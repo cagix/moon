@@ -94,9 +94,9 @@
   (let [[n m] (split-with (partial not= item) coll)]
     (concat n (rest m))))
 
-(defn safe-remove-one [values value]
-  {:post [(= (count %) (dec (count values)))]}
-  (remove-one values value))
+(defn safe-remove-one [coll item]
+  {:post [(= (count %) (dec (count coll)))]}
+  (remove-one coll item))
 
 (defn k->pretty-name [k]
   (str/capitalize (name k)))

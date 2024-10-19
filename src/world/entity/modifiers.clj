@@ -9,11 +9,8 @@
             [utils.core :refer [safe-remove-one update-kv k->pretty-name]]
             [world.entity :as entity]))
 
-(defn- ops-add [ops to-add-ops]
-  (update-kv conj ops to-add-ops))
-
-(defn- ops-remove [ops to-remove-ops]
-  (update-kv safe-remove-one ops to-remove-ops))
+(defn- ops-add    [ops value-ops] (update-kv conj            ops value-ops))
+(defn- ops-remove [ops value-ops] (update-kv safe-remove-one ops value-ops))
 
 (comment
  (= (ops-add {:+ [1 2 3]}
@@ -25,23 +22,24 @@
     {:+ [1 3], :* []})
  )
 
+(defn- mods-add    [mods value-ops] (update-kv ops-add    mods value-ops))
+(defn- mods-remove [mods value-ops] (update-kv ops-remove mods value-ops))
+
 (comment
- (= (update-kv ops-add
-               {:speed {:+ [1 2 3]}}
-               {:speed {:* -0.5}})
+ (= (mods-add {:speed {:+ [1 2 3]}}
+              {:speed {:* -0.5}})
     {:speed {:+ [1 2 3], :* [-0.5]}})
 
- (= (update-kv ops-remove
-               {:speed {:+ [1 2 3] :* [-0.5]}}
-               {:speed {:+ 2 :* -0.5}})
+ (= (mods-remove {:speed {:+ [1 2 3] :* [-0.5]}}
+                 {:speed {:+ 2 :* -0.5}})
     {:speed {:+ [1 3], :* []}})
  )
 
 (defn update-mods [[_ eid mods] f]
-  [[:e/update eid :entity/modifiers #(update-kv f % mods)]])
+  [[:e/update eid :entity/modifiers #(f % mods)]])
 
-(defc :tx/apply-modifiers   (tx/handle [this] (update-mods this ops-add)))
-(defc :tx/reverse-modifiers (tx/handle [this] (update-mods this ops-remove)))
+(defc :tx/apply-modifiers   (tx/handle [this] (update-mods this mods-add)))
+(defc :tx/reverse-modifiers (tx/handle [this] (update-mods this mods-remove)))
 
 ; DRY ->effective-value (summing)
 ; also: sort-by op/order @ modifier/info-text itself (so player will see applied order)
