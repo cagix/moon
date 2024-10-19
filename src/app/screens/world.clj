@@ -1,5 +1,7 @@
 (ns app.screens.world
-  (:require [gdx.graphics :as g]
+  (:require [component.db :as db]
+            [gdx.app :as app]
+            [gdx.graphics :as g]
             [gdx.graphics.camera :as 🎥]
             [gdx.input :refer [key-pressed? key-just-pressed?]]
             [gdx.ui :as ui]
@@ -89,20 +91,7 @@
 (defn create []
   [:screens/world (stage-screen/create :screen (->WorldScreen))])
 
-(defn- world-actors []
-  [(ui/table {:rows [[{:actor (action-bar/create)
-                       :expand? true
-                       :bottom? true}]]
-              :id :action-bar-table
-              :cell-defaults {:pad 2}
-              :fill-parent? true})
-   (hp-mana-bars/create)
-   (ui/group {:id :windows
-              :actors [(debug-window/create)
-                       (entity-info-window/create)
-                       (inventory/create)]})
-   (ui/actor {:draw moon.creature.player.item-on-cursor/draw-item-on-cursor})
-   (player-message/create)])
+(declare world-actors)
 
 (defn- reset-stage! []
   (let [stage (stage-get)] ; these fns to stage itself
@@ -116,3 +105,52 @@
     (let [level (level/generate-level world-id)]
       (world/init! (:tiled-map level))
       (creature/spawn-all level))))
+
+(import 'com.kotcrab.vis.ui.widget.MenuBar)
+(import 'com.kotcrab.vis.ui.widget.Menu)
+(import 'com.kotcrab.vis.ui.widget.MenuItem)
+
+(defn- menu-item [text on-clicked]
+  (doto (MenuItem. (str text))
+    (.addListener (ui/change-listener on-clicked))))
+
+(defn- ->menu-bar []
+  (let [menu-bar (MenuBar.)
+        app-menu (Menu. "App")]
+    (.addItem app-menu (menu-item "Map editor" (partial screen/change! :screens/map-editor)))
+    (.addItem app-menu (menu-item "Properties" (partial screen/change! :screens/property-editor)))
+    (.addItem app-menu (menu-item "Exit" app/exit!))
+    (.addMenu menu-bar app-menu)
+    (let [world (Menu. "World")]
+      (doseq [{:keys [property/id]} (db/all :properties/worlds)]
+        (.addItem world (menu-item (str "Start " id) (start-game-fn id))))
+      (.addMenu menu-bar world))
+    menu-bar))
+
+(defn- dev-menu []
+  (ui/table {:rows [[{:actor (.getTable (->menu-bar))
+                      :expand-x? true
+                      :fill-x? true
+                      :colspan 1}]
+                    [{:actor (ui/label "")
+                      :expand? true
+                      :fill-x? true
+                      :fill-y? true}]]
+             :fill-parent? true}))
+
+(defn- world-actors []
+  [(when dev-mode?
+     (dev-menu))
+   (ui/table {:rows [[{:actor (action-bar/create)
+                       :expand? true
+                       :bottom? true}]]
+              :id :action-bar-table
+              :cell-defaults {:pad 2}
+              :fill-parent? true})
+   (hp-mana-bars/create)
+   (ui/group {:id :windows
+              :actors [(debug-window/create)
+                       (entity-info-window/create)
+                       (inventory/create)]})
+   (ui/actor {:draw moon.creature.player.item-on-cursor/draw-item-on-cursor})
+   (player-message/create)])

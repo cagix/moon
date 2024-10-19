@@ -113,7 +113,7 @@
 
 (declare ^:dynamic *on-clicked-actor*)
 
-(defn- change-listener [on-clicked]
+(defn change-listener [on-clicked]
   (proxy [ChangeListener] []
     (changed [event actor]
       (binding [*on-clicked-actor* actor]
