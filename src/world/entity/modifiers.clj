@@ -2,8 +2,8 @@
   (:require [clojure.string :as str]
             [component.core :refer [defc]]
             [component.info :as info]
-            [component.operation :as op]
             [component.tx :as tx]
+            [data.operation :as op]
             [gdx.graphics :as g]
             [utils.core :refer [remove-one k->pretty-name]]
             [world.entity :as entity]))
