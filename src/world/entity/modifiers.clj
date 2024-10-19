@@ -4,7 +4,6 @@
             [component.info :as info]
             [component.tx :as tx]
             [data.operation :as op]
-            [data.ops :as ops]
             [gdx.graphics :as g]
             [utils.core :refer [safe-remove-one update-kv k->pretty-name]]
             [world.entity :as entity]))
