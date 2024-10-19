@@ -64,7 +64,7 @@
  )
 
 (defn- post-tx! [tx]
-  (post-runnable! (tx/do-all [tx])))
+  (post-runnable! (tx/do! [tx])))
 
 (defn- learn-skill! [skill-id] (post-tx! (fn [] [[:tx/add-skill world/player (db/get skill-id)]])))
 (defn- create-item! [item-id]  (post-tx! (fn [] [[:tx/item       (:position @world/player) (db/get item-id)]])))
@@ -83,12 +83,12 @@
         (binding [*print-level* nil]
           (with-out-str
            (doseq [[nmsp ks] (sort-by first
-                                      (group-by namespace (sort (keys (methods tx/do!)))))]
+                                      (group-by namespace (sort (keys (methods tx/handle)))))]
 
              (println "\n#" nmsp)
              (doseq [k ks
                      :let [attr-m (component/meta k)]]
-               (println (str "* __" k "__ `" (get (:params attr-m) "tx/do!") "`"))
+               (println (str "* __" k "__ `" (get (:params attr-m) "tx/handle") "`"))
                (when-let [data (:schema attr-m)]
                  (println (str "    * data: `" (pr-str data) "`")))
                (let [ks (descendants k)]

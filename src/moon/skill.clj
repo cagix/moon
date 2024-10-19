@@ -71,14 +71,14 @@
   (contains? skills id))
 
 (defc :tx/add-skill
-  (tx/do! [[_ eid {:keys [property/id] :as skill}]]
+  (tx/handle [[_ eid {:keys [property/id] :as skill}]]
     (assert (not (has-skill? @eid skill)))
     [[:e/assoc-in eid [:entity/skills id] skill]
      (when (:entity/player? @eid)
        [:tx.action-bar/add skill])]))
 
 (defc :tx/remove-skill
-  (tx/do! [[_ eid {:keys [property/id] :as skill}]]
+  (tx/handle [[_ eid {:keys [property/id] :as skill}]]
     (assert (has-skill? @eid skill))
     [[:e/dissoc-in eid [:entity/skills id]]
      (when (:entity/player? @eid)
@@ -106,7 +106,7 @@
                                                            (:entity/image (db/get id)) ; TODO here anyway taken
                                                            ; => should probably build this window @ game start
                                                            (fn []
-                                                             (tx/do-all (player-clicked-skillmenu (db/get id)))))]]
+                                                             (tx/do! (player-clicked-skillmenu (db/get id)))))]]
                          (do
                           (ui/add-tooltip! button #(info/->text (db/get id))) ; TODO no player modifiers applied (see actionbar)
                           button))]

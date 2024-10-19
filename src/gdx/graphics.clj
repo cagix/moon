@@ -63,7 +63,7 @@
   (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
 
 (defc :tx/cursor
-  (tx/do! [[_ cursor-key]]
+  (tx/handle [[_ cursor-key]]
     (set-cursor! cursor-key)
     nil))
 

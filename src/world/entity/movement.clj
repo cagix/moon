@@ -63,7 +63,7 @@
            [:tx/position-changed eid]])))))
 
 (defc :tx/set-movement
-  (tx/do! [[_ eid movement]]
+  (tx/handle [[_ eid movement]]
     (assert (or (nil? movement)
                 (nil? (:direction movement))
                 (and (:direction movement) ; continue schema of that ...

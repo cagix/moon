@@ -67,6 +67,6 @@
 
 (defc :tx/sound
   {:schema :s/sound}
-  (tx/do! [[_ file]]
+  (tx/handle [[_ file]]
     (play-sound! file)
     nil))

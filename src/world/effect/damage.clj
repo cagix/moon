@@ -24,7 +24,7 @@
   (effect/applicable? [_]
     (effect/applicable? (damage-effect)))
 
-  (tx/do! [_]
+  (tx/handle [_]
     [(damage-effect)]))
 
 (defn- effective-armor-save [source* target*]
@@ -86,7 +86,7 @@
     (and target
          (entity-stat @target :stats/hp)))
 
-  (tx/do! [_]
+  (tx/handle [_]
     (let [source* @source
           target* @target
           hp (entity-stat target* :stats/hp)]

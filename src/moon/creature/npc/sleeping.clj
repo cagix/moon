@@ -24,7 +24,7 @@
               [:tx/event friendly-eid :alert])))))
 
 (defc :tx/shout
-  (tx/do! [[_ position faction delay-seconds]]
+  (tx/handle [[_ position faction delay-seconds]]
     [[:e/create
       position
       entity/effect-body-props

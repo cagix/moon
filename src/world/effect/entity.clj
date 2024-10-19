@@ -36,7 +36,7 @@
       true)
 
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-    (tx/do! [_]
+    (tx/handle [_]
       (when-not (:entity/temp-modifier @target)
         [[:tx/apply-modifiers target modifiers]
          [:e/assoc target :entity/temp-modifier {:modifiers modifiers
@@ -52,7 +52,7 @@
          (= (:entity/faction @target)
             (entity/enemy @source))))
 
-  (tx/do! [_]
+  (tx/handle [_]
     [[:tx/audiovisual (:position @target) :audiovisuals/convert]
      [:e/assoc target :entity/faction (entity/friend @source)]]))
 
@@ -65,7 +65,7 @@
   (effect/applicable? [_]
     (and target (:entity/state @target)))
 
-  (tx/do! [_]
+  (tx/handle [_]
     [[:tx/event target :stun duration]]))
 
 (defc :effect.entity/kill
@@ -75,5 +75,5 @@
   (effect/applicable? [_]
     (and target (:entity/state @target)))
 
-  (tx/do! [_]
+  (tx/handle [_]
     [[:tx/event target :kill]]))

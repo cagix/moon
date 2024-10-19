@@ -63,7 +63,7 @@
   (first (:world-unit-dimensions (:entity/image projectile))))
 
 (defc :tx/projectile
-  (tx/do! [[_
+  (tx/handle [[_
             {:keys [position direction faction]}
             {:keys [entity/image
                     projectile/max-range
@@ -111,7 +111,7 @@
                           target-p)
               max-range))))
 
-  (tx/do! [_]
+  (tx/handle [_]
     [[:tx/sound "sounds/bfxr_waypointunlock.wav"]
      [:tx/projectile
       {:position (projectile-start-point @source target-direction (projectile-size projectile))

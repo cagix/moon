@@ -55,7 +55,7 @@
           components))
 
 (defc :e/create
-  (tx/do! [[_ position body components]]
+  (tx/handle [[_ position body components]]
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))
     (let [eid (atom (-> body
@@ -69,33 +69,33 @@
               #(entity/create component eid))))))
 
 (defc :e/destroy
-  (tx/do! [[_ eid]]
+  (tx/handle [[_ eid]]
     [[:e/assoc eid :entity/destroyed? true]]))
 
 (defc :e/assoc
-  (tx/do! [[_ eid k v]]
+  (tx/handle [[_ eid k v]]
     (assert (keyword? k))
     (swap! eid assoc k v)
     nil))
 
 (defc :e/assoc-in
-  (tx/do! [[_ eid ks v]]
+  (tx/handle [[_ eid ks v]]
     (swap! eid assoc-in ks v)
     nil))
 
 (defc :e/dissoc
-  (tx/do! [[_ eid k]]
+  (tx/handle [[_ eid k]]
     (assert (keyword? k))
     (swap! eid dissoc k)
     nil))
 
 (defc :e/dissoc-in
-  (tx/do! [[_ eid ks]]
+  (tx/handle [[_ eid ks]]
     (swap! eid dissoc-in ks)
     nil))
 
 (defc :e/update
-  (tx/do! [[_ eid k f]]
+  (tx/handle [[_ eid k f]]
     (swap! eid update k f)
     nil))
 
@@ -136,7 +136,7 @@
   (try
    (doseq [k (keys @eid)]
      (when-let [v (k @eid)]
-       (tx/do-all (entity/tick [k v] eid))))
+       (tx/do! (entity/tick [k v] eid))))
    (catch Throwable t
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
 

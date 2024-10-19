@@ -39,7 +39,7 @@
   (effect/useful? [_]
     true)
 
-  (tx/do! [[effect-k operations]]
+  (tx/handle [[effect-k operations]]
     (let [stat-k (effect-k->stat-k effect-k)]
       (when-let [effective-value (entity-stat @effect/target stat-k)]
         [[:e/assoc-in effect/target [:entity/stats stat-k]

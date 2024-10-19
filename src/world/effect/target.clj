@@ -45,7 +45,7 @@
     false
     )
 
-  (tx/do! [_]
+  (tx/handle [_]
     (let [source* @source]
       (apply concat
              (for [target (creatures-in-los-of-player)]
@@ -106,7 +106,7 @@
     (assert target)
     (in-range? @source @target maxrange))
 
-  (tx/do! [_]
+  (tx/handle [_]
     (let [source* @source
           target* @target]
       (if (in-range? source* target* maxrange)

@@ -19,7 +19,7 @@
                     :up? true}))))
 
 (defc :tx/add-text-effect
-  (tx/do! [[_ eid text]]
+  (tx/handle [[_ eid text]]
     [[:e/assoc
       eid
       :entity/string-effect

@@ -66,7 +66,7 @@
   (init-ids->eids))
 
 (defc :tx/add-to-world
-  (tx/do! [[_ eid]]
+  (tx/handle [[_ eid]]
     (let [id (:entity/id @eid)]
       (assert (number? id))
       (alter-var-root #'ids->eids assoc id eid))
@@ -77,7 +77,7 @@
     nil))
 
 (defc :tx/remove-from-world
-  (tx/do! [[_ eid]]
+  (tx/handle [[_ eid]]
     (let [id (:entity/id @eid)]
       (assert (contains? ids->eids id))
       (alter-var-root #'ids->eids dissoc id))
@@ -86,7 +86,7 @@
     nil))
 
 (defc :tx/position-changed
-  (tx/do! [[_ eid]]
+  (tx/handle [[_ eid]]
     (content-grid/update-entity! content-grid eid)
     (grid-entity-position-changed! eid)
    nil))
@@ -114,18 +114,18 @@
                           (render-before-entities)
                           (render-entities! (map deref (active-entities)))
                           (render-after-entities)))
-  (tx/do-all [player-update-state
-              ; this do always so can get debug info even when game not running
-              update-mouseover-entity!
-              update-game-paused
-              #(when-not paused?
-                 (update-time! (min (g/delta-time) entity/max-delta-time))
-                 (let [entities (active-entities)]
-                   (update-potential-fields! entities)
-                   (try (run! tick-system entities)
-                        (catch Throwable t
-                          (error-window! t)
-                          (bind-root #'entity-tick-error t))))
-                 nil)
-              ; do not pause this as for example pickup item, should be destroyed.
-              remove-destroyed-entities!]))
+  (tx/do! [player-update-state
+           ; this do always so can get debug info even when game not running
+           update-mouseover-entity!
+           update-game-paused
+           #(when-not paused?
+              (update-time! (min (g/delta-time) entity/max-delta-time))
+              (let [entities (active-entities)]
+                (update-potential-fields! entities)
+                (try (run! tick-system entities)
+                     (catch Throwable t
+                       (error-window! t)
+                       (bind-root #'entity-tick-error t))))
+              nil)
+           ; do not pause this as for example pickup item, should be destroyed.
+           remove-destroyed-entities!]))

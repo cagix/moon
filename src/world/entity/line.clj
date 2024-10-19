@@ -13,7 +13,7 @@
         (g/draw-line position end color)))))
 
 (defc :tx/line-render
-  (tx/do! [[_ {:keys [start end duration color thick?]}]]
+  (tx/handle [[_ {:keys [start end duration color thick?]}]]
     [[:e/create
       start
       entity/effect-body-props

@@ -24,8 +24,8 @@
 (defn update-mods [[_ eid mods] f]
   [[:e/update eid :entity/modifiers #(update-kv f % mods)]])
 
-(defc :tx/apply-modifiers   (tx/do! [this] (update-mods this ops/add)))
-(defc :tx/reverse-modifiers (tx/do! [this] (update-mods this ops/remove)))
+(defc :tx/apply-modifiers   (tx/handle [this] (update-mods this ops/add)))
+(defc :tx/reverse-modifiers (tx/handle [this] (update-mods this ops/remove)))
 
 ; DRY ->effective-value (summing)
 ; also: sort-by op/order @ modifier/info-text itself (so player will see applied order)

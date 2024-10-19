@@ -56,5 +56,5 @@
            [:e/assoc eid new-state-k (new-state-obj 1)]])))))
 
 (defc :tx/event
-  (tx/do! [[_ eid event params]]
+  (tx/handle [[_ eid event params]]
     (send-event! eid event params)))

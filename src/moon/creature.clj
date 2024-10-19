@@ -95,7 +95,7 @@
 
 (defc :tx/creature
   {:let {:keys [position creature-id components]}}
-  (tx/do! [_]
+  (tx/handle [_]
     (let [props (db/get creature-id)]
       [[:e/create
         position
@@ -110,23 +110,23 @@
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
 (defn spawn-all [{:keys [tiled-map start-position]}]
-  (tx/do-all (for [creature (cons {:position start-position
-                                   :creature-id :creatures/vampire
-                                   :components {:entity/state {:fsm fsms/player
-                                                               :initial-state :player-idle}
-                                                :entity/faction :good
-                                                :entity/player? true
-                                                :entity/free-skill-points 3
-                                                :entity/clickable {:type :clickable/player}
-                                                :entity/click-distance-tiles 1.5}}
-                                  (when spawn-enemies?
-                                    (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                                      {:position position
-                                       :creature-id (keyword creature-id)
-                                       :components {:entity/state {:fsm fsms/npc
-                                                                   :initial-state :npc-sleeping}
-                                                    :entity/faction :evil}})))]
-               [:tx/creature (update creature :position tile->middle)])))
+  (tx/do! (for [creature (cons {:position start-position
+                                :creature-id :creatures/vampire
+                                :components {:entity/state {:fsm fsms/player
+                                                            :initial-state :player-idle}
+                                             :entity/faction :good
+                                             :entity/player? true
+                                             :entity/free-skill-points 3
+                                             :entity/clickable {:type :clickable/player}
+                                             :entity/click-distance-tiles 1.5}}
+                               (when spawn-enemies?
+                                 (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                                   {:position position
+                                    :creature-id (keyword creature-id)
+                                    :components {:entity/state {:fsm fsms/npc
+                                                                :initial-state :npc-sleeping}
+                                                 :entity/faction :evil}})))]
+            [:tx/creature (update creature :position tile->middle)])))
 
 ; https://github.com/damn/core/issues/29
 (defc :effect/spawn
@@ -136,7 +136,7 @@
     (and (:entity/faction @effect/source)
          effect/target-position))
 
-  (tx/do! [_]
+  (tx/handle [_]
     [[:tx/sound "sounds/bfxr_shield_consume.wav"]
      [:tx/creature {:position effect/target-position
                     :creature-id id ; already properties/get called through one-to-one, now called again.

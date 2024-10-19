@@ -7,7 +7,7 @@
             [world.entity :as entity]))
 
 (defsystem applicable?
-  "An effect will only be done (with tx/do!) if this function returns truthy.
+  "An effect will only be done (with tx/handle) if this function returns truthy.
 Required system for every effect, no default.")
 
 (defsystem useful?
@@ -93,6 +93,6 @@ Default method returns true.")
      ~@body))
 
 (defc :tx/effect
-  (tx/do! [[_ effect-ctx effect]]
+  (tx/handle [[_ effect-ctx effect]]
     (with-ctx effect-ctx
-      (tx/do-all (filter-applicable? effect)))))
+      (tx/do! (filter-applicable? effect)))))

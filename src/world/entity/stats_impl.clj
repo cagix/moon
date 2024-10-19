@@ -27,7 +27,7 @@
    :effect-ops [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]})
 
 (defc :tx.entity.stats/pay-mana-cost
-  (tx/do! [[_ eid cost]]
+  (tx/handle [[_ eid cost]]
     (let [mana-val ((entity-stat @eid :stats/mana) 0)]
       (assert (<= cost mana-val))
       [[:e/assoc-in eid [:entity/stats :stats/mana 0] (- mana-val cost)]])))
@@ -37,7 +37,7 @@
        eid (atom (entity/map->Entity {:entity/stats {:stats/mana [mana-val 10]}}))
        mana-cost 3
        resulting-mana (- mana-val mana-cost)]
-   (= (tx/do! [:tx.entity.stats/pay-mana-cost eid mana-cost] nil)
+   (= (tx/handle [:tx.entity.stats/pay-mana-cost eid mana-cost] nil)
       [[:e/assoc-in eid [:entity/stats :stats/mana 0] resulting-mana]]))
  )
 

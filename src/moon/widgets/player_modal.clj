@@ -25,6 +25,6 @@
                           :pack? true})))
 
 (defc :tx/player-modal
-  (tx/do! [[_ params]]
+  (tx/handle [[_ params]]
     (show-player-modal! params)
     nil))

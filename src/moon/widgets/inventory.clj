@@ -83,7 +83,7 @@
     (a/set-id! stack cell)
     (a/add-listener! stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
-                               (tx/do-all (player-clicked-inventory cell)))))
+                               (tx/do! (player-clicked-inventory cell)))))
     stack))
 
 (defn- inventory-table []
@@ -128,7 +128,7 @@
        cell))
 
 (defc :tx/set-item-image-in-widget
-  (tx/do! [[_ cell item]]
+  (tx/handle [[_ cell item]]
     (let [cell-widget (cell-widget cell)
           image-widget (get cell-widget :image)
           drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
@@ -138,7 +138,7 @@
       nil)))
 
 (defc :tx/remove-item-from-widget
-  (tx/do! [[_ cell]]
+  (tx/handle [[_ cell]]
     (let [cell-widget (cell-widget cell)
           image-widget (get cell-widget :image)]
       (ui/set-drawable! image-widget (slot->background (cell 0)))

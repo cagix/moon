@@ -27,6 +27,6 @@
              :act check-remove-message}))
 
 (defc :tx/msg-to-player
-  (tx/do! [[_ message]]
+  (tx/handle [[_ message]]
     (.bindRoot #'message-to-player {:message message :counter 0})
     nil))

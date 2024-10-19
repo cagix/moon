@@ -53,7 +53,7 @@
    :z-order :z-order/on-ground})
 
 (defc :tx/item
-  (tx/do! [[_ position item]]
+  (tx/handle [[_ position item]]
     [[:e/create position body-props {:entity/image (:entity/image item)
                                      :entity/item item
                                      :entity/clickable {:type :clickable/item
@@ -97,11 +97,11 @@
        [:tx/remove-item-from-widget cell])]))
 
 (defc :tx/set-item
-  (tx/do! [[_ eid cell item]]
+  (tx/handle [[_ eid cell item]]
     (set-item eid cell item)))
 
 (defc :tx/remove-item
-  (tx/do! [[_ eid cell]]
+  (tx/handle [[_ eid cell]]
     (remove-item eid cell)))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
@@ -126,7 +126,7 @@
             (set-item eid cell (update cell-item :count + (:count item))))))
 
 (defc :tx/stack-item
-  (tx/do! [[_ eid cell item]]
+  (tx/handle [[_ eid cell item]]
     (stack-item eid cell item)))
 
 (defn- try-put-item-in [eid slot item]
@@ -146,7 +146,7 @@
    (try-put-item-in eid :inventory.slot/bag item)))
 
 (defc :tx/pickup-item
-  (tx/do! [[_ eid item]]
+  (tx/handle [[_ eid item]]
     (pickup-item eid item)))
 
 (defn can-pickup-item? [eid item]

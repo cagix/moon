@@ -13,7 +13,7 @@
               :image/scale 2}})
 
 (defc :tx/audiovisual
-  (tx/do! [[_ position id]]
+  (tx/handle [[_ position id]]
     (let [{:keys [tx/sound entity/animation]} (db/get id)]
       [[:tx/sound sound]
        [:e/create
