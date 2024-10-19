@@ -6,16 +6,32 @@
             [data.operation :as op]
             [data.ops :as ops]
             [gdx.graphics :as g]
-            [utils.core :refer [update-kv k->pretty-name]]
+            [utils.core :refer [safe-remove-one update-kv k->pretty-name]]
             [world.entity :as entity]))
 
+(defn- ops-add [ops to-add-ops]
+  (update-kv conj ops to-add-ops))
+
+(defn- ops-remove [ops to-remove-ops]
+  (update-kv safe-remove-one ops to-remove-ops))
+
 (comment
- (= (update-kv ops/add
+ (= (ops-add {:+ [1 2 3]}
+             {:* -0.5 :+ -1})
+    {:+ [1 2 3 -1], :* [-0.5]})
+
+ (= (ops-remove {:+ [1 2 3] :* [-0.5]}
+                {:+ 2 :* -0.5})
+    {:+ [1 3], :* []})
+ )
+
+(comment
+ (= (update-kv ops-add
                {:speed {:+ [1 2 3]}}
                {:speed {:* -0.5}})
     {:speed {:+ [1 2 3], :* [-0.5]}})
 
- (= (update-kv ops/remove
+ (= (update-kv ops-remove
                {:speed {:+ [1 2 3] :* [-0.5]}}
                {:speed {:+ 2 :* -0.5}})
     {:speed {:+ [1 3], :* []}})
@@ -24,8 +40,8 @@
 (defn update-mods [[_ eid mods] f]
   [[:e/update eid :entity/modifiers #(update-kv f % mods)]])
 
-(defc :tx/apply-modifiers   (tx/handle [this] (update-mods this ops/add)))
-(defc :tx/reverse-modifiers (tx/handle [this] (update-mods this ops/remove)))
+(defc :tx/apply-modifiers   (tx/handle [this] (update-mods this ops-add)))
+(defc :tx/reverse-modifiers (tx/handle [this] (update-mods this ops-remove)))
 
 ; DRY ->effective-value (summing)
 ; also: sort-by op/order @ modifier/info-text itself (so player will see applied order)
