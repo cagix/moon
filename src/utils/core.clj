@@ -94,6 +94,10 @@
   (let [[n m] (split-with (partial not= item) coll)]
     (concat n (rest m))))
 
+(defn safe-remove-one [values value]
+  {:post [(= (count %) (dec (count values)))]}
+  (remove-one values value))
+
 (defn k->pretty-name [k]
   (str/capitalize (name k)))
 
@@ -132,3 +136,12 @@
      (when (seq ~aseq)
        ~@body)))
 
+(defn dissoc-in [m ks]
+  (assert (> (count ks) 1))
+  (update-in m (drop-last ks) dissoc (last ks)))
+
+(defn update-kv [f m kvs]
+  (reduce-kv (fn [m k v]
+               (update m k f v))
+             m
+             kvs))

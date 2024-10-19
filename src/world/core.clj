@@ -12,7 +12,7 @@
             [gdx.math.shape :as shape]
             [gdx.tiled :as t]
             [gdx.utils :refer [dispose!]]
-            [utils.core :refer [bind-root ->tile tile->middle safe-merge sort-by-order]]
+            [utils.core :refer [bind-root ->tile tile->middle safe-merge sort-by-order dissoc-in]]
             [world.core.content-grid :as content-grid]
             [world.core.raycaster :as raycaster]
             [world.entity :as entity]

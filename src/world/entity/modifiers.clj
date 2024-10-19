@@ -4,31 +4,28 @@
             [component.info :as info]
             [component.tx :as tx]
             [data.operation :as op]
+            [data.ops :as ops]
             [gdx.graphics :as g]
-            [utils.core :refer [remove-one k->pretty-name]]
+            [utils.core :refer [update-kv k->pretty-name]]
             [world.entity :as entity]))
 
-(defn- txs-update-modifiers [eid modifiers f]
-  (for [[modifier-k operations] modifiers
-        [operation-k value] operations]
-    [:e/update-in eid [:entity/modifiers modifier-k operation-k] (f value)]))
+(comment
+ (= (update-kv ops/add
+               {:speed {:+ [1 2 3]}}
+               {:speed {:* -0.5}})
+    {:speed {:+ [1 2 3], :* [-0.5]}})
 
-(defn- conj-value [value]
-  (fn [values]
-    (conj values value)))
+ (= (update-kv ops/remove
+               {:speed {:+ [1 2 3] :* [-0.5]}}
+               {:speed {:+ 2 :* -0.5}})
+    {:speed {:+ [1 3], :* []}})
+ )
 
-(defn- remove-value [value]
-  (fn [values]
-    {:post [(= (count %) (dec (count values)))]}
-    (remove-one values value)))
+(defn update-mods [[_ eid mods] f]
+  [[:e/update eid :entity/modifiers #(update-kv f % mods)]])
 
-(defc :tx/apply-modifiers
-  (tx/do! [[_ eid modifiers]]
-    (txs-update-modifiers eid modifiers conj-value)))
-
-(defc :tx/reverse-modifiers
-  (tx/do! [[_ eid modifiers]]
-    (txs-update-modifiers eid modifiers remove-value)))
+(defc :tx/apply-modifiers   (tx/do! [this] (update-mods this ops/add)))
+(defc :tx/reverse-modifiers (tx/do! [this] (update-mods this ops/remove)))
 
 ; DRY ->effective-value (summing)
 ; also: sort-by op/order @ modifier/info-text itself (so player will see applied order)

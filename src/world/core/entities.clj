@@ -91,13 +91,12 @@
 
 (defc :e/dissoc-in
   (tx/do! [[_ eid ks]]
-    (assert (> (count ks) 1))
-    (swap! eid update-in (drop-last ks) dissoc (last ks))
+    (swap! eid dissoc-in ks)
     nil))
 
-(defc :e/update-in
-  (tx/do! [[_ eid ks f]]
-    (swap! eid update-in ks f)
+(defc :e/update
+  (tx/do! [[_ eid k f]]
+    (swap! eid update k f)
     nil))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
