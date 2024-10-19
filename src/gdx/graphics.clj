@@ -9,7 +9,7 @@
             [gdx.graphics.viewport :as vp]
             [gdx.graphics.tiled :as tiled]
             [gdx.utils :refer [gdx-field]]
-            [utils.core :refer [bind-root safe-get]])
+            [utils.core :refer [bind-root safe-get mapvals]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
@@ -41,10 +41,6 @@
   scale will multiply the drawn text size with the scale."
   [{:keys [x y text font h-align up? scale] :as opts}]
   (text/draw (or font default-font) *unit-scale* batch opts))
-
-(defn- mapvals [f m]
-  (into {} (for [[k v] m]
-             [k (f v)])))
 
 (defn- ->cursor [file [hotspot-x hotspot-y]]
   (let [pixmap (Pixmap. (.internal Gdx/files file))

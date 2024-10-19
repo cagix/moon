@@ -145,3 +145,8 @@
                (update m k f v))
              m
              kvs))
+
+(defn mapvals [f m]
+  (into {} (for [[k v] m]
+             [k (f v)])))
+

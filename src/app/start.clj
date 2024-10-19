@@ -12,6 +12,16 @@
             [gdx.screen :as screen]
             [gdx.vis-ui :as vis-ui]))
 
+
+(g/def-markup-color "MODIFIER_BLUE" :cyan)
+
+; For now no green/red color for positive/negative numbers
+; as :stats/damage-receive negative value would be red but actually a useful buff
+; -> could give damage reduce 10% like in diablo 2
+; and then make it negative .... @ applicator
+(def ^:private positive-modifier-color "[MODIFIER_BLUE]" #_"[LIME]")
+(def ^:private negative-modifier-color "[MODIFIER_BLUE]" #_"[SCARLET]")
+
 (def lwjgl3-config {:title "Core"
                     :width 1440
                     :height 900
