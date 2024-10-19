@@ -22,8 +22,8 @@
     {:+ [1 3], :* []})
  )
 
-(defn- mods-add    [mods value-ops] (update-kv ops-add    mods value-ops))
-(defn- mods-remove [mods value-ops] (update-kv ops-remove mods value-ops))
+(defn- mods-add    [mods value-mods] (update-kv ops-add    mods value-mods))
+(defn- mods-remove [mods value-mods] (update-kv ops-remove mods value-mods))
 
 (comment
  (= (mods-add {:speed {:+ [1 2 3]}}

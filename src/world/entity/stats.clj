@@ -46,7 +46,8 @@
           ; TODO similar to components.entity.modifiers/->modified-value
           ; but operations not sort-by op/order ??
           ; op-apply reuse fn over operations to get effectiv value
-          (reduce (fn [value operation] (op/apply operation value))
+          (reduce (fn [value operation]
+                    (op/apply operation value))
                   effective-value
                   operations)]]))))
 
