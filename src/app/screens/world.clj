@@ -111,8 +111,28 @@
 (import 'com.kotcrab.vis.ui.widget.MenuItem)
 
 (defn- menu-item [text on-clicked]
-  (doto (MenuItem. (str text))
+  (doto (MenuItem. text)
     (.addListener (ui/change-listener on-clicked))))
+
+(defn- add-upd-label [table text-fn]
+  (let [label (ui/label "")]
+    (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
+    (.expandX (.right (.add table label)))))
+
+(defn- fps [] (str "FPS: " (g/frames-per-second)))
+
+
+(defn- add-debug-infos [mb]
+  (let [table (.getTable mb)
+        add! #(add-upd-label table %)]
+    (add! #(str "Mouseover-entity id: " (when-let [entity (world/mouseover-entity)] (:entity/id entity))))
+    (add! #(str "elapsed-time " (utils.core/readable-number world/elapsed-time) " seconds"))
+    (add! #(str "paused? " world/paused?))
+    (add! #(str "GUI: " (g/gui-mouse-position)))
+    (add! #(str "World: "(mapv int (g/world-mouse-position))))
+    (add! #(str "Zoom: " (🎥/zoom (g/world-camera))))
+    (add! #(str "logic-frame: " world/logic-frame))
+    (add! fps)))
 
 (defn- ->menu-bar []
   (let [menu-bar (MenuBar.)
@@ -125,6 +145,11 @@
       (doseq [{:keys [property/id]} (db/all :properties/worlds)]
         (.addItem world (menu-item (str "Start " id) (start-game-fn id))))
       (.addMenu menu-bar world))
+    (let [help (Menu. "Help")]
+        (.addItem help (MenuItem. "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[TAB] - Minimap\n[P]/[SPACE] - Unpause"))
+      (.addMenu menu-bar help))
+    (def mb menu-bar)
+    (add-debug-infos mb)
     menu-bar))
 
 (defn- dev-menu []
@@ -132,7 +157,8 @@
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]
-                    [{:actor (ui/label "")
+                    [{:actor (doto (ui/label "")
+                               (a/set-touchable! :disabled))
                       :expand? true
                       :fill-x? true
                       :fill-y? true}]]
