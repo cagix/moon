@@ -68,37 +68,6 @@
             (for [component @eid]
               #(entity/create component eid))))))
 
-(defc :e/destroy
-  (tx/handle [[_ eid]]
-    [[:e/assoc eid :entity/destroyed? true]]))
-
-(defc :e/assoc
-  (tx/handle [[_ eid k v]]
-    (assert (keyword? k))
-    (swap! eid assoc k v)
-    nil))
-
-(defc :e/assoc-in
-  (tx/handle [[_ eid ks v]]
-    (swap! eid assoc-in ks v)
-    nil))
-
-(defc :e/dissoc
-  (tx/handle [[_ eid k]]
-    (assert (keyword? k))
-    (swap! eid dissoc k)
-    nil))
-
-(defc :e/dissoc-in
-  (tx/handle [[_ eid ks]]
-    (swap! eid dissoc-in ks)
-    nil))
-
-(defc :e/update
-  (tx/handle [[_ eid k f]]
-    (swap! eid update k f)
-    nil))
-
 (def ^:private ^:dbg-flag show-body-bounds false)
 
 (defn- draw-body-rect [entity color]

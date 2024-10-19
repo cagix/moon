@@ -1,10 +1,11 @@
 (ns world.entity
   (:require [component.core :refer [defsystem defc]]
             [component.info :as info]
+            [component.tx :as tx]
             [gdx.math.shape :as shape]
             [gdx.math.vector :as v]
             [malli.core :as m]
-            [utils.core :refer [define-order ->tile]]))
+            [utils.core :refer [define-order ->tile dissoc-in]]))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)
@@ -121,3 +122,34 @@
    :let faction}
   (info/text [_]
     (str "[SLATE]Faction: " (name faction) "[]")))
+
+(defc :e/destroy
+  (tx/handle [[_ eid]]
+    [[:e/assoc eid :entity/destroyed? true]]))
+
+(defc :e/assoc
+  (tx/handle [[_ eid k v]]
+    (assert (keyword? k))
+    (swap! eid assoc k v)
+    nil))
+
+(defc :e/assoc-in
+  (tx/handle [[_ eid ks v]]
+    (swap! eid assoc-in ks v)
+    nil))
+
+(defc :e/dissoc
+  (tx/handle [[_ eid k]]
+    (assert (keyword? k))
+    (swap! eid dissoc k)
+    nil))
+
+(defc :e/dissoc-in
+  (tx/handle [[_ eid ks]]
+    (swap! eid dissoc-in ks)
+    nil))
+
+(defc :e/update
+  (tx/handle [[_ eid k f]]
+    (swap! eid update k f)
+    nil))

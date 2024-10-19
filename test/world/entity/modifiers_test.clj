@@ -1,22 +1,23 @@
 (ns world.entity.modifiers-test
   (:require [clojure.test :refer :all]
             [component.tx :as tx]
+            data.val-max
             [world.entity.modifiers :as modifiers]
             [world.entity :as entity]))
 
 (deftest apply-modifiers
   (let [eid (atom {:entity/modifiers {:modifier/movement-speed {:op/mult [0.1]}}})]
-    (tx/do-all [[:tx/apply-modifiers
-                 eid
-                 {:modifier/movement-speed {:op/mult -0.1}}]])
+    (tx/do! [[:tx/apply-modifiers
+              eid
+              {:modifier/movement-speed {:op/mult -0.1}}]])
     (is (= (:modifier/movement-speed (:entity/modifiers @eid))
            #:op{:mult [0.1 -0.1]}))))
 
 (deftest reverse-modifiers
   (let [eid (atom {:entity/modifiers {:modifier/movement-speed {:op/mult [0.1 -0.1]}}})]
-    (tx/do-all [[:tx/reverse-modifiers
-                 eid
-                 {:modifier/movement-speed {:op/mult -0.1}}]])
+    (tx/do! [[:tx/reverse-modifiers
+              eid
+              {:modifier/movement-speed {:op/mult -0.1}}]])
     (is (= (:modifier/movement-speed (:entity/modifiers @eid))
            #:op{:mult [0.1]}))))
 
