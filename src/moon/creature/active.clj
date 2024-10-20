@@ -4,7 +4,7 @@
             [world.core :refer [timer stopped? finished-ratio]]
             [world.entity :as entity]
             [world.entity.state :as state]
-            [world.entity.stats :refer [entity-stat]]
+            [world.entity.modifiers :refer [entity-stat]]
             [world.effect :as effect]))
 
 (defn- draw-skill-icon [icon entity [x y] action-counter-ratio]

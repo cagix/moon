@@ -21,6 +21,7 @@
             moon.creature.player.item-on-cursor
             moon.creature.player.moving
             [world.entity :as entity]
+            world.entity.stats
             [world.effect :as effect]))
 
 (defc :entity/player?

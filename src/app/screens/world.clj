@@ -31,8 +31,7 @@
             world.entity.string-effect
             world.effect.damage
             world.effect.entity
-            world.effect.target
-            world.entity.stats))
+            world.effect.target))
 
 (defn- check-window-hotkeys []
   (doseq [[hotkey window-id] {:keys/i :inventory-window

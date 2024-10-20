@@ -4,7 +4,7 @@
             [gdx.ui :as ui]
             [utils.core :refer [readable-number]]
             [world.core :as world]
-            [world.entity.stats :refer [entity-stat]]))
+            [world.entity.modifiers :refer [entity-stat]]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (g/draw-text {:text infostr

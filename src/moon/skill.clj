@@ -7,7 +7,7 @@
             [world.core :as world :refer [stopped?]]
             [world.entity :as entity]
             [world.entity.state :as entity-state]
-            [world.entity.stats :refer [entity-stat]]
+            [world.entity.modifiers :refer [entity-stat]]
             [world.effect :as effect]))
 
 (property/def :properties/skills

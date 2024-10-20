@@ -3,8 +3,7 @@
             [component.info :as info]
             [component.tx :as tx]
             [gdx.rand :refer [rand-int-between]]
-            [world.entity.modifiers :refer [->modified-value]]
-            [world.entity.stats :refer [entity-stat]]
+            [world.entity.modifiers :refer [modified-value entity-stat]]
             [world.effect :as effect :refer [source target]]))
 
 (defn- entity->melee-damage [entity]
@@ -43,7 +42,7 @@
   (< (rand) (effective-armor-save source* target*)))
 
 (defn- ->effective-damage [damage source*]
-  (update damage :damage/min-max #(->modified-value source* :modifier/damage-deal %)))
+  (update damage :damage/min-max #(modified-value source* :modifier/damage-deal %)))
 
 (comment
  (let [->source (fn [mods] {:entity/modifiers mods})]
@@ -101,7 +100,7 @@
        (let [;_ (println "Source unmodified damage:" damage)
              {:keys [damage/min-max]} (->effective-damage damage source*)
              ;_ (println "\nSource modified: min-max:" min-max)
-             min-max (->modified-value target* :modifier/damage-receive min-max)
+             min-max (modified-value target* :modifier/damage-receive min-max)
              ;_ (println "effective min-max: " min-max)
              dmg-amount (rand-int-between min-max)
              ;_ (println "dmg-amount: " dmg-amount)

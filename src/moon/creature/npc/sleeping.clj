@@ -5,7 +5,7 @@
             [world.core :as world :refer [stopped? timer]]
             [world.entity :as entity]
             [world.entity.state :as state]
-            [world.entity.stats :refer [entity-stat]]))
+            [world.entity.modifiers :refer [entity-stat]]))
 
 (def ^:private shout-radius 4)
 

@@ -4,7 +4,7 @@
             [gdx.math.vector :as v]
             [world.entity :as entity]
             [world.entity.state :as state]
-            [world.entity.stats :refer [entity-stat]]))
+            [world.entity.modifiers :refer [entity-stat]]))
 
 (defn- add-vs [vs]
   (v/normalise (reduce v/add [0 0] vs)))

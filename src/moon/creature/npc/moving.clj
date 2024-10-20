@@ -3,7 +3,7 @@
             [world.core :refer [timer stopped?]]
             [world.entity :as entity]
             [world.entity.state :as state]
-            [world.entity.stats :refer [entity-stat]]))
+            [world.entity.modifiers :refer [entity-stat]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; pathfindinusable skills every frame

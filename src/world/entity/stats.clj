@@ -1,70 +1,110 @@
 (ns world.entity.stats
-  (:require [clojure.string :as str]
-            [component.core :refer [defc defc*]]
-            [component.info :as info]
+  (:require [component.core :refer [defc]]
             [component.tx :as tx]
-            [data.operation :as op]
             [data.val-max :as val-max]
-            [utils.core :refer [k->pretty-name]]
             [world.entity :as entity]
             [world.entity.hpbar :as hpbar]
-            [world.entity.modifiers :refer [->modified-value]]
-            [world.effect :as effect]))
+            [world.entity.modifiers :refer [defmodifier defstat entity-stat]]))
 
-(defn- defmodifier [k operations]
-  {:pre [(= (namespace k) "modifier")]}
-  (defc* k {:schema [:s/map-optional operations]}))
+; TODO negate this value also @ use
+; so can make positiive modifeirs green , negative red....
+(defmodifier :modifier/damage-receive [:op/max-inc :op/max-mult])
+(defmodifier :modifier/damage-deal [:op/val-inc :op/val-mult :op/max-inc :op/max-mult])
 
-(defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
-(defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
-(defn- modifier-k [stat-k]   (keyword "modifier"      (name stat-k)))
+; TODO needs to be there for each npc - make non-removable (added to all creatures)
+; and no need at created player (npc controller component?)
+(defstat :stats/aggro-range   {:schema nat-int?})
+(defstat :stats/reaction-time {:schema pos-int?})
 
-(defn entity-stat [entity stat-k]
-  (when-let [base-value (stat-k entity)]
-    (->modified-value entity
-                      (modifier-k stat-k)
-                      base-value)))
+; TODO
+; @ hp says here 'Minimum' hp instead of just 'HP'
+; Sets to 0 but don't kills
+; Could even set to a specific value ->
+; op/set-to-ratio 0.5 ....
+; sets the hp to 50%...
+(defstat :stats/hp
+  {:schema pos-int?
+   :modifier-ops [:op/max-inc :op/max-mult]
+   :effect-ops [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]})
 
-; is called :base/stat-effect so it doesn't show up in (:schema [:s/components-ns :effect.entity]) list in editor
-; for :skill/effects
-(defc :base/stat-effect
-  (info/text [[k operations]]
-    (str/join "\n"
-              (for [operation operations]
-                (str (op/info-text operation) " " (k->pretty-name k)))))
+(defc :stats/hp
+  (entity/->v [[_ v]]
+    [v v])
 
-  (effect/applicable? [[k _]]
-    (and effect/target
-         (entity-stat @effect/target (stat-k k))))
+  (entity/render-info [_ entity]
+    (let [ratio (val-max/ratio (entity-stat entity :stats/hp))]
+      (when (or (< ratio 1) (:entity/mouseover? entity))
+        (hpbar/draw entity ratio)))))
 
-  (effect/useful? [_]
-    true)
+(defstat :stats/mana
+  {:schema nat-int?
+   :modifier-ops [:op/max-inc :op/max-mult]
+   :effect-ops [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]})
 
-  (tx/handle [[effect-k operations]]
-    (let [stat-k (stat-k effect-k)]
-      (when-let [effective-value (entity-stat @effect/target stat-k)]
-        [[:e/assoc effect/target stat-k
-          ; TODO similar to components.entity.modifiers/->modified-value
-          ; but operations not sort-by op/order ??
-          ; op-apply reuse fn over operations to get effectiv value
-          (reduce (fn [value operation]
-                    (op/apply operation value))
-                  effective-value
-                  operations)]]))))
+(defc :stats/mana
+  (entity/->v [[_ v]]
+    [v v]))
 
-(defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
-  {:pre [(= (namespace k) "stats")]}
-  (defc* k attr-m)
-  (derive k :entity/stat)
-  (when modifier-ops
-    (defmodifier (modifier-k k) modifier-ops))
-  (when effect-ops
-    (let [effect-k (effect-k k)]
-      (defc* effect-k {:schema [:s/map-optional effect-ops]})
-      (derive effect-k :base/stat-effect))))
+(defc :tx.entity.stats/pay-mana-cost
+  (tx/handle [[_ eid cost]]
+    (let [mana-val ((entity-stat @eid :stats/mana) 0)]
+      (assert (<= cost mana-val))
+      [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]])))
 
-(load "stats_impl")
+(comment
+ (let [mana-val 4
+       eid (atom (entity/map->Entity {:stats/mana [mana-val 10]}))
+       mana-cost 3
+       resulting-mana (- mana-val mana-cost)]
+   (= (tx/handle [:tx.entity.stats/pay-mana-cost eid mana-cost] nil)
+      [[:e/assoc-in eid [:stats/mana 0] resulting-mana]]))
+ )
 
-(defc :entity/stat
-  (info/text [[k v]]
-    (str (k->pretty-name k) ": " (entity-stat info/*info-text-entity* k))))
+; * TODO clamp/post-process effective-values @ stat-k->effective-value
+; * just don't create movement-speed increases too much?
+; * dont remove strength <0 or floating point modifiers  (op/int-inc ?)
+; * cast/attack speed dont decrease below 0 ??
+
+; TODO clamp between 0 and max-speed ( same as movement-speed-schema )
+(defstat :stats/movement-speed
+  {:schema pos? ;(m/form entity/movement-speed-schema)
+   :modifier-ops [:op/inc :op/mult]})
+
+; TODO show the stat in different color red/green if it was permanently modified ?
+; or an icon even on the creature
+; also we want audiovisuals always ...
+(defc :effect.entity/movement-speed
+  {:schema [:s/map [:op/mult]]})
+(derive :effect.entity/movement-speed :base/stat-effect)
+
+; TODO clamp into ->pos-int
+(defstat :stats/strength
+  {:schema nat-int?
+   :modifier-ops [:op/inc]})
+
+; TODO here >0
+(let [doc "action-time divided by this stat when a skill is being used.
+          Default value 1.
+
+          For example:
+          attack/cast-speed 1.5 => (/ action-time 1.5) => 150% attackspeed."
+      schema pos?
+      operations [:op/inc]]
+  (defstat :stats/cast-speed
+    {:schema schema
+     :editor/doc doc
+     :modifier-ops operations})
+
+  (defstat :stats/attack-speed
+    {:schema schema
+     :editor/doc doc
+     :modifier-ops operations}))
+
+; TODO bounds
+(defstat :stats/armor-save
+  {:schema number?
+   :modifier-ops [:op/inc]})
+
+(defstat :stats/armor-pierce
+  {:schema number?
+   :modifier-ops [:op/inc]})

@@ -1,12 +1,13 @@
 (ns world.entity.modifiers
   (:require [clojure.string :as str]
-            [component.core :refer [defc]]
+            [component.core :refer [defc defc*]]
             [component.info :as info]
             [component.tx :as tx]
             [data.operation :as op]
             [gdx.graphics :as g]
             [utils.core :refer [safe-remove-one update-kv k->pretty-name]]
-            [world.entity :as entity]))
+            [world.entity :as entity]
+            [world.effect :as effect]))
 
 (defn- ops-add    [ops value-ops] (update-kv conj            ops value-ops))
 (defn- ops-remove [ops value-ops] (update-kv safe-remove-one ops value-ops))
@@ -89,7 +90,7 @@
       (when (seq modifiers)
         (mod-info-text modifiers)))))
 
-(defn ->modified-value [{:keys [entity/modifiers]} modifier-k base-value]
+(defn modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}
   (->> modifiers
        modifier-k
@@ -97,3 +98,54 @@
        (reduce (fn [base-value [operation-k values]]
                  (op/apply [operation-k (apply + values)] base-value))
                base-value)))
+
+(defn defmodifier [k operations]
+  {:pre [(= (namespace k) "modifier")]}
+  (defc* k {:schema [:s/map-optional operations]}))
+
+(defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
+(defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
+(defn- modifier-k [stat-k]   (keyword "modifier"      (name stat-k)))
+
+(defn entity-stat [entity stat-k]
+  (when-let [base-value (stat-k entity)]
+    (modified-value entity
+                    (modifier-k stat-k)
+                    base-value)))
+
+(defc :base/stat-effect
+  (info/text [[k operations]]
+    (str/join "\n"
+              (for [operation operations]
+                (str (op/info-text operation) " " (k->pretty-name k)))))
+
+  (effect/applicable? [[k _]]
+    (and effect/target
+         (entity-stat @effect/target (stat-k k))))
+
+  (effect/useful? [_]
+    true)
+
+  (tx/handle [[effect-k operations]]
+    (let [stat-k (stat-k effect-k)]
+      (when-let [effective-value (entity-stat @effect/target stat-k)]
+        [[:e/assoc effect/target stat-k
+          (reduce (fn [value operation]
+                    (op/apply operation value))
+                  effective-value
+                  operations)]]))))
+
+(defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
+  {:pre [(= (namespace k) "stats")]}
+  (defc* k attr-m)
+  (derive k :entity/stat)
+  (when modifier-ops
+    (defmodifier (modifier-k k) modifier-ops))
+  (when effect-ops
+    (let [effect-k (effect-k k)]
+      (defc* effect-k {:schema [:s/map-optional effect-ops]})
+      (derive effect-k :base/stat-effect))))
+
+(defc :entity/stat
+  (info/text [[k v]]
+    (str (k->pretty-name k) ": " (entity-stat info/*info-text-entity* k))))
