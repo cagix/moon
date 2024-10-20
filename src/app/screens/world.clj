@@ -143,7 +143,7 @@
         (.addItem world (menu-item (str "Start " id) (start-game-fn id))))
       (.addMenu menu-bar world))
     (let [help (Menu. "Help")]
-        (.addItem help (MenuItem. "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[TAB] - Minimap\n[P]/[SPACE] - Unpause"))
+        (.addItem help (MenuItem. "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"))
       (.addMenu menu-bar help))
     (def mb menu-bar)
     (add-debug-infos mb)
