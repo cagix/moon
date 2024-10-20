@@ -8,7 +8,7 @@
                          :cell-defaults {:pad 5}
                          :pack? true})]
     {:actor (ui/scroll-pane table)
-     :width  (.getWidth table)
+     :width  (+ (.getWidth table) 50)
      :height (min (- (g/gui-viewport-height) 50)
                   (.getHeight table))}))
 
