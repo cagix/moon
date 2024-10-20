@@ -8,21 +8,17 @@
 
 (comment
 
- (defn- migrate [ptype prop-fn]
-   (let [cnt (atom 0)]
-     (time
-      (doseq [prop (map prop-fn (db/all-raw ptype))]
-        (println (swap! cnt inc) (:property/id prop) ", " (:property/pretty-name prop))
-        (update! prop)))
-     ; omg every update! calls async-write-to-file ...
-     ; actually if its async why does it take so long ?
-     (async-write-to-file! @app-state)
-     nil))
+ (defn- migrate [property-type migrate-fn]
+   (doseq [id (map :property/id (all-raw property-type))]
+     (println id)
+     (alter-var-root #'db update id migrate-fn))
+   (async-write-to-file!))
 
  (migrate :properties/creatures
-          (fn [prop]
-            (-> prop
-                (assoc :entity/tags ""))))
+          (fn [{:keys [entity/stats] :as creature}]
+            (-> creature
+                (dissoc :entity/stats)
+                (merge stats))))
 
  )
 

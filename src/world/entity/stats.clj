@@ -21,7 +21,7 @@
 (defn entity-stat
   "Calculating value of the stat w. modifiers"
   [entity stat-k]
-  (when-let [base-value (stat-k (:entity/stats entity))]
+  (when-let [base-value (stat-k entity)]
     (->modified-value entity (stat-k->modifier-k stat-k) base-value)))
 
 ; is called :base/stat-effect so it doesn't show up in (:schema [:s/components-ns :effect.entity]) list in editor
@@ -42,7 +42,7 @@
   (tx/handle [[effect-k operations]]
     (let [stat-k (effect-k->stat-k effect-k)]
       (when-let [effective-value (entity-stat @effect/target stat-k)]
-        [[:e/assoc-in effect/target [:entity/stats stat-k]
+        [[:e/assoc effect/target stat-k
           ; TODO similar to components.entity.modifiers/->modified-value
           ; but operations not sort-by op/order ??
           ; op-apply reuse fn over operations to get effectiv value
@@ -53,6 +53,7 @@
 
 (defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
   (defc* k attr-m)
+  (derive k :entity/stat)
   (when modifier-ops
     (defmodifier (stat-k->modifier-k k) modifier-ops))
   (when effect-ops
@@ -62,46 +63,6 @@
 
 (load "stats_impl")
 
-(let [stats-order [:stats/hp
-                   :stats/mana
-                   ;:stats/movement-speed
-                   :stats/strength
-                   :stats/cast-speed
-                   :stats/attack-speed
-                   :stats/armor-save
-                   ;:stats/armor-pierce
-                   ;:stats/aggro-range
-                   ;:stats/reaction-time
-                   ]]
-  (defn- stats-info-texts [entity]
-    (str/join "\n"
-              (for [stat-k stats-order
-                    :let [value (entity-stat entity stat-k)]
-                    :when value]
-                (str (k->pretty-name stat-k) ": " value)))))
-
-(defc :entity/stats
-  {:schema [:s/map [:stats/hp
-                    :stats/movement-speed
-                    :stats/aggro-range
-                    :stats/reaction-time
-                    [:stats/mana          {:optional true}]
-                    [:stats/strength      {:optional true}]
-                    [:stats/cast-speed    {:optional true}]
-                    [:stats/attack-speed  {:optional true}]
-                    [:stats/armor-save    {:optional true}]
-                    [:stats/armor-pierce  {:optional true}]]]
-   :let stats}
-  (entity/->v [_]
-    (-> stats
-        (update :stats/hp   (fn [hp  ] (when hp   [hp   hp])))
-        (update :stats/mana (fn [mana] (when mana [mana mana])))))
-
-  (info/text [_]
-    (stats-info-texts info/*info-text-entity*))
-
-  (entity/render-info [_ entity]
-    (when-let [hp (entity-stat entity :stats/hp)]
-      (let [ratio (val-max/ratio hp)]
-        (when (or (< ratio 1) (:entity/mouseover? entity))
-          (hpbar/draw entity ratio))))))
+(defc :entity/stat
+  (info/text [[k v]]
+    (str (k->pretty-name k) ": " (entity-stat info/*info-text-entity* k))))

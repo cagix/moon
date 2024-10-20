@@ -34,7 +34,16 @@
             :creature/species
             :creature/level
             :entity/animation
-            :entity/stats
+            :stats/hp
+            :stats/movement-speed
+            :stats/aggro-range
+            :stats/reaction-time
+            [:stats/mana          {:optional true}]
+            [:stats/strength      {:optional true}]
+            [:stats/cast-speed    {:optional true}]
+            [:stats/attack-speed  {:optional true}]
+            [:stats/armor-save    {:optional true}]
+            [:stats/armor-pierce  {:optional true}]
             :entity/skills
             [:entity/modifiers {:optional true}]
             [:entity/inventory {:optional true}]]
