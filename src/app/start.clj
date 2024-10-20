@@ -10,7 +10,10 @@
             [gdx.graphics :as g]
             [gdx.ui :as ui]
             [gdx.screen :as screen]
-            [gdx.vis-ui :as vis-ui]))
+            [gdx.vis-ui :as vis-ui])
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.utils ScreenUtils)))
 
 (def lwjgl3-config {:title "Core"
                     :width 1440
@@ -51,7 +54,7 @@
 
 (defn -main []
   (db/load! "properties.edn")
-  (app/start! (proxy [com.badlogic.gdx.ApplicationAdapter] []
+  (app/start! (proxy [ApplicationAdapter] []
                 (create []
                   (assets/load! "resources/")
                   (g/load! graphics)
@@ -69,7 +72,7 @@
                   (screen/dispose-all!))
 
                 (render []
-                  (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
+                  (ScreenUtils/clear Color/BLACK)
                   (screen/render! (screen/current)))
 
                 (resize [w h]
