@@ -13,6 +13,7 @@
             [gdx.ui.actor :as a]
             [gdx.ui.stage-screen :refer [stage-add!]]
             [utils.core :refer [truncate ->edn-str]])
+  (:import (com.kotcrab.vis.ui.widget VisTextField VisCheckBox))
   (:load "widgets_relationships"))
 
 (defn- add-schema-tooltip! [widget schema]
@@ -25,7 +26,7 @@
   (ui/label (truncate (->edn-str v) 60)))
 
 (defmethod widget/value :default [_ widget]
-  (a/id widget))
+  ((a/id widget) 1))
 
 ;;
 
@@ -34,7 +35,7 @@
   (ui/check-box "" (fn [_]) checked?))
 
 (defmethod widget/value :boolean [_ widget]
-  (.isChecked ^com.kotcrab.vis.ui.widget.VisCheckBox widget))
+  (VisCheckBox/.isChecked  widget))
 
 ;;
 
@@ -42,7 +43,7 @@
   (add-schema-tooltip! (ui/text-field v {}) schema))
 
 (defmethod widget/value :string [_ widget]
-  (.getText ^com.kotcrab.vis.ui.widget.VisTextField widget))
+  (VisTextField/.getText widget))
 
 ;;
 
@@ -50,7 +51,7 @@
   (add-schema-tooltip! (ui/text-field (->edn-str v) {}) schema))
 
 (defmethod widget/value number? [_ widget]
-  (edn/read-string (.getText ^com.kotcrab.vis.ui.widget.VisTextField widget)))
+  (edn/read-string (VisTextField/.getText widget)))
 
 ;;
 
@@ -73,8 +74,13 @@
     [(ui/image-button (g/image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
+(defn- big-image-button [image]
+  (ui/image-button (g/edn->image image)
+                   (fn on-clicked [])
+                   {:scale 2}))
+
 (defmethod widget/create :s/image [_ image]
-  (ui/image->widget (g/edn->image image) {})
+  (big-image-button image)
   #_(ui/image-button image
                      #(stage-add! (scrollable-choose-window (texture-rows)))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here
@@ -83,7 +89,7 @@
 
 (defmethod widget/create :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (ui/image->widget (g/edn->image image) {}))]
+                      (big-image-button image))]
              :cell-defaults {:pad 1}}))
 
 ;;

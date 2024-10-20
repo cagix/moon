@@ -2,15 +2,15 @@
   (:require [gdx.graphics :as g]
             [gdx.ui :as ui]))
 
-; TODO set to preferred width/height ??? why layouting not working properly?
-; use a tree?
-; make example with plain data
 (defn scroll-pane-cell [rows]
-  (let [table (ui/table {:rows rows :cell-defaults {:pad 1} :pack? true})
-        scroll-pane (ui/scroll-pane table)]
-    {:actor scroll-pane
-     :width  (- (g/gui-viewport-width)  600)    ; (+ (actor/width table) 200)
-     :height (- (g/gui-viewport-height) 100)})) ; (min (- (g/gui-viewport-height) 50) (actor/height table))
+  (let [table (ui/table {:rows rows
+                         :name "scroll-pane-table"
+                         :cell-defaults {:pad 5}
+                         :pack? true})]
+    {:actor (ui/scroll-pane table)
+     :width  (.getWidth table)
+     :height (min (- (g/gui-viewport-height) 50)
+                  (.getHeight table))}))
 
 (defn scrollable-choose-window [rows]
   (ui/window {:title "Choose"
