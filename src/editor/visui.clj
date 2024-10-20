@@ -51,7 +51,7 @@
    :skill/cost
    :skill/cooldown])
 
-(defn- component-order [[k _v]]
+(defn component-order [[k _v]]
   (or (index-of k property-k-sort-order) 99))
 
 ;;

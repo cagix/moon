@@ -1,13 +1,21 @@
 (ns ^:no-doc editor.javafx
   (:require [clojure.java.io :as io]
+            [component.db :as db]
+            [component.schema :as schema]
+            [component.property :as property]
             [dev.javafx :as fx]
-            utils.core)
+            [editor.visui]
+            [editor.widget]
+            [utils.core :refer [->edn-str safe-get]])
   (:import (javafx.event EventHandler)
-           (javafx.scene.control Button TreeItem TreeView)
+           (javafx.scene.control Button CheckBox ComboBox TreeItem TreeView)
            (javafx.scene.image Image ImageView)
            (javafx.scene.layout StackPane)
-           (javafx.scene Scene Node))
+           (javafx.scene Scene Node)
+           (javafx.collections FXCollections)
+           )
   #_(:gen-class :extends javafx.application.Application))
+
 
 (comment
  ; * remove comment at :gen-class
@@ -21,6 +29,8 @@
 
 (defn -start [app stage]
   (def stage stage))
+
+(defmulti schema->widget editor.widget/widget-type)
 
 (import javafx.scene.control.TabPane
         javafx.scene.control.TabPane$TabClosingPolicy
@@ -42,20 +52,42 @@
 ; * new window w. form label, widget, Save, Cancel button
 (import javafx.stage.Stage)
 
-(defn- property-editor-window [property]
+(defmethod schema->widget :default [_ v]
+  (TextField. (->edn-str v)))
+
+(defmethod schema->widget :boolean [_ v]
+  (doto (CheckBox.)
+    (.setSelected v)))
+
+(defmethod schema->widget :string [_ v]
+  (TextField. v))
+
+#_(defmethod schema->widget :enum [schema v]
+  (let [combo-box (ComboBox.)
+        items (FXCollections/observableArrayList (map ->edn-str (rest schema)))]
+    (.setItems combo-box items)
+    combo-box))
+
+(defmethod schema->widget :s/map [_ m]
   (let [grid (doto (GridPane.)
                (.setPadding (Insets. 0 10 0 10))
                (.setVgap 10)
                (.setHgap 10))
-        scene (Scene. grid 450 450)
         rows (atom -1)]
-    (doseq [[k v] property
+    (doseq [[k v] (sort-by editor.visui/component-order m)
             :let [row (swap! rows inc)]]
-      (.add grid (Label. (str k)) 0 row)
-      (.add grid (TextField. (utils.core/->edn-str v)) 1 row))
+      (.add grid (Label. (str k))                 0 row)
+      (.add grid (schema->widget (schema/of k) v) 1 row))
+    grid))
+
+(defn- property-editor-window [property-id]
+  (let [props (safe-get db/db property-id)
+        schema (schema/of (property/type props))
+        widget (schema->widget (schema/of (property/type props))
+                               props)]
     (doto (Stage.)
-      (.setTitle (name (:property/id property)))
-      (.setScene scene)
+      (.setTitle (name property-id))
+      (.setScene (Scene. widget 450 450))
       .show)))
 
 (require '[component.property :as property])
@@ -79,7 +111,7 @@
     (.setOnAction button (reify EventHandler
                            (handle [_ e]
                              (println (name (:property/id property)))
-                             (property-editor-window property)
+                             (property-editor-window (:property/id property))
                              )))
     button))
 

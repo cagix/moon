@@ -7,7 +7,7 @@
  ; plus in widget-type
  )
 
-(defn- widget-type [schema _]
+(defn widget-type [schema _]
   (let [stype (schema/type schema)]
     (cond
      (#{:s/map-optional :s/components-ns} stype)
