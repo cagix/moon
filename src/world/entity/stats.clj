@@ -12,17 +12,18 @@
             [world.effect :as effect]))
 
 (defn- defmodifier [k operations]
+  {:pre [(= (namespace k) "modifier")]}
   (defc* k {:schema [:s/map-optional operations]}))
 
-(defn-  stat-k->effect-k   [k] (keyword "effect.entity" (name k)))
-(defn effect-k->stat-k     [k] (keyword "stats"         (name k)))
-(defn-  stat-k->modifier-k [k] (keyword "modifier"      (name k)))
+(defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
+(defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
+(defn- modifier-k [stat-k]   (keyword "modifier"      (name stat-k)))
 
-(defn entity-stat
-  "Calculating value of the stat w. modifiers"
-  [entity stat-k]
+(defn entity-stat [entity stat-k]
   (when-let [base-value (stat-k entity)]
-    (->modified-value entity (stat-k->modifier-k stat-k) base-value)))
+    (->modified-value entity
+                      (modifier-k stat-k)
+                      base-value)))
 
 ; is called :base/stat-effect so it doesn't show up in (:schema [:s/components-ns :effect.entity]) list in editor
 ; for :skill/effects
@@ -34,13 +35,13 @@
 
   (effect/applicable? [[k _]]
     (and effect/target
-         (entity-stat @effect/target (effect-k->stat-k k))))
+         (entity-stat @effect/target (stat-k k))))
 
   (effect/useful? [_]
     true)
 
   (tx/handle [[effect-k operations]]
-    (let [stat-k (effect-k->stat-k effect-k)]
+    (let [stat-k (stat-k effect-k)]
       (when-let [effective-value (entity-stat @effect/target stat-k)]
         [[:e/assoc effect/target stat-k
           ; TODO similar to components.entity.modifiers/->modified-value
@@ -52,12 +53,13 @@
                   operations)]]))))
 
 (defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
+  {:pre [(= (namespace k) "stats")]}
   (defc* k attr-m)
   (derive k :entity/stat)
   (when modifier-ops
-    (defmodifier (stat-k->modifier-k k) modifier-ops))
+    (defmodifier (modifier-k k) modifier-ops))
   (when effect-ops
-    (let [effect-k (stat-k->effect-k k)]
+    (let [effect-k (effect-k k)]
       (defc* effect-k {:schema [:s/map-optional effect-ops]})
       (derive effect-k :base/stat-effect))))
 

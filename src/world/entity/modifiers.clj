@@ -34,6 +34,14 @@
     {:speed {:+ [1 3], :* []}})
  )
 
+(comment
+ ; Example blood-helm
+ {:modifier/hp {:op/max-inc -200}}
+
+ ; :entity/hp => {:base-value ... :operations ... }
+ ; modifier: tuple of [component operation(s)]
+ )
+
 (defn update-mods [[_ eid mods] f]
   [[:e/update eid :entity/modifiers #(f % mods)]])
 

@@ -50,8 +50,8 @@
    (and
     (= (->effective-damage {:damage/min-max [5 10]}
                            (->source {:modifier/damage-deal {:op/val-inc [1 5 10]
-                                                            :op/val-mult [0.2 0.3]
-                                                            :op/max-mult [1]}}))
+                                                             :op/val-mult [0.2 0.3]
+                                                             :op/max-mult [1]}}))
        {:damage/min-max [31 62]})
 
     (= (->effective-damage {:damage/min-max [5 10]}
