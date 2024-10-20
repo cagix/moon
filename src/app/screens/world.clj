@@ -14,7 +14,6 @@
             [moon.creature :as creature]
             moon.creature.player.item-on-cursor
             [moon.widgets.action-bar :as action-bar]
-            [moon.widgets.debug-window :as debug-window]
             [moon.widgets.entity-info-window :as entity-info-window]
             [moon.widgets.hp-mana :as hp-mana-bars]
             [moon.widgets.inventory :as inventory]
@@ -35,14 +34,9 @@
             world.effect.target
             world.entity.stats))
 
-(defn- hotkey->window-id []
-  (merge {:keys/i :inventory-window
-          :keys/e :entity-info-window}
-         (when dev-mode?
-           {:keys/z :debug-window})))
-
 (defn- check-window-hotkeys []
-  (doseq [[hotkey window-id] (hotkey->window-id)
+  (doseq [[hotkey window-id] {:keys/i :inventory-window
+                              :keys/e :entity-info-window}
           :when (key-just-pressed? hotkey)]
     (a/toggle-visible! (get (:windows (stage-get)) window-id))))
 
@@ -67,9 +61,8 @@
 (defn- check-key-input []
   (check-zoom-keys)
   (check-window-hotkeys)
-  (cond (and (key-just-pressed? :keys/escape)
-             (not (close-windows?!)))
-        (screen/change! :screens/options-menu)
+  (cond (key-just-pressed? :keys/escape)
+        (close-windows?!)
 
         ; TODO not implementing StageSubScreen so NPE no screen-render!
         #_(key-just-pressed? :keys/tab)
@@ -125,6 +118,10 @@
 (defn- add-debug-infos [mb]
   (let [table (.getTable mb)
         add! #(add-upd-label table %)]
+    ;"Mouseover-Actor: "
+    #_(when-let [actor (mouse-on-actor?)]
+        (str "TRUE - name:" (.getName actor)
+             "id: " (a/id actor)))
     (add! #(str "Mouseover-entity id: " (when-let [entity (world/mouseover-entity)] (:entity/id entity))))
     (add! #(str "elapsed-time " (utils.core/readable-number world/elapsed-time) " seconds"))
     (add! #(str "paused? " world/paused?))
@@ -175,8 +172,7 @@
               :fill-parent? true})
    (hp-mana-bars/create)
    (ui/group {:id :windows
-              :actors [(debug-window/create)
-                       (entity-info-window/create)
+              :actors [(entity-info-window/create)
                        (inventory/create)]})
    (ui/actor {:draw moon.creature.player.item-on-cursor/draw-item-on-cursor})
    (player-message/create)])

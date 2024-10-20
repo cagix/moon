@@ -2,7 +2,6 @@
   (:require [app.screens.editor :as property-editor]
             [app.screens.main :as main-menu]
             [app.screens.map-editor :as map-editor]
-            [app.screens.options :as options-screen]
             [app.screens.world :as world-screen]
             [component.db :as db]
             [gdx.app :as app]
@@ -61,7 +60,6 @@
                   (vis-ui/load! :skin-scale/x1)
                   (screen/set-screens! [(main-menu/create moon)
                                         (map-editor/create)
-                                        (options-screen/create moon)
                                         (property-editor/screen moon)
                                         (world-screen/create)]))
 
