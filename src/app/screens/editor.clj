@@ -8,6 +8,9 @@
             [gdx.screen :as screen])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
+(defn- edit-property [property-id]
+  (stage-add! (editor/property-editor-window property-id)))
+
 (defn- property-type-tabs []
   (for [property-type (sort (property/types))]
     {:title (:title (property/overview property-type))
@@ -17,9 +20,6 @@
   (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
     (getTabTitle [] title)
     (getContentTable [] content)))
-
-(defn- edit-property [property-id]
-  (stage-add! (editor/property-editor-window property-id)))
 
 (defn- main-table []
   (let [table (ui/table {:fill-parent? true})
