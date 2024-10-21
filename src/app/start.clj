@@ -10,7 +10,8 @@
             [gdx.ui :as ui]
             [gdx.screen :as screen]
             [gdx.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx ApplicationAdapter)
+  (:import (com.badlogic.gdx ApplicationAdapter
+                             Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
@@ -71,7 +72,7 @@
   (for [[class exts] [[Sound #{"wav"}]
                       [Texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
-                  (files/recursively-search folder exts))]
+                  (recursively-search folder exts))]
     [file class]))
 
 (defn- application-listener []
