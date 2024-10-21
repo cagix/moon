@@ -17,10 +17,6 @@
 (declare gui-view
          ^:private world-view)
 
-(defn- bind-views! [{:keys [gui-view world-view]}]
-  (bind-root #'gui-view (->gui-view gui-view))
-  (bind-root #'world-view (->world-view world-view)))
-
 (defn- world-unit-scale []
   (:unit-scale world-view))
 

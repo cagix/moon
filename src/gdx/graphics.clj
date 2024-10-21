@@ -94,7 +94,8 @@
     (bind-root #'sd-texture shape-drawer-texture)
     (bind-root #'cursors (->cursors cursors))
     (bind-root #'default-font (->default-font default-font))
-    (bind-views! views)
+    (bind-root #'gui-view (->gui-view gui-view))
+    (bind-root #'world-view (->world-view world-view)))
     (bind-root #'cached-map-renderer (memoize tiled-renderer))))
 
 (defn dispose! []
