@@ -86,7 +86,8 @@
                   (screen/set-screens! [(main-menu/create moon)
                                         (map-editor/create)
                                         (property-editor/screen moon)
-                                        (world-screen/create)]))
+                                        (world-screen/create)])
+                  ((world-screen/start-game-fn :worlds/vampire)))
 
                 (dispose []
                   (assets/dispose)

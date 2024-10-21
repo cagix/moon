@@ -1553,11 +1553,10 @@
   :property/id :creatures/dragon-shadow,
   :property/pretty-name "Dragon-shadow",
   :stats/aggro-range 6,
-  :stats/hp 45,
-  :stats/mana 11,
-  :stats/movement-speed 1.0,
-  :stats/reaction-time 12,
-  :stats/strength 1}
+  :stats/hp 100,
+  :stats/movement-speed 5.5,
+  :stats/reaction-time 3,
+  :stats/strength 100}
  {:creature/level 5,
   :creature/species :species/banshee,
   :entity/animation
