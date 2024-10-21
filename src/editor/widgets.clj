@@ -7,8 +7,9 @@
             [editor.widget :as widget]
             [editor.overview :refer [overview-table]]
             [editor.utils :refer [scrollable-choose-window]]
-            [gdx.graphics :as g]
             [gdx.assets :as assets]
+            [gdx.audio :as audio]
+            [gdx.graphics :as g]
             [gdx.ui :as ui]
             [gdx.ui.actor :as a]
             [gdx.ui.stage-screen :refer [stage-add!]]
@@ -70,7 +71,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 (defn- texture-rows []
-  (for [file (sort assets/all-texture-files)]
+  (for [file (sort (assets/of-class com.badlogic.gdx.graphics.Texture))]
     [(ui/image-button (g/image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
@@ -96,12 +97,12 @@
 
 
 (defn- ->play-sound-button [sound-file]
-  (ui/text-button "play!" #(assets/play-sound! sound-file)))
+  (ui/text-button "play!" #(audio/play-sound! sound-file)))
 
 (declare ->sound-columns)
 
 (defn- open-sounds-window! [table]
-  (let [rows (for [sound-file assets/all-sound-files]
+  (let [rows (for [sound-file (assets/of-class com.badlogic.gdx.audio.Sound)]
                [(ui/text-button (str/replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)

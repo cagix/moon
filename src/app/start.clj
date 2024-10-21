@@ -3,6 +3,7 @@
             [app.screens.main :as main-menu]
             [app.screens.map-editor :as map-editor]
             [app.screens.world :as world-screen]
+            [clojure.string :as str]
             [component.db :as db]
             [gdx.app :as app]
             [gdx.assets :as assets]
@@ -10,8 +11,10 @@
             [gdx.ui :as ui]
             [gdx.screen :as screen]
             [gdx.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.utils ScreenUtils)))
 
 (def lwjgl3-config {:title "Core"
@@ -51,11 +54,33 @@
                      :scaling :fill
                      :align :center}))
 
+(defn- recursively-search [folder extensions]
+  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- search-assets [folder]
+  (for [[class exts] [[Sound #{"wav"}]
+                      [Texture #{"png" "bmp"}]]
+        file (map #(str/replace-first % folder "")
+                  (recursively-search folder exts))]
+    [file class]))
+
 (defn -main []
   (db/load! "properties.edn")
   (app/start! (proxy [ApplicationAdapter] []
                 (create []
-                  (assets/load! "resources/")
+                  (assets/load (search-assets "resources/"))
                   (g/load! graphics)
                   (vis-ui/load! :skin-scale/x1)
                   (screen/set-screens! [(main-menu/create moon)
@@ -64,7 +89,7 @@
                                         (world-screen/create)]))
 
                 (dispose []
-                  (assets/dispose!)
+                  (assets/dispose)
                   (g/dispose!)
                   (vis-ui/dispose!)
                   (screen/dispose-all!))
