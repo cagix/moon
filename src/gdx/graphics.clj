@@ -9,7 +9,7 @@
             [gdx.graphics.viewport :as vp]
             [gdx.graphics.tiled :as tiled]
             [gdx.utils :refer [gdx-field]]
-            [utils.core :refer [bind-root safe-get]])
+            [utils.core :refer [safe-get]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
@@ -92,14 +92,14 @@
 (defn load! [{:keys [views default-font cursors]}]
   (let [batch (SpriteBatch.)
         {:keys [shape-drawer shape-drawer-texture]} (sd/create batch)]
-    (bind-root #'batch batch)
-    (bind-root #'sd shape-drawer)
-    (bind-root #'sd-texture shape-drawer-texture)
-    (bind-root #'cursors (->cursors cursors))
-    (bind-root #'default-font (->default-font default-font))
-    (bind-root #'gui-view   (->gui-view   (:gui-view views)))
-    (bind-root #'world-view (->world-view (:world-view views))))
-    (bind-root #'cached-map-renderer (memoize tiled-renderer)))
+    (.bindRoot #'batch batch)
+    (.bindRoot #'sd shape-drawer)
+    (.bindRoot #'sd-texture shape-drawer-texture)
+    (.bindRoot #'cursors (->cursors cursors))
+    (.bindRoot #'default-font (->default-font default-font))
+    (.bindRoot #'gui-view   (->gui-view   (:gui-view views)))
+    (.bindRoot #'world-view (->world-view (:world-view views))))
+    (.bindRoot #'cached-map-renderer (memoize tiled-renderer)))
 
 (defn dispose! []
   (.dispose batch)

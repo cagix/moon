@@ -150,6 +150,6 @@
     :occupied #{}}))
 
 (defn- init-grid! [width height position->value]
-  (bind-root #'grid (g2d/create-grid width
+  (.bindRoot #'grid (g2d/create-grid width
                                      height
                                      #(atom (create-cell % (position->value %))))))

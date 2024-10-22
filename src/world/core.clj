@@ -12,7 +12,7 @@
             [gdx.math.shape :as shape]
             [gdx.tiled :as t]
             [gdx.utils :refer [dispose!]]
-            [utils.core :refer [bind-root ->tile tile->middle safe-merge sort-by-order]]
+            [utils.core :refer [->tile tile->middle safe-merge sort-by-order]]
             [world.core.content-grid :as content-grid]
             [world.core.raycaster :as raycaster]
             [world.entity :as entity]
@@ -37,7 +37,7 @@
          player)
 
 (defn- init-content-grid! [opts]
-  (bind-root #'content-grid (content-grid/create opts)))
+  (.bindRoot #'content-grid (content-grid/create opts)))
 
 (defn active-entities []
   (content-grid/active-entities content-grid @player))
@@ -51,7 +51,7 @@
 
 (defn init! [tiled-map]
   (init-tiled-map tiled-map)
-  (bind-root #'entity-tick-error nil)
+  (.bindRoot #'entity-tick-error nil)
   (init-time!)
   (let [w (t/width  tiled-map)
         h (t/height tiled-map)]
@@ -101,7 +101,7 @@
       (key-pressed? :keys/space))) ; FIXMe :keys? shouldnt it be just :space?
 
 (defn- update-game-paused []
-  (bind-root #'paused? (or entity-tick-error
+  (.bindRoot #'paused? (or entity-tick-error
                                  (and pausing?
                                       (player-state-pause-game?)
                                       (not (player-unpaused?)))))
@@ -125,7 +125,7 @@
                 (try (run! tick-system entities)
                      (catch Throwable t
                        (error-window! t)
-                       (bind-root #'entity-tick-error t))))
+                       (.bindRoot #'entity-tick-error t))))
               nil)
            ; do not pause this as for example pickup item, should be destroyed.
            remove-destroyed-entities!]))

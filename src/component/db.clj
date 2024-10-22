@@ -4,7 +4,7 @@
             [clojure.pprint :refer [pprint]]
             [component.property :as property]
             [component.schema :as schema]
-            [utils.core :refer [bind-root safe-get]]))
+            [utils.core :refer [safe-get]]))
 
 (comment
 
@@ -30,8 +30,8 @@
         properties (-> file slurp edn/read-string)]
     (assert (apply distinct? (map :property/id properties)))
     (run! property/validate! properties)
-    (bind-root #'db (zipmap (map :property/id properties) properties))
-    (bind-root #'edn-file file)))
+    (.bindRoot #'db (zipmap (map :property/id properties) properties))
+    (.bindRoot #'edn-file file)))
 
 (defn- async-pprint-spit! [properties]
   (.start

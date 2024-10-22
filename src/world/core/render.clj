@@ -48,7 +48,7 @@
 
 (defn init-tiled-map [tm]
   (clear-tiled-map)
-  (bind-root #'tiled-map tm))
+  (.bindRoot #'tiled-map tm))
 
 (defn- render-tiled-map! [light-position]
   (g/draw-tiled-map tiled-map

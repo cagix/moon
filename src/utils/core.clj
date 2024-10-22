@@ -1,9 +1,6 @@
 (ns utils.core
   (:require [clojure.string :as str]))
 
-(defn bind-root [avar value]
-  (alter-var-root avar (constantly value)))
-
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
     (if (= result ::not-found)

@@ -7,7 +7,7 @@
             [component.tx :as tx]
             [gdx.graphics :as g]
             [gdx.tiled :as tiled]
-            [utils.core :refer [bind-root safe-merge tile->middle]]
+            [utils.core :refer [safe-merge tile->middle]]
             [world.core :as world]
             [world.creature.fsms :as fsms]
             world.creature.active
@@ -26,7 +26,7 @@
 
 (defc :entity/player?
   (entity/create [_ eid]
-    (bind-root #'world/player eid)
+    (.bindRoot #'world/player eid)
     nil))
 
 (property/def :properties/creatures
