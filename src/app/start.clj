@@ -111,7 +111,7 @@
 (defn -main []
   (db/load! "properties.edn")
   (when SharedLibraryLoader/isMac
-    (set-dock-icon "resources/moon.png")
+    (set-dock-icon "moon.png")
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (application-listener)
