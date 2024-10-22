@@ -69,31 +69,17 @@
           :else
           (recur remaining result))))
 
-#_(defn- search-assets [folder]
+(defn- search-assets [folder]
   (for [[class exts] [[Sound #{"wav"}]
                       [Texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
                   (recursively-search folder exts))]
     [file class]))
 
-(defn- assets []
-  (for [[file class-str] (clojure.edn/read-string (slurp (clojure.java.io/resource "assets.edn")))]
-    [file (case class-str
-            "com.badlogic.gdx.audio.Sound" Sound
-            "com.badlogic.gdx.graphics.Texture" Texture)]))
-
-(comment
- (spit "resources/assets.edn"
-       (utils.core/->edn-str (map (fn [[file class]]
-                                    [file (.getName class)])
-                                  (doall (search-assets "resources/")))))
-
- )
-
 (defn- application-listener []
   (proxy [ApplicationAdapter] []
     (create []
-      (assets/load (assets))
+      (assets/load (search-assets "resources/"))
       (g/load! graphics)
       (vis-ui/load! :skin-scale/x1)
       (screen/set-screens! [(main-menu/create moon)
