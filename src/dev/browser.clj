@@ -77,6 +77,11 @@
        (when-let [amount (amount-syms first-sym)]
          (str/join " " (take amount more)))))
 
+(defn- form->rest [[first-sym & more]]
+  (apply str (if-let [amount (amount-syms first-sym)]
+               (drop amount more)
+               more)))
+
 (defn- clj-files [folder]
   (sort (filter #(str/ends-with? % ".clj") (map str (file-seq (io/file "src/"))))))
 
@@ -104,6 +109,7 @@
            (println "Found defprotocol : " (second form))
            (doseq [sig (sort (map name (keys (:sigs gdx.app/Listener))))]
              (.add (.getChildren tree-item) (TreeItem. (str (first-sym->icon 'defn) sig))))))
+    (.add (.getChildren tree-item) (TreeItem. (form->rest form)))
     tree-item))
 
 (defn- file-forms-tree-item [file]
