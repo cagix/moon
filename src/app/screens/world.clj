@@ -78,7 +78,8 @@
     (world/tick!)
     (check-key-input))
 
-  (screen/dispose! [_]))
+  (screen/dispose! [_]
+    (world/dispose)))
 
 (defn create []
   [:screens/world (stage-screen/create :screen (->WorldScreen))])

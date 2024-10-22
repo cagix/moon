@@ -129,3 +129,6 @@
               nil)
            ; do not pause this as for example pickup item, should be destroyed.
            remove-destroyed-entities!]))
+
+(defn dispose []
+  (clear-tiled-map))

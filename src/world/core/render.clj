@@ -42,9 +42,12 @@
 
 (declare tiled-map)
 
-(defn init-tiled-map [tm]
+(defn- clear-tiled-map []
   (when (bound? #'tiled-map)
-    (dispose! tiled-map))
+    (dispose! tiled-map)))
+
+(defn init-tiled-map [tm]
+  (clear-tiled-map)
   (bind-root #'tiled-map tm))
 
 (defn- render-tiled-map! [light-position]
