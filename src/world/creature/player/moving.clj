@@ -1,4 +1,4 @@
-(ns moon.creature.player.moving
+(ns world.creature.player.moving
   (:require [component.core :refer [defc]]
             [gdx.input :refer [key-pressed?]]
             [gdx.math.vector :as v]

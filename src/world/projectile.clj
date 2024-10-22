@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.projectile
+(ns ^:no-doc world.projectile
   (:require [component.core :refer [defc]]
             [component.info :as info]
             [component.property :as property]

@@ -1,4 +1,4 @@
-(ns moon.audiovisual
+(ns world.audiovisual
   (:require [component.core :refer [defc]]
             [component.db :as db]
             [component.property :as property]

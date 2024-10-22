@@ -1,4 +1,4 @@
-(ns moon.creature
+(ns world.creature
   (:require [clojure.string :as str]
             [component.core :refer [defc]]
             [component.db :as db]
@@ -9,17 +9,17 @@
             [gdx.tiled :as tiled]
             [utils.core :refer [bind-root safe-merge tile->middle]]
             [world.core :as world]
-            [moon.creature.fsms :as fsms]
-            moon.creature.active
-            moon.creature.stunned
-            moon.creature.npc.dead
-            moon.creature.npc.idle
-            moon.creature.npc.moving
-            moon.creature.npc.sleeping
-            moon.creature.player.dead
-            moon.creature.player.idle
-            moon.creature.player.item-on-cursor
-            moon.creature.player.moving
+            [world.creature.fsms :as fsms]
+            world.creature.active
+            world.creature.stunned
+            world.creature.npc.dead
+            world.creature.npc.idle
+            world.creature.npc.moving
+            world.creature.npc.sleeping
+            world.creature.player.dead
+            world.creature.player.idle
+            world.creature.player.item-on-cursor
+            world.creature.player.moving
             [world.entity :as entity]
             world.entity.stats
             [world.effect :as effect]))

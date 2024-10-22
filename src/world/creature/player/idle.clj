@@ -1,16 +1,16 @@
-(ns moon.creature.player.idle
+(ns world.creature.player.idle
   (:require [component.core :refer [defc]]
             [gdx.input :refer [button-just-pressed?]]
             [gdx.math.vector :as v]
             [gdx.ui :as ui]
             [gdx.ui.actor :as a]
             [gdx.ui.stage-screen :refer [mouse-on-actor?]]
-            [moon.item :refer [can-pickup-item?]]
-            [moon.skill :as skill :refer [has-skill? clicked-skillmenu-skill]]
-            [moon.widgets.action-bar :refer [selected-skill]]
-            [moon.widgets.inventory :refer [clicked-inventory-cell inventory-window]]
+            [world.item :refer [can-pickup-item?]]
+            [world.skill :as skill :refer [has-skill? clicked-skillmenu-skill]]
+            [world.widgets.action-bar :refer [selected-skill]]
+            [world.widgets.inventory :refer [clicked-inventory-cell inventory-window]]
             [world.core :as world :refer [timer stopped? finished-ratio mouseover-eid]]
-            [moon.creature.player.moving :refer [WASD-movement-vector]]
+            [world.creature.player.moving :refer [WASD-movement-vector]]
             [world.entity :as entity]
             [world.entity.state :as state]
             [world.effect :as effect]))

@@ -1,4 +1,4 @@
-(ns moon.creature.npc.dead
+(ns world.creature.npc.dead
   (:require [component.core :refer [defc]]
             [world.entity :as entity]
             [world.entity.state :as state]))

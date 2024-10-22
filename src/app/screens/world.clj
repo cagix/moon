@@ -11,18 +11,18 @@
             [gdx.ui.stage-screen :as stage-screen :refer [stage-get]]
             [level.generate :as level]
             [utils.core :refer [dev-mode?]]
-            [moon.creature :as creature]
-            moon.creature.player.item-on-cursor
-            [moon.widgets.action-bar :as action-bar]
-            [moon.widgets.entity-info-window :as entity-info-window]
-            [moon.widgets.hp-mana :as hp-mana-bars]
-            [moon.widgets.inventory :as inventory]
-            [moon.widgets.player-message :as player-message]
-            moon.widgets.player-modal
+            [world.creature :as creature]
+            world.creature.player.item-on-cursor
+            [world.widgets.action-bar :as action-bar]
+            [world.widgets.entity-info-window :as entity-info-window]
+            [world.widgets.hp-mana :as hp-mana-bars]
+            [world.widgets.inventory :as inventory]
+            [world.widgets.player-message :as player-message]
+            world.widgets.player-modal
             [world.core :as world]
 
-            moon.audiovisual
-            moon.projectile
+            world.audiovisual
+            world.projectile
             world.entity.animation
             world.entity.delete-after-duration
             world.entity.image
@@ -173,5 +173,5 @@
    (ui/group {:id :windows
               :actors [(entity-info-window/create)
                        (inventory/create)]})
-   (ui/actor {:draw moon.creature.player.item-on-cursor/draw-item-on-cursor})
+   (ui/actor {:draw world.creature.player.item-on-cursor/draw-item-on-cursor})
    (player-message/create)])

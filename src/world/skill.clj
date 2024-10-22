@@ -1,4 +1,4 @@
-(ns moon.skill
+(ns world.skill
   (:require [component.core :refer [defc defsystem]]
             [component.info :as info]
             [component.property :as property]

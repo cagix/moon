@@ -1,4 +1,4 @@
-(ns moon.widgets.hp-mana
+(ns world.widgets.hp-mana
   (:require [data.val-max :as val-max]
             [gdx.graphics :as g]
             [gdx.ui :as ui]

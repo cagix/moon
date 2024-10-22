@@ -1,4 +1,4 @@
-(ns moon.creature.fsms
+(ns world.creature.fsms
   (:require [reduce-fsm :as fsm]))
 
 (comment

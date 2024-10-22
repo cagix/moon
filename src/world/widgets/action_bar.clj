@@ -1,4 +1,4 @@
-(ns moon.widgets.action-bar
+(ns world.widgets.action-bar
   (:require [component.core :refer [defc defsystem]]
             [component.info :as info]
             [component.tx :as tx]

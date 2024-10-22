@@ -1,4 +1,4 @@
-(ns moon.item
+(ns world.item
   (:require [component.core :refer [defc]]
             [component.info :as info]
             [component.property :as property]

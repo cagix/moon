@@ -1,4 +1,4 @@
-(ns moon.creature.npc.sleeping
+(ns world.creature.npc.sleeping
   (:require [component.core :refer [defc]]
             [component.tx :as tx]
             [gdx.graphics :as g]

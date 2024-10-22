@@ -1,11 +1,11 @@
-(ns moon.creature.player.item-on-cursor
+(ns world.creature.player.item-on-cursor
   (:require [component.core :refer [defc]]
             [gdx.graphics :as g]
             [gdx.input :refer [button-just-pressed?]]
             [gdx.math.vector :as v]
             [gdx.ui.stage-screen :refer [mouse-on-actor?]]
-            [moon.item :refer [valid-slot? stackable?]]
-            [moon.widgets.inventory :refer [clicked-inventory-cell]]
+            [world.item :refer [valid-slot? stackable?]]
+            [world.widgets.inventory :refer [clicked-inventory-cell]]
             [world.core :as world]
             [world.entity :as entity]
             [world.entity.state :as state]))

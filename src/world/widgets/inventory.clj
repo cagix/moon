@@ -1,4 +1,4 @@
-(ns moon.widgets.inventory
+(ns world.widgets.inventory
   (:require [component.core :refer [defsystem defc]]
             [component.info :as info]
             [component.tx :as tx]
@@ -7,7 +7,7 @@
             [gdx.ui :as ui]
             [gdx.ui.actor :as a]
             [gdx.ui.stage-screen :refer [stage-get]]
-            [moon.item :refer [valid-slot? empty-inventory]]
+            [world.item :refer [valid-slot? empty-inventory]]
             [world.core :as world]
             [world.entity.state :as state]))
 

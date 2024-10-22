@@ -1,4 +1,4 @@
-(ns moon.creature.player.dead
+(ns world.creature.player.dead
   (:require [component.core :refer [defc]]
             [gdx.screen :as screen]
             [world.entity.state :as state]))
