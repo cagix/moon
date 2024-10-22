@@ -20,8 +20,9 @@
                                       Texture)
            (com.badlogic.gdx.utils SharedLibraryLoader
                                    ScreenUtils)
+           (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration))
-  (:gen-class))
+  #_(:gen-class))
 
 (def cursors {:cursors/bag                   ["bag001"       [0   0]]
               :cursors/black-x               ["black_x"      [0   0]]
@@ -101,9 +102,16 @@
     (resize [w h]
       (g/resize! [w h]))))
 
+(defn- set-dock-icon [image-path]
+  (let [toolkit (Toolkit/getDefaultToolkit)
+        image (.getImage toolkit (clojure.java.io/resource image-path))
+        taskbar (Taskbar/getTaskbar)]
+    (.setIconImage taskbar image)))
+
 (defn -main []
   (db/load! "properties.edn")
   (when SharedLibraryLoader/isMac
+    (set-dock-icon "resources/moon.png")
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (application-listener)
