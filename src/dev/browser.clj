@@ -6,7 +6,14 @@
            (javafx.scene.image Image ImageView)
            (javafx.scene.layout StackPane)
            (javafx.scene Scene Node))
-  #_(:gen-class :extends javafx.application.Application))
+  (:gen-class :extends javafx.application.Application))
+
+; Project management tool!
+; Write for a ns if stable/unstable/see docs etc
+
+; Actually we do _not_ need to see private stuff!
+; or ns form!
+; just publics -> generate documentation ...
 
 (comment
 
@@ -75,14 +82,15 @@
 
 ; (clj-files "src/")
 
-(defn- file->ns-str [path]
+(defn- path->ns-str [path]
   (-> path
       (str/replace "src/" "")
       (str/replace ".clj" "")
-      (str/replace "/" ".")))
+      (str/replace "/" ".")
+      (str/replace "_" ".")))
 
 (defn- file->pretty [file]
-  (let [ns-str (file->ns-str file)]
+  (let [ns-str (path->ns-str file)]
     (str (when-let [icon (::icon (meta (find-ns (symbol ns-str))))]
            (str icon " "))
          ns-str)))
@@ -99,12 +107,25 @@
     tree-item))
 
 (defn- file-forms-tree-item [file]
+  (println "file-forms-tree-item . file: " file " - pretty: " (file->pretty file))
   (let [item (TreeItem. (file->pretty file))]
     (doseq [form (clj-file-forms file)]
       (.add (.getChildren item) (form->node form)))
     item))
 
 ;(.getName (.isDirectory (second (seq (.listFiles (io/file "src/"))))))
+(defn- directory->pretty-name [path]
+  (case path
+    "app"       "🖥️ app"
+    "component" "⚙️ component"
+    "data"      "💿 data"
+    "dev"       "💼 dev"
+    "editor"    "🖋️ editor"
+    "gdx"       "🎮 gdx"
+    "level"     "🗺️ level"
+    "utils"     "🧰 utils"
+    "world"     "🌍 world"
+    path))
 
 (defn add-items! [root-item root-file]
   (doseq [file (sort-by java.io.File/.getName (seq (.listFiles root-file)))
@@ -114,7 +135,7 @@
     (.add (.getChildren root-item)
           (cond
            (.isDirectory file)
-           (let [tree-item (TreeItem. path)]
+           (let [tree-item (TreeItem. (directory->pretty-name (path->ns-str path)))]
              (add-items! tree-item file)
              tree-item)
 
