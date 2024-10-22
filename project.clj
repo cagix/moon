@@ -26,7 +26,7 @@
 
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
 
-  :uberjar-name "cdq_3.jar"
+  :uberjar-name "vampire.jar"
 
   :omit-source true
 

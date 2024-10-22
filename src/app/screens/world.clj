@@ -162,8 +162,7 @@
              :fill-parent? true}))
 
 (defn- world-actors []
-  [(when dev-mode?
-     (dev-menu))
+  [(if dev-mode? (dev-menu) (ui/actor {}))
    (ui/table {:rows [[{:actor (action-bar/create)
                        :expand? true
                        :bottom? true}]]

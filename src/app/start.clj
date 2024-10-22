@@ -77,7 +77,7 @@
     [file class]))
 
 (defn- assets []
-  (for [[file class-str] (clojure.edn/read-string (slurp "resources/assets.edn"))]
+  (for [[file class-str] (clojure.edn/read-string (slurp (clojure.java.io/resource "assets.edn")))]
     [file (case class-str
             "com.badlogic.gdx.audio.Sound" Sound
             "com.badlogic.gdx.graphics.Texture" Texture)]))
