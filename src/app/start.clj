@@ -8,6 +8,7 @@
             [app.screens.world :as world-screen]
             [component.db :as db]
             [gdx.assets :as assets]
+            [gdx.backends.lwjgl3 :as lwjgl3]
             [gdx.graphics :as g]
             [gdx.screen :as screen]
             [gdx.vis-ui :as vis-ui])

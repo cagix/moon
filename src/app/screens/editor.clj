@@ -40,7 +40,7 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn screen [background-image]
+(defn screen []
   [:screens/property-editor
    (stage-screen/create :actors
                         [(background-image/create)
