@@ -13,10 +13,13 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils Disposable)
+           (com.badlogic.gdx.utils Disposable ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport))
   (:load "graphics/color"
          "graphics_sd"))
+
+(defn clear-screen []
+  (ScreenUtils/clear Color/BLACK))
 
 (declare batch)
 

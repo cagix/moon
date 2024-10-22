@@ -1,5 +1,6 @@
 (ns app.screens.editor
-  (:require [component.property :as property]
+  (:require [app.screens.background-image :as background-image]
+            [component.property :as property]
             [editor.overview :refer [overview-table]]
             [editor.visui :as editor]
             [gdx.input :refer [key-just-pressed?]]
@@ -42,7 +43,7 @@
 (defn screen [background-image]
   [:screens/property-editor
    (stage-screen/create :actors
-                        [(background-image)
+                        [(background-image/create)
                          (main-table)
                          (ui/actor {:act (fn []
                                            (when (key-just-pressed? :shift-left)
