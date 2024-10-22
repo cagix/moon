@@ -1,5 +1,6 @@
 (ns app.start
-  (:require [app.screens.editor :as property-editor]
+  (:require [app.config :as config]
+            [app.screens.editor :as property-editor]
             [app.screens.main :as main-menu]
             [app.screens.map-editor :as map-editor]
             [app.screens.world :as world-screen]
@@ -10,47 +11,18 @@
             [gdx.ui :as ui]
             [gdx.screen :as screen]
             [gdx.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx ApplicationAdapter
-                             Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color
-                                      Texture)
-           (com.badlogic.gdx.utils SharedLibraryLoader
-                                   ScreenUtils)
+           (com.badlogic.gdx.graphics Color Texture)
+           (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration))
   #_(:gen-class))
 
-(def cursors {:cursors/bag                   ["bag001"       [0   0]]
-              :cursors/black-x               ["black_x"      [0   0]]
-              :cursors/default               ["default"      [0   0]]
-              :cursors/denied                ["denied"       [16 16]]
-              :cursors/hand-before-grab      ["hand004"      [4  16]]
-              :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-              :cursors/hand-grab             ["hand003"      [4  16]]
-              :cursors/move-window           ["move002"      [16 16]]
-              :cursors/no-skill-selected     ["denied003"    [0   0]]
-              :cursors/over-button           ["hand002"      [0   0]]
-              :cursors/sandclock             ["sandclock"    [16 16]]
-              :cursors/skill-not-usable      ["x007"         [0   0]]
-              :cursors/use-skill             ["pointer004"   [0   0]]
-              :cursors/walking               ["walking"      [16 16]]})
-
-(def graphics {:cursors cursors
-               :default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                              :size 16
-                              :quality-scaling 2}
-               :views {:gui-view {:world-width 1440
-                                  :world-height 900}
-                       :world-view {:world-width 1440
-                                    :world-height 900
-                                    :tile-size 48}}})
-
-(defn- moon []
-  (ui/image->widget (g/image "images/moon_background.png")
+(defn- background-image []
+  (ui/image->widget (g/image config/screen-background)
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))
@@ -80,12 +52,12 @@
 (defn- application-listener []
   (proxy [ApplicationAdapter] []
     (create []
-      (assets/load (search-assets "resources/"))
-      (g/load! graphics)
-      (vis-ui/load! :skin-scale/x1)
-      (screen/set-screens! [(main-menu/create moon)
+      (assets/load (search-assets config/resources))
+      (g/load! config/graphics)
+      (vis-ui/load! config/skin-scale)
+      (screen/set-screens! [(main-menu/create background-image)
                             (map-editor/create)
-                            (property-editor/screen moon)
+                            (property-editor/screen background-image)
                             (world-screen/create)])
       ((world-screen/start-game-fn :worlds/vampire)))
 
@@ -108,14 +80,17 @@
         taskbar (Taskbar/getTaskbar)]
     (.setIconImage taskbar image)))
 
+(defn- lwjgl3-config [{:keys [title fps width height]}]
+  (doto (Lwjgl3ApplicationConfiguration.)
+    (.setTitle title)
+    (.setForegroundFPS fps)
+    (.setWindowedMode width height)))
+
 (defn -main []
-  (db/load! "properties.edn")
+  (db/load! config/properties)
   (when SharedLibraryLoader/isMac
-    (set-dock-icon "moon.png")
+    (set-dock-icon config/dock-icon)
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (application-listener)
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle "Eternal")
-                        (.setForegroundFPS 60)
-                        (.setWindowedMode 1440 900))))
+                      (lwjgl3-config config/lwjgl3)))
