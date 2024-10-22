@@ -28,7 +28,8 @@
 (defn load! [file]
   (let [file (clojure.java.io/resource file) ; load here and not in threading macro so #'edn-file correct (tests?!)
         properties (-> file slurp edn/read-string)]
-    (assert (apply distinct? (map :property/id properties)))
+    (assert (or (empty? properties)
+                (apply distinct? (map :property/id properties))))
     (run! property/validate! properties)
     (.bindRoot #'db (zipmap (map :property/id properties) properties))
     (.bindRoot #'edn-file file)))
