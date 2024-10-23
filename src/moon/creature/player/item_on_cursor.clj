@@ -1,5 +1,5 @@
 (ns moon.creature.player.item-on-cursor
-  (:require [clojure.gdx :refer [button-just-pressed?]]
+  (:require [gdl.input :refer [button-just-pressed?]]
             [moon.component :refer [defc]]
             [moon.graphics :as g]
             [moon.math.vector :as v]

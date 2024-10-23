@@ -1,4 +1,4 @@
-(ns moon.graphics.camera
+(ns gdl.graphics.camera
   (:import (com.badlogic.gdx.math Vector3)
            (com.badlogic.gdx.graphics Camera OrthographicCamera)))
 

@@ -1,9 +1,9 @@
 (ns moon.screens.world
-  (:require [clojure.gdx :refer [key-pressed? key-just-pressed?]]
-            [clojure.gdx.graphics :refer [clear-screen frames-per-second]]
+  (:require [gdl.graphics :refer [clear-screen frames-per-second]]
+            [gdl.graphics.camera :as cam]
+            [gdl.input :refer [key-pressed? key-just-pressed?]]
             [moon.db :as db]
             [moon.graphics :as g]
-            [moon.graphics.camera :as cam]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
             [moon.screen :as screen]

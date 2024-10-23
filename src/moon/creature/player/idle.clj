@@ -1,5 +1,5 @@
 (ns moon.creature.player.idle
-  (:require [clojure.gdx :refer [button-just-pressed?]]
+  (:require [gdl.input :refer [button-just-pressed?]]
             [moon.component :refer [defc]]
             [moon.math.vector :as v]
             [moon.ui :as ui]

@@ -1,5 +1,5 @@
 (ns moon.creature
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [gdl.graphics.color :as color]
             [clojure.string :as str]
             [moon.component :refer [defc]]
             [moon.db :as db]

@@ -1,5 +1,5 @@
 (ns moon.widgets.inventory
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [gdl.graphics.color :as color]
             [moon.component :refer [defsystem defc]]
             [moon.info :as info]
             [moon.tx :as tx]

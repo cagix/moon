@@ -1,5 +1,6 @@
 (ns moon.ui.stage-screen
-  (:require [clojure.gdx :refer [dispose set-input-processor]]
+  (:require [gdl.input :as input]
+            [gdl.utils :refer [dispose]]
             [moon.graphics :as g]
             [moon.screen :as screen]
             [moon.ui.stage :as stage]))
@@ -7,11 +8,11 @@
 (defrecord StageScreen [stage sub-screen]
   screen/Screen
   (screen/enter! [_]
-    (set-input-processor stage)
+    (input/set-processor stage)
     (when sub-screen (screen/enter! sub-screen)))
 
   (screen/exit! [_]
-    (set-input-processor nil)
+    (input/set-processor nil)
     (when sub-screen (screen/exit! sub-screen)))
 
   (screen/render! [_]

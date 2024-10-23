@@ -1,5 +1,5 @@
 (ns dev.experiment
-  (:require [clojure.gdx :refer [post-runnable]]
+  (:require [gdl.app :refer [post-runnable]]
             [moon.component :as component]
             [moon.db :as db]
             [moon.tx :as tx]

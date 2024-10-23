@@ -1,5 +1,5 @@
 (ns moon.editor.visui
-  (:require [clojure.gdx :refer [key-just-pressed?]]
+  (:require [gdl.input :refer [key-just-pressed?]]
             [moon.component :as component]
             [moon.db :as db]
             [moon.info :as info]

@@ -1,6 +1,6 @@
 (ns moon.app
-  (:require [clojure.gdx :refer [dispose]]
-            [clojure.gdx.assets :as gdx.assets]
+  (:require [gdl.utils :refer [dispose]]
+            [gdl.assets :as gdx.assets]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [moon.db :as db]

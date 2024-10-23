@@ -1,5 +1,5 @@
 (ns moon.screens.editor
-  (:require [clojure.gdx :refer [key-just-pressed?]]
+  (:require [gdl.input :refer [key-just-pressed?]]
             [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.visui :as editor]

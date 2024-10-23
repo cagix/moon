@@ -1,4 +1,4 @@
-(ns moon.graphics.shape-drawer
+(ns gdl.graphics.shape-drawer
   (:import (com.badlogic.gdx.graphics Color Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.math MathUtils)

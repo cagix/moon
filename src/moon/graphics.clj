@@ -1,17 +1,17 @@
 (ns moon.graphics
-  (:require [clojure.gdx :refer [dispose]]
-            [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.graphics.color :as color]
+  (:require [gdl.graphics :as graphics]
+            [gdl.graphics.batch :as batch]
+            [gdl.graphics.color :as color]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.text :as text]
+            [gdl.graphics.viewport :as vp]
+            [gdl.graphics.tiled :as tiled]
+            [gdl.utils :refer [dispose]]
             [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.schema :as schema]
             [moon.tx :as tx]
             [moon.assets :as assets]
-            [moon.graphics.batch :as batch]
-            [moon.graphics.shape-drawer :as sd]
-            [moon.graphics.text :as text]
-            [moon.graphics.viewport :as vp]
-            [moon.graphics.tiled :as tiled]
             [moon.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)

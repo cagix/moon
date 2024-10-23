@@ -1,4 +1,4 @@
-(ns moon.graphics.tiled
+(ns gdl.graphics.tiled
   (:require [moon.tiled :as tiled])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 

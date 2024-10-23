@@ -1,5 +1,6 @@
 (ns moon.screens.main
-  (:require [clojure.gdx :refer [exit-app key-just-pressed?]]
+  (:require [gdl.app :as app]
+            [gdl.input :refer [key-just-pressed?]]
             [moon.screens.world :as world]
             [moon.db :as db]
             [moon.graphics :as g]
@@ -16,7 +17,7 @@
                                     [(ui/text-button "Map editor" #(screen/change! :screens/map-editor))])
                                   (when dev-mode?
                                     [(ui/text-button "Property editor" #(screen/change! :screens/property-editor))])
-                                  [(ui/text-button "Exit" exit-app)]]))
+                                  [(ui/text-button "Exit" app/exit)]]))
              :cell-defaults {:pad-bottom 25}
              :fill-parent? true}))
 
@@ -35,5 +36,5 @@
                          (->buttons)
                          (ui/actor {:act (fn []
                                            (when (key-just-pressed? :keys/escape)
-                                             (exit-app)))})]
+                                             (app/exit)))})]
                         :screen (->MainMenuScreen))])

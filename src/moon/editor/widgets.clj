@@ -1,6 +1,6 @@
 (ns moon.editor.widgets
   (:require [clojure.edn :as edn]
-            [clojure.gdx.assets :as gdx.assets]
+            [gdl.assets :as gdx.assets]
             [clojure.string :as str]
             [moon.db :as db]
             [moon.info :as info]

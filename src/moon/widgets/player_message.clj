@@ -1,5 +1,5 @@
 (ns moon.widgets.player-message
-  (:require [clojure.gdx.graphics :as gdx.graphics]
+  (:require [gdl.graphics :as gdx.graphics]
             [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]
