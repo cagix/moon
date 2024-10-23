@@ -1,4 +1,4 @@
-(ns app.start
+(ns moon.app
   (:require (app.screens [editor :as property-editor]
                          [main :as main-menu]
                          [map-editor :as map-editor]

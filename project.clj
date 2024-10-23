@@ -39,8 +39,8 @@
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 *print-level* 3}
-  :profiles {:uberjar {:aot [app.start]}}
-  :main app.start)
+  :profiles {:uberjar {:aot [moon.app]}}
+  :main moon.app)
 
 ; * Notes
 
