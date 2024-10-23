@@ -1,9 +1,6 @@
 (ns moon.app
-  (:require [clojure.string :as str]
-            [gdl.app :as app]
-            [gdl.assets :refer [manager]]
+  (:require [gdl.app :as app]
             [gdl.ui :as ui]
-            [gdl.utils :refer [dispose recursively-search]]
             [moon.assets :as assets]
             moon.components
             [moon.db :as db]
@@ -13,13 +10,6 @@
                           [main :as main-menu]
                           [map-editor :as map-editor]
                           [world :as world-screen])))
-
-(defn- search-assets [folder]
-  (for [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
-        file (map #(str/replace-first % folder "")
-                  (recursively-search folder exts))]
-    [file class]))
 
 (def ^:private cursors
   {:cursors/bag                   ["bag001"       [0   0]]
@@ -57,7 +47,7 @@
 (defn- app-listener []
   (reify app/Listener
     (create [_]
-      (.bindRoot #'assets/manager (manager (search-assets "resources/")))
+      (assets/load "resources/")
       (g/load! graphics)
       (ui/load! :skin-scale/x1)
       (screen/set-screens! [(main-menu/create background-image)
@@ -67,7 +57,7 @@
       ((world-screen/start-game-fn :worlds/vampire)))
 
     (dispose [_]
-      (dispose assets/manager)
+      (assets/dispose)
       (g/dispose!)
       (ui/dispose!)
       (screen/dispose-all!))
