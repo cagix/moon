@@ -1,14 +1,14 @@
-(ns editor.visui
+(ns moon.editor.visui
   (:require [moon.component :as component]
             [moon.db :as db]
             [moon.info :as info]
             [moon.property :as property]
             [moon.schema :as schema]
-            [editor.common :refer [component-order]]
-            [editor.malli :as malli]
-            [editor.utils :refer [scroll-pane-cell]]
-            [editor.widget :as widget]
-            editor.widgets
+            [moon.editor.common :refer [component-order]]
+            [moon.editor.malli :as malli]
+            [moon.editor.utils :refer [scroll-pane-cell]]
+            [moon.editor.widget :as widget]
+            moon.editor.widgets
             [gdx.input :refer [key-just-pressed?]]
             [gdx.ui :as ui]
             [gdx.ui.actor :as a]

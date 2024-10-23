@@ -1,4 +1,4 @@
-(ns editor.common
+(ns moon.editor.common
   (:require [moon.schema :as schema]
             [utils.core :refer [index-of]]))
 

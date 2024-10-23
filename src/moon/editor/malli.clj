@@ -1,4 +1,4 @@
-(ns editor.malli
+(ns moon.editor.malli
   (:require [clojure.set :as set]))
 
 (defn map-keys [m-schema]

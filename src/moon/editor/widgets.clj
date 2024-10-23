@@ -1,12 +1,12 @@
-(ns editor.widgets
+(ns moon.editor.widgets
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
             [moon.db :as db]
             [moon.info :as info]
             [moon.property :as property]
-            [editor.widget :as widget]
-            [editor.overview :refer [overview-table]]
-            [editor.utils :refer [scrollable-choose-window]]
+            [moon.editor.widget :as widget]
+            [moon.editor.overview :refer [overview-table]]
+            [moon.editor.utils :refer [scrollable-choose-window]]
             [gdx.assets :as assets]
             [gdx.audio :as audio]
             [gdx.graphics :as g]

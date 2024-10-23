@@ -1,7 +1,7 @@
 (ns moon.screens.editor
   (:require [moon.property :as property]
-            [editor.overview :refer [overview-table]]
-            [editor.visui :as editor]
+            [moon.editor.overview :refer [overview-table]]
+            [moon.editor.visui :as editor]
             [gdx.input :refer [key-just-pressed?]]
             [gdx.ui :as ui]
             [gdx.ui.stage-screen :as stage-screen :refer [stage-add!]]

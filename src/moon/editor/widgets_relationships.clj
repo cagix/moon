@@ -1,4 +1,4 @@
-(in-ns 'editor.widgets)
+(in-ns 'moon.editor.widgets)
 
 ; TODO schemas not checking if that property exists in db...
 ; https://github.com/damn/core/issues/59
