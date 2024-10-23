@@ -19,6 +19,50 @@
 
 ; FIXME overview table not refreshed after changes in properties
 
+(defn- apply-context-fn [window f]
+  #(try (f)
+        (a/remove! window)
+        (catch Throwable t
+          (error-window! t))))
+
+(defn props->editor-window [props]
+  (let [schema (schema/of (property/type props))
+        window (ui/window {:title (str "[SKY]Property[]")
+                           :modal? true
+                           :close-button? true
+                           :center? true
+                           :close-on-escape? true
+                           :cell-defaults {:pad 5}})
+        widget (widget/create schema props)
+        save!   (apply-context-fn window #(db/update! (widget/value schema widget)))
+        delete! (apply-context-fn window #(db/delete! (:property/id props)))]
+    (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
+                                              [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
+                                                :center? true}
+                                               {:actor (ui/text-button "Delete" delete!)
+                                                :center? true}]])]])
+    (ui/add-actor! window (ui/actor {:act (fn []
+                                            (when (key-just-pressed? :enter)
+                                              (save!)))}))
+    (.pack window)
+    (def editor-window window)
+    window))
+
+(defn- property-value []
+ (let [window editor-window
+       scroll-pane-table (.findActor (:scroll-pane window) "scroll-pane-table")
+       m-widget-cell (first (seq (.getCells scroll-pane-table)))
+       table (:map-widget scroll-pane-table)]
+   (widget/value [:s/map] table)))
+
+(defn- rebuild-editor-window []
+  (let [prop-value (property-value)]
+    (a/remove! editor-window)
+    (stage-add! (props->editor-window prop-value))))
+
+(defn property-editor-window [id]
+  (props->editor-window (safe-get db/db id)))
+
 (defn- k->default-value [k]
   (let [schema (schema/of k)]
     (cond
@@ -63,8 +107,6 @@
                                 (= k ((a/id actor) 0))))
                          (ui/children table)))
 
-(declare rebuild-editor-window)
-
 (defn- attribute-label [k m-schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                         (name k))
@@ -90,22 +132,6 @@
 
 (defn- horiz-sep []
   [(ui/horizontal-separator-cell component-row-cols)])
-
-(def editor-window)
-
-(defn- property-value []
- (let [window editor-window
-       scroll-pane-table (.findActor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (.getCells scroll-pane-table)))
-       table (:map-widget scroll-pane-table)]
-   (widget/value [:s/map] table)))
-
-(declare props->editor-window)
-
-(defn- rebuild-editor-window []
-  (let [prop-value (property-value)]
-    (a/remove! editor-window)
-    (stage-add! (props->editor-window prop-value))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
@@ -157,35 +183,3 @@
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (a/id widget)]]
           [k (widget/value (schema/of k) widget)])))
-
-(defn- apply-context-fn [window f]
-  #(try (f)
-        (a/remove! window)
-        (catch Throwable t
-          (error-window! t))))
-
-(defn props->editor-window [props]
-  (let [schema (schema/of (property/type props))
-        window (ui/window {:title (str "[SKY]Property[]")
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true
-                           :cell-defaults {:pad 5}})
-        widget (widget/create schema props)
-        save!   (apply-context-fn window #(db/update! (widget/value schema widget)))
-        delete! (apply-context-fn window #(db/delete! (:property/id props)))]
-    (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
-                                              [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
-                                                :center? true}
-                                               {:actor (ui/text-button "Delete" delete!)
-                                                :center? true}]])]])
-    (ui/add-actor! window (ui/actor {:act (fn []
-                                            (when (key-just-pressed? :enter)
-                                              (save!)))}))
-    (.pack window)
-    (def editor-window window)
-    window))
-
-(defn property-editor-window [id]
-  (props->editor-window (safe-get db/db id)))

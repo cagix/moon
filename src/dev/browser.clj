@@ -6,7 +6,7 @@
            (javafx.scene.image Image ImageView)
            (javafx.scene.layout StackPane)
            (javafx.scene Scene Node))
-  (:gen-class :extends javafx.application.Application))
+  #_(:gen-class :extends javafx.application.Application))
 
 ; Project management tool!
 ; Write for a ns if stable/unstable/see docs etc
