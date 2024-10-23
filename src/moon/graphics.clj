@@ -1,5 +1,6 @@
 (ns moon.graphics
   (:require [clojure.gdx :refer [dispose]]
+            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
             [moon.component :refer [defc]]
             [moon.db :as db]
@@ -13,7 +14,7 @@
             [moon.graphics.tiled :as tiled]
             [moon.utils :refer [safe-get]])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color OrthographicCamera Texture Pixmap)
+           (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport FitViewport))
   (:load "graphics_sd"))
@@ -43,21 +44,15 @@
   (into {} (for [[k v] m]
              [k (f v)])))
 
-(defn- ->cursor [file [hotspot-x hotspot-y]]
-  (let [pixmap (Pixmap. (.internal Gdx/files file))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (dispose pixmap)
-    cursor))
-
 (defn- ->cursors [cursors]
   (mapvals (fn [[file hotspot]]
-             (->cursor (str "cursors/" file ".png") hotspot))
+             (graphics/cursor (str "cursors/" file ".png") hotspot))
            cursors))
 
 (declare ^:private cursors)
 
 (defn set-cursor! [cursor-key]
-  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
+  (graphics/set-cursor (safe-get cursors cursor-key)))
 
 (defc :tx/cursor
   (tx/handle [[_ cursor-key]]
