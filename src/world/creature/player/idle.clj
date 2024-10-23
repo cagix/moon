@@ -1,5 +1,5 @@
 (ns world.creature.player.idle
-  (:require [component.core :refer [defc]]
+  (:require [moon.component :refer [defc]]
             [gdx.input :refer [button-just-pressed?]]
             [gdx.math.vector :as v]
             [gdx.ui :as ui]

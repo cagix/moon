@@ -1,8 +1,8 @@
 (ns world.skill
-  (:require [component.core :refer [defc defsystem]]
-            [component.info :as info]
-            [component.property :as property]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc defsystem]]
+            [moon.info :as info]
+            [moon.property :as property]
+            [moon.tx :as tx]
             [utils.core :refer [readable-number]]
             [world.core :as world :refer [stopped?]]
             [world.entity :as entity]

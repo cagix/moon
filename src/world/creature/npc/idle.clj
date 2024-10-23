@@ -1,5 +1,5 @@
 (ns world.creature.npc.idle
-  (:require [component.core :refer [defc]]
+  (:require [moon.component :refer [defc]]
             [world.skill :as skill]
             [world.core :as world]
             [world.entity :as entity]

@@ -1,6 +1,6 @@
-(ns component.schema
+(ns moon.schema
   (:refer-clojure :exclude [type])
-  (:require [component.core :as component]
+  (:require [moon.component :as component]
             [utils.core :refer [safe-get]]))
 
 (defn of [k]

@@ -1,7 +1,7 @@
 (ns data.operation
   (:refer-clojure :exclude [apply])
   (:require [clojure.math :as math]
-            [component.core :refer [defsystem defc]]))
+            [moon.component :refer [defsystem defc]]))
 
 (defsystem value-text)
 (defsystem apply [_ base-value])

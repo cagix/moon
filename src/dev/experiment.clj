@@ -1,7 +1,7 @@
 (ns dev.experiment
-  (:require [component.core :as component]
-            [component.db :as db]
-            [component.tx :as tx]
+  (:require [moon.component :as component]
+            [moon.db :as db]
+            [moon.tx :as tx]
             [gdx.app :refer [post-runnable!]]
             [world.core :as world]))
 
@@ -112,7 +112,7 @@
                "")
              (let [attr-map (component/meta k)]
                #_(if (seq attr-map)
-                   (pr-str (:component.core/fn-params attr-map))
+                   (pr-str (:moon.component/fn-params attr-map))
                    (str " `"
                         (binding [*print-level* nil]
                           (with-out-str

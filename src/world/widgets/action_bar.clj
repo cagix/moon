@@ -1,7 +1,7 @@
 (ns world.widgets.action-bar
-  (:require [component.core :refer [defc defsystem]]
-            [component.info :as info]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc defsystem]]
+            [moon.info :as info]
+            [moon.tx :as tx]
             [gdx.ui :as ui]
             [gdx.ui.actor :as a]
             [gdx.ui.stage-screen :refer [stage-get]]))

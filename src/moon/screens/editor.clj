@@ -1,5 +1,5 @@
 (ns moon.screens.editor
-  (:require [component.property :as property]
+  (:require [moon.property :as property]
             [editor.overview :refer [overview-table]]
             [editor.visui :as editor]
             [gdx.input :refer [key-just-pressed?]]

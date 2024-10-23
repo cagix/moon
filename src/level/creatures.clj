@@ -1,5 +1,5 @@
 (ns level.creatures
-  (:require [component.property :as property]
+  (:require [moon.property :as property]
             [gdx.tiled :as t]))
 
 (defn with-level [creature-properties level]

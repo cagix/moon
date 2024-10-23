@@ -1,8 +1,8 @@
 (ns world.core
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [component.core :refer [defc]]
-            [component.db :as db]
-            [component.tx :as tx]
+            [moon.component :refer [defc]]
+            [moon.db :as db]
+            [moon.tx :as tx]
             [data.grid2d :as g2d]
             [gdx.graphics :as g :refer [white black]]
             [gdx.graphics.camera :as 🎥]

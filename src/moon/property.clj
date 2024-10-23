@@ -1,7 +1,7 @@
-(ns component.property
+(ns moon.property
   (:refer-clojure :exclude [def type])
-  (:require [component.core :refer [defc] :as component]
-            [component.schema :as schema]
+  (:require [moon.component :refer [defc] :as component]
+            [moon.schema :as schema]
             [malli.core :as m]
             [malli.error :as me]))
 

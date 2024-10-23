@@ -1,7 +1,7 @@
 (ns level.generate
-  (:require [component.core :refer [defc]]
-            [component.db :as db]
-            [component.property :as property]
+  (:require [moon.component :refer [defc]]
+            [moon.db :as db]
+            [moon.property :as property]
             [data.grid2d :as g2d]
             [gdx.tiled :as t]
             [level.area-level-grid :as area-level-grid]

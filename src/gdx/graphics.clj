@@ -1,8 +1,8 @@
 (ns gdx.graphics
-  (:require [component.core :refer [defc]]
-            [component.db :as db]
-            [component.schema :as schema]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.db :as db]
+            [moon.schema :as schema]
+            [moon.tx :as tx]
             [gdx.assets :as assets]
             [gdx.graphics.batch :as batch]
             [gdx.graphics.shape-drawer :as sd]

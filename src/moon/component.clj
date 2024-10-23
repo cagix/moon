@@ -1,4 +1,4 @@
-(ns component.core
+(ns moon.component
   "A component is a vector of `[k & values?]`.
   For example a minimal component is `[:foo]`"
   (:refer-clojure :exclude [meta]))

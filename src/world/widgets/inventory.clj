@@ -1,7 +1,7 @@
 (ns world.widgets.inventory
-  (:require [component.core :refer [defsystem defc]]
-            [component.info :as info]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defsystem defc]]
+            [moon.info :as info]
+            [moon.tx :as tx]
             [data.grid2d :as g2d]
             [gdx.graphics :as g]
             [gdx.ui :as ui]

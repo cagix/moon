@@ -1,7 +1,7 @@
 (ns world.entity.animation
-  (:require [component.core :refer [defc]]
-            [component.db :as db]
-            [component.schema :as schema]
+  (:require [moon.component :refer [defc]]
+            [moon.db :as db]
+            [moon.schema :as schema]
             [gdx.graphics :as g]
             [world.core :as world]
             [world.entity :as entity]))

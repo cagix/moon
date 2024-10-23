@@ -1,7 +1,7 @@
 (ns world.effect.damage
-  (:require [component.core :refer [defc]]
-            [component.info :as info]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.info :as info]
+            [moon.tx :as tx]
             [gdx.rand :refer [rand-int-between]]
             [world.entity.modifiers :refer [modified-value entity-stat]]
             [world.effect :as effect :refer [source target]]))

@@ -1,7 +1,7 @@
 (ns moon.app
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [component.db :as db]
+            [moon.db :as db]
             [gdx.assets :as assets]
             [gdx.graphics :as g]
             [gdx.screen :as screen]

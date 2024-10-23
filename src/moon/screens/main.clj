@@ -1,6 +1,6 @@
 (ns moon.screens.main
   (:require [moon.screens.world :as world]
-            [component.db :as db]
+            [moon.db :as db]
             [gdx.app :as app]
             [gdx.graphics :as g]
             [gdx.input :refer [key-just-pressed?]]

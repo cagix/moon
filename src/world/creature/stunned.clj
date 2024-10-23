@@ -1,5 +1,5 @@
 (ns world.creature.stunned
-  (:require [component.core :refer [defc]]
+  (:require [moon.component :refer [defc]]
             [gdx.graphics :as g]
             [world.core :refer [timer stopped?]]
             [world.entity :as entity]

@@ -1,6 +1,6 @@
 (ns world.entity.line
-  (:require [component.core :refer [defc]]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.tx :as tx]
             [gdx.graphics :as g]
             [world.entity :as entity]))
 

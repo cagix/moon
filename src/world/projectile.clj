@@ -1,8 +1,8 @@
 (ns world.projectile
-  (:require [component.core :refer [defc]]
-            [component.info :as info]
-            [component.property :as property]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.info :as info]
+            [moon.property :as property]
+            [moon.tx :as tx]
             [gdx.math.vector :as v]
             [utils.core :refer [find-first]]
             [world.core :as w]

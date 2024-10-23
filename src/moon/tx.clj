@@ -1,5 +1,5 @@
-(ns component.tx
-  (:require [component.core :refer [defsystem]]))
+(ns moon.tx
+  (:require [moon.component :refer [defsystem]]))
 
 (defsystem handle)
 

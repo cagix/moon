@@ -1,9 +1,9 @@
-(ns component.db
+(ns moon.db
   (:refer-clojure :exclude [get])
   (:require [clojure.edn :as edn]
             [clojure.pprint :refer [pprint]]
-            [component.property :as property]
-            [component.schema :as schema]
+            [moon.property :as property]
+            [moon.schema :as schema]
             [utils.core :refer [safe-get]]))
 
 (comment

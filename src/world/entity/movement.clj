@@ -1,6 +1,6 @@
 (ns world.entity.movement
-  (:require [component.core :refer [defc]]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.tx :as tx]
             [gdx.math.vector :as v]
             [malli.core :as m]
             [world.core :as world]

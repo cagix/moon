@@ -1,5 +1,5 @@
 (ns world.widgets.entity-info-window
-  (:require [component.info :as info]
+  (:require [moon.info :as info]
             [gdx.graphics :as g]
             [gdx.ui :as ui]
             [world.core :refer [mouseover-entity]]))

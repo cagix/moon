@@ -1,5 +1,5 @@
 (ns world.creature.active
-  (:require [component.core :refer [defc]]
+  (:require [moon.component :refer [defc]]
             [gdx.graphics :as g]
             [world.core :refer [timer stopped? finished-ratio]]
             [world.entity :as entity]

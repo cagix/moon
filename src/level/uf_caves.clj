@@ -1,6 +1,6 @@
 (ns level.uf-caves
   (:require [data.grid2d :as g2d]
-            [component.db :as db]
+            [moon.db :as db]
             [gdx.graphics :as g]
             [gdx.tiled :as t]
             [gdx.rand :refer [get-rand-weighted-item]]

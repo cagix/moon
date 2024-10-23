@@ -1,7 +1,7 @@
 (ns world.effect.entity
-  (:require [component.core :refer [defc]]
-            [component.info :as info]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.info :as info]
+            [moon.tx :as tx]
             [gdx.graphics :as g]
             [utils.core :refer [readable-number]]
             [world.core :refer [timer stopped? finished-ratio]]

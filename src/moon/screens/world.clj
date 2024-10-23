@@ -1,5 +1,5 @@
 (ns moon.screens.world
-  (:require [component.db :as db]
+  (:require [moon.db :as db]
             [gdx.app :as app]
             [gdx.graphics :as g]
             [gdx.graphics.camera :as 🎥]

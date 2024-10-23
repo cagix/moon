@@ -1,7 +1,7 @@
 (ns world.effect.target
-  (:require [component.core :refer [defc]]
-            [component.info :as info]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.info :as info]
+            [moon.tx :as tx]
             [gdx.graphics :as g]
             [gdx.math.vector :as v]
             [world.core :as world]

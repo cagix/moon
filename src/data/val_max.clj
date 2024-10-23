@@ -1,7 +1,7 @@
 (ns data.val-max
   (:require [clojure.string :as str]
-            [component.core :refer [defc]]
-            [component.schema :as schema]
+            [moon.component :refer [defc]]
+            [moon.schema :as schema]
             [data.operation :as op]
             [malli.core :as m]))
 

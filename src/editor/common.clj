@@ -1,5 +1,5 @@
 (ns editor.common
-  (:require [component.schema :as schema]
+  (:require [moon.schema :as schema]
             [utils.core :refer [index-of]]))
 
 (defn widget-type [schema _]

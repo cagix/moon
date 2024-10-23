@@ -1,6 +1,6 @@
 (ns world.effect
-  (:require [component.core :refer [defsystem defc]]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defsystem defc]]
+            [moon.tx :as tx]
             [gdx.graphics :as g]
             [gdx.math.vector :as v]
             [world.core :as world :refer [mouseover-eid]]

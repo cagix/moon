@@ -1,7 +1,7 @@
 (ns gdx.audio
-  (:require [component.core :refer [defc]]
-            [component.schema :as schema]
-            [component.tx :as tx])
+  (:require [moon.component :refer [defc]]
+            [moon.schema :as schema]
+            [moon.tx :as tx])
   (:require [gdx.assets :as assets])
   (:import (com.badlogic.gdx.audio Sound)))
 

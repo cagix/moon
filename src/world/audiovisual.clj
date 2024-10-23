@@ -1,8 +1,8 @@
 (ns world.audiovisual
-  (:require [component.core :refer [defc]]
-            [component.db :as db]
-            [component.property :as property]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.db :as db]
+            [moon.property :as property]
+            [moon.tx :as tx]
             [world.entity :as entity]))
 
 (property/def :properties/audiovisuals

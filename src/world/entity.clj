@@ -1,7 +1,7 @@
 (ns world.entity
-  (:require [component.core :refer [defsystem defc]]
-            [component.info :as info]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defsystem defc]]
+            [moon.info :as info]
+            [moon.tx :as tx]
             [gdx.math.shape :as shape]
             [gdx.math.vector :as v]
             [malli.core :as m]

@@ -1,6 +1,6 @@
-(ns component.info
+(ns moon.info
   (:require [clojure.string :as str]
-            [component.core :refer [defsystem]]
+            [moon.component :refer [defsystem]]
             [utils.core :refer [index-of]]))
 
 (defsystem text "Return info-string (for tooltips,etc.). Default nil.")

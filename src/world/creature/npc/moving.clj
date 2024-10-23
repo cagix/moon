@@ -1,5 +1,5 @@
 (ns world.creature.npc.moving
-  (:require [component.core :refer [defc]]
+  (:require [moon.component :refer [defc]]
             [world.core :refer [timer stopped?]]
             [world.entity :as entity]
             [world.entity.state :as state]

@@ -1,6 +1,6 @@
 (ns moon.screens.map-editor
   (:require [clojure.string :as str]
-            [component.db :as db]
+            [moon.db :as db]
             [gdx.graphics :as g :refer [white]]
             [gdx.graphics.camera :as 🎥]
             [gdx.input :refer [key-pressed? key-just-pressed?]]

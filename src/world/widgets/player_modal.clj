@@ -1,6 +1,6 @@
 (ns world.widgets.player-modal
-  (:require [component.core :refer [defc]]
-            [component.tx :as tx]
+  (:require [moon.component :refer [defc]]
+            [moon.tx :as tx]
             [gdx.graphics :as g]
             [gdx.ui :as ui]
             [gdx.ui.actor :as a]

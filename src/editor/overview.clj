@@ -1,7 +1,7 @@
 (ns editor.overview
-  (:require [component.db :as db]
-            [component.info :as info]
-            [component.property :as property]
+  (:require [moon.db :as db]
+            [moon.info :as info]
+            [moon.property :as property]
             [gdx.ui :as ui]
             [gdx.ui.actor :as a]))
 
