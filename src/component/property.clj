@@ -21,7 +21,7 @@
 (defn types []
   (filter #(= "properties" (namespace %)) (keys component/meta)))
 
-(defn m-schema [property]
+(defn- m-schema [property]
   (-> property type schema/form-of))
 
 (defn- invalid-ex-info [m-schema value]
