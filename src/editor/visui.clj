@@ -61,7 +61,7 @@
     (stage-add! (props->editor-window prop-value))))
 
 (defn property-editor-window [id]
-  (props->editor-window (safe-get db/db id)))
+  (props->editor-window (db/get-raw id)))
 
 (defn- k->default-value [k]
   (let [schema (schema/of k)]

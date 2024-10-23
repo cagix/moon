@@ -22,7 +22,7 @@
 
  )
 
-(declare db
+(declare ^:private db
          ^:private edn-file)
 
 (defn load! [file]
@@ -59,6 +59,13 @@
        (map recur-sort-map)
        doall
        async-pprint-spit!))
+
+(defn get-raw [id]
+  (safe-get db id))
+
+(defn all-raw [type]
+  (->> (vals db)
+       (filter #(= type (property/type %)))))
 
 (def ^:private undefined-data-ks (atom #{}))
 
@@ -97,11 +104,7 @@
                       (throw (ex-info " " {:k k :v v} t)))))))
 
 (defn get [id]
-  (build (safe-get db id)))
-
-(defn all-raw [type]
-  (->> (vals db)
-       (filter #(= type (property/type %)))))
+  (build (get-raw id)))
 
 (defn all [type]
   (map build (all-raw type)))

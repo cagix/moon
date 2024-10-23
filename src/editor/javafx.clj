@@ -79,7 +79,7 @@
     grid))
 
 (defn- property-editor-window [property-id]
-  (let [props (safe-get db/db property-id)
+  (let [props (db/get-raw property-id)
         schema (schema/of (property/type props))
         widget (schema->widget schema props)]
     (doto (Stage.)
