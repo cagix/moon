@@ -7,16 +7,12 @@
             [moon.db :as db]
             [moon.graphics :as graphics]
             [moon.screen :as screen]
-            (moon.screens [editor :as property-editor]
-                          [main :as main-menu]
-                          [map-editor :as map-editor]
-                          [world :as world-screen])
             moon.components))
 
 (def ^:private config (-> "app.edn" io/resource slurp edn/read-string))
 
 (defn- background-image []
-  (ui/image->widget (g/image (:background-image config))
+  (ui/image->widget (graphics/image (:background-image config))
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))
@@ -27,10 +23,8 @@
       (assets/load (:assets config))
       (graphics/load! (:graphics config))
       (ui/load! (:ui config))
-      (screen/set-screens! [(main-menu/create background-image)
-                            (map-editor/create)
-                            (property-editor/screen background-image)
-                            (world-screen/create)]))
+      (screen/set-screens! (:screens config)
+                           background-image))
 
     (dispose [_]
       (assets/dispose)
@@ -42,7 +36,7 @@
       (screen/render! (screen/current)))
 
     (resize [_ dimensions]
-      (g/resize! dimensions))))
+      (graphics/resize! dimensions))))
 
 (defn -main []
   (db/load! (:properties config))

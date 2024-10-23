@@ -22,4 +22,8 @@
             moon.effect.damage
             moon.effect.entity
             moon.effect.target
+            moon.screens.main
+            moon.screens.map-editor
+            moon.screens.editor
+            moon.screens.world
             moon.widgets.player-modal))

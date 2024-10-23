@@ -1,4 +1,7 @@
-(ns moon.screen)
+(ns moon.screen
+  (:require [moon.component :refer [defsystem]]))
+
+(defsystem create)
 
 (defprotocol Screen
   (enter!   [_])
@@ -24,11 +27,12 @@
     (enter! screen)))
 
 (defn set-screens!
-  "Screens is a vector of vectors: `[screen-keyword screen]`.
-  Calls `change!` to first "
-  [screens]
-  {:pre [(vector? screens)]}
-  (.bindRoot #'screens (into {} screens))
+  "Calls `change!` to first "
+  [screen-ks params]
+  {:pre [(vector? screen-ks)]}
+  (.bindRoot #'screens (into {}
+                             (for [k screen-ks]
+                               [k (create [k params])])))
   (change! (ffirst screens)))
 
 (defn dispose-all! []

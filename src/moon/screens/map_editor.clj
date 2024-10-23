@@ -1,17 +1,18 @@
 (ns ^:no-doc moon.screens.map-editor
-  (:require [gdl.graphics.camera :as cam]
+  (:require [clojure.string :as str]
+            [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
-            [gdl.utils :refer [dispose]]
-            [clojure.string :as str]
-            [moon.db :as db]
-            [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
+            [gdl.utils :refer [dispose]]
+            [gdl.tiled :as t]
+            [moon.component :refer [defc]]
+            [moon.db :as db]
+            [moon.graphics :as g]
             [moon.ui.error-window :refer [error-window!]]
             [moon.ui.stage-screen :as stage-screen]
             [moon.screen :as screen]
-            [gdl.tiled :as t]
             [moon.level.generate :refer [generate-level]]
             [moon.level.modules :refer [module-width module-height]]
             [moon.level.tiled :refer [movement-properties movement-property]]))
@@ -157,10 +158,10 @@ direction keys: move")
   (dispose! [_]
     (dispose (:tiled-map @current-data))))
 
-(defn create []
-  [:screens/map-editor
-   (stage-screen/create :actors [(->generate-map-window world-id)
-                                 (->info-window)]
-                        :screen (->MapEditorScreen (atom {:tiled-map (t/load-map moon.level.generate/modules-file)
-                                                          :show-movement-properties false
-                                                          :show-grid-lines false})))])
+(defc :screens/map-editor
+  (screen/create [_]
+    (stage-screen/create :actors [(->generate-map-window world-id)
+                                  (->info-window)]
+                         :screen (->MapEditorScreen (atom {:tiled-map (t/load-map moon.level.generate/modules-file)
+                                                           :show-movement-properties false
+                                                           :show-grid-lines false})))))

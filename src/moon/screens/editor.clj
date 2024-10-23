@@ -1,9 +1,10 @@
 (ns ^:no-doc moon.screens.editor
   (:require [gdl.input :refer [key-just-pressed?]]
+            [gdl.ui :as ui]
+            [moon.component :refer [defc]]
             [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.visui :as editor]
-            [gdl.ui :as ui]
             [moon.ui.stage-screen :as stage-screen :refer [stage-add!]]
             [moon.screen :as screen])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
@@ -39,11 +40,11 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn screen [background-image]
-  [:screens/property-editor
-   (stage-screen/create :actors
-                        [(background-image)
-                         (main-table)
-                         (ui/actor {:act (fn []
-                                           (when (key-just-pressed? :shift-left)
-                                             (screen/change! :screens/main-menu)))})])])
+(defc :screens/editor
+  (screen/create [[_ background-image]]
+    (stage-screen/create :actors
+                         [(background-image)
+                          (main-table)
+                          (ui/actor {:act (fn []
+                                            (when (key-just-pressed? :shift-left)
+                                              (screen/change! :screens/main-menu)))})])))

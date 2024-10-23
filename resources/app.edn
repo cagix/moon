@@ -28,4 +28,8 @@
                                  :world-height 900
                                  :tile-size 48}}}
  :properties "properties.edn"
+ :screens [:screens/main-menu
+           :screens/map-editor
+           :screens/editor
+           :screens/world]
  :ui :skin-scale/x1}

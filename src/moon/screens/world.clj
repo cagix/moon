@@ -2,15 +2,16 @@
   (:require [gdl.graphics :refer [clear-screen frames-per-second]]
             [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
-            [moon.db :as db]
-            [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.screen :as screen]
             [gdl.ui.stage :as stage]
+            [gdl.utils :refer [dev-mode?]]
+            [moon.component :refer [defc]]
+            [moon.db :as db]
+            [moon.graphics :as g]
+            [moon.screen :as screen]
             [moon.ui.stage-screen :as stage-screen :refer [stage-get]]
             [moon.level.generate :as level]
-            [gdl.utils :refer [dev-mode?]]
             [moon.creature :as creature]
             moon.creature.player.item-on-cursor
             [moon.widgets.action-bar :as action-bar]
@@ -69,8 +70,9 @@
   (screen/dispose! [_]
     (world/clear-tiled-map)))
 
-(defn create []
-  [:screens/world (stage-screen/create :screen (->WorldScreen))])
+(defc :screens/world
+  (screen/create [_]
+    (stage-screen/create :screen (->WorldScreen))))
 
 (declare world-actors)
 
