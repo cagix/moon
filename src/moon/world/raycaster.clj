@@ -1,5 +1,5 @@
 (ns moon.world.raycaster
-  (:require [moon.math.vector :as v]
+  (:require [gdl.math.vector :as v]
             [data.grid2d :as g2d])
   (:import (gdl RayCaster)))
 

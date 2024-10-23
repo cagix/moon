@@ -1,6 +1,6 @@
 (ns moon.level.caves
   (:require [data.grid2d :as g]
-            [moon.rand :refer [sshuffle srand srand-int]]
+            [gdl.rand :refer [sshuffle srand srand-int]]
             [moon.utils :refer [assoc-ks]]))
 
 ;Cave Algorithmus.

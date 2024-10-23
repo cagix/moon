@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defsystem defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]
-            [moon.math.vector :as v]
+            [gdl.math.vector :as v]
             [moon.world :as world :refer [mouseover-eid]]
             [moon.entity :as entity]))
 

@@ -1,7 +1,7 @@
 (ns moon.creature.player.idle
   (:require [gdl.input :refer [button-just-pressed?]]
             [moon.component :refer [defc]]
-            [moon.math.vector :as v]
+            [gdl.math.vector :as v]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
             [moon.ui.stage-screen :refer [mouse-on-actor?]]

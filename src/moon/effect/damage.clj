@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [moon.tx :as tx]
-            [moon.rand :refer [rand-int-between]]
+            [gdl.rand :refer [rand-int-between]]
             [moon.entity.modifiers :refer [modified-value entity-stat]]
             [moon.effect :as effect :refer [source target]]))
 

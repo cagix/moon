@@ -11,7 +11,7 @@
             [moon.ui.error-window :refer [error-window!]]
             [moon.ui.stage-screen :as stage-screen]
             [moon.screen :as screen]
-            [moon.tiled :as t]
+            [gdl.tiled :as t]
             [moon.level.generate :refer [generate-level]]
             [moon.level.modules :refer [module-width module-height]]
             [moon.level.tiled :refer [movement-properties movement-property]]))

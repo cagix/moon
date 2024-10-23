@@ -1,7 +1,7 @@
 (ns moon.creature.player.moving
   (:require [gdl.input :refer [key-pressed?]]
             [moon.component :refer [defc]]
-            [moon.math.vector :as v]
+            [gdl.math.vector :as v]
             [moon.entity :as entity]
             [moon.entity.state :as state]
             [moon.entity.modifiers :refer [entity-stat]]))

@@ -1,4 +1,4 @@
-(ns moon.math.shape
+(ns gdl.math.shape
   (:refer-clojure :exclude [contains?])
   (:import (com.badlogic.gdx.math Circle Rectangle Intersector)))
 

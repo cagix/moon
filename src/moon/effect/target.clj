@@ -3,7 +3,7 @@
             [moon.info :as info]
             [moon.tx :as tx]
             [moon.graphics :as g]
-            [moon.math.vector :as v]
+            [gdl.math.vector :as v]
             [moon.world :as world]
             [moon.entity :as entity]
             [moon.effect :as effect :refer [source target]]))

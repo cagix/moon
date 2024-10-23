@@ -3,7 +3,7 @@
             [moon.info :as info]
             [moon.property :as property]
             [moon.tx :as tx]
-            [moon.math.vector :as v]
+            [gdl.math.vector :as v]
             [moon.utils :refer [find-first]]
             [moon.world :as w]
             [moon.entity :as entity]

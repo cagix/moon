@@ -2,8 +2,8 @@
   (:require [data.grid2d :as g2d]
             [moon.db :as db]
             [moon.graphics :as g]
-            [moon.tiled :as t]
-            [moon.rand :refer [get-rand-weighted-item]]
+            [gdl.tiled :as t]
+            [gdl.rand :refer [get-rand-weighted-item]]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scalegrid printgrid transition-idx-value cave-grid adjacent-wall-positions flood-fill]]
             [moon.level.tiled :refer [movement-property wgt-grid->tiled-map]]))

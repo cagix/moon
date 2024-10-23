@@ -1,5 +1,5 @@
 (ns moon.level.modules
-  (:require [moon.tiled :as t]
+  (:require [gdl.tiled :as t]
             [moon.level.grid :refer [transition-idx-value]]
             [moon.level.tiled :refer [grid->tiled-map]]))
 

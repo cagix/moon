@@ -7,7 +7,7 @@
             [moon.property :as property]
             [moon.tx :as tx]
             [moon.graphics :as g]
-            [moon.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [moon.utils :refer [safe-merge tile->middle]]
             [moon.world :as world]
             [moon.creature.fsms :as fsms]

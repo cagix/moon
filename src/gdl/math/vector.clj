@@ -1,4 +1,4 @@
-(ns moon.math.vector
+(ns gdl.math.vector
   (:import (com.badlogic.gdx.math MathUtils Vector2)))
 
 (defn- ^Vector2 ->v [[x y]]

@@ -2,7 +2,7 @@
   (:require [gdl.input :refer [button-just-pressed?]]
             [moon.component :refer [defc]]
             [moon.graphics :as g]
-            [moon.math.vector :as v]
+            [gdl.math.vector :as v]
             [moon.ui.stage-screen :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
             [moon.widgets.inventory :refer [clicked-inventory-cell]]

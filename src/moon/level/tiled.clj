@@ -1,6 +1,6 @@
 (ns moon.level.tiled
   (:require [data.grid2d :as g]
-            [moon.tiled :as t]))
+            [gdl.tiled :as t]))
 
 ; TODO performance bottleneck -> every time getting same layers
 ; takes 600 ms to read movement-properties

@@ -1,4 +1,4 @@
-(ns moon.tiled
+(ns gdl.tiled
   (:import com.badlogic.gdx.graphics.g2d.TextureRegion
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
