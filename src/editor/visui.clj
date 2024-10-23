@@ -4,6 +4,7 @@
             [component.info :as info]
             [component.property :as property]
             [component.schema :as schema]
+            [editor.common :refer [component-order]]
             [editor.malli :as malli]
             [editor.utils :refer [scroll-pane-cell]]
             [editor.widget :as widget]
@@ -14,8 +15,7 @@
             [gdx.ui.error-window :refer [error-window!]]
             [gdx.ui.stage-screen :refer [stage-add!]]
             [malli.core :as m]
-            [malli.generator :as mg]
-            [utils.core :refer [safe-get index-of]]))
+            [malli.generator :as mg]))
 
 ; We are working with raw property data without edn->value and db/build
 ; otherwise at db/update! we would have to convert again from edn->value back to edn
@@ -75,28 +75,6 @@
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
      :else (mg/generate (schema/form schema) {:size 3}))))
-
-(def ^:private property-k-sort-order
-  [:property/id
-   :property/pretty-name
-   :app/lwjgl3
-   :entity/image
-   :entity/animation
-   :creature/species
-   :creature/level
-   :entity/body
-   :item/slot
-   :projectile/speed
-   :projectile/max-range
-   :projectile/piercing?
-   :skill/action-time-modifier-key
-   :skill/action-time
-   :skill/start-action-sound
-   :skill/cost
-   :skill/cooldown])
-
-(defn component-order [[k _v]]
-  (or (index-of k property-k-sort-order) 99))
 
 (defn- value-widget [[k v]]
   (let [widget (widget/create (schema/of k) v)]

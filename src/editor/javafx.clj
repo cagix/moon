@@ -1,19 +1,19 @@
 (ns ^:no-doc editor.javafx
-  (:require [clojure.java.io :as io]
-            [component.db :as db]
+  (:require [component.db :as db]
             [component.schema :as schema]
             [component.property :as property]
             [dev.javafx :as fx]
-            [editor.visui]
-            [editor.widget]
+            [editor.common :refer [component-order widget-type]]
             [utils.core :refer [->edn-str safe-get]])
-  (:import (javafx.event EventHandler)
-           (javafx.scene.control Button CheckBox ComboBox TreeItem TreeView)
+  (:import (javafx.collections FXCollections)
+           (javafx.geometry Insets Rectangle2D)
+           (javafx.event EventHandler)
+           (javafx.scene.control Button CheckBox ComboBox Label TextField Tab TabPane TabPane$TabClosingPolicy)
            (javafx.scene.image Image ImageView)
-           (javafx.scene.layout StackPane)
+           (javafx.scene.layout StackPane VBox FlowPane GridPane)
            (javafx.scene Scene Node)
-           (javafx.collections FXCollections))
-  #_(:gen-class :extends javafx.application.Application))
+           (javafx.stage Stage))
+  (:gen-class :extends javafx.application.Application))
 
 (comment
  ; * remove comment at :gen-class
@@ -28,27 +28,7 @@
 (defn -start [app stage]
   (def stage stage))
 
-(defmulti schema->widget editor.widget/widget-type)
-
-(import javafx.scene.control.TabPane
-        javafx.scene.control.TabPane$TabClosingPolicy
-        javafx.scene.control.Tab
-        javafx.scene.control.Label
-        javafx.scene.control.TextField
-        javafx.scene.layout.VBox)
-
-(import javafx.geometry.Insets)
-(import javafx.scene.image.ImageView)
-(import javafx.scene.image.Image)
-(import javafx.scene.layout.FlowPane)
-(import javafx.scene.layout.GridPane)
-
-(import javafx.geometry.Rectangle2D)
-
-; TODO
-; https://docs.oracle.com/javafx/2/get_started/form.htm
-; * new window w. form label, widget, Save, Cancel button
-(import javafx.stage.Stage)
+(defmulti schema->widget widget-type)
 
 (defmethod schema->widget :default [_ v]
   (TextField. (->edn-str v)))
@@ -72,7 +52,7 @@
                (.setVgap 10)
                (.setHgap 10))
         rows (atom -1)]
-    (doseq [[k v] (sort-by editor.visui/component-order m)
+    (doseq [[k v] (sort-by component-order m)
             :let [row (swap! rows inc)]]
       (.add grid (Label. (str k))                 0 row)
       (.add grid (schema->widget (schema/of k) v) 1 row))
@@ -86,9 +66,6 @@
       (.setTitle (name property-id))
       (.setScene (Scene. widget 450 450))
       .show)))
-
-(require '[component.property :as property])
-(require '[component.db :as db])
 
 (def ->image (memoize (fn [file] (Image. file))))
 
