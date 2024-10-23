@@ -4,53 +4,14 @@
             [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.info :as info]
-            [moon.property :as property]
             [moon.tx :as tx]
             [moon.graphics :as g]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [safe-merge tile->middle]]
             [moon.world :as world]
             [moon.creature.fsms :as fsms]
-            moon.creature.active
-            moon.creature.stunned
-            moon.creature.npc.dead
-            moon.creature.npc.idle
-            moon.creature.npc.moving
-            moon.creature.npc.sleeping
-            moon.creature.player.dead
-            moon.creature.player.idle
-            moon.creature.player.item-on-cursor
-            moon.creature.player.moving
             [moon.entity :as entity]
-            moon.entity.stats
             [moon.effect :as effect]))
-
-(property/def :properties/creatures
-  {:schema [:entity/body
-            :property/pretty-name
-            :creature/species
-            :creature/level
-            :entity/animation
-            :stats/hp
-            :stats/movement-speed
-            :stats/aggro-range
-            :stats/reaction-time
-            [:stats/mana          {:optional true}]
-            [:stats/strength      {:optional true}]
-            [:stats/cast-speed    {:optional true}]
-            [:stats/attack-speed  {:optional true}]
-            [:stats/armor-save    {:optional true}]
-            [:stats/armor-pierce  {:optional true}]
-            :entity/skills
-            [:entity/modifiers {:optional true}]
-            [:entity/inventory {:optional true}]]
-   :overview {:title "Creatures"
-              :columns 15
-              :image/scale 1.5
-              :sort-by-fn #(vector (:creature/level %)
-                                   (name (:creature/species %))
-                                   (name (:property/id %)))
-              :extra-info-text #(str (:creature/level %))}})
 
 (color/put "ITEM_GOLD" [0.84 0.8 0.52])
 

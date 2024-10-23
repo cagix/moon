@@ -4,8 +4,9 @@
             [gdl.assets :refer [manager]]
             [gdl.ui :as ui]
             [gdl.utils :refer [dispose recursively-search]]
-            [moon.db :as db]
             [moon.assets :as assets]
+            moon.components
+            [moon.db :as db]
             [moon.graphics :as g]
             [moon.screen :as screen]
             (moon.screens [editor :as property-editor]

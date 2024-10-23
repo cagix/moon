@@ -18,20 +18,7 @@
             [moon.widgets.hp-mana :as hp-mana-bars]
             [moon.widgets.inventory :as inventory]
             [moon.widgets.player-message :as player-message]
-            moon.widgets.player-modal
-            [moon.world :as world]
-            moon.audiovisual
-            moon.projectile
-            moon.entity.animation
-            moon.entity.delete-after-duration
-            moon.entity.image
-            moon.entity.line
-            moon.entity.movement
-            moon.entity.player
-            moon.entity.string-effect
-            moon.effect.damage
-            moon.effect.entity
-            moon.effect.target))
+            [moon.world :as world]))
 
 (defn- check-window-hotkeys []
   (doseq [[hotkey window-id] {:keys/i :inventory-window
