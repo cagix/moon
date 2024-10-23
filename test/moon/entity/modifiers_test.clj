@@ -1,9 +1,9 @@
-(ns world.entity.modifiers-test
+(ns moon.entity.modifiers-test
   (:require [clojure.test :refer :all]
             [moon.tx :as tx]
             moon.val-max ; load val-max ops
-            [world.entity.modifiers :refer [modified-value]]
-            world.entity)) ; load :e/update
+            [moon.entity.modifiers :refer [modified-value]]
+            moon.entity)) ; load :e/update
 
 (deftest apply-modifiers
   (let [eid (atom {:entity/modifiers {:modifier/movement-speed {:op/mult [0.1]}}})]
