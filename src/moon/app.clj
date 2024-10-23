@@ -1,5 +1,6 @@
 (ns moon.app
   (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.ui :as ui]
             [moon.assets :as assets]
@@ -12,11 +13,7 @@
                           [map-editor :as map-editor]
                           [world :as world-screen])))
 
-(def ^:private config
-  (-> "app.edn"
-      clojure.java.io/resource ; same 3 steps as moon.db ...
-      slurp
-      edn/read-string))
+(def ^:private config (-> "app.edn" io/resource slurp edn/read-string))
 
 (defn- background-image []
   (ui/image->widget (g/image (:background-image config))
