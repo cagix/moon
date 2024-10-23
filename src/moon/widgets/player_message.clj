@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.widgets.player-message
   (:require [gdl.graphics :as gdx.graphics]
-            [moon.component :refer [defc]]
+            [moon.component :refer [defc] :as component]
             [moon.tx :as tx]
             [moon.graphics :as g]
             [gdl.ui :as ui]))
@@ -23,9 +23,10 @@
     (when (>= counter duration-seconds)
       (.bindRoot #'message-to-player nil))))
 
-(defn create []
-  (ui/actor {:draw draw-player-message
-             :act check-remove-message}))
+(defc :widgets/player-message
+  (component/create [_]
+    (ui/actor {:draw draw-player-message
+               :act check-remove-message})))
 
 (defc :tx/msg-to-player
   (tx/handle [[_ message]]

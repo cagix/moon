@@ -9,7 +9,6 @@
             [moon.editor.malli :as malli]
             [moon.editor.utils :refer [scroll-pane-cell]]
             [moon.editor.widget :as widget]
-            moon.editor.widgets
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.ui.error-window :refer [error-window!]]

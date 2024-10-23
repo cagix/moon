@@ -1,10 +1,11 @@
 (ns ^:no-doc moon.widgets.hp-mana
   (:require [gdl.utils :refer [readable-number]]
-            [moon.val-max :as val-max]
-            [moon.graphics :as g]
             [gdl.ui :as ui]
-            [moon.world :as world]
-            [moon.entity.modifiers :refer [entity-stat]]))
+            [moon.component :as component :refer [defc]]
+            [moon.entity.modifiers :refer [entity-stat]]
+            [moon.graphics :as g]
+            [moon.val-max :as val-max]
+            [moon.world :as world]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (g/draw-text {:text infostr
@@ -12,21 +13,22 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn create []
-  (let [rahmen      (g/image "images/rahmen.png")
-        hpcontent   (g/image "images/hp.png")
-        manacontent (g/image "images/mana.png")
-        x (/ (g/gui-viewport-width) 2)
-        [rahmenw rahmenh] (:pixel-dimensions rahmen)
-        y-mana 80 ; action-bar-icon-size
-        y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [x y contentimg minmaxval name]
-                            (g/draw-image rahmen [x y])
-                            (g/draw-image (g/sub-image contentimg [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
-                                          [x y])
-                            (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui/actor {:draw (fn []
-                       (let [player-entity @world/player
-                             x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (entity-stat player-entity :stats/hp) "HP")
-                         (render-hpmana-bar x y-mana manacontent (entity-stat player-entity :stats/mana) "MP")))})))
+(defc :widgets/hp-mana
+  (component/create [_]
+    (let [rahmen      (g/image "images/rahmen.png")
+          hpcontent   (g/image "images/hp.png")
+          manacontent (g/image "images/mana.png")
+          x (/ (g/gui-viewport-width) 2)
+          [rahmenw rahmenh] (:pixel-dimensions rahmen)
+          y-mana 80 ; action-bar-icon-size
+          y-hp (+ y-mana rahmenh)
+          render-hpmana-bar (fn [x y contentimg minmaxval name]
+                              (g/draw-image rahmen [x y])
+                              (g/draw-image (g/sub-image contentimg [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                                            [x y])
+                              (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+      (ui/actor {:draw (fn []
+                         (let [player-entity @world/player
+                               x (- x (/ rahmenw 2))]
+                           (render-hpmana-bar x y-hp   hpcontent   (entity-stat player-entity :stats/hp) "HP")
+                           (render-hpmana-bar x y-mana manacontent (entity-stat player-entity :stats/mana) "MP")))}))))

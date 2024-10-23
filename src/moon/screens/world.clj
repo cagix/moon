@@ -14,11 +14,7 @@
             [moon.level.generate :as level]
             [moon.creature :as creature]
             moon.creature.player.item-on-cursor
-            [moon.widgets.action-bar :as action-bar]
-            [moon.widgets.entity-info-window :as entity-info-window]
-            [moon.widgets.hp-mana :as hp-mana-bars]
             [moon.widgets.inventory :as inventory]
-            [moon.widgets.player-message :as player-message]
             [moon.world :as world]))
 
 (defn- check-window-hotkeys []
@@ -78,21 +74,21 @@
   [(if dev-mode?
      (component/create [:widgets/dev-menu nil])
      (ui/actor {}))
-   (ui/table {:rows [[{:actor (action-bar/create)
+   (ui/table {:rows [[{:actor (component/create [:widgets/action-bar nil])
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table
               :cell-defaults {:pad 2}
               :fill-parent? true})
-   (hp-mana-bars/create)
+   (component/create [:widgets/hp-mana nil])
    (ui/group {:id :windows
-              :actors [(entity-info-window/create)
+              :actors [(component/create [:widgets/entity-info-window nil])
                        (inventory/create)]})
    (ui/actor {:draw moon.creature.player.item-on-cursor/draw-item-on-cursor})
-   (player-message/create)])
+   (component/create [:widgets/player-message nil])])
 
 (defn- reset-stage! []
-  (let [stage (stage-get)] ; these fns to stage itself
+  (let [stage (stage-get)]
     (stage/clear! stage)
     (run! #(stage/add! stage %) (world-actors))))
 

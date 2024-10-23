@@ -1,5 +1,5 @@
 (ns moon.widgets.action-bar
-  (:require [moon.component :refer [defc defsystem]]
+  (:require [moon.component :refer [defc defsystem] :as component]
             [moon.info :as info]
             [moon.tx :as tx]
             [gdl.ui :as ui]
@@ -17,11 +17,12 @@
 (defn- group->button-group [group]
   (.getUserObject (.findActor group "action-bar/button-group")))
 
-(defn create []
-  (let [group (ui/horizontal-group {:pad 2 :space 2})]
-    (a/set-id! group ::action-bar)
-    (ui/add-actor! group (action-bar-button-group))
-    group))
+(defc :widgets/action-bar
+  (component/create [_]
+    (let [group (ui/horizontal-group {:pad 2 :space 2})]
+      (a/set-id! group ::action-bar)
+      (ui/add-actor! group (action-bar-button-group))
+      group)))
 
 (defn- get-action-bar []
   (let [group (::action-bar (:action-bar-table (stage-get)))]

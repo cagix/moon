@@ -12,6 +12,7 @@
             moon.properties.creatures
             moon.audiovisual
             moon.projectile
+            moon.editor.widgets
             moon.entity.animation
             moon.entity.delete-after-duration
             moon.entity.image
@@ -27,5 +28,8 @@
             moon.screens.editor
             moon.screens.world
             moon.widgets.dev-menu
+            moon.widgets.entity-info-window
+            moon.widgets.hp-mana
+            moon.widgets.player-message
             moon.widgets.player-modal
             ))
