@@ -1,5 +1,6 @@
 (ns moon.app
-  (:require [gdl.app :as app]
+  (:require [clojure.edn :as edn]
+            [gdl.app :as app]
             [gdl.ui :as ui]
             [moon.assets :as assets]
             moon.components
@@ -11,35 +12,14 @@
                           [map-editor :as map-editor]
                           [world :as world-screen])))
 
-(def ^:private cursors
-  {:cursors/bag                   ["bag001"       [0   0]]
-   :cursors/black-x               ["black_x"      [0   0]]
-   :cursors/default               ["default"      [0   0]]
-   :cursors/denied                ["denied"       [16 16]]
-   :cursors/hand-before-grab      ["hand004"      [4  16]]
-   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-   :cursors/hand-grab             ["hand003"      [4  16]]
-   :cursors/move-window           ["move002"      [16 16]]
-   :cursors/no-skill-selected     ["denied003"    [0   0]]
-   :cursors/over-button           ["hand002"      [0   0]]
-   :cursors/sandclock             ["sandclock"    [16 16]]
-   :cursors/skill-not-usable      ["x007"         [0   0]]
-   :cursors/use-skill             ["pointer004"   [0   0]]
-   :cursors/walking               ["walking"      [16 16]]})
-
-(def ^:private graphics
-  {:cursors cursors
-   :default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                  :size 16
-                  :quality-scaling 2}
-   :views {:gui-view {:world-width 1440
-                      :world-height 900}
-           :world-view {:world-width 1440
-                        :world-height 900
-                        :tile-size 48}}})
+(def ^:private config
+  (-> "app.edn"
+      clojure.java.io/resource ; same 3 steps as moon.db ...
+      slurp
+      edn/read-string))
 
 (defn- background-image []
-  (ui/image->widget (g/image "images/moon_background.png")
+  (ui/image->widget (g/image (:background-image config))
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))
@@ -47,14 +27,13 @@
 (defn- app-listener []
   (reify app/Listener
     (create [_]
-      (assets/load "resources/")
-      (g/load! graphics)
-      (ui/load! :skin-scale/x1)
+      (assets/load (:assets config))
+      (g/load! (:graphics config))
+      (ui/load! (:ui config))
       (screen/set-screens! [(main-menu/create background-image)
                             (map-editor/create)
                             (property-editor/screen background-image)
-                            (world-screen/create)])
-      ((world-screen/start-game-fn :worlds/vampire)))
+                            (world-screen/create)]))
 
     (dispose [_]
       (assets/dispose)
@@ -69,11 +48,6 @@
       (g/resize! dimensions))))
 
 (defn -main []
-  (db/load! "properties.edn")
-  (when app/mac?
-    (app/set-dock-icon "moon.png"))
-  (app/start {:title "Moon"
-              :fps 60
-              :width 1440
-              :height 900}
+  (db/load! (:properties config))
+  (app/start (:app config)
              (app-listener)))
