@@ -25,11 +25,6 @@
             moon.entity.stats
             [moon.effect :as effect]))
 
-(defc :entity/player?
-  (entity/create [_ eid]
-    (.bindRoot #'world/player eid)
-    nil))
-
 (property/def :properties/creatures
   {:schema [:entity/body
             :property/pretty-name

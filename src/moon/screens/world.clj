@@ -27,6 +27,7 @@
             moon.entity.image
             moon.entity.line
             moon.entity.movement
+            moon.entity.player
             moon.entity.string-effect
             moon.effect.damage
             moon.effect.entity
