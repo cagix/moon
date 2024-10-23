@@ -1,6 +1,18 @@
-(ns moon.input
-  (:require [moon.utils :refer [gdx-field]])
-  (:import (com.badlogic.gdx Gdx)))
+(ns clojure.gdx
+  (:require [clojure.string :as str])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.utils Disposable)))
+
+(defn exit-app []
+  (.exit Gdx/app))
+
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
+(def dispose Disposable/.dispose)
+
+(defn gdx-field [klass-str k]
+  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
 
 (def ^:private gdx-input-button (partial gdx-field "Input$Buttons"))
 (def ^:private gdx-input-key    (partial gdx-field "Input$Keys"))
@@ -23,5 +35,5 @@
   [k]
   (.isKeyPressed Gdx/input (gdx-input-key k)))
 
-(defn set-processor! [processor]
+(defn set-input-processor [processor]
   (.setInputProcessor Gdx/input processor))

@@ -1,16 +1,15 @@
 (ns moon.screens.map-editor
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx :refer [dispose key-pressed? key-just-pressed?]]
+            [clojure.string :as str]
             [moon.db :as db]
             [moon.graphics :as g :refer [white]]
             [moon.graphics.camera :as cam]
-            [moon.input :refer [key-pressed? key-just-pressed?]]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
             [moon.ui.error-window :refer [error-window!]]
             [moon.ui.stage-screen :as stage-screen]
             [moon.screen :as screen]
             [moon.tiled :as t]
-            [moon.utils :refer [dispose!]]
             [moon.level.generate :refer [generate-level]]
             [moon.level.modules :refer [module-width module-height]]
             [moon.level.tiled :refer [movement-properties movement-property]]))
@@ -116,7 +115,7 @@ direction keys: move")
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (generate-level world-id)
         atom-data (current-data)]
-    (dispose! (:tiled-map @atom-data))
+    (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
@@ -154,7 +153,7 @@ direction keys: move")
       (screen/change! :screens/main-menu)))
 
   (dispose! [_]
-    (dispose! (:tiled-map @current-data))))
+    (dispose (:tiled-map @current-data))))
 
 (defn create []
   [:screens/map-editor

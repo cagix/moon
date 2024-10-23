@@ -7,7 +7,7 @@
 (defn ->texture-region
   ([path-or-texture]
    (let [^Texture tex (if (string? path-or-texture)
-                        (assets/get path-or-texture)
+                        (get assets/manager path-or-texture)
                         path-or-texture)]
      (TextureRegion. tex)))
 

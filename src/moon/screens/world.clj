@@ -1,8 +1,8 @@
 (ns moon.screens.world
-  (:require [moon.db :as db]
+  (:require [clojure.gdx :refer [key-pressed? key-just-pressed?]]
+            [moon.db :as db]
             [moon.graphics :as g]
             [moon.graphics.camera :as cam]
-            [moon.input :refer [key-pressed? key-just-pressed?]]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
             [moon.screen :as screen]
@@ -77,7 +77,7 @@
     (check-key-input))
 
   (screen/dispose! [_]
-    (world/dispose)))
+    (world/clear-tiled-map)))
 
 (defn create []
   [:screens/world (stage-screen/create :screen (->WorldScreen))])

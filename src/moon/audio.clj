@@ -6,7 +6,7 @@
   (:import (com.badlogic.gdx.audio Sound)))
 
 (defn play-sound! [path]
-  (Sound/.play (assets/get path)))
+  (Sound/.play (get assets/manager path)))
 
 (defmethod schema/form :s/sound [_] :string)
 

@@ -1,6 +1,6 @@
 (ns moon.creature.player.moving
-  (:require [moon.component :refer [defc]]
-            [moon.input :refer [key-pressed?]]
+  (:require [clojure.gdx :refer [key-pressed?]]
+            [moon.component :refer [defc]]
             [moon.math.vector :as v]
             [moon.entity :as entity]
             [moon.entity.state :as state]

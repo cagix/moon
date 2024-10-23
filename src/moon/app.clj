@@ -1,5 +1,7 @@
 (ns moon.app
-  (:require [clojure.java.io :as io]
+  (:require [clojure.gdx :refer [dispose]]
+            [clojure.gdx.assets :as gdx.assets]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [moon.db :as db]
             [moon.assets :as assets]
@@ -77,7 +79,7 @@
 (defn- application-listener []
   (proxy [ApplicationAdapter] []
     (create []
-      (assets/load (search-assets "resources/"))
+      (.bindRoot #'assets/manager (gdx.assets/manager (search-assets "resources/")))
       (g/load! graphics)
       (ui/load! :skin-scale/x1)
       (screen/set-screens! [(main-menu/create background-image)
@@ -87,7 +89,7 @@
       ((world-screen/start-game-fn :worlds/vampire)))
 
     (dispose []
-      (assets/dispose)
+      (dispose assets/manager)
       (g/dispose!)
       (ui/dispose!)
       (screen/dispose-all!))

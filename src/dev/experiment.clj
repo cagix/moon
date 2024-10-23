@@ -1,9 +1,9 @@
 (ns dev.experiment
-  (:require [moon.component :as component]
+  (:require [clojure.gdx :refer [post-runnable]]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.tx :as tx]
-            [moon.world :as world])
-  (:import (com.badlogic.gdx Gdx)))
+            [moon.world :as world]))
 
 (comment
 
@@ -64,11 +64,8 @@
                                        :entity/faction :evil} }])
  )
 
-(defmacro post-runnable! [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
 (defn- post-tx! [tx]
-  (post-runnable! (tx/do! [tx])))
+  (post-runnable (tx/do! [tx])))
 
 (defn- learn-skill! [skill-id] (post-tx! (fn [] [[:tx/add-skill world/player (db/get skill-id)]])))
 (defn- create-item! [item-id]  (post-tx! (fn [] [[:tx/item       (:position @world/player) (db/get item-id)]])))

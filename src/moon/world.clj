@@ -1,17 +1,17 @@
 (ns moon.world
-  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
+  (:require [clojure.gdx :refer [dispose key-pressed? key-just-pressed?]]
+            [clj-commons.pretty.repl :refer [pretty-pst]]
             [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.tx :as tx]
             [data.grid2d :as g2d]
             [moon.graphics :as g :refer [white black]]
             [moon.graphics.camera :as cam]
-            [moon.input :refer [key-pressed? key-just-pressed?]]
             [moon.ui.error-window :refer [error-window!]]
             [moon.ui.stage-screen :as stage-screen]
             [moon.math.shape :as shape]
             [moon.tiled :as t]
-            [moon.utils :refer [dispose! ->tile tile->middle safe-merge sort-by-order]]
+            [moon.utils :refer [->tile tile->middle safe-merge sort-by-order]]
             [moon.world.content-grid :as content-grid]
             [moon.world.raycaster :as raycaster]
             [moon.entity :as entity]
@@ -128,6 +128,3 @@
               nil)
            ; do not pause this as for example pickup item, should be destroyed.
            remove-destroyed-entities!]))
-
-(defn dispose []
-  (clear-tiled-map))

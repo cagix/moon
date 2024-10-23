@@ -1,16 +1,12 @@
 (ns moon.screens.main
-  (:require [moon.screens.world :as world]
+  (:require [clojure.gdx :refer [exit-app key-just-pressed?]]
+            [moon.screens.world :as world]
             [moon.db :as db]
             [moon.graphics :as g]
-            [moon.input :refer [key-just-pressed?]]
             [moon.screen :as screen]
             [moon.ui :as ui]
             [moon.ui.stage-screen :as stage-screen]
-            [moon.utils :refer [dev-mode?]])
-  (:import (com.badlogic.gdx Gdx)))
-
-(defn- exit! []
-  (.exit Gdx/app))
+            [moon.utils :refer [dev-mode?]]))
 
 (defn- ->buttons []
   (ui/table {:rows (remove nil? (concat
@@ -20,7 +16,7 @@
                                     [(ui/text-button "Map editor" #(screen/change! :screens/map-editor))])
                                   (when dev-mode?
                                     [(ui/text-button "Property editor" #(screen/change! :screens/property-editor))])
-                                  [(ui/text-button "Exit" exit!)]]))
+                                  [(ui/text-button "Exit" exit-app)]]))
              :cell-defaults {:pad-bottom 25}
              :fill-parent? true}))
 
@@ -39,5 +35,5 @@
                          (->buttons)
                          (ui/actor {:act (fn []
                                            (when (key-just-pressed? :keys/escape)
-                                             (exit!)))})]
+                                             (exit-app)))})]
                         :screen (->MainMenuScreen))])

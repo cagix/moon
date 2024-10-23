@@ -1,5 +1,6 @@
 (ns moon.graphics
-  (:require [moon.component :refer [defc]]
+  (:require [clojure.gdx :refer [gdx-field]]
+            [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.schema :as schema]
             [moon.tx :as tx]
@@ -9,7 +10,7 @@
             [moon.graphics.text :as text]
             [moon.graphics.viewport :as vp]
             [moon.graphics.tiled :as tiled]
-            [moon.utils :refer [safe-get gdx-field]])
+            [moon.utils :refer [safe-get]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)

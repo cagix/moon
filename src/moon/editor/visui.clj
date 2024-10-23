@@ -1,5 +1,6 @@
 (ns moon.editor.visui
-  (:require [moon.component :as component]
+  (:require [clojure.gdx :refer [key-just-pressed?]]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.info :as info]
             [moon.property :as property]
@@ -9,7 +10,6 @@
             [moon.editor.utils :refer [scroll-pane-cell]]
             [moon.editor.widget :as widget]
             moon.editor.widgets
-            [moon.input :refer [key-just-pressed?]]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
             [moon.ui.error-window :refer [error-window!]]

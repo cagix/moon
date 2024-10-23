@@ -65,10 +65,19 @@
 
 ;;
 
+(defn- all-textures []
+  (clojure.gdx.assets/of-class moon.assets/manager
+                               com.badlogic.gdx.graphics.Texture)
+  )
+
+(defn- all-sounds []
+  (clojure.gdx.assets/of-class moon.assets/manager
+                               com.badlogic.gdx.audio.Sound))
+
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 (defn- texture-rows []
-  (for [file (sort (assets/of-class com.badlogic.gdx.graphics.Texture))]
+  (for [file (sort (all-textures))]
     [(ui/image-button (g/image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
@@ -99,7 +108,7 @@
 (declare ->sound-columns)
 
 (defn- open-sounds-window! [table]
-  (let [rows (for [sound-file (assets/of-class com.badlogic.gdx.audio.Sound)]
+  (let [rows (for [sound-file (all-sounds)]
                [(ui/text-button (str/replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)

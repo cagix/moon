@@ -45,7 +45,8 @@
 (defc :entity/movement
   {:let {:keys [direction speed rotate-in-movement-direction?] :as movement}}
   (entity/tick [_ eid]
-    (assert (m/validate entity/movement-speed-schema speed))
+    (assert (m/validate entity/movement-speed-schema speed)
+            (pr-str speed))
     (assert (or (zero? (v/length direction))
                 (v/normalised? direction)))
     (when-not (or (zero? (v/length direction))
