@@ -1,5 +1,6 @@
 (ns moon.editor.widgets
   (:require [clojure.edn :as edn]
+            [clojure.gdx.assets :as gdx.assets]
             [clojure.string :as str]
             [moon.db :as db]
             [moon.info :as info]
@@ -66,13 +67,10 @@
 ;;
 
 (defn- all-textures []
-  (clojure.gdx.assets/of-class moon.assets/manager
-                               com.badlogic.gdx.graphics.Texture)
-  )
+  (gdx.assets/of-class assets/manager com.badlogic.gdx.graphics.Texture))
 
 (defn- all-sounds []
-  (clojure.gdx.assets/of-class moon.assets/manager
-                               com.badlogic.gdx.audio.Sound))
+  (gdx.assets/of-class assets/manager com.badlogic.gdx.audio.Sound))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
