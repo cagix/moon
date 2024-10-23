@@ -4,7 +4,7 @@
             [moon.tx :as tx]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.stage :refer [stage-get]]))
+            [moon.stage :as stage]))
 
 (def ^:private image-scale 2)
 
@@ -25,7 +25,7 @@
       group)))
 
 (defn- get-action-bar []
-  (let [group (::action-bar (:action-bar-table (stage-get)))]
+  (let [group (::action-bar (:action-bar-table (stage/get)))]
     {:horizontal-group group
      :button-group (group->button-group group)}))
 

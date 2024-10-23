@@ -1,8 +1,8 @@
 (ns ^:no-doc dev.tree
   (:require [moon.graphics :as g]
             [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]
-            [moon.stage :refer [stage-add!]]
+            [gdl.ui.stage]
+            [moon.stage :as stage]
             [moon.world :as world :refer [mouseover-entity]]))
 
 (comment
@@ -50,13 +50,13 @@
     (add-elements! node v))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
-    (add-map-nodes! node (children->str-map (ui/children (stage/root v))) level))
+    (add-map-nodes! node (children->str-map (ui/children (gdl.ui.stage/root v))) level))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
     (add-map-nodes! node (children->str-map (ui/children v)) level)))
 
 (comment
- (let [vis-image (first (ui/children (stage/root (stage-get))))]
+ (let [vis-image (first (ui/children (gdl.ui.stage/root (stage-get))))]
    (supers (class vis-image))
    (str vis-image)
    )
@@ -99,10 +99,11 @@
   (let [object (case obj
                  :entity (mouseover-entity)
                  :tile @(get world/grid (mapv int (g/world-mouse-position))))]
-    (stage-add! (ui/window {:title "Tree View"
-                            :close-button? true
-                            :close-on-escape? true
-                            :center? true
-                            :rows [[(scroll-pane-cell [[(->prop-tree (into (sorted-map) object))]])]]
-                            :pack? true}))
+    (stage/add!
+     (ui/window {:title "Tree View"
+                 :close-button? true
+                 :close-on-escape? true
+                 :center? true
+                 :rows [[(scroll-pane-cell [[(->prop-tree (into (sorted-map) object))]])]]
+                 :pack? true}))
     nil))

@@ -5,12 +5,12 @@
             [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.visui :as editor]
-            [moon.stage :as stage :refer [stage-add!]]
+            [moon.stage :as stage]
             [moon.screen :as screen])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 (defn- edit-property [property-id]
-  (stage-add! (editor/property-editor-window property-id)))
+  (stage/add! (editor/property-editor-window property-id)))
 
 (defn- property-type-tabs []
   (for [property-type (sort (property/types))]

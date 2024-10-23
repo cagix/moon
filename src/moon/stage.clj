@@ -1,4 +1,5 @@
 (ns moon.stage
+  (:refer-clojure :exclude [get])
   (:require [gdl.input :as input]
             [gdl.utils :refer [dispose]]
             [moon.graphics :as g]
@@ -36,11 +37,11 @@
     (map->StageScreen {:stage stage
                        :sub-screen screen})))
 
-(defn stage-get []
+(defn get []
   (:stage (screen/current)))
 
 (defn mouse-on-actor? []
-  (stage/hit (stage-get) (g/gui-mouse-position) :touchable? true))
+  (stage/hit (get) (g/gui-mouse-position) :touchable? true))
 
-(defn stage-add! [actor]
-  (stage/add! (stage-get) actor))
+(defn add! [actor]
+  (stage/add! (get) actor))

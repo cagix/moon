@@ -12,7 +12,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.ui.error-window :refer [error-window!]]
-            [moon.stage :refer [stage-add!]]
+            [moon.stage :as stage]
             [malli.core :as m]
             [malli.generator :as mg]))
 
@@ -61,7 +61,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
     (a/remove! editor-window)
-    (stage-add! (props->editor-window prop-value))))
+    (stage/add! (props->editor-window prop-value))))
 
 (defn property-editor-window [id]
   (props->editor-window (db/get-raw id)))
@@ -136,7 +136,7 @@
                                                            map-widget-table)])
                           (rebuild-editor-window)))]))
     (.pack window)
-    (stage-add! window)))
+    (stage/add! window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))

@@ -7,7 +7,7 @@
             [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.stage :refer [stage-get]]
+            [moon.stage :as stage]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.world :as world]
             [moon.entity.state :as state]))
@@ -122,7 +122,7 @@
                        :pad 4}]]}))
 
 (defn inventory-window []
-  (get (:windows (stage-get)) :inventory-window))
+  (get (:windows (stage/get)) :inventory-window))
 
 (defn- cell-widget [cell]
   (get (::table (inventory-window))

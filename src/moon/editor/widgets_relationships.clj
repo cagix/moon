@@ -22,7 +22,7 @@
                                                (redo-rows (conj property-ids id)))]
                            (.add window (overview-table property-type clicked-id-fn))
                            (.pack window)
-                           (stage-add! window))))]
+                           (stage/add! window))))]
       (for [property-id property-ids]
         (let [property (db/get property-id)
               image-widget (ui/image->widget (property/->image property)
@@ -62,7 +62,7 @@
                                                  (redo-rows id))]
                              (.add window (overview-table property-type clicked-id-fn))
                              (.pack window)
-                             (stage-add! window)))))]
+                             (stage/add! window)))))]
       [(when property-id
          (let [property (db/get property-id)
                image-widget (ui/image->widget (property/->image property) {:id property-id})]

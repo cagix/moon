@@ -10,7 +10,7 @@
             [moon.db :as db]
             [moon.graphics :as g]
             [moon.screen :as screen]
-            [moon.stage :as stage :refer [stage-get]]
+            [moon.stage :as stage]
             [moon.level.generate :as level]
             [moon.creature :as creature]
             moon.creature.player.item-on-cursor
@@ -21,10 +21,10 @@
   (doseq [[hotkey window-id] {:keys/i :inventory-window
                               :keys/e :entity-info-window}
           :when (key-just-pressed? hotkey)]
-    (a/toggle-visible! (get (:windows (stage-get)) window-id))))
+    (a/toggle-visible! (get (:windows (stage/get)) window-id))))
 
 (defn- close-windows?! []
-  (let [windows (ui/children (:windows (stage-get)))]
+  (let [windows (ui/children (:windows (stage/get)))]
     (if (some a/visible? windows)
       (do
        (run! #(a/set-visible! % false) windows)
@@ -88,7 +88,7 @@
    (component/create [:widgets/player-message nil])])
 
 (defn- reset-stage! []
-  (let [stage (stage-get)]
+  (let [stage (stage/get)]
     (stage/clear! stage)
     (run! #(stage/add! stage %) (world-actors))))
 

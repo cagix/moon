@@ -13,7 +13,7 @@
             [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.stage :refer [stage-add!]]
+            [moon.stage :as stage]
             [gdl.utils :refer [truncate ->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisTextField VisCheckBox))
   (:load "widgets_relationships"))
@@ -87,7 +87,7 @@
 (defmethod widget/create :s/image [_ image]
   (big-image-button image)
   #_(ui/image-button image
-                     #(stage-add! (scrollable-choose-window (texture-rows)))
+                     #(stage/add! (scrollable-choose-window (texture-rows)))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 ;;
@@ -115,7 +115,7 @@
                                   (ui/pack-ancestor-window! table)
                                   (a/set-id! table sound-file)))
                 (->play-sound-button sound-file)])]
-    (stage-add! (scrollable-choose-window rows))))
+    (stage/add! (scrollable-choose-window rows))))
 
 (defn- ->sound-columns [table sound-file]
   [(ui/text-button (name sound-file) #(open-sounds-window! table))
