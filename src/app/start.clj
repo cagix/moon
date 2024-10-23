@@ -9,8 +9,7 @@
             [gdx.assets :as assets]
             [gdx.graphics :as g]
             [gdx.screen :as screen]
-            [gdx.ui :as ui]
-            [gdx.vis-ui :as vis-ui])
+            [gdx.ui :as ui])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (java.awt Taskbar Toolkit)
@@ -80,7 +79,7 @@
     (create []
       (assets/load (search-assets "resources/"))
       (g/load! graphics)
-      (vis-ui/load! :skin-scale/x1)
+      (ui/load! :skin-scale/x1)
       (screen/set-screens! [(main-menu/create background-image)
                             (map-editor/create)
                             (property-editor/screen background-image)
@@ -90,7 +89,7 @@
     (dispose []
       (assets/dispose)
       (g/dispose!)
-      (vis-ui/dispose!)
+      (ui/dispose!)
       (screen/dispose-all!))
 
     (render []
