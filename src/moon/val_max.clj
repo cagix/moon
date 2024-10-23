@@ -1,8 +1,8 @@
-(ns data.val-max
+(ns moon.val-max
   (:require [clojure.string :as str]
             [moon.component :refer [defc]]
             [moon.schema :as schema]
-            [data.operation :as op]
+            [moon.operation :as op]
             [malli.core :as m]))
 
 (def ^:private val-max-schema

@@ -1,7 +1,7 @@
 (ns world.entity.modifiers-test
   (:require [clojure.test :refer :all]
             [moon.tx :as tx]
-            data.val-max ; load val-max ops
+            moon.val-max ; load val-max ops
             [world.entity.modifiers :refer [modified-value]]
             world.entity)) ; load :e/update
 

@@ -1,7 +1,7 @@
 (ns world.entity.stats
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
-            [data.val-max :as val-max]
+            [moon.val-max :as val-max]
             [world.entity :as entity]
             [world.entity.hpbar :as hpbar]
             [world.entity.modifiers :refer [defmodifier defstat entity-stat]]))

@@ -3,7 +3,7 @@
             [moon.component :refer [defc defc*]]
             [moon.info :as info]
             [moon.tx :as tx]
-            [data.operation :as op]
+            [moon.operation :as op]
             [gdx.graphics :as g]
             [utils.core :refer [safe-remove-one update-kv k->pretty-name]]
             [world.entity :as entity]

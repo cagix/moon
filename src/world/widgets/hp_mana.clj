@@ -1,5 +1,5 @@
 (ns world.widgets.hp-mana
-  (:require [data.val-max :as val-max]
+  (:require [moon.val-max :as val-max]
             [gdx.graphics :as g]
             [gdx.ui :as ui]
             [utils.core :refer [readable-number]]

@@ -1,4 +1,4 @@
-(ns data.operation
+(ns moon.operation
   (:refer-clojure :exclude [apply])
   (:require [clojure.math :as math]
             [moon.component :refer [defsystem defc]]))
