@@ -1,4 +1,4 @@
-(ns moon.screens.map-editor
+(ns ^:no-doc moon.screens.map-editor
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-pressed? key-just-pressed?]]

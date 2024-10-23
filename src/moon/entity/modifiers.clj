@@ -1,4 +1,4 @@
-(ns moon.entity.modifiers
+(ns ^:no-doc moon.entity.modifiers
   (:require [gdl.graphics.color :as color]
             [clojure.string :as str]
             [moon.component :refer [defc defc*]]

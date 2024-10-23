@@ -1,4 +1,4 @@
-(ns moon.entity.stats
+(ns ^:no-doc moon.entity.stats
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.val-max :as val-max]

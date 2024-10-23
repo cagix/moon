@@ -1,4 +1,4 @@
-(ns moon.projectile
+(ns ^:no-doc moon.projectile
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [moon.property :as property]

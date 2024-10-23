@@ -1,4 +1,4 @@
-(ns moon.entity.image
+(ns ^:no-doc moon.entity.image
   (:require [moon.graphics :as g]
             [moon.component :refer [defc]]
             [moon.entity :as entity]))

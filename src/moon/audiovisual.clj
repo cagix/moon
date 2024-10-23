@@ -1,4 +1,4 @@
-(ns moon.audiovisual
+(ns ^:no-doc moon.audiovisual
   (:require [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.property :as property]

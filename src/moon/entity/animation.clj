@@ -1,4 +1,4 @@
-(ns moon.entity.animation
+(ns ^:no-doc moon.entity.animation
   (:require [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.schema :as schema]

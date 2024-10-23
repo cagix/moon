@@ -1,4 +1,4 @@
-(ns moon.entity.movement
+(ns ^:no-doc moon.entity.movement
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [gdl.math.vector :as v]

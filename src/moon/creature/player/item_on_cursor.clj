@@ -1,4 +1,4 @@
-(ns moon.creature.player.item-on-cursor
+(ns ^:no-doc moon.creature.player.item-on-cursor
   (:require [gdl.input :refer [button-just-pressed?]]
             [moon.component :refer [defc]]
             [moon.graphics :as g]

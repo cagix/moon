@@ -1,4 +1,4 @@
-(ns moon.widgets.hp-mana
+(ns ^:no-doc moon.widgets.hp-mana
   (:require [gdl.utils :refer [readable-number]]
             [moon.val-max :as val-max]
             [moon.graphics :as g]

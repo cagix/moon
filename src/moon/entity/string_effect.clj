@@ -1,4 +1,4 @@
-(ns moon.entity.string-effect
+(ns ^:no-doc moon.entity.string-effect
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]

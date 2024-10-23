@@ -1,4 +1,4 @@
-(ns moon.screens.editor
+(ns ^:no-doc moon.screens.editor
   (:require [gdl.input :refer [key-just-pressed?]]
             [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]

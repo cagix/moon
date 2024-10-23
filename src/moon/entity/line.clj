@@ -1,4 +1,4 @@
-(ns moon.entity.line
+(ns ^:no-doc moon.entity.line
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]

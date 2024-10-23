@@ -1,4 +1,4 @@
-(ns moon.entity.hpbar
+(ns ^:no-doc moon.entity.hpbar
   (:require [moon.graphics :as g]))
 
 (def ^:private hpbar-colors

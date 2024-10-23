@@ -1,4 +1,4 @@
-(ns moon.creature.active
+(ns ^:no-doc moon.creature.active
   (:require [moon.component :refer [defc]]
             [moon.graphics :as g]
             [moon.world :refer [timer stopped? finished-ratio]]

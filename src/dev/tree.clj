@@ -1,4 +1,4 @@
-(ns dev.tree
+(ns ^:no-doc dev.tree
   (:require [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]

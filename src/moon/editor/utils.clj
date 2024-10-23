@@ -1,4 +1,4 @@
-(ns moon.editor.utils
+(ns ^:no-doc moon.editor.utils
   (:require [moon.graphics :as g]
             [gdl.ui :as ui]))
 

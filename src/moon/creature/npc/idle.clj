@@ -1,4 +1,4 @@
-(ns moon.creature.npc.idle
+(ns ^:no-doc moon.creature.npc.idle
   (:require [moon.component :refer [defc]]
             [moon.skill :as skill]
             [moon.world :as world]

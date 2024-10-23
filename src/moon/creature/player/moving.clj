@@ -1,4 +1,4 @@
-(ns moon.creature.player.moving
+(ns ^:no-doc moon.creature.player.moving
   (:require [gdl.input :refer [key-pressed?]]
             [moon.component :refer [defc]]
             [gdl.math.vector :as v]

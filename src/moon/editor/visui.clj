@@ -1,4 +1,4 @@
-(ns moon.editor.visui
+(ns ^:no-doc moon.editor.visui
   (:require [gdl.input :refer [key-just-pressed?]]
             [moon.component :as component]
             [moon.db :as db]

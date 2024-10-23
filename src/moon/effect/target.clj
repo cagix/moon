@@ -1,4 +1,4 @@
-(ns moon.effect.target
+(ns ^:no-doc moon.effect.target
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [moon.tx :as tx]

@@ -1,4 +1,4 @@
-(ns moon.screens.main
+(ns ^:no-doc moon.screens.main
   (:require [gdl.app :as app]
             [gdl.input :refer [key-just-pressed?]]
             [moon.screens.world :as world]

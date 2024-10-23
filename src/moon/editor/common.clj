@@ -1,4 +1,4 @@
-(ns moon.editor.common
+(ns ^:no-doc moon.editor.common
   (:require [moon.schema :as schema]
             [gdl.utils :refer [index-of]]))
 

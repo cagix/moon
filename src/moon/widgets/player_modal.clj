@@ -1,4 +1,4 @@
-(ns moon.widgets.player-modal
+(ns ^:no-doc moon.widgets.player-modal
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]

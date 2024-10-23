@@ -1,4 +1,4 @@
-(ns moon.entity.state
+(ns ^:no-doc moon.entity.state
   (:require [moon.component :refer [defsystem defc]]
             [moon.info :as info]
             [moon.tx :as tx]

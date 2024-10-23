@@ -1,4 +1,4 @@
-(ns moon.creature.npc.dead
+(ns ^:no-doc moon.creature.npc.dead
   (:require [moon.component :refer [defc]]
             [moon.entity :as entity]
             [moon.entity.state :as state]))

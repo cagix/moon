@@ -1,4 +1,4 @@
-(ns moon.screens.world
+(ns ^:no-doc moon.screens.world
   (:require [gdl.graphics :refer [clear-screen frames-per-second]]
             [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-pressed? key-just-pressed?]]

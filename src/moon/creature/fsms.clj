@@ -1,4 +1,4 @@
-(ns moon.creature.fsms
+(ns ^:no-doc moon.creature.fsms
   (:require [reduce-fsm :as fsm]))
 
 (comment

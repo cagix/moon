@@ -1,4 +1,4 @@
-(ns moon.entity.delete-after-duration
+(ns ^:no-doc moon.entity.delete-after-duration
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [gdl.utils :refer [readable-number]]

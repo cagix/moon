@@ -1,4 +1,4 @@
-(ns moon.editor.widgets
+(ns ^:no-doc moon.editor.widgets
   (:require [clojure.edn :as edn]
             [gdl.assets :as gdx.assets]
             [clojure.string :as str]
