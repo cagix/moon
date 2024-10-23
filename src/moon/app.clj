@@ -4,14 +4,14 @@
             [gdl.app :as app]
             [gdl.ui :as ui]
             [moon.assets :as assets]
-            moon.components
             [moon.db :as db]
-            [moon.graphics :as g]
+            [moon.graphics :as graphics]
             [moon.screen :as screen]
             (moon.screens [editor :as property-editor]
                           [main :as main-menu]
                           [map-editor :as map-editor]
-                          [world :as world-screen])))
+                          [world :as world-screen])
+            moon.components))
 
 (def ^:private config (-> "app.edn" io/resource slurp edn/read-string))
 
@@ -25,7 +25,7 @@
   (reify app/Listener
     (create [_]
       (assets/load (:assets config))
-      (g/load! (:graphics config))
+      (graphics/load! (:graphics config))
       (ui/load! (:ui config))
       (screen/set-screens! [(main-menu/create background-image)
                             (map-editor/create)
@@ -34,7 +34,7 @@
 
     (dispose [_]
       (assets/dispose)
-      (g/dispose!)
+      (graphics/dispose!)
       (ui/dispose!)
       (screen/dispose-all!))
 
