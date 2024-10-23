@@ -3,7 +3,7 @@
             [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.visui :as editor]
-            [moon.ui :as ui]
+            [gdl.ui :as ui]
             [moon.ui.stage-screen :as stage-screen :refer [stage-add!]]
             [moon.screen :as screen])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))

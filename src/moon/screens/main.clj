@@ -5,7 +5,7 @@
             [moon.db :as db]
             [moon.graphics :as g]
             [moon.screen :as screen]
-            [moon.ui :as ui]
+            [gdl.ui :as ui]
             [moon.ui.stage-screen :as stage-screen]
             [gdl.utils :refer [dev-mode?]]))
 

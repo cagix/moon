@@ -1,16 +1,156 @@
-(ns moon.ui
-  (:require [moon.ui.actor :as a])
+(ns gdl.ui
+  (:require [gdl.ui.actor :as a])
   (:import (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table Cell WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree))
-  (:load "ui/tooltip"
-         "ui/table"
-         "ui/opts"
-         "ui/group"))
+           (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)))
+
+(defn- set-cell-opts [^Cell cell opts]
+  (doseq [[option arg] opts]
+    (case option
+      :fill-x?    (.fillX     cell)
+      :fill-y?    (.fillY     cell)
+      :expand?    (.expand    cell)
+      :expand-x?  (.expandX   cell)
+      :expand-y?  (.expandY   cell)
+      :bottom?    (.bottom    cell)
+      :colspan    (.colspan   cell (int arg))
+      :pad        (.pad       cell (float arg))
+      :pad-top    (.padTop    cell (float arg))
+      :pad-bottom (.padBottom cell (float arg))
+      :width      (.width     cell (float arg))
+      :height     (.height    cell (float arg))
+      :center?    (.center    cell)
+      :right?     (.right     cell)
+      :left?      (.left      cell))))
+
+(defn add-rows!
+  "rows is a seq of seqs of columns.
+  Elements are actors or nil (for just adding empty cells ) or a map of
+  {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."
+  [^Table table rows]
+  (doseq [row rows]
+    (doseq [props-or-actor row]
+      (cond
+       (map? props-or-actor) (-> (.add table ^Actor (:actor props-or-actor))
+                                 (set-cell-opts (dissoc props-or-actor :actor)))
+       :else (.add table ^Actor props-or-actor)))
+    (.row table))
+  table)
+
+(defn- set-table-opts [^Table table {:keys [rows cell-defaults]}]
+  (set-cell-opts (.defaults table) cell-defaults)
+  (add-rows! table rows))
+
+(defn horizontal-separator-cell [colspan]
+  {:actor (Separator. "default")
+   :pad-top 2
+   :pad-bottom 2
+   :colspan colspan
+   :fill-x? true
+   :expand-x? true})
+
+(defn vertical-separator-cell []
+  {:actor (Separator. "vertical")
+   :pad-top 2
+   :pad-bottom 2
+   :fill-y? true
+   :expand-y? true})
+
+(comment
+ ; fill parent & pack is from Widget TODO ( not widget-group ?)
+ com.badlogic.gdx.scenes.scene2d.ui.Widget
+ ; about .pack :
+ ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
+ )
+
+(defn- set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
+  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
+  (when pack?
+    (.pack widget-group))
+  widget-group)
+
+(defn- set-opts [actor opts]
+  (a/set-opts! actor opts)
+  (when (instance? Table actor)
+    (set-table-opts actor opts)) ; before widget-group-opts so pack is packing rows
+  (when (instance? WidgetGroup actor)
+    (set-widget-group-opts actor opts))
+  actor)
+
+(defn children
+  "Returns an ordered list of child actors in this group."
+  [^Group group]
+  (seq (.getChildren group)))
+
+(defn clear-children!
+  "Removes all actors from this group and unfocuses them."
+  [^Group group]
+  (.clearChildren group))
+
+(defn add-actor!
+  "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made."
+  [^Group group actor]
+  (.addActor group actor))
+
+(defn find-actor-with-id [group id]
+  (let [actors (children group)
+        ids (keep a/id actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (a/id %)) actors))))
+
+(defmacro ^:private proxy-ILookup
+  "For actors inheriting from Group."
+  [class args]
+  `(proxy [~class clojure.lang.ILookup] ~args
+     (valAt
+       ([id#]
+        (find-actor-with-id ~'this id#))
+       ([id# not-found#]
+        (or (find-actor-with-id ~'this id#) not-found#)))))
+
+(defn group [{:keys [actors] :as opts}]
+  (let [group (proxy-ILookup Group [])]
+    (run! #(add-actor! group %) actors)
+    (set-opts group opts)))
+
+(defn horizontal-group [{:keys [space pad]}]
+  (let [group (proxy-ILookup HorizontalGroup [])]
+    (when space (.space group (float space)))
+    (when pad   (.pad   group (float pad)))
+    group))
+
+(defn vertical-group [actors]
+  (let [group (proxy-ILookup VerticalGroup [])]
+    (run! #(add-actor! group %) actors)
+    group))
+
+(defn add-tooltip!
+  "tooltip-text is a (fn []) or a string. If it is a function will be-recalculated every show."
+  [^Actor a tooltip-text]
+  (let [text? (string? tooltip-text)
+        label (VisLabel. (if text? tooltip-text ""))
+        tooltip (proxy [Tooltip] []
+                  ; hooking into getWidth because at
+                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                  ; when tooltip position gets calculated we setText (which calls pack) before that
+                  ; so that the size is correct for the newly calculated text.
+                  (getWidth []
+                    (let [^Tooltip this this]
+                      (when-not text?
+                        (.setText this (str (tooltip-text))))
+                      (proxy-super getWidth))))]
+    (.setAlignment label Align/center)
+    (.setTarget  tooltip ^Actor a)
+    (.setContent tooltip ^Actor label)))
+
+(defn remove-tooltip! [^Actor a]
+  (Tooltip/removeTooltip a))
 
 (defn- check-cleanup-visui! []
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.

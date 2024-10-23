@@ -1,7 +1,7 @@
 (ns dev.tree
   (:require [moon.graphics :as g]
-            [moon.ui :as ui]
-            [moon.ui.stage :as stage]
+            [gdl.ui :as ui]
+            [gdl.ui.stage :as stage]
             [moon.ui.stage-screen :refer [stage-add!]]
             [moon.world :as world :refer [mouseover-entity]]))
 

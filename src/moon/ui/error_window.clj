@@ -1,6 +1,6 @@
 (ns moon.ui.error-window
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [moon.ui :as ui]
+            [gdl.ui :as ui]
             [moon.ui.stage-screen :refer [stage-add!]]))
 
 (defmacro ^:private with-err-str

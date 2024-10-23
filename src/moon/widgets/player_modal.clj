@@ -2,8 +2,8 @@
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]
-            [moon.ui :as ui]
-            [moon.ui.actor :as a]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as a]
             [moon.ui.stage-screen :refer [stage-add! stage-get]]))
 
 ; no window movable type cursor appears here like in player idle

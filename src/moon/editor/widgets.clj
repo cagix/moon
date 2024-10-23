@@ -11,8 +11,8 @@
             [moon.assets :as assets]
             [moon.audio :as audio]
             [moon.graphics :as g]
-            [moon.ui :as ui]
-            [moon.ui.actor :as a]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as a]
             [moon.ui.stage-screen :refer [stage-add!]]
             [gdl.utils :refer [truncate ->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisTextField VisCheckBox))

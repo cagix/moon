@@ -7,7 +7,7 @@
             [moon.assets :as assets]
             [moon.graphics :as g]
             [moon.screen :as screen]
-            [moon.ui :as ui]
+            [gdl.ui :as ui]
             (moon.screens [editor :as property-editor]
                           [main :as main-menu]
                           [map-editor :as map-editor]

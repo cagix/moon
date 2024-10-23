@@ -3,7 +3,7 @@
             [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]
-            [moon.ui :as ui]))
+            [gdl.ui :as ui]))
 
 (def ^:private duration-seconds 1.5)
 

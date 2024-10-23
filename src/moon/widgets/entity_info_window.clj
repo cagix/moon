@@ -1,7 +1,7 @@
 (ns moon.widgets.entity-info-window
   (:require [moon.info :as info]
             [moon.graphics :as g]
-            [moon.ui :as ui]
+            [gdl.ui :as ui]
             [moon.world :refer [mouseover-entity]]))
 
 (def ^:private disallowed-keys [:entity/skills

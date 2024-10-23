@@ -10,8 +10,8 @@
             [moon.editor.utils :refer [scroll-pane-cell]]
             [moon.editor.widget :as widget]
             moon.editor.widgets
-            [moon.ui :as ui]
-            [moon.ui.actor :as a]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as a]
             [moon.ui.error-window :refer [error-window!]]
             [moon.ui.stage-screen :refer [stage-add!]]
             [malli.core :as m]

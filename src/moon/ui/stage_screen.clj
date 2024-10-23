@@ -3,7 +3,7 @@
             [gdl.utils :refer [dispose]]
             [moon.graphics :as g]
             [moon.screen :as screen]
-            [moon.ui.stage :as stage]))
+            [gdl.ui.stage :as stage]))
 
 (defrecord StageScreen [stage sub-screen]
   screen/Screen
