@@ -83,8 +83,7 @@
 (defn- property-editor-window [property-id]
   (let [props (safe-get db/db property-id)
         schema (schema/of (property/type props))
-        widget (schema->widget (schema/of (property/type props))
-                               props)]
+        widget (schema->widget schema props)]
     (doto (Stage.)
       (.setTitle (name property-id))
       (.setScene (Scene. widget 450 450))
