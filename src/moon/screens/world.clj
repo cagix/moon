@@ -4,7 +4,7 @@
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [gdl.ui.stage :as stage]
+            [gdl.ui.stage]
             [gdl.utils :refer [dev-mode?]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
@@ -89,8 +89,8 @@
 
 (defn- reset-stage! []
   (let [stage (stage/get)]
-    (stage/clear! stage)
-    (run! #(stage/add! stage %) (world-actors))))
+    (gdl.ui.stage/clear! stage)
+    (run! #(gdl.ui.stage/add! stage %) (world-actors))))
 
 (.bindRoot #'world/start
            (fn start-game-fn [world-id]
