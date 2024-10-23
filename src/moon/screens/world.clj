@@ -1,4 +1,4 @@
-(ns app.screens.world
+(ns moon.screens.world
   (:require [component.db :as db]
             [gdx.app :as app]
             [gdx.graphics :as g]
@@ -20,7 +20,6 @@
             [world.widgets.player-message :as player-message]
             world.widgets.player-modal
             [world.core :as world]
-
             world.audiovisual
             world.projectile
             world.entity.animation

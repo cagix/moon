@@ -1,5 +1,5 @@
-(ns app.screens.main
-  (:require [app.screens.world :as world]
+(ns moon.screens.main
+  (:require [moon.screens.world :as world]
             [component.db :as db]
             [gdx.app :as app]
             [gdx.graphics :as g]

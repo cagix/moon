@@ -1,4 +1,4 @@
-(ns app.screens.minimap)
+(ns moon.screens.minimap)
 
 ; 28.4 viewportwidth
 ; 16 viewportheight

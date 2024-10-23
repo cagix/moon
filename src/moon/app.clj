@@ -1,15 +1,15 @@
 (ns moon.app
-  (:require (app.screens [editor :as property-editor]
-                         [main :as main-menu]
-                         [map-editor :as map-editor]
-                         [world :as world-screen])
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [component.db :as db]
             [gdx.assets :as assets]
             [gdx.graphics :as g]
             [gdx.screen :as screen]
-            [gdx.ui :as ui])
+            [gdx.ui :as ui]
+            (moon.screens [editor :as property-editor]
+                          [main :as main-menu]
+                          [map-editor :as map-editor]
+                          [world :as world-screen]))
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (java.awt Taskbar Toolkit)

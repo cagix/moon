@@ -1,4 +1,4 @@
-(ns app.screens.editor
+(ns moon.screens.editor
   (:require [component.property :as property]
             [editor.overview :refer [overview-table]]
             [editor.visui :as editor]
