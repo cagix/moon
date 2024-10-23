@@ -1,4 +1,4 @@
-(ns ^:no-doc editor.visui
+(ns editor.visui
   (:require [component.core :as component]
             [component.db :as db]
             [component.info :as info]

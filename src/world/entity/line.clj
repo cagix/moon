@@ -1,4 +1,4 @@
-(ns ^:no-doc world.entity.line
+(ns world.entity.line
   (:require [component.core :refer [defc]]
             [component.tx :as tx]
             [gdx.graphics :as g]

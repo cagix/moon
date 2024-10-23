@@ -1,5 +1,6 @@
-(ns ^:no-doc editor.javafx
-  (:require [component.db :as db]
+(ns editor.javafx
+  (:require [clojure.java.io :as io]
+            [component.db :as db]
             [component.schema :as schema]
             [component.property :as property]
             [dev.javafx :as fx]
@@ -11,9 +12,10 @@
            (javafx.scene.control Button CheckBox ComboBox Label TextField Tab TabPane TabPane$TabClosingPolicy)
            (javafx.scene.image Image ImageView)
            (javafx.scene.layout StackPane HBox VBox FlowPane GridPane)
+           (javafx.scene.media Media MediaPlayer MediaPlayer$Status)
            (javafx.scene Scene Node)
            (javafx.stage Stage))
-  (:gen-class :extends javafx.application.Application))
+  #_(:gen-class :extends javafx.application.Application))
 
 (comment
  ; * remove comment at :gen-class
@@ -60,9 +62,6 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (HBox. (into-array Node (map image-view (:frames animation)))))
-
-(import '[javafx.scene.media Media MediaPlayer MediaPlayer$Status])
-(require '[clojure.java.io :as io])
 
 (defmethod schema->widget :s/sound [_ sound-file]
   (let [play-button (Button. "▶️ Play")

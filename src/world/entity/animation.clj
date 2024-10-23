@@ -1,4 +1,4 @@
-(ns ^:no-doc world.entity.animation
+(ns world.entity.animation
   (:require [component.core :refer [defc]]
             [component.db :as db]
             [component.schema :as schema]

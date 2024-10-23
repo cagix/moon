@@ -1,10 +1,9 @@
 (ns app.screens.background-image
-  (:require [app.config :as config]
-            [gdx.graphics :as g]
+  (:require [gdx.graphics :as g]
             [gdx.ui :as ui]))
 
 (defn create []
-  (ui/image->widget (g/image config/screen-background)
+  (ui/image->widget (g/image "images/moon_background.png")
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))

@@ -1,4 +1,4 @@
-(ns ^:no-doc world.entity.movement
+(ns world.entity.movement
   (:require [component.core :refer [defc]]
             [component.tx :as tx]
             [gdx.math.vector :as v]

@@ -1,4 +1,4 @@
-(ns ^:no-doc world.entity.image
+(ns world.entity.image
   (:require [gdx.graphics :as g]
             [component.core :refer [defc]]
             [world.entity :as entity]))

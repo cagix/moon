@@ -1,4 +1,4 @@
-(ns ^:no-doc world.entity.string-effect
+(ns world.entity.string-effect
   (:require [component.core :refer [defc]]
             [component.tx :as tx]
             [gdx.graphics :as g]
