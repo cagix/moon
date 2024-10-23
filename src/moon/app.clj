@@ -1,44 +1,21 @@
 (ns moon.app
-  (:require [gdl.utils :refer [dispose]]
-            [gdl.assets :as gdx.assets]
-            [clojure.java.io :as io]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
+            [gdl.app :as app]
+            [gdl.assets :refer [manager]]
+            [gdl.ui :as ui]
+            [gdl.utils :refer [dispose recursively-search]]
             [moon.db :as db]
             [moon.assets :as assets]
             [moon.graphics :as g]
             [moon.screen :as screen]
-            [gdl.ui :as ui]
             (moon.screens [editor :as property-editor]
                           [main :as main-menu]
                           [map-editor :as map-editor]
-                          [world :as world-screen]))
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.utils SharedLibraryLoader)))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
+                          [world :as world-screen])))
 
 (defn- search-assets [folder]
-  (for [[class exts] [[Sound #{"wav"}]
-                      [Texture #{"png" "bmp"}]]
+  (for [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
                   (recursively-search folder exts))]
     [file class]))
@@ -76,10 +53,10 @@
                      :scaling :fill
                      :align :center}))
 
-(defn- application-listener []
-  (proxy [ApplicationAdapter] []
-    (create []
-      (.bindRoot #'assets/manager (gdx.assets/manager (search-assets "resources/")))
+(defn- app-listener []
+  (reify app/Listener
+    (create [_]
+      (.bindRoot #'assets/manager (manager (search-assets "resources/")))
       (g/load! graphics)
       (ui/load! :skin-scale/x1)
       (screen/set-screens! [(main-menu/create background-image)
@@ -88,32 +65,24 @@
                             (world-screen/create)])
       ((world-screen/start-game-fn :worlds/vampire)))
 
-    (dispose []
+    (dispose [_]
       (dispose assets/manager)
       (g/dispose!)
       (ui/dispose!)
       (screen/dispose-all!))
 
-    (render []
+    (render [_]
       (screen/render! (screen/current)))
 
-    (resize [w h]
-      (g/resize! [w h]))))
-
-(defn- set-dock-icon [image-path]
-  (let [toolkit (Toolkit/getDefaultToolkit)
-        image (.getImage toolkit (io/resource image-path))
-        taskbar (Taskbar/getTaskbar)]
-    (.setIconImage taskbar image)))
+    (resize [_ dimensions]
+      (g/resize! dimensions))))
 
 (defn -main []
   (db/load! "properties.edn")
-  (when SharedLibraryLoader/isMac
-    (set-dock-icon "moon.png")
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (Lwjgl3Application. (application-listener)
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle "Moon")
-                        (.setForegroundFPS 60)
-                        (.setWindowedMode 1440 900))))
+  (when app/mac?
+    (app/set-dock-icon "moon.png"))
+  (app/start {:title "Moon"
+              :fps 60
+              :width 1440
+              :height 900}
+             (app-listener)))
