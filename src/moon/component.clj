@@ -63,7 +63,7 @@ Example:
     `(do
       (when ~attr-map?
         (defc* ~k ~attr-map))
-      (alter-meta! *ns* #(update % :doc str "\n* defc `" ~k "`"))
+      #_(alter-meta! *ns* #(update % :doc str "\n* defc `" ~k "`"))
       ~@(for [[sys & fn-body] sys-impls
               :let [sys-var (resolve sys)
                     sys-params (:params (clojure.core/meta sys-var))
