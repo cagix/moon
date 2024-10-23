@@ -1,7 +1,7 @@
 (ns world.entity.line
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
+            [moon.graphics :as g]
             [world.entity :as entity]))
 
 (defc :entity/line-render

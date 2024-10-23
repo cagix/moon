@@ -2,10 +2,10 @@
   (:require [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.visui :as editor]
-            [gdx.input :refer [key-just-pressed?]]
-            [gdx.ui :as ui]
-            [gdx.ui.stage-screen :as stage-screen :refer [stage-add!]]
-            [gdx.screen :as screen])
+            [moon.input :refer [key-just-pressed?]]
+            [moon.ui :as ui]
+            [moon.ui.stage-screen :as stage-screen :refer [stage-add!]]
+            [moon.screen :as screen])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 (defn- edit-property [property-id]

@@ -9,11 +9,11 @@
             [moon.editor.utils :refer [scroll-pane-cell]]
             [moon.editor.widget :as widget]
             moon.editor.widgets
-            [gdx.input :refer [key-just-pressed?]]
-            [gdx.ui :as ui]
-            [gdx.ui.actor :as a]
-            [gdx.ui.error-window :refer [error-window!]]
-            [gdx.ui.stage-screen :refer [stage-add!]]
+            [moon.input :refer [key-just-pressed?]]
+            [moon.ui :as ui]
+            [moon.ui.actor :as a]
+            [moon.ui.error-window :refer [error-window!]]
+            [moon.ui.stage-screen :refer [stage-add!]]
             [malli.core :as m]
             [malli.generator :as mg]))
 

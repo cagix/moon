@@ -1,7 +1,7 @@
 (ns world.creature.player.moving
   (:require [moon.component :refer [defc]]
-            [gdx.input :refer [key-pressed?]]
-            [gdx.math.vector :as v]
+            [moon.input :refer [key-pressed?]]
+            [moon.math.vector :as v]
             [world.entity :as entity]
             [world.entity.state :as state]
             [world.entity.modifiers :refer [entity-stat]]))

@@ -3,7 +3,7 @@
             [moon.db :as db]
             [moon.property :as property]
             [data.grid2d :as g2d]
-            [gdx.tiled :as t]
+            [moon.tiled :as t]
             [moon.level.area-level-grid :as area-level-grid]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]

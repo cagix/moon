@@ -1,8 +1,8 @@
 (ns world.effect
   (:require [moon.component :refer [defsystem defc]]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
-            [gdx.math.vector :as v]
+            [moon.graphics :as g]
+            [moon.math.vector :as v]
             [moon.world :as world :refer [mouseover-eid]]
             [world.entity :as entity]))
 

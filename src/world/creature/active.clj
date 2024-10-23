@@ -1,6 +1,6 @@
 (ns world.creature.active
   (:require [moon.component :refer [defc]]
-            [gdx.graphics :as g]
+            [moon.graphics :as g]
             [moon.world :refer [timer stopped? finished-ratio]]
             [world.entity :as entity]
             [world.entity.state :as state]

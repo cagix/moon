@@ -1,5 +1,5 @@
 (ns world.entity.hpbar
-  (:require [gdx.graphics :as g]))
+  (:require [moon.graphics :as g]))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]

@@ -1,6 +1,6 @@
 (ns world.entity.follow-ai
   (:require [data.grid2d :as g2d]
-            [gdx.math.vector :as v]
+            [moon.math.vector :as v]
             [utils.core :refer [->tile indexed utils-positions when-seq]]
             [moon.world :as world
              :refer [occupied-by-other?

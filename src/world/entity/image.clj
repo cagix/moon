@@ -1,5 +1,5 @@
 (ns world.entity.image
-  (:require [gdx.graphics :as g]
+  (:require [moon.graphics :as g]
             [moon.component :refer [defc]]
             [world.entity :as entity]))
 

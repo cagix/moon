@@ -2,8 +2,8 @@
   (:require [moon.component :refer [defsystem defc]]
             [moon.info :as info]
             [moon.tx :as tx]
-            [gdx.math.shape :as shape]
-            [gdx.math.vector :as v]
+            [moon.math.shape :as shape]
+            [moon.math.vector :as v]
             [malli.core :as m]
             [utils.core :refer [define-order ->tile dissoc-in]]))
 

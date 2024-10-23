@@ -7,12 +7,12 @@
             [moon.editor.widget :as widget]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.utils :refer [scrollable-choose-window]]
-            [gdx.assets :as assets]
-            [gdx.audio :as audio]
-            [gdx.graphics :as g]
-            [gdx.ui :as ui]
-            [gdx.ui.actor :as a]
-            [gdx.ui.stage-screen :refer [stage-add!]]
+            [moon.assets :as assets]
+            [moon.audio :as audio]
+            [moon.graphics :as g]
+            [moon.ui :as ui]
+            [moon.ui.actor :as a]
+            [moon.ui.stage-screen :refer [stage-add!]]
             [utils.core :refer [truncate ->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisTextField VisCheckBox))
   (:load "widgets_relationships"))

@@ -1,8 +1,8 @@
 (ns world.widgets.player-message
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
-            [gdx.ui :as ui]))
+            [moon.graphics :as g]
+            [moon.ui :as ui]))
 
 (def ^:private duration-seconds 1.5)
 

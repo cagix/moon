@@ -2,8 +2,8 @@
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
-            [gdx.math.vector :as v]
+            [moon.graphics :as g]
+            [moon.math.vector :as v]
             [moon.world :as world]
             [world.entity :as entity]
             [world.effect :as effect :refer [source target]]))

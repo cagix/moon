@@ -1,6 +1,6 @@
 (ns moon.editor.utils
-  (:require [gdx.graphics :as g]
-            [gdx.ui :as ui]))
+  (:require [moon.graphics :as g]
+            [moon.ui :as ui]))
 
 (defn scroll-pane-cell [rows]
   (let [table (ui/table {:rows rows

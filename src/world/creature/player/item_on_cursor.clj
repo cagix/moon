@@ -1,9 +1,9 @@
 (ns world.creature.player.item-on-cursor
   (:require [moon.component :refer [defc]]
-            [gdx.graphics :as g]
-            [gdx.input :refer [button-just-pressed?]]
-            [gdx.math.vector :as v]
-            [gdx.ui.stage-screen :refer [mouse-on-actor?]]
+            [moon.graphics :as g]
+            [moon.input :refer [button-just-pressed?]]
+            [moon.math.vector :as v]
+            [moon.ui.stage-screen :refer [mouse-on-actor?]]
             [world.item :refer [valid-slot? stackable?]]
             [world.widgets.inventory :refer [clicked-inventory-cell]]
             [moon.world :as world]

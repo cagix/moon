@@ -1,11 +1,11 @@
 (ns moon.screens.main
   (:require [moon.screens.world :as world]
             [moon.db :as db]
-            [gdx.graphics :as g]
-            [gdx.input :refer [key-just-pressed?]]
-            [gdx.screen :as screen]
-            [gdx.ui :as ui]
-            [gdx.ui.stage-screen :as stage-screen]
+            [moon.graphics :as g]
+            [moon.input :refer [key-just-pressed?]]
+            [moon.screen :as screen]
+            [moon.ui :as ui]
+            [moon.ui.stage-screen :as stage-screen]
             [utils.core :refer [dev-mode?]])
   (:import (com.badlogic.gdx Gdx)))
 

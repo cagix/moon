@@ -2,9 +2,9 @@
   (:require [moon.component :refer [defc defsystem]]
             [moon.info :as info]
             [moon.tx :as tx]
-            [gdx.ui :as ui]
-            [gdx.ui.actor :as a]
-            [gdx.ui.stage-screen :refer [stage-get]]))
+            [moon.ui :as ui]
+            [moon.ui.actor :as a]
+            [moon.ui.stage-screen :refer [stage-get]]))
 
 (def ^:private image-scale 2)
 

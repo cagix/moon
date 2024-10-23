@@ -1,7 +1,7 @@
 (ns world.creature.npc.sleeping
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
+            [moon.graphics :as g]
             [moon.world :as world :refer [stopped? timer]]
             [world.entity :as entity]
             [world.entity.state :as state]

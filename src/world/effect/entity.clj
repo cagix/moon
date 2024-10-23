@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
+            [moon.graphics :as g]
             [utils.core :refer [readable-number]]
             [moon.world :refer [timer stopped? finished-ratio]]
             [world.entity :as entity]

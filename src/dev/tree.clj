@@ -1,8 +1,8 @@
 (ns dev.tree
-  (:require [gdx.graphics :as g]
-            [gdx.ui :as ui]
-            [gdx.ui.stage :as stage]
-            [gdx.ui.stage-screen :refer [stage-add!]]
+  (:require [moon.graphics :as g]
+            [moon.ui :as ui]
+            [moon.ui.stage :as stage]
+            [moon.ui.stage-screen :refer [stage-add!]]
             [moon.world :as world :refer [mouseover-entity]]))
 
 (comment

@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.schema :as schema]
-            [gdx.graphics :as g]
+            [moon.graphics :as g]
             [moon.world :as world]
             [world.entity :as entity]))
 

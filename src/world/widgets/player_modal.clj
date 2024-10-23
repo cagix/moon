@@ -1,10 +1,10 @@
 (ns world.widgets.player-modal
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
-            [gdx.ui :as ui]
-            [gdx.ui.actor :as a]
-            [gdx.ui.stage-screen :refer [stage-add! stage-get]]))
+            [moon.graphics :as g]
+            [moon.ui :as ui]
+            [moon.ui.actor :as a]
+            [moon.ui.stage-screen :refer [stage-add! stage-get]]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

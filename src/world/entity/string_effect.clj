@@ -1,7 +1,7 @@
 (ns world.entity.string-effect
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
-            [gdx.graphics :as g]
+            [moon.graphics :as g]
             [moon.world :as world :refer [timer stopped?]]
             [world.entity :as entity]))
 

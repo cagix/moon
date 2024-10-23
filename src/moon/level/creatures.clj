@@ -1,6 +1,6 @@
 (ns moon.level.creatures
   (:require [moon.property :as property]
-            [gdx.tiled :as t]))
+            [moon.tiled :as t]))
 
 (defn with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

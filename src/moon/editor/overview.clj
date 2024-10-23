@@ -2,8 +2,8 @@
   (:require [moon.db :as db]
             [moon.info :as info]
             [moon.property :as property]
-            [gdx.ui :as ui]
-            [gdx.ui.actor :as a]))
+            [moon.ui :as ui]
+            [moon.ui.actor :as a]))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
