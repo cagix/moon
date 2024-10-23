@@ -2,7 +2,7 @@
   (:require [data.grid2d :as g2d]
             [gdx.math.vector :as v]
             [utils.core :refer [->tile indexed utils-positions when-seq]]
-            [world.core :as world
+            [moon.world :as world
              :refer [occupied-by-other?
                      nearest-entity-distance
                      nearest-entity

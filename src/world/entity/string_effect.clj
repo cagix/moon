@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [gdx.graphics :as g]
-            [world.core :as world :refer [timer stopped?]]
+            [moon.world :as world :refer [timer stopped?]]
             [world.entity :as entity]))
 
 (defc :entity/string-effect

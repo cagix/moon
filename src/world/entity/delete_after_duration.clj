@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [utils.core :refer [readable-number]]
-            [world.core :refer [timer stopped? finished-ratio]]
+            [moon.world :refer [timer stopped? finished-ratio]]
             [world.entity :as entity]))
 
 (defc :entity/delete-after-duration

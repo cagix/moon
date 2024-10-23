@@ -1,7 +1,7 @@
 (ns world.creature.stunned
   (:require [moon.component :refer [defc]]
             [gdx.graphics :as g]
-            [world.core :refer [timer stopped?]]
+            [moon.world :refer [timer stopped?]]
             [world.entity :as entity]
             [world.entity.state :as state]))
 

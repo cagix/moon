@@ -3,7 +3,7 @@
             [gdx.graphics :as g]
             [gdx.ui :as ui]
             [utils.core :refer [readable-number]]
-            [world.core :as world]
+            [moon.world :as world]
             [world.entity.modifiers :refer [entity-stat]]))
 
 (defn- render-infostr-on-bar [infostr x y h]

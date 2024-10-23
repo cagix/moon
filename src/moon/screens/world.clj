@@ -1,6 +1,5 @@
 (ns moon.screens.world
   (:require [moon.db :as db]
-            [gdx.app :as app]
             [gdx.graphics :as g]
             [gdx.graphics.camera :as 🎥]
             [gdx.input :refer [key-pressed? key-just-pressed?]]
@@ -19,7 +18,7 @@
             [world.widgets.inventory :as inventory]
             [world.widgets.player-message :as player-message]
             world.widgets.player-modal
-            [world.core :as world]
+            [moon.world :as world]
             world.audiovisual
             world.projectile
             world.entity.animation
@@ -135,7 +134,7 @@
         app-menu (Menu. "App")]
     (.addItem app-menu (menu-item "Map editor" (partial screen/change! :screens/map-editor)))
     (.addItem app-menu (menu-item "Properties" (partial screen/change! :screens/property-editor)))
-    (.addItem app-menu (menu-item "Exit" app/exit!))
+    (.addItem app-menu (menu-item "Exit"       (partial screen/change! :screens/main-menu)))
     (.addMenu menu-bar app-menu)
     (let [world (Menu. "World")]
       (doseq [{:keys [property/id]} (db/all :properties/worlds)]

@@ -3,7 +3,7 @@
             [gdx.ui :as ui]
             [gdx.ui.stage :as stage]
             [gdx.ui.stage-screen :refer [stage-add!]]
-            [world.core :as world :refer [mouseover-entity]]))
+            [moon.world :as world :refer [mouseover-entity]]))
 
 (comment
 

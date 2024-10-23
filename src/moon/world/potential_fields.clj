@@ -1,4 +1,4 @@
-(in-ns 'world.core)
+(in-ns 'moon.world)
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
 ; adjacent cells are walls and blocked.

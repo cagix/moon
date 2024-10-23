@@ -1,4 +1,4 @@
-(in-ns 'world.core)
+(in-ns 'moon.world)
 
 (defn- rectangle->tiles
   [{[x y] :left-bottom :keys [left-bottom width height]}]

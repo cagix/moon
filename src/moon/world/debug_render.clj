@@ -1,4 +1,4 @@
-(in-ns 'world.core)
+(in-ns 'moon.world)
 
 (defn- geom-test []
   (let [position (g/world-mouse-position)

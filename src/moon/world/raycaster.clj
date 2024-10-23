@@ -1,4 +1,4 @@
-(ns world.core.raycaster
+(ns moon.world.raycaster
   (:require [gdx.math.vector :as v]
             [data.grid2d :as g2d])
   (:import (gdl RayCaster)))

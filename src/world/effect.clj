@@ -3,7 +3,7 @@
             [moon.tx :as tx]
             [gdx.graphics :as g]
             [gdx.math.vector :as v]
-            [world.core :as world :refer [mouseover-eid]]
+            [moon.world :as world :refer [mouseover-eid]]
             [world.entity :as entity]))
 
 (defsystem applicable?

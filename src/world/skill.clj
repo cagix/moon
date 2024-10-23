@@ -4,7 +4,7 @@
             [moon.property :as property]
             [moon.tx :as tx]
             [utils.core :refer [readable-number]]
-            [world.core :as world :refer [stopped?]]
+            [moon.world :as world :refer [stopped?]]
             [world.entity :as entity]
             [world.entity.state :as entity-state]
             [world.entity.modifiers :refer [entity-stat]]

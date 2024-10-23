@@ -8,7 +8,7 @@
             [gdx.graphics :as g]
             [gdx.tiled :as tiled]
             [utils.core :refer [safe-merge tile->middle]]
-            [world.core :as world]
+            [moon.world :as world]
             [world.creature.fsms :as fsms]
             world.creature.active
             world.creature.stunned

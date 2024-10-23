@@ -1,4 +1,4 @@
-(in-ns 'world.core)
+(in-ns 'moon.world)
 
 (defn- init-ids->eids []
   (def ^:private ids->eids {}))

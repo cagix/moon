@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc]]
             [moon.tx :as tx]
             [gdx.graphics :as g]
-            [world.core :as world :refer [stopped? timer]]
+            [moon.world :as world :refer [stopped? timer]]
             [world.entity :as entity]
             [world.entity.state :as state]
             [world.entity.modifiers :refer [entity-stat]]))

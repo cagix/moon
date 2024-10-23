@@ -4,7 +4,7 @@
             [moon.tx :as tx]
             [gdx.graphics :as g]
             [gdx.math.vector :as v]
-            [world.core :as world]
+            [moon.world :as world]
             [world.entity :as entity]
             [world.effect :as effect :refer [source target]]))
 

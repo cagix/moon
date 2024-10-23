@@ -5,7 +5,7 @@
             [moon.tx :as tx]
             [gdx.math.vector :as v]
             [utils.core :refer [find-first]]
-            [world.core :as w]
+            [moon.world :as w]
             [world.entity :as entity]
             [world.effect :as effect :refer [source target target-direction]]))
 

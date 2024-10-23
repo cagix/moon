@@ -6,7 +6,7 @@
             [gdx.ui.stage-screen :refer [mouse-on-actor?]]
             [world.item :refer [valid-slot? stackable?]]
             [world.widgets.inventory :refer [clicked-inventory-cell]]
-            [world.core :as world]
+            [moon.world :as world]
             [world.entity :as entity]
             [world.entity.state :as state]))
 

@@ -3,7 +3,7 @@
             [moon.db :as db]
             [moon.schema :as schema]
             [gdx.graphics :as g]
-            [world.core :as world]
+            [moon.world :as world]
             [world.entity :as entity]))
 
 (defprotocol Animation

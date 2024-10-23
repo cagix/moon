@@ -2,8 +2,8 @@
   (:require [moon.component :as component]
             [moon.db :as db]
             [moon.tx :as tx]
-            [gdx.app :refer [post-runnable!]]
-            [world.core :as world]))
+            [moon.world :as world])
+  (:import (com.badlogic.gdx Gdx)))
 
 (comment
 
@@ -49,6 +49,7 @@
 
  )
 
+
 (comment
  ; start world - small empty test room
  ; 2 creatures - player?
@@ -62,6 +63,9 @@
                           :components {:entity/state [:state/npc :npc-sleeping]
                                        :entity/faction :evil} }])
  )
+
+(defmacro post-runnable! [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (defn- post-tx! [tx]
   (post-runnable! (tx/do! [tx])))

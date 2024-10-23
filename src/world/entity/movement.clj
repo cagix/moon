@@ -3,7 +3,7 @@
             [moon.tx :as tx]
             [gdx.math.vector :as v]
             [malli.core :as m]
-            [world.core :as world]
+            [moon.world :as world]
             [world.entity :as entity]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]

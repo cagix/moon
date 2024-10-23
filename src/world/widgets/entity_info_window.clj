@@ -2,7 +2,7 @@
   (:require [moon.info :as info]
             [gdx.graphics :as g]
             [gdx.ui :as ui]
-            [world.core :refer [mouseover-entity]]))
+            [moon.world :refer [mouseover-entity]]))
 
 (def ^:private disallowed-keys [:entity/skills
                                 :entity/state

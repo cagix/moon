@@ -1,4 +1,4 @@
-(ns world.core
+(ns moon.world
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [moon.component :refer [defc]]
             [moon.db :as db]
@@ -13,14 +13,14 @@
             [gdx.tiled :as t]
             [gdx.utils :refer [dispose!]]
             [utils.core :refer [->tile tile->middle safe-merge sort-by-order]]
-            [world.core.content-grid :as content-grid]
-            [world.core.raycaster :as raycaster]
+            [moon.world.content-grid :as content-grid]
+            [moon.world.raycaster :as raycaster]
             [world.entity :as entity]
             [world.entity.state :as entity-state]
             [moon.level.tiled :refer [movement-property]])
-  (:load "core/grid"
-         "core/potential_fields"
-         "core/time"))
+  (:load "world/grid"
+         "world/potential_fields"
+         "world/time"))
 
 (defn- init-raycaster []
   (def ^:private raycaster (raycaster/create grid blocks-vision?)))
@@ -42,10 +42,10 @@
 (defn active-entities []
   (content-grid/active-entities content-grid @player))
 
-(load "core/entities"
-      "core/mouseover_entity"
-      "core/debug_render"
-      "core/render")
+(load "world/entities"
+      "world/mouseover_entity"
+      "world/debug_render"
+      "world/render")
 
 (declare ^:private entity-tick-error)
 

@@ -1,4 +1,4 @@
-(in-ns 'world.core)
+(in-ns 'moon.world)
 
 (def mouseover-eid nil)
 

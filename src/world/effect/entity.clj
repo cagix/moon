@@ -4,7 +4,7 @@
             [moon.tx :as tx]
             [gdx.graphics :as g]
             [utils.core :refer [readable-number]]
-            [world.core :refer [timer stopped? finished-ratio]]
+            [moon.world :refer [timer stopped? finished-ratio]]
             [world.entity :as entity]
             [world.effect :as effect :refer [source target]]))
 

@@ -1,7 +1,7 @@
 (ns world.creature.npc.idle
   (:require [moon.component :refer [defc]]
             [world.skill :as skill]
-            [world.core :as world]
+            [moon.world :as world]
             [world.entity :as entity]
             [world.entity.follow-ai :as follow-ai]
             [world.effect :as effect]))

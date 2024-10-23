@@ -8,7 +8,7 @@
             [gdx.ui.actor :as a]
             [gdx.ui.stage-screen :refer [stage-get]]
             [world.item :refer [valid-slot? empty-inventory]]
-            [world.core :as world]
+            [moon.world :as world]
             [world.entity.state :as state]))
 
 ; Items are also smaller than 48x48 all of them

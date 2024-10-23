@@ -1,4 +1,4 @@
-(in-ns 'world.core)
+(in-ns 'moon.world)
 
 (defn- init-explored-tile-corners [width height]
   (def explored-tile-corners (atom (g2d/create-grid width height (constantly false)))))

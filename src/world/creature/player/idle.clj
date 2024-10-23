@@ -9,7 +9,7 @@
             [world.skill :as skill :refer [has-skill? clicked-skillmenu-skill]]
             [world.widgets.action-bar :refer [selected-skill]]
             [world.widgets.inventory :refer [clicked-inventory-cell inventory-window]]
-            [world.core :as world :refer [timer stopped? finished-ratio mouseover-eid]]
+            [moon.world :as world :refer [timer stopped? finished-ratio mouseover-eid]]
             [world.creature.player.moving :refer [WASD-movement-vector]]
             [world.entity :as entity]
             [world.entity.state :as state]
