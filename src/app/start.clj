@@ -1,7 +1,6 @@
 (ns app.start
   (:require app.assets
             [app.config :as config]
-            [app.dock-icon :as dock-icon]
             [app.screens.editor :as property-editor]
             [app.screens.main :as main-menu]
             [app.screens.map-editor :as map-editor]
@@ -12,9 +11,7 @@
             [gdx.graphics :as g]
             [gdx.screen :as screen]
             [gdx.vis-ui :as vis-ui])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
-           (org.lwjgl.system Configuration)))
+  (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (defn- application-listener []
   (proxy [ApplicationAdapter] []
@@ -43,9 +40,5 @@
 
 (defn -main []
   (db/load! config/properties)
-  (when SharedLibraryLoader/isMac
-    (dock-icon/set config/dock-icon)
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (.set Configuration/GLFW_CHECK_THREAD0 false))
   (lwjgl3/application (application-listener)
-                      (lwjgl3/config config/lwjgl3)))
+                      config/lwjgl3))

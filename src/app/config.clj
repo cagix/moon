@@ -2,12 +2,11 @@
 
 (def properties "properties.edn")
 
-(def dock-icon "moon.png")
-
 (def lwjgl3 {:title "Eternal"
              :fps 60
              :width 1440
-             :height 900})
+             :height 900
+             :dock-icon "moon.png"})
 
 (def resources "resources/")
 
