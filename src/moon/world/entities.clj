@@ -12,7 +12,7 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (🎥/position (g/world-camera))
+        [cx cy] (cam/position (g/world-camera))
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))

@@ -16,8 +16,8 @@
 (def ^:private ^:dbg-flag cell-occupied? false)
 
 (defn- tile-debug []
-  (let [🎥 (g/world-camera)
-        [left-x right-x bottom-y top-y] (🎥/frustum 🎥)]
+  (let [cam (g/world-camera)
+        [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
       (g/draw-grid (int left-x) (int bottom-y)
@@ -25,7 +25,7 @@
                    (+ 2 (int (g/world-viewport-height)))
                    1 1 [1 1 1 0.8]))
 
-    (doseq [[x y] (🎥/visible-tiles 🎥)
+    (doseq [[x y] (cam/visible-tiles cam)
             :let [cell (grid [x y])]
             :when cell
             :let [cell* @cell]]

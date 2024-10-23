@@ -1,7 +1,7 @@
 (ns moon.screens.world
   (:require [moon.db :as db]
             [moon.graphics :as g]
-            [moon.graphics.camera :as 🎥]
+            [moon.graphics.camera :as cam]
             [moon.input :refer [key-pressed? key-just-pressed?]]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
@@ -45,7 +45,7 @@
        true))))
 
 (defn- adjust-zoom [camera by] ; DRY map editor
-  (🎥/set-zoom! camera (max 0.1 (+ (🎥/zoom camera) by))))
+  (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
 
 (def ^:private zoom-speed 0.05)
 
@@ -125,7 +125,7 @@
     (add! #(str "paused? " world/paused?))
     (add! #(str "GUI: " (g/gui-mouse-position)))
     (add! #(str "World: "(mapv int (g/world-mouse-position))))
-    (add! #(str "Zoom: " (🎥/zoom (g/world-camera))))
+    (add! #(str "Zoom: " (cam/zoom (g/world-camera))))
     (add! #(str "logic-frame: " world/logic-frame))
     (add! fps)))
 

@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [moon.db :as db]
             [moon.graphics :as g :refer [white]]
-            [moon.graphics.camera :as 🎥]
+            [moon.graphics.camera :as cam]
             [moon.input :refer [key-pressed? key-just-pressed?]]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
@@ -16,11 +16,11 @@
             [moon.level.tiled :refer [movement-properties movement-property]]))
 
 (defn- show-whole-map! [camera tiled-map]
-  (🎥/set-position! camera
+  (cam/set-position! camera
                     [(/ (t/width  tiled-map) 2)
                      (/ (t/height tiled-map) 2)])
-  (🎥/set-zoom! camera
-                (🎥/calculate-zoom camera
+  (cam/set-zoom! camera
+                (cam/calculate-zoom camera
                                    :left [0 0]
                                    :top [0 (t/height tiled-map)]
                                    :right [(t/width tiled-map) 0]
@@ -67,7 +67,7 @@ direction keys: move")
     window))
 
 (defn- adjust-zoom [camera by] ; DRY context.game
-  (🎥/set-zoom! camera (max 0.1 (+ (🎥/zoom camera) by))))
+  (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
 
 (def ^:private camera-movement-speed 1)
 (def ^:private zoom-speed 0.1)
@@ -78,8 +78,8 @@ direction keys: move")
   (when (key-pressed? :keys/shift-left) (adjust-zoom camera    zoom-speed))
   (when (key-pressed? :keys/minus)      (adjust-zoom camera (- zoom-speed)))
   (let [apply-position (fn [idx f]
-                         (🎥/set-position! camera
-                                           (update (🎥/position camera)
+                         (cam/set-position! camera
+                                           (update (cam/position camera)
                                                    idx
                                                    #(f % camera-movement-speed))))]
     (if (key-pressed? :keys/left)  (apply-position 0 -))
@@ -93,7 +93,7 @@ direction keys: move")
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (🎥/visible-tiles (g/world-camera))
+        visible-tiles (cam/visible-tiles (g/world-camera))
         [x y] (mapv int (g/world-mouse-position))]
     (g/draw-rectangle x y 1 1 :white)
     (when start-position
@@ -140,7 +140,7 @@ direction keys: move")
     (show-whole-map! (g/world-camera) (:tiled-map @current-data)))
 
   (screen/exit! [_]
-    (🎥/reset-zoom! (g/world-camera)))
+    (cam/reset-zoom! (g/world-camera)))
 
   (screen/render! [_]
     (g/draw-tiled-map (:tiled-map @current-data) (constantly white))

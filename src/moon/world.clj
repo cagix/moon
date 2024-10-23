@@ -5,7 +5,7 @@
             [moon.tx :as tx]
             [data.grid2d :as g2d]
             [moon.graphics :as g :refer [white black]]
-            [moon.graphics.camera :as 🎥]
+            [moon.graphics.camera :as cam]
             [moon.input :refer [key-pressed? key-just-pressed?]]
             [moon.ui.error-window :refer [error-window!]]
             [moon.ui.stage-screen :as stage-screen]
@@ -108,8 +108,8 @@
   nil)
 
 (defn tick! []
-  (🎥/set-position! (g/world-camera) (:position @player))
-  (render-tiled-map! (🎥/position (g/world-camera)))
+  (cam/set-position! (g/world-camera) (:position @player))
+  (render-tiled-map! (cam/position (g/world-camera)))
   (g/render-world-view! (fn []
                           (render-before-entities)
                           (render-entities! (map deref (active-entities)))

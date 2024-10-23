@@ -1,1 +1,1 @@
-DEV_MODE=true lein run -m gdx.dev moon.app
+DEV_MODE=true lein run -m moon.dev moon.app

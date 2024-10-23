@@ -18,7 +18,7 @@
         top    (apply max-key (fn [[x y]] y) positions-explored)
         right  (apply max-key (fn [[x y]] x) positions-explored)
         bottom (apply min-key (fn [[x y]] y) positions-explored)]
-    (🎥/calculate-zoom (g/world-camera)
+    (cam/calculate-zoom (g/world-camera)
                        :left left
                        :top top
                        :right right
@@ -30,17 +30,17 @@
 
 #_(deftype Screen []
     (show [_]
-      (🎥/set-zoom! (g/world-camera) (minimap-zoom)))
+      (cam/set-zoom! (g/world-camera) (minimap-zoom)))
 
     (hide [_]
-      (🎥/reset-zoom! (g/world-camera)))
+      (cam/reset-zoom! (g/world-camera)))
 
     ; TODO fixme not subscreen
     (render [_]
       (g/draw-tiled-map world/tiled-map
                         (->tile-corner-color-setter @world/explored-tile-corners))
       (g/render-world-view! (fn []
-                              (g/draw-filled-circle (🎥/camera-position (g/world-camera))
+                              (g/draw-filled-circle (cam/camera-position (g/world-camera))
                                                     0.5
                                                     :green)))
       (when (or (key-just-pressed? :keys/tab)
