@@ -1,5 +1,6 @@
 (ns moon.world
   (:require [clojure.gdx :refer [dispose key-pressed? key-just-pressed?]]
+            [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.color :as color]
             [clj-commons.pretty.repl :refer [pretty-pst]]
             [moon.component :refer [defc]]
@@ -119,7 +120,7 @@
            update-mouseover-entity!
            update-game-paused
            #(when-not paused?
-              (update-time! (min (g/delta-time) entity/max-delta-time))
+              (update-time! (min (gdx.graphics/delta-time) entity/max-delta-time))
               (let [entities (active-entities)]
                 (update-potential-fields! entities)
                 (try (run! tick-system entities)

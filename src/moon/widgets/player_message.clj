@@ -1,5 +1,6 @@
 (ns moon.widgets.player-message
-  (:require [moon.component :refer [defc]]
+  (:require [clojure.gdx.graphics :as gdx.graphics]
+            [moon.component :refer [defc]]
             [moon.tx :as tx]
             [moon.graphics :as g]
             [moon.ui :as ui]))
@@ -18,7 +19,7 @@
 
 (defn- check-remove-message []
   (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (g/delta-time))
+    (alter-var-root #'message-to-player update :counter + (gdx.graphics/delta-time))
     (when (>= counter duration-seconds)
       (.bindRoot #'message-to-player nil))))
 

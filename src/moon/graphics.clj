@@ -1,5 +1,6 @@
 (ns moon.graphics
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx :refer [dispose]]
+            [clojure.gdx.graphics.color :as color]
             [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.schema :as schema]
@@ -14,12 +15,8 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils Disposable ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport))
   (:load "graphics_sd"))
-
-(defn clear-screen []
-  (ScreenUtils/clear Color/BLACK))
 
 (declare batch)
 
@@ -27,9 +24,6 @@
 
 (load "graphics_views"
       "graphics_image")
-
-(defn delta-time        [] (.getDeltaTime       Gdx/graphics))
-(defn frames-per-second [] (.getFramesPerSecond Gdx/graphics))
 
 (defn- ->default-font [true-type-font]
   (or (and true-type-font (text/truetype-font true-type-font))
@@ -52,7 +46,7 @@
 (defn- ->cursor [file [hotspot-x hotspot-y]]
   (let [pixmap (Pixmap. (.internal Gdx/files file))
         cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
+    (dispose pixmap)
     cursor))
 
 (defn- ->cursors [cursors]
@@ -102,10 +96,10 @@
     (.bindRoot #'cached-map-renderer (memoize tiled-renderer)))
 
 (defn dispose! []
-  (.dispose batch)
-  (.dispose sd-texture)
-  (.dispose default-font)
-  (run! Disposable/.dispose (vals cursors)))
+  (dispose batch)
+  (dispose sd-texture)
+  (dispose default-font)
+  (run! dispose (vals cursors)))
 
 (defn resize! [[w h]]
   (vp/update (gui-viewport) [w h] :center-camera? true)

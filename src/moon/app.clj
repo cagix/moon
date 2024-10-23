@@ -95,7 +95,6 @@
       (screen/dispose-all!))
 
     (render []
-      (g/clear-screen)
       (screen/render! (screen/current)))
 
     (resize [w h]

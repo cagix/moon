@@ -1,5 +1,6 @@
 (ns moon.screens.world
   (:require [clojure.gdx :refer [key-pressed? key-just-pressed?]]
+            [clojure.gdx.graphics :refer [clear-screen frames-per-second]]
             [moon.db :as db]
             [moon.graphics :as g]
             [moon.graphics.camera :as cam]
@@ -73,6 +74,7 @@
     (g/set-cursor! :cursors/default))
 
   (screen/render! [_]
+    (clear-screen :black)
     (world/tick!)
     (check-key-input))
 
@@ -110,8 +112,7 @@
     (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
     (.expandX (.right (.add table label)))))
 
-(defn- fps [] (str "FPS: " (g/frames-per-second)))
-
+(defn- fps [] (str "FPS: " (frames-per-second)))
 
 (defn- add-debug-infos [mb]
   (let [table (.getTable mb)
