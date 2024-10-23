@@ -3,7 +3,7 @@
             [moon.component :refer [defc]]
             [moon.graphics :as g]
             [gdl.math.vector :as v]
-            [moon.ui.stage-screen :refer [mouse-on-actor?]]
+            [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
             [moon.widgets.inventory :refer [clicked-inventory-cell]]
             [moon.world :as world]

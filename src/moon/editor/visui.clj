@@ -12,7 +12,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.ui.error-window :refer [error-window!]]
-            [moon.ui.stage-screen :refer [stage-add!]]
+            [moon.stage :refer [stage-add!]]
             [malli.core :as m]
             [malli.generator :as mg]))
 

@@ -10,7 +10,7 @@
             [moon.db :as db]
             [moon.graphics :as g]
             [moon.screen :as screen]
-            [moon.ui.stage-screen :as stage-screen :refer [stage-get]]
+            [moon.stage :as stage :refer [stage-get]]
             [moon.level.generate :as level]
             [moon.creature :as creature]
             moon.creature.player.item-on-cursor
@@ -68,7 +68,7 @@
 
 (defc :screens/world
   (screen/create [_]
-    (stage-screen/create :screen (->WorldScreen))))
+    (stage/create :screen (->WorldScreen))))
 
 (defn- world-actors []
   [(if dev-mode?

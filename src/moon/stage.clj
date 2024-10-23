@@ -1,4 +1,4 @@
-(ns moon.ui.stage-screen
+(ns moon.stage
   (:require [gdl.input :as input]
             [gdl.utils :refer [dispose]]
             [moon.graphics :as g]

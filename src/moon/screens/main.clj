@@ -4,7 +4,7 @@
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
             [moon.component :refer [defc]]
-            [moon.ui.stage-screen :as stage-screen]
+            [moon.stage :as stage]
             [moon.db :as db]
             [moon.tx :as tx]
             [moon.graphics :as g]
@@ -33,10 +33,10 @@
 
 (defc :screens/main-menu
   (screen/create [[_ background-image]]
-    (stage-screen/create :actors
-                         [(background-image)
-                          (->buttons)
-                          (ui/actor {:act (fn []
-                                            (when (key-just-pressed? :keys/escape)
-                                              (app/exit)))})]
-                         :screen (->MainMenuScreen))))
+    (stage/create :actors
+                  [(background-image)
+                   (->buttons)
+                   (ui/actor {:act (fn []
+                                     (when (key-just-pressed? :keys/escape)
+                                       (app/exit)))})]
+                  :screen (->MainMenuScreen))))

@@ -4,7 +4,7 @@
             [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.ui.stage-screen :refer [stage-add! stage-get]]))
+            [moon.stage :refer [stage-add! stage-get]]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

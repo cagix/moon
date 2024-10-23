@@ -4,7 +4,7 @@
             [moon.tx :as tx]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.ui.stage-screen :refer [stage-get]]))
+            [moon.stage :refer [stage-get]]))
 
 (def ^:private image-scale 2)
 

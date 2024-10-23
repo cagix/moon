@@ -5,7 +5,7 @@
             [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.visui :as editor]
-            [moon.ui.stage-screen :as stage-screen :refer [stage-add!]]
+            [moon.stage :as stage :refer [stage-add!]]
             [moon.screen :as screen])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
@@ -42,9 +42,9 @@
 
 (defc :screens/editor
   (screen/create [[_ background-image]]
-    (stage-screen/create :actors
-                         [(background-image)
-                          (main-table)
-                          (ui/actor {:act (fn []
-                                            (when (key-just-pressed? :shift-left)
-                                              (screen/change! :screens/main-menu)))})])))
+    (stage/create :actors
+                  [(background-image)
+                   (main-table)
+                   (ui/actor {:act (fn []
+                                     (when (key-just-pressed? :shift-left)
+                                       (screen/change! :screens/main-menu)))})])))

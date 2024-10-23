@@ -4,7 +4,7 @@
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.ui.stage-screen :refer [mouse-on-actor?]]
+            [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [can-pickup-item?]]
             [moon.skill :as skill :refer [has-skill? clicked-skillmenu-skill]]
             [moon.widgets.action-bar :refer [selected-skill]]

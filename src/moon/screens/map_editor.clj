@@ -11,7 +11,7 @@
             [moon.db :as db]
             [moon.graphics :as g]
             [moon.ui.error-window :refer [error-window!]]
-            [moon.ui.stage-screen :as stage-screen]
+            [moon.stage :as stage]
             [moon.screen :as screen]
             [moon.level.generate :refer [generate-level]]
             [moon.level.modules :refer [module-width module-height]]
@@ -160,8 +160,8 @@ direction keys: move")
 
 (defc :screens/map-editor
   (screen/create [_]
-    (stage-screen/create :actors [(->generate-map-window world-id)
-                                  (->info-window)]
-                         :screen (->MapEditorScreen (atom {:tiled-map (t/load-map moon.level.generate/modules-file)
-                                                           :show-movement-properties false
-                                                           :show-grid-lines false})))))
+    (stage/create :actors [(->generate-map-window world-id)
+                           (->info-window)]
+                  :screen (->MapEditorScreen (atom {:tiled-map (t/load-map moon.level.generate/modules-file)
+                                                    :show-movement-properties false
+                                                    :show-grid-lines false})))))

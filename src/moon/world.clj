@@ -11,7 +11,7 @@
             [data.grid2d :as g2d]
             [moon.graphics :as g]
             [moon.ui.error-window :refer [error-window!]]
-            [moon.ui.stage-screen :as stage-screen]
+            [moon.stage :as stage]
             [gdl.math.shape :as shape]
             [gdl.tiled :as t]
             [moon.world.content-grid :as content-grid]

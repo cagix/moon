@@ -2,7 +2,7 @@
   (:require [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
-            [moon.ui.stage-screen :refer [stage-add!]]
+            [moon.stage :refer [stage-add!]]
             [moon.world :as world :refer [mouseover-entity]]))
 
 (comment

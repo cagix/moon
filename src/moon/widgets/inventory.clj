@@ -7,7 +7,7 @@
             [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.ui.stage-screen :refer [stage-get]]
+            [moon.stage :refer [stage-get]]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.world :as world]
             [moon.entity.state :as state]))
