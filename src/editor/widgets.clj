@@ -1,7 +1,6 @@
 (ns editor.widgets
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
-            [component.db :as db]
             [component.info :as info]
             [component.property :as property]
             [editor.widget :as widget]
@@ -65,9 +64,6 @@
 
 ;;
 
-(defmethod db/edn->value :s/image [_ image]
-  (g/edn->image image))
-
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 (defn- texture-rows []
@@ -76,7 +72,7 @@
     #_[(ui/text-button file (fn []))]))
 
 (defn- big-image-button [image]
-  (ui/image-button (g/edn->image image)
+  (ui/image-button image
                    (fn on-clicked [])
                    {:scale 2}))
 

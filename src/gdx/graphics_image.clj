@@ -97,3 +97,6 @@
   [:map {:closed true}
    [:file :string]
    [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
+
+(defmethod db/edn->value :s/image [_ image]
+  (edn->image image))

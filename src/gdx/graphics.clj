@@ -1,5 +1,6 @@
 (ns gdx.graphics
   (:require [component.core :refer [defc]]
+            [component.db :as db]
             [component.schema :as schema]
             [component.tx :as tx]
             [gdx.assets :as assets]
