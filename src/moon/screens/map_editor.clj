@@ -1,8 +1,9 @@
 (ns moon.screens.map-editor
   (:require [clojure.gdx :refer [dispose key-pressed? key-just-pressed?]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.string :as str]
             [moon.db :as db]
-            [moon.graphics :as g :refer [white]]
+            [moon.graphics :as g]
             [moon.graphics.camera :as cam]
             [moon.ui :as ui]
             [moon.ui.actor :as a]
@@ -142,7 +143,7 @@ direction keys: move")
     (cam/reset-zoom! (g/world-camera)))
 
   (screen/render! [_]
-    (g/draw-tiled-map (:tiled-map @current-data) (constantly white))
+    (g/draw-tiled-map (:tiled-map @current-data) (constantly color/white))
     (g/render-world-view! render-on-map)
     (if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))

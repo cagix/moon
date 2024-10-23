@@ -26,7 +26,7 @@
 
 #_(defn- ->tile-corner-color-setter [explored?]
   (fn tile-corner-color-setter [color x y]
-    (if (get explored? [x y]) white black)))
+    (if (get explored? [x y]) color/white color/black)))
 
 #_(deftype Screen []
     (show [_]

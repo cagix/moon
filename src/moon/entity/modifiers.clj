@@ -1,10 +1,10 @@
 (ns moon.entity.modifiers
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.string :as str]
             [moon.component :refer [defc defc*]]
             [moon.info :as info]
             [moon.tx :as tx]
             [moon.operation :as op]
-            [moon.graphics :as g]
             [moon.utils :refer [safe-remove-one update-kv k->pretty-name]]
             [moon.entity :as entity]
             [moon.effect :as effect]))
@@ -60,7 +60,7 @@
         :when (seq operations)]
     [modifier-k operations]))
 
-(g/def-markup-color "MODIFIER_BLUE" :cyan)
+(color/put "MODIFIER_BLUE" :cyan)
 
 ; For now no green/red color for positive/negative numbers
 ; as :stats/damage-receive negative value would be red but actually a useful buff

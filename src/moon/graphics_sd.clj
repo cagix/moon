@@ -4,7 +4,7 @@
          ^:private sd-texture)
 
 (defn- sd-color [sd color]
-  (sd/set-color sd (munge-color color)))
+  (sd/set-color sd (color/munge color)))
 
 (defn draw-ellipse [position radius-x radius-y color]
   (sd-color sd color)

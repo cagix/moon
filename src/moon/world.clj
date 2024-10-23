@@ -1,11 +1,12 @@
 (ns moon.world
   (:require [clojure.gdx :refer [dispose key-pressed? key-just-pressed?]]
+            [clojure.gdx.graphics.color :as color]
             [clj-commons.pretty.repl :refer [pretty-pst]]
             [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.tx :as tx]
             [data.grid2d :as g2d]
-            [moon.graphics :as g :refer [white black]]
+            [moon.graphics :as g]
             [moon.graphics.camera :as cam]
             [moon.ui.error-window :refer [error-window!]]
             [moon.ui.stage-screen :as stage-screen]

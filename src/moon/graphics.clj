@@ -1,5 +1,5 @@
 (ns moon.graphics
-  (:require [clojure.gdx :refer [gdx-field]]
+  (:require [clojure.gdx.graphics.color :as color]
             [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.schema :as schema]
@@ -12,12 +12,11 @@
             [moon.graphics.tiled :as tiled]
             [moon.utils :refer [safe-get]])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap)
+           (com.badlogic.gdx.graphics Color OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils Disposable ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport))
-  (:load "graphics/color"
-         "graphics_sd"))
+  (:load "graphics_sd"))
 
 (defn clear-screen []
   (ScreenUtils/clear Color/BLACK))

@@ -1,5 +1,6 @@
 (ns moon.creature
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.string :as str]
             [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.info :as info]
@@ -56,7 +57,7 @@
                                    (name (:property/id %)))
               :extra-info-text #(str (:creature/level %))}})
 
-(g/def-markup-color "ITEM_GOLD" [0.84 0.8 0.52])
+(color/put "ITEM_GOLD" [0.84 0.8 0.52])
 
 (defc :property/pretty-name
   {:schema :string

@@ -1,5 +1,6 @@
 (ns moon.widgets.inventory
-  (:require [moon.component :refer [defsystem defc]]
+  (:require [clojure.gdx.graphics.color :as color]
+            [moon.component :refer [defsystem defc]]
             [moon.info :as info]
             [moon.tx :as tx]
             [data.grid2d :as g2d]
@@ -72,7 +73,7 @@
                      :texture-region
                      ui/texture-region-drawable)]
     (ui/set-min-size! drawable cell-size)
-    (ui/tinted-drawable drawable (g/->color 1 1 1 0.4))))
+    (ui/tinted-drawable drawable (color/create 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
