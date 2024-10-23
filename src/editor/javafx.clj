@@ -12,10 +12,8 @@
            (javafx.scene.image Image ImageView)
            (javafx.scene.layout StackPane)
            (javafx.scene Scene Node)
-           (javafx.collections FXCollections)
-           )
+           (javafx.collections FXCollections))
   #_(:gen-class :extends javafx.application.Application))
-
 
 (comment
  ; * remove comment at :gen-class
