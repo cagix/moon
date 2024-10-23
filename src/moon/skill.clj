@@ -3,7 +3,7 @@
             [moon.info :as info]
             [moon.property :as property]
             [moon.tx :as tx]
-            [moon.utils :refer [readable-number]]
+            [gdl.utils :refer [readable-number]]
             [moon.world :as world :refer [stopped?]]
             [moon.entity :as entity]
             [moon.entity.state :as entity-state]

@@ -1,6 +1,6 @@
 (ns moon.level.nads
   (:require [data.grid2d :as g]
-            [moon.utils :refer [assoc-ks]]))
+            [gdl.utils :refer [assoc-ks]]))
 
 (defn- wall-at? [grid posi]
   (= :wall (get grid posi)))

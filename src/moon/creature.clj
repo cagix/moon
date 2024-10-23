@@ -8,7 +8,7 @@
             [moon.tx :as tx]
             [moon.graphics :as g]
             [gdl.tiled :as tiled]
-            [moon.utils :refer [safe-merge tile->middle]]
+            [gdl.utils :refer [safe-merge tile->middle]]
             [moon.world :as world]
             [moon.creature.fsms :as fsms]
             moon.creature.active

@@ -84,7 +84,7 @@
 (def ^:private value-widget? (comp vector? a/id))
 
 (defn- find-kv-widget [table k]
-  (moon.utils/find-first (fn [actor]
+  (gdl.utils/find-first (fn [actor]
                            (and (a/id actor)
                                 (= k ((a/id actor) 0))))
                          (ui/children table)))

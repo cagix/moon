@@ -1,6 +1,6 @@
 (ns moon.level.grid
   (:require [data.grid2d :as g]
-            [moon.utils :refer [assoc-ks]]
+            [gdl.utils :refer [assoc-ks]]
             [moon.level.caves :as caves]
             [moon.level.nads :as nads]))
 

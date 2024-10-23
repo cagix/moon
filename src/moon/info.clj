@@ -1,7 +1,7 @@
 (ns moon.info
   (:require [clojure.string :as str]
-            [moon.component :refer [defsystem]]
-            [moon.utils :refer [index-of]]))
+            [gdl.utils :refer [index-of]]
+            [moon.component :refer [defsystem]]))
 
 (defsystem text "Return info-string (for tooltips,etc.). Default nil.")
 (defmethod text :default [_])

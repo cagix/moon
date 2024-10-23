@@ -4,7 +4,7 @@
             [clojure.pprint :refer [pprint]]
             [moon.property :as property]
             [moon.schema :as schema]
-            [moon.utils :refer [safe-get]]))
+            [gdl.utils :refer [safe-get]]))
 
 (comment
 

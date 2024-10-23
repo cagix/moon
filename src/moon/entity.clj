@@ -5,7 +5,7 @@
             [gdl.math.shape :as shape]
             [gdl.math.vector :as v]
             [malli.core :as m]
-            [moon.utils :refer [define-order ->tile dissoc-in]]))
+            [gdl.utils :refer [define-order ->tile dissoc-in]]))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)

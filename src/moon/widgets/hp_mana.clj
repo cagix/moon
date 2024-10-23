@@ -1,8 +1,8 @@
 (ns moon.widgets.hp-mana
-  (:require [moon.val-max :as val-max]
+  (:require [gdl.utils :refer [readable-number]]
+            [moon.val-max :as val-max]
             [moon.graphics :as g]
             [moon.ui :as ui]
-            [moon.utils :refer [readable-number]]
             [moon.world :as world]
             [moon.entity.modifiers :refer [entity-stat]]))
 

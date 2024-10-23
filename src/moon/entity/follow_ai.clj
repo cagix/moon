@@ -1,7 +1,7 @@
 (ns moon.entity.follow-ai
   (:require [data.grid2d :as g2d]
             [gdl.math.vector :as v]
-            [moon.utils :refer [->tile indexed utils-positions when-seq]]
+            [gdl.utils :refer [->tile indexed utils-positions when-seq]]
             [moon.world :as world
              :refer [occupied-by-other?
                      nearest-entity-distance

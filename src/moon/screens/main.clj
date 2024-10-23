@@ -7,7 +7,7 @@
             [moon.screen :as screen]
             [moon.ui :as ui]
             [moon.ui.stage-screen :as stage-screen]
-            [moon.utils :refer [dev-mode?]]))
+            [gdl.utils :refer [dev-mode?]]))
 
 (defn- ->buttons []
   (ui/table {:rows (remove nil? (concat

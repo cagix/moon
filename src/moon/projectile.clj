@@ -4,7 +4,7 @@
             [moon.property :as property]
             [moon.tx :as tx]
             [gdl.math.vector :as v]
-            [moon.utils :refer [find-first]]
+            [gdl.utils :refer [find-first]]
             [moon.world :as w]
             [moon.entity :as entity]
             [moon.effect :as effect :refer [source target target-direction]]))

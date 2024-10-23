@@ -1,6 +1,6 @@
 (ns moon.editor.common
   (:require [moon.schema :as schema]
-            [moon.utils :refer [index-of]]))
+            [gdl.utils :refer [index-of]]))
 
 (defn widget-type [schema _]
   (let [stype (schema/type schema)]
