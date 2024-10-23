@@ -1,7 +1,7 @@
-(ns level.modules
+(ns moon.level.modules
   (:require [gdx.tiled :as t]
-            [level.grid :refer [transition-idx-value]]
-            [level.tiled :refer [grid->tiled-map]]))
+            [moon.level.grid :refer [transition-idx-value]]
+            [moon.level.tiled :refer [grid->tiled-map]]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
 ; * at the beginning enemies very close, different area different spawn-rate !

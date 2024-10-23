@@ -1,8 +1,8 @@
-(ns level.grid
+(ns moon.level.grid
   (:require [data.grid2d :as g]
             [utils.core :refer [assoc-ks]]
-            [level.caves :as caves]
-            [level.nads :as nads]))
+            [moon.level.caves :as caves]
+            [moon.level.nads :as nads]))
 
 (defn scale-grid [grid [w h]]
   (g/create-grid (* (g/width grid)  w)

@@ -1,12 +1,12 @@
-(ns level.uf-caves
+(ns moon.level.uf-caves
   (:require [data.grid2d :as g2d]
             [moon.db :as db]
             [gdx.graphics :as g]
             [gdx.tiled :as t]
             [gdx.rand :refer [get-rand-weighted-item]]
-            [level.creatures :as creatures]
-            [level.grid :refer [scalegrid printgrid transition-idx-value cave-grid adjacent-wall-positions flood-fill]]
-            [level.tiled :refer [movement-property wgt-grid->tiled-map]]))
+            [moon.level.creatures :as creatures]
+            [moon.level.grid :refer [scalegrid printgrid transition-idx-value cave-grid adjacent-wall-positions flood-fill]]
+            [moon.level.tiled :refer [movement-property wgt-grid->tiled-map]]))
 
 (defn- uf-transition [position grid]
   (transition-idx-value position (= :transition (get grid position))))

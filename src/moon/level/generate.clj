@@ -1,15 +1,15 @@
-(ns level.generate
+(ns moon.level.generate
   (:require [moon.component :refer [defc]]
             [moon.db :as db]
             [moon.property :as property]
             [data.grid2d :as g2d]
             [gdx.tiled :as t]
-            [level.area-level-grid :as area-level-grid]
-            [level.creatures :as creatures]
-            [level.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [level.modules :as modules :refer [modules-scale module-width module-height]]
-            [level.tiled :refer [movement-property]]
-            [level.uf-caves :as uf-caves]))
+            [moon.level.area-level-grid :as area-level-grid]
+            [moon.level.creatures :as creatures]
+            [moon.level.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
+            [moon.level.modules :as modules :refer [modules-scale module-width module-height]]
+            [moon.level.tiled :refer [movement-property]]
+            [moon.level.uf-caves :as uf-caves]))
 
 (def ^:private spawn-creatures? true)
 

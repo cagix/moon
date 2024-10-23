@@ -1,4 +1,4 @@
-(ns level.caves
+(ns moon.level.caves
   (:require [data.grid2d :as g]
             [gdx.rand :refer [sshuffle srand srand-int]]
             [utils.core :refer [assoc-ks]]))

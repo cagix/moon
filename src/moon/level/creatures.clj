@@ -1,4 +1,4 @@
-(ns level.creatures
+(ns moon.level.creatures
   (:require [moon.property :as property]
             [gdx.tiled :as t]))
 

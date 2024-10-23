@@ -9,7 +9,7 @@
             [gdx.screen :as screen]
             [gdx.ui.stage :as stage]
             [gdx.ui.stage-screen :as stage-screen :refer [stage-get]]
-            [level.generate :as level]
+            [moon.level.generate :as level]
             [utils.core :refer [dev-mode?]]
             [world.creature :as creature]
             world.creature.player.item-on-cursor

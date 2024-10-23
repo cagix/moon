@@ -17,7 +17,7 @@
             [world.core.raycaster :as raycaster]
             [world.entity :as entity]
             [world.entity.state :as entity-state]
-            [level.tiled :refer [movement-property]])
+            [moon.level.tiled :refer [movement-property]])
   (:load "core/grid"
          "core/potential_fields"
          "core/time"))

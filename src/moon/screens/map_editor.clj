@@ -11,9 +11,9 @@
             [gdx.screen :as screen]
             [gdx.tiled :as t]
             [gdx.utils :refer [dispose!]]
-            [level.generate :refer [generate-level]]
-            [level.modules :refer [module-width module-height]]
-            [level.tiled :refer [movement-properties movement-property]]))
+            [moon.level.generate :refer [generate-level]]
+            [moon.level.modules :refer [module-width module-height]]
+            [moon.level.tiled :refer [movement-properties movement-property]]))
 
 (defn- show-whole-map! [camera tiled-map]
   (🎥/set-position! camera
@@ -160,6 +160,6 @@ direction keys: move")
   [:screens/map-editor
    (stage-screen/create :actors [(->generate-map-window world-id)
                                  (->info-window)]
-                        :screen (->MapEditorScreen (atom {:tiled-map (t/load-map level.generate/modules-file)
+                        :screen (->MapEditorScreen (atom {:tiled-map (t/load-map moon.level.generate/modules-file)
                                                           :show-movement-properties false
                                                           :show-grid-lines false})))])
