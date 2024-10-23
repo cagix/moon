@@ -15,8 +15,8 @@
             [utils.core :refer [->tile tile->middle safe-merge sort-by-order]]
             [moon.world.content-grid :as content-grid]
             [moon.world.raycaster :as raycaster]
-            [world.entity :as entity]
-            [world.entity.state :as entity-state]
+            [moon.entity :as entity]
+            [moon.entity.state :as entity-state]
             [moon.level.tiled :refer [movement-property]])
   (:load "world/grid"
          "world/potential_fields"

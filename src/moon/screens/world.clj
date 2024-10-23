@@ -10,26 +10,26 @@
             [moon.ui.stage-screen :as stage-screen :refer [stage-get]]
             [moon.level.generate :as level]
             [utils.core :refer [dev-mode?]]
-            [world.creature :as creature]
-            world.creature.player.item-on-cursor
-            [world.widgets.action-bar :as action-bar]
-            [world.widgets.entity-info-window :as entity-info-window]
-            [world.widgets.hp-mana :as hp-mana-bars]
-            [world.widgets.inventory :as inventory]
-            [world.widgets.player-message :as player-message]
-            world.widgets.player-modal
+            [moon.creature :as creature]
+            moon.creature.player.item-on-cursor
+            [moon.widgets.action-bar :as action-bar]
+            [moon.widgets.entity-info-window :as entity-info-window]
+            [moon.widgets.hp-mana :as hp-mana-bars]
+            [moon.widgets.inventory :as inventory]
+            [moon.widgets.player-message :as player-message]
+            moon.widgets.player-modal
             [moon.world :as world]
-            world.audiovisual
-            world.projectile
-            world.entity.animation
-            world.entity.delete-after-duration
-            world.entity.image
-            world.entity.line
-            world.entity.movement
-            world.entity.string-effect
-            world.effect.damage
-            world.effect.entity
-            world.effect.target))
+            moon.audiovisual
+            moon.projectile
+            moon.entity.animation
+            moon.entity.delete-after-duration
+            moon.entity.image
+            moon.entity.line
+            moon.entity.movement
+            moon.entity.string-effect
+            moon.effect.damage
+            moon.effect.entity
+            moon.effect.target))
 
 (defn- check-window-hotkeys []
   (doseq [[hotkey window-id] {:keys/i :inventory-window
@@ -171,5 +171,5 @@
    (ui/group {:id :windows
               :actors [(entity-info-window/create)
                        (inventory/create)]})
-   (ui/actor {:draw world.creature.player.item-on-cursor/draw-item-on-cursor})
+   (ui/actor {:draw moon.creature.player.item-on-cursor/draw-item-on-cursor})
    (player-message/create)])
