@@ -66,6 +66,8 @@
     (init-explored-tile-corners w h))
   (init-ids->eids))
 
+(declare start)
+
 (defc :tx/add-to-world
   (tx/handle [[_ eid]]
     (let [id (:entity/id @eid)]

@@ -5,15 +5,16 @@
             [gdl.utils :refer [dev-mode?]]
             [moon.component :refer [defc]]
             [moon.ui.stage-screen :as stage-screen]
-            [moon.screens.world :as world]
             [moon.db :as db]
+            [moon.tx :as tx]
             [moon.graphics :as g]
-            [moon.screen :as screen]))
+            [moon.screen :as screen]
+            [moon.world :as world]))
 
 (defn- ->buttons []
   (ui/table {:rows (remove nil? (concat
                                  (for [{:keys [property/id]} (db/all :properties/worlds)]
-                                   [(ui/text-button (str "Start " id) (world/start-game-fn id))])
+                                   [(ui/text-button (str "Start " id) #(world/start id))])
                                  [(when dev-mode?
                                     [(ui/text-button "Map editor" #(screen/change! :screens/map-editor))])
                                   (when dev-mode?

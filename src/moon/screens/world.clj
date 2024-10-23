@@ -81,13 +81,13 @@
     (stage/clear! stage)
     (run! #(stage/add! stage %) (world-actors))))
 
-(defn start-game-fn [world-id]
-  (fn []
-    (screen/change! :screens/world)
-    (reset-stage!)
-    (let [level (level/generate-level world-id)]
-      (world/init! (:tiled-map level))
-      (creature/spawn-all level))))
+(.bindRoot #'world/start
+           (fn start-game-fn [world-id]
+             (screen/change! :screens/world)
+             (reset-stage!)
+             (let [level (level/generate-level world-id)]
+               (world/init! (:tiled-map level))
+               (creature/spawn-all level))))
 
 (import 'com.kotcrab.vis.ui.widget.MenuBar)
 (import 'com.kotcrab.vis.ui.widget.Menu)
@@ -129,7 +129,7 @@
     (.addMenu menu-bar app-menu)
     (let [world (Menu. "World")]
       (doseq [{:keys [property/id]} (db/all :properties/worlds)]
-        (.addItem world (menu-item (str "Start " id) (start-game-fn id))))
+        (.addItem world (menu-item (str "Start " id) #(world/start id))))
       (.addMenu menu-bar world))
     (let [help (Menu. "Help")]
         (.addItem help (MenuItem. "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"))
