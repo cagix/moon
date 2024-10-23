@@ -13,7 +13,7 @@
             [moon.ui.error-window :refer [error-window!]]
             [moon.stage :as stage]
             [moon.screen :as screen]
-            [moon.level.generate :refer [generate-level]]
+            [moon.level :as level]
             [moon.level.modules :refer [module-width module-height]]
             [moon.level.tiled :refer [movement-properties movement-property]]))
 
@@ -116,7 +116,7 @@ direction keys: move")
 (def ^:private world-id :worlds/modules)
 
 (defn- generate-screen-ctx [properties]
-  (let [{:keys [tiled-map start-position]} (generate-level world-id)
+  (let [{:keys [tiled-map start-position]} (level/generate world-id)
         atom-data (current-data)]
     (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc

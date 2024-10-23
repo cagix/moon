@@ -9,9 +9,9 @@
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.graphics :as g]
+            [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
-            [moon.level.generate :as level]
             [moon.creature :as creature]
             moon.creature.player.item-on-cursor
             [moon.widgets.inventory :as inventory]
@@ -96,6 +96,6 @@
            (fn start-game-fn [world-id]
              (screen/change! :screens/world)
              (reset-stage!)
-             (let [level (level/generate-level world-id)]
+             (let [level (level/generate world-id)]
                (world/init! (:tiled-map level))
                (creature/spawn-all level))))

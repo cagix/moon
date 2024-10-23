@@ -4,6 +4,7 @@
             [moon.property :as property]
             [data.grid2d :as g2d]
             [gdl.tiled :as t]
+            [moon.level :as level]
             [moon.level.area-level-grid :as area-level-grid]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
@@ -103,18 +104,12 @@
    :overview {:title "Worlds"
               :columns 10}})
 
-(defmulti generate (fn [world] (:world/generator world)))
-
-(defmethod generate :world.generator/tiled-map [world]
+(defmethod level/generate* :world.generator/tiled-map [world]
   {:tiled-map (t/load-map (:world/tiled-map world))
    :start-position [32 71]})
 
-(defmethod generate :world.generator/modules [world]
+(defmethod level/generate* :world.generator/modules [world]
   (generate-modules world))
 
-(defmethod generate :world.generator/uf-caves [world]
+(defmethod level/generate* :world.generator/uf-caves [world]
   (uf-caves/create world))
-
-(defn generate-level [world-id]
-  (let [prop (db/get world-id)]
-    (assoc (generate prop) :world/player-creature (:world/player-creature prop))))
