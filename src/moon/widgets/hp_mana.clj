@@ -2,7 +2,7 @@
   (:require [moon.val-max :as val-max]
             [moon.graphics :as g]
             [moon.ui :as ui]
-            [utils.core :refer [readable-number]]
+            [moon.utils :refer [readable-number]]
             [moon.world :as world]
             [moon.entity.modifiers :refer [entity-stat]]))
 

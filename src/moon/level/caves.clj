@@ -1,7 +1,7 @@
 (ns moon.level.caves
   (:require [data.grid2d :as g]
             [moon.rand :refer [sshuffle srand srand-int]]
-            [utils.core :refer [assoc-ks]]))
+            [moon.utils :refer [assoc-ks]]))
 
 ;Cave Algorithmus.
 ;http://properundead.com/2009/03/cave-generator.html

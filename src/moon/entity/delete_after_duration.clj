@@ -1,7 +1,7 @@
 (ns moon.entity.delete-after-duration
   (:require [moon.component :refer [defc]]
             [moon.info :as info]
-            [utils.core :refer [readable-number]]
+            [moon.utils :refer [readable-number]]
             [moon.world :refer [timer stopped? finished-ratio]]
             [moon.entity :as entity]))
 

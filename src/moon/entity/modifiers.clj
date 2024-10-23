@@ -5,7 +5,7 @@
             [moon.tx :as tx]
             [moon.operation :as op]
             [moon.graphics :as g]
-            [utils.core :refer [safe-remove-one update-kv k->pretty-name]]
+            [moon.utils :refer [safe-remove-one update-kv k->pretty-name]]
             [moon.entity :as entity]
             [moon.effect :as effect]))
 

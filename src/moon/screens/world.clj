@@ -9,7 +9,7 @@
             [moon.ui.stage :as stage]
             [moon.ui.stage-screen :as stage-screen :refer [stage-get]]
             [moon.level.generate :as level]
-            [utils.core :refer [dev-mode?]]
+            [moon.utils :refer [dev-mode?]]
             [moon.creature :as creature]
             moon.creature.player.item-on-cursor
             [moon.widgets.action-bar :as action-bar]
@@ -121,7 +121,7 @@
         (str "TRUE - name:" (.getName actor)
              "id: " (a/id actor)))
     (add! #(str "Mouseover-entity id: " (when-let [entity (world/mouseover-entity)] (:entity/id entity))))
-    (add! #(str "elapsed-time " (utils.core/readable-number world/elapsed-time) " seconds"))
+    (add! #(str "elapsed-time " (moon.utils/readable-number world/elapsed-time) " seconds"))
     (add! #(str "paused? " world/paused?))
     (add! #(str "GUI: " (g/gui-mouse-position)))
     (add! #(str "World: "(mapv int (g/world-mouse-position))))

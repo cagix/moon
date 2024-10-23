@@ -1,7 +1,7 @@
 (ns moon.schema
   (:refer-clojure :exclude [type])
   (:require [moon.component :as component]
-            [utils.core :refer [safe-get]]))
+            [moon.utils :refer [safe-get]]))
 
 (defn of [k]
   (:schema (safe-get component/meta k)))

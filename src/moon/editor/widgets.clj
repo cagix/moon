@@ -13,7 +13,7 @@
             [moon.ui :as ui]
             [moon.ui.actor :as a]
             [moon.ui.stage-screen :refer [stage-add!]]
-            [utils.core :refer [truncate ->edn-str]])
+            [moon.utils :refer [truncate ->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisTextField VisCheckBox))
   (:load "widgets_relationships"))
 

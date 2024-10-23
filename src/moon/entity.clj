@@ -5,7 +5,7 @@
             [moon.math.shape :as shape]
             [moon.math.vector :as v]
             [malli.core :as m]
-            [utils.core :refer [define-order ->tile dissoc-in]]))
+            [moon.utils :refer [define-order ->tile dissoc-in]]))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)

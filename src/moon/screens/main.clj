@@ -6,7 +6,7 @@
             [moon.screen :as screen]
             [moon.ui :as ui]
             [moon.ui.stage-screen :as stage-screen]
-            [utils.core :refer [dev-mode?]])
+            [moon.utils :refer [dev-mode?]])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn- exit! []

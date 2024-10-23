@@ -3,7 +3,7 @@
             [moon.info :as info]
             [moon.tx :as tx]
             [moon.graphics :as g]
-            [utils.core :refer [readable-number]]
+            [moon.utils :refer [readable-number]]
             [moon.world :refer [timer stopped? finished-ratio]]
             [moon.entity :as entity]
             [moon.effect :as effect :refer [source target]]))

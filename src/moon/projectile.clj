@@ -4,7 +4,7 @@
             [moon.property :as property]
             [moon.tx :as tx]
             [moon.math.vector :as v]
-            [utils.core :refer [find-first]]
+            [moon.utils :refer [find-first]]
             [moon.world :as w]
             [moon.entity :as entity]
             [moon.effect :as effect :refer [source target target-direction]]))

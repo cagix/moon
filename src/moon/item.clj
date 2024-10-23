@@ -4,7 +4,7 @@
             [moon.property :as property]
             [moon.tx :as tx]
             [data.grid2d :as g2d]
-            [utils.core :refer [find-first]]
+            [moon.utils :refer [find-first]]
             [moon.entity :as entity]
             [moon.entity.modifiers :refer [mod-info-text]]))
 

@@ -9,8 +9,7 @@
             [moon.graphics.text :as text]
             [moon.graphics.viewport :as vp]
             [moon.graphics.tiled :as tiled]
-            [moon.utils :refer [gdx-field]]
-            [utils.core :refer [safe-get]])
+            [moon.utils :refer [safe-get gdx-field]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
