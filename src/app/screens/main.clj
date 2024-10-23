@@ -1,6 +1,5 @@
 (ns app.screens.main
-  (:require [app.screens.background-image :as background-image]
-            [app.screens.world :as world]
+  (:require [app.screens.world :as world]
             [component.db :as db]
             [gdx.app :as app]
             [gdx.graphics :as g]
@@ -30,10 +29,10 @@
   (screen/render! [_])
   (screen/dispose! [_]))
 
-(defn create []
+(defn create [background-image]
   [:screens/main-menu
    (stage-screen/create :actors
-                        [(background-image/create)
+                        [(background-image)
                          (->buttons)
                          (ui/actor {:act (fn []
                                            (when (key-just-pressed? :keys/escape)

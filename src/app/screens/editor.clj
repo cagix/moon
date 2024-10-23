@@ -1,6 +1,5 @@
 (ns app.screens.editor
-  (:require [app.screens.background-image :as background-image]
-            [component.property :as property]
+  (:require [component.property :as property]
             [editor.overview :refer [overview-table]]
             [editor.visui :as editor]
             [gdx.input :refer [key-just-pressed?]]
@@ -40,10 +39,10 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn screen []
+(defn screen [background-image]
   [:screens/property-editor
    (stage-screen/create :actors
-                        [(background-image/create)
+                        [(background-image)
                          (main-table)
                          (ui/actor {:act (fn []
                                            (when (key-just-pressed? :shift-left)

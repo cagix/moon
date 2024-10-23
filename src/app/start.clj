@@ -6,10 +6,11 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [component.db :as db]
-            (gdx [assets :as assets]
-                 [graphics :as g]
-                 [screen :as screen]
-                 [vis-ui :as vis-ui]))
+            [gdx.assets :as assets]
+            [gdx.graphics :as g]
+            [gdx.screen :as screen]
+            [gdx.ui :as ui]
+            [gdx.vis-ui :as vis-ui])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (java.awt Taskbar Toolkit)
@@ -68,15 +69,21 @@
                         :world-height 900
                         :tile-size 48}}})
 
+(defn- background-image []
+  (ui/image->widget (g/image "images/moon_background.png")
+                    {:fill-parent? true
+                     :scaling :fill
+                     :align :center}))
+
 (defn- application-listener []
   (proxy [ApplicationAdapter] []
     (create []
       (assets/load (search-assets "resources/"))
       (g/load! graphics)
       (vis-ui/load! :skin-scale/x1)
-      (screen/set-screens! [(main-menu/create)
+      (screen/set-screens! [(main-menu/create background-image)
                             (map-editor/create)
-                            (property-editor/screen)
+                            (property-editor/screen background-image)
                             (world-screen/create)])
       ((world-screen/start-game-fn :worlds/vampire)))
 
