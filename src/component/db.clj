@@ -122,7 +122,7 @@
   (get property-id))
 
 (defmethod edn->value :s/one-to-many [_ property-ids]
-  (map get property-ids))
+  (set (map get property-ids)))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]
   [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])
