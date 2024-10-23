@@ -17,6 +17,10 @@
             [malli.generator :as mg]
             [utils.core :refer [safe-get index-of]]))
 
+; We are working with raw property data without edn->value and db/build
+; otherwise at db/update! we would have to convert again from edn->value back to edn
+; for example at images/relationships
+
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- apply-context-fn [window f]

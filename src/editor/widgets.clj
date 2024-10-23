@@ -1,6 +1,7 @@
 (ns editor.widgets
   (:require [clojure.edn :as edn]
             [clojure.string :as str]
+            [component.db :as db]
             [component.info :as info]
             [component.property :as property]
             [editor.widget :as widget]
