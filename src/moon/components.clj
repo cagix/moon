@@ -26,4 +26,6 @@
             moon.screens.map-editor
             moon.screens.editor
             moon.screens.world
-            moon.widgets.player-modal))
+            moon.widgets.dev-menu
+            moon.widgets.player-modal
+            ))

@@ -9,22 +9,21 @@
             [moon.screen :as screen]
             moon.components))
 
-(def ^:private config (-> "app.edn" io/resource slurp edn/read-string))
+(defn- background-image [config]
+  (fn []
+    (ui/image->widget (graphics/image (:background-image config))
+                      {:fill-parent? true
+                       :scaling :fill
+                       :align :center})))
 
-(defn- background-image []
-  (ui/image->widget (graphics/image (:background-image config))
-                    {:fill-parent? true
-                     :scaling :fill
-                     :align :center}))
-
-(defn- app-listener []
+(defn- app-listener [config]
   (reify app/Listener
     (create [_]
       (assets/load (:assets config))
       (graphics/load! (:graphics config))
       (ui/load! (:ui config))
       (screen/set-screens! (:screens config)
-                           background-image))
+                           (background-image config)))
 
     (dispose [_]
       (assets/dispose)
@@ -39,6 +38,7 @@
       (graphics/resize! dimensions))))
 
 (defn -main []
-  (db/load! (:properties config))
-  (app/start (:app config)
-             (app-listener)))
+  (let [config (-> "app.edn" io/resource slurp edn/read-string)]
+    (db/load! (:properties config))
+    (app/start (:app config)
+               (app-listener config))))
