@@ -73,7 +73,7 @@
     #_[(ui/text-button file (fn []))]))
 
 (defn- big-image-button [image]
-  (ui/image-button image
+  (ui/image-button (g/edn->image image)
                    (fn on-clicked [])
                    {:scale 2}))
 

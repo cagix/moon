@@ -10,7 +10,7 @@
            (javafx.event EventHandler)
            (javafx.scene.control Button CheckBox ComboBox Label TextField Tab TabPane TabPane$TabClosingPolicy)
            (javafx.scene.image Image ImageView)
-           (javafx.scene.layout StackPane VBox FlowPane GridPane)
+           (javafx.scene.layout StackPane HBox VBox FlowPane GridPane)
            (javafx.scene Scene Node)
            (javafx.stage Stage))
   (:gen-class :extends javafx.application.Application))
@@ -28,6 +28,16 @@
 (defn -start [app stage]
   (def stage stage))
 
+(def ->image (memoize (fn [file] (Image. file))))
+
+(defn image-view [{:keys [file sub-image-bounds]}]
+  (let [[x y w h] sub-image-bounds
+        image-view (ImageView. (->image file))]
+    (if sub-image-bounds
+      (do (.setViewport image-view (Rectangle2D. x y w h))
+          image-view)
+      image-view)))
+
 (defmulti schema->widget widget-type)
 
 (defmethod schema->widget :default [_ v]
@@ -40,11 +50,37 @@
 (defmethod schema->widget :string [_ v]
   (TextField. v))
 
-#_(defmethod schema->widget :enum [schema v]
-  (let [combo-box (ComboBox.)
-        items (FXCollections/observableArrayList (map ->edn-str (rest schema)))]
-    (.setItems combo-box items)
-    combo-box))
+(defmethod schema->widget :enum [schema v]
+  (doto (ComboBox.)
+    (.setItems (FXCollections/observableArrayList (map ->edn-str (rest schema))))
+    (.setValue (->edn-str v))))
+
+(defmethod schema->widget :s/image [_ image]
+  (image-view image))
+
+(defmethod schema->widget :s/animation [_ animation]
+  (HBox. (into-array Node (map image-view (:frames animation)))))
+
+(import '[javafx.scene.media Media MediaPlayer MediaPlayer$Status])
+(require '[clojure.java.io :as io])
+
+(defmethod schema->widget :s/sound [_ sound-file]
+  (let [play-button (Button. "▶️ Play")
+        hbox (doto (HBox.)
+               (.setPadding (Insets. 5)))]
+    (.setOnAction play-button
+                  (fn [_]
+                    (let [media (Media. (str (io/resource sound-file)))
+                          media-player (MediaPlayer. media)]
+                      (.setOnEndOfMedia media-player
+                                        (fn []
+                                          #_(println "Sound has finished playing.")))
+                      (.setOnError media-player
+                                   (fn []
+                                     #_(println "Error playing sound:" (.getError media-player))))
+                      (.play media-player))))
+    (.add (.getChildren hbox) play-button)
+    hbox))
 
 (defmethod schema->widget :s/map [_ m]
   (let [grid (doto (GridPane.)
@@ -66,16 +102,6 @@
       (.setTitle (name property-id))
       (.setScene (Scene. widget 450 450))
       .show)))
-
-(def ->image (memoize (fn [file] (Image. file))))
-
-(defn image-view [{:keys [file sub-image-bounds]}]
-  (let [[x y w h] sub-image-bounds
-        image-view (ImageView. (->image file))]
-    (if sub-image-bounds
-      (do (.setViewport image-view (Rectangle2D. x y w h))
-          image-view)
-      image-view)))
 
 (defn- property->button [property]
   (let [image (property/->image property)
