@@ -7,8 +7,7 @@
             [gdl.graphics.viewport :as vp]
             [gdl.graphics.tiled :as tiled]
             [gdl.utils :refer [dispose safe-get]]
-            [moon.assets :as assets]
-            [moon.schema :as schema])
+            [moon.assets :as assets])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport FitViewport)))
@@ -212,9 +211,6 @@
               [(int (/ sprite-x tilew))
                (int (/ sprite-y tileh))]))
     (image file)))
-
-(defmethod schema/edn->value :s/image [_ image]
-  (edn->image image))
 
 (defn- ->default-font [true-type-font]
   (or (and true-type-font (text/truetype-font true-type-font))

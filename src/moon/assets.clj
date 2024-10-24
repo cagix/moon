@@ -9,7 +9,7 @@
 (declare manager)
 
 (defn- search [folder]
-  (for [[class exts] [[Sound      #{"wav"}]
+  (for [[class exts] [[Sound   #{"wav"      }]
                       [Texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
                   (utils/recursively-search folder exts))]
