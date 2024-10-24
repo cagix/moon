@@ -65,8 +65,31 @@
     (init-explored-tile-corners w h))
   (init-ids->eids))
 
-(declare start
-         spawn-entities)
+(declare start)
+
+(def ^:private ^:dbg-flag spawn-enemies? true)
+
+; player-creature needs mana & inventory
+; till then hardcode :creatures/vampire
+(defn spawn-entities [{:keys [tiled-map start-position]}]
+  (component/->handle
+   (for [creature (cons {:position start-position
+                         :creature-id :creatures/vampire
+                         :components {:entity/state {:fsm :fsms/player
+                                                     :initial-state :player-idle}
+                                      :entity/faction :good
+                                      :entity/player? true
+                                      :entity/free-skill-points 3
+                                      :entity/clickable {:type :clickable/player}
+                                      :entity/click-distance-tiles 1.5}}
+                        (when spawn-enemies?
+                          (for [[position creature-id] (t/positions-with-property tiled-map :creatures :id)]
+                            {:position position
+                             :creature-id (keyword creature-id)
+                             :components {:entity/state {:fsm :fsms/npc
+                                                         :initial-state :npc-sleeping}
+                                          :entity/faction :evil}})))]
+     [:tx/creature (update creature :position tile->middle)])))
 
 (defc :tx/add-to-world
   (component/handle [[_ eid]]

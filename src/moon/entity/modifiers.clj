@@ -69,7 +69,7 @@
 (def ^:private positive-modifier-color "[MODIFIER_BLUE]" #_"[LIME]")
 (def ^:private negative-modifier-color "[MODIFIER_BLUE]" #_"[SCARLET]")
 
-(defn mod-info-text [modifiers]
+(defn- mod-info-text [modifiers]
   (str "[MODIFIER_BLUE]"
        (str/join "\n"
                  (for [[modifier-k operations] modifiers
@@ -89,6 +89,13 @@
     (let [modifiers (sum-operation-values modifiers)]
       (when (seq modifiers)
         (mod-info-text modifiers)))))
+
+(defc :item/modifiers
+  {:schema [:s/components-ns :modifier]
+   :let modifiers}
+  (component/info [_]
+    (when (seq modifiers)
+      (mod-info-text modifiers))))
 
 (defn- modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}

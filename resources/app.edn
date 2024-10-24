@@ -33,8 +33,7 @@
            :screens/editor
            :screens/world]
  :ui :skin-scale/x1
- :components [creature
-              creature.active
+ :components [creature.active
               creature.stunned
               creature.npc.dead
               creature.npc.idle
@@ -47,11 +46,10 @@
               editor.visui
               editor.widgets-map
               interaction
-              item.modifiers
               properties.creatures
               properties.worlds
+              properties.projectiles
               audiovisual
-              projectile
               editor.widgets
               entity.animation
               entity.delete-after-duration
@@ -60,12 +58,17 @@
               entity.line
               entity.movement
               entity.player
+              entity.projectile
               entity.string-effect
               entity.follow-ai
               effect.damage
               effect.melee-damage
               effect.entity
               effect.target
+              effect.spawn
+              effect.projectile
+              fsms.player
+              fsms.npc
               level.generate
               level.uf-caves
               level.tiled-map
@@ -77,6 +80,7 @@
               screens.world
               skill
               tx.cursor
+              tx.creature
               tx.sound
               widgets.action-bar
               widgets.dev-menu

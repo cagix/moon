@@ -2,10 +2,11 @@
   (:require [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.stage :as stage]
-            [moon.world :as world :refer [mouseover-eid]]
+            [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.effect :as effect]))
+            [moon.graphics :as g]
+            [moon.stage :as stage]
+            [moon.world :as world :refer [mouseover-eid]]))
 
 (defn- denied [text]
   [[:tx/sound "sounds/bfxr_denied.wav"]
@@ -63,6 +64,14 @@
      (ui/button? actor) :cursors/over-button
      :else :cursors/default)))
 
+(defn- effect-ctx [eid]
+  (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
+                            (g/world-mouse-position))]
+    {:effect/source eid
+     :effect/target mouseover-eid
+     :effect/target-position target-position
+     :effect/target-direction (v/direction (:position @eid) target-position)}))
+
 (defn- interaction-state [eid]
   (let [entity @eid]
     (cond
@@ -75,7 +84,7 @@
      :else
      (if-let [skill-id (entity/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
-             effect-ctx (effect/player-ctx eid)
+             effect-ctx (effect-ctx eid)
              state (effect/with-ctx effect-ctx
                      (effect/usable-state entity skill))]
          (if (= state :usable)
