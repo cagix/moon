@@ -85,21 +85,17 @@
           m
           (keys m)))
 
-(defmulti edn->value (fn [schema v]
-                       (when schema  ; undefined-data-ks
-                         (schema/type schema))))
-(defmethod edn->value :default [_schema v] v)
-
 (defn- build [property]
   (apply-kvs property
              (fn [k v]
-               (try (edn->value (try (schema/of k)
-                                     (catch Throwable _t
-                                       (swap! undefined-data-ks conj k)
-                                       nil))
-                                (if (map? v)
-                                  (build v)
-                                  v))
+               (try (schema/edn->value
+                     (try (schema/of k)
+                          (catch Throwable _t
+                            (swap! undefined-data-ks conj k)
+                            nil))
+                     (if (map? v)
+                       (build v)
+                       v))
                     (catch Throwable t
                       (throw (ex-info " " {:k k :v v} t)))))))
 
@@ -121,10 +117,10 @@
   (alter-var-root #'db dissoc property-id)
   (async-write-to-file!))
 
-(defmethod edn->value :s/one-to-one [_ property-id]
+(defmethod schema/edn->value :s/one-to-one [_ property-id]
   (get property-id))
 
-(defmethod edn->value :s/one-to-many [_ property-ids]
+(defmethod schema/edn->value :s/one-to-many [_ property-ids]
   (set (map get property-ids)))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]

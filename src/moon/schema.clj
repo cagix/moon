@@ -30,6 +30,11 @@
 (defmulti widget        widget-type)
 (defmulti widget-value  widget-type)
 
+(defmulti edn->value (fn [schema v]
+                       (when schema  ; undefined-data-ks
+                         (type schema))))
+(defmethod edn->value :default [_schema v] v)
+
 (defn- attribute-form
   "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
   [ks]

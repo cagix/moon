@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.animation
   (:require [moon.component :refer [defc]]
-            [moon.db :as db]
             [moon.schema :as schema]
             [moon.graphics :as g]
             [moon.world :as world]
@@ -44,7 +43,7 @@
                :frame-duration frame-duration
                :looping? looping?))
 
-(defmethod db/edn->value :s/animation [_ animation]
+(defmethod schema/edn->value :s/animation [_ animation]
   (edn->animation animation))
 
 (defn- tx-assoc-image-current-frame [eid animation]
