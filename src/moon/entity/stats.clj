@@ -3,6 +3,7 @@
             [moon.entity :as entity]
             [moon.entity.hpbar :as hpbar]
             [moon.entity.modifiers :refer [defmodifier defstat]]
+            [moon.graphics :as g]
             [moon.val-max :as val-max]))
 
 ; TODO negate this value also @ use
@@ -26,6 +27,37 @@
    :modifier-ops [:op/max-inc :op/max-mult]
    :effect-ops [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]})
 
+(def ^:private hpbar-colors
+  {:green     [0 0.8 0]
+   :darkgreen [0 0.5 0]
+   :yellow    [0.5 0.5 0]
+   :red       [0.5 0 0]})
+
+(defn- hpbar-color [ratio]
+  (let [ratio (float ratio)
+        color (cond
+                (> ratio 0.75) :green
+                (> ratio 0.5)  :darkgreen
+                (> ratio 0.25) :yellow
+                :else          :red)]
+    (color hpbar-colors)))
+
+(def ^:private borders-px 1)
+
+(defn- draw-hpbar [{:keys [position width half-width half-height]}
+                   ratio]
+  (let [[x y] position]
+    (let [x (- x half-width)
+          y (+ y half-height)
+          height (g/pixels->world-units 5)
+          border (g/pixels->world-units borders-px)]
+      (g/draw-filled-rectangle x y width height :black)
+      (g/draw-filled-rectangle (+ x border)
+                               (+ y border)
+                               (- (* width ratio) (* 2 border))
+                               (- height (* 2 border))
+                               (hpbar-color ratio)))))
+
 (defc :stats/hp
   (entity/->v [[_ v]]
     [v v])
@@ -33,7 +65,7 @@
   (entity/render-info [_ entity]
     (let [ratio (val-max/ratio (entity/stat entity :stats/hp))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
-        (hpbar/draw entity ratio)))))
+        (draw-hpbar entity ratio)))))
 
 (defstat :stats/mana
   {:schema nat-int?
