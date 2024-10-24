@@ -9,7 +9,6 @@
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.utils :refer [scrollable-choose-window]]
             [moon.assets :as assets]
-            [moon.audio :as audio]
             [moon.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
@@ -101,7 +100,7 @@
 
 
 (defn- ->play-sound-button [sound-file]
-  (ui/text-button "play!" #(audio/play-sound! sound-file)))
+  (ui/text-button "play!" #(assets/play-sound! sound-file)))
 
 (declare ->sound-columns)
 

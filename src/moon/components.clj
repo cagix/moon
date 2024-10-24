@@ -11,6 +11,7 @@
             moon.creature.player.moving
             moon.entity.stats
             moon.editor.visui
+            moon.editor.widgets-map
             moon.interaction
             moon.properties.creatures
             moon.properties.worlds
@@ -32,11 +33,13 @@
             moon.screens.map-editor
             moon.screens.editor
             moon.screens.world
+            moon.tx.sound
             moon.widgets.action-bar
             moon.widgets.dev-menu
             moon.widgets.entity-info-window
             moon.widgets.inventory
             moon.widgets.hp-mana
+            moon.widgets.property
             moon.widgets.player-message
             moon.widgets.player-modal
             ))

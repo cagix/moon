@@ -2,13 +2,15 @@
   (:refer-clojure :exclude [load])
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.utils :as utils]))
+            [gdl.utils :as utils])
+  (:import (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics Texture)))
 
 (declare manager)
 
 (defn- search [folder]
-  (for [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
+  (for [[class exts] [[Sound      #{"wav"}]
+                      [Texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
                   (utils/recursively-search folder exts))]
     [file class]))
@@ -18,3 +20,6 @@
 
 (defn dispose []
   (utils/dispose manager))
+
+(defn play-sound! [path]
+  (Sound/.play (get assets/manager path)))
