@@ -4,7 +4,7 @@
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.stage :refer [mouse-on-actor?]]
+            [moon.stage :as stage]
             [moon.item :refer [can-pickup-item?]]
             [moon.skill :as skill :refer [has-skill?]]
             [moon.widgets.action-bar :refer [selected-skill]]
@@ -64,7 +64,7 @@
                (a/id (a/parent actor)))))
 
 (defn- mouseover-actor->cursor []
-  (let [actor (mouse-on-actor?)]
+  (let [actor (state/mouse-on-actor?)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor) :cursors/move-window
@@ -74,7 +74,7 @@
 (defn- ->interaction-state [eid]
   (let [entity @eid]
     (cond
-     (mouse-on-actor?)
+     (stage/mouse-on-actor?)
      [(mouseover-actor->cursor) (fn [] nil)] ; handled by actors themself, they check player state
 
      (and mouseover-eid (:entity/clickable @mouseover-eid))
