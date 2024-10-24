@@ -5,7 +5,6 @@
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.editor.utils :refer [scroll-pane-cell]]
-            [moon.editor.widget :as widget]
             [moon.property :as property]
             [moon.schema :as schema]
             [moon.ui.error-window :refer [error-window!]]))
@@ -28,8 +27,8 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        widget (widget/create schema props)
-        save!   (apply-context-fn window #(db/update! (widget/value schema widget)))
+        widget (schema/widget schema props)
+        save!   (apply-context-fn window #(db/update! (schema/widget-value schema widget)))
         delete! (apply-context-fn window #(db/delete! (:property/id props)))]
     (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                               [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]" save!)

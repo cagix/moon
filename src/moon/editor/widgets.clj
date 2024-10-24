@@ -4,8 +4,8 @@
             [clojure.string :as str]
             [moon.db :as db]
             [moon.info :as info]
+            [moon.schema :as schema]
             [moon.property :as property]
-            [moon.editor.widget :as widget]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.utils :refer [scrollable-choose-window]]
             [moon.assets :as assets]
@@ -23,44 +23,44 @@
 
 ;;
 
-(defmethod widget/create :default [_ v]
+(defmethod schema/widget :default [_ v]
   (ui/label (truncate (->edn-str v) 60)))
 
-(defmethod widget/value :default [_ widget]
+(defmethod schema/widget-value :default [_ widget]
   ((a/id widget) 1))
 
 ;;
 
-(defmethod widget/create :boolean [_ checked?]
+(defmethod schema/widget :boolean [_ checked?]
   (assert (boolean? checked?))
   (ui/check-box "" (fn [_]) checked?))
 
-(defmethod widget/value :boolean [_ widget]
+(defmethod schema/widget-value :boolean [_ widget]
   (VisCheckBox/.isChecked  widget))
 
 ;;
 
-(defmethod widget/create :string [schema v]
+(defmethod schema/widget :string [schema v]
   (add-schema-tooltip! (ui/text-field v {}) schema))
 
-(defmethod widget/value :string [_ widget]
+(defmethod schema/widget-value :string [_ widget]
   (VisTextField/.getText widget))
 
 ;;
 
-(defmethod widget/create number? [schema v]
+(defmethod schema/widget number? [schema v]
   (add-schema-tooltip! (ui/text-field (->edn-str v) {}) schema))
 
-(defmethod widget/value number? [_ widget]
+(defmethod schema/widget-value number? [_ widget]
   (edn/read-string (VisTextField/.getText widget)))
 
 ;;
 
-(defmethod widget/create :enum [schema v]
+(defmethod schema/widget :enum [schema v]
   (ui/select-box {:items (map ->edn-str (rest schema))
                   :selected (->edn-str v)}))
 
-(defmethod widget/value :enum [_ widget]
+(defmethod schema/widget-value :enum [_ widget]
   (edn/read-string (.getSelected ^com.kotcrab.vis.ui.widget.VisSelectBox widget)))
 
 ;;
@@ -83,7 +83,7 @@
                    (fn on-clicked [])
                    {:scale 2}))
 
-(defmethod widget/create :s/image [_ image]
+(defmethod schema/widget :s/image [_ image]
   (big-image-button image)
   #_(ui/image-button image
                      #(stage/add! (scrollable-choose-window (texture-rows)))
@@ -91,7 +91,7 @@
 
 ;;
 
-(defmethod widget/create :s/animation [_ animation]
+(defmethod schema/widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
                       (big-image-button image))]
              :cell-defaults {:pad 1}}))
@@ -120,7 +120,7 @@
   [(ui/text-button (name sound-file) #(open-sounds-window! table))
    (->play-sound-button sound-file)])
 
-(defmethod widget/create :s/sound [_ sound-file]
+(defmethod schema/widget :s/sound [_ sound-file]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (ui/add-rows! table [(if sound-file
                            (->sound-columns table sound-file)

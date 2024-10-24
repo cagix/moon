@@ -8,7 +8,6 @@
             [moon.schema :as schema]
             [moon.editor.malli :as malli]
             [moon.editor.utils :refer [scroll-pane-cell]]
-            [moon.editor.widget :as widget]
             [moon.stage :as stage]
             [malli.generator :as mg]))
 
@@ -20,7 +19,7 @@
        scroll-pane-table (.findActor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
-   (widget/value [:s/map] table)))
+   (schema/widget-value [:s/map] table)))
 
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
@@ -37,7 +36,7 @@
      :else (mg/generate (schema/form schema) {:size 3}))))
 
 (defn- value-widget [[k v]]
-  (let [widget (widget/create (schema/of k) v)]
+  (let [widget (schema/widget (schema/of k) v)]
     (.setUserObject widget [k v])
     widget))
 
@@ -83,7 +82,7 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         malli-form (schema/form schema)
-        remaining-ks (sort (remove (set (keys (widget/value schema map-widget-table)))
+        remaining-ks (sort (remove (set (keys (schema/widget-value schema map-widget-table)))
                                    (malli/map-keys malli-form)))]
     (ui/add-rows!
      window
@@ -124,7 +123,7 @@
 (defn- component-order [[k _v]]
   (or (index-of k property-k-sort-order) 99))
 
-(defmethod widget/create :s/map [schema m]
+(defmethod schema/widget :s/map [schema m]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -142,8 +141,8 @@
              component-rows))
     table))
 
-(defmethod widget/value :s/map [_ table]
+(defmethod schema/widget-value :s/map [_ table]
   (into {}
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (a/id widget)]]
-          [k (widget/value (schema/of k) widget)])))
+          [k (schema/widget-value (schema/of k) widget)])))

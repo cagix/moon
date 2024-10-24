@@ -16,6 +16,20 @@
 
 (def form-of (comp form of))
 
+(defn- widget-type [schema _]
+  (let [stype (type schema)]
+    (cond
+     (#{:s/map-optional :s/components-ns} stype)
+     :s/map
+
+     (#{number? nat-int? int? pos? pos-int? :s/val-max} stype)
+     number?
+
+     :else stype)))
+
+(defmulti widget        widget-type)
+(defmulti widget-value  widget-type)
+
 (defn- attribute-form
   "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
   [ks]

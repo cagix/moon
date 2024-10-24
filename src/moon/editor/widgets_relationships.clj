@@ -32,12 +32,12 @@
       (for [id property-ids]
         (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
 
-(defmethod widget/create :s/one-to-many [[_ property-type] property-ids]
+(defmethod schema/widget :s/one-to-many [[_ property-type] property-ids]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows table property-type property-ids)
     table))
 
-(defmethod widget/value :s/one-to-many [_ widget]
+(defmethod schema/widget-value :s/one-to-many [_ widget]
   (->> (ui/children widget)
        (keep a/id)
        set))
@@ -71,10 +71,10 @@
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))
 
-(defmethod widget/create :s/one-to-one [[_ property-type] property-id]
+(defmethod schema/widget :s/one-to-one [[_ property-type] property-id]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows table property-type property-id)
     table))
 
-(defmethod widget/value :s/one-to-one [_ widget]
+(defmethod schema/widget-value :s/one-to-one [_ widget]
   (->> (ui/children widget) (keep a/id) first))

@@ -18,7 +18,7 @@
                                  [(when dev-mode?
                                     [(ui/text-button "Map editor" #(screen/change! :screens/map-editor))])
                                   (when dev-mode?
-                                    [(ui/text-button "Property editor" #(screen/change! :screens/property-editor))])
+                                    [(ui/text-button "Property editor" #(screen/change! :screens/editor))])
                                   [(ui/text-button "Exit" app/exit)]]))
              :cell-defaults {:pad-bottom 25}
              :fill-parent? true}))
