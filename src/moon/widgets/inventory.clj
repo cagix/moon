@@ -119,11 +119,8 @@
                 :rows [[{:actor (inventory-table)
                          :pad 4}]]})))
 
-(defn inventory-window []
-  (get (:windows (stage/get)) :inventory-window))
-
 (defn- cell-widget [cell]
-  (get (::table (inventory-window))
+  (get (::table (world/get-window :inventory-window))
        cell))
 
 (defc :tx/set-item-image-in-widget

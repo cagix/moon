@@ -6,7 +6,7 @@
             [gdl.utils :refer [readable-number]]
             [moon.world :as world :refer [stopped?]]
             [moon.entity :as entity]
-            [moon.entity.state :as entity-state]
+            [moon.entity.state :as state]
             [moon.entity.modifiers :refer [entity-stat]]
             [moon.effect :as effect]))
 
@@ -85,7 +85,7 @@
        [:tx.action-bar/remove skill])]))
 
 (defn- player-clicked-skillmenu [skill]
-  (state/clicked-skillmenu-skill (entity-state/state-obj @world/player) skill))
+  (state/clicked-skillmenu-skill (state/state-obj @world/player) skill))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player))

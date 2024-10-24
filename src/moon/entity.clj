@@ -153,3 +153,7 @@
   (tx/handle [[_ eid k f]]
     (swap! eid update k f)
     nil))
+
+(declare selected-skill
+         can-pickup-item?
+         interaction-state)

@@ -1,8 +1,9 @@
 (ns ^:no-doc moon.creature.player.item-on-cursor
   (:require [gdl.input :refer [button-just-pressed?]]
+            [gdl.math.vector :as v]
+            [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
-            [gdl.math.vector :as v]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
             [moon.world :as world]

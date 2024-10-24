@@ -1,5 +1,5 @@
 (ns moon.widgets.action-bar
-  (:require [moon.component :refer [defc defsystem] :as component]
+  (:require [moon.component :refer [defc] :as component]
             [moon.info :as info]
             [moon.tx :as tx]
             [gdl.ui :as ui]
@@ -47,9 +47,11 @@
       (ui/bg-remove! button-group button)
       nil)))
 
-(defn selected-skill []
+(defn- selected-skill []
   (when-let [skill-button (ui/bg-checked (:button-group (get-action-bar)))]
     (a/id skill-button)))
+
+(.bindRoot #'moon.entity/selected-skill selected-skill)
 
 (comment
 
