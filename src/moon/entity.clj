@@ -158,4 +158,5 @@
          has-skill?
          ai-direction-vector
          stat
-         modified-value)
+         modified-value
+         skill-usable-state)
