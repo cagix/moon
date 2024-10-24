@@ -1,7 +1,6 @@
 (ns moon.item
   (:require [data.grid2d :as g2d]
             [moon.component :refer [defc] :as component]
-            [moon.entity.modifiers :refer [mod-info-text]]
             [moon.property :as property]))
 
 (def empty-inventory
@@ -22,13 +21,6 @@
 
 (defc :item/slot
   {:schema (apply vector :enum (keys empty-inventory))})
-
-(defc :item/modifiers
-  {:schema [:s/components-ns :modifier]
-   :let modifiers}
-  (component/info [_]
-    (when (seq modifiers)
-      (mod-info-text modifiers))))
 
 (property/def :properties/items
   {:schema [:property/pretty-name

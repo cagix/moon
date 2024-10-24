@@ -1,10 +1,10 @@
 (ns ^:no-doc moon.effect.target
-  (:require [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
-            [gdl.math.vector :as v]
-            [moon.world :as world]
+  (:require [gdl.math.vector :as v]
+            [moon.component :refer [defc] :as component]
+            [moon.effect :as effect :refer [source target]]
             [moon.entity :as entity]
-            [moon.effect :as effect :refer [source target]]))
+            [moon.graphics :as g]
+            [moon.world :as world]))
 
 (defc :entity-effects {:schema [:s/components-ns :effect.entity]})
 

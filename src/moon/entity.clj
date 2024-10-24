@@ -157,4 +157,5 @@
          interaction-state
          has-skill?
          ai-direction-vector
-         stat)
+         stat
+         modified-value)

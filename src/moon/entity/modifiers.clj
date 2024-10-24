@@ -88,7 +88,7 @@
       (when (seq modifiers)
         (mod-info-text modifiers)))))
 
-(defn modified-value [{:keys [entity/modifiers]} modifier-k base-value]
+(defn- modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}
   (->> modifiers
        modifier-k
@@ -97,9 +97,7 @@
                  (op/apply [operation-k (apply + values)] base-value))
                base-value)))
 
-(defn defmodifier [k operations]
-  {:pre [(= (namespace k) "modifier")]}
-  (defc* k {:schema [:s/map-optional operations]}))
+(.bindRoot #'entity/modified-value modified-value)
 
 (defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
 (defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
@@ -134,6 +132,10 @@
                     (op/apply operation value))
                   effective-value
                   operations)]]))))
+
+(defn defmodifier [k operations]
+  {:pre [(= (namespace k) "modifier")]}
+  (defc* k {:schema [:s/map-optional operations]}))
 
 (defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
   {:pre [(= (namespace k) "stats")]}
