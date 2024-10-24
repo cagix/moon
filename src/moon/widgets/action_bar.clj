@@ -1,6 +1,5 @@
 (ns moon.widgets.action-bar
   (:require [moon.component :refer [defc] :as component]
-            [moon.info :as info]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.stage :as stage]))
@@ -33,7 +32,7 @@
     (let [{:keys [horizontal-group button-group]} (get-action-bar)
           button (ui/image-button image (fn []) {:scale image-scale})]
       (a/set-id! button id)
-      (ui/add-tooltip! button #(info/->text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+      (ui/add-tooltip! button #(component/->info skill)) ; (assoc ctx :effect/source (world/player)) FIXME
       (ui/add-actor! horizontal-group button)
       (ui/bg-add! button-group button)
       nil)))

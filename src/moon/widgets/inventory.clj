@@ -6,10 +6,8 @@
             [moon.component :refer [defc] :as component]
             [moon.entity.state :as state]
             [moon.graphics :as g]
-            [moon.info :as info]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.stage :as stage]
-            [moon.tx :as tx]
             [moon.world :as world]))
 
 ; Items are also smaller than 48x48 all of them
@@ -81,7 +79,7 @@
     (a/set-id! stack cell)
     (a/add-listener! stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
-                               (tx/do! (player-clicked-inventory cell)))))
+                               (component/->handle (player-clicked-inventory cell)))))
     stack))
 
 (defn- inventory-table []
@@ -130,7 +128,7 @@
           drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
       (ui/set-min-size! drawable cell-size)
       (ui/set-drawable! image-widget drawable)
-      (ui/add-tooltip! cell-widget #(info/->text item))
+      (ui/add-tooltip! cell-widget #(component/->info item))
       nil)))
 
 (defc :tx/remove-item-from-widget

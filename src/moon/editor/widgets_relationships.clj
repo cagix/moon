@@ -27,7 +27,7 @@
         (let [property (db/get property-id)
               image-widget (ui/image->widget (property/->image property)
                                              {:id property-id})]
-          (ui/add-tooltip! image-widget #(info/->text property))
+          (ui/add-tooltip! image-widget #(component/->info property))
           image-widget))
       (for [id property-ids]
         (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
@@ -66,7 +66,7 @@
       [(when property-id
          (let [property (db/get property-id)
                image-widget (ui/image->widget (property/->image property) {:id property-id})]
-           (ui/add-tooltip! image-widget #(info/->text property))
+           (ui/add-tooltip! image-widget #(component/->info property))
            image-widget))]
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))

@@ -3,7 +3,6 @@
             [moon.component :refer [defsystem defc] :as component]
             [moon.graphics :as g]
             [moon.entity :as entity]
-            [moon.tx :as tx]
             [moon.world :as world :refer [mouseover-eid]]))
 
 (defsystem applicable?
@@ -95,7 +94,7 @@ Default method returns true.")
 (defc :tx/effect
   (component/handle [[_ effect-ctx effect]]
     (with-ctx effect-ctx
-      (tx/do! (filter-applicable? effect)))))
+      (component/->handle (filter-applicable? effect)))))
 
 (defn- mana-value [entity]
   (if-let [mana (entity/stat entity :stats/mana)]

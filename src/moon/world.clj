@@ -7,7 +7,6 @@
             [clj-commons.pretty.repl :refer [pretty-pst]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
-            [moon.tx :as tx]
             [data.grid2d :as g2d]
             [moon.graphics :as g]
             [moon.ui.error-window :refer [error-window!]]
@@ -118,21 +117,22 @@
                           (render-before-entities)
                           (render-entities! (map deref (active-entities)))
                           (render-after-entities)))
-  (tx/do! [player-update-state
-           ; this do always so can get debug info even when game not running
-           update-mouseover-entity!
-           update-game-paused
-           #(when-not paused?
-              (update-time! (min (gdx.graphics/delta-time) entity/max-delta-time))
-              (let [entities (active-entities)]
-                (update-potential-fields! entities)
-                (try (run! tick-system entities)
-                     (catch Throwable t
-                       (error-window! t)
-                       (.bindRoot #'entity-tick-error t))))
-              nil)
-           ; do not pause this as for example pickup item, should be destroyed.
-           remove-destroyed-entities!]))
+  (component/->handle
+   [player-update-state
+    ; this do always so can get debug info even when game not running
+    update-mouseover-entity!
+    update-game-paused
+    #(when-not paused?
+       (update-time! (min (gdx.graphics/delta-time) entity/max-delta-time))
+       (let [entities (active-entities)]
+         (update-potential-fields! entities)
+         (try (run! tick-system entities)
+              (catch Throwable t
+                (error-window! t)
+                (.bindRoot #'entity-tick-error t))))
+       nil)
+    ; do not pause this as for example pickup item, should be destroyed.
+    remove-destroyed-entities!]))
 
 (defn get-window [k]
   (get (:windows (stage/get)) k))

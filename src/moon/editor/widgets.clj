@@ -1,19 +1,19 @@
 (ns ^:no-doc moon.editor.widgets
   (:require [clojure.edn :as edn]
-            [gdl.assets :as gdx.assets]
             [clojure.string :as str]
+            [gdl.assets :as gdx.assets]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as a]
+            [gdl.utils :refer [truncate ->edn-str]]
+            [moon.component :as component]
             [moon.db :as db]
-            [moon.info :as info]
             [moon.schema :as schema]
             [moon.property :as property]
             [moon.editor.overview :refer [overview-table]]
             [moon.editor.utils :refer [scrollable-choose-window]]
             [moon.assets :as assets]
             [moon.graphics :as g]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
-            [moon.stage :as stage]
-            [gdl.utils :refer [truncate ->edn-str]])
+            [moon.stage :as stage])
   (:import (com.kotcrab.vis.ui.widget VisTextField VisCheckBox))
   (:load "widgets_relationships"))
 

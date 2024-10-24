@@ -1,16 +1,15 @@
 (ns moon.creature
-  (:require [gdl.graphics.color :as color]
-            [clojure.string :as str]
-            [moon.component :refer [defc] :as component]
-            [moon.db :as db]
-            [moon.tx :as tx]
-            [moon.graphics :as g]
+  (:require [clojure.string :as str]
+            [gdl.graphics.color :as color]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [safe-merge tile->middle]]
-            [moon.world :as world]
+            [moon.component :refer [defc] :as component]
             [moon.creature.fsms :as fsms]
+            [moon.db :as db]
+            [moon.graphics :as g]
+            [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.effect :as effect]))
+            [moon.world :as world]))
 
 (color/put "ITEM_GOLD" [0.84 0.8 0.52])
 
@@ -76,23 +75,24 @@
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
 (defn- spawn-all [{:keys [tiled-map start-position]}]
-  (tx/do! (for [creature (cons {:position start-position
-                                :creature-id :creatures/vampire
-                                :components {:entity/state {:fsm fsms/player
-                                                            :initial-state :player-idle}
-                                             :entity/faction :good
-                                             :entity/player? true
-                                             :entity/free-skill-points 3
-                                             :entity/clickable {:type :clickable/player}
-                                             :entity/click-distance-tiles 1.5}}
-                               (when spawn-enemies?
-                                 (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                                   {:position position
-                                    :creature-id (keyword creature-id)
-                                    :components {:entity/state {:fsm fsms/npc
-                                                                :initial-state :npc-sleeping}
-                                                 :entity/faction :evil}})))]
-            [:tx/creature (update creature :position tile->middle)])))
+  (component/->handle
+   (for [creature (cons {:position start-position
+                         :creature-id :creatures/vampire
+                         :components {:entity/state {:fsm fsms/player
+                                                     :initial-state :player-idle}
+                                      :entity/faction :good
+                                      :entity/player? true
+                                      :entity/free-skill-points 3
+                                      :entity/clickable {:type :clickable/player}
+                                      :entity/click-distance-tiles 1.5}}
+                        (when spawn-enemies?
+                          (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                            {:position position
+                             :creature-id (keyword creature-id)
+                             :components {:entity/state {:fsm fsms/npc
+                                                         :initial-state :npc-sleeping}
+                                          :entity/faction :evil}})))]
+     [:tx/creature (update creature :position tile->middle)])))
 
 (.bindRoot #'world/spawn-entities spawn-all)
 

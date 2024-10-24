@@ -2,7 +2,6 @@
   (:require [gdl.app :refer [post-runnable]]
             [moon.component :as component]
             [moon.db :as db]
-            [moon.tx :as tx]
             [moon.world :as world]))
 
 (comment
@@ -65,7 +64,7 @@
  )
 
 (defn- post-tx! [tx]
-  (post-runnable (tx/do! [tx])))
+  (post-runnable (component/->handle [tx])))
 
 (defn- learn-skill! [skill-id] (post-tx! (fn [] [[:tx/add-skill world/player (db/get skill-id)]])))
 (defn- create-item! [item-id]  (post-tx! (fn [] [[:tx/item       (:position @world/player) (db/get item-id)]])))

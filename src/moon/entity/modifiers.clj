@@ -3,7 +3,6 @@
             [gdl.graphics.color :as color]
             [gdl.utils :refer [safe-remove-one update-kv k->pretty-name]]
             [moon.component :refer [defc defc*] :as component]
-            [moon.info :as info]
             [moon.operation :as op]
             [moon.entity :as entity]
             [moon.effect :as effect]))
@@ -149,4 +148,4 @@
 
 (defc :entity/stat
   (component/info [[k v]]
-    (str (k->pretty-name k) ": " (entity/stat info/*info-text-entity* k))))
+    (str (k->pretty-name k) ": " (entity/stat component/*info-text-entity* k))))

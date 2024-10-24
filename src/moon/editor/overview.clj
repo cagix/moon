@@ -1,9 +1,9 @@
 (ns ^:no-doc moon.editor.overview
-  (:require [moon.db :as db]
-            [moon.info :as info]
-            [moon.property :as property]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]))
+  (:require [gdl.ui :as ui]
+            [gdl.ui.actor :as a]
+            [moon.component :as component]
+            [moon.db :as db]
+            [moon.property :as property]))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
@@ -12,7 +12,7 @@
                  (ui/text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui/stack [button top-widget])]
-    (ui/add-tooltip! button #(info/->text props))
+    (ui/add-tooltip! button #(component/->info props))
     (a/set-touchable! top-widget :disabled)
     stack))
 

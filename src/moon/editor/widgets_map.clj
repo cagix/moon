@@ -3,7 +3,6 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [moon.component :as component]
-            [moon.info :as info]
             [moon.property :as property]
             [moon.schema :as schema]
             [moon.editor.malli :as malli]

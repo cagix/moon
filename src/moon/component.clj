@@ -1,12 +1,11 @@
 (ns moon.component
-  "A component is a vector of `[k & values?]`.
-  For example a minimal component is `[:foo]`"
-  (:refer-clojure :exclude [meta]))
+  (:refer-clojure :exclude [meta])
+  (:require [clojure.string :as str]
+            [gdl.utils :refer [index-of]]))
 
-(def systems "Map of all systems as key of name-string to var." {})
+(def systems {})
 
 (defmacro defsystem
-  "A system is a multimethod which takes as first argument a component and dispatches on k."
   ([sys-name]
    `(defsystem ~sys-name nil ['_]))
 
@@ -31,30 +30,12 @@
 (def meta {})
 
 (defn defc*
-  "Defines a component without systems methods, so only to set metadata."
   [k attr-map]
   (when (meta k)
     (println "WARNING: Overwriting defc" k "attr-map"))
   (alter-var-root #'meta assoc k attr-map))
 
-(defmacro defc
-  "Defines a component with keyword k and optional metadata attribute-map followed by system implementations (via defmethods).
-
-attr-map may contain `:let` binding which is let over the value part of a component `[k value]`.
-
-Example:
-```clojure
-(defsystem foo)
-
-(defc :foo/bar
-  {:let {:keys [a b]}}
-  (foo [_]
-    (+ a b)))
-
-(foo [:foo/bar {:a 1 :b 2}])
-=> 3
-```"
-  [k & sys-impls]
+(defmacro defc [k & sys-impls]
   (let [attr-map? (not (list? (first sys-impls)))
         attr-map  (if attr-map? (first sys-impls) {})
         sys-impls (if attr-map? (rest sys-impls) sys-impls)
@@ -92,5 +73,67 @@ Example:
 
 (defsystem handle)
 
+(defn ->handle [txs]
+  (doseq [tx txs]
+    (when-let [result (try (cond (not tx) nil
+                                 (fn? tx) (tx)
+                                 :else (handle tx))
+                           (catch Throwable t
+                             (throw (ex-info "Error with transactions" {:tx tx} t))))]
+      (->handle result))))
+
 (defsystem info)
 (defmethod info :default [_])
+
+(def ^:private info-text-k-order [:property/pretty-name
+                                  :skill/action-time-modifier-key
+                                  :skill/action-time
+                                  :skill/cooldown
+                                  :skill/cost
+                                  :skill/effects
+                                  :creature/species
+                                  :creature/level
+                                  :stats/hp
+                                  :stats/mana
+                                  :stats/strength
+                                  :stats/cast-speed
+                                  :stats/attack-speed
+                                  :stats/armor-save
+                                  :entity/delete-after-duration
+                                  :projectile/piercing?
+                                  :entity/projectile-collision
+                                  :maxrange
+                                  :entity-effects])
+
+(defn- sort-k-order [components]
+  (sort-by (fn [[k _]] (or (index-of k info-text-k-order) 99))
+           components))
+
+(defn- remove-newlines [s]
+  (let [new-s (-> s
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
+    (if (= (count new-s) (count s))
+      s
+      (remove-newlines new-s))))
+
+(declare ^:dynamic *info-text-entity*)
+
+(defn ->info
+  "Recursively generates info-text via [[info]]."
+  [components]
+  (->> components
+       sort-k-order
+       (keep (fn [{v 1 :as component}]
+               (str (try (binding [*info-text-entity* components]
+                           (info component))
+                         (catch Throwable t
+                           ; calling from property-editor where entity components
+                           ; have a different data schema than after component/create
+                           ; and info-text might break
+                           (pr-str component)))
+                    (when (map? v)
+                      (str "\n" (->info v))))))
+       (str/join "\n")
+       remove-newlines))

@@ -105,7 +105,7 @@
   (try
    (doseq [k (keys @eid)]
      (when-let [v (k @eid)]
-       (tx/do! (entity/tick [k v] eid))))
+       (component/->handle (entity/tick [k v] eid))))
    (catch Throwable t
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
 
