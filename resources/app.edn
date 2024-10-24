@@ -57,6 +57,7 @@
               entity.inventory
               entity.line
               entity.movement
+              entity.modifiers
               entity.player
               entity.projectile
               entity.string-effect
