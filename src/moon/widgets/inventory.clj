@@ -1,6 +1,6 @@
 (ns moon.widgets.inventory
   (:require [gdl.graphics.color :as color]
-            [moon.component :refer [defsystem defc]]
+            [moon.component :refer [defsystem defc] :as component]
             [moon.info :as info]
             [moon.tx :as tx]
             [data.grid2d :as g2d]
@@ -111,15 +111,16 @@
       (.row table))
     table))
 
-(defn create []
-  (ui/window {:title "Inventory"
-              :id :inventory-window
-              :visible? false
-              :pack? true
-              :position [(g/gui-viewport-width)
-                         (g/gui-viewport-height)]
-              :rows [[{:actor (inventory-table)
-                       :pad 4}]]}))
+(defc :widgets/inventory
+  (component/create [_]
+    (ui/window {:title "Inventory"
+                :id :inventory-window
+                :visible? false
+                :pack? true
+                :position [(g/gui-viewport-width)
+                           (g/gui-viewport-height)]
+                :rows [[{:actor (inventory-table)
+                         :pad 4}]]})))
 
 (defn inventory-window []
   (get (:windows (stage/get)) :inventory-window))
