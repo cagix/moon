@@ -4,17 +4,10 @@
             [moon.component :refer [defsystem defc]]))
 
 (defsystem value-text)
+
 (defsystem apply [_ base-value])
+
 (defsystem order)
-
-(defn- +? [n]
-  (case (math/signum n)
-    0.0 ""
-    1.0 "+"
-    -1.0 ""))
-
-(defn info-text [{value 1 :as operation}]
-  (str (+? value) (value-text operation)))
 
 (defc :op/inc
   {:schema number?

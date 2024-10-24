@@ -69,12 +69,21 @@
 (def ^:private positive-modifier-color "[MODIFIER_BLUE]" #_"[LIME]")
 (def ^:private negative-modifier-color "[MODIFIER_BLUE]" #_"[SCARLET]")
 
+(defn- +? [n]
+  (case (math/signum n)
+    0.0 ""
+    1.0 "+"
+    -1.0 ""))
+
+(defn- op-info-text [{value 1 :as operation}]
+  (str (+? value) (op/value-text operation)))
+
 (defn- mod-info-text [modifiers]
   (str "[MODIFIER_BLUE]"
        (str/join "\n"
                  (for [[modifier-k operations] modifiers
                        operation operations]
-                   (str (op/info-text operation) " " (k->pretty-name modifier-k))))
+                   (str (op-info-text operation) " " (k->pretty-name modifier-k))))
        "[]"))
 
 (defc :entity/modifiers
@@ -124,7 +133,7 @@
   (component/info [[k operations]]
     (str/join "\n"
               (for [operation operations]
-                (str (op/info-text operation) " " (k->pretty-name k)))))
+                (str (op-info-text operation) " " (k->pretty-name k)))))
 
   (effect/applicable? [[k _]]
     (and effect/target

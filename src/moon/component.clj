@@ -73,7 +73,14 @@
 
 (defsystem handle)
 
-(defn ->handle [txs]
+(defn ->handle
+  "Processes a sequence of transactions (`txs`), handling each transaction via the `handle` system.
+  For each transaction:
+  - If the transaction is a function, it invokes the function.
+  - Otherwise, it passes the transaction to the `handle` function.
+  If a transaction results in further transactions, recursively processes them.
+  Catches any throwables and attaches the transaction data with ex-info."
+  [txs]
   (doseq [tx txs]
     (when-let [result (try (cond (not tx) nil
                                  (fn? tx) (tx)
@@ -121,7 +128,12 @@
 (declare ^:dynamic *info-text-entity*)
 
 (defn ->info
-  "Recursively generates info-text via [[info]]."
+  "Recursively generates a string of information (`info-text`) from a collection of components.
+  Each component is processed using the `info` system:
+  - Components are sorted by a predefined key order (`info-text-k-order`).
+  - For each component, its associated `info` method is invoked, and the result is included in the output.
+  - If the component contains nested maps, their contents are also recursively processed.
+  Handles exceptions during `info` method execution and ensures the resulting string is free of excessive newlines."
   [components]
   (->> components
        sort-k-order
