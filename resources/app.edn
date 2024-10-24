@@ -65,7 +65,8 @@
               effect.damage
               effect.melee-damage
               effect.entity
-              effect.target
+              effect.target-entity
+              effect.target-all
               effect.spawn
               effect.projectile
               fsms.player
