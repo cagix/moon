@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.line
-  (:require [moon.component :refer [defc]]
-            [moon.tx :as tx]
+  (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [moon.entity :as entity]))
 
@@ -13,7 +12,7 @@
         (g/draw-line position end color)))))
 
 (defc :tx/line-render
-  (tx/handle [[_ {:keys [start end duration color thick?]}]]
+  (component/handle [[_ {:keys [start end duration color thick?]}]]
     [[:e/create
       start
       entity/effect-body-props

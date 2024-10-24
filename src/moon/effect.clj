@@ -1,5 +1,5 @@
 (ns moon.effect
-  (:require [moon.component :refer [defsystem defc]]
+  (:require [moon.component :refer [defsystem defc] :as component]
             [moon.tx :as tx]
             [moon.graphics :as g]
             [gdl.math.vector :as v]
@@ -7,7 +7,7 @@
             [moon.entity :as entity]))
 
 (defsystem applicable?
-  "An effect will only be done (with tx/handle) if this function returns truthy.
+  "An effect will only be done (with component/handle) if this function returns truthy.
 Required system for every effect, no default.")
 
 (defsystem useful?
@@ -93,6 +93,6 @@ Default method returns true.")
      ~@body))
 
 (defc :tx/effect
-  (tx/handle [[_ effect-ctx effect]]
+  (component/handle [[_ effect-ctx effect]]
     (with-ctx effect-ctx
       (tx/do! (filter-applicable? effect)))))

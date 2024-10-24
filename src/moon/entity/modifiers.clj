@@ -1,11 +1,10 @@
 (ns ^:no-doc moon.entity.modifiers
-  (:require [gdl.graphics.color :as color]
-            [clojure.string :as str]
-            [moon.component :refer [defc defc*]]
-            [moon.info :as info]
-            [moon.tx :as tx]
-            [moon.operation :as op]
+  (:require [clojure.string :as str]
+            [gdl.graphics.color :as color]
             [gdl.utils :refer [safe-remove-one update-kv k->pretty-name]]
+            [moon.component :refer [defc defc*] :as component]
+            [moon.info :as info]
+            [moon.operation :as op]
             [moon.entity :as entity]
             [moon.effect :as effect]))
 
@@ -46,8 +45,8 @@
 (defn update-mods [[_ eid mods] f]
   [[:e/update eid :entity/modifiers #(f % mods)]])
 
-(defc :tx/apply-modifiers   (tx/handle [this] (update-mods this mods-add)))
-(defc :tx/reverse-modifiers (tx/handle [this] (update-mods this mods-remove)))
+(defc :tx/apply-modifiers   (component/handle [this] (update-mods this mods-add)))
+(defc :tx/reverse-modifiers (component/handle [this] (update-mods this mods-remove)))
 
 ; DRY ->effective-value (summing)
 ; also: sort-by op/order @ modifier/info-text itself (so player will see applied order)
@@ -85,7 +84,7 @@
                [modifier-k (into {} (for [[operation-k value] operations]
                                       [operation-k [value]]))])))
 
-  (info/text [_]
+  (component/info [_]
     (let [modifiers (sum-operation-values modifiers)]
       (when (seq modifiers)
         (mod-info-text modifiers)))))
@@ -114,7 +113,7 @@
                     base-value)))
 
 (defc :base/stat-effect
-  (info/text [[k operations]]
+  (component/info [[k operations]]
     (str/join "\n"
               (for [operation operations]
                 (str (op/info-text operation) " " (k->pretty-name k)))))
@@ -126,7 +125,7 @@
   (effect/useful? [_]
     true)
 
-  (tx/handle [[effect-k operations]]
+  (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
       (when-let [effective-value (entity-stat @effect/target stat-k)]
         [[:e/assoc effect/target stat-k
@@ -147,5 +146,5 @@
       (derive effect-k :base/stat-effect))))
 
 (defc :entity/stat
-  (info/text [[k v]]
+  (component/info [[k v]]
     (str (k->pretty-name k) ": " (entity-stat info/*info-text-entity* k))))

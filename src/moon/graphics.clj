@@ -7,10 +7,9 @@
             [gdl.graphics.viewport :as vp]
             [gdl.graphics.tiled :as tiled]
             [gdl.utils :refer [dispose safe-get]]
-            [moon.component :refer [defc]]
+            [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.schema :as schema]
-            [moon.tx :as tx]
             [moon.assets :as assets])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
@@ -253,7 +252,7 @@
   (graphics/set-cursor (safe-get cursors cursor-key)))
 
 (defc :tx/cursor
-  (tx/handle [[_ cursor-key]]
+  (component/handle [[_ cursor-key]]
     (set-cursor! cursor-key)
     nil))
 

@@ -1,10 +1,8 @@
 (ns ^:no-doc moon.effect.damage
-  (:require [moon.component :refer [defc]]
-            [moon.info :as info]
-            [moon.tx :as tx]
-            [gdl.rand :refer [rand-int-between]]
-            [moon.entity.modifiers :refer [modified-value entity-stat]]
-            [moon.effect :as effect :refer [source target]]))
+  (:require [gdl.rand :refer [rand-int-between]]
+            [moon.component :refer [defc] :as component]
+            [moon.effect :as effect :refer [source target]]
+            [moon.entity.modifiers :refer [modified-value entity-stat]]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity-stat entity :stats/strength) 0)]
@@ -15,15 +13,15 @@
 
 (defc :effect.entity/melee-damage
   {:schema :some}
-  (info/text [_]
+  (component/info [_]
     (str "Damage based on entity strength."
          (when source
-           (str "\n" (info/text (damage-effect))))))
+           (str "\n" (component/info (damage-effect))))))
 
   (effect/applicable? [_]
     (effect/applicable? (damage-effect)))
 
-  (tx/handle [_]
+  (component/handle [_]
     [(damage-effect)]))
 
 (defn- effective-armor-save [source* target*]
@@ -73,7 +71,7 @@
 (defc :effect.entity/damage
   {:let damage
    :schema [:s/map [:damage/min-max]]}
-  (info/text [_]
+  (component/info [_]
     (if source
       (let [modified (->effective-damage damage @source)]
         (if (= damage modified)
@@ -85,7 +83,7 @@
     (and target
          (entity-stat @target :stats/hp)))
 
-  (tx/handle [_]
+  (component/handle [_]
     (let [source* @source
           target* @target
           hp (entity-stat target* :stats/hp)]

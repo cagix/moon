@@ -84,12 +84,12 @@
         (binding [*print-level* nil]
           (with-out-str
            (doseq [[nmsp ks] (sort-by first
-                                      (group-by namespace (sort (keys (methods tx/handle)))))]
+                                      (group-by namespace (sort (keys (methods component/handle)))))]
 
              (println "\n#" nmsp)
              (doseq [k ks
                      :let [attr-m (component/meta k)]]
-               (println (str "* __" k "__ `" (get (:params attr-m) "tx/handle") "`"))
+               (println (str "* __" k "__ `" (get (:params attr-m) "component/handle") "`"))
                (when-let [data (:schema attr-m)]
                  (println (str "    * data: `" (pr-str data) "`")))
                (let [ks (descendants k)]

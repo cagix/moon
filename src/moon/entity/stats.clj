@@ -1,10 +1,9 @@
 (ns ^:no-doc moon.entity.stats
-  (:require [moon.component :refer [defc]]
-            [moon.tx :as tx]
-            [moon.val-max :as val-max]
+  (:require [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
             [moon.entity.hpbar :as hpbar]
-            [moon.entity.modifiers :refer [defmodifier defstat entity-stat]]))
+            [moon.entity.modifiers :refer [defmodifier defstat entity-stat]]
+            [moon.val-max :as val-max]))
 
 ; TODO negate this value also @ use
 ; so can make positiive modifeirs green , negative red....
@@ -46,7 +45,7 @@
     [v v]))
 
 (defc :tx.entity.stats/pay-mana-cost
-  (tx/handle [[_ eid cost]]
+  (component/handle [[_ eid cost]]
     (let [mana-val ((entity-stat @eid :stats/mana) 0)]
       (assert (<= cost mana-val))
       [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]])))
@@ -56,7 +55,7 @@
        eid (atom (entity/map->Entity {:stats/mana [mana-val 10]}))
        mana-cost 3
        resulting-mana (- mana-val mana-cost)]
-   (= (tx/handle [:tx.entity.stats/pay-mana-cost eid mana-cost] nil)
+   (= (component/handle [:tx.entity.stats/pay-mana-cost eid mana-cost] nil)
       [[:e/assoc-in eid [:stats/mana 0] resulting-mana]]))
  )
 

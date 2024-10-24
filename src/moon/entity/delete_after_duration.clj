@@ -1,16 +1,15 @@
 (ns ^:no-doc moon.entity.delete-after-duration
-  (:require [moon.component :refer [defc]]
-            [moon.info :as info]
-            [gdl.utils :refer [readable-number]]
-            [moon.world :refer [timer stopped? finished-ratio]]
-            [moon.entity :as entity]))
+  (:require [gdl.utils :refer [readable-number]]
+            [moon.component :refer [defc] :as component]
+            [moon.entity :as entity]
+            [moon.world :refer [timer stopped? finished-ratio]]))
 
 (defc :entity/delete-after-duration
   {:let counter}
   (entity/->v [[_ duration]]
     (timer duration))
 
-  (info/text [_]
+  (component/info [_]
     (str "[LIGHT_GRAY]Remaining: " (readable-number (finished-ratio counter)) "/1[]"))
 
   (entity/tick [_ eid]

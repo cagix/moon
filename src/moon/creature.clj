@@ -1,9 +1,8 @@
 (ns moon.creature
   (:require [gdl.graphics.color :as color]
             [clojure.string :as str]
-            [moon.component :refer [defc]]
+            [moon.component :refer [defc] :as component]
             [moon.db :as db]
-            [moon.info :as info]
             [moon.tx :as tx]
             [moon.graphics :as g]
             [gdl.tiled :as tiled]
@@ -18,7 +17,7 @@
 (defc :property/pretty-name
   {:schema :string
    :let value}
-  (info/text [_]
+  (component/info [_]
     (str "[ITEM_GOLD]"value"[]")))
 
 (defc :body/width   {:schema pos?})
@@ -38,12 +37,12 @@
   {:schema [:qualified-keyword {:namespace :species}]}
   (entity/->v [[_ species]]
     (str/capitalize (name species)))
-  (info/text [[_ species]]
+  (component/info [[_ species]]
     (str "[LIGHT_GRAY]Creature - " species "[]")))
 
 (defc :creature/level
   {:schema pos-int?}
-  (info/text [[_ lvl]]
+  (component/info [[_ lvl]]
     (str "[GRAY]Level " lvl "[]")))
 
 ; # :z-order/flying has no effect for now
@@ -62,7 +61,7 @@
 
 (defc :tx/creature
   {:let {:keys [position creature-id components]}}
-  (tx/handle [_]
+  (component/handle [_]
     (let [props (db/get creature-id)]
       [[:e/create
         position
@@ -105,7 +104,7 @@
     (and (:entity/faction @effect/source)
          effect/target-position))
 
-  (tx/handle [_]
+  (component/handle [_]
     [[:tx/sound "sounds/bfxr_shield_consume.wav"]
      [:tx/creature {:position effect/target-position
                     :creature-id id ; already properties/get called through one-to-one, now called again.

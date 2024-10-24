@@ -1,10 +1,7 @@
 (ns moon.info
   (:require [clojure.string :as str]
             [gdl.utils :refer [index-of]]
-            [moon.component :refer [defsystem]]))
-
-(defsystem text "Return info-string (for tooltips,etc.). Default nil.")
-(defmethod text :default [_])
+            [moon.component :as component]))
 
 (def ^:private info-text-k-order [:property/pretty-name
                                   :skill/action-time-modifier-key
@@ -42,13 +39,13 @@
 (declare ^:dynamic *info-text-entity*)
 
 (defn ->text
-  "Recursively generates info-text via [[text]]."
+  "Recursively generates info-text via [[moon.component/info]]."
   [components]
   (->> components
        sort-k-order
        (keep (fn [{v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (text component))
+                           (component/info component))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create

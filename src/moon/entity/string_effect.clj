@@ -1,9 +1,8 @@
 (ns ^:no-doc moon.entity.string-effect
-  (:require [moon.component :refer [defc]]
-            [moon.tx :as tx]
+  (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
-            [moon.world :as world :refer [timer stopped?]]
-            [moon.entity :as entity]))
+            [moon.entity :as entity]
+            [moon.world :as world :refer [timer stopped?]]))
 
 (defc :entity/string-effect
   (entity/tick [[k {:keys [counter]}] eid]
@@ -19,7 +18,7 @@
                     :up? true}))))
 
 (defc :tx/add-text-effect
-  (tx/handle [[_ eid text]]
+  (component/handle [[_ eid text]]
     [[:e/assoc
       eid
       :entity/string-effect

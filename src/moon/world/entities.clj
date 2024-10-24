@@ -55,7 +55,7 @@
           components))
 
 (defc :e/create
-  (tx/handle [[_ position body components]]
+  (component/handle [[_ position body components]]
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))
     (let [eid (atom (-> body

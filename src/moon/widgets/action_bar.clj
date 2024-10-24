@@ -1,7 +1,6 @@
 (ns moon.widgets.action-bar
   (:require [moon.component :refer [defc] :as component]
             [moon.info :as info]
-            [moon.tx :as tx]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.stage :as stage]))
@@ -30,7 +29,7 @@
      :button-group (group->button-group group)}))
 
 (defc :tx.action-bar/add
-  (tx/handle [[_ {:keys [property/id entity/image] :as skill}]]
+  (component/handle [[_ {:keys [property/id entity/image] :as skill}]]
     (let [{:keys [horizontal-group button-group]} (get-action-bar)
           button (ui/image-button image (fn []) {:scale image-scale})]
       (a/set-id! button id)
@@ -40,7 +39,7 @@
       nil)))
 
 (defc :tx.action-bar/remove
-  (tx/handle [[_ {:keys [property/id]}]]
+  (component/handle [[_ {:keys [property/id]}]]
     (let [{:keys [horizontal-group button-group]} (get-action-bar)
           button (get horizontal-group id)]
       (a/remove! button)

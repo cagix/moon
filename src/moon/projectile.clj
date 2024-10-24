@@ -1,13 +1,11 @@
 (ns ^:no-doc moon.projectile
-  (:require [moon.component :refer [defc]]
-            [moon.info :as info]
-            [moon.property :as property]
-            [moon.tx :as tx]
-            [gdl.math.vector :as v]
+  (:require [gdl.math.vector :as v]
             [gdl.utils :refer [find-first]]
-            [moon.world :as w]
+            [moon.component :refer [defc] :as component]
+            [moon.property :as property]
             [moon.entity :as entity]
-            [moon.effect :as effect :refer [source target target-direction]]))
+            [moon.effect :as effect :refer [source target target-direction]]
+            [moon.world :as w]))
 
 (property/def :properties/projectiles
   {:schema [:entity/image
@@ -55,7 +53,7 @@
 (defc :projectile/speed     {:schema pos-int?})
 
 (defc :projectile/piercing? {:schema :boolean}
-  (info/text [_]
+  (component/info [_]
     "[LIME]Piercing[]"))
 
 (defn- projectile-size [projectile]
@@ -63,13 +61,13 @@
   (first (:world-unit-dimensions (:entity/image projectile))))
 
 (defc :tx/projectile
-  (tx/handle [[_
-            {:keys [position direction faction]}
-            {:keys [entity/image
-                    projectile/max-range
-                    projectile/speed
-                    entity-effects
-                    projectile/piercing?] :as projectile}]]
+  (component/handle [[_
+                      {:keys [position direction faction]}
+                      {:keys [entity/image
+                              projectile/max-range
+                              projectile/speed
+                              entity-effects
+                              projectile/piercing?] :as projectile}]]
     (let [size (projectile-size projectile)]
       [[:e/create
         position
@@ -111,7 +109,7 @@
                           target-p)
               max-range))))
 
-  (tx/handle [_]
+  (component/handle [_]
     [[:tx/sound "sounds/bfxr_waypointunlock.wav"]
      [:tx/projectile
       {:position (projectile-start-point @source target-direction (projectile-size projectile))

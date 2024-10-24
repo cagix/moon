@@ -1,14 +1,12 @@
 (ns moon.skill
-  (:require [moon.component :refer [defc]]
-            [moon.info :as info]
-            [moon.property :as property]
-            [moon.tx :as tx]
-            [gdl.utils :refer [readable-number]]
-            [moon.world :as world :refer [stopped?]]
+  (:require [gdl.utils :refer [readable-number]]
+            [moon.component :refer [defc] :as component]
+            [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.state :as state]
             [moon.entity.modifiers :refer [entity-stat]]
-            [moon.effect :as effect]))
+            [moon.property :as property]
+            [moon.world :as world :refer [stopped?]]))
 
 (property/def :properties/skills
   {:schema [:entity/image
@@ -25,13 +23,13 @@
 
 (defc :skill/action-time-modifier-key
   {:schema [:enum :stats/cast-speed :stats/attack-speed]}
-  (info/text [[_ v]]
+  (component/info [[_ v]]
     (str "[VIOLET]" (case v
                       :stats/cast-speed "Spell"
                       :stats/attack-speed "Attack") "[]")))
 
 (defc :skill/action-time {:schema pos?}
-  (info/text [[_ v]]
+  (component/info [[_ v]]
     (str "[GOLD]Action-Time: " (readable-number v) " seconds[]")))
 
 (defc :skill/start-action-sound {:schema :s/sound})
@@ -40,12 +38,12 @@
   {:schema [:s/components-ns :effect]})
 
 (defc :skill/cooldown {:schema nat-int?}
-  (info/text [[_ v]]
+  (component/info [[_ v]]
     (when-not (zero? v)
       (str "[SKY]Cooldown: " (readable-number v) " seconds[]"))))
 
 (defc :skill/cost {:schema nat-int?}
-  (info/text [[_ v]]
+  (component/info [[_ v]]
     (when-not (zero? v)
       (str "[CYAN]Cost: " v " Mana[]"))))
 
@@ -56,7 +54,7 @@
           (for [skill skills]
             [:tx/add-skill eid skill])))
 
-  (info/text [[_ skills]]
+  (component/info [[_ skills]]
     ; => recursive info-text leads to endless text wall
     #_(when (seq skills)
         (str "[VIOLET]Skills: " (str/join "," (map name (keys skills))) "[]")))
@@ -71,14 +69,14 @@
   (contains? skills id))
 
 (defc :tx/add-skill
-  (tx/handle [[_ eid {:keys [property/id] :as skill}]]
+  (component/handle [[_ eid {:keys [property/id] :as skill}]]
     (assert (not (has-skill? @eid skill)))
     [[:e/assoc-in eid [:entity/skills id] skill]
      (when (:entity/player? @eid)
        [:tx.action-bar/add skill])]))
 
 (defc :tx/remove-skill
-  (tx/handle [[_ eid {:keys [property/id] :as skill}]]
+  (component/handle [[_ eid {:keys [property/id] :as skill}]]
     (assert (has-skill? @eid skill))
     [[:e/dissoc-in eid [:entity/skills id]]
      (when (:entity/player? @eid)

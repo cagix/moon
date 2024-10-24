@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.movement
-  (:require [moon.component :refer [defc]]
-            [moon.tx :as tx]
+  (:require [moon.component :refer [defc] :as component]
             [gdl.math.vector :as v]
             [malli.core :as m]
             [moon.world :as world]
@@ -64,7 +63,7 @@
            [:tx/position-changed eid]])))))
 
 (defc :tx/set-movement
-  (tx/handle [[_ eid movement]]
+  (component/handle [[_ eid movement]]
     (assert (or (nil? movement)
                 (nil? (:direction movement))
                 (and (:direction movement) ; continue schema of that ...

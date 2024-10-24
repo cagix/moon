@@ -1,16 +1,16 @@
 (ns moon.widgets.inventory
-  (:require [gdl.graphics.color :as color]
-            [moon.component :refer [defc] :as component]
-            [moon.info :as info]
-            [moon.tx :as tx]
-            [data.grid2d :as g2d]
-            [moon.graphics :as g]
+  (:require [data.grid2d :as g2d]
+            [gdl.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.stage :as stage]
+            [moon.component :refer [defc] :as component]
+            [moon.entity.state :as state]
+            [moon.graphics :as g]
+            [moon.info :as info]
             [moon.item :refer [valid-slot? empty-inventory]]
-            [moon.world :as world]
-            [moon.entity.state :as state]))
+            [moon.stage :as stage]
+            [moon.tx :as tx]
+            [moon.world :as world]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -124,7 +124,7 @@
        cell))
 
 (defc :tx/set-item-image-in-widget
-  (tx/handle [[_ cell item]]
+  (component/handle [[_ cell item]]
     (let [cell-widget (cell-widget cell)
           image-widget (get cell-widget :image)
           drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
@@ -134,7 +134,7 @@
       nil)))
 
 (defc :tx/remove-item-from-widget
-  (tx/handle [[_ cell]]
+  (component/handle [[_ cell]]
     (let [cell-widget (cell-widget cell)
           image-widget (get cell-widget :image)]
       (ui/set-drawable! image-widget (slot->background (cell 0)))

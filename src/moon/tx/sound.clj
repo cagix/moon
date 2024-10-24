@@ -1,12 +1,11 @@
 (ns moon.tx.sound
-  (:require [moon.component :refer [defc]]
+  (:require [moon.component :refer [defc] :as component]
             [moon.assets :as assets]
-            [moon.schema :as schema]
-            [moon.tx :as tx]))
+            [moon.schema :as schema]))
 
 (defc :tx/sound
   {:schema :s/sound}
-  (tx/handle [[_ file]]
+  (component/handle [[_ file]]
     (assets/play-sound! file)
     nil))
 

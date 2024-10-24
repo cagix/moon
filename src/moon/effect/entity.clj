@@ -1,7 +1,5 @@
 (ns ^:no-doc moon.effect.entity
-  (:require [moon.component :refer [defc]]
-            [moon.info :as info]
-            [moon.tx :as tx]
+  (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [gdl.utils :refer [readable-number]]
             [moon.world :refer [timer stopped? finished-ratio]]
@@ -10,7 +8,7 @@
 
 (defc :entity/temp-modifier
   {:let {:keys [counter modifiers]}}
-  (info/text [_]
+  (component/info [_]
     (str "[LIGHT_GRAY]Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1[]"))
 
   (entity/tick [[k _] eid]
@@ -25,7 +23,7 @@
       duration 5]
   (defc :effect.entity/spiderweb
     {:schema :some}
-    (info/text [_]
+    (component/info [_]
       "Spiderweb slows 50% for 5 seconds."
       ; modifiers same like item/modifiers has info-text
       ; counter ?
@@ -36,7 +34,7 @@
       true)
 
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-    (tx/handle [_]
+    (component/handle [_]
       (when-not (:entity/temp-modifier @target)
         [[:tx/apply-modifiers target modifiers]
          [:e/assoc target :entity/temp-modifier {:modifiers modifiers
@@ -44,7 +42,7 @@
 
 (defc :effect.entity/convert
   {:schema :some}
-  (info/text [_]
+  (component/info [_]
     "Converts target to your side.")
 
   (effect/applicable? [_]
@@ -52,28 +50,28 @@
          (= (:entity/faction @target)
             (entity/enemy @source))))
 
-  (tx/handle [_]
+  (component/handle [_]
     [[:tx/audiovisual (:position @target) :audiovisuals/convert]
      [:e/assoc target :entity/faction (entity/friend @source)]]))
 
 (defc :effect.entity/stun
   {:schema pos?
    :let duration}
-  (info/text [_]
+  (component/info [_]
     (str "Stuns for " (readable-number duration) " seconds"))
 
   (effect/applicable? [_]
     (and target (:entity/state @target)))
 
-  (tx/handle [_]
+  (component/handle [_]
     [[:tx/event target :stun duration]]))
 
 (defc :effect.entity/kill
   {:schema :some}
-  (info/text [_] "Kills target")
+  (component/info [_] "Kills target")
 
   (effect/applicable? [_]
     (and target (:entity/state @target)))
 
-  (tx/handle [_]
+  (component/handle [_]
     [[:tx/event target :kill]]))

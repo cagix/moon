@@ -5,7 +5,7 @@
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.utils :refer [dispose ->tile tile->middle safe-merge sort-by-order]]
             [clj-commons.pretty.repl :refer [pretty-pst]]
-            [moon.component :refer [defc]]
+            [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.tx :as tx]
             [data.grid2d :as g2d]
@@ -70,7 +70,7 @@
          spawn-entities)
 
 (defc :tx/add-to-world
-  (tx/handle [[_ eid]]
+  (component/handle [[_ eid]]
     (let [id (:entity/id @eid)]
       (assert (number? id))
       (alter-var-root #'ids->eids assoc id eid))
@@ -81,7 +81,7 @@
     nil))
 
 (defc :tx/remove-from-world
-  (tx/handle [[_ eid]]
+  (component/handle [[_ eid]]
     (let [id (:entity/id @eid)]
       (assert (contains? ids->eids id))
       (alter-var-root #'ids->eids dissoc id))
@@ -90,7 +90,7 @@
     nil))
 
 (defc :tx/position-changed
-  (tx/handle [[_ eid]]
+  (component/handle [[_ eid]]
     (content-grid/update-entity! content-grid eid)
     (grid-entity-position-changed! eid)
    nil))

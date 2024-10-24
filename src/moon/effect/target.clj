@@ -1,7 +1,5 @@
 (ns ^:no-doc moon.effect.target
-  (:require [moon.component :refer [defc]]
-            [moon.info :as info]
-            [moon.tx :as tx]
+  (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [gdl.math.vector :as v]
             [moon.world :as world]
@@ -34,7 +32,7 @@
 (defc :effect/target-all
   {:schema [:s/map [:entity-effects]]
    :let {:keys [entity-effects]}}
-  (info/text [_]
+  (component/info [_]
     "[LIGHT_GRAY]All visible targets[]")
 
   (effect/applicable? [_]
@@ -45,7 +43,7 @@
     false
     )
 
-  (tx/handle [_]
+  (component/handle [_]
     (let [source* @source]
       (apply concat
              (for [target (creatures-in-los-of-player)]
@@ -88,7 +86,7 @@
                   maxrange)))
 
 (defc :maxrange {:schema pos?}
-  (info/text [[_ maxrange]]
+  (component/info [[_ maxrange]]
     (str "[LIGHT_GRAY]Range " maxrange " meters[]")))
 
 (defc :effect/target-entity
@@ -106,7 +104,7 @@
     (assert target)
     (in-range? @source @target maxrange))
 
-  (tx/handle [_]
+  (component/handle [_]
     (let [source* @source
           target* @target]
       (if (in-range? source* target* maxrange)

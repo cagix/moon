@@ -89,3 +89,8 @@ Example:
       ~k)))
 
 (defsystem create)
+
+(defsystem handle)
+
+(defsystem info)
+(defmethod info :default [_])

@@ -6,7 +6,6 @@
             [moon.component :refer [defc]]
             [moon.stage :as stage]
             [moon.db :as db]
-            [moon.tx :as tx]
             [moon.graphics :as g]
             [moon.screen :as screen]
             [moon.world :as world]))

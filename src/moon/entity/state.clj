@@ -1,9 +1,7 @@
 (ns ^:no-doc moon.entity.state
-  (:require [moon.component :refer [defsystem defc]]
-            [moon.info :as info]
-            [moon.tx :as tx]
-            [reduce-fsm :as fsm]
-            [moon.entity :as entity]))
+  (:require [moon.component :refer [defsystem defc] :as component]
+            [moon.entity :as entity]
+            [reduce-fsm :as fsm]))
 
 (defsystem enter)
 (defmethod enter :default [_])
@@ -36,7 +34,7 @@
     [[:e/assoc eid k (->init-fsm fsm initial-state)]
      [:e/assoc eid initial-state (entity/->v [initial-state eid])]])
 
-  (info/text [[_ fsm]]
+  (component/info [[_ fsm]]
     (str "[YELLOW]State: " (name (:state fsm)) "[]")))
 
 (defn state-k [entity]
@@ -62,5 +60,5 @@
            [:e/assoc eid new-state-k (new-state-obj 1)]])))))
 
 (defc :tx/event
-  (tx/handle [[_ eid event params]]
+  (component/handle [[_ eid event params]]
     (send-event! eid event params)))

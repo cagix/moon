@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.creature.npc.sleeping
-  (:require [moon.component :refer [defc]]
-            [moon.tx :as tx]
+  (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [moon.world :as world :refer [stopped? timer]]
             [moon.entity :as entity]
@@ -24,7 +23,7 @@
               [:tx/event friendly-eid :alert])))))
 
 (defc :tx/shout
-  (tx/handle [[_ position faction delay-seconds]]
+  (component/handle [[_ position faction delay-seconds]]
     [[:e/create
       position
       entity/effect-body-props

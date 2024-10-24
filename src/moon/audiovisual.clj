@@ -1,8 +1,7 @@
 (ns ^:no-doc moon.audiovisual
-  (:require [moon.component :refer [defc]]
+  (:require [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.property :as property]
-            [moon.tx :as tx]
             [moon.entity :as entity]))
 
 (property/def :properties/audiovisuals
@@ -13,7 +12,7 @@
               :image/scale 2}})
 
 (defc :tx/audiovisual
-  (tx/handle [[_ position id]]
+  (component/handle [[_ position id]]
     (let [{:keys [tx/sound entity/animation]} (db/get id)]
       [[:tx/sound sound]
        [:e/create

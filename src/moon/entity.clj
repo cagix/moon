@@ -1,11 +1,9 @@
 (ns moon.entity
-  (:require [moon.component :refer [defsystem defc]]
-            [moon.info :as info]
-            [moon.tx :as tx]
-            [gdl.math.shape :as shape]
+  (:require [gdl.math.shape :as shape]
             [gdl.math.vector :as v]
+            [gdl.utils :refer [define-order ->tile dissoc-in]]
             [malli.core :as m]
-            [gdl.utils :refer [define-order ->tile dissoc-in]]))
+            [moon.component :refer [defsystem defc] :as component]))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)
@@ -120,37 +118,37 @@
 (defc :entity/faction
   {:schema [:enum :good :evil]
    :let faction}
-  (info/text [_]
+  (component/info [_]
     (str "[SLATE]Faction: " (name faction) "[]")))
 
 (defc :e/destroy
-  (tx/handle [[_ eid]]
+  (component/handle [[_ eid]]
     [[:e/assoc eid :entity/destroyed? true]]))
 
 (defc :e/assoc
-  (tx/handle [[_ eid k v]]
+  (component/handle [[_ eid k v]]
     (assert (keyword? k))
     (swap! eid assoc k v)
     nil))
 
 (defc :e/assoc-in
-  (tx/handle [[_ eid ks v]]
+  (component/handle [[_ eid ks v]]
     (swap! eid assoc-in ks v)
     nil))
 
 (defc :e/dissoc
-  (tx/handle [[_ eid k]]
+  (component/handle [[_ eid k]]
     (assert (keyword? k))
     (swap! eid dissoc k)
     nil))
 
 (defc :e/dissoc-in
-  (tx/handle [[_ eid ks]]
+  (component/handle [[_ eid ks]]
     (swap! eid dissoc-in ks)
     nil))
 
 (defc :e/update
-  (tx/handle [[_ eid k f]]
+  (component/handle [[_ eid k f]]
     (swap! eid update k f)
     nil))
 

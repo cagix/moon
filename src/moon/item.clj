@@ -1,12 +1,10 @@
 (ns moon.item
-  (:require [moon.component :refer [defc]]
-            [moon.info :as info]
-            [moon.property :as property]
-            [moon.tx :as tx]
-            [data.grid2d :as g2d]
+  (:require [data.grid2d :as g2d]
             [gdl.utils :refer [find-first]]
+            [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
-            [moon.entity.modifiers :refer [mod-info-text]]))
+            [moon.entity.modifiers :refer [mod-info-text]]
+            [moon.property :as property]))
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
@@ -30,7 +28,7 @@
 (defc :item/modifiers
   {:schema [:s/components-ns :modifier]
    :let modifiers}
-  (info/text [_]
+  (component/info [_]
     (when (seq modifiers)
       (mod-info-text modifiers))))
 
@@ -53,7 +51,7 @@
    :z-order :z-order/on-ground})
 
 (defc :tx/item
-  (tx/handle [[_ position item]]
+  (component/handle [[_ position item]]
     [[:e/create position body-props {:entity/image (:entity/image item)
                                      :entity/item item
                                      :entity/clickable {:type :clickable/item
@@ -97,11 +95,11 @@
        [:tx/remove-item-from-widget cell])]))
 
 (defc :tx/set-item
-  (tx/handle [[_ eid cell item]]
+  (component/handle [[_ eid cell item]]
     (set-item eid cell item)))
 
 (defc :tx/remove-item
-  (tx/handle [[_ eid cell]]
+  (component/handle [[_ eid cell]]
     (remove-item eid cell)))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
@@ -126,7 +124,7 @@
             (set-item eid cell (update cell-item :count + (:count item))))))
 
 (defc :tx/stack-item
-  (tx/handle [[_ eid cell item]]
+  (component/handle [[_ eid cell item]]
     (stack-item eid cell item)))
 
 (defn- try-put-item-in [eid slot item]
@@ -146,7 +144,7 @@
    (try-put-item-in eid :inventory.slot/bag item)))
 
 (defc :tx/pickup-item
-  (tx/handle [[_ eid item]]
+  (component/handle [[_ eid item]]
     (pickup-item eid item)))
 
 (defn- can-pickup-item? [eid item]

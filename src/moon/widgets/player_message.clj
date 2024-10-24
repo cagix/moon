@@ -1,9 +1,8 @@
 (ns ^:no-doc moon.widgets.player-message
   (:require [gdl.graphics :as gdx.graphics]
+            [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]
-            [moon.tx :as tx]
-            [moon.graphics :as g]
-            [gdl.ui :as ui]))
+            [moon.graphics :as g]))
 
 (def ^:private duration-seconds 1.5)
 
@@ -29,6 +28,6 @@
                :act check-remove-message})))
 
 (defc :tx/msg-to-player
-  (tx/handle [[_ message]]
+  (component/handle [[_ message]]
     (.bindRoot #'message-to-player {:message message :counter 0})
     nil))
