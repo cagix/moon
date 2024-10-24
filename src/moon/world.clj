@@ -14,11 +14,11 @@
             [moon.stage :as stage]
             [gdl.math.shape :as shape]
             [gdl.tiled :as t]
-            [moon.world.content-grid :as content-grid]
-            [moon.world.raycaster :as raycaster]
             [moon.entity :as entity]
             [moon.entity.state :as entity-state]
-            [moon.level.tiled :refer [movement-property]])
+            [moon.level :as level]
+            [moon.world.content-grid :as content-grid]
+            [moon.world.raycaster :as raycaster])
   (:load "world/grid"
          "world/potential_fields"
          "world/time"))
@@ -57,7 +57,7 @@
   (let [w (t/width  tiled-map)
         h (t/height tiled-map)]
     (init-grid! w h (fn [position]
-                      (case (movement-property tiled-map position)
+                      (case (level/movement-property tiled-map position)
                         "none" :none
                         "air"  :air
                         "all"  :all)))

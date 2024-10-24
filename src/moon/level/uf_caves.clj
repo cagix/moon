@@ -4,9 +4,10 @@
             [moon.graphics :as g]
             [gdl.tiled :as t]
             [gdl.rand :refer [get-rand-weighted-item]]
+            [moon.level :as level]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scalegrid printgrid transition-idx-value cave-grid adjacent-wall-positions flood-fill]]
-            [moon.level.tiled :refer [movement-property wgt-grid->tiled-map]]))
+            [moon.level.tiled :refer [wgt-grid->tiled-map]]))
 
 (defn- uf-transition [position grid]
   (transition-idx-value position (= :transition (get grid position))))
@@ -123,7 +124,7 @@
                                          (->wall-tile wall-idx))
                            :ground (->ground-tile ground-idx)))
         tiled-map (wgt-grid->tiled-map grid position->tile)
-        can-spawn? #(= "all" (movement-property tiled-map %))
+        can-spawn? #(= "all" (level/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill grid start-position can-spawn?)
         ]

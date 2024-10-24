@@ -10,9 +10,10 @@
 ; * assuming bottom left in floor module is walkable
 ; whats the assumption here? => or put extra borders around? / assert!
 
-(def module-width  32)
-(def module-height 20)
-(def modules-scale [module-width module-height])
+(def file "maps/modules.tmx")
+(def width  32)
+(def height 20)
+(def scale [width height])
 
 (def ^:private number-modules-x 8)
 (def ^:private number-modules-y 4)
@@ -25,10 +26,10 @@
 (def ^:private floor-idxvalue 0)
 
 (defn- module-index->tiled-map-positions [[module-x module-y]]
-  (let [start-x (* module-x (+ module-width  module-offset-tiles))
-        start-y (* module-y (+ module-height module-offset-tiles))]
-    (for [x (range start-x (+ start-x module-width))
-          y (range start-y (+ start-y module-height))]
+  (let [start-x (* module-x (+ width  module-offset-tiles))
+        start-y (* module-y (+ height module-offset-tiles))]
+    (for [x (range start-x (+ start-x width))
+          y (range start-y (+ start-y height))]
       [x y])))
 
 (defn- floor->module-index []
@@ -51,11 +52,11 @@
                              (if transition?
                                (transition-idxvalue->module-index idxvalue)
                                (floor->module-index)))
-        offsets (for [x (range module-width)
-                      y (range module-height)]
+        offsets (for [x (range width)
+                      y (range height)]
                   [x y])
         offset->tiled-map-position (zipmap offsets tiled-map-positions)
-        scaled-position (mapv * unscaled-position modules-scale)]
+        scaled-position (mapv * unscaled-position scale)]
     (reduce (fn [grid offset]
               (assoc grid
                      (mapv + scaled-position offset)
@@ -69,9 +70,9 @@
              unscaled-floor-positions
              unscaled-transition-positions]
   (let [_ (assert (and (= (t/width modules-tiled-map)
-                          (* number-modules-x (+ module-width module-offset-tiles)))
+                          (* number-modules-x (+ width module-offset-tiles)))
                        (= (t/height modules-tiled-map)
-                          (* number-modules-y (+ module-height module-offset-tiles)))))
+                          (* number-modules-y (+ height module-offset-tiles)))))
         scaled-grid (reduce (fn [scaled-grid unscaled-position]
                               (place-module scaled-grid unscaled-position :transition? false))
                             scaled-grid

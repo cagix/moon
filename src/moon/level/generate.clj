@@ -8,8 +8,7 @@
             [moon.level.area-level-grid :as area-level-grid]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [moon.level.modules :as modules :refer [modules-scale module-width module-height]]
-            [moon.level.tiled :refer [movement-property]]
+            [moon.level.modules :as modules]
             [moon.level.uf-caves :as uf-caves]))
 
 (def ^:private spawn-creatures? true)
@@ -25,8 +24,6 @@
         (let [creatures (creatures/with-level creature-properties area-level)]
           (when (seq creatures)
             (t/set-tile! layer position (creatures/tile (rand-nth creatures)))))))))
-
-(def modules-file "maps/modules.tmx")
 
 (defn generate-modules
   "The generated tiled-map needs to be disposed."
@@ -44,15 +41,15 @@
                    (= #{:wall :ground :transition} (set (g2d/cells grid)))
                    (= #{:ground :transition} (set (g2d/cells grid))))
                   (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
-        scale modules-scale
+        scale modules/scale
         scaled-grid (scale-grid grid scale)
-        tiled-map (modules/place (t/load-map modules-file)
+        tiled-map (modules/place (t/load-map modules/file)
                                  scaled-grid
                                  grid
                                  (filter #(= :ground     (get grid %)) (g2d/posis grid))
                                  (filter #(= :transition (get grid %)) (g2d/posis grid)))
         start-position (mapv * start scale)
-        can-spawn? #(= "all" (movement-property tiled-map %))
+        can-spawn? #(= "all" (level/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill scaled-grid start-position can-spawn?)
         ;_ (println "scaled grid with filled nil: '?' \n")

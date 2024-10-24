@@ -14,20 +14,18 @@
             [moon.stage :as stage]
             [moon.screen :as screen]
             [moon.level :as level]
-            moon.level.generate
-            [moon.level.modules :refer [module-width module-height]]
-            [moon.level.tiled :refer [movement-properties movement-property]]))
+            [moon.level.modules :as modules]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
-                    [(/ (t/width  tiled-map) 2)
-                     (/ (t/height tiled-map) 2)])
+                     [(/ (t/width  tiled-map) 2)
+                      (/ (t/height tiled-map) 2)])
   (cam/set-zoom! camera
-                (cam/calculate-zoom camera
-                                   :left [0 0]
-                                   :top [0 (t/height tiled-map)]
-                                   :right [(t/width tiled-map) 0]
-                                   :bottom [0 0])))
+                 (cam/calculate-zoom camera
+                                     :left [0 0]
+                                     :top [0 (t/height tiled-map)]
+                                     :right [(t/width tiled-map) 0]
+                                     :bottom [0 0])))
 
 (defn- current-data []
   (-> (screen/current) :sub-screen :current-data))
@@ -48,15 +46,15 @@ direction keys: move")
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
                                  (g/world-mouse-position)
-                                 [module-width module-height])))
+                                 [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (t/property-value tiled-map :creatures tile :id)))
           (when area-level-grid
             (let [level (get area-level-grid tile)]
               (when (number? level)
                 (str "Area level:" level))))
-          (str "Movement properties " (movement-property tiled-map tile) "\n"
-               (apply vector (movement-properties tiled-map tile)))]
+          (str "Movement properties " (level/movement-property tiled-map tile) "\n"
+               (apply vector (level/movement-properties tiled-map tile)))]
          (remove nil?)
          (str/join "\n"))))
 
@@ -103,7 +101,7 @@ direction keys: move")
       (g/draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
-              :let [prop (movement-property tiled-map [x y])]]
+              :let [prop (level/movement-property tiled-map [x y])]]
         (g/draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
         (g/draw-filled-circle [(+ x 0.5) (+ y 0.5)]
                               0.05
@@ -163,6 +161,6 @@ direction keys: move")
   (screen/create [_]
     (stage/create :actors [(->generate-map-window world-id)
                            (->info-window)]
-                  :screen (->MapEditorScreen (atom {:tiled-map (t/load-map moon.level.generate/modules-file)
+                  :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)
                                                     :show-movement-properties false
                                                     :show-grid-lines false})))))
