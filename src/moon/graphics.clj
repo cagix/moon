@@ -7,9 +7,7 @@
             [gdl.graphics.viewport :as vp]
             [gdl.graphics.tiled :as tiled]
             [gdl.utils :refer [dispose safe-get]]
-            [moon.component :refer [defc] :as component]
             [moon.db :as db]
-            [moon.schema :as schema]
             [moon.assets :as assets])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
@@ -215,11 +213,6 @@
                (int (/ sprite-y tileh))]))
     (image file)))
 
-(defmethod schema/form :s/image [_]
-  [:map {:closed true}
-   [:file :string]
-   [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
-
 (defmethod db/edn->value :s/image [_ image]
   (edn->image image))
 
@@ -250,11 +243,6 @@
 
 (defn set-cursor! [cursor-key]
   (graphics/set-cursor (safe-get cursors cursor-key)))
-
-(defc :tx/cursor
-  (component/handle [[_ cursor-key]]
-    (set-cursor! cursor-key)
-    nil))
 
 (declare ^:private cached-map-renderer)
 

@@ -22,4 +22,4 @@
   (utils/dispose manager))
 
 (defn play-sound! [path]
-  (Sound/.play (get assets/manager path)))
+  (Sound/.play (get manager path)))

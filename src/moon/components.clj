@@ -29,10 +29,13 @@
             moon.effect.entity
             moon.effect.target
             moon.level.tiled-map
+            moon.schema.image
+            moon.schema.sound
             moon.screens.main
             moon.screens.map-editor
             moon.screens.editor
             moon.screens.world
+            moon.tx.cursor
             moon.tx.sound
             moon.widgets.action-bar
             moon.widgets.dev-menu
