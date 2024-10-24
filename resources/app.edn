@@ -82,6 +82,7 @@
               tx.cursor
               tx.creature
               tx.sound
+              operation.val-max
               widgets.action-bar
               widgets.dev-menu
               widgets.entity-info-window
