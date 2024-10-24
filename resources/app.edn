@@ -44,10 +44,10 @@
               creature.player.idle
               creature.player.item-on-cursor
               creature.player.moving
-              entity.stats
               editor.visui
               editor.widgets-map
               interaction
+              item.modifiers
               properties.creatures
               properties.worlds
               audiovisual
@@ -61,7 +61,9 @@
               entity.movement
               entity.player
               entity.string-effect
+              entity.follow-ai
               effect.damage
+              effect.melee-damage
               effect.entity
               effect.target
               level.generate
