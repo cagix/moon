@@ -66,7 +66,8 @@
     (init-explored-tile-corners w h))
   (init-ids->eids))
 
-(declare start)
+(declare start
+         spawn-entities)
 
 (defc :tx/add-to-world
   (tx/handle [[_ eid]]

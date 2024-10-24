@@ -1,5 +1,6 @@
 (ns moon.components
-  (:require moon.creature.active
+  (:require moon.creature
+            moon.creature.active
             moon.creature.stunned
             moon.creature.npc.dead
             moon.creature.npc.idle

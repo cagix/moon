@@ -76,7 +76,7 @@
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
-(defn spawn-all [{:keys [tiled-map start-position]}]
+(defn- spawn-all [{:keys [tiled-map start-position]}]
   (tx/do! (for [creature (cons {:position start-position
                                 :creature-id :creatures/vampire
                                 :components {:entity/state {:fsm fsms/player
@@ -94,6 +94,8 @@
                                                                 :initial-state :npc-sleeping}
                                                  :entity/faction :evil}})))]
             [:tx/creature (update creature :position tile->middle)])))
+
+(.bindRoot #'world/spawn-entities spawn-all)
 
 ; https://github.com/damn/core/issues/29
 (defc :effect/spawn

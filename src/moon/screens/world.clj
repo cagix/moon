@@ -12,7 +12,6 @@
             [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
-            [moon.creature :as creature]
             moon.creature.player.item-on-cursor
             [moon.widgets.inventory :as inventory]
             [moon.world :as world]))
@@ -98,4 +97,4 @@
              (reset-stage!)
              (let [level (level/generate world-id)]
                (world/init! (:tiled-map level))
-               (creature/spawn-all level))))
+               (world/spawn-entities level))))

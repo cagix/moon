@@ -14,6 +14,7 @@
             [moon.stage :as stage]
             [moon.screen :as screen]
             [moon.level :as level]
+            moon.level.generate
             [moon.level.modules :refer [module-width module-height]]
             [moon.level.tiled :refer [movement-properties movement-property]]))
 
