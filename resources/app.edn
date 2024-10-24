@@ -32,4 +32,54 @@
            :screens/map-editor
            :screens/editor
            :screens/world]
- :ui :skin-scale/x1}
+ :ui :skin-scale/x1
+ :components [creature
+              creature.active
+              creature.stunned
+              creature.npc.dead
+              creature.npc.idle
+              creature.npc.moving
+              creature.npc.sleeping
+              creature.player.dead
+              creature.player.idle
+              creature.player.item-on-cursor
+              creature.player.moving
+              entity.stats
+              editor.visui
+              editor.widgets-map
+              interaction
+              properties.creatures
+              properties.worlds
+              audiovisual
+              projectile
+              editor.widgets
+              entity.animation
+              entity.delete-after-duration
+              entity.image
+              entity.line
+              entity.movement
+              entity.player
+              entity.string-effect
+              effect.damage
+              effect.entity
+              effect.target
+              level.generate
+              level.uf-caves
+              level.tiled-map
+              schema.image
+              schema.sound
+              screens.main
+              screens.map-editor
+              screens.editor
+              screens.world
+              tx.cursor
+              tx.sound
+              widgets.action-bar
+              widgets.dev-menu
+              widgets.entity-info-window
+              widgets.inventory
+              widgets.hp-mana
+              widgets.property
+              widgets.player-message
+              widgets.player-modal
+              ]}

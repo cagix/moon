@@ -6,8 +6,7 @@
             [moon.assets :as assets]
             [moon.db :as db]
             [moon.graphics :as graphics]
-            [moon.screen :as screen]
-            moon.components))
+            [moon.screen :as screen]))
 
 (defn- background-image [config]
   (fn []
@@ -39,6 +38,8 @@
 
 (defn -main []
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]
+    (run! (comp require symbol #(str "moon." %))
+          (:components config))
     (db/load! (:properties config))
     (app/start (:app config)
                (app-listener config))))
