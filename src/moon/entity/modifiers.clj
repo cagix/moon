@@ -1,5 +1,6 @@
 (ns ^:no-doc moon.entity.modifiers
-  (:require [clojure.string :as str]
+  (:require [clojure.math :as math]
+            [clojure.string :as str]
             [gdl.graphics.color :as color]
             [gdl.utils :refer [safe-remove-one update-kv k->pretty-name]]
             [moon.component :refer [defc defc*] :as component]
