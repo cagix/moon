@@ -15,10 +15,17 @@
   (doto (MenuItem. text)
     (.addListener (ui/change-listener on-clicked))))
 
-(defn- add-upd-label [table text-fn]
-  (let [label (ui/label "")]
-    (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
-    (.expandX (.right (.add table label)))))
+(defn- add-upd-label
+  ([table text-fn icon]
+   (let [icon (ui/image->widget (g/image (str "images/" icon ".png")) {})
+         label (ui/label "")
+         sub-table (ui/table {:rows [[icon label]]})]
+     (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
+     (.expandX (.right (.add table sub-table)))))
+  ([table text-fn]
+   (let [label (ui/label "")]
+     (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
+     (.expandX (.right (.add table label))))))
 
 (defn- add-debug-infos [mb]
   (let [table (.getTable mb)
@@ -27,14 +34,22 @@
     #_(when-let [actor (mouse-on-actor?)]
         (str "TRUE - name:" (.getName actor)
              "id: " (a/id actor)))
-    (add! #(str "Mouseover-entity id: " (when-let [entity (world/mouseover-entity)] (:entity/id entity))))
-    (add! #(str "elapsed-time " (readable-number world/elapsed-time) " seconds"))
+    (add-upd-label table
+                   #(str "Mouseover-entity id: " (when-let [entity (world/mouseover-entity)] (:entity/id entity)))
+                   "mouseover")
+    (add-upd-label table
+                   #(str "elapsed-time " (readable-number world/elapsed-time) " seconds")
+                   "clock")
     (add! #(str "paused? " world/paused?))
     (add! #(str "GUI: " (g/gui-mouse-position)))
     (add! #(str "World: "(mapv int (g/world-mouse-position))))
-    (add! #(str "Zoom: " (cam/zoom (g/world-camera))))
+    (add-upd-label table
+                   #(str "Zoom: " (cam/zoom (g/world-camera)))
+                   "zoom")
     (add! #(str "logic-frame: " world/logic-frame))
-    (add! #(str "FPS: " (gdl.graphics/frames-per-second)))))
+    (add-upd-label table
+                   #(str "FPS: " (gdl.graphics/frames-per-second))
+                   "fps")))
 
 (defn- ->menu-bar []
   (let [menu-bar (MenuBar.)
