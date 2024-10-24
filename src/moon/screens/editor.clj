@@ -6,7 +6,7 @@
             [moon.screen :as screen]))
 
 (defc :screens/editor
-  (screen/create [[_ background-image]]
+  (component/create [[_ background-image]]
     (stage/create :actors
                   [(background-image)
                    (component/create [:editor/main-table nil])

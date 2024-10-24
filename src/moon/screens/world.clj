@@ -64,7 +64,7 @@
     (world/clear-tiled-map)))
 
 (defc :screens/world
-  (screen/create [_]
+  (component/create [_]
     (stage/create :screen (->WorldScreen))))
 
 (defn- world-actors []

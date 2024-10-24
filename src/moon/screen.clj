@@ -1,7 +1,5 @@
 (ns moon.screen
-  (:require [moon.component :refer [defsystem]]))
-
-(defsystem create)
+  (:require [moon.component :as component]))
 
 (defprotocol Screen
   (enter!   [_])
@@ -32,7 +30,7 @@
   {:pre [(vector? screen-ks)]}
   (.bindRoot #'screens (into {}
                              (for [k screen-ks]
-                               [k (create [k params])])))
+                               [k (component/create [k params])])))
   (change! (ffirst screens)))
 
 (defn dispose-all! []

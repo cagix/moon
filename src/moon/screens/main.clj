@@ -3,7 +3,7 @@
             [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
-            [moon.component :refer [defc]]
+            [moon.component :refer [defc] :as component]
             [moon.stage :as stage]
             [moon.db :as db]
             [moon.graphics :as g]
@@ -31,7 +31,7 @@
   (screen/dispose! [_]))
 
 (defc :screens/main-menu
-  (screen/create [[_ background-image]]
+  (component/create [[_ background-image]]
     (stage/create :actors
                   [(background-image)
                    (->buttons)

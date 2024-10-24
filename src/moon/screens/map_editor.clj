@@ -7,7 +7,7 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
-            [moon.component :refer [defc]]
+            [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.graphics :as g]
             [moon.ui.error-window :refer [error-window!]]
@@ -158,7 +158,7 @@ direction keys: move")
     (dispose (:tiled-map @current-data))))
 
 (defc :screens/map-editor
-  (screen/create [_]
+  (component/create [_]
     (stage/create :actors [(->generate-map-window world-id)
                            (->info-window)]
                   :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)
