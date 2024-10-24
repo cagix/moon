@@ -1,10 +1,8 @@
 (ns moon.skill
   (:require [gdl.utils :refer [readable-number]]
             [moon.component :refer [defc] :as component]
-            [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.state :as state]
-            [moon.entity.modifiers :refer [entity-stat]]
             [moon.property :as property]
             [moon.world :as world :refer [stopped?]]))
 
@@ -65,8 +63,10 @@
                      (stopped? cooling-down?))]
       [:e/assoc-in eid [k (:property/id skill) :skill/cooling-down?] false])))
 
-(defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
+(defn- has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
+
+(.bindRoot #'entity/has-skill? has-skill?)
 
 (defc :tx/add-skill
   (component/handle [[_ eid {:keys [property/id] :as skill}]]
@@ -106,26 +106,3 @@
                           (ui/add-tooltip! button #(info/->text (db/get id))) ; TODO no player modifiers applied (see actionbar)
                           button))]
                 :pack? true}))
-
-(defn- mana-value [entity]
-  (if-let [mana (entity-stat entity :stats/mana)]
-    (mana 0)
-    0))
-
-(defn- not-enough-mana? [entity {:keys [skill/cost]}]
-  (> cost (mana-value entity)))
-
-(defn usable-state
-  [entity {:keys [skill/cooling-down? skill/effects] :as skill}]
-  (cond
-   cooling-down?
-   :cooldown
-
-   (not-enough-mana? entity skill)
-   :not-enough-mana
-
-   (not (effect/effect-applicable? effects))
-   :invalid-params
-
-   :else
-   :usable))

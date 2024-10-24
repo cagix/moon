@@ -3,8 +3,7 @@
             [moon.graphics :as g]
             [moon.world :as world :refer [stopped? timer]]
             [moon.entity :as entity]
-            [moon.entity.state :as state]
-            [moon.entity.modifiers :refer [entity-stat]]))
+            [moon.entity.state :as state]))
 
 (def ^:private shout-radius 4)
 
@@ -44,7 +43,7 @@
     (let [entity @eid
           cell (world/grid (entity/tile entity))] ; pattern!
       (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
-        (when (<= distance (entity-stat entity :stats/aggro-range))
+        (when (<= distance (entity/stat entity :stats/aggro-range))
           [[:tx/event eid :alert]]))))
 
   (entity/render-above [_ entity]

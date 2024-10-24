@@ -3,7 +3,6 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.stage :as stage]
-            [moon.skill :as skill]
             [moon.world :as world :refer [mouseover-eid]]
             [moon.entity :as entity]
             [moon.effect :as effect]))
@@ -78,7 +77,7 @@
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (effect/player-ctx eid)
              state (effect/with-ctx effect-ctx
-                     (skill/usable-state entity skill))]
+                     (effect/usable-state entity skill))]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight

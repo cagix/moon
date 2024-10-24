@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
             [moon.entity.hpbar :as hpbar]
-            [moon.entity.modifiers :refer [defmodifier defstat entity-stat]]
+            [moon.entity.modifiers :refer [defmodifier defstat]]
             [moon.val-max :as val-max]))
 
 ; TODO negate this value also @ use
@@ -31,7 +31,7 @@
     [v v])
 
   (entity/render-info [_ entity]
-    (let [ratio (val-max/ratio (entity-stat entity :stats/hp))]
+    (let [ratio (val-max/ratio (entity/stat entity :stats/hp))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
         (hpbar/draw entity ratio)))))
 
@@ -46,7 +46,7 @@
 
 (defc :tx.entity.stats/pay-mana-cost
   (component/handle [[_ eid cost]]
-    (let [mana-val ((entity-stat @eid :stats/mana) 0)]
+    (let [mana-val ((entity/stat @eid :stats/mana) 0)]
       (assert (<= cost mana-val))
       [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]])))
 

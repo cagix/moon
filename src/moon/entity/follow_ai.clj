@@ -94,7 +94,7 @@
          (= cell (first cells)))))
 
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
-(defn direction-vector [eid] ; TODO pass faction here, one less dependency.
+(defn- direction-vector [eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
         own-cell (get world/grid (->tile position))
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
@@ -110,3 +110,5 @@
                     (occupied-by-other? @own-cell eid)) ; prevent friction 2 move to center
        (when-not (inside-cell? @eid target-cell)
          (v/direction position (:middle @target-cell)))))))
+
+(.bindRoot #'entity/ai-direction-vector direction-vector)

@@ -56,6 +56,7 @@
               entity.animation
               entity.delete-after-duration
               entity.image
+              entity.inventory
               entity.line
               entity.movement
               entity.player
@@ -72,6 +73,7 @@
               screens.map-editor
               screens.editor
               screens.world
+              skill
               tx.cursor
               tx.sound
               widgets.action-bar

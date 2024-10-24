@@ -4,7 +4,6 @@
             [moon.world :refer [timer stopped? finished-ratio]]
             [moon.entity :as entity]
             [moon.entity.state :as state]
-            [moon.entity.modifiers :refer [entity-stat]]
             [moon.effect :as effect]))
 
 (defn- draw-skill-icon [icon entity [x y] action-counter-ratio]
@@ -22,7 +21,7 @@
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (entity-stat entity (:skill/action-time-modifier-key skill))
+     (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
 (defc :active-skill

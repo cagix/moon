@@ -106,11 +106,13 @@
 (defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
 (defn- modifier-k [stat-k]   (keyword "modifier"      (name stat-k)))
 
-(defn entity-stat [entity stat-k]
+(defn- entity-stat [entity stat-k]
   (when-let [base-value (stat-k entity)]
     (modified-value entity
                     (modifier-k stat-k)
                     base-value)))
+
+(.bindRoot #'entity/stat entity-stat)
 
 (defc :base/stat-effect
   (component/info [[k operations]]
@@ -120,14 +122,14 @@
 
   (effect/applicable? [[k _]]
     (and effect/target
-         (entity-stat @effect/target (stat-k k))))
+         (entity/stat @effect/target (stat-k k))))
 
   (effect/useful? [_]
     true)
 
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
-      (when-let [effective-value (entity-stat @effect/target stat-k)]
+      (when-let [effective-value (entity/stat @effect/target stat-k)]
         [[:e/assoc effect/target stat-k
           (reduce (fn [value operation]
                     (op/apply operation value))
@@ -147,4 +149,4 @@
 
 (defc :entity/stat
   (component/info [[k v]]
-    (str (k->pretty-name k) ": " (entity-stat info/*info-text-entity* k))))
+    (str (k->pretty-name k) ": " (entity/stat info/*info-text-entity* k))))

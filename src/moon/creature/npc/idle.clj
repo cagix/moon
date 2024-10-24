@@ -1,9 +1,7 @@
 (ns ^:no-doc moon.creature.npc.idle
   (:require [moon.component :refer [defc]]
-            [moon.skill :as skill]
             [moon.world :as world]
             [moon.entity :as entity]
-            [moon.entity.follow-ai :as follow-ai]
             [moon.effect :as effect]))
 
 (comment
@@ -18,7 +16,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (skill/usable-state entity %))
+       (filter #(and (= :usable (effect/usable-state entity %))
                      (effect/effect-useful? (:skill/effects %))))
        first))
 
@@ -32,4 +30,4 @@
       (if-let [skill (effect/with-ctx effect-ctx
                        (npc-choose-skill @eid))]
         [[:tx/event eid :start-action [skill effect-ctx]]]
-        [[:tx/event eid :movement-direction (follow-ai/direction-vector eid)]]))))
+        [[:tx/event eid :movement-direction (entity/ai-direction-vector eid)]]))))

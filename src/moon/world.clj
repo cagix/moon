@@ -15,7 +15,7 @@
             [gdl.math.shape :as shape]
             [gdl.tiled :as t]
             [moon.entity :as entity]
-            [moon.entity.state :as entity-state]
+            [moon.entity.state :as state]
             [moon.level :as level]
             [moon.world.content-grid :as content-grid]
             [moon.world.raycaster :as raycaster])
@@ -97,8 +97,8 @@
 
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn- player-state-pause-game? [] (entity-state/pause-game? (entity-state/state-obj @player)))
-(defn- player-update-state      [] (entity-state/manual-tick (entity-state/state-obj @player)))
+(defn- player-state-pause-game? [] (state/pause-game? (state/state-obj @player)))
+(defn- player-update-state      [] (state/manual-tick (state/state-obj @player)))
 
 (defn- player-unpaused? []
   (or (key-just-pressed? :keys/p)

@@ -2,10 +2,11 @@
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.component :refer [defc] :as component]
             [moon.effect :as effect :refer [source target]]
-            [moon.entity.modifiers :refer [modified-value entity-stat]]))
+            [moon.entity :as entity]
+            [moon.entity.modifiers :refer [modified-value]]))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (entity-stat entity :stats/strength) 0)]
+  (let [strength (or (entity/stat entity :stats/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defn- damage-effect []
@@ -25,8 +26,8 @@
     [(damage-effect)]))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (entity-stat target* :stats/armor-save) 0)
-          (or (entity-stat source* :stats/armor-pierce) 0))
+  (max (- (or (entity/stat target* :stats/armor-save) 0)
+          (or (entity/stat source* :stats/armor-pierce) 0))
        0))
 
 (comment
@@ -81,12 +82,12 @@
 
   (effect/applicable? [_]
     (and target
-         (entity-stat @target :stats/hp)))
+         (entity/stat @target :stats/hp)))
 
   (component/handle [_]
     (let [source* @source
           target* @target
-          hp (entity-stat target* :stats/hp)]
+          hp (entity/stat target* :stats/hp)]
       (cond
        (zero? (hp 0))
        []

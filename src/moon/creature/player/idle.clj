@@ -1,7 +1,6 @@
 (ns ^:no-doc moon.creature.player.idle
   (:require [gdl.input :refer [button-just-pressed? WASD-movement-vector]]
             [moon.component :refer [defc]]
-            [moon.skill :refer [has-skill?]]
             [moon.entity :as entity]
             [moon.entity.state :as state]))
 
@@ -32,6 +31,6 @@
     (let [free-skill-points (:entity/free-skill-points @eid)]
       ; TODO no else case, no visible free-skill-points
       (when (and (pos? free-skill-points)
-                 (not (has-skill? @eid skill)))
+                 (not (entity/has-skill? @eid skill)))
         [[:e/assoc eid :entity/free-skill-points (dec free-skill-points)]
          [:tx/add-skill eid skill]]))))
