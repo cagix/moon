@@ -1,5 +1,5 @@
 (ns moon.skill
-  (:require [moon.component :refer [defc defsystem]]
+  (:require [moon.component :refer [defc]]
             [moon.info :as info]
             [moon.property :as property]
             [moon.tx :as tx]
@@ -84,11 +84,8 @@
      (when (:entity/player? @eid)
        [:tx.action-bar/remove skill])]))
 
-(defsystem clicked-skillmenu-skill [_ skill])
-(defmethod clicked-skillmenu-skill :default [_ skill])
-
 (defn- player-clicked-skillmenu [skill]
-  (clicked-skillmenu-skill (entity-state/state-obj @world/player) skill))
+  (state/clicked-skillmenu-skill (entity-state/state-obj @world/player) skill))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player))

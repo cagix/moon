@@ -20,6 +20,12 @@
 (defsystem manual-tick)
 (defmethod manual-tick :default [_])
 
+(defsystem clicked-inventory-cell [_ cell])
+(defmethod clicked-inventory-cell :default [_ cell])
+
+(defsystem clicked-skillmenu-skill [_ skill])
+(defmethod clicked-skillmenu-skill :default [_ skill])
+
 ; fsm throws when initial-state is not part of states, so no need to assert initial-state
 ; initial state is nil, so associng it. make bug report at reduce-fsm?
 (defn- ->init-fsm [fsm initial-state]

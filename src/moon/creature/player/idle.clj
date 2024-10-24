@@ -6,9 +6,9 @@
             [gdl.ui.actor :as a]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [can-pickup-item?]]
-            [moon.skill :as skill :refer [has-skill? clicked-skillmenu-skill]]
+            [moon.skill :as skill :refer [has-skill?]]
             [moon.widgets.action-bar :refer [selected-skill]]
-            [moon.widgets.inventory :refer [clicked-inventory-cell inventory-window]]
+            [moon.widgets.inventory :refer [inventory-window]]
             [moon.world :as world :refer [timer stopped? finished-ratio mouseover-eid]]
             [moon.creature.player.moving :refer [WASD-movement-vector]]
             [moon.entity :as entity]
@@ -124,14 +124,14 @@
               (when (button-just-pressed? :left)
                 (on-click))))))
 
-  (clicked-inventory-cell [_ cell]
+  (state/clicked-inventory-cell [_ cell]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       [[:tx/sound "sounds/bfxr_takeit.wav"]
        [:tx/event eid :pickup-item item]
        [:tx/remove-item eid cell]]))
 
-  (clicked-skillmenu-skill [_ skill]
+  (state/clicked-skillmenu-skill [_ skill]
     (let [free-skill-points (:entity/free-skill-points @eid)]
       ; TODO no else case, no visible free-skill-points
       (when (and (pos? free-skill-points)

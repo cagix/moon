@@ -1,11 +1,10 @@
 (ns ^:no-doc moon.creature.player.item-on-cursor
   (:require [gdl.input :refer [button-just-pressed?]]
-            [moon.component :refer [defc]]
+            [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [gdl.math.vector :as v]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
-            [moon.widgets.inventory :refer [clicked-inventory-cell]]
             [moon.world :as world]
             [moon.entity :as entity]
             [moon.entity.state :as state]))
@@ -77,7 +76,7 @@
                (world-item?))
       [[:tx/event eid :drop-item]]))
 
-  (clicked-inventory-cell [_ cell]
+  (state/clicked-inventory-cell [_ cell]
     (clicked-cell eid cell))
 
   (state/enter [_]
@@ -99,9 +98,13 @@
     (when (world-item?)
       (g/draw-centered-image (:entity/image item) (item-place-position entity)))))
 
-(defn draw-item-on-cursor []
+(defn- draw-item-on-cursor []
   (let [player-e* @world/player]
     (when (and (= :player-item-on-cursor (state/state-k player-e*))
                (not (world-item?)))
       (g/draw-centered-image (:entity/image (:entity/item-on-cursor player-e*))
                              (g/gui-mouse-position)))))
+
+(defc :widgets/draw-item-on-cursor
+  (component/create [_]
+    (ui/actor {:draw draw-item-on-cursor})))

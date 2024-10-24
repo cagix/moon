@@ -95,7 +95,7 @@
 
 (def ^:private uf-caves-scale 4)
 
-(defn create [{:keys [world/map-size world/spawn-rate]}]
+(defn- create [{:keys [world/map-size world/spawn-rate]}]
   (let [{:keys [start grid]} (cave-grid :size map-size)
         ;_ (println "Start: " start)
         ;_ (printgrid grid)
@@ -134,3 +134,6 @@
     (uf-place-creatures! spawn-rate tiled-map spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))
+
+(defmethod level/generate* :world.generator/uf-caves [world]
+  (create world))

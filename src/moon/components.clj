@@ -10,7 +10,9 @@
             moon.creature.player.idle
             moon.creature.player.moving
             moon.entity.stats
+            moon.editor.visui
             moon.properties.creatures
+            moon.properties.worlds
             moon.audiovisual
             moon.projectile
             moon.editor.widgets
@@ -24,6 +26,7 @@
             moon.effect.damage
             moon.effect.entity
             moon.effect.target
+            moon.level.tiled-map
             moon.screens.main
             moon.screens.map-editor
             moon.screens.editor

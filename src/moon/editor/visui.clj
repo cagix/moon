@@ -1,11 +1,12 @@
 (ns ^:no-doc moon.editor.visui
   (:require [gdl.input :refer [key-just-pressed?]]
-            [moon.component :as component]
+            [moon.component :as component :refer [defc]]
             [moon.db :as db]
             [moon.info :as info]
             [moon.property :as property]
             [moon.schema :as schema]
             [moon.editor.common :refer [component-order]]
+            [moon.editor.overview :refer [overview-table]]
             [moon.editor.malli :as malli]
             [moon.editor.utils :refer [scroll-pane-cell]]
             [moon.editor.widget :as widget]
@@ -14,7 +15,8 @@
             [moon.ui.error-window :refer [error-window!]]
             [moon.stage :as stage]
             [malli.core :as m]
-            [malli.generator :as mg]))
+            [malli.generator :as mg])
+  (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 ; We are working with raw property data without edn->value and db/build
 ; otherwise at db/update! we would have to convert again from edn->value back to edn
@@ -63,7 +65,7 @@
     (a/remove! editor-window)
     (stage/add! (props->editor-window prop-value))))
 
-(defn property-editor-window [id]
+(defn- property-editor-window [id]
   (props->editor-window (db/get-raw id)))
 
 (defn- k->default-value [k]
@@ -164,3 +166,35 @@
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (a/id widget)]]
           [k (widget/value (schema/of k) widget)])))
+
+(defn- edit-property [property-id]
+  (stage/add! (property-editor-window property-id)))
+
+(defn- property-type-tabs []
+  (for [property-type (sort (property/types))]
+    {:title (:title (property/overview property-type))
+     :content (overview-table property-type edit-property)}))
+
+(defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
+  (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
+    (getTabTitle [] title)
+    (getContentTable [] content)))
+
+(defc :editor/main-table
+  (component/create [_]
+    (let [table (ui/table {:fill-parent? true})
+          container (ui/table {})
+          tabbed-pane (TabbedPane.)]
+      (.addListener tabbed-pane
+                    (proxy [TabbedPaneAdapter] []
+                      (switchedTab [^Tab tab]
+                        (.clearChildren container)
+                        (.fill (.expand (.add container (.getContentTable tab)))))))
+      (.fillX (.expandX (.add table (.getTable tabbed-pane))))
+      (.row table)
+      (.fill (.expand (.add table container)))
+      (.row table)
+      (.pad (.left (.add table (ui/label "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]"))) (float 10))
+      (doseq [tab-data (property-type-tabs)]
+        (.add tabbed-pane (tab-widget tab-data)))
+      table)))

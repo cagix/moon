@@ -12,7 +12,6 @@
             [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
-            moon.creature.player.item-on-cursor
             [moon.world :as world]))
 
 (defn- check-window-hotkeys []
@@ -82,8 +81,8 @@
    (ui/group {:id :windows
               :actors [(component/create [:widgets/entity-info-window nil])
                        (component/create [:widgets/inventory          nil])]})
-   (ui/actor {:draw moon.creature.player.item-on-cursor/draw-item-on-cursor})
-   (component/create [:widgets/player-message nil])])
+   (component/create [:widgets/draw-item-on-cursor nil])
+   (component/create [:widgets/player-message      nil])])
 
 (defn- reset-stage! []
   (let [stage (stage/get)]

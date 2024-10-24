@@ -1,6 +1,6 @@
 (ns moon.widgets.inventory
   (:require [gdl.graphics.color :as color]
-            [moon.component :refer [defsystem defc] :as component]
+            [moon.component :refer [defc] :as component]
             [moon.info :as info]
             [moon.tx :as tx]
             [data.grid2d :as g2d]
@@ -42,11 +42,8 @@
                      (a/mouseover? this (g/gui-mouse-position))
                      (a/id (a/parent this))))))
 
-(defsystem clicked-inventory-cell [_ cell])
-(defmethod clicked-inventory-cell :default [_ cell])
-
 (defn- player-clicked-inventory [cell]
-  (clicked-inventory-cell (state/state-obj @world/player) cell))
+  (state/clicked-inventory-cell (state/state-obj @world/player) cell))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0

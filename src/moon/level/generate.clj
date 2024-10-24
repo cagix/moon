@@ -1,15 +1,12 @@
 (ns moon.level.generate
-  (:require [moon.component :refer [defc]]
-            [moon.db :as db]
-            [moon.property :as property]
+  (:require [moon.db :as db]
             [data.grid2d :as g2d]
             [gdl.tiled :as t]
             [moon.level :as level]
             [moon.level.area-level-grid :as area-level-grid]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [moon.level.modules :as modules]
-            [moon.level.uf-caves :as uf-caves]))
+            [moon.level.modules :as modules]))
 
 (def ^:private spawn-creatures? true)
 
@@ -80,33 +77,5 @@
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
 
-(defc :world/player-creature {:schema :some #_[:s/one-to-one :properties/creatures]})
-(defc :world/map-size {:schema pos-int?})
-(defc :world/max-area-level {:schema pos-int?}) ; TODO <= map-size !?
-(defc :world/spawn-rate {:schema pos?}) ; TODO <1 !
-(defc :world/tiled-map {:schema :string})
-(defc :world/components {:schema [:s/map []]})
-(defc :world/generator {:schema [:enum
-                                 :world.generator/tiled-map
-                                 :world.generator/modules
-                                 :world.generator/uf-caves]})
-
-(property/def :properties/worlds
-  {:schema [:world/generator
-            :world/player-creature
-            [:world/tiled-map {:optional true}]
-            [:world/map-size {:optional true}]
-            [:world/max-area-level {:optional true}]
-            [:world/spawn-rate {:optional true}]]
-   :overview {:title "Worlds"
-              :columns 10}})
-
-(defmethod level/generate* :world.generator/tiled-map [world]
-  {:tiled-map (t/load-map (:world/tiled-map world))
-   :start-position [32 71]})
-
 (defmethod level/generate* :world.generator/modules [world]
   (generate-modules world))
-
-(defmethod level/generate* :world.generator/uf-caves [world]
-  (uf-caves/create world))
