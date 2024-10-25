@@ -34,6 +34,17 @@
            :screens/world]
  :ui :skin-scale/x1
  :components [
+              effect.convert
+              effect.damage
+              effect.kill
+              effect.melee-damage
+              effect.projectile
+              effect.spawn
+              effect.spiderweb
+              effect.stun
+              effect.target-all
+              effect.target-entity
+
               interaction
 
               properties.audiovisuals
@@ -44,15 +55,16 @@
               entity.animation
               entity.delete-after-duration
               entity.destroy-audiovisual
+              entity.follow-ai
               entity.image
               entity.inventory
               entity.line
-              entity.movement
               entity.modifiers
+              entity.movement
               entity.player
               entity.projectile
               entity.string-effect
-              entity.follow-ai
+              entity.temp-modifier
 
               entity.state.active
               entity.state.stunned
@@ -64,14 +76,6 @@
               entity.state.player.idle
               entity.state.player.item-on-cursor
               entity.state.player.moving
-
-              effect.damage
-              effect.melee-damage
-              effect.entity
-              effect.target-entity
-              effect.target-all
-              effect.spawn
-              effect.projectile
 
               fsms.player
               fsms.npc

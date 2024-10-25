@@ -37,8 +37,8 @@
 (defmulti widget        widget-type)
 (defmulti widget-value  widget-type)
 
-(defmethod schema/widget :default [_ v]
+(defmethod widget :default [_ v]
   (ui/label (truncate (->edn-str v) 60)))
 
-(defmethod schema/widget-value :default [_ widget]
+(defmethod widget-value :default [_ widget]
   ((actor/id widget) 1))
