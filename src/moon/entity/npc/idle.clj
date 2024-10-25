@@ -29,7 +29,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (entity/skill-usable-state entity %))
+       (filter #(and (= :usable (effect/skill-usable-state entity %))
                      (effect/effect-useful? (:skill/effects %))))
        first))
 

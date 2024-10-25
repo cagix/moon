@@ -1,5 +1,6 @@
 (ns moon.effect
-  (:require [moon.component :refer [defsystem defc] :as component]))
+  (:require [moon.component :refer [defsystem defc] :as component]
+            [moon.entity :as entity]))
 
 (defsystem applicable?
   "An effect will only be done (with component/handle) if this function returns truthy.
@@ -51,3 +52,26 @@ Default method returns true.")
   (component/handle [[_ effect-ctx effect]]
     (with-ctx effect-ctx
       (component/->handle (filter-applicable? effect)))))
+
+(defn- mana-value [entity]
+  (if-let [mana (entity/stat entity :stats/mana)]
+    (mana 0)
+    0))
+
+(defn- not-enough-mana? [entity {:keys [skill/cost]}]
+  (> cost (mana-value entity)))
+
+(defn skill-usable-state
+  [entity {:keys [skill/cooling-down? skill/effects] :as skill}]
+  (cond
+   cooling-down?
+   :cooldown
+
+   (not-enough-mana? entity skill)
+   :not-enough-mana
+
+   (not (effect-applicable? effects))
+   :invalid-params
+
+   :else
+   :usable))
