@@ -60,8 +60,9 @@
               entity.delete-after-animation-stopped
               entity.delete-after-duration
               entity.destroy-audiovisual
-              entity.fsm
+              entity.faction
               entity.follow-ai
+              entity.fsm
               entity.image
               entity.inventory
               entity.line-render
@@ -111,6 +112,7 @@
               tx.creature
               tx.cursor
               tx.effect
+              tx.entity
               tx.item
               tx.line-render
               tx.sound

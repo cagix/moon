@@ -3,7 +3,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
-            [gdl.utils :refer [dispose ->tile tile->middle safe-merge sort-by-order]]
+            [gdl.utils :refer [dispose ->tile tile->middle sort-by-order]]
             [clj-commons.pretty.repl :refer [pretty-pst]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
@@ -154,7 +154,7 @@
                 (.bindRoot #'entity-tick-error t))))
        nil)
     ; do not pause this as for example pickup item, should be destroyed.
-    remove-destroyed-entities!]))
+    [:tx/remove-destroyed-entities]]))
 
 (defn get-window [k]
   (get (:windows (stage/get)) k))

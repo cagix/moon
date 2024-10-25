@@ -1,7 +1,7 @@
 (ns moon.entity
   (:require [gdl.math.shape :as shape]
             [gdl.math.vector :as v]
-            [gdl.utils :refer [define-order ->tile dissoc-in]]
+            [gdl.utils :refer [define-order ->tile]]
             [malli.core :as m]
             [moon.component :refer [defsystem defc] :as component]))
 
@@ -115,43 +115,6 @@
 (defn friend [{:keys [entity/faction]}]
   faction)
 
-(defc :entity/faction
-  {:schema [:enum :good :evil]
-   :let faction}
-  (component/info [_]
-    (str "[SLATE]Faction: " (name faction) "[]")))
-
-(defc :e/destroy
-  (component/handle [[_ eid]]
-    [[:e/assoc eid :entity/destroyed? true]]))
-
-(defc :e/assoc
-  (component/handle [[_ eid k v]]
-    (assert (keyword? k))
-    (swap! eid assoc k v)
-    nil))
-
-(defc :e/assoc-in
-  (component/handle [[_ eid ks v]]
-    (swap! eid assoc-in ks v)
-    nil))
-
-(defc :e/dissoc
-  (component/handle [[_ eid k]]
-    (assert (keyword? k))
-    (swap! eid dissoc k)
-    nil))
-
-(defc :e/dissoc-in
-  (component/handle [[_ eid ks]]
-    (swap! eid dissoc-in ks)
-    nil))
-
-(defc :e/update
-  (component/handle [[_ eid k f]]
-    (swap! eid update k f)
-    nil))
-
 (declare selected-skill
          can-pickup-item?
          has-skill?
@@ -167,12 +130,7 @@
 (defn not-enough-mana? [entity {:keys [skill/cost]}]
   (> cost (mana-value entity)))
 
-(defn state-k [entity]
-  (-> entity :entity/fsm :state))
-
-(defn state-obj [entity]
-  (let [k (state-k entity)]
-    [k (k entity)]))
+;; State
 
 (defsystem enter)
 (defmethod enter :default [_])
@@ -194,3 +152,10 @@
 
 (defsystem clicked-skillmenu-skill [_ skill])
 (defmethod clicked-skillmenu-skill :default [_ skill])
+
+(defn state-k [entity]
+  (-> entity :entity/fsm :state))
+
+(defn state-obj [entity]
+  (let [k (state-k entity)]
+    [k (k entity)]))

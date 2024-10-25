@@ -33,41 +33,6 @@
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
 
-(defn- remove-destroyed-entities!
-  "Calls destroy on all entities which are marked with ':e/destroy'"
-  []
-  (mapcat (fn [eid]
-            (cons [:tx/remove-from-world eid]
-                  (for [component @eid]
-                    #(entity/destroy component eid))))
-          (filter (comp :entity/destroyed? deref) (all-entities))))
-
-(let [cnt (atom 0)]
-  (defn- unique-number! []
-    (swap! cnt inc)))
-
-(defn- create-vs
-  "Creates a map for every component with map entries `[k (create [k v])]`."
-  [components]
-  (reduce (fn [m [k v]]
-            (assoc m k (entity/->v [k v])))
-          {}
-          components))
-
-(defc :e/create
-  (component/handle [[_ position body components]]
-    (assert (and (not (contains? components :position))
-                 (not (contains? components :entity/id))))
-    (let [eid (atom (-> body
-                        (assoc :position position)
-                        entity/->Body
-                        (safe-merge (-> components
-                                        (assoc :entity/id (unique-number!))
-                                        (create-vs)))))]
-      (cons [:tx/add-to-world eid]
-            (for [component @eid]
-              #(entity/create component eid))))))
-
 (def ^:private ^:dbg-flag show-body-bounds false)
 
 (defn- draw-body-rect [entity color]
