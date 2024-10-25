@@ -1,14 +1,48 @@
 (ns moon.schema.map
-  (:require [gdl.ui :as ui]
+  (:require [clojure.set :as set]
+            [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [moon.component :as component]
             [moon.property :as property]
             [moon.schema :as schema]
-            [moon.editor.malli :as malli]
             [moon.editor.utils :refer [scroll-pane-cell]]
             [moon.stage :as stage]
             [malli.generator :as mg]))
+
+(defn- map-keys [m-schema]
+  (let [[_m _p & ks] m-schema]
+    (for [[k m? _schema] ks]
+      k)))
+
+(defn- map-form-k->properties
+  "Given a map schema gives a map of key to key properties (like :optional)."
+  [m-schema]
+  (let [[_m _p & ks] m-schema]
+    (into {} (for [[k m? _schema] ks]
+               [k (if (map? m?) m?)]))))
+
+(defn- optional? [k map-schema]
+  (:optional (k (map-form-k->properties map-schema))))
+
+(defn- optional-keyset [m-schema]
+  (set (filter #(optional? % m-schema) (map-keys m-schema))))
+
+(comment
+ (= (optional-keyset
+     [:map {:closed true}
+      [:foo]
+      [:bar]
+      [:baz {:optional true}]
+      [:boz {:optional false}]
+      [:asdf {:optional true}]])
+    [:baz :asdf])
+
+ )
+
+(defn- optional-keys-left [m-schema m]
+  (seq (set/difference (optional-keyset m-schema)
+                       (set (keys m)))))
 
 (defn- attribute-form
   "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
@@ -78,7 +112,7 @@
 (defn- attribute-label [k m-schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                         (name k))
-        delete-button (when (malli/optional? k m-schema)
+        delete-button (when (optional? k m-schema)
                         (ui/text-button "-"
                                         (fn []
                                           (a/remove! (find-kv-widget table k))
@@ -110,7 +144,7 @@
                            :cell-defaults {:pad 5}})
         malli-form (schema/form schema)
         remaining-ks (sort (remove (set (keys (schema/widget-value schema map-widget-table)))
-                                   (malli/map-keys malli-form)))]
+                                   (map-keys malli-form)))]
     (ui/add-rows!
      window
      (for [k remaining-ks]
@@ -157,7 +191,7 @@
                           (map #(component-row % (schema/form schema) table)
                                (sort-by component-order m)))
         colspan component-row-cols
-        opt? (malli/optional-keys-left (schema/form schema) m)]
+        opt? (optional-keys-left (schema/form schema) m)]
     (ui/add-rows!
      table
      (concat [(when opt?
