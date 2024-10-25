@@ -1,7 +1,8 @@
 (ns moon.tx.entity
   (:require [gdl.utils :refer [safe-merge dissoc-in]]
             [moon.component :refer [defc] :as component]
-            [moon.entity :as entity]))
+            [moon.entity :as entity]
+            [moon.world :as world]))
 
 (let [cnt (atom 0)]
   (defn- unique-number! []
@@ -37,7 +38,7 @@
               (cons [:tx/remove-from-world eid]
                     (for [component @eid]
                       #(entity/destroy component eid))))
-            (filter (comp :entity/destroyed? deref) (all-entities)))))
+            (filter (comp :entity/destroyed? deref) (world/all-entities)))))
 
 (defc :e/assoc
   (component/handle [[_ eid k v]]

@@ -1997,7 +1997,6 @@
     :items/cloth-boot
     :items/necklace-eye
     :items/blood-glove
-    :items/gold-boot
     :items/cloth-chest
     :items/gold-chest},
   :entity/skills #{:skills/melee-attack},
