@@ -23,3 +23,6 @@
 
 (defn play-sound! [path]
   (Sound/.play (get manager path)))
+
+(defn all-of-class [class]
+  (assets/of-class manager class))

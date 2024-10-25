@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.editor.visui
+(ns ^:no-doc moon.widgets.properties-tabs
   (:require [gdl.ui :as ui]
             [moon.component :as component :refer [defc]]
             [moon.db :as db]
@@ -21,7 +21,7 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defc :editor/main-table
+(defc :widgets/properties-tabs
   (component/create [_]
     (let [table (ui/table {:fill-parent? true})
           container (ui/table {})

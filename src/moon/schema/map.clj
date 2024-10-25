@@ -6,7 +6,7 @@
             [moon.component :as component]
             [moon.property :as property]
             [moon.schema :as schema]
-            [moon.editor.utils :refer [scroll-pane-cell]]
+            [moon.ui.scrollpane :refer [scroll-pane-cell]]
             [moon.stage :as stage]
             [malli.generator :as mg]))
 

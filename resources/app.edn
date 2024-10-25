@@ -34,13 +34,13 @@
            :screens/world]
  :ui :skin-scale/x1
  :components [
-              editor.visui
               interaction
+
               properties.audiovisuals
               properties.creatures
               properties.worlds
               properties.projectiles
-              editor.widgets
+
               entity.animation
               entity.delete-after-duration
               entity.destroy-audiovisual
@@ -72,27 +72,37 @@
               effect.target-all
               effect.spawn
               effect.projectile
+
               fsms.player
               fsms.npc
+
               level.generate
               level.uf-caves
               level.tiled-map
 
+              schema.animation
+              schema.boolean
+              schema.enum
               schema.image
               schema.map
+              schema.number
               schema.one-to-many
               schema.one-to-one
               schema.sound
+              schema.string
 
               screens.main
               screens.map-editor
               screens.editor
               screens.world
+
               skill
+
               tx.audiovisual
               tx.cursor
               tx.creature
               tx.sound
+
               operation.val-max
 
               widgets.action-bar
@@ -103,5 +113,6 @@
               widgets.player-message
               widgets.player-modal
               widgets.properties-overview
+              widgets.properties-tabs
               widgets.property
               ]}

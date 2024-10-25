@@ -1,7 +1,5 @@
 (ns ^:no-doc moon.entity.animation
   (:require [moon.component :refer [defc]]
-            [moon.schema :as schema]
-            [moon.graphics :as g]
             [moon.world :as world]
             [moon.entity :as entity]))
 
@@ -30,7 +28,7 @@
     (frames (min (int (/ (float cnt) (float frame-duration)))
                  (dec (count frames))))))
 
-(defn- ->animation [frames & {:keys [frame-duration looping?]}]
+(defn ->animation [frames & {:keys [frame-duration looping?]}]
   (map->ImmutableAnimation
     {:frames (vec frames)
      :frame-duration frame-duration
@@ -38,22 +36,8 @@
      :cnt 0
      :maxcnt (* (count frames) (float frame-duration))}))
 
-(defn- edn->animation [{:keys [frames frame-duration looping?]}]
-  (->animation (map g/edn->image frames)
-               :frame-duration frame-duration
-               :looping? looping?))
-
-(defmethod schema/edn->value :s/animation [_ animation]
-  (edn->animation animation))
-
 (defn- tx-assoc-image-current-frame [eid animation]
   [:e/assoc eid :entity/image (current-frame animation)])
-
-(defmethod schema/form :s/animation [_]
-  [:map {:closed true}
-   [:frames :some] ; FIXME actually images
-   [:frame-duration pos?]
-   [:looping? :boolean]])
 
 (defc :entity/animation
   {:schema :s/animation

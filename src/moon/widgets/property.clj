@@ -4,7 +4,7 @@
             [gdl.ui.actor :as a]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
-            [moon.editor.utils :refer [scroll-pane-cell]]
+            [moon.ui.scrollpane :refer [scroll-pane-cell]]
             [moon.property :as property]
             [moon.schema :as schema]
             [moon.ui.error-window :refer [error-window!]]))

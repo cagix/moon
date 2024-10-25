@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.editor.utils
+(ns moon.ui.scrollpane
   (:require [moon.graphics :as g]
             [gdl.ui :as ui]))
 

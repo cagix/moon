@@ -9,7 +9,7 @@
   (component/create [[_ background-image]]
     (stage/create :actors
                   [(background-image)
-                   (component/create [:editor/main-table nil])
+                   (component/create [:widgets/properties-tabs nil])
                    (ui/actor {:act (fn []
                                      (when (key-just-pressed? :shift-left)
                                        (screen/change! :screens/main-menu)))})])))

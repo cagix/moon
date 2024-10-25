@@ -1,7 +1,9 @@
 (ns moon.schema
   (:refer-clojure :exclude [type])
-  (:require [moon.component :as component]
-            [gdl.utils :refer [safe-get]]))
+  (:require [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]
+            [gdl.utils :refer [safe-get truncate ->edn-str]]
+            [moon.component :as component]))
 
 (defn of [k]
   (:schema (safe-get component/meta k)))
@@ -15,6 +17,11 @@
 (defmethod form :default [schema] schema)
 
 (def form-of (comp form of))
+
+(defmulti edn->value (fn [schema v]
+                       (when schema  ; undefined-data-ks
+                         (type schema))))
+(defmethod edn->value :default [_schema v] v)
 
 (defn- widget-type [schema _]
   (let [stype (type schema)]
@@ -30,7 +37,8 @@
 (defmulti widget        widget-type)
 (defmulti widget-value  widget-type)
 
-(defmulti edn->value (fn [schema v]
-                       (when schema  ; undefined-data-ks
-                         (type schema))))
-(defmethod edn->value :default [_schema v] v)
+(defmethod schema/widget :default [_ v]
+  (ui/label (truncate (->edn-str v) 60)))
+
+(defmethod schema/widget-value :default [_ widget]
+  ((actor/id widget) 1))
