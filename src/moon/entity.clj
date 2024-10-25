@@ -154,7 +154,6 @@
 
 (declare selected-skill
          can-pickup-item?
-         interaction-state
          has-skill?
          ai-direction-vector
          stat
