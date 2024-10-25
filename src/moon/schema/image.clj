@@ -20,13 +20,10 @@
     [(ui/image-button (g/image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
-(defn image->button [image]
+(defmethod schema/widget :s/image [_ image]
   (ui/image-button (g/edn->image image)
                    (fn on-clicked [])
-                   {:scale 2}))
-
-(defmethod schema/widget :s/image [_ image]
-  (image->button image)
+                   {:scale 2})
   #_(ui/image-button image
                      #(stage/add! (scrollable-choose-window (texture-rows)))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here

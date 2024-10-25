@@ -1,43 +1,11 @@
 (ns ^:no-doc moon.entity.animation
-  (:require [moon.component :refer [defc]]
-            [moon.world :as world]
-            [moon.entity :as entity]))
-
-(defprotocol Animation
-  (anim-tick [_ delta])
-  (restart [_])
-  (anim-stopped? [_])
-  (current-frame [_]))
-
-(defrecord ImmutableAnimation [frames frame-duration looping? cnt maxcnt]
-  Animation
-  (anim-tick [this delta]
-    (let [maxcnt (float maxcnt)
-          newcnt (+ (float cnt) (float delta))]
-      (assoc this :cnt (cond (< newcnt maxcnt) newcnt
-                             looping? (min maxcnt (- newcnt maxcnt))
-                             :else maxcnt))))
-
-  (restart [this]
-    (assoc this :cnt 0))
-
-  (anim-stopped? [_]
-    (and (not looping?) (>= cnt maxcnt)))
-
-  (current-frame [this]
-    (frames (min (int (/ (float cnt) (float frame-duration)))
-                 (dec (count frames))))))
-
-(defn ->animation [frames & {:keys [frame-duration looping?]}]
-  (map->ImmutableAnimation
-    {:frames (vec frames)
-     :frame-duration frame-duration
-     :looping? looping?
-     :cnt 0
-     :maxcnt (* (count frames) (float frame-duration))}))
+  (:require [moon.animation :as animation]
+            [moon.component :refer [defc]]
+            [moon.entity :as entity]
+            [moon.world :as world]))
 
 (defn- tx-assoc-image-current-frame [eid animation]
-  [:e/assoc eid :entity/image (current-frame animation)])
+  [:e/assoc eid :entity/image (animation/current-frame animation)])
 
 (defc :entity/animation
   {:schema :s/animation
@@ -47,12 +15,4 @@
 
   (entity/tick [[k _] eid]
     [(tx-assoc-image-current-frame eid animation)
-     [:e/assoc eid k (anim-tick animation world/delta-time)]]))
-
-(defc :entity/delete-after-animation-stopped?
-  (entity/create [_ eid]
-    (-> @eid :entity/animation :looping? not assert))
-
-  (entity/tick [_ eid]
-    (when (anim-stopped? (:entity/animation @eid))
-      [[:e/destroy eid]])))
+     [:e/assoc eid k (animation/tick animation world/delta-time)]]))

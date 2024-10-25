@@ -57,6 +57,7 @@
 
               entity.active
               entity.animation
+              entity.delete-after-animation-stopped
               entity.delete-after-duration
               entity.destroy-audiovisual
               entity.fsm
@@ -99,6 +100,7 @@
               schema.one-to-one
               schema.sound
               schema.string
+              schema.val-max
 
               screens.main
               screens.map-editor
