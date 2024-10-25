@@ -35,7 +35,6 @@
  :ui :skin-scale/x1
  :components [
               editor.visui
-              editor.widgets-map
               interaction
               properties.audiovisuals
               properties.creatures
@@ -78,10 +77,13 @@
               level.generate
               level.uf-caves
               level.tiled-map
-              schema.one-to-one
-              schema.one-to-many
+
               schema.image
+              schema.map
+              schema.one-to-many
+              schema.one-to-one
               schema.sound
+
               screens.main
               screens.map-editor
               screens.editor

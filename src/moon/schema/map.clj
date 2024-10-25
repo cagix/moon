@@ -1,4 +1,4 @@
-(ns moon.editor.widgets-map
+(ns moon.schema.map
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
@@ -9,6 +9,34 @@
             [moon.editor.utils :refer [scroll-pane-cell]]
             [moon.stage :as stage]
             [malli.generator :as mg]))
+
+(defn- attribute-form
+  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
+  [ks]
+  (for [k ks
+        :let [k? (keyword? k)
+              schema-props (if k? nil (k 1))
+              k (if k? k (k 0))]]
+    (do
+     (assert (keyword? k))
+     (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
+     [k schema-props (schema/form-of k)])))
+
+(defn- map-form [ks]
+  (apply vector :map {:closed true} (attribute-form ks)))
+
+(defmethod schema/form :s/map [[_ ks]]
+  (map-form ks))
+
+(defmethod schema/form :s/map-optional [[_ ks]]
+  (map-form (map (fn [k] [k {:optional true}]) ks)))
+
+(defn- namespaced-ks [ns-name-k]
+  (filter #(= (name ns-name-k) (namespace %))
+          (keys component/meta)))
+
+(defmethod schema/form :s/components-ns [[_ ns-name-k]]
+  (schema/form [:s/map-optional (namespaced-ks ns-name-k)]))
 
 (defn- editor-window []
   (:property-editor-window (stage/get)))
