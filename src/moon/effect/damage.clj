@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.effect.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.component :refer [defc] :as component]
-            [moon.effect :as effect :refer [source target]]
+            [moon.effect :refer [source target]]
             [moon.entity :as entity]))
 
 (defn- effective-armor-save [source* target*]
@@ -59,7 +59,7 @@
           (str (damage->text damage) "\nModified: " (damage->text modified))))
       (damage->text damage))) ; property menu no source,modifiers
 
-  (effect/applicable? [_]
+  (component/applicable? [_]
     (and target
          (entity/stat @target :stats/hp)))
 

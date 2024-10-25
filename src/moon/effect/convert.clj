@@ -1,14 +1,14 @@
 (ns moon.effect.convert
   (:require [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
-            [moon.effect :as effect :refer [source target]]))
+            [moon.effect :refer [source target]]))
 
 (defc :effect.entity/convert
   {:schema :some}
   (component/info [_]
     "Converts target to your side.")
 
-  (effect/applicable? [_]
+  (component/applicable? [_]
     (and target
          (= (:entity/faction @target)
             (entity/enemy @source))))

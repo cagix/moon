@@ -1,6 +1,6 @@
 (ns moon.effect.melee-damage
   (:require [moon.component :refer [defc] :as component]
-            [moon.effect :as effect :refer [source]]
+            [moon.effect :refer [source]]
             [moon.entity :as entity]))
 
 (defn- entity->melee-damage [entity]
@@ -17,8 +17,8 @@
          (when source
            (str "\n" (component/info (damage-effect))))))
 
-  (effect/applicable? [_]
-    (effect/applicable? (damage-effect)))
+  (component/applicable? [_]
+    (component/applicable? (damage-effect)))
 
   (component/handle [_]
     [(damage-effect)]))

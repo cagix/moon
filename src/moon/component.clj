@@ -139,3 +139,11 @@
                       (str "\n" (->info v))))))
        (str/join "\n")
        remove-newlines))
+
+(defsystem applicable?)
+
+(defsystem useful?)
+(defmethod useful? :default [_] true)
+
+(defsystem render)
+(defmethod render :default [_])

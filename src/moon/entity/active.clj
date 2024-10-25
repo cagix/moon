@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.active
-  (:require [moon.component :refer [defc]]
+  (:require [moon.component :refer [defc] :as component]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.graphics :as g]
@@ -60,7 +60,7 @@
   (entity/tick [_ eid]
     (cond
      (effect/with-ctx (check-update-ctx effect-ctx)
-       (not (effect/effect-applicable? (:skill/effects skill))))
+       (not (effect/applicable? (:skill/effects skill))))
      [[:tx/event eid :action-done]
       ; TODO some sound ?
       ]
@@ -73,4 +73,4 @@
     (let [{:keys [entity/image skill/effects]} skill]
       (draw-skill-icon image entity (:position entity) (finished-ratio counter))
       (effect/with-ctx (check-update-ctx effect-ctx)
-        (run! effect/render! effects)))))
+        (run! component/render effects)))))

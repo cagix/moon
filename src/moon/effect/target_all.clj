@@ -1,6 +1,6 @@
 (ns moon.effect.target-all
   (:require [moon.component :refer [defc] :as component]
-            [moon.effect :as effect :refer [source target]]
+            [moon.effect :refer [source target]]
             [moon.graphics :as g]
             [moon.world :as world]))
 
@@ -31,10 +31,10 @@
   (component/info [_]
     "[LIGHT_GRAY]All visible targets[]")
 
-  (effect/applicable? [_]
+  (component/applicable? [_]
     true)
 
-  (effect/useful? [_]
+  (component/useful? [_]
     ; TODO
     false
     )
@@ -56,7 +56,7 @@
                 ; find a way to pass ctx / effect-ctx separate ?
                 [:tx/effect {:effect/source source :effect/target target} entity-effects]]))))
 
-  (effect/render! [_]
+  (component/render [_]
     (let [source* @source]
       (doseq [target* (map deref (creatures-in-los-of-player))]
         (g/draw-line (:position source*) #_(start-point source* target*)

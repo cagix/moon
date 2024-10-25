@@ -136,11 +136,11 @@
               (for [operation operations]
                 (str (op-info-text operation) " " (k->pretty-name k)))))
 
-  (effect/applicable? [[k _]]
+  (component/applicable? [[k _]]
     (and effect/target
          (entity/stat @effect/target (stat-k k))))
 
-  (effect/useful? [_]
+  (component/useful? [_]
     true)
 
   (component/handle [[effect-k operations]]

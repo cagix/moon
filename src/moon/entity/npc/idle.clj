@@ -30,7 +30,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (effect/skill-usable-state entity %))
-                     (effect/effect-useful? (:skill/effects %))))
+                     (effect/useful? (:skill/effects %))))
        first))
 
 (defc :npc-idle

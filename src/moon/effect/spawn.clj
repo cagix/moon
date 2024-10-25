@@ -6,7 +6,7 @@
 (defc :effect/spawn
   {:schema [:s/one-to-one :properties/creatures]
    :let {:keys [property/id]}}
-  (effect/applicable? [_]
+  (component/applicable? [_]
     (and (:entity/faction @effect/source)
          effect/target-position))
 

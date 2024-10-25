@@ -1,7 +1,7 @@
 (ns moon.effect.stun
   (:require [moon.component :refer [defc] :as component]
             [gdl.utils :refer [readable-number]]
-            [moon.effect :as effect :refer [target]]) )
+            [moon.effect :refer [target]]) )
 
 (defc :effect.entity/stun
   {:schema pos?
@@ -9,7 +9,7 @@
   (component/info [_]
     (str "Stuns for " (readable-number duration) " seconds"))
 
-  (effect/applicable? [_]
+  (component/applicable? [_]
     (and target (:entity/fsm @target)))
 
   (component/handle [_]

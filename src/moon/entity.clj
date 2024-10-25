@@ -159,6 +159,14 @@
          stat
          modified-value)
 
+(defn mana-value [entity]
+  (if-let [mana (stat entity :stats/mana)]
+    (mana 0)
+    0))
+
+(defn not-enough-mana? [entity {:keys [skill/cost]}]
+  (> cost (mana-value entity)))
+
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
 

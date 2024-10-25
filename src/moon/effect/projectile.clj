@@ -2,7 +2,7 @@
   (:require [gdl.math.vector :as v]
             [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
-            [moon.effect :as effect :refer [source target target-direction]]
+            [moon.effect :refer [source target target-direction]]
             [moon.world :as w]))
 
 (defn- projectile-size [projectile]
@@ -42,11 +42,11 @@
   {:schema [:s/one-to-one :properties/projectiles]
    :let {:keys [entity-effects projectile/max-range] :as projectile}}
   ; TODO for npcs need target -- anyway only with direction
-  (effect/applicable? [_]
+  (component/applicable? [_]
     target-direction) ; faction @ source also ?
 
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
-  (effect/useful? [_]
+  (component/useful? [_]
     (let [source-p (:position @source)
           target-p (:position @target)]
       (and (not (w/path-blocked? ; TODO test

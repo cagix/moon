@@ -1,12 +1,13 @@
 (ns ^:no-doc moon.effect.kill
   (:require [moon.component :refer [defc] :as component]
-            [moon.effect :as effect :refer [target]]))
+            [moon.effect :refer [target]]))
 
 (defc :effect.entity/kill
   {:schema :some}
-  (component/info [_] "Kills target")
+  (component/info [_]
+    "Kills target")
 
-  (effect/applicable? [_]
+  (component/applicable? [_]
     (and target (:entity/fsm @target)))
 
   (component/handle [_]
