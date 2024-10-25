@@ -84,6 +84,8 @@
               level.uf-caves
               level.tiled-map
 
+              operation.inc
+              operation.mult
               operation.val-max
 
               properties.audiovisuals
