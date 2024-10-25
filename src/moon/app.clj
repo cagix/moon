@@ -8,9 +8,9 @@
             [moon.graphics :as graphics]
             [moon.screen :as screen]))
 
-(defn- background-image [config]
+(defn- background-image [image-path]
   (fn []
-    (ui/image->widget (graphics/image (:background-image config))
+    (ui/image->widget (graphics/image image-path)
                       {:fill-parent? true
                        :scaling :fill
                        :align :center})))
@@ -18,11 +18,12 @@
 (defn- app-listener [config]
   (reify app/Listener
     (create [_]
-      (assets/load (:assets config))
-      (graphics/load! (:graphics config))
-      (ui/load! (:ui config))
-      (screen/set-screens! (:screens config)
-                           (background-image config)))
+      (assets/load         (:assets   config))
+      (graphics/load!      (:graphics config))
+      (ui/load!            (:ui       config))
+      (screen/set-screens! (:screens  config)
+                           (background-image
+                            (:background-image config))))
 
     (dispose [_]
       (assets/dispose)
