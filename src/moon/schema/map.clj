@@ -3,12 +3,12 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
+            [malli.generator :as mg]
             [moon.component :as component]
             [moon.property :as property]
             [moon.schema :as schema]
-            [moon.ui.scrollpane :refer [scroll-pane-cell]]
             [moon.stage :as stage]
-            [malli.generator :as mg]))
+            [moon.widgets.scrollpane :refer [scroll-pane-cell]]))
 
 (defn- map-keys [m-schema]
   (let [[_m _p & ks] m-schema]

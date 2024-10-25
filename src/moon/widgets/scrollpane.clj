@@ -1,4 +1,4 @@
-(ns moon.ui.scrollpane
+(ns moon.widgets.scrollpane
   (:require [moon.graphics :as g]
             [gdl.ui :as ui]))
 

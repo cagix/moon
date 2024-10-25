@@ -9,7 +9,7 @@
             [moon.db :as db]
             [data.grid2d :as g2d]
             [moon.graphics :as g]
-            [moon.ui.error-window :refer [error-window!]]
+            [moon.widgets.error-window :refer [error-window!]]
             [moon.stage :as stage]
             [gdl.math.shape :as shape]
             [gdl.tiled :as t]

@@ -1,4 +1,4 @@
-(ns moon.ui.error-window
+(ns moon.widgets.error-window
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [gdl.ui :as ui]
             [moon.stage :as stage]))

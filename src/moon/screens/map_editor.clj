@@ -10,7 +10,7 @@
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.graphics :as g]
-            [moon.ui.error-window :refer [error-window!]]
+            [moon.widgets.error-window :refer [error-window!]]
             [moon.stage :as stage]
             [moon.screen :as screen]
             [moon.level :as level]

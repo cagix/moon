@@ -5,7 +5,7 @@
             [moon.assets :as assets]
             [moon.schema :as schema]
             [moon.stage :as stage]
-            [moon.ui.scrollpane :refer [scrollable-choose-window]])
+            [moon.widgets.scrollpane :refer [scrollable-choose-window]])
   (:import (com.badlogic.gdx.audio Sound)))
 
 (defmethod schema/form :s/sound [_]
