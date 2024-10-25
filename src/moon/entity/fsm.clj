@@ -24,9 +24,10 @@
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (entity/state-obj @eid)
               new-state-obj [new-state-k (entity/->v [new-state-k eid params])]]
-          [#(exit old-state-obj)
-           #(enter new-state-obj)
-           (when (:entity/player? @eid) #(player-enter new-state-obj))
+          [#(entity/exit old-state-obj)
+           #(entity/enter new-state-obj)
+           (when (:entity/player? @eid)
+             #(entity/player-enter new-state-obj))
            [:e/assoc eid :entity/fsm new-fsm]
            [:e/dissoc eid old-state-k]
            [:e/assoc eid new-state-k (new-state-obj 1)]])))))

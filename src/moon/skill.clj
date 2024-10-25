@@ -83,7 +83,7 @@
        [:tx.action-bar/remove skill])]))
 
 (defn- player-clicked-skillmenu [skill]
-  (entity/clicked-skillmenu-skill (entitye/state-obj @world/player) skill))
+  (entity/clicked-skillmenu-skill (entity/state-obj @world/player) skill))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player))
