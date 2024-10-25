@@ -1,8 +1,7 @@
 (ns ^:no-doc moon.entity.npc.moving
   (:require [moon.component :refer [defc]]
             [moon.world :refer [timer stopped?]]
-            [moon.entity :as entity]
-            [moon.entity.state :as state]))
+            [moon.entity :as entity]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; pathfindinusable skills every frame
@@ -14,11 +13,11 @@
      :movement-vector movement-vector
      :counter (timer (* (entity/stat @eid :stats/reaction-time) 0.016))})
 
-  (state/enter [_]
+  (entity/enter [_]
     [[:tx/set-movement eid {:direction movement-vector
                             :speed (or (entity/stat @eid :stats/movement-speed) 0)}]])
 
-  (state/exit [_]
+  (entity/exit [_]
     [[:tx/set-movement eid nil]])
 
   (entity/tick [_ eid]

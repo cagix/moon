@@ -6,9 +6,8 @@
             [moon.graphics :as g]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
-            [moon.world :as world]
             [moon.entity :as entity]
-            [moon.entity.state :as state]))
+            [moon.world :as world]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -69,22 +68,22 @@
     {:eid eid
      :item item})
 
-  (state/pause-game? [_]
+  (entity/pause-game? [_]
     true)
 
-  (state/manual-tick [_]
+  (entity/manual-tick [_]
     (when (and (button-just-pressed? :left)
                (world-item?))
       [[:tx/event eid :drop-item]]))
 
-  (state/clicked-inventory-cell [_ cell]
+  (entity/clicked-inventory-cell [_ cell]
     (clicked-cell eid cell))
 
-  (state/enter [_]
+  (entity/enter [_]
     [[:tx/cursor :cursors/hand-grab]
      [:e/assoc eid :entity/item-on-cursor item]])
 
-  (state/exit [_]
+  (entity/exit [_]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
@@ -101,7 +100,7 @@
 
 (defn- draw-item-on-cursor []
   (let [player-e* @world/player]
-    (when (and (= :player-item-on-cursor (state/state-k player-e*))
+    (when (and (= :player-item-on-cursor (entity/state-k player-e*))
                (not (world-item?)))
       (g/draw-centered-image (:entity/image (:entity/item-on-cursor player-e*))
                              (g/gui-mouse-position)))))

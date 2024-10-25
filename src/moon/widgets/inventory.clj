@@ -4,7 +4,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :refer [defc] :as component]
-            [moon.entity.state :as state]
+            [moon.entity :as entity]
             [moon.graphics :as g]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.stage :as stage]
@@ -21,7 +21,7 @@
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
   (g/draw-rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
-             (= :player-item-on-cursor (state/state-k player-entity)))
+             (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
@@ -41,7 +41,7 @@
                      (a/id (a/parent this))))))
 
 (defn- player-clicked-inventory [cell]
-  (state/clicked-inventory-cell (state/state-obj @world/player) cell))
+  (entity/clicked-inventory-cell (entity/state-obj @world/player) cell))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0

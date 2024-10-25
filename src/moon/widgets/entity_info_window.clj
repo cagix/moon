@@ -5,7 +5,7 @@
             [moon.world :refer [mouseover-entity]]))
 
 (def ^:private disallowed-keys [:entity/skills
-                                :entity/state
+                                :entity/fsm
                                 :entity/faction
                                 :active-skill])
 

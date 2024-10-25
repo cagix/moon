@@ -59,6 +59,7 @@
               entity.animation
               entity.delete-after-duration
               entity.destroy-audiovisual
+              entity.fsm
               entity.follow-ai
               entity.image
               entity.inventory

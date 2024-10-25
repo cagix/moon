@@ -3,7 +3,6 @@
             [moon.component :refer [defc] :as component]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.entity.state :as state]
             [moon.property :as property]
             [moon.world :as world :refer [stopped?]]))
 
@@ -84,7 +83,7 @@
        [:tx.action-bar/remove skill])]))
 
 (defn- player-clicked-skillmenu [skill]
-  (state/clicked-skillmenu-skill (state/state-obj @world/player) skill))
+  (entity/clicked-skillmenu-skill (entitye/state-obj @world/player) skill))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player))

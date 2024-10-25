@@ -2,7 +2,6 @@
   (:require [moon.component :refer [defc]]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.entity.state :as state]
             [moon.graphics :as g]
             [moon.world :as world :refer [timer stopped? finished-ratio]]))
 
@@ -45,13 +44,13 @@
                    (apply-action-speed-modifier @eid skill)
                    timer)})
 
-  (state/player-enter [_]
+  (entity/player-enter [_]
     [[:tx/cursor :cursors/sandclock]])
 
-  (state/pause-game? [_]
+  (entity/pause-game? [_]
     false)
 
-  (state/enter [_]
+  (entity/enter [_]
     [[:tx/sound (:skill/start-action-sound skill)]
      (when (:skill/cooldown skill)
        [:e/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] (timer (:skill/cooldown skill))])

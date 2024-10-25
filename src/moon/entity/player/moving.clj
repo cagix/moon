@@ -1,8 +1,7 @@
 (ns ^:no-doc moon.entity.player.moving
   (:require [gdl.input :refer [WASD-movement-vector]]
             [moon.component :refer [defc]]
-            [moon.entity :as entity]
-            [moon.entity.state :as state]))
+            [moon.entity :as entity]))
 
 (defc :player-moving
   {:let {:keys [eid movement-vector]}}
@@ -10,17 +9,17 @@
     {:eid eid
      :movement-vector movement-vector})
 
-  (state/player-enter [_]
+  (entity/player-enter [_]
     [[:tx/cursor :cursors/walking]])
 
-  (state/pause-game? [_]
+  (entity/pause-game? [_]
     false)
 
-  (state/enter [_]
+  (entity/enter [_]
     [[:tx/set-movement eid {:direction movement-vector
                             :speed (entity/stat @eid :stats/movement-speed)}]])
 
-  (state/exit [_]
+  (entity/exit [_]
     [[:tx/set-movement eid nil]])
 
   (entity/tick [_ eid]

@@ -59,7 +59,7 @@
 
  (post-tx! [:tx/creature {:position [35 73]
                           :creature-id :creatures/dragon-red
-                          :components {:entity/state [:state/npc :npc-sleeping]
+                          :components {:entity/fsm [:state/npc :npc-sleeping]
                                        :entity/faction :evil} }])
  )
 

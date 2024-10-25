@@ -2,8 +2,7 @@
   (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [moon.world :as world :refer [stopped? timer]]
-            [moon.entity :as entity]
-            [moon.entity.state :as state]))
+            [moon.entity :as entity]))
 
 (def ^:private shout-radius 4)
 
@@ -35,7 +34,7 @@
   (entity/->v [[_ eid]]
     {:eid eid})
 
-  (state/exit [_]
+  (entity/exit [_]
     [[:tx/add-text-effect eid "[WHITE]!"]
      [:tx/shout (:position @eid) (:entity/faction @eid) 0.2]])
 

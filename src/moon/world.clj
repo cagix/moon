@@ -14,7 +14,6 @@
             [gdl.math.shape :as shape]
             [gdl.tiled :as t]
             [moon.entity :as entity]
-            [moon.entity.state :as state]
             [moon.level :as level]
             [moon.world.content-grid :as content-grid]
             [moon.world.raycaster :as raycaster])
@@ -75,8 +74,8 @@
   (component/->handle
    (for [creature (cons {:position start-position
                          :creature-id :creatures/vampire
-                         :components {:entity/state {:fsm :fsms/player
-                                                     :initial-state :player-idle}
+                         :components {:entity/fsm {:fsm :fsms/player
+                                                   :initial-state :player-idle}
                                       :entity/faction :good
                                       :entity/player? true
                                       :entity/free-skill-points 3
@@ -86,8 +85,8 @@
                           (for [[position creature-id] (t/positions-with-property tiled-map :creatures :id)]
                             {:position position
                              :creature-id (keyword creature-id)
-                             :components {:entity/state {:fsm :fsms/npc
-                                                         :initial-state :npc-sleeping}
+                             :components {:entity/fsm {:fsm :fsms/npc
+                                                       :initial-state :npc-sleeping}
                                           :entity/faction :evil}})))]
      [:tx/creature (update creature :position tile->middle)])))
 
@@ -119,8 +118,8 @@
 
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn- player-state-pause-game? [] (state/pause-game? (state/state-obj @player)))
-(defn- player-update-state      [] (state/manual-tick (state/state-obj @player)))
+(defn- player-state-pause-game? [] (entity/pause-game? (entity/state-obj @player)))
+(defn- player-update-state      [] (entity/manual-tick (entity/state-obj @player)))
 
 (defn- player-unpaused? []
   (or (key-just-pressed? :keys/p)

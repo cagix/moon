@@ -2,8 +2,7 @@
   (:require [moon.component :refer [defc]]
             [moon.graphics :as g]
             [moon.world :refer [timer stopped?]]
-            [moon.entity :as entity]
-            [moon.entity.state :as state]))
+            [moon.entity :as entity]))
 
 (defc :stunned
   {:let {:keys [eid counter]}}
@@ -11,10 +10,10 @@
     {:eid eid
      :counter (timer duration)})
 
-  (state/player-enter [_]
+  (entity/player-enter [_]
     [[:tx/cursor :cursors/denied]])
 
-  (state/pause-game? [_]
+  (entity/pause-game? [_]
     false)
 
   (entity/tick [_ eid]

@@ -10,7 +10,7 @@
     (str "Stuns for " (readable-number duration) " seconds"))
 
   (effect/applicable? [_]
-    (and target (:entity/state @target)))
+    (and target (:entity/fsm @target)))
 
   (component/handle [_]
     [[:tx/event target :stun duration]]))

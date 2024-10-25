@@ -1,12 +1,11 @@
 (ns ^:no-doc moon.entity.npc.dead
   (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]
-            [moon.entity.state :as state]))
+            [moon.entity :as entity]))
 
 (defc :npc-dead
   {:let {:keys [eid]}}
   (entity/->v [[_ eid]]
     {:eid eid})
 
-  (state/enter [_]
+  (entity/enter [_]
     [[:e/destroy eid]]))
