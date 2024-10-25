@@ -24,11 +24,6 @@
          ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"}
          logic-frame)
 
-(defn update-time! [delta]
-  (.bindRoot #'delta-time delta)
-  (alter-var-root #'elapsed-time + delta)
-  (alter-var-root #'logic-frame inc))
-
 (defn timer [duration]
   {:pre [(>= duration 0)]}
   {:duration duration

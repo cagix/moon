@@ -93,7 +93,10 @@
       world/update-mouseover-entity!
       update-game-paused
       #(when-not world/paused?
-         (world/update-time! (min (delta-time) entity/max-delta-time))
+         (alter-var-root #'world/logic-frame inc)
+         (let [delta (min (delta-time) entity/max-delta-time)]
+           (.bindRoot      #'world/delta-time delta)
+           (alter-var-root #'world/elapsed-time + delta))
          (let [entities (world/active-entities)]
            (update-potential-fields! entities)
            (try (run! world/tick-system entities)
