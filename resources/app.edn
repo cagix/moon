@@ -110,6 +110,7 @@
               tx.audiovisual
               tx.creature
               tx.cursor
+              tx.effect
               tx.item
               tx.line-render
               tx.sound

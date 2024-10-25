@@ -1,5 +1,5 @@
 (ns moon.effect
-  (:require [moon.component :refer [defsystem defc] :as component]
+  (:require [moon.component :refer [defsystem]]
             [moon.entity :as entity]))
 
 (defsystem applicable?
@@ -16,7 +16,7 @@ Default method returns true.")
 (defsystem render!  "Renders effect during active-skill state while active till done?. Default do nothing.")
 (defmethod render! :default [_])
 
-(defn- filter-applicable? [effect]
+(defn filter-applicable? [effect]
   (filter applicable? effect))
 
 (defn effect-applicable? [effect]
@@ -47,11 +47,6 @@ Default method returns true.")
              target-direction (:effect/target-direction ~ctx)
              target-position  (:effect/target-position  ~ctx)]
      ~@body))
-
-(defc :tx/effect
-  (component/handle [[_ effect-ctx effect]]
-    (with-ctx effect-ctx
-      (component/->handle (filter-applicable? effect)))))
 
 (defn- mana-value [entity]
   (if-let [mana (entity/stat entity :stats/mana)]

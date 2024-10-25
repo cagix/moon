@@ -3,29 +3,32 @@
   (:require [clojure.string :as str]
             [gdl.utils :refer [index-of]]))
 
+(def add-ns-doc? true)
+
 (def systems {})
 
 (defmacro defsystem
-  ([sys-name]
-   `(defsystem ~sys-name nil ['_]))
-
-  ([sys-name params-or-doc]
-   (let [[doc params] (if (string? params-or-doc)
-                        [params-or-doc ['_]]
-                        [nil params-or-doc])]
-     `(defsystem ~sys-name ~doc ~params)))
-
-  ([sys-name docstring params]
-   (when (zero? (count params))
-     (throw (IllegalArgumentException. "First argument needs to be component.")))
-   (when-let [avar (resolve sys-name)]
-     (println "WARNING: Overwriting defsystem:" avar))
-   `(do
-     (defmulti ~(vary-meta sys-name assoc :params (list 'quote params))
-       ~(str "[[defsystem]] `" params "`" (when docstring (str "\n\n" docstring)))
-       (fn [[k#] & _args#] k#))
-     (alter-var-root #'systems assoc ~(str (ns-name *ns*) "/" sys-name) (var ~sys-name))
-     (var ~sys-name))))
+  {:arglists '([name docstring? params?])}
+  [name-sym & args]
+  (let [docstring (if (string? (first args))
+                    (first args))
+        params (if (string? (first args))
+                 (second args)
+                 (first args))
+        params (if (nil? params)
+                 '[_]
+                 params)]
+    (when (zero? (count params))
+      (throw (IllegalArgumentException. "First argument needs to be component.")))
+    (when-let [avar (resolve name-sym)]
+      (println "WARNING: Overwriting defsystem:" avar))
+    `(do
+      (defmulti ~(vary-meta name-sym assoc :params (list 'quote params))
+        ~(str "[[defsystem]] `" (str params) "`"
+              (when docstring (str "\n\n" docstring)))
+        (fn [[k#] & _args#] k#))
+      (alter-var-root #'systems assoc ~(str (ns-name *ns*) "/" name-sym) (var ~name-sym))
+      (var ~name-sym))))
 
 (def meta {})
 
@@ -44,7 +47,8 @@
     `(do
       (when ~attr-map?
         (defc* ~k ~attr-map))
-      #_(alter-meta! *ns* #(update % :doc str "\n* defc `" ~k "`"))
+      (when add-ns-doc?
+        (alter-meta! *ns* #(update % :doc str "\n* defc `" ~k "`")))
       ~@(for [[sys & fn-body] sys-impls
               :let [sys-var (resolve sys)
                     sys-params (:params (clojure.core/meta sys-var))
@@ -75,8 +79,11 @@
 
 (defn ->handle
   "Processes a sequence of transactions (`txs`), handling each transaction via the `handle` system.
+
   For each transaction:
+
   - If the transaction is a function, it invokes the function.
+
   - Otherwise, it passes the transaction to the `handle` function.
   If a transaction results in further transactions, recursively processes them.
   Catches any throwables and attaches the transaction data with ex-info."
@@ -129,9 +136,13 @@
 
 (defn ->info
   "Recursively generates a string of information (`info-text`) from a collection of components.
+
   Each component is processed using the `info` system:
+
   - Components are sorted by a predefined key order (`info-text-k-order`).
+
   - For each component, its associated `info` method is invoked, and the result is included in the output.
+
   - If the component contains nested maps, their contents are also recursively processed.
   Handles exceptions during `info` method execution and ensures the resulting string is free of excessive newlines."
   [components]
