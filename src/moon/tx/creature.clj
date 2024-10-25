@@ -1,9 +1,7 @@
 (ns moon.tx.creature
   (:require [gdl.utils :refer [safe-merge]]
             [moon.component :as component :refer [defc]]
-            [moon.db :as db]
-            [moon.entity :as entity]
-            [moon.world :as world]))
+            [moon.db :as db]))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
