@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.entity.image
-  (:require [moon.graphics :as g]
-            [moon.component :refer [defc]]
-            [moon.entity :as entity]))
+  (:require [moon.component :refer [defc]]
+            [moon.entity :as entity]
+            [moon.graphics :as g]))
 
 (defc :entity/image
   {:schema :s/image

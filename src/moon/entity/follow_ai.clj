@@ -2,14 +2,13 @@
   (:require [data.grid2d :as g2d]
             [gdl.math.vector :as v]
             [gdl.utils :refer [->tile indexed utils-positions when-seq]]
-            [moon.world :as world
-             :refer [occupied-by-other?
-                     nearest-entity-distance
-                     nearest-entity
-                     cached-adjacent-cells
-                     rectangle->cells
-                     pf-cell-blocked?]]
-            [moon.entity :as entity]))
+            [moon.entity :as entity]
+            [moon.world :as world :refer [occupied-by-other?
+                                          nearest-entity-distance
+                                          nearest-entity
+                                          cached-adjacent-cells
+                                          rectangle->cells
+                                          pf-cell-blocked?]]))
 
 (let [order (g2d/get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

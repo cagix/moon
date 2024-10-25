@@ -45,27 +45,6 @@
               effect.target-all
               effect.target-entity
 
-              interaction
-
-              properties.audiovisuals
-              properties.creatures
-              properties.worlds
-              properties.projectiles
-
-              entity.animation
-              entity.delete-after-duration
-              entity.destroy-audiovisual
-              entity.follow-ai
-              entity.image
-              entity.inventory
-              entity.line
-              entity.modifiers
-              entity.movement
-              entity.player
-              entity.projectile
-              entity.string-effect
-              entity.temp-modifier
-
               entity.state.active
               entity.state.stunned
               entity.state.npc.dead
@@ -76,6 +55,28 @@
               entity.state.player.idle
               entity.state.player.item-on-cursor
               entity.state.player.moving
+
+              entity.animation
+              entity.delete-after-duration
+              entity.destroy-audiovisual
+              entity.follow-ai
+              entity.image
+              entity.inventory
+              entity.line-render
+              entity.modifiers
+              entity.movement
+              entity.player
+              entity.projectile
+              entity.string-effect
+              entity.temp-modifier
+
+              interaction
+
+              properties.audiovisuals
+              properties.creatures
+              properties.worlds
+              properties.projectiles
+
 
               fsms.player
               fsms.npc
@@ -103,8 +104,9 @@
               skill
 
               tx.audiovisual
-              tx.cursor
               tx.creature
+              tx.cursor
+              tx.line-render
               tx.sound
 
               operation.val-max
