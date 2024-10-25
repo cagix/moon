@@ -50,7 +50,7 @@
   (clear-tiled-map)
   (.bindRoot #'tiled-map tm))
 
-(defn- render-tiled-map! [light-position]
+(defn render-tiled-map! [light-position]
   (g/draw-tiled-map tiled-map
                     (->tile-color-setter (atom nil) light-position))
   #_(reset! do-once false))

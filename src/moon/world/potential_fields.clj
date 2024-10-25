@@ -1,4 +1,13 @@
-(in-ns 'moon.world)
+(ns moon.world.potential-fields
+  (:require [moon.entity :as entity]
+            [moon.world :refer [blocked?
+                                cached-adjacent-cells
+                                grid
+                                nearest-entity
+                                nearest-entity-distance]]))
+
+; FIXME config !
+(def factions-iterations {:good 15 :evil 5})
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
 ; adjacent cells are walls and blocked.
@@ -10,8 +19,6 @@
 ; potential-field-following the removal of NAD's.
 
 (def ^:private pf-cache (atom nil))
-
-(def ^:private factions-iterations {:good 15 :evil 5})
 
 (defn pf-cell-blocked? [cell*]
   (blocked? cell* :z-order/ground))
@@ -137,6 +144,6 @@
                                              tiles->entities
                                              max-iterations)))))
 
-(defn- update-potential-fields! [entities]
+(defn update-potential-fields! [entities]
   (doseq [[faction max-iterations] factions-iterations]
     (update-faction-potential-field faction entities max-iterations)))

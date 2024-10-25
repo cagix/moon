@@ -15,7 +15,7 @@
   (.bindRoot #'elapsed-time 0)
   (.bindRoot #'logic-frame 0))
 
-(defn- update-time! [delta]
+(defn update-time! [delta]
   (.bindRoot #'delta-time delta)
   (alter-var-root #'elapsed-time + delta)
   (alter-var-root #'logic-frame inc))

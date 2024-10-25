@@ -24,6 +24,7 @@
  )
 
 (defn- npc-choose-skill [entity]
+  {:pre [(bound? #'effect/source)]}
   (->> entity
        :entity/skills
        vals
@@ -41,6 +42,7 @@
   (entity/tick [_ eid]
     (let [effect-ctx (effect-ctx eid)]
       (if-let [skill (effect/with-ctx effect-ctx
+                       (assert (bound? #'effect/source))
                        (npc-choose-skill @eid))]
         [[:tx/event eid :start-action [skill effect-ctx]]]
         [[:tx/event eid :movement-direction (entity/ai-direction-vector eid)]]))))

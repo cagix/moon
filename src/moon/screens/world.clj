@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.screens.world
-  (:require [gdl.graphics :refer [clear-screen frames-per-second]]
+  (:require [gdl.graphics :refer [clear-screen frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.ui :as ui]
@@ -8,11 +8,15 @@
             [gdl.utils :refer [dev-mode?]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
+            [moon.entity :as entity]
             [moon.graphics :as g]
             [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
-            [moon.world :as world]))
+            [moon.widgets.error-window :refer [error-window!]]
+            [moon.world :as world]
+            [moon.world.debug-render :as debug-render]
+            [moon.world.potential-fields :refer [update-potential-fields!]]))
 
 (defn- check-window-hotkeys []
   (doseq [[hotkey window-id] {:keys/i :inventory-window
@@ -48,6 +52,23 @@
         #_(key-just-pressed? :keys/tab)
         #_(screen/change! :screens/minimap)))
 
+; FIXME config/changeable inside the app (dev-menu ?)
+(def ^:private ^:dbg-flag pausing? true)
+
+(defn- player-state-pause-game? [] (entity/pause-game? (entity/state-obj @world/player)))
+(defn- player-update-state      [] (entity/manual-tick (entity/state-obj @world/player)))
+
+(defn- player-unpaused? []
+  (or (key-just-pressed? :keys/p)
+      (key-pressed? :keys/space))) ; FIXMe :keys? shouldnt it be just :space?
+
+(defn- update-game-paused []
+  (.bindRoot #'world/paused? (or world/entity-tick-error
+                                 (and pausing?
+                                      (player-state-pause-game?)
+                                      (not (player-unpaused?)))))
+  nil)
+
 (deftype WorldScreen []
   screen/Screen
   (screen/enter! [_])
@@ -57,7 +78,31 @@
 
   (screen/render! [_]
     (clear-screen :black)
-    (world/tick!)
+    ; FIXME position DRY
+    (cam/set-position! (g/world-camera) (:position @world/player))
+    ; FIXME position DRY
+    (world/render-tiled-map! (cam/position (g/world-camera)))
+    (g/render-world-view! (fn []
+                            (debug-render/before-entities)
+                            ; FIXME position DRY (from player)
+                            (world/render-entities! (map deref (world/active-entities)))
+                            (debug-render/after-entities)))
+    (component/->handle
+     [player-update-state
+      ; this do always so can get debug info even when game not running
+      world/update-mouseover-entity!
+      update-game-paused
+      #(when-not world/paused?
+         (world/update-time! (min (delta-time) entity/max-delta-time))
+         (let [entities (world/active-entities)]
+           (update-potential-fields! entities)
+           (try (run! world/tick-system entities)
+                (catch Throwable t
+                  (error-window! t)
+                  (.bindRoot #'world/entity-tick-error t))))
+         nil)
+      ; do not pause this as for example pickup item, should be destroyed.
+      [:tx/remove-destroyed-entities]])
     (check-key-input))
 
   (screen/dispose! [_]

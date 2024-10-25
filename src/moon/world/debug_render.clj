@@ -1,4 +1,10 @@
-(in-ns 'moon.world)
+(ns moon.world.debug-render
+  (:require [gdl.graphics.camera :as cam]
+            [gdl.math.shape :as shape]
+            [gdl.utils :refer [->tile]]
+            [moon.graphics :as g]
+            [moon.world :refer [circle->cells grid]]
+            [moon.world.potential-fields :refer [factions-iterations]]))
 
 (defn- geom-test []
   (let [position (g/world-mouse-position)
@@ -43,8 +49,6 @@
             (let [ratio (/ distance (factions-iterations faction))]
               (g/draw-filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-;;
-
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
 (defn- highlight-mouseover-tile []
@@ -57,8 +61,9 @@
                             :air  [1 1 0 0.5]
                             :none [1 0 0 0.5]))))))
 
-(defn- render-before-entities [] (tile-debug))
+(defn before-entities []
+  (tile-debug))
 
-(defn- render-after-entities []
+(defn after-entities []
   #_(geom-test)
   (highlight-mouseover-tile))

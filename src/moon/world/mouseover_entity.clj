@@ -16,7 +16,7 @@
          (filter #(line-of-sight? player-entity @%))
          first)))
 
-(defn- update-mouseover-entity! []
+(defn update-mouseover-entity! []
   (let [eid (if (stage/mouse-on-actor?)
               nil
               (calculate-mouseover-eid))]

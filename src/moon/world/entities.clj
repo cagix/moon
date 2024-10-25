@@ -48,7 +48,7 @@
      (draw-body-rect entity :red)
      (pretty-pst t 12))))
 
-(defn- render-entities!
+(defn render-entities!
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."
   [entities]
   (let [player-entity @player]
@@ -66,15 +66,13 @@
 ; should be contains? check ?
 ; but then the 'order' is important? in such case dependent components
 ; should be moved together?
-(defn- tick-system [eid]
+(defn tick-system [eid]
   (try
    (doseq [k (keys @eid)]
      (when-let [v (k @eid)]
-       (component/->handle (entity/tick [k v] eid))))
+       (component/->handle
+        (try (entity/tick [k v] eid)
+             (catch Throwable t
+               (throw (ex-info "entity/tick" {:k k} t)))))))
    (catch Throwable t
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
-
-(defn- tick-entities!
-  "Calls tick system on all components of entities."
-  [entities]
-  (run! tick-system entities))

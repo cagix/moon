@@ -41,8 +41,8 @@
          (effect/applicable? entity-effects)))
 
   (component/useful? [_]
-    (assert source)
-    (assert target)
+    (assert (bound? #'source))
+    (assert (bound? #'target))
     (in-range? @source @target maxrange))
 
   (component/handle [_]

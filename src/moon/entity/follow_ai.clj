@@ -7,8 +7,8 @@
                                           nearest-entity-distance
                                           nearest-entity
                                           cached-adjacent-cells
-                                          rectangle->cells
-                                          pf-cell-blocked?]]))
+                                          rectangle->cells]]
+            [moon.world.potential-fields :refer [pf-cell-blocked?]]))
 
 (let [order (g2d/get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes
