@@ -1,5 +1,8 @@
 (in-ns 'moon.editor.widgets)
 
+(defn- overview-table [property-type clicked-id-fn]
+  (component/create [:widgets/properties-overview property-type clicked-id-fn]))
+
 ; TODO schemas not checking if that property exists in db...
 ; https://github.com/damn/core/issues/59
 

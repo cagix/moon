@@ -9,7 +9,6 @@
             [moon.db :as db]
             [moon.schema :as schema]
             [moon.property :as property]
-            [moon.editor.overview :refer [overview-table]]
             [moon.editor.utils :refer [scrollable-choose-window]]
             [moon.assets :as assets]
             [moon.graphics :as g]

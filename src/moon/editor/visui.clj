@@ -3,7 +3,6 @@
             [moon.component :as component :refer [defc]]
             [moon.db :as db]
             [moon.property :as property]
-            [moon.editor.overview :refer [overview-table]]
             [moon.stage :as stage])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
@@ -15,7 +14,7 @@
 (defn- property-type-tabs []
   (for [property-type (sort (property/types))]
     {:title (:title (property/overview property-type))
-     :content (overview-table property-type edit-property)}))
+     :content (component/create [:widgets/properties-overview property-type edit-property])}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
   (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]

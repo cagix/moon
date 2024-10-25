@@ -94,12 +94,14 @@
               tx.creature
               tx.sound
               operation.val-max
+
               widgets.action-bar
               widgets.dev-menu
               widgets.entity-info-window
-              widgets.inventory
               widgets.hp-mana
-              widgets.property
+              widgets.inventory
               widgets.player-message
               widgets.player-modal
+              widgets.properties-overview
+              widgets.property
               ]}
