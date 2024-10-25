@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.state.stunned
+(ns ^:no-doc moon.entity.stunned
   (:require [moon.component :refer [defc]]
             [moon.graphics :as g]
             [moon.world :refer [timer stopped?]]

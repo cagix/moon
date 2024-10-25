@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.state.npc.sleeping
+(ns ^:no-doc moon.entity.npc.sleeping
   (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [moon.world :as world :refer [stopped? timer]]

@@ -45,17 +45,17 @@
               effect.target-all
               effect.target-entity
 
-              entity.state.active
-              entity.state.stunned
-              entity.state.npc.dead
-              entity.state.npc.idle
-              entity.state.npc.moving
-              entity.state.npc.sleeping
-              entity.state.player.dead
-              entity.state.player.idle
-              entity.state.player.item-on-cursor
-              entity.state.player.moving
+              entity.npc.dead
+              entity.npc.idle
+              entity.npc.moving
+              entity.npc.sleeping
 
+              entity.player.dead
+              entity.player.idle
+              entity.player.item-on-cursor
+              entity.player.moving
+
+              entity.active
               entity.animation
               entity.delete-after-duration
               entity.destroy-audiovisual
@@ -68,6 +68,7 @@
               entity.player
               entity.projectile
               entity.string-effect
+              entity.stunned
               entity.temp-modifier
 
               interaction
