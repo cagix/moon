@@ -4,7 +4,6 @@
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [gdl.utils :refer [dev-mode?]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.entity :as entity]
@@ -119,7 +118,7 @@
 (.bindRoot #'world/start
            (fn [world-id]
              (screen/change :screens/world)
-             (stage/reset (component/create [:world/widgets nil]))
+             (stage/reset (component/create [:world/widgets]))
              (let [level (level/generate world-id)]
                (world/init! (:tiled-map level))
                (world/spawn-entities level))))
