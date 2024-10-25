@@ -116,15 +116,3 @@
   {:pre [(contains? db property-id)]}
   (alter-var-root #'db dissoc property-id)
   (async-write-to-file!))
-
-(defmethod schema/edn->value :s/one-to-one [_ property-id]
-  (get property-id))
-
-(defmethod schema/edn->value :s/one-to-many [_ property-ids]
-  (set (map get property-ids)))
-
-(defmethod schema/form :s/one-to-one [[_ property-type]]
-  [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])
-
-(defmethod schema/form :s/one-to-many [[_ property-type]]
-  [:set [:qualified-keyword {:namespace (property/type->id-namespace property-type)}]])

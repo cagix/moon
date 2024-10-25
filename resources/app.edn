@@ -75,6 +75,8 @@
               level.generate
               level.uf-caves
               level.tiled-map
+              schema.one-to-one
+              schema.one-to-many
               schema.image
               schema.sound
               screens.main
