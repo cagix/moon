@@ -1,11 +1,12 @@
 (ns ^:no-doc moon.screens.world
-  (:require [gdl.graphics :refer [clear-screen frames-per-second delta-time]]
+  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
+            [gdl.graphics :refer [clear-screen frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.ui.stage]
-            [gdl.utils :refer [dev-mode?]]
+            [gdl.utils :refer [dev-mode? sort-by-order]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.entity :as entity]
@@ -17,6 +18,29 @@
             [moon.world :as world]
             [moon.world.debug-render :as debug-render]
             [moon.world.potential-fields :refer [update-potential-fields!]]))
+
+(defn- calculate-mouseover-eid []
+  (let [player @world/player
+        hits (remove #(= (:z-order @%) :z-order/effect) ; or: only items/creatures/projectiles.
+                     (world/point->entities
+                      (g/world-mouse-position)))]
+    (->> entity/render-order
+         (sort-by-order hits #(:z-order @%))
+         reverse
+         (filter #(world/line-of-sight? player @%))
+         first)))
+
+(defn- update-mouseover-entity! []
+  (let [eid (if (stage/mouse-on-actor?)
+              nil
+              (calculate-mouseover-eid))]
+    [(when world/mouseover-eid
+       [:e/dissoc world/mouseover-eid :entity/mouseover?])
+     (when eid
+       [:e/assoc eid :entity/mouseover? true])
+     (fn []
+       (.bindRoot #'world/mouseover-eid eid)
+       nil)]))
 
 (defn- check-window-hotkeys []
   (doseq [[hotkey window-id] {:keys/i :inventory-window
@@ -52,6 +76,34 @@
         #_(key-just-pressed? :keys/tab)
         #_(screen/change! :screens/minimap)))
 
+(def ^:private ^:dbg-flag show-body-bounds false)
+
+(defn- draw-body-rect [entity color]
+  (let [[x y] (:left-bottom entity)]
+    (g/draw-rectangle x y (:width entity) (:height entity) color)))
+
+(defn- render-entity! [system entity]
+  (try
+   (when show-body-bounds
+     (draw-body-rect entity (if (:collides? entity) :white :gray)))
+   (run! #(system % entity) entity)
+   (catch Throwable t
+     (draw-body-rect entity :red)
+     (pretty-pst t 12))))
+
+(defn- render-entities!
+  "Draws entities in the correct z-order and in the order of render-systems for each z-order."
+  [entities]
+  (let [player @world/player]
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              entity/render-order)
+            system entity/render-systems
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (world/line-of-sight? player entity))]
+      (render-entity! system entity))))
+
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
@@ -69,6 +121,22 @@
                                       (not (player-unpaused?)))))
   nil)
 
+; precaution in case a component gets removed by another component
+; the question is do we still want to update nil components ?
+; should be contains? check ?
+; but then the 'order' is important? in such case dependent components
+; should be moved together?
+(defn- tick-entity [eid]
+  (try
+   (doseq [k (keys @eid)]
+     (when-let [v (k @eid)]
+       (component/->handle
+        (try (entity/tick [k v] eid)
+             (catch Throwable t
+               (throw (ex-info "entity/tick" {:k k} t)))))))
+   (catch Throwable t
+     (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+
 (deftype WorldScreen []
   screen/Screen
   (screen/enter! [_])
@@ -85,12 +153,12 @@
     (g/render-world-view! (fn []
                             (debug-render/before-entities)
                             ; FIXME position DRY (from player)
-                            (world/render-entities! (map deref (world/active-entities)))
+                            (render-entities! (map deref (world/active-entities)))
                             (debug-render/after-entities)))
     (component/->handle
      [player-update-state
       ; this do always so can get debug info even when game not running
-      world/update-mouseover-entity!
+      update-mouseover-entity!
       update-game-paused
       #(when-not world/paused?
          (alter-var-root #'world/logic-frame inc)
@@ -99,7 +167,7 @@
            (alter-var-root #'world/elapsed-time + delta))
          (let [entities (world/active-entities)]
            (update-potential-fields! entities)
-           (try (run! world/tick-system entities)
+           (try (run! tick-entity entities)
                 (catch Throwable t
                   (error-window! t)
                   (.bindRoot #'world/entity-tick-error t))))

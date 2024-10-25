@@ -1,12 +1,11 @@
 (ns moon.world
   (:require [data.grid2d :as g2d]
-            [clj-commons.pretty.repl :refer [pretty-pst]]
             [gdl.graphics :as gdx.graphics]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.math.shape :as shape]
             [gdl.tiled :as t]
-            [gdl.utils :refer [dispose ->tile tile->middle sort-by-order]]
+            [gdl.utils :refer [dispose ->tile tile->middle]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.entity :as entity]
@@ -94,75 +93,11 @@
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
 
-(def ^:private ^:dbg-flag show-body-bounds false)
-
-(defn- draw-body-rect [entity color]
-  (let [[x y] (:left-bottom entity)]
-    (g/draw-rectangle x y (:width entity) (:height entity) color)))
-
-(defn- render-entity! [system entity]
-  (try
-   (when show-body-bounds
-     (draw-body-rect entity (if (:collides? entity) :white :gray)))
-   (run! #(system % entity) entity)
-   (catch Throwable t
-     (draw-body-rect entity :red)
-     (pretty-pst t 12))))
-
-(defn render-entities!
-  "Draws entities in the correct z-order and in the order of render-systems for each z-order."
-  [entities]
-  (let [player-entity @player]
-    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
-                                               first
-                                               entity/render-order)
-            system entity/render-systems
-            entity entities
-            :when (or (= z-order :z-order/effect)
-                      (line-of-sight? player-entity entity))]
-      (render-entity! system entity))))
-
-; precaution in case a component gets removed by another component
-; the question is do we still want to update nil components ?
-; should be contains? check ?
-; but then the 'order' is important? in such case dependent components
-; should be moved together?
-(defn tick-system [eid]
-  (try
-   (doseq [k (keys @eid)]
-     (when-let [v (k @eid)]
-       (component/->handle
-        (try (entity/tick [k v] eid)
-             (catch Throwable t
-               (throw (ex-info "entity/tick" {:k k} t)))))))
-   (catch Throwable t
-     (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
-
 (def mouseover-eid nil)
 
 (defn mouseover-entity []
   (when-let [eid mouseover-eid]
     @eid))
-
-(defn- calculate-mouseover-eid []
-  (let [player-entity @player
-        hits (remove #(= (:z-order @%) :z-order/effect) ; or: only items/creatures/projectiles.
-                     (point->entities (g/world-mouse-position)))]
-    (->> entity/render-order
-         (sort-by-order hits #(:z-order @%))
-         reverse
-         (filter #(line-of-sight? player-entity @%))
-         first)))
-
-(defn update-mouseover-entity! []
-  (let [eid (if (stage/mouse-on-actor?)
-              nil
-              (calculate-mouseover-eid))]
-    [(when mouseover-eid
-       [:e/dissoc mouseover-eid :entity/mouseover?])
-     (when eid
-       [:e/assoc eid :entity/mouseover? true])
-     (fn [] (.bindRoot #'mouseover-eid eid) nil)]))
 
 (declare tiled-map)
 
