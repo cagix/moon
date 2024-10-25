@@ -45,3 +45,8 @@
 
 (defn add! [actor]
   (stage/add! (get) actor))
+
+(defn reset [new-actors]
+  (let [stage (get)]
+    (stage/clear! stage)
+    (run! #(stage/add! stage %) new-actors)))

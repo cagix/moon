@@ -4,7 +4,6 @@
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [gdl.ui.stage]
             [gdl.utils :refer [dev-mode?]]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
@@ -117,32 +116,10 @@
   (component/create [_]
     (stage/create :screen (->WorldScreen))))
 
-(defn- world-actors []
-  [(if dev-mode?
-     (component/create [:widgets/dev-menu nil])
-     (ui/actor {}))
-   (ui/table {:rows [[{:actor (component/create [:widgets/action-bar nil])
-                       :expand? true
-                       :bottom? true}]]
-              :id :action-bar-table
-              :cell-defaults {:pad 2}
-              :fill-parent? true})
-   (component/create [:widgets/hp-mana nil])
-   (ui/group {:id :windows
-              :actors [(component/create [:widgets/entity-info-window nil])
-                       (component/create [:widgets/inventory          nil])]})
-   (component/create [:widgets/draw-item-on-cursor nil])
-   (component/create [:widgets/player-message      nil])])
-
-(defn- reset-stage! []
-  (let [stage (stage/get)]
-    (gdl.ui.stage/clear! stage)
-    (run! #(gdl.ui.stage/add! stage %) (world-actors))))
-
 (.bindRoot #'world/start
-           (fn start-game-fn [world-id]
+           (fn [world-id]
              (screen/change :screens/world)
-             (reset-stage!)
+             (stage/reset (component/create [:world/widgets nil]))
              (let [level (level/generate world-id)]
                (world/init! (:tiled-map level))
                (world/spawn-entities level))))
