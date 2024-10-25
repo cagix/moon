@@ -72,20 +72,21 @@
               entity.stunned
               entity.temp-modifier
 
-              interaction
-
-              properties.audiovisuals
-              properties.creatures
-              properties.worlds
-              properties.projectiles
-
-
               fsms.player
               fsms.npc
 
               level.generate
               level.uf-caves
               level.tiled-map
+
+              operation.val-max
+
+              properties.audiovisuals
+              properties.creatures
+              properties.items
+              properties.projectiles
+              properties.skills
+              properties.worlds
 
               schema.animation
               schema.boolean
@@ -103,15 +104,11 @@
               screens.editor
               screens.world
 
-              skill
-
               tx.audiovisual
               tx.creature
               tx.cursor
               tx.line-render
               tx.sound
-
-              operation.val-max
 
               widgets.action-bar
               widgets.dev-menu
@@ -123,4 +120,8 @@
               widgets.properties-overview
               widgets.properties-tabs
               widgets.property
+
+              interaction
+              skill
+
               ]}

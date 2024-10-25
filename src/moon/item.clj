@@ -1,7 +1,6 @@
 (ns moon.item
   (:require [data.grid2d :as g2d]
-            [moon.component :refer [defc] :as component]
-            [moon.property :as property]))
+            [moon.component :refer [defc] :as component]))
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
@@ -21,19 +20,6 @@
 
 (defc :item/slot
   {:schema (apply vector :enum (keys empty-inventory))})
-
-(property/def :properties/items
-  {:schema [:property/pretty-name
-            :entity/image
-            :item/slot
-            [:item/modifiers {:optional true}]]
-   :overview {:title "Items"
-              :columns 20
-              :image/scale 1.1
-              :sort-by-fn #(vector (if-let [slot (:item/slot %)]
-                                     (name slot)
-                                     "")
-                             (name (:property/id %)))}})
 
 (def ^:private body-props
   {:width 0.75
