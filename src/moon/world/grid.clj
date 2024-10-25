@@ -18,8 +18,6 @@
          [x y])
        [[l b] [l t] [r b] [r t]]))))
 
-(declare grid)
-
 (defn rectangle->cells [rectangle]
   (into [] (keep grid) (rectangle->tiles rectangle)))
 
@@ -140,7 +138,7 @@
   (nearest-entity-distance [this faction]
     (-> this faction :distance)))
 
-(defn- create-cell [position movement]
+(defn- grid-cell [position movement]
   {:pre [(#{:none :air :all} movement)]}
   (map->RCell
    {:position position
@@ -149,7 +147,13 @@
     :entities #{}
     :occupied #{}}))
 
-(defn- init-grid! [width height position->value]
-  (.bindRoot #'grid (g2d/create-grid width
-                                     height
-                                     #(atom (create-cell % (position->value %))))))
+(defn- create-grid [tiled-map]
+  (g2d/create-grid
+   (t/width tiled-map)
+   (t/height tiled-map)
+   (fn [position]
+     (atom (grid-cell position
+                      (case (level/movement-property tiled-map position)
+                        "none" :none
+                        "air"  :air
+                        "all"  :all))))))

@@ -14,9 +14,9 @@
        (some component/useful?)))
 
 (declare ^:dynamic source ; always available
-         ^:dynamic target
-         ^:dynamic target-direction ; always available
-         ^:dynamic target-position) ; always available
+         ^:dynamic target ; optional
+         ^:dynamic target-direction ; always available ( player? TODO )
+         ^:dynamic target-position) ; always available ( player? TODO )
 
 (defmacro with-ctx [ctx & body]
   `(binding [source           (:effect/source           ~ctx)

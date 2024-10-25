@@ -57,6 +57,7 @@
 
               entity.active
               entity.animation
+              entity.clickable
               entity.delete-after-animation-stopped
               entity.delete-after-duration
               entity.destroy-audiovisual
@@ -67,6 +68,7 @@
               entity.inventory
               entity.line-render
               entity.modifiers
+              entity.mouseover
               entity.movement
               entity.player
               entity.projectile
