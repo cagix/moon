@@ -54,9 +54,9 @@
 (defn- ->menu-bar []
   (let [menu-bar (MenuBar.)
         app-menu (Menu. "App")]
-    (.addItem app-menu (menu-item "Map editor" (partial screen/change! :screens/map-editor)))
-    (.addItem app-menu (menu-item "Properties" (partial screen/change! :screens/editor)))
-    (.addItem app-menu (menu-item "Exit"       (partial screen/change! :screens/main-menu)))
+    (.addItem app-menu (menu-item "Map editor" (partial screen/change :screens/map-editor)))
+    (.addItem app-menu (menu-item "Properties" (partial screen/change :screens/editor)))
+    (.addItem app-menu (menu-item "Exit"       (partial screen/change :screens/main-menu)))
     (.addMenu menu-bar app-menu)
     (let [world (Menu. "World")]
       (doseq [{:keys [property/id]} (db/all :properties/worlds)]

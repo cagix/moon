@@ -45,7 +45,7 @@
                                                     :green)))
       (when (or (key-just-pressed? :keys/tab)
                 (key-just-pressed? :keys/escape))
-        (screen/change! :screens/world))))
+        (screen/change :screens/world))))
 
 #_(defc :screens/minimap
   (component/create [_]

@@ -94,12 +94,12 @@
 
 (deftype WorldScreen []
   screen/Screen
-  (screen/enter! [_])
+  (screen/enter [_])
 
-  (screen/exit! [_]
+  (screen/exit [_]
     (g/set-cursor! :cursors/default))
 
-  (screen/render! [_]
+  (screen/render [_]
     (render-world)
     (component/->handle update-world)
     (check-zoom-keys)
@@ -108,9 +108,9 @@
           (close-windows)
 
           #_(key-just-pressed? :keys/tab)
-          #_(screen/change! :screens/minimap)))
+          #_(screen/change :screens/minimap)))
 
-  (screen/dispose! [_]
+  (screen/dispose [_]
     (world/clear-tiled-map)))
 
 (defc :screens/world
@@ -141,7 +141,7 @@
 
 (.bindRoot #'world/start
            (fn start-game-fn [world-id]
-             (screen/change! :screens/world)
+             (screen/change :screens/world)
              (reset-stage!)
              (let [level (level/generate world-id)]
                (world/init! (:tiled-map level))

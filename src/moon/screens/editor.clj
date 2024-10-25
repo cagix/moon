@@ -12,4 +12,4 @@
                    (component/create [:widgets/properties-tabs nil])
                    (ui/actor {:act (fn []
                                      (when (key-just-pressed? :shift-left)
-                                       (screen/change! :screens/main-menu)))})])))
+                                       (screen/change :screens/main-menu)))})])))

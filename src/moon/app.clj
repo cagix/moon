@@ -18,21 +18,21 @@
 (defn- app-listener [config]
   (reify app/Listener
     (create [_]
-      (assets/load         (:assets   config))
-      (graphics/load!      (:graphics config))
-      (ui/load!            (:ui       config))
-      (screen/set-screens! (:screens  config)
-                           (background-image
-                            (:background-image config))))
+      (assets/load        (:assets   config))
+      (graphics/load!     (:graphics config))
+      (ui/load!           (:ui       config))
+      (screen/set-screens (:screens  config)
+                          (background-image
+                           (:background-image config))))
 
     (dispose [_]
       (assets/dispose)
       (graphics/dispose!)
       (ui/dispose!)
-      (screen/dispose-all!))
+      (screen/dispose-all))
 
     (render [_]
-      (screen/render! (screen/current)))
+      (screen/render (screen/current)))
 
     (resize [_ dimensions]
       (graphics/resize! dimensions))))

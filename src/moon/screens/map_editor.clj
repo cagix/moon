@@ -137,13 +137,13 @@ direction keys: move")
 
 (defrecord MapEditorScreen [current-data]
   screen/Screen
-  (screen/enter! [_]
+  (screen/enter [_]
     (show-whole-map! (g/world-camera) (:tiled-map @current-data)))
 
-  (screen/exit! [_]
+  (screen/exit [_]
     (cam/reset-zoom! (g/world-camera)))
 
-  (screen/render! [_]
+  (screen/render [_]
     (g/draw-tiled-map (:tiled-map @current-data) (constantly color/white))
     (g/render-world-view! render-on-map)
     (if (key-just-pressed? :keys/l)
@@ -152,9 +152,9 @@ direction keys: move")
       (swap! current-data update :show-movement-properties not))
     (camera-controls (g/world-camera))
     (when (key-just-pressed? :keys/escape)
-      (screen/change! :screens/main-menu)))
+      (screen/change :screens/main-menu)))
 
-  (dispose! [_]
+  (dispose [_]
     (dispose (:tiled-map @current-data))))
 
 (defc :screens/map-editor
