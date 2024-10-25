@@ -46,13 +46,14 @@
               editor.visui
               editor.widgets-map
               interaction
+              properties.audiovisuals
               properties.creatures
               properties.worlds
               properties.projectiles
-              audiovisual
               editor.widgets
               entity.animation
               entity.delete-after-duration
+              entity.destroy-audiovisual
               entity.image
               entity.inventory
               entity.line
@@ -81,6 +82,7 @@
               screens.editor
               screens.world
               skill
+              tx.audiovisual
               tx.cursor
               tx.creature
               tx.sound
