@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Define the source directory
+SRC_DIR="src"
+
+# Check if the source directory exists
+if [ ! -d "$SRC_DIR" ]; then
+  echo "Directory $SRC_DIR does not exist."
+  exit 1
+fi
+
+# Find all .clj files, count comments, TODOs, FIXMEs, and calculate percentages
+find "$SRC_DIR" -name "*.clj" -print0 | while IFS= read -r -d '' file; do
+  # Count total lines, comments, TODOs, and FIXMEs
+  total_lines=$(wc -l < "$file")
+  comment_count=$(grep -c '^\s*;' "$file")
+  todo_count=$(grep -ci 'TODO' "$file")
+  fixme_count=$(grep -ci 'FIXME' "$file")
+
+  # Calculate percentage of comments
+  if [ "$total_lines" -gt 0 ]; then
+    comment_percentage=$(awk "BEGIN { printf \"%.2f\", ($comment_count / $total_lines) * 100 }")
+  else
+    comment_percentage=0
+  fi
+
+  # Print the counts along with the file name and comment percentage
+  echo "$comment_percentage $comment_count $todo_count $fixme_count $file"
+done | sort -nr | head -n 10 | awk '{print $1, $5}' | sed 's/^ //'
+
