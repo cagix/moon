@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.creature.player.idle
+(ns ^:no-doc moon.entity.state.player.idle
   (:require [gdl.input :refer [button-just-pressed? WASD-movement-vector]]
             [moon.component :refer [defc]]
             [moon.entity :as entity]

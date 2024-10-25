@@ -33,16 +33,7 @@
            :screens/editor
            :screens/world]
  :ui :skin-scale/x1
- :components [creature.active
-              creature.stunned
-              creature.npc.dead
-              creature.npc.idle
-              creature.npc.moving
-              creature.npc.sleeping
-              creature.player.dead
-              creature.player.idle
-              creature.player.item-on-cursor
-              creature.player.moving
+ :components [
               editor.visui
               editor.widgets-map
               interaction
@@ -63,6 +54,18 @@
               entity.projectile
               entity.string-effect
               entity.follow-ai
+
+              entity.state.active
+              entity.state.stunned
+              entity.state.npc.dead
+              entity.state.npc.idle
+              entity.state.npc.moving
+              entity.state.npc.sleeping
+              entity.state.player.dead
+              entity.state.player.idle
+              entity.state.player.item-on-cursor
+              entity.state.player.moving
+
               effect.damage
               effect.melee-damage
               effect.entity
