@@ -1,9 +1,9 @@
-(ns moon.skill
+(ns moon.entity.skills
   (:require [gdl.utils :refer [readable-number]]
             [moon.component :refer [defc] :as component]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.world :as world :refer [stopped?]]))
+            [moon.world :as world :refer [stopped?]]) )
 
 (defc :skill/action-time-modifier-key
   {:schema [:enum :stats/cast-speed :stats/attack-speed]}
@@ -67,53 +67,3 @@
     [[:e/dissoc-in eid [:entity/skills id]]
      (when (:entity/player? @eid)
        [:tx.action-bar/remove skill])]))
-
-(defn- player-clicked-skillmenu [skill]
-  (entity/clicked-skillmenu-skill (entity/state-obj @world/player) skill))
-
-; TODO render text label free-skill-points
-; (str "Free points: " (:entity/free-skill-points @world/player))
-#_(defn ->skill-window []
-    (ui/window {:title "Skills"
-                :id :skill-window
-                :visible? false
-                :cell-defaults {:pad 10}
-                :rows [(for [id [:skills/projectile
-                                 :skills/meditation
-                                 :skills/spawn
-                                 :skills/melee-attack]
-                             :let [; get-property in callbacks if they get changed, this is part of context permanently
-                                   button (ui/image-button ; TODO reuse actionbar button scale?
-                                                           (:entity/image (db/get id)) ; TODO here anyway taken
-                                                           ; => should probably build this window @ game start
-                                                           (fn []
-                                                             (tx/do! (player-clicked-skillmenu (db/get id)))))]]
-                         (do
-                          (ui/add-tooltip! button #(info/->text (db/get id))) ; TODO no player modifiers applied (see actionbar)
-                          button))]
-                :pack? true}))
-
-(defn- mana-value [entity]
-  (if-let [mana (entity/stat entity :stats/mana)]
-    (mana 0)
-    0))
-
-(defn- not-enough-mana? [entity {:keys [skill/cost]}]
-  (> cost (mana-value entity)))
-
-(defn- usable-state
-  [entity {:keys [skill/cooling-down? skill/effects] :as skill}]
-  (cond
-   cooling-down?
-   :cooldown
-
-   (not-enough-mana? entity skill)
-   :not-enough-mana
-
-   (not (effect/effect-applicable? effects))
-   :invalid-params
-
-   :else
-   :usable))
-
-(.bindRoot #'entity/skill-usable-state usable-state)

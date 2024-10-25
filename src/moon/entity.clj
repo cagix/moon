@@ -157,8 +157,7 @@
          has-skill?
          ai-direction-vector
          stat
-         modified-value
-         skill-usable-state)
+         modified-value)
 
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
@@ -187,3 +186,26 @@
 
 (defsystem clicked-skillmenu-skill [_ skill])
 (defmethod clicked-skillmenu-skill :default [_ skill])
+
+(defn- mana-value [entity]
+  (if-let [mana (entity/stat entity :stats/mana)]
+    (mana 0)
+    0))
+
+(defn- not-enough-mana? [entity {:keys [skill/cost]}]
+  (> cost (mana-value entity)))
+
+(defn skill-usable-state
+  [entity {:keys [skill/cooling-down? skill/effects] :as skill}]
+  (cond
+   cooling-down?
+   :cooldown
+
+   (not-enough-mana? entity skill)
+   :not-enough-mana
+
+   (not (effect/effect-applicable? effects))
+   :invalid-params
+
+   :else
+   :usable))

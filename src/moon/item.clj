@@ -1,6 +1,6 @@
 (ns moon.item
   (:require [data.grid2d :as g2d]
-            [moon.component :refer [defc] :as component]))
+            [moon.component :refer [defc]]))
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
@@ -20,18 +20,6 @@
 
 (defc :item/slot
   {:schema (apply vector :enum (keys empty-inventory))})
-
-(def ^:private body-props
-  {:width 0.75
-   :height 0.75
-   :z-order :z-order/on-ground})
-
-(defc :tx/item
-  (component/handle [[_ position item]]
-    [[:e/create position body-props {:entity/image (:entity/image item)
-                                     :entity/item item
-                                     :entity/clickable {:type :clickable/item
-                                                        :text (:property/pretty-name item)}}]]))
 
 (defn cells-and-items [inventory slot]
   (for [[position item] (slot inventory)]

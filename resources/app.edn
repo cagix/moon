@@ -68,6 +68,7 @@
               entity.movement
               entity.player
               entity.projectile
+              entity.skills
               entity.string-effect
               entity.stunned
               entity.temp-modifier
@@ -107,6 +108,7 @@
               tx.audiovisual
               tx.creature
               tx.cursor
+              tx.item
               tx.line-render
               tx.sound
 
@@ -120,6 +122,4 @@
               widgets.properties-overview
               widgets.properties-tabs
               widgets.property
-
-              skill
               ]}
