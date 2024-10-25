@@ -3,7 +3,7 @@
 (defprotocol Animation
   (tick [_ delta])
   (restart [_])
-  (anim-stopped? [_])
+  (stopped? [_])
   (current-frame [_]))
 
 (defrecord ImmutableAnimation [frames frame-duration looping? cnt maxcnt]
@@ -18,7 +18,7 @@
   (restart [this]
     (assoc this :cnt 0))
 
-  (anim-stopped? [_]
+  (stopped? [_]
     (and (not looping?) (>= cnt maxcnt)))
 
   (current-frame [this]
