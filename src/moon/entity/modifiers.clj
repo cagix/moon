@@ -7,23 +7,18 @@
             [moon.effect :as effect]
             [moon.graphics :as g]
             [moon.modifiers :as mods]
-            [moon.operation :as op]
+            [moon.operations :as ops]
             [moon.val-max :as val-max]))
 
 (color/put "MODIFIER_BLUE" :cyan)
 
 (defc :entity/modifiers
-  {:schema [:s/components-ns :modifier]
-   :let modifiers}
-  (entity/->v [_]
-    (into {} (for [[modifier-k operations] modifiers]
-               [modifier-k (into {} (for [[operation-k value] operations]
-                                      [operation-k [value]]))])))
+  {:schema [:s/components-ns :modifier]}
+  (entity/->v [[_ value-mods]]
+    (mods/value-mods->mods value-mods))
 
-  (component/info [_]
-    (let [modifiers (mods/sum-operation-values modifiers)]
-      (when (seq modifiers)
-        (mods/info-text modifiers))))
+  (component/info [[_ mods]]
+    (mods/info-text (mods/sum-vals mods)))
 
   (component/handle [[k eid add-or-remove mods]]
     [[:e/assoc eid k ((case add-or-remove
@@ -31,23 +26,13 @@
                         :remove mods/remove) (k @eid) mods)]]))
 
 (defc :item/modifiers
-  {:schema [:s/components-ns :modifier]
-   :let modifiers}
-  (component/info [_]
-    (when (seq modifiers)
-      (mods/info-text modifiers))))
-
-(defn- ops-apply [ops value]
-  (reduce (fn [value op]
-            (op/apply op value))
-          value
-          (sort-by op/order ops)))
+  {:schema [:s/components-ns :modifier]}
+  (component/info [[_ value-mods]]
+    (mods/info-text value-mods)))
 
 (defn- modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}
-  (ops-apply (->> modifiers
-                  modifier-k
-                  mods/sum-ops)
+  (ops/apply (->> modifiers modifier-k mods/sum-ops)
              base-value))
 
 (.bindRoot #'entity/modified-value modified-value)
@@ -58,17 +43,13 @@
 
 (defn- entity-stat [entity stat-k]
   (when-let [base-value (stat-k entity)]
-    (modified-value entity
-                    (modifier-k stat-k)
-                    base-value)))
+    (modified-value entity (modifier-k stat-k) base-value)))
 
 (.bindRoot #'entity/stat entity-stat)
 
 (defc :base/stat-effect
-  (component/info [[k operations]]
-    (str/join "\n"
-              (for [operation operations]
-                (str (mods/op-info-text operation) " " (k->pretty-name k)))))
+  (component/info [[k ops]]
+    (ops/info-text ops k))
 
   (component/applicable? [[k _]]
     (and effect/target
@@ -80,7 +61,7 @@
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
       (when-let [effective-value (entity/stat @effect/target stat-k)]
-        [[:e/assoc effect/target stat-k (ops-apply operations
+        [[:e/assoc effect/target stat-k (ops/apply operations
                                                    effective-value)]]))))
 
 (defn defmodifier [k operations]
