@@ -32,7 +32,7 @@
 
 (defn- modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}
-  (ops/apply (->> modifiers modifier-k mods/sum-ops)
+  (ops/apply (->> modifiers modifier-k ops/sum-vals)
              base-value))
 
 (.bindRoot #'entity/modified-value modified-value)

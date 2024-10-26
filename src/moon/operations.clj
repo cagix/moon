@@ -22,8 +22,8 @@
 
 (defn info-text [value-ops k]
   (str/join "\n"
-            (for [[k v] (sort-by op/order value-ops)]
-              (str (+? v) (op/value-text [k v]) " " (k->pretty-name k)))))
+            (for [{v 1 :as op} (sort-by op/order value-ops)]
+              (str (+? v) (op/value-text op) " " (k->pretty-name k)))))
 
 (defn apply [value-ops value]
   (reduce (fn [value op]
