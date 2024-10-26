@@ -37,14 +37,18 @@
     (when (seq modifiers)
       (mods/info-text modifiers))))
 
+(defn- ops-apply [ops value]
+  (reduce (fn [value op]
+            (op/apply op value))
+          value
+          (sort-by op/order ops)))
+
 (defn- modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}
-  (->> modifiers
-       modifier-k
-       (sort-by op/order)
-       (reduce (fn [base-value [operation-k values]]
-                 (op/apply [operation-k (apply + values)] base-value))
-               base-value)))
+  (ops-apply (->> modifiers
+                  modifier-k
+                  mods/sum-ops)
+             base-value))
 
 (.bindRoot #'entity/modified-value modified-value)
 
@@ -76,10 +80,8 @@
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
       (when-let [effective-value (entity/stat @effect/target stat-k)]
-        [[:e/assoc effect/target stat-k (reduce (fn [value operation]
-                                                  (op/apply operation value))
-                                                effective-value
-                                                operations)]]))))
+        [[:e/assoc effect/target stat-k (ops-apply operations
+                                                   effective-value)]]))))
 
 (defn defmodifier [k operations]
   {:pre [(= (namespace k) "modifier")]}

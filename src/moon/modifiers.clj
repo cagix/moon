@@ -21,7 +21,7 @@
 (defn add    [mods value-mods] (update-kv ops-add    mods value-mods))
 (defn remove [mods value-mods] (update-kv ops-remove mods value-mods))
 
-(defn- sum-ops [ops]
+(defn sum-ops [ops]
   (for [[k values] ops
         :let [value (apply + values)]
         :when (not (zero? value))]
