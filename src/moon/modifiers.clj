@@ -32,8 +32,6 @@
    [[:op/inc -4] [:op/mult 2.4]])
 
 (defn sum-operation-values [modifiers]
-  ; so basically just mapvals ?
-  ; the seq just for the empty list case
   (for [[k ops] modifiers
         :let [ops (sum-ops ops)]
         :when (seq ops)]

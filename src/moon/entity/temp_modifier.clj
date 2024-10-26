@@ -13,7 +13,7 @@
   (entity/tick [[k _] eid]
     (when (stopped? counter)
       [[:e/dissoc eid k]
-       [:tx/reverse-modifiers eid modifiers]]))
+       [:entity/modifiers eid :remove modifiers]]))
 
   (entity/render-above [_ entity]
     (g/draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))

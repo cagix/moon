@@ -3,25 +3,45 @@
             [moon.component :as component]
             [moon.entity :as entity]
             moon.entity.modifiers
+            [moon.modifiers :as mods]
             moon.operation.inc
             moon.operation.mult
             moon.operation.val-max
             moon.tx.entity))
 
+(deftest handler
+  (let [mods     {:modifier/movement-speed {:op/mult [0.1]}}
+        new-mods {:modifier/movement-speed {:op/mult -0.1}}
+        resulting-mods (mods/add mods new-mods)
+        eid (atom {:entity/modifiers mods})]
+
+    (= (component/handle [:entity/modifiers
+                          eid
+                          :add
+                          new-mods])
+       [[:e/assoc
+         eid
+         :entity/modifiers
+         resulting-mods]])))
+
 (deftest apply-modifiers
-  (let [eid (atom {:entity/modifiers {:modifier/movement-speed {:op/mult [0.1]}}})]
-    (component/->handle
-     [[:tx/apply-modifiers
-       eid
-       {:modifier/movement-speed {:op/mult -0.1}}]])
+  (let [eid (atom
+             {:entity/modifiers
+              {:modifier/movement-speed
+               {:op/mult [0.1]}}})]
+    (component/->handle [[:entity/modifiers
+                          eid
+                          :add
+                          {:modifier/movement-speed {:op/mult -0.1}}]])
     (is (= (:modifier/movement-speed (:entity/modifiers @eid))
            #:op{:mult [0.1 -0.1]}))))
 
 (deftest reverse-modifiers
   (let [eid (atom {:entity/modifiers {:modifier/movement-speed {:op/mult [0.1 -0.1]}}})]
     (component/->handle
-     [[:tx/reverse-modifiers
+     [[:entity/modifiers
        eid
+       :remove
        {:modifier/movement-speed {:op/mult -0.1}}]])
     (is (= (:modifier/movement-speed (:entity/modifiers @eid))
            #:op{:mult [0.1]}))))

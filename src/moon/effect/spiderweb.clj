@@ -20,6 +20,6 @@
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
     (component/handle [_]
       (when-not (:entity/temp-modifier @target)
-        [[:tx/apply-modifiers target modifiers]
+        [[:entity/modifiers target :add modifiers]
          [:e/assoc target :entity/temp-modifier {:modifiers modifiers
                                                  :counter (timer duration)}]]))))

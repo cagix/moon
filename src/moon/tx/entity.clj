@@ -61,8 +61,3 @@
   (component/handle [[_ eid ks]]
     (swap! eid dissoc-in ks)
     nil))
-
-(defc :e/update
-  (component/handle [[_ eid k f]]
-    (swap! eid update k f)
-    nil))

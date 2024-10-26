@@ -10,12 +10,6 @@
             [moon.operation :as op]
             [moon.val-max :as val-max]))
 
-(defn update-mods [[_ eid mods] f]
-  [[:e/update eid :entity/modifiers #(f % mods)]])
-
-(defc :tx/apply-modifiers   (component/handle [this] (update-mods this mods/add)))
-(defc :tx/reverse-modifiers (component/handle [this] (update-mods this mods/remove)))
-
 (color/put "MODIFIER_BLUE" :cyan)
 
 (defc :entity/modifiers
@@ -29,7 +23,12 @@
   (component/info [_]
     (let [modifiers (mods/sum-operation-values modifiers)]
       (when (seq modifiers)
-        (mods/info-text modifiers)))))
+        (mods/info-text modifiers))))
+
+  (component/handle [[k eid add-or-remove mods]]
+    [[:e/assoc eid k ((case add-or-remove
+                        :add    mods/add
+                        :remove mods/remove) (k @eid) mods)]]))
 
 (defc :item/modifiers
   {:schema [:s/components-ns :modifier]
