@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.modifiers
   (:require [clojure.string :as str]
-            [gdl.graphics.color :as color]
             [gdl.utils :refer [k->pretty-name]]
             [moon.component :refer [defc defc*] :as component]
             [moon.entity :as entity]
@@ -9,8 +8,6 @@
             [moon.modifiers :as mods]
             [moon.operations :as ops]
             [moon.val-max :as val-max]))
-
-(color/put "MODIFIER_BLUE" :cyan)
 
 (defc :entity/modifiers
   {:schema [:s/components-ns :modifier]}

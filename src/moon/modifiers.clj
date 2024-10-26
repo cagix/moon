@@ -15,7 +15,7 @@
 
 (defn info-text [value-mods]
   (when (seq value-mods)
-    (str "[MODIFIER_BLUE]"
+    (str "[MODIFIERS]"
          (str/join "\n"
                    (for [[k ops] value-mods]
                      (ops/info-text ops k)))

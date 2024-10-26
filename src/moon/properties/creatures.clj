@@ -1,6 +1,5 @@
 (ns moon.properties.creatures
   (:require [clojure.string :as str]
-            [gdl.graphics.color :as color]
             [gdl.utils :refer [safe-merge]]
             [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
@@ -33,13 +32,11 @@
                                    (name (:property/id %)))
               :extra-info-text #(str (:creature/level %))}})
 
-(color/put "ITEM_GOLD" [0.84 0.8 0.52])
-
 (defc :property/pretty-name
   {:schema :string
    :let value}
   (component/info [_]
-    (str "[ITEM_GOLD]"value"[]")))
+    (str "[PRETTY_NAME]"value"[]")))
 
 (defc :body/width   {:schema pos?})
 (defc :body/height  {:schema pos?})
