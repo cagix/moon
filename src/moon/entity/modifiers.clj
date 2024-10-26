@@ -1,6 +1,5 @@
-(ns ^:no-doc moon.entity.modifiers
-  (:require [clojure.string :as str]
-            [gdl.utils :refer [k->pretty-name]]
+(ns moon.entity.modifiers
+  (:require [gdl.utils :refer [k->pretty-name]]
             [moon.component :refer [defc defc*] :as component]
             [moon.entity :as entity]
             [moon.effect :as effect]
