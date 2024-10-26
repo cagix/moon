@@ -54,7 +54,7 @@
 (defc   :op/max-mult {:schema number?})
 (derive :op/max-mult :op/val-max)
 
-(comment
+(comment ; TODO these are all test! see damage !
  (and
   (= (op/apply [:op/val-inc 30]    [5 10]) [35 35])
   (= (op/apply [:op/max-mult -0.5] [5 10]) [5 5])

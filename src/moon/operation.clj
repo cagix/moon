@@ -7,3 +7,8 @@
 (defsystem apply [_ base-value])
 
 (defsystem order)
+
+; now I get it
+; moon.operations
+; and op/ is a component
+; so the systems all to component (anyway)

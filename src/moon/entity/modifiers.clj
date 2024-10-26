@@ -1,65 +1,25 @@
 (ns ^:no-doc moon.entity.modifiers
-  (:require [clojure.math :as math]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [gdl.graphics.color :as color]
-            [gdl.utils :refer [safe-remove-one update-kv k->pretty-name]]
+            [gdl.utils :refer [k->pretty-name]]
             [moon.component :refer [defc defc*] :as component]
             [moon.entity :as entity]
             [moon.effect :as effect]
             [moon.graphics :as g]
+            [moon.modifiers :as mods]
             [moon.operation :as op]
             [moon.val-max :as val-max]))
 
-(defn- ops-add    [ops value-ops] (update-kv conj            ops value-ops))
-(defn- ops-remove [ops value-ops] (update-kv safe-remove-one ops value-ops))
-
-(comment
- (= (ops-add {:+ [1 2 3]}
-             {:* -0.5 :+ -1})
-    {:+ [1 2 3 -1], :* [-0.5]})
-
- (= (ops-remove {:+ [1 2 3] :* [-0.5]}
-                {:+ 2 :* -0.5})
-    {:+ [1 3], :* []})
- )
-
-(defn- mods-add    [mods value-mods] (update-kv ops-add    mods value-mods))
-(defn- mods-remove [mods value-mods] (update-kv ops-remove mods value-mods))
-
-(comment
- (= (mods-add {:speed {:+ [1 2 3]}}
-              {:speed {:* -0.5}})
-    {:speed {:+ [1 2 3], :* [-0.5]}})
-
- (= (mods-remove {:speed {:+ [1 2 3] :* [-0.5]}}
-                 {:speed {:+ 2 :* -0.5}})
-    {:speed {:+ [1 3], :* []}})
- )
-
-(comment
- ; Example blood-helm
- {:modifier/hp {:op/max-inc -200}}
-
- ; :entity/hp => {:base-value ... :operations ... }
- ; modifier: tuple of [component operation(s)]
- )
-
+; not possible to test that anonymous fn ?
+; pass f to :e/update ?
+; its just e/assoc ?!
+; => I need a tx' helper or ?
 (defn update-mods [[_ eid mods] f]
   [[:e/update eid :entity/modifiers #(f % mods)]])
 
-(defc :tx/apply-modifiers   (component/handle [this] (update-mods this mods-add)))
-(defc :tx/reverse-modifiers (component/handle [this] (update-mods this mods-remove)))
-
-; DRY ->effective-value (summing)
-; also: sort-by op/order @ modifier/info-text itself (so player will see applied order)
-(defn- sum-operation-values [modifiers]
-  (for [[modifier-k operations] modifiers
-        :let [operations (for [[operation-k values] operations
-                               :let [value (apply + values)]
-                               :when (not (zero? value))]
-                           [operation-k value])]
-        :when (seq operations)]
-    [modifier-k operations]))
+; just add-remove !
+(defc :tx/apply-modifiers   (component/handle [this] (update-mods this mods/add)))
+(defc :tx/reverse-modifiers (component/handle [this] (update-mods this mods/remove)))
 
 (color/put "MODIFIER_BLUE" :cyan)
 
@@ -70,23 +30,6 @@
 (def ^:private positive-modifier-color "[MODIFIER_BLUE]" #_"[LIME]")
 (def ^:private negative-modifier-color "[MODIFIER_BLUE]" #_"[SCARLET]")
 
-(defn- +? [n]
-  (case (math/signum n)
-    0.0 ""
-    1.0 "+"
-    -1.0 ""))
-
-(defn- op-info-text [{value 1 :as operation}]
-  (str (+? value) (op/value-text operation)))
-
-(defn- mod-info-text [modifiers]
-  (str "[MODIFIER_BLUE]"
-       (str/join "\n"
-                 (for [[modifier-k operations] modifiers
-                       operation operations]
-                   (str (op-info-text operation) " " (k->pretty-name modifier-k))))
-       "[]"))
-
 (defc :entity/modifiers
   {:schema [:s/components-ns :modifier]
    :let modifiers}
@@ -96,21 +39,25 @@
                                       [operation-k [value]]))])))
 
   (component/info [_]
-    (let [modifiers (sum-operation-values modifiers)]
+    (let [modifiers (mods/sum-operation-values modifiers)]
       (when (seq modifiers)
-        (mod-info-text modifiers)))))
+        (mods/info-text modifiers)))))
 
 (defc :item/modifiers
   {:schema [:s/components-ns :modifier]
    :let modifiers}
   (component/info [_]
     (when (seq modifiers)
-      (mod-info-text modifiers))))
+      (mods/info-text modifiers))))
 
 (defn- modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}
   (->> modifiers
        modifier-k
+       ; here just call sum first
+       ; then no need apply +
+       ; and can call a ops/apply fn which does the sort
+       ; so a mods/apply here ? no wait
        (sort-by op/order)
        (reduce (fn [base-value [operation-k values]]
                  (op/apply [operation-k (apply + values)] base-value))
@@ -130,11 +77,14 @@
 
 (.bindRoot #'entity/stat entity-stat)
 
+; so here we just do i tlike modifiers
+; multiple stat we can affect
+; with just multiple :effect-k ...
 (defc :base/stat-effect
   (component/info [[k operations]]
     (str/join "\n"
               (for [operation operations]
-                (str (op-info-text operation) " " (k->pretty-name k)))))
+                (str (mods/op-info-text operation) " " (k->pretty-name k)))))
 
   (component/applicable? [[k _]]
     (and effect/target
@@ -145,17 +95,38 @@
 
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
+      ; I don't understand how we can apply operations on effective-value
+      ; won't the modifiers get changed then
+      ; shouldnt we work on  base value ?
       (when-let [effective-value (entity/stat @effect/target stat-k)]
-        [[:e/assoc effect/target stat-k
-          (reduce (fn [value operation]
-                    (op/apply operation value))
-                  effective-value
-                  operations)]]))))
+        [[:e/assoc effect/target stat-k (reduce (fn [value operation]
+                                                  (op/apply operation value))
+                                                effective-value
+                                                operations)]]))))
+
+; for example + 100% HP
+; so you have 10 and then makes it 20 EFFECTIVE_VALUE
+; now I give you 5 damage and youre at 15
+; so I change your BASE_VALUE to 15
+; then with the +100% HP still there you suddenly have 30 HP?
+; how does this even work ?
+
+; => thats why I need automatede tests also for val-max ops !!!!!
+
+; => because we don't have modifiers for the VAL part of HP /mana...
+
+; we cant run effects on modified stuffs ?
+; that would mean just adding one more modifier permanently...
+
+; but those totally permanent modifiers go together with a status component
+; forr example for spiderweb ?
 
 (defn defmodifier [k operations]
   {:pre [(= (namespace k) "modifier")]}
   (defc* k {:schema [:s/map-optional operations]}))
 
+; and this all we have to get from schema ... !
+; ?!
 (defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
   {:pre [(= (namespace k) "stats")]}
   (defc* k attr-m)
