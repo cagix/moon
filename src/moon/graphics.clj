@@ -6,7 +6,7 @@
             [gdl.graphics.text :as text]
             [gdl.graphics.viewport :as vp]
             [gdl.graphics.tiled :as tiled]
-            [gdl.utils :refer [dispose safe-get]]
+            [gdl.utils :refer [dispose safe-get mapvals]]
             [moon.assets :as assets])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
@@ -225,10 +225,6 @@
   scale will multiply the drawn text size with the scale."
   [{:keys [x y text font h-align up? scale] :as opts}]
   (text/draw (or font default-font) *unit-scale* batch opts))
-
-(defn- mapvals [f m]
-  (into {} (for [[k v] m]
-             [k (f v)])))
 
 (defn- ->cursors [cursors]
   (mapvals (fn [[file hotspot]]
