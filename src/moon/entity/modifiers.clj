@@ -8,6 +8,28 @@
             [moon.operations :as ops]
             [moon.val-max :as val-max]))
 
+; TODO
+; * why not just
+; :entity/hp a normal component
+; and it has a 'modifiable-stat' as value
+; with {:base-value :operations}
+; => a stat itself is just a functional construct
+; where we can call 'stat/effective-value'
+
+; Also problem we can edit modifiers in the editor
+; for the damage-reduce/deal mods
+; why don't are just stats ???
+; omg ...
+
+; there is too much stats stuff happening
+
+; do I even need this in the game ???
+
+; work on something else
+
+; what are my project hotspots ???
+; not clear
+
 (defc :entity/modifiers
   {:schema [:s/components-ns :modifier]}
   (entity/->v [[_ value-mods]]
@@ -26,8 +48,11 @@
   (ops/apply (->> modifiers modifier-k ops/sum-vals)
              base-value))
 
+; this is also weird ... why not let ppl call this fn directly here ?
+; protocols? makes tests more difficult
 (.bindRoot #'entity/modified-value modified-value)
 
+; this effect-k is weird
 (defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
 (defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
 (defn- modifier-k [stat-k]   (keyword "modifier"      (name stat-k)))
@@ -38,6 +63,7 @@
 
 (.bindRoot #'entity/stat entity-stat)
 
+; namespace 'base' so doesnt show up as 'effect' or 'effect.entity' ...
 (defc :base/stat-effect
   (component/info [[k ops]]
     (ops/info-text ops k))
@@ -72,6 +98,15 @@
 (defc :entity/stat
   (component/info [[k v]]
     (str (k->pretty-name k) ": " (entity/stat component/*info-text-entity* k))))
+
+
+;;;;;;
+;;;;;;
+;;;;;;
+;;;;;; implementations
+;;;;;;
+;;;;;;
+;;;;;;
 
 ; TODO negate this value also @ use
 ; so can make positiive modifeirs green , negative red....
