@@ -1,5 +1,8 @@
 (ns moon.properties.items
-  (:require [moon.property :as property]))
+  (:require [moon.component :as component :refer [defc]]
+            [moon.item :as item]
+            [moon.modifiers :as mods]
+            [moon.property :as property]))
 
 (property/def :properties/items
   {:schema [:property/pretty-name
@@ -13,3 +16,11 @@
                                      (name slot)
                                      "")
                              (name (:property/id %)))}})
+
+(defc :item/slot
+  {:schema (apply vector :enum (keys item/empty-inventory))})
+
+(defc :item/modifiers
+  {:schema [:s/components-ns :modifier]}
+  (component/info [[_ value-mods]]
+    (mods/info-text value-mods)))

@@ -22,11 +22,6 @@
                         :add    mods/add
                         :remove mods/remove) (k @eid) mods)]]))
 
-(defc :item/modifiers
-  {:schema [:s/components-ns :modifier]}
-  (component/info [[_ value-mods]]
-    (mods/info-text value-mods)))
-
 (defn- modified-value [{:keys [entity/modifiers]} modifier-k base-value]
   {:pre [(= "modifier" (namespace modifier-k))]}
   (ops/apply (->> modifiers modifier-k ops/sum-vals)
@@ -58,8 +53,7 @@
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
       (when-let [effective-value (entity/stat @effect/target stat-k)]
-        [[:e/assoc effect/target stat-k (ops/apply operations
-                                                   effective-value)]]))))
+        [[:e/assoc effect/target stat-k (ops/apply operations effective-value)]]))))
 
 (defn defmodifier [k operations]
   {:pre [(= (namespace k) "modifier")]}

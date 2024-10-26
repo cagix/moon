@@ -1,6 +1,5 @@
 (ns moon.item
-  (:require [data.grid2d :as g2d]
-            [moon.component :refer [defc]]))
+  (:require [data.grid2d :as g2d]))
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
@@ -17,9 +16,6 @@
        (map (fn [[slot [width height]]]
               [slot (g2d/create-grid width height (constantly nil))]))
        (into {})))
-
-(defc :item/slot
-  {:schema (apply vector :enum (keys empty-inventory))})
 
 (defn cells-and-items [inventory slot]
   (for [[position item] (slot inventory)]
