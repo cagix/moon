@@ -27,7 +27,7 @@
      (when eid
        [:e/assoc eid :entity/mouseover? true])
      (fn []
-       (.bindRoot #'world/mouseover-eid eid)
+       (bind-root #'world/mouseover-eid eid)
        nil)]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)

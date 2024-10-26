@@ -52,7 +52,7 @@
 (defn- has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
 
-(.bindRoot #'entity/has-skill? has-skill?)
+(bind-root #'entity/has-skill? has-skill?)
 
 (defc :tx/add-skill
   (component/handle [[_ eid {:keys [property/id] :as skill}]]

@@ -84,7 +84,7 @@
 (defn- can-pickup-item? [eid item]
   (boolean (pickup-item eid item)))
 
-(.bindRoot #'entity/can-pickup-item? can-pickup-item?)
+(bind-root #'entity/can-pickup-item? can-pickup-item?)
 
 (defc :entity/inventory
   {:schema [:s/one-to-many :properties/items]}

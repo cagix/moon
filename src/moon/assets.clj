@@ -16,7 +16,7 @@
     [file class]))
 
 (defn load [folder]
-  (.bindRoot #'manager (assets/manager (search folder))))
+  (bind-root #'manager (assets/manager (search folder))))
 
 (defn dispose []
   (utils/dispose manager))

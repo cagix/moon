@@ -31,8 +31,8 @@
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! property/validate! properties)
-    (.bindRoot #'db (zipmap (map :property/id properties) properties))
-    (.bindRoot #'edn-file file)))
+    (bind-root #'db (zipmap (map :property/id properties) properties))
+    (bind-root #'edn-file file)))
 
 (defn- async-pprint-spit! [properties]
   (.start

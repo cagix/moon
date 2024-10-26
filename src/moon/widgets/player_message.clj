@@ -20,7 +20,7 @@
   (when-let [{:keys [counter]} message-to-player]
     (alter-var-root #'message-to-player update :counter + (gdx.graphics/delta-time))
     (when (>= counter duration-seconds)
-      (.bindRoot #'message-to-player nil))))
+      (bind-root #'message-to-player nil))))
 
 (defc :widgets/player-message
   (component/create [_]
@@ -29,5 +29,5 @@
 
 (defc :tx/msg-to-player
   (component/handle [[_ message]]
-    (.bindRoot #'message-to-player {:message message :counter 0})
+    (bind-root #'message-to-player {:message message :counter 0})
     nil))

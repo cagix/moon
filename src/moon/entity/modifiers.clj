@@ -50,7 +50,7 @@
 
 ; this is also weird ... why not let ppl call this fn directly here ?
 ; protocols? makes tests more difficult
-(.bindRoot #'entity/modified-value modified-value)
+(bind-root #'entity/modified-value modified-value)
 
 ; this effect-k is weird
 (defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
@@ -61,7 +61,7 @@
   (when-let [base-value (stat-k entity)]
     (modified-value entity (modifier-k stat-k) base-value)))
 
-(.bindRoot #'entity/stat entity-stat)
+(bind-root #'entity/stat entity-stat)
 
 ; namespace 'base' so doesnt show up as 'effect' or 'effect.entity' ...
 (defc :base/stat-effect

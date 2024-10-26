@@ -21,14 +21,14 @@
     (exit screen))
   (let [screen (new-k screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
-    (.bindRoot #'screen-k new-k)
+    (bind-root #'screen-k new-k)
     (enter screen)))
 
 (defn set-screens
   "Calls `change` to first "
   [screen-ks params]
   {:pre [(vector? screen-ks)]}
-  (.bindRoot #'screens (into {}
+  (bind-root #'screens (into {}
                              (for [k screen-ks]
                                [k (component/create [k params])])))
   (change (ffirst screens)))

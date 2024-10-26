@@ -256,15 +256,15 @@
   (tiled/renderer tiled-map (world-unit-scale) batch))
 
 (defn load! [{:keys [views default-font cursors]}]
-  (.bindRoot #'batch (SpriteBatch.))
+  (bind-root #'batch (SpriteBatch.))
   (let [{:keys [shape-drawer shape-drawer-texture]} (sd/create batch)]
-    (.bindRoot #'sd shape-drawer)
-    (.bindRoot #'sd-texture shape-drawer-texture))
-  (.bindRoot #'cursors (->cursors cursors))
-  (.bindRoot #'default-font (->default-font default-font))
-  (.bindRoot #'gui-view   (->gui-view   (:gui-view views)))
-  (.bindRoot #'world-view (->world-view (:world-view views)))
-  (.bindRoot #'cached-map-renderer (memoize tiled-renderer)))
+    (bind-root #'sd shape-drawer)
+    (bind-root #'sd-texture shape-drawer-texture))
+  (bind-root #'cursors (->cursors cursors))
+  (bind-root #'default-font (->default-font default-font))
+  (bind-root #'gui-view   (->gui-view   (:gui-view views)))
+  (bind-root #'world-view (->world-view (:world-view views)))
+  (bind-root #'cached-map-renderer (memoize tiled-renderer)))
 
 (defn dispose! []
   (dispose batch)

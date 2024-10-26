@@ -49,7 +49,7 @@
   (when-let [skill-button (ui/bg-checked (:button-group (get-action-bar)))]
     (a/id skill-button)))
 
-(.bindRoot #'moon.entity/selected-skill selected-skill)
+(bind-root #'moon.entity/selected-skill selected-skill)
 
 (comment
 

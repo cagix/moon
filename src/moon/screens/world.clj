@@ -51,7 +51,7 @@
       (key-pressed? :keys/space))) ; FIXMe :keys? shouldnt it be just :space?
 
 (defn- update-game-paused []
-  (.bindRoot #'world/paused? (or world/entity-tick-error
+  (bind-root #'world/paused? (or world/entity-tick-error
                                  (and pausing?
                                       (player-state-pause-game?)
                                       (not (player-unpaused?)))))
@@ -60,7 +60,7 @@
 (defn- update-time []
   (alter-var-root #'world/logic-frame inc)
   (let [delta (min (delta-time) entity/max-delta-time)]
-    (.bindRoot      #'world/delta-time delta)
+    (bind-root      #'world/delta-time delta)
     (alter-var-root #'world/elapsed-time + delta)))
 
 (def ^:private update-world
@@ -74,7 +74,7 @@
         (try (entities/tick entities)
              (catch Throwable t
                (error-window! t)
-               (.bindRoot #'world/entity-tick-error t))))
+               (bind-root #'world/entity-tick-error t))))
       nil)
    [:tx/remove-destroyed-entities]]) ; do not pause this as for example pickup item, should be destroyed.
 
@@ -115,7 +115,7 @@
   (component/create [_]
     (stage/create :screen (->WorldScreen))))
 
-(.bindRoot #'world/start
+(bind-root #'world/start
            (fn [world-id]
              (screen/change :screens/world)
              (stage/reset (component/create [:world/widgets]))

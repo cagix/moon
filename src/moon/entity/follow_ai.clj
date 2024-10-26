@@ -110,4 +110,4 @@
        (when-not (inside-cell? @eid target-cell)
          (v/direction position (:middle @target-cell)))))))
 
-(.bindRoot #'entity/ai-direction-vector direction-vector)
+(bind-root #'entity/ai-direction-vector direction-vector)

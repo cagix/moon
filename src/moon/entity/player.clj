@@ -5,5 +5,5 @@
 
 (defc :entity/player?
   (entity/create [_ eid]
-    (.bindRoot #'world/player eid)
+    (bind-root #'world/player eid)
     nil))

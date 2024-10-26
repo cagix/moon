@@ -115,17 +115,17 @@
   (clear-tiled-map)
   (let [width  (t/width  tiled-map)
         height (t/height tiled-map)]
-    (.bindRoot #'tiled-map tiled-map)
-    (.bindRoot #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
-    (.bindRoot #'grid (create-grid tiled-map))
-    (.bindRoot #'raycaster (raycaster/create grid blocks-vision?))
-    (.bindRoot #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
+    (bind-root #'tiled-map tiled-map)
+    (bind-root #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
+    (bind-root #'grid (create-grid tiled-map))
+    (bind-root #'raycaster (raycaster/create grid blocks-vision?))
+    (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
                                                     :width  width
                                                     :height height})))
-  (.bindRoot #'entity-tick-error nil)
-  (.bindRoot #'elapsed-time 0)
-  (.bindRoot #'logic-frame 0)
-  (.bindRoot #'ids->eids {}))
+  (bind-root #'entity-tick-error nil)
+  (bind-root #'elapsed-time 0)
+  (bind-root #'logic-frame 0)
+  (bind-root #'ids->eids {}))
 
 (declare start)
 
