@@ -10,25 +10,13 @@
             [moon.operation :as op]
             [moon.val-max :as val-max]))
 
-; not possible to test that anonymous fn ?
-; pass f to :e/update ?
-; its just e/assoc ?!
-; => I need a tx' helper or ?
 (defn update-mods [[_ eid mods] f]
   [[:e/update eid :entity/modifiers #(f % mods)]])
 
-; just add-remove !
 (defc :tx/apply-modifiers   (component/handle [this] (update-mods this mods/add)))
 (defc :tx/reverse-modifiers (component/handle [this] (update-mods this mods/remove)))
 
 (color/put "MODIFIER_BLUE" :cyan)
-
-; For now no green/red color for positive/negative numbers
-; as :stats/damage-receive negative value would be red but actually a useful buff
-; -> could give damage reduce 10% like in diablo 2
-; and then make it negative .... @ applicator
-(def ^:private positive-modifier-color "[MODIFIER_BLUE]" #_"[LIME]")
-(def ^:private negative-modifier-color "[MODIFIER_BLUE]" #_"[SCARLET]")
 
 (defc :entity/modifiers
   {:schema [:s/components-ns :modifier]
@@ -54,10 +42,6 @@
   {:pre [(= "modifier" (namespace modifier-k))]}
   (->> modifiers
        modifier-k
-       ; here just call sum first
-       ; then no need apply +
-       ; and can call a ops/apply fn which does the sort
-       ; so a mods/apply here ? no wait
        (sort-by op/order)
        (reduce (fn [base-value [operation-k values]]
                  (op/apply [operation-k (apply + values)] base-value))
@@ -77,9 +61,6 @@
 
 (.bindRoot #'entity/stat entity-stat)
 
-; so here we just do i tlike modifiers
-; multiple stat we can affect
-; with just multiple :effect-k ...
 (defc :base/stat-effect
   (component/info [[k operations]]
     (str/join "\n"
@@ -95,38 +76,16 @@
 
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
-      ; I don't understand how we can apply operations on effective-value
-      ; won't the modifiers get changed then
-      ; shouldnt we work on  base value ?
       (when-let [effective-value (entity/stat @effect/target stat-k)]
         [[:e/assoc effect/target stat-k (reduce (fn [value operation]
                                                   (op/apply operation value))
                                                 effective-value
                                                 operations)]]))))
 
-; for example + 100% HP
-; so you have 10 and then makes it 20 EFFECTIVE_VALUE
-; now I give you 5 damage and youre at 15
-; so I change your BASE_VALUE to 15
-; then with the +100% HP still there you suddenly have 30 HP?
-; how does this even work ?
-
-; => thats why I need automatede tests also for val-max ops !!!!!
-
-; => because we don't have modifiers for the VAL part of HP /mana...
-
-; we cant run effects on modified stuffs ?
-; that would mean just adding one more modifier permanently...
-
-; but those totally permanent modifiers go together with a status component
-; forr example for spiderweb ?
-
 (defn defmodifier [k operations]
   {:pre [(= (namespace k) "modifier")]}
   (defc* k {:schema [:s/map-optional operations]}))
 
-; and this all we have to get from schema ... !
-; ?!
 (defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
   {:pre [(= (namespace k) "stats")]}
   (defc* k attr-m)

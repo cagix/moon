@@ -8,8 +8,6 @@
             moon.operation.val-max
             moon.tx.entity))
 
-; I am testing the wrong thing here !
-; the transactuin should just return an :e/update form !
 (deftest apply-modifiers
   (let [eid (atom {:entity/modifiers {:modifier/movement-speed {:op/mult [0.1]}}})]
     (component/->handle
