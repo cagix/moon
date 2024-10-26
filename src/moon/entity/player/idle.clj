@@ -62,9 +62,9 @@
   (let [actor (stage/mouse-on-actor?)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
-     (ui/window-title-bar? actor) :cursors/move-window
-     (ui/button? actor) :cursors/over-button
-     :else :cursors/default)))
+     (ui/window-title-bar? actor)      :cursors/move-window
+     (ui/button? actor)                :cursors/over-button
+     :else                             :cursors/default)))
 
 (defn- effect-ctx [eid]
   (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
