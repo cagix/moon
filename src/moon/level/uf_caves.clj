@@ -9,6 +9,8 @@
             [moon.level.grid :refer [scalegrid printgrid transition-idx-value cave-grid adjacent-wall-positions flood-fill]]
             [moon.level.tiled :refer [wgt-grid->tiled-map]]))
 
+(def ^:private scaling 4)
+
 (defn- rand-0-3 []
   (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
 
@@ -74,42 +76,47 @@
 (defn- transition? [grid [x y]]
   (= :ground (get grid [x (dec y)])))
 
-(def ^:private uf-caves-scale 4)
+(defn- assoc-transition-cells [grid]
+  (let [grid (reduce #(assoc %1 %2 :transition) grid
+                     (adjacent-wall-positions grid))]
+    (assert (or
+             (= #{:wall :ground :transition} (set (g2d/cells grid)))
+             (= #{:ground :transition}       (set (g2d/cells grid))))
+            (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
+    ;_ (printgrid grid)
+    ;_ (println)
+    grid))
 
-(defn- create [{:keys [world/map-size world/spawn-rate]}]
-  (let [{:keys [start grid]} (cave-grid :size map-size)
-        ;_ (println "Start: " start)
-        ;_ (printgrid grid)
-        ;_ (println)
-        scale uf-caves-scale
-        grid (scalegrid grid scale)
-        ;_ (printgrid grid)
-        ;_ (println)
-        start-position (mapv #(* % scale) start)
-        grid (reduce #(assoc %1 %2 :transition) grid
-                     (adjacent-wall-positions grid))
-        _ (assert (or
-                   (= #{:wall :ground :transition} (set (g2d/cells grid)))
-                   (= #{:ground :transition}       (set (g2d/cells grid))))
-                  (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
-        ;_ (printgrid grid)
-        ;_ (println)
-        ground-idx (rand-nth uf-grounds)
+(defn- scale-grid [grid start scale]
+  (let [grid (scalegrid grid scale)]
+    ;_ (printgrid grid)
+    ;_ (println)
+    {:start-position (mapv #(* % scale) start)
+     :grid grid}))
+
+(defn- generate-tiled-map [grid]
+  (let [ground-idx (rand-nth uf-grounds)
         {wall-x 0 wall-y 1 :as wall-idx} (rand-nth uf-walls)
-        transition-idx  [wall-x (inc wall-y)]
+        transition-idx [wall-x (inc wall-y)]
         position->tile (fn [position]
                          (case (get grid position)
                            :wall (wall-tile wall-idx)
                            :transition (if (transition? grid position)
                                          (transition-tile transition-idx)
                                          (wall-tile wall-idx))
-                           :ground (ground-tile ground-idx)))
-        tiled-map (wgt-grid->tiled-map grid position->tile)
+                           :ground (ground-tile ground-idx)))]
+    (wgt-grid->tiled-map grid position->tile)))
+
+; TODO don't spawn my faction vampire w. player items ...
+; FIXME - overlapping with player - don't spawn creatures on start position
+(defn- create [{:keys [world/map-size world/spawn-rate]}]
+  (let [{:keys [start grid]} (cave-grid :size map-size)
+        {:keys [start-position grid]} (scale-grid grid start scaling)
+        grid (assoc-transition-cells grid)
+        tiled-map (generate-tiled-map grid)
         can-spawn? #(= "all" (level/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill grid start-position can-spawn?)]
-    ; TODO don't spawn my faction vampire w. player items ...
-    ; FIXME - overlapping with player - don't spawn creatures on start position
     (set-creatures-tiles spawn-rate tiled-map spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))

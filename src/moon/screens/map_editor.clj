@@ -112,7 +112,7 @@ direction keys: move")
     (when show-grid-lines
       (g/draw-grid 0 0 (t/width  tiled-map) (t/height tiled-map) 1 1 [1 1 1 0.5]))))
 
-(def ^:private world-id :worlds/modules)
+(def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (level/generate world-id)
