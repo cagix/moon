@@ -54,7 +54,8 @@
     [[:tx/sound (:skill/start-action-sound skill)]
      (when (:skill/cooldown skill)
        [:e/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] (timer (:skill/cooldown skill))])
-     (when-not (zero? (:skill/cost skill))
+     (when (and (:skill/cost skill)
+                (zero? (:skill/cost skill)))
        [:tx.entity.stats/pay-mana-cost eid (:skill/cost skill)])])
 
   (entity/tick [_ eid]

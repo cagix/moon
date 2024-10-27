@@ -128,7 +128,7 @@
     0))
 
 (defn not-enough-mana? [entity {:keys [skill/cost]}]
-  (> cost (mana-value entity)))
+  (and cost (> cost (mana-value entity))))
 
 ;; State
 
