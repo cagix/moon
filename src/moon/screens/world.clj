@@ -1,5 +1,5 @@
 (ns moon.screens.world
-  (:require [gdl.graphics :refer [clear-screen frames-per-second delta-time]]
+  (:require [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.ui :as ui]
@@ -77,7 +77,6 @@
    [:tx/remove-destroyed-entities]]) ; do not pause this as for example pickup item, should be destroyed.
 
 (defn- render-world []
-  (clear-screen :black)
   ; FIXME position DRY
   (cam/set-position! (g/world-camera) (:position @world/player))
   ; FIXME position DRY

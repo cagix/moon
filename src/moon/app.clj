@@ -2,6 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.app :as app]
+            [gdl.graphics :refer [clear-screen]]
             [gdl.ui :as ui]
             [moon.assets :as assets]
             [moon.db :as db]
@@ -32,6 +33,7 @@
       (screen/dispose-all))
 
     (render [_]
+      (clear-screen :black)
       (screen/render (screen/current)))
 
     (resize [_ dimensions]
