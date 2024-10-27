@@ -5,6 +5,7 @@
             [moon.entity :as entity]
             [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
             [moon.world :as world]))
 
@@ -12,7 +13,7 @@
   (let [player @world/player
         hits (remove #(= (:z-order @%) :z-order/effect) ; or: only items/creatures/projectiles.
                      (world/point->entities
-                      (g/world-mouse-position)))]
+                      (world-view/mouse-position)))]
     (->> entity/render-order
          (sort-by-order hits #(:z-order @%))
          reverse

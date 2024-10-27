@@ -1,0 +1,33 @@
+(ns moon.graphics.world-view
+  (:require [gdl.graphics.viewport :as vp])
+  (:import (com.badlogic.gdx.graphics OrthographicCamera)
+           (com.badlogic.gdx.utils.viewport FitViewport)))
+
+(declare view)
+
+(defn init [{:keys [world-width world-height tile-size]}]
+  (bind-root #'view
+             (let [unit-scale (/ tile-size)]
+               {:unit-scale (float unit-scale)
+                :viewport (let [world-width  (* world-width  unit-scale)
+                                world-height (* world-height unit-scale)
+                                camera (OrthographicCamera.)
+                                y-down? false]
+                            (.setToOrtho camera y-down? world-width world-height)
+                            (FitViewport. world-width world-height camera))})))
+
+(defn unit-scale [] (:unit-scale view))
+
+(defn pixels->units [pixels]
+  (* (int pixels) (unit-scale)))
+
+(defn viewport [] (:viewport view))
+
+(defn mouse-position []
+  ; TODO clamping only works for gui-viewport ? check. comment if true
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (vp/unproject-mouse-posi (viewport)))
+
+(defn camera [] (vp/camera       (viewport)))
+(defn width  [] (vp/world-width  (viewport)))
+(defn height [] (vp/world-height (viewport)))

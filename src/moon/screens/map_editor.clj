@@ -12,6 +12,7 @@
             [moon.graphics :as g]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.world-view :as world-view]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.stage :as stage]
             [moon.screen :as screen]
@@ -40,14 +41,14 @@ ESCAPE: leave
 direction keys: move")
 
 (defn- map-infos ^String []
-  (let [tile (mapv int (g/world-mouse-position))
+  (let [tile (mapv int (world-view/mouse-position))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (g/world-mouse-position)
+                                 (world-view/mouse-position)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (t/property-value tiled-map :creatures tile :id)))
@@ -96,8 +97,8 @@ direction keys: move")
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles (g/world-camera))
-        [x y] (mapv int (g/world-mouse-position))]
+        visible-tiles (cam/visible-tiles (world-view/camera))
+        [x y] (mapv int (world-view/mouse-position))]
     (sd/rectangle x y 1 1 :white)
     (when start-position
       (sd/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
@@ -124,7 +125,7 @@ direction keys: move")
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! (g/world-camera) tiled-map)
+    (show-whole-map! (world-view/camera) tiled-map)
     (.setVisible (t/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
@@ -140,10 +141,10 @@ direction keys: move")
 (defrecord MapEditorScreen [current-data]
   screen/Screen
   (screen/enter [_]
-    (show-whole-map! (g/world-camera) (:tiled-map @current-data)))
+    (show-whole-map! (world-view/camera) (:tiled-map @current-data)))
 
   (screen/exit [_]
-    (cam/reset-zoom! (g/world-camera)))
+    (cam/reset-zoom! (world-view/camera)))
 
   (screen/render [_]
     (g/draw-tiled-map (:tiled-map @current-data) (constantly color/white))
@@ -152,7 +153,7 @@ direction keys: move")
       (swap! current-data update :show-grid-lines not))
     (if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
-    (camera-controls (g/world-camera))
+    (camera-controls (world-view/camera))
     (when (key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))
 

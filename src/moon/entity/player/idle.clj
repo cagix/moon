@@ -6,7 +6,7 @@
             [moon.component :refer [defc]]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.graphics :as g]
+            [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
             [moon.world :as world :refer [mouseover-eid]]))
 
@@ -68,7 +68,7 @@
 
 (defn- effect-ctx [eid]
   (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
-                            (g/world-mouse-position))]
+                            (world-view/mouse-position))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position

@@ -8,6 +8,7 @@
             [moon.db :as db]
             [moon.graphics :as g]
             [moon.graphics.gui-view :as gui-view]
+            [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
             [moon.world :as world])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
@@ -43,9 +44,9 @@
                    "clock")
     (add! #(str "paused? " world/paused?))
     (add! #(str "GUI: " (gui-view/mouse-position)))
-    (add! #(str "World: "(mapv int (g/world-mouse-position))))
+    (add! #(str "World: "(mapv int (world-view/mouse-position))))
     (add-upd-label table
-                   #(str "Zoom: " (cam/zoom (g/world-camera)))
+                   #(str "Zoom: " (cam/zoom (world-view/camera)))
                    "zoom")
     (add! #(str "logic-frame: " world/logic-frame))
     (add-upd-label table

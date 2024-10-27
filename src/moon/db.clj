@@ -2,9 +2,9 @@
   (:refer-clojure :exclude [get])
   (:require [clojure.edn :as edn]
             [clojure.pprint :refer [pprint]]
+            [gdl.utils :refer [safe-get]]
             [moon.property :as property]
-            [moon.schema :as schema]
-            [gdl.utils :refer [safe-get]]))
+            [moon.schema :as schema]))
 
 (comment
 

@@ -2,48 +2,17 @@
   (:require [gdl.graphics :as graphics]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.text :as text]
-            [gdl.graphics.viewport :as vp]
             [gdl.graphics.tiled :as tiled]
             [gdl.utils :refer [dispose safe-get mapvals]]
             [moon.assets :as assets]
-            [moon.graphics.shape-drawer :as sd])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+            [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.world-view :as world-view])
+  (:import (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)))
 
 (declare batch)
 
 (def ^:private ^:dynamic *unit-scale* 1)
-
-(defn- ->world-view [{:keys [world-width world-height tile-size]}]
-  (let [unit-scale (/ tile-size)]
-    {:unit-scale (float unit-scale)
-     :viewport (let [world-width  (* world-width  unit-scale)
-                     world-height (* world-height unit-scale)
-                     camera (OrthographicCamera.)
-                     y-down? false]
-                 (.setToOrtho camera y-down? world-width world-height)
-                 (FitViewport. world-width world-height camera))}))
-
-(declare ^:private world-view)
-
-(defn- world-unit-scale []
-  (:unit-scale world-view))
-
-(defn pixels->world-units [pixels]
-  (* (int pixels) (world-unit-scale)))
-
-(defn world-viewport [] (:viewport world-view))
-
-(defn- world-mouse-position* []
-  ; TODO clamping only works for gui-viewport ? check. comment if true
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-posi (world-viewport)))
-
-(defn world-mouse-position  [] (world-mouse-position*))
-(defn world-camera          [] (vp/camera       (world-viewport)))
-(defn world-viewport-width  [] (vp/world-width  (world-viewport)))
-(defn world-viewport-height [] (vp/world-height (world-viewport)))
 
 (defn- render-view! [{:keys [viewport unit-scale]} draw-fn]
   (batch/draw-on batch
@@ -53,7 +22,7 @@
                      #(binding [*unit-scale* unit-scale]
                         (draw-fn))))))
 
-(defn render-world-view! [render-fn] (render-view! world-view render-fn))
+(defn render-world-view! [render-fn] (render-view! world-view/view render-fn))
 
 (defn- tr-dimensions [^TextureRegion texture-region]
   [(.getRegionWidth  texture-region)
@@ -94,7 +63,7 @@
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions (world-unit-scale)))))
+           :world-unit-dimensions (scale-dimensions pixel-dimensions (world-view/unit-scale)))))
 
 (defn draw-image [{:keys [texture-region color] :as image} position]
   (batch/draw-texture-region batch
@@ -185,17 +154,16 @@
   [tiled-map color-setter]
   (tiled/render (cached-map-renderer tiled-map)
                 color-setter
-                (world-camera)
+                (world-view/camera)
                 tiled-map))
 
 (defn- tiled-renderer [tiled-map]
-  (tiled/renderer tiled-map (world-unit-scale) batch))
+  (tiled/renderer tiled-map (world-view/unit-scale) batch))
 
 (defn load! [{:keys [views default-font cursors]}]
   (bind-root #'batch (SpriteBatch.))
   (bind-root #'cursors (->cursors cursors))
   (bind-root #'default-font (->default-font default-font))
-  (bind-root #'world-view (->world-view (:world-view views)))
   (bind-root #'cached-map-renderer (memoize tiled-renderer)))
 
 (defn dispose! []

@@ -2,8 +2,8 @@
   (:require [moon.component :refer [defc]]
             [moon.entity :as entity]
             [moon.entity.modifiers :refer [defstat]]
-            [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.world-view :as world-view]
             [moon.val-max :as val-max]))
 
 ; TODO
@@ -39,8 +39,8 @@
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (g/pixels->world-units 5)
-          border (g/pixels->world-units borders-px)]
+          height (world-view/pixels->units 5)
+          border (world-view/pixels->units borders-px)]
       (sd/filled-rectangle x y width height :black)
       (sd/filled-rectangle (+ x border)
                            (+ y border)
@@ -56,4 +56,3 @@
     (let [ratio (val-max/ratio (entity/stat entity :stats/hp))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
         (draw-hpbar entity ratio)))))
-

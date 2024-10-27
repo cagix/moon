@@ -12,6 +12,7 @@
             [moon.graphics :as graphics]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]))
 
 (defn- background-image [image-path]
@@ -28,7 +29,8 @@
     (create [_]
       (assets/load        (:assets   config))
       (graphics/load!     (:graphics config))
-      (gui-view/init (:gui-view (:views (:graphics config))))
+      (gui-view/init   (:gui-view   (:views (:graphics config))))
+      (world-view/init (:world-view (:views (:graphics config))))
       (let [{:keys [shape-drawer
                     shape-drawer-texture]} (shape-drawer/create graphics/batch)]
         (bind-root #'sd/sd shape-drawer)
@@ -50,8 +52,8 @@
       (screen/render (screen/current)))
 
     (resize [_ dimensions]
-      (vp/update (gui-view/viewport)       dimensions :center-camera? true)
-      (vp/update (graphics/world-viewport) dimensions))))
+      (vp/update (gui-view/viewport)   dimensions :center-camera? true)
+      (vp/update (world-view/viewport) dimensions))))
 
 (defn -main []
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]

@@ -5,7 +5,7 @@
             [gdl.tiled :as tiled]
             [gdl.utils :refer [dispose ->tile tile->middle]]
             [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
+            [moon.graphics.world-view :as world-view]
             [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
@@ -69,14 +69,14 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position (g/world-camera))
+        [cx cy] (cam/position (world-view/camera))
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float (g/world-viewport-width))  2)))
-     (<= ydist (inc (/ (float (g/world-viewport-height)) 2))))))
+     (<= xdist (inc (/ (float (world-view/width))  2)))
+     (<= ydist (inc (/ (float (world-view/height)) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see

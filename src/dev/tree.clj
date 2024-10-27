@@ -1,6 +1,6 @@
 (ns ^:no-doc dev.tree
-  (:require [moon.graphics :as g]
-            [moon.graphics.gui-view :as gui-view]
+  (:require [moon.graphics.gui-view :as gui-view]
+            [moon.graphics.world-view :as world-view]
             [gdl.ui :as ui]
             [gdl.ui.stage]
             [moon.stage :as stage]
@@ -99,7 +99,7 @@
 (defn- show-tree-view! [obj]
   (let [object (case obj
                  :entity (mouseover-entity)
-                 :tile @(get world/grid (mapv int (g/world-mouse-position))))]
+                 :tile @(get world/grid (mapv int (world-view/mouse-position))))]
     (stage/add!
      (ui/window {:title "Tree View"
                  :close-button? true

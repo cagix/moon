@@ -1,6 +1,7 @@
 (ns ^:no-doc moon.entity.string-effect
   (:require [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
+            [moon.graphics.world-view :as world-view]
             [moon.entity :as entity]
             [moon.world :as world :refer [timer stopped?]]))
 
@@ -13,7 +14,7 @@
     (let [[x y] (:position entity)]
       (g/draw-text {:text text
                     :x x
-                    :y (+ y (:half-height entity) (g/pixels->world-units 5))
+                    :y (+ y (:half-height entity) (world-view/pixels->units 5))
                     :scale 2
                     :up? true}))))
 

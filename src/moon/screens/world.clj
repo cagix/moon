@@ -8,6 +8,7 @@
             [moon.db :as db]
             [moon.entity :as entity]
             [moon.graphics :as g]
+            [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
             [moon.stage :as stage]
             [moon.widgets.error-window :refer [error-window!]]
@@ -34,7 +35,7 @@
 (def ^:private zoom-speed 0.05)
 
 (defn- check-zoom-keys []
-  (let [camera (g/world-camera)]
+  (let [camera (world-view/camera)]
     (when (key-pressed? :keys/minus)  (adjust-zoom camera    zoom-speed))
     (when (key-pressed? :keys/equals) (adjust-zoom camera (- zoom-speed)))))
 
@@ -78,9 +79,9 @@
 
 (defn- render-world []
   ; FIXME position DRY
-  (cam/set-position! (g/world-camera) (:position @world/player))
+  (cam/set-position! (world-view/camera) (:position @world/player))
   ; FIXME position DRY
-  (render-tiled-map (cam/position (g/world-camera)))
+  (render-tiled-map (cam/position (world-view/camera)))
   (g/render-world-view! (fn []
                           (debug-render/before-entities)
                           ; FIXME position DRY (from player)

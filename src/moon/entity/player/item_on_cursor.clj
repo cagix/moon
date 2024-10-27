@@ -5,6 +5,7 @@
             [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
             [moon.graphics.gui-view :as gui-view]
+            [moon.graphics.world-view :as world-view]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
             [moon.entity :as entity]
@@ -56,7 +57,7 @@
 
 (defn- item-place-position [entity]
   (placement-point (:position entity)
-                   (g/world-mouse-position)
+                   (world-view/mouse-position)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 

@@ -4,11 +4,12 @@
             [gdl.utils :refer [->tile]]
             [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.world-view :as world-view]
             [moon.world :refer [circle->cells grid]]
             [moon.world.potential-fields :refer [factions-iterations]]))
 
 (defn- geom-test []
-  (let [position (g/world-mouse-position)
+  (let [position (world-view/mouse-position)
         radius 0.8
         circle {:position position :radius radius}]
     (sd/circle position radius [1 0 0 0.5])
@@ -23,13 +24,13 @@
 (def ^:private ^:dbg-flag cell-occupied? false)
 
 (defn- tile-debug []
-  (let [cam (g/world-camera)
+  (let [cam (world-view/camera)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
       (sd/grid (int left-x) (int bottom-y)
-               (inc (int (g/world-viewport-width)))
-               (+ 2 (int (g/world-viewport-height)))
+               (inc (int (world-view/width)))
+               (+ 2 (int (world-view/height)))
                1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
@@ -54,7 +55,7 @@
 
 (defn- highlight-mouseover-tile []
   (when highlight-blocked-cell?
-    (let [[x y] (->tile (g/world-mouse-position))
+    (let [[x y] (->tile (world-view/mouse-position))
           cell (get grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (sd/rectangle x y 1 1
