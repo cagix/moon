@@ -112,27 +112,24 @@
 
 (declare entity-tick-error)
 
-(defn- init! [tiled-map]
-  (clear-tiled-map)
-  (bind-root #'tiled-map tiled-map)
-  (bind-root #'grid (create-grid tiled-map))
-  (bind-root #'raycaster (raycaster/create grid blocks-vision?))
-  (let [width  (t/width  tiled-map)
-        height (t/height tiled-map)]
-    (bind-root #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
-    (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
-                                                    :width  width
-                                                    :height height})))
-  (bind-root #'entity-tick-error nil)
-  (bind-root #'elapsed-time 0)
-  (bind-root #'logic-frame 0)
-  (bind-root #'ids->eids {}))
-
 (defn start [world-id]
   (screen/change :screens/world)
   (stage/reset (component/create [:world/widgets]))
-  (let [level (level/generate world-id)]
-    (init! (:tiled-map level))
+  (let [{:keys [tiled-map] :as level} (level/generate world-id)]
+    (clear-tiled-map)
+    (bind-root #'tiled-map tiled-map)
+    (bind-root #'grid (create-grid tiled-map))
+    (bind-root #'raycaster (raycaster/create grid blocks-vision?))
+    (let [width  (t/width  tiled-map)
+          height (t/height tiled-map)]
+      (bind-root #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
+      (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
+                                                      :width  width
+                                                      :height height})))
+    (bind-root #'entity-tick-error nil)
+    (bind-root #'elapsed-time 0)
+    (bind-root #'logic-frame 0)
+    (bind-root #'ids->eids {})
     (component/->handle [[:tx/spawn-creatures level]])))
 
 (defc :tx/add-to-world
