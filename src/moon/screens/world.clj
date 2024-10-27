@@ -17,7 +17,8 @@
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
             [moon.world.potential-fields :refer [update-potential-fields!]]
-            [moon.world.render :refer [render-tiled-map]]))
+            [moon.world.render :refer [render-tiled-map]]
+            [moon.world.time :as world.time]))
 
 (defn- check-window-hotkeys []
   (doseq [[hotkey window-id] {:keys/i :inventory-window
@@ -61,7 +62,7 @@
   (alter-var-root #'world/logic-frame inc)
   (let [delta (min (delta-time) entity/max-delta-time)]
     (bind-root      #'world/delta-time delta)
-    (alter-var-root #'world/elapsed-time + delta)))
+    (alter-var-root #'world.time/elapsed + delta)))
 
 (def ^:private update-world
   [player-update-state

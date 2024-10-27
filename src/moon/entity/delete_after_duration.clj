@@ -2,7 +2,7 @@
   (:require [gdl.utils :refer [readable-number]]
             [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
-            [moon.world :refer [timer stopped? finished-ratio]]))
+            [moon.world.time :refer [timer stopped? finished-ratio]]))
 
 (defc :entity/delete-after-duration
   {:let counter}

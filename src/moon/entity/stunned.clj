@@ -1,8 +1,8 @@
 (ns ^:no-doc moon.entity.stunned
   (:require [moon.component :refer [defc]]
+            [moon.entity :as entity]
             [moon.graphics.shape-drawer :as sd]
-            [moon.world :refer [timer stopped?]]
-            [moon.entity :as entity]))
+            [moon.world.time :refer [timer stopped?]]))
 
 (defc :stunned
   {:let {:keys [eid counter]}}

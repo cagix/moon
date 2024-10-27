@@ -1,7 +1,7 @@
 (ns moon.effect.spiderweb
   (:require [moon.component :refer [defc] :as component]
-            [moon.world :refer [timer]]
-            [moon.effect :refer [target]]))
+            [moon.effect :refer [target]]
+            [moon.world.time :refer [timer]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]

@@ -3,7 +3,8 @@
             [moon.component :refer [defc] :as component]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.world :as world :refer [stopped?]]) )
+            [moon.world :as world]
+            [moon.world.time :refer [stopped?]]))
 
 (defc :skill/action-time-modifier-key
   {:schema [:enum :stats/cast-speed :stats/attack-speed]}

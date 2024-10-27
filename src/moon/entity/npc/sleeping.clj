@@ -1,8 +1,9 @@
 (ns ^:no-doc moon.entity.npc.sleeping
   (:require [moon.component :refer [defc] :as component]
+            [moon.entity :as entity]
             [moon.graphics :as g]
-            [moon.world :as world :refer [stopped? timer]]
-            [moon.entity :as entity]))
+            [moon.world :as world]
+            [moon.world.time :refer [stopped? timer]]))
 
 (def ^:private shout-radius 4)
 

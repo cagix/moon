@@ -4,7 +4,8 @@
             [moon.entity :as entity]
             [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
-            [moon.world :as world :refer [timer stopped? finished-ratio]]))
+            [moon.world :as world]
+            [moon.world.time :refer [timer stopped? finished-ratio]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)

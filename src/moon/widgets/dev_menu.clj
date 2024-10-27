@@ -10,7 +10,8 @@
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
-            [moon.world :as world])
+            [moon.world :as world]
+            [moon.world.time :as world.time])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 
 (defn- menu-item [text on-clicked]
@@ -40,7 +41,7 @@
                    #(str "Mouseover-entity id: " (when-let [entity (world/mouseover-entity)] (:entity/id entity)))
                    "mouseover")
     (add-upd-label table
-                   #(str "elapsed-time " (readable-number world/elapsed-time) " seconds")
+                   #(str "elapsed-time " (readable-number world.time/elapsed) " seconds")
                    "clock")
     (add! #(str "paused? " world/paused?))
     (add! #(str "GUI: " (gui-view/mouse-position)))

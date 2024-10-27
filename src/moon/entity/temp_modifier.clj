@@ -1,9 +1,9 @@
 (ns moon.entity.temp-modifier
-  (:require [moon.component :refer [defc] :as component]
+  (:require [gdl.utils :refer [readable-number]]
+            [moon.component :refer [defc] :as component]
+            [moon.entity :as entity]
             [moon.graphics.shape-drawer :as sd]
-            [gdl.utils :refer [readable-number]]
-            [moon.world :refer [stopped? finished-ratio]]
-            [moon.entity :as entity]))
+            [moon.world.time :refer [stopped? finished-ratio]]))
 
 (defc :entity/temp-modifier
   {:let {:keys [counter modifiers]}}

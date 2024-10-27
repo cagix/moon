@@ -3,7 +3,7 @@
             [moon.graphics :as g]
             [moon.graphics.world-view :as world-view]
             [moon.entity :as entity]
-            [moon.world :as world :refer [timer stopped?]]))
+            [moon.world.time :as time :refer [timer stopped?]]))
 
 (defc :entity/string-effect
   (entity/tick [[k {:keys [counter]}] eid]
@@ -26,6 +26,6 @@
       (if-let [string-effect (:entity/string-effect @eid)]
         (-> string-effect
             (update :text str "\n" text)
-            (update :counter world/reset))
+            (update :counter time/reset))
         {:text text
          :counter (timer 0.4)})]]))
