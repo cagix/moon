@@ -24,7 +24,8 @@
                                   (ui/add-rows! table [(columns table sound-file)])
                                   (a/remove! (ui/find-ancestor-window ui/*on-clicked-actor*))
                                   (ui/pack-ancestor-window! table)
-                                  (a/set-id! table sound-file)))
+                                  (let [[k _] (.getUserObject table)]
+                                    (.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
     (stage/add! (scrollable-choose-window rows))))
 
