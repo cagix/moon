@@ -40,9 +40,9 @@
       (g/draw-tiled-map world/tiled-map
                         (->tile-corner-color-setter @world/explored-tile-corners))
       (g/render-world-view! (fn []
-                              (g/draw-filled-circle (cam/camera-position (g/world-camera))
-                                                    0.5
-                                                    :green)))
+                              (sd/filled-circle (cam/camera-position (g/world-camera))
+                                                0.5
+                                                :green)))
       (when (or (key-just-pressed? :keys/tab)
                 (key-just-pressed? :keys/escape))
         (screen/change :screens/world))))

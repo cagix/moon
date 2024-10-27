@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.entity.stunned
   (:require [moon.component :refer [defc]]
-            [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.world :refer [timer stopped?]]
             [moon.entity :as entity]))
 
@@ -21,4 +21,4 @@
       [[:tx/event eid :effect-wears-off]]))
 
   (entity/render-below [_ entity]
-    (g/draw-circle (:position entity) 0.5 [1 1 1 0.6])))
+    (sd/circle (:position entity) 0.5 [1 1 1 0.6])))

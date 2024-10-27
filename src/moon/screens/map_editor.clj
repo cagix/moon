@@ -10,6 +10,7 @@
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.stage :as stage]
             [moon.screen :as screen]
@@ -96,21 +97,21 @@ direction keys: move")
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (g/world-camera))
         [x y] (mapv int (g/world-mouse-position))]
-    (g/draw-rectangle x y 1 1 :white)
+    (sd/rectangle x y 1 1 :white)
     (when start-position
-      (g/draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (sd/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (level/movement-property tiled-map [x y])]]
-        (g/draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
-        (g/draw-filled-circle [(+ x 0.5) (+ y 0.5)]
-                              0.05
-                              (case prop
-                                "all"   :green
-                                "air"   :orange
-                                "none"  :red))))
+        (sd/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
+        (sd/filled-circle [(+ x 0.5) (+ y 0.5)]
+                          0.05
+                          (case prop
+                            "all"   :green
+                            "air"   :orange
+                            "none"  :red))))
     (when show-grid-lines
-      (g/draw-grid 0 0 (t/width  tiled-map) (t/height tiled-map) 1 1 [1 1 1 0.5]))))
+      (sd/grid 0 0 (t/width  tiled-map) (t/height tiled-map) 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 

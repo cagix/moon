@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.entity.line-render
   (:require [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.entity :as entity]))
 
 (defc :entity/line-render
@@ -8,5 +8,5 @@
   (entity/render [_ entity]
     (let [position (:position entity)]
       (if thick?
-        (g/with-shape-line-width 4 #(g/draw-line position end color))
-        (g/draw-line position end color)))))
+        (sd/with-line-width 4 #(sd/line position end color))
+        (sd/line position end color)))))

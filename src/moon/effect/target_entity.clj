@@ -3,7 +3,7 @@
             [moon.component :refer [defc] :as component]
             [moon.effect :as effect :refer [source target]]
             [moon.entity :as entity]
-            [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.world :as world]))
 
 (defc :entity-effects {:schema [:s/components-ns :effect.entity]})
@@ -77,8 +77,8 @@
     (when target
       (let [source* @source
             target* @target]
-        (g/draw-line (start-point source* target*)
-                     (end-point source* target* maxrange)
-                     (if (in-range? source* target* maxrange)
-                       [1 0 0 0.5]
-                       [1 1 0 0.5]))))))
+        (sd/line (start-point source* target*)
+                 (end-point source* target* maxrange)
+                 (if (in-range? source* target* maxrange)
+                   [1 0 0 0.5]
+                   [1 1 0 0.5]))))))

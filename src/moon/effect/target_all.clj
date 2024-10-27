@@ -1,7 +1,7 @@
 (ns moon.effect.target-all
   (:require [moon.component :refer [defc] :as component]
             [moon.effect :refer [source target]]
-            [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.world :as world]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
@@ -59,6 +59,6 @@
   (component/render [_]
     (let [source* @source]
       (doseq [target* (map deref (creatures-in-los-of-player))]
-        (g/draw-line (:position source*) #_(start-point source* target*)
-                     (:position target*)
-                     [1 0 0 0.5])))))
+        (sd/line (:position source*) #_(start-point source* target*)
+                 (:position target*)
+                 [1 0 0 0.5])))))

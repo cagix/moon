@@ -4,6 +4,7 @@
             [moon.entity :as entity]
             [moon.effect :as effect]
             [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.modifiers :as mods]
             [moon.operations :as ops]
             [moon.val-max :as val-max]))
@@ -158,12 +159,12 @@
           y (+ y half-height)
           height (g/pixels->world-units 5)
           border (g/pixels->world-units borders-px)]
-      (g/draw-filled-rectangle x y width height :black)
-      (g/draw-filled-rectangle (+ x border)
-                               (+ y border)
-                               (- (* width ratio) (* 2 border))
-                               (- height (* 2 border))
-                               (hpbar-color ratio)))))
+      (sd/filled-rectangle x y width height :black)
+      (sd/filled-rectangle (+ x border)
+                           (+ y border)
+                           (- (* width ratio) (* 2 border))
+                           (- height (* 2 border))
+                           (hpbar-color ratio)))))
 
 (defc :stats/hp
   (entity/->v [[_ v]]

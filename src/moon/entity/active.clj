@@ -3,6 +3,7 @@
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.world :as world :refer [timer stopped? finished-ratio]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
@@ -11,8 +12,8 @@
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (g/draw-filled-circle center radius [1 1 1 0.125])
-    (g/draw-sector center radius
+    (sd/filled-circle center radius [1 1 1 0.125])
+    (sd/sector center radius
                    90 ; start-angle
                    (* (float action-counter-ratio) 360) ; degree
                    [1 1 1 0.5])

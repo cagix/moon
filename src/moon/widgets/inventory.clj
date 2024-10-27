@@ -6,6 +6,7 @@
             [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
             [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.stage :as stage]
             [moon.world :as world]))
@@ -19,14 +20,14 @@
 (def ^:private not-allowed-color  [0.6 0   0 0.8])
 
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
-  (g/draw-rectangle x y cell-size cell-size :gray)
+  (sd/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (g/draw-filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (sd/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??

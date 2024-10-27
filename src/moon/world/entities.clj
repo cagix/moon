@@ -4,6 +4,7 @@
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
             [moon.stage :as stage]
             [moon.world :as world]))
 
@@ -34,7 +35,7 @@
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (g/draw-rectangle x y (:width entity) (:height entity) color)))
+    (sd/rectangle x y (:width entity) (:height entity) color)))
 
 (defn- render-entity! [system entity]
   (try
