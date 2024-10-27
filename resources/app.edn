@@ -120,6 +120,7 @@
               tx.item
               tx.line-render
               tx.sound
+              tx.spawn-creatures
 
               widgets.action-bar
               widgets.dev-menu

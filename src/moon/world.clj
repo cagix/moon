@@ -128,36 +128,12 @@
   (bind-root #'logic-frame 0)
   (bind-root #'ids->eids {}))
 
-(def ^:private ^:dbg-flag spawn-enemies? true)
-
-; player-creature needs mana & inventory
-; till then hardcode :creatures/vampire
-(defn- spawn-entities [{:keys [tiled-map start-position]}]
-  (component/->handle
-   (for [creature (cons {:position start-position
-                         :creature-id :creatures/vampire
-                         :components {:entity/fsm {:fsm :fsms/player
-                                                   :initial-state :player-idle}
-                                      :entity/faction :good
-                                      :entity/player? true
-                                      :entity/free-skill-points 3
-                                      :entity/clickable {:type :clickable/player}
-                                      :entity/click-distance-tiles 1.5}}
-                        (when spawn-enemies?
-                          (for [[position creature-id] (t/positions-with-property tiled-map :creatures :id)]
-                            {:position position
-                             :creature-id (keyword creature-id)
-                             :components {:entity/fsm {:fsm :fsms/npc
-                                                       :initial-state :npc-sleeping}
-                                          :entity/faction :evil}})))]
-     [:tx/creature (update creature :position tile->middle)])))
-
 (defn start [world-id]
   (screen/change :screens/world)
   (stage/reset (component/create [:world/widgets]))
   (let [level (level/generate world-id)]
     (init! (:tiled-map level))
-    (spawn-entities level)))
+    (component/->handle [[:tx/spawn-creatures level]])))
 
 (defc :tx/add-to-world
   (component/handle [[_ eid]]
