@@ -23,4 +23,10 @@
 (defc :item/modifiers
   {:schema [:s/components-ns :modifier]}
   (component/info [[_ value-mods]]
-    (mods/info-text value-mods)))
+    (str (mods/info-text value-mods)
+         "\n [GRAY]"
+         (binding [*print-level* nil]
+           (with-out-str
+            (clojure.pprint/pprint
+             value-mods)))
+         "[]")))
