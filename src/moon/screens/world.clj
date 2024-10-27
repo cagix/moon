@@ -8,7 +8,6 @@
             [moon.db :as db]
             [moon.entity :as entity]
             [moon.graphics :as g]
-            [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
             [moon.widgets.error-window :refer [error-window!]]
@@ -114,11 +113,3 @@
 (defc :screens/world
   (component/create [_]
     (stage/create :screen (->WorldScreen))))
-
-(bind-root #'world/start
-           (fn [world-id]
-             (screen/change :screens/world)
-             (stage/reset (component/create [:world/widgets]))
-             (let [level (level/generate world-id)]
-               (world/init! (:tiled-map level))
-               (world/spawn-entities level))))

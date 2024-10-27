@@ -11,6 +11,7 @@
             [moon.entity :as entity]
             [moon.graphics :as g]
             [moon.level :as level]
+            [moon.screen :as screen]
             [moon.stage :as stage]
             [moon.world.content-grid :as content-grid]
             [moon.world.raycaster :as raycaster]))
@@ -111,7 +112,7 @@
 
 (declare entity-tick-error)
 
-(defn init! [tiled-map]
+(defn- init! [tiled-map]
   (clear-tiled-map)
   (let [width  (t/width  tiled-map)
         height (t/height tiled-map)]
@@ -127,13 +128,11 @@
   (bind-root #'logic-frame 0)
   (bind-root #'ids->eids {}))
 
-(declare start)
-
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
-(defn spawn-entities [{:keys [tiled-map start-position]}]
+(defn- spawn-entities [{:keys [tiled-map start-position]}]
   (component/->handle
    (for [creature (cons {:position start-position
                          :creature-id :creatures/vampire
@@ -152,6 +151,13 @@
                                                        :initial-state :npc-sleeping}
                                           :entity/faction :evil}})))]
      [:tx/creature (update creature :position tile->middle)])))
+
+(defn start [world-id]
+  (screen/change :screens/world)
+  (stage/reset (component/create [:world/widgets]))
+  (let [level (level/generate world-id)]
+    (init! (:tiled-map level))
+    (spawn-entities level)))
 
 (defc :tx/add-to-world
   (component/handle [[_ eid]]
