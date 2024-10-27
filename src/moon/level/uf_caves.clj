@@ -9,9 +9,6 @@
             [moon.level.grid :refer [scalegrid printgrid transition-idx-value cave-grid adjacent-wall-positions flood-fill]]
             [moon.level.tiled :refer [wgt-grid->tiled-map]]))
 
-(defn- uf-transition [position grid]
-  (transition-idx-value position (= :transition (get grid position))))
-
 (defn- rand-0-3 []
   (get-rand-weighted-item {0 60 1 1 2 1 3 1}))
 
