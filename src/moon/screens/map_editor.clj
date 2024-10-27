@@ -33,7 +33,7 @@
 (def ^:private infotext
   "L: grid lines
 M: movement properties
-zoom: shift-left,minus
+zoom: minus,equals
 ESCAPE: leave
 direction keys: move")
 
@@ -76,8 +76,8 @@ direction keys: move")
 ; TODO textfield takes control !
 ; PLUS symbol shift & = symbol on keyboard not registered
 (defn- camera-controls [camera]
-  (when (key-pressed? :keys/shift-left) (adjust-zoom camera    zoom-speed))
-  (when (key-pressed? :keys/minus)      (adjust-zoom camera (- zoom-speed)))
+  (when (key-pressed? :keys/minus)  (adjust-zoom camera    zoom-speed))
+  (when (key-pressed? :keys/equals) (adjust-zoom camera (- zoom-speed)))
   (let [apply-position (fn [idx f]
                          (cam/set-position! camera
                                            (update (cam/position camera)
