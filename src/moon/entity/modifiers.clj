@@ -30,6 +30,11 @@
 ; what are my project hotspots ???
 ; not clear
 
+; => 1. make like diablo2 everything into an int, all stats and ops
+; as percentage ... e.g. cast-speed not 0-1 but -100
+; then just add modifiers together no collections necessary
+; also stats together w. modifiers
+
 (defc :entity/modifiers
   {:schema [:s/components-ns :modifier]}
   (entity/->v [[_ value-mods]]
