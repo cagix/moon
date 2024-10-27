@@ -114,12 +114,12 @@
 
 (defn- init! [tiled-map]
   (clear-tiled-map)
+  (bind-root #'tiled-map tiled-map)
+  (bind-root #'grid (create-grid tiled-map))
+  (bind-root #'raycaster (raycaster/create grid blocks-vision?))
   (let [width  (t/width  tiled-map)
         height (t/height tiled-map)]
-    (bind-root #'tiled-map tiled-map)
     (bind-root #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
-    (bind-root #'grid (create-grid tiled-map))
-    (bind-root #'raycaster (raycaster/create grid blocks-vision?))
     (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
                                                     :width  width
                                                     :height height})))
