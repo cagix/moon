@@ -1,13 +1,10 @@
 (ns moon.world
   (:require [data.grid2d :as g2d]
-            [gdl.graphics :as gdx.graphics]
             [gdl.graphics.camera :as cam]
             [gdl.math.shape :as shape]
-            [gdl.tiled :as t]
+            [gdl.tiled :as tiled]
             [gdl.utils :refer [dispose ->tile tile->middle]]
             [moon.component :refer [defc] :as component]
-            [moon.db :as db]
-            [moon.entity :as entity]
             [moon.graphics :as g]
             [moon.level :as level]
             [moon.screen :as screen]
@@ -16,7 +13,7 @@
             [moon.world.raycaster :as raycaster]))
 
 (declare paused?
-         ^{:doc "The game logic update delta-time. Different then gdx.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
+         ^{:doc "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
          delta-time
          ^{:doc "The elapsed in-game-time (not counting when game is paused)."}
          elapsed-time
@@ -116,8 +113,8 @@
     (bind-root #'tiled-map tiled-map)
     (bind-root #'grid (create-grid tiled-map))
     (bind-root #'raycaster (raycaster/create grid blocks-vision?))
-    (let [width  (t/width  tiled-map)
-          height (t/height tiled-map)]
+    (let [width  (tiled/width  tiled-map)
+          height (tiled/height tiled-map)]
       (bind-root #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
       (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
                                                       :width  width

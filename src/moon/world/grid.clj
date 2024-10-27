@@ -149,8 +149,8 @@
 
 (defn- create-grid [tiled-map]
   (g2d/create-grid
-   (t/width tiled-map)
-   (t/height tiled-map)
+   (tiled/width tiled-map)
+   (tiled/height tiled-map)
    (fn [position]
      (atom (grid-cell position
                       (case (level/movement-property tiled-map position)
