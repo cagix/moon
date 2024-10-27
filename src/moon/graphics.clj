@@ -1,9 +1,7 @@
 (ns moon.graphics
-  (:require [gdl.graphics :as graphics]
-            [gdl.graphics.batch :as batch]
+  (:require [gdl.graphics.batch :as batch]
             [gdl.graphics.text :as text]
-            [gdl.graphics.tiled :as tiled]
-            [gdl.utils :refer [dispose safe-get mapvals]]
+            [gdl.utils :refer [dispose]]
             [moon.assets :as assets]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view])
@@ -131,42 +129,10 @@
   [{:keys [x y text font h-align up? scale] :as opts}]
   (text/draw (or font default-font) *unit-scale* batch opts))
 
-(defn- ->cursors [cursors]
-  (mapvals (fn [[file hotspot]]
-             (graphics/cursor (str "cursors/" file ".png") hotspot))
-           cursors))
-
-(declare ^:private cursors)
-
-(defn set-cursor! [cursor-key]
-  (graphics/set-cursor (safe-get cursors cursor-key)))
-
-(declare ^:private cached-map-renderer)
-
-(defn draw-tiled-map
-  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
-
-  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
-
-  Can be used for lights & shadows.
-
-  Renders only visible layers."
-  [tiled-map color-setter]
-  (tiled/render (cached-map-renderer tiled-map)
-                color-setter
-                (world-view/camera)
-                tiled-map))
-
-(defn- tiled-renderer [tiled-map]
-  (tiled/renderer tiled-map (world-view/unit-scale) batch))
-
-(defn load! [{:keys [views default-font cursors]}]
+(defn load! [{:keys [default-font]}]
   (bind-root #'batch (SpriteBatch.))
-  (bind-root #'cursors (->cursors cursors))
-  (bind-root #'default-font (->default-font default-font))
-  (bind-root #'cached-map-renderer (memoize tiled-renderer)))
+  (bind-root #'default-font (->default-font default-font)))
 
 (defn dispose! []
   (dispose batch)
-  (dispose default-font)
-  (run! dispose (vals cursors)))
+  (dispose default-font))

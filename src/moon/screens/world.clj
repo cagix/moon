@@ -8,6 +8,7 @@
             [moon.db :as db]
             [moon.entity :as entity]
             [moon.graphics :as g]
+            [moon.graphics.cursors :as cursors]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
             [moon.stage :as stage]
@@ -93,7 +94,7 @@
   (screen/enter [_])
 
   (screen/exit [_]
-    (g/set-cursor! :cursors/default))
+    (cursors/set :cursors/default))
 
   (screen/render [_]
     (render-world)

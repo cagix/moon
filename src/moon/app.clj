@@ -10,8 +10,10 @@
             [moon.assets :as assets]
             [moon.db :as db]
             [moon.graphics :as graphics]
+            [moon.graphics.cursors :as cursors]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.tiled :as tiled-map-renderer]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]))
 
@@ -31,6 +33,8 @@
       (graphics/load!     (:graphics config))
       (gui-view/init   (:gui-view   (:views (:graphics config))))
       (world-view/init (:world-view (:views (:graphics config))))
+      (tiled-map-renderer/init)
+      (cursors/init (:cursors (:graphics config)))
       (let [{:keys [shape-drawer
                     shape-drawer-texture]} (shape-drawer/create graphics/batch)]
         (bind-root #'sd/sd shape-drawer)
@@ -42,6 +46,7 @@
 
     (dispose [_]
       (dispose sd-texture)
+      (cursors/dispose)
       (assets/dispose)
       (graphics/dispose!)
       (ui/dispose!)

@@ -6,7 +6,7 @@
             [moon.component :refer [defc] :as component]
             [moon.stage :as stage]
             [moon.db :as db]
-            [moon.graphics :as g]
+            [moon.graphics.cursors :as cursors]
             [moon.screen :as screen]
             [moon.world :as world]))
 
@@ -25,7 +25,7 @@
 (deftype MainMenuScreen []
   screen/Screen
   (screen/enter [_]
-    (g/set-cursor! :cursors/default))
+    (cursors/set :cursors/default))
   (screen/exit [_])
   (screen/render [_])
   (screen/dispose [_]))

@@ -12,6 +12,7 @@
             [moon.graphics :as g]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.tiled :as tiled-map-renderer]
             [moon.graphics.world-view :as world-view]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.stage :as stage]
@@ -147,7 +148,8 @@ direction keys: move")
     (cam/reset-zoom! (world-view/camera)))
 
   (screen/render [_]
-    (g/draw-tiled-map (:tiled-map @current-data) (constantly color/white))
+    (tiled-map-renderer/draw (:tiled-map @current-data)
+                             (constantly color/white))
     (g/render-world-view! render-on-map)
     (if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))

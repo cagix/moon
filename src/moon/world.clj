@@ -125,6 +125,7 @@
     (bind-root #'ids->eids {})
     (component/->handle [[:tx/spawn-creatures level]])))
 
+; => I could call this as a tx on WORLD components
 (defc :tx/add-to-world
   (component/handle [[_ eid]]
     (let [id (:entity/id @eid)]
