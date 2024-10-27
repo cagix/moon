@@ -3,6 +3,7 @@
   (:require [gdl.input :as input]
             [gdl.utils :refer [dispose]]
             [moon.graphics :as g]
+            [moon.graphics.gui-view :as gui-view]
             [moon.screen :as screen]
             [gdl.ui.stage :as stage]))
 
@@ -32,7 +33,7 @@
 (defn create
   "Actors or screen can be nil."
   [& {:keys [actors screen]}]
-  (let [stage (stage/create (:viewport g/gui-view) g/batch)]
+  (let [stage (stage/create (gui-view/viewport) g/batch)]
     (run! #(stage/add! stage %) actors)
     (map->StageScreen {:stage stage
                        :sub-screen screen})))
@@ -41,7 +42,7 @@
   (:stage (screen/current)))
 
 (defn mouse-on-actor? []
-  (stage/hit (get) (g/gui-mouse-position) :touchable? true))
+  (stage/hit (get) (gui-view/mouse-position) :touchable? true))
 
 (defn add! [actor]
   (stage/add! (get) actor))

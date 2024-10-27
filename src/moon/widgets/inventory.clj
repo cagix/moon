@@ -6,6 +6,7 @@
             [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
             [moon.graphics :as g]
+            [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.stage :as stage]
@@ -38,7 +39,7 @@
      (draw-cell-rect @world/player
                      (a/x this)
                      (a/y this)
-                     (a/mouseover? this (g/gui-mouse-position))
+                     (a/mouseover? this (gui-view/mouse-position))
                      (a/id (a/parent this))))))
 
 (defn- player-clicked-inventory [cell]
@@ -113,8 +114,7 @@
                 :id :inventory-window
                 :visible? false
                 :pack? true
-                :position [(g/gui-viewport-width)
-                           (g/gui-viewport-height)]
+                :position [(gui-view/width) (gui-view/height)]
                 :rows [[{:actor (inventory-table)
                          :pad 4}]]})))
 

@@ -10,6 +10,7 @@
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.graphics :as g]
+            [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.stage :as stage]
@@ -65,7 +66,7 @@ direction keys: move")
     (ui/add-actor! window (ui/actor {:act #(do
                                             (.setText label (map-infos))
                                             (.pack window))}))
-    (a/set-position! window 0 (g/gui-viewport-height))
+    (a/set-position! window 0 (gui-view/height))
     window))
 
 (defn- adjust-zoom [camera by] ; DRY context.game

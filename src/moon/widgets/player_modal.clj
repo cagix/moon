@@ -2,7 +2,7 @@
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
+            [moon.graphics.gui-view :as gui-view]
             [moon.stage :as stage]))
 
 ; no window movable type cursor appears here like in player idle
@@ -20,8 +20,8 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ (g/gui-viewport-width) 2)
-                                 (* (g/gui-viewport-height) (/ 3 4))]
+               :center-position [(/ (gui-view/width) 2)
+                                 (* (gui-view/height) (/ 3 4))]
                :pack? true})))
 
 (defc :tx/player-modal

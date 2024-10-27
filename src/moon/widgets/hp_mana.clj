@@ -4,6 +4,7 @@
             [moon.component :as component :refer [defc]]
             [moon.entity :as entity]
             [moon.graphics :as g]
+            [moon.graphics.gui-view :as gui-view]
             [moon.val-max :as val-max]
             [moon.world :as world]))
 
@@ -18,7 +19,7 @@
     (let [rahmen      (g/image "images/rahmen.png")
           hpcontent   (g/image "images/hp.png")
           manacontent (g/image "images/mana.png")
-          x (/ (g/gui-viewport-width) 2)
+          x (/ (gui-view/width) 2)
           [rahmenw rahmenh] (:pixel-dimensions rahmen)
           y-mana 80 ; action-bar-icon-size
           y-hp (+ y-mana rahmenh)

@@ -1,6 +1,6 @@
 (ns moon.widgets.scrollpane
-  (:require [moon.graphics :as g]
-            [gdl.ui :as ui]))
+  (:require [gdl.ui :as ui]
+            [moon.graphics.gui-view :as gui-view]))
 
 (defn scroll-pane-cell [rows]
   (let [table (ui/table {:rows rows
@@ -9,7 +9,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (g/gui-viewport-height) 50)
+     :height (min (- (gui-view/height) 50)
                   (.getHeight table))}))
 
 (defn scrollable-choose-window [rows]

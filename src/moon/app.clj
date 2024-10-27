@@ -4,11 +4,13 @@
             [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.shape-drawer :as shape-drawer]
+            [gdl.graphics.viewport :as vp]
             [gdl.ui :as ui]
             [gdl.utils :refer [dispose]]
             [moon.assets :as assets]
             [moon.db :as db]
             [moon.graphics :as graphics]
+            [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
             [moon.screen :as screen]))
 
@@ -26,6 +28,7 @@
     (create [_]
       (assets/load        (:assets   config))
       (graphics/load!     (:graphics config))
+      (gui-view/init (:gui-view (:views (:graphics config))))
       (let [{:keys [shape-drawer
                     shape-drawer-texture]} (shape-drawer/create graphics/batch)]
         (bind-root #'sd/sd shape-drawer)
@@ -47,7 +50,8 @@
       (screen/render (screen/current)))
 
     (resize [_ dimensions]
-      (graphics/resize! dimensions))))
+      (vp/update (gui-view/viewport)       dimensions :center-camera? true)
+      (vp/update (graphics/world-viewport) dimensions))))
 
 (defn -main []
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]

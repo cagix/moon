@@ -4,6 +4,7 @@
             [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]
             [moon.graphics :as g]
+            [moon.graphics.gui-view :as gui-view]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
             [moon.entity :as entity]
@@ -103,7 +104,7 @@
     (when (and (= :player-item-on-cursor (entity/state-k player-e*))
                (not (world-item?)))
       (g/draw-centered-image (:entity/image (:entity/item-on-cursor player-e*))
-                             (g/gui-mouse-position)))))
+                             (gui-view/mouse-position)))))
 
 (defc :widgets/draw-item-on-cursor
   (component/create [_]

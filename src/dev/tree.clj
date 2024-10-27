@@ -1,5 +1,6 @@
 (ns ^:no-doc dev.tree
   (:require [moon.graphics :as g]
+            [moon.graphics.gui-view :as gui-view]
             [gdl.ui :as ui]
             [gdl.ui.stage]
             [moon.stage :as stage]
@@ -90,10 +91,10 @@
                          :pack? true})
         scroll-pane (ui/scroll-pane table)]
     {:actor scroll-pane
-     :width (/ (g/gui-viewport-width) 2)
+     :width (/ (gui-view/width) 2)
      :height
-     (- (g/gui-viewport-height) 50)
-     #_(min (- (g/gui-viewport-height) 50) (height table))}))
+     (- (gui-view/height) 50)
+     #_(min (- (gui-view/height) 50) (height table))}))
 
 (defn- show-tree-view! [obj]
   (let [object (case obj
