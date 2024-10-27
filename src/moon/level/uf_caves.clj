@@ -6,7 +6,7 @@
             [gdl.rand :refer [get-rand-weighted-item]]
             [moon.level :as level]
             [moon.level.creatures :as creatures]
-            [moon.level.grid :refer [scalegrid printgrid transition-idx-value cave-grid adjacent-wall-positions flood-fill]]
+            [moon.level.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [moon.level.tiled :refer [wgt-grid->tiled-map]]))
 
 (def ^:private scaling 4)

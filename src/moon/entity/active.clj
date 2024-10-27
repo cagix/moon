@@ -5,8 +5,8 @@
             [moon.graphics :as g]
             [moon.world :as world :refer [timer stopped? finished-ratio]]))
 
-(defn- draw-skill-icon [icon entity [x y] action-counter-ratio]
-  (let [[width height] (:world-unit-dimensions icon)
+(defn- draw-skill-image [image entity [x y] action-counter-ratio]
+  (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
@@ -16,7 +16,7 @@
                    90 ; start-angle
                    (* (float action-counter-ratio) 360) ; degree
                    [1 1 1 0.5])
-    (g/draw-image icon [(- (float x) radius) y])))
+    (g/draw-image image [(- (float x) radius) y])))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
@@ -72,6 +72,6 @@
 
   (entity/render-info [_ entity]
     (let [{:keys [entity/image skill/effects]} skill]
-      (draw-skill-icon image entity (:position entity) (finished-ratio counter))
+      (draw-skill-image image entity (:position entity) (finished-ratio counter))
       (effect/with-ctx (check-update-ctx effect-ctx)
         (run! component/render effects)))))
