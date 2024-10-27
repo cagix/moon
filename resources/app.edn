@@ -64,6 +64,7 @@
               entity.faction
               entity.follow-ai
               entity.fsm
+              entity.hitpoints
               entity.image
               entity.inventory
               entity.line-render
