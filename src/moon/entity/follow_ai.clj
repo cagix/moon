@@ -3,11 +3,11 @@
             [gdl.math.vector :as v]
             [gdl.utils :refer [->tile indexed utils-positions when-seq]]
             [moon.entity :as entity]
-            [moon.world :as world :refer [occupied-by-other?
-                                          nearest-entity-distance
-                                          nearest-entity
-                                          cached-adjacent-cells
-                                          rectangle->cells]]
+            [moon.world.grid :as grid :refer [occupied-by-other?
+                                              nearest-entity-distance
+                                              nearest-entity
+                                              cached-adjacent-cells
+                                              rectangle->cells]]
             [moon.world.potential-fields :refer [pf-cell-blocked?]]))
 
 (let [order (g2d/get-8-neighbour-positions [0 0])]
@@ -95,7 +95,7 @@
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
 (defn- direction-vector [eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
-        own-cell (get world/grid (->tile position))
+        own-cell (grid/cell (->tile position))
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
     (cond
      target-entity

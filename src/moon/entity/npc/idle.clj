@@ -2,11 +2,12 @@
   (:require [moon.component :refer [defc]]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.world :as world]))
+            [moon.world :as world]
+            [moon.world.grid :as grid]))
 
 (defn- nearest-enemy [entity]
-  (world/nearest-entity @(world/grid (entity/tile entity))
-                        (entity/enemy entity)))
+  (grid/nearest-entity @(grid/cell (entity/tile entity))
+                       (entity/enemy entity)))
 
 (defn- effect-ctx [eid]
   (let [entity @eid

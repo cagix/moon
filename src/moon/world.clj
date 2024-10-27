@@ -1,15 +1,15 @@
 (ns moon.world
   (:require [data.grid2d :as g2d]
             [gdl.graphics.camera :as cam]
-            [gdl.math.shape :as shape]
             [gdl.tiled :as tiled]
-            [gdl.utils :refer [dispose ->tile tile->middle]]
+            [gdl.utils :refer [dispose]]
             [moon.component :refer [defc] :as component]
             [moon.graphics.world-view :as world-view]
             [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
             [moon.world.content-grid :as content-grid]
+            [moon.world.grid :as grid :refer [grid]]
             [moon.world.raycaster :as raycaster]
             [moon.world.time :as world.time]))
 
@@ -20,10 +20,6 @@
 
          ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"}
          logic-frame)
-
-(declare grid)
-
-(load "world/grid")
 
 (declare ^:private raycaster)
 
@@ -88,6 +84,17 @@
 (declare explored-tile-corners)
 (declare entity-tick-error)
 
+(defn- create-grid [tiled-map]
+  (g2d/create-grid
+   (tiled/width tiled-map)
+   (tiled/height tiled-map)
+   (fn [position]
+     (atom (grid/->cell position
+                        (case (level/movement-property tiled-map position)
+                          "none" :none
+                          "air"  :air
+                          "all"  :all))))))
+
 (defn start [world-id]
   (screen/change :screens/world)
   (stage/reset (component/create [:world/widgets]))
@@ -95,7 +102,7 @@
     (clear-tiled-map)
     (bind-root #'tiled-map tiled-map)
     (bind-root #'grid (create-grid tiled-map))
-    (bind-root #'raycaster (raycaster/create grid blocks-vision?))
+    (bind-root #'raycaster (raycaster/create grid grid/blocks-vision?))
     (let [width  (tiled/width  tiled-map)
           height (tiled/height tiled-map)]
       (bind-root #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
@@ -117,7 +124,7 @@
     (content-grid/update-entity! content-grid eid)
     ; https://github.com/damn/core/issues/58
     ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-    (grid-add-entity! eid)
+    (grid/add-entity eid)
     nil))
 
 (defc :tx/remove-from-world
@@ -126,13 +133,13 @@
       (assert (contains? ids->eids id))
       (alter-var-root #'ids->eids dissoc id))
     (content-grid/remove-entity! eid)
-    (grid-remove-entity! eid)
+    (grid/remove-entity eid)
     nil))
 
 (defc :tx/position-changed
   (component/handle [[_ eid]]
     (content-grid/update-entity! content-grid eid)
-    (grid-entity-position-changed! eid)
+    (grid/entity-position-changed eid)
    nil))
 
 (defn get-window [k]

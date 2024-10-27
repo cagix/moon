@@ -7,12 +7,13 @@
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
-            [moon.world :as world]))
+            [moon.world :as world]
+            [moon.world.grid :as grid]))
 
 (defn- calculate-mouseover-eid []
   (let [player @world/player
         hits (remove #(= (:z-order @%) :z-order/effect) ; or: only items/creatures/projectiles.
-                     (world/point->entities
+                     (grid/point->entities
                       (world-view/mouse-position)))]
     (->> entity/render-order
          (sort-by-order hits #(:z-order @%))

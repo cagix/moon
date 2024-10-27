@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
             [moon.graphics :as g]
-            [moon.world :as world]
+            [moon.world.grid :as grid]
             [moon.world.time :refer [stopped? timer]]))
 
 (def ^:private shout-radius 4)
@@ -10,7 +10,7 @@
 (defn- friendlies-in-radius [position faction]
   (->> {:position position
         :radius shout-radius}
-       world/circle->entities
+       grid/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
 (defc :entity/alert-friendlies-after-duration
@@ -41,8 +41,8 @@
 
   (entity/tick [_ eid]
     (let [entity @eid
-          cell (world/grid (entity/tile entity))] ; pattern!
-      (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
+          cell (grid/cell (entity/tile entity))] ; pattern!
+      (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :stats/aggro-range))
           [[:tx/event eid :alert]]))))
 

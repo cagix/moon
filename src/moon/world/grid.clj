@@ -1,4 +1,7 @@
-(in-ns 'moon.world)
+(ns moon.world.grid
+  (:require [data.grid2d :as g2d]
+            [gdl.math.shape :as shape]
+            [gdl.utils :refer [->tile tile->middle]]))
 
 (defn- rectangle->tiles
   [{[x y] :left-bottom :keys [left-bottom width height]}]
@@ -17,6 +20,11 @@
              y (range b (inc t))]
          [x y])
        [[l b] [l t] [r b] [r t]]))))
+
+(declare grid)
+
+(defn cell [position]
+  (get grid position))
 
 (defn rectangle->cells [rectangle]
   (into [] (keep grid) (rectangle->tiles rectangle)))
@@ -83,17 +91,17 @@
     (filter #(shape/contains? @% position)
             (:entities @cell))))
 
-(defn- grid-add-entity! [eid]
+(defn add-entity [eid]
   (set-cells! eid)
   (when (:collides? @eid)
     (set-occupied-cells! eid)))
 
-(defn- grid-remove-entity! [eid]
+(defn remove-entity [eid]
   (remove-from-cells! eid)
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)))
 
-(defn- grid-entity-position-changed! [eid]
+(defn entity-position-changed [eid]
   (remove-from-cells! eid)
   (set-cells! eid)
   (when (:collides? @eid)
@@ -138,7 +146,7 @@
   (nearest-entity-distance [this faction]
     (-> this faction :distance)))
 
-(defn- grid-cell [position movement]
+(defn ->cell [position movement]
   {:pre [(#{:none :air :all} movement)]}
   (map->RCell
    {:position position
@@ -146,14 +154,3 @@
     :movement movement
     :entities #{}
     :occupied #{}}))
-
-(defn- create-grid [tiled-map]
-  (g2d/create-grid
-   (tiled/width tiled-map)
-   (tiled/height tiled-map)
-   (fn [position]
-     (atom (grid-cell position
-                      (case (level/movement-property tiled-map position)
-                        "none" :none
-                        "air"  :air
-                        "all"  :all))))))

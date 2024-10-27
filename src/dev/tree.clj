@@ -4,7 +4,8 @@
             [gdl.ui :as ui]
             [gdl.ui.stage]
             [moon.stage :as stage]
-            [moon.world :as world :refer [mouseover-entity]]))
+            [moon.world :refer [mouseover-entity]]
+            [moon.world.grid :as grid]))
 
 (comment
 
@@ -99,7 +100,7 @@
 (defn- show-tree-view! [obj]
   (let [object (case obj
                  :entity (mouseover-entity)
-                 :tile @(get world/grid (mapv int (world-view/mouse-position))))]
+                 :tile @(grid/cell (mapv int (world-view/mouse-position))))]
     (stage/add!
      (ui/window {:title "Tree View"
                  :close-button? true

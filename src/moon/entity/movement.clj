@@ -1,9 +1,10 @@
 (ns ^:no-doc moon.entity.movement
-  (:require [moon.component :refer [defc] :as component]
-            [gdl.math.vector :as v]
+  (:require [gdl.math.vector :as v]
             [malli.core :as m]
+            [moon.component :refer [defc] :as component]
+            [moon.entity :as entity]
             [moon.world :as world]
-            [moon.entity :as entity]))
+            [moon.world.grid :as grid]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -15,10 +16,10 @@
 
 (defn- valid-position? [{:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
-  (let [cells* (into [] (map deref) (world/rectangle->cells body))]
-    (and (not-any? #(world/blocked? % z-order) cells*)
+  (let [cells* (into [] (map deref) (grid/rectangle->cells body))]
+    (and (not-any? #(grid/blocked? % z-order) cells*)
          (->> cells*
-              world/cells->entities
+              grid/cells->entities
               (not-any? (fn [other-entity]
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)

@@ -5,7 +5,7 @@
             [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
-            [moon.world :refer [circle->cells grid]]
+            [moon.world.grid :refer [circle->cells grid]]
             [moon.world.potential-fields :refer [factions-iterations]]))
 
 (defn- geom-test []
