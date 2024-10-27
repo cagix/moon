@@ -15,23 +15,6 @@
 (defn- rand-0-5 []
   (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
 
-; TODO zoomed out see that line of sight raycast goes x screens away
-; only becuz of zoom?
-
-; Level:
-; * ground textures
-; * wall textures
-; * doodads ?
-; * creatures w. that lvl
-; (skills/items)
-; * level-name (Goblin Lair , Halfling Village, Demon Kingdom)
-; * spawn-rate
-; * level-size
-; * to finish lvl maybe find 3-4 signs to activate (takes some time) to open a portal
-; every sign will increase spawn rate (maybe 0 at beginning -> can keep spawning)
-
-; can use different algorithms(e.g. cave, module-gen-uf-terrain, room-gen? , differnt cave algorithm ...)
-
 (defn- uf-place-creatures! [spawn-rate tiled-map spawn-positions]
   (let [layer (t/add-layer! tiled-map :name "creatures" :visible false)
         creatures (db/all :properties/creatures)
