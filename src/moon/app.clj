@@ -8,6 +8,7 @@
             [gdl.ui :as ui]
             [gdl.utils :refer [dispose]]
             [moon.assets :as assets]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.graphics :as graphics]
             [moon.graphics.cursors :as cursors]
@@ -60,10 +61,17 @@
       (vp/update (gui-view/viewport)   dimensions :center-camera? true)
       (vp/update (world-view/viewport) dimensions))))
 
+(defn- load-components [components]
+  (doseq [component components
+          :let [[ns-sym v] (if (symbol? component)
+                             [component nil]
+                             component)]]
+    (require (symbol (str "moon." ns-sym)))
+    (component/on-load [(keyword (str "moon." (str ns-sym))) v])))
+
 (defn -main []
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]
-    (run! (comp require symbol #(str "moon." %))
-          (:components config))
+    (load-components (:components config))
     (db/load! (:properties config))
     (app/start (:app config)
                (app-listener config))))

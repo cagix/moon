@@ -73,6 +73,9 @@
                  ~@fn-exprs)))))
       ~k)))
 
+(defsystem on-load)
+(defmethod on-load :default [_])
+
 (defsystem create)
 
 (defsystem handle)
