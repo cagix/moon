@@ -2,7 +2,6 @@
   (:require [data.grid2d :as g2d]
             [gdl.graphics :as gdx.graphics]
             [gdl.graphics.camera :as cam]
-            [gdl.graphics.color :as color]
             [gdl.math.shape :as shape]
             [gdl.tiled :as t]
             [gdl.utils :refer [dispose ->tile tile->middle]]
@@ -107,9 +106,6 @@
     (dispose tiled-map)))
 
 (declare explored-tile-corners)
-
-(load "world/render")
-
 (declare entity-tick-error)
 
 (defn start [world-id]

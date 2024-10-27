@@ -1,4 +1,8 @@
-(in-ns 'moon.world)
+(ns moon.world.render
+  (:require [gdl.graphics.color :as color]
+            [gdl.utils :refer [->tile]]
+            [moon.graphics :as g]
+            [moon.world :refer [tiled-map explored-tile-corners ray-blocked?]]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
@@ -37,7 +41,7 @@
               (swap! explored-tile-corners assoc (->tile position) true))
             color/white)))))
 
-(defn render-tiled-map! [light-position]
+(defn render-tiled-map [light-position]
   (g/draw-tiled-map tiled-map
                     (->tile-color-setter (atom nil) light-position))
   #_(reset! do-once false))

@@ -14,7 +14,8 @@
             [moon.world :as world]
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
-            [moon.world.potential-fields :refer [update-potential-fields!]]))
+            [moon.world.potential-fields :refer [update-potential-fields!]]
+            [moon.world.render :refer [render-tiled-map]]))
 
 (defn- check-window-hotkeys []
   (doseq [[hotkey window-id] {:keys/i :inventory-window
@@ -80,7 +81,7 @@
   ; FIXME position DRY
   (cam/set-position! (g/world-camera) (:position @world/player))
   ; FIXME position DRY
-  (world/render-tiled-map! (cam/position (g/world-camera)))
+  (render-tiled-map (cam/position (g/world-camera)))
   (g/render-world-view! (fn []
                           (debug-render/before-entities)
                           ; FIXME position DRY (from player)
