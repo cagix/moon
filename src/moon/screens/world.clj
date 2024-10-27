@@ -37,8 +37,6 @@
     (when (key-pressed? :keys/minus)  (adjust-zoom camera    zoom-speed))
     (when (key-pressed? :keys/equals) (adjust-zoom camera (- zoom-speed)))))
 
-
-
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
