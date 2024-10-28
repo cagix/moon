@@ -34,7 +34,6 @@
            :screens/world]
  :ui :skin-scale/x1
  :components [
-              [db "properties.edn"]
               colors
 
               effect.convert
@@ -155,4 +154,6 @@
 
               world.start
               world.widgets
+
+              [db "properties.edn"] ; load after components, require defc schemas for validation
               ]}
