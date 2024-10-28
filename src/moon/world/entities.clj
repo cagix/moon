@@ -3,7 +3,6 @@
             [gdl.utils :refer [sort-by-order]]
             [moon.component :as component]
             [moon.entity :as entity]
-            [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]

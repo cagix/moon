@@ -1,18 +1,15 @@
-(ns moon.graphics
+(ns moon.graphics.texture
   (:require [moon.assets :as assets])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-(defn tr-dimensions [^TextureRegion texture-region]
+(defn dimensions [^TextureRegion texture-region]
   [(.getRegionWidth  texture-region)
    (.getRegionHeight texture-region)])
 
-(defn texture-region
-  ([path-or-texture]
-   (let [^Texture tex (if (string? path-or-texture)
-                        (get assets/manager path-or-texture)
-                        path-or-texture)]
-     (TextureRegion. tex)))
+(defn region
+  ([path]
+   (TextureRegion. ^Texture (get assets/manager path)))
 
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))

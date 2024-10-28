@@ -1,7 +1,7 @@
 (ns moon.graphics.image
   (:require [gdl.graphics.batch :as batch]
-            [moon.graphics :as g]
             [moon.graphics.batch :refer [batch]]
+            [moon.graphics.texture :as texture]
             [moon.graphics.view :as view]
             [moon.graphics.world-view :as world-view]))
 
@@ -26,7 +26,7 @@
                   (number? (scale 0))
                   (number? (scale 1))))]}
   (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions (g/tr-dimensions texture-region) scale)
+                           (scale-dimensions (texture/dimensions texture-region) scale)
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
@@ -60,10 +60,10 @@
       map->Sprite))
 
 (defn image [file]
-  (image* (g/texture-region file)))
+  (image* (texture/region file)))
 
 (defn sub-image [{:keys [texture-region]} bounds]
-  (image* (g/texture-region texture-region bounds)))
+  (image* (texture/region texture-region bounds)))
 
 (defn sprite-sheet [file tilew tileh]
   {:image (image file)

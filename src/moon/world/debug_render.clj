@@ -2,7 +2,6 @@
   (:require [gdl.graphics.camera :as cam]
             [gdl.math.shape :as shape]
             [gdl.utils :refer [->tile]]
-            [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
             [moon.world.grid :refer [circle->cells grid]]

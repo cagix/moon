@@ -1,9 +1,9 @@
 (ns moon.level.uf-caves
   (:require [data.grid2d :as g2d]
-            [moon.db :as db]
-            [moon.graphics :as g]
-            [gdl.tiled :as t]
             [gdl.rand :refer [get-rand-weighted-item]]
+            [gdl.tiled :as t]
+            [moon.db :as db]
+            [moon.graphics.texture :as texture]
             [moon.level :as level]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
@@ -37,14 +37,14 @@
 (def ^:private sprite-size 48)
 
 (defn- terrain-texture-region []
-  (g/texture-region "maps/uf_terrain.png"))
+  (texture/region "maps/uf_terrain.png"))
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (g/texture-region (terrain-texture-region)
-                             [(* sprite-x sprite-size)
-                              (* sprite-y sprite-size)
-                              sprite-size
-                              sprite-size])
+  (tm-tile (texture/region (terrain-texture-region)
+                           [(* sprite-x sprite-size)
+                            (* sprite-y sprite-size)
+                            sprite-size
+                            sprite-size])
            movement))
 
 (def ^:private uf-grounds
