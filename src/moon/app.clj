@@ -9,7 +9,6 @@
             [gdl.utils :refer [dispose]]
             [moon.assets :as assets]
             [moon.component :as component]
-            [moon.db :as db]
             [moon.graphics :as graphics]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.gui-view :as gui-view]
@@ -72,6 +71,5 @@
 (defn -main []
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]
     (load-components (:components config))
-    (db/load! (:properties config))
     (app/start (:app config)
                (app-listener config))))

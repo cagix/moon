@@ -27,7 +27,6 @@
                     :world-view {:world-width 1440
                                  :world-height 900
                                  :tile-size 48}}}
- :properties "properties.edn"
  :screens [:screens/main-menu
            :screens/map-editor
            :screens/editor
@@ -35,6 +34,9 @@
            :screens/world]
  :ui :skin-scale/x1
  :components [
+              [db "properties.edn"]
+              colors
+
               effect.convert
               effect.damage
               effect.kill
@@ -153,6 +155,4 @@
 
               world.start
               world.widgets
-
-              colors
               ]}
