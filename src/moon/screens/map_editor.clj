@@ -7,6 +7,7 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
+            [moon.controls :as controls]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.graphics.gui-view :as gui-view]
@@ -70,17 +71,11 @@ direction keys: move")
     (a/set-position! window 0 (gui-view/height))
     window))
 
-(defn- adjust-zoom [camera by] ; DRY context.game
-  (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
-
 (def ^:private camera-movement-speed 1)
-(def ^:private zoom-speed 0.1)
 
 ; TODO textfield takes control !
 ; PLUS symbol shift & = symbol on keyboard not registered
 (defn- camera-controls [camera]
-  (when (key-pressed? :keys/minus)  (adjust-zoom camera    zoom-speed))
-  (when (key-pressed? :keys/equals) (adjust-zoom camera (- zoom-speed)))
   (let [apply-position (fn [idx f]
                          (cam/set-position! camera
                                            (update (cam/position camera)
@@ -154,6 +149,7 @@ direction keys: move")
       (swap! current-data update :show-grid-lines not))
     (if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
+    (controls/world-camera-zoom)
     (camera-controls (world-view/camera))
     (when (key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))

@@ -1,9 +1,9 @@
 (ns moon.widgets.windows
-  (:require [gdl.input :refer [key-just-pressed?]]
-            [gdl.ui :as ui]
+  (:require [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [moon.stage :as stage]
-            [moon.component :as component]))
+            [moon.controls :as controls]
+            [moon.component :as component]
+            [moon.stage :as stage]))
 
 (defn create []
   (ui/group {:id :windows
@@ -13,13 +13,12 @@
 (defn- windows []
   (:windows (stage/get)))
 
-(defn inventory [k]
+(defn inventory []
   (get (windows) :inventory-window))
 
 (defn check-hotkeys []
-  (doseq [[hotkey window-id] {:keys/i :inventory-window
-                              :keys/e :entity-info-window}
-          :when (key-just-pressed? hotkey)]
+  (doseq [window-id [:inventory-window :entity-info-window]
+          :when (controls/toggle-visible? window-id)]
     (actor/toggle-visible! (get (windows) window-id))))
 
 (defn close-all []

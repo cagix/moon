@@ -1,7 +1,7 @@
 (ns moon.screens.world
   (:require [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
-            [gdl.input :refer [key-pressed? key-just-pressed?]]
+            [moon.controls :as controls]
             [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
             [moon.graphics.cursors :as cursors]
@@ -17,31 +17,17 @@
             [moon.world.tiled-map :refer [render-tiled-map]]
             [moon.world.time :as world.time]))
 
-(defn- adjust-zoom [camera by] ; DRY map editor
-  (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
-
-(def ^:private zoom-speed 0.05)
-
-(defn- check-zoom-keys []
-  (let [camera (world-view/camera)]
-    (when (key-pressed? :keys/minus)  (adjust-zoom camera    zoom-speed))
-    (when (key-pressed? :keys/equals) (adjust-zoom camera (- zoom-speed)))))
-
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
 (defn- player-state-pause-game? [] (entity/pause-game? (entity/state-obj @world/player)))
 (defn- player-update-state      [] (entity/manual-tick (entity/state-obj @world/player)))
 
-(defn- player-unpaused? []
-  (or (key-just-pressed? :keys/p)
-      (key-pressed? :keys/space))) ; FIXMe :keys? shouldnt it be just :space?
-
 (defn- update-game-paused []
   (bind-root #'world/paused? (or world/entity-tick-error
                                  (and pausing?
                                       (player-state-pause-game?)
-                                      (not (player-unpaused?)))))
+                                      (not (controls/unpaused?)))))
   nil)
 
 (defn- update-time []
@@ -86,12 +72,12 @@
   (screen/render [_]
     (render-world)
     (component/->handle update-world)
-    (check-zoom-keys)
+    (controls/world-camera-zoom)
     (windows/check-hotkeys)
-    (cond (key-just-pressed? :keys/escape)
+    (cond (controls/close-windows?)
           (windows/close-all)
 
-          (key-just-pressed? :keys/tab)
+          (controls/minimap?)
           (screen/change :screens/minimap)))
 
   (screen/dispose [_]

@@ -4,6 +4,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [readable-number]]
+            [moon.controls :as controls]
             [moon.component :as component :refer [defc]]
             [moon.db :as db]
             [moon.graphics.image :as img]
@@ -66,7 +67,7 @@
         (.addItem world (menu-item (str "Start " id) #(component/->handle [[:world/start id]]))))
       (.addMenu menu-bar world))
     (let [help (Menu. "Help")]
-        (.addItem help (MenuItem. "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"))
+        (.addItem help (MenuItem. controls/help-text))
       (.addMenu menu-bar help))
     (def mb menu-bar)
     (add-debug-infos mb)
