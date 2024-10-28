@@ -1,7 +1,7 @@
 (ns moon.widgets.properties-overview
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]))
 

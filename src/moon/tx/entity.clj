@@ -1,6 +1,6 @@
 (ns moon.tx.entity
   (:require [gdl.utils :refer [safe-merge dissoc-in]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.world :as world]))
 

@@ -1,7 +1,6 @@
 (ns moon.graphics.gui-view
   (:require [gdl.graphics.viewport :as vp]
-            [moon.app :as app]
-            [moon.component :refer [defc]])
+            [moon.app :as app])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 

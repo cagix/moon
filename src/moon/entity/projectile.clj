@@ -1,6 +1,6 @@
 (ns moon.entity.projectile
   (:require [gdl.utils :refer [find-first]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.world.grid :as grid]))
 

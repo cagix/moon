@@ -3,7 +3,7 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [malli.generator :as mg]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.malli :as malli]
             [moon.property :as property]
             [moon.schema :as schema]
@@ -33,7 +33,7 @@
 
 (defn- namespaced-ks [ns-name-k]
   (filter #(= (name ns-name-k) (namespace %))
-          (keys component/meta)))
+          (keys component-attrs)))
 
 (defmethod schema/form :s/components-ns [[_ ns-name-k]]
   (schema/form [:s/map-optional (namespaced-ks ns-name-k)]))
@@ -83,7 +83,7 @@
                                         (fn []
                                           (a/remove! (find-kv-widget table k))
                                           (rebuild-editor-window))))]
-    (when-let [doc (:editor/doc (component/meta k))]
+    (when-let [doc (:editor/doc (component-attrs k))]
       (ui/add-tooltip! label doc))
     (ui/table {:cell-defaults {:pad 2}
                :rows [[{:actor delete-button :left? true}

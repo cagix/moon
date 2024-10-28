@@ -1,5 +1,5 @@
 (ns moon.entity.line-render
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.graphics.shape-drawer :as sd]
             [moon.entity :as entity]))
 

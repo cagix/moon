@@ -1,5 +1,5 @@
 (ns moon.tx.item
-  (:require [moon.component :refer [defc] :as component]))
+  (:require [moon.component :as component]))
 
 (def ^:private body-props
   {:width 0.75

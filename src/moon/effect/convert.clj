@@ -1,5 +1,5 @@
 (ns moon.effect.convert
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.entity :as entity]
             [moon.effect :refer [source target]]))
 

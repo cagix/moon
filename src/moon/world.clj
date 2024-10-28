@@ -1,7 +1,7 @@
 (ns moon.world
   (:require [gdl.graphics.camera :as cam]
             [gdl.utils :refer [dispose]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.graphics.world-view :as world-view]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]

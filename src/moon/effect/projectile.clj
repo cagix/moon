@@ -1,6 +1,6 @@
 (ns moon.effect.projectile
   (:require [gdl.math.vector :as v]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.effect :refer [source target target-direction]]
             [moon.world :as w]))

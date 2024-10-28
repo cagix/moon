@@ -1,5 +1,5 @@
 (ns moon.fsms.player
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [reduce-fsm :as fsm]))
 
 (defc :fsms/player

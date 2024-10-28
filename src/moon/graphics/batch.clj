@@ -1,7 +1,6 @@
 (ns moon.graphics.batch
   (:require [gdl.utils :refer [dispose]]
-            [moon.app :as app]
-            [moon.component :refer [defc]])
+            [moon.app :as app])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (declare batch)

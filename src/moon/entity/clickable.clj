@@ -1,6 +1,5 @@
 (ns moon.entity.clickable
-  (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]
+  (:require [moon.entity :as entity]
             [moon.graphics.text :as text]))
 
 (defc :entity/clickable

@@ -1,6 +1,6 @@
 (ns moon.entity.skills
   (:require [gdl.utils :refer [readable-number]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.world :as world]

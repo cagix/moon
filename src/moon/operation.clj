@@ -1,6 +1,5 @@
 (ns moon.operation
-  (:refer-clojure :exclude [apply])
-  (:require [moon.component :refer [defsystem]]))
+  (:refer-clojure :exclude [apply]))
 
 (defsystem value-text)
 

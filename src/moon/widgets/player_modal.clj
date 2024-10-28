@@ -1,7 +1,7 @@
 (ns moon.widgets.player-modal
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.graphics.gui-view :as gui-view]
             [moon.stage :as stage]))
 

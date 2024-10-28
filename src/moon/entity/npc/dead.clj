@@ -1,6 +1,5 @@
 (ns moon.entity.npc.dead
-  (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]))
+  (:require [moon.entity :as entity]))
 
 (defc :npc-dead
   {:let {:keys [eid]}}

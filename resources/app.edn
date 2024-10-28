@@ -128,9 +128,10 @@
               schema.string
               schema.val-max
 
+              screens.editor
               screens.main
               screens.map-editor
-              screens.editor
+              screens.minimap
               screens.world
 
               tx.audiovisual

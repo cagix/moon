@@ -1,5 +1,5 @@
 (ns moon.tx.line-render
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.entity :as entity]))
 
 (defc :tx/line-render

@@ -1,6 +1,5 @@
 (ns moon.entity.animation
   (:require [moon.animation :as animation]
-            [moon.component :refer [defc]]
             [moon.entity :as entity]
             [moon.world :as world]))
 

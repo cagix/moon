@@ -8,7 +8,7 @@
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [moon.controls :as controls]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]

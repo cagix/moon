@@ -1,5 +1,5 @@
 (ns moon.entity.fsm
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))
 

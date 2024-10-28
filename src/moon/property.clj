@@ -1,7 +1,6 @@
 (ns moon.property
   (:refer-clojure :exclude [def type])
-  (:require [moon.component :refer [defc] :as component]
-            [moon.schema :as schema]
+  (:require [moon.schema :as schema]
             [malli.core :as m]
             [malli.error :as me]))
 
@@ -19,7 +18,7 @@
   (keyword "properties" (namespace id)))
 
 (defn types []
-  (filter #(= "properties" (namespace %)) (keys component/meta)))
+  (filter #(= "properties" (namespace %)) (keys component-attrs)))
 
 (defn- m-schema [property]
   (-> property type schema/form-of))
@@ -35,7 +34,7 @@
       (throw (invalid-ex-info m-schema property)))))
 
 (defn overview [property-type]
-  (:overview (component/meta property-type)))
+  (:overview (component-attrs property-type)))
 
 (defn ->image [{:keys [entity/image entity/animation]}]
   (or image

@@ -1,7 +1,6 @@
 (ns moon.ui
   (:require [gdl.ui :as ui]
-            [moon.app :as app]
-            [moon.component :refer [defc]]))
+            [moon.app :as app]))
 
 (defc :moon.ui
   (app/create [[_ skin-scale]]

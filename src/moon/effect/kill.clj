@@ -1,5 +1,5 @@
 (ns moon.effect.kill
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.effect :refer [target]]))
 
 (defc :effect.entity/kill

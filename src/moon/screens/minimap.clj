@@ -2,7 +2,7 @@
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-just-pressed?]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.tiled :as tiled-map-renderer]
             [moon.graphics.world-view :as world-view]

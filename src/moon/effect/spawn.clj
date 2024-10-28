@@ -1,5 +1,5 @@
 (ns moon.effect.spawn
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.effect :as effect]))
 
 ; https://github.com/damn/core/issues/29

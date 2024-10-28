@@ -2,7 +2,7 @@
   (:require [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
             [moon.schema :as schema]

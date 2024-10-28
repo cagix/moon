@@ -1,6 +1,6 @@
 (ns moon.entity.delete-after-duration
   (:require [gdl.utils :refer [readable-number]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
 

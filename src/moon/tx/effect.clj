@@ -1,5 +1,5 @@
 (ns moon.tx.effect
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.effect :as effect]))
 
 (defc :tx/effect

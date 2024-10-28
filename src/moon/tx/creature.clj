@@ -1,6 +1,6 @@
 (ns moon.tx.creature
   (:require [gdl.utils :refer [safe-merge]]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.db :as db]))
 
 ; # :z-order/flying has no effect for now

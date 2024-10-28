@@ -1,5 +1,5 @@
 (ns moon.entity.faction
-  (:require [moon.component :refer [defc] :as component]))
+  (:require [moon.component :as component]))
 
 (defc :entity/faction
   {:schema [:enum :good :evil]

@@ -1,7 +1,7 @@
 (ns moon.widgets.hp-mana
   (:require [gdl.utils :refer [readable-number]]
             [gdl.ui :as ui]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.graphics.image :as img]
             [moon.graphics.text :as text]

@@ -1,6 +1,6 @@
 (ns moon.effect.target-entity
   (:require [gdl.math.vector :as v]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.effect :as effect :refer [source target]]
             [moon.entity :as entity]
             [moon.graphics.shape-drawer :as sd]

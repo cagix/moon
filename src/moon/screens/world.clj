@@ -2,7 +2,7 @@
   (:require [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [moon.controls :as controls]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.world-view :as world-view]

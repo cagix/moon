@@ -1,6 +1,5 @@
 (ns moon.entity.npc.idle
-  (:require [moon.component :refer [defc]]
-            [moon.effect :as effect]
+  (:require [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.world :as world]
             [moon.world.grid :as grid]))

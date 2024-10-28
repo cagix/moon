@@ -1,6 +1,5 @@
 (ns moon.entity.delete-after-animation-stopped
   (:require [moon.animation :as animation]
-            [moon.component :refer [defc]]
             [moon.entity :as entity]))
 
 (defc :entity/delete-after-animation-stopped?

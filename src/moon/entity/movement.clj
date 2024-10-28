@@ -1,7 +1,7 @@
 (ns moon.entity.movement
   (:require [gdl.math.vector :as v]
             [malli.core :as m]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.world :as world]
             [moon.world.grid :as grid]))

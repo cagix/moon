@@ -1,6 +1,5 @@
 (ns moon.entity.npc.moving
-  (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]
+  (:require [moon.entity :as entity]
             [moon.world.time :refer [timer stopped?]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check

@@ -1,6 +1,6 @@
 (ns moon.entity.inventory
   (:require [gdl.utils :refer [find-first]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.item :as item]))
 

@@ -3,7 +3,6 @@
             [gdl.graphics.shape-drawer :as d]
             [gdl.utils :refer [dispose]]
             [moon.app :as app]
-            [moon.component :refer [defc]]
             [moon.graphics.batch :refer [batch]]))
 
 (declare ^:private sd

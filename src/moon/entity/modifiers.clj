@@ -1,6 +1,6 @@
 (ns moon.entity.modifiers
   (:require [gdl.utils :refer [k->pretty-name]]
-            [moon.component :refer [defc defc*] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.effect :as effect]
             [moon.modifiers :as mods]

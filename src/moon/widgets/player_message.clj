@@ -1,7 +1,7 @@
 (ns moon.widgets.player-message
   (:require [gdl.graphics :as gdx.graphics]
             [gdl.ui :as ui]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.graphics.text :as text]
             [moon.graphics.gui-view :as gui-view]))
 

@@ -1,6 +1,5 @@
 (ns moon.entity.mouseover
-  (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]
+  (:require [moon.entity :as entity]
             [moon.graphics.shape-drawer :as sd]
             [moon.world :as world]))
 

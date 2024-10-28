@@ -1,6 +1,5 @@
 (ns moon.properties.worlds
-  (:require [moon.component :refer [defc]]
-            [moon.property :as property]))
+  (:require [moon.property :as property]))
 
 (defc :world/player-creature {:schema :some #_[:s/one-to-one :properties/creatures]})
 (defc :world/map-size {:schema pos-int?})

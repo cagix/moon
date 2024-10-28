@@ -1,7 +1,7 @@
 (ns moon.tx.spawn-creatures
   (:require [gdl.tiled :as tiled]
             [gdl.utils :refer [tile->middle]]
-            [moon.component :refer [defc] :as component]))
+            [moon.component :as component]))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 

@@ -1,6 +1,6 @@
 (ns moon.widgets.properties-tabs
   (:require [gdl.ui :as ui]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
             [moon.stage :as stage])

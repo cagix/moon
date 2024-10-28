@@ -2,8 +2,7 @@
   (:refer-clojure :exclude [set])
   (:require [gdl.graphics :as graphics]
             [gdl.utils :refer [dispose safe-get mapvals]]
-            [moon.app :as app]
-            [moon.component :refer [defc]]))
+            [moon.app :as app]))
 
 (declare ^:private cursors)
 

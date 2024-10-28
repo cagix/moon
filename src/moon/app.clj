@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
-            [moon.component :as component :refer [defsystem]]
+            [moon.component :as component]
             [moon.screen :as screen]))
 
 (defn- module->component [module]

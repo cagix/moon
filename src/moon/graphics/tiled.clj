@@ -1,7 +1,6 @@
 (ns moon.graphics.tiled
   (:require [gdl.graphics.tiled :as tiled]
             [moon.app :as app]
-            [moon.component :refer [defc]]
             [moon.graphics.batch :refer [batch]]
             [moon.graphics.world-view :as world-view]))
 

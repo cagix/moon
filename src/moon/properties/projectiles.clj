@@ -1,5 +1,5 @@
 (ns moon.properties.projectiles
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.property :as property]))
 
 (property/def :properties/projectiles

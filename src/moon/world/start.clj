@@ -1,7 +1,7 @@
 (ns moon.world.start
   (:require [data.grid2d :as g2d]
             [gdl.tiled :as tiled]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.world.grid :as grid]
             [moon.level :as level]
             [moon.screen :as screen]

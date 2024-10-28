@@ -1,5 +1,5 @@
 (ns moon.effect.target-all
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.effect :refer [source target]]
             [moon.graphics.shape-drawer :as sd]
             [moon.world :as world]))

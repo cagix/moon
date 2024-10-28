@@ -3,7 +3,7 @@
   (:require [clojure.edn :as edn]
             [clojure.pprint :refer [pprint]]
             [gdl.utils :refer [safe-get]]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.property :as property]
             [moon.schema :as schema]))
 

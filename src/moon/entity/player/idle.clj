@@ -3,7 +3,6 @@
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :refer [defc]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.graphics.world-view :as world-view]

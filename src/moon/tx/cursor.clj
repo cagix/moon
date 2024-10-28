@@ -1,5 +1,5 @@
 (ns moon.tx.cursor
-  (:require [moon.component :as component :refer [defc]]
+  (:require [moon.component :as component]
             [moon.graphics.cursors :as cursors]))
 
 (defc :tx/cursor

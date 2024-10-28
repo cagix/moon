@@ -1,6 +1,5 @@
 (ns moon.entity.hitpoints
-  (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]
+  (:require [moon.entity :as entity]
             [moon.entity.modifiers :refer [defstat]]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]

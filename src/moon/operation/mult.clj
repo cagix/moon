@@ -1,6 +1,5 @@
 (ns moon.operation.mult
-  (:require [moon.component :refer [defc]]
-            [moon.operation :as op]))
+  (:require [moon.operation :as op]))
 
 (defc :op/mult
   {:schema number?

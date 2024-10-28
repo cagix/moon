@@ -1,7 +1,7 @@
 (ns moon.screens.editor
   (:require [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.stage :as stage]
             [moon.screen :as screen]
             [moon.widgets.background-image :as background-image]))

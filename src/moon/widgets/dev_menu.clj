@@ -5,7 +5,7 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [readable-number]]
             [moon.controls :as controls]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.db :as db]
             [moon.graphics.image :as img]
             [moon.graphics.gui-view :as gui-view]

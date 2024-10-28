@@ -2,11 +2,10 @@
   (:refer-clojure :exclude [type])
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [gdl.utils :refer [safe-get truncate ->edn-str]]
-            [moon.component :as component]))
+            [gdl.utils :refer [safe-get truncate ->edn-str]]))
 
 (defn of [k]
-  (:schema (safe-get component/meta k)))
+  (:schema (safe-get component-attrs k)))
 
 (defn type [schema]
   (if (vector? schema)

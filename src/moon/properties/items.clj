@@ -1,5 +1,5 @@
 (ns moon.properties.items
-  (:require [moon.component :as component :refer [defc]]
+  (:require [moon.component :as component]
             [moon.item :as item]
             [moon.modifiers :as mods]
             [moon.property :as property]))

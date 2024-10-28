@@ -1,5 +1,5 @@
 (ns moon.tx.audiovisual
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.db :as db]
             [moon.entity :as entity]))
 

@@ -1,5 +1,5 @@
 (ns moon.widgets.action-bar
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.stage :as stage]))

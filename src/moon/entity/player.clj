@@ -1,6 +1,5 @@
 (ns moon.entity.player
-  (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]
+  (:require [moon.entity :as entity]
             [moon.world :as world]))
 
 (defc :entity/player?

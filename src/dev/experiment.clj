@@ -87,7 +87,7 @@
 
              (println "\n#" nmsp)
              (doseq [k ks
-                     :let [attr-m (component/meta k)]]
+                     :let [attr-m (component-attrs k)]]
                (println (str "* __" k "__ `" (get (:params attr-m) "component/handle") "`"))
                (when-let [data (:schema attr-m)]
                  (println (str "    * data: `" (pr-str data) "`")))
@@ -96,13 +96,7 @@
                    (println "    * Descendants"))
                  (doseq [k ks]
                    (println "      *" k)
-                   (println (str "        * data: `" (pr-str (:schema (component/meta k))) "`"))))))))))
-
-(defn- component-systems [component-k]
-   (for [[sys-name sys-var] component/systems
-         [k method] (methods @sys-var)
-         :when (= k component-k)]
-     sys-name))
+                   (println (str "        * data: `" (pr-str (:schema (component-attrs k))) "`"))))))))))
 
 (defn- print-components* [ks]
   (doseq [k ks]
@@ -110,7 +104,7 @@
              (if-let [ancestrs (ancestors k)]
                (str "-> "(clojure.string/join "," ancestrs))
                "")
-             (let [attr-map (component/meta k)]
+             (let [attr-map (component-attrs k)]
                #_(if (seq attr-map)
                    (pr-str (:moon.component/fn-params attr-map))
                    (str " `"
@@ -120,9 +114,7 @@
                         "`\n"
                         )
                    "")
-               ""))
-    #_(doseq [system-name (component-systems k)]
-        (println "  * " system-name))))
+               ""))))
 
 (defn- spit-out [file ks]
   (spit file
@@ -136,7 +128,7 @@
           (with-out-str
            (doseq [[nmsp components] (sort-by first
                                               (group-by namespace
-                                                        (sort (keys component/meta))))]
+                                                        (sort (keys component-attrs))))]
              (println "\n#" nmsp)
              (print-components* components)
              )))))

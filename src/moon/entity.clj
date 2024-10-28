@@ -2,8 +2,7 @@
   (:require [gdl.math.shape :as shape]
             [gdl.math.vector :as v]
             [gdl.utils :refer [define-order ->tile]]
-            [malli.core :as m]
-            [moon.component :refer [defsystem defc] :as component]))
+            [malli.core :as m]))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)

@@ -1,6 +1,6 @@
 (ns moon.widgets.entity-info-window
   (:require [gdl.ui :as ui]
-            [moon.component :as component :refer [defc]]
+            [moon.component :as component]
             [moon.graphics.gui-view :as gui-view]
             [moon.world :refer [mouseover-entity]]))
 

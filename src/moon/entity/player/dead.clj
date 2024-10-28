@@ -1,6 +1,5 @@
 (ns moon.entity.player.dead
-  (:require [moon.component :refer [defc]]
-            [moon.entity :as entity]
+  (:require [moon.entity :as entity]
             [moon.screen :as screen]))
 
 (defc :player-dead

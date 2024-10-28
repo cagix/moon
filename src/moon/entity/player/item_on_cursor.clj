@@ -2,7 +2,7 @@
   (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.image :as image]
             [moon.graphics.world-view :as world-view]

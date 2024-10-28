@@ -3,8 +3,7 @@
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.utils :as utils :refer [dispose]]
-            [moon.app :as app]
-            [moon.component :refer [defc]])
+            [moon.app :as app])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)))
 

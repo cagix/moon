@@ -2,7 +2,6 @@
   (:require [gdl.graphics.text :as text]
             [gdl.utils :refer [dispose]]
             [moon.app :as app]
-            [moon.component :refer [defc]]
             [moon.graphics.batch :refer [batch]]
             [moon.graphics.view :as view]))
 

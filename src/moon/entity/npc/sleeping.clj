@@ -1,5 +1,5 @@
 (ns moon.entity.npc.sleeping
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [moon.entity :as entity]
             [moon.graphics.text :as text]
             [moon.world.grid :as grid]

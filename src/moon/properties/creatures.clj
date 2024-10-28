@@ -1,7 +1,7 @@
 (ns moon.properties.creatures
   (:require [clojure.string :as str]
             [gdl.utils :refer [safe-merge]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.property :as property]))
 

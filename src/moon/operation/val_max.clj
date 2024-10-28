@@ -1,7 +1,6 @@
 (ns moon.operation.val-max
   (:require [clojure.string :as str]
             [malli.core :as m]
-            [moon.component :refer [defc]]
             [moon.schema :as schema]
             [moon.operation :as op]
             [moon.val-max :as val-max]))

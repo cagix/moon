@@ -3,7 +3,7 @@
             [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.stage :as stage]
             [moon.db :as db]
             [moon.graphics.cursors :as cursors]

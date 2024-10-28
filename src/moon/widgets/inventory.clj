@@ -3,7 +3,7 @@
             [gdl.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.image :as image]

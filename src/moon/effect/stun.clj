@@ -1,5 +1,5 @@
 (ns moon.effect.stun
-  (:require [moon.component :refer [defc] :as component]
+  (:require [moon.component :as component]
             [gdl.utils :refer [readable-number]]
             [moon.effect :refer [target]]))
 

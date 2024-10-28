@@ -1,7 +1,7 @@
 (ns moon.world.widgets
   (:require [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
-            [moon.component :refer [defc] :as component]
+            [moon.component :as component]
             [moon.widgets.windows :as windows]))
 
 (defc :world/widgets
