@@ -27,7 +27,7 @@
     (when-not (zero? v)
       (str "[SKY]Cooldown: " (readable-number v) " seconds[]"))))
 
-(defc :skill/cost {:schema nat-int?} ; FIXME cannot be zero! and optional doesnt work! and anywhere test for 0 !
+(defc :skill/cost {:schema nat-int?}
   (component/info [[_ v]]
     (when-not (zero? v)
       (str "[CYAN]Cost: " v " Mana[]"))))

@@ -46,10 +46,9 @@
 ; stats armor-pierce wrong place
 ; assert min body size from entity
 
-(defc :entity/body
-  {:schema [:s/map [:body/width
-                :body/height
-                :body/flying?]]})
+(defc :entity/body {:schema [:s/map [:body/width
+                                     :body/height
+                                     :body/flying?]]})
 
 (defc :creature/species
   {:schema [:qualified-keyword {:namespace :species}]}
