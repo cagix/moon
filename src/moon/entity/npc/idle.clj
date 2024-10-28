@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.npc.idle
+(ns moon.entity.npc.idle
   (:require [moon.component :refer [defc]]
             [moon.effect :as effect]
             [moon.entity :as entity]

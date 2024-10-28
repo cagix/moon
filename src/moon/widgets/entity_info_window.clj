@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.widgets.entity-info-window
+(ns moon.widgets.entity-info-window
   (:require [gdl.ui :as ui]
             [moon.component :as component :refer [defc]]
             [moon.graphics :as g]

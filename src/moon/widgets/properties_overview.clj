@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.widgets.properties-overview
+(ns moon.widgets.properties-overview
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :as component :refer [defc]]

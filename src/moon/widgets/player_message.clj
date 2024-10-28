@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.widgets.player-message
+(ns moon.widgets.player-message
   (:require [gdl.graphics :as gdx.graphics]
             [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]

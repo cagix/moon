@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.player.dead
+(ns moon.entity.player.dead
   (:require [moon.component :refer [defc]]
             [moon.entity :as entity]
             [moon.screen :as screen]))

@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.widgets.player-modal
+(ns moon.widgets.player-modal
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :refer [defc] :as component]

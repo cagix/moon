@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.player.moving
+(ns moon.entity.player.moving
   (:require [gdl.input :refer [WASD-movement-vector]]
             [moon.component :refer [defc]]
             [moon.entity :as entity]))

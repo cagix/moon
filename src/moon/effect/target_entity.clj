@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.effect.target-entity
+(ns moon.effect.target-entity
   (:require [gdl.math.vector :as v]
             [moon.component :refer [defc] :as component]
             [moon.effect :as effect :refer [source target]]

@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.npc.sleeping
+(ns moon.entity.npc.sleeping
   (:require [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
             [moon.graphics :as g]

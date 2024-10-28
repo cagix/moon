@@ -1,4 +1,4 @@
-(ns ^:no-doc dev.tree
+(ns dev.tree
   (:require [moon.graphics.gui-view :as gui-view]
             [moon.graphics.world-view :as world-view]
             [gdl.ui :as ui]

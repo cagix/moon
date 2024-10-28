@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.widgets.properties-tabs
+(ns moon.widgets.properties-tabs
   (:require [gdl.ui :as ui]
             [moon.component :as component :refer [defc]]
             [moon.db :as db]

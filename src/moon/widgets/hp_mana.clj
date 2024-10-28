@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.widgets.hp-mana
+(ns moon.widgets.hp-mana
   (:require [gdl.utils :refer [readable-number]]
             [gdl.ui :as ui]
             [moon.component :as component :refer [defc]]

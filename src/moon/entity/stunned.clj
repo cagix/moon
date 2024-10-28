@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.stunned
+(ns moon.entity.stunned
   (:require [moon.component :refer [defc]]
             [moon.entity :as entity]
             [moon.graphics.shape-drawer :as sd]

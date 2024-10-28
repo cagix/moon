@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.effect.damage
+(ns moon.effect.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.component :refer [defc] :as component]
             [moon.effect :refer [source target]]

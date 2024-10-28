@@ -1,4 +1,4 @@
-(ns ^:no-doc dev.experiment
+(ns dev.experiment
   (:require [gdl.app :refer [post-runnable]]
             [moon.component :as component]
             [moon.db :as db]

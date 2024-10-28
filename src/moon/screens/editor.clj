@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.screens.editor
+(ns moon.screens.editor
   (:require [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]

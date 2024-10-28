@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.entity.npc.moving
+(ns moon.entity.npc.moving
   (:require [moon.component :refer [defc]]
             [moon.entity :as entity]
             [moon.world.time :refer [timer stopped?]]))
