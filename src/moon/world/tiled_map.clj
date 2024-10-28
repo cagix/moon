@@ -1,4 +1,4 @@
-(ns moon.world.render
+(ns moon.world.tiled-map
   (:require [gdl.graphics.color :as color]
             [gdl.utils :refer [->tile]]
             [moon.graphics.tiled :as tiled-map-renderer]

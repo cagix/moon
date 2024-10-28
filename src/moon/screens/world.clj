@@ -17,7 +17,7 @@
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
             [moon.world.potential-fields :refer [update-potential-fields!]]
-            [moon.world.render :refer [render-tiled-map]]
+            [moon.world.tiled-map :refer [render-tiled-map]]
             [moon.world.time :as world.time]))
 
 (defn- check-window-hotkeys []
