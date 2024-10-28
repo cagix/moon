@@ -2,7 +2,7 @@
   (:require [moon.component :refer [defc] :as component]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.graphics :as g]
+            [moon.graphics.image :as image]
             [moon.graphics.shape-drawer :as sd]
             [moon.world :as world]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
@@ -18,7 +18,7 @@
                    90 ; start-angle
                    (* (float action-counter-ratio) 360) ; degree
                    [1 1 1 0.5])
-    (g/draw-image image [(- (float x) radius) y])))
+    (image/draw image [(- (float x) radius) y])))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time

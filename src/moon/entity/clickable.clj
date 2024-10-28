@@ -1,14 +1,14 @@
 (ns moon.entity.clickable
   (:require [moon.component :refer [defc]]
             [moon.entity :as entity]
-            [moon.graphics :as g]))
+            [moon.graphics.text :as text]))
 
 (defc :entity/clickable
   (entity/render [[_ {:keys [text]}]
                   {:keys [entity/mouseover?] :as entity}]
     (when (and mouseover? text)
       (let [[x y] (:position entity)]
-        (g/draw-text {:text text
-                      :x x
-                      :y (+ y (:half-height entity))
-                      :up? true})))))
+        (text/draw {:text text
+                    :x x
+                    :y (+ y (:half-height entity))
+                    :up? true})))))

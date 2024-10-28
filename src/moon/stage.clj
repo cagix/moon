@@ -1,11 +1,11 @@
 (ns moon.stage
   (:refer-clojure :exclude [get])
   (:require [gdl.input :as input]
+            [gdl.ui.stage :as stage]
             [gdl.utils :refer [dispose]]
-            [moon.graphics :as g]
+            [moon.graphics.batch :refer [batch]]
             [moon.graphics.gui-view :as gui-view]
-            [moon.screen :as screen]
-            [gdl.ui.stage :as stage]))
+            [moon.screen :as screen]))
 
 (defrecord StageScreen [stage sub-screen]
   screen/Screen
@@ -33,7 +33,7 @@
 (defn create
   "Actors or screen can be nil."
   [& {:keys [actors screen]}]
-  (let [stage (stage/create (gui-view/viewport) g/batch)]
+  (let [stage (stage/create (gui-view/viewport) batch)]
     (run! #(stage/add! stage %) actors)
     (map->StageScreen {:stage stage
                        :sub-screen screen})))

@@ -3,12 +3,13 @@
             [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]
             [moon.stage :as stage]
-            [moon.screen :as screen]))
+            [moon.screen :as screen]
+            [moon.widgets.background-image :as background-image]))
 
 (defc :screens/editor
-  (component/create [[_ background-image]]
+  (component/create [_]
     (stage/create :actors
-                  [(background-image)
+                  [(background-image/create)
                    (component/create [:widgets/properties-tabs nil])
                    (ui/actor {:act (fn []
                                      (when (key-just-pressed? :shift-left)

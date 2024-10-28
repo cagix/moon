@@ -2,7 +2,9 @@
   (:refer-clojure :exclude [load])
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.utils :as utils])
+            [gdl.utils :as utils :refer [dispose]]
+            [moon.app :as app]
+            [moon.component :refer [defc]])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)))
 
@@ -15,11 +17,12 @@
                   (utils/recursively-search folder exts))]
     [file class]))
 
-(defn load [folder]
-  (bind-root #'manager (assets/manager (search folder))))
+(defc :moon.assets
+  (app/create [[_ folder]]
+    (bind-root #'manager (assets/manager (search folder))))
 
-(defn dispose []
-  (utils/dispose manager))
+  (app/dispose [_]
+    (dispose manager)))
 
 (defn play-sound! [path]
   (Sound/.play (get manager path)))

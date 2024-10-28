@@ -1,7 +1,7 @@
 (ns moon.entity.npc.sleeping
   (:require [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
-            [moon.graphics :as g]
+            [moon.graphics.text :as text]
             [moon.world.grid :as grid]
             [moon.world.time :refer [stopped? timer]]))
 
@@ -48,7 +48,7 @@
 
   (entity/render-above [_ entity]
     (let [[x y] (:position entity)]
-      (g/draw-text {:text "zzz"
-                    :x x
-                    :y (+ y (:half-height entity))
-                    :up? true}))))
+      (text/draw {:text "zzz"
+                  :x x
+                  :y (+ y (:half-height entity))
+                  :up? true}))))

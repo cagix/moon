@@ -3,7 +3,6 @@
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-just-pressed?]]
             [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.tiled :as tiled-map-renderer]
             [moon.graphics.world-view :as world-view]
@@ -49,10 +48,8 @@
   (render [_]
     (tiled-map-renderer/draw world/tiled-map
                              (->tile-corner-color-setter @world/explored-tile-corners))
-    (g/render-world-view! (fn []
-                            (sd/filled-circle (cam/position (world-view/camera))
-                                              0.5
-                                              :green)))
+    (world-view/render (fn []
+                         (sd/filled-circle (cam/position (world-view/camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
       (screen/change :screens/world))))

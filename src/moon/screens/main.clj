@@ -7,7 +7,8 @@
             [moon.stage :as stage]
             [moon.db :as db]
             [moon.graphics.cursors :as cursors]
-            [moon.screen :as screen]))
+            [moon.screen :as screen]
+            [moon.widgets.background-image :as background-image]))
 
 (defn- ->buttons []
   (ui/table {:rows (remove nil? (concat
@@ -30,9 +31,9 @@
   (screen/dispose [_]))
 
 (defc :screens/main-menu
-  (component/create [[_ background-image]]
+  (component/create [_]
     (stage/create :actors
-                  [(background-image)
+                  [(background-image/create)
                    (->buttons)
                    (ui/actor {:act (fn []
                                      (when (key-just-pressed? :keys/escape)

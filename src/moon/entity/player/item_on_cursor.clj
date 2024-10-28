@@ -3,8 +3,8 @@
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
             [moon.graphics.gui-view :as gui-view]
+            [moon.graphics.image :as image]
             [moon.graphics.world-view :as world-view]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]
@@ -98,14 +98,14 @@
 
   (entity/render-below [_ entity]
     (when (world-item?)
-      (g/draw-centered-image (:entity/image item) (item-place-position entity)))))
+      (image/draw-centered (:entity/image item) (item-place-position entity)))))
 
 (defn- draw-item-on-cursor []
   (let [player-e* @world/player]
     (when (and (= :player-item-on-cursor (entity/state-k player-e*))
                (not (world-item?)))
-      (g/draw-centered-image (:entity/image (:entity/item-on-cursor player-e*))
-                             (gui-view/mouse-position)))))
+      (image/draw-centered (:entity/image (:entity/item-on-cursor player-e*))
+                           (gui-view/mouse-position)))))
 
 (defc :widgets/draw-item-on-cursor
   (component/create [_]

@@ -6,7 +6,7 @@
             [gdl.utils :refer [readable-number]]
             [moon.component :as component :refer [defc]]
             [moon.db :as db]
-            [moon.graphics :as g]
+            [moon.graphics.image :as img]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
@@ -20,7 +20,7 @@
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (g/image (str "images/" icon ".png")) {})
+   (let [icon (ui/image->widget (img/image (str "images/" icon ".png")) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (.addActor table (ui/actor {:act #(.setText label (text-fn))}))

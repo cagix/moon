@@ -9,7 +9,6 @@
             [gdl.tiled :as t]
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
-            [moon.graphics :as g]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.tiled :as tiled-map-renderer]
@@ -150,7 +149,7 @@ direction keys: move")
   (screen/render [_]
     (tiled-map-renderer/draw (:tiled-map @current-data)
                              (constantly color/white))
-    (g/render-world-view! render-on-map)
+    (world-view/render render-on-map)
     (if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
     (if (key-just-pressed? :keys/m)

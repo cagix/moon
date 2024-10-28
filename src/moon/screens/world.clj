@@ -7,7 +7,6 @@
             [moon.component :refer [defc] :as component]
             [moon.db :as db]
             [moon.entity :as entity]
-            [moon.graphics :as g]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
@@ -84,11 +83,11 @@
   (cam/set-position! (world-view/camera) (:position @world/player))
   ; FIXME position DRY
   (render-tiled-map (cam/position (world-view/camera)))
-  (g/render-world-view! (fn []
-                          (debug-render/before-entities)
-                          ; FIXME position DRY (from player)
-                          (entities/render (map deref (world/active-entities)))
-                          (debug-render/after-entities))))
+  (world-view/render (fn []
+                       (debug-render/before-entities)
+                       ; FIXME position DRY (from player)
+                       (entities/render (map deref (world/active-entities)))
+                       (debug-render/after-entities))))
 
 (deftype WorldScreen []
   screen/Screen

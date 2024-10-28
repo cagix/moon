@@ -26,11 +26,11 @@
 
 (defn set-screens
   "Calls `change` to first "
-  [screen-ks params]
+  [screen-ks]
   {:pre [(vector? screen-ks)]}
   (bind-root #'screens (into {}
                              (for [k screen-ks]
-                               [k (component/create [k params])])))
+                               [k (component/create [k])])))
   (change (ffirst screens)))
 
 (defn dispose-all []

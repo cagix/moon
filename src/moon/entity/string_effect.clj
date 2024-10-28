@@ -1,6 +1,6 @@
 (ns moon.entity.string-effect
   (:require [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
+            [moon.graphics.text :as text]
             [moon.graphics.world-view :as world-view]
             [moon.entity :as entity]
             [moon.world.time :as time :refer [timer stopped?]]))
@@ -12,11 +12,11 @@
 
   (entity/render-above [[_ {:keys [text]}] entity]
     (let [[x y] (:position entity)]
-      (g/draw-text {:text text
-                    :x x
-                    :y (+ y (:half-height entity) (world-view/pixels->units 5))
-                    :scale 2
-                    :up? true}))))
+      (text/draw {:text text
+                  :x x
+                  :y (+ y (:half-height entity) (world-view/pixels->units 5))
+                  :scale 2
+                  :up? true}))))
 
 (defc :tx/add-text-effect
   (component/handle [[_ eid text]]

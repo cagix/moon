@@ -2,7 +2,7 @@
   (:require [gdl.graphics :as gdx.graphics]
             [gdl.ui :as ui]
             [moon.component :refer [defc] :as component]
-            [moon.graphics :as g]
+            [moon.graphics.text :as text]
             [moon.graphics.gui-view :as gui-view]))
 
 (def ^:private duration-seconds 1.5)
@@ -11,11 +11,11 @@
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
-    (g/draw-text {:x (/ (gui-view/width) 2)
-                  :y (+ (/ (gui-view/height) 2) 200)
-                  :text message
-                  :scale 2.5
-                  :up? true})))
+    (text/draw {:x (/ (gui-view/width) 2)
+                :y (+ (/ (gui-view/height) 2) 200)
+                :text message
+                :scale 2.5
+                :up? true})))
 
 (defn- check-remove-message []
   (when-let [{:keys [counter]} message-to-player]

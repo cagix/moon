@@ -5,8 +5,8 @@
             [gdl.ui.actor :as a]
             [moon.component :refer [defc] :as component]
             [moon.entity :as entity]
-            [moon.graphics :as g]
             [moon.graphics.gui-view :as gui-view]
+            [moon.graphics.image :as image]
             [moon.graphics.shape-drawer :as sd]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.stage :as stage]
@@ -62,8 +62,8 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (-> (g/sprite-sheet "images/items.png" 48 48)
-      (g/sprite (slot->sprite-idx slot))))
+  (-> (image/sprite-sheet "images/items.png" 48 48)
+      (image/sprite (slot->sprite-idx slot))))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
