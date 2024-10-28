@@ -31,6 +31,7 @@
  :screens [:screens/main-menu
            :screens/map-editor
            :screens/editor
+           :screens/minimap
            :screens/world]
  :ui :skin-scale/x1
  :components [

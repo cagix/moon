@@ -105,8 +105,8 @@
     (cond (key-just-pressed? :keys/escape)
           (close-windows)
 
-          #_(key-just-pressed? :keys/tab)
-          #_(screen/change :screens/minimap)))
+          (key-just-pressed? :keys/tab)
+          (screen/change :screens/minimap)))
 
   (screen/dispose [_]
     (world/clear-tiled-map)))

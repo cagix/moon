@@ -1,4 +1,14 @@
-(ns ^:no-doc moon.screens.minimap)
+(ns moon.screens.minimap
+  (:require [gdl.graphics.camera :as cam]
+            [gdl.graphics.color :as color]
+            [gdl.input :refer [key-just-pressed?]]
+            [moon.component :refer [defc] :as component]
+            [moon.graphics :as g]
+            [moon.graphics.shape-drawer :as sd]
+            [moon.graphics.tiled :as tiled-map-renderer]
+            [moon.graphics.world-view :as world-view]
+            [moon.screen :as screen]
+            [moon.world :as world]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight
@@ -9,7 +19,7 @@
 
 ; we want min/max explored tiles X / Y and show the whole explored area....
 
-#_(defn- minimap-zoom []
+(defn- minimap-zoom []
   (let [positions-explored (map first
                                 (remove (fn [[position value]]
                                           (false? value))
@@ -24,29 +34,29 @@
                        :right right
                        :bottom bottom)))
 
-#_(defn- ->tile-corner-color-setter [explored?]
+(defn- ->tile-corner-color-setter [explored?]
   (fn tile-corner-color-setter [color x y]
     (if (get explored? [x y]) color/white color/black)))
 
-#_(deftype Screen []
-    (show [_]
-      (cam/set-zoom! (world-view/camera) (minimap-zoom)))
+(deftype Minimap []
+  screen/Screen
+  (enter [_]
+    (cam/set-zoom! (world-view/camera) (minimap-zoom)))
 
-    (hide [_]
-      (cam/reset-zoom! (world-view/camera)))
+  (exit [_]
+    (cam/reset-zoom! (world-view/camera)))
 
-    ; TODO fixme not subscreen
-    (render [_]
-      (tiled-map-renderer/draw world/tiled-map
-                               (->tile-corner-color-setter @world/explored-tile-corners))
-      (g/render-world-view! (fn []
-                              (sd/filled-circle (cam/camera-position (world-view/camera))
-                                                0.5
-                                                :green)))
-      (when (or (key-just-pressed? :keys/tab)
-                (key-just-pressed? :keys/escape))
-        (screen/change :screens/world))))
+  (render [_]
+    (tiled-map-renderer/draw world/tiled-map
+                             (->tile-corner-color-setter @world/explored-tile-corners))
+    (g/render-world-view! (fn []
+                            (sd/filled-circle (cam/position (world-view/camera))
+                                              0.5
+                                              :green)))
+    (when (or (key-just-pressed? :keys/tab)
+              (key-just-pressed? :keys/escape))
+      (screen/change :screens/world))))
 
-#_(defc :screens/minimap
+(defc :screens/minimap
   (component/create [_]
-    (->Screen)))
+    (->Minimap)))
