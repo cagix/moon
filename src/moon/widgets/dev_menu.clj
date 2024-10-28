@@ -63,7 +63,7 @@
     (.addMenu menu-bar app-menu)
     (let [world (Menu. "World")]
       (doseq [{:keys [property/id]} (db/all :properties/worlds)]
-        (.addItem world (menu-item (str "Start " id) #(world/start id))))
+        (.addItem world (menu-item (str "Start " id) #(component/->handle [[:world/start id]]))))
       (.addMenu menu-bar world))
     (let [help (Menu. "Help")]
         (.addItem help (MenuItem. "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"))

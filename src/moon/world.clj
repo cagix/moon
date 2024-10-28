@@ -1,15 +1,11 @@
 (ns moon.world
-  (:require [data.grid2d :as g2d]
-            [gdl.graphics.camera :as cam]
-            [gdl.tiled :as tiled]
+  (:require [gdl.graphics.camera :as cam]
             [gdl.utils :refer [dispose]]
             [moon.component :refer [defc] :as component]
             [moon.graphics.world-view :as world-view]
-            [moon.level :as level]
-            [moon.screen :as screen]
             [moon.stage :as stage]
             [moon.world.content-grid :as content-grid]
-            [moon.world.grid :as grid :refer [grid]]
+            [moon.world.grid :as grid]
             [moon.world.raycaster :as raycaster]
             [moon.world.time :as world.time]))
 
@@ -83,37 +79,6 @@
 
 (declare explored-tile-corners)
 (declare entity-tick-error)
-
-(defn- create-grid [tiled-map]
-  (g2d/create-grid
-   (tiled/width tiled-map)
-   (tiled/height tiled-map)
-   (fn [position]
-     (atom (grid/->cell position
-                        (case (level/movement-property tiled-map position)
-                          "none" :none
-                          "air"  :air
-                          "all"  :all))))))
-
-(defn start [world-id]
-  (screen/change :screens/world)
-  (stage/reset (component/create [:world/widgets]))
-  (let [{:keys [tiled-map] :as level} (level/generate world-id)]
-    (clear-tiled-map)
-    (bind-root #'tiled-map tiled-map)
-    (bind-root #'grid (create-grid tiled-map))
-    (bind-root #'raycaster (raycaster/create grid grid/blocks-vision?))
-    (let [width  (tiled/width  tiled-map)
-          height (tiled/height tiled-map)]
-      (bind-root #'explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
-      (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
-                                                      :width  width
-                                                      :height height})))
-    (bind-root #'entity-tick-error nil)
-    (bind-root #'world.time/elapsed 0)
-    (bind-root #'logic-frame 0)
-    (bind-root #'ids->eids {})
-    (component/->handle [[:tx/spawn-creatures level]])))
 
 ; => I could call this as a tx on WORLD components
 (defc :tx/add-to-world
