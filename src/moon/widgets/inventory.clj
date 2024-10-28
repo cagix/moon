@@ -10,6 +10,7 @@
             [moon.graphics.shape-drawer :as sd]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.stage :as stage]
+            [moon.widgets.windows :as windows]
             [moon.world :as world]))
 
 ; Items are also smaller than 48x48 all of them
@@ -119,8 +120,7 @@
                          :pad 4}]]})))
 
 (defn- cell-widget [cell]
-  (get (::table (world/get-window :inventory-window))
-       cell))
+  (get (::table (windows/inventory)) cell))
 
 (defc :tx/set-item-image-in-widget
   (component/handle [[_ cell item]]

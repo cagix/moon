@@ -1,7 +1,8 @@
 (ns moon.world.widgets
   (:require [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
-            [moon.component :refer [defc] :as component]))
+            [moon.component :refer [defc] :as component]
+            [moon.widgets.windows :as windows]))
 
 (defc :world/widgets
   (component/create [_]
@@ -15,8 +16,6 @@
                 :cell-defaults {:pad 2}
                 :fill-parent? true})
      (component/create [:widgets/hp-mana])
-     (ui/group {:id :windows
-                :actors [(component/create [:widgets/entity-info-window])
-                         (component/create [:widgets/inventory])]})
+     (windows/create)
      (component/create [:widgets/draw-item-on-cursor])
      (component/create [:widgets/player-message])]))

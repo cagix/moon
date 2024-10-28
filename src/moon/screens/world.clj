@@ -2,33 +2,20 @@
   (:require [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
             [moon.component :refer [defc] :as component]
-            [moon.db :as db]
             [moon.entity :as entity]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
             [moon.stage :as stage]
             [moon.widgets.error-window :refer [error-window!]]
+            [moon.widgets.windows :as windows]
             [moon.world :as world]
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tiled-map :refer [render-tiled-map]]
             [moon.world.time :as world.time]))
-
-(defn- check-window-hotkeys []
-  (doseq [[hotkey window-id] {:keys/i :inventory-window
-                              :keys/e :entity-info-window}
-          :when (key-just-pressed? hotkey)]
-    (a/toggle-visible! (get (:windows (stage/get)) window-id))))
-
-(defn- close-windows []
-  (let [windows (ui/children (:windows (stage/get)))]
-    (when (some a/visible? windows)
-      (run! #(a/set-visible! % false) windows))))
 
 (defn- adjust-zoom [camera by] ; DRY map editor
   (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
@@ -100,9 +87,9 @@
     (render-world)
     (component/->handle update-world)
     (check-zoom-keys)
-    (check-window-hotkeys)
+    (windows/check-hotkeys)
     (cond (key-just-pressed? :keys/escape)
-          (close-windows)
+          (windows/close-all)
 
           (key-just-pressed? :keys/tab)
           (screen/change :screens/minimap)))

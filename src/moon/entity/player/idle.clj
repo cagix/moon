@@ -8,6 +8,7 @@
             [moon.entity :as entity]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
+            [moon.widgets.windows :as windows]
             [moon.world :as world :refer [mouseover-eid]]))
 
 (defn- denied [text]
@@ -21,7 +22,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (a/visible? (world/get-window :inventory-window))
+     (a/visible? (windows/inventory))
      [[:tx/sound "sounds/bfxr_takeit.wav"]
       [:e/destroy eid]
       [:tx/event world/player :pickup-item item]]
@@ -36,7 +37,7 @@
       [:tx/msg-to-player "Your Inventory is full"]])))
 
 (defmethod on-clicked :clickable/player [_]
-  (a/toggle-visible! (world/get-window :inventory-window))) ; TODO no tx
+  (a/toggle-visible! (windows/inventory))) ; TODO no tx
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))

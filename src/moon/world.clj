@@ -3,7 +3,6 @@
             [gdl.utils :refer [dispose]]
             [moon.component :refer [defc] :as component]
             [moon.graphics.world-view :as world-view]
-            [moon.stage :as stage]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]
             [moon.world.raycaster :as raycaster]
@@ -106,6 +105,3 @@
     (content-grid/update-entity! content-grid eid)
     (grid/entity-position-changed eid)
    nil))
-
-(defn get-window [k]
-  (get (:windows (stage/get)) k))
