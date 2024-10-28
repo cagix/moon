@@ -9,11 +9,6 @@
 (defn bind-root [avar value]
   (.bindRoot avar value))
 
-; TODO dispose
-; & search what else I ':refer' -> key prseed? etc. ! :D
-; edn/read ? io-resource? str/replace ? str-join ?
-; pprint ?
-
 (def defc-ns-docs? true)
 
 (defmacro defsystem
