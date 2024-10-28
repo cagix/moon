@@ -63,10 +63,11 @@
 (defn- load-components [components]
   (doseq [component components
           :let [[ns-sym v] (if (symbol? component)
-                             [component nil]
-                             component)]]
-    (require (symbol (str "moon." ns-sym)))
-    (component/on-load [(keyword (str "moon." (str ns-sym))) v])))
+                             [component]
+                             component)
+                ns-str (str "mooon." ns-sym)]]
+    (require (symbol ns-str))
+    (component/on-load [(keyword ns-str) v])))
 
 (defn -main []
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]
