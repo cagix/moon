@@ -1,8 +1,9 @@
 (ns dev.tree
-  (:require [moon.graphics.gui-view :as gui-view]
-            [moon.graphics.world-view :as world-view]
+  (:require [dev.app-values-tree :refer [ns-value-vars]]
             [gdl.ui :as ui]
             [gdl.ui.stage]
+            [moon.graphics.gui-view :as gui-view]
+            [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
             [moon.world.mouseover :as mouseover]
             [moon.world.grid :as grid]))
@@ -11,6 +12,7 @@
 
  (show-tree-view! :entity)
  (show-tree-view! :tile)
+ (show-tree-view! :ns-value-vars)
  )
 
 (defn- ->v-str [v]
@@ -44,11 +46,11 @@
   (zipmap (map str children)
           children))
 
-(defn- ->nested-nodes [node level v]
+(defn- add-nodes [node level v]
   (when (map? v)
     (add-map-nodes! node v (inc level)))
 
-  (when (and (vector? v) (>= (count v) 3))
+  (when (and (coll? v) (>= (count v) 3))
     (add-elements! node v))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
@@ -73,18 +75,13 @@
        (let [node (ui/t-node (ui/label (labelstr k v)))]
          (.add parent-node node) ; no t-node-add!: tree cannot be casted to tree-node ... , Tree itself different .add
          #_(when (instance? clojure.lang.Atom v) ; StackOverFLow
-           (->nested-nodes node level @v))
-         (->nested-nodes node level v))
+           (add-nodes node level @v))
+         (add-nodes node level v))
        (catch Throwable t
          (throw (ex-info "" {:k k :v v} t))
          #_(.add parent-node (ui/t-node (ui/label (str "[RED] "k " - " t))))
 
          )))))
-
-(defn- ->prop-tree [prop]
-  (let [tree (ui/tree)]
-    (add-map-nodes! tree prop 0)
-    tree))
 
 (defn- scroll-pane-cell [rows]
   (let [table (ui/table {:rows rows
@@ -99,13 +96,17 @@
 
 (defn- show-tree-view! [obj]
   (let [object (case obj
+                 :ns-value-vars (into {} (ns-value-vars))
                  :entity (mouseover/entity)
-                 :tile @(grid/cell (mapv int (world-view/mouse-position))))]
+                 :tile @(grid/cell (mapv int (world-view/mouse-position))))
+        object (into (sorted-map) object)
+        tree (ui/tree)]
+    (add-map-nodes! tree object 0)
     (stage/add!
      (ui/window {:title "Tree View"
                  :close-button? true
                  :close-on-escape? true
                  :center? true
-                 :rows [[(scroll-pane-cell [[(->prop-tree (into (sorted-map) object))]])]]
+                 :rows [[(scroll-pane-cell [[tree]])]]
                  :pack? true}))
     nil))
