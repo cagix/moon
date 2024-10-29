@@ -40,6 +40,16 @@
     (println "WARNING: Overwriting defc" k "attr-map"))
   (alter-var-root #'component-attrs assoc k attr-map))
 
+; FIXME plain ones
+; (defc-ns-sym :ui)
+; => moon..ui
+(defn defc-ns-sym [k]
+  (symbol (str "moon." (namespace k) "." (name k))))
+
+(defn defc-check-ns [k]
+  (when-not (= (ns-name *ns*) (defc-ns-sym k))
+    (println (ns-name *ns*) ":" k)))
+
 (defmacro defc [k & sys-impls]
   (let [attr-map? (not (list? (first sys-impls)))
         attr-map  (if attr-map? (first sys-impls) {})
@@ -47,6 +57,7 @@
         let-bindings (:let attr-map)
         attr-map (dissoc attr-map :let)]
     `(do
+      #_(defc-check-ns ~k)
       (when ~attr-map?
         (defc* ~k ~attr-map))
       (when defc-ns-docs?
