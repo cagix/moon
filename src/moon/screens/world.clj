@@ -4,6 +4,7 @@
             [moon.controls :as controls]
             [moon.component :as component]
             [moon.entity :as entity]
+            [moon.entity.movement :as movement]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
@@ -32,7 +33,7 @@
 
 (defn- update-time []
   (alter-var-root #'world/logic-frame inc)
-  (let [delta (min (delta-time) entity/max-delta-time)]
+  (let [delta (min (delta-time) movement/max-delta-time)]
     (bind-root      #'world/delta-time delta)
     (alter-var-root #'world.time/elapsed + delta)))
 

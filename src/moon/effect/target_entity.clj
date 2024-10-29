@@ -1,8 +1,8 @@
 (ns moon.effect.target-entity
   (:require [gdl.math.vector :as v]
             [moon.component :as component]
+            [moon.body :as body]
             [moon.effect :as effect :refer [source target]]
-            [moon.entity :as entity]
             [moon.graphics.shape-drawer :as sd]
             [moon.world :as world]))
 
@@ -18,12 +18,12 @@
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
   (v/add (:position entity)
-         (v/scale (entity/direction entity target*)
+         (v/scale (body/direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
   (v/add (start-point entity target*)
-         (v/scale (entity/direction entity target*)
+         (v/scale (body/direction entity target*)
                   maxrange)))
 
 (defc :maxrange {:schema pos?}

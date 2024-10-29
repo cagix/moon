@@ -1,6 +1,7 @@
 (ns moon.entity.projectile
   (:require [gdl.utils :refer [find-first]]
             [moon.component :as component]
+            [moon.body :as body]
             [moon.entity :as entity]
             [moon.world.grid :as grid]))
 
@@ -21,7 +22,7 @@
                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                              (:entity/faction @%))
                                        (:collides? @%)
-                                       (entity/collides? entity @%))
+                                       (body/collides? entity @%))
                                  (grid/cells->entities cells*))
           destroy? (or (and hit-entity (not piercing?))
                        (some #(grid/blocked? % (:z-order entity)) cells*))]

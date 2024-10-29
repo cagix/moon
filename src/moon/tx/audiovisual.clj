@@ -1,7 +1,7 @@
 (ns moon.tx.audiovisual
   (:require [moon.component :as component]
-            [moon.db :as db]
-            [moon.entity :as entity]))
+            [moon.body :as body]
+            [moon.db :as db]))
 
 (defc :tx/audiovisual
   (component/handle [[_ position id]]
@@ -9,6 +9,6 @@
       [[:tx/sound sound]
        [:e/create
         position
-        entity/effect-body-props
+        body/effect-body-props
         {:entity/animation animation
          :entity/delete-after-animation-stopped? true}]])))

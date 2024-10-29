@@ -1,5 +1,6 @@
 (ns moon.entity.npc.idle
   (:require [moon.effect :as effect]
+            [moon.body :as body]
             [moon.entity :as entity]
             [moon.entity.faction :as faction]
             [moon.entity.follow-ai :as follow-ai]
@@ -7,7 +8,7 @@
             [moon.world.grid :as grid]))
 
 (defn- nearest-enemy [entity]
-  (grid/nearest-entity @(grid/cell (entity/tile entity))
+  (grid/nearest-entity @(grid/cell (body/tile entity))
                        (faction/enemy entity)))
 
 (defn- effect-ctx [eid]
@@ -17,7 +18,7 @@
                  target)]
     {:effect/source eid
      :effect/target target
-     :effect/target-direction (when target (entity/direction entity @target))}))
+     :effect/target-direction (when target (body/direction entity @target))}))
 
 (comment
  (let [eid (entity/get-entity 76)

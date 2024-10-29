@@ -1,5 +1,6 @@
 (ns moon.entity.npc.sleeping
   (:require [moon.component :as component]
+            [moon.body :as body]
             [moon.entity :as entity]
             [moon.entity.faction :as faction]
             [moon.graphics.text :as text]
@@ -26,7 +27,7 @@
   (component/handle [[_ position faction delay-seconds]]
     [[:e/create
       position
-      entity/effect-body-props
+      body/effect-body-props
       {:entity/alert-friendlies-after-duration
        {:counter (timer delay-seconds)
         :faction faction}}]]))
@@ -42,7 +43,7 @@
 
   (entity/tick [_ eid]
     (let [entity @eid
-          cell (grid/cell (entity/tile entity))] ; pattern!
+          cell (grid/cell (body/tile entity))] ; pattern!
       (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
         (when (<= distance (entity/stat entity :stats/aggro-range))
           [[:tx/event eid :alert]]))))

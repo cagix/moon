@@ -1,6 +1,7 @@
 (ns moon.tx.entity
   (:require [gdl.utils :refer [safe-merge dissoc-in]]
             [moon.component :as component]
+            [moon.body :as body]
             [moon.entity :as entity]
             [moon.world :as world]))
 
@@ -20,7 +21,7 @@
                  (not (contains? components :entity/id))))
     (let [eid (atom (-> body
                         (assoc :position position)
-                        entity/->Body
+                        body/create
                         (safe-merge (-> components
                                         (assoc :entity/id (unique-number!))
                                         (create-vs)))))]

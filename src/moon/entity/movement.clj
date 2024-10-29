@@ -2,9 +2,18 @@
   (:require [gdl.math.vector :as v]
             [malli.core :as m]
             [moon.component :as component]
+            [moon.body :as body]
             [moon.entity :as entity]
             [moon.world :as world]
             [moon.world.grid :as grid]))
+
+; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
+(def max-delta-time 0.04)
+
+; set max speed so small entities are not skipped by projectiles
+; could set faster than max-speed if I just do multiple smaller movement steps in one frame
+(def ^:private max-speed (/ body/minimum-size max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -24,7 +33,7 @@
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
                                  (:collides? other-entity)
-                                 (entity/collides? other-entity body)))))))))
+                                 (body/collides? other-entity body)))))))))
 
 (defn- try-move [body movement]
   (let [new-body (move-body body movement)]
@@ -45,7 +54,7 @@
 (defc :entity/movement
   {:let {:keys [direction speed rotate-in-movement-direction?] :as movement}}
   (entity/tick [_ eid]
-    (assert (m/validate entity/movement-speed-schema speed)
+    (assert (m/validate speed-schema speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))
                 (v/normalised? direction)))

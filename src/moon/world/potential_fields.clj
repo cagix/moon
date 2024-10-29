@@ -1,5 +1,5 @@
 (ns moon.world.potential-fields
-  (:require [moon.entity :as entity]
+  (:require [moon.body :as body]
             [moon.world.grid :refer [blocked?
                                      cached-adjacent-cells
                                      grid
@@ -54,7 +54,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(entity/tile @%) entities)
+            (zipmap (map #(body/tile @%) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -128,7 +128,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(entity/tile @%) entities)
+    (zipmap (map #(body/tile @%) entities)
             entities)))
 
 (defn- update-faction-potential-field [faction entities max-iterations]

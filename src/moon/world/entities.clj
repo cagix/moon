@@ -2,6 +2,7 @@
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [gdl.utils :refer [sort-by-order]]
             [moon.component :as component]
+            [moon.body :as body]
             [moon.entity :as entity]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
@@ -14,7 +15,7 @@
         hits (remove #(= (:z-order @%) :z-order/effect) ; or: only items/creatures/projectiles.
                      (grid/point->entities
                       (world-view/mouse-position)))]
-    (->> entity/render-order
+    (->> body/render-order
          (sort-by-order hits #(:z-order @%))
          reverse
          (filter #(world/line-of-sight? player @%))
@@ -53,7 +54,7 @@
   (let [player @world/player]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
-                                              entity/render-order)
+                                              body/render-order)
             system entity/render-systems
             entity entities
             :when (or (= z-order :z-order/effect)
