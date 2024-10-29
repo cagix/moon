@@ -1,6 +1,7 @@
 (ns moon.entity.npc.sleeping
   (:require [moon.component :as component]
             [moon.entity :as entity]
+            [moon.entity.faction :as faction]
             [moon.graphics.text :as text]
             [moon.world.grid :as grid]
             [moon.world.time :refer [stopped? timer]]))
@@ -42,7 +43,7 @@
   (entity/tick [_ eid]
     (let [entity @eid
           cell (grid/cell (entity/tile entity))] ; pattern!
-      (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
+      (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
         (when (<= distance (entity/stat entity :stats/aggro-range))
           [[:tx/event eid :alert]]))))
 

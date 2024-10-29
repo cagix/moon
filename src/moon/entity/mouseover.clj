@@ -1,5 +1,6 @@
 (ns moon.entity.mouseover
   (:require [moon.entity :as entity]
+            [moon.entity.faction :as faction]
             [moon.graphics.shape-drawer :as sd]
             [moon.world :as world]))
 
@@ -15,9 +16,9 @@
         #(sd/ellipse (:position entity)
                      (:half-width entity)
                      (:half-height entity)
-                     (cond (= faction (entity/enemy player))
+                     (cond (= faction (faction/enemy player))
                            enemy-color
-                           (= faction (entity/friend player))
+                           (= faction (:entity/faction player))
                            friendly-color
                            :else
                            neutral-color))))))

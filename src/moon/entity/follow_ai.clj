@@ -2,7 +2,7 @@
   (:require [data.grid2d :as g2d]
             [gdl.math.vector :as v]
             [gdl.utils :refer [->tile indexed utils-positions when-seq]]
-            [moon.entity :as entity]
+            [moon.entity.faction :as faction]
             [moon.world.grid :as grid :refer [occupied-by-other?
                                               nearest-entity-distance
                                               nearest-entity
@@ -56,7 +56,7 @@
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [eid own-cell]
-  (let [faction (entity/enemy @eid)
+  (let [faction (faction/enemy @eid)
         distance-to    #(nearest-entity-distance @% faction)
         nearest-entity #(nearest-entity          @% faction)
         own-dist (distance-to own-cell)
@@ -93,7 +93,7 @@
          (= cell (first cells)))))
 
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
-(defn- direction-vector [eid] ; TODO pass faction here, one less dependency.
+(defn direction-vector [eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
         own-cell (grid/cell (->tile position))
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
@@ -109,5 +109,3 @@
                     (occupied-by-other? @own-cell eid)) ; prevent friction 2 move to center
        (when-not (inside-cell? @eid target-cell)
          (v/direction position (:middle @target-cell)))))))
-
-(bind-root #'entity/ai-direction-vector direction-vector)

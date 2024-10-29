@@ -106,18 +106,9 @@
 (defn collides? [entity other-entity]
   (shape/overlaps? entity other-entity))
 
-(defn enemy [{:keys [entity/faction]}]
-  (case faction
-    :evil :good
-    :good :evil))
-
-(defn friend [{:keys [entity/faction]}]
-  faction)
-
 (declare selected-skill
          can-pickup-item?
          has-skill?
-         ai-direction-vector
          stat
          modified-value)
 

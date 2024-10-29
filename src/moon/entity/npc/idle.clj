@@ -1,12 +1,14 @@
 (ns moon.entity.npc.idle
   (:require [moon.effect :as effect]
             [moon.entity :as entity]
+            [moon.entity.faction :as faction]
+            [moon.entity.follow-ai :as follow-ai]
             [moon.world :as world]
             [moon.world.grid :as grid]))
 
 (defn- nearest-enemy [entity]
   (grid/nearest-entity @(grid/cell (entity/tile entity))
-                       (entity/enemy entity)))
+                       (faction/enemy entity)))
 
 (defn- effect-ctx [eid]
   (let [entity @eid
@@ -45,4 +47,4 @@
                        (assert (bound? #'effect/source))
                        (npc-choose-skill @eid))]
         [[:tx/event eid :start-action [skill effect-ctx]]]
-        [[:tx/event eid :movement-direction (entity/ai-direction-vector eid)]]))))
+        [[:tx/event eid :movement-direction (follow-ai/direction-vector eid)]]))))

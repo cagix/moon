@@ -1,7 +1,7 @@
 (ns moon.effect.convert
   (:require [moon.component :as component]
-            [moon.entity :as entity]
-            [moon.effect :refer [source target]]))
+            [moon.effect :refer [source target]]
+            [moon.entity.faction :as faction]))
 
 (defc :effect.entity/convert
   {:schema :some}
@@ -11,8 +11,8 @@
   (component/applicable? [_]
     (and target
          (= (:entity/faction @target)
-            (entity/enemy @source))))
+            (faction/enemy @source))))
 
   (component/handle [_]
     [[:tx/audiovisual (:position @target) :audiovisuals/convert]
-     [:e/assoc target :entity/faction (entity/friend @source)]]))
+     [:e/assoc target :entity/faction (:entity/faction @source)]]))
