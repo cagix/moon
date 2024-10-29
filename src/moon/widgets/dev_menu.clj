@@ -11,8 +11,8 @@
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
-            [moon.screens.world :as screens.world]
-            [moon.world :as world]
+            [moon.screens.world :as world]
+            [moon.world.mouseover :as mouseover]
             [moon.world.time :as world.time])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 
@@ -40,7 +40,7 @@
         (str "TRUE - name:" (.getName actor)
              "id: " (a/id actor)))
     (add-upd-label table
-                   #(str "Mouseover-entity id: " (when-let [entity (world/mouseover-entity)] (:entity/id entity)))
+                   #(str "Mouseover-entity id: " (when-let [entity (mouseover/entity)] (:entity/id entity)))
                    "mouseover")
     (add-upd-label table
                    #(str "elapsed-time " (readable-number world.time/elapsed) " seconds")
@@ -65,7 +65,7 @@
     (.addMenu menu-bar app-menu)
     (let [world (Menu. "World")]
       (doseq [{:keys [property/id]} (db/all :properties/worlds)]
-        (.addItem world (menu-item (str "Start " id) #(screens.world/start id))))
+        (.addItem world (menu-item (str "Start " id) #(world/start id))))
       (.addMenu menu-bar world))
     (let [help (Menu. "Help")]
         (.addItem help (MenuItem. controls/help-text))

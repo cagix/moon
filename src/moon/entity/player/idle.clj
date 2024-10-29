@@ -12,7 +12,7 @@
             [moon.stage :as stage]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.windows :as windows]
-            [moon.world :refer [mouseover-eid]]))
+            [moon.world.mouseover :as mouseover]))
 
 (defn- denied [text]
   [[:tx/sound "sounds/bfxr_denied.wav"]
@@ -71,10 +71,10 @@
      :else                             :cursors/default)))
 
 (defn- effect-ctx [eid]
-  (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
+  (let [target-position (or (and mouseover/eid (:position @mouseover/eid))
                             (world-view/mouse-position))]
     {:effect/source eid
-     :effect/target mouseover-eid
+     :effect/target mouseover/eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
@@ -84,8 +84,8 @@
      (stage/mouse-on-actor?)
      [(mouseover-actor->cursor) (fn [] nil)] ; handled by actors themself, they check player state
 
-     (and mouseover-eid (:entity/clickable @mouseover-eid))
-     (clickable-entity-interaction entity mouseover-eid)
+     (and mouseover/eid (:entity/clickable @mouseover/eid))
+     (clickable-entity-interaction entity mouseover/eid)
 
      :else
      (if-let [skill-id (action-bar/selected-skill)]

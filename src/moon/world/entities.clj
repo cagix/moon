@@ -7,8 +7,7 @@
             [moon.entity.player :as player]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
-            [moon.stage :as stage]
-            [moon.world :as world]
+            [moon.world :refer [line-of-sight?]]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))
 
@@ -21,29 +20,6 @@
 
 (defn active []
   (content-grid/active-entities content-grid @player/eid))
-
-(defn- calculate-mouseover-eid []
-  (let [player @player/eid
-        hits (remove #(= (:z-order @%) :z-order/effect) ; or: only items/creatures/projectiles.
-                     (grid/point->entities
-                      (world-view/mouse-position)))]
-    (->> body/render-order
-         (sort-by-order hits #(:z-order @%))
-         reverse
-         (filter #(world/line-of-sight? player @%))
-         first)))
-
-(defn update-mouseover []
-  (let [eid (if (stage/mouse-on-actor?)
-              nil
-              (calculate-mouseover-eid))]
-    [(when world/mouseover-eid
-       [:e/dissoc world/mouseover-eid :entity/mouseover?])
-     (when eid
-       [:e/assoc eid :entity/mouseover? true])
-     (fn []
-       (bind-root #'world/mouseover-eid eid)
-       nil)]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
@@ -70,7 +46,7 @@
             system entity/render-systems
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (world/line-of-sight? player entity))]
+                      (line-of-sight? player entity))]
       (render-entity! system entity))))
 
 ; precaution in case a component gets removed by another component

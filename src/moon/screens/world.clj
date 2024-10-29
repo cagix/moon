@@ -20,6 +20,7 @@
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
             [moon.world.grid :as grid]
+            [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.raycaster :as raycaster]
             [moon.world.tiled-map :refer [render-tiled-map]]
@@ -72,7 +73,7 @@
 
 (def ^:private update-world
   [player-update-state
-   entities/update-mouseover ; this do always so can get debug info even when game not running
+   mouseover/update ; this do always so can get debug info even when game not running
    update-game-paused
    #(when-not time/paused?
       (time/pass (min (delta-time) movement/max-delta-time))

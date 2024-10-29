@@ -31,12 +31,6 @@
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
 
-(def mouseover-eid nil)
-
-(defn mouseover-entity []
-  (when-let [eid mouseover-eid]
-    @eid))
-
 (declare tiled-map)
 
 (defn clear-tiled-map []
