@@ -1,6 +1,8 @@
 (ns moon.screens.world
-  (:require [gdl.graphics :refer [frames-per-second delta-time]]
+  (:require [data.grid2d :as g2d]
+            [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
+            [gdl.tiled :as tiled]
             [moon.controls :as controls]
             [moon.component :as component]
             [moon.entity :as entity]
@@ -8,16 +10,50 @@
             [moon.entity.player :as player]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.world-view :as world-view]
+            [moon.level :as level]
             [moon.screen :as screen]
             [moon.stage :as stage]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.widgets.windows :as windows]
             [moon.world :as world]
+            [moon.world.content-grid :as content-grid]
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
+            [moon.world.grid :as grid]
             [moon.world.potential-fields :refer [update-potential-fields!]]
+            [moon.world.raycaster :as raycaster]
             [moon.world.tiled-map :refer [render-tiled-map]]
             [moon.world.time :as time]))
+
+(defn- create-grid [tiled-map]
+  (g2d/create-grid
+   (tiled/width tiled-map)
+   (tiled/height tiled-map)
+   (fn [position]
+     (atom (grid/->cell position
+                        (case (level/movement-property tiled-map position)
+                          "none" :none
+                          "air"  :air
+                          "all"  :all))))))
+
+(defn start [world-id]
+  (screen/change :screens/world)
+  (stage/reset (component/create [:world/widgets]))
+  (let [{:keys [tiled-map] :as level} (level/generate world-id)]
+    (world/clear-tiled-map)
+    (bind-root #'world/tiled-map tiled-map)
+    (bind-root #'grid/grid (create-grid tiled-map))
+    (raycaster/init grid/grid grid/blocks-vision?)
+    (let [width  (tiled/width  tiled-map)
+          height (tiled/height tiled-map)]
+      (bind-root #'world/explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
+      (bind-root #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config
+                                                               :width  width
+                                                               :height height})))
+    (bind-root #'world/entity-tick-error nil)
+    (bind-root #'entities/ids->eids {})
+    (time/init)
+    (component/->handle [[:tx/spawn-creatures level]])))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)

@@ -155,7 +155,6 @@
               widgets.properties-tabs
               widgets.property
 
-              world.start
               world.widgets
 
               [db "properties.edn"] ; load after components, require defc schemas for validation
