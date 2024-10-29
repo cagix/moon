@@ -26,9 +26,7 @@
 
 (def render-systems [render-below render render-above render-info])
 
-(declare can-pickup-item?
-         has-skill?
-         stat
+(declare stat
          modified-value)
 
 (defn mana-value [entity]

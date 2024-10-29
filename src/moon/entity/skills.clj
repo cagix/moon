@@ -50,10 +50,8 @@
                      (stopped? cooling-down?))]
       [:e/assoc-in eid [k (:property/id skill) :skill/cooling-down?] false])))
 
-(defn- has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
+(defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
-
-(bind-root #'entity/has-skill? has-skill?)
 
 (defc :tx/add-skill
   (component/handle [[_ eid {:keys [property/id] :as skill}]]

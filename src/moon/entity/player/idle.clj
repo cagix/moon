@@ -5,6 +5,8 @@
             [gdl.ui.actor :as a]
             [moon.effect :as effect]
             [moon.entity :as entity]
+            [moon.entity.inventory :as inventory]
+            [moon.entity.skills :as skills]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
             [moon.widgets.action-bar :as action-bar]
@@ -27,7 +29,7 @@
       [:e/destroy eid]
       [:tx/event world/player :pickup-item item]]
 
-     (entity/can-pickup-item? world/player item)
+     (inventory/can-pickup-item? world/player item)
      [[:tx/sound "sounds/bfxr_pickup.wav"]
       [:e/destroy eid]
       [:tx/pickup-item world/player item]]
@@ -139,6 +141,6 @@
     (let [free-skill-points (:entity/free-skill-points @eid)]
       ; TODO no else case, no visible free-skill-points
       (when (and (pos? free-skill-points)
-                 (not (entity/has-skill? @eid skill)))
+                 (not (skills/has-skill? @eid skill)))
         [[:e/assoc eid :entity/free-skill-points (dec free-skill-points)]
          [:tx/add-skill eid skill]]))))
