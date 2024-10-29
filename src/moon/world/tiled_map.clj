@@ -1,9 +1,24 @@
 (ns moon.world.tiled-map
-  (:require [gdl.graphics.color :as color]
-            [gdl.utils :refer [->tile]]
-            [moon.graphics.tiled :as tiled-map-renderer]
-            [moon.world :refer [tiled-map explored-tile-corners]]
+  (:require [data.grid2d :as g2d]
+            [gdl.graphics.color :as color]
+            [gdl.utils :refer [dispose ->tile]]
+            [gdl.tiled :as tiled]
+            [moon.graphics.tiled :as renderer]
             [moon.world.raycaster :refer [ray-blocked?]]))
+
+(declare tiled-map
+         explored-tile-corners)
+
+(defn clear []
+  (when (bound? #'tiled-map)
+    (dispose tiled-map)))
+
+(defn init [tmap]
+  (bind-root #'tiled-map tmap)
+  (bind-root #'explored-tile-corners
+             (atom (g2d/create-grid (tiled/width  tmap)
+                                    (tiled/height tmap)
+                                    (constantly false)))))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
@@ -42,7 +57,7 @@
               (swap! explored-tile-corners assoc (->tile position) true))
             color/white)))))
 
-(defn render-tiled-map [light-position]
-  (tiled-map-renderer/draw tiled-map
-                           (->tile-color-setter (atom nil) light-position))
+(defn render [light-position]
+  (renderer/draw tiled-map
+                 (->tile-color-setter (atom nil) light-position))
   #_(reset! do-once false))

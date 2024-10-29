@@ -4,10 +4,10 @@
             [gdl.input :refer [key-just-pressed?]]
             [moon.component :as component]
             [moon.graphics.shape-drawer :as sd]
-            [moon.graphics.tiled :as tiled-map-renderer]
+            [moon.graphics.tiled :as renderer]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
-            [moon.world :as world]))
+            [moon.world.tiled-map :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight
@@ -22,7 +22,7 @@
   (let [positions-explored (map first
                                 (remove (fn [[position value]]
                                           (false? value))
-                                        (seq @world/explored-tile-corners)))
+                                        (seq @explored-tile-corners)))
         left   (apply min-key (fn [[x y]] x) positions-explored)
         top    (apply max-key (fn [[x y]] y) positions-explored)
         right  (apply max-key (fn [[x y]] x) positions-explored)
@@ -46,8 +46,8 @@
     (cam/reset-zoom! (world-view/camera)))
 
   (render [_]
-    (tiled-map-renderer/draw world/tiled-map
-                             (->tile-corner-color-setter @world/explored-tile-corners))
+    (renderer/draw tiled-map
+                   (->tile-corner-color-setter @explored-tile-corners))
     (world-view/render (fn []
                          (sd/filled-circle (cam/position (world-view/camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)

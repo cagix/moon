@@ -1,6 +1,5 @@
 (ns moon.world
   (:require [gdl.graphics.camera :as cam]
-            [gdl.utils :refer [dispose]]
             [moon.graphics.world-view :as world-view]
             [moon.world.raycaster :refer [ray-blocked?]]))
 
@@ -30,11 +29,3 @@
            (on-screen? target))
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
-
-(declare tiled-map)
-
-(defn clear-tiled-map []
-  (when (bound? #'tiled-map)
-    (dispose tiled-map)))
-
-(declare explored-tile-corners)

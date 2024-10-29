@@ -23,7 +23,7 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.raycaster :as raycaster]
-            [moon.world.tiled-map :refer [render-tiled-map]]
+            [moon.world.tiled-map :as tiled-map]
             [moon.world.time :as time]))
 
 (defn- create-grid [tiled-map]
@@ -37,19 +37,22 @@
                           "air"  :air
                           "all"  :all))))))
 
-(declare tick-error)
+(declare tick-error
+         paused?
+         ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"}
+         logic-frame)
 
 (defn start [world-id]
   (screen/change :screens/world)
+  (bind-root #'logic-frame 0)
   (stage/reset (component/create [:world/widgets]))
   (let [{:keys [tiled-map] :as level} (level/generate world-id)]
-    (world/clear-tiled-map)
-    (bind-root #'world/tiled-map tiled-map)
+    (tiled-map/clear)
+    (tiled-map/init tiled-map)
     (bind-root #'grid/grid (create-grid tiled-map))
     (raycaster/init grid/grid grid/blocks-vision?)
     (let [width  (tiled/width  tiled-map)
           height (tiled/height tiled-map)]
-      (bind-root #'world/explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
       (bind-root #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config
                                                                :width  width
                                                                :height height})))
@@ -65,17 +68,18 @@
 (defn- player-update-state      [] (entity/manual-tick (entity/state-obj @player/eid)))
 
 (defn- update-game-paused []
-  (bind-root #'time/paused? (or tick-error
-                                (and pausing?
-                                     (player-state-pause-game?)
-                                     (not (controls/unpaused?)))))
+  (bind-root #'paused? (or tick-error
+                           (and pausing?
+                                (player-state-pause-game?)
+                                (not (controls/unpaused?)))))
   nil)
 
 (def ^:private update-world
   [player-update-state
    mouseover/update ; this do always so can get debug info even when game not running
    update-game-paused
-   #(when-not time/paused?
+   #(when-not paused?
+      (alter-var-root #'logic-frame inc)
       (time/pass (min (delta-time) movement/max-delta-time))
       (let [entities (entities/active)]
         (update-potential-fields! entities)
@@ -90,7 +94,7 @@
   ; FIXME position DRY
   (cam/set-position! (world-view/camera) (:position @player/eid))
   ; FIXME position DRY
-  (render-tiled-map (cam/position (world-view/camera)))
+  (tiled-map/render (cam/position (world-view/camera)))
   (world-view/render (fn []
                        (debug-render/before-entities)
                        ; FIXME position DRY (from player)
@@ -116,7 +120,7 @@
           (screen/change :screens/minimap)))
 
   (screen/dispose [_]
-    (world/clear-tiled-map)))
+    (tiled-map/clear)))
 
 (defc :screens/world
   (component/create [_]

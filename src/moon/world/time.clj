@@ -20,20 +20,13 @@
     ; min 1 because floating point math inaccuracies
     (min 1 (/ (- stop-time elapsed) duration))))
 
-(declare paused?
-
-         ^{:doc "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
-         delta
-
-         ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"}
-         logic-frame)
+(def delta
+  "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed.")
 
 (defn pass [delta-ms]
-  (alter-var-root #'logic-frame inc)
   (alter-var-root #'elapsed + delta-ms)
   (bind-root #'delta delta-ms))
 
 (defn init []
-  (bind-root #'logic-frame 0)
   (bind-root #'elapsed 0)
   (bind-root #'delta nil))
