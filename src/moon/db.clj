@@ -90,16 +90,16 @@
 (defn- build [property]
   (apply-kvs property
              (fn [k v]
-               (try (schema/edn->value
-                     (try (schema/of k)
-                          (catch Throwable _t
-                            (swap! undefined-data-ks conj k)
-                            nil))
-                     (if (map? v)
-                       (build v)
-                       v))
-                    (catch Throwable t
-                      (throw (ex-info " " {:k k :v v} t)))))))
+               (let [schema (try (schema/of k)
+                                 (catch Throwable _t
+                                   (swap! undefined-data-ks conj k)
+                                   nil))
+                     v (if (map? v)
+                         (build v)
+                         v)]
+                 (try (schema/edn->value schema v)
+                      (catch Throwable t
+                        (throw (ex-info " " {:k k :v v} t))))))))
 
 (defn get [id]
   (build (get-raw id)))
