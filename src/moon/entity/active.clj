@@ -4,7 +4,7 @@
             [moon.entity :as entity]
             [moon.graphics.image :as image]
             [moon.graphics.shape-drawer :as sd]
-            [moon.world :as world]
+            [moon.world.line-of-sight :refer [line-of-sight?]]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
@@ -31,7 +31,7 @@
   [{:keys [effect/source effect/target] :as ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (world/line-of-sight? @source @target))
+           (line-of-sight? @source @target))
     ctx
     (dissoc ctx :effect/target)))
 

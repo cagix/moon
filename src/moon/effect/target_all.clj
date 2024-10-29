@@ -3,15 +3,15 @@
             [moon.effect :refer [source target]]
             [moon.entity.player :as player]
             [moon.graphics.shape-drawer :as sd]
-            [moon.world :as world]
-            [moon.world.entities :as entities]))
+            [moon.world.entities :as entities]
+            [moon.world.line-of-sight :refer [line-of-sight?]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
 ; same code as in render entities on world view screens/world
 (defn- creatures-in-los-of-player []
   (->> (entities/active)
        (filter #(:creature/species @%))
-       (filter #(world/line-of-sight? @player/eid @%))
+       (filter #(line-of-sight? @player/eid @%))
        (remove #(:entity/player? @%))))
 
 ; TODO targets projectiles with -50% hp !!

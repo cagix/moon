@@ -4,8 +4,8 @@
             [moon.entity :as entity]
             [moon.entity.faction :as faction]
             [moon.entity.follow-ai :as follow-ai]
-            [moon.world :as world]
-            [moon.world.grid :as grid]))
+            [moon.world.grid :as grid]
+            [moon.world.line-of-sight :refer [line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
   (grid/nearest-entity @(grid/cell (body/tile entity))
@@ -14,7 +14,7 @@
 (defn- effect-ctx [eid]
   (let [entity @eid
         target (nearest-enemy entity)
-        target (when (and target (world/line-of-sight? entity @target))
+        target (when (and target (line-of-sight? entity @target))
                  target)]
     {:effect/source eid
      :effect/target target

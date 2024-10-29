@@ -5,8 +5,8 @@
             [moon.entity.player :as player]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
-            [moon.world :refer [line-of-sight?]]
-            [moon.world.grid :as grid]))
+            [moon.world.grid :as grid]
+            [moon.world.line-of-sight :refer [line-of-sight?]]))
 
 (def eid nil)
 

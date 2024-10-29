@@ -1,4 +1,4 @@
-(ns moon.world
+(ns moon.world.line-of-sight
   (:require [gdl.graphics.camera :as cam]
             [moon.graphics.world-view :as world-view]
             [moon.world.raycaster :refer [ray-blocked?]]))
