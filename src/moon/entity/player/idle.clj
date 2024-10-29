@@ -7,6 +7,7 @@
             [moon.entity :as entity]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
+            [moon.widgets.action-bar :as action-bar]
             [moon.widgets.windows :as windows]
             [moon.world :as world :refer [mouseover-eid]]))
 
@@ -84,7 +85,7 @@
      (clickable-entity-interaction entity mouseover-eid)
 
      :else
-     (if-let [skill-id (entity/selected-skill)]
+     (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (effect-ctx eid)
              state (effect/with-ctx effect-ctx

@@ -106,8 +106,7 @@
 (defn collides? [entity other-entity]
   (shape/overlaps? entity other-entity))
 
-(declare selected-skill
-         can-pickup-item?
+(declare can-pickup-item?
          has-skill?
          stat
          modified-value)

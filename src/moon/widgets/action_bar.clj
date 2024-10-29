@@ -45,11 +45,9 @@
       (ui/bg-remove! button-group button)
       nil)))
 
-(defn- selected-skill []
+(defn selected-skill []
   (when-let [skill-button (ui/bg-checked (:button-group (get-action-bar)))]
     (a/id skill-button)))
-
-(bind-root #'moon.entity/selected-skill selected-skill)
 
 (comment
 
