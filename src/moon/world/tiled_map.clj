@@ -2,7 +2,8 @@
   (:require [gdl.graphics.color :as color]
             [gdl.utils :refer [->tile]]
             [moon.graphics.tiled :as tiled-map-renderer]
-            [moon.world :refer [tiled-map explored-tile-corners ray-blocked?]]))
+            [moon.world :refer [tiled-map explored-tile-corners]]
+            [moon.world.raycaster :refer [ray-blocked?]]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 

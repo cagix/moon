@@ -2,17 +2,7 @@
   (:require [gdl.graphics.camera :as cam]
             [gdl.utils :refer [dispose]]
             [moon.graphics.world-view :as world-view]
-            [moon.world.raycaster :as raycaster]))
-
-(declare ^:private raycaster)
-
-(defn ray-blocked? [start target]
-  (raycaster/blocked? raycaster start target))
-
-(defn path-blocked?
-  "path-w in tiles. casts two rays."
-  [start target path-w]
-  (raycaster/path-blocked? raycaster start target path-w))
+            [moon.world.raycaster :refer [ray-blocked?]]))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?

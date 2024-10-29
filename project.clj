@@ -2,7 +2,6 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
                  [gdl "0.1"]
-                 [com.github.damn/grid2d "1.0"]
                  [metosin/malli "0.13.0"]
                  [com.github.damn/reduce-fsm "eb1a2c1ff0"]]
   :plugins [[lein-hiera "2.0.0"]

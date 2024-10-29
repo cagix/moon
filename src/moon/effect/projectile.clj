@@ -3,7 +3,7 @@
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.effect :refer [source target target-direction]]
-            [moon.world :as w]))
+            [moon.world.raycaster :refer [path-blocked?]]))
 
 (defn- projectile-size [projectile]
   {:pre [(:entity/image projectile)]}
@@ -49,10 +49,10 @@
   (component/useful? [_]
     (let [source-p (:position @source)
           target-p (:position @target)]
-      (and (not (w/path-blocked? ; TODO test
-                                 source-p
-                                 target-p
-                                 (projectile-size projectile)))
+      (and (not (path-blocked? ; TODO test
+                               source-p
+                               target-p
+                               (projectile-size projectile)))
            ; TODO not taking into account body sizes
            (< (v/distance source-p ; entity/distance function protocol EntityPosition
                           target-p)

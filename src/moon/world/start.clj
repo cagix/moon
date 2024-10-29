@@ -32,7 +32,7 @@
       (world/clear-tiled-map)
       (bind-root #'world/tiled-map tiled-map)
       (bind-root #'grid/grid (create-grid tiled-map))
-      (bind-root #'world/raycaster (raycaster/create grid/grid grid/blocks-vision?))
+      (raycaster/init grid/grid grid/blocks-vision?)
       (let [width  (tiled/width  tiled-map)
             height (tiled/height tiled-map)]
         (bind-root #'world/explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
