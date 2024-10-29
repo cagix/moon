@@ -17,7 +17,7 @@
             [moon.world.entities :as entities]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tiled-map :refer [render-tiled-map]]
-            [moon.world.time :as world.time]))
+            [moon.world.time :as time]))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
@@ -26,24 +26,18 @@
 (defn- player-update-state      [] (entity/manual-tick (entity/state-obj @player/eid)))
 
 (defn- update-game-paused []
-  (bind-root #'world/paused? (or world/entity-tick-error
-                                 (and pausing?
-                                      (player-state-pause-game?)
-                                      (not (controls/unpaused?)))))
+  (bind-root #'time/paused? (or world/entity-tick-error
+                                (and pausing?
+                                     (player-state-pause-game?)
+                                     (not (controls/unpaused?)))))
   nil)
-
-(defn- update-time []
-  (alter-var-root #'world/logic-frame inc)
-  (let [delta (min (delta-time) movement/max-delta-time)]
-    (bind-root      #'world/delta-time delta)
-    (alter-var-root #'world.time/elapsed + delta)))
 
 (def ^:private update-world
   [player-update-state
    entities/update-mouseover ; this do always so can get debug info even when game not running
    update-game-paused
-   #(when-not world/paused?
-      (update-time)
+   #(when-not time/paused?
+      (time/pass (min (delta-time) movement/max-delta-time))
       (let [entities (entities/active)]
         (update-potential-fields! entities)
         (try (entities/tick entities)

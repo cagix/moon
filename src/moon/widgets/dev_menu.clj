@@ -11,6 +11,7 @@
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
+            [moon.screens.world :as screens.world]
             [moon.world :as world]
             [moon.world.time :as world.time])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
@@ -44,13 +45,13 @@
     (add-upd-label table
                    #(str "elapsed-time " (readable-number world.time/elapsed) " seconds")
                    "clock")
-    (add! #(str "paused? " world/paused?))
+    (add! #(str "paused? " world.time/paused?))
     (add! #(str "GUI: " (gui-view/mouse-position)))
     (add! #(str "World: "(mapv int (world-view/mouse-position))))
     (add-upd-label table
                    #(str "Zoom: " (cam/zoom (world-view/camera)))
                    "zoom")
-    (add! #(str "logic-frame: " world/logic-frame))
+    (add! #(str "logic-frame: " world.time/logic-frame))
     (add-upd-label table
                    #(str "FPS: " (gdl.graphics/frames-per-second))
                    "fps")))

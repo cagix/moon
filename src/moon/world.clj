@@ -1,18 +1,8 @@
 (ns moon.world
   (:require [gdl.graphics.camera :as cam]
             [gdl.utils :refer [dispose]]
-            [moon.component :as component]
             [moon.graphics.world-view :as world-view]
-            [moon.world.raycaster :as raycaster]
-            [moon.world.time :as world.time]))
-
-(declare paused?
-
-         ^{:doc "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
-         delta-time
-
-         ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"}
-         logic-frame)
+            [moon.world.raycaster :as raycaster]))
 
 (declare ^:private raycaster)
 

@@ -11,7 +11,7 @@
             [moon.world.entities :as entities]
             [moon.world.grid :as grid]
             [moon.world.raycaster :as raycaster]
-            [moon.world.time :as world.time]))
+            [moon.world.time :as time]))
 
 (defn- create-grid [tiled-map]
   (g2d/create-grid
@@ -37,10 +37,9 @@
             height (tiled/height tiled-map)]
         (bind-root #'world/explored-tile-corners (atom (g2d/create-grid width height (constantly false))))
         (bind-root #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config
-                                                              :width  width
-                                                              :height height})))
+                                                                 :width  width
+                                                                 :height height})))
       (bind-root #'world/entity-tick-error nil)
-      (bind-root #'world.time/elapsed 0)
-      (bind-root #'world/logic-frame 0)
       (bind-root #'entities/ids->eids {})
+      (time/init)
       (component/->handle [[:tx/spawn-creatures level]]))))

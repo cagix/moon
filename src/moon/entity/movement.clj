@@ -4,8 +4,8 @@
             [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
-            [moon.world :as world]
-            [moon.world.grid :as grid]))
+            [moon.world.grid :as grid]
+            [moon.world.time :as time]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
@@ -61,7 +61,7 @@
     (when-not (or (zero? (v/length direction))
                   (nil? speed)
                   (zero? speed))
-      (let [movement (assoc movement :delta-time world/delta-time)
+      (let [movement (assoc movement :delta-time time/delta)
             body @eid]
         (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                           (try-move-solid-body body movement)
