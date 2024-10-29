@@ -19,7 +19,9 @@
              ;"-Dcom.sun.management.jmxremote.ssl=false"
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
-  :injections [(load "clojure/moon")]
+  :injections [(do
+                (require 'malli.core) ; fix strange_malli_bug.clj
+                (load "clojure/moon"))]
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
   ; this from engine, what purpose?
