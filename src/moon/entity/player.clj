@@ -1,6 +1,5 @@
 (ns moon.entity.player
-  (:require [moon.entity :as entity]
-            [moon.world :as world]))
+  (:require [moon.entity :as entity]))
 
 (declare eid)
 

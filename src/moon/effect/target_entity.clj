@@ -3,8 +3,7 @@
             [moon.component :as component]
             [moon.body :as body]
             [moon.effect :as effect :refer [source target]]
-            [moon.graphics.shape-drawer :as sd]
-            [moon.world :as world]))
+            [moon.graphics.shape-drawer :as sd]))
 
 (defc :entity-effects {:schema [:s/components-ns :effect.entity]})
 

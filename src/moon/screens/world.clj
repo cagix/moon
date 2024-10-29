@@ -15,7 +15,6 @@
             [moon.stage :as stage]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.widgets.windows :as windows]
-            [moon.world :as world]
             [moon.world.content-grid :as content-grid]
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
