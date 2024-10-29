@@ -4,14 +4,26 @@
             [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
+            [moon.entity.player :as player]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
             [moon.world :as world]
+            [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))
 
+(declare ^:private ids->eids)
+
+(defn all [] (vals ids->eids))
+(defn get-entity [id] (get ids->eids id))
+
+(declare ^:private content-grid)
+
+(defn active []
+  (content-grid/active-entities content-grid @player/eid))
+
 (defn- calculate-mouseover-eid []
-  (let [player @world/player
+  (let [player @player/eid
         hits (remove #(= (:z-order @%) :z-order/effect) ; or: only items/creatures/projectiles.
                      (grid/point->entities
                       (world-view/mouse-position)))]
@@ -51,7 +63,7 @@
 (defn render
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."
   [entities]
-  (let [player @world/player]
+  (let [player @player/eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               body/render-order)
@@ -79,3 +91,29 @@
 
 (defn tick [entities]
   (run! tick-entity entities))
+
+(defc :tx/add-to-world
+  (component/handle [[_ eid]]
+    (let [id (:entity/id @eid)]
+      (assert (number? id))
+      (alter-var-root #'ids->eids assoc id eid))
+    (content-grid/update-entity! content-grid eid)
+    ; https://github.com/damn/core/issues/58
+    ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+    (grid/add-entity eid)
+    nil))
+
+(defc :tx/remove-from-world
+  (component/handle [[_ eid]]
+    (let [id (:entity/id @eid)]
+      (assert (contains? ids->eids id))
+      (alter-var-root #'ids->eids dissoc id))
+    (content-grid/remove-entity! eid)
+    (grid/remove-entity eid)
+    nil))
+
+(defc :tx/position-changed
+  (component/handle [[_ eid]]
+    (content-grid/update-entity! content-grid eid)
+    (grid/entity-position-changed eid)
+   nil))

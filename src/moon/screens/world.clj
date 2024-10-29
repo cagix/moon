@@ -5,6 +5,7 @@
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.entity.movement :as movement]
+            [moon.entity.player :as player]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
@@ -21,8 +22,8 @@
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn- player-state-pause-game? [] (entity/pause-game? (entity/state-obj @world/player)))
-(defn- player-update-state      [] (entity/manual-tick (entity/state-obj @world/player)))
+(defn- player-state-pause-game? [] (entity/pause-game? (entity/state-obj @player/eid)))
+(defn- player-update-state      [] (entity/manual-tick (entity/state-obj @player/eid)))
 
 (defn- update-game-paused []
   (bind-root #'world/paused? (or world/entity-tick-error
@@ -43,7 +44,7 @@
    update-game-paused
    #(when-not world/paused?
       (update-time)
-      (let [entities (world/active-entities)]
+      (let [entities (entities/active)]
         (update-potential-fields! entities)
         (try (entities/tick entities)
              (catch Throwable t
@@ -54,13 +55,13 @@
 
 (defn- render-world []
   ; FIXME position DRY
-  (cam/set-position! (world-view/camera) (:position @world/player))
+  (cam/set-position! (world-view/camera) (:position @player/eid))
   ; FIXME position DRY
   (render-tiled-map (cam/position (world-view/camera)))
   (world-view/render (fn []
                        (debug-render/before-entities)
                        ; FIXME position DRY (from player)
-                       (entities/render (map deref (world/active-entities)))
+                       (entities/render (map deref (entities/active)))
                        (debug-render/after-entities))))
 
 (deftype WorldScreen []

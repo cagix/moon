@@ -5,13 +5,13 @@
             [gdl.ui.actor :as a]
             [moon.component :as component]
             [moon.entity :as entity]
+            [moon.entity.player :as player]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.image :as image]
             [moon.graphics.shape-drawer :as sd]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.stage :as stage]
-            [moon.widgets.windows :as windows]
-            [moon.world :as world]))
+            [moon.widgets.windows :as windows]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -37,14 +37,14 @@
 (defn- draw-rect-actor []
   (ui/widget
    (fn [this]
-     (draw-cell-rect @world/player
+     (draw-cell-rect @player/eid
                      (a/x this)
                      (a/y this)
                      (a/mouseover? this (gui-view/mouse-position))
                      (a/id (a/parent this))))))
 
 (defn- player-clicked-inventory [cell]
-  (entity/clicked-inventory-cell (entity/state-obj @world/player) cell))
+  (entity/clicked-inventory-cell (entity/state-obj @player/eid) cell))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0

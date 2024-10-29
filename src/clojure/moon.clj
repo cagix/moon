@@ -57,7 +57,7 @@
         let-bindings (:let attr-map)
         attr-map (dissoc attr-map :let)]
     `(do
-      #_(defc-check-ns ~k)
+      (defc-check-ns ~k)
       (when ~attr-map?
         (defc* ~k ~attr-map))
       (when defc-ns-docs?

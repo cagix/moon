@@ -6,12 +6,13 @@
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
+            [moon.entity.player :as player]
             [moon.entity.skills :as skills]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.windows :as windows]
-            [moon.world :as world :refer [mouseover-eid]]))
+            [moon.world :refer [mouseover-eid]]))
 
 (defn- denied [text]
   [[:tx/sound "sounds/bfxr_denied.wav"]
@@ -27,12 +28,12 @@
      (a/visible? (windows/inventory))
      [[:tx/sound "sounds/bfxr_takeit.wav"]
       [:e/destroy eid]
-      [:tx/event world/player :pickup-item item]]
+      [:tx/event player/eid :pickup-item item]]
 
-     (inventory/can-pickup-item? world/player item)
+     (inventory/can-pickup-item? player/eid item)
      [[:tx/sound "sounds/bfxr_pickup.wav"]
       [:e/destroy eid]
-      [:tx/pickup-item world/player item]]
+      [:tx/pickup-item player/eid item]]
 
      :else
      [[:tx/sound "sounds/bfxr_denied.wav"]
@@ -58,7 +59,7 @@
 (defn- inventory-cell-with-item? [actor]
   (and (a/parent actor)
        (= "inventory-cell" (a/name (a/parent actor)))
-       (get-in (:entity/inventory @world/player)
+       (get-in (:entity/inventory @player/eid)
                (a/id (a/parent actor)))))
 
 (defn- mouseover-actor->cursor []

@@ -2,7 +2,7 @@
   (:require [gdl.app :refer [post-runnable]]
             [moon.component :as component]
             [moon.db :as db]
-            [moon.world :as world]))
+            [moon.entity.player :as player]))
 
 (comment
 
@@ -66,8 +66,15 @@
 (defn- post-tx! [tx]
   (post-runnable (component/->handle [tx])))
 
-(defn- learn-skill! [skill-id] (post-tx! (fn [] [[:tx/add-skill world/player (db/get skill-id)]])))
-(defn- create-item! [item-id]  (post-tx! (fn [] [[:tx/item       (:position @world/player) (db/get item-id)]])))
+(defn- learn-skill! [skill-id]
+  (post-tx!
+   (fn []
+     [[:tx/add-skill player/eid (db/get skill-id)]])))
+
+(defn- create-item! [item-id]
+  (post-tx!
+   (fn []
+     [[:tx/item (:position @player/eid) (db/get item-id)]])))
 
 ; https://gist.github.com/pierrejoubert73/902cc94d79424356a8d20be2b382e1ab
 ; https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections

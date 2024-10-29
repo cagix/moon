@@ -3,13 +3,13 @@
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [moon.component :as component]
+            [moon.entity :as entity]
+            [moon.entity.player :as player]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.image :as image]
             [moon.graphics.world-view :as world-view]
             [moon.stage :refer [mouse-on-actor?]]
-            [moon.item :refer [valid-slot? stackable?]]
-            [moon.entity :as entity]
-            [moon.world :as world]))
+            [moon.item :refer [valid-slot? stackable?]]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -101,7 +101,7 @@
       (image/draw-centered (:entity/image item) (item-place-position entity)))))
 
 (defn- draw-item-on-cursor []
-  (let [player-e* @world/player]
+  (let [player-e* @player/eid]
     (when (and (= :player-item-on-cursor (entity/state-k player-e*))
                (not (world-item?)))
       (image/draw-centered (:entity/image (:entity/item-on-cursor player-e*))

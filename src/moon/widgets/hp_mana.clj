@@ -3,11 +3,11 @@
             [gdl.ui :as ui]
             [moon.component :as component]
             [moon.entity :as entity]
+            [moon.entity.player :as player]
             [moon.graphics.image :as img]
             [moon.graphics.text :as text]
             [moon.graphics.gui-view :as gui-view]
-            [moon.val-max :as val-max]
-            [moon.world :as world]))
+            [moon.val-max :as val-max]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (text/draw {:text infostr
@@ -30,7 +30,7 @@
                                         [x y])
                               (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
       (ui/actor {:draw (fn []
-                         (let [player-entity @world/player
+                         (let [player-entity @player/eid
                                x (- x (/ rahmenw 2))]
                            (render-hpmana-bar x y-hp   hpcontent   (entity/stat player-entity :stats/hp) "HP")
                            (render-hpmana-bar x y-mana manacontent (entity/stat player-entity :stats/mana) "MP")))}))))

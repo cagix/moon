@@ -3,8 +3,6 @@
             [gdl.utils :refer [dispose]]
             [moon.component :as component]
             [moon.graphics.world-view :as world-view]
-            [moon.world.content-grid :as content-grid]
-            [moon.world.grid :as grid]
             [moon.world.raycaster :as raycaster]
             [moon.world.time :as world.time]))
 
@@ -25,17 +23,6 @@
   "path-w in tiles. casts two rays."
   [start target path-w]
   (raycaster/path-blocked? raycaster start target path-w))
-
-(declare ^:private content-grid
-         player)
-
-(defn active-entities []
-  (content-grid/active-entities content-grid @player))
-
-(declare ^:private ids->eids)
-
-(defn all-entities [] (vals ids->eids))
-(defn get-entity [id] (get ids->eids id))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -78,30 +65,3 @@
 
 (declare explored-tile-corners)
 (declare entity-tick-error)
-
-; => I could call this as a tx on WORLD components
-(defc :tx/add-to-world
-  (component/handle [[_ eid]]
-    (let [id (:entity/id @eid)]
-      (assert (number? id))
-      (alter-var-root #'ids->eids assoc id eid))
-    (content-grid/update-entity! content-grid eid)
-    ; https://github.com/damn/core/issues/58
-    ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-    (grid/add-entity eid)
-    nil))
-
-(defc :tx/remove-from-world
-  (component/handle [[_ eid]]
-    (let [id (:entity/id @eid)]
-      (assert (contains? ids->eids id))
-      (alter-var-root #'ids->eids dissoc id))
-    (content-grid/remove-entity! eid)
-    (grid/remove-entity eid)
-    nil))
-
-(defc :tx/position-changed
-  (component/handle [[_ eid]]
-    (content-grid/update-entity! content-grid eid)
-    (grid/entity-position-changed eid)
-   nil))

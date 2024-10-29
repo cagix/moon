@@ -3,7 +3,7 @@
             [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
-            [moon.world :as world]))
+            [moon.world.entities :as entities]))
 
 (let [cnt (atom 0)]
   (defn- unique-number! []
@@ -39,7 +39,7 @@
               (cons [:tx/remove-from-world eid]
                     (for [component @eid]
                       #(entity/destroy component eid))))
-            (filter (comp :entity/destroyed? deref) (world/all-entities)))))
+            (filter (comp :entity/destroyed? deref) (entities/all)))))
 
 (defc :e/assoc
   (component/handle [[_ eid k v]]
