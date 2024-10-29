@@ -36,6 +36,8 @@
                           "air"  :air
                           "all"  :all))))))
 
+(declare tick-error)
+
 (defn start [world-id]
   (screen/change :screens/world)
   (stage/reset (component/create [:world/widgets]))
@@ -50,7 +52,7 @@
       (bind-root #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config
                                                                :width  width
                                                                :height height})))
-    (bind-root #'world/entity-tick-error nil)
+    (bind-root #'tick-error nil)
     (bind-root #'entities/ids->eids {})
     (time/init)
     (component/->handle [[:tx/spawn-creatures level]])))
@@ -62,7 +64,7 @@
 (defn- player-update-state      [] (entity/manual-tick (entity/state-obj @player/eid)))
 
 (defn- update-game-paused []
-  (bind-root #'time/paused? (or world/entity-tick-error
+  (bind-root #'time/paused? (or tick-error
                                 (and pausing?
                                      (player-state-pause-game?)
                                      (not (controls/unpaused?)))))
@@ -79,7 +81,7 @@
         (try (entities/tick entities)
              (catch Throwable t
                (error-window! t)
-               (bind-root #'world/entity-tick-error t))))
+               (bind-root #'tick-error t))))
       nil)
    [:tx/remove-destroyed-entities]]) ; do not pause this as for example pickup item, should be destroyed.
 

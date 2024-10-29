@@ -44,4 +44,3 @@
     (dispose tiled-map)))
 
 (declare explored-tile-corners)
-(declare entity-tick-error)
