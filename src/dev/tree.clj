@@ -8,11 +8,20 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.grid :as grid]))
 
+(defn- mouseover-grid-cell []
+  @(grid/cell (mapv int (world-view/mouse-position))))
+
 (comment
 
- (show-tree-view! :entity)
- (show-tree-view! :tile)
- (show-tree-view! :ns-value-vars)
+ (show-tree-view! (mouseover/entity))
+ (show-tree-view! (mouseover-grid-cell))
+ (show-tree-view! (ns-value-vars #{"moon"}))
+
+ ; Idea:
+ ; * Generate the tree as data-structure first
+ ; Then pass to the ui
+ ; So can test it locally?
+ ; or some interface for tree-node & on-clicked
 
  )
 
@@ -108,14 +117,10 @@
      (- (gui-view/height) 50)
      #_(min (- (gui-view/height) 50) (height table))}))
 
-(defn- show-tree-view! [obj]
-  (let [object (case obj
-                 :ns-value-vars (into {} (ns-value-vars))
-                 :entity (mouseover/entity)
-                 :tile @(grid/cell (mapv int (world-view/mouse-position))))
-        object (into (sorted-map) object)
-        tree (ui/tree)]
-    (add-map-nodes! tree object 0)
+(defn- show-tree-view! [m]
+  {:pre [(map? m)]}
+  (let [tree (ui/tree)]
+    (add-map-nodes! tree (into (sorted-map) m) 0)
     (stage/add!
      (ui/window {:title "Tree View"
                  :close-button? true

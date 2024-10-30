@@ -16,7 +16,7 @@
   (require (symbol k)))
 
 (defn- load-components [components]
-  (doseq [component (map module->component components) ]
+  (doseq [component (map module->component components)]
     (require-component component)
     (component/on-load component)))
 

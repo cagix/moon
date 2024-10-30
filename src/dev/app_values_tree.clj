@@ -10,17 +10,19 @@
                       (let [value @avar]
                         (not (or (fn? value)
                                  (instance? clojure.lang.MultiFn value)
-                                 #_(:method-map value) ; breaks for stage Ilookup
                                  (protocol? value)
-                                 (instance? java.lang.Class value) ;anonymous class (proxy)
-                                 ))))))
-(defn ns-value-vars []
-  (for [nmspace (get-namespaces #{"moon"})
-        :let [value-vars (get-non-fn-vars nmspace)]
-        :when (seq value-vars)]
-    [(ns-name nmspace)
-     value-vars
-     #_(map (comp symbol name symbol) value-vars)]))
+                                 ; anonymous class (proxy)
+                                 (instance? java.lang.Class value)))))))
+(defn ns-value-vars
+  "Returns a map of ns-name to value-vars (non-function vars).
+  Use to understand the state of your application.
+
+  Example: `(ns-value-vars #{\"moon\"})`"
+  [packages]
+  (into {} (for [nmspace (get-namespaces packages)
+                 :let [value-vars (get-non-fn-vars nmspace)]
+                 :when (seq value-vars)]
+             [(ns-name nmspace) value-vars])))
 
 (defn print-app-values-tree []
   (spit "app-values-tree.clj"

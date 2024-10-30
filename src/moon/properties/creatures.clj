@@ -1,10 +1,12 @@
 (ns moon.properties.creatures
   (:require [clojure.string :as str]
-            [gdl.utils :refer [safe-merge]]
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.property :as property]))
 
+; player doesn;t need aggro-range/reaction-time
+; stats armor-pierce wrong place
+; assert min body size from entity
 (property/def :properties/creatures
   {:schema [:entity/body
             :property/pretty-name
@@ -41,10 +43,6 @@
 (defc :body/width   {:schema pos?})
 (defc :body/height  {:schema pos?})
 (defc :body/flying? {:schema :boolean})
-
-; player doesn;t need aggro-range/reaction-time
-; stats armor-pierce wrong place
-; assert min body size from entity
 
 (defc :entity/body {:schema [:s/map [:body/width
                                      :body/height
