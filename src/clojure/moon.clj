@@ -50,6 +50,8 @@
   (when-not (= (ns-name *ns*) (defc-ns-sym k))
     (println (ns-name *ns*) ":" k)))
 
+(def print-ns-mismatch? true)
+
 (defmacro defc [k & sys-impls]
   (let [attr-map? (not (list? (first sys-impls)))
         attr-map  (if attr-map? (first sys-impls) {})
@@ -57,7 +59,8 @@
         let-bindings (:let attr-map)
         attr-map (dissoc attr-map :let)]
     `(do
-      #_(defc-check-ns ~k)
+      (when print-ns-mismatch?
+        (defc-check-ns ~k))
       (when ~attr-map?
         (defc* ~k ~attr-map))
       (when defc-ns-docs?

@@ -16,7 +16,7 @@
 
 (defn- denied [text]
   [[:tx/sound "sounds/bfxr_denied.wav"]
-   [:tx/msg-to-player text]])
+   [:widgets/player-message text]])
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -37,7 +37,7 @@
 
      :else
      [[:tx/sound "sounds/bfxr_denied.wav"]
-      [:tx/msg-to-player "Your Inventory is full"]])))
+      [:widgets/player-message "Your Inventory is full"]])))
 
 (defmethod on-clicked :clickable/player [_]
   (a/toggle-visible! (windows/inventory))) ; TODO no tx

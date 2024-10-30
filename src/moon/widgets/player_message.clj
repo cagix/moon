@@ -26,9 +26,8 @@
 (defc :widgets/player-message
   (component/create [_]
     (ui/actor {:draw draw-player-message
-               :act check-remove-message})))
+               :act check-remove-message}))
 
-(defc :tx/msg-to-player
   (component/handle [[_ message]]
     (bind-root #'message-to-player {:message message :counter 0})
     nil))
