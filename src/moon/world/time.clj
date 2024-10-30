@@ -1,6 +1,7 @@
 (ns moon.world.time)
 
-(def elapsed "The elapsed in-game-time in seconds (not counting when game is paused).")
+(declare ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
+         elapsed)
 
 (defn timer [duration]
   {:pre [(>= duration 0)]}
@@ -20,8 +21,8 @@
     ; min 1 because floating point math inaccuracies
     (min 1 (/ (- stop-time elapsed) duration))))
 
-(def delta
-  "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed.")
+(declare ^{:doc "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
+         delta)
 
 (defn pass [delta-ms]
   (alter-var-root #'elapsed + delta-ms)

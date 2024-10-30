@@ -13,7 +13,13 @@
  (show-tree-view! :entity)
  (show-tree-view! :tile)
  (show-tree-view! :ns-value-vars)
+
  )
+
+(defn- class->label-str [class]
+  (case class
+    clojure.lang.LazySeq ""
+    (str class)))
 
 (defn- ->v-str [v]
   (cond
@@ -21,24 +27,28 @@
    (keyword? v) v
    (string? v) (pr-str v)
    (boolean? v) v
-   (instance? clojure.lang.Atom v) (str "[LIME] Atom [GRAY]" (class @v) "[]")
+   (instance? clojure.lang.Atom v) (str "[LIME] Atom [] [GRAY]" (class @v) "[]")
    (map? v) (str (class v))
    (and (vector? v) (< (count v) 3)) (pr-str v)
-   (vector? v) (str "Vector "(count v))
-   :else (str "[GRAY]" (str v) "[]")))
+   (vector? v) (str "Vector " (count v))
+   (var? v) (str "[GOLD]" (:name (meta v)) "[] : " (->v-str @v))
+   :else (str "[ORANGE]" (class->label-str v) "[]")))
 
+; TODO truncate ...
 (defn- labelstr [k v]
-  (str "[LIGHT_GRAY]:"
-       (if (keyword? k)
-         (str
-          (when-let [ns (namespace k)] (str ns "/")) "[WHITE]" (name k))
-         k) ; TODO truncate ...
-       ": [GOLD]" (str (->v-str v))))
+  (str
+   (if (keyword? k)
+     (str "[LIGHT_GRAY]:" (when-let [ns (namespace k)] (str ns "/")) " [] [WHITE]" (name k) "[]")
+     k)
+   ": [GOLD]" (str (->v-str v)) "[]"))
 
 (defn- add-elements! [node elements]
-  (doseq [element elements
-          :let [el-node (ui/t-node (ui/label (str (->v-str element))))]]
-    (.add node el-node)))
+  (doseq [element elements]
+    (.add node (ui/t-node (ui/label (str (->v-str element)))))))
+
+(let [ns-sym (first (first (into {} (ns-value-vars))))]
+  ;(map ->v-str vars)
+  )
 
 (declare add-map-nodes!)
 
@@ -50,14 +60,18 @@
   (when (map? v)
     (add-map-nodes! node v (inc level)))
 
-  (when (and (coll? v) (>= (count v) 3))
+  (when (coll? v)
     (add-elements! node v))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
     (add-map-nodes! node (children->str-map (ui/children (gdl.ui.stage/root v))) level))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
-    (add-map-nodes! node (children->str-map (ui/children v)) level)))
+    (add-map-nodes! node (children->str-map (ui/children v)) level))
+
+  (when (and (var? v)
+             (instance? com.badlogic.gdx.assets.AssetManager @v))
+    (add-map-nodes! node (bean @v) level)))
 
 (comment
  (let [vis-image (first (ui/children (gdl.ui.stage/root (stage-get))))]

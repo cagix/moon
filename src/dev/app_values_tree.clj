@@ -18,7 +18,9 @@
   (for [nmspace (get-namespaces #{"moon"})
         :let [value-vars (get-non-fn-vars nmspace)]
         :when (seq value-vars)]
-    [(ns-name nmspace) (map (comp symbol name symbol) value-vars)]))
+    [(ns-name nmspace)
+     value-vars
+     #_(map (comp symbol name symbol) value-vars)]))
 
 (defn print-app-values-tree []
   (spit "app-values-tree.clj"
