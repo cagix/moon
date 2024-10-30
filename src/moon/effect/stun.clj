@@ -13,4 +13,4 @@
     (and target (:entity/fsm @target)))
 
   (component/handle [_]
-    [[:tx/event target :stun duration]]))
+    [[:entity/fsm target :stun duration]]))

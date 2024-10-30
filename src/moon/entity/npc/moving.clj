@@ -21,4 +21,4 @@
 
   (entity/tick [_ eid]
     (when (stopped? counter)
-      [[:tx/event eid :timer-finished]])))
+      [[:entity/fsm eid :timer-finished]])))

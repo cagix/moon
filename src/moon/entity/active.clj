@@ -66,12 +66,12 @@
     (cond
      (effect/with-ctx (check-update-ctx effect-ctx)
        (not (effect/applicable? (:skill/effects skill))))
-     [[:tx/event eid :action-done]
+     [[:entity/fsm eid :action-done]
       ; TODO some sound ?
       ]
 
      (stopped? counter)
-     [[:tx/event eid :action-done]
+     [[:entity/fsm eid :action-done]
       [:tx/effect effect-ctx (:skill/effects skill)]]))
 
   (entity/render-info [_ entity]

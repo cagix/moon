@@ -17,7 +17,7 @@
 
   (entity/tick [_ eid]
     (when (stopped? counter)
-      [[:tx/event eid :effect-wears-off]]))
+      [[:entity/fsm eid :effect-wears-off]]))
 
   (entity/render-below [_ entity]
     (sd/circle (:position entity) 0.5 [1 1 1 0.6])))

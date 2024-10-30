@@ -25,4 +25,4 @@
     (if-let [movement-vector (WASD-movement-vector)]
       [[:tx/set-movement eid {:direction movement-vector
                               :speed (entity/stat @eid :stats/movement-speed)}]]
-      [[:tx/event eid :no-movement-input]])))
+      [[:entity/fsm eid :no-movement-input]])))

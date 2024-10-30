@@ -11,4 +11,4 @@
     (and target (:entity/fsm @target)))
 
   (component/handle [_]
-    [[:tx/event target :kill]]))
+    [[:entity/fsm target :kill]]))

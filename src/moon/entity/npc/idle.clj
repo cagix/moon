@@ -47,5 +47,5 @@
       (if-let [skill (effect/with-ctx effect-ctx
                        (assert (bound? #'effect/source))
                        (npc-choose-skill @eid))]
-        [[:tx/event eid :start-action [skill effect-ctx]]]
-        [[:tx/event eid :movement-direction (follow-ai/direction-vector eid)]]))))
+        [[:entity/fsm eid :start-action [skill effect-ctx]]]
+        [[:entity/fsm eid :movement-direction (follow-ai/direction-vector eid)]]))))

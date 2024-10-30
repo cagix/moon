@@ -86,4 +86,4 @@
          [[:tx/audiovisual (:position target*) :audiovisuals/damage]
           [:tx/add-text-effect target (str "[RED]" dmg-amount)]
           [:e/assoc-in target [:stats/hp 0] new-hp-val]
-          [:tx/event target (if (zero? new-hp-val) :kill :alert)]])))))
+          [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]])))))

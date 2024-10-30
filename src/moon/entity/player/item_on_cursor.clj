@@ -23,7 +23,7 @@
      [[:tx/sound "sounds/bfxr_itemput.wav"]
       [:tx/set-item eid cell item-on-cursor]
       [:e/dissoc eid :entity/item-on-cursor]
-      [:tx/event eid :dropped-item]]
+      [:entity/fsm eid :dropped-item]]
 
      ; STACK ITEMS
      (and item-in-cell
@@ -31,7 +31,7 @@
      [[:tx/sound "sounds/bfxr_itemput.wav"]
       [:tx/stack-item eid cell item-on-cursor]
       [:e/dissoc eid :entity/item-on-cursor]
-      [:tx/event eid :dropped-item]]
+      [:entity/fsm eid :dropped-item]]
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -42,8 +42,8 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       [:e/dissoc eid :entity/item-on-cursor]
-      [:tx/event eid :dropped-item]
-      [:tx/event eid :pickup-item item-in-cell]])))
+      [:entity/fsm eid :dropped-item]
+      [:entity/fsm eid :pickup-item item-in-cell]])))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -76,7 +76,7 @@
   (entity/manual-tick [_]
     (when (and (button-just-pressed? :left)
                (world-item?))
-      [[:tx/event eid :drop-item]]))
+      [[:entity/fsm eid :drop-item]]))
 
   (entity/clicked-inventory-cell [_ cell]
     (clicked-cell eid cell))

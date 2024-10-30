@@ -21,7 +21,7 @@
     (when (stopped? counter)
       (cons [:e/destroy eid]
             (for [friendly-eid (friendlies-in-radius (:position @eid) faction)]
-              [:tx/event friendly-eid :alert])))))
+              [:entity/fsm friendly-eid :alert])))))
 
 (defc :tx/shout
   (component/handle [[_ position faction delay-seconds]]
@@ -46,7 +46,7 @@
           cell (grid/cell (body/tile entity))] ; pattern!
       (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
         (when (<= distance (entity/stat entity :stats/aggro-range))
-          [[:tx/event eid :alert]]))))
+          [[:entity/fsm eid :alert]]))))
 
   (entity/render-above [_ entity]
     (let [[x y] (:position entity)]

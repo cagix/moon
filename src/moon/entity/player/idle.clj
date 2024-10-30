@@ -28,7 +28,7 @@
      (a/visible? (windows/inventory))
      [[:tx/sound "sounds/bfxr_takeit.wav"]
       [:e/destroy eid]
-      [:tx/event player/eid :pickup-item item]]
+      [:entity/fsm player/eid :pickup-item item]]
 
      (inventory/can-pickup-item? player/eid item)
      [[:tx/sound "sounds/bfxr_pickup.wav"]
@@ -100,7 +100,7 @@
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
              (fn []
-               [[:tx/event eid :start-action [skill effect-ctx]]])])
+               [[:entity/fsm eid :start-action [skill effect-ctx]]])])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -125,7 +125,7 @@
 
   (entity/manual-tick [_]
     (if-let [movement-vector (WASD-movement-vector)]
-      [[:tx/event eid :movement-input movement-vector]]
+      [[:entity/fsm eid :movement-input movement-vector]]
       (let [[cursor on-click] (interaction-state eid)]
         (cons [:tx/cursor cursor]
               (when (button-just-pressed? :left)
@@ -135,7 +135,7 @@
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       [[:tx/sound "sounds/bfxr_takeit.wav"]
-       [:tx/event eid :pickup-item item]
+       [:entity/fsm eid :pickup-item item]
        [:tx/remove-item eid cell]]))
 
   (entity/clicked-skillmenu-skill [_ skill]
