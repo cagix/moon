@@ -61,7 +61,11 @@
       (when ~attr-map?
         (defc* ~k ~attr-map))
       (when defc-ns-docs?
-        (alter-meta! *ns* #(update % :doc str "\n* defc `" ~k "`")))
+        (alter-meta! *ns* #(update % :doc str "\n* defc `" ~k "`"
+                                   (when (:schema ~attr-map)
+                                     (str " schema: `" (:schema ~attr-map) "`"))
+                                   (when (:doc ~attr-map)
+                                     (str "\n\n" (:doc ~attr-map))))))
       ~@(for [[sys & fn-body] sys-impls
               :let [sys-var (resolve sys)
                     sys-params (:params (meta sys-var))

@@ -5,6 +5,8 @@
 ; https://github.com/damn/core/issues/29
 (defc :effect/spawn
   {:schema [:s/one-to-one :properties/creatures]
+   :doc "Spawns a creature at `effect/target-position` with state `:npc-idle`
+        and `:entity/faction` as `effect/source`."
    :let {:keys [property/id]}}
   (component/applicable? [_]
     (and (:entity/faction @effect/source)
