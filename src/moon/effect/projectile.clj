@@ -61,7 +61,9 @@
   (component/handle [_]
     [[:tx/sound "sounds/bfxr_waypointunlock.wav"]
      [:tx/projectile
-      {:position (projectile-start-point @source target-direction (projectile-size projectile))
+      {:position (projectile-start-point @source
+                                         target-direction
+                                         (projectile-size projectile))
        :direction target-direction
        :faction (:entity/faction @source)}
       projectile]]))
