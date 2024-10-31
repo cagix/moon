@@ -1,35 +1,7 @@
 (ns moon.entity.skills
-  (:require [gdl.utils :refer [readable-number]]
-            [moon.component :as component]
-            [moon.effect :as effect]
+  (:require [moon.component :as component]
             [moon.entity :as entity]
             [moon.world.time :refer [stopped?]]))
-
-(defc :skill/action-time-modifier-key
-  {:schema [:enum :stats/cast-speed :stats/attack-speed]}
-  (component/info [[_ v]]
-    (str "[VIOLET]" (case v
-                      :stats/cast-speed "Spell"
-                      :stats/attack-speed "Attack") "[]")))
-
-(defc :skill/action-time {:schema pos?}
-  (component/info [[_ v]]
-    (str "[GOLD]Action-Time: " (readable-number v) " seconds[]")))
-
-(defc :skill/start-action-sound {:schema :s/sound})
-
-(defc :skill/effects
-  {:schema [:s/components-ns :effect]})
-
-(defc :skill/cooldown {:schema nat-int?}
-  (component/info [[_ v]]
-    (when-not (zero? v)
-      (str "[SKY]Cooldown: " (readable-number v) " seconds[]"))))
-
-(defc :skill/cost {:schema nat-int?}
-  (component/info [[_ v]]
-    (when-not (zero? v)
-      (str "[CYAN]Cost: " v " Mana[]"))))
 
 (defc :entity/skills
   {:schema [:s/one-to-many :properties/skills]}
