@@ -162,14 +162,24 @@
 
 (comment
 
+ (defn- for-print [schema]
+   (cond
+     (= schema number?)  'number?
+     (= schema nat-int?) 'nat-int?
+     (= schema int?)     'int?
+     (= schema pos?)     'pos?
+     (= schema pos-int?) 'pos-int?
+     :else schema))
+
  (binding [*print-level* nil]
    (->> (into {}
               (for [[k v] (filter (comp :schema val) component-attrs)]
-                [k (:schema v)]))
+                [k (for-print (:schema v))]))
         (into (sorted-map))
         clojure.pprint/pprint
         with-out-str
         (spit "resources/schema.edn")))
+
 
  )
 
