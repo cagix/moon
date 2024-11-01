@@ -1,6 +1,5 @@
 (ns moon.graphics.world-view
   (:require [gdl.graphics.viewport :as vp]
-            [moon.app :as app]
             [moon.graphics.view :as view])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils.viewport FitViewport)))
@@ -9,20 +8,19 @@
 
 (defn- viewport [] (:viewport view))
 
-(defc :moon.graphics.world-view
-  (app/create [[_ {:keys [world-width world-height tile-size]}]]
-    (bind-root #'view
-               (let [unit-scale (/ tile-size)]
-                 {:unit-scale (float unit-scale)
-                  :viewport (let [world-width  (* world-width  unit-scale)
-                                  world-height (* world-height unit-scale)
-                                  camera (OrthographicCamera.)
-                                  y-down? false]
-                              (.setToOrtho camera y-down? world-width world-height)
-                              (FitViewport. world-width world-height camera))})))
+(defn init [{:keys [world-width world-height tile-size]}]
+  (bind-root #'view
+             (let [unit-scale (/ tile-size)]
+               {:unit-scale (float unit-scale)
+                :viewport (let [world-width  (* world-width  unit-scale)
+                                world-height (* world-height unit-scale)
+                                camera (OrthographicCamera.)
+                                y-down? false]
+                            (.setToOrtho camera y-down? world-width world-height)
+                            (FitViewport. world-width world-height camera))})))
 
-  (app/resize [_ dimensions]
-    (vp/update (viewport) dimensions)))
+(defn resize [dimensions]
+  (vp/update (viewport) dimensions))
 
 (defn unit-scale [] (:unit-scale view))
 

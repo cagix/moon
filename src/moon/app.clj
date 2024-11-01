@@ -3,72 +3,61 @@
             [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
-            [moon.component :as component]
-            [moon.screen :as screen]))
-
-(defn- module->component [module]
-  (let [[ns-sym v] (if (symbol? module)
-                     [module]
-                     module)]
-    [(keyword (str "moon." ns-sym)) v]))
-
-(defn- require-component [[k]]
-  (require (symbol k)))
-
-(defn- load-components [components]
-  (doseq [component (map module->component components)]
-    (require-component component)
-    (component/on-load component)))
-
-(defsystem create)
-
-(defsystem dispose)
-(defmethod dispose :default [_])
-
-(defsystem resize [_ dimensions])
-(defmethod resize :default [_ _])
-
-;;
-
-(require 'moon.assets)
-(require 'moon.graphics.batch)
-(require 'moon.graphics.cursors)
-
-(defc :moon.assets
-  (create [[_ folder]] (moon.assets/init folder))
-  (dispose [_]         (moon.assets/dispose)))
-
-(defc :moon.graphics.batch
-  (create [_]  (moon.graphics.batch/init))
-  (dispose [_] (moon.graphics.batch/dispose)))
-
-(defc :moon.graphics.cursors
-  (create [[_ cursors]] (moon.graphics.cursors/init cursors))
-  (dispose [_]          (moon.graphics.cursors/dispose)))
-
-;;
-
-(defn- app-listener [{:keys [components screens]}]
-  (let [components (map module->component components)]
-    (run! require-component components)
-    (reify app/Listener
-      (create [_]
-        (run! create components)
-        (screen/set-screens screens))
-
-      (dispose [_]
-        (run! dispose components)
-        (screen/dispose-all))
-
-      (render [_]
-        (clear-screen :black)
-        (screen/render (screen/current)))
-
-      (resize [_ dimensions]
-        (run! #(resize % dimensions) components)))))
+            [gdl.ui :as ui]
+            [moon.assets :as assets]
+            [moon.db :as db]
+            [moon.graphics.batch :as batch]
+            [moon.graphics.cursors :as cursors]
+            [moon.graphics.gui-view :as gui-view]
+            [moon.graphics.world-view :as world-view]
+            [moon.graphics.shape-drawer :as shape-drawer]
+            [moon.graphics.tiled :as graphics.tiled]
+            [moon.graphics.text :as font]
+            [moon.screen :as screen]
+            moon.components))
 
 (defn -main []
-  (let [config (-> "app.edn" io/resource slurp edn/read-string)]
-    (load-components (:components config))
-    (app/start (:lwjgl3 config)
-               (app-listener (:app config)))))
+  (db/init "properties.edn")
+  (app/start {:title "Moon"
+              :fps 60
+              :width 1440
+              :height 900
+              :dock-icon "moon.png"}
+             (reify app/Listener
+               (create [_]
+                 (assets/init)
+                 (batch/init)
+                 (shape-drawer/init)
+                 (cursors/init)
+                 (gui-view/init {:world-width 1440
+                                 :world-height 900})
+                 (world-view/init {:world-width 1440
+                                   :world-height 900
+                                   :tile-size 48})
+                 (ui/load! :skin-scale/x1)
+                 (graphics.tiled/init)
+                 (font/init {:file "fonts/exocet/films.EXL_____.ttf"
+                             :size 16
+                             :quality-scaling 2})
+                 (screen/set-screens [:screens/main-menu
+                                      :screens/map-editor
+                                      :screens/editor
+                                      :screens/minimap
+                                      :screens/world]))
+
+               (dispose [_]
+                 (assets/dispose)
+                 (batch/dispose)
+                 (shape-drawer/dispose)
+                 (cursors/dispose)
+                 (ui/dispose!)
+                 (font/dispose)
+                 (screen/dispose-all))
+
+               (render [_]
+                 (clear-screen :black)
+                 (screen/render (screen/current)))
+
+               (resize [_ dimensions]
+                 (gui-view/resize   dimensions)
+                 (world-view/resize dimensions)))))

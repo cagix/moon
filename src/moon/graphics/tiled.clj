@@ -1,6 +1,5 @@
 (ns moon.graphics.tiled
   (:require [gdl.graphics.tiled :as tiled]
-            [moon.app :as app]
             [moon.graphics.batch :refer [batch]]
             [moon.graphics.world-view :as world-view]))
 
@@ -23,6 +22,5 @@
 (defn- tiled-renderer [tiled-map]
   (tiled/renderer tiled-map (world-view/unit-scale) batch))
 
-(defc :moon.graphics.tiled
-  (app/create [_]
-    (bind-root #'cached-map-renderer (memoize tiled-renderer))))
+(defn init []
+  (bind-root #'cached-map-renderer (memoize tiled-renderer)))

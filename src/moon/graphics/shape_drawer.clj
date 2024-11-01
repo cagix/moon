@@ -1,21 +1,19 @@
 (ns moon.graphics.shape-drawer
   (:require [gdl.graphics.color :as color]
             [gdl.graphics.shape-drawer :as d]
-            [gdl.utils :refer [dispose]]
-            [moon.app :as app]
             [moon.graphics.batch :refer [batch]]))
 
 (declare ^:private sd
          ^:private sd-texture)
 
-(defc :moon.graphics.shape-drawer
-  (app/create [_]
-    (let [{:keys [shape-drawer
-                  shape-drawer-texture]} (d/create batch)]
-      (bind-root #'sd         shape-drawer)
-      (bind-root #'sd-texture shape-drawer-texture)))
-  (app/dispose [_]
-    (dispose sd-texture)))
+(defn init []
+  (let [{:keys [shape-drawer
+                shape-drawer-texture]} (d/create batch)]
+    (bind-root #'sd         shape-drawer)
+    (bind-root #'sd-texture shape-drawer-texture)))
+
+(defn dispose []
+  (.dispose sd-texture))
 
 (defn- set-color [sd color]
   (d/set-color sd (color/munge color)))

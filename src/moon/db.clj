@@ -3,7 +3,6 @@
   (:require [clojure.edn :as edn]
             [clojure.pprint :refer [pprint]]
             [gdl.utils :refer [safe-get]]
-            [moon.component :as component]
             [moon.property :as property]
             [moon.schema :as schema]))
 
@@ -26,15 +25,14 @@
 (declare ^:private db
          ^:private edn-file)
 
-(defc :moon.db
-  (component/on-load [[_ file]]
-    (let [file (clojure.java.io/resource file) ; load here and not in threading macro so #'edn-file correct (tests?!)
-          properties (-> file slurp edn/read-string)]
-      (assert (or (empty? properties)
-                  (apply distinct? (map :property/id properties))))
-      (run! property/validate! properties)
-      (bind-root #'db (zipmap (map :property/id properties) properties))
-      (bind-root #'edn-file file))))
+(defn init [file]
+  (let [file (clojure.java.io/resource file) ; load here and not in threading macro so #'edn-file correct (tests?!)
+        properties (-> file slurp edn/read-string)]
+    (assert (or (empty? properties)
+                (apply distinct? (map :property/id properties))))
+    (run! property/validate! properties)
+    (bind-root #'db (zipmap (map :property/id properties) properties))
+    (bind-root #'edn-file file)))
 
 (defn- async-pprint-spit! [properties]
   (.start

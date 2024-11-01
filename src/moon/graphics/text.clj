@@ -1,18 +1,17 @@
 (ns moon.graphics.text
   (:require [gdl.graphics.text :as text]
             [gdl.utils :refer [dispose]]
-            [moon.app :as app]
             [moon.graphics.batch :refer [batch]]
             [moon.graphics.view :as view]))
 
 (declare ^:private default-font)
 
-(defc :moon.graphics.text
-  (app/create [[_ true-type-font]]
-    (bind-root #'default-font (or (and true-type-font (text/truetype-font true-type-font))
-                                  (text/default-font))))
-  (app/dispose [_]
-    (dispose default-font)))
+(defn init [true-type-font]
+  (bind-root #'default-font (or (and true-type-font (text/truetype-font true-type-font))
+                                (text/default-font))))
+
+(defn dispose []
+  (.dispose default-font))
 
 (defn draw
   "font, h-align, up? and scale are optional.

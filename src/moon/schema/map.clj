@@ -128,11 +128,24 @@
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
 
-(def ^:private property-k-sort-order)
-
-(defc :moon.schema.map
-  (component/on-load [[_ {:keys [editor-k-sort-order]}]]
-    (bind-root #'property-k-sort-order editor-k-sort-order)))
+(def ^:private property-k-sort-order
+  [:property/id
+   :property/pretty-name
+   :app/lwjgl3
+   :entity/image
+   :entity/animation
+   :creature/species
+   :creature/level
+   :entity/body
+   :item/slot
+   :projectile/speed
+   :projectile/max-range
+   :projectile/piercing?
+   :skill/action-time-modifier-key
+   :skill/action-time
+   :skill/start-action-sound
+   :skill/cost
+   :skill/cooldown])
 
 (defn- component-order [[k _v]]
   (or (index-of k property-k-sort-order) 99))

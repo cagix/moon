@@ -1,15 +1,14 @@
 (ns moon.assets
-  (:require [gdl.assets :as assets]
-            [gdl.utils :as utils])
+  (:require [gdl.assets :as assets])
   (:import (com.badlogic.gdx.audio Sound)))
 
 (declare manager)
 
-(defn init [folder]
-  (bind-root #'manager (assets/manager (assets/search folder))))
+(defn init []
+  (bind-root #'manager (assets/manager (assets/search "resources/"))))
 
 (defn dispose []
-  (utils/dispose manager))
+  (.dispose manager))
 
 (defn play-sound! [path]
   (Sound/.play (get manager path)))

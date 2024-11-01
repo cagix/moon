@@ -1,6 +1,5 @@
 (ns moon.graphics.gui-view
-  (:require [gdl.graphics.viewport :as vp]
-            [moon.app :as app])
+  (:require [gdl.graphics.viewport :as vp])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
@@ -9,16 +8,15 @@
 (defn viewport []
   (:viewport view))
 
-(defc :moon.graphics.gui-view
-  (app/create [[_ {:keys [world-width world-height]}]]
-    (bind-root #'view
+(defn init [{:keys [world-width world-height]}]
+  (bind-root #'view
              {:unit-scale 1
               :viewport (FitViewport. world-width
                                       world-height
                                       (OrthographicCamera.))}))
 
-  (app/resize [_ dimensions]
-    (vp/update (viewport) dimensions :center-camera? true)))
+(defn resize [dimensions]
+  (vp/update (viewport) dimensions :center-camera? true))
 
 (defn mouse-position []
   ; TODO mapv int needed?
