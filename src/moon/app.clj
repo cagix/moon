@@ -28,11 +28,25 @@
 (defsystem resize [_ dimensions])
 (defmethod resize :default [_ _])
 
+;;
+
 (require 'moon.assets)
+(require 'moon.graphics.batch)
+(require 'moon.graphics.cursors)
 
 (defc :moon.assets
   (create [[_ folder]] (moon.assets/init folder))
   (dispose [_]         (moon.assets/dispose)))
+
+(defc :moon.graphics.batch
+  (create [_]  (moon.graphics.batch/init))
+  (dispose [_] (moon.graphics.batch/dispose)))
+
+(defc :moon.graphics.cursors
+  (create [[_ cursors]] (moon.graphics.cursors/init cursors))
+  (dispose [_]          (moon.graphics.cursors/dispose)))
+
+;;
 
 (defn- app-listener [{:keys [components screens]}]
   (let [components (map module->component components)]
