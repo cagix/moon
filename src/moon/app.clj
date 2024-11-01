@@ -28,6 +28,12 @@
 (defsystem resize [_ dimensions])
 (defmethod resize :default [_ _])
 
+(require 'moon.assets)
+
+(defc :moon.assets
+  (create [[_ folder]] (moon.assets/init folder))
+  (dispose [_]         (moon.assets/dispose)))
+
 (defn- app-listener [{:keys [components screens]}]
   (let [components (map module->component components)]
     (run! require-component components)
