@@ -7,6 +7,10 @@
 
 (defc :entity-effects {:schema [:s/components-ns :effect.entity]})
 
+(defc :maxrange {:schema pos?}
+  (component/info [[_ maxrange]]
+    (str "[LIGHT_GRAY]Range " maxrange " meters[]")))
+
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)
                            (:position target*)))
@@ -25,15 +29,12 @@
          (v/scale (body/direction entity target*)
                   maxrange)))
 
-(defc :maxrange {:schema pos?}
-  (component/info [[_ maxrange]]
-    (str "[LIGHT_GRAY]Range " maxrange " meters[]")))
-
 (defc :effect/target-entity
-  {:let {:keys [maxrange entity-effects]}
-   :schema [:s/map [:entity-effects :maxrange]]
+  {:schema [:s/map [:entity-effects
+                    :maxrange]]
    :editor/doc "Applies entity-effects to a target if they are inside max-range & in line of sight.
-               Cancels if line of sight is lost. Draws a red/yellow line wheter the target is inside the max range. If the effect is to be done and target out of range -> draws a hit-ground-effect on the max location."}
+               Cancels if line of sight is lost. Draws a red/yellow line wheter the target is inside the max range. If the effect is to be done and target out of range -> draws a hit-ground-effect on the max location."
+   :let {:keys [maxrange entity-effects]}}
 
   (component/applicable? [_]
     (and target
