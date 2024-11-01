@@ -1,4 +1,4 @@
-(ns moon.effect.spiderweb
+(ns moon.effect.entity.spiderweb
   (:require [moon.component :as component]
             [moon.effect :refer [target]]
             [moon.world.time :refer [timer]]))

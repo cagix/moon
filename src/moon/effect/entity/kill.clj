@@ -1,4 +1,4 @@
-(ns moon.effect.kill
+(ns moon.effect.entity.kill
   (:require [moon.component :as component]
             [moon.effect :refer [target]]))
 

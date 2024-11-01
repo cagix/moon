@@ -1,4 +1,4 @@
-(ns moon.effect.stun
+(ns moon.effect.entity.stun
   (:require [moon.component :as component]
             [gdl.utils :refer [readable-number]]
             [moon.effect :refer [target]]))

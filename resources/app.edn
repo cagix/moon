@@ -38,14 +38,15 @@
  :components [
               colors
 
-              effect.convert
-              effect.damage
-              effect.kill
-              effect.melee-damage
+              effect.entity.convert
+              effect.entity.damage
+              effect.entity.kill
+              effect.entity.melee-damage
+              effect.entity.spiderweb
+              effect.entity.stun
+
               effect.projectile
               effect.spawn
-              effect.spiderweb
-              effect.stun
               effect.target-all
               effect.target-entity
 

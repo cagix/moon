@@ -55,7 +55,7 @@
   (doseq [element elements]
     (.add node (ui/t-node (ui/label (str (->v-str element)))))))
 
-(let [ns-sym (first (first (into {} (ns-value-vars))))]
+#_(let [ns-sym (first (first (into {} (ns-value-vars))))]
   ;(map ->v-str vars)
   )
 
