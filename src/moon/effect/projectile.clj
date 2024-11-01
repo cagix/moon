@@ -3,35 +3,8 @@
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.effect :refer [source target target-direction]]
+            [moon.projectile :as projectile]
             [moon.world.raycaster :refer [path-blocked?]]))
-
-(defn- projectile-size [projectile]
-  {:pre [(:entity/image projectile)]}
-  (first (:world-unit-dimensions (:entity/image projectile))))
-
-(defc :tx/projectile
-  (component/handle [[_
-                      {:keys [position direction faction]}
-                      {:keys [entity/image
-                              projectile/max-range
-                              projectile/speed
-                              entity-effects
-                              projectile/piercing?] :as projectile}]]
-    (let [size (projectile-size projectile)]
-      [[:e/create
-        position
-        {:width size
-         :height size
-         :z-order :z-order/flying
-         :rotation-angle (v/angle-from-vector direction)}
-        {:entity/movement {:direction direction
-                           :speed speed}
-         :entity/image image
-         :entity/faction faction
-         :entity/delete-after-duration (/ max-range speed)
-         :entity/destroy-audiovisual :audiovisuals/hit-wall
-         :entity/projectile-collision {:entity-effects entity-effects
-                                       :piercing? piercing?}}]])))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)
@@ -52,7 +25,7 @@
       (and (not (path-blocked? ; TODO test
                                source-p
                                target-p
-                               (projectile-size projectile)))
+                               (projectile/size projectile)))
            ; TODO not taking into account body sizes
            (< (v/distance source-p ; entity/distance function protocol EntityPosition
                           target-p)
@@ -63,7 +36,7 @@
      [:tx/projectile
       {:position (projectile-start-point @source
                                          target-direction
-                                         (projectile-size projectile))
+                                         (projectile/size projectile))
        :direction target-direction
        :faction (:entity/faction @source)}
       projectile]]))

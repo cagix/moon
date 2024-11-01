@@ -76,6 +76,7 @@
                      entity
                      item
                      line-render
+                     projectile
                      sound
                      spawn-creatures)
             (moon.widgets action-bar
