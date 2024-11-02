@@ -3,7 +3,7 @@
             [moon.body :as body]
             [moon.entity :as entity]
             [moon.faction :as faction]
-            [moon.entity.follow-ai :as follow-ai]
+            [moon.follow-ai :as follow-ai]
             [moon.world.grid :as grid]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
 

@@ -1,4 +1,4 @@
-(ns moon.entity.follow-ai
+(ns moon.follow-ai
   (:require [data.grid2d :as g2d]
             [gdl.math.vector :as v]
             [gdl.utils :refer [->tile indexed utils-positions when-seq]]
