@@ -68,14 +68,6 @@
                             mult
                             val-max) ; omgwtf
 
-            ; they have lots of mixed up stuff - schema is plain data ? ....
-            (moon.properties audiovisuals
-                             creatures
-                             items
-                             projectiles
-                             skills
-                             worlds)
-
             ; those are not defc yet
             (moon.schema animation
                          boolean
@@ -118,6 +110,7 @@
                           properties-tabs
                           property)
             moon.colors
+            moon.properties
             moon.world.widgets))
 
 (comment
@@ -187,10 +180,27 @@
 
  (:params
   :schema
-  :overview
   :modifier-ops
   :effect-ops
   :editor/doc
   :doc)
 
  )
+
+; * properties/ can remove (only overview)
+; * defc with just color & value-for-info can remove
+; * key -> pretty-name ?
+; * all component data in db ?
+; what about tests ?
+
+; * db & schema both components
+; e.g. db is also keyword-attr
+; => why not all component-attrs move to edn and editable ?!
+; and can click and open source file ?!
+; what does that mean for :property/id ? why does something need to keep its own id ?
+
+; src/moon/property.clj
+; property/def remove.
+; its not tx/sound but audiovisual ?!
+; if something has the same schema I can reuse the component ??
+; stats take a look

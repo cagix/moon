@@ -1,11 +1,8 @@
 (ns moon.property
-  (:refer-clojure :exclude [def type])
+  (:refer-clojure :exclude [type])
   (:require [moon.schema :as schema]
             [malli.core :as m]
             [malli.error :as me]))
-
-(defn def [k {:keys [overview]}]
-  (defc k {:overview overview}))
 
 (defn type->id-namespace [property-type]
   (keyword (name property-type)))
@@ -28,9 +25,6 @@
   (let [m-schema (m/schema (m-schema property))]
     (when-not (m/validate m-schema property)
       (throw (invalid-ex-info m-schema property)))))
-
-(defn overview [property-type]
-  (:overview (component-attrs property-type)))
 
 (defn ->image [{:keys [entity/image entity/animation]}]
   (or image

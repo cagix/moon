@@ -1,5 +1,6 @@
 (ns moon.widgets.properties-tabs
-  (:require [gdl.ui :as ui]
+  (:require [clojure.string :as str]
+            [gdl.ui :as ui]
             [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
@@ -13,7 +14,7 @@
 
 (defn- property-type-tabs []
   (for [property-type (sort (property/types))]
-    {:title (:title (property/overview property-type))
+    {:title (str/capitalize (name property-type))
      :content (component/create [:widgets/properties-overview property-type edit-property])}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]

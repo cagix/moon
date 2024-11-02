@@ -29,6 +29,9 @@
 (defn- slurp-edn [resource]
   (-> resource slurp edn/read-string))
 
+; Load component-attrs themself ?!
+; remove defc ?!
+; just defmethods ?
 (defn- load-schema []
   (doseq [[k v] (slurp-edn schema-file)]
     (alter-var-root #'component-attrs assoc-in [k :schema] v)))

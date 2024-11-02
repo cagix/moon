@@ -117,8 +117,7 @@
           Default value 1.
 
           For example:
-          attack/cast-speed 1.5 => (/ action-time 1.5) => 150% attackspeed."
-      ]
+          attack/cast-speed 1.5 => (/ action-time 1.5) => 150% attackspeed."]
   (defstat :stats/cast-speed   {:editor/doc doc})
   (defstat :stats/attack-speed {:editor/doc doc}))
 
