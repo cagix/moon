@@ -4,8 +4,6 @@
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
-            [gdl.ui :as ui]
-            [moon.component :as component]
             [moon.entity :as entity]
             [moon.player :as player]
             [moon.stage :refer [mouse-on-actor?]]
@@ -98,15 +96,11 @@
 
   (entity/render-below [_ entity]
     (when (world-item?)
-      (image/draw-centered (:entity/image item) (item-place-position entity)))))
+      (image/draw-centered (:entity/image item) (item-place-position entity))))
 
-(defn- draw-item-on-cursor []
-  (let [player-e* @player/eid]
-    (when (and (= :player-item-on-cursor (entity/state-k player-e*))
-               (not (world-item?)))
-      (image/draw-centered (:entity/image (:entity/item-on-cursor player-e*))
-                           (gui-view/mouse-position)))))
-
-(defmethods :widgets/draw-item-on-cursor
-  (component/create [_]
-    (ui/actor {:draw draw-item-on-cursor})))
+  (entity/draw-gui-view [_]
+    (let [entity @eid]
+      (when (and (= :player-item-on-cursor (entity/state-k entity))
+                 (not (world-item?)))
+        (image/draw-centered (:entity/image (:entity/item-on-cursor entity))
+                             (gui-view/mouse-position))))))

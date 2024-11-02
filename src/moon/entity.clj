@@ -60,6 +60,9 @@
 (defsystem clicked-skillmenu-skill [_ skill])
 (defmethod clicked-skillmenu-skill :default [_ skill])
 
+(defsystem draw-gui-view [_])
+(defmethod draw-gui-view :default [_])
+
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
 

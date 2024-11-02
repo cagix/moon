@@ -2,6 +2,8 @@
   (:require [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
             [moon.component :as component]
+            [moon.entity :as entity]
+            [moon.player :as player]
             [moon.widgets.windows :as windows]))
 
 (defmethods :world/widgets
@@ -17,5 +19,5 @@
                 :fill-parent? true})
      (component/create [:widgets/hp-mana])
      (windows/create)
-     (component/create [:widgets/draw-item-on-cursor])
+     (ui/actor {:draw #(entity/draw-gui-view (entity/state-obj @player/eid))})
      (component/create [:widgets/player-message])]))

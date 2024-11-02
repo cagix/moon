@@ -15,7 +15,7 @@
                              sleeping)
             (moon.entity.player dead
                                 idle
-                                item-on-cursor ; :widgets/draw-item-on-cursor
+                                item-on-cursor
                                 moving)
             (moon.entity active
                          animation
