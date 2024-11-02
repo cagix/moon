@@ -3,7 +3,6 @@
             [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
-            [moon.component :as component]
             [moon.stage :as stage]
             [moon.db :as db]
             [moon.graphics.cursors :as cursors]
@@ -11,7 +10,7 @@
             [moon.screens.world :as world]
             [moon.widgets.background-image :as background-image]))
 
-(defn- ->buttons []
+(defn- buttons []
   (ui/table
    {:rows
     (remove nil?
@@ -34,12 +33,11 @@
   (screen/render [_])
   (screen/dispose [_]))
 
-(defmethods :screens/main-menu
-  (component/create [_]
-    (stage/create :actors
-                  [(background-image/create)
-                   (->buttons)
-                   (ui/actor {:act (fn []
-                                     (when (key-just-pressed? :keys/escape)
-                                       (app/exit)))})]
-                  :screen (->MainMenuScreen))))
+(defn create []
+  (stage/create :actors
+                [(background-image/create)
+                 (buttons)
+                 (ui/actor {:act (fn []
+                                   (when (key-just-pressed? :keys/escape)
+                                     (app/exit)))})]
+                :screen (->MainMenuScreen)))

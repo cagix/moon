@@ -14,6 +14,11 @@
             [moon.graphics.tiled :as graphics.tiled]
             [moon.graphics.text :as font]
             [moon.screen :as screen]
+            [moon.screens.main :as main-menu]
+            [moon.screens.editor :as editor]
+            [moon.screens.map-editor :as map-editor]
+            [moon.screens.minimap :as minimap]
+            [moon.screens.world :as world]
             moon.components))
 
 (defn -main []
@@ -39,11 +44,12 @@
                  (font/init {:file "fonts/exocet/films.EXL_____.ttf"
                              :size 16
                              :quality-scaling 2})
-                 (screen/set-screens [:screens/main-menu
-                                      :screens/map-editor
-                                      :screens/editor
-                                      :screens/minimap
-                                      :screens/world]))
+                 (screen/set-screens
+                  {:screens/main-menu (main-menu/create)
+                   :screens/map-editor (map-editor/create)
+                   :screens/editor (editor/create)
+                   :screens/minimap (minimap/create)
+                   :screens/world (world/create)}))
 
                (dispose [_]
                  (assets/dispose)

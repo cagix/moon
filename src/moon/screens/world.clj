@@ -121,6 +121,5 @@
   (screen/dispose [_]
     (tiled-map/clear)))
 
-(defmethods :screens/world
-  (component/create [_]
-    (stage/create :screen (->WorldScreen))))
+(defn create []
+  (stage/create :screen (->WorldScreen)))

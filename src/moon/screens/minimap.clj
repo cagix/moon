@@ -2,7 +2,6 @@
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-just-pressed?]]
-            [moon.component :as component]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.tiled :as renderer]
             [moon.graphics.world-view :as world-view]
@@ -54,6 +53,5 @@
               (key-just-pressed? :keys/escape))
       (screen/change :screens/world))))
 
-(defmethods :screens/minimap
-  (component/create [_]
-    (->Minimap)))
+(defn create []
+  (->Minimap))

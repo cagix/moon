@@ -1,5 +1,4 @@
-(ns moon.screen
-  (:require [moon.component :as component]))
+(ns moon.screen)
 
 (defprotocol Screen
   (enter   [_])
@@ -26,11 +25,8 @@
 
 (defn set-screens
   "Calls `change` to first "
-  [screen-ks]
-  {:pre [(vector? screen-ks)]}
-  (bind-root #'screens (into {}
-                             (for [k screen-ks]
-                               [k (component/create [k])])))
+  [screens]
+  (bind-root #'screens screens)
   (change (ffirst screens)))
 
 (defn dispose-all []

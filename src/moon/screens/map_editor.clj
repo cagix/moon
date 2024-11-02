@@ -8,7 +8,6 @@
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [moon.controls :as controls]
-            [moon.component :as component]
             [moon.db :as db]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.shape-drawer :as sd]
@@ -157,10 +156,9 @@ direction keys: move")
   (dispose [_]
     (dispose (:tiled-map @current-data))))
 
-(defmethods :screens/map-editor
-  (component/create [_]
-    (stage/create :actors [(->generate-map-window world-id)
-                           (->info-window)]
-                  :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)
-                                                    :show-movement-properties false
-                                                    :show-grid-lines false})))))
+(defn create []
+  (stage/create :actors [(->generate-map-window world-id)
+                         (->info-window)]
+                :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)
+                                                  :show-movement-properties false
+                                                  :show-grid-lines false}))))
