@@ -74,8 +74,7 @@
                      item
                      line-render
                      projectile
-                     sound
-                     spawn-creatures)
+                     sound)
 
             ; public fns
             (moon.widgets action-bar
