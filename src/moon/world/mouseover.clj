@@ -2,9 +2,9 @@
   (:refer-clojure :exclude [update])
   (:require [gdl.utils :refer [sort-by-order]]
             [moon.body :as body]
-            [moon.entity.player :as player]
             [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
+            [moon.player :as player]
             [moon.world.grid :as grid]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
 

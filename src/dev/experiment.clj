@@ -2,7 +2,7 @@
   (:require [gdl.app :refer [post-runnable]]
             [moon.component :as component]
             [moon.db :as db]
-            [moon.entity.player :as player]))
+            [moon.player :as player]))
 
 (comment
 

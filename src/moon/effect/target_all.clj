@@ -1,8 +1,8 @@
 (ns moon.effect.target-all
   (:require [moon.component :as component]
             [moon.effect :refer [source target]]
-            [moon.entity.player :as player]
             [moon.graphics.shape-drawer :as sd]
+            [moon.player :as player]
             [moon.world.entities :as entities]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
 

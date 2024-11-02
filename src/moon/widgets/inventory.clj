@@ -5,11 +5,11 @@
             [gdl.ui.actor :as a]
             [moon.component :as component]
             [moon.entity :as entity]
-            [moon.entity.player :as player]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.image :as image]
             [moon.graphics.shape-drawer :as sd]
             [moon.item :refer [valid-slot? empty-inventory]]
+            [moon.player :as player]
             [moon.stage :as stage]
             [moon.widgets.windows :as windows]))
 

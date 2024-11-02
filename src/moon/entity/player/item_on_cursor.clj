@@ -4,10 +4,10 @@
             [gdl.ui :as ui]
             [moon.component :as component]
             [moon.entity :as entity]
-            [moon.entity.player :as player]
             [moon.graphics.gui-view :as gui-view]
             [moon.graphics.image :as image]
             [moon.graphics.world-view :as world-view]
+            [moon.player :as player]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]))
 

@@ -1,8 +1,8 @@
 (ns moon.entity.mouseover
   (:require [moon.entity :as entity]
             [moon.faction :as faction]
-            [moon.entity.player :as player]
-            [moon.graphics.shape-drawer :as sd]))
+            [moon.graphics.shape-drawer :as sd]
+            [moon.player :as player]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])

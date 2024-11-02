@@ -4,9 +4,9 @@
             [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
-            [moon.entity.player :as player]
             [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
+            [moon.player :as player]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]
             [moon.world.line-of-sight :refer [line-of-sight?]]))

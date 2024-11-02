@@ -3,10 +3,10 @@
             [gdl.ui :as ui]
             [moon.component :as component]
             [moon.entity :as entity]
-            [moon.entity.player :as player]
             [moon.graphics.image :as img]
             [moon.graphics.text :as text]
             [moon.graphics.gui-view :as gui-view]
+            [moon.player :as player]
             [moon.val-max :as val-max]))
 
 (defn- render-infostr-on-bar [infostr x y h]
