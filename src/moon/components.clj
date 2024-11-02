@@ -34,7 +34,7 @@
                          movement ; max-delta-time, speed-schema
                          player
                          projectile
-                         skills ; tx's, has-skill ?
+                         skills ; has-skill?
                          string-effect ; tx's
                          stunned
                          temp-modifier)

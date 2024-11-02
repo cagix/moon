@@ -144,4 +144,4 @@
       (when (and (pos? free-skill-points)
                  (not (skills/has-skill? @eid skill)))
         [[:e/assoc eid :entity/free-skill-points (dec free-skill-points)]
-         [:tx/add-skill eid skill]]))))
+         [:entity/skills eid :add skill]]))))

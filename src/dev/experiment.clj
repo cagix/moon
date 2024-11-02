@@ -50,7 +50,7 @@
 (defn- learn-skill! [skill-id]
   (post-tx!
    (fn []
-     [[:tx/add-skill player/eid (db/get skill-id)]])))
+     [[:entity/skills player/eid :add (db/get skill-id)]])))
 
 (defn- create-item! [item-id]
   (post-tx!
