@@ -39,14 +39,13 @@
                          stunned
                          temp-modifier)
             (moon.fsms player
-                       npc) ; public vars, just plain data and call fsm-inc in state
+                       npc)
             (moon.level generate
                         uf-caves
                         tiled-map)
             (moon.operation inc
                             mult
                             val-max) ; omgwtf
-
             ; those are not defc yet
             (moon.schema animation
                          boolean
@@ -59,7 +58,6 @@
                          sound
                          string
                          val-max)
-
             (moon.tx audiovisual
                      creature
                      cursor
@@ -69,7 +67,6 @@
                      line-render
                      projectile
                      sound)
-
             ; public fns
             (moon.widgets action-bar
                           dev-menu

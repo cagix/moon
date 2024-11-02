@@ -26,7 +26,7 @@
 
 (defmethods :entity/fsm
   (entity/create [[k {:keys [fsm initial-state]}] eid]
-    [[:e/assoc eid k (->init-fsm (component/create [fsm nil]) initial-state)]
+    [[:e/assoc eid k (->init-fsm (component/create [fsm]) initial-state)]
      [:e/assoc eid initial-state (entity/->v [initial-state eid])]])
 
   (component/info [[_ fsm]]
