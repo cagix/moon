@@ -85,7 +85,6 @@
   (boolean (pickup-item eid item)))
 
 (defc :entity/inventory
-  {:schema [:s/one-to-many :properties/items]}
   (entity/create [[_ items] eid]
     (cons [:e/assoc eid :entity/inventory item/empty-inventory]
           (for [item items]

@@ -2,8 +2,7 @@
   (:require [moon.operation :as op]))
 
 (defc :op/mult
-  {:schema number?
-   :let value}
+  {:let value}
   (op/value-text [_]
     (str (int (* 100 value)) "%"))
 

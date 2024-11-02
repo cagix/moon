@@ -7,8 +7,7 @@
   [:e/assoc eid :entity/image (animation/current-frame animation)])
 
 (defc :entity/animation
-  {:schema :s/animation
-   :let animation}
+  {:let animation}
   (entity/create [_ eid]
     [(tx-assoc-image-current-frame eid animation)])
 

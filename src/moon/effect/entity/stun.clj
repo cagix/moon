@@ -4,8 +4,7 @@
             [moon.effect :refer [target]]))
 
 (defc :effect.entity/stun
-  {:schema pos?
-   :let duration}
+  {:let duration}
   (component/info [_]
     (str "Stuns for " (readable-number duration) " seconds"))
 

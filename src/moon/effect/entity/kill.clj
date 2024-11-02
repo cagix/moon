@@ -3,7 +3,6 @@
             [moon.effect :refer [target]]))
 
 (defc :effect.entity/kill
-  {:schema :some}
   (component/info [_]
     "Kills target")
 

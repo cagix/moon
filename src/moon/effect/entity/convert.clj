@@ -4,7 +4,6 @@
             [moon.entity.faction :as faction]))
 
 (defc :effect.entity/convert
-  {:schema :some}
   (component/info [_]
     "Converts target to your side.")
 

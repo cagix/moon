@@ -11,10 +11,7 @@
 ; Could even set to a specific value ->
 ; op/set-to-ratio 0.5 ....
 ; sets the hp to 50%...
-(defstat :stats/hp
-  {:schema pos-int?
-   :modifier-ops [:op/max-inc :op/max-mult]
-   :effect-ops [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]})
+(defstat :stats/hp)
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]

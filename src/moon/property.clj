@@ -4,12 +4,8 @@
             [malli.core :as m]
             [malli.error :as me]))
 
-(defc :property/id {:schema :qualified-keyword})
-
-(defn def [k {:keys [schema overview]}]
-  (defc k
-    {:schema [:s/map (conj schema :property/id)]
-     :overview overview}))
+(defn def [k {:keys [overview]}]
+  (defc k {:overview overview}))
 
 (defn type->id-namespace [property-type]
   (keyword (name property-type)))

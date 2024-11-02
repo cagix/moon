@@ -28,8 +28,7 @@
  )
 
 (defc :effect/target-all
-  {:schema [:s/map [:entity-effects]]
-   :let {:keys [entity-effects]}}
+  {:let {:keys [entity-effects]}}
   (component/info [_]
     "[LIGHT_GRAY]All visible targets[]")
 

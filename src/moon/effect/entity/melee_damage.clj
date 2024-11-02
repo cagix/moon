@@ -11,7 +11,6 @@
   [:effect.entity/damage (entity->melee-damage @source)])
 
 (defc :effect.entity/melee-damage
-  {:schema :some}
   (component/info [_]
     (str "Damage based on entity strength."
          (when source

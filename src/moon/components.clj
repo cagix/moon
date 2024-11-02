@@ -180,7 +180,6 @@
         with-out-str
         (spit "resources/schema.edn")))
 
-
  )
 
 (comment

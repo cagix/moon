@@ -4,7 +4,6 @@
             [moon.world.time :refer [stopped?]]))
 
 (defc :entity/skills
-  {:schema [:s/one-to-many :properties/skills]}
   (entity/create [[k skills] eid]
     (cons [:e/assoc eid k nil]
           (for [skill skills]

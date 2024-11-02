@@ -17,7 +17,7 @@
             moon.components))
 
 (defn -main []
-  (db/init "properties.edn")
+  (db/init)
   (app/start {:title "Moon"
               :fps 60
               :width 1440

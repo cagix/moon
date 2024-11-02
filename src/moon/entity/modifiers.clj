@@ -7,7 +7,6 @@
             [moon.operations :as ops]))
 
 (defc :entity/modifiers
-  {:schema [:s/components-ns :modifier]}
   (entity/->v [[_ value-mods]]
     (mods/value-mods->mods value-mods))
 
@@ -54,39 +53,28 @@
       (when-let [effective-value (entity/stat @effect/target stat-k)]
         [[:e/assoc effect/target stat-k (ops/apply operations effective-value)]]))))
 
-(defn defmodifier [k operations]
-  {:pre [(= (namespace k) "modifier")]}
-  (defc* k {:schema [:s/map-optional operations]}))
-
-(defn defstat [k {:keys [modifier-ops effect-ops] :as attr-m}]
-  {:pre [(= (namespace k) "stats")]}
-  (defc* k attr-m)
-  (derive k :entity/stat)
-  (when modifier-ops
-    (defmodifier (modifier-k k) modifier-ops))
-  (when effect-ops
-    (let [effect-k (effect-k k)]
-      (defc* effect-k {:schema [:s/map-optional effect-ops]})
-      (derive effect-k :base/stat-effect))))
-
 (defc :entity/stat
   (component/info [[k v]]
     (str (k->pretty-name k) ": " (entity/stat component/*info-text-entity* k))))
 
-; TODO negate this value also @ use
+(defn defstat
+  ([k]
+   (defstat k {}))
+
+  ([k attr-m]
+   {:pre [(= (namespace k) "stats")]}
+   (defc* k attr-m)
+   (derive k :entity/stat)
+   (derive (effect-k k) :base/stat-effect)))
+
+; TODO negate this value also @ use (modifier damage receive)
 ; so can make positiive modifeirs green , negative red....
-(defmodifier :modifier/damage-receive [:op/max-inc :op/max-mult])
-(defmodifier :modifier/damage-deal [:op/val-inc :op/val-mult :op/max-inc :op/max-mult])
 
 ; TODO needs to be there for each npc - make non-removable (added to all creatures)
 ; and no need at created player (npc controller component?)
-(defstat :stats/aggro-range   {:schema nat-int?})
-(defstat :stats/reaction-time {:schema pos-int?})
-
-(defstat :stats/mana
-  {:schema nat-int?
-   :modifier-ops [:op/max-inc :op/max-mult]
-   :effect-ops [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]})
+(defstat :stats/aggro-range)
+(defstat :stats/reaction-time)
+(defstat :stats/mana)
 
 (defc :stats/mana
   (entity/->v [[_ v]]
@@ -113,21 +101,16 @@
 ; * cast/attack speed dont decrease below 0 ??
 
 ; TODO clamp between 0 and max-speed ( same as movement-speed-schema )
-(defstat :stats/movement-speed
-  {:schema pos? ;(m/form entity/movement-speed-schema)
-   :modifier-ops [:op/inc :op/mult]})
+(defstat :stats/movement-speed) ;(m/form entity/movement-speed-schema)
 
 ; TODO show the stat in different color red/green if it was permanently modified ?
 ; or an icon even on the creature
 ; also we want audiovisuals always ...
-(defc :effect.entity/movement-speed
-  {:schema [:s/map [:op/mult]]})
 (derive :effect.entity/movement-speed :base/stat-effect)
+; TODO is not automatically derived?
 
 ; TODO clamp into ->pos-int
-(defstat :stats/strength
-  {:schema nat-int?
-   :modifier-ops [:op/inc]})
+(defstat :stats/strength)
 
 ; TODO here >0
 (let [doc "action-time divided by this stat when a skill is being used.
@@ -135,23 +118,10 @@
 
           For example:
           attack/cast-speed 1.5 => (/ action-time 1.5) => 150% attackspeed."
-      schema pos?
-      operations [:op/inc]]
-  (defstat :stats/cast-speed
-    {:schema schema
-     :editor/doc doc
-     :modifier-ops operations})
-
-  (defstat :stats/attack-speed
-    {:schema schema
-     :editor/doc doc
-     :modifier-ops operations}))
+      ]
+  (defstat :stats/cast-speed   {:editor/doc doc})
+  (defstat :stats/attack-speed {:editor/doc doc}))
 
 ; TODO bounds
-(defstat :stats/armor-save
-  {:schema number?
-   :modifier-ops [:op/inc]})
-
-(defstat :stats/armor-pierce
-  {:schema number?
-   :modifier-ops [:op/inc]})
+(defstat :stats/armor-save)
+(defstat :stats/armor-pierce)

@@ -1,6 +1,7 @@
 (ns moon.db
   (:refer-clojure :exclude [get])
   (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
             [gdl.utils :refer [safe-get]]
             [moon.property :as property]
@@ -22,17 +23,25 @@
 
  )
 
-(declare ^:private db
-         ^:private edn-file)
+(def ^:private properties-file (io/resource "properties.edn"))
+(def ^:private schema-file     (io/resource "schema.edn"))
 
-(defn init [file]
-  (let [file (clojure.java.io/resource file) ; load here and not in threading macro so #'edn-file correct (tests?!)
-        properties (-> file slurp edn/read-string)]
+(defn- slurp-edn [resource]
+  (-> resource slurp edn/read-string))
+
+(defn- load-schema []
+  (doseq [[k v] (slurp-edn schema-file)]
+    (alter-var-root #'component-attrs assoc-in [k :schema] v)))
+
+(declare ^:private db)
+
+(defn init []
+  (load-schema)
+  (let [properties (slurp-edn properties-file)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! property/validate! properties)
-    (bind-root #'db (zipmap (map :property/id properties) properties))
-    (bind-root #'edn-file file)))
+    (bind-root #'db (zipmap (map :property/id properties) properties))))
 
 (defn- async-pprint-spit! [properties]
   (.start
@@ -42,7 +51,7 @@
         (->> properties
              pprint
              with-out-str
-             (spit edn-file)))))))
+             (spit properties-file)))))))
 
 (defn- recur-sort-map [m]
   (into (sorted-map)

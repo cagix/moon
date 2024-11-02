@@ -3,12 +3,7 @@
             [moon.property :as property]))
 
 (property/def :properties/projectiles
-  {:schema [:entity/image
-            :projectile/max-range
-            :projectile/speed
-            :projectile/piercing?
-            :entity-effects]
-   :overview {:title "Projectiles"
+  {:overview {:title "Projectiles"
               :columns 16
               :image/scale 2}})
 
@@ -16,9 +11,9 @@
 
 ; -> range needs to be smaller than potential field range (otherwise hitting someone who can't get back at you)
 ; -> first range check then ray ! otherwise somewhere in contentfield out of sight
-(defc :projectile/max-range {:schema pos-int?})
-(defc :projectile/speed     {:schema pos-int?})
+#_(defc :projectile/max-range {:schema pos-int?})
+#_(defc :projectile/speed     {:schema pos-int?})
 
-(defc :projectile/piercing? {:schema :boolean}
+(defc :projectile/piercing?
   (component/info [_]
     "[LIME]Piercing[]"))

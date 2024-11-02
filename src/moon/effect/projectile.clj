@@ -12,8 +12,7 @@
                   (+ (:radius entity) size 0.1))))
 
 (defc :effect/projectile
-  {:schema [:s/one-to-one :properties/projectiles]
-   :let {:keys [entity-effects projectile/max-range] :as projectile}}
+  {:let {:keys [entity-effects projectile/max-range] :as projectile}}
   ; TODO for npcs need target -- anyway only with direction
   (component/applicable? [_]
     target-direction) ; faction @ source also ?

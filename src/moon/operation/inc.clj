@@ -2,8 +2,7 @@
   (:require [moon.operation :as op]))
 
 (defc :op/inc
-  {:schema number?
-   :let value}
+  {:let value}
   (op/value-text [_]
     (str value))
 
