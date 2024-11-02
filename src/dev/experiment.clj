@@ -6,30 +6,15 @@
 
 (comment
 
- ; * Test
- ; * if z-order/effect renders behind wall
- ; * => graphics txs?
- (post-tx! [:tx/line-render {:start [68 38]
-                             :end [70 30]
-                             :color [1 1 1]
-                             :duration 2}])
-
- (do ; this only works in game screen otherwise action-bar uses wrong stage !!
-     ; remove anyway other screens?! optionsmenu not needed -> menubar in dev mode
-     (learn-skill! :skills/projectile)
-     (learn-skill! :skills/spawn)
-     (learn-skill! :skills/meditation)
-     (learn-skill! :skills/death-ray)
-     (learn-skill! :skills/convert)
-     (learn-skill! :skills/blood-curse)
-     (learn-skill! :skills/slow)
-     (learn-skill! :skills/double-fireball))
-
- ; FIXME
- ; first says inventory is full
- ; ok! beholder doesn't have inventory - player entity needs inventory/...
- ; => tests...
- (create-item! :items/blood-glove)
+ (do
+  (learn-skill! :skills/projectile)
+  (learn-skill! :skills/spawn)
+  (learn-skill! :skills/meditation)
+  (learn-skill! :skills/death-ray)
+  (learn-skill! :skills/convert)
+  (learn-skill! :skills/blood-curse)
+  (learn-skill! :skills/slow)
+  (learn-skill! :skills/double-fireball))
 
  ; start world - small empty test room
  ; 2 creatures - player?
