@@ -1,8 +1,8 @@
 (ns moon.widgets.player-modal
-  (:require [gdl.ui :as ui]
+  (:require [gdl.graphics.gui-view :as gui-view]
+            [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :as component]
-            [moon.graphics.gui-view :as gui-view]
             [moon.stage :as stage]))
 
 ; no window movable type cursor appears here like in player idle

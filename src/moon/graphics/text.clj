@@ -1,8 +1,8 @@
 (ns moon.graphics.text
   (:require [gdl.graphics.batch :refer [batch]]
             [gdl.graphics.text :as text]
-            [gdl.utils :refer [dispose]]
-            [moon.graphics.view :as view]))
+            [gdl.graphics.view :as view]
+            [gdl.utils :refer [dispose]]))
 
 (declare ^:private default-font)
 

@@ -1,9 +1,9 @@
 (ns moon.world.debug-render
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.world-view :as world-view]
             [gdl.math.shape :as shape]
             [gdl.utils :refer [->tile]]
-            [moon.graphics.world-view :as world-view]
             [moon.world.grid :refer [circle->cells grid]]
             [moon.world.potential-fields :refer [factions-iterations]]))
 

@@ -1,11 +1,11 @@
 (ns moon.widgets.hp-mana
-  (:require [gdl.utils :refer [readable-number]]
+  (:require [gdl.graphics.gui-view :as gui-view]
             [gdl.ui :as ui]
+            [gdl.utils :refer [readable-number]]
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.graphics.image :as img]
             [moon.graphics.text :as text]
-            [moon.graphics.gui-view :as gui-view]
             [moon.player :as player]
             [moon.val-max :as val-max]))
 

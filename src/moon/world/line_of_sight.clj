@@ -1,6 +1,6 @@
 (ns moon.world.line-of-sight
   (:require [gdl.graphics.camera :as cam]
-            [moon.graphics.world-view :as world-view]
+            [gdl.graphics.world-view :as world-view]
             [moon.world.raycaster :refer [ray-blocked?]]))
 
 ; does not take into account zoom - but zoom is only for debug ???

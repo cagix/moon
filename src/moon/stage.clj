@@ -1,10 +1,10 @@
 (ns moon.stage
   (:refer-clojure :exclude [get])
   (:require [gdl.graphics.batch :refer [batch]]
+            [gdl.graphics.gui-view :as gui-view]
             [gdl.input :as input]
             [gdl.ui.stage :as stage]
             [gdl.utils :refer [dispose]]
-            [moon.graphics.gui-view :as gui-view]
             [moon.screen :as screen]))
 
 (defrecord StageScreen [stage sub-screen]

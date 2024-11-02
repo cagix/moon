@@ -1,8 +1,8 @@
 (ns moon.world.mouseover
   (:refer-clojure :exclude [update])
   (:require [gdl.utils :refer [sort-by-order]]
+            [gdl.graphics.world-view :as world-view]
             [moon.body :as body]
-            [moon.graphics.world-view :as world-view]
             [moon.stage :as stage]
             [moon.player :as player]
             [moon.world.grid :as grid]

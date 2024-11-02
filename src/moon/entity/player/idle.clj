@@ -1,5 +1,6 @@
 (ns moon.entity.player.idle
-  (:require [gdl.input :refer [button-just-pressed? WASD-movement-vector]]
+  (:require [gdl.graphics.world-view :as world-view]
+            [gdl.input :refer [button-just-pressed? WASD-movement-vector]]
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
@@ -7,7 +8,6 @@
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.entity.skills :as skills]
-            [moon.graphics.world-view :as world-view]
             [moon.player :as player]
             [moon.stage :as stage]
             [moon.widgets.action-bar :as action-bar]

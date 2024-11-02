@@ -1,6 +1,8 @@
 (ns moon.widgets.dev-menu
   (:require [gdl.graphics]
             [gdl.graphics.camera :as cam]
+            [gdl.graphics.gui-view :as gui-view]
+            [gdl.graphics.world-view :as world-view]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [readable-number]]
@@ -8,8 +10,6 @@
             [moon.component :as component]
             [moon.db :as db]
             [moon.graphics.image :as img]
-            [moon.graphics.gui-view :as gui-view]
-            [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
             [moon.screens.world :as world]
             [moon.world.mouseover :as mouseover]

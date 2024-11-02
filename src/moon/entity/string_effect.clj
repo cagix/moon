@@ -1,7 +1,7 @@
 (ns moon.entity.string-effect
-  (:require [moon.component :as component]
+  (:require [gdl.graphics.world-view :as world-view]
+            [moon.component :as component]
             [moon.graphics.text :as text]
-            [moon.graphics.world-view :as world-view]
             [moon.entity :as entity]
             [moon.world.time :as time :refer [timer stopped?]]))
 

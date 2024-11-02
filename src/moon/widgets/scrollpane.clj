@@ -1,6 +1,6 @@
 (ns moon.widgets.scrollpane
-  (:require [gdl.ui :as ui]
-            [moon.graphics.gui-view :as gui-view]))
+  (:require [gdl.graphics.gui-view :as gui-view]
+            [gdl.ui :as ui]))
 
 (defn scroll-pane-cell [rows]
   (let [table (ui/table {:rows rows

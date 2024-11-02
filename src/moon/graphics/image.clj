@@ -1,8 +1,8 @@
 (ns moon.graphics.image
   (:require [gdl.graphics.batch :as batch]
-            [moon.graphics.texture :as texture]
-            [moon.graphics.view :as view]
-            [moon.graphics.world-view :as world-view]))
+            [gdl.graphics.view :as view]
+            [gdl.graphics.world-view :as world-view]
+            [moon.graphics.texture :as texture]))
 
 (defrecord Sprite [texture-region
                    pixel-dimensions
