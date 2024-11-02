@@ -16,14 +16,11 @@
                   :x x
                   :y (+ y (:half-height entity) (world-view/pixels->units 5))
                   :scale 2
-                  :up? true}))))
+                  :up? true})))
 
-(defmethods :tx/add-text-effect
-  (component/handle [[_ eid text]]
-    [[:e/assoc
-      eid
-      :entity/string-effect
-      (if-let [string-effect (:entity/string-effect @eid)]
+  (component/handle [[k eid text]]
+    [[:e/assoc eid k
+      (if-let [string-effect (k @eid)]
         (-> string-effect
             (update :text str "\n" text)
             (update :counter time/reset))

@@ -38,7 +38,7 @@
     {:eid eid})
 
   (entity/exit [_]
-    [[:tx/add-text-effect eid "[WHITE]!"]
+    [[:entity/string-effect eid "[WHITE]!"]
      [:tx/shout (:position @eid) (:entity/faction @eid) 0.2]])
 
   (entity/tick [_ eid]

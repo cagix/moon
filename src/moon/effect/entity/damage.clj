@@ -69,7 +69,7 @@
        []
 
        (armor-saves? source* target*)
-       [[:tx/add-text-effect target "[WHITE]ARMOR"]] ; TODO !_!_!_!_!_!
+       [[:entity/string-effect target "[WHITE]ARMOR"]] ; TODO !_!_!_!_!_!
 
        :else
        (let [;_ (println "Source unmodified damage:" damage)
@@ -81,6 +81,6 @@
              ;_ (println "dmg-amount: " dmg-amount)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          [[:tx/audiovisual (:position target*) :audiovisuals/damage]
-          [:tx/add-text-effect target (str "[RED]" dmg-amount)]
+          [:entity/string-effect target (str "[RED]" dmg-amount)]
           [:e/assoc-in target [:stats/hp 0] new-hp-val]
           [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]])))))

@@ -35,7 +35,7 @@
                          player
                          projectile
                          skills ; has-skill?
-                         string-effect ; tx's
+                         string-effect
                          stunned
                          temp-modifier)
             (moon.fsms player
