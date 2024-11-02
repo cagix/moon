@@ -16,14 +16,14 @@
 
  (do ; this only works in game screen otherwise action-bar uses wrong stage !!
      ; remove anyway other screens?! optionsmenu not needed -> menubar in dev mode
-  (learn-skill! :skills/projectile)
-  (learn-skill! :skills/spawn)
-  (learn-skill! :skills/meditation)
-  (learn-skill! :skills/death-ray)
-  (learn-skill! :skills/convert)
-  (learn-skill! :skills/blood-curse)
-  (learn-skill! :skills/slow)
-  (learn-skill! :skills/double-fireball))
+     (learn-skill! :skills/projectile)
+     (learn-skill! :skills/spawn)
+     (learn-skill! :skills/meditation)
+     (learn-skill! :skills/death-ray)
+     (learn-skill! :skills/convert)
+     (learn-skill! :skills/blood-curse)
+     (learn-skill! :skills/slow)
+     (learn-skill! :skills/double-fireball))
 
  ; FIXME
  ; first says inventory is full
@@ -31,22 +31,6 @@
  ; => tests...
  (create-item! :items/blood-glove)
 
- (require '[clojure.string :as str])
- (spit "item_tags.txt"
-       (with-out-str
-        (clojure.pprint/pprint
-         (distinct
-          (sort
-           (mapcat
-            (comp #(str/split % #"-")
-                  name
-                  :property/id)
-            (db/all :properties/items)))))))
-
- )
-
-
-(comment
  ; start world - small empty test room
  ; 2 creatures - player?
  ; start skill w. applicable needs target (bow)
