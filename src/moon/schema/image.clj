@@ -1,6 +1,6 @@
 (ns moon.schema.image
-  (:require [gdl.ui :as ui]
-            [moon.assets :as assets]
+  (:require [gdl.assets :as assets]
+            [gdl.ui :as ui]
             [moon.graphics.image :as img]
             [moon.schema :as schema])
   (:import (com.badlogic.gdx.graphics Texture)))

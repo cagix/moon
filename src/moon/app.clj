@@ -1,12 +1,12 @@
 (ns moon.app
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [gdl.assets :as assets]
             [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.ui :as ui]
-            [moon.assets :as assets]
             [moon.db :as db]
             [moon.graphics.cursors :as cursors]
             [moon.graphics.gui-view :as gui-view]
@@ -30,7 +30,7 @@
               :dock-icon "moon.png"}
              (reify app/Listener
                (create [_]
-                 (assets/init)
+                 (assets/init "resources/")
                  (batch/init)
                  (shape-drawer/init)
                  (cursors/init)

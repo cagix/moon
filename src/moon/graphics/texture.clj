@@ -1,5 +1,5 @@
 (ns moon.graphics.texture
-  (:require [moon.assets :as assets])
+  (:require [gdl.assets :as assets])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 

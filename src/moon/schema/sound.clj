@@ -1,8 +1,8 @@
 (ns moon.schema.sound
   (:require [clojure.string :as str]
+            [gdl.assets :as assets]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.assets :as assets]
             [moon.schema :as schema]
             [moon.stage :as stage]
             [moon.widgets.scrollpane :refer [scrollable-choose-window]])
@@ -12,7 +12,7 @@
   :string)
 
 (defn- play-button [sound-file]
-  (ui/text-button "play!" #(assets/play-sound! sound-file)))
+  (ui/text-button "play!" #(assets/play-sound sound-file)))
 
 (declare columns)
 
