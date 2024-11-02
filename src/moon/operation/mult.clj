@@ -4,9 +4,10 @@
 (defmethods :op/mult
   {:let value}
   (op/value-text [_]
-    (str (int (* 100 value)) "%"))
+    (str value "%"))
 
   (op/apply [_ base-value]
-    (* base-value (inc value)))
+    (* base-value (inc (/ value 100))))
 
-  (op/order [_] 1))
+  (op/order [_]
+    1))

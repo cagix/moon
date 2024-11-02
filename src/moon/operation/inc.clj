@@ -9,4 +9,5 @@
   (op/apply [_ base-value]
     (+ base-value value))
 
-  (op/order [_] 0))
+  (op/order [_]
+    0))
