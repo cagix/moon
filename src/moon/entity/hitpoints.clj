@@ -5,12 +5,6 @@
             [moon.entity.modifiers :refer [defstat]]
             [moon.val-max :as val-max]))
 
-; TODO
-; @ hp says here 'Minimum' hp instead of just 'HP'
-; Sets to 0 but don't kills
-; Could even set to a specific value ->
-; op/set-to-ratio 0.5 ....
-; sets the hp to 50%...
 (defstat :stats/hp)
 
 (def ^:private hpbar-colors

@@ -31,7 +31,7 @@
                          line-render
                          modifiers ; lots of stuff
                          mouseover
-                         movement ; tx/set-movement, max-delta-time, speed-schema
+                         movement ; max-delta-time, speed-schema
                          player
                          projectile
                          skills ; tx's, has-skill ?

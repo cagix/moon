@@ -52,8 +52,7 @@
         (try-move body (assoc movement :direction [0 ydir])))))
 
 (defmethods :entity/movement
-  {:let {:keys [direction speed rotate-in-movement-direction?] :as movement}}
-  (entity/tick [_ eid]
+  (entity/tick [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}] eid]
     (assert (m/validate speed-schema speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))
@@ -70,9 +69,8 @@
            [:e/assoc eid :left-bottom (:left-bottom body)]
            (when rotate-in-movement-direction?
              [:e/assoc eid :rotation-angle (v/angle-from-vector direction)])
-           [:tx/position-changed eid]])))))
+           [:tx/position-changed eid]]))))
 
-(defmethods :tx/set-movement
   (component/handle [[_ eid movement]]
     (assert (or (nil? movement)
                 (nil? (:direction movement))
