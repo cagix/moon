@@ -2,9 +2,6 @@
   (:require [clojure.string :as str]
             [gdl.utils :refer [index-of]]))
 
-(defsystem on-load)
-(defmethod on-load :default [_])
-
 (defsystem create)
 
 (defsystem handle)
