@@ -24,7 +24,6 @@
                          delete-after-duration
                          destroy-audiovisual
                          faction ; defn enemy
-                         follow-ai ; not a 'component'
                          fsm
                          hitpoints ; :stats/hp not :entity/hitpoints
                          image
@@ -33,7 +32,7 @@
                          modifiers ; lots of stuff
                          mouseover
                          movement ; tx/set-movement, max-delta-time, speed-schema
-                         player ; eid
+                         player
                          projectile
                          skills ; tx's, has-skill ?
                          string-effect ; tx's
