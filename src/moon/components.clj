@@ -23,7 +23,7 @@
                          delete-after-animation-stopped
                          delete-after-duration
                          destroy-audiovisual
-                         faction ; defn enemy
+                         faction
                          fsm
                          hitpoints ; :stats/hp not :entity/hitpoints
                          image
