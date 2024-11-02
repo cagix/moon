@@ -24,23 +24,11 @@
  )
 
 (def ^:private properties-file (io/resource "properties.edn"))
-(def ^:private schema-file     (io/resource "schema.edn"))
-
-(defn- slurp-edn [resource]
-  (-> resource slurp edn/read-string))
-
-; Load component-attrs themself ?!
-; remove defc ?!
-; just defmethods ?
-(defn- load-schema []
-  (doseq [[k v] (slurp-edn schema-file)]
-    (alter-var-root #'component-attrs assoc-in [k :schema] v)))
 
 (declare ^:private db)
 
 (defn init []
-  (load-schema)
-  (let [properties (slurp-edn properties-file)]
+  (let [properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! property/validate! properties)

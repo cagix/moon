@@ -32,7 +32,7 @@
 
 (defn- namespaced-ks [ns-name-k]
   (filter #(= (name ns-name-k) (namespace %))
-          (keys component-attrs)))
+          (keys schema/schemas)))
 
 (defmethod schema/form :s/components-ns [[_ ns-name-k]]
   (schema/form [:s/map-optional (namespaced-ks ns-name-k)]))

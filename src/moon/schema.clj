@@ -1,11 +1,18 @@
 (ns moon.schema
   (:refer-clojure :exclude [type])
-  (:require [gdl.ui :as ui]
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [safe-get truncate ->edn-str]]))
 
+(def schemas (-> "schema.edn"
+                 io/resource
+                 slurp
+                 edn/read-string))
+
 (defn of [k]
-  (:schema (safe-get component-attrs k)))
+  (safe-get schemas k))
 
 (defn type [schema]
   (if (vector? schema)

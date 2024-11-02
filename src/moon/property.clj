@@ -11,7 +11,7 @@
   (keyword "properties" (namespace id)))
 
 (defn types []
-  (filter #(= "properties" (namespace %)) (keys component-attrs)))
+  (filter #(= "properties" (namespace %)) (keys schema/schemas)))
 
 (defn- m-schema [property]
   (-> property type schema/form-of))

@@ -1,7 +1,5 @@
 (in-ns 'clojure.core)
 
-(def component-attrs {})
-
 (defn bind-root [avar value]
   (.bindRoot avar value))
 
