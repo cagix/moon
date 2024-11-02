@@ -60,12 +60,6 @@
                          string
                          val-max)
 
-            (moon.screens editor
-                          main
-                          map-editor
-                          minimap
-                          world) ; more stuff
-
             (moon.tx audiovisual
                      creature
                      cursor
