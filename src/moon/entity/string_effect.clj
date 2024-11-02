@@ -5,7 +5,7 @@
             [moon.entity :as entity]
             [moon.world.time :as time :refer [timer stopped?]]))
 
-(defc :entity/string-effect
+(defmethods :entity/string-effect
   (entity/tick [[k {:keys [counter]}] eid]
     (when (stopped? counter)
       [[:e/dissoc eid k]]))
@@ -18,7 +18,7 @@
                   :scale 2
                   :up? true}))))
 
-(defc :tx/add-text-effect
+(defmethods :tx/add-text-effect
   (component/handle [[_ eid text]]
     [[:e/assoc
       eid

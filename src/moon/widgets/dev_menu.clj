@@ -74,7 +74,7 @@
     (add-debug-infos mb)
     menu-bar))
 
-(defc :widgets/dev-menu
+(defmethods :widgets/dev-menu
   (component/create [_]
     (ui/table {:rows [[{:actor (.getTable (->menu-bar))
                         :expand-x? true

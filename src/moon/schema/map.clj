@@ -82,8 +82,6 @@
                                         (fn []
                                           (a/remove! (find-kv-widget table k))
                                           (rebuild-editor-window))))]
-    (when-let [doc (:editor/doc (component-attrs k))]
-      (ui/add-tooltip! label doc))
     (ui/table {:cell-defaults {:pad 2}
                :rows [[{:actor delete-button :left? true}
                        label]]})))

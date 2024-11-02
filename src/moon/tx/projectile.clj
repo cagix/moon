@@ -3,7 +3,7 @@
             [moon.component :as component]
             [moon.projectile :as projectile]))
 
-(defc :tx/projectile
+(defmethods :tx/projectile
   (component/handle [[_
                       {:keys [position direction faction]}
                       {:keys [entity/image

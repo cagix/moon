@@ -3,7 +3,7 @@
             [moon.effect :refer [source target]]
             [moon.entity.faction :as faction]))
 
-(defc :effect.entity/convert
+(defmethods :effect.entity/convert
   (component/info [_]
     "Converts target to your side.")
 

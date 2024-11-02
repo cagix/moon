@@ -4,7 +4,7 @@
             [moon.component :as component]
             [moon.widgets.windows :as windows]))
 
-(defc :world/widgets
+(defmethods :world/widgets
   (component/create [_]
     [(if dev-mode?
        (component/create [:widgets/dev-menu])

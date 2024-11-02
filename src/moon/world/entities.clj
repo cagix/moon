@@ -68,7 +68,7 @@
 (defn tick [entities]
   (run! tick-entity entities))
 
-(defc :tx/add-to-world
+(defmethods :tx/add-to-world
   (component/handle [[_ eid]]
     (let [id (:entity/id @eid)]
       (assert (number? id))
@@ -79,7 +79,7 @@
     (grid/add-entity eid)
     nil))
 
-(defc :tx/remove-from-world
+(defmethods :tx/remove-from-world
   (component/handle [[_ eid]]
     (let [id (:entity/id @eid)]
       (assert (contains? ids->eids id))
@@ -88,7 +88,7 @@
     (grid/remove-entity eid)
     nil))
 
-(defc :tx/position-changed
+(defmethods :tx/position-changed
   (component/handle [[_ eid]]
     (content-grid/update-entity! content-grid eid)
     (grid/entity-position-changed eid)

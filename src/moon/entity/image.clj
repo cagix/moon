@@ -2,7 +2,7 @@
   (:require [moon.entity :as entity]
             [moon.graphics.image :as image]))
 
-(defc :entity/image
+(defmethods :entity/image
   {:let image}
   (entity/render [_ entity]
     (image/draw-rotated-centered image

@@ -37,7 +37,7 @@
                        :image/scale 2}
    :properties/worlds {:columns 10}})
 
-(defc :widgets/properties-overview
+(defmethods :widgets/properties-overview
   (component/create [[_ property-type clicked-id-fn]]
     (let [{:keys [sort-by-fn
                   extra-info-text

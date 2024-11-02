@@ -115,7 +115,7 @@
        [:cursors/no-skill-selected
         (fn [] (denied "No selected skill"))]))))
 
-(defc :player-idle
+(defmethods :player-idle
   {:let {:keys [eid]}}
   (entity/->v [[_ eid]]
     {:eid eid})

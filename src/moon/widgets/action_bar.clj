@@ -15,7 +15,7 @@
 (defn- group->button-group [group]
   (.getUserObject (.findActor group "action-bar/button-group")))
 
-(defc :widgets/action-bar
+(defmethods :widgets/action-bar
   (component/create [_]
     (let [group (ui/horizontal-group {:pad 2 :space 2})]
       (a/set-id! group ::action-bar)
@@ -27,7 +27,7 @@
     {:horizontal-group group
      :button-group (group->button-group group)}))
 
-(defc :tx.action-bar/add
+(defmethods :tx.action-bar/add
   (component/handle [[_ {:keys [property/id entity/image] :as skill}]]
     (let [{:keys [horizontal-group button-group]} (get-action-bar)
           button (ui/image-button image (fn []) {:scale image-scale})]
@@ -37,7 +37,7 @@
       (ui/bg-add! button-group button)
       nil)))
 
-(defc :tx.action-bar/remove
+(defmethods :tx.action-bar/remove
   (component/handle [[_ {:keys [property/id]}]]
     (let [{:keys [horizontal-group button-group]} (get-action-bar)
           button (get horizontal-group id)]

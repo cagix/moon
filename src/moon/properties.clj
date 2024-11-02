@@ -10,22 +10,22 @@
 ; stats armor-pierce wrong place
 ; assert min body size from entity
 
-(defc :property/pretty-name
+(defmethods :property/pretty-name
   {:let value}
   (component/info [_]
     (str "[PRETTY_NAME]"value"[]")))
 
-(defc :creature/species
+(defmethods :creature/species
   (entity/->v [[_ species]]
     (str/capitalize (name species)))
   (component/info [[_ species]]
     (str "[LIGHT_GRAY]Creature - " species "[]")))
 
-(defc :creature/level
+(defmethods :creature/level
   (component/info [[_ lvl]]
     (str "[GRAY]Level " lvl "[]")))
 
-(defc :item/modifiers
+(defmethods :item/modifiers
   (component/info [[_ value-mods]]
     (str (mods/info-text value-mods)
          "\n [GRAY]"
@@ -42,29 +42,29 @@
 #_(defc :projectile/max-range {:schema pos-int?})
 #_(defc :projectile/speed     {:schema pos-int?})
 
-(defc :projectile/piercing?
+(defmethods :projectile/piercing?
   (component/info [_]
     "[LIME]Piercing[]"))
 
 #_(defc :world/max-area-level {:schema pos-int?}) ; TODO <= map-size !?
 #_(defc :world/spawn-rate {:schema pos?}) ; TODO <1 !
 
-(defc :skill/action-time-modifier-key
+(defmethods :skill/action-time-modifier-key
   (component/info [[_ v]]
     (str "[VIOLET]" (case v
                       :stats/cast-speed "Spell"
                       :stats/attack-speed "Attack") "[]")))
 
-(defc :skill/action-time
+(defmethods :skill/action-time
   (component/info [[_ v]]
     (str "[GOLD]Action-Time: " (readable-number v) " seconds[]")))
 
-(defc :skill/cooldown
+(defmethods :skill/cooldown
   (component/info [[_ v]]
     (when-not (zero? v)
       (str "[SKY]Cooldown: " (readable-number v) " seconds[]"))))
 
-(defc :skill/cost
+(defmethods :skill/cost
   (component/info [[_ v]]
     (when-not (zero? v)
       (str "[CYAN]Cost: " v " Mana[]"))))

@@ -44,7 +44,7 @@
                            (- height (* 2 border))
                            (hpbar-color ratio)))))
 
-(defc :stats/hp
+(defmethods :stats/hp
   (entity/->v [[_ v]]
     [v v])
 

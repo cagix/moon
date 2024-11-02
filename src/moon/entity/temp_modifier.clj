@@ -5,7 +5,7 @@
             [moon.graphics.shape-drawer :as sd]
             [moon.world.time :refer [stopped? finished-ratio]]))
 
-(defc :entity/temp-modifier
+(defmethods :entity/temp-modifier
   {:let {:keys [counter modifiers]}}
   (component/info [_]
     (str "[LIGHT_GRAY]Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1[]"))

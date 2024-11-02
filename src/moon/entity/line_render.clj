@@ -3,7 +3,7 @@
             [moon.graphics.shape-drawer :as sd]
             [moon.entity :as entity]))
 
-(defc :entity/line-render
+(defmethods :entity/line-render
   {:let {:keys [thick? end color]}}
   (entity/render [_ entity]
     (let [position (:position entity)]

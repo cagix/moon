@@ -3,7 +3,7 @@
             [moon.body :as body]
             [moon.db :as db]))
 
-(defc :tx/audiovisual
+(defmethods :tx/audiovisual
   (component/handle [[_ position id]]
     (let [{:keys [tx/sound entity/animation]} (db/get id)]
       [[:tx/sound sound]

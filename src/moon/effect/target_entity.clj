@@ -5,7 +5,7 @@
             [moon.effect :as effect :refer [source target]]
             [moon.graphics.shape-drawer :as sd]))
 
-(defc :maxrange
+(defmethods :maxrange
   (component/info [[_ maxrange]]
     (str "[LIGHT_GRAY]Range " maxrange " meters[]")))
 
@@ -27,11 +27,8 @@
          (v/scale (body/direction entity target*)
                   maxrange)))
 
-(defc :effect/target-entity
-  {:editor/doc "Applies entity-effects to a target if they are inside max-range & in line of sight.
-               Cancels if line of sight is lost. Draws a red/yellow line wheter the target is inside the max range. If the effect is to be done and target out of range -> draws a hit-ground-effect on the max location."
-   :let {:keys [maxrange entity-effects]}}
-
+(defmethods :effect/target-entity
+  {:let {:keys [maxrange entity-effects]}}
   (component/applicable? [_]
     (and target
          (effect/applicable? entity-effects)))

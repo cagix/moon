@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [reduce-fsm :as fsm]))
 
-(defc :fsms/player
+(defmethods :fsms/player
   (component/create [_]
     (fsm/defsm-inc player
       [[:player-idle

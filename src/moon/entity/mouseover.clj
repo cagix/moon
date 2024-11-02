@@ -9,7 +9,7 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defc :entity/mouseover?
+(defmethods :entity/mouseover?
   (entity/render-below [_ {:keys [entity/faction] :as entity}]
     (let [player @player/eid]
       (sd/with-line-width 3

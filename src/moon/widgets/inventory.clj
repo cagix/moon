@@ -109,7 +109,7 @@
       (.row table))
     table))
 
-(defc :widgets/inventory
+(defmethods :widgets/inventory
   (component/create [_]
     (ui/window {:title "Inventory"
                 :id :inventory-window
@@ -122,7 +122,7 @@
 (defn- cell-widget [cell]
   (get (::table (windows/inventory)) cell))
 
-(defc :tx/set-item-image-in-widget
+(defmethods :tx/set-item-image-in-widget
   (component/handle [[_ cell item]]
     (let [cell-widget (cell-widget cell)
           image-widget (get cell-widget :image)
@@ -132,7 +132,7 @@
       (ui/add-tooltip! cell-widget #(component/->info item))
       nil)))
 
-(defc :tx/remove-item-from-widget
+(defmethods :tx/remove-item-from-widget
   (component/handle [[_ cell]]
     (let [cell-widget (cell-widget cell)
           image-widget (get cell-widget :image)]

@@ -1,7 +1,7 @@
 (ns moon.entity.npc.dead
   (:require [moon.entity :as entity]))
 
-(defc :npc-dead
+(defmethods :npc-dead
   {:let {:keys [eid]}}
   (entity/->v [[_ eid]]
     {:eid eid})

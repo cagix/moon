@@ -15,7 +15,7 @@
               :y (+ y 2)
               :up? true}))
 
-(defc :widgets/hp-mana
+(defmethods :widgets/hp-mana
   (component/create [_]
     (let [rahmen      (img/image "images/rahmen.png")
           hpcontent   (img/image "images/hp.png")

@@ -16,7 +16,7 @@
  (= (val-max-op-k->parts :op/val-inc) [:val :op/inc])
  )
 
-(defc :op/val-max
+(defmethods :op/val-max
   (op/value-text [[op-k value]]
     (let [[val-or-max op-k] (val-max-op-k->parts op-k)]
       (str (op/value-text [op-k value]) " " (case val-or-max

@@ -3,7 +3,7 @@
 
 (declare eid)
 
-(defc :entity/player?
+(defmethods :entity/player?
   (entity/create [_ e-id]
     (bind-root #'eid e-id)
     nil))

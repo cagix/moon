@@ -2,7 +2,7 @@
   (:require [moon.animation :as animation]
             [moon.entity :as entity]))
 
-(defc :entity/delete-after-animation-stopped?
+(defmethods :entity/delete-after-animation-stopped?
   (entity/create [_ eid]
     (-> @eid :entity/animation :looping? not assert))
 

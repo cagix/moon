@@ -24,7 +24,7 @@
            [:e/dissoc eid old-state-k]
            [:e/assoc eid new-state-k (new-state-obj 1)]])))))
 
-(defc :entity/fsm
+(defmethods :entity/fsm
   (entity/create [[k {:keys [fsm initial-state]}] eid]
     [[:e/assoc eid k (->init-fsm (component/create [fsm nil]) initial-state)]
      [:e/assoc eid initial-state (entity/->v [initial-state eid])]])

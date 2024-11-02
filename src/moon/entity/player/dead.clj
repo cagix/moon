@@ -2,7 +2,7 @@
   (:require [moon.entity :as entity]
             [moon.screen :as screen]))
 
-(defc :player-dead
+(defmethods :player-dead
   (entity/player-enter [_]
     [[:tx/cursor :cursors/black-x]])
 

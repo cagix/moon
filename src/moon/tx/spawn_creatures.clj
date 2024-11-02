@@ -7,7 +7,7 @@
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
-(defc :tx/spawn-creatures
+(defmethods :tx/spawn-creatures
   (component/handle [[_ {:keys [tiled-map start-position]}]]
     (for [creature (cons {:position start-position
                           :creature-id :creatures/vampire

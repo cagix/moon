@@ -46,7 +46,7 @@
 (defn- damage->text [{[min-dmg max-dmg] :damage/min-max}]
   (str min-dmg "-" max-dmg " damage"))
 
-(defc :effect.entity/damage
+(defmethods :effect.entity/damage
   {:let damage}
   (component/info [_]
     (if source

@@ -22,7 +22,7 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defc :widgets/properties-tabs
+(defmethods :widgets/properties-tabs
   (component/create [_]
     (let [table (ui/table {:fill-parent? true})
           container (ui/table {})

@@ -64,7 +64,7 @@
 (defn- world-item? []
   (not (mouse-on-actor?)))
 
-(defc :player-item-on-cursor
+(defmethods :player-item-on-cursor
   {:let {:keys [eid item]}}
   (entity/->v [[_ eid item]]
     {:eid eid
@@ -107,6 +107,6 @@
       (image/draw-centered (:entity/image (:entity/item-on-cursor player-e*))
                            (gui-view/mouse-position)))))
 
-(defc :widgets/draw-item-on-cursor
+(defmethods :widgets/draw-item-on-cursor
   (component/create [_]
     (ui/actor {:draw draw-item-on-cursor})))

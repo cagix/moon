@@ -23,7 +23,7 @@
     (when (>= counter duration-seconds)
       (bind-root #'message-to-player nil))))
 
-(defc :widgets/player-message
+(defmethods :widgets/player-message
   (component/create [_]
     (ui/actor {:draw draw-player-message
                :act check-remove-message}))

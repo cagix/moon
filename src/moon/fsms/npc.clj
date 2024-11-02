@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [reduce-fsm :as fsm]))
 
-(defc :fsms/npc
+(defmethods :fsms/npc
   (component/create [_]
     (fsm/defsm-inc npc
       [[:npc-sleeping

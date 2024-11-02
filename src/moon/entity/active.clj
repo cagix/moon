@@ -35,7 +35,7 @@
     ctx
     (dissoc ctx :effect/target)))
 
-(defc :active-skill
+(defmethods :active-skill
   {:let {:keys [eid skill effect-ctx counter]}}
   (entity/->v [[_ eid [skill effect-ctx]]]
     {:eid eid

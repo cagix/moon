@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [moon.assets :as assets]))
 
-(defc :tx/sound
+(defmethods :tx/sound
   (component/handle [[_ file]]
     (assets/play-sound! file)
     nil))

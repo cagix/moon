@@ -15,7 +15,7 @@
        grid/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
-(defc :entity/alert-friendlies-after-duration
+(defmethods :entity/alert-friendlies-after-duration
   {:let {:keys [counter faction]}}
   (entity/tick [_ eid]
     (when (stopped? counter)
@@ -23,7 +23,7 @@
             (for [friendly-eid (friendlies-in-radius (:position @eid) faction)]
               [:entity/fsm friendly-eid :alert])))))
 
-(defc :tx/shout
+(defmethods :tx/shout
   (component/handle [[_ position faction delay-seconds]]
     [[:e/create
       position
@@ -32,7 +32,7 @@
        {:counter (timer delay-seconds)
         :faction faction}}]]))
 
-(defc :npc-sleeping
+(defmethods :npc-sleeping
   {:let {:keys [eid]}}
   (entity/->v [[_ eid]]
     {:eid eid})

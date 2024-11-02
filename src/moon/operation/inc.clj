@@ -1,7 +1,7 @@
 (ns moon.operation.inc
   (:require [moon.operation :as op]))
 
-(defc :op/inc
+(defmethods :op/inc
   {:let value}
   (op/value-text [_]
     (str value))

@@ -2,7 +2,7 @@
   (:require [gdl.input :refer [WASD-movement-vector]]
             [moon.entity :as entity]))
 
-(defc :player-moving
+(defmethods :player-moving
   {:let {:keys [eid movement-vector]}}
   (entity/->v [[_ eid movement-vector]]
     {:eid eid

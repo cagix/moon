@@ -1,7 +1,7 @@
 (ns moon.entity.faction
   (:require [moon.component :as component]))
 
-(defc :entity/faction
+(defmethods :entity/faction
   {:let faction}
   (component/info [_]
     (str "[SLATE]Faction: " (name faction) "[]")))

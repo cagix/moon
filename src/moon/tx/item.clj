@@ -6,7 +6,7 @@
    :height 0.75
    :z-order :z-order/on-ground})
 
-(defc :tx/item
+(defmethods :tx/item
   (component/handle [[_ position item]]
     [[:e/create position body-props {:entity/image (:entity/image item)
                                      :entity/item item

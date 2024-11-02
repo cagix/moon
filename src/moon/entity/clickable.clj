@@ -2,7 +2,7 @@
   (:require [moon.entity :as entity]
             [moon.graphics.text :as text]))
 
-(defc :entity/clickable
+(defmethods :entity/clickable
   (entity/render [[_ {:keys [text]}]
                   {:keys [entity/mouseover?] :as entity}]
     (when (and mouseover? text)

@@ -10,7 +10,7 @@
 (defn- damage-effect []
   [:effect.entity/damage (entity->melee-damage @source)])
 
-(defc :effect.entity/melee-damage
+(defmethods :effect.entity/melee-damage
   (component/info [_]
     (str "Damage based on entity strength."
          (when source

@@ -5,7 +5,7 @@
             [moon.entity :as entity]
             [moon.world.grid :as grid]))
 
-(defc :entity/projectile-collision
+(defmethods :entity/projectile-collision
   {:let {:keys [entity-effects already-hit-bodies piercing?]}}
   (entity/->v [[_ v]]
     (assoc v :already-hit-bodies #{}))

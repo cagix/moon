@@ -5,7 +5,7 @@
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; pathfindinusable skills every frame
 ; also prevents fast twitching around changing directions every frame
-(defc :npc-moving
+(defmethods :npc-moving
   {:let {:keys [eid movement-vector counter]}}
   (entity/->v [[_ eid movement-vector]]
     {:eid eid

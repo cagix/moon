@@ -24,7 +24,7 @@
                                  (* (gui-view/height) (/ 3 4))]
                :pack? true})))
 
-(defc :widgets/player-modal
+(defmethods :widgets/player-modal
   (component/handle [[_ params]]
     (show-player-modal! params)
     nil))

@@ -9,7 +9,7 @@
                                 :entity/faction
                                 :active-skill])
 
-(defc :widgets/entity-info-window
+(defmethods :widgets/entity-info-window
   (component/create [_]
     (let [label (ui/label "")
           window (ui/window {:title "Info"

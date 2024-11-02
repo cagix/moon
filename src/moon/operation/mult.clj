@@ -1,7 +1,7 @@
 (ns moon.operation.mult
   (:require [moon.operation :as op]))
 
-(defc :op/mult
+(defmethods :op/mult
   {:let value}
   (op/value-text [_]
     (str (int (* 100 value)) "%"))

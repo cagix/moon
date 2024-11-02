@@ -17,7 +17,7 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defc :tx/creature
+(defmethods :tx/creature
   {:let {:keys [position creature-id components]}}
   (component/handle [_]
     (let [props (db/get creature-id)]

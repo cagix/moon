@@ -85,7 +85,7 @@
 ; => I need also an internal documentation ??
 ; of private fns?!
 
-(defn- print-txs [file]
+#_(defn- print-txs [file]
   (spit file
         (binding [*print-level* nil]
           (with-out-str
@@ -105,7 +105,7 @@
                    (println "      *" k)
                    (println (str "        * data: `" (pr-str (:schema (component-attrs k))) "`"))))))))))
 
-(defn- print-components* [ks]
+#_(defn- print-components* [ks]
   (doseq [k ks]
     (println "*" k
              (if-let [ancestrs (ancestors k)]
@@ -123,13 +123,13 @@
                    "")
                ""))))
 
-(defn- spit-out [file ks]
+#_(defn- spit-out [file ks]
   (spit file
         (binding [*print-level* nil]
           (with-out-str
            (print-components* ks)))))
 
-(defn- print-components [file]
+#_(defn- print-components [file]
   (spit file
         (binding [*print-level* nil]
           (with-out-str

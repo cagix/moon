@@ -6,7 +6,7 @@
             [moon.modifiers :as mods]
             [moon.operations :as ops]))
 
-(defc :entity/modifiers
+(defmethods :entity/modifiers
   (entity/->v [[_ value-mods]]
     (mods/value-mods->mods value-mods))
 
@@ -37,7 +37,7 @@
 
 ; namespace 'base' so doesnt show up as 'effect' or 'effect.entity' ...
 ; just add :show-in-ui? false to attr-map !
-(defc :base/stat-effect
+(defmethods :base/stat-effect
   (component/info [[k ops]]
     (ops/info-text ops k))
 
@@ -53,19 +53,14 @@
       (when-let [effective-value (entity/stat @effect/target stat-k)]
         [[:e/assoc effect/target stat-k (ops/apply operations effective-value)]]))))
 
-(defc :entity/stat
+(defmethods :entity/stat
   (component/info [[k v]]
     (str (k->pretty-name k) ": " (entity/stat component/*info-text-entity* k))))
 
-(defn defstat
-  ([k]
-   (defstat k {}))
-
-  ([k attr-m]
-   {:pre [(= (namespace k) "stats")]}
-   (defc* k attr-m)
-   (derive k :entity/stat)
-   (derive (effect-k k) :base/stat-effect)))
+(defn defstat [k]
+  {:pre [(= (namespace k) "stats")]}
+  (derive k :entity/stat)
+  (derive (effect-k k) :base/stat-effect))
 
 ; TODO negate this value also @ use (modifier damage receive)
 ; so can make positiive modifeirs green , negative red....
@@ -76,11 +71,11 @@
 (defstat :stats/reaction-time)
 (defstat :stats/mana)
 
-(defc :stats/mana
+(defmethods :stats/mana
   (entity/->v [[_ v]]
     [v v]))
 
-(defc :tx.entity.stats/pay-mana-cost
+(defmethods :tx.entity.stats/pay-mana-cost
   (component/handle [[_ eid cost]]
     (let [mana-val ((entity/stat @eid :stats/mana) 0)]
       (assert (<= cost mana-val))
@@ -113,13 +108,14 @@
 (defstat :stats/strength)
 
 ; TODO here >0
-(let [doc "action-time divided by this stat when a skill is being used.
-          Default value 1.
+(comment
+ (let [doc "action-time divided by this stat when a skill is being used.
+           Default value 1.
 
-          For example:
-          attack/cast-speed 1.5 => (/ action-time 1.5) => 150% attackspeed."]
-  (defstat :stats/cast-speed   {:editor/doc doc})
-  (defstat :stats/attack-speed {:editor/doc doc}))
+           For example:
+           attack/cast-speed 1.5 => (/ action-time 1.5) => 150% attackspeed."]))
+(defstat :stats/cast-speed)
+(defstat :stats/attack-speed)
 
 ; TODO bounds
 (defstat :stats/armor-save)

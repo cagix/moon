@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [moon.effect :as effect]))
 
-(defc :tx/effect
+(defmethods :tx/effect
   (component/handle [[_ effect-ctx effect]]
     (effect/with-ctx effect-ctx
       (component/->handle

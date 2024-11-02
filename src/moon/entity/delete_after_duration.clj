@@ -4,7 +4,7 @@
             [moon.entity :as entity]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
 
-(defc :entity/delete-after-duration
+(defmethods :entity/delete-after-duration
   {:let counter}
   (entity/->v [[_ duration]]
     (timer duration))

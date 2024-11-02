@@ -3,7 +3,7 @@
             [gdl.utils :refer [readable-number]]
             [moon.effect :refer [target]]))
 
-(defc :effect.entity/stun
+(defmethods :effect.entity/stun
   {:let duration}
   (component/info [_]
     (str "Stuns for " (readable-number duration) " seconds"))

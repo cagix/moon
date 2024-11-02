@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [moon.body :as body]))
 
-(defc :tx/line-render
+(defmethods :tx/line-render
   (component/handle [[_ {:keys [start end duration color thick?]}]]
     [[:e/create
       start

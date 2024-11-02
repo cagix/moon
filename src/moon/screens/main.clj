@@ -34,7 +34,7 @@
   (screen/render [_])
   (screen/dispose [_]))
 
-(defc :screens/main-menu
+(defmethods :screens/main-menu
   (component/create [_]
     (stage/create :actors
                   [(background-image/create)

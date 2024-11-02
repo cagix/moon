@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [moon.graphics.cursors :as cursors]))
 
-(defc :tx/cursor
+(defmethods :tx/cursor
   (component/handle [[_ cursor-key]]
     (cursors/set cursor-key)
     nil))

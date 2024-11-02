@@ -41,6 +41,6 @@
     (.pack window)
     window))
 
-(defc :widgets/property-editor
+(defmethods :widgets/property-editor
   (component/create [[_ props]]
     (props->editor-window props)))

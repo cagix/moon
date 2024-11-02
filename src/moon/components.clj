@@ -153,41 +153,6 @@
 ; => required & optional systems
 ; => required & optional attributes (select-keys on ns ?)
 
-(comment
-
- (defn- for-print [schema]
-   (cond
-     (= schema number?)  'number?
-     (= schema nat-int?) 'nat-int?
-     (= schema int?)     'int?
-     (= schema pos?)     'pos?
-     (= schema pos-int?) 'pos-int?
-     :else schema))
-
- (binding [*print-level* nil]
-   (->> (into {}
-              (for [[k v] (filter (comp :schema val) component-attrs)]
-                [k (for-print (:schema v))]))
-        (into (sorted-map))
-        clojure.pprint/pprint
-        with-out-str
-        (spit "resources/schema.edn")))
-
- )
-
-(comment
- (distinct (mapcat keys (vals component-attrs)))
-
- (:params
-  :schema
-  :modifier-ops
-  :effect-ops
-  :editor/doc
-  :doc)
-
- )
-
-; * properties/ can remove (only overview)
 ; * defc with just color & value-for-info can remove
 ; * key -> pretty-name ?
 ; * all component data in db ?

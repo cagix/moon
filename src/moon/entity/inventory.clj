@@ -28,11 +28,11 @@
      (when (:entity/player? entity)
        [:tx/remove-item-from-widget cell])]))
 
-(defc :tx/set-item
+(defmethods :tx/set-item
   (component/handle [[_ eid cell item]]
     (set-item eid cell item)))
 
-(defc :tx/remove-item
+(defmethods :tx/remove-item
   (component/handle [[_ eid cell]]
     (remove-item eid cell)))
 
@@ -57,7 +57,7 @@
     (concat (remove-item eid cell)
             (set-item eid cell (update cell-item :count + (:count item))))))
 
-(defc :tx/stack-item
+(defmethods :tx/stack-item
   (component/handle [[_ eid cell item]]
     (stack-item eid cell item)))
 
@@ -77,14 +77,14 @@
    (try-put-item-in eid (:item/slot item)   item)
    (try-put-item-in eid :inventory.slot/bag item)))
 
-(defc :tx/pickup-item
+(defmethods :tx/pickup-item
   (component/handle [[_ eid item]]
     (pickup-item eid item)))
 
 (defn can-pickup-item? [eid item]
   (boolean (pickup-item eid item)))
 
-(defc :entity/inventory
+(defmethods :entity/inventory
   (entity/create [[_ items] eid]
     (cons [:e/assoc eid :entity/inventory item/empty-inventory]
           (for [item items]

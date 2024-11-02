@@ -3,7 +3,7 @@
             [moon.graphics.shape-drawer :as sd]
             [moon.world.time :refer [timer stopped?]]))
 
-(defc :stunned
+(defmethods :stunned
   {:let {:keys [eid counter]}}
   (entity/->v [[_ eid duration]]
     {:eid eid

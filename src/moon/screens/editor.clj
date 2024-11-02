@@ -6,7 +6,7 @@
             [moon.screen :as screen]
             [moon.widgets.background-image :as background-image]))
 
-(defc :screens/editor
+(defmethods :screens/editor
   (component/create [_]
     (stage/create :actors
                   [(background-image/create)

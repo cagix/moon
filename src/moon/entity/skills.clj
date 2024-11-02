@@ -3,7 +3,7 @@
             [moon.entity :as entity]
             [moon.world.time :refer [stopped?]]))
 
-(defc :entity/skills
+(defmethods :entity/skills
   (entity/create [[k skills] eid]
     (cons [:e/assoc eid k nil]
           (for [skill skills]
@@ -23,14 +23,14 @@
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
 
-(defc :tx/add-skill
+(defmethods :tx/add-skill
   (component/handle [[_ eid {:keys [property/id] :as skill}]]
     (assert (not (has-skill? @eid skill)))
     [[:e/assoc-in eid [:entity/skills id] skill]
      (when (:entity/player? @eid)
        [:tx.action-bar/add skill])]))
 
-(defc :tx/remove-skill
+(defmethods :tx/remove-skill
   (component/handle [[_ eid {:keys [property/id] :as skill}]]
     (assert (has-skill? @eid skill))
     [[:e/dissoc-in eid [:entity/skills id]]

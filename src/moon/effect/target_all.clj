@@ -27,7 +27,7 @@
 
  )
 
-(defc :effect/target-all
+(defmethods :effect/target-all
   {:let {:keys [entity-effects]}}
   (component/info [_]
     "[LIGHT_GRAY]All visible targets[]")

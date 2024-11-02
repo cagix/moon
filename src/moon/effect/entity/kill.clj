@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [moon.effect :refer [target]]))
 
-(defc :effect.entity/kill
+(defmethods :effect.entity/kill
   (component/info [_]
     "Kills target")
 

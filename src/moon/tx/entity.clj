@@ -15,7 +15,7 @@
           {}
           components))
 
-(defc :e/create
+(defmethods :e/create
   (component/handle [[_ position body components]]
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))
@@ -29,11 +29,11 @@
             (for [component @eid]
               #(entity/create component eid))))))
 
-(defc :e/destroy
+(defmethods :e/destroy
   (component/handle [[_ eid]]
     [[:e/assoc eid :entity/destroyed? true]]))
 
-(defc :tx/remove-destroyed-entities
+(defmethods :tx/remove-destroyed-entities
   (component/handle [_]
     (mapcat (fn [eid]
               (cons [:tx/remove-from-world eid]
@@ -41,24 +41,24 @@
                       #(entity/destroy component eid))))
             (filter (comp :entity/destroyed? deref) (entities/all)))))
 
-(defc :e/assoc
+(defmethods :e/assoc
   (component/handle [[_ eid k v]]
     (assert (keyword? k))
     (swap! eid assoc k v)
     nil))
 
-(defc :e/assoc-in
+(defmethods :e/assoc-in
   (component/handle [[_ eid ks v]]
     (swap! eid assoc-in ks v)
     nil))
 
-(defc :e/dissoc
+(defmethods :e/dissoc
   (component/handle [[_ eid k]]
     (assert (keyword? k))
     (swap! eid dissoc k)
     nil))
 
-(defc :e/dissoc-in
+(defmethods :e/dissoc-in
   (component/handle [[_ eid ks]]
     (swap! eid dissoc-in ks)
     nil))

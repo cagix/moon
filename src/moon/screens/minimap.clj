@@ -54,6 +54,6 @@
               (key-just-pressed? :keys/escape))
       (screen/change :screens/world))))
 
-(defc :screens/minimap
+(defmethods :screens/minimap
   (component/create [_]
     (->Minimap)))

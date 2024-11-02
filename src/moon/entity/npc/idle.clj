@@ -37,7 +37,7 @@
                      (effect/useful? (:skill/effects %))))
        first))
 
-(defc :npc-idle
+(defmethods :npc-idle
   {:let {:keys [eid]}}
   (entity/->v [[_ eid]]
     {:eid eid})

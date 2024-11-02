@@ -157,7 +157,7 @@ direction keys: move")
   (dispose [_]
     (dispose (:tiled-map @current-data))))
 
-(defc :screens/map-editor
+(defmethods :screens/map-editor
   (component/create [_]
     (stage/create :actors [(->generate-map-window world-id)
                            (->info-window)]
