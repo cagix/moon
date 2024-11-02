@@ -1,7 +1,7 @@
 (ns moon.effect.entity.convert
   (:require [moon.component :as component]
             [moon.effect :refer [source target]]
-            [moon.entity.faction :as faction]))
+            [moon.faction :as faction]))
 
 (defmethods :effect.entity/convert
   (component/info [_]

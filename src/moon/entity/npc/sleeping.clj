@@ -2,7 +2,7 @@
   (:require [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
-            [moon.entity.faction :as faction]
+            [moon.faction :as faction]
             [moon.graphics.text :as text]
             [moon.world.grid :as grid]
             [moon.world.time :refer [stopped? timer]]))

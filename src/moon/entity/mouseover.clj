@@ -1,6 +1,6 @@
 (ns moon.entity.mouseover
   (:require [moon.entity :as entity]
-            [moon.entity.faction :as faction]
+            [moon.faction :as faction]
             [moon.entity.player :as player]
             [moon.graphics.shape-drawer :as sd]))
 
