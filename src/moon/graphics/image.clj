@@ -1,6 +1,5 @@
 (ns moon.graphics.image
   (:require [gdl.graphics.batch :as batch]
-            [moon.graphics.batch :refer [batch]]
             [moon.graphics.texture :as texture]
             [moon.graphics.view :as view]
             [moon.graphics.world-view :as world-view]))
@@ -33,8 +32,7 @@
            :world-unit-dimensions (scale-dimensions pixel-dimensions (world-view/unit-scale)))))
 
 (defn draw [{:keys [texture-region color] :as image} position]
-  (batch/draw-texture-region batch
-                             texture-region
+  (batch/draw-texture-region texture-region
                              position
                              (unit-dimensions image)
                              0 ; rotation
@@ -43,8 +41,7 @@
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image)]
-    (batch/draw-texture-region batch
-                               texture-region
+    (batch/draw-texture-region texture-region
                                [(- (float x) (/ (float w) 2))
                                 (- (float y) (/ (float h) 2))]
                                [w h]

@@ -1,6 +1,6 @@
 (ns moon.graphics.tiled
-  (:require [gdl.graphics.tiled :as tiled]
-            [moon.graphics.batch :refer [batch]]
+  (:require [gdl.graphics.batch :refer [batch]]
+            [gdl.graphics.tiled :as tiled]
             [moon.graphics.world-view :as world-view]))
 
 (declare ^:private cached-map-renderer)

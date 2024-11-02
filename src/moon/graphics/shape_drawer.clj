@@ -1,7 +1,7 @@
 (ns moon.graphics.shape-drawer
-  (:require [gdl.graphics.color :as color]
-            [gdl.graphics.shape-drawer :as d]
-            [moon.graphics.batch :refer [batch]]))
+  (:require [gdl.graphics.batch :refer [batch]]
+            [gdl.graphics.color :as color]
+            [gdl.graphics.shape-drawer :as d]))
 
 (declare ^:private sd
          ^:private sd-texture)
