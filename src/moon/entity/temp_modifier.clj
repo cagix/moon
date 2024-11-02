@@ -1,8 +1,8 @@
 (ns moon.entity.temp-modifier
-  (:require [gdl.utils :refer [readable-number]]
+  (:require [gdl.graphics.shape-drawer :as sd]
+            [gdl.utils :refer [readable-number]]
             [moon.component :as component]
             [moon.entity :as entity]
-            [moon.graphics.shape-drawer :as sd]
             [moon.world.time :refer [stopped? finished-ratio]]))
 
 (defmethods :entity/temp-modifier

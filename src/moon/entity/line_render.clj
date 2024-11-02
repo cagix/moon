@@ -1,6 +1,6 @@
 (ns moon.entity.line-render
-  (:require [moon.component :as component]
-            [moon.graphics.shape-drawer :as sd]
+  (:require [gdl.graphics.shape-drawer :as sd]
+            [moon.component :as component]
             [moon.entity :as entity]))
 
 (defmethods :entity/line-render

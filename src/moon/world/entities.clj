@@ -1,10 +1,10 @@
 (ns moon.world.entities
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
+            [gdl.graphics.shape-drawer :as sd]
             [gdl.utils :refer [sort-by-order]]
             [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
-            [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
             [moon.player :as player]
             [moon.world.content-grid :as content-grid]

@@ -1,7 +1,7 @@
 (ns moon.entity.hitpoints
-  (:require [moon.entity :as entity]
+  (:require [gdl.graphics.shape-drawer :as sd]
+            [moon.entity :as entity]
             [moon.entity.modifiers :refer [defstat]]
-            [moon.graphics.shape-drawer :as sd]
             [moon.graphics.world-view :as world-view]
             [moon.val-max :as val-max]))
 

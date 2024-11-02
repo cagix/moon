@@ -1,9 +1,9 @@
 (ns moon.effect.target-entity
-  (:require [gdl.math.vector :as v]
+  (:require [gdl.graphics.shape-drawer :as sd]
+            [gdl.math.vector :as v]
             [moon.component :as component]
             [moon.body :as body]
-            [moon.effect :as effect :refer [source target]]
-            [moon.graphics.shape-drawer :as sd]))
+            [moon.effect :as effect :refer [source target]]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)

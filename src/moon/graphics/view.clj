@@ -1,6 +1,6 @@
 (ns moon.graphics.view
   (:require [gdl.graphics.batch :as batch]
-            [moon.graphics.shape-drawer :as sd]))
+            [gdl.graphics.shape-drawer :as sd]))
 
 (def ^:dynamic *unit-scale* 1)
 

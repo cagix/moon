@@ -1,8 +1,8 @@
 (ns moon.screens.minimap
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
+            [gdl.graphics.shape-drawer :as sd]
             [gdl.input :refer [key-just-pressed?]]
-            [moon.graphics.shape-drawer :as sd]
             [moon.graphics.tiled :as renderer]
             [moon.graphics.world-view :as world-view]
             [moon.screen :as screen]
