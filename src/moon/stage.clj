@@ -1,9 +1,9 @@
 (ns moon.stage
   (:refer-clojure :exclude [get])
-  (:require [gdl.input :as input]
+  (:require [gdl.graphics.batch :refer [batch]]
+            [gdl.input :as input]
             [gdl.ui.stage :as stage]
             [gdl.utils :refer [dispose]]
-            [moon.graphics.batch :refer [batch]]
             [moon.graphics.gui-view :as gui-view]
             [moon.screen :as screen]))
 
