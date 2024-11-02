@@ -1,6 +1,6 @@
 (ns moon.entity.clickable
-  (:require [moon.entity :as entity]
-            [moon.graphics.text :as text]))
+  (:require [gdl.graphics.text :as text]
+            [moon.entity :as entity]))
 
 (defmethods :entity/clickable
   (entity/render [[_ {:keys [text]}]

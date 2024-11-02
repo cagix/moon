@@ -1,9 +1,9 @@
 (ns moon.entity.active
-  (:require [gdl.graphics.shape-drawer :as sd]
+  (:require [gdl.graphics.image :as image]
+            [gdl.graphics.shape-drawer :as sd]
             [moon.component :as component]
             [moon.effect :as effect]
             [moon.entity :as entity]
-            [moon.graphics.image :as image]
             [moon.world.line-of-sight :refer [line-of-sight?]]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
 

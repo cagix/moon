@@ -1,6 +1,6 @@
 (ns moon.entity.image
-  (:require [moon.entity :as entity]
-            [moon.graphics.image :as image]))
+  (:require [gdl.graphics.image :as image]
+            [moon.entity :as entity]))
 
 (defmethods :entity/image
   {:let image}

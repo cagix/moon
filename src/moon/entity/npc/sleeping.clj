@@ -1,9 +1,9 @@
 (ns moon.entity.npc.sleeping
-  (:require [moon.component :as component]
+  (:require [gdl.graphics.text :as text]
+            [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
             [moon.faction :as faction]
-            [moon.graphics.text :as text]
             [moon.world.grid :as grid]
             [moon.world.time :refer [stopped? timer]]))
 

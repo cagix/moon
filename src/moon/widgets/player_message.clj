@@ -1,9 +1,9 @@
 (ns moon.widgets.player-message
   (:require [gdl.graphics :as gdx.graphics]
             [gdl.graphics.gui-view :as gui-view]
+            [gdl.graphics.text :as text]
             [gdl.ui :as ui]
-            [moon.component :as component]
-            [moon.graphics.text :as text]))
+            [moon.component :as component]))
 
 (def ^:private duration-seconds 1.5)
 

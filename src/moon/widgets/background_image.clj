@@ -1,6 +1,6 @@
 (ns moon.widgets.background-image
-  (:require [gdl.ui :as ui]
-            [moon.graphics.image :as img]))
+  (:require [gdl.graphics.image :as img]
+            [gdl.ui :as ui]))
 
 (defn create []
   (ui/image->widget (img/image "images/moon_background.png")

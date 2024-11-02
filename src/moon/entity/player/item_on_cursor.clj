@@ -1,12 +1,12 @@
 (ns moon.entity.player.item-on-cursor
   (:require [gdl.graphics.gui-view :as gui-view]
+            [gdl.graphics.image :as image]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [moon.component :as component]
             [moon.entity :as entity]
-            [moon.graphics.image :as image]
             [moon.player :as player]
             [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]))

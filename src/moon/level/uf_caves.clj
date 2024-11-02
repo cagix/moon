@@ -1,9 +1,9 @@
 (ns moon.level.uf-caves
   (:require [data.grid2d :as g2d]
+            [gdl.graphics.texture :as texture]
             [gdl.rand :refer [get-rand-weighted-item]]
             [gdl.tiled :as t]
             [moon.db :as db]
-            [moon.graphics.texture :as texture]
             [moon.level :as level]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]

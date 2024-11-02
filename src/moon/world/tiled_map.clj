@@ -1,9 +1,9 @@
 (ns moon.world.tiled-map
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
+            [gdl.graphics.tiled :as renderer]
             [gdl.utils :refer [dispose ->tile]]
             [gdl.tiled :as tiled]
-            [moon.graphics.tiled :as renderer]
             [moon.world.raycaster :refer [ray-blocked?]]))
 
 (declare tiled-map

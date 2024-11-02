@@ -2,9 +2,9 @@
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.tiled :as renderer]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-just-pressed?]]
-            [moon.graphics.tiled :as renderer]
             [moon.screen :as screen]
             [moon.world.tiled-map :refer [tiled-map explored-tile-corners]]))
 

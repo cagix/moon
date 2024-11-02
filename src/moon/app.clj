@@ -5,14 +5,14 @@
             [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.batch :as batch]
+            [gdl.graphics.cursors :as cursors]
+            [gdl.graphics.tiled :as graphics.tiled]
+            [gdl.graphics.text :as font]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
             [gdl.ui :as ui]
             [moon.db :as db]
-            [moon.graphics.cursors :as cursors]
-            [moon.graphics.tiled :as graphics.tiled]
-            [moon.graphics.text :as font]
             [moon.screen :as screen]
             [moon.screens.main :as main-menu]
             [moon.screens.editor :as editor]
@@ -20,6 +20,22 @@
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
             moon.components))
+
+(def ^:private cursors
+  {:cursors/bag                   ["bag001"       [0   0]]
+   :cursors/black-x               ["black_x"      [0   0]]
+   :cursors/default               ["default"      [0   0]]
+   :cursors/denied                ["denied"       [16 16]]
+   :cursors/hand-before-grab      ["hand004"      [4  16]]
+   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+   :cursors/hand-grab             ["hand003"      [4  16]]
+   :cursors/move-window           ["move002"      [16 16]]
+   :cursors/no-skill-selected     ["denied003"    [0   0]]
+   :cursors/over-button           ["hand002"      [0   0]]
+   :cursors/sandclock             ["sandclock"    [16 16]]
+   :cursors/skill-not-usable      ["x007"         [0   0]]
+   :cursors/use-skill             ["pointer004"   [0   0]]
+   :cursors/walking               ["walking"      [16 16]]})
 
 (defn -main []
   (db/init)
@@ -33,7 +49,7 @@
                  (assets/init "resources/")
                  (batch/init)
                  (shape-drawer/init)
-                 (cursors/init)
+                 (cursors/init cursors)
                  (gui-view/init {:world-width 1440
                                  :world-height 900})
                  (world-view/init {:world-width 1440
