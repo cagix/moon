@@ -37,6 +37,7 @@
         sys-impls (if let-bindings
                     (rest sys-impls)
                     sys-impls)]
+    (assert (keyword? k) (pr-str k))
     `(do
       (defc-check-ns ~k)
       (alter-meta! *ns* #(update % :doc str "\n* defmethods `" ~k "`"))
@@ -53,7 +54,6 @@
                      (str sys-var " requires " (count sys-params) " args: " sys-params "."
                           " Given " (count fn-params)  " args: " fn-params))))
            `(do
-             (assert (keyword? ~k) (pr-str ~k))
              (when (get (methods @~sys-var) ~k)
                (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
              (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
