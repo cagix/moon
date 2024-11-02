@@ -5,10 +5,6 @@
             [moon.effect :as effect :refer [source target]]
             [moon.graphics.shape-drawer :as sd]))
 
-(defmethods :maxrange
-  (component/info [[_ maxrange]]
-    (str "[LIGHT_GRAY]Range " maxrange " meters[]")))
-
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)
                            (:position target*)))

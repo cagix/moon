@@ -6,6 +6,10 @@
             [moon.item :as item]
             [moon.modifiers :as mods]))
 
+(defmethods :maxrange
+  (component/info [[_ maxrange]]
+    (str "[LIGHT_GRAY]Range " maxrange " meters[]")))
+
 ; player doesn;t need aggro-range/reaction-time
 ; stats armor-pierce wrong place
 ; assert min body size from entity

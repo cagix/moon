@@ -1,30 +1,10 @@
 (ns moon.components
-  ; can I just convert them all ???
-  ; * only one defc
-  ; * no other public functions or anything else
-
-  ; What to do with :schema ? & properties ?
-  ; => could be done inside the editor  / schema
-  ; => could define properties/attributes & add/remove
-  ; => have a game database editor
-
-  ; => tests are important that way my application stays decomplected etc. design stays good
-  ; => e.g. can I use property editor separately
-  ; that makes me think - add tests to gdl
-  ; release w. tests ?!
-  ; that scool
-  ; how would apotential field test look like ?
-
-  ; that makes me think of the one where the army spawns automatically
-  ; and you can do stuff idk
-  ; or youre in the middle of a huge fight
-
   (:require (moon.effect projectile
                          spawn
                          target-all
-                         target-entity) ; :entity-effects, :maxrange
+                         target-entity)
             (moon.effect.entity convert
-                                damage ; defc :damage/min-max schema: :s/val-max
+                                damage
                                 kill
                                 melee-damage
                                 spiderweb
@@ -143,10 +123,7 @@
 
  (defn install-effect [ns-sym]
    (let [ns (find-ns ns-sym)
-         k (ns->k ns)
-         attr-map (meta *ns*)]
-     (assert (:schema attr-map))
-     (defc* k (select-keys attr-map [:schema]))
+         k (ns->k ns)]
      (doseq [[system fn-sym] effect-systems]
        (add-method system k (ns-resolve ns-sym fn-sym))))))
 
