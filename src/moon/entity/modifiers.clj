@@ -35,8 +35,6 @@
 
 (bind-root #'entity/stat entity-stat)
 
-; namespace 'base' so doesnt show up as 'effect' or 'effect.entity' ...
-; just add :show-in-ui? false to attr-map !
 (defmethods :base/stat-effect
   (component/info [[k ops]]
     (ops/info-text ops k))

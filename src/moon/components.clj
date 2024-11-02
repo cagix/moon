@@ -28,7 +28,7 @@
                          fsm
                          hitpoints ; :stats/hp not :entity/hitpoints
                          image
-                         inventory ; lots of :tx
+                         inventory ; lots of :tx, can-pickup-item?
                          line-render
                          modifiers ; lots of stuff
                          mouseover
