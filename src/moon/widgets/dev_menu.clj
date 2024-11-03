@@ -8,7 +8,6 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [readable-number]]
             [moon.controls :as controls]
-            [moon.component :as component]
             [moon.db :as db]
             [moon.screen :as screen]
             [moon.screens.world :as world]
@@ -74,15 +73,14 @@
     (add-debug-infos mb)
     menu-bar))
 
-(defmethods :widgets/dev-menu
-  (component/create [_]
-    (ui/table {:rows [[{:actor (.getTable (->menu-bar))
-                        :expand-x? true
-                        :fill-x? true
-                        :colspan 1}]
-                      [{:actor (doto (ui/label "")
-                                 (a/set-touchable! :disabled))
-                        :expand? true
-                        :fill-x? true
-                        :fill-y? true}]]
-               :fill-parent? true})))
+(defn create [_]
+  (ui/table {:rows [[{:actor (.getTable (->menu-bar))
+                      :expand-x? true
+                      :fill-x? true
+                      :colspan 1}]
+                    [{:actor (doto (ui/label "")
+                               (a/set-touchable! :disabled))
+                      :expand? true
+                      :fill-x? true
+                      :fill-y? true}]]
+             :fill-parent? true}))

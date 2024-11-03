@@ -36,17 +36,16 @@
     (ui/bg-remove! button-group button)
     nil))
 
-(defmethods :widgets/action-bar
-  (component/create [_]
-    (let [group (ui/horizontal-group {:pad 2 :space 2})]
-      (a/set-id! group ::action-bar)
-      (ui/add-actor! group (action-bar-button-group))
-      group))
+(defn create [_]
+  (let [group (ui/horizontal-group {:pad 2 :space 2})]
+    (a/set-id! group ::action-bar)
+    (ui/add-actor! group (action-bar-button-group))
+    group))
 
-  (component/handle [[_ op skill]]
-    (case op
-      :add    (add-skill    skill)
-      :remove (remove-skill skill))))
+(defn handle [[_ op skill]]
+  (case op
+    :add    (add-skill    skill)
+    :remove (remove-skill skill)))
 
 (defn selected-skill []
   (when-let [skill-button (ui/bg-checked (:button-group (get-action-bar)))]

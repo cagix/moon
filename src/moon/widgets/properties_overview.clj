@@ -37,20 +37,19 @@
                        :image/scale 2}
    :properties/worlds {:columns 10}})
 
-(defmethods :widgets/properties-overview
-  (component/create [[_ property-type clicked-id-fn]]
-    (let [{:keys [sort-by-fn
-                  extra-info-text
-                  columns
-                  image/scale]} (overview property-type)
-          properties (db/all property-type)
-          properties (if sort-by-fn
-                       (sort-by sort-by-fn properties)
-                       properties)]
-      (ui/table
-       {:cell-defaults {:pad 5}
-        :rows (for [properties (partition-all columns properties)]
-                (for [property properties]
-                  (try (property-widget property clicked-id-fn extra-info-text scale)
-                       (catch Throwable t
-                         (throw (ex-info "" {:property property} t))))))}))))
+(defn create [[_ property-type clicked-id-fn]]
+  (let [{:keys [sort-by-fn
+                extra-info-text
+                columns
+                image/scale]} (overview property-type)
+        properties (db/all property-type)
+        properties (if sort-by-fn
+                     (sort-by sort-by-fn properties)
+                     properties)]
+    (ui/table
+     {:cell-defaults {:pad 5}
+      :rows (for [properties (partition-all columns properties)]
+              (for [property properties]
+                (try (property-widget property clicked-id-fn extra-info-text scale)
+                     (catch Throwable t
+                       (throw (ex-info "" {:property property} t))))))})))

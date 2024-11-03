@@ -1,8 +1,7 @@
-(ns moon.widgets.player-modal
+(ns moon.tx.player-modal
   (:require [gdl.graphics.gui-view :as gui-view]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :as component]
             [moon.stage :as stage]))
 
 ; no window movable type cursor appears here like in player idle
@@ -24,7 +23,6 @@
                                  (* (gui-view/height) (/ 3 4))]
                :pack? true})))
 
-(defmethods :widgets/player-modal
-  (component/handle [[_ params]]
-    (show-player-modal! params)
-    nil))
+(defn handle [[_ params]]
+  (show-player-modal! params)
+  nil)

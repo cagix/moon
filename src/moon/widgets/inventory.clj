@@ -109,15 +109,14 @@
       (.row table))
     table))
 
-(defmethods :widgets/inventory
-  (component/create [_]
-    (ui/window {:title "Inventory"
-                :id :inventory-window
-                :visible? false
-                :pack? true
-                :position [(gui-view/width) (gui-view/height)]
-                :rows [[{:actor (inventory-table)
-                         :pad 4}]]})))
+(defn create [_]
+  (ui/window {:title "Inventory"
+              :id :inventory-window
+              :visible? false
+              :pack? true
+              :position [(gui-view/width) (gui-view/height)]
+              :rows [[{:actor (inventory-table)
+                       :pad 4}]]}))
 
 (defn- cell-widget [cell]
   (get (::table (windows/inventory)) cell))

@@ -17,16 +17,6 @@
                          string
                          val-max)
             (moon.tx entity)
-            (moon.widgets action-bar
-                          dev-menu
-                          entity-info-window
-                          hp-mana
-                          inventory
-                          player-message
-                          player-modal
-                          properties-overview
-                          properties-tabs
-                          property)
             moon.colors
             moon.properties
             moon.world.widgets))
@@ -170,5 +160,21 @@
 (install tx 'moon.tx.effect)
 (install tx 'moon.tx.item)
 (install tx 'moon.tx.line-render)
+(install tx 'moon.tx.player-modal)
 (install tx 'moon.tx.projectile)
 (install tx 'moon.tx.sound)
+
+(def ^:private widget
+  {:required [#'component/create]
+   :optional [#'component/handle]})
+
+(doseq [ns-sym '[moon.widgets.action-bar
+                 moon.widgets.dev-menu
+                 moon.widgets.entity-info-window
+                 moon.widgets.hp-mana
+                 moon.widgets.inventory
+                 moon.widgets.player-message
+                 moon.widgets.properties-overview
+                 moon.widgets.properties-tabs
+                 moon.widgets.property]]
+  (install widget ns-sym))

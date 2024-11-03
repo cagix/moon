@@ -10,7 +10,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (stage/add! (component/create [:widgets/property-editor (db/get-raw id)])))
+  (stage/add! (component/create [:widgets/property (db/get-raw id)])))
 
 (defn- property-type-tabs []
   (for [property-type (sort (property/types))]
@@ -22,21 +22,20 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defmethods :widgets/properties-tabs
-  (component/create [_]
-    (let [table (ui/table {:fill-parent? true})
-          container (ui/table {})
-          tabbed-pane (TabbedPane.)]
-      (.addListener tabbed-pane
-                    (proxy [TabbedPaneAdapter] []
-                      (switchedTab [^Tab tab]
-                        (.clearChildren container)
-                        (.fill (.expand (.add container (.getContentTable tab)))))))
-      (.fillX (.expandX (.add table (.getTable tabbed-pane))))
-      (.row table)
-      (.fill (.expand (.add table container)))
-      (.row table)
-      (.pad (.left (.add table (ui/label "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]"))) (float 10))
-      (doseq [tab-data (property-type-tabs)]
-        (.add tabbed-pane (tab-widget tab-data)))
-      table)))
+(defn create [_]
+  (let [table (ui/table {:fill-parent? true})
+        container (ui/table {})
+        tabbed-pane (TabbedPane.)]
+    (.addListener tabbed-pane
+                  (proxy [TabbedPaneAdapter] []
+                    (switchedTab [^Tab tab]
+                      (.clearChildren container)
+                      (.fill (.expand (.add container (.getContentTable tab)))))))
+    (.fillX (.expandX (.add table (.getTable tabbed-pane))))
+    (.row table)
+    (.fill (.expand (.add table container)))
+    (.row table)
+    (.pad (.left (.add table (ui/label "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]"))) (float 10))
+    (doseq [tab-data (property-type-tabs)]
+      (.add tabbed-pane (tab-widget tab-data)))
+    table))

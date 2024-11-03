@@ -2,8 +2,7 @@
   (:require [gdl.graphics :as gdx.graphics]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.text :as text]
-            [gdl.ui :as ui]
-            [moon.component :as component]))
+            [gdl.ui :as ui]))
 
 (def ^:private duration-seconds 1.5)
 
@@ -23,11 +22,10 @@
     (when (>= counter duration-seconds)
       (bind-root #'message-to-player nil))))
 
-(defmethods :widgets/player-message
-  (component/create [_]
-    (ui/actor {:draw draw-player-message
-               :act check-remove-message}))
+(defn create [_]
+  (ui/actor {:draw draw-player-message
+             :act check-remove-message}))
 
-  (component/handle [[_ message]]
-    (bind-root #'message-to-player {:message message :counter 0})
-    nil))
+(defn handle [[_ message]]
+  (bind-root #'message-to-player {:message message :counter 0})
+  nil)

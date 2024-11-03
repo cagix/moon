@@ -50,7 +50,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
     (a/remove! (editor-window))
-    (stage/add! (component/create [:widgets/property-editor prop-value]))))
+    (stage/add! (component/create [:widgets/property prop-value]))))
 
 (defn- k->default-value [k]
   (let [schema (schema/of k)]
