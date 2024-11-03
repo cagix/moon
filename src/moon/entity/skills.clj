@@ -1,6 +1,6 @@
 (ns moon.entity.skills
   (:require [moon.effect :as effect]
-            [moon.modifiers :as modifiers]
+            [moon.modifiers :as mods]
             [moon.world.time :refer [stopped?]]))
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
@@ -38,7 +38,7 @@
      [:widgets/action-bar op skill])])
 
 (defn- mana-value [entity]
-  (if-let [mana (modifiers/effective-value entity :stats/mana)]
+  (if-let [mana (mods/value entity :stats/mana)]
     (mana 0)
     0))
 

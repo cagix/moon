@@ -1,7 +1,7 @@
 (ns moon.entity.hitpoints
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
-            [moon.modifiers :as modifiers]
+            [moon.modifiers :as mods]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -39,6 +39,6 @@
   [v v])
 
 (defn render-info [_ entity]
-  (let [ratio (val-max/ratio (modifiers/effective-value entity :stats/hp))]
+  (let [ratio (val-max/ratio (mods/value entity :stats/hp))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))

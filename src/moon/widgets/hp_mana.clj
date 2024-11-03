@@ -4,7 +4,7 @@
             [gdl.graphics.text :as text]
             [gdl.ui :as ui]
             [gdl.utils :refer [readable-number]]
-            [moon.modifiers :as modifiers]
+            [moon.modifiers :as mods]
             [moon.player :as player]
             [moon.val-max :as val-max]))
 
@@ -30,5 +30,5 @@
     (ui/actor {:draw (fn []
                        (let [player-entity @player/eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (modifiers/effective-value player-entity :stats/hp) "HP")
-                         (render-hpmana-bar x y-mana manacontent (modifiers/effective-value player-entity :stats/mana) "MP")))})))
+                         (render-hpmana-bar x y-hp   hpcontent   (mods/value player-entity :stats/hp) "HP")
+                         (render-hpmana-bar x y-mana manacontent (mods/value player-entity :stats/mana) "MP")))})))

@@ -27,10 +27,11 @@
 (defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
 (defn- modifier-k [stat-k]   (keyword "modifier"      (name stat-k)))
 
-(defn effective-value
+; TODO no tests !
+(defn value
   ([entity stat-k]
    (when-let [base-value (stat-k entity)]
-     (effective-value entity (modifier-k stat-k) base-value)))
+     (value entity (modifier-k stat-k) base-value)))
 
   ([{:keys [entity/modifiers]} modifier-k base-value]
    {:pre [(= "modifier" (namespace modifier-k))]}
@@ -43,18 +44,18 @@
 
   (component/applicable? [[k _]]
     (and effect/target
-         (effective-value @effect/target (stat-k k))))
+         (value @effect/target (stat-k k))))
 
   (component/useful? [_]
     true)
 
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
-      (when-let [effective-value (effective-value @effect/target stat-k)]
-        [[:e/assoc effect/target stat-k (ops/apply operations effective-value)]]))))
+      (when-let [value (value @effect/target stat-k)]
+        [[:e/assoc effect/target stat-k (ops/apply operations value)]]))))
 
 (defmethod component/info :entity/stat [[k v]]
-  (str (k->pretty-name k) ": " (effective-value component/*info-text-entity* k)))
+  (str (k->pretty-name k) ": " (value component/*info-text-entity* k)))
 
 (defn defstat [k]
   {:pre [(= (namespace k) "stats")]}
@@ -75,7 +76,7 @@
   [v v])
 
 (defmethod component/handle :tx.entity.stats/pay-mana-cost [[_ eid cost]]
-  (let [mana-val ((effective-value @eid :stats/mana) 0)]
+  (let [mana-val ((value @eid :stats/mana) 0)]
     (assert (<= cost mana-val))
     [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]]))
 

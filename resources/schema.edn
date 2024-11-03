@@ -24,14 +24,19 @@
  :effect.entity/spiderweb :some,
  :effect.entity/stun pos?,
 
- :entity/animation :s/animation,
- :entity/body [:s/map [:body/width :body/height :body/flying?]],
- :entity/faction [:enum :good :evil],
  :entity/image :s/image,
- :entity/inventory [:s/one-to-many :properties/items],
+ :entity/animation :s/animation,
+
+ :entity/body [:s/map [:body/width :body/height :body/flying?]],
+
+ :entity/faction [:enum :good :evil],
+
  :entity/modifiers [:s/components-ns :modifier],
- :entity/skills [:s/one-to-many :properties/skills],
- :item/modifiers [:s/components-ns :modifier],
+ :item/modifiers   [:s/components-ns :modifier],
+
+ :entity/inventory [:s/one-to-many :properties/items],
+ :entity/skills    [:s/one-to-many :properties/skills],
+
  :item/slot
  [:enum
   :inventory.slot/cloak
