@@ -3,7 +3,7 @@
             [gdl.graphics.shape-drawer :as sd]
             [moon.component :as component]
             [moon.effect :as effect]
-            [moon.entity :as entity]
+            [moon.modifiers :as modifiers]
             [moon.world.line-of-sight :refer [line-of-sight?]]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
 
@@ -22,7 +22,7 @@
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (entity/stat entity (:skill/action-time-modifier-key skill))
+     (or (modifiers/effective-value entity (:skill/action-time-modifier-key skill))
          1)))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.

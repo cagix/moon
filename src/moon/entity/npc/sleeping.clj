@@ -1,8 +1,8 @@
 (ns moon.entity.npc.sleeping
   (:require [gdl.graphics.text :as text]
             [moon.body :as body]
-            [moon.entity :as entity]
             [moon.entity.faction :as faction]
+            [moon.modifiers :as modifiers]
             [moon.world.grid :as grid]))
 
 (defn ->v [[_ eid]]
@@ -16,7 +16,7 @@
   (let [entity @eid
         cell (grid/cell (body/tile entity))] ; pattern!
     (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
-      (when (<= distance (entity/stat entity :stats/aggro-range))
+      (when (<= distance (modifiers/effective-value entity :stats/aggro-range))
         [[:entity/fsm eid :alert]]))))
 
 (defn render-above [_ entity]

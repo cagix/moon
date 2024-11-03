@@ -2,6 +2,7 @@
   (:require [moon.effect :as effect]
             [moon.body :as body]
             [moon.entity.faction :as faction]
+            [moon.entity.skills :as skills]
             [moon.follow-ai :as follow-ai]
             [moon.world.grid :as grid]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
@@ -32,7 +33,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (effect/skill-usable-state entity %))
+       (filter #(and (= :usable (skills/usable-state entity %))
                      (effect/useful? (:skill/effects %))))
        first))
 

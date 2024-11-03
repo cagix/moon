@@ -27,16 +27,6 @@
 
 (def render-systems [render-below render render-above render-info])
 
-(declare stat)
-
-(defn mana-value [entity]
-  (if-let [mana (stat entity :stats/mana)]
-    (mana 0)
-    0))
-
-(defn not-enough-mana? [entity {:keys [skill/cost]}]
-  (and cost (> cost (mana-value entity))))
-
 ;; State
 
 (defsystem enter)

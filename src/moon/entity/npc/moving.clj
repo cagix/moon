@@ -1,5 +1,5 @@
 (ns moon.entity.npc.moving
-  (:require [moon.entity :as entity]
+  (:require [moon.modifiers :as modifiers]
             [moon.world.time :refer [timer stopped?]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
@@ -9,11 +9,11 @@
 (defn ->v [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector
-   :counter (timer (* (entity/stat @eid :stats/reaction-time) 0.016))})
+   :counter (timer (* (modifiers/effective-value @eid :stats/reaction-time) 0.016))})
 
 (defn enter [[_ {:keys [eid movement-vector]}]]
   [[:entity/movement eid {:direction movement-vector
-                          :speed (or (entity/stat @eid :stats/movement-speed) 0)}]])
+                          :speed (or (modifiers/effective-value @eid :stats/movement-speed) 0)}]])
 
 (defn exit [[_ {:keys [eid]}]]
   [[:entity/movement eid nil]])

@@ -91,7 +91,7 @@
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (effect-ctx eid)
              state (effect/with-ctx effect-ctx
-                     (effect/skill-usable-state entity skill))]
+                     (skills/usable-state entity skill))]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight

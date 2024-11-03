@@ -1,6 +1,5 @@
 (ns moon.effect
-  (:require [moon.component :as component]
-            [moon.entity :as entity]))
+  (:require [moon.component :as component]))
 
 (defn filter-applicable? [effect]
   (filter component/applicable? effect))
@@ -24,18 +23,3 @@
              target-direction (:effect/target-direction ~ctx)
              target-position  (:effect/target-position  ~ctx)]
      ~@body))
-
-(defn skill-usable-state
-  [entity {:keys [skill/cooling-down? skill/effects] :as skill}]
-  (cond
-   cooling-down?
-   :cooldown
-
-   (entity/not-enough-mana? entity skill)
-   :not-enough-mana
-
-   (not (applicable? effects))
-   :invalid-params
-
-   :else
-   :usable))

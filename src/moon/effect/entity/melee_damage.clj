@@ -1,10 +1,10 @@
 (ns moon.effect.entity.melee-damage
   (:require [moon.component :as component]
             [moon.effect :refer [source]]
-            [moon.entity :as entity]))
+            [moon.modifiers :as modifiers]))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (entity/stat entity :stats/strength) 0)]
+  (let [strength (or (modifiers/effective-value entity :stats/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defn- damage-effect []

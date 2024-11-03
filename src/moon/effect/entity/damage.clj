@@ -1,12 +1,11 @@
 (ns moon.effect.entity.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.effect :refer [source target]]
-            [moon.entity :as entity]
             [moon.modifiers :as modifiers]))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (entity/stat target* :stats/armor-save) 0)
-          (or (entity/stat source* :stats/armor-pierce) 0))
+  (max (- (or (modifiers/effective-value target* :stats/armor-save) 0)
+          (or (modifiers/effective-value source* :stats/armor-pierce) 0))
        0))
 
 (comment
@@ -56,12 +55,12 @@
 
 (defn applicable? [_]
   (and target
-       (entity/stat @target :stats/hp)))
+       (modifiers/effective-value @target :stats/hp)))
 
 (defn handle [[_ damage]]
   (let [source* @source
         target* @target
-        hp (entity/stat target* :stats/hp)]
+        hp (modifiers/effective-value target* :stats/hp)]
     (cond
      (zero? (hp 0))
      []

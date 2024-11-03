@@ -1,6 +1,6 @@
 (ns moon.entity.player.moving
   (:require [gdl.input :refer [WASD-movement-vector]]
-            [moon.entity :as entity]))
+            [moon.modifiers :as modifiers]))
 
 (defn ->v [[_ eid movement-vector]]
   {:eid eid
@@ -14,7 +14,7 @@
 
 (defn enter [[_ {:keys [eid movement-vector]}]]
   [[:entity/movement eid {:direction movement-vector
-                          :speed (entity/stat @eid :stats/movement-speed)}]])
+                          :speed (modifiers/effective-value @eid :stats/movement-speed)}]])
 
 (defn exit [[_ {:keys [eid]}]]
   [[:entity/movement eid nil]])
@@ -22,5 +22,5 @@
 (defn tick [[_ {:keys [movement-vector]}] eid]
   (if-let [movement-vector (WASD-movement-vector)]
     [[:entity/movement eid {:direction movement-vector
-                            :speed (entity/stat @eid :stats/movement-speed)}]]
+                            :speed (modifiers/effective-value @eid :stats/movement-speed)}]]
     [[:entity/fsm eid :no-movement-input]]))

@@ -20,7 +20,6 @@
                          sound
                          string
                          val-max)
-            moon.stats
             (moon.tx entity)))
 
 (defn- namespace->component-key [ns-str]
