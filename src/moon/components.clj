@@ -102,6 +102,8 @@
 (defn- add-method [system k avar]
   {:pre [(keyword? k)
          (var? avar)]}
+  (when (k (methods system))
+    (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
   (MultiFn/.addMethod system k avar))
 
 (require '[moon.component :as component])
@@ -112,7 +114,6 @@
                                 #'component/useful?
                                 #'component/render]})
 
-; TODO overwrite warnings ?
 (defn add-methods [ns-sym component-systems]
   (let [k (namespace->component-key (str ns-sym))
         resolve-method #(ns-resolve ns-sym (:name (meta %)))]
