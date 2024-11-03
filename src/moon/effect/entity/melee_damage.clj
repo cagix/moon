@@ -10,14 +10,13 @@
 (defn- damage-effect []
   [:effect.entity/damage (entity->melee-damage @source)])
 
-(defmethods :effect.entity/melee-damage
-  (component/info [_]
-    (str "Damage based on entity strength."
-         (when source
-           (str "\n" (component/info (damage-effect))))))
+(defn info [_]
+  (str "Damage based on entity strength."
+       (when source
+         (str "\n" (component/info (damage-effect))))))
 
-  (component/applicable? [_]
-    (component/applicable? (damage-effect)))
+(defn applicable? [_]
+  (component/applicable? (damage-effect)))
 
-  (component/handle [_]
-    [(damage-effect)]))
+(defn handle [_]
+  [(damage-effect)])

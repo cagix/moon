@@ -1,6 +1,5 @@
 (ns moon.effect.entity.damage
   (:require [gdl.rand :refer [rand-int-between]]
-            [moon.component :as component]
             [moon.effect :refer [source target]]
             [moon.entity :as entity]))
 
@@ -46,41 +45,39 @@
 (defn- damage->text [{[min-dmg max-dmg] :damage/min-max}]
   (str min-dmg "-" max-dmg " damage"))
 
-(defmethods :effect.entity/damage
-  {:let damage}
-  (component/info [_]
-    (if source
-      (let [modified (->effective-damage damage @source)]
-        (if (= damage modified)
-          (damage->text damage)
-          (str (damage->text damage) "\nModified: " (damage->text modified))))
-      (damage->text damage))) ; property menu no source,modifiers
+(defn info [[_ damage]]
+  (if source
+    (let [modified (->effective-damage damage @source)]
+      (if (= damage modified)
+        (damage->text damage)
+        (str (damage->text damage) "\nModified: " (damage->text modified))))
+    (damage->text damage))) ; property menu no source,modifiers
 
-  (component/applicable? [_]
-    (and target
-         (entity/stat @target :stats/hp)))
+(defn applicable? [_]
+  (and target
+       (entity/stat @target :stats/hp)))
 
-  (component/handle [_]
-    (let [source* @source
-          target* @target
-          hp (entity/stat target* :stats/hp)]
-      (cond
-       (zero? (hp 0))
-       []
+(defn handle [[_ damage]]
+  (let [source* @source
+        target* @target
+        hp (entity/stat target* :stats/hp)]
+    (cond
+     (zero? (hp 0))
+     []
 
-       (armor-saves? source* target*)
-       [[:entity/string-effect target "[WHITE]ARMOR"]] ; TODO !_!_!_!_!_!
+     (armor-saves? source* target*)
+     [[:entity/string-effect target "[WHITE]ARMOR"]] ; TODO !_!_!_!_!_!
 
-       :else
-       (let [;_ (println "Source unmodified damage:" damage)
-             {:keys [damage/min-max]} (->effective-damage damage source*)
-             ;_ (println "\nSource modified: min-max:" min-max)
-             min-max (entity/modified-value target* :modifier/damage-receive min-max)
-             ;_ (println "effective min-max: " min-max)
-             dmg-amount (rand-int-between min-max)
-             ;_ (println "dmg-amount: " dmg-amount)
-             new-hp-val (max (- (hp 0) dmg-amount) 0)]
-         [[:tx/audiovisual (:position target*) :audiovisuals/damage]
-          [:entity/string-effect target (str "[RED]" dmg-amount)]
-          [:e/assoc-in target [:stats/hp 0] new-hp-val]
-          [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]])))))
+     :else
+     (let [;_ (println "Source unmodified damage:" damage)
+           {:keys [damage/min-max]} (->effective-damage damage source*)
+           ;_ (println "\nSource modified: min-max:" min-max)
+           min-max (entity/modified-value target* :modifier/damage-receive min-max)
+           ;_ (println "effective min-max: " min-max)
+           dmg-amount (rand-int-between min-max)
+           ;_ (println "dmg-amount: " dmg-amount)
+           new-hp-val (max (- (hp 0) dmg-amount) 0)]
+       [[:tx/audiovisual (:position target*) :audiovisuals/damage]
+        [:entity/string-effect target (str "[RED]" dmg-amount)]
+        [:e/assoc-in target [:stats/hp 0] new-hp-val]
+        [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]]))))

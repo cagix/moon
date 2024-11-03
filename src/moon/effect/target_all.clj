@@ -1,6 +1,6 @@
 (ns moon.effect.target-all
+  "🚧 Under construction ⚠️"
   (:require [gdl.graphics.shape-drawer :as sd]
-            [moon.component :as component]
             [moon.effect :refer [source target]]
             [moon.player :as player]
             [moon.world.entities :as entities]
@@ -27,39 +27,37 @@
 
  )
 
-(defmethods :effect/target-all
-  {:let {:keys [entity-effects]}}
-  (component/info [_]
-    "[LIGHT_GRAY]All visible targets[]")
+(defn info [_]
+  "[LIGHT_GRAY]All visible targets[]")
 
-  (component/applicable? [_]
-    true)
+(defn applicable? [_]
+  true)
 
-  (component/useful? [_]
-    ; TODO
-    false
-    )
+(defn useful? [_]
+  ; TODO
+  false
+  )
 
-  (component/handle [_]
-    (let [source* @source]
-      (apply concat
-             (for [target (creatures-in-los-of-player)]
-               [[:tx/line-render {:start (:position source*) #_(start-point source* target*)
-                                  :end (:position @target)
-                                  :duration 0.05
-                                  :color [1 0 0 0.75]
-                                  :thick? true}]
-                ; some sound .... or repeat smae sound???
-                ; skill do sound  / skill start sound >?
-                ; problem : nested tx/effect , we are still having direction/target-position
-                ; at sub-effects
-                ; and no more safe - merge
-                ; find a way to pass ctx / effect-ctx separate ?
-                [:tx/effect {:effect/source source :effect/target target} entity-effects]]))))
+(defn handle [[_ {:keys [entity-effects]}]]
+  (let [source* @source]
+    (apply concat
+           (for [target (creatures-in-los-of-player)]
+             [[:tx/line-render {:start (:position source*) #_(start-point source* target*)
+                                :end (:position @target)
+                                :duration 0.05
+                                :color [1 0 0 0.75]
+                                :thick? true}]
+              ; some sound .... or repeat smae sound???
+              ; skill do sound  / skill start sound >?
+              ; problem : nested tx/effect , we are still having direction/target-position
+              ; at sub-effects
+              ; and no more safe - merge
+              ; find a way to pass ctx / effect-ctx separate ?
+              [:tx/effect {:effect/source source :effect/target target} entity-effects]]))))
 
-  (component/render [_]
-    (let [source* @source]
-      (doseq [target* (map deref (creatures-in-los-of-player))]
-        (sd/line (:position source*) #_(start-point source* target*)
-                 (:position target*)
-                 [1 0 0 0.5])))))
+(defn render [_]
+  (let [source* @source]
+    (doseq [target* (map deref (creatures-in-los-of-player))]
+      (sd/line (:position source*) #_(start-point source* target*)
+               (:position target*)
+               [1 0 0 0.5]))))

@@ -1,15 +1,5 @@
 (ns moon.components
-  (:require (moon.effect projectile
-                         spawn
-                         target-all
-                         target-entity)
-            (moon.effect.entity convert
-                                damage
-                                kill
-                                melee-damage
-                                spiderweb
-                                stun)
-            (moon.entity.npc dead
+  (:require (moon.entity.npc dead
                              idle
                              moving
                              sleeping)
@@ -115,6 +105,7 @@
                                 #'component/render]})
 
 (defn add-methods [ns-sym component-systems]
+  (require ns-sym)
   (let [k (namespace->component-key (str ns-sym))
         resolve-method #(ns-resolve ns-sym (:name (meta %)))]
     (doseq [system-var (:required component-systems)
@@ -126,8 +117,17 @@
             :when method-var]
       (add-method @system-var k method-var))))
 
-(add-methods 'moon.effect.projectile effect-systems)
-(add-methods 'moon.effect.spawn      effect-systems)
+(add-methods 'moon.effect.projectile    effect-systems)
+(add-methods 'moon.effect.spawn         effect-systems)
+(add-methods 'moon.effect.target-all    effect-systems)
+(add-methods 'moon.effect.target-entity effect-systems)
+
+(add-methods 'moon.effect.entity.convert      effect-systems)
+(add-methods 'moon.effect.entity.damage       effect-systems)
+(add-methods 'moon.effect.entity.kill         effect-systems)
+(add-methods 'moon.effect.entity.melee-damage effect-systems)
+(add-methods 'moon.effect.entity.spiderweb    effect-systems)
+(add-methods 'moon.effect.entity.stun         effect-systems)
 
 (comment
 

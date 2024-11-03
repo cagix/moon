@@ -2002,6 +2002,7 @@
   :entity/skills
   #{:skills/double-fireball
     :skills/spawn
+    :skills/convert
     :skills/blood-curse
     :skills/bow
     :skills/slow
