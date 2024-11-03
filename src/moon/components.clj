@@ -1,5 +1,7 @@
 (ns moon.components
-  (:require (moon.entity.npc dead
+  (:require [clojure.string :as str]
+            [moon.component :as component]
+            (moon.entity.npc dead
                              idle
                              moving
                              sleeping)
@@ -28,8 +30,6 @@
                          string-effect
                          stunned
                          temp-modifier)
-            (moon.fsms player
-                       npc)
             (moon.level generate
                         uf-caves
                         tiled-map)
@@ -70,10 +70,8 @@
                           property)
             moon.colors
             moon.properties
-            moon.world.widgets))
-
-(require '[clojure.string :as str])
-(import clojure.lang.MultiFn)
+            moon.world.widgets)
+  (:import clojure.lang.MultiFn))
 
 (defn- namespace->component-key [ns-str]
    (let [ns-parts (-> ns-str
@@ -88,7 +86,6 @@
       (= (namespace->component-key "moon.effect.entity.convert")
          :effect.entity/convert)))
 
-; TODO check if rede-ffing the public fns changes something.
 (defn- add-method [system k avar]
   {:pre [(keyword? k)
          (var? avar)]}
@@ -96,15 +93,7 @@
     (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
   (MultiFn/.addMethod system k avar))
 
-(require '[moon.component :as component])
-
-(def effect-systems {:required [#'component/applicable?
-                                #'component/handle]
-                     :optional [#'component/info
-                                #'component/useful?
-                                #'component/render]})
-
-(defn add-methods [ns-sym component-systems]
+(defn- add-methods [ns-sym component-systems]
   (require ns-sym)
   (let [k (namespace->component-key (str ns-sym))
         resolve-method #(ns-resolve ns-sym (:name (meta %)))]
@@ -117,17 +106,29 @@
             :when method-var]
       (add-method @system-var k method-var))))
 
-(add-methods 'moon.effect.projectile    effect-systems)
-(add-methods 'moon.effect.spawn         effect-systems)
-(add-methods 'moon.effect.target-all    effect-systems)
-(add-methods 'moon.effect.target-entity effect-systems)
+(def ^:private effect
+  {:required [#'component/applicable?
+              #'component/handle]
+   :optional [#'component/info
+              #'component/useful?
+              #'component/render]})
 
-(add-methods 'moon.effect.entity.convert      effect-systems)
-(add-methods 'moon.effect.entity.damage       effect-systems)
-(add-methods 'moon.effect.entity.kill         effect-systems)
-(add-methods 'moon.effect.entity.melee-damage effect-systems)
-(add-methods 'moon.effect.entity.spiderweb    effect-systems)
-(add-methods 'moon.effect.entity.stun         effect-systems)
+(add-methods 'moon.effect.projectile          effect)
+(add-methods 'moon.effect.spawn               effect)
+(add-methods 'moon.effect.target-all          effect)
+(add-methods 'moon.effect.target-entity       effect)
+(add-methods 'moon.effect.entity.convert      effect)
+(add-methods 'moon.effect.entity.damage       effect)
+(add-methods 'moon.effect.entity.kill         effect)
+(add-methods 'moon.effect.entity.melee-damage effect)
+(add-methods 'moon.effect.entity.spiderweb    effect)
+(add-methods 'moon.effect.entity.stun         effect)
+
+(def ^:private fsms-systems
+  {:required [#'component/create]})
+
+(add-methods 'moon.fsms.player fsms-systems)
+(add-methods 'moon.fsms.npc    fsms-systems)
 
 (comment
 
