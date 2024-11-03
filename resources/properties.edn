@@ -1999,7 +1999,16 @@
     :items/blood-glove
     :items/cloth-chest
     :items/gold-chest},
-  :entity/skills #{:skills/projectile :skills/melee-attack},
+  :entity/skills
+  #{:skills/double-fireball
+    :skills/spawn
+    :skills/blood-curse
+    :skills/bow
+    :skills/slow
+    :skills/meditation
+    :skills/death-ray
+    :skills/projectile
+    :skills/melee-attack},
   :property/id :creatures/vampire,
   :property/pretty-name "Vampire",
   :stats/aggro-range 6,
