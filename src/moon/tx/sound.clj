@@ -1,8 +1,6 @@
 (ns moon.tx.sound
-  (:require [gdl.assets :as assets]
-            [moon.component :as component]))
+  (:require [gdl.assets :as assets]))
 
-(defmethods :tx/sound
-  (component/handle [[_ file]]
-    (assets/play-sound file)
-    nil))
+(defn handle [[_ file]]
+  (assets/play-sound file)
+  nil)

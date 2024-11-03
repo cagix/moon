@@ -21,15 +21,7 @@
                          sound
                          string
                          val-max)
-            (moon.tx audiovisual
-                     creature
-                     cursor
-                     effect
-                     entity
-                     item
-                     line-render
-                     projectile
-                     sound)
+            (moon.tx entity)
             (moon.widgets action-bar
                           dev-menu
                           entity-info-window
@@ -160,3 +152,15 @@
 (add-methods entity-state 'moon.entity.player.moving         :player-moving)
 (add-methods entity-state 'moon.entity.active                :active-skill)
 (add-methods entity-state 'moon.entity.stunned               :stunned)
+
+(def ^:private tx
+  {:required [#'component/handle]})
+
+(add-methods tx 'moon.tx.audiovisual)
+(add-methods tx 'moon.tx.creature)
+(add-methods tx 'moon.tx.cursor)
+(add-methods tx 'moon.tx.effect)
+(add-methods tx 'moon.tx.item)
+(add-methods tx 'moon.tx.line-render)
+(add-methods tx 'moon.tx.projectile)
+(add-methods tx 'moon.tx.sound)

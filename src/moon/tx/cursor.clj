@@ -1,8 +1,6 @@
 (ns moon.tx.cursor
-  (:require [gdl.graphics.cursors :as cursors]
-            [moon.component :as component]))
+  (:require [gdl.graphics.cursors :as cursors]))
 
-(defmethods :tx/cursor
-  (component/handle [[_ cursor-key]]
-    (cursors/set cursor-key)
-    nil))
+(defn handle [[_ cursor-key]]
+  (cursors/set cursor-key)
+  nil)

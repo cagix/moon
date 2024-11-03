@@ -1,6 +1,5 @@
 (ns moon.tx.creature
   (:require [gdl.utils :refer [safe-merge]]
-            [moon.component :as component]
             [moon.db :as db]))
 
 ; # :z-order/flying has no effect for now
@@ -17,14 +16,12 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defmethods :tx/creature
-  {:let {:keys [position creature-id components]}}
-  (component/handle [_]
-    (let [props (db/get creature-id)]
-      [[:e/create
-        position
-        (->body (:entity/body props))
-        (-> props
-            (dissoc :entity/body)
-            (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-            (safe-merge components))]])))
+(defn handle [[_ {:keys [position creature-id components]}]]
+  (let [props (db/get creature-id)]
+    [[:e/create
+      position
+      (->body (:entity/body props))
+      (-> props
+          (dissoc :entity/body)
+          (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+          (safe-merge components))]]))
