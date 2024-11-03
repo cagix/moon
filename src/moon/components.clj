@@ -55,6 +55,10 @@
          (var? avar)]}
   (when (k (methods system))
     (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
+
+  ; TODO check fn-params ... ? compare with sys ?
+  #_(first (:arglists (meta #'render)))
+
   (MultiFn/.addMethod system k avar))
 
 (defn- add-methods
