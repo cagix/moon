@@ -58,8 +58,11 @@
 
   ; TODO check fn-params ... ? compare with sys ?
   #_(first (:arglists (meta #'render)))
-
+  (alter-meta! avar assoc :no-doc true)
   (MultiFn/.addMethod system k avar))
+
+(defn- ns-publics-without-no-doc? [ns]
+  (some #(not (:no-doc (meta %))) (vals (ns-publics ns))))
 
 (defn- add-methods
   ([component-systems ns-sym]
@@ -77,7 +80,10 @@
      (doseq [system-var (:optional component-systems)
              :let [method-var (resolve-method system-var)]
              :when method-var]
-       (add-method @system-var k method-var)))))
+       (add-method @system-var k method-var)))
+   (let [ns (find-ns ns-sym)]
+     (when-not (ns-publics-without-no-doc? ns)
+       (alter-meta! ns assoc :no-doc true)))))
 
 (def ^:private effect
   {:required [#'component/applicable?
