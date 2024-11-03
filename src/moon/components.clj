@@ -20,8 +20,7 @@
                          sound
                          string
                          val-max)
-            (moon.tx entity)
-            moon.world.widgets))
+            (moon.tx entity)))
 
 (defn- namespace->component-key [ns-str]
    (let [ns-parts (-> ns-str

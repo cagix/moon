@@ -5,7 +5,8 @@
             [gdl.graphics.cursors :as cursors]
             [gdl.graphics.world-view :as world-view]
             [gdl.tiled :as tiled]
-            [gdl.utils :refer [tile->middle]]
+            [gdl.ui :as ui]
+            [gdl.utils :refer [tile->middle dev-mode?]]
             [moon.controls :as controls]
             [moon.component :as component]
             [moon.entity :as entity]
@@ -66,10 +67,25 @@
                                          :entity/faction :evil}})))]
     [:tx/creature (update creature :position tile->middle)]))
 
+(defn- widgets []
+  [(if dev-mode?
+     (component/create [:widgets/dev-menu])
+     (ui/actor {}))
+   (ui/table {:rows [[{:actor (component/create [:widgets/action-bar])
+                       :expand? true
+                       :bottom? true}]]
+              :id :action-bar-table
+              :cell-defaults {:pad 2}
+              :fill-parent? true})
+   (component/create [:widgets/hp-mana])
+   (windows/create)
+   (ui/actor {:draw #(entity/draw-gui-view (entity/state-obj @player/eid))})
+   (component/create [:widgets/player-message])])
+
 (defn start [world-id]
   (screen/change :screens/world)
   (bind-root #'logic-frame 0)
-  (stage/reset (component/create [:world/widgets]))
+  (stage/reset (widgets))
   (let [{:keys [tiled-map] :as level} (level/generate world-id)]
     (tiled-map/clear)
     (tiled-map/init tiled-map)
