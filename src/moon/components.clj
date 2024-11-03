@@ -2,19 +2,14 @@
   (:require [clojure.string :as str]
             [moon.component :as component]
             [moon.entity :as entity]
-            ;;
-            (moon.entity hitpoints ; :stats/hp not :entity/hitpoints
-                         inventory ; lots of :tx, can-pickup-item?
-                         modifiers ; lots of stuff
-                         )
-            ;;
+            (moon.entity inventory
+                         modifiers)
             (moon.level generate
                         uf-caves
                         tiled-map)
             (moon.operation inc
                             mult
-                            val-max) ; omgwtf
-            ; those are not defc yet
+                            val-max)
             (moon.schema animation
                          boolean
                          enum
@@ -30,12 +25,11 @@
                      creature
                      cursor
                      effect
-                     entity ; lots o stuff
+                     entity
                      item
                      line-render
                      projectile
                      sound)
-            ; public fns
             (moon.widgets action-bar
                           dev-menu
                           entity-info-window
@@ -142,6 +136,7 @@
 (add-methods entity 'moon.entity.string-effect)
 (add-methods entity 'moon.entity.movement)
 (add-methods entity 'moon.entity.temp-modifier)
+(add-methods entity 'moon.entity.hitpoints :stats/hp)
 
 (def ^:private entity-state
   (merge-with concat
@@ -165,9 +160,3 @@
 (add-methods entity-state 'moon.entity.player.moving         :player-moving)
 (add-methods entity-state 'moon.entity.active                :active-skill)
 (add-methods entity-state 'moon.entity.stunned               :stunned)
-
-; How do I check they are all wired properly?
-; Doesnt check if name mismatch for optional one
-; => go from fns to systems not other way around ?
-
-

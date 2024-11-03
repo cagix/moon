@@ -16,10 +16,10 @@
 (defn- hpbar-color [ratio]
   (let [ratio (float ratio)
         color (cond
-                (> ratio 0.75) :green
-                (> ratio 0.5)  :darkgreen
-                (> ratio 0.25) :yellow
-                :else          :red)]
+               (> ratio 0.75) :green
+               (> ratio 0.5)  :darkgreen
+               (> ratio 0.25) :yellow
+               :else          :red)]
     (color hpbar-colors)))
 
 (def ^:private borders-px 1)
@@ -38,11 +38,10 @@
                            (- height (* 2 border))
                            (hpbar-color ratio)))))
 
-(defmethods :stats/hp
-  (entity/->v [[_ v]]
-    [v v])
+(defn ->v [[_ v]]
+  [v v])
 
-  (entity/render-info [_ entity]
-    (let [ratio (val-max/ratio (entity/stat entity :stats/hp))]
-      (when (or (< ratio 1) (:entity/mouseover? entity))
-        (draw-hpbar entity ratio)))))
+(defn render-info [_ entity]
+  (let [ratio (val-max/ratio (entity/stat entity :stats/hp))]
+    (when (or (< ratio 1) (:entity/mouseover? entity))
+      (draw-hpbar entity ratio))))
