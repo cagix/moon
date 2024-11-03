@@ -33,8 +33,7 @@
                           property)
             moon.colors
             moon.properties
-            moon.world.widgets)
-  (:import clojure.lang.MultiFn))
+            moon.world.widgets))
 
 (defn- namespace->component-key [ns-str]
    (let [ns-parts (-> ns-str
@@ -50,36 +49,38 @@
          :effect.entity/convert)))
 
 (defn- add-method [system k avar]
-  {:pre [(keyword? k)
-         (var? avar)]}
+  (assert (keyword? k))
+  (assert (var? avar) (pr-str avar))
   (when (k (methods system))
     (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
 
   ; TODO check fn-params ... ? compare with sys ?
   #_(first (:arglists (meta #'render)))
+
   (alter-meta! avar assoc :no-doc true)
-  (MultiFn/.addMethod system k avar))
+  (clojure.lang.MultiFn/.addMethod system k avar))
+
+(defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
+  (doseq [system-var system-vars
+          :let [method-var (ns-resolve ns-sym (:name (meta system-var)))]]
+    (assert (or optional? method-var)
+            (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym))
+    (when method-var
+      (add-method @system-var k method-var))))
 
 (defn- ns-publics-without-no-doc? [ns]
   (some #(not (:no-doc (meta %))) (vals (ns-publics ns))))
 
-(defn- add-methods
+(defn- install
   ([component-systems ns-sym]
-   (add-methods component-systems
-                ns-sym
-                (namespace->component-key (str ns-sym))))
+   (install component-systems
+            ns-sym
+            (namespace->component-key (str ns-sym))))
 
   ([component-systems ns-sym k]
    (require ns-sym)
-   (let [resolve-method #(ns-resolve ns-sym (:name (meta %)))]
-     (doseq [system-var (:required component-systems)
-             :let [method-var (resolve-method system-var)]]
-       (assert method-var)
-       (add-method @system-var k method-var))
-     (doseq [system-var (:optional component-systems)
-             :let [method-var (resolve-method system-var)]
-             :when method-var]
-       (add-method @system-var k method-var)))
+   (add-methods (:required component-systems) ns-sym k)
+   (add-methods (:optional component-systems) ns-sym k :optional? true)
    (let [ns (find-ns ns-sym)]
      (when-not (ns-publics-without-no-doc? ns)
        (alter-meta! ns assoc :no-doc true)))))
@@ -101,13 +102,13 @@
                  moon.effect.entity.melee-damage
                  moon.effect.entity.spiderweb
                  moon.effect.entity.stun]]
-  (add-methods effect ns-sym))
+  (install effect ns-sym))
 
 (def ^:private fsm
   {:required [#'component/create]})
 
-(add-methods fsm 'moon.fsms.player)
-(add-methods fsm 'moon.fsms.npc)
+(install fsm 'moon.fsms.player)
+(install fsm 'moon.fsms.npc)
 
 (def ^:private entity
   {:optional [#'component/info
@@ -121,24 +122,24 @@
               #'entity/render-above
               #'entity/render-info]})
 
-(add-methods entity 'moon.entity.animation)
-(add-methods entity 'moon.entity.clickable)
-(add-methods entity 'moon.entity.delete-after-animation-stopped)
-(add-methods entity 'moon.entity.delete-after-duration)
-(add-methods entity 'moon.entity.destroy-audiovisual)
-(add-methods entity 'moon.entity.faction)
-(add-methods entity 'moon.entity.fsm)
-(add-methods entity 'moon.entity.image)
-(add-methods entity 'moon.entity.inventory)
-(add-methods entity 'moon.entity.line-render)
-(add-methods entity 'moon.entity.mouseover :entity/mouseover?)
-(add-methods entity 'moon.entity.player :entity/player?)
-(add-methods entity 'moon.entity.projectile-collision)
-(add-methods entity 'moon.entity.skills)
-(add-methods entity 'moon.entity.string-effect)
-(add-methods entity 'moon.entity.movement)
-(add-methods entity 'moon.entity.temp-modifier)
-(add-methods entity 'moon.entity.hitpoints :stats/hp)
+(install entity 'moon.entity.animation)
+(install entity 'moon.entity.clickable)
+(install entity 'moon.entity.delete-after-animation-stopped)
+(install entity 'moon.entity.delete-after-duration)
+(install entity 'moon.entity.destroy-audiovisual)
+(install entity 'moon.entity.faction)
+(install entity 'moon.entity.fsm)
+(install entity 'moon.entity.image)
+(install entity 'moon.entity.inventory)
+(install entity 'moon.entity.line-render)
+(install entity 'moon.entity.mouseover :entity/mouseover?)
+(install entity 'moon.entity.player :entity/player?)
+(install entity 'moon.entity.projectile-collision)
+(install entity 'moon.entity.skills)
+(install entity 'moon.entity.string-effect)
+(install entity 'moon.entity.movement)
+(install entity 'moon.entity.temp-modifier)
+(install entity 'moon.entity.hitpoints :stats/hp)
 
 (def ^:private entity-state
   (merge-with concat
@@ -152,25 +153,25 @@
                           #'entity/clicked-skillmenu-skill
                           #'entity/draw-gui-view]}))
 
-(add-methods entity-state 'moon.entity.npc.dead              :npc-dead)
-(add-methods entity-state 'moon.entity.npc.idle              :npc-idle)
-(add-methods entity-state 'moon.entity.npc.moving            :npc-moving)
-(add-methods entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
-(add-methods entity-state 'moon.entity.player.dead           :player-dead)
-(add-methods entity-state 'moon.entity.player.idle           :player-idle)
-(add-methods entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
-(add-methods entity-state 'moon.entity.player.moving         :player-moving)
-(add-methods entity-state 'moon.entity.active                :active-skill)
-(add-methods entity-state 'moon.entity.stunned               :stunned)
+(install entity-state 'moon.entity.npc.dead              :npc-dead)
+(install entity-state 'moon.entity.npc.idle              :npc-idle)
+(install entity-state 'moon.entity.npc.moving            :npc-moving)
+(install entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
+(install entity-state 'moon.entity.player.dead           :player-dead)
+(install entity-state 'moon.entity.player.idle           :player-idle)
+(install entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
+(install entity-state 'moon.entity.player.moving         :player-moving)
+(install entity-state 'moon.entity.active                :active-skill)
+(install entity-state 'moon.entity.stunned               :stunned)
 
 (def ^:private tx
   {:required [#'component/handle]})
 
-(add-methods tx 'moon.tx.audiovisual)
-(add-methods tx 'moon.tx.creature)
-(add-methods tx 'moon.tx.cursor)
-(add-methods tx 'moon.tx.effect)
-(add-methods tx 'moon.tx.item)
-(add-methods tx 'moon.tx.line-render)
-(add-methods tx 'moon.tx.projectile)
-(add-methods tx 'moon.tx.sound)
+(install tx 'moon.tx.audiovisual)
+(install tx 'moon.tx.creature)
+(install tx 'moon.tx.cursor)
+(install tx 'moon.tx.effect)
+(install tx 'moon.tx.item)
+(install tx 'moon.tx.line-render)
+(install tx 'moon.tx.projectile)
+(install tx 'moon.tx.sound)
