@@ -32,7 +32,7 @@
      (inventory/can-pickup-item? player/eid item)
      [[:tx/sound "sounds/bfxr_pickup.wav"]
       [:e/destroy eid]
-      [:tx/pickup-item player/eid item]]
+      [:entity/inventory :pickup player/eid item]]
 
      :else
      [[:tx/sound "sounds/bfxr_denied.wav"]
@@ -133,7 +133,7 @@
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     [[:tx/sound "sounds/bfxr_takeit.wav"]
      [:entity/fsm eid :pickup-item item]
-     [:tx/remove-item eid cell]]))
+     [:entity/inventory :remove eid cell]]))
 
 (defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]

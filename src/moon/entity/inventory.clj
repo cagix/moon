@@ -1,7 +1,5 @@
 (ns moon.entity.inventory
   (:require [gdl.utils :refer [find-first]]
-            [moon.component :as component]
-            [moon.entity :as entity]
             [moon.item :as item]))
 
 (defn- applies-modifiers? [[slot _]]
@@ -28,14 +26,6 @@
      (when (:entity/player? entity)
        [:tx/remove-item-from-widget cell])]))
 
-(defmethods :tx/set-item
-  (component/handle [[_ eid cell item]]
-    (set-item eid cell item)))
-
-(defmethods :tx/remove-item
-  (component/handle [[_ eid cell]]
-    (remove-item eid cell)))
-
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]
   (let [item (get-in (:entity/inventory @eid) cell)]
@@ -57,10 +47,6 @@
     (concat (remove-item eid cell)
             (set-item eid cell (update cell-item :count + (:count item))))))
 
-(defmethods :tx/stack-item
-  (component/handle [[_ eid cell item]]
-    (stack-item eid cell item)))
-
 (defn- try-put-item-in [eid slot item]
   (let [inventory (:entity/inventory @eid)
         cells-items (item/cells-and-items inventory slot)
@@ -77,15 +63,17 @@
    (try-put-item-in eid (:item/slot item)   item)
    (try-put-item-in eid :inventory.slot/bag item)))
 
-(defmethods :tx/pickup-item
-  (component/handle [[_ eid item]]
-    (pickup-item eid item)))
-
 (defn can-pickup-item? [eid item]
   (boolean (pickup-item eid item)))
 
-(defmethods :entity/inventory
-  (entity/create [[_ items] eid]
-    (cons [:e/assoc eid :entity/inventory item/empty-inventory]
-          (for [item items]
-            [:tx/pickup-item eid item]))))
+(defn create [[k items] eid]
+  (cons [:e/assoc eid k item/empty-inventory]
+        (for [item items]
+          [k :pickup eid item])))
+
+(defn handle [[_ op & args]]
+  (case op
+    :set    (apply set-item    args)
+    :remove (apply remove-item args)
+    :stack  (apply stack-item  args)
+    :pickup (apply pickup-item args)))

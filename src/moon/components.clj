@@ -2,8 +2,7 @@
   (:require [clojure.string :as str]
             [moon.component :as component]
             [moon.entity :as entity]
-            (moon.entity inventory
-                         modifiers)
+            (moon.entity modifiers)
             (moon.level generate
                         uf-caves
                         tiled-map)
@@ -130,6 +129,7 @@
 (add-methods entity 'moon.entity.faction)
 (add-methods entity 'moon.entity.fsm)
 (add-methods entity 'moon.entity.image)
+(add-methods entity 'moon.entity.inventory)
 (add-methods entity 'moon.entity.line-render)
 (add-methods entity 'moon.entity.mouseover :entity/mouseover?)
 (add-methods entity 'moon.entity.player :entity/player?)

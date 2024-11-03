@@ -19,7 +19,7 @@
      (and (not item-in-cell)
           (valid-slot? cell item-on-cursor))
      [[:tx/sound "sounds/bfxr_itemput.wav"]
-      [:tx/set-item eid cell item-on-cursor]
+      [:entity/inventory :set eid cell item-on-cursor]
       [:e/dissoc eid :entity/item-on-cursor]
       [:entity/fsm eid :dropped-item]]
 
@@ -27,7 +27,7 @@
      (and item-in-cell
           (stackable? item-in-cell item-on-cursor))
      [[:tx/sound "sounds/bfxr_itemput.wav"]
-      [:tx/stack-item eid cell item-on-cursor]
+      [:entity/inventory :stack eid cell item-on-cursor]
       [:e/dissoc eid :entity/item-on-cursor]
       [:entity/fsm eid :dropped-item]]
 
@@ -35,8 +35,8 @@
      (and item-in-cell
           (valid-slot? cell item-on-cursor))
      [[:tx/sound "sounds/bfxr_itemput.wav"]
-      [:tx/remove-item eid cell]
-      [:tx/set-item eid cell item-on-cursor]
+      [:entity/inventory :remove eid cell]
+      [:entity/inventory :set eid cell item-on-cursor]
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       [:e/dissoc eid :entity/item-on-cursor]
