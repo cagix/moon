@@ -15,50 +15,43 @@
           {}
           components))
 
-(defmethods :e/create
-  (component/handle [[_ position body components]]
-    (assert (and (not (contains? components :position))
-                 (not (contains? components :entity/id))))
-    (let [eid (atom (-> body
-                        (assoc :position position)
-                        body/create
-                        (safe-merge (-> components
-                                        (assoc :entity/id (unique-number!))
-                                        (create-vs)))))]
-      (cons [:tx/add-to-world eid]
-            (for [component @eid]
-              #(entity/create component eid))))))
+(defmethod component/handle :e/create [[_ position body components]]
+  (assert (and (not (contains? components :position))
+               (not (contains? components :entity/id))))
+  (let [eid (atom (-> body
+                      (assoc :position position)
+                      body/create
+                      (safe-merge (-> components
+                                      (assoc :entity/id (unique-number!))
+                                      (create-vs)))))]
+    (cons [:tx/add-to-world eid]
+          (for [component @eid]
+            #(entity/create component eid)))))
 
-(defmethods :e/destroy
-  (component/handle [[_ eid]]
-    [[:e/assoc eid :entity/destroyed? true]]))
+(defmethod component/handle :e/destroy [[_ eid]]
+  [[:e/assoc eid :entity/destroyed? true]])
 
-(defmethods :tx/remove-destroyed-entities
-  (component/handle [_]
-    (mapcat (fn [eid]
-              (cons [:tx/remove-from-world eid]
-                    (for [component @eid]
-                      #(entity/destroy component eid))))
-            (filter (comp :entity/destroyed? deref) (entities/all)))))
+(defmethod component/handle :tx/remove-destroyed-entities [_]
+  (mapcat (fn [eid]
+            (cons [:tx/remove-from-world eid]
+                  (for [component @eid]
+                    #(entity/destroy component eid))))
+          (filter (comp :entity/destroyed? deref) (entities/all))))
 
-(defmethods :e/assoc
-  (component/handle [[_ eid k v]]
-    (assert (keyword? k))
-    (swap! eid assoc k v)
-    nil))
+(defmethod component/handle :e/assoc [[_ eid k v]]
+  (assert (keyword? k))
+  (swap! eid assoc k v)
+  nil)
 
-(defmethods :e/assoc-in
-  (component/handle [[_ eid ks v]]
-    (swap! eid assoc-in ks v)
-    nil))
+(defmethod component/handle :e/assoc-in [[_ eid ks v]]
+  (swap! eid assoc-in ks v)
+  nil)
 
-(defmethods :e/dissoc
-  (component/handle [[_ eid k]]
-    (assert (keyword? k))
-    (swap! eid dissoc k)
-    nil))
+(defmethod component/handle :e/dissoc [[_ eid k]]
+  (assert (keyword? k))
+  (swap! eid dissoc k)
+  nil)
 
-(defmethods :e/dissoc-in
-  (component/handle [[_ eid ks]]
-    (swap! eid dissoc-in ks)
-    nil))
+(defmethod component/handle :e/dissoc-in [[_ eid ks]]
+  (swap! eid dissoc-in ks)
+  nil)

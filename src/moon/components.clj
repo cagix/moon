@@ -179,17 +179,15 @@
                  moon.widgets.property]]
   (install widget ns-sym))
 
-(defmethods :maxrange
-  (component/info [[_ maxrange]]
-    (str "[LIGHT_GRAY]Range " maxrange " meters[]")))
+(defmethod component/info :maxrange [[_ maxrange]]
+  (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
 
 ; player doesn;t need aggro-range/reaction-time
 ; stats armor-pierce wrong place
 ; assert min body size from entity
 
-(defmethods :property/pretty-name
-  (component/info [[_ value]]
-    (str "[PRETTY_NAME]"value"[]")))
+(defmethod component/info :property/pretty-name [[_ value]]
+  (str "[PRETTY_NAME]"value"[]"))
 
 (defmethods :creature/species
   (entity/->v [[_ species]]
@@ -197,19 +195,17 @@
   (component/info [[_ species]]
     (str "[LIGHT_GRAY]Creature - " species "[]")))
 
-(defmethods :creature/level
-  (component/info [[_ lvl]]
-    (str "[GRAY]Level " lvl "[]")))
+(defmethod component/info :creature/level [[_ lvl]]
+  (str "[GRAY]Level " lvl "[]"))
 
-(defmethods :item/modifiers
-  (component/info [[_ value-mods]]
-    (str (mods/info-text value-mods)
-         "\n [GRAY]"
-         (binding [*print-level* nil]
-           (with-out-str
-            (clojure.pprint/pprint
-             value-mods)))
-         "[]")))
+(defmethod component/info :item/modifiers [[_ value-mods]]
+  (str (mods/info-text value-mods)
+       "\n [GRAY]"
+       (binding [*print-level* nil]
+         (with-out-str
+          (clojure.pprint/pprint
+           value-mods)))
+       "[]"))
 
 ; TODO speed is 10 tiles/s but I checked moves 8 tiles/sec ... after delta time change ?
 
@@ -218,32 +214,27 @@
 #_(defc :projectile/max-range {:schema pos-int?})
 #_(defc :projectile/speed     {:schema pos-int?})
 
-(defmethods :projectile/piercing?
-  (component/info [_]
-    "[LIME]Piercing[]"))
+(defmethod component/info :projectile/piercing? [_]
+  "[LIME]Piercing[]")
 
 #_(defc :world/max-area-level {:schema pos-int?}) ; TODO <= map-size !?
 #_(defc :world/spawn-rate {:schema pos?}) ; TODO <1 !
 
-(defmethods :skill/action-time-modifier-key
-  (component/info [[_ v]]
-    (str "[VIOLET]" (case v
-                      :stats/cast-speed "Spell"
-                      :stats/attack-speed "Attack") "[]")))
+(defmethod component/info :skill/action-time-modifier-key [[_ v]]
+  (str "[VIOLET]" (case v
+                    :stats/cast-speed "Spell"
+                    :stats/attack-speed "Attack") "[]"))
 
-(defmethods :skill/action-time
-  (component/info [[_ v]]
-    (str "[GOLD]Action-Time: " (readable-number v) " seconds[]")))
+(defmethod component/info :skill/action-time [[_ v]]
+  (str "[GOLD]Action-Time: " (readable-number v) " seconds[]"))
 
-(defmethods :skill/cooldown
-  (component/info [[_ v]]
-    (when-not (zero? v)
-      (str "[SKY]Cooldown: " (readable-number v) " seconds[]"))))
+(defmethod component/info :skill/cooldown [[_ v]]
+  (when-not (zero? v)
+    (str "[SKY]Cooldown: " (readable-number v) " seconds[]")))
 
-(defmethods :skill/cost
-  (component/info [[_ v]]
-    (when-not (zero? v)
-      (str "[CYAN]Cost: " v " Mana[]"))))
+(defmethod component/info :skill/cost [[_ v]]
+  (when-not (zero? v)
+    (str "[CYAN]Cost: " v " Mana[]")))
 
 (color/put "MODIFIERS" :cyan)
 (color/put "PRETTY_NAME" [0.84 0.8 0.52])
