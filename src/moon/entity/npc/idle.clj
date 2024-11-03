@@ -1,7 +1,6 @@
 (ns moon.entity.npc.idle
   (:require [moon.effect :as effect]
             [moon.body :as body]
-            [moon.entity :as entity]
             [moon.faction :as faction]
             [moon.follow-ai :as follow-ai]
             [moon.world.grid :as grid]
@@ -37,15 +36,13 @@
                      (effect/useful? (:skill/effects %))))
        first))
 
-(defmethods :npc-idle
-  {:let {:keys [eid]}}
-  (entity/->v [[_ eid]]
-    {:eid eid})
+(defn ->v [[_ eid]]
+  {:eid eid})
 
-  (entity/tick [_ eid]
-    (let [effect-ctx (effect-ctx eid)]
-      (if-let [skill (effect/with-ctx effect-ctx
-                       (assert (bound? #'effect/source))
-                       (npc-choose-skill @eid))]
-        [[:entity/fsm eid :start-action [skill effect-ctx]]]
-        [[:entity/fsm eid :movement-direction (follow-ai/direction-vector eid)]]))))
+(defn tick [_ eid]
+  (let [effect-ctx (effect-ctx eid)]
+    (if-let [skill (effect/with-ctx effect-ctx
+                     (assert (bound? #'effect/source))
+                     (npc-choose-skill @eid))]
+      [[:entity/fsm eid :start-action [skill effect-ctx]]]
+      [[:entity/fsm eid :movement-direction (follow-ai/direction-vector eid)]])))

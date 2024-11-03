@@ -32,25 +32,23 @@
        {:counter (timer delay-seconds)
         :faction faction}}]]))
 
-(defmethods :npc-sleeping
-  {:let {:keys [eid]}}
-  (entity/->v [[_ eid]]
-    {:eid eid})
+(defn ->v [[_ eid]]
+  {:eid eid})
 
-  (entity/exit [_]
-    [[:entity/string-effect eid "[WHITE]!"]
-     [:tx/shout (:position @eid) (:entity/faction @eid) 0.2]])
+(defn exit [[_ {:keys [eid]}]]
+  [[:entity/string-effect eid "[WHITE]!"]
+   [:tx/shout (:position @eid) (:entity/faction @eid) 0.2]])
 
-  (entity/tick [_ eid]
-    (let [entity @eid
-          cell (grid/cell (body/tile entity))] ; pattern!
-      (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
-        (when (<= distance (entity/stat entity :stats/aggro-range))
-          [[:entity/fsm eid :alert]]))))
+(defn tick [_ eid]
+  (let [entity @eid
+        cell (grid/cell (body/tile entity))] ; pattern!
+    (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
+      (when (<= distance (entity/stat entity :stats/aggro-range))
+        [[:entity/fsm eid :alert]]))))
 
-  (entity/render-above [_ entity]
-    (let [[x y] (:position entity)]
-      (text/draw {:text "zzz"
-                  :x x
-                  :y (+ y (:half-height entity))
-                  :up? true}))))
+(defn render-above [_ entity]
+  (let [[x y] (:position entity)]
+    (text/draw {:text "zzz"
+                :x x
+                :y (+ y (:half-height entity))
+                :up? true})))

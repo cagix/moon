@@ -1,16 +1,8 @@
 (ns moon.components
   (:require [clojure.string :as str]
             [moon.component :as component]
-            (moon.entity.npc dead
-                             idle
-                             moving
-                             sleeping)
-            (moon.entity.player dead
-                                idle
-                                item-on-cursor
-                                moving)
-            (moon.entity active
-                         animation
+            [moon.entity :as entity]
+            (moon.entity animation
                          clickable
                          delete-after-animation-stopped
                          delete-after-duration
@@ -28,7 +20,6 @@
                          projectile
                          skills ; has-skill?
                          string-effect
-                         stunned
                          temp-modifier)
             (moon.level generate
                         uf-caves
@@ -93,18 +84,23 @@
     (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
   (MultiFn/.addMethod system k avar))
 
-(defn- add-methods [ns-sym component-systems]
-  (require ns-sym)
-  (let [k (namespace->component-key (str ns-sym))
-        resolve-method #(ns-resolve ns-sym (:name (meta %)))]
-    (doseq [system-var (:required component-systems)
-            :let [method-var (resolve-method system-var)]]
-      (assert method-var)
-      (add-method @system-var k method-var))
-    (doseq [system-var (:optional component-systems)
-            :let [method-var (resolve-method system-var)]
-            :when method-var]
-      (add-method @system-var k method-var))))
+(defn- add-methods
+  ([ns-sym component-systems]
+   (add-methods ns-sym
+                (namespace->component-key (str ns-sym))
+                component-systems))
+
+  ([ns-sym k component-systems]
+   (require ns-sym)
+   (let [resolve-method #(ns-resolve ns-sym (:name (meta %)))]
+     (doseq [system-var (:required component-systems)
+             :let [method-var (resolve-method system-var)]]
+       (assert method-var)
+       (add-method @system-var k method-var))
+     (doseq [system-var (:optional component-systems)
+             :let [method-var (resolve-method system-var)]
+             :when method-var]
+       (add-method @system-var k method-var)))))
 
 (def ^:private effect
   {:required [#'component/applicable?
@@ -129,3 +125,40 @@
 
 (add-methods 'moon.fsms.player fsm)
 (add-methods 'moon.fsms.npc    fsm)
+
+(def ^:private entity
+  {:optional [#'entity/->v
+              #'entity/create
+              #'entity/destroy
+              #'entity/tick
+              #'entity/render-below
+              #'entity/render
+              #'entity/render-above
+              #'entity/render-info]})
+
+(def ^:private entity-state
+  (merge-with concat
+              entity
+              {:optional [#'entity/enter
+                          #'entity/exit
+                          #'entity/player-enter
+                          #'entity/pause-game?
+                          #'entity/manual-tick
+                          #'entity/clicked-inventory-cell
+                          #'entity/clicked-skillmenu-skill
+                          #'entity/draw-gui-view]}))
+
+(add-methods 'moon.entity.npc.dead              :npc-dead              entity-state)
+(add-methods 'moon.entity.npc.idle              :npc-idle              entity-state)
+(add-methods 'moon.entity.npc.moving            :npc-moving            entity-state)
+(add-methods 'moon.entity.npc.sleeping          :npc-sleeping          entity-state)
+(add-methods 'moon.entity.player.dead           :player-dead           entity-state)
+(add-methods 'moon.entity.player.idle           :player-idle           entity-state)
+(add-methods 'moon.entity.player.item-on-cursor :player-item-on-cursor entity-state)
+(add-methods 'moon.entity.player.moving         :player-moving         entity-state)
+(add-methods 'moon.entity.active                :active-skill          entity-state)
+(add-methods 'moon.entity.stunned               :stunned               entity-state)
+
+; How do I check they are all wired properly?
+; Doesnt check if name mismatch for optional one
+; => go from fns to systems not other way around ?

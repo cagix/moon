@@ -1,10 +1,7 @@
-(ns moon.entity.npc.dead
-  (:require [moon.entity :as entity]))
+(ns moon.entity.npc.dead)
 
-(defmethods :npc-dead
-  {:let {:keys [eid]}}
-  (entity/->v [[_ eid]]
-    {:eid eid})
+(defn ->v [[_ eid]]
+  {:eid eid})
 
-  (entity/enter [_]
-    [[:e/destroy eid]]))
+(defn enter [[_ {:keys [eid]}]]
+  [[:e/destroy eid]])

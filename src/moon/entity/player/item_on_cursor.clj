@@ -62,45 +62,43 @@
 (defn- world-item? []
   (not (mouse-on-actor?)))
 
-(defmethods :player-item-on-cursor
-  {:let {:keys [eid item]}}
-  (entity/->v [[_ eid item]]
-    {:eid eid
-     :item item})
+(defn ->v [[_ eid item]]
+  {:eid eid
+   :item item})
 
-  (entity/pause-game? [_]
-    true)
+(defn pause-game? [_]
+  true)
 
-  (entity/manual-tick [_]
-    (when (and (button-just-pressed? :left)
-               (world-item?))
-      [[:entity/fsm eid :drop-item]]))
+(defn manual-tick [[_ {:keys [eid]}]]
+  (when (and (button-just-pressed? :left)
+             (world-item?))
+    [[:entity/fsm eid :drop-item]]))
 
-  (entity/clicked-inventory-cell [_ cell]
-    (clicked-cell eid cell))
+(defn clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  (clicked-cell eid cell))
 
-  (entity/enter [_]
-    [[:tx/cursor :cursors/hand-grab]
-     [:e/assoc eid :entity/item-on-cursor item]])
+(defn enter [[_ {:keys [eid item]}]]
+  [[:tx/cursor :cursors/hand-grab]
+   [:e/assoc eid :entity/item-on-cursor item]])
 
-  (entity/exit [_]
-    ; at clicked-cell when we put it into a inventory-cell
-    ; we do not want to drop it on the ground too additonally,
-    ; so we dissoc it there manually. Otherwise it creates another item
-    ; on the ground
-    (let [entity @eid]
-      (when (:entity/item-on-cursor entity)
-        [[:tx/sound "sounds/bfxr_itemputground.wav"]
-         [:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]
-         [:e/dissoc eid :entity/item-on-cursor]])))
+(defn exit [[_ {:keys [eid]}]]
+  ; at clicked-cell when we put it into a inventory-cell
+  ; we do not want to drop it on the ground too additonally,
+  ; so we dissoc it there manually. Otherwise it creates another item
+  ; on the ground
+  (let [entity @eid]
+    (when (:entity/item-on-cursor entity)
+      [[:tx/sound "sounds/bfxr_itemputground.wav"]
+       [:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]
+       [:e/dissoc eid :entity/item-on-cursor]])))
 
-  (entity/render-below [_ entity]
-    (when (world-item?)
-      (image/draw-centered (:entity/image item) (item-place-position entity))))
+(defn render-below [[_ {:keys [item]}] entity]
+  (when (world-item?)
+    (image/draw-centered (:entity/image item) (item-place-position entity))))
 
-  (entity/draw-gui-view [_]
-    (let [entity @eid]
-      (when (and (= :player-item-on-cursor (entity/state-k entity))
-                 (not (world-item?)))
-        (image/draw-centered (:entity/image (:entity/item-on-cursor entity))
-                             (gui-view/mouse-position))))))
+(defn draw-gui-view [[_ {:keys [eid]}]]
+  (let [entity @eid]
+    (when (and (= :player-item-on-cursor (entity/state-k entity))
+               (not (world-item?)))
+      (image/draw-centered (:entity/image (:entity/item-on-cursor entity))
+                           (gui-view/mouse-position)))))

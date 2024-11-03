@@ -5,7 +5,6 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.effect :as effect]
-            [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.entity.skills :as skills]
             [moon.player :as player]
@@ -115,33 +114,31 @@
        [:cursors/no-skill-selected
         (fn [] (denied "No selected skill"))]))))
 
-(defmethods :player-idle
-  {:let {:keys [eid]}}
-  (entity/->v [[_ eid]]
-    {:eid eid})
+(defn ->v [[_ eid]]
+  {:eid eid})
 
-  (entity/pause-game? [_]
-    true)
+(defn pause-game? [_]
+  true)
 
-  (entity/manual-tick [_]
-    (if-let [movement-vector (WASD-movement-vector)]
-      [[:entity/fsm eid :movement-input movement-vector]]
-      (let [[cursor on-click] (interaction-state eid)]
-        (cons [:tx/cursor cursor]
-              (when (button-just-pressed? :left)
-                (on-click))))))
+(defn manual-tick [[_ {:keys [eid]}]]
+  (if-let [movement-vector (WASD-movement-vector)]
+    [[:entity/fsm eid :movement-input movement-vector]]
+    (let [[cursor on-click] (interaction-state eid)]
+      (cons [:tx/cursor cursor]
+            (when (button-just-pressed? :left)
+              (on-click))))))
 
-  (entity/clicked-inventory-cell [_ cell]
-    ; TODO no else case
-    (when-let [item (get-in (:entity/inventory @eid) cell)]
-      [[:tx/sound "sounds/bfxr_takeit.wav"]
-       [:entity/fsm eid :pickup-item item]
-       [:tx/remove-item eid cell]]))
+(defn clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  ; TODO no else case
+  (when-let [item (get-in (:entity/inventory @eid) cell)]
+    [[:tx/sound "sounds/bfxr_takeit.wav"]
+     [:entity/fsm eid :pickup-item item]
+     [:tx/remove-item eid cell]]))
 
-  (entity/clicked-skillmenu-skill [_ skill]
-    (let [free-skill-points (:entity/free-skill-points @eid)]
-      ; TODO no else case, no visible free-skill-points
-      (when (and (pos? free-skill-points)
-                 (not (skills/has-skill? @eid skill)))
-        [[:e/assoc eid :entity/free-skill-points (dec free-skill-points)]
-         [:entity/skills eid :add skill]]))))
+(defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
+  (let [free-skill-points (:entity/free-skill-points @eid)]
+    ; TODO no else case, no visible free-skill-points
+    (when (and (pos? free-skill-points)
+               (not (skills/has-skill? @eid skill)))
+      [[:e/assoc eid :entity/free-skill-points (dec free-skill-points)]
+       [:entity/skills eid :add skill]])))

@@ -5,20 +5,19 @@
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; pathfindinusable skills every frame
 ; also prevents fast twitching around changing directions every frame
-(defmethods :npc-moving
-  {:let {:keys [eid movement-vector counter]}}
-  (entity/->v [[_ eid movement-vector]]
-    {:eid eid
-     :movement-vector movement-vector
-     :counter (timer (* (entity/stat @eid :stats/reaction-time) 0.016))})
 
-  (entity/enter [_]
-    [[:entity/movement eid {:direction movement-vector
-                            :speed (or (entity/stat @eid :stats/movement-speed) 0)}]])
+(defn ->v [[_ eid movement-vector]]
+  {:eid eid
+   :movement-vector movement-vector
+   :counter (timer (* (entity/stat @eid :stats/reaction-time) 0.016))})
 
-  (entity/exit [_]
-    [[:entity/movement eid nil]])
+(defn enter [[_ {:keys [eid movement-vector]}]]
+  [[:entity/movement eid {:direction movement-vector
+                          :speed (or (entity/stat @eid :stats/movement-speed) 0)}]])
 
-  (entity/tick [_ eid]
-    (when (stopped? counter)
-      [[:entity/fsm eid :timer-finished]])))
+(defn exit [[_ {:keys [eid]}]]
+  [[:entity/movement eid nil]])
+
+(defn tick [[_ {:keys [counter]}] eid]
+  (when (stopped? counter)
+    [[:entity/fsm eid :timer-finished]]))

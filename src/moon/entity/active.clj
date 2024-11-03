@@ -35,47 +35,45 @@
     ctx
     (dissoc ctx :effect/target)))
 
-(defmethods :active-skill
-  {:let {:keys [eid skill effect-ctx counter]}}
-  (entity/->v [[_ eid [skill effect-ctx]]]
-    {:eid eid
-     :skill skill
-     :effect-ctx effect-ctx
-     :counter (->> skill
-                   :skill/action-time
-                   (apply-action-speed-modifier @eid skill)
-                   timer)})
+(defn ->v [[_ eid [skill effect-ctx]]]
+  {:eid eid
+   :skill skill
+   :effect-ctx effect-ctx
+   :counter (->> skill
+                 :skill/action-time
+                 (apply-action-speed-modifier @eid skill)
+                 timer)})
 
-  (entity/player-enter [_]
-    [[:tx/cursor :cursors/sandclock]])
+(defn player-enter [_]
+  [[:tx/cursor :cursors/sandclock]])
 
-  (entity/pause-game? [_]
-    false)
+(defn pause-game? [_]
+  false)
 
-  (entity/enter [_]
-    [[:tx/sound (:skill/start-action-sound skill)]
+(defn enter [[_ {:keys [eid skill]}]]
+  [[:tx/sound (:skill/start-action-sound skill)]
 
-     (when (:skill/cooldown skill)
-       [:e/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] (timer (:skill/cooldown skill))])
+   (when (:skill/cooldown skill)
+     [:e/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] (timer (:skill/cooldown skill))])
 
-     (when (and (:skill/cost skill)
-                (not (zero? (:skill/cost skill))))
-       [:tx.entity.stats/pay-mana-cost eid (:skill/cost skill)])])
+   (when (and (:skill/cost skill)
+              (not (zero? (:skill/cost skill))))
+     [:tx.entity.stats/pay-mana-cost eid (:skill/cost skill)])])
 
-  (entity/tick [_ eid]
-    (cond
-     (effect/with-ctx (check-update-ctx effect-ctx)
-       (not (effect/applicable? (:skill/effects skill))))
-     [[:entity/fsm eid :action-done]
-      ; TODO some sound ?
-      ]
+(defn tick [[_ {:keys [skill effect-ctx counter]}] eid]
+  (cond
+   (effect/with-ctx (check-update-ctx effect-ctx)
+     (not (effect/applicable? (:skill/effects skill))))
+   [[:entity/fsm eid :action-done]
+    ; TODO some sound ?
+    ]
 
-     (stopped? counter)
-     [[:entity/fsm eid :action-done]
-      [:tx/effect effect-ctx (:skill/effects skill)]]))
+   (stopped? counter)
+   [[:entity/fsm eid :action-done]
+    [:tx/effect effect-ctx (:skill/effects skill)]]))
 
-  (entity/render-info [_ entity]
-    (let [{:keys [entity/image skill/effects]} skill]
-      (draw-skill-image image entity (:position entity) (finished-ratio counter))
-      (effect/with-ctx (check-update-ctx effect-ctx)
-        (run! component/render effects)))))
+(defn render-info [[_ {:keys [skill effect-ctx counter]}] entity]
+  (let [{:keys [entity/image skill/effects]} skill]
+    (draw-skill-image image entity (:position entity) (finished-ratio counter))
+    (effect/with-ctx (check-update-ctx effect-ctx)
+      (run! component/render effects))))
