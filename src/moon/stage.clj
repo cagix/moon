@@ -3,9 +3,9 @@
   (:require [gdl.graphics.batch :refer [batch]]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.input :as input]
+            [gdl.screen :as screen]
             [gdl.ui.stage :as stage]
-            [gdl.utils :refer [dispose]]
-            [moon.screen :as screen]))
+            [gdl.utils :refer [dispose]]))
 
 (defrecord StageScreen [stage sub-screen]
   screen/Screen

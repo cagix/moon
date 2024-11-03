@@ -4,12 +4,12 @@
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.image :as img]
             [gdl.graphics.world-view :as world-view]
+            [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [readable-number]]
             [moon.controls :as controls]
             [moon.db :as db]
-            [moon.screen :as screen]
             [moon.screens.world :as world]
             [moon.world.mouseover :as mouseover]
             [moon.world.time :as time])

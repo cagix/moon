@@ -5,7 +5,7 @@
             [gdl.graphics.tiled :as renderer]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-just-pressed?]]
-            [moon.screen :as screen]
+            [gdl.screen :as screen]
             [moon.world.tiled-map :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth

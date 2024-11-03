@@ -1,5 +1,5 @@
 (ns moon.entity.player.dead
-  (:require [moon.screen :as screen]))
+  (:require [gdl.screen :as screen]))
 
 (defn player-enter [_]
   [[:tx/cursor :cursors/black-x]])

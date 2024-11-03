@@ -1,12 +1,12 @@
 (ns ^:no-doc moon.screens.editor
   (:require [clojure.string :as str]
             [gdl.input :refer [key-just-pressed?]]
+            [gdl.screen :as screen]
             [gdl.ui :as ui]
             [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
             [moon.stage :as stage]
-            [moon.screen :as screen]
             [moon.widgets.background-image :as background-image])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 

@@ -7,6 +7,7 @@
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
+            [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
@@ -15,7 +16,6 @@
             [moon.db :as db]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.stage :as stage]
-            [moon.screen :as screen]
             [moon.level :as level]
             [moon.level.modules :as modules]))
 
