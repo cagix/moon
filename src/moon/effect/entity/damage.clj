@@ -2,7 +2,7 @@
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.effect :refer [source target]]
             [moon.entity :as entity]
-            [moon.entity.modifiers :as modifiers]))
+            [moon.modifiers :as modifiers]))
 
 (defn- effective-armor-save [source* target*]
   (max (- (or (entity/stat target* :stats/armor-save) 0)

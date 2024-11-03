@@ -2,8 +2,8 @@
   (:require [gdl.utils :refer [k->pretty-name]]
             [moon.component :as component :refer [defmethods]]
             [moon.entity :as entity]
-            [moon.entity.modifiers :as modifiers]
             [moon.effect :as effect]
+            [moon.modifiers :as modifiers]
             [moon.operations :as ops]))
 
 (defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
@@ -47,6 +47,7 @@
 ; and no need at created player (npc controller component?)
 (defstat :stats/aggro-range)
 (defstat :stats/reaction-time)
+(defstat :stats/hp)
 (defstat :stats/mana)
 
 (defmethod entity/->v :stats/mana [[_ v]]

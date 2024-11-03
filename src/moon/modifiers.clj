@@ -25,3 +25,8 @@
   (into {} (for [[k ops] value-mods]
              [k (into {} (for [[op-k v] ops]
                            [op-k [v]]))])))
+
+(defn effective-value [{:keys [entity/modifiers]} modifier-k base-value]
+  {:pre [(= "modifier" (namespace modifier-k))]}
+  (ops/apply (->> modifiers modifier-k ops/sum-vals)
+             base-value))

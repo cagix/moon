@@ -2,7 +2,6 @@
   (:require [clojure.test :refer :all]
             [moon.component :as component]
             [moon.entity :as entity]
-            moon.entity.modifiers
             [moon.modifiers :as mods]
             moon.tx.entity))
 

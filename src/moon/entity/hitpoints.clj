@@ -2,10 +2,7 @@
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
             [moon.entity :as entity]
-            [moon.stats :refer [defstat]]
             [moon.val-max :as val-max]))
-
-(defstat :stats/hp)
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
