@@ -22,8 +22,8 @@
                  (str (+? v) (op/value-text op) " " (k->pretty-name k))))
              (sort-by op/order ops))))
 
-(defn apply [value-ops value]
+(defn apply [ops value]
   (reduce (fn [value op]
             (op/apply op value))
           value
-          (sort-by op/order value-ops)))
+          (sort-by op/order ops)))
