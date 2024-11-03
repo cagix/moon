@@ -20,7 +20,10 @@
              ]
   :injections [(do
                 (require 'malli.core) ; fix strange_malli_bug.clj
-                (load "clojure/moon"))]
+
+                (defn bind-root [avar value]
+                  (.bindRoot avar value))
+                )]
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
   ; this from engine, what purpose?

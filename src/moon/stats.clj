@@ -1,6 +1,6 @@
 (ns moon.stats
   (:require [gdl.utils :refer [k->pretty-name]]
-            [moon.component :as component]
+            [moon.component :as component :refer [defmethods]]
             [moon.entity :as entity]
             [moon.entity.modifiers :as modifiers]
             [moon.effect :as effect]
@@ -32,9 +32,8 @@
       (when-let [effective-value (entity/stat @effect/target stat-k)]
         [[:e/assoc effect/target stat-k (ops/apply operations effective-value)]]))))
 
-(defmethods :entity/stat
-  (component/info [[k v]]
-    (str (k->pretty-name k) ": " (entity/stat component/*info-text-entity* k))))
+(defmethod component/info :entity/stat [[k v]]
+  (str (k->pretty-name k) ": " (entity/stat component/*info-text-entity* k)))
 
 (defn defstat [k]
   {:pre [(= (namespace k) "stats")]}
@@ -50,15 +49,13 @@
 (defstat :stats/reaction-time)
 (defstat :stats/mana)
 
-(defmethods :stats/mana
-  (entity/->v [[_ v]]
-    [v v]))
+(defmethod entity/->v :stats/mana [[_ v]]
+  [v v])
 
-(defmethods :tx.entity.stats/pay-mana-cost
-  (component/handle [[_ eid cost]]
-    (let [mana-val ((entity/stat @eid :stats/mana) 0)]
-      (assert (<= cost mana-val))
-      [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]])))
+(defmethod component/handle :tx.entity.stats/pay-mana-cost [[_ eid cost]]
+  (let [mana-val ((entity/stat @eid :stats/mana) 0)]
+    (assert (<= cost mana-val))
+    [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]]))
 
 (comment
  (let [mana-val 4
