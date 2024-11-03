@@ -1,8 +1,6 @@
 (ns moon.entity.player
-  (:require [moon.entity :as entity]
-            [moon.player :as player]))
+  (:require [moon.player :as player]))
 
-(defmethods :entity/player?
-  (entity/create [_ eid]
-    (bind-root #'player/eid eid)
-    nil))
+(defn create [_ eid]
+  (bind-root #'player/eid eid)
+  nil)

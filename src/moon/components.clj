@@ -2,25 +2,12 @@
   (:require [clojure.string :as str]
             [moon.component :as component]
             [moon.entity :as entity]
-            (moon.entity animation
-                         clickable
-                         delete-after-animation-stopped
-                         delete-after-duration
-                         destroy-audiovisual
-                         faction
-                         fsm
-                         hitpoints ; :stats/hp not :entity/hitpoints
-                         image
+            ;;
+            (moon.entity hitpoints ; :stats/hp not :entity/hitpoints
                          inventory ; lots of :tx, can-pickup-item?
-                         line-render
                          modifiers ; lots of stuff
-                         mouseover
-                         movement ; max-delta-time, speed-schema
-                         player
-                         projectile
-                         skills ; has-skill?
-                         string-effect
-                         temp-modifier)
+                         )
+            ;;
             (moon.level generate
                         uf-caves
                         tiled-map)
@@ -85,12 +72,12 @@
   (MultiFn/.addMethod system k avar))
 
 (defn- add-methods
-  ([ns-sym component-systems]
-   (add-methods ns-sym
-                (namespace->component-key (str ns-sym))
-                component-systems))
+  ([component-systems ns-sym]
+   (add-methods component-systems
+                ns-sym
+                (namespace->component-key (str ns-sym))))
 
-  ([ns-sym k component-systems]
+  ([component-systems ns-sym k]
    (require ns-sym)
    (let [resolve-method #(ns-resolve ns-sym (:name (meta %)))]
      (doseq [system-var (:required component-systems)
@@ -109,25 +96,28 @@
               #'component/useful?
               #'component/render]})
 
-(add-methods 'moon.effect.projectile          effect)
-(add-methods 'moon.effect.spawn               effect)
-(add-methods 'moon.effect.target-all          effect)
-(add-methods 'moon.effect.target-entity       effect)
-(add-methods 'moon.effect.entity.convert      effect)
-(add-methods 'moon.effect.entity.damage       effect)
-(add-methods 'moon.effect.entity.kill         effect)
-(add-methods 'moon.effect.entity.melee-damage effect)
-(add-methods 'moon.effect.entity.spiderweb    effect)
-(add-methods 'moon.effect.entity.stun         effect)
+(doseq [ns-sym '[moon.effect.projectile
+                 moon.effect.spawn
+                 moon.effect.target-all
+                 moon.effect.target-entity
+                 moon.effect.entity.convert
+                 moon.effect.entity.damage
+                 moon.effect.entity.kill
+                 moon.effect.entity.melee-damage
+                 moon.effect.entity.spiderweb
+                 moon.effect.entity.stun]]
+  (add-methods effect ns-sym))
 
 (def ^:private fsm
   {:required [#'component/create]})
 
-(add-methods 'moon.fsms.player fsm)
-(add-methods 'moon.fsms.npc    fsm)
+(add-methods fsm 'moon.fsms.player)
+(add-methods fsm 'moon.fsms.npc)
 
 (def ^:private entity
-  {:optional [#'entity/->v
+  {:optional [#'component/info
+              #'component/handle
+              #'entity/->v
               #'entity/create
               #'entity/destroy
               #'entity/tick
@@ -135,6 +125,23 @@
               #'entity/render
               #'entity/render-above
               #'entity/render-info]})
+
+(add-methods entity 'moon.entity.animation)
+(add-methods entity 'moon.entity.clickable)
+(add-methods entity 'moon.entity.delete-after-animation-stopped)
+(add-methods entity 'moon.entity.delete-after-duration)
+(add-methods entity 'moon.entity.destroy-audiovisual)
+(add-methods entity 'moon.entity.faction)
+(add-methods entity 'moon.entity.fsm)
+(add-methods entity 'moon.entity.image)
+(add-methods entity 'moon.entity.line-render)
+(add-methods entity 'moon.entity.mouseover :entity/mouseover?)
+(add-methods entity 'moon.entity.player :entity/player?)
+(add-methods entity 'moon.entity.projectile-collision)
+(add-methods entity 'moon.entity.skills)
+(add-methods entity 'moon.entity.string-effect)
+(add-methods entity 'moon.entity.movement)
+(add-methods entity 'moon.entity.temp-modifier)
 
 (def ^:private entity-state
   (merge-with concat
@@ -148,17 +155,19 @@
                           #'entity/clicked-skillmenu-skill
                           #'entity/draw-gui-view]}))
 
-(add-methods 'moon.entity.npc.dead              :npc-dead              entity-state)
-(add-methods 'moon.entity.npc.idle              :npc-idle              entity-state)
-(add-methods 'moon.entity.npc.moving            :npc-moving            entity-state)
-(add-methods 'moon.entity.npc.sleeping          :npc-sleeping          entity-state)
-(add-methods 'moon.entity.player.dead           :player-dead           entity-state)
-(add-methods 'moon.entity.player.idle           :player-idle           entity-state)
-(add-methods 'moon.entity.player.item-on-cursor :player-item-on-cursor entity-state)
-(add-methods 'moon.entity.player.moving         :player-moving         entity-state)
-(add-methods 'moon.entity.active                :active-skill          entity-state)
-(add-methods 'moon.entity.stunned               :stunned               entity-state)
+(add-methods entity-state 'moon.entity.npc.dead              :npc-dead)
+(add-methods entity-state 'moon.entity.npc.idle              :npc-idle)
+(add-methods entity-state 'moon.entity.npc.moving            :npc-moving)
+(add-methods entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
+(add-methods entity-state 'moon.entity.player.dead           :player-dead)
+(add-methods entity-state 'moon.entity.player.idle           :player-idle)
+(add-methods entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
+(add-methods entity-state 'moon.entity.player.moving         :player-moving)
+(add-methods entity-state 'moon.entity.active                :active-skill)
+(add-methods entity-state 'moon.entity.stunned               :stunned)
 
 ; How do I check they are all wired properly?
 ; Doesnt check if name mismatch for optional one
 ; => go from fns to systems not other way around ?
+
+

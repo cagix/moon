@@ -1,12 +1,8 @@
 (ns moon.entity.line-render
-  (:require [gdl.graphics.shape-drawer :as sd]
-            [moon.component :as component]
-            [moon.entity :as entity]))
+  (:require [gdl.graphics.shape-drawer :as sd]))
 
-(defmethods :entity/line-render
-  {:let {:keys [thick? end color]}}
-  (entity/render [_ entity]
-    (let [position (:position entity)]
-      (if thick?
-        (sd/with-line-width 4 #(sd/line position end color))
-        (sd/line position end color)))))
+(defn render [[_ {:keys [thick? end color]}] entity]
+  (let [position (:position entity)]
+    (if thick?
+      (sd/with-line-width 4 #(sd/line position end color))
+      (sd/line position end color))))

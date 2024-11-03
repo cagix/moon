@@ -24,13 +24,12 @@
            [:e/dissoc eid old-state-k]
            [:e/assoc eid new-state-k (new-state-obj 1)]])))))
 
-(defmethods :entity/fsm
-  (entity/create [[k {:keys [fsm initial-state]}] eid]
-    [[:e/assoc eid k (->init-fsm (component/create [fsm]) initial-state)]
-     [:e/assoc eid initial-state (entity/->v [initial-state eid])]])
+(defn create [[k {:keys [fsm initial-state]}] eid]
+  [[:e/assoc eid k (->init-fsm (component/create [fsm]) initial-state)]
+   [:e/assoc eid initial-state (entity/->v [initial-state eid])]])
 
-  (component/info [[_ fsm]]
-    (str "[YELLOW]State: " (name (:state fsm)) "[]"))
+(defn info [[_ fsm]]
+  (str "[YELLOW]State: " (name (:state fsm)) "[]"))
 
-  (component/handle [[_ eid event params]]
-    (send-event! eid event params)))
+(defn handle [[_ eid event params]]
+  (send-event! eid event params))

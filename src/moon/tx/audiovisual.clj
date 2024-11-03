@@ -11,4 +11,4 @@
         position
         body/effect-body-props
         {:entity/animation animation
-         :entity/delete-after-animation-stopped? true}]])))
+         :entity/delete-after-animation-stopped true}]])))
