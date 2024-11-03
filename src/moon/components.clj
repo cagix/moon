@@ -175,6 +175,5 @@
                  moon.widgets.inventory
                  moon.widgets.player-message
                  moon.widgets.properties-overview
-                 moon.widgets.properties-tabs
                  moon.widgets.property]]
   (install widget ns-sym))
