@@ -1,4 +1,4 @@
-(ns moon.modifiers
+(ns moon.stats
   (:require [gdl.utils :refer [mapvals k->pretty-name]]
             [moon.component :as component :refer [defmethods]]
             [moon.entity :as entity]
