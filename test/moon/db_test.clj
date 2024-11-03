@@ -11,7 +11,7 @@
 ; => given a 'ns'
 ; it just calls moon.db/init
 
-(let [ns-sym 'moon.db
+#_(let [ns-sym 'moon.db
       system 'update!]
   (ns-resolve ns-sym system)
   )

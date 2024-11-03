@@ -82,39 +82,70 @@
             moon.properties
             moon.world.widgets))
 
-(comment
+(require '[clojure.string :as str])
+(import clojure.lang.MultiFn)
 
- (require '[clojure.string :as str])
- (import clojure.lang.MultiFn)
-
- (defn- ns->k [ns]
-   (let [ns-parts (-> *ns*
-                      ns-name
+(defn- namespace->component-key [ns-str]
+   (let [ns-parts (-> ns-str
                       (str/replace #"^moon." "")
                       (str/split #"\."))]
      (keyword (str/join "." (drop-last ns-parts))
               (last ns-parts))))
 
+(comment
+ (and (= (namespace->component-key "moon.effect.projectile")
+         :effect/projectile)
+      (= (namespace->component-key "moon.effect.entity.convert")
+         :effect.entity/convert)))
+
+; TODO check if rede-ffing the public fns changes something.
+(defn- add-method [system k avar]
+  {:pre [(keyword? k)
+         (var? avar)]}
+  (MultiFn/.addMethod system k avar))
+
+(require '[moon.component :as component])
+
+(def effect-systems {:required [#'component/applicable?
+                                #'component/handle]
+                     :optional [#'component/info
+                                #'component/useful?
+                                #'component/render]})
+
+; TODO overwrite warnings ?
+(defn add-methods [ns-sym component-systems]
+  (let [k (namespace->component-key (str ns-sym))
+        resolve-method #(ns-resolve ns-sym (:name (meta %)))]
+    (doseq [system-var (:required component-systems)
+            :let [method-var (resolve-method system-var)]]
+      (assert method-var)
+      (add-method @system-var k method-var))
+    (doseq [system-var (:optional component-systems)
+            :let [method-var (resolve-method system-var)]
+            :when method-var]
+      (add-method @system-var k method-var))))
+
+(add-methods 'moon.effect.projectile effect-systems)
+
+(comment
 
  (seq (.listFiles (io/file "src/moon/effect/entity/")))
 
  (MultiFn/.addMethod component/info        :foo nil)
  (ns-resolve 'moon.effect.entity.convert 'info)
 
- (defn- add-method [system k avar]
-   {:pre [(keyword? k)
-          (var? avar)]}
-   (MultiFn/.addMethod system k avar))
+ ; TODO useful?
+ ; make clearer name - its used by AI _After_ applicable? call
+ ; and AI _only_ uses skills
+ ; no wait, useful ? is just useful
+ ; the AI logic is the part I need to explain
+ ; same like faction , it just is what it is
+ ; but potential field does the faction magic
 
- (def effect-systems {component/info 'info
-                      component/applicable? 'applicable?
-                      component/handle 'handle})
+ ; moon.effect.projectile
+ ; only applicable? useful? & handle
 
- (defn install-effect [ns-sym]
-   (let [ns (find-ns ns-sym)
-         k (ns->k ns)]
-     (doseq [[system fn-sym] effect-systems]
-       (add-method system k (ns-resolve ns-sym fn-sym))))))
+ )
 
 ; => required & optional systems
 ; => required & optional attributes (select-keys on ns ?)
