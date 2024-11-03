@@ -2,7 +2,7 @@
   (:require [moon.modifiers :as mods]))
 
 (defn info [[_ mods]]
-  (mods/info-text mods))
+  (mods/info mods))
 
 (defn handle [[k eid add-or-remove mods]]
   [[:e/assoc eid k ((case add-or-remove

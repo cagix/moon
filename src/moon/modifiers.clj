@@ -10,13 +10,18 @@
 (defn add    [mods other-mods] (merge-with ops/add    mods other-mods))
 (defn remove [mods other-mods] (merge-with ops/remove mods other-mods))
 
-(defn info-text [mods]
+(defn- dbg-info [mods]
+  (str "\n [GRAY]"
+       (binding [*print-level* nil]
+         (with-out-str (clojure.pprint/pprint mods)))
+       "[]"))
+
+(defn info [mods]
   (when (seq mods)
     (str "[MODIFIERS]"
-         (str/join "\n"
-                   (for [[k ops] mods]
-                     (ops/info-text ops k)))
-         "[]")))
+         (str/join "\n" (keep (fn [[k ops]] (ops/info ops k)) mods))
+         "[]"
+         (dbg-info mods))))
 
 (defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
 (defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
@@ -34,7 +39,7 @@
 
 (defmethods :base/stat-effect
   (component/info [[k ops]]
-    (ops/info-text ops k))
+    (ops/info ops k))
 
   (component/applicable? [[k _]]
     (and effect/target

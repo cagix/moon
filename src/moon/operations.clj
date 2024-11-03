@@ -14,7 +14,7 @@
     1.0 "+"
     -1.0 ""))
 
-(defn info-text [ops k]
+(defn info [ops k]
   (str/join "\n"
             (keep
              (fn [{v 1 :as op}]

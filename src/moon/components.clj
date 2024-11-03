@@ -200,14 +200,8 @@
 (defmethod component/info :creature/level [[_ lvl]]
   (str "[GRAY]Level " lvl "[]"))
 
-(defmethod component/info :item/modifiers [[_ value-mods]]
-  (str (mods/info-text value-mods)
-       "\n [GRAY]"
-       (binding [*print-level* nil]
-         (with-out-str
-          (clojure.pprint/pprint
-           value-mods)))
-       "[]"))
+(defmethod component/info :item/modifiers [[_ mods]]
+  (mods/info mods))
 
 ; TODO speed is 10 tiles/s but I checked moves 8 tiles/sec ... after delta time change ?
 
