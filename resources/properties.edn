@@ -1986,9 +1986,7 @@
   :entity/body
   {:body/flying? false, :body/height 2/3, :body/width 17/24},
   :entity/inventory
-  #{:items/cloak-royal
-    :items/shield-vorpal-buckler
-    :items/chain-leg
+  #{:items/chain-leg
     :items/studded-helm
     :items/blood-helm
     :items/shield-mystic-great

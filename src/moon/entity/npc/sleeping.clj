@@ -1,35 +1,9 @@
 (ns moon.entity.npc.sleeping
   (:require [gdl.graphics.text :as text]
-            [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
             [moon.faction :as faction]
-            [moon.world.grid :as grid]
-            [moon.world.time :refer [stopped? timer]]))
-
-(def ^:private shout-radius 4)
-
-(defn- friendlies-in-radius [position faction]
-  (->> {:position position
-        :radius shout-radius}
-       grid/circle->entities
-       (filter #(= (:entity/faction @%) faction))))
-
-(defmethods :entity/alert-friendlies-after-duration
-  (entity/tick [[_ {:keys [counter faction]}] eid]
-    (when (stopped? counter)
-      (cons [:e/destroy eid]
-            (for [friendly-eid (friendlies-in-radius (:position @eid) faction)]
-              [:entity/fsm friendly-eid :alert])))))
-
-(defmethods :tx/shout
-  (component/handle [[_ position faction delay-seconds]]
-    [[:e/create
-      position
-      body/effect-body-props
-      {:entity/alert-friendlies-after-duration
-       {:counter (timer delay-seconds)
-        :faction faction}}]]))
+            [moon.world.grid :as grid]))
 
 (defn ->v [[_ eid]]
   {:eid eid})

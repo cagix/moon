@@ -109,6 +109,7 @@
               #'entity/render-above
               #'entity/render-info]})
 
+(install entity 'moon.entity.alert-friendlies-after-duration)
 (install entity 'moon.entity.animation)
 (install entity 'moon.entity.clickable)
 (install entity 'moon.entity.delete-after-animation-stopped)
@@ -163,6 +164,7 @@
 (install tx 'moon.tx.line-render)
 (install tx 'moon.tx.player-modal)
 (install tx 'moon.tx.projectile)
+(install tx 'moon.tx.shout)
 (install tx 'moon.tx.sound)
 
 (def ^:private widget
@@ -189,11 +191,11 @@
 (defmethod component/info :property/pretty-name [[_ value]]
   (str "[PRETTY_NAME]"value"[]"))
 
-(defmethods :creature/species
-  (entity/->v [[_ species]]
-    (str/capitalize (name species)))
-  (component/info [[_ species]]
-    (str "[LIGHT_GRAY]Creature - " species "[]")))
+(defmethod entity/->v :creature/species [[_ species]]
+  (str/capitalize (name species)))
+
+(defmethod component/info :creature/species [[_ species]]
+  (str "[LIGHT_GRAY]Creature - " species "[]"))
 
 (defmethod component/info :creature/level [[_ lvl]]
   (str "[GRAY]Level " lvl "[]"))
