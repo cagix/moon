@@ -16,8 +16,7 @@
        (filter #(= (:entity/faction @%) faction))))
 
 (defmethods :entity/alert-friendlies-after-duration
-  {:let {:keys [counter faction]}}
-  (entity/tick [_ eid]
+  (entity/tick [[_ {:keys [counter faction]}] eid]
     (when (stopped? counter)
       (cons [:e/destroy eid]
             (for [friendly-eid (friendlies-in-radius (:position @eid) faction)]

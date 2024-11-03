@@ -2,11 +2,10 @@
   (:require [moon.operation :as op]))
 
 (defmethods :op/mult
-  {:let value}
-  (op/value-text [_]
+  (op/value-text [[_ value]]
     (str value "%"))
 
-  (op/apply [_ base-value]
+  (op/apply [[_ value] base-value]
     (* base-value (inc (/ value 100))))
 
   (op/order [_]

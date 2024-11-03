@@ -15,8 +15,7 @@
 ; assert min body size from entity
 
 (defmethods :property/pretty-name
-  {:let value}
-  (component/info [_]
+  (component/info [[_ value]]
     (str "[PRETTY_NAME]"value"[]")))
 
 (defmethods :creature/species
