@@ -1,7 +1,7 @@
 (ns moon.widgets.error-window
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [gdl.ui :as ui]
-            [moon.stage :as stage]))
+            [gdl.stage :as stage]
+            [gdl.ui :as ui]))
 
 (defmacro ^:private with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh

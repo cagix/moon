@@ -1,9 +1,9 @@
 (ns moon.widgets.windows
-  (:require [gdl.ui :as ui]
+  (:require [gdl.stage :as stage]
+            [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [moon.controls :as controls]
-            [moon.component :as component]
-            [moon.stage :as stage]))
+            [moon.component :as component]))
 
 (defn create []
   (ui/group {:id :windows

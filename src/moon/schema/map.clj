@@ -1,12 +1,12 @@
 (ns ^:no-doc moon.schema.map
-  (:require [gdl.ui :as ui]
+  (:require [gdl.stage :as stage]
+            [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [malli.generator :as mg]
             [moon.component :as component]
             [moon.malli :as malli]
             [moon.schema :as schema]
-            [moon.stage :as stage]
             [moon.widgets.scrollpane :refer [scroll-pane-cell]]))
 
 (defn- attribute-form

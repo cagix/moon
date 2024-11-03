@@ -2,9 +2,9 @@
   (:require [dev.app-values-tree :refer [ns-value-vars]]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
+            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.stage]
-            [moon.stage :as stage]
             [moon.world.mouseover :as mouseover]
             [moon.world.grid :as grid]))
 

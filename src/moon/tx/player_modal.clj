@@ -1,8 +1,8 @@
 (ns moon.tx.player-modal
   (:require [gdl.graphics.gui-view :as gui-view]
+            [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
-            [moon.stage :as stage]))
+            [gdl.ui.actor :as a]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

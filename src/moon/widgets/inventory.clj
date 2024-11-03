@@ -4,13 +4,13 @@
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
+            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]
-            [moon.stage :as stage]
             [moon.widgets.windows :as windows]))
 
 ; Items are also smaller than 48x48 all of them

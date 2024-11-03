@@ -1,11 +1,11 @@
 (ns ^:no-doc moon.schema.one-to-one
-  (:require [gdl.ui :as ui]
+  (:require [gdl.stage :as stage]
+            [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
-            [moon.schema :as schema]
-            [moon.stage :as stage] ))
+            [moon.schema :as schema]))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]
   [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])

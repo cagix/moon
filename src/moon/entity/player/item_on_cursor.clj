@@ -4,9 +4,9 @@
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
+            [gdl.stage :refer [mouse-on-actor?]]
             [moon.entity :as entity]
             [moon.player :as player]
-            [moon.stage :refer [mouse-on-actor?]]
             [moon.item :refer [valid-slot? stackable?]]))
 
 (defn- clicked-cell [eid cell]
