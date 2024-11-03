@@ -124,48 +124,8 @@
 (add-methods 'moon.effect.entity.spiderweb    effect)
 (add-methods 'moon.effect.entity.stun         effect)
 
-(def ^:private fsms-systems
+(def ^:private fsm
   {:required [#'component/create]})
 
-(add-methods 'moon.fsms.player fsms-systems)
-(add-methods 'moon.fsms.npc    fsms-systems)
-
-(comment
-
- (seq (.listFiles (io/file "src/moon/effect/entity/")))
-
- (MultiFn/.addMethod component/info        :foo nil)
- (ns-resolve 'moon.effect.entity.convert 'info)
-
- ; TODO useful?
- ; make clearer name - its used by AI _After_ applicable? call
- ; and AI _only_ uses skills
- ; no wait, useful ? is just useful
- ; the AI logic is the part I need to explain
- ; same like faction , it just is what it is
- ; but potential field does the faction magic
-
- ; moon.effect.projectile
- ; only applicable? useful? & handle
-
- )
-
-; => required & optional systems
-; => required & optional attributes (select-keys on ns ?)
-
-; * defc with just color & value-for-info can remove
-; * key -> pretty-name ?
-; * all component data in db ?
-; what about tests ?
-
-; * db & schema both components
-; e.g. db is also keyword-attr
-; => why not all component-attrs move to edn and editable ?!
-; and can click and open source file ?!
-; what does that mean for :property/id ? why does something need to keep its own id ?
-
-; src/moon/property.clj
-; property/def remove.
-; its not tx/sound but audiovisual ?!
-; if something has the same schema I can reuse the component ??
-; stats take a look
+(add-methods 'moon.fsms.player fsm)
+(add-methods 'moon.fsms.npc    fsm)
