@@ -69,8 +69,7 @@
     (let [help (Menu. "Help")]
         (.addItem help (MenuItem. controls/help-text))
       (.addMenu menu-bar help))
-    (def mb menu-bar)
-    (add-debug-infos mb)
+    (add-debug-infos menu-bar)
     menu-bar))
 
 (defn create [_]

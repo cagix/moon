@@ -1,4 +1,4 @@
-(ns moon.schema.animation
+(ns ^:no-doc moon.schema.animation
   (:require [gdl.graphics.image :as image]
             [gdl.ui :as ui]
             [moon.animation :as animation]

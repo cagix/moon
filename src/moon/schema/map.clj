@@ -1,4 +1,4 @@
-(ns moon.schema.map
+(ns ^:no-doc moon.schema.map
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]

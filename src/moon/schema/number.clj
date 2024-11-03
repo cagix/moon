@@ -1,4 +1,4 @@
-(ns moon.schema.number
+(ns ^:no-doc moon.schema.number
   (:require [clojure.edn :as edn]
             [gdl.ui :as ui]
             [gdl.utils :refer [->edn-str]]

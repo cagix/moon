@@ -1,4 +1,4 @@
-(ns moon.schema.enum
+(ns ^:no-doc moon.schema.enum
   (:require [clojure.edn :as edn]
             [gdl.ui :as ui]
             [gdl.utils :refer [->edn-str]]

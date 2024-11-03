@@ -1,4 +1,4 @@
-(ns moon.schema.one-to-one
+(ns ^:no-doc moon.schema.one-to-one
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.component :as component]

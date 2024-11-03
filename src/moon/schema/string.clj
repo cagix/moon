@@ -1,4 +1,4 @@
-(ns moon.schema.string
+(ns ^:no-doc moon.schema.string
   (:require [gdl.ui :as ui]
             [moon.schema :as schema])
   (:import (com.kotcrab.vis.ui.widget VisTextField)))

@@ -1,4 +1,4 @@
-(ns moon.schema.boolean
+(ns ^:no-doc moon.schema.boolean
   (:require [gdl.ui :as ui]
             [moon.schema :as schema]))
 

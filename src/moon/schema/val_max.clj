@@ -1,4 +1,4 @@
-(ns moon.schema.val-max
+(ns ^:no-doc moon.schema.val-max
   (:require [malli.core :as m]
             [moon.schema :as schema]
             [moon.val-max :as val-max]))

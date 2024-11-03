@@ -1,4 +1,4 @@
-(ns moon.schema.sound
+(ns ^:no-doc moon.schema.sound
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.ui :as ui]
