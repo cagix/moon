@@ -127,6 +127,7 @@
       (add-method @system-var k method-var))))
 
 (add-methods 'moon.effect.projectile effect-systems)
+(add-methods 'moon.effect.spawn      effect-systems)
 
 (comment
 
