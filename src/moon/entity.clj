@@ -27,8 +27,7 @@
 
 (def render-systems [render-below render render-above render-info])
 
-(declare stat
-         modified-value)
+(declare stat)
 
 (defn mana-value [entity]
   (if-let [mana (stat entity :stats/mana)]

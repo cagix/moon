@@ -2,7 +2,7 @@
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
             [moon.entity :as entity]
-            [moon.entity.modifiers :refer [defstat]]
+            [moon.stats :refer [defstat]]
             [moon.val-max :as val-max]))
 
 (defstat :stats/hp)

@@ -2,7 +2,6 @@
   (:require [clojure.string :as str]
             [moon.component :as component]
             [moon.entity :as entity]
-            (moon.entity modifiers)
             (moon.level generate
                         uf-caves
                         tiled-map)
@@ -137,6 +136,7 @@
 (install entity 'moon.entity.projectile-collision)
 (install entity 'moon.entity.skills)
 (install entity 'moon.entity.string-effect)
+(install entity 'moon.entity.modifiers)
 (install entity 'moon.entity.movement)
 (install entity 'moon.entity.temp-modifier)
 (install entity 'moon.entity.hitpoints :stats/hp)

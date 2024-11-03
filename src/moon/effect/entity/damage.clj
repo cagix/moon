@@ -1,7 +1,8 @@
 (ns moon.effect.entity.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.effect :refer [source target]]
-            [moon.entity :as entity]))
+            [moon.entity :as entity]
+            [moon.entity.modifiers :as modifiers]))
 
 (defn- effective-armor-save [source* target*]
   (max (- (or (entity/stat target* :stats/armor-save) 0)
@@ -19,7 +20,7 @@
   (< (rand) (effective-armor-save source* target*)))
 
 (defn- ->effective-damage [damage source*]
-  (update damage :damage/min-max #(entity/modified-value source* :modifier/damage-deal %)))
+  (update damage :damage/min-max #(modifiers/effective-value source* :modifier/damage-deal %)))
 
 (comment
  (let [->source (fn [mods] {:entity/modifiers mods})]
@@ -72,7 +73,7 @@
      (let [;_ (println "Source unmodified damage:" damage)
            {:keys [damage/min-max]} (->effective-damage damage source*)
            ;_ (println "\nSource modified: min-max:" min-max)
-           min-max (entity/modified-value target* :modifier/damage-receive min-max)
+           min-max (modifiers/effective-value target* :modifier/damage-receive min-max)
            ;_ (println "effective min-max: " min-max)
            dmg-amount (rand-int-between min-max)
            ;_ (println "dmg-amount: " dmg-amount)
