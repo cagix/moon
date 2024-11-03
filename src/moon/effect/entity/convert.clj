@@ -1,6 +1,6 @@
 (ns moon.effect.entity.convert
   (:require [moon.effect :refer [source target]]
-            [moon.faction :as faction]))
+            [moon.entity.faction :as faction]))
 
 (defn info [_]
   "Converts target to your side.")

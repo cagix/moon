@@ -1,7 +1,7 @@
 (ns moon.entity.npc.idle
   (:require [moon.effect :as effect]
             [moon.body :as body]
-            [moon.faction :as faction]
+            [moon.entity.faction :as faction]
             [moon.follow-ai :as follow-ai]
             [moon.world.grid :as grid]
             [moon.world.line-of-sight :refer [line-of-sight?]]))

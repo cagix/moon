@@ -1,6 +1,6 @@
 (ns moon.entity.mouseover
   (:require [gdl.graphics.shape-drawer :as sd]
-            [moon.faction :as faction]
+            [moon.entity.faction :as faction]
             [moon.player :as player]))
 
 (def ^:private outline-alpha 0.4)

@@ -2,7 +2,7 @@
   (:require [gdl.graphics.text :as text]
             [moon.body :as body]
             [moon.entity :as entity]
-            [moon.faction :as faction]
+            [moon.entity.faction :as faction]
             [moon.world.grid :as grid]))
 
 (defn ->v [[_ eid]]
