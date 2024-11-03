@@ -35,8 +35,8 @@
      (#{:s/map-optional :s/components-ns} stype)
      :s/map
 
-     (#{number? nat-int? int? pos? pos-int? :s/val-max} stype)
-     number?
+     (#{:s/number :s/nat-int :s/int :s/pos :s/pos-int :s/val-max} stype)
+     :s/number
 
      :else stype)))
 

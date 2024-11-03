@@ -5,6 +5,8 @@
             [moon.component :refer [defsystem defmethods]]
             [moon.val-max :as val-max]))
 
+; TODO assert here also int?
+
 (defsystem value-text)
 
 (defsystem apply [_ base-value])

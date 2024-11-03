@@ -30,3 +30,7 @@
                                         e))))]
     (when-not (m/validate m-schema property)
       (throw (invalid-ex-info m-schema property)))))
+
+
+; Again had problems with pos? and widget-type
+; => use keywords

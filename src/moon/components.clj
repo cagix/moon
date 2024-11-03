@@ -207,14 +207,14 @@
 
 ; -> range needs to be smaller than potential field range (otherwise hitting someone who can't get back at you)
 ; -> first range check then ray ! otherwise somewhere in contentfield out of sight
-#_(defc :projectile/max-range {:schema pos-int?})
-#_(defc :projectile/speed     {:schema pos-int?})
+#_(defc :projectile/max-range)
+#_(defc :projectile/speed)
 
 (defmethod component/info :projectile/piercing? [_]
   "[LIME]Piercing[]")
 
-#_(defc :world/max-area-level {:schema pos-int?}) ; TODO <= map-size !?
-#_(defc :world/spawn-rate {:schema pos?}) ; TODO <1 !
+#_(defc :world/max-area-level) ; TODO <= map-size !?
+#_(defc :world/spawn-rate) ; TODO <1 !
 
 (defmethod component/info :skill/action-time-modifier-key [[_ v]]
   (str "[VIOLET]" (case v

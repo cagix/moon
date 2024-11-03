@@ -4,15 +4,15 @@
 
  :entity-effects [:s/components-ns :effect.entity],
 
- :maxrange pos?,
+ :maxrange :s/pos,
  :effect/target-entity [:s/map [:entity-effects :maxrange]],
 
  :effect/target-all [:s/map [:entity-effects]],
 
  :body/flying? :boolean,
- :body/height pos?,
- :body/width pos?,
- :creature/level pos-int?,
+ :body/height :s/pos,
+ :body/width :s/pos,
+ :creature/level :s/pos-int,
  :creature/species [:qualified-keyword {:namespace :species}],
 
  :damage/min-max :s/val-max,
@@ -22,7 +22,7 @@
  :effect.entity/kill :some,
  :effect.entity/melee-damage :some,
  :effect.entity/spiderweb :some,
- :effect.entity/stun pos?,
+ :effect.entity/stun :s/pos,
 
  :entity/image :s/image,
  :entity/animation :s/animation,
@@ -57,15 +57,15 @@
  :modifier/damage-deal
  [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
  :modifier/damage-receive [:s/map-optional [:op/max-inc :op/max-mult]],
- :op/inc int?,
- :op/max-inc int?,
- :op/max-mult int?,
- :op/mult int?,
- :op/val-inc int?,
- :op/val-mult int?,
- :projectile/max-range pos-int?,
+ :op/inc :s/int,
+ :op/max-inc :s/int,
+ :op/max-mult :s/int,
+ :op/mult :s/int,
+ :op/val-inc :s/int,
+ :op/val-mult :s/int,
+ :projectile/max-range :s/pos-int,
  :projectile/piercing? :boolean,
- :projectile/speed pos-int?,
+ :projectile/speed :s/pos-int,
  :properties/audiovisuals
  [:s/map [:tx/sound :entity/animation :property/id]],
  :properties/creatures
@@ -126,32 +126,32 @@
    :property/id]],
  :property/id :qualified-keyword,
  :property/pretty-name :string,
- :skill/action-time pos?,
+ :skill/action-time :s/pos,
  :skill/action-time-modifier-key
  [:enum :stats/cast-speed :stats/attack-speed],
- :skill/cooldown nat-int?,
- :skill/cost nat-int?,
+ :skill/cooldown :s/nat-int,
+ :skill/cost :s/nat-int,
  :skill/effects [:s/components-ns :effect],
  :skill/start-action-sound :s/sound,
- :stats/aggro-range nat-int?,
- :stats/armor-pierce number?,
- :stats/armor-save number?,
- :stats/attack-speed pos?,
- :stats/cast-speed pos?,
+ :stats/aggro-range :s/nat-int,
+ :stats/armor-pierce :s/number,
+ :stats/armor-save :s/number,
+ :stats/attack-speed :s/pos,
+ :stats/cast-speed :s/pos,
 
  ;; Stats
  ; * effect.entity & modifier keys have to match name of stats key
 
- :stats/hp pos-int?,
+ :stats/hp :s/pos-int,
  :effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
  :modifier/hp [:s/map-optional [:op/max-inc :op/max-mult]],
 
  ;;
 
- :stats/mana nat-int?,
- :stats/movement-speed pos?,
- :stats/reaction-time pos-int?,
- :stats/strength nat-int?,
+ :stats/mana :s/nat-int,
+ :stats/movement-speed :s/pos,
+ :stats/reaction-time :s/pos-int,
+ :stats/strength :s/nat-int,
 
  :effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
  :modifier/mana [:s/map-optional [:op/max-inc :op/max-mult]],
@@ -165,8 +165,8 @@
 
  :world/components [:s/map []],
  :world/generator [:enum :world.generator/tiled-map :world.generator/modules :world.generator/uf-caves],
- :world/map-size pos-int?,
- :world/max-area-level pos-int?,
+ :world/map-size :s/pos-int,
+ :world/max-area-level :s/pos-int,
  :world/player-creature :some,
- :world/spawn-rate pos?,
+ :world/spawn-rate :s/pos,
  :world/tiled-map :string}

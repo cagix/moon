@@ -19,8 +19,6 @@
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
   :injections [(do
-                (require 'malli.core) ; fix strange_malli_bug.clj
-
                 (in-ns 'clojure.core)
                 (defn bind-root [avar value]
                   (.bindRoot avar value))
