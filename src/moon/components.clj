@@ -5,9 +5,6 @@
             (moon.level generate
                         uf-caves
                         tiled-map)
-            (moon.operation inc
-                            mult
-                            val-max)
             (moon.schema animation
                          boolean
                          enum

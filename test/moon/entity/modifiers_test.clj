@@ -4,9 +4,6 @@
             [moon.entity :as entity]
             moon.entity.modifiers
             [moon.modifiers :as mods]
-            moon.operation.inc
-            moon.operation.mult
-            moon.operation.val-max
             moon.tx.entity))
 
 (deftest handler
