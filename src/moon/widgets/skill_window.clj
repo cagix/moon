@@ -1,4 +1,4 @@
-(ns moon.widgets.skill-window)
+(ns ^:no-doc moon.widgets.skill-window)
 
 #_(defn- player-clicked-skillmenu [skill]
   (entity/clicked-skillmenu-skill (entity/state-obj @player/eid) skill))

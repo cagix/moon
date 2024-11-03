@@ -1,4 +1,4 @@
-(ns moon.tx.entity
+(ns ^:no-doc moon.tx.entity
   (:require [gdl.utils :refer [safe-merge dissoc-in]]
             [moon.component :as component]
             [moon.body :as body]

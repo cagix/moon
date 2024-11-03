@@ -1,4 +1,4 @@
-(ns moon.screens.map-editor
+(ns ^:no-doc moon.screens.map-editor
   (:require [clojure.string :as str]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]

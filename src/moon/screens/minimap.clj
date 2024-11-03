@@ -1,4 +1,4 @@
-(ns moon.screens.minimap
+(ns ^:no-doc moon.screens.minimap
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.graphics.shape-drawer :as sd]

@@ -1,4 +1,4 @@
-(ns dev.app-values-tree
+(ns ^:no-doc dev.app-values-tree
   (:require [gdl.utils :refer [get-namespaces get-vars]]))
 
 (defn- protocol? [value]

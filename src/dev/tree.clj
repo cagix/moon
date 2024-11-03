@@ -1,4 +1,4 @@
-(ns dev.tree
+(ns ^:no-doc dev.tree
   (:require [dev.app-values-tree :refer [ns-value-vars]]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]

@@ -1,4 +1,4 @@
-(ns moon.widgets.background-image
+(ns ^:no-doc moon.widgets.background-image
   (:require [gdl.graphics.image :as img]
             [gdl.ui :as ui]))
 

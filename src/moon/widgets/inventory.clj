@@ -1,4 +1,4 @@
-(ns moon.widgets.inventory
+(ns ^:no-doc moon.widgets.inventory
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
             [gdl.graphics.gui-view :as gui-view]

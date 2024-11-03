@@ -1,4 +1,4 @@
-(ns moon.world.debug-render
+(ns ^:no-doc moon.world.debug-render
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]

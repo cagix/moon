@@ -1,4 +1,4 @@
-(ns moon.components
+(ns ^:no-doc moon.components
   (:require [clojure.string :as str]
             [gdl.graphics.color :as color]
             [gdl.utils :refer [readable-number]]
