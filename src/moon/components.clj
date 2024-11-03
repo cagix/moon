@@ -5,7 +5,6 @@
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.item :as item]
-            [moon.modifiers :as mods]
             (moon.level generate
                         uf-caves
                         tiled-map)
@@ -20,6 +19,7 @@
                          sound
                          string
                          val-max)
+            moon.modifiers
             (moon.tx entity)))
 
 (defn- namespace->component-key [ns-str]
@@ -199,9 +199,6 @@
 
 (defmethod component/info :creature/level [[_ lvl]]
   (str "[GRAY]Level " lvl "[]"))
-
-(defmethod component/info :item/modifiers [[_ mods]]
-  (mods/info mods))
 
 ; TODO speed is 10 tiles/s but I checked moves 8 tiles/sec ... after delta time change ?
 

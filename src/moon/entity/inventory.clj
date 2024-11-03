@@ -12,7 +12,7 @@
                  (item/valid-slot? cell item)))
     [[:e/assoc-in eid (cons :entity/inventory cell) item]
      (when (applies-modifiers? cell)
-       [:entity/modifiers eid :add (:item/modifiers item)])
+       [:entity/modifiers eid :add (:entity/modifiers item)])
      (when (:entity/player? entity)
        [:widgets/inventory :set cell item])]))
 
@@ -22,7 +22,7 @@
     (assert item)
     [[:e/assoc-in eid (cons :entity/inventory cell) nil]
      (when (applies-modifiers? cell)
-       [:entity/modifiers eid :remove (:item/modifiers item)])
+       [:entity/modifiers eid :remove (:entity/modifiers item)])
      (when (:entity/player? entity)
        [:widgets/inventory :remove cell])]))
 

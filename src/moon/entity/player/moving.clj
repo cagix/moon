@@ -1,6 +1,6 @@
 (ns moon.entity.player.moving
   (:require [gdl.input :refer [WASD-movement-vector]]
-            [moon.modifiers :as mods]))
+            [moon.entity.modifiers :as mods]))
 
 (defn ->v [[_ eid movement-vector]]
   {:eid eid

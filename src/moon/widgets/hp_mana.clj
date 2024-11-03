@@ -4,7 +4,7 @@
             [gdl.graphics.text :as text]
             [gdl.ui :as ui]
             [gdl.utils :refer [readable-number]]
-            [moon.modifiers :as mods]
+            [moon.entity.modifiers :as mods]
             [moon.player :as player]
             [moon.val-max :as val-max]))
 

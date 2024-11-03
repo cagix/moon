@@ -1,7 +1,7 @@
 (ns moon.effect.entity.melee-damage
   (:require [moon.component :as component]
             [moon.effect :refer [source]]
-            [moon.modifiers :as mods]))
+            [moon.entity.modifiers :as mods]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (mods/value entity :stats/strength) 0)]

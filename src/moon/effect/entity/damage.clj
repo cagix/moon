@@ -1,7 +1,7 @@
 (ns moon.effect.entity.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.effect :refer [source target]]
-            [moon.modifiers :as mods]))
+            [moon.entity.modifiers :as mods]))
 
 (defn- effective-armor-save [source* target*]
   (max (- (or (mods/value target* :stats/armor-save) 0)

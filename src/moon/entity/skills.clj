@@ -1,6 +1,6 @@
 (ns moon.entity.skills
   (:require [moon.effect :as effect]
-            [moon.modifiers :as mods]
+            [moon.entity.modifiers :as mods]
             [moon.world.time :refer [stopped?]]))
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]

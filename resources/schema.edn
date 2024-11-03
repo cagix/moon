@@ -32,7 +32,6 @@
  :entity/faction [:enum :good :evil],
 
  :entity/modifiers [:s/components-ns :modifier],
- :item/modifiers   [:s/components-ns :modifier],
 
  :entity/inventory [:s/one-to-many :properties/items],
  :entity/skills    [:s/one-to-many :properties/skills],
@@ -94,7 +93,7 @@
   [:property/pretty-name
    :entity/image
    :item/slot
-   [:item/modifiers {:optional true}]
+   [:entity/modifiers {:optional true}]
    :property/id]],
  :properties/projectiles
  [:s/map

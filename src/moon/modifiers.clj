@@ -1,42 +1,13 @@
 (ns moon.modifiers
-  (:refer-clojure :exclude [remove])
-  (:require [clojure.string :as str]
-            [gdl.utils :refer [mapvals k->pretty-name]]
+  (:require [gdl.utils :refer [mapvals k->pretty-name]]
             [moon.component :as component :refer [defmethods]]
             [moon.entity :as entity]
+            [moon.entity.modifiers :as mods]
             [moon.effect :as effect]
             [moon.operations :as ops]))
 
-(defn add    [mods other-mods] (merge-with ops/add    mods other-mods))
-(defn remove [mods other-mods] (merge-with ops/remove mods other-mods))
-
-(defn- dbg-info [mods]
-  (str "\n [GRAY]"
-       (binding [*print-level* nil]
-         (with-out-str (clojure.pprint/pprint mods)))
-       "[]"))
-
-(defn info [mods]
-  (when (seq mods)
-    (str "[MODIFIERS]"
-         (str/join "\n" (keep (fn [[k ops]] (ops/info ops k)) mods))
-         "[]"
-         (dbg-info mods))))
-
 (defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
 (defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
-(defn- modifier-k [stat-k]   (keyword "modifier"      (name stat-k)))
-
-; TODO no tests !
-(defn value
-  ([entity stat-k]
-   (when-let [base-value (stat-k entity)]
-     (value entity (modifier-k stat-k) base-value)))
-
-  ([{:keys [entity/modifiers]} modifier-k base-value]
-   {:pre [(= "modifier" (namespace modifier-k))]}
-   (ops/apply (modifier-k modifiers)
-              base-value)))
 
 (defmethods :base/stat-effect
   (component/info [[k ops]]
@@ -44,18 +15,18 @@
 
   (component/applicable? [[k _]]
     (and effect/target
-         (value @effect/target (stat-k k))))
+         (mods/value @effect/target (stat-k k))))
 
   (component/useful? [_]
     true)
 
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
-      (when-let [value (value @effect/target stat-k)]
+      (when-let [value (mods/value @effect/target stat-k)]
         [[:e/assoc effect/target stat-k (ops/apply operations value)]]))))
 
 (defmethod component/info :entity/stat [[k v]]
-  (str (k->pretty-name k) ": " (value component/*info-text-entity* k)))
+  (str (k->pretty-name k) ": " (mods/value component/*info-text-entity* k)))
 
 (defn defstat [k]
   {:pre [(= (namespace k) "stats")]}
@@ -76,7 +47,7 @@
   [v v])
 
 (defmethod component/handle :tx.entity.stats/pay-mana-cost [[_ eid cost]]
-  (let [mana-val ((value @eid :stats/mana) 0)]
+  (let [mana-val ((mods/value @eid :stats/mana) 0)]
     (assert (<= cost mana-val))
     [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]]))
 

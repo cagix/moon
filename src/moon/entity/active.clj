@@ -3,7 +3,7 @@
             [gdl.graphics.shape-drawer :as sd]
             [moon.component :as component]
             [moon.effect :as effect]
-            [moon.modifiers :as mods]
+            [moon.entity.modifiers :as mods]
             [moon.world.line-of-sight :refer [line-of-sight?]]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
 

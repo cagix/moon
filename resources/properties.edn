@@ -2781,535 +2781,535 @@
   :stats/strength 1}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff,
   :property/pretty-name "Staff"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-small-gold,
   :property/pretty-name "Gold Small Skull"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-cloth,
   :property/pretty-name "Cloth Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-heater,
   :property/pretty-name "Heater Gold Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/axe,
   :property/pretty-name "Axe"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/coin-copper,
   :property/pretty-name "Copper Coin"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-ruby,
   :property/pretty-name "Ruby Gem"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-dragon,
   :property/pretty-name "Dragon Crystal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/mystic-boot,
   :property/pretty-name "Boot Mystic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/cloth-helm,
   :property/pretty-name "Helm Cloth"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-blood,
   :property/pretty-name "Blood Crystal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/chain-helm,
   :property/pretty-name "Helm Chain"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-great,
   :property/pretty-name "Great Flame Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/dagger,
   :property/pretty-name "Dagger"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-large-open,
   :property/pretty-name "Open Large Skull"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 528 48 48]},
-  :item/modifiers {:modifier/movement-speed {:op/mult 40}},
+  :entity/modifiers {:modifier/movement-speed {:op/mult 40}},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-royal,
   :property/pretty-name "Royal Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 288 48 48]},
-  :item/modifiers {:modifier/movement-speed {:op/inc 1}},
+  :entity/modifiers {:modifier/movement-speed {:op/inc 1}},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-buckler,
   :property/pretty-name "Buckler Vorpal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/gold-leg,
   :property/pretty-name "Leg Gold"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/handaxe,
   :property/pretty-name "Handaxe"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [816 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/flask-red,
   :property/pretty-name "Red Flask"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-great,
   :property/pretty-name "Great Vorpal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-ruby,
   :property/pretty-name "Ruby Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/wild-boot,
   :property/pretty-name "Boot Wild"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/cloth-glove,
   :property/pretty-name "Glove Cloth"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/studded-leg,
   :property/pretty-name "Leg Studded"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-heater,
   :property/pretty-name "Heater Flame Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/coin-gold,
   :property/pretty-name "Gold Coin"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-cross,
   :property/pretty-name "Cross Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-eye,
   :property/pretty-name "Eye Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-hammer-sun,
   :property/pretty-name "Sun Hammer Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-blue,
   :property/pretty-name "Blue Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/club-spiked,
   :property/pretty-name "Spiked Club"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-tourmaline,
   :property/pretty-name "Tourmaline Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/plate-leg,
   :property/pretty-name "Leg Plate"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-buckler,
   :property/pretty-name "Buckler Elven Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-azure,
   :property/pretty-name "Azure Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/royal-boot,
   :property/pretty-name "Boot Royal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-flame,
   :property/pretty-name "Flame Sword Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/mystic-chest,
   :property/pretty-name "Chest Mystic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/mystic-leg,
   :property/pretty-name "Leg Mystic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/hammer-exotic1,
   :property/pretty-name "Exotic1 Hammer"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/crossbow,
   :property/pretty-name "Crossbow"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/dirk,
   :property/pretty-name "Dirk"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-buckler,
   :property/pretty-name "Buckler Mystic Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-spear-blood,
   :property/pretty-name "Blood Spear Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-ornate,
   :property/pretty-name "Ornate Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-diamond,
   :property/pretty-name "Diamond Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-small-blood,
   :property/pretty-name "Blood Small Skull"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/royal-helm,
   :property/pretty-name "Helm Royal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-black,
   :property/pretty-name "Black Potion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 528 48 48]},
-  :item/modifiers {:modifier/damage-deal {:op/val-mult 300}},
+  :entity/modifiers {:modifier/damage-deal {:op/val-mult 300}},
   :item/slot :inventory.slot/leg,
   :property/id :items/chain-leg,
   :property/pretty-name "Leg Chain"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-sapphire,
   :property/pretty-name "Sapphire Gem"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-great,
   :property/pretty-name "Great Elven Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/studded-glove,
   :property/pretty-name "Glove Studded"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/cloth-leg,
   :property/pretty-name "Leg Cloth"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-red,
   :property/pretty-name "Red Potion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-emerald,
   :property/pretty-name "Emerald Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [864 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-kite,
   :property/pretty-name "Kite Mystic Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/leather-boot,
   :property/pretty-name "Boot Leather"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 576 48 48]},
-  :item/modifiers {:modifier/hp {:op/max-inc 2}},
+  :entity/modifiers {:modifier/hp {:op/max-inc 2}},
   :item/slot :inventory.slot/glove,
   :property/id :items/chain-glove,
   :property/pretty-name "Glove Chain"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/spear,
   :property/pretty-name "Spear"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-flame,
   :property/pretty-name "Flame Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 432 48 48]},
-  :item/modifiers {:modifier/damage-deal {:op/max-mult 100}},
+  :entity/modifiers {:modifier/damage-deal {:op/max-mult 100}},
   :item/slot :inventory.slot/helm,
   :property/id :items/studded-helm,
   :property/pretty-name "Helm Studded"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-silver,
   :property/pretty-name "Silver Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [816 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-red-half,
   :property/pretty-name "Half Red Heart"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-empty,
   :property/pretty-name "Empty Chest"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-leather,
   :property/pretty-name "Leather Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-gold-open,
   :property/pretty-name "Open Gold Chest"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-amethyst,
   :property/pretty-name "Amethyst Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-red,
   :property/pretty-name "Red Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-latch,
   :property/pretty-name "Latch Book"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword-exotic2,
   :property/pretty-name "Exotic2 Sword"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-bone,
   :property/pretty-name "Bone Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 432 48 48]},
-  :item/modifiers {:modifier/hp {:op/max-inc -200}},
+  :entity/modifiers {:modifier/hp {:op/max-inc -200}},
   :item/slot :inventory.slot/helm,
   :property/id :items/blood-helm,
   :property/pretty-name "Helm Blood"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [912 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-great,
   :property/pretty-name "Great Mystic Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/plate-helm,
   :property/pretty-name "Helm Plate"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/plate-boot,
   :property/pretty-name "Boot Plate"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/shortbow,
   :property/pretty-name "Shortbow"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 336 48 48]},
-  :item/modifiers {:modifier/mana {:op/max-mult -50}},
+  :entity/modifiers {:modifier/mana {:op/max-mult -50}},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-copper,
   :property/pretty-name "Copper Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/wild-leg,
   :property/pretty-name "Leg Wild"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-amethyst,
   :property/pretty-name "Amethyst Gem"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/leather-chest,
   :property/pretty-name "Chest Leather"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-heater,
   :property/pretty-name "Heater Wood Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/torch-lit,
   :property/pretty-name "Lit Torch"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/mace,
   :property/pretty-name "Mace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 336 48 48]},
-  :item/modifiers {:modifier/cast-speed {:op/inc 50}},
+  :entity/modifiers {:modifier/cast-speed {:op/inc 50}},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-gold,
   :property/pretty-name "Gold Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 624 48 48]},
-  :item/modifiers {:modifier/hp {:op/max-inc 10, :op/max-mult 5}},
+  :entity/modifiers {:modifier/hp {:op/max-inc 10, :op/max-mult 5}},
   :item/slot :inventory.slot/boot,
   :property/id :items/cloth-boot,
   :property/pretty-name "Boot Cloth"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-brown,
   :property/pretty-name "Brown Book"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 384 48 48]},
-  :item/modifiers
+  :entity/modifiers
   {:modifier/damage-deal {:op/val-mult 10},
    :modifier/strength {:op/inc 5}},
   :item/slot :inventory.slot/necklace,
@@ -3317,457 +3317,457 @@
   :property/pretty-name "Eye Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-gold,
   :property/pretty-name "Gold Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/stiletto,
   :property/pretty-name "Stiletto"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-heater,
   :property/pretty-name "Heater Elven Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword,
   :property/pretty-name "Sword"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-evil,
   :property/pretty-name "Evil Book"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-silver-,
   :property/pretty-name "Silver Chest"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/leather-glove,
   :property/pretty-name "Glove Leather"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-hellfire,
   :property/pretty-name "Hellfire Sword Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [864 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/flask-blue,
   :property/pretty-name "Blue Flask"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/wild-helm,
   :property/pretty-name "Helm Wild"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/wild-glove,
   :property/pretty-name "Glove Wild"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-small,
   :property/pretty-name "Small Skull"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-cloud,
   :property/pretty-name "Cloud Crystal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-ornate,
   :property/pretty-name "Ornate Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-great,
   :property/pretty-name "Great Wood Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-buckler,
   :property/pretty-name "Buckler Gold Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-empty,
   :property/pretty-name "Empty Heart"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-green,
   :property/pretty-name "Green Potion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-great,
   :property/pretty-name "Great Gold Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-ankh,
   :property/pretty-name "Ankh Staff"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-silver-open,
   :property/pretty-name "Open Silver Chest"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-staff-venom,
   :property/pretty-name "Venom Staff Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/greataxe,
   :property/pretty-name "Greataxe"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/blood-chest,
   :property/pretty-name "Chest Blood"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-gold,
   :property/pretty-name "Gold Chest"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-vorpal,
   :property/pretty-name "Vorpal Sword Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [864 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-dark,
   :property/pretty-name "Dark Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-staff-winged,
   :property/pretty-name "Winged Staff Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-ruby,
   :property/pretty-name "Ruby Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-buckler,
   :property/pretty-name "Buckler Iron Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-blood,
   :property/pretty-name "Blood Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/chain-boot,
   :property/pretty-name "Boot Chain"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-white,
   :property/pretty-name "White Potion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-buckler,
   :property/pretty-name "Buckler Wood Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/quarterstaff,
   :property/pretty-name "Quarterstaff"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/skull-large-closed,
   :property/pretty-name "Closed Large Skull"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-cold,
   :property/pretty-name "Cold Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/blood-boot,
   :property/pretty-name "Boot Blood"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-ornate,
   :property/pretty-name "Ornate Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [912 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/flask-green,
   :property/pretty-name "Green Flask"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/axe-exotic1,
   :property/pretty-name "Exotic1 Axe"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/falchion,
   :property/pretty-name "Falchion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/drumstick,
   :property/pretty-name "Drumstick"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-lightning,
   :property/pretty-name "Lightning Sword Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-heater,
   :property/pretty-name "Heater Vorpal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-gold-kite,
   :property/pretty-name "Kite Gold Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-axe-frost,
   :property/pretty-name "Frost Axe Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/leather-leg,
   :property/pretty-name "Leg Leather"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [816 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-crimson,
   :property/pretty-name "Crimson Crystal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-gold,
   :property/pretty-name "Gold Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword-exotic1,
   :property/pretty-name "Exotic1 Sword"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-heater,
   :property/pretty-name "Heater Ice Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sling,
   :property/pretty-name "Sling"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-winged,
   :property/pretty-name "Winged Staff"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/chain-chest,
   :property/pretty-name "Chest Chain"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/hammer,
   :property/pretty-name "Hammer"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [864 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-sun,
   :property/pretty-name "Sun Crystal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-pearl,
   :property/pretty-name "Pearl Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 576 48 48]},
-  :item/modifiers {:modifier/strength {:op/inc 3}},
+  :entity/modifiers {:modifier/strength {:op/inc 3}},
   :item/slot :inventory.slot/glove,
   :property/id :items/blood-glove,
   :property/pretty-name "Glove Blood"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-acid,
   :property/pretty-name "Acid Sword Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/gold-helm,
   :property/pretty-name "Helm Gold"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 624 48 48]},
-  :item/modifiers {:modifier/movement-speed {:op/inc 12}},
+  :entity/modifiers {:modifier/movement-speed {:op/inc 12}},
   :item/slot :inventory.slot/boot,
   :property/id :items/gold-boot,
   :property/pretty-name "Boot Gold"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-emerald,
   :property/pretty-name "Emerald Gem"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/blood-leg,
   :property/pretty-name "Leg Blood"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/longbow,
   :property/pretty-name "Longbow"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 624 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/boot,
   :property/id :items/studded-boot,
   :property/pretty-name "Boot Studded"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-kite,
   :property/pretty-name "Kite Iron Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-great,
   :property/pretty-name "Great Royal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-elven-kite,
   :property/pretty-name "Kite Elven Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-glow,
   :property/pretty-name "Glow Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-emerald,
   :property/pretty-name "Emerald Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-staff-chaos,
   :property/pretty-name "Chaos Staff Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/royal-chest,
   :property/pretty-name "Chest Royal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-great,
   :property/pretty-name "Great Ice Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 528 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/leg,
   :property/id :items/royal-leg,
   :property/pretty-name "Leg Royal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 480 48 48]},
-  :item/modifiers
+  :entity/modifiers
   {:modifier/hp {:op/max-inc 10},
    :modifier/movement-speed {:op/mult 10}},
   :item/slot :inventory.slot/chest,
@@ -3775,343 +3775,343 @@
   :property/pretty-name "Chest Cloth"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-bow-horned,
   :property/pretty-name "Horned Bow Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-red,
   :property/pretty-name "Red Book"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-wood-kite,
   :property/pretty-name "Kite Wood Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-blue,
   :property/pretty-name "Blue Book"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/wild-chest,
   :property/pretty-name "Chest Wild"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [672 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/coin-silver,
   :property/pretty-name "Silver Coin"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-black,
   :property/pretty-name "Black Book"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-branch,
   :property/pretty-name "Branch Staff"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/club,
   :property/pretty-name "Club"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-buckler,
   :property/pretty-name "Buckler Ice Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-blue,
   :property/pretty-name "Blue Potion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/potion-empty,
   :property/pretty-name "Empty Potion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-great,
   :property/pretty-name "Great Iron Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [912 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-green-half,
   :property/pretty-name "Half Green Heart"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/greatmace,
   :property/pretty-name "Greatmace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/staff-jeweled,
   :property/pretty-name "Jeweled Staff"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/royal-glove,
   :property/pretty-name "Glove Royal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/trident,
   :property/pretty-name "Trident"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/studded-chest,
   :property/pretty-name "Chest Studded"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-sky,
   :property/pretty-name "Sky Crystal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/plate-glove,
   :property/pretty-name "Glove Plate"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-silver,
   :property/pretty-name "Silver Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/mystic-helm,
   :property/pretty-name "Helm Mystic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [816 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-mystic,
   :property/pretty-name "Mystic Necklace"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/chest,
   :property/id :items/plate-chest,
   :property/pretty-name "Chest Plate"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/maul,
   :property/pretty-name "Maul"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-vorpal-kite,
   :property/pretty-name "Kite Vorpal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/crystal-onyx,
   :property/pretty-name "Onyx Crystal"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/gold-glove,
   :property/pretty-name "Glove Gold"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [384 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-buckler,
   :property/pretty-name "Buckler Royal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [960 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-green-full,
   :property/pretty-name "Full Green Heart"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 384 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/gem-tourmaline,
   :property/pretty-name "Tourmaline Gem"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/lance,
   :property/pretty-name "Lance"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/greatspear,
   :property/pretty-name "Greatspear"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-ice-kite,
   :property/pretty-name "Kite Ice Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [864 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/heart-red-full,
   :property/pretty-name "Full Red Heart"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 336 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-amethyst,
   :property/pretty-name "Amethyst Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 432 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/helm,
   :property/id :items/leather-helm,
   :property/pretty-name "Helm Leather"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [720 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/satchel,
   :property/pretty-name "Satchel"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [528 480 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-tattered,
   :property/pretty-name "Tattered Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/broadsword,
   :property/pretty-name "Broadsword"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/book-green,
   :property/pretty-name "Green Book"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [576 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/chest-silver-empty,
   :property/pretty-name "Empty Silver Chest"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [624 48 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/torch,
   :property/pretty-name "Torch"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-heater,
   :property/pretty-name "Heater Royal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-royal-kite,
   :property/pretty-name "Kite Royal Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 144 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/cross,
   :property/pretty-name "Cross"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-ornate,
   :property/pretty-name "Ornate Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [432 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/glove,
   :property/id :items/mystic-glove,
   :property/pretty-name "Glove Mystic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [192 0 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/bag,
   :property/id :items/key-green,
   :property/pretty-name "Green Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 192 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/magic-sword-cold,
   :property/pretty-name "Cold Sword Magic"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-kite,
   :property/pretty-name "Kite Flame Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [240 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-iron-heater,
   :property/pretty-name "Heater Iron Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [480 576 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/cloak,
   :property/id :items/cloak-fur,
   :property/pretty-name "Fur Cloak"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 288 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-flame-buckler,
   :property/pretty-name "Buckler Flame Shield"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [816 96 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/weapon,
   :property/id :items/sword-exotic3,
   :property/pretty-name "Exotic3 Sword"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [288 480 48 48]},
-  :item/modifiers
+  :entity/modifiers
   {:modifier/armor-save {:op/inc 10},
    :modifier/hp {:op/max-mult 10},
    :modifier/movement-speed {:op/mult 10}},
@@ -4120,7 +4120,7 @@
   :property/pretty-name "Chest Gold"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [816 240 48 48]},
-  :item/modifiers {},
+  :entity/modifiers {},
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-heater,
   :property/pretty-name "Heater Mystic Shield"}

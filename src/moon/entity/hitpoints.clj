@@ -1,7 +1,7 @@
 (ns moon.entity.hitpoints
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
-            [moon.modifiers :as mods]
+            [moon.entity.modifiers :as mods]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors
