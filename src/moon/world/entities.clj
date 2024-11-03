@@ -68,28 +68,29 @@
 (defn tick [entities]
   (run! tick-entity entities))
 
-(defmethods :tx/add-to-world
-  (component/handle [[_ eid]]
-    (let [id (:entity/id @eid)]
-      (assert (number? id))
-      (alter-var-root #'ids->eids assoc id eid))
-    (content-grid/update-entity! content-grid eid)
-    ; https://github.com/damn/core/issues/58
-    ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-    (grid/add-entity eid)
-    nil))
+(defn- add-to-world [eid]
+  (let [id (:entity/id @eid)]
+    (assert (number? id))
+    (alter-var-root #'ids->eids assoc id eid))
+  (content-grid/update-entity! content-grid eid)
+  ; https://github.com/damn/core/issues/58
+  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+  (grid/add-entity eid))
 
-(defmethods :tx/remove-from-world
-  (component/handle [[_ eid]]
-    (let [id (:entity/id @eid)]
-      (assert (contains? ids->eids id))
-      (alter-var-root #'ids->eids dissoc id))
-    (content-grid/remove-entity! eid)
-    (grid/remove-entity eid)
-    nil))
+(defn- remove-from-world [eid]
+  (let [id (:entity/id @eid)]
+    (assert (contains? ids->eids id))
+    (alter-var-root #'ids->eids dissoc id))
+  (content-grid/remove-entity! eid)
+  (grid/remove-entity eid))
 
-(defmethods :tx/position-changed
-  (component/handle [[_ eid]]
-    (content-grid/update-entity! content-grid eid)
-    (grid/entity-position-changed eid)
-   nil))
+(defn- position-changed [eid]
+  (content-grid/update-entity! content-grid eid)
+  (grid/entity-position-changed eid))
+
+(defmethod component/handle :world/entity [[_ op eid]]
+  (case op
+    :add              (add-to-world      eid)
+    :remove           (remove-from-world eid)
+    :position-changed (position-changed  eid))
+  nil)

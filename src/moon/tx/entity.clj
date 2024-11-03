@@ -24,7 +24,7 @@
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
                                       (create-vs)))))]
-    (cons [:tx/add-to-world eid]
+    (cons [:world/entity :add eid]
           (for [component @eid]
             #(entity/create component eid)))))
 
@@ -33,7 +33,7 @@
 
 (defmethod component/handle :tx/remove-destroyed-entities [_]
   (mapcat (fn [eid]
-            (cons [:tx/remove-from-world eid]
+            (cons [:world/entity :remove eid]
                   (for [component @eid]
                     #(entity/destroy component eid))))
           (filter (comp :entity/destroyed? deref) (entities/all))))

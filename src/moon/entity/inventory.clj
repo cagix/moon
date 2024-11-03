@@ -14,7 +14,7 @@
      (when (applies-modifiers? cell)
        [:entity/modifiers eid :add (:item/modifiers item)])
      (when (:entity/player? entity)
-       [:tx/set-item-image-in-widget cell item])]))
+       [:widgets/inventory :set cell item])]))
 
 (defn- remove-item [eid cell]
   (let [entity @eid
@@ -24,7 +24,7 @@
      (when (applies-modifiers? cell)
        [:entity/modifiers eid :remove (:item/modifiers item)])
      (when (:entity/player? entity)
-       [:tx/remove-item-from-widget cell])]))
+       [:widgets/inventory :remove cell])]))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]

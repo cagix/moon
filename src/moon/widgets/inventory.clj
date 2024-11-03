@@ -121,20 +121,22 @@
 (defn- cell-widget [cell]
   (get (::table (windows/inventory)) cell))
 
-(defmethods :tx/set-item-image-in-widget
-  (component/handle [[_ cell item]]
-    (let [cell-widget (cell-widget cell)
-          image-widget (get cell-widget :image)
-          drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
-      (ui/set-min-size! drawable cell-size)
-      (ui/set-drawable! image-widget drawable)
-      (ui/add-tooltip! cell-widget #(component/->info item))
-      nil)))
+(defn- set-item-image-in-widget [cell item]
+  (let [cell-widget (cell-widget cell)
+        image-widget (get cell-widget :image)
+        drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
+    (ui/set-min-size! drawable cell-size)
+    (ui/set-drawable! image-widget drawable)
+    (ui/add-tooltip! cell-widget #(component/->info item))))
 
-(defmethods :tx/remove-item-from-widget
-  (component/handle [[_ cell]]
-    (let [cell-widget (cell-widget cell)
-          image-widget (get cell-widget :image)]
-      (ui/set-drawable! image-widget (slot->background (cell 0)))
-      (ui/remove-tooltip! cell-widget)
-      nil)))
+(defn- remove-item-from-widget [cell]
+  (let [cell-widget (cell-widget cell)
+        image-widget (get cell-widget :image)]
+    (ui/set-drawable! image-widget (slot->background (cell 0)))
+    (ui/remove-tooltip! cell-widget)))
+
+(defn handle [[_ op & args]]
+  (case op
+    :set    (apply set-item-image-in-widget args)
+    :remove (apply remove-item-from-widget  args))
+  nil)

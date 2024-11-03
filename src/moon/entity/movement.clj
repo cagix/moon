@@ -66,7 +66,7 @@
          [:e/assoc eid :left-bottom (:left-bottom body)]
          (when rotate-in-movement-direction?
            [:e/assoc eid :rotation-angle (v/angle-from-vector direction)])
-         [:tx/position-changed eid]]))))
+         [:world/entity :position-changed eid]]))))
 
 (defn handle [[_ eid movement]]
   (assert (or (nil? movement)

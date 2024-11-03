@@ -25,7 +25,7 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn- tabs-table [_]
+(defn- tabs-table []
   (let [table (ui/table {:fill-parent? true})
         container (ui/table {})
         tabbed-pane (TabbedPane.)]
