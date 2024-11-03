@@ -1,5 +1,5 @@
 (ns moon.entity.delete-after-animation-stopped
-  (:require [moon.animation :as animation]))
+  (:require [gdl.animation :as animation]))
 
 (defn create [_ eid]
   (-> @eid :entity/animation :looping? not assert))

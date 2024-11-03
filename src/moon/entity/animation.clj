@@ -1,5 +1,5 @@
 (ns moon.entity.animation
-  (:require [moon.animation :as animation]
+  (:require [gdl.animation :as animation]
             [moon.world.time :as time]))
 
 (defn- tx-assoc-image-current-frame [eid animation]

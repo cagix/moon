@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.schema.animation
-  (:require [gdl.graphics.image :as image]
+  (:require [gdl.animation :as animation]
+            [gdl.graphics.image :as image]
             [gdl.ui :as ui]
-            [moon.animation :as animation]
             [moon.schema :as schema]))
 
 (defmethod schema/form :s/animation [_]
