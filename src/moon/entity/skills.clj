@@ -6,15 +6,11 @@
 
 (defn- add-skill [eid {:keys [property/id] :as skill}]
   (assert (not (has-skill? @eid skill)))
-  [[:e/assoc-in eid [:entity/skills id] skill]
-   (when (:entity/player? @eid)
-     [:tx.action-bar/add skill])])
+  [:e/assoc-in eid [:entity/skills id] skill])
 
 (defn- remove-skill [eid {:keys [property/id] :as skill}]
   (assert (has-skill? @eid skill))
-  [[:e/dissoc-in eid [:entity/skills id]]
-   (when (:entity/player? @eid)
-     [:tx.action-bar/remove skill])])
+  [:e/dissoc-in eid [:entity/skills id]])
 
 (defn create [[k skills] eid]
   (cons [:e/assoc eid k nil]
@@ -32,8 +28,9 @@
                    (stopped? cooling-down?))]
     [:e/assoc-in eid [k (:property/id skill) :skill/cooling-down?] false]))
 
-(defn handle [[_ eid add-or-remove skill]]
-  (case add-or-remove
+(defn handle [[_ eid op skill]]
+  [(case op
     :add    (add-skill    eid skill)
-    :remove (remove-skill eid skill)))
-
+    :remove (remove-skill eid skill))
+   (when (:entity/player? @eid)
+     [:widgets/action-bar op skill])])

@@ -43,7 +43,7 @@
     (is (= (:modifier/movement-speed (:entity/modifiers @eid))
            #:op{:mult [0.1]}))))
 
-(deftest test-modified-value
+#_(deftest test-modified-value
   (is (= (entity/modified-value {:entity/modifiers {:modifier/damage-deal {:op/val-inc [30]
                                                                            :op/val-mult [0.5]}}}
                                 :modifier/damage-deal

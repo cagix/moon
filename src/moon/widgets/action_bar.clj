@@ -15,35 +15,38 @@
 (defn- group->button-group [group]
   (.getUserObject (.findActor group "action-bar/button-group")))
 
-(defmethods :widgets/action-bar
-  (component/create [_]
-    (let [group (ui/horizontal-group {:pad 2 :space 2})]
-      (a/set-id! group ::action-bar)
-      (ui/add-actor! group (action-bar-button-group))
-      group)))
-
 (defn- get-action-bar []
   (let [group (::action-bar (:action-bar-table (stage/get)))]
     {:horizontal-group group
      :button-group (group->button-group group)}))
 
-(defmethods :tx.action-bar/add
-  (component/handle [[_ {:keys [property/id entity/image] :as skill}]]
-    (let [{:keys [horizontal-group button-group]} (get-action-bar)
-          button (ui/image-button image (fn []) {:scale image-scale})]
-      (a/set-id! button id)
-      (ui/add-tooltip! button #(component/->info skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-      (ui/add-actor! horizontal-group button)
-      (ui/bg-add! button-group button)
-      nil)))
+(defn- add-skill [{:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar)
+        button (ui/image-button image (fn []) {:scale image-scale})]
+    (a/set-id! button id)
+    (ui/add-tooltip! button #(component/->info skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (ui/add-actor! horizontal-group button)
+    (ui/bg-add! button-group button)
+    nil))
 
-(defmethods :tx.action-bar/remove
-  (component/handle [[_ {:keys [property/id]}]]
-    (let [{:keys [horizontal-group button-group]} (get-action-bar)
-          button (get horizontal-group id)]
-      (a/remove! button)
-      (ui/bg-remove! button-group button)
-      nil)))
+(defn- remove-skill [{:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar)
+        button (get horizontal-group id)]
+    (a/remove! button)
+    (ui/bg-remove! button-group button)
+    nil))
+
+(defmethods :widgets/action-bar
+  (component/create [_]
+    (let [group (ui/horizontal-group {:pad 2 :space 2})]
+      (a/set-id! group ::action-bar)
+      (ui/add-actor! group (action-bar-button-group))
+      group))
+
+  (component/handle [[_ op skill]]
+    (case op
+      :add    (add-skill    skill)
+      :remove (remove-skill skill))))
 
 (defn selected-skill []
   (when-let [skill-button (ui/bg-checked (:button-group (get-action-bar)))]
