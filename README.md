@@ -1,4 +1,4 @@
-![moon_background](https://github.com/user-attachments/assets/02b007a9-cf1d-4ce4-92ae-e4299684b99c)
+![moon 2](https://github.com/user-attachments/assets/f26d7060-a3f7-4fde-bc2b-5a97dd3f51e4)
 
 Based on [clojure](https://clojure.org/) & [libgdx](https://libgdx.com/).
 
