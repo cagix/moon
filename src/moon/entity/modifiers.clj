@@ -29,9 +29,9 @@
 (defn value
   ([entity k]
    (when-let [base-value (k entity)]
-     (value entity (modifier-k k) base-value)))
+     (value base-value entity (modifier-k k))))
 
-  ([{:keys [entity/modifiers]} k base-value]
+  ([base-value {:keys [entity/modifiers]} k]
    {:pre [(= "modifier" (namespace k))]}
    (ops/apply (k modifiers)
               base-value)))
