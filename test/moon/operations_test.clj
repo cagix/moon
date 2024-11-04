@@ -13,23 +13,23 @@
 
 (deftest info
   (= (ops/info {:op/inc -4
-                     :op/mult 24}
-                    "Strength")
+                :op/mult 24}
+               "Strength")
      "-4 Strength\n+24% Strength")
 
   (= (ops/info {:op/inc -4
-                     :op/mult 0}
-                    "Strength")
+                :op/mult 0}
+               "Strength")
      "-4 Strength")
 
   (= (ops/info {:op/max-inc 0
-                     :op/max-mult 35}
-                    "Hitpoints")
+                :op/max-mult 35}
+               "Hitpoints")
      "+35% Maximum Hitpoints")
 
   (= (ops/info {:op/max-inc -30
-                     :op/max-mult 5}
-                    "Hitpoints")
+                :op/max-mult 5}
+               "Hitpoints")
      "-30 Maximum Hitpoints\n+5% Maximum Hitpoints"))
 
 (deftest ops-apply

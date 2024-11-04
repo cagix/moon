@@ -5,6 +5,21 @@
             [moon.modifiers :as mods]
             moon.tx.entity))
 
+(deftest add-mods
+  (is (= (mods/add {:modifier/movement-speed {:op/mult 10}}
+                   {:modifier/movement-speed {:op/mult -10}})
+         {:modifier/movement-speed {:op/mult 0}}))
+
+  (is (= (mods/add {:modifier/strength {:op/inc 3}}
+                   {:modifier/movement-speed {:op/mult -1}})
+         {:modifier/strength {:op/inc 3}
+          :modifier/movement-speed {:op/mult -1}})))
+
+(deftest remove-mods
+  (is (= (mods/remove {:modifier/movement-speed {:op/mult 50}}
+                      {:modifier/movement-speed {:op/mult -10}})
+         {:modifier/movement-speed {:op/mult 60}})))
+
 (deftest handler
   (let [mods     {:modifier/movement-speed {:op/mult [0.1]}}
         new-mods {:modifier/movement-speed {:op/mult -0.1}}
