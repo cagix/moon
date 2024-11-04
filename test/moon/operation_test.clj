@@ -2,8 +2,8 @@
   (:require [clojure.test :refer :all]
             [moon.operation :as op]))
 
-(deftest val-max-op-k->parts
-  (is (= (#'op/val-max-op-k->parts :op/val-inc) [:val :op/inc])))
+(deftest k->parts
+  (is (= (#'op/k->parts :op/val-inc) [:val :op/inc])))
 
 (deftest val-max-ops
   (is (= (op/apply [:op/val-inc 30]   [5 10]) [35 35]))
