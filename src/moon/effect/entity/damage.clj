@@ -18,28 +18,28 @@
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
 
-(defn- ->effective-damage [damage source*]
+(defn- effective-damage [damage source*]
   (update damage :damage/min-max #(mods/value source* :modifier/damage-deal %)))
 
 (comment
  (let [->source (fn [mods] {:entity/modifiers mods})]
    (and
-    (= (->effective-damage {:damage/min-max [5 10]}
-                           (->source {:modifier/damage-deal {:op/val-inc [1 5 10]
-                                                             :op/val-mult [0.2 0.3]
-                                                             :op/max-mult [1]}}))
+    (= (effective-damage {:damage/min-max [5 10]}
+                         (->source {:modifier/damage-deal {:op/val-inc [1 5 10]
+                                                           :op/val-mult [0.2 0.3]
+                                                           :op/max-mult [1]}}))
        {:damage/min-max [31 62]})
 
-    (= (->effective-damage {:damage/min-max [5 10]}
-                           (->source {:modifier/damage-deal {:op/val-inc [1]}}))
+    (= (effective-damage {:damage/min-max [5 10]}
+                         (->source {:modifier/damage-deal {:op/val-inc [1]}}))
        {:damage/min-max [6 10]})
 
-    (= (->effective-damage {:damage/min-max [5 10]}
-                           (->source {:modifier/damage-deal {:op/max-mult [2]}}))
+    (= (effective-damage {:damage/min-max [5 10]}
+                         (->source {:modifier/damage-deal {:op/max-mult [2]}}))
        {:damage/min-max [5 30]})
 
-    (= (->effective-damage {:damage/min-max [5 10]}
-                           (->source nil))
+    (= (effective-damage {:damage/min-max [5 10]}
+                         (->source nil))
        {:damage/min-max [5 10]}))))
 
 (defn- damage->text [{[min-dmg max-dmg] :damage/min-max}]
@@ -47,7 +47,7 @@
 
 (defn info [[_ damage]]
   (if source
-    (let [modified (->effective-damage damage @source)]
+    (let [modified (effective-damage damage @source)]
       (if (= damage modified)
         (damage->text damage)
         (str (damage->text damage) "\nModified: " (damage->text modified))))
@@ -70,7 +70,7 @@
 
      :else
      (let [;_ (println "Source unmodified damage:" damage)
-           {:keys [damage/min-max]} (->effective-damage damage source*)
+           {:keys [damage/min-max]} (effective-damage damage source*)
            ;_ (println "\nSource modified: min-max:" min-max)
            min-max (mods/value target* :modifier/damage-receive min-max)
            ;_ (println "effective min-max: " min-max)
