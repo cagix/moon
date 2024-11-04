@@ -26,6 +26,10 @@
         ; How tf does thi work?
         ; its because with val-max I dont apply mods to val?
         ; so confusing
+        ; we don't apply effects on modified values ....
+        ; otherwise we just add more modifiers...
+        ; we have to use mods/value because thats how we get current hp/mana
+        ; although it is never modified ... ? or is it ?
         [[:e/assoc effect/target stat-k (ops/apply operations value)]]))))
 
 (defmethod component/info :entity/stat [[k v]]
