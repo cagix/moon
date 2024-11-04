@@ -1,4 +1,5 @@
-![moon 2](https://github.com/user-attachments/assets/f26d7060-a3f7-4fde-bc2b-5a97dd3f51e4)
+![moon 2](https://github.com/user-attachments/assets/b1c666de-2aad-427f-b06a-c838048958bb)
+
 
 Based on [clojure](https://clojure.org/) & [libgdx](https://libgdx.com/).
 
