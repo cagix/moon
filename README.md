@@ -2,9 +2,11 @@
 
 ![moon 2](https://github.com/user-attachments/assets/b1c666de-2aad-427f-b06a-c838048958bb)
 
-Based on [clojure](https://clojure.org/) & [libgdx](https://libgdx.com/).
+Moon Engine is an open-source Action RPG-Maker written in [clojure](https://clojure.org/) and utilizing [libgdx](https://libgdx.com/) as a `backend`.
 
-Featuring a property editor for creatures, skills, items, effects, modifiers, and audiovisuals..
+It supports a property-editor for all game relevant components like audiovisuals, creatures, items, skills, and ... effects/modifiers.
+
+Everything is stored in a 'DATABASE' where stuff can be edited.... => So why not make it a separate project the 'moon.db' project?
 
 ## Video
 
