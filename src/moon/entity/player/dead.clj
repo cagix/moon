@@ -9,7 +9,7 @@
 
 (defn enter [_]
   [[:tx/sound "sounds/bfxr_playerdeath.wav"]
-   [:widgets/player-modal {:title "YOU DIED"
-                           :text "\nGood luck next time"
-                           :button-text ":("
-                           :on-click #(screen/change :screens/main-menu)}]])
+   [:tx/player-modal {:title "YOU DIED"
+                      :text "\nGood luck next time"
+                      :button-text ":("
+                      :on-click #(screen/change :screens/main-menu)}]])
