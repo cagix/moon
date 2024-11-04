@@ -4,7 +4,8 @@
             [clojure.java.io :as io]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [gdl.utils :refer [safe-get truncate ->edn-str]]))
+            [gdl.utils :refer [safe-get truncate ->edn-str]])
+  (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
 (def schemas (-> "schema.edn"
                  io/resource
@@ -36,7 +37,7 @@
      :s/map
 
      (#{:s/number :s/nat-int :s/int :s/pos :s/pos-int :s/val-max} stype)
-     :s/number
+     :widget/edn
 
      :else stype)))
 
@@ -48,3 +49,10 @@
 
 (defmethod widget-value :default [_ widget]
   ((actor/id widget) 1))
+
+(defmethod widget :widget/edn [schema v]
+  (ui/add-tooltip! (ui/text-field (->edn-str v) {})
+                   (str schema)))
+
+(defmethod widget-value :widget/edn [_ widget]
+  (edn/read-string (VisTextField/.getText widget)))
