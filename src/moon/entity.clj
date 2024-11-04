@@ -1,5 +1,5 @@
 (ns moon.entity
-  (:require [moon.component :refer [defsystem]]))
+  (:require [gdl.system :refer [defsystem]]))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)

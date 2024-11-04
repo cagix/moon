@@ -1,6 +1,7 @@
 (ns moon.stats
-  (:require [gdl.utils :refer [mapvals k->pretty-name]]
-            [moon.component :as component :refer [defmethods]]
+  (:require [gdl.system :refer [defmethods]]
+            [gdl.utils :refer [mapvals k->pretty-name]]
+            [moon.component :as component]
             [moon.entity :as entity]
             [moon.entity.modifiers :as mods]
             [moon.effect :as effect]

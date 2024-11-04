@@ -1,8 +1,8 @@
 (ns moon.operation
   (:refer-clojure :exclude [apply])
   (:require [clojure.string :as str]
+            [gdl.system :refer [defsystem defmethods]]
             [malli.core :as m]
-            [moon.component :refer [defsystem defmethods]]
             [moon.val-max :as val-max]))
 
 (defsystem value-text)
