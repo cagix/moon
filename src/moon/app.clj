@@ -17,7 +17,7 @@
             [moon.screens.map-editor :as map-editor]
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
-            moon.components))
+            moon.install))
 
 (def ^:private cursors
   {:cursors/bag                   ["bag001"       [0   0]]
