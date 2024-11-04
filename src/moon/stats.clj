@@ -23,6 +23,9 @@
   (component/handle [[effect-k operations]]
     (let [stat-k (stat-k effect-k)]
       (when-let [value (mods/value @effect/target stat-k)]
+        ; How tf does thi work?
+        ; its because with val-max I dont apply mods to val?
+        ; so confusing
         [[:e/assoc effect/target stat-k (ops/apply operations value)]]))))
 
 (defmethod component/info :entity/stat [[k v]]
