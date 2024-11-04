@@ -1,5 +1,4 @@
 (ns moon.effect.projectile
-  "🚧 Under construction ⚠️"
   (:require [gdl.math.vector :as v]
             [moon.effect :refer [source target target-direction]]
             [moon.projectile :as projectile]
@@ -11,8 +10,7 @@
                   (+ (:radius entity) size 0.1))))
 
 ; TODO for npcs need target -- anyway only with direction
-(defn applicable?
-  [_]
+(defn applicable? [_]
   target-direction) ; faction @ source also ?
 
 ; TODO valid params direction has to be  non-nil (entities not los player ) ?
