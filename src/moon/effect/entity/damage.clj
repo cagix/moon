@@ -66,7 +66,7 @@
      []
 
      (armor-saves? source* target*)
-     [[:entity/string-effect target "[WHITE]ARMOR"]] ; TODO !_!_!_!_!_!
+     [[:entity/string-effect target "[WHITE]ARMOR"]]
 
      :else
      (let [;_ (println "Source unmodified damage:" damage)
