@@ -141,19 +141,21 @@
  ;; Stats
  ; * effect.entity & modifier keys have to match name of stats key
 
- :stats/hp :s/pos-int,
+ :stats/hp   :s/pos-int,
+ :stats/mana :s/nat-int,
+ :modifier/hp        [:s/map-optional [:op/max-inc :op/max-mult]],
+ :modifier/mana      [:s/map-optional [:op/max-inc :op/max-mult]],
  :effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- :modifier/hp [:s/map-optional [:op/max-inc :op/max-mult]],
+ :effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
+ ; are all those 4 not just `:ops/val-max` ?
+
 
  ;;
 
- :stats/mana :s/nat-int,
  :stats/movement-speed :s/pos,
  :stats/reaction-time :s/pos-int,
  :stats/strength :s/nat-int,
 
- :effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- :modifier/mana [:s/map-optional [:op/max-inc :op/max-mult]],
 
  :effect.entity/movement-speed [:s/map [:op/mult]],
  :modifier/movement-speed [:s/map-optional [:op/inc :op/mult]],
