@@ -1,6 +1,7 @@
 (ns ^:no-doc moon.components
   (:require [clojure.string :as str]
             [gdl.graphics.color :as color]
+            [gdl.system :as system]
             [gdl.utils :refer [readable-number]]
             [moon.component :as component]
             [moon.entity :as entity]
@@ -35,42 +36,13 @@
       (= (namespace->component-key "moon.effect.entity.convert")
          :effect.entity/convert)))
 
-(defn- add-method [system k avar]
-  (assert (keyword? k))
-  (assert (var? avar) (pr-str avar))
-  (when (k (methods system))
-    (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
-
-  ; TODO check fn-params ... ? compare with sys ?
-  #_(first (:arglists (meta #'render)))
-
-  (alter-meta! avar assoc :no-doc true)
-  (clojure.lang.MultiFn/.addMethod system k avar))
-
-(defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
-  (doseq [system-var system-vars
-          :let [method-var (ns-resolve ns-sym (:name (meta system-var)))]]
-    (assert (or optional? method-var)
-            (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym))
-    (when method-var
-      (add-method @system-var k method-var))))
-
-(defn- ns-publics-without-no-doc? [ns]
-  (some #(not (:no-doc (meta %))) (vals (ns-publics ns))))
-
 (defn- install
   ([component-systems ns-sym]
-   (install component-systems
-            ns-sym
-            (namespace->component-key (str ns-sym))))
-
+   (system/install component-systems
+                   ns-sym
+                   (namespace->component-key (str ns-sym))))
   ([component-systems ns-sym k]
-   (require ns-sym)
-   (add-methods (:required component-systems) ns-sym k)
-   (add-methods (:optional component-systems) ns-sym k :optional? true)
-   (let [ns (find-ns ns-sym)]
-     (when-not (ns-publics-without-no-doc? ns)
-       (alter-meta! ns assoc :no-doc true)))))
+   (system/install component-systems ns-sym k)))
 
 (def ^:private effect
   {:required [#'component/applicable?
