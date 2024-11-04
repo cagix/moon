@@ -26,36 +26,3 @@
 (defmethod render-info :default [_ entity])
 
 (def render-systems [render-below render render-above render-info])
-
-;; State
-
-(defsystem enter)
-(defmethod enter :default [_])
-
-(defsystem exit)
-(defmethod exit :default [_])
-
-(defsystem player-enter)
-(defmethod player-enter :default [_])
-
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
-
-(defsystem manual-tick)
-(defmethod manual-tick :default [_])
-
-(defsystem clicked-inventory-cell [_ cell])
-(defmethod clicked-inventory-cell :default [_ cell])
-
-(defsystem clicked-skillmenu-skill [_ skill])
-(defmethod clicked-skillmenu-skill :default [_ skill])
-
-(defsystem draw-gui-view [_])
-(defmethod draw-gui-view :default [_])
-
-(defn state-k [entity]
-  (-> entity :entity/fsm :state))
-
-(defn state-obj [entity]
-  (let [k (state-k entity)]
-    [k (k entity)]))

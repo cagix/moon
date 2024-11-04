@@ -1,8 +1,5 @@
 (ns ^:no-doc moon.widgets.skill-window)
 
-#_(defn- player-clicked-skillmenu [skill]
-  (entity/clicked-skillmenu-skill (entity/state-obj @player/eid) skill))
-
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player/eid))
 #_(defn ->skill-window []

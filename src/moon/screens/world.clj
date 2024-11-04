@@ -11,7 +11,6 @@
             [gdl.utils :refer [tile->middle dev-mode?]]
             [moon.controls :as controls]
             [moon.component :as component]
-            [moon.entity :as entity]
             [moon.entity.movement :as movement]
             [moon.level :as level]
             [moon.player :as player]
@@ -79,7 +78,7 @@
               :fill-parent? true})
    (component/create [:widgets/hp-mana])
    (windows/create)
-   (ui/actor {:draw #(entity/draw-gui-view (entity/state-obj @player/eid))})
+   (ui/actor {:draw player/draw-state})
    (component/create [:widgets/player-message])])
 
 (defn start [world-id]
@@ -104,18 +103,15 @@
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn- player-state-pause-game? [] (entity/pause-game? (entity/state-obj @player/eid)))
-(defn- player-update-state      [] (entity/manual-tick (entity/state-obj @player/eid)))
-
 (defn- update-game-paused []
   (bind-root #'paused? (or tick-error
                            (and pausing?
-                                (player-state-pause-game?)
+                                (player/state-pauses-game?)
                                 (not (controls/unpaused?)))))
   nil)
 
 (def ^:private update-world
-  [player-update-state
+  [player/update-state
    mouseover/update ; this do always so can get debug info even when game not running
    update-game-paused
    #(when-not paused?

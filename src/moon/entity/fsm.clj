@@ -1,7 +1,24 @@
 (ns moon.entity.fsm
-  (:require [moon.component :as component]
+  (:require [gdl.system :refer [defsystem]]
+            [moon.component :as component]
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))
+
+(defsystem enter)
+(defmethod enter :default [_])
+
+(defsystem exit)
+(defmethod exit :default [_])
+
+(defsystem player-enter)
+(defmethod player-enter :default [_])
+
+(defn state-k [entity]
+  (-> entity :entity/fsm :state))
+
+(defn state-obj [entity]
+  (let [k (state-k entity)]
+    [k (k entity)]))
 
 ; fsm throws when initial-state is not part of states, so no need to assert initial-state
 ; initial state is nil, so associng it. make bug report at reduce-fsm?
@@ -14,12 +31,12 @@
           new-fsm (fsm/fsm-event fsm event)
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (entity/state-obj @eid)
+        (let [old-state-obj (state-obj @eid)
               new-state-obj [new-state-k (entity/->v [new-state-k eid params])]]
-          [#(entity/exit old-state-obj)
-           #(entity/enter new-state-obj)
+          [#(exit old-state-obj)
+           #(enter new-state-obj)
            (when (:entity/player? @eid)
-             #(entity/player-enter new-state-obj))
+             #(player-enter new-state-obj))
            [:e/assoc eid :entity/fsm new-fsm]
            [:e/dissoc eid old-state-k]
            [:e/assoc eid new-state-k (new-state-obj 1)]])))))

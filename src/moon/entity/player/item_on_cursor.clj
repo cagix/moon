@@ -5,7 +5,7 @@
             [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.stage :refer [mouse-on-actor?]]
-            [moon.entity :as entity]
+            [moon.entity.fsm :as fsm]
             [moon.player :as player]
             [moon.item :refer [valid-slot? stackable?]]))
 
@@ -98,7 +98,7 @@
 
 (defn draw-gui-view [[_ {:keys [eid]}]]
   (let [entity @eid]
-    (when (and (= :player-item-on-cursor (entity/state-k entity))
+    (when (and (= :player-item-on-cursor (fsm/state-k entity))
                (not (world-item?)))
       (image/draw-centered (:entity/image (:entity/item-on-cursor entity))
                            (gui-view/mouse-position)))))

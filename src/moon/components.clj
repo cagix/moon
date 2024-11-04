@@ -1,6 +1,8 @@
 (ns moon.components
   (:require [moon.component :as component]
-            [moon.entity :as entity]))
+            [moon.entity :as entity]
+            [moon.entity.fsm :as fsm]
+            [moon.player :as player]))
 
 (def effect
   {:required [#'component/applicable?
@@ -27,14 +29,14 @@
 (def entity-state
   (merge-with concat
               entity
-              {:optional [#'entity/enter
-                          #'entity/exit
-                          #'entity/player-enter
-                          #'entity/pause-game?
-                          #'entity/manual-tick
-                          #'entity/clicked-inventory-cell
-                          #'entity/clicked-skillmenu-skill
-                          #'entity/draw-gui-view]}))
+              {:optional [#'fsm/enter
+                          #'fsm/exit
+                          #'fsm/player-enter
+                          #'player/pause-game?
+                          #'player/manual-tick
+                          #'player/clicked-inventory-cell
+                          #'player/clicked-skillmenu-skill
+                          #'player/draw-gui-view]}))
 
 (def tx
   {:required [#'component/handle]})
