@@ -5,8 +5,6 @@
             [moon.component :refer [defsystem defmethods]]
             [moon.val-max :as val-max]))
 
-; TODO assert here also int?
-
 (defsystem value-text)
 
 (defsystem apply [_ base-value])
@@ -40,10 +38,6 @@
   (let [[val-or-max inc-or-mult] (mapv keyword (str/split (name op-k) #"-"))]
     [val-or-max (keyword "op" (name inc-or-mult))]))
 
-(comment
- (= (val-max-op-k->parts :op/val-inc) [:val :op/inc])
- )
-
 (defmethods :op/val-max
   (value-text [[op-k value]]
     (let [[val-or-max op-k] (val-max-op-k->parts op-k)]
@@ -73,13 +67,3 @@
 (derive :op/val-mult :op/val-max)
 (derive :op/max-inc  :op/val-max)
 (derive :op/max-mult :op/val-max)
-
-(comment
- (and
-  (= (op/apply [:op/val-inc 30]    [5 10]) [35 35])
-  (= (op/apply [:op/max-mult -0.5] [5 10]) [5 5])
-  (= (op/apply [:op/val-mult 2]    [5 10]) [15 15])
-  (= (op/apply [:op/val-mult 1.3]  [5 10]) [11 11])
-  (= (op/apply [:op/max-mult -0.8] [5 10]) [1 1])
-  (= (op/apply [:op/max-mult -0.9] [5 10]) [0 0]))
- )
