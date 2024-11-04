@@ -1,7 +1,5 @@
 (ns moon.app
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [gdl.assets :as assets]
+  (:require [gdl.assets :as assets]
             [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.batch :as batch]
