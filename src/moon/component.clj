@@ -13,7 +13,7 @@
                                  (fn? tx) (tx)
                                  :else (handle tx))
                            (catch Throwable t
-                             (throw (ex-info "Error with transactions" {:tx tx} t))))]
+                             (throw (ex-info "Error with transaction" {:tx tx} t))))]
       (->handle result))))
 
 (defsystem info)
