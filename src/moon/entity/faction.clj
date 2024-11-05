@@ -1,6 +1,6 @@
 (ns moon.entity.faction)
 
-(defn info [[_ faction]]
+(defn info [faction]
   (str "[SLATE]Faction: " (name faction) "[]"))
 
 (defn enemy [{:keys [entity/faction]}]

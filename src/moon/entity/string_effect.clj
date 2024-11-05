@@ -1,13 +1,14 @@
 (ns moon.entity.string-effect
   (:require [gdl.graphics.text :as text]
             [gdl.graphics.world-view :as world-view]
+            [gdl.system :refer [*k*]]
             [moon.world.time :as time :refer [timer stopped?]]))
 
-(defn tick [[k {:keys [counter]}] eid]
+(defn tick [{:keys [counter]} eid]
   (when (stopped? counter)
-    [[:e/dissoc eid k]]))
+    [[:e/dissoc eid *k*]]))
 
-(defn render-above [[_ {:keys [text]}] entity]
+(defn render-above [{:keys [text]} entity]
   (let [[x y] (:position entity)]
     (text/draw {:text text
                 :x x
@@ -15,9 +16,9 @@
                 :scale 2
                 :up? true})))
 
-(defn handle [[k eid text]]
-  [[:e/assoc eid k
-    (if-let [string-effect (k @eid)]
+(defn handle [eid text]
+  [[:e/assoc eid *k*
+    (if-let [string-effect (*k* @eid)]
       (-> string-effect
           (update :text str "\n" text)
           (update :counter time/reset))

@@ -1,7 +1,7 @@
 (ns moon.tx.line-render
   (:require [moon.body :as body]))
 
-(defn handle [[_ {:keys [start end duration color thick?]}]]
+(defn handle [{:keys [start end duration color thick?]}]
   [[:e/create
     start
     body/effect-body-props

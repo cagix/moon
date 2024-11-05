@@ -35,7 +35,7 @@
     ctx
     (dissoc ctx :effect/target)))
 
-(defn ->v [[_ eid [skill effect-ctx]]]
+(defn ->v [eid [skill effect-ctx]]
   {:eid eid
    :skill skill
    :effect-ctx effect-ctx
@@ -50,7 +50,7 @@
 (defn pause-game? [_]
   false)
 
-(defn enter [[_ {:keys [eid skill]}]]
+(defn enter [{:keys [eid skill]}]
   [[:tx/sound (:skill/start-action-sound skill)]
 
    (when (:skill/cooldown skill)
@@ -60,7 +60,7 @@
               (not (zero? (:skill/cost skill))))
      [:tx.entity.stats/pay-mana-cost eid (:skill/cost skill)])])
 
-(defn tick [[_ {:keys [skill effect-ctx counter]}] eid]
+(defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
    (effect/with-ctx (check-update-ctx effect-ctx)
      (not (effect/applicable? (:skill/effects skill))))
@@ -72,7 +72,7 @@
    [[:entity/fsm eid :action-done]
     [:tx/effect effect-ctx (:skill/effects skill)]]))
 
-(defn render-info [[_ {:keys [skill effect-ctx counter]}] entity]
+(defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
     (effect/with-ctx (check-update-ctx effect-ctx)

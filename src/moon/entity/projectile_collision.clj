@@ -1,13 +1,14 @@
 (ns moon.entity.projectile-collision
-  (:require [gdl.utils :refer [find-first]]
+  (:require [gdl.system :refer [*k*]]
+            [gdl.utils :refer [find-first]]
             [moon.body :as body]
             [moon.world.grid :as grid]))
 
-(defn ->v [[_ v]]
+(defn ->v [v]
   (assoc v :already-hit-bodies #{}))
 
 ; TODO probably belongs to body
-(defn tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
+(defn tick [{:keys [entity-effects already-hit-bodies piercing?]} eid]
   ; TODO this could be called from body on collision
   ; for non-solid
   ; means non colliding with other entities
@@ -23,7 +24,7 @@
         destroy? (or (and hit-entity (not piercing?))
                      (some #(grid/blocked? % (:z-order entity)) cells*))]
     [(when hit-entity
-       [:e/assoc-in eid [k :already-hit-bodies] (conj already-hit-bodies hit-entity)]) ; this is only necessary in case of not piercing ...
+       [:e/assoc-in eid [*k* :already-hit-bodies] (conj already-hit-bodies hit-entity)]) ; this is only necessary in case of not piercing ...
      (when destroy?
        [:e/destroy eid])
      (when hit-entity

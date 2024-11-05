@@ -49,7 +49,7 @@
         (try-move body (assoc movement :direction [xdir 0]))
         (try-move body (assoc movement :direction [0 ydir])))))
 
-(defn tick [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}] eid]
+(defn tick [{:keys [direction speed rotate-in-movement-direction?] :as movement} eid]
   (assert (m/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
@@ -68,7 +68,7 @@
            [:e/assoc eid :rotation-angle (v/angle-from-vector direction)])
          [:world/entity :position-changed eid]]))))
 
-(defn handle [[_ eid movement]]
+(defn handle [eid movement]
   (assert (or (nil? movement)
               (nil? (:direction movement))
               (and (:direction movement) ; continue schema of that ...

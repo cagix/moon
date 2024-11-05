@@ -2,7 +2,7 @@
   (:require [gdl.input :refer [WASD-movement-vector]]
             [moon.entity.modifiers :as mods]))
 
-(defn ->v [[_ eid movement-vector]]
+(defn ->v [eid movement-vector]
   {:eid eid
    :movement-vector movement-vector})
 
@@ -12,14 +12,14 @@
 (defn pause-game? [_]
   false)
 
-(defn enter [[_ {:keys [eid movement-vector]}]]
+(defn enter [{:keys [eid movement-vector]}]
   [[:entity/movement eid {:direction movement-vector
                           :speed (mods/value @eid :stats/movement-speed)}]])
 
-(defn exit [[_ {:keys [eid]}]]
+(defn exit [{:keys [eid]}]
   [[:entity/movement eid nil]])
 
-(defn tick [[_ {:keys [movement-vector]}] eid]
+(defn tick [{:keys [movement-vector]} eid]
   (if-let [movement-vector (WASD-movement-vector)]
     [[:entity/movement eid {:direction movement-vector
                             :speed (mods/value @eid :stats/movement-speed)}]]

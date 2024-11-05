@@ -106,7 +106,7 @@
       (.row table))
     table))
 
-(defn create [_]
+(defn create []
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
@@ -132,7 +132,7 @@
     (ui/set-drawable! image-widget (slot->background (cell 0)))
     (ui/remove-tooltip! cell-widget)))
 
-(defn handle [[_ op & args]]
+(defn handle [op & args]
   (case op
     :set    (apply set-item-image-in-widget args)
     :remove (apply remove-item-from-widget  args))

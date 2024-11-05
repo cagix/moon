@@ -14,7 +14,7 @@
               :y (+ y 2)
               :up? true}))
 
-(defn create [_]
+(defn create []
   (let [rahmen      (img/image "images/rahmen.png")
         hpcontent   (img/image "images/hp.png")
         manacontent (img/image "images/mana.png")

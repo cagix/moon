@@ -2,7 +2,7 @@
   (:require [moon.body :as body]
             [moon.world.time :refer [timer]]))
 
-(defn handle [[_ position faction delay-seconds]]
+(defn handle [position faction delay-seconds]
   [[:e/create
     position
     body/effect-body-props

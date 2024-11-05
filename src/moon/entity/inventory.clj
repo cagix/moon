@@ -1,5 +1,6 @@
 (ns moon.entity.inventory
-  (:require [gdl.utils :refer [find-first]]
+  (:require [gdl.system :refer [*k*]]
+            [gdl.utils :refer [find-first]]
             [moon.item :as item]))
 
 (defn- applies-modifiers? [[slot _]]
@@ -66,12 +67,11 @@
 (defn can-pickup-item? [eid item]
   (boolean (pickup-item eid item)))
 
-(defn create [[k items] eid]
-  (cons [:e/assoc eid k item/empty-inventory]
-        (for [item items]
-          [k :pickup eid item])))
+(defn create [items eid]
+  (cons [:e/assoc eid *k* item/empty-inventory]
+        (mapv #(vector *k* :pickup eid %) items)))
 
-(defn handle [[_ op & args]]
+(defn handle [op & args]
   (case op
     :set    (apply set-item    args)
     :remove (apply remove-item args)

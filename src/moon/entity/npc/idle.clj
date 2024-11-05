@@ -37,7 +37,7 @@
                      (effect/useful? (:skill/effects %))))
        first))
 
-(defn ->v [[_ eid]]
+(defn ->v [eid]
   {:eid eid})
 
 (defn tick [_ eid]

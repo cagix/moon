@@ -16,7 +16,7 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn handle [[_ {:keys [position creature-id components]}]]
+(defn handle [{:keys [position creature-id components]}]
   (let [props (db/get creature-id)]
     [[:e/create
       position

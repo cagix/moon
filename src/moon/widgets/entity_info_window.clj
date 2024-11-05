@@ -9,7 +9,7 @@
                                 :entity/faction
                                 :active-skill])
 
-(defn create [_]
+(defn create []
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window

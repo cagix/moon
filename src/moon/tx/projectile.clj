@@ -2,14 +2,12 @@
   (:require [gdl.math.vector :as v]
             [moon.projectile :as projectile]))
 
-(defn handle
-  [[_
-    {:keys [position direction faction]}
-    {:keys [entity/image
-            projectile/max-range
-            projectile/speed
-            entity-effects
-            projectile/piercing?] :as projectile}]]
+(defn handle [{:keys [position direction faction]}
+              {:keys [entity/image
+                      projectile/max-range
+                      projectile/speed
+                      entity-effects
+                      projectile/piercing?] :as projectile}]
   (let [size (projectile/size projectile)]
     [[:e/create
       position

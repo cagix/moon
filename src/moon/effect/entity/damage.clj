@@ -19,7 +19,7 @@
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
 
-(defn info [[_ damage]]
+(defn info [damage]
   (if source
     (let [modified (damage/modified @source damage)]
       (if (= damage modified)
@@ -31,7 +31,7 @@
   (and target
        (mods/value @target :stats/hp)))
 
-(defn handle [[_ damage]]
+(defn handle [damage]
   (let [source* @source
         target* @target
         hp (mods/value target* :stats/hp)]

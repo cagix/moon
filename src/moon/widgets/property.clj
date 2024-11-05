@@ -40,5 +40,5 @@
     (.pack window)
     window))
 
-(defn create [[_ props]]
+(defn create [props]
   (props->editor-window props))

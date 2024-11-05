@@ -36,13 +36,13 @@
     (ui/bg-remove! button-group button)
     nil))
 
-(defn create [_]
+(defn create []
   (let [group (ui/horizontal-group {:pad 2 :space 2})]
     (a/set-id! group ::action-bar)
     (ui/add-actor! group (action-bar-button-group))
     group))
 
-(defn handle [[_ op skill]]
+(defn handle [op skill]
   (case op
     :add    (add-skill    skill)
     :remove (remove-skill skill)))

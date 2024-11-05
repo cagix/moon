@@ -1,7 +1,7 @@
 (ns moon.fsms.player
   (:require [reduce-fsm :as fsm]))
 
-(defn create [_]
+(defn create []
   (fsm/fsm-inc
    [[:player-idle
      :kill -> :player-dead

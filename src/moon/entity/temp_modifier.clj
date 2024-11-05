@@ -1,14 +1,15 @@
 (ns moon.entity.temp-modifier
   (:require [gdl.graphics.shape-drawer :as sd]
+            [gdl.system :refer [*k*]]
             [gdl.utils :refer [readable-number]]
             [moon.world.time :refer [stopped? finished-ratio]]))
 
-(defn info [[_ {:keys [counter]}]]
+(defn info [{:keys [counter]}]
   (str "[LIGHT_GRAY]Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1[]"))
 
-(defn tick [[k {:keys [modifiers counter]}] eid]
+(defn tick [{:keys [modifiers counter]} eid]
   (when (stopped? counter)
-    [[:e/dissoc eid k]
+    [[:e/dissoc eid *k*]
      [:entity/modifiers eid :remove modifiers]]))
 
 ; TODO draw opacity as of counter ratio?

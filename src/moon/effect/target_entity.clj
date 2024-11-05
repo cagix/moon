@@ -23,16 +23,16 @@
          (v/scale (body/direction entity target*)
                   maxrange)))
 
-(defn applicable? [[_ {:keys [entity-effects]}]]
+(defn applicable? [{:keys [entity-effects]}]
   (and target
        (effect/applicable? entity-effects)))
 
-(defn useful? [[_ {:keys [maxrange]}]]
+(defn useful? [{:keys [maxrange]}]
   (assert (bound? #'source))
   (assert (bound? #'target))
   (in-range? @source @target maxrange))
 
-(defn handle [[_ {:keys [maxrange entity-effects]}]]
+(defn handle [{:keys [maxrange entity-effects]}]
   (let [source* @source
         target* @target]
     (if (in-range? source* target* maxrange)
@@ -60,7 +60,7 @@
        ; * either use 'MISS' or get enemy entities at end-point
        [:tx/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground]])))
 
-(defn render [[_ {:keys [maxrange]}]]
+(defn render [{:keys [maxrange]}]
   (when target
     (let [source* @source
           target* @target]

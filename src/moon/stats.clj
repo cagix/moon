@@ -1,5 +1,5 @@
 (ns moon.stats
-  (:require [gdl.system :refer [defmethods]]
+  (:require [gdl.system :refer [defmethods *k*]]
             [gdl.utils :refer [mapvals k->pretty-name]]
             [moon.component :as component]
             [moon.entity :as entity]
@@ -14,15 +14,15 @@
   (component/info [[k ops]]
     (ops/info ops k))
 
-  (component/applicable? [[k _]]
+  (component/applicable? [_]
     (and effect/target
-         (mods/value @effect/target (stat-k k))))
+         (mods/value @effect/target (stat-k *k*))))
 
   (component/useful? [_]
     true)
 
-  (component/handle [[effect-k operations]]
-    (let [stat-k (stat-k effect-k)]
+  (component/handle [operations]
+    (let [stat-k (stat-k *k*)]
       (when-let [value (mods/value @effect/target stat-k)]
         ; How tf does thi work?
         ; its because with val-max I dont apply mods to val?

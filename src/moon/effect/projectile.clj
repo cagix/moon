@@ -14,8 +14,7 @@
   target-direction) ; faction @ source also ?
 
 ; TODO valid params direction has to be  non-nil (entities not los player ) ?
-(defn useful?
-  [[_ {:keys [projectile/max-range] :as projectile}]]
+(defn useful? [{:keys [projectile/max-range] :as projectile}]
   (let [source-p (:position @source)
         target-p (:position @target)]
     ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
@@ -28,8 +27,7 @@
                         target-p)
             max-range))))
 
-(defn handle
-  [[_ projectile]]
+(defn handle [projectile]
   [[:tx/sound "sounds/bfxr_waypointunlock.wav"]
    [:tx/projectile
     {:position (start-point @source target-direction (projectile/size projectile))

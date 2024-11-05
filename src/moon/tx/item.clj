@@ -5,7 +5,7 @@
    :height 0.75
    :z-order :z-order/on-ground})
 
-(defn handle [[_ position item]]
+(defn handle [position item]
   [[:e/create
     position
     body-props

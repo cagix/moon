@@ -23,6 +23,6 @@
                                  (* (gui-view/height) (/ 3 4))]
                :pack? true})))
 
-(defn handle [[_ params]]
+(defn handle [params]
   (show-player-modal! params)
   nil)

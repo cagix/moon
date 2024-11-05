@@ -2,7 +2,7 @@
   (:require [gdl.graphics.shape-drawer :as sd]
             [moon.world.time :refer [timer stopped?]]))
 
-(defn ->v [[_ eid duration]]
+(defn ->v [eid duration]
   {:eid eid
    :counter (timer duration)})
 
@@ -12,7 +12,7 @@
 (defn pause-game? [_]
   false)
 
-(defn tick [[_ {:keys [counter]}] eid]
+(defn tick [{:keys [counter]} eid]
   (when (stopped? counter)
     [[:entity/fsm eid :effect-wears-off]]))
 

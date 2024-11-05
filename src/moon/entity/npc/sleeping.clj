@@ -5,10 +5,10 @@
             [moon.entity.modifiers :as mods]
             [moon.world.grid :as grid]))
 
-(defn ->v [[_ eid]]
+(defn ->v [eid]
   {:eid eid})
 
-(defn exit [[_ {:keys [eid]}]]
+(defn exit [{:keys [eid]}]
   [[:entity/string-effect eid "[WHITE]!"]
    [:tx/shout (:position @eid) (:entity/faction @eid) 0.2]])
 

@@ -2,7 +2,7 @@
   (:require [moon.body :as body]
             [moon.db :as db]))
 
-(defn handle [[_ position id]]
+(defn handle [position id]
   (let [{:keys [tx/sound entity/animation]} (db/get id)]
     [[:tx/sound sound]
      [:e/create

@@ -1,4 +1,4 @@
 (ns moon.entity.destroy-audiovisual)
 
-(defn destroy [[_ audiovisuals-id] eid]
+(defn destroy [audiovisuals-id eid]
   [[:tx/audiovisual (:position @eid) audiovisuals-id]])

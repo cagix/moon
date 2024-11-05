@@ -8,7 +8,7 @@
   (and (:entity/faction @effect/source)
        effect/target-position))
 
-(defn handle [[_ {:keys [property/id]}]]
+(defn handle [{:keys [property/id]}]
   [[:tx/sound "sounds/bfxr_shield_consume.wav"]
    [:tx/creature {:position effect/target-position
                   :creature-id id ; already properties/get called through one-to-one, now called again.

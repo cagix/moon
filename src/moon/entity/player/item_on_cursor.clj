@@ -62,26 +62,26 @@
 (defn- world-item? []
   (not (mouse-on-actor?)))
 
-(defn ->v [[_ eid item]]
+(defn ->v [eid item]
   {:eid eid
    :item item})
 
 (defn pause-game? [_]
   true)
 
-(defn manual-tick [[_ {:keys [eid]}]]
+(defn manual-tick [{:keys [eid]}]
   (when (and (button-just-pressed? :left)
              (world-item?))
     [[:entity/fsm eid :drop-item]]))
 
-(defn clicked-inventory-cell [[_ {:keys [eid]}] cell]
+(defn clicked-inventory-cell [{:keys [eid]} cell]
   (clicked-cell eid cell))
 
-(defn enter [[_ {:keys [eid item]}]]
+(defn enter [{:keys [eid item]}]
   [[:tx/cursor :cursors/hand-grab]
    [:e/assoc eid :entity/item-on-cursor item]])
 
-(defn exit [[_ {:keys [eid]}]]
+(defn exit [{:keys [eid]}]
   ; at clicked-cell when we put it into a inventory-cell
   ; we do not want to drop it on the ground too additonally,
   ; so we dissoc it there manually. Otherwise it creates another item
@@ -92,11 +92,11 @@
        [:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]
        [:e/dissoc eid :entity/item-on-cursor]])))
 
-(defn render-below [[_ {:keys [item]}] entity]
+(defn render-below [{:keys [item]} entity]
   (when (world-item?)
     (image/draw-centered (:entity/image item) (item-place-position entity))))
 
-(defn draw-gui-view [[_ {:keys [eid]}]]
+(defn draw-gui-view [{:keys [eid]}]
   (let [entity @eid]
     (when (and (= :player-item-on-cursor (fsm/state-k entity))
                (not (world-item?)))

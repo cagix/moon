@@ -1,7 +1,7 @@
 (ns moon.fsms.npc
   (:require [reduce-fsm :as fsm]))
 
-(defn create [_]
+(defn create []
   (fsm/fsm-inc
    [[:npc-sleeping
      :kill -> :npc-dead

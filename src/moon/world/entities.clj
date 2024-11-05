@@ -57,11 +57,10 @@
 (defn- tick-entity [eid]
   (try
    (doseq [k (keys @eid)]
-     (when-let [v (k @eid)]
-       (component/->handle
-        (try (entity/tick [k v] eid)
-             (catch Throwable t
-               (throw (ex-info "entity/tick" {:k k} t)))))))
+     (try (when-let [v (k @eid)]
+            (component/->handle (entity/tick [k v] eid)))
+          (catch Throwable t
+            (throw (ex-info "entity/tick" {:k k} t)))))
    (catch Throwable t
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
 

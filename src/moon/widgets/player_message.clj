@@ -22,10 +22,10 @@
     (when (>= counter duration-seconds)
       (bind-root #'message-to-player nil))))
 
-(defn create [_]
+(defn create []
   (ui/actor {:draw draw-player-message
              :act check-remove-message}))
 
-(defn handle [[_ message]]
+(defn handle [message]
   (bind-root #'message-to-player {:message message :counter 0})
   nil)

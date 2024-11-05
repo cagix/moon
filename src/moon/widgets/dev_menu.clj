@@ -72,7 +72,7 @@
     (add-debug-infos menu-bar)
     menu-bar))
 
-(defn create [_]
+(defn create []
   (ui/table {:rows [[{:actor (.getTable (->menu-bar))
                       :expand-x? true
                       :fill-x? true

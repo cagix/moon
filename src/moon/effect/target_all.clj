@@ -38,7 +38,7 @@
   false
   )
 
-(defn handle [[_ {:keys [entity-effects]}]]
+(defn handle [{:keys [entity-effects]}]
   (let [source* @source]
     (apply concat
            (for [target (creatures-in-los-of-player)]

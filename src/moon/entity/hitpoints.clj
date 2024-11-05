@@ -35,7 +35,7 @@
                            (- height (* 2 border))
                            (hpbar-color ratio)))))
 
-(defn ->v [[_ v]]
+(defn ->v [v]
   [v v])
 
 (defn render-info [_ entity]

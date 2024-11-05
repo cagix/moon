@@ -37,7 +37,7 @@
                        :image/scale 2}
    :properties/worlds {:columns 10}})
 
-(defn create [[_ property-type clicked-id-fn]]
+(defn create [property-type clicked-id-fn]
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns

@@ -1,7 +1,7 @@
 (ns moon.entity.npc.dead)
 
-(defn ->v [[_ eid]]
+(defn ->v [eid]
   {:eid eid})
 
-(defn enter [[_ {:keys [eid]}]]
+(defn enter [{:keys [eid]}]
   [[:e/destroy eid]])

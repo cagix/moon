@@ -10,7 +10,7 @@
        grid/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
-(defn tick [[_ {:keys [counter faction]}] eid]
+(defn tick [{:keys [counter faction]} eid]
   (when (stopped? counter)
     (cons [:e/destroy eid]
           (for [friendly-eid (friendlies-in-radius (:position @eid) faction)]

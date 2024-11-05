@@ -114,13 +114,13 @@
        [:cursors/no-skill-selected
         (fn [] (denied "No selected skill"))]))))
 
-(defn ->v [[_ eid]]
+(defn ->v [eid]
   {:eid eid})
 
 (defn pause-game? [_]
   true)
 
-(defn manual-tick [[_ {:keys [eid]}]]
+(defn manual-tick [{:keys [eid]}]
   (if-let [movement-vector (WASD-movement-vector)]
     [[:entity/fsm eid :movement-input movement-vector]]
     (let [[cursor on-click] (interaction-state eid)]
@@ -128,14 +128,14 @@
             (when (button-just-pressed? :left)
               (on-click))))))
 
-(defn clicked-inventory-cell [[_ {:keys [eid]}] cell]
+(defn clicked-inventory-cell [{:keys [eid]} cell]
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     [[:tx/sound "sounds/bfxr_takeit.wav"]
      [:entity/fsm eid :pickup-item item]
      [:entity/inventory :remove eid cell]]))
 
-(defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
+(defn clicked-skillmenu-skill [{:keys [eid]} skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)

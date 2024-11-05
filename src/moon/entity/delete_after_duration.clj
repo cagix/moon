@@ -2,13 +2,13 @@
   (:require [gdl.utils :refer [readable-number]]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
 
-(defn ->v [[_ duration]]
+(defn ->v [duration]
   (timer duration))
 
-(defn info [[_ counter]]
+(defn info [counter]
   (str "[LIGHT_GRAY]Remaining: " (readable-number (finished-ratio counter)) "/1[]"))
 
-(defn tick [[_ counter] eid]
+(defn tick [counter eid]
   (when (stopped? counter)
     [[:e/destroy eid]]))
 
