@@ -2346,7 +2346,7 @@
    :looping? true},
   :entity/body
   {:body/flying? false, :body/height 35/48, :body/width 17/24},
-  :entity/modifiers {:modifier/damage-receive {:op/max-mult -90}},
+  :entity/modifiers {:modifier/damage-receive-max {:op/mult -90}},
   :entity/skills #{:skills/melee-attack},
   :property/id :creatures/golem-stone,
   :property/pretty-name "Golem-stone",
@@ -3081,7 +3081,7 @@
   :property/pretty-name "Black Potion"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 528 48 48]},
-  :entity/modifiers {:modifier/damage-deal {:op/val-mult 300}},
+  :entity/modifiers {:modifier/damage-deal-max {:op/mult 300}},
   :item/slot :inventory.slot/leg,
   :property/id :items/chain-leg,
   :property/pretty-name "Leg Chain"}
@@ -3153,7 +3153,7 @@
   :property/pretty-name "Flame Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [96 432 48 48]},
-  :entity/modifiers {:modifier/damage-deal {:op/max-mult 100}},
+  :entity/modifiers {:modifier/damage-deal-min {:op/mult 100}},
   :item/slot :inventory.slot/helm,
   :property/id :items/studded-helm,
   :property/pretty-name "Helm Studded"}
@@ -3310,7 +3310,7 @@
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [768 384 48 48]},
   :entity/modifiers
-  {:modifier/damage-deal {:op/val-mult 10},
+  {:modifier/damage-deal-max {:op/mult 10},
    :modifier/strength {:op/inc 5}},
   :item/slot :inventory.slot/necklace,
   :property/id :items/necklace-eye,

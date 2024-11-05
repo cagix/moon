@@ -49,13 +49,17 @@
   :inventory.slot/shield
   :inventory.slot/weapon
   :inventory.slot/boot],
- :modifier/armor-pierce [:s/map-optional [:op/inc]],
- :modifier/armor-save [:s/map-optional [:op/inc]],
- :modifier/attack-speed [:s/map-optional [:op/inc]],
- :modifier/cast-speed [:s/map-optional [:op/inc]],
- :modifier/damage-deal
- [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- :modifier/damage-receive [:s/map-optional [:op/max-inc :op/max-mult]],
+
+ :modifier/armor-pierce       [:s/map-optional [:op/inc]],
+ :modifier/armor-save         [:s/map-optional [:op/inc]],
+ :modifier/attack-speed       [:s/map-optional [:op/inc]],
+ :modifier/cast-speed         [:s/map-optional [:op/inc]],
+ :modifier/damage-deal-min    [:s/map-optional [:op/inc :op/mult]]
+ :modifier/damage-deal-max    [:s/map-optional [:op/inc :op/mult]]
+ :modifier/damage-receive-max [:s/map-optional [:op/inc :op/mult]],
+ :modifier/movement-speed     [:s/map-optional [:op/inc :op/mult]],
+ :modifier/strength           [:s/map-optional [:op/inc]],
+
  :op/inc :s/int,
  :op/max-inc :s/int,
  :op/max-mult :s/int,
@@ -158,9 +162,6 @@
 
 
  :effect.entity/movement-speed [:s/map [:op/mult]],
- :modifier/movement-speed [:s/map-optional [:op/inc :op/mult]],
-
- :modifier/strength [:s/map-optional [:op/inc]],
 
  :tx/sound :s/sound,
 

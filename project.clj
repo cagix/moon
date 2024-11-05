@@ -30,7 +30,7 @@
   :global-vars {*warn-on-reflection* false
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
-                ;*print-level* 3
+                *print-level* 3
                 }
   :profiles {:uberjar {:aot [moon.app]}}
   :main moon.app)
