@@ -1,23 +1,22 @@
 {
- :effect/projectile [:s/one-to-one :properties/projectiles],
- :effect/spawn      [:s/one-to-one :properties/creatures],
-
  :entity-effects [:s/components-ns :effect.entity],
-
  :maxrange :s/pos,
- :effect/target-entity [:s/map [:entity-effects :maxrange]],
-
- :effect/target-all [:s/map [:entity-effects]],
 
  :body/flying? :boolean,
  :body/height :s/pos,
  :body/width :s/pos,
+
  :creature/level :s/pos-int,
  :creature/species [:qualified-keyword {:namespace :species}],
 
  :damage/min-max :s/val-max,
- :effect.entity/damage [:s/map [:damage/min-max]],
 
+ :effect/projectile [:s/one-to-one :properties/projectiles],
+ :effect/spawn      [:s/one-to-one :properties/creatures],
+ :effect/target-entity [:s/map [:entity-effects :maxrange]],
+ :effect/target-all [:s/map [:entity-effects]],
+
+ :effect.entity/damage [:s/map [:damage/min-max]],
  :effect.entity/convert :some,
  :effect.entity/kill :some,
  :effect.entity/melee-damage :some,
@@ -26,29 +25,24 @@
 
  :entity/image :s/image,
  :entity/animation :s/animation,
-
  :entity/body [:s/map [:body/width :body/height :body/flying?]],
-
  :entity/faction [:enum :good :evil],
-
  :entity/modifiers [:s/components-ns :modifier],
-
  :entity/inventory [:s/one-to-many :properties/items],
  :entity/skills    [:s/one-to-many :properties/skills],
 
- :item/slot
- [:enum
-  :inventory.slot/cloak
-  :inventory.slot/chest
-  :inventory.slot/helm
-  :inventory.slot/necklace
-  :inventory.slot/glove
-  :inventory.slot/rings
-  :inventory.slot/bag
-  :inventory.slot/leg
-  :inventory.slot/shield
-  :inventory.slot/weapon
-  :inventory.slot/boot],
+ :item/slot [:enum
+             :inventory.slot/cloak
+             :inventory.slot/chest
+             :inventory.slot/helm
+             :inventory.slot/necklace
+             :inventory.slot/glove
+             :inventory.slot/rings
+             :inventory.slot/bag
+             :inventory.slot/leg
+             :inventory.slot/shield
+             :inventory.slot/weapon
+             :inventory.slot/boot],
 
  :modifier/armor-pierce       [:s/map-optional [:op/inc]],
  :modifier/armor-save         [:s/map-optional [:op/inc]],
@@ -61,107 +55,101 @@
  :modifier/strength           [:s/map-optional [:op/inc]],
 
  :op/inc :s/int,
- :op/max-inc :s/int,
- :op/max-mult :s/int,
  :op/mult :s/int,
- :op/val-inc :s/int,
- :op/val-mult :s/int,
+
  :projectile/max-range :s/pos-int,
  :projectile/piercing? :boolean,
  :projectile/speed :s/pos-int,
- :properties/audiovisuals
- [:s/map [:tx/sound :entity/animation :property/id]],
- :properties/creatures
- [:s/map
-  [:entity/body
-   :property/pretty-name
-   :creature/species
-   :creature/level
-   :entity/animation
-   :stats/hp
-   :stats/movement-speed
-   :stats/aggro-range
-   :stats/reaction-time
-   [:stats/mana {:optional true}]
-   [:stats/strength {:optional true}]
-   [:stats/cast-speed {:optional true}]
-   [:stats/attack-speed {:optional true}]
-   [:stats/armor-save {:optional true}]
-   [:stats/armor-pierce {:optional true}]
-   :entity/skills
-   [:entity/modifiers {:optional true}]
-   [:entity/inventory {:optional true}]
-   :property/id]],
- :properties/items
- [:s/map
-  [:property/pretty-name
-   :entity/image
-   :item/slot
-   [:entity/modifiers {:optional true}]
-   :property/id]],
- :properties/projectiles
- [:s/map
-  [:entity/image
-   :projectile/max-range
-   :projectile/speed
-   :projectile/piercing?
-   :entity-effects
-   :property/id]],
- :properties/skills
- [:s/map
-  [:entity/image
-   :property/pretty-name
-   :skill/action-time-modifier-key
-   :skill/action-time
-   :skill/start-action-sound
-   :skill/effects
-   [:skill/cooldown {:optional true}]
-   [:skill/cost {:optional true}]
-   :property/id]],
- :properties/worlds
- [:s/map
-  [:world/generator
-   :world/player-creature
-   [:world/tiled-map {:optional true}]
-   [:world/map-size {:optional true}]
-   [:world/max-area-level {:optional true}]
-   [:world/spawn-rate {:optional true}]
-   :property/id]],
+
+ :properties/audiovisuals [:s/map [:tx/sound :entity/animation :property/id]],
+ :properties/creatures [:s/map
+                        [:entity/body
+                         :property/pretty-name
+                         :creature/species
+                         :creature/level
+                         :entity/animation
+                         :stats/hp
+                         :stats/movement-speed
+                         :stats/aggro-range
+                         :stats/reaction-time
+                         [:stats/mana {:optional true}]
+                         [:stats/strength {:optional true}]
+                         [:stats/cast-speed {:optional true}]
+                         [:stats/attack-speed {:optional true}]
+                         [:stats/armor-save {:optional true}]
+                         [:stats/armor-pierce {:optional true}]
+                         :entity/skills
+                         [:entity/modifiers {:optional true}]
+                         [:entity/inventory {:optional true}]
+                         :property/id]],
+ :properties/items [:s/map
+                    [:property/pretty-name
+                     :entity/image
+                     :item/slot
+                     [:entity/modifiers {:optional true}]
+                     :property/id]],
+ :properties/projectiles [:s/map
+                          [:entity/image
+                           :projectile/max-range
+                           :projectile/speed
+                           :projectile/piercing?
+                           :entity-effects
+                           :property/id]],
+ :properties/skills [:s/map
+                     [:entity/image
+                      :property/pretty-name
+                      :skill/action-time-modifier-key
+                      :skill/action-time
+                      :skill/start-action-sound
+                      :skill/effects
+                      [:skill/cooldown {:optional true}]
+                      [:skill/cost {:optional true}]
+                      :property/id]],
+ :properties/worlds [:s/map
+                     [:world/generator
+                      :world/player-creature
+                      [:world/tiled-map {:optional true}]
+                      [:world/map-size {:optional true}]
+                      [:world/max-area-level {:optional true}]
+                      [:world/spawn-rate {:optional true}]
+                      :property/id]],
+
  :property/id :qualified-keyword,
  :property/pretty-name :string,
+
  :skill/action-time :s/pos,
- :skill/action-time-modifier-key
- [:enum :stats/cast-speed :stats/attack-speed],
+ :skill/action-time-modifier-key [:enum :stats/cast-speed :stats/attack-speed],
  :skill/cooldown :s/nat-int,
  :skill/cost :s/nat-int,
  :skill/effects [:s/components-ns :effect],
  :skill/start-action-sound :s/sound,
+
+ :op/max-inc :s/int,
+ :op/max-mult :s/int,
+ :op/val-inc :s/int,
+ :op/val-mult :s/int,
+
+ ; TODO remove those
+ :modifier/hp        [:s/map-optional [:op/max-inc :op/max-mult]],
+ :modifier/mana      [:s/map-optional [:op/max-inc :op/max-mult]],
+
+ :effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
+ :effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
+ ;
+
+ ; TODO ??? just a modifier ?! - also unused ...
+ :effect.entity/movement-speed [:s/map [:op/mult]],
+
  :stats/aggro-range :s/nat-int,
  :stats/armor-pierce :s/number,
  :stats/armor-save :s/number,
  :stats/attack-speed :s/pos,
  :stats/cast-speed :s/pos,
-
- ;; Stats
- ; * effect.entity & modifier keys have to match name of stats key
-
  :stats/hp   :s/pos-int,
  :stats/mana :s/nat-int,
- :modifier/hp        [:s/map-optional [:op/max-inc :op/max-mult]],
- :modifier/mana      [:s/map-optional [:op/max-inc :op/max-mult]],
- :effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- :effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- ; are all those 4 not just `:ops/val-max` ?
-
-
- ;;
-
  :stats/movement-speed :s/pos,
  :stats/reaction-time :s/pos-int,
  :stats/strength :s/nat-int,
-
-
- :effect.entity/movement-speed [:s/map [:op/mult]],
 
  :tx/sound :s/sound,
 
