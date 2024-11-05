@@ -51,7 +51,9 @@
                          (sd/filled-circle (cam/position (world-view/camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
-      (screen/change :screens/world))))
+      (screen/change :screens/world)))
+
+  (dispose [_]))
 
 (defn create []
   (->Minimap))
