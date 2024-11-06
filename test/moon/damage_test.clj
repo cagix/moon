@@ -32,6 +32,22 @@
   (= (damage/modified source target {:damage/min-max [5 10]})
      #:damage{:min-max [0 7]}))
 
+(deftest max-reduces-min
+  (= (damage/modified {} target {:damage/min-max [5 5]})
+     #:damage{:min-max [2 2]}))
+
 (deftest info
   (= (damage/info {:damage/min-max [10 12]})
      "10-12 damage"))
+
+(deftest max-decrease-lowers-min
+  (= (damage/modified
+      {:entity/modifiers {:modifier/damage-deal-max {:op/inc -5}}}
+      {:damage/min-max [8 9]})
+     {:damage/min-max [4 4]}))
+
+(deftest min-increase-increases-max
+  (= (damage/modified
+      {:entity/modifiers {:modifier/damage-deal-min {:op/inc 5}}}
+      {:damage/min-max [8 9]})
+     {:damage/min-max [13 13]}))
