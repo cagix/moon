@@ -1,7 +1,7 @@
 (ns moon.entity.skills
   (:require [gdl.system :refer [*k*]]
             [moon.effect :as effect]
-            [moon.entity.modifiers :as mods]
+            [moon.entity.mana :as mana]
             [moon.world.time :refer [stopped?]]))
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
@@ -39,8 +39,8 @@
      [:widgets/action-bar op skill])])
 
 (defn- mana-value [entity]
-  (if-let [mana (mods/value entity :stats/mana)]
-    (mana 0)
+  (if-let [mana (:stats/mana entity)]
+    ((mana/value entity) 0)
     0))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]

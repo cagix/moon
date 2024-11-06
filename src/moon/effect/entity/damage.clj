@@ -2,6 +2,7 @@
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.damage :as damage]
             [moon.effect :refer [source target]]
+            [moon.entity.hitpoints :as hitpoints]
             [moon.entity.modifiers :as mods]))
 
 (defn- effective-armor-save [source* target*]
@@ -29,12 +30,12 @@
 
 (defn applicable? [_]
   (and target
-       (mods/value @target :stats/hp)))
+       (:stats/hp @target)))
 
 (defn handle [damage]
   (let [source* @source
         target* @target
-        hp (mods/value target* :stats/hp)]
+        hp (hitpoints/value target*)]
     (cond
      (zero? (hp 0))
      []

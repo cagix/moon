@@ -3135,7 +3135,7 @@
   :property/pretty-name "Boot Leather"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [144 576 48 48]},
-  :entity/modifiers {:modifier/hp {:op/max-inc 2}},
+  :entity/modifiers {:modifier/hp-max {:op/inc 2}},
   :item/slot :inventory.slot/glove,
   :property/id :items/chain-glove,
   :property/pretty-name "Glove Chain"}
@@ -3219,7 +3219,7 @@
   :property/pretty-name "Bone Key"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [336 432 48 48]},
-  :entity/modifiers {:modifier/hp {:op/max-inc -200}},
+  :entity/modifiers {:modifier/hp-max {:op/inc -200}},
   :item/slot :inventory.slot/helm,
   :property/id :items/blood-helm,
   :property/pretty-name "Helm Blood"}
@@ -3249,7 +3249,7 @@
   :property/pretty-name "Shortbow"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [48 336 48 48]},
-  :entity/modifiers {:modifier/mana {:op/max-mult -50}},
+  :entity/modifiers {:modifier/mana-max {:op/mult -50}},
   :item/slot :inventory.slot/rings,
   :property/id :items/ring-copper,
   :property/pretty-name "Copper Ring"}
@@ -3297,7 +3297,7 @@
   :property/pretty-name "Gold Ring"}
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 624 48 48]},
-  :entity/modifiers {:modifier/hp {:op/max-inc 10, :op/max-mult 5}},
+  :entity/modifiers {:modifier/hp-max {:op/inc 10, :op/mult 5}},
   :item/slot :inventory.slot/boot,
   :property/id :items/cloth-boot,
   :property/pretty-name "Boot Cloth"}
@@ -3768,7 +3768,7 @@
  {:entity/image
   {:file "images/items.png", :sub-image-bounds [0 480 48 48]},
   :entity/modifiers
-  {:modifier/hp {:op/max-inc 10},
+  {:modifier/hp-max {:op/inc 10},
    :modifier/movement-speed {:op/mult 10}},
   :item/slot :inventory.slot/chest,
   :property/id :items/cloth-chest,
@@ -4113,7 +4113,7 @@
   {:file "images/items.png", :sub-image-bounds [288 480 48 48]},
   :entity/modifiers
   {:modifier/armor-save {:op/inc 10},
-   :modifier/hp {:op/max-mult 10},
+   :modifier/hp-max {:op/mult 10},
    :modifier/movement-speed {:op/mult 10}},
   :item/slot :inventory.slot/chest,
   :property/id :items/gold-chest,
@@ -4181,9 +4181,7 @@
   :skill/action-time-modifier-key :stats/cast-speed,
   :skill/cooldown 0,
   :skill/cost 1,
-  :skill/effects
-  {:effect/target-all
-   {:entity-effects {:effect.entity/hp {:op/val-mult -50}}}},
+  :skill/effects {}
   :skill/start-action-sound "sounds/bfxr_healmonsters.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [96 64 32 32]},

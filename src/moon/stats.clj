@@ -4,12 +4,15 @@
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.entity.modifiers :as mods]
+            [moon.entity.mana :as mana]
             [moon.effect :as effect]
             [moon.operations :as ops]))
 
 (defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
 (defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
 
+; FIXME doesn't work anymore, need to use special functions for val-mxa stats
+; remove base-stat-effect...
 (defmethods :base/stat-effect
   (component/info [[k ops]]
     (ops/info ops k))
@@ -33,8 +36,12 @@
         ; although it is never modified ... ? or is it ?
         [[:e/assoc effect/target stat-k (ops/apply operations value)]]))))
 
+; FIXME this also not right anymore ... need to apply specific modifiers for that stat...
 (defmethod component/info :entity/stat [[k v]]
   (str (k->pretty-name k) ": " (mods/value component/*info-text-entity* k)))
+
+; stat system - entity component & one more system - stat-value
+; - implemented to get the value ....
 
 (defn defstat [k]
   {:pre [(= (namespace k) "stats")]}
@@ -54,8 +61,9 @@
 (defmethod entity/->v :stats/mana [[_ v]]
   [v v])
 
+; here too
 (defmethod component/handle :tx.entity.stats/pay-mana-cost [[_ eid cost]]
-  (let [mana-val ((mods/value @eid :stats/mana) 0)]
+  (let [mana-val ((mana/value @eid) 0)]
     (assert (<= cost mana-val))
     [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]]))
 

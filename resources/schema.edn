@@ -53,8 +53,10 @@
  :modifier/damage-receive-max [:s/map-optional [:op/inc :op/mult]],
  :modifier/movement-speed     [:s/map-optional [:op/inc :op/mult]],
  :modifier/strength           [:s/map-optional [:op/inc]],
+ :modifier/hp-max             [:s/map-optional [:op/inc :op/mult]],
+ :modifier/mana-max           [:s/map-optional [:op/inc :op/mult]],
 
- :op/inc :s/int,
+ :op/inc  :s/int,
  :op/mult :s/int,
 
  :projectile/max-range :s/pos-int,
@@ -124,21 +126,15 @@
  :skill/effects [:s/components-ns :effect],
  :skill/start-action-sound :s/sound,
 
- :op/max-inc :s/int,
- :op/max-mult :s/int,
- :op/val-inc :s/int,
- :op/val-mult :s/int,
-
  ; TODO remove those
- :modifier/hp        [:s/map-optional [:op/max-inc :op/max-mult]],
- :modifier/mana      [:s/map-optional [:op/max-inc :op/max-mult]],
 
- :effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- :effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- ;
-
+ ; TODO implement later
+ ;:effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
+ ;:effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
  ; TODO ??? just a modifier ?! - also unused ...
  :effect.entity/movement-speed [:s/map [:op/mult]],
+ ;
+
 
  :stats/aggro-range :s/nat-int,
  :stats/armor-pierce :s/number,
