@@ -16,11 +16,3 @@
   (if (and (zero? v) (zero? mx))
     0
     (/ v mx)))
-
-#_(defn lower-than-max? [[^int v ^int mx]]
-  {:pre [(m/validate schema [v mx])]}
-  (< v mx))
-
-#_(defn set-to-max [[v mx]]
-  {:pre [(m/validate schema [v mx])]}
-  [mx mx])
