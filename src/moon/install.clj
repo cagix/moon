@@ -84,7 +84,9 @@
 (install components/entity 'moon.entity.modifiers)
 (install components/entity 'moon.entity.movement)
 (install components/entity 'moon.entity.temp-modifier)
+
 (install components/entity 'moon.entity.hitpoints :stats/hp)
+(install components/entity 'moon.entity.mana      :stats/mana)
 
 (install components/entity-state 'moon.entity.npc.dead              :npc-dead)
 (install components/entity-state 'moon.entity.npc.idle              :npc-idle)

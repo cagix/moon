@@ -1,5 +1,6 @@
 (ns moon.entity.mana
-  (:require [moon.val-max :as val-max]))
+  (:require [moon.component :as component]
+            [moon.val-max :as val-max]))
 
 (defn value
   "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
@@ -8,3 +9,6 @@
   (-> entity
       :stats/mana
       (val-max/apply-max-modifier entity :modifier/mana-max)))
+
+(defn info [_]
+  (str "Mana: " (value component/*info-text-entity*)))
