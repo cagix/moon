@@ -126,14 +126,9 @@
  :skill/effects [:s/components-ns :effect],
  :skill/start-action-sound :s/sound,
 
- ; TODO remove those
-
  ; TODO implement later
  ;:effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
  ;:effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- ; TODO ??? just a modifier ?! - also unused ...
- :effect.entity/movement-speed [:s/map [:op/mult]],
- ;
 
 
  :stats/aggro-range :s/nat-int,
