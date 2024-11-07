@@ -15,11 +15,6 @@
   {:pre [(= (namespace k) "stats")]}
   (derive k :entity/stat))
 
-; TODO negate this value also @ use (modifier damage receive)
-; so can make positiive modifeirs green , negative red....
-
-; TODO needs to be there for each npc - make non-removable (added to all creatures)
-; and no need at created player (npc controller component?)
 (defstat :stats/aggro-range)
 (defstat :stats/reaction-time)
 
