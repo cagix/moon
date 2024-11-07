@@ -77,12 +77,22 @@
     (assert (get (:occupied @cell) eid))
     (swap! cell update :occupied disj eid)))
 
-; TODO LAZY SEQ @ g/get-8-neighbour-positions !!
-; https://github.com/damn/g/blob/master/src/data/grid2d.clj#L126
+(defn- get-8-neighbour-positions [[x y]]
+  (mapv (fn [tx ty]
+          [tx ty])
+   (range (dec x) (+ x 2))
+   (range (dec y) (+ y 2))))
+
+(def ^:private offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]])
+
+; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
+(defn- get-8-neighbour-positions [position]
+  (mapv #(mapv + position %) offsets))
+
 (defn cached-adjacent-cells [cell]
   (if-let [result (:adjacent-cells @cell)]
     result
-    (let [result (into [] (keep grid) (-> @cell :position g2d/get-8-neighbour-positions))]
+    (let [result (into [] (keep grid) (-> @cell :position get-8-neighbour-positions))]
       (swap! cell assoc :adjacent-cells result)
       result)))
 
