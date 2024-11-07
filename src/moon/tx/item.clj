@@ -1,14 +1,11 @@
 (ns moon.tx.item)
 
-(def ^:private body-props
-  {:width 0.75
-   :height 0.75
-   :z-order :z-order/on-ground})
-
 (defn handle [position item]
   [[:e/create
     position
-    body-props
+    {:width 0.75
+     :height 0.75
+     :z-order :z-order/on-ground}
     {:entity/image (:entity/image item)
      :entity/item item
      :entity/clickable {:type :clickable/item
