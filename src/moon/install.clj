@@ -124,10 +124,6 @@
 (defmethod component/info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
 
-; player doesn;t need aggro-range/reaction-time
-; stats armor-pierce wrong place
-; assert min body size from entity
-
 (defmethod component/info :property/pretty-name [[_ value]]
   (str "[PRETTY_NAME]"value"[]"))
 
