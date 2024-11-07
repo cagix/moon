@@ -8,45 +8,12 @@
             [moon.effect :as effect]
             [moon.operations :as ops]))
 
-(defn- effect-k   [stat-k]   (keyword "effect.entity" (name stat-k)))
-(defn- stat-k     [effect-k] (keyword "stats"         (name effect-k)))
-
-; FIXME doesn't work anymore, need to use special functions for val-mxa stats
-; remove base-stat-effect...
-(defmethods :base/stat-effect
-  (component/info [[k ops]]
-    (ops/info ops k))
-
-  (component/applicable? [_]
-    (and effect/target
-         (mods/value @effect/target (stat-k *k*))))
-
-  (component/useful? [_]
-    true)
-
-  (component/handle [operations]
-    (let [stat-k (stat-k *k*)]
-      (when-let [value (mods/value @effect/target stat-k)]
-        ; How tf does thi work?
-        ; its because with val-max I dont apply mods to val?
-        ; so confusing
-        ; we don't apply effects on modified values ....
-        ; otherwise we just add more modifiers...
-        ; we have to use mods/value because thats how we get current hp/mana
-        ; although it is never modified ... ? or is it ?
-        [[:e/assoc effect/target stat-k (ops/apply operations value)]]))))
-
-; FIXME this also not right anymore ... need to apply specific modifiers for that stat...
 (defmethod component/info :entity/stat [[k v]]
   (str (k->pretty-name k) ": " (mods/value component/*info-text-entity* k)))
 
-; stat system - entity component & one more system - stat-value
-; - implemented to get the value ....
-
 (defn defstat [k]
   {:pre [(= (namespace k) "stats")]}
-  (derive k :entity/stat)
-  (derive (effect-k k) :base/stat-effect))
+  (derive k :entity/stat))
 
 ; TODO negate this value also @ use (modifier damage receive)
 ; so can make positiive modifeirs green , negative red....
@@ -55,26 +22,6 @@
 ; and no need at created player (npc controller component?)
 (defstat :stats/aggro-range)
 (defstat :stats/reaction-time)
-(defstat :stats/hp)
-(defstat :stats/mana)
-
-(defmethod entity/->v :stats/mana [[_ v]]
-  [v v])
-
-; here too
-(defmethod component/handle :tx.entity.stats/pay-mana-cost [[_ eid cost]]
-  (let [mana-val ((mana/value @eid) 0)]
-    (assert (<= cost mana-val))
-    [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]]))
-
-(comment
- (let [mana-val 4
-       eid (atom (entity/map->Entity {:stats/mana [mana-val 10]}))
-       mana-cost 3
-       resulting-mana (- mana-val mana-cost)]
-   (= (component/handle [:tx.entity.stats/pay-mana-cost eid mana-cost] nil)
-      [[:e/assoc-in eid [:stats/mana 0] resulting-mana]]))
- )
 
 ; * TODO clamp/post-process effective-values @ stat-k->effective-value
 ; * just don't create movement-speed increases too much?
@@ -87,8 +34,6 @@
 ; TODO show the stat in different color red/green if it was permanently modified ?
 ; or an icon even on the creature
 ; also we want audiovisuals always ...
-(derive :effect.entity/movement-speed :base/stat-effect)
-; TODO is not automatically derived?
 
 ; TODO clamp into ->pos-int
 (defstat :stats/strength)
