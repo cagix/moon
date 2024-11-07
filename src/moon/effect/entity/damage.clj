@@ -3,11 +3,11 @@
             [moon.damage :as damage]
             [moon.effect :refer [source target]]
             [moon.entity.hitpoints :as hitpoints]
-            [moon.entity.modifiers :as mods]))
+            [moon.entity.stat :as stat]))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (mods/value target* :stats/armor-save) 0)
-          (or (mods/value source* :stats/armor-pierce) 0))
+  (max (- (or (stat/value target* :stats/armor-save) 0)
+          (or (stat/value source* :stats/armor-pierce) 0))
        0))
 
 (comment

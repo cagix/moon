@@ -25,15 +25,7 @@
                         :add    mods-add
                         :remove mods-remove) (*k* @eid) mods)]])
 
-(defn- modifier-k [k]
-  (keyword "modifier" (name k)))
-
-(defn value
-  ([entity k]
-   (when-let [base-value (k entity)]
-     (value base-value entity (modifier-k k))))
-
-  ([base-value {:keys [entity/modifiers]} k]
-   {:pre [(= "modifier" (namespace k))]}
-   (ops/apply (k modifiers)
-              base-value)))
+(defn value [base-value {:keys [entity/modifiers]} modifier-k]
+  {:pre [(= "modifier" (namespace modifier-k))]}
+  (ops/apply (modifier-k modifiers)
+             base-value))

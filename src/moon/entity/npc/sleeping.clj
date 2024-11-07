@@ -2,7 +2,7 @@
   (:require [gdl.graphics.text :as text]
             [moon.body :as body]
             [moon.entity.faction :as faction]
-            [moon.entity.modifiers :as mods]
+            [moon.entity.stat :as stat]
             [moon.world.grid :as grid]))
 
 (defn ->v [eid]
@@ -16,7 +16,7 @@
   (let [entity @eid
         cell (grid/cell (body/tile entity))] ; pattern!
     (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
-      (when (<= distance (mods/value entity :stats/aggro-range))
+      (when (<= distance (stat/value entity :stats/aggro-range))
         [[:entity/fsm eid :alert]]))))
 
 (defn render-above [_ entity]
