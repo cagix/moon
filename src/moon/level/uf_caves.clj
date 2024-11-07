@@ -105,7 +105,7 @@
                                          (transition-tile transition-idx)
                                          (wall-tile wall-idx))
                            :ground (ground-tile ground-idx)))]
-    (wgt-grid->tiled-map grid position->tile)))
+    (wgt-grid->tiled-map sprite-size grid position->tile)))
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position

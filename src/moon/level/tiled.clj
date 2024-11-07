@@ -26,13 +26,13 @@
                          (t/copy-tile (t/cell->tile cell)))))))
     tiled-map))
 
-(defn wgt-grid->tiled-map [grid position->tile]
+(defn wgt-grid->tiled-map [tile-size grid position->tile]
   (let [tiled-map (t/->empty-tiled-map)
         properties (t/m-props tiled-map)]
     (t/put! properties "width"  (g/width  grid))
     (t/put! properties "height" (g/height grid))
-    (t/put! properties "tilewidth" 48)
-    (t/put! properties "tileheight" 48)
+    (t/put! properties "tilewidth"  tile-size)
+    (t/put! properties "tileheight" tile-size)
     (let [layer (t/add-layer! tiled-map :name "ground" :visible true)
           properties (t/m-props layer)]
       (t/put! properties "movement-properties" true)
