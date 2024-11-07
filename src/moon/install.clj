@@ -53,6 +53,7 @@
                moon.effect.spawn
                moon.effect.target-all
                moon.effect.target-entity
+
                moon.effect.entity.convert
                moon.effect.entity.damage
                moon.effect.entity.kill
@@ -64,28 +65,29 @@
              '[moon.fsms.player
                moon.fsms.npc])
 
-(install components/entity 'moon.entity.alert-friendlies-after-duration)
-(install components/entity 'moon.entity.animation)
-(install components/entity 'moon.entity.clickable)
-(install components/entity 'moon.entity.delete-after-animation-stopped)
-(install components/entity 'moon.entity.delete-after-duration)
-(install components/entity 'moon.entity.destroy-audiovisual)
-(install components/entity 'moon.entity.faction)
-(install components/entity 'moon.entity.fsm)
-(install components/entity 'moon.entity.image)
-(install components/entity 'moon.entity.inventory)
-(install components/entity 'moon.entity.line-render)
-(install components/entity 'moon.entity.mouseover?)
-(install components/entity 'moon.entity.player?)
-(install components/entity 'moon.entity.projectile-collision)
-(install components/entity 'moon.entity.skills)
-(install components/entity 'moon.entity.string-effect)
-(install components/entity 'moon.entity.modifiers)
-(install components/entity 'moon.entity.movement)
-(install components/entity 'moon.entity.temp-modifier)
-(install components/entity 'moon.entity.stat)
-(install components/entity 'moon.entity.hp)
-(install components/entity 'moon.entity.mana)
+(install-all components/entity
+             '[moon.entity.alert-friendlies-after-duration
+               moon.entity.animation
+               moon.entity.clickable
+               moon.entity.delete-after-animation-stopped
+               moon.entity.delete-after-duration
+               moon.entity.destroy-audiovisual
+               moon.entity.faction
+               moon.entity.fsm
+               moon.entity.image
+               moon.entity.inventory
+               moon.entity.line-render
+               moon.entity.mouseover?
+               moon.entity.player?
+               moon.entity.projectile-collision
+               moon.entity.skills
+               moon.entity.string-effect
+               moon.entity.modifiers
+               moon.entity.movement
+               moon.entity.temp-modifier
+               moon.entity.stat
+               moon.entity.hp
+               moon.entity.mana])
 
 (install components/entity-state 'moon.entity.npc.dead              :npc-dead)
 (install components/entity-state 'moon.entity.npc.idle              :npc-idle)
