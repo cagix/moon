@@ -72,7 +72,7 @@
   (assert (or (nil? movement)
               (nil? (:direction movement))
               (and (:direction movement) ; continue schema of that ...
-                   #_(:speed movement)))) ; princess no stats/movement-speed, then nil and here assertion-error
+                   #_(:speed movement)))) ; princess no entity/movement-speed, then nil and here assertion-error
   [(if (or (nil? movement)
            (nil? (:direction movement)))
      [:e/dissoc eid :entity/movement]

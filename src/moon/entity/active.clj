@@ -58,7 +58,7 @@
 
    (when (and (:skill/cost skill)
               (not (zero? (:skill/cost skill))))
-     [:tx.entity.stats/pay-mana-cost eid (:skill/cost skill)])])
+     [:tx/pay-mana-cost eid (:skill/cost skill)])])
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond

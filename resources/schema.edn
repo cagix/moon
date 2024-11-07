@@ -70,16 +70,16 @@
                          :creature/species
                          :creature/level
                          :entity/animation
-                         :stats/hp
-                         :stats/movement-speed
-                         :stats/aggro-range
-                         :stats/reaction-time
-                         [:stats/mana {:optional true}]
-                         [:stats/strength {:optional true}]
-                         [:stats/cast-speed {:optional true}]
-                         [:stats/attack-speed {:optional true}]
-                         [:stats/armor-save {:optional true}]
-                         [:stats/armor-pierce {:optional true}]
+                         :entity/hp
+                         :entity/movement-speed
+                         :entity/aggro-range
+                         :entity/reaction-time
+                         [:entity/mana {:optional true}]
+                         [:entity/strength {:optional true}]
+                         [:entity/cast-speed {:optional true}]
+                         [:entity/attack-speed {:optional true}]
+                         [:entity/armor-save {:optional true}]
+                         [:entity/armor-pierce {:optional true}]
                          :entity/skills
                          [:entity/modifiers {:optional true}]
                          [:entity/inventory {:optional true}]
@@ -120,27 +120,22 @@
  :property/pretty-name :string,
 
  :skill/action-time :s/pos,
- :skill/action-time-modifier-key [:enum :stats/cast-speed :stats/attack-speed],
+ :skill/action-time-modifier-key [:enum :entity/cast-speed :entity/attack-speed],
  :skill/cooldown :s/nat-int,
  :skill/cost :s/nat-int,
  :skill/effects [:s/components-ns :effect],
  :skill/start-action-sound :s/sound,
 
- ; TODO implement later
- ;:effect.entity/hp   [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
- ;:effect.entity/mana [:s/map-optional [:op/val-inc :op/val-mult :op/max-inc :op/max-mult]],
-
-
- :stats/aggro-range :s/nat-int,
- :stats/armor-pierce :s/number,
- :stats/armor-save :s/number,
- :stats/attack-speed :s/pos,
- :stats/cast-speed :s/pos,
- :stats/hp   :s/pos-int,
- :stats/mana :s/nat-int,
- :stats/movement-speed :s/pos,
- :stats/reaction-time :s/pos-int,
- :stats/strength :s/nat-int,
+ :entity/aggro-range :s/nat-int,
+ :entity/armor-pierce :s/number,
+ :entity/armor-save :s/number,
+ :entity/attack-speed :s/pos,
+ :entity/cast-speed :s/pos,
+ :entity/hp   :s/pos-int,
+ :entity/mana :s/nat-int,
+ :entity/movement-speed :s/pos,
+ :entity/reaction-time :s/pos-int,
+ :entity/strength :s/nat-int,
 
  :tx/sound :s/sound,
 

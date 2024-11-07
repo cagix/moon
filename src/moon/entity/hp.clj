@@ -1,4 +1,4 @@
-(ns moon.entity.hitpoints
+(ns moon.entity.hp
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
             [moon.component :as component]
@@ -40,7 +40,7 @@
   Current-hp is capped by max-hp."
   [entity]
   (-> entity
-      :stats/hp
+      :entity/hp
       (val-max/apply-max-modifier entity :modifier/hp-max)))
 
 (defn info [_]

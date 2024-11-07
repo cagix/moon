@@ -12,11 +12,11 @@
   ([eid movement-vector]
    {:eid eid
     :movement-vector movement-vector
-    :counter (timer (* (stat/value @eid :stats/reaction-time) 0.016))}))
+    :counter (timer (* (stat/value @eid :entity/reaction-time) 0.016))}))
 
 (defn enter [{:keys [eid movement-vector]}]
   [[:entity/movement eid {:direction movement-vector
-                          :speed (or (stat/value @eid :stats/movement-speed) 0)}]])
+                          :speed (or (stat/value @eid :entity/movement-speed) 0)}]])
 
 (defn exit [{:keys [eid]}]
   [[:entity/movement eid nil]])

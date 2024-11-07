@@ -4,7 +4,7 @@
             [moon.entity.stat :as stat]))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (stat/value entity :stats/strength) 0)]
+  (let [strength (or (stat/value entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defn- damage-effect []

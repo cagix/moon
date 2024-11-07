@@ -14,7 +14,7 @@
 
 (defn enter [{:keys [eid movement-vector]}]
   [[:entity/movement eid {:direction movement-vector
-                          :speed (stat/value @eid :stats/movement-speed)}]])
+                          :speed (stat/value @eid :entity/movement-speed)}]])
 
 (defn exit [{:keys [eid]}]
   [[:entity/movement eid nil]])
@@ -22,5 +22,5 @@
 (defn tick [{:keys [movement-vector]} eid]
   (if-let [movement-vector (WASD-movement-vector)]
     [[:entity/movement eid {:direction movement-vector
-                            :speed (stat/value @eid :stats/movement-speed)}]]
+                            :speed (stat/value @eid :entity/movement-speed)}]]
     [[:entity/fsm eid :no-movement-input]]))

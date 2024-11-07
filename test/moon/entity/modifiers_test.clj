@@ -65,7 +65,7 @@
          [52 52]))
 
   (is (= (entity/modified-value {:entity/modifiers {:modifier/damage-deal {:op/val-inc [30]}
-                                                    :stats/fooz-barz {:op/babu [1 2 3]}}}
+                                                    :entity/fooz-barz {:op/babu [1 2 3]}}}
                                 :modifier/damage-deal
                                 [5 10])
          [35 35]))

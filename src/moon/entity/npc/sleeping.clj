@@ -16,7 +16,7 @@
   (let [entity @eid
         cell (grid/cell (body/tile entity))] ; pattern!
     (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
-      (when (<= distance (stat/value entity :stats/aggro-range))
+      (when (<= distance (stat/value entity :entity/aggro-range))
         [[:entity/fsm eid :alert]]))))
 
 (defn render-above [_ entity]

@@ -2,18 +2,18 @@
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.damage :as damage]
             [moon.effect :refer [source target]]
-            [moon.entity.hitpoints :as hitpoints]
+            [moon.entity.hp :as hp]
             [moon.entity.stat :as stat]))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (stat/value target* :stats/armor-save) 0)
-          (or (stat/value source* :stats/armor-pierce) 0))
+  (max (- (or (stat/value target* :entity/armor-save) 0)
+          (or (stat/value source* :entity/armor-pierce) 0))
        0))
 
 (comment
  ; broken
- (let [source* {:stats/armor-pierce 0.4}
-       target* {:stats/armor-save   0.5}]
+ (let [source* {:entity/armor-pierce 0.4}
+       target* {:entity/armor-save   0.5}]
    (effective-armor-save source* target*))
  )
 
@@ -30,12 +30,12 @@
 
 (defn applicable? [_]
   (and target
-       (:stats/hp @target)))
+       (:entity/hp @target)))
 
 (defn handle [damage]
   (let [source* @source
         target* @target
-        hp (hitpoints/value target*)]
+        hp (hp/value target*)]
     (cond
      (zero? (hp 0))
      []
@@ -50,5 +50,5 @@
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        [[:tx/audiovisual (:position target*) :audiovisuals/damage]
         [:entity/string-effect target (str "[RED]" dmg-amount)]
-        [:e/assoc-in target [:stats/hp 0] new-hp-val]
+        [:e/assoc-in target [:entity/hp 0] new-hp-val]
         [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]]))))

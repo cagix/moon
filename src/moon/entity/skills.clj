@@ -39,7 +39,7 @@
      [:widgets/action-bar op skill])])
 
 (defn- mana-value [entity]
-  (if-let [mana (:stats/mana entity)]
+  (if-let [mana (:entity/mana entity)]
     ((mana/value entity) 0)
     0))
 

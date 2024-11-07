@@ -84,8 +84,8 @@
 (install components/entity 'moon.entity.movement)
 (install components/entity 'moon.entity.temp-modifier)
 (install components/entity 'moon.entity.stat)
-(install components/entity 'moon.entity.hitpoints :stats/hp)
-(install components/entity 'moon.entity.mana      :stats/mana)
+(install components/entity 'moon.entity.hp)
+(install components/entity 'moon.entity.mana)
 
 (install components/entity-state 'moon.entity.npc.dead              :npc-dead)
 (install components/entity-state 'moon.entity.npc.idle              :npc-idle)
@@ -150,8 +150,8 @@
 
 (defmethod component/info :skill/action-time-modifier-key [[_ v]]
   (str "[VIOLET]" (case v
-                    :stats/cast-speed "Spell"
-                    :stats/attack-speed "Attack") "[]"))
+                    :entity/cast-speed "Spell"
+                    :entity/attack-speed "Attack") "[]"))
 
 (defmethod component/info :skill/action-time [[_ v]]
   (str "[GOLD]Action-Time: " (readable-number v) " seconds[]"))
@@ -167,8 +167,8 @@
 (color/put "MODIFIERS" :cyan)
 (color/put "PRETTY_NAME" [0.84 0.8 0.52])
 
-(derive :stats/aggro-range   :entity/stat)
-(derive :stats/reaction-time :entity/stat)
+(derive :entity/aggro-range   :entity/stat)
+(derive :entity/reaction-time :entity/stat)
 
 ; * TODO clamp/post-process effective-values @ stat-k->effective-value
 ; * just don't create movement-speed increases too much?
@@ -177,14 +177,14 @@
 
 ; TODO clamp between 0 and max-speed ( same as movement-speed-schema )
 ;(m/form entity/movement-speed-schema)
-(derive :stats/movement-speed :entity/stat)
+(derive :entity/movement-speed :entity/stat)
 
 ; TODO show the stat in different color red/green if it was permanently modified ?
 ; or an icon even on the creature
 ; also we want audiovisuals always ...
 
 ; TODO clamp into ->pos-int
-(derive :stats/strength :entity/stat)
+(derive :entity/strength :entity/stat)
 
 ; TODO here >0
 (comment
@@ -193,9 +193,9 @@
 
            For example:
            attack/cast-speed 1.5 => (/ action-time 1.5) => 150% attackspeed."]))
-(derive :stats/cast-speed :entity/stat)
-(derive :stats/attack-speed :entity/stat)
+(derive :entity/cast-speed :entity/stat)
+(derive :entity/attack-speed :entity/stat)
 
 ; TODO bounds
-(derive :stats/armor-save :entity/stat)
-(derive :stats/armor-pierce :entity/stat)
+(derive :entity/armor-save :entity/stat)
+(derive :entity/armor-pierce :entity/stat)

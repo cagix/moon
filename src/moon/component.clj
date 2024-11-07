@@ -27,12 +27,12 @@
                                   :skill/effects
                                   :creature/species
                                   :creature/level
-                                  :stats/hp
-                                  :stats/mana
-                                  :stats/strength
-                                  :stats/cast-speed
-                                  :stats/attack-speed
-                                  :stats/armor-save
+                                  :entity/hp
+                                  :entity/mana
+                                  :entity/strength
+                                  :entity/cast-speed
+                                  :entity/attack-speed
+                                  :entity/armor-save
                                   :entity/delete-after-duration
                                   :projectile/piercing?
                                   :entity/projectile-collision

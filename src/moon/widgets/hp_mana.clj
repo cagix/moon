@@ -4,7 +4,7 @@
             [gdl.graphics.text :as text]
             [gdl.ui :as ui]
             [gdl.utils :refer [readable-number]]
-            [moon.entity.hitpoints :as hitpoints]
+            [moon.entity.hp :as hp]
             [moon.entity.mana :as mana]
             [moon.player :as player]
             [moon.val-max :as val-max]))
@@ -31,6 +31,5 @@
     (ui/actor {:draw (fn []
                        (let [player-entity @player/eid
                              x (- x (/ rahmenw 2))]
-                         ; TODO last
-                         (render-hpmana-bar x y-hp   hpcontent   (hitpoints/value player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (mana/value      player-entity) "MP")))})))
+                         (render-hpmana-bar x y-hp   hpcontent   (hp/value   player-entity) "HP")
+                         (render-hpmana-bar x y-mana manacontent (mana/value player-entity) "MP")))})))

@@ -7,7 +7,7 @@
   Current-mana is capped by max-mana."
   [entity]
   (-> entity
-      :stats/mana
+      :entity/mana
       (val-max/apply-max-modifier entity :modifier/mana-max)))
 
 (defn info [_]
@@ -17,16 +17,16 @@
   [v v])
 
 ; TODO same as hp @ damage ... and similar to effect.entity/mana or hp ...
-(defmethod component/handle :tx.entity.stats/pay-mana-cost [[_ eid cost]]
+(defmethod component/handle :tx/pay-mana-cost [[_ eid cost]]
   (let [mana-val ((value @eid) 0)]
     (assert (<= cost mana-val))
-    [[:e/assoc-in eid [:stats/mana 0] (- mana-val cost)]]))
+    [[:e/assoc-in eid [:entity/mana 0] (- mana-val cost)]]))
 
 (comment
  (let [mana-val 4
-       eid (atom (entity/map->Entity {:stats/mana [mana-val 10]}))
+       eid (atom (entity/map->Entity {:entity/mana [mana-val 10]}))
        mana-cost 3
        resulting-mana (- mana-val mana-cost)]
-   (= (component/handle [:tx.entity.stats/pay-mana-cost eid mana-cost] nil)
-      [[:e/assoc-in eid [:stats/mana 0] resulting-mana]]))
+   (= (component/handle [:tx/pay-mana-cost eid mana-cost] nil)
+      [[:e/assoc-in eid [:entity/mana 0] resulting-mana]]))
  )
