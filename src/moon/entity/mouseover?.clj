@@ -1,4 +1,4 @@
-(ns moon.entity.mouseover
+(ns moon.entity.mouseover?
   (:require [gdl.graphics.shape-drawer :as sd]
             [moon.entity.faction :as faction]
             [moon.player :as player]))

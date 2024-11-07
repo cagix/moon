@@ -1,4 +1,4 @@
-(ns moon.entity.player
+(ns moon.entity.player?
   (:require [moon.player :as player]))
 
 (defn create [_ eid]
