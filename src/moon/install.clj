@@ -83,7 +83,7 @@
 (install components/entity 'moon.entity.modifiers)
 (install components/entity 'moon.entity.movement)
 (install components/entity 'moon.entity.temp-modifier)
-(install components/entity 'moon.entity.stat :entity/stat)
+(install components/entity 'moon.entity.stat)
 (install components/entity 'moon.entity.hitpoints :stats/hp)
 (install components/entity 'moon.entity.mana      :stats/mana)
 
