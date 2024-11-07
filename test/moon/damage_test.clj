@@ -47,3 +47,9 @@
           {:entity/modifiers {:modifier/damage-deal-min {:op/inc 5}}}
           {:damage/min-max [8 9]})
          {:damage/min-max [13 13]})))
+
+(deftest does-not-reduce-below-zero
+  (is (= (damage/modified
+          {:entity/modifiers {:modifier/damage-deal-min {:op/inc -6}}}
+          {:damage/min-max [5 10]})
+         #:damage{:min-max [0 10]})))
