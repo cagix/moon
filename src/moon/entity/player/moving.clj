@@ -6,8 +6,8 @@
   {:eid eid
    :movement-vector movement-vector})
 
-(defn player-enter [_]
-  [[:tx/cursor :cursors/walking]])
+(defn cursor [_]
+  :cursors/walking)
 
 (defn pause-game? [_]
   false)

@@ -1,5 +1,6 @@
 (ns moon.entity.fsm
-  (:require [gdl.system :refer [defsystem *k*]]
+  (:require [gdl.graphics.cursors :as cursors]
+            [gdl.system :refer [defsystem *k*]]
             [moon.component :as component]
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))
@@ -10,8 +11,8 @@
 (defsystem exit)
 (defmethod exit :default [_])
 
-(defsystem player-enter)
-(defmethod player-enter :default [_])
+(defsystem cursor)
+(defmethod cursor :default [_])
 
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
@@ -35,10 +36,11 @@
               new-state-obj [new-state-k (entity/->v (if params
                                                        [new-state-k eid params]
                                                        [new-state-k eid]))]]
+          (when (:entity/player? @eid)
+            (when-let [crs (cursor new-state-obj)]
+              (cursors/set crs)))
           [#(exit old-state-obj)
            #(enter new-state-obj)
-           (when (:entity/player? @eid)
-             #(player-enter new-state-obj))
            [:e/assoc eid :entity/fsm new-fsm]
            [:e/dissoc eid old-state-k]
            [:e/assoc eid new-state-k (new-state-obj 1)]])))))

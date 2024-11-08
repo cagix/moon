@@ -103,7 +103,6 @@
 (install-all components/tx
              '[moon.tx.audiovisual
                moon.tx.creature
-               moon.tx.cursor
                moon.tx.effect
                moon.tx.item
                moon.tx.line-render

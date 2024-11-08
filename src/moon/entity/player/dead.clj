@@ -2,8 +2,8 @@
   (:require [gdl.assets :refer [play-sound]]
             [gdl.screen :as screen]))
 
-(defn player-enter [_]
-  [[:tx/cursor :cursors/black-x]])
+(defn cursor [_]
+  :cursors/black-x)
 
 (defn pause-game? [_]
   true)

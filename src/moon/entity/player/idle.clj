@@ -1,5 +1,6 @@
 (ns moon.entity.player.idle
   (:require [gdl.assets :refer [play-sound]]
+            [gdl.graphics.cursors :as cursors]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed? WASD-movement-vector]]
             [gdl.math.vector :as v]
@@ -128,9 +129,9 @@
   (if-let [movement-vector (WASD-movement-vector)]
     [[:entity/fsm eid :movement-input movement-vector]]
     (let [[cursor on-click] (interaction-state eid)]
-      (cons [:tx/cursor cursor]
-            (when (button-just-pressed? :left)
-              (on-click))))))
+      (cursors/set cursor)
+      (when (button-just-pressed? :left)
+        (on-click)))))
 
 (defn clicked-inventory-cell [{:keys [eid]} cell]
   ; TODO no else case

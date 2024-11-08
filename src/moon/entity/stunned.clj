@@ -6,8 +6,8 @@
   {:eid eid
    :counter (timer duration)})
 
-(defn player-enter [_]
-  [[:tx/cursor :cursors/denied]])
+(defn cursor [_]
+  :cursors/denied)
 
 (defn pause-game? [_]
   false)

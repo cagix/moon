@@ -45,8 +45,8 @@
                  (apply-action-speed-modifier @eid skill)
                  timer)})
 
-(defn player-enter [_]
-  [[:tx/cursor :cursors/sandclock]])
+(defn cursor [_]
+  :cursors/sandclock)
 
 (defn pause-game? [_]
   false)

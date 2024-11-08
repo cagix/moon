@@ -31,7 +31,7 @@
               entity
               {:optional [#'fsm/enter
                           #'fsm/exit
-                          #'fsm/player-enter
+                          #'fsm/cursor
                           #'player/pause-game?
                           #'player/manual-tick
                           #'player/clicked-inventory-cell

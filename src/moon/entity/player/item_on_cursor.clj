@@ -81,9 +81,11 @@
 (defn clicked-inventory-cell [{:keys [eid]} cell]
   (clicked-cell eid cell))
 
+(defn cursor [_]
+  :cursors/hand-grab)
+
 (defn enter [{:keys [eid item]}]
-  [[:tx/cursor :cursors/hand-grab]
-   [:e/assoc eid :entity/item-on-cursor item]])
+  [[:e/assoc eid :entity/item-on-cursor item]])
 
 (defn exit [{:keys [eid]}]
   ; at clicked-cell when we put it into a inventory-cell
