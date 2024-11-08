@@ -2,7 +2,6 @@
   "🚧 Under construction ⚠️"
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
-            [moon.audiovisual :as audiovisual]
             [moon.body :as body]
             [moon.effect :as effect :refer [source target]]))
 
@@ -54,13 +53,12 @@
        entity-effects
 
        )
-       ; TODO
+      [; TODO
        ; * clicking on far away monster
        ; * hitting ground in front of you ( there is another monster )
        ; * -> it doesn't get hit ! hmmm
        ; * either use 'MISS' or get enemy entities at end-point
-      (audiovisual/create (end-point source* target* maxrange)
-                          :audiovisuals/hit-ground))))
+       [:tx/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground]])))
 
 (defn render [{:keys [maxrange]}]
   (when target
