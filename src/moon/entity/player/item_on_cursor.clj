@@ -1,5 +1,6 @@
 (ns moon.entity.player.item-on-cursor
-  (:require [gdl.graphics.gui-view :as gui-view]
+  (:require [gdl.assets :refer [play-sound]]
+            [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.image :as image]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed?]]
@@ -18,30 +19,33 @@
      ; PUT ITEM IN EMPTY CELL
      (and (not item-in-cell)
           (valid-slot? cell item-on-cursor))
-     [[:tx/sound "sounds/bfxr_itemput.wav"]
-      [:entity/inventory :set eid cell item-on-cursor]
-      [:e/dissoc eid :entity/item-on-cursor]
-      [:entity/fsm eid :dropped-item]]
+     (do
+      (play-sound "sounds/bfxr_itemput.wav")
+      [[:entity/inventory :set eid cell item-on-cursor]
+       [:e/dissoc eid :entity/item-on-cursor]
+       [:entity/fsm eid :dropped-item]])
 
      ; STACK ITEMS
      (and item-in-cell
           (stackable? item-in-cell item-on-cursor))
-     [[:tx/sound "sounds/bfxr_itemput.wav"]
-      [:entity/inventory :stack eid cell item-on-cursor]
-      [:e/dissoc eid :entity/item-on-cursor]
-      [:entity/fsm eid :dropped-item]]
+     (do
+      (play-sound "sounds/bfxr_itemput.wav")
+      [[:entity/inventory :stack eid cell item-on-cursor]
+       [:e/dissoc eid :entity/item-on-cursor]
+       [:entity/fsm eid :dropped-item]])
 
      ; SWAP ITEMS
      (and item-in-cell
           (valid-slot? cell item-on-cursor))
-     [[:tx/sound "sounds/bfxr_itemput.wav"]
-      [:entity/inventory :remove eid cell]
-      [:entity/inventory :set eid cell item-on-cursor]
-      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
-      ; TODO? coud handle pickup-item from item-on-cursor state also
-      [:e/dissoc eid :entity/item-on-cursor]
-      [:entity/fsm eid :dropped-item]
-      [:entity/fsm eid :pickup-item item-in-cell]])))
+     (do
+      (play-sound "sounds/bfxr_itemput.wav")
+      [[:entity/inventory :remove eid cell]
+       [:entity/inventory :set eid cell item-on-cursor]
+       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+       ; TODO? coud handle pickup-item from item-on-cursor state also
+       [:e/dissoc eid :entity/item-on-cursor]
+       [:entity/fsm eid :dropped-item]
+       [:entity/fsm eid :pickup-item item-in-cell]]))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -88,8 +92,8 @@
   ; on the ground
   (let [entity @eid]
     (when (:entity/item-on-cursor entity)
-      [[:tx/sound "sounds/bfxr_itemputground.wav"]
-       [:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]
+      (play-sound "sounds/bfxr_itemputground.wav")
+      [[:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]
        [:e/dissoc eid :entity/item-on-cursor]])))
 
 (defn render-below [{:keys [item]} entity]

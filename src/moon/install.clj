@@ -109,8 +109,7 @@
                moon.tx.line-render
                moon.tx.player-modal
                moon.tx.projectile
-               moon.tx.shout
-               moon.tx.sound])
+               moon.tx.shout])
 
 (install-all components/widget
              '[moon.widgets.action-bar

@@ -1,5 +1,6 @@
 (ns moon.effect.projectile
-  (:require [gdl.math.vector :as v]
+  (:require [gdl.assets :refer [play-sound]]
+            [gdl.math.vector :as v]
             [moon.effect :refer [source target target-direction]]
             [moon.projectile :as projectile]
             [moon.world.raycaster :refer [path-blocked?]]))
@@ -28,8 +29,8 @@
             max-range))))
 
 (defn handle [projectile]
-  [[:tx/sound "sounds/bfxr_waypointunlock.wav"]
-   [:tx/projectile
+  (play-sound "sounds/bfxr_waypointunlock.wav")
+  [[:tx/projectile
     {:position (start-point @source target-direction (projectile/size projectile))
      :direction target-direction
      :faction (:entity/faction @source)}

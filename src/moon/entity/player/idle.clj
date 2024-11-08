@@ -1,5 +1,6 @@
 (ns moon.entity.player.idle
-  (:require [gdl.graphics.world-view :as world-view]
+  (:require [gdl.assets :refer [play-sound]]
+            [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed? WASD-movement-vector]]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]
@@ -14,8 +15,8 @@
             [moon.world.mouseover :as mouseover]))
 
 (defn- denied [text]
-  [[:tx/sound "sounds/bfxr_denied.wav"]
-   [:widgets/player-message text]])
+  (play-sound "sounds/bfxr_denied.wav")
+  [[:widgets/player-message text]])
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -25,18 +26,21 @@
   (let [item (:entity/item @eid)]
     (cond
      (a/visible? (windows/inventory))
-     [[:tx/sound "sounds/bfxr_takeit.wav"]
-      [:e/destroy eid]
-      [:entity/fsm player/eid :pickup-item item]]
+     (do
+      (play-sound "sounds/bfxr_takeit.wav")
+      [[:e/destroy eid]
+       [:entity/fsm player/eid :pickup-item item]])
 
      (inventory/can-pickup-item? player/eid item)
-     [[:tx/sound "sounds/bfxr_pickup.wav"]
-      [:e/destroy eid]
-      [:entity/inventory :pickup player/eid item]]
+     (do
+      (play-sound "sounds/bfxr_pickup.wav")
+      [[:e/destroy eid]
+       [:entity/inventory :pickup player/eid item]])
 
      :else
-     [[:tx/sound "sounds/bfxr_denied.wav"]
-      [:widgets/player-message "Your Inventory is full"]])))
+     (do
+      (play-sound "sounds/bfxr_denied.wav")
+      [[:widgets/player-message "Your Inventory is full"]]))))
 
 (defmethod on-clicked :clickable/player [_]
   (a/toggle-visible! (windows/inventory))) ; TODO no tx
@@ -131,8 +135,8 @@
 (defn clicked-inventory-cell [{:keys [eid]} cell]
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
-    [[:tx/sound "sounds/bfxr_takeit.wav"]
-     [:entity/fsm eid :pickup-item item]
+    (play-sound "sounds/bfxr_takeit.wav")
+    [[:entity/fsm eid :pickup-item item]
      [:entity/inventory :remove eid cell]]))
 
 (defn clicked-skillmenu-skill [{:keys [eid]} skill]

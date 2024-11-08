@@ -1,5 +1,6 @@
 (ns moon.entity.active
-  (:require [gdl.graphics.image :as image]
+  (:require [gdl.assets :as assets]
+            [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
             [moon.component :as component]
             [moon.effect :as effect]
@@ -51,8 +52,8 @@
   false)
 
 (defn enter [{:keys [eid skill]}]
-  [[:tx/sound (:skill/start-action-sound skill)]
-
+  (play-sound (:skill/start-action-sound skill))
+  [
    (when (:skill/cooldown skill)
      [:e/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] (timer (:skill/cooldown skill))])
 
