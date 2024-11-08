@@ -106,7 +106,6 @@
                moon.tx.effect
                moon.tx.item
                moon.tx.line-render
-               moon.tx.player-modal
                moon.tx.projectile
                moon.tx.shout])
 

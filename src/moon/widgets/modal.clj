@@ -1,4 +1,4 @@
-(ns moon.tx.player-modal
+(ns moon.widgets.modal
   (:require [gdl.graphics.gui-view :as gui-view]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
@@ -8,7 +8,7 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn- show-player-modal! [{:keys [title text button-text on-click]}]
+(defn show [{:keys [title text button-text on-click]}]
   (assert (not (::modal (stage/get))))
   (stage/add!
    (ui/window {:title title
@@ -22,7 +22,3 @@
                :center-position [(/ (gui-view/width) 2)
                                  (* (gui-view/height) (/ 3 4))]
                :pack? true})))
-
-(defn handle [params]
-  (show-player-modal! params)
-  nil)
