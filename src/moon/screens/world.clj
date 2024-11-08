@@ -15,6 +15,7 @@
             [moon.level :as level]
             [moon.player :as player]
             [moon.widgets.error-window :refer [error-window!]]
+            [moon.widgets.player-message :as player-message]
             [moon.widgets.windows :as windows]
             [moon.world.content-grid :as content-grid]
             [moon.world.debug-render :as debug-render]
@@ -79,7 +80,7 @@
    (component/create [:widgets/hp-mana])
    (windows/create)
    (ui/actor {:draw player/draw-state})
-   (component/create [:widgets/player-message])])
+   (player-message/create)])
 
 (defn start [world-id]
   (screen/change :screens/world)

@@ -12,12 +12,13 @@
             [moon.entity.skills :as skills]
             [moon.player :as player]
             [moon.widgets.action-bar :as action-bar]
+            [moon.widgets.player-message :as player-message]
             [moon.widgets.windows :as windows]
             [moon.world.mouseover :as mouseover]))
 
 (defn- denied [text]
   (play-sound "sounds/bfxr_denied.wav")
-  [[:widgets/player-message text]])
+  (player-message/show text))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -41,7 +42,7 @@
      :else
      (do
       (play-sound "sounds/bfxr_denied.wav")
-      [[:widgets/player-message "Your Inventory is full"]]))))
+      (player-message/show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
   (a/toggle-visible! (windows/inventory))) ; TODO no tx

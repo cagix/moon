@@ -26,6 +26,6 @@
   (ui/actor {:draw draw-player-message
              :act check-remove-message}))
 
-(defn handle [message]
+(defn show [message]
   (bind-root #'message-to-player {:message message :counter 0})
   nil)

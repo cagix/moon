@@ -116,7 +116,6 @@
                moon.widgets.entity-info-window
                moon.widgets.hp-mana
                moon.widgets.inventory
-               moon.widgets.player-message
                moon.widgets.properties-overview
                moon.widgets.property])
 
