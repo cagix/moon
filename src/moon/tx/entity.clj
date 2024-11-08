@@ -24,18 +24,18 @@
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
                                       (create-vs)))))]
-    (cons [:world/entity :add eid]
-          (for [component @eid]
-            #(entity/create component eid)))))
+    (entities/add-to-world eid)
+    (for [component @eid]
+      #(entity/create component eid))))
 
 (defmethod component/handle :e/destroy [[_ eid]]
   [[:e/assoc eid :entity/destroyed? true]])
 
 (defmethod component/handle :tx/remove-destroyed-entities [_]
   (mapcat (fn [eid]
-            (cons [:world/entity :remove eid]
-                  (for [component @eid]
-                    #(entity/destroy component eid))))
+            (entities/remove-from-world eid)
+            (for [component @eid]
+              #(entity/destroy component eid)))
           (filter (comp :entity/destroyed? deref) (entities/all))))
 
 (defmethod component/handle :e/assoc [[_ eid k v]]

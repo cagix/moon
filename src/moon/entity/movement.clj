@@ -2,6 +2,7 @@
   (:require [gdl.math.vector :as v]
             [malli.core :as m]
             [moon.body :as body]
+            [moon.world.entities :as entities]
             [moon.world.grid :as grid]
             [moon.world.time :as time]))
 
@@ -62,11 +63,11 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)
                         (move-body body movement))]
+        (entities/position-changed eid)
         [[:e/assoc eid :position    (:position    body)]
          [:e/assoc eid :left-bottom (:left-bottom body)]
          (when rotate-in-movement-direction?
-           [:e/assoc eid :rotation-angle (v/angle-from-vector direction)])
-         [:world/entity :position-changed eid]]))))
+           [:e/assoc eid :rotation-angle (v/angle-from-vector direction)])]))))
 
 (defn handle [eid movement]
   (assert (or (nil? movement)

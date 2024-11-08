@@ -67,7 +67,7 @@
 (defn tick [entities]
   (run! tick-entity entities))
 
-(defn- add-to-world [eid]
+(defn add-to-world [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (alter-var-root #'ids->eids assoc id eid))
@@ -76,20 +76,13 @@
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (grid/add-entity eid))
 
-(defn- remove-from-world [eid]
+(defn remove-from-world [eid]
   (let [id (:entity/id @eid)]
     (assert (contains? ids->eids id))
     (alter-var-root #'ids->eids dissoc id))
   (content-grid/remove-entity! eid)
   (grid/remove-entity eid))
 
-(defn- position-changed [eid]
+(defn position-changed [eid]
   (content-grid/update-entity! content-grid eid)
   (grid/entity-position-changed eid))
-
-(defmethod component/handle :world/entity [[_ op eid]]
-  (case op
-    :add              (add-to-world      eid)
-    :remove           (remove-from-world eid)
-    :position-changed (position-changed  eid))
-  nil)
