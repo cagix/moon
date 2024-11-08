@@ -10,8 +10,7 @@
             [moon.component :as component]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
-            [moon.player :as player]
-            [moon.widgets.windows :as windows]))
+            [moon.player :as player]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -115,10 +114,13 @@
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
-(defn- cell-widget [cell]
-  (get (::table (windows/inventory)) cell))
+(defn window []
+  (get (:windows (stage/get)) :inventory-window))
 
-(defn- set-item-image-in-widget [cell item]
+(defn- cell-widget [cell]
+  (get (::table (window)) cell))
+
+(defn set-item-image-in-widget [cell item]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)
         drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
@@ -126,14 +128,8 @@
     (ui/set-drawable! image-widget drawable)
     (ui/add-tooltip! cell-widget #(component/->info item))))
 
-(defn- remove-item-from-widget [cell]
+(defn remove-item-from-widget [cell]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)]
     (ui/set-drawable! image-widget (slot->background (cell 0)))
     (ui/remove-tooltip! cell-widget)))
-
-(defn handle [op & args]
-  (case op
-    :set    (apply set-item-image-in-widget args)
-    :remove (apply remove-item-from-widget  args))
-  nil)

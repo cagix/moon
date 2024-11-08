@@ -114,7 +114,6 @@
                moon.widgets.dev-menu
                moon.widgets.entity-info-window
                moon.widgets.hp-mana
-               moon.widgets.inventory
                moon.widgets.properties-overview
                moon.widgets.property])
 

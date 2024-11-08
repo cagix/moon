@@ -3,18 +3,16 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [moon.controls :as controls]
-            [moon.component :as component]))
+            [moon.component :as component]
+            [moon.widgets.inventory :as inventory]))
 
 (defn create []
   (ui/group {:id :windows
              :actors [(component/create [:widgets/entity-info-window])
-                      (component/create [:widgets/inventory])]}))
+                      (inventory/create)]}))
 
 (defn- windows []
   (:windows (stage/get)))
-
-(defn inventory []
-  (get (windows) :inventory-window))
 
 (defn check-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]

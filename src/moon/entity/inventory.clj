@@ -1,7 +1,8 @@
 (ns moon.entity.inventory
   (:require [gdl.system :refer [*k*]]
             [gdl.utils :refer [find-first]]
-            [moon.item :as item]))
+            [moon.item :as item]
+            [moon.widgets.inventory :as inventory]))
 
 (defn- applies-modifiers? [[slot _]]
   (not= :inventory.slot/bag slot))
@@ -11,21 +12,21 @@
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
                  (item/valid-slot? cell item)))
+    (when (:entity/player? entity)
+      (inventory/set-item-image-in-widget cell item))
     [[:e/assoc-in eid (cons :entity/inventory cell) item]
      (when (applies-modifiers? cell)
-       [:entity/modifiers eid :add (:entity/modifiers item)])
-     (when (:entity/player? entity)
-       [:widgets/inventory :set cell item])]))
+       [:entity/modifiers eid :add (:entity/modifiers item)])]))
 
 (defn- remove-item [eid cell]
   (let [entity @eid
         item (get-in (:entity/inventory entity) cell)]
     (assert item)
+    (when (:entity/player? entity)
+      (inventory/remove-item-from-widget cell))
     [[:e/assoc-in eid (cons :entity/inventory cell) nil]
      (when (applies-modifiers? cell)
-       [:entity/modifiers eid :remove (:entity/modifiers item)])
-     (when (:entity/player? entity)
-       [:widgets/inventory :remove cell])]))
+       [:entity/modifiers eid :remove (:entity/modifiers item)])]))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]
@@ -48,24 +49,25 @@
     (concat (remove-item eid cell)
             (set-item eid cell (update cell-item :count + (:count item))))))
 
-(defn- try-put-item-in [eid slot item]
-  (let [inventory (:entity/inventory @eid)
-        cells-items (item/cells-and-items inventory slot)
-        [cell _cell-item] (find-first (fn [[_cell cell-item]] (item/stackable? item cell-item))
-                                      cells-items)]
-    (if cell
-      (stack-item eid cell item)
-      (when-let [[empty-cell] (find-first (fn [[_cell item]] (nil? item))
-                                          cells-items)]
-        (set-item eid empty-cell item)))))
+(defn- free-cell [inventory slot item]
+  (find-first (fn [[_cell cell-item]]
+                (or (item/stackable? item cell-item)
+                    (nil? cell-item)))
+              (item/cells-and-items inventory slot)))
+
+(defn can-pickup-item? [{:keys [entity/inventory]} item]
+  (or
+   (free-cell inventory (:item/slot item)   item)
+   (free-cell inventory :inventory.slot/bag item)))
 
 (defn- pickup-item [eid item]
-  (or
-   (try-put-item-in eid (:item/slot item)   item)
-   (try-put-item-in eid :inventory.slot/bag item)))
-
-(defn can-pickup-item? [eid item]
-  (boolean (pickup-item eid item)))
+  (let [[cell cell-item] (can-pickup-item? @eid item)]
+    (assert cell)
+    (assert (or (item/stackable? item cell-item)
+                (nil? cell-item)))
+    (if (item/stackable? item cell-item)
+      (stack-item eid cell item)
+      (set-item   eid cell item))))
 
 (defn create [items eid]
   (cons [:e/assoc eid *k* item/empty-inventory]

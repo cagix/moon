@@ -12,8 +12,8 @@
             [moon.entity.skills :as skills]
             [moon.player :as player]
             [moon.widgets.action-bar :as action-bar]
+            [moon.widgets.inventory :as widgets.inventory]
             [moon.widgets.player-message :as player-message]
-            [moon.widgets.windows :as windows]
             [moon.world.mouseover :as mouseover]))
 
 (defn- denied [text]
@@ -27,13 +27,13 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (a/visible? (windows/inventory))
+     (a/visible? (widgets.inventory/window))
      (do
       (play-sound "sounds/bfxr_takeit.wav")
       [[:e/destroy eid]
        [:entity/fsm player/eid :pickup-item item]])
 
-     (inventory/can-pickup-item? player/eid item)
+     (inventory/can-pickup-item? @player/eid item)
      (do
       (play-sound "sounds/bfxr_pickup.wav")
       [[:e/destroy eid]
@@ -45,7 +45,7 @@
       (player-message/show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (a/toggle-visible! (windows/inventory))) ; TODO no tx
+  (a/toggle-visible! (widgets.inventory/window)))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
