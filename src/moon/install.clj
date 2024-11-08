@@ -101,8 +101,7 @@
 (install components/entity-state 'moon.entity.stunned               :stunned)
 
 (install-all components/tx
-             '[moon.tx.audiovisual
-               moon.tx.creature
+             '[moon.tx.creature
                moon.tx.cursor
                moon.tx.effect
                moon.tx.item

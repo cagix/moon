@@ -1,5 +1,6 @@
 (ns moon.effect.entity.convert
-  (:require [moon.effect :refer [source target]]
+  (:require [moon.audiovisual :as audiovisual]
+            [moon.effect :refer [source target]]
             [moon.entity.faction :as faction]))
 
 (defn info [_]
@@ -11,5 +12,5 @@
           (faction/enemy @source))))
 
 (defn handle [_]
-  [[:tx/audiovisual (:position @target) :audiovisuals/convert]
-   [:e/assoc target :entity/faction (:entity/faction @source)]])
+  (audiovisual/create (:position @target) :audiovisuals/convert)
+  [[:e/assoc target :entity/faction (:entity/faction @source)]])

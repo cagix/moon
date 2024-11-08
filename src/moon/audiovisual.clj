@@ -1,9 +1,9 @@
-(ns moon.tx.audiovisual
+(ns moon.audiovisual
   (:require [gdl.assets :refer [play-sound]]
             [moon.body :as body]
             [moon.db :as db]))
 
-(defn handle [position id]
+(defn create [position id]
   (let [{:keys [tx/sound entity/animation]} (db/get id)]
     (play-sound sound)
     [[:e/create

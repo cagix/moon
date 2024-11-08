@@ -1,5 +1,6 @@
 (ns moon.effect.entity.damage
   (:require [gdl.rand :refer [rand-int-between]]
+            [moon.audiovisual :as audiovisual]
             [moon.damage :as damage]
             [moon.effect :refer [source target]]
             [moon.entity.hp :as hp]
@@ -48,7 +49,7 @@
                     (damage/modified source* target* damage))
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
-       [[:tx/audiovisual (:position target*) :audiovisuals/damage]
-        [:entity/string-effect target (str "[RED]" dmg-amount)]
+       (audiovisual/create (:position target*) :audiovisuals/damage)
+       [[:entity/string-effect target (str "[RED]" dmg-amount)]
         [:e/assoc-in target [:entity/hp 0] new-hp-val]
         [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]]))))
