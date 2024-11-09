@@ -12,7 +12,7 @@
 
 (defn tick [{:keys [counter faction]} eid]
   (when (stopped? counter)
-    (cons [:e/destroy eid]
-          (for [friendly-eid (friendlies-in-radius (:position @eid) faction)]
-            [:entity/fsm friendly-eid :alert]))))
+    (swap! eid assoc :entity/destroyed? true)
+    (for [friendly-eid (friendlies-in-radius (:position @eid) faction)]
+      [:entity/fsm friendly-eid :alert])))
 

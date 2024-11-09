@@ -4,4 +4,4 @@
   {:eid eid})
 
 (defn enter [{:keys [eid]}]
-  [[:e/destroy eid]])
+  (swap! eid assoc :entity/destroyed? true))

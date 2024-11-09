@@ -26,6 +26,6 @@
     [(when hit-entity
        [:e/assoc-in eid [*k* :already-hit-bodies] (conj already-hit-bodies hit-entity)]) ; this is only necessary in case of not piercing ...
      (when destroy?
-       [:e/destroy eid])
+       (swap! eid assoc :entity/destroyed? true))
      (when hit-entity
        [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))

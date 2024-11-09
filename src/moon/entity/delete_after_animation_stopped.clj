@@ -6,4 +6,4 @@
 
 (defn tick [_ eid]
   (when (animation/stopped? (:entity/animation @eid))
-    [[:e/destroy eid]]))
+    (swap! eid assoc :entity/destroyed? true)))

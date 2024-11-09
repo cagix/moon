@@ -10,5 +10,5 @@
 
 (defn tick [counter eid]
   (when (stopped? counter)
-    [[:e/destroy eid]]))
+    (swap! eid assoc :entity/destroyed? true)))
 

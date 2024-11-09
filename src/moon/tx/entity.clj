@@ -28,9 +28,6 @@
     (for [component @eid]
       #(entity/create component eid))))
 
-(defmethod component/handle :e/destroy [[_ eid]]
-  [[:e/assoc eid :entity/destroyed? true]])
-
 (defmethod component/handle :tx/remove-destroyed-entities [_]
   (mapcat (fn [eid]
             (entities/remove-from-world eid)

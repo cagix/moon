@@ -30,14 +30,14 @@
      (a/visible? (widgets.inventory/window))
      (do
       (play-sound "sounds/bfxr_takeit.wav")
-      [[:e/destroy eid]
-       [:entity/fsm player/eid :pickup-item item]])
+      (swap! eid assoc :entity/destroyed? true)
+      [[:entity/fsm player/eid :pickup-item item]])
 
      (inventory/can-pickup-item? @player/eid item)
      (do
       (play-sound "sounds/bfxr_pickup.wav")
-      [[:e/destroy eid]
-       [:entity/inventory :pickup player/eid item]])
+      (swap! eid assoc :entity/destroyed? true)
+      [[:entity/inventory :pickup player/eid item]])
 
      :else
      (do
