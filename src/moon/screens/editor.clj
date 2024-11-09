@@ -7,18 +7,20 @@
             [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
-            [moon.widgets.background-image :as background-image])
+            [moon.widgets.background-image :as background-image]
+            [moon.widgets.property :as widgets.property]
+            [moon.widgets.properties-overview :as properties-overview])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (stage/add! (component/create [:widgets/property (db/get-raw id)])))
+  (stage/add! (widgets.property/editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
   (for [property-type (sort (property/types))]
     {:title (str/capitalize (name property-type))
-     :content (component/create [:widgets/properties-overview property-type edit-property])}))
+     :content (properties-overview/table property-type edit-property)}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
   (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]

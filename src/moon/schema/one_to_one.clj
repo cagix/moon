@@ -5,7 +5,8 @@
             [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
-            [moon.schema :as schema]))
+            [moon.schema :as schema]
+            [moon.widgets.properties-overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]
   [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])
@@ -31,10 +32,7 @@
                                  clicked-id-fn (fn [id]
                                                  (a/remove! window)
                                                  (redo-rows id))]
-                             (.add window (component/create
-                                           [:widgets/properties-overview
-                                            property-type
-                                            clicked-id-fn]))
+                             (.add window (properties-overview/table property-type clicked-id-fn))
                              (.pack window)
                              (stage/add! window)))))]
       [(when property-id

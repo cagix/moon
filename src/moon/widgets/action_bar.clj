@@ -2,7 +2,7 @@
   (:require [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :as component] ))
+            [moon.component :as component]))
 
 (def ^:private image-scale 2)
 
@@ -20,7 +20,7 @@
     {:horizontal-group group
      :button-group (group->button-group group)}))
 
-(defn- add-skill [{:keys [property/id entity/image] :as skill}]
+(defn add-skill [{:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (ui/image-button image (fn []) {:scale image-scale})]
     (a/set-id! button id)
@@ -29,7 +29,7 @@
     (ui/bg-add! button-group button)
     nil))
 
-(defn- remove-skill [{:keys [property/id]}]
+(defn remove-skill [{:keys [property/id]}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (get horizontal-group id)]
     (a/remove! button)
@@ -41,11 +41,6 @@
     (a/set-id! group ::action-bar)
     (ui/add-actor! group (action-bar-button-group))
     group))
-
-(defn handle [op skill]
-  (case op
-    :add    (add-skill    skill)
-    :remove (remove-skill skill)))
 
 (defn selected-skill []
   (when-let [skill-button (ui/bg-checked (:button-group (get-action-bar)))]

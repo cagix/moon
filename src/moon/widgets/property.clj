@@ -17,7 +17,7 @@
 ; We are working with raw property data without edn->value and db/build
 ; otherwise at db/update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
-(defn- props->editor-window [props]
+(defn editor-window [props]
   (let [schema (schema/of (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
@@ -39,6 +39,3 @@
                                               (save!)))}))
     (.pack window)
     window))
-
-(defn create [props]
-  (props->editor-window props))

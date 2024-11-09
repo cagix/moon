@@ -7,6 +7,7 @@
             [moon.component :as component]
             [moon.malli :as malli]
             [moon.schema :as schema]
+            [moon.widgets.property :as widgets.property]
             [moon.widgets.scrollpane :refer [scroll-pane-cell]]))
 
 (defn- attribute-form
@@ -50,7 +51,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
     (a/remove! (editor-window))
-    (stage/add! (component/create [:widgets/property prop-value]))))
+    (stage/add! (widgets.property/editor-window prop-value))))
 
 (defn- k->default-value [k]
   (let [schema (schema/of k)]

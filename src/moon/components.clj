@@ -40,7 +40,3 @@
 
 (def tx
   {:required [#'component/handle]})
-
-(def widget
-  {:required [#'component/create]
-   :optional [#'component/handle]})

@@ -109,14 +109,6 @@
                moon.tx.projectile
                moon.tx.shout])
 
-(install-all components/widget
-             '[moon.widgets.action-bar
-               moon.widgets.dev-menu
-               moon.widgets.entity-info-window
-               moon.widgets.hp-mana
-               moon.widgets.properties-overview
-               moon.widgets.property])
-
 (defmethod component/info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
 

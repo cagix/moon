@@ -2,6 +2,7 @@
   (:require [gdl.system :refer [*k*]]
             [moon.effect :as effect]
             [moon.entity.mana :as mana]
+            [moon.widgets.action-bar :as action-bar]
             [moon.world.time :refer [stopped?]]))
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
@@ -32,11 +33,13 @@
            [:e/assoc-in eid [*k* (:property/id skill) :skill/cooling-down?] false])))
 
 (defn handle [eid op skill]
+  (when (:entity/player? @eid)
+    (case op
+      :add    (action-bar/add-skill    skill)
+      :remove (action-bar/remove-skill skill)))
   [(case op
     :add    (add-skill    eid skill)
-    :remove (remove-skill eid skill))
-   (when (:entity/player? @eid)
-     [:widgets/action-bar op skill])])
+    :remove (remove-skill eid skill))])
 
 (defn- mana-value [entity]
   (if-let [mana (:entity/mana entity)]

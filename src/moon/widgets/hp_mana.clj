@@ -15,7 +15,7 @@
               :y (+ y 2)
               :up? true}))
 
-(defn create []
+(defn actor []
   (let [rahmen      (img/image "images/rahmen.png")
         hpcontent   (img/image "images/hp.png")
         manacontent (img/image "images/mana.png")
