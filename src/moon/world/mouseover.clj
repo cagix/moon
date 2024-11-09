@@ -28,10 +28,9 @@
   (let [new-eid (if (stage/mouse-on-actor?)
                   nil
                   (calculate-eid))]
-    [(when eid
-       [:e/dissoc eid :entity/mouseover?])
-     (when new-eid
-       [:e/assoc new-eid :entity/mouseover? true])
-     (fn []
-       (bind-root #'eid new-eid)
-       nil)]))
+    (when eid
+      (swap! eid dissoc :entity/mouseover?))
+    (when new-eid
+      (swap! new-eid assoc :entity/mouseover? true))
+    (bind-root #'eid new-eid)
+    nil))

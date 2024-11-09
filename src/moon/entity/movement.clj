@@ -64,17 +64,20 @@
                         (try-move-solid-body body movement)
                         (move-body body movement))]
         (entities/position-changed eid)
-        [[:e/assoc eid :position    (:position    body)]
-         [:e/assoc eid :left-bottom (:left-bottom body)]
-         (when rotate-in-movement-direction?
-           [:e/assoc eid :rotation-angle (v/angle-from-vector direction)])]))))
+        (swap! eid assoc
+               :position (:position body)
+               :left-bottom (:left-bottom body))
+        (when rotate-in-movement-direction?
+          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
+        nil))))
 
 (defn handle [eid movement]
   (assert (or (nil? movement)
               (nil? (:direction movement))
               (and (:direction movement) ; continue schema of that ...
                    #_(:speed movement)))) ; princess no entity/movement-speed, then nil and here assertion-error
-  [(if (or (nil? movement)
-           (nil? (:direction movement)))
-     [:e/dissoc eid :entity/movement]
-     [:e/assoc eid :entity/movement movement])])
+  (swap! eid #(if (or (nil? movement)
+                      (nil? (:direction movement)))
+                (dissoc % :entity/movement)
+                (assoc % :entity/movement movement)))
+  nil)

@@ -18,6 +18,6 @@
 ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
 (defn handle [_]
   (when-not (:entity/temp-modifier @target)
-    [[:entity/modifiers target :add modifiers]
-     [:e/assoc target :entity/temp-modifier {:modifiers modifiers
-                                             :counter (timer duration)}]]))
+    (swap! target assoc :entity/temp-modifier {:modifiers modifiers
+                                               :counter (timer duration)})
+    [[:entity/modifiers target :add modifiers]]))

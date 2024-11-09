@@ -20,13 +20,5 @@
 (defmethod component/handle :tx/pay-mana-cost [[_ eid cost]]
   (let [mana-val ((value @eid) 0)]
     (assert (<= cost mana-val))
-    [[:e/assoc-in eid [:entity/mana 0] (- mana-val cost)]]))
-
-(comment
- (let [mana-val 4
-       eid (atom (entity/map->Entity {:entity/mana [mana-val 10]}))
-       mana-cost 3
-       resulting-mana (- mana-val mana-cost)]
-   (= (component/handle [:tx/pay-mana-cost eid mana-cost] nil)
-      [[:e/assoc-in eid [:entity/mana 0] resulting-mana]]))
- )
+    (swap! eid assoc-in [:entity/mana 0] (- mana-val cost))
+    nil))

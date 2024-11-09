@@ -53,9 +53,11 @@
 
 (defn enter [{:keys [eid skill]}]
   (play-sound (:skill/start-action-sound skill))
-  [(when (:skill/cooldown skill)
-     [:e/assoc-in eid [:entity/skills (:property/id skill) :skill/cooling-down?] (timer (:skill/cooldown skill))])
-   (when (and (:skill/cost skill)
+  (when (:skill/cooldown skill)
+    (swap! eid assoc-in
+           [:entity/skills (:property/id skill) :skill/cooling-down?]
+           (timer (:skill/cooldown skill))))
+  [(when (and (:skill/cost skill)
               (not (zero? (:skill/cost skill))))
      [:tx/pay-mana-cost eid (:skill/cost skill)])])
 

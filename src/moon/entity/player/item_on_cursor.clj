@@ -21,8 +21,8 @@
           (valid-slot? cell item-on-cursor))
      (do
       (play-sound "sounds/bfxr_itemput.wav")
+      (swap! eid dissoc :entity/item-on-cursor)
       [[:entity/inventory :set eid cell item-on-cursor]
-       [:e/dissoc eid :entity/item-on-cursor]
        [:entity/fsm eid :dropped-item]])
 
      ; STACK ITEMS
@@ -30,8 +30,8 @@
           (stackable? item-in-cell item-on-cursor))
      (do
       (play-sound "sounds/bfxr_itemput.wav")
+      (swap! eid dissoc :entity/item-on-cursor)
       [[:entity/inventory :stack eid cell item-on-cursor]
-       [:e/dissoc eid :entity/item-on-cursor]
        [:entity/fsm eid :dropped-item]])
 
      ; SWAP ITEMS
@@ -39,11 +39,11 @@
           (valid-slot? cell item-on-cursor))
      (do
       (play-sound "sounds/bfxr_itemput.wav")
+      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+      ; TODO? coud handle pickup-item from item-on-cursor state also
+      (swap! eid dissoc :entity/item-on-cursor)
       [[:entity/inventory :remove eid cell]
        [:entity/inventory :set eid cell item-on-cursor]
-       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
-       ; TODO? coud handle pickup-item from item-on-cursor state also
-       [:e/dissoc eid :entity/item-on-cursor]
        [:entity/fsm eid :dropped-item]
        [:entity/fsm eid :pickup-item item-in-cell]]))))
 
@@ -85,7 +85,8 @@
   :cursors/hand-grab)
 
 (defn enter [{:keys [eid item]}]
-  [[:e/assoc eid :entity/item-on-cursor item]])
+  (swap! eid assoc :entity/item-on-cursor item)
+  nil)
 
 (defn exit [{:keys [eid]}]
   ; at clicked-cell when we put it into a inventory-cell
@@ -95,8 +96,8 @@
   (let [entity @eid]
     (when (:entity/item-on-cursor entity)
       (play-sound "sounds/bfxr_itemputground.wav")
-      [[:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]
-       [:e/dissoc eid :entity/item-on-cursor]])))
+      (swap! eid dissoc :entity/item-on-cursor)
+      [[:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]])))
 
 (defn render-below [{:keys [item]} entity]
   (when (world-item?)

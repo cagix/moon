@@ -21,9 +21,10 @@
 (defn- mods-remove [mods other-mods] (merge-with ops/remove mods other-mods))
 
 (defn handle [eid add-or-remove mods]
-  [[:e/assoc eid *k* ((case add-or-remove
-                        :add    mods-add
-                        :remove mods-remove) (*k* @eid) mods)]])
+  (swap! eid update *k* (case add-or-remove
+                          :add    mods-add
+                          :remove mods-remove) mods)
+  nil)
 
 (defn value [base-value {:keys [entity/modifiers]} modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}

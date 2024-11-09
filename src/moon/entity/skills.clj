@@ -8,18 +8,18 @@
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
 
-(defn- add-skill [eid {:keys [property/id] :as skill}]
-  (assert (not (has-skill? @eid skill)))
-  [:e/assoc-in eid [:entity/skills id] skill])
+(defn- add-skill [entity {:keys [property/id] :as skill}]
+  (assert (not (has-skill? entity skill)))
+  (assoc-in entity [:entity/skills id] skill))
 
-(defn- remove-skill [eid {:keys [property/id] :as skill}]
-  (assert (has-skill? @eid skill))
-  [:e/dissoc-in eid [:entity/skills id]])
+(defn- remove-skill [entity {:keys [property/id] :as skill}]
+  (assert (has-skill? entity skill))
+  (update entity :entity/skills dissoc id))
 
 (defn create [skills eid]
-  (cons [:e/assoc eid *k* nil]
-        (for [skill skills]
-          [:entity/skills eid :add skill])))
+  (swap! eid assoc *k* nil)
+  (for [skill skills]
+    [:entity/skills eid :add skill]))
 
 (defn info [skills]
   ; => recursive info-text leads to endless text wall
@@ -27,19 +27,21 @@
       (str "[VIOLET]Skills: " (str/join "," (map name (keys skills))) "[]")))
 
 (defn tick [skills eid]
-  (doall (for [{:keys [skill/cooling-down?] :as skill} (vals skills)
-               :when (and cooling-down?
-                          (stopped? cooling-down?))]
-           [:e/assoc-in eid [*k* (:property/id skill) :skill/cooling-down?] false])))
+  (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
+          :when (and cooling-down?
+                     (stopped? cooling-down?))]
+    (swap! eid assoc-in [*k* (:property/id skill) :skill/cooling-down?] false)))
 
 (defn handle [eid op skill]
   (when (:entity/player? @eid)
     (case op
       :add    (action-bar/add-skill    skill)
       :remove (action-bar/remove-skill skill)))
-  [(case op
-    :add    (add-skill    eid skill)
-    :remove (remove-skill eid skill))])
+  (swap! eid (case op
+               :add    add-skill
+               :remove remove-skill)
+         skill)
+  nil)
 
 (defn- mana-value [entity]
   (if-let [mana (:entity/mana entity)]

@@ -48,7 +48,7 @@
                     (damage/modified source* target* damage))
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
+       (swap! target assoc-in [:entity/hp 0] new-hp-val)
        [[:tx/audiovisual (:position target*) :audiovisuals/damage]
         [:entity/string-effect target (str "[RED]" dmg-amount)]
-        [:e/assoc-in target [:entity/hp 0] new-hp-val]
         [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]]))))

@@ -39,15 +39,18 @@
           (when (:entity/player? @eid)
             (when-let [crs (cursor new-state-obj)]
               (cursors/set crs)))
+          (swap! eid #(-> %
+                          (assoc :entity/fsm new-fsm
+                                 new-state-k (new-state-obj 1))
+                          (dissoc old-state-k)))
           [#(exit old-state-obj)
-           #(enter new-state-obj)
-           [:e/assoc eid :entity/fsm new-fsm]
-           [:e/dissoc eid old-state-k]
-           [:e/assoc eid new-state-k (new-state-obj 1)]])))))
+           #(enter new-state-obj)])))))
 
 (defn create [{:keys [fsm initial-state]} eid]
-  [[:e/assoc eid *k* (->init-fsm (component/create [fsm]) initial-state)]
-   [:e/assoc eid initial-state (entity/->v [initial-state eid])]])
+  (swap! eid assoc
+         *k* (->init-fsm (component/create [fsm]) initial-state)
+         initial-state (entity/->v [initial-state eid]))
+  nil)
 
 (defn info [fsm]
   (str "[YELLOW]State: " (name (:state fsm)) "[]"))

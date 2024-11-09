@@ -11,5 +11,5 @@
           (faction/enemy @source))))
 
 (defn handle [_]
-  [[:tx/audiovisual (:position @target) :audiovisuals/convert]
-   [:e/assoc target :entity/faction (:entity/faction @source)]])
+  (swap! target assoc :entity/faction (:entity/faction @source))
+  [[:tx/audiovisual (:position @target) :audiovisuals/convert]])

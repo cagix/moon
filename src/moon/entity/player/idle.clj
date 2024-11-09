@@ -146,5 +146,5 @@
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
                (not (skills/has-skill? @eid skill)))
-      [[:e/assoc eid :entity/free-skill-points (dec free-skill-points)]
-       [:entity/skills eid :add skill]])))
+      (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
+      [[:entity/skills eid :add skill]])))

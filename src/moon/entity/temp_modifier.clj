@@ -9,8 +9,8 @@
 
 (defn tick [{:keys [modifiers counter]} eid]
   (when (stopped? counter)
-    [[:e/dissoc eid *k*]
-     [:entity/modifiers eid :remove modifiers]]))
+    (swap! eid dissoc *k*)
+    [[:entity/modifiers eid :remove modifiers]]))
 
 ; TODO draw opacity as of counter ratio?
 (defn render-above [_ entity]

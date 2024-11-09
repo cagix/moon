@@ -14,9 +14,9 @@
                  (item/valid-slot? cell item)))
     (when (:entity/player? entity)
       (inventory/set-item-image-in-widget cell item))
-    [[:e/assoc-in eid (cons :entity/inventory cell) item]
-     (when (applies-modifiers? cell)
-       [:entity/modifiers eid :add (:entity/modifiers item)])]))
+    (swap! eid assoc-in (cons :entity/inventory cell) item)
+    (when (applies-modifiers? cell)
+      [[:entity/modifiers eid :add (:entity/modifiers item)]])))
 
 (defn- remove-item [eid cell]
   (let [entity @eid
@@ -24,9 +24,9 @@
     (assert item)
     (when (:entity/player? entity)
       (inventory/remove-item-from-widget cell))
-    [[:e/assoc-in eid (cons :entity/inventory cell) nil]
-     (when (applies-modifiers? cell)
-       [:entity/modifiers eid :remove (:entity/modifiers item)])]))
+    (swap! eid assoc-in (cons :entity/inventory cell) nil)
+    (when (applies-modifiers? cell)
+      [[:entity/modifiers eid :remove (:entity/modifiers item)]])))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]
@@ -70,8 +70,8 @@
       (set-item   eid cell item))))
 
 (defn create [items eid]
-  (cons [:e/assoc eid *k* item/empty-inventory]
-        (mapv #(vector *k* :pickup eid %) items)))
+  (swap! eid assoc *k* item/empty-inventory)
+  (mapv #(vector *k* :pickup eid %) items))
 
 (defn handle [op & args]
   (case op
