@@ -8,7 +8,8 @@
             [gdl.stage :refer [mouse-on-actor?]]
             [moon.entity.fsm :as fsm]
             [moon.player :as player]
-            [moon.item :refer [valid-slot? stackable?]]))
+            [moon.item :refer [valid-slot? stackable?]]
+            [moon.world.entities :as entities]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -97,7 +98,8 @@
     (when (:entity/item-on-cursor entity)
       (play-sound "sounds/bfxr_itemputground.wav")
       (swap! eid dissoc :entity/item-on-cursor)
-      [[:tx/item (item-place-position entity) (:entity/item-on-cursor entity)]])))
+      (entities/item (item-place-position entity) (:entity/item-on-cursor entity))
+      nil)))
 
 (defn render-below [{:keys [item]} entity]
   (when (world-item?)

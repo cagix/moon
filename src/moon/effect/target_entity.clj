@@ -3,7 +3,8 @@
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
             [moon.body :as body]
-            [moon.effect :as effect :refer [source target]]))
+            [moon.effect :as effect :refer [source target]]
+            [moon.world.entities :as entities]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)
@@ -36,29 +37,28 @@
   (let [source* @source
         target* @target]
     (if (in-range? source* target* maxrange)
-      (cons
-       [:tx/line-render {:start (start-point source* target*)
-                         :end (:position target*)
-                         :duration 0.05
-                         :color [1 0 0 0.75]
-                         :thick? true}]
+      (do
+       (entities/line-render {:start (start-point source* target*)
+                              :end (:position target*)
+                              :duration 0.05
+                              :color [1 0 0 0.75]
+                              :thick? true})
        ; TODO => make new context with end-point ... and check on point entity
        ; friendly fire ?!
        ; player maybe just direction possible ?!
-
        ; TODO FIXME
        ; have to use tx/effect now ?!
        ; still same context ...
        ; filter applicable ?! - omg
-       entity-effects
-
-       )
-      [; TODO
+       entity-effects)
+      (do
+       ; TODO
        ; * clicking on far away monster
        ; * hitting ground in front of you ( there is another monster )
        ; * -> it doesn't get hit ! hmmm
        ; * either use 'MISS' or get enemy entities at end-point
-       [:tx/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground]])))
+       (entities/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground)
+       nil))))
 
 (defn render [{:keys [maxrange]}]
   (when target

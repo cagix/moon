@@ -72,8 +72,9 @@
     ]
 
    (stopped? counter)
-   [[:entity/fsm eid :action-done]
-    [:tx/effect effect-ctx (:skill/effects skill)]]))
+   (do
+    (effect/do! effect-ctx (:skill/effects skill))
+    [[:entity/fsm eid :action-done]])))
 
 (defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]

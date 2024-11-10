@@ -3,7 +3,8 @@
             [moon.damage :as damage]
             [moon.effect :refer [source target]]
             [moon.entity.hp :as hp]
-            [moon.entity.stat :as stat]))
+            [moon.entity.stat :as stat]
+            [moon.world.entities :as entities]))
 
 (defn- effective-armor-save [source* target*]
   (max (- (or (stat/value target* :entity/armor-save) 0)
@@ -49,6 +50,6 @@
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
-       [[:tx/audiovisual (:position target*) :audiovisuals/damage]
-        [:entity/string-effect target (str "[RED]" dmg-amount)]
+       (entities/audiovisual (:position target*) :audiovisuals/damage)
+       [[:entity/string-effect target (str "[RED]" dmg-amount)]
         [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]]))))

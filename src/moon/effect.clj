@@ -23,3 +23,8 @@
              target-direction (:effect/target-direction ~ctx)
              target-position  (:effect/target-position  ~ctx)]
      ~@body))
+
+(defn do! [effect-ctx effect]
+  (with-ctx effect-ctx
+    (component/->handle
+     (filter-applicable? effect))))

@@ -3,14 +3,15 @@
             [moon.body :as body]
             [moon.entity.faction :as faction]
             [moon.entity.stat :as stat]
+            [moon.world.entities :as entities]
             [moon.world.grid :as grid]))
 
 (defn ->v [eid]
   {:eid eid})
 
 (defn exit [{:keys [eid]}]
-  [[:entity/string-effect eid "[WHITE]!"]
-   [:tx/shout (:position @eid) (:entity/faction @eid) 0.2]])
+  (entities/shout (:position @eid) (:entity/faction @eid) 0.2)
+  [[:entity/string-effect eid "[WHITE]!"]])
 
 (defn tick [_ eid]
   (let [entity @eid

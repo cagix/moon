@@ -57,23 +57,23 @@
 ; till then hardcode :creatures/vampire
 
 (defn- spawn-creatures [{:keys [tiled-map start-position]}]
-  (for [creature (cons {:position start-position
-                        :creature-id :creatures/vampire
-                        :components {:entity/fsm {:fsm :fsms/player
-                                                  :initial-state :player-idle}
-                                     :entity/faction :good
-                                     :entity/player? true
-                                     :entity/free-skill-points 3
-                                     :entity/clickable {:type :clickable/player}
-                                     :entity/click-distance-tiles 1.5}}
-                       (when spawn-enemies?
-                         (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                           {:position position
-                            :creature-id (keyword creature-id)
-                            :components {:entity/fsm {:fsm :fsms/npc
-                                                      :initial-state :npc-sleeping}
-                                         :entity/faction :evil}})))]
-    [:tx/creature (update creature :position tile->middle)]))
+  (doseq [creature (cons {:position start-position
+                          :creature-id :creatures/vampire
+                          :components {:entity/fsm {:fsm :fsms/player
+                                                    :initial-state :player-idle}
+                                       :entity/faction :good
+                                       :entity/player? true
+                                       :entity/free-skill-points 3
+                                       :entity/clickable {:type :clickable/player}
+                                       :entity/click-distance-tiles 1.5}}
+                         (when spawn-enemies?
+                           (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                             {:position position
+                              :creature-id (keyword creature-id)
+                              :components {:entity/fsm {:fsm :fsms/npc
+                                                        :initial-state :npc-sleeping}
+                                           :entity/faction :evil}})))]
+    (entities/creature (update creature :position tile->middle))))
 
 (defn- menu-item [text on-clicked]
   (doto (MenuItem. text)
@@ -193,7 +193,7 @@
     (bind-root #'tick-error nil)
     (bind-root #'entities/ids->eids {})
     (time/init)
-    (component/->handle (spawn-creatures level))))
+    (spawn-creatures level)))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)

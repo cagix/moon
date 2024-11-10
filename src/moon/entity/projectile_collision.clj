@@ -2,6 +2,7 @@
   (:require [gdl.system :refer [*k*]]
             [gdl.utils :refer [find-first]]
             [moon.body :as body]
+            [moon.effect :as effect]
             [moon.world.grid :as grid]))
 
 (defn ->v [v]
@@ -27,5 +28,6 @@
       (swap! eid assoc :entity/destroyed? true))
     (when hit-entity
       (swap! eid assoc-in [*k* :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
-    [(when hit-entity
-       [:tx/effect {:effect/source eid :effect/target hit-entity} entity-effects])]))
+    (when hit-entity
+      (effect/do! {:effect/source eid :effect/target hit-entity} entity-effects))
+    nil))

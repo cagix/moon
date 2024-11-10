@@ -2,7 +2,8 @@
   (:require [gdl.app :refer [post-runnable]]
             [moon.component :as component]
             [moon.db :as db]
-            [moon.player :as player]))
+            [moon.player :as player]
+            [moon.world.entities :as entities]))
 
 (comment
 
@@ -24,11 +25,11 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-tx! [:tx/creature {:position [35 73]
-                          :creature-id :creatures/dragon-red
-                          :components {:entity/fsm {:fsm :fsms/npc
-                                                    :initial-state :npc-sleeping}
-                                       :entity/faction :evil}}])
+ (post-runnable (entities/creature {:position [35 73]
+                                    :creature-id :creatures/dragon-red
+                                    :components {:entity/fsm {:fsm :fsms/npc
+                                                              :initial-state :npc-sleeping}
+                                                 :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (moon.world.entities/get-entity 168)]) ; TODO how to get id ?
@@ -53,6 +54,5 @@
      [[:entity/skills player/eid :add (db/get skill-id)]])))
 
 (defn- create-item! [item-id]
-  (post-tx!
-   (fn []
-     [[:tx/item (:position @player/eid) (db/get item-id)]])))
+  (post-runnable
+   (entities/item (:position @player/eid) (db/get item-id))))

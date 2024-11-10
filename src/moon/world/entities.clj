@@ -1,15 +1,20 @@
 (ns moon.world.entities
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
+            [gdl.assets :refer [play-sound]]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
+            [gdl.math.vector :as v]
             [gdl.utils :refer [sort-by-order safe-merge]]
             [moon.component :as component]
+            [moon.db :as db]
             [moon.body :as body]
             [moon.entity :as entity]
             [moon.player :as player]
+            [moon.projectile :as projectile]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]
-            [moon.world.line-of-sight :refer [line-of-sight?]]))
+            [moon.world.line-of-sight :refer [line-of-sight?]]
+            [moon.world.time :refer [timer]]))
 
 (declare ^:private ids->eids)
 
@@ -103,7 +108,7 @@
           {}
           components))
 
-(defn create [position body components]
+(defn- create [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
@@ -115,3 +120,78 @@
     (add-to-world eid)
     (doseq [component @eid]
       (component/->handle (entity/create component eid)))))
+
+(defn audiovisual [position id]
+  (let [{:keys [tx/sound entity/animation]} (db/get id)]
+    (play-sound sound)
+    (create position
+            body/effect-body-props
+            {:entity/animation animation
+             :entity/delete-after-animation-stopped true})))
+
+; # :z-order/flying has no effect for now
+; * entities with :z-order/flying are not flying over water,etc. (movement/air)
+; because using potential-field for z-order/ground
+; -> would have to add one more potential-field for each faction for z-order/flying
+; * they would also (maybe) need a separate occupied-cells if they don't collide with other
+; * they could also go over ground units and not collide with them
+; ( a test showed then flying OVER player entity )
+; -> so no flying units for now
+(defn- ->body [{:keys [body/width body/height #_body/flying?]}]
+  {:width  width
+   :height height
+   :collides? true
+   :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
+
+(defn creature [{:keys [position creature-id components]}]
+  (let [props (db/get creature-id)]
+    (create position
+            (->body (:entity/body props))
+            (-> props
+                (dissoc :entity/body)
+                (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                (safe-merge components)))))
+
+(defn item [position item]
+  (create position
+          {:width 0.75
+           :height 0.75
+           :z-order :z-order/on-ground}
+          {:entity/image (:entity/image item)
+           :entity/item item
+           :entity/clickable {:type :clickable/item
+                              :text (:property/pretty-name item)}}))
+
+(defn shout [position faction duration]
+  (create position
+          body/effect-body-props
+          {:entity/alert-friendlies-after-duration
+           {:counter (timer duration)
+            :faction faction}}))
+
+(defn line-render [{:keys [start end duration color thick?]}]
+  (create start
+          body/effect-body-props
+          #:entity {:line-render {:thick? thick? :end end :color color}
+                    :delete-after-duration duration}))
+
+(defn projectile [{:keys [position direction faction]}
+                  {:keys [entity/image
+                          projectile/max-range
+                          projectile/speed
+                          entity-effects
+                          projectile/piercing?] :as projectile}]
+  (let [size (projectile/size projectile)]
+    (create position
+            {:width size
+             :height size
+             :z-order :z-order/flying
+             :rotation-angle (v/angle-from-vector direction)}
+            {:entity/movement {:direction direction
+                               :speed speed}
+             :entity/image image
+             :entity/faction faction
+             :entity/delete-after-duration (/ max-range speed)
+             :entity/destroy-audiovisual :audiovisuals/hit-wall
+             :entity/projectile-collision {:entity-effects entity-effects
+                                           :piercing? piercing?}})))

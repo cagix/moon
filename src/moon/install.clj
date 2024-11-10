@@ -99,15 +99,6 @@
 (install components/entity-state 'moon.entity.active                :active-skill)
 (install components/entity-state 'moon.entity.stunned               :stunned)
 
-(install-all components/tx
-             '[moon.tx.audiovisual
-               moon.tx.creature
-               moon.tx.effect
-               moon.tx.item
-               moon.tx.line-render
-               moon.tx.projectile
-               moon.tx.shout])
-
 (defmethod component/info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
 

@@ -37,6 +37,3 @@
                           #'player/clicked-inventory-cell
                           #'player/clicked-skillmenu-skill
                           #'player/draw-gui-view]}))
-
-(def tx
-  {:required [#'component/handle]})
