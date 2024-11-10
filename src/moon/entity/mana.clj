@@ -16,9 +16,7 @@
 (defn ->v [v]
   [v v])
 
-; TODO same as hp @ damage ... and similar to effect.entity/mana or hp ...
-(defmethod component/handle :tx/pay-mana-cost [[_ eid cost]]
-  (let [mana-val ((value @eid) 0)]
+(defn pay-cost [entity cost]
+  (let [mana-val ((value entity) 0)]
     (assert (<= cost mana-val))
-    (swap! eid assoc-in [:entity/mana 0] (- mana-val cost))
-    nil))
+    (assoc-in entity [:entity/mana 0] (- mana-val cost))))

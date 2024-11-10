@@ -2,7 +2,7 @@
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
-            [gdl.utils :refer [sort-by-order]]
+            [gdl.utils :refer [sort-by-order safe-merge]]
             [moon.component :as component]
             [moon.body :as body]
             [moon.entity :as entity]
@@ -67,7 +67,7 @@
 (defn tick [entities]
   (run! tick-entity entities))
 
-(defn add-to-world [eid]
+(defn- add-to-world [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (alter-var-root #'ids->eids assoc id eid))
@@ -92,3 +92,26 @@
     (remove-from-world eid)
     (doseq [component @eid]
       (component/->handle (entity/destroy component eid)))))
+
+(let [cnt (atom 0)]
+  (defn- unique-number! []
+    (swap! cnt inc)))
+
+(defn- create-vs [components]
+  (reduce (fn [m [k v]]
+            (assoc m k (entity/->v [k v])))
+          {}
+          components))
+
+(defn create [position body components]
+  (assert (and (not (contains? components :position))
+               (not (contains? components :entity/id))))
+  (let [eid (atom (-> body
+                      (assoc :position position)
+                      body/create
+                      (safe-merge (-> components
+                                      (assoc :entity/id (unique-number!))
+                                      (create-vs)))))]
+    (add-to-world eid)
+    (doseq [component @eid]
+      (component/->handle (entity/create component eid)))))

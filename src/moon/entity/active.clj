@@ -4,6 +4,7 @@
             [gdl.graphics.shape-drawer :as sd]
             [moon.component :as component]
             [moon.effect :as effect]
+            [moon.entity.mana :as entity.mana]
             [moon.entity.stat :as stat]
             [moon.world.line-of-sight :refer [line-of-sight?]]
             [moon.world.time :refer [timer stopped? finished-ratio]]))
@@ -57,9 +58,10 @@
     (swap! eid assoc-in
            [:entity/skills (:property/id skill) :skill/cooling-down?]
            (timer (:skill/cooldown skill))))
-  [(when (and (:skill/cost skill)
-              (not (zero? (:skill/cost skill))))
-     [:tx/pay-mana-cost eid (:skill/cost skill)])])
+  (when (and (:skill/cost skill)
+             (not (zero? (:skill/cost skill))))
+    (swap! eid entity.mana/pay-cost (:skill/cost skill)))
+  nil)
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
