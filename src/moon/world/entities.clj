@@ -76,7 +76,7 @@
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (grid/add-entity eid))
 
-(defn remove-from-world [eid]
+(defn- remove-from-world [eid]
   (let [id (:entity/id @eid)]
     (assert (contains? ids->eids id))
     (alter-var-root #'ids->eids dissoc id))
@@ -86,3 +86,9 @@
 (defn position-changed [eid]
   (content-grid/update-entity! content-grid eid)
   (grid/entity-position-changed eid))
+
+(defn remove-destroyed []
+  (doseq [eid (filter (comp :entity/destroyed? deref) (all))]
+    (remove-from-world eid)
+    (doseq [component @eid]
+      (component/->handle (entity/destroy component eid)))))

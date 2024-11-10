@@ -27,9 +27,3 @@
     (entities/add-to-world eid)
     (for [component @eid]
       #(entity/create component eid))))
-
-(defmethod component/handle :tx/remove-destroyed-entities [_]
-  (doseq [eid (filter (comp :entity/destroyed? deref) (entities/all))]
-    (entities/remove-from-world eid)
-    (for [component @eid]
-      #(entity/destroy component eid))))

@@ -218,8 +218,7 @@
              (catch Throwable t
                (error-window! t)
                (bind-root #'tick-error t))))
-      nil)
-   [:tx/remove-destroyed-entities]]) ; do not pause this as for example pickup item, should be destroyed.
+      nil)])
 
 (defn- render-world []
   ; FIXME position DRY
@@ -242,6 +241,7 @@
   (screen/render [_]
     (render-world)
     (component/->handle update-world)
+    (entities/remove-destroyed) ; do not pause this as for example pickup item, should be destroyed.
     (controls/world-camera-zoom)
     (check-window-hotkeys)
     (cond (controls/close-windows?)
