@@ -2,7 +2,7 @@
   (:require [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :as component]))
+            [moon.info :as info]))
 
 (def ^:private image-scale 2)
 
@@ -24,7 +24,7 @@
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (ui/image-button image (fn []) {:scale image-scale})]
     (a/set-id! button id)
-    (ui/add-tooltip! button #(component/->info skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (ui/add-actor! horizontal-group button)
     (ui/bg-add! button-group button)
     nil))

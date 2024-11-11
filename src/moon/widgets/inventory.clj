@@ -7,8 +7,8 @@
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :as component]
             [moon.entity.fsm :as fsm]
+            [moon.info :as info]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]))
 
@@ -126,7 +126,7 @@
         drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
     (ui/set-min-size! drawable cell-size)
     (ui/set-drawable! image-widget drawable)
-    (ui/add-tooltip! cell-widget #(component/->info item))))
+    (ui/add-tooltip! cell-widget #(info/text item))))
 
 (defn remove-item-from-widget [cell]
   (let [cell-widget (cell-widget cell)

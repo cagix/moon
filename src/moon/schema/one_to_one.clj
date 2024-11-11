@@ -2,8 +2,8 @@
   (:require [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.component :as component]
             [moon.db :as db]
+            [moon.info :as info]
             [moon.property :as property]
             [moon.schema :as schema]
             [moon.widgets.properties-overview :as properties-overview]))
@@ -38,7 +38,7 @@
       [(when property-id
          (let [property (db/get property-id)
                image-widget (ui/image->widget (property/->image property) {:id property-id})]
-           (ui/add-tooltip! image-widget #(component/->info property))
+           (ui/add-tooltip! image-widget #(info/text property))
            image-widget))]
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))

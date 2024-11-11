@@ -6,6 +6,7 @@
             [moon.component :as component]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
+            [moon.info :as info]
             [moon.item :as item]
             (moon.level generate
                         uf-caves
@@ -51,7 +52,7 @@
 (def ^:private effect
   {:required [#'component/applicable?
               #'component/handle]
-   :optional [#'component/info
+   :optional [#'info/info
               #'component/useful?
               #'component/render]})
 
@@ -69,7 +70,7 @@
                moon.effect.entity.stun])
 
 (def ^:private entity
-  {:optional [#'component/info
+  {:optional [#'info/info
               #'entity/->v
               #'entity/create
               #'entity/destroy
@@ -126,19 +127,19 @@
 (install entity-state 'moon.entity.active                :active-skill)
 (install entity-state 'moon.entity.stunned               :stunned)
 
-(defmethod component/info :maxrange [[_ maxrange]]
+(defmethod info/info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
 
-(defmethod component/info :property/pretty-name [[_ value]]
+(defmethod info/info :property/pretty-name [[_ value]]
   (str "[PRETTY_NAME]"value"[]"))
 
 (defmethod entity/->v :creature/species [[_ species]]
   (str/capitalize (name species)))
 
-(defmethod component/info :creature/species [[_ species]]
+(defmethod info/info :creature/species [[_ species]]
   (str "[LIGHT_GRAY]Creature - " species "[]"))
 
-(defmethod component/info :creature/level [[_ lvl]]
+(defmethod info/info :creature/level [[_ lvl]]
   (str "[GRAY]Level " lvl "[]"))
 
 ; TODO speed is 10 tiles/s but I checked moves 8 tiles/sec ... after delta time change ?
@@ -148,25 +149,25 @@
 #_(defc :projectile/max-range)
 #_(defc :projectile/speed)
 
-(defmethod component/info :projectile/piercing? [_]
+(defmethod info/info :projectile/piercing? [_]
   "[LIME]Piercing[]")
 
 #_(defc :world/max-area-level) ; TODO <= map-size !?
 #_(defc :world/spawn-rate) ; TODO <1 !
 
-(defmethod component/info :skill/action-time-modifier-key [[_ v]]
+(defmethod info/info :skill/action-time-modifier-key [[_ v]]
   (str "[VIOLET]" (case v
                     :entity/cast-speed "Spell"
                     :entity/attack-speed "Attack") "[]"))
 
-(defmethod component/info :skill/action-time [[_ v]]
+(defmethod info/info :skill/action-time [[_ v]]
   (str "[GOLD]Action-Time: " (readable-number v) " seconds[]"))
 
-(defmethod component/info :skill/cooldown [[_ v]]
+(defmethod info/info :skill/cooldown [[_ v]]
   (when-not (zero? v)
     (str "[SKY]Cooldown: " (readable-number v) " seconds[]")))
 
-(defmethod component/info :skill/cost [[_ v]]
+(defmethod info/info :skill/cost [[_ v]]
   (when-not (zero? v)
     (str "[CYAN]Cost: " v " Mana[]")))
 

@@ -1,7 +1,7 @@
 (ns moon.entity.hp
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
-            [moon.component :as component]
+            [moon.info :as info]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -44,7 +44,7 @@
       (val-max/apply-max-modifier entity :modifier/hp-max)))
 
 (defn info [_]
-  (str "Hitpoints: " (value component/*info-text-entity*)))
+  (str "Hitpoints: " (value info/*entity*)))
 
 (defn ->v [v]
   [v v])

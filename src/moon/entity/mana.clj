@@ -1,5 +1,5 @@
 (ns moon.entity.mana
-  (:require [moon.component :as component]
+  (:require [moon.info :as info]
             [moon.val-max :as val-max]))
 
 (defn value
@@ -11,7 +11,7 @@
       (val-max/apply-max-modifier entity :modifier/mana-max)))
 
 (defn info [_]
-  (str "Mana: " (value component/*info-text-entity*)))
+  (str "Mana: " (value info/*entity*)))
 
 (defn ->v [v]
   [v v])

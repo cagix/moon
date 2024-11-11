@@ -1,7 +1,7 @@
 (ns moon.widgets.entity-info-window
   (:require [gdl.graphics.gui-view :as gui-view]
             [gdl.ui :as ui]
-            [moon.component :as component]
+            [moon.info :as info]
             [moon.world.mouseover :as mouseover]))
 
 (def ^:private disallowed-keys [:entity/skills
@@ -22,11 +22,11 @@
                                             ; items then have 2x pretty-name
                                             #_(.setText (.getTitleLabel window)
                                                         (if-let [entity (mouseover/entity)]
-                                                          (component/->info [:property/pretty-name (:property/pretty-name entity)])
+                                                          (info/text [:property/pretty-name (:property/pretty-name entity)])
                                                           "Entity Info"))
                                             (.setText label
                                                       (str (when-let [entity (mouseover/entity)]
-                                                             (component/->info
+                                                             (info/text
                                                               ; don't use select-keys as it loses Entity record type
                                                               (apply dissoc entity disallowed-keys)))))
                                             (.pack window))}))
