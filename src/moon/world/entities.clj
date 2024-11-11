@@ -17,8 +17,11 @@
 
 (declare ^:private ids->eids)
 
-(defn all [] (vals ids->eids))
-(defn get-entity [id] (get ids->eids id))
+(defn all []
+  (vals ids->eids))
+
+(defn get-entity [id]
+  (get ids->eids id))
 
 (declare ^:private content-grid)
 
