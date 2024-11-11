@@ -2,6 +2,7 @@
   (:require [moon.effect :as effect]
             [moon.body :as body]
             [moon.entity.faction :as faction]
+            [moon.entity.fsm :as fsm]
             [moon.entity.skills :as skills]
             [moon.follow-ai :as follow-ai]
             [moon.world.grid :as grid]
@@ -45,5 +46,5 @@
     (if-let [skill (effect/with-ctx effect-ctx
                      (assert (bound? #'effect/source))
                      (npc-choose-skill @eid))]
-      [[:entity/fsm eid :start-action [skill effect-ctx]]]
-      [[:entity/fsm eid :movement-direction (follow-ai/direction-vector eid)]])))
+      (fsm/event eid :start-action [skill effect-ctx])
+      (fsm/event eid :movement-direction (or (follow-ai/direction-vector eid) [0 0])))))

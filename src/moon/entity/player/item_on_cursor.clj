@@ -7,6 +7,7 @@
             [gdl.math.vector :as v]
             [gdl.stage :refer [mouse-on-actor?]]
             [moon.entity.fsm :as fsm]
+            [moon.entity.inventory :as inventory]
             [moon.player :as player]
             [moon.item :refer [valid-slot? stackable?]]
             [moon.world.entities :as entities]))
@@ -23,8 +24,8 @@
      (do
       (play-sound "sounds/bfxr_itemput.wav")
       (swap! eid dissoc :entity/item-on-cursor)
-      [[:entity/inventory :set eid cell item-on-cursor]
-       [:entity/fsm eid :dropped-item]])
+      (inventory/set-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -32,8 +33,8 @@
      (do
       (play-sound "sounds/bfxr_itemput.wav")
       (swap! eid dissoc :entity/item-on-cursor)
-      [[:entity/inventory :stack eid cell item-on-cursor]
-       [:entity/fsm eid :dropped-item]])
+      (inventory/stack-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -43,10 +44,10 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      [[:entity/inventory :remove eid cell]
-       [:entity/inventory :set eid cell item-on-cursor]
-       [:entity/fsm eid :dropped-item]
-       [:entity/fsm eid :pickup-item item-in-cell]]))))
+      (inventory/remove-item eid cell)
+      (inventory/set-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item)
+      (fsm/event eid :pickup-item item-in-cell)))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -77,7 +78,7 @@
 (defn manual-tick [{:keys [eid]}]
   (when (and (button-just-pressed? :left)
              (world-item?))
-    [[:entity/fsm eid :drop-item]]))
+    (fsm/event eid :drop-item)))
 
 (defn clicked-inventory-cell [{:keys [eid]} cell]
   (clicked-cell eid cell))
@@ -86,8 +87,7 @@
   :cursors/hand-grab)
 
 (defn enter [{:keys [eid item]}]
-  (swap! eid assoc :entity/item-on-cursor item)
-  nil)
+  (swap! eid assoc :entity/item-on-cursor item))
 
 (defn exit [{:keys [eid]}]
   ; at clicked-cell when we put it into a inventory-cell
@@ -98,8 +98,7 @@
     (when (:entity/item-on-cursor entity)
       (play-sound "sounds/bfxr_itemputground.wav")
       (swap! eid dissoc :entity/item-on-cursor)
-      (entities/item (item-place-position entity) (:entity/item-on-cursor entity))
-      nil)))
+      (entities/item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
 (defn render-below [{:keys [item]} entity]
   (when (world-item?)

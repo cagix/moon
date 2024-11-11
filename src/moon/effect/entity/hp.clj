@@ -16,7 +16,6 @@
 #_(defn handle [operations]
   (let [stat-k (stat-k *k*)]
     (when-let [value (mods/value @effect/target stat-k)]
-      (swap! effect/target assoc stat-k (ops/apply operations value))
-      nil)))
+      (swap! effect/target assoc stat-k (ops/apply operations value)))))
 
 ; TODO make as tx also? from entity/mana itself? ( so can use at pay-mana/damage)

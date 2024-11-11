@@ -13,5 +13,4 @@
 
 (defn handle [_]
   (swap! target assoc :entity/faction (:entity/faction @source))
-  (entities/audiovisual (:position @target) :audiovisuals/convert)
-  nil)
+  (entities/audiovisual (:position @target) :audiovisuals/convert))

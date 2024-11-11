@@ -54,7 +54,8 @@
   (assert (m/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
-              (v/normalised? direction)))
+              (v/normalised? direction))
+          (str "cannot understand direction: " (pr-str direction)))
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
@@ -68,16 +69,4 @@
                :position (:position body)
                :left-bottom (:left-bottom body))
         (when rotate-in-movement-direction?
-          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))
-        nil))))
-
-(defn handle [eid movement]
-  (assert (or (nil? movement)
-              (nil? (:direction movement))
-              (and (:direction movement) ; continue schema of that ...
-                   #_(:speed movement)))) ; princess no entity/movement-speed, then nil and here assertion-error
-  (swap! eid #(if (or (nil? movement)
-                      (nil? (:direction movement)))
-                (dissoc % :entity/movement)
-                (assoc % :entity/movement movement)))
-  nil)
+          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))

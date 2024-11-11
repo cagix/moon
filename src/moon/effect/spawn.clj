@@ -16,5 +16,4 @@
                       :creature-id id ; already properties/get called through one-to-one, now called again.
                       :components {:entity/fsm {:fsm :fsms/npc
                                                 :initial-state :npc-idle}
-                                   :entity/faction (:entity/faction @effect/source)}})
-  nil)
+                                   :entity/faction (:entity/faction @effect/source)}}))

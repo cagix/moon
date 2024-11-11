@@ -24,7 +24,7 @@
              target-position  (:effect/target-position  ~ctx)]
      ~@body))
 
-(defn do! [effect-ctx effect]
+(defn do! [effect-ctx effects]
   (with-ctx effect-ctx
-    (component/->handle
-     (filter-applicable? effect))))
+    (doseq [effect (filter-applicable? effects)]
+      (component/handle effect))))

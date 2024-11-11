@@ -2,8 +2,10 @@
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.damage :as damage]
             [moon.effect :refer [source target]]
+            [moon.entity.fsm :as fsm]
             [moon.entity.hp :as hp]
             [moon.entity.stat :as stat]
+            [moon.entity.string-effect :as string-effect]
             [moon.world.entities :as entities]))
 
 (defn- effective-armor-save [source* target*]
@@ -39,17 +41,16 @@
         hp (hp/value target*)]
     (cond
      (zero? (hp 0))
-     []
+     nil
 
      (armor-saves? source* target*)
-     [[:entity/string-effect target "[WHITE]ARMOR"]]
+     (swap! target string-effect/add "[WHITE]ARMOR")
 
      :else
-     (let [min-max (:damage/min-max
-                    (damage/modified source* target* damage))
+     (let [min-max (:damage/min-max (damage/modified source* target* damage))
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
        (entities/audiovisual (:position target*) :audiovisuals/damage)
-       [[:entity/string-effect target (str "[RED]" dmg-amount)]
-        [:entity/fsm target (if (zero? new-hp-val) :kill :alert)]]))))
+       (fsm/event target (if (zero? new-hp-val) :kill :alert))
+       (swap! target string-effect/add (str "[RED]" dmg-amount))))))

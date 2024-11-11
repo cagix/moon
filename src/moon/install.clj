@@ -4,8 +4,8 @@
             [gdl.system :as system]
             [gdl.utils :refer [readable-number]]
             [moon.component :as component]
-            [moon.components :as components]
             [moon.entity :as entity]
+            [moon.entity.fsm :as fsm]
             [moon.item :as item]
             (moon.level generate
                         uf-caves
@@ -20,7 +20,8 @@
                          one-to-one
                          sound
                          string
-                         val-max)))
+                         val-max)
+            [moon.player :as player]))
 
 (defn- namespace->component-key [ns-str]
    (let [ns-parts (-> ns-str
@@ -47,7 +48,14 @@
   (doseq [ns-sym ns-syms]
     (install component-systems ns-sym)) )
 
-(install-all components/effect
+(def ^:private effect
+  {:required [#'component/applicable?
+              #'component/handle]
+   :optional [#'component/info
+              #'component/useful?
+              #'component/render]})
+
+(install-all effect
              '[moon.effect.projectile
                moon.effect.spawn
                moon.effect.target-all
@@ -60,11 +68,18 @@
                moon.effect.entity.spiderweb
                moon.effect.entity.stun])
 
-(install-all components/fsm
-             '[moon.fsms.player
-               moon.fsms.npc])
+(def ^:private entity
+  {:optional [#'component/info
+              #'entity/->v
+              #'entity/create
+              #'entity/destroy
+              #'entity/tick
+              #'entity/render-below
+              #'entity/render
+              #'entity/render-above
+              #'entity/render-info]})
 
-(install-all components/entity
+(install-all entity
              '[moon.entity.alert-friendlies-after-duration
                moon.entity.animation
                moon.entity.clickable
@@ -88,16 +103,28 @@
                moon.entity.hp
                moon.entity.mana])
 
-(install components/entity-state 'moon.entity.npc.dead              :npc-dead)
-(install components/entity-state 'moon.entity.npc.idle              :npc-idle)
-(install components/entity-state 'moon.entity.npc.moving            :npc-moving)
-(install components/entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
-(install components/entity-state 'moon.entity.player.dead           :player-dead)
-(install components/entity-state 'moon.entity.player.idle           :player-idle)
-(install components/entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
-(install components/entity-state 'moon.entity.player.moving         :player-moving)
-(install components/entity-state 'moon.entity.active                :active-skill)
-(install components/entity-state 'moon.entity.stunned               :stunned)
+(def ^:private entity-state
+  (merge-with concat
+              entity
+              {:optional [#'fsm/enter
+                          #'fsm/exit
+                          #'fsm/cursor
+                          #'player/pause-game?
+                          #'player/manual-tick
+                          #'player/clicked-inventory-cell
+                          #'player/clicked-skillmenu-skill
+                          #'player/draw-gui-view]}))
+
+(install entity-state 'moon.entity.npc.dead              :npc-dead)
+(install entity-state 'moon.entity.npc.idle              :npc-idle)
+(install entity-state 'moon.entity.npc.moving            :npc-moving)
+(install entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
+(install entity-state 'moon.entity.player.dead           :player-dead)
+(install entity-state 'moon.entity.player.idle           :player-idle)
+(install entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
+(install entity-state 'moon.entity.player.moving         :player-moving)
+(install entity-state 'moon.entity.active                :active-skill)
+(install entity-state 'moon.entity.stunned               :stunned)
 
 (defmethod component/info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))

@@ -50,15 +50,16 @@
        ; have to use tx/effect now ?!
        ; still same context ...
        ; filter applicable ?! - omg
-       entity-effects)
-      (do
-       ; TODO
-       ; * clicking on far away monster
-       ; * hitting ground in front of you ( there is another monster )
-       ; * -> it doesn't get hit ! hmmm
-       ; * either use 'MISS' or get enemy entities at end-point
-       (entities/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground)
-       nil))))
+       (effect/do!
+        {:effect/source source
+         :effect/target target}
+        entity-effects))
+      ; TODO
+      ; * clicking on far away monster
+      ; * hitting ground in front of you ( there is another monster )
+      ; * -> it doesn't get hit ! hmmm
+      ; * either use 'MISS' or get enemy entities at end-point
+      (entities/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground))))
 
 (defn render [{:keys [maxrange]}]
   (when target

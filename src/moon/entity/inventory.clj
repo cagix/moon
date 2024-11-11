@@ -1,13 +1,14 @@
 (ns moon.entity.inventory
   (:require [gdl.system :refer [*k*]]
             [gdl.utils :refer [find-first]]
+            [moon.entity.modifiers :as mods]
             [moon.item :as item]
             [moon.widgets.inventory :as inventory]))
 
 (defn- applies-modifiers? [[slot _]]
   (not= :inventory.slot/bag slot))
 
-(defn- set-item [eid cell item]
+(defn set-item [eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
@@ -16,9 +17,9 @@
       (inventory/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
-      [[:entity/modifiers eid :add (:entity/modifiers item)]])))
+      (swap! eid mods/add (:entity/modifiers item)))))
 
-(defn- remove-item [eid cell]
+(defn remove-item [eid cell]
   (let [entity @eid
         item (get-in (:entity/inventory entity) cell)]
     (assert item)
@@ -26,7 +27,7 @@
       (inventory/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
-      [[:entity/modifiers eid :remove (:entity/modifiers item)]])))
+      (swap! eid mods/remove (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]
@@ -41,7 +42,7 @@
       (remove-item! eid cell))))
 
 ; TODO no items which stack are available
-(defn- stack-item [eid cell item]
+(defn stack-item [eid cell item]
   (let [cell-item (get-in (:entity/inventory @eid) cell)]
     (assert (item/stackable? item cell-item))
     ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
@@ -60,7 +61,7 @@
    (free-cell inventory (:item/slot item)   item)
    (free-cell inventory :inventory.slot/bag item)))
 
-(defn- pickup-item [eid item]
+(defn pickup-item [eid item]
   (let [[cell cell-item] (can-pickup-item? @eid item)]
     (assert cell)
     (assert (or (item/stackable? item cell-item)
@@ -71,11 +72,5 @@
 
 (defn create [items eid]
   (swap! eid assoc *k* item/empty-inventory)
-  (mapv #(vector *k* :pickup eid %) items))
-
-(defn handle [op & args]
-  (case op
-    :set    (apply set-item    args)
-    :remove (apply remove-item args)
-    :stack  (apply stack-item  args)
-    :pickup (apply pickup-item args)))
+  (doseq [item items]
+    (pickup-item eid item)))

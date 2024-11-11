@@ -1,5 +1,6 @@
 (ns moon.entity.npc.moving
-  (:require [moon.entity.stat :as stat]
+  (:require [moon.entity.fsm :as fsm]
+            [moon.entity.stat :as stat]
             [moon.world.time :refer [timer stopped?]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
@@ -15,12 +16,12 @@
     :counter (timer (* (stat/value @eid :entity/reaction-time) 0.016))}))
 
 (defn enter [{:keys [eid movement-vector]}]
-  [[:entity/movement eid {:direction movement-vector
-                          :speed (or (stat/value @eid :entity/movement-speed) 0)}]])
+  (swap! eid assoc :entity/movement {:direction movement-vector
+                                     :speed (or (stat/value @eid :entity/movement-speed) 0)}))
 
 (defn exit [{:keys [eid]}]
-  [[:entity/movement eid nil]])
+  (swap! eid dissoc :entity/movement))
 
 (defn tick [{:keys [counter]} eid]
   (when (stopped? counter)
-    [[:entity/fsm eid :timer-finished]]))
+    (fsm/event eid :timer-finished)))

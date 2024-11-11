@@ -27,5 +27,4 @@
              :act check-remove-message}))
 
 (defn show [message]
-  (bind-root #'message-to-player {:message message :counter 0})
-  nil)
+  (bind-root #'message-to-player {:message message :counter 0}))

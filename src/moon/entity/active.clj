@@ -4,6 +4,7 @@
             [gdl.graphics.shape-drawer :as sd]
             [moon.component :as component]
             [moon.effect :as effect]
+            [moon.entity.fsm :as fsm]
             [moon.entity.mana :as entity.mana]
             [moon.entity.stat :as stat]
             [moon.world.line-of-sight :refer [line-of-sight?]]
@@ -60,21 +61,21 @@
            (timer (:skill/cooldown skill))))
   (when (and (:skill/cost skill)
              (not (zero? (:skill/cost skill))))
-    (swap! eid entity.mana/pay-cost (:skill/cost skill)))
-  nil)
+    (swap! eid entity.mana/pay-cost (:skill/cost skill))))
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
    (effect/with-ctx (check-update-ctx effect-ctx)
      (not (effect/applicable? (:skill/effects skill))))
-   [[:entity/fsm eid :action-done]
+   (do
+    (fsm/event eid :action-done)
     ; TODO some sound ?
-    ]
+    )
 
    (stopped? counter)
    (do
     (effect/do! effect-ctx (:skill/effects skill))
-    [[:entity/fsm eid :action-done]])))
+    (fsm/event eid :action-done))))
 
 (defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]

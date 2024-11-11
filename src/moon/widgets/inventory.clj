@@ -78,7 +78,7 @@
     (a/set-id! stack cell)
     (a/add-listener! stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
-                               (component/->handle (player/clicked-inventory cell)))))
+                               (player/clicked-inventory cell))))
     stack))
 
 (defn- inventory-table []

@@ -5,7 +5,6 @@
             [gdl.graphics.world-view :as world-view]
             [gdl.math.vector :as v]
             [gdl.utils :refer [sort-by-order safe-merge]]
-            [moon.component :as component]
             [moon.db :as db]
             [moon.body :as body]
             [moon.entity :as entity]
@@ -63,7 +62,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (component/->handle (entity/tick [k v] eid)))
+            (entity/tick [k v] eid))
           (catch Throwable t
             (throw (ex-info "entity/tick" {:k k} t)))))
    (catch Throwable t
@@ -96,7 +95,7 @@
   (doseq [eid (filter (comp :entity/destroyed? deref) (all))]
     (remove-from-world eid)
     (doseq [component @eid]
-      (component/->handle (entity/destroy component eid)))))
+      (entity/destroy component eid))))
 
 (let [cnt (atom 0)]
   (defn- unique-number! []
@@ -119,7 +118,7 @@
                                       (create-vs)))))]
     (add-to-world eid)
     (doseq [component @eid]
-      (component/->handle (entity/create component eid)))))
+      (entity/create component eid))))
 
 (defn audiovisual [position id]
   (let [{:keys [tx/sound entity/animation]} (db/get id)]

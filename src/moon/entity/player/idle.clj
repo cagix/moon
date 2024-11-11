@@ -8,6 +8,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.effect :as effect]
+            [moon.entity.fsm :as fsm]
             [moon.entity.inventory :as inventory]
             [moon.entity.skills :as skills]
             [moon.player :as player]
@@ -31,13 +32,13 @@
      (do
       (play-sound "sounds/bfxr_takeit.wav")
       (swap! eid assoc :entity/destroyed? true)
-      [[:entity/fsm player/eid :pickup-item item]])
+      (fsm/event player/eid :pickup-item item))
 
      (inventory/can-pickup-item? @player/eid item)
      (do
       (play-sound "sounds/bfxr_pickup.wav")
       (swap! eid assoc :entity/destroyed? true)
-      [[:entity/inventory :pickup player/eid item]])
+      (inventory/pickup-item player/eid item))
 
      :else
      (do
@@ -104,8 +105,7 @@
             ; different color ?
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
-             (fn []
-               [[:entity/fsm eid :start-action [skill effect-ctx]]])])
+             (fn [] (fsm/event eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -128,7 +128,7 @@
 
 (defn manual-tick [{:keys [eid]}]
   (if-let [movement-vector (WASD-movement-vector)]
-    [[:entity/fsm eid :movement-input movement-vector]]
+    (fsm/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
       (cursors/set cursor)
       (when (button-just-pressed? :left)
@@ -138,8 +138,8 @@
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play-sound "sounds/bfxr_takeit.wav")
-    [[:entity/fsm eid :pickup-item item]
-     [:entity/inventory :remove eid cell]]))
+    (fsm/event eid :pickup-item item)
+    (inventory/remove-item eid cell)))
 
 (defn clicked-skillmenu-skill [{:keys [eid]} skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]
@@ -147,4 +147,4 @@
     (when (and (pos? free-skill-points)
                (not (skills/has-skill? @eid skill)))
       (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-      [[:entity/skills eid :add skill]])))
+      (swap! eid skills/add skill))))

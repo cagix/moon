@@ -5,6 +5,56 @@
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))
 
+(def ^:private npc-fsm
+  (fsm/fsm-inc
+   [[:npc-sleeping
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :alert -> :npc-idle]
+    [:npc-idle
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :movement-direction -> :npc-moving]
+    [:npc-moving
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :timer-finished -> :npc-idle]
+    [:active-skill
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :action-done -> :npc-idle]
+    [:stunned
+     :kill -> :npc-dead
+     :effect-wears-off -> :npc-idle]
+    [:npc-dead]]))
+
+(def ^:private player-fsm
+  (fsm/fsm-inc
+   [[:player-idle
+     :kill -> :player-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :pickup-item -> :player-item-on-cursor
+     :movement-input -> :player-moving]
+    [:player-moving
+     :kill -> :player-dead
+     :stun -> :stunned
+     :no-movement-input -> :player-idle]
+    [:active-skill
+     :kill -> :player-dead
+     :stun -> :stunned
+     :action-done -> :player-idle]
+    [:stunned
+     :kill -> :player-dead
+     :effect-wears-off -> :player-idle]
+    [:player-item-on-cursor
+     :kill -> :player-dead
+     :stun -> :stunned
+     :drop-item -> :player-idle
+     :dropped-item -> :player-idle]
+    [:player-dead]]))
+
 (defsystem enter)
 (defmethod enter :default [_])
 
@@ -43,19 +93,21 @@
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          [#(exit old-state-obj)
-           #(enter new-state-obj)])))))
+          (exit old-state-obj)
+          (enter new-state-obj))))))
 
 (defn create [{:keys [fsm initial-state]} eid]
   (swap! eid assoc
-         *k* (->init-fsm (component/create [fsm]) initial-state)
-         initial-state (entity/->v [initial-state eid]))
-  nil)
+         *k* (->init-fsm (case fsm
+                           :fsms/player player-fsm
+                           :fsms/npc npc-fsm)
+                         initial-state)
+         initial-state (entity/->v [initial-state eid])))
 
 (defn info [fsm]
   (str "[YELLOW]State: " (name (:state fsm)) "[]"))
 
-(defn handle
+(defn event
   ([eid event]
    (send-event! eid event nil))
   ([eid event params]

@@ -2,5 +2,4 @@
   (:require [moon.player :as player]))
 
 (defn create [_ eid]
-  (bind-root #'player/eid eid)
-  nil)
+  (bind-root #'player/eid eid))

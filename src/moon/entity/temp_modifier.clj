@@ -2,6 +2,7 @@
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.system :refer [*k*]]
             [gdl.utils :refer [readable-number]]
+            [moon.entity.modifiers :as mods]
             [moon.world.time :refer [stopped? finished-ratio]]))
 
 (defn info [{:keys [counter]}]
@@ -10,7 +11,7 @@
 (defn tick [{:keys [modifiers counter]} eid]
   (when (stopped? counter)
     (swap! eid dissoc *k*)
-    [[:entity/modifiers eid :remove modifiers]]))
+    (swap! eid mods/remove modifiers)))
 
 ; TODO draw opacity as of counter ratio?
 (defn render-above [_ entity]

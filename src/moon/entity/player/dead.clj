@@ -14,5 +14,4 @@
   (modal/show {:title "YOU DIED"
                :text "\nGood luck next time"
                :button-text ":("
-               :on-click #(screen/change :screens/main-menu)})
-  nil)
+               :on-click #(screen/change :screens/main-menu)}))

@@ -13,7 +13,6 @@
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
             [moon.controls :as controls]
-            [moon.component :as component]
             [moon.db :as db]
             [moon.entity.movement :as movement]
             [moon.level :as level]
@@ -205,20 +204,20 @@
                                 (not (controls/unpaused?)))))
   nil)
 
-(def ^:private update-world
-  [player/update-state
-   mouseover/update ; this do always so can get debug info even when game not running
-   update-game-paused
-   #(when-not paused?
-      (alter-var-root #'logic-frame inc)
-      (time/pass (min (delta-time) movement/max-delta-time))
-      (let [entities (entities/active)]
-        (update-potential-fields! entities)
-        (try (entities/tick entities)
-             (catch Throwable t
-               (error-window! t)
-               (bind-root #'tick-error t))))
-      nil)])
+(defn- update-world []
+  (player/update-state)
+  (mouseover/update) ; this do always so can get debug info even when game not running
+  (update-game-paused)
+  (when-not paused?
+    (alter-var-root #'logic-frame inc)
+    (time/pass (min (delta-time) movement/max-delta-time))
+    (let [entities (entities/active)]
+      (update-potential-fields! entities)
+      (try (entities/tick entities)
+           (catch Throwable t
+             (error-window! t)
+             (bind-root #'tick-error t)))))
+  (entities/remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
 
 (defn- render-world []
   ; FIXME position DRY
@@ -240,8 +239,7 @@
 
   (screen/render [_]
     (render-world)
-    (component/->handle update-world)
-    (entities/remove-destroyed) ; do not pause this as for example pickup item, should be destroyed.
+    (update-world)
     (controls/world-camera-zoom)
     (check-window-hotkeys)
     (cond (controls/close-windows?)

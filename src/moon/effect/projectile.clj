@@ -34,8 +34,7 @@
   (entities/projectile {:position (start-point @source target-direction (projectile/size projectile))
                         :direction target-direction
                         :faction (:entity/faction @source)}
-                       projectile)
-  nil)
+                       projectile))
 
 (comment
  ; mass shooting

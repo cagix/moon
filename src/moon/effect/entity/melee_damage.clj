@@ -1,22 +1,20 @@
 (ns moon.effect.entity.melee-damage
   (:require [moon.component :as component]
             [moon.effect :refer [source]]
+            [moon.effect.entity.damage :as damage]
             [moon.entity.stat :as stat]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (stat/value entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
-(defn- damage-effect []
-  [:effect.entity/damage (entity->melee-damage @source)])
-
 (defn info [_]
   (str "Damage based on entity strength."
        (when source
-         (str "\n" (component/info (damage-effect))))))
+         (str "\n" (damage/info (entity->melee-damage @source))))))
 
 (defn applicable? [_]
-  (component/applicable? (damage-effect)))
+  (damage/applicable? (entity->melee-damage @source)))
 
 (defn handle [_]
-  [(damage-effect)])
+  (damage/handle (entity->melee-damage @source)))

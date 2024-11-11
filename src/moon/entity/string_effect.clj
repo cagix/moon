@@ -6,8 +6,7 @@
 
 (defn tick [{:keys [counter]} eid]
   (when (stopped? counter)
-    (swap! eid dissoc *k*)
-    nil))
+    (swap! eid dissoc *k*)))
 
 (defn render-above [{:keys [text]} entity]
   (let [[x y] (:position entity)]
@@ -17,11 +16,12 @@
                 :scale 2
                 :up? true})))
 
-(defn handle [eid text]
-  (swap! eid assoc *k* (if-let [string-effect (*k* @eid)]
-                         (-> string-effect
-                             (update :text str "\n" text)
-                             (update :counter time/reset))
-                         {:text text
-                          :counter (timer 0.4)}))
-  nil)
+(defn add [entity text]
+  (assoc entity
+         :entity/string-effect
+         (if-let [string-effect (*k* entity)]
+           (-> string-effect
+               (update :text str "\n" text)
+               (update :counter time/reset))
+           {:text text
+            :counter (timer 0.4)})))

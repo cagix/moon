@@ -3,18 +3,15 @@
             [gdl.utils :refer [index-of]]
             [gdl.system :refer [defsystem]]))
 
-(defsystem create)
-
 (defsystem handle)
 
-(defn ->handle [txs]
-  (doseq [tx txs]
-    (when-let [result (try (cond (not tx) nil
-                                 (fn? tx) (tx)
-                                 :else (handle tx))
-                           (catch Throwable t
-                             (throw (ex-info "Error with transaction" {:tx tx} t))))]
-      (->handle result))))
+(defsystem applicable?)
+
+(defsystem useful?)
+(defmethod useful? :default [_] true)
+
+(defsystem render)
+(defmethod render :default [_])
 
 (defsystem info)
 (defmethod info :default [_])
@@ -69,11 +66,3 @@
                       (str "\n" (->info v))))))
        (str/join "\n")
        remove-newlines))
-
-(defsystem applicable?)
-
-(defsystem useful?)
-(defmethod useful? :default [_] true)
-
-(defsystem render)
-(defmethod render :default [_])
