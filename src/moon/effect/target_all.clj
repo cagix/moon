@@ -1,7 +1,7 @@
 (ns moon.effect.target-all
   "🚧 Under construction ⚠️"
   (:require [gdl.graphics.shape-drawer :as sd]
-            [moon.effects :as effects :refer [source target]]
+            [moon.effects :as effects]
             [moon.player :as player]
             [moon.world.entities :as entities]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
@@ -30,15 +30,16 @@
 (defn info [_]
   "[LIGHT_GRAY]All visible targets[]")
 
-(defn applicable? [_]
+(defn applicable? [_ _]
   true)
 
-(defn useful? [_]
+(defn useful? [_ _]
   ; TODO
   false
   )
 
-(defn handle [{:keys [entity-effects]}]
+(defn handle [{:keys [entity-effects]}
+              {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target (creatures-in-los-of-player)]
       (entities/line-render {:start (:position source*) #_(start-point source* target*)
@@ -55,7 +56,7 @@
       (effects/do! {:effect/source source :effect/target target}
                    entity-effects))))
 
-(defn render [_]
+(defn render [_ {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target* (map deref (creatures-in-los-of-player))]
       (sd/line (:position source*) #_(start-point source* target*)

@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.effect.entity.spiderweb
-  (:require [moon.effects :refer [target]]
-            [moon.entity.modifiers :as mods]
+  (:require [moon.entity.modifiers :as mods]
             [moon.world.time :refer [timer]]))
 
 (def modifiers {:modifier/movement-speed {:op/mult -0.5}})
@@ -12,12 +11,12 @@
   ; counter ?
   )
 
-(defn applicable? [_]
+(defn applicable? [_ _]
   ; ?
   true)
 
 ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-(defn handle [_]
+(defn handle [_ {:keys [effect/target]}]
   (when-not (:entity/temp-modifier @target)
     (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                :counter (timer duration)})

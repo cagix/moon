@@ -27,15 +27,14 @@
    (npc-choose-skill effect-ctx @eid))
  )
 
-(defn- npc-choose-skill [entity]
-  {:pre [(bound? #'effects/source)]}
+(defn- npc-choose-skill [entity ctx]
   (->> entity
        :entity/skills
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (skills/usable-state entity %))
-                     (effects/useful? (:skill/effects %))))
+       (filter #(and (= :usable (skills/usable-state entity % ctx))
+                     (effects/useful? ctx (:skill/effects %))))
        first))
 
 (defn ->v [eid]
@@ -43,8 +42,6 @@
 
 (defn tick [_ eid]
   (let [effect-ctx (effect-ctx eid)]
-    (if-let [skill (effects/with-ctx effect-ctx
-                     (assert (bound? #'effects/source))
-                     (npc-choose-skill @eid))]
+    (if-let [skill (npc-choose-skill @eid effect-ctx)]
       (fsm/event eid :start-action [skill effect-ctx])
       (fsm/event eid :movement-direction (or (follow-ai/direction-vector eid) [0 0])))))

@@ -3,7 +3,7 @@
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
             [moon.body :as body]
-            [moon.effects :as effects :refer [source target]]
+            [moon.effects :as effects]
             [moon.world.entities :as entities]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
@@ -24,16 +24,14 @@
          (v/scale (body/direction entity target*)
                   maxrange)))
 
-(defn applicable? [{:keys [entity-effects]}]
+(defn applicable? [{:keys [entity-effects]} {:keys [effect/target] :as ctx}]
   (and target
-       (effects/applicable? entity-effects)))
+       (effects/applicable? ctx entity-effects)))
 
-(defn useful? [{:keys [maxrange]}]
-  (assert (bound? #'source))
-  (assert (bound? #'target))
+(defn useful? [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (in-range? @source @target maxrange))
 
-(defn handle [{:keys [maxrange entity-effects]}]
+(defn handle [{:keys [maxrange entity-effects]} {:keys [effect/source effect/target] :as ctx}]
   (let [source* @source
         target* @target]
     (if (in-range? source* target* maxrange)
@@ -50,9 +48,7 @@
        ; have to use tx/effect now ?!
        ; still same context ...
        ; filter applicable ?! - omg
-       (effects/do! {:effect/source source
-                     :effect/target target}
-                    entity-effects))
+       (effects/do! ctx entity-effects))
       ; TODO
       ; * clicking on far away monster
       ; * hitting ground in front of you ( there is another monster )
@@ -60,7 +56,7 @@
       ; * either use 'MISS' or get enemy entities at end-point
       (entities/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground))))
 
-(defn render [{:keys [maxrange]}]
+(defn render [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (when target
     (let [source* @source
           target* @target]

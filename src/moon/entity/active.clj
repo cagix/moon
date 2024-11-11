@@ -65,8 +65,8 @@
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
-   (effects/with-ctx (check-update-ctx effect-ctx)
-     (not (effects/applicable? (:skill/effects skill))))
+   (not (effects/applicable? (check-update-ctx effect-ctx)
+                             (:skill/effects skill)))
    (do
     (fsm/event eid :action-done)
     ; TODO some sound ?
@@ -80,5 +80,4 @@
 (defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effects/with-ctx (check-update-ctx effect-ctx)
-      (run! effect/render effects))))
+    (run! #(effect/render % (check-update-ctx effect-ctx)) effects)))

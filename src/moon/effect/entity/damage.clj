@@ -1,7 +1,6 @@
 (ns moon.effect.entity.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.damage :as damage]
-            [moon.effects :refer [source target]]
             [moon.entity.fsm :as fsm]
             [moon.entity.hp :as hp]
             [moon.entity.stat :as stat]
@@ -23,19 +22,21 @@
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
 
+; FIXME no source
 (defn info [damage]
-  (if source
+  (damage/info damage)
+  #_(if source
     (let [modified (damage/modified @source damage)]
       (if (= damage modified)
         (damage/info damage)
         (str (damage/info damage) "\nModified: " (damage/info modified))))
     (damage/info damage))) ; property menu no source,modifiers
 
-(defn applicable? [_]
+(defn applicable? [_ {:keys [effect/target]}]
   (and target
        (:entity/hp @target)))
 
-(defn handle [damage]
+(defn handle [damage {:keys [effect/source effect/target]}]
   (let [source* @source
         target* @target
         hp (hp/value target*)]

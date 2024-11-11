@@ -1,12 +1,12 @@
 (ns moon.effect
   (:require [gdl.system :refer [defsystem]]))
 
-(defsystem handle)
+(defsystem handle [_ ctx])
 
-(defsystem applicable?)
+(defsystem applicable? [_ ctx])
 
-(defsystem useful?)
-(defmethod useful? :default [_] true)
+(defsystem useful?          [_  ctx])
+(defmethod useful? :default [_ _ctx] true)
 
-(defsystem render)
-(defmethod render :default [_])
+(defsystem render           [_  ctx])
+(defmethod render :default  [_ _ctx])

@@ -46,7 +46,9 @@
   (and cost (> cost (mana-value entity))))
 
 (defn usable-state
-  [entity {:keys [skill/cooling-down? skill/effects] :as skill}]
+  [entity
+   {:keys [skill/cooling-down? skill/effects] :as skill}
+   effect-ctx]
   (cond
    cooling-down?
    :cooldown
@@ -54,7 +56,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effects/applicable? effects))
+   (not (effects/applicable? effect-ctx effects))
    :invalid-params
 
    :else

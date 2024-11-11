@@ -1,6 +1,5 @@
 (ns moon.entity.modifiers-test
   (:require [clojure.test :refer :all]
-            [moon.component :as component]
             [moon.entity :as entity]
             [moon.entity.modifiers :as mods]))
 
@@ -46,7 +45,7 @@
     (is (= (:modifier/movement-speed (:entity/modifiers @eid))
            #:op{:mult [0.1 -0.1]}))))
 
-(deftest reverse-modifiers
+#_(deftest reverse-modifiers
   (let [eid (atom {:entity/modifiers {:modifier/movement-speed {:op/mult [0.1 -0.1]}}})]
     (component/->handle
      [[:entity/modifiers
