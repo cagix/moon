@@ -3,7 +3,7 @@
             [gdl.graphics.color :as color]
             [gdl.system :as system]
             [gdl.utils :refer [readable-number]]
-            [moon.component :as component]
+            [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
             [moon.info :as info]
@@ -50,11 +50,11 @@
     (install component-systems ns-sym)) )
 
 (def ^:private effect
-  {:required [#'component/applicable?
-              #'component/handle]
+  {:required [#'effect/applicable?
+              #'effect/handle]
    :optional [#'info/info
-              #'component/useful?
-              #'component/render]})
+              #'effect/useful?
+              #'effect/render]})
 
 (install-all effect
              '[moon.effect.projectile

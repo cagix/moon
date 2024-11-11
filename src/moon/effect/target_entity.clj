@@ -3,7 +3,7 @@
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
             [moon.body :as body]
-            [moon.effect :as effect :refer [source target]]
+            [moon.effects :as effects :refer [source target]]
             [moon.world.entities :as entities]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
@@ -26,7 +26,7 @@
 
 (defn applicable? [{:keys [entity-effects]}]
   (and target
-       (effect/applicable? entity-effects)))
+       (effects/applicable? entity-effects)))
 
 (defn useful? [{:keys [maxrange]}]
   (assert (bound? #'source))
@@ -50,10 +50,9 @@
        ; have to use tx/effect now ?!
        ; still same context ...
        ; filter applicable ?! - omg
-       (effect/do!
-        {:effect/source source
-         :effect/target target}
-        entity-effects))
+       (effects/do! {:effect/source source
+                     :effect/target target}
+                    entity-effects))
       ; TODO
       ; * clicking on far away monster
       ; * hitting ground in front of you ( there is another monster )

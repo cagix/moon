@@ -1,30 +1,12 @@
 (ns moon.effect
-  (:require [moon.component :as component]))
+  (:require [gdl.system :refer [defsystem]]))
 
-(defn filter-applicable? [effect]
-  (filter component/applicable? effect))
+(defsystem handle)
 
-(defn applicable? [effect]
-  (seq (filter-applicable? effect)))
+(defsystem applicable?)
 
-(defn useful? [effect]
-  (->> effect
-       filter-applicable?
-       (some component/useful?)))
+(defsystem useful?)
+(defmethod useful? :default [_] true)
 
-(declare ^:dynamic source ; always available
-         ^:dynamic target ; optional
-         ^:dynamic target-direction ; always available ( player? TODO )
-         ^:dynamic target-position) ; always available ( player? TODO )
-
-(defmacro with-ctx [ctx & body]
-  `(binding [source           (:effect/source           ~ctx)
-             target           (:effect/target           ~ctx)
-             target-direction (:effect/target-direction ~ctx)
-             target-position  (:effect/target-position  ~ctx)]
-     ~@body))
-
-(defn do! [effect-ctx effects]
-  (with-ctx effect-ctx
-    (doseq [effect (filter-applicable? effects)]
-      (component/handle effect))))
+(defsystem render)
+(defmethod render :default [_])

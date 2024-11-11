@@ -4,7 +4,6 @@
             [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [moon.component :as component]
             [moon.db :as db]
             [moon.property :as property]
             [moon.widgets.background-image :as background-image]

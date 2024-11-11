@@ -7,7 +7,7 @@
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.effect :as effect]
+            [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
             [moon.entity.inventory :as inventory]
             [moon.entity.skills :as skills]
@@ -97,7 +97,7 @@
      (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (effect-ctx eid)
-             state (effect/with-ctx effect-ctx
+             state (effects/with-ctx effect-ctx
                      (skills/usable-state entity skill))]
          (if (= state :usable)
            (do

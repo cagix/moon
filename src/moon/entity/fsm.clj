@@ -1,7 +1,6 @@
 (ns moon.entity.fsm
   (:require [gdl.graphics.cursors :as cursors]
             [gdl.system :refer [defsystem *k*]]
-            [moon.component :as component]
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))
 

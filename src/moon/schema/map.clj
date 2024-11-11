@@ -4,7 +4,6 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [malli.generator :as mg]
-            [moon.component :as component]
             [moon.malli :as malli]
             [moon.schema :as schema]
             [moon.widgets.property :as widgets.property]

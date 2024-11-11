@@ -1,5 +1,5 @@
 (ns moon.effect.entity.convert
-  (:require [moon.effect :refer [source target]]
+  (:require [moon.effects :refer [source target]]
             [moon.entity.faction :as faction]
             [moon.world.entities :as entities]))
 

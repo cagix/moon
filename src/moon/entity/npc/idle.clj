@@ -1,5 +1,5 @@
 (ns moon.entity.npc.idle
-  (:require [moon.effect :as effect]
+  (:require [moon.effects :as effects]
             [moon.body :as body]
             [moon.entity.faction :as faction]
             [moon.entity.fsm :as fsm]
@@ -28,14 +28,14 @@
  )
 
 (defn- npc-choose-skill [entity]
-  {:pre [(bound? #'effect/source)]}
+  {:pre [(bound? #'effects/source)]}
   (->> entity
        :entity/skills
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skills/usable-state entity %))
-                     (effect/useful? (:skill/effects %))))
+                     (effects/useful? (:skill/effects %))))
        first))
 
 (defn ->v [eid]
@@ -43,8 +43,8 @@
 
 (defn tick [_ eid]
   (let [effect-ctx (effect-ctx eid)]
-    (if-let [skill (effect/with-ctx effect-ctx
-                     (assert (bound? #'effect/source))
+    (if-let [skill (effects/with-ctx effect-ctx
+                     (assert (bound? #'effects/source))
                      (npc-choose-skill @eid))]
       (fsm/event eid :start-action [skill effect-ctx])
       (fsm/event eid :movement-direction (or (follow-ai/direction-vector eid) [0 0])))))

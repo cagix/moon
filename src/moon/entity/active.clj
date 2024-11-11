@@ -2,8 +2,8 @@
   (:require [gdl.assets :refer [play-sound]]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
-            [moon.component :as component]
             [moon.effect :as effect]
+            [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
             [moon.entity.mana :as entity.mana]
             [moon.entity.stat :as stat]
@@ -65,8 +65,8 @@
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
-   (effect/with-ctx (check-update-ctx effect-ctx)
-     (not (effect/applicable? (:skill/effects skill))))
+   (effects/with-ctx (check-update-ctx effect-ctx)
+     (not (effects/applicable? (:skill/effects skill))))
    (do
     (fsm/event eid :action-done)
     ; TODO some sound ?
@@ -74,11 +74,11 @@
 
    (stopped? counter)
    (do
-    (effect/do! effect-ctx (:skill/effects skill))
+    (effects/do! effect-ctx (:skill/effects skill))
     (fsm/event eid :action-done))))
 
 (defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effect/with-ctx (check-update-ctx effect-ctx)
-      (run! component/render effects))))
+    (effects/with-ctx (check-update-ctx effect-ctx)
+      (run! effect/render effects))))

@@ -1,7 +1,7 @@
 (ns moon.effect.projectile
   (:require [gdl.assets :refer [play-sound]]
             [gdl.math.vector :as v]
-            [moon.effect :refer [source target target-direction]]
+            [moon.effects :refer [source target target-direction]]
             [moon.projectile :as projectile]
             [moon.world.entities :as entities]
             [moon.world.raycaster :refer [path-blocked?]]))

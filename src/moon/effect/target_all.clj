@@ -1,7 +1,7 @@
 (ns moon.effect.target-all
   "🚧 Under construction ⚠️"
   (:require [gdl.graphics.shape-drawer :as sd]
-            [moon.effect :as effect :refer [source target]]
+            [moon.effects :as effects :refer [source target]]
             [moon.player :as player]
             [moon.world.entities :as entities]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
@@ -52,8 +52,8 @@
       ; at sub-effects
       ; and no more safe - merge
       ; find a way to pass ctx / effect-ctx separate ?
-      (effect/do! {:effect/source source :effect/target target}
-                  entity-effects))))
+      (effects/do! {:effect/source source :effect/target target}
+                   entity-effects))))
 
 (defn render [_]
   (let [source* @source]

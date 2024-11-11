@@ -1,7 +1,7 @@
 (ns moon.effect.entity.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.damage :as damage]
-            [moon.effect :refer [source target]]
+            [moon.effects :refer [source target]]
             [moon.entity.fsm :as fsm]
             [moon.entity.hp :as hp]
             [moon.entity.stat :as stat]

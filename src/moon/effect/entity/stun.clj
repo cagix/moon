@@ -1,6 +1,6 @@
 (ns moon.effect.entity.stun
   (:require [gdl.utils :refer [readable-number]]
-            [moon.effect :refer [target]]
+            [moon.effects :refer [target]]
             [moon.entity.fsm :as fsm]))
 
 (defn info [duration]

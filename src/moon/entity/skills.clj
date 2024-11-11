@@ -1,7 +1,7 @@
 (ns moon.entity.skills
   (:refer-clojure :exclude [remove])
   (:require [gdl.system :refer [*k*]]
-            [moon.effect :as effect]
+            [moon.effects :as effects]
             [moon.entity.mana :as mana]
             [moon.widgets.action-bar :as action-bar]
             [moon.world.time :refer [stopped?]]))
@@ -54,7 +54,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effect/applicable? effects))
+   (not (effects/applicable? effects))
    :invalid-params
 
    :else
