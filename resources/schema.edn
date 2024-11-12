@@ -16,6 +16,7 @@
  :effect/target-entity [:s/map [:entity-effects :maxrange]],
  :effect/target-all [:s/map [:entity-effects]],
 
+ :effect.entity/audiovisual [:s/one-to-one :properties/audiovisuals]
  :effect.entity/damage [:s/map [:damage/min-max]],
  :effect.entity/convert :some,
  :effect.entity/kill :some,

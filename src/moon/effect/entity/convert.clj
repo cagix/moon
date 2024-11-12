@@ -1,6 +1,5 @@
 (ns moon.effect.entity.convert
-  (:require [moon.entity.faction :as faction]
-            [moon.world.entities :as entities]))
+  (:require [moon.entity.faction :as faction]))
 
 (defn info [_]
   "Converts target to your side.")
@@ -11,5 +10,4 @@
           (faction/enemy @source))))
 
 (defn handle [_ {:keys [effect/source effect/target]}]
-  (swap! target assoc :entity/faction (:entity/faction @source))
-  (entities/audiovisual (:position @target) :audiovisuals/convert))
+  (swap! target assoc :entity/faction (:entity/faction @source)))

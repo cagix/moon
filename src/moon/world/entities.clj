@@ -5,8 +5,8 @@
             [gdl.graphics.world-view :as world-view]
             [gdl.math.vector :as v]
             [gdl.utils :refer [sort-by-order safe-merge]]
-            [moon.db :as db]
             [moon.body :as body]
+            [moon.db :as db]
             [moon.entity :as entity]
             [moon.player :as player]
             [moon.projectile :as projectile]
@@ -130,13 +130,12 @@
    :height 0.5
    :z-order :z-order/effect})
 
-(defn audiovisual [position id]
-  (let [{:keys [tx/sound entity/animation]} (db/get id)]
-    (play-sound sound)
-    (create position
-            effect-body-props
-            {:entity/animation animation
-             :entity/delete-after-animation-stopped true})))
+(defn audiovisual [position {:keys [tx/sound entity/animation]}]
+  (play-sound sound)
+  (create position
+          effect-body-props
+          {:entity/animation animation
+           :entity/delete-after-animation-stopped true}))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)

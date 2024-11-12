@@ -62,6 +62,7 @@
                moon.effect.target-all
                moon.effect.target-entity
 
+               moon.effect.entity.audiovisual
                moon.effect.entity.convert
                moon.effect.entity.damage
                moon.effect.entity.kill

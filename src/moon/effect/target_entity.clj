@@ -1,6 +1,7 @@
 (ns moon.effect.target-entity
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
+            [moon.db :as db]
             [moon.body :as body]
             [moon.effects :as effects]
             [moon.world.entities :as entities]))
@@ -41,7 +42,7 @@
                               :color [1 0 0 0.75]
                               :thick? true})
        (effects/do! ctx entity-effects))
-      (entities/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground))))
+      (entities/audiovisual (end-point source* target* maxrange) (db/get :audiovisuals/hit-ground)))))
 
 (defn render [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (when target
