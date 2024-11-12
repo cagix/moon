@@ -28,4 +28,4 @@
   (spit "app-values-tree.clj"
         (with-out-str
          (clojure.pprint/pprint
-          (ns-value-vars)))))
+          (ns-value-vars #{"moon" "gdl"})))))

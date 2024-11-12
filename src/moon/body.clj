@@ -59,12 +59,6 @@
 (defn tile [entity]
   (->tile (:position entity)))
 
-(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."}
-  effect-body-props
-  {:width 0.5
-   :height 0.5
-   :z-order :z-order/effect})
-
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
 

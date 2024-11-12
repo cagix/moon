@@ -140,7 +140,10 @@
  :tx/sound :s/sound,
 
  :world/components [:s/map []],
- :world/generator [:enum :world.generator/tiled-map :world.generator/modules :world.generator/uf-caves],
+ :world/generator [:enum
+                   :world.generator/tiled-map
+                   :world.generator/modules
+                   :world.generator/uf-caves],
  :world/map-size :s/pos-int,
  :world/max-area-level :s/pos-int,
  :world/player-creature :some,

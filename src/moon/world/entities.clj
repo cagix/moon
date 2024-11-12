@@ -15,7 +15,7 @@
             [moon.world.line-of-sight :refer [line-of-sight?]]
             [moon.world.time :refer [timer]]))
 
-(declare ^:private ids->eids)
+(declare ids->eids)
 
 (defn all []
   (vals ids->eids))
@@ -23,7 +23,7 @@
 (defn get-entity [id]
   (get ids->eids id))
 
-(declare ^:private content-grid)
+(declare content-grid)
 
 (defn active []
   (content-grid/active-entities content-grid @player/eid))
@@ -123,11 +123,18 @@
     (doseq [component @eid]
       (entity/create component eid))))
 
+(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
+       :private true}
+  effect-body-props
+  {:width 0.5
+   :height 0.5
+   :z-order :z-order/effect})
+
 (defn audiovisual [position id]
   (let [{:keys [tx/sound entity/animation]} (db/get id)]
     (play-sound sound)
     (create position
-            body/effect-body-props
+            effect-body-props
             {:entity/animation animation
              :entity/delete-after-animation-stopped true})))
 
@@ -166,14 +173,14 @@
 
 (defn shout [position faction duration]
   (create position
-          body/effect-body-props
+          effect-body-props
           {:entity/alert-friendlies-after-duration
            {:counter (timer duration)
             :faction faction}}))
 
 (defn line-render [{:keys [start end duration color thick?]}]
   (create start
-          body/effect-body-props
+          effect-body-props
           #:entity {:line-render {:thick? thick? :end end :color color}
                     :delete-after-duration duration}))
 

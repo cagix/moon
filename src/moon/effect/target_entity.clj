@@ -1,5 +1,4 @@
 (ns moon.effect.target-entity
-  "🚧 Under construction ⚠️"
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
             [moon.body :as body]
@@ -41,19 +40,7 @@
                               :duration 0.05
                               :color [1 0 0 0.75]
                               :thick? true})
-       ; TODO => make new context with end-point ... and check on point entity
-       ; friendly fire ?!
-       ; player maybe just direction possible ?!
-       ; TODO FIXME
-       ; have to use tx/effect now ?!
-       ; still same context ...
-       ; filter applicable ?! - omg
        (effects/do! ctx entity-effects))
-      ; TODO
-      ; * clicking on far away monster
-      ; * hitting ground in front of you ( there is another monster )
-      ; * -> it doesn't get hit ! hmmm
-      ; * either use 'MISS' or get enemy entities at end-point
       (entities/audiovisual (end-point source* target* maxrange) :audiovisuals/hit-ground))))
 
 (defn render [{:keys [maxrange]} {:keys [effect/source effect/target]}]
