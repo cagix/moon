@@ -21,10 +21,11 @@
 
 (defn- add-update-labels [menu-bar update-labels]
   (let [table (.getTable menu-bar)]
-    (doseq [{:keys [update-fn icon]} update-labels]
-      (if icon
-        (add-upd-label table update-fn icon)
-        (add-upd-label table update-fn)))))
+    (doseq [{:keys [label update-fn icon]} update-labels]
+      (let [update-fn #(str label ": " (update-fn))]
+        (if icon
+          (add-upd-label table update-fn icon)
+          (add-upd-label table update-fn))))))
 
 (defn- add-menu [menu-bar {:keys [label items]}]
   (let [app-menu (Menu. label)]

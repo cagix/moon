@@ -80,7 +80,7 @@
 
 (defn- dev-menu-bar []
   (dev-menu/create
-   {:menus [{:label "App"
+   {:menus [{:label "Screens"
              :items [{:label "Map-editor"
                       :on-click (partial screen/change :screens/map-editor)}
                      {:label "Editor"
@@ -93,16 +93,23 @@
                        :on-click #(start id)})}
             {:label "Help"
              :items [{:label controls/help-text}]}]
-    :update-labels [{:update-fn #(str "Mouseover-entity id: " (when-let [entity (mouseover/entity)] (:entity/id entity)))
+    :update-labels [{:label "Mouseover-entity id"
+                     :update-fn #(when-let [entity (mouseover/entity)] (:entity/id entity))
                      :icon "images/mouseover.png"}
-                    {:update-fn #(str "elapsed-time " (readable-number time/elapsed) " seconds")
+                    {:label "elapsed-time"
+                     :update-fn #(str (readable-number time/elapsed) " seconds")
                      :icon "images/clock.png"}
-                    {:update-fn #(str "paused? " paused?)}
-                    {:update-fn #(str "GUI: " (gui-view/mouse-position))}
-                    {:update-fn #(str "World: "(mapv int (world-view/mouse-position)))}
-                    {:update-fn #(str "Zoom: " (cam/zoom (world-view/camera)))
+                    {:label "paused?"
+                     :update-fn (fn [] paused?)}
+                    {:label "GUI"
+                     :update-fn gui-view/mouse-position}
+                    {:label "World"
+                     :update-fn #(mapv int (world-view/mouse-position))}
+                    {:label "Zoom"
+                     :update-fn #(cam/zoom (world-view/camera))
                      :icon "images/zoom.png"}
-                    {:update-fn #(str "FPS: " (gdl.graphics/frames-per-second))
+                    {:label "FPS"
+                     :update-fn gdl.graphics/frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
