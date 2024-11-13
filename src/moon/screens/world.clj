@@ -113,20 +113,32 @@
 
 (declare start)
 
+(defn- add-menu [menu-bar {:keys [label items]}]
+  (let [app-menu (Menu. label)]
+    (doseq [{:keys [label on-click]} items]
+      (.addItem app-menu (menu-item label (or on-click (fn [])))))
+    (.addMenu menu-bar app-menu)))
+
+(defn- create-menu-bar [menus]
+  (let [menu-bar (MenuBar.)]
+    (run! #(add-menu menu-bar %) menus)
+    menu-bar))
+
 (defn- ->menu-bar []
-  (let [menu-bar (MenuBar.)
-        app-menu (Menu. "App")]
-    (.addItem app-menu (menu-item "Map editor" (partial screen/change :screens/map-editor)))
-    (.addItem app-menu (menu-item "Properties" (partial screen/change :screens/editor)))
-    (.addItem app-menu (menu-item "Exit"       (partial screen/change :screens/main-menu)))
-    (.addMenu menu-bar app-menu)
-    (let [world (Menu. "World")]
-      (doseq [{:keys [property/id]} (db/all :properties/worlds)]
-        (.addItem world (menu-item (str "Start " id) #(start id))))
-      (.addMenu menu-bar world))
-    (let [help (Menu. "Help")]
-        (.addItem help (MenuItem. controls/help-text))
-      (.addMenu menu-bar help))
+  (let [menu-bar (create-menu-bar
+                  [{:label "App"
+                    :items [{:label "Map-editor"
+                             :on-click (partial screen/change :screens/map-editor)}
+                            {:label "Editor"
+                             :on-click (partial screen/change :screens/editor)}
+                            {:label "Main-Menu"
+                             :on-click (partial screen/change :screens/main-menu)}]}
+                   {:label "World"
+                    :items (for [{:keys [property/id]} (db/all :properties/worlds)]
+                             {:label (str "Start " id)
+                              :on-click #(start id)})}
+                   {:label "Help"
+                    :items [{:label controls/help-text}]}])]
     (add-debug-infos menu-bar)
     menu-bar))
 
