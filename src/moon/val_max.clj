@@ -1,5 +1,6 @@
 (ns moon.val-max
-  (:require [malli.core :as m]
+  (:require [gdl.schema :as schema]
+            [malli.core :as m]
             [moon.entity.modifiers :as mods]))
 
 (def schema
@@ -9,6 +10,9 @@
                                (when (< mx v)
                                  (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
               (fn [[^int a ^int b]] (<= a b))]]))
+
+(defmethod schema/form :s/val-max [_]
+  (m/form schema))
 
 (defn ratio
   "If mx and v is 0, returns 0, otherwise (/ v mx)"

@@ -7,8 +7,8 @@
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [moon.widgets.background-image :as background-image]
-            [moon.widgets.property :as widgets.property]
-            [moon.widgets.properties-overview :as properties-overview])
+            [gdl.editor.property :as widgets.property]
+            [gdl.editor.overview :as properties-overview])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 ; FIXME overview table not refreshed after changes in properties

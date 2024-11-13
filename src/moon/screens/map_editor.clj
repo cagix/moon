@@ -14,8 +14,8 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
+            [gdl.widgets.error-window :refer [error-window!]]
             [moon.controls :as controls]
-            [moon.widgets.error-window :refer [error-window!]]
             [moon.level :as level]
             [moon.level.modules :as modules]))
 

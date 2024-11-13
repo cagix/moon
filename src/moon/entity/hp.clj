@@ -1,7 +1,7 @@
 (ns moon.entity.hp
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
-            [moon.info :as info]
+            [gdl.info :as info]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors

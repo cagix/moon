@@ -1,5 +1,5 @@
 (ns moon.entity.mana
-  (:require [moon.info :as info]
+  (:require [gdl.info :as info]
             [moon.val-max :as val-max]))
 
 (defn value

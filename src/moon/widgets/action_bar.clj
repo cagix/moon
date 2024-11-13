@@ -1,8 +1,8 @@
 (ns moon.widgets.action-bar
-  (:require [gdl.stage :as stage]
+  (:require [gdl.info :as info]
+            [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
-            [moon.info :as info]))
+            [gdl.ui.actor :as a]))
 
 (def ^:private image-scale 2)
 

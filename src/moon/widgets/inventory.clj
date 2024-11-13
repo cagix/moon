@@ -4,11 +4,11 @@
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
+            [gdl.info :as info]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.entity.fsm :as fsm]
-            [moon.info :as info]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]))
 

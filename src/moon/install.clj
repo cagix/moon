@@ -1,27 +1,28 @@
 (ns ^:no-doc moon.install
   (:require [clojure.string :as str]
             [gdl.graphics.color :as color]
+            [gdl.info :as info]
             [gdl.system :as system]
             [gdl.utils :refer [readable-number]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
-            [moon.info :as info]
             [moon.item :as item]
             (moon.level generate
                         uf-caves
                         tiled-map)
-            (moon.schema animation
-                         boolean
-                         enum
-                         image
-                         map
-                         number
-                         one-to-many
-                         one-to-one
-                         sound
-                         string
-                         val-max)
+
+            (gdl.schema animation ; FIXME
+                        boolean
+                        enum
+                        image
+                        map
+                        number
+                        one-to-many
+                        one-to-one
+                        sound
+                        string)
+
             [moon.player :as player]))
 
 (defn- namespace->component-key [ns-str]

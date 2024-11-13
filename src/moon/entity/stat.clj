@@ -1,7 +1,7 @@
 (ns moon.entity.stat
-  (:require [gdl.system :refer [*k*]]
+  (:require [gdl.info :as info]
+            [gdl.system :refer [*k*]]
             [gdl.utils :refer [k->pretty-name]]
-            [moon.info :as info]
             [moon.entity.modifiers :as mods]))
 
 (defn value [entity k]

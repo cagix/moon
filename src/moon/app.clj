@@ -19,6 +19,67 @@
             [moon.screens.world :as world]
             moon.install))
 
+(bind-root #'gdl.schema.map/property-k-sort-order
+           [:property/id
+            :property/pretty-name
+            :app/lwjgl3
+            :entity/image
+            :entity/animation
+            :creature/species
+            :creature/level
+            :entity/body
+            :item/slot
+            :projectile/speed
+            :projectile/max-range
+            :projectile/piercing?
+            :skill/action-time-modifier-key
+            :skill/action-time
+            :skill/start-action-sound
+            :skill/cost
+            :skill/cooldown])
+
+(bind-root #'gdl.editor.overview/overview
+           {:properties/audiovisuals {:columns 10
+                                      :image/scale 2}
+            :properties/creatures {:columns 15
+                                   :image/scale 1.5
+                                   :sort-by-fn #(vector (:creature/level %)
+                                                        (name (:creature/species %))
+                                                        (name (:property/id %)))
+                                   :extra-info-text #(str (:creature/level %))}
+            :properties/items {:columns 20
+                               :image/scale 1.1
+                               :sort-by-fn #(vector (if-let [slot (:item/slot %)]
+                                                      (name slot)
+                                                      "")
+                                                    (name (:property/id %)))}
+            :properties/projectiles {:columns 16
+                                     :image/scale 2}
+            :properties/skills {:columns 16
+                                :image/scale 2}
+            :properties/worlds {:columns 10}})
+
+(bind-root #'gdl.info/info-text-k-order
+           [:property/pretty-name
+            :skill/action-time-modifier-key
+            :skill/action-time
+            :skill/cooldown
+            :skill/cost
+            :skill/effects
+            :creature/species
+            :creature/level
+            :entity/hp
+            :entity/mana
+            :entity/strength
+            :entity/cast-speed
+            :entity/attack-speed
+            :entity/armor-save
+            :entity/delete-after-duration
+            :projectile/piercing?
+            :entity/projectile-collision
+            :maxrange
+            :entity-effects])
+
 (defn -main []
   (db/init :schema "schema.edn"
            :properties "properties.edn")
