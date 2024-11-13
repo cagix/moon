@@ -122,7 +122,8 @@
                    :screens/map-editor (map-editor/create)
                    :screens/editor (editor/create)
                    :screens/minimap (minimap/create)
-                   :screens/world (world/create)}))
+                   :screens/world (world/create)})
+                 (world/start :worlds/vampire))
 
                (dispose [_]
                  (assets/dispose)
