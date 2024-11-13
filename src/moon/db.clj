@@ -7,22 +7,6 @@
             [moon.property :as property]
             [moon.schema :as schema]))
 
-(comment
-
- (defn- migrate [property-type migrate-fn]
-   (doseq [id (map :property/id (all-raw property-type))]
-     (println id)
-     (alter-var-root #'db update id migrate-fn))
-   (async-write-to-file!))
-
- (migrate :properties/creatures
-          (fn [{:keys [entity/stats] :as creature}]
-            (-> creature
-                (dissoc :entity/stats)
-                (merge stats))))
-
- )
-
 (def ^:private properties-file (io/resource "properties.edn"))
 
 (declare ^:private db)
@@ -115,4 +99,10 @@
 (defn delete! [property-id]
   {:pre [(contains? db property-id)]}
   (alter-var-root #'db dissoc property-id)
+  (async-write-to-file!))
+
+(defn migrate [property-type update-fn]
+  (doseq [id (map :property/id (all-raw property-type))]
+    (println id)
+    (alter-var-root #'db update id update-fn))
   (async-write-to-file!))
