@@ -47,8 +47,7 @@
 
 (declare tick-error
          paused?
-         ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"}
-         logic-frame)
+         ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"})
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
@@ -109,7 +108,6 @@
     (add-upd-label table
                    #(str "Zoom: " (cam/zoom (world-view/camera)))
                    "zoom")
-    (add! #(str "logic-frame: " logic-frame))
     (add-upd-label table
                    #(str "FPS: " (gdl.graphics/frames-per-second))
                    "fps")))
@@ -180,7 +178,6 @@
 
 (defn start [world-id]
   (screen/change :screens/world)
-  (bind-root #'logic-frame 0)
   (stage/reset (widgets))
   (let [{:keys [tiled-map] :as level} (level/generate world-id)]
     (tiled-map/clear)
@@ -212,7 +209,6 @@
   (mouseover/update) ; this do always so can get debug info even when game not running
   (update-game-paused)
   (when-not paused?
-    (alter-var-root #'logic-frame inc)
     (time/pass (min (delta-time) movement/max-delta-time))
     (let [entities (entities/active)]
       (update-potential-fields! entities)
