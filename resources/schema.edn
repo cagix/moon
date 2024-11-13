@@ -1,4 +1,59 @@
 {
+ :properties/audiovisuals [:s/map [:property/id
+                                   :tx/sound
+                                   :entity/animation]],
+
+ :properties/creatures [:s/map [:property/id
+                                :entity/body
+                                :property/pretty-name
+                                :creature/species
+                                :creature/level
+                                :entity/animation
+                                :entity/hp
+                                :entity/movement-speed
+                                :entity/aggro-range
+                                :entity/reaction-time
+                                :entity/skills
+                                [:entity/mana         {:optional true}]
+                                [:entity/strength     {:optional true}]
+                                [:entity/cast-speed   {:optional true}]
+                                [:entity/attack-speed {:optional true}]
+                                [:entity/armor-save   {:optional true}]
+                                [:entity/armor-pierce {:optional true}]
+                                [:entity/modifiers    {:optional true}]
+                                [:entity/inventory    {:optional true}]]],
+
+ :properties/items [:s/map [:property/id
+                            :property/pretty-name
+                            :entity/image
+                            :item/slot
+                            [:entity/modifiers {:optional true}]]],
+
+ :properties/projectiles [:s/map [:property/id
+                                  :entity/image
+                                  :projectile/max-range
+                                  :projectile/speed
+                                  :projectile/piercing?
+                                  :entity-effects]],
+
+ :properties/skills [:s/map [:property/id
+                             :entity/image
+                             :property/pretty-name
+                             :skill/action-time-modifier-key
+                             :skill/action-time
+                             :skill/start-action-sound
+                             :skill/effects
+                             [:skill/cooldown {:optional true}]
+                             [:skill/cost     {:optional true}]]],
+
+ :properties/worlds [:s/map [:property/id
+                             :world/generator
+                             :world/player-creature
+                             [:world/tiled-map      {:optional true}]
+                             [:world/map-size       {:optional true}]
+                             [:world/max-area-level {:optional true}]
+                             [:world/spawn-rate     {:optional true}]]],
+
  :entity-effects [:s/components-ns :effect.entity],
  :maxrange :s/pos,
 
@@ -64,58 +119,6 @@
  :projectile/piercing? :boolean,
  :projectile/speed :s/pos-int,
 
- :properties/audiovisuals [:s/map [:tx/sound :entity/animation :property/id]],
- :properties/creatures [:s/map
-                        [:entity/body
-                         :property/pretty-name
-                         :creature/species
-                         :creature/level
-                         :entity/animation
-                         :entity/hp
-                         :entity/movement-speed
-                         :entity/aggro-range
-                         :entity/reaction-time
-                         [:entity/mana {:optional true}]
-                         [:entity/strength {:optional true}]
-                         [:entity/cast-speed {:optional true}]
-                         [:entity/attack-speed {:optional true}]
-                         [:entity/armor-save {:optional true}]
-                         [:entity/armor-pierce {:optional true}]
-                         :entity/skills
-                         [:entity/modifiers {:optional true}]
-                         [:entity/inventory {:optional true}]
-                         :property/id]],
- :properties/items [:s/map
-                    [:property/pretty-name
-                     :entity/image
-                     :item/slot
-                     [:entity/modifiers {:optional true}]
-                     :property/id]],
- :properties/projectiles [:s/map
-                          [:entity/image
-                           :projectile/max-range
-                           :projectile/speed
-                           :projectile/piercing?
-                           :entity-effects
-                           :property/id]],
- :properties/skills [:s/map
-                     [:entity/image
-                      :property/pretty-name
-                      :skill/action-time-modifier-key
-                      :skill/action-time
-                      :skill/start-action-sound
-                      :skill/effects
-                      [:skill/cooldown {:optional true}]
-                      [:skill/cost     {:optional true}]
-                      :property/id]],
- :properties/worlds [:s/map
-                     [:world/generator
-                      :world/player-creature
-                      [:world/tiled-map      {:optional true}]
-                      [:world/map-size       {:optional true}]
-                      [:world/max-area-level {:optional true}]
-                      [:world/spawn-rate     {:optional true}]
-                      :property/id]],
 
  :property/id :qualified-keyword,
  :property/pretty-name :string,
