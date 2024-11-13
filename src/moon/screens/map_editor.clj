@@ -1,5 +1,6 @@
 (ns ^:no-doc moon.screens.map-editor
   (:require [clojure.string :as str]
+            [gdl.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.graphics.shape-drawer :as sd]
@@ -14,7 +15,6 @@
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [moon.controls :as controls]
-            [moon.db :as db]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.level :as level]
             [moon.level.modules :as modules]))

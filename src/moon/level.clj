@@ -1,7 +1,7 @@
 (ns moon.level
   (:require [data.grid2d :as g]
-            [gdl.tiled :as t]
-            [moon.db :as db]))
+            [gdl.db :as db]
+            [gdl.tiled :as t]))
 
 (defmulti generate* (fn [world] (:world/generator world)))
 

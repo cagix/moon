@@ -1,11 +1,11 @@
 (ns ^:no-doc moon.schema.map
-  (:require [gdl.stage :as stage]
+  (:require [gdl.schema :as schema]
+            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [malli.generator :as mg]
             [moon.malli :as malli]
-            [moon.schema :as schema]
             [moon.widgets.property :as widgets.property]
             [moon.widgets.scrollpane :refer [scroll-pane-cell]]))
 

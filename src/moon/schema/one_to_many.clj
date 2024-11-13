@@ -1,11 +1,11 @@
 (ns ^:no-doc moon.schema.one-to-many
-  (:require [gdl.stage :as stage]
+  (:require [gdl.db :as db]
+            [gdl.property :as property]
+            [gdl.schema :as schema]
+            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.db :as db]
             [moon.info :as info]
-            [moon.property :as property]
-            [moon.schema :as schema]
             [moon.widgets.properties-overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-many [[_ property-type]]

@@ -1,11 +1,11 @@
 (ns ^:no-doc moon.screens.editor
   (:require [clojure.string :as str]
+            [gdl.db :as db]
             [gdl.input :refer [key-just-pressed?]]
+            [gdl.property :as property]
             [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [moon.db :as db]
-            [moon.property :as property]
             [moon.widgets.background-image :as background-image]
             [moon.widgets.property :as widgets.property]
             [moon.widgets.properties-overview :as properties-overview])

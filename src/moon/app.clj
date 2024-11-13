@@ -1,6 +1,7 @@
 (ns moon.app
   (:require [gdl.assets :as assets]
             [gdl.app :as app]
+            [gdl.db :as db]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.cursors :as cursors]
@@ -11,7 +12,6 @@
             [gdl.graphics.world-view :as world-view]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
-            [moon.db :as db]
             [moon.screens.main :as main-menu]
             [moon.screens.editor :as editor]
             [moon.screens.map-editor :as map-editor]

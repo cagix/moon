@@ -1,7 +1,7 @@
 (ns moon.effects.target-entity
-  (:require [gdl.graphics.shape-drawer :as sd]
+  (:require [gdl.db :as db]
+            [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
-            [moon.db :as db]
             [moon.body :as body]
             [moon.effects :as effects]
             [moon.world.entities :as entities]))

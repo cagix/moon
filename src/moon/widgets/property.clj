@@ -1,10 +1,10 @@
 (ns moon.widgets.property
-  (:require [gdl.input :refer [key-just-pressed?]]
+  (:require [gdl.db :as db]
+            [gdl.input :refer [key-just-pressed?]]
+            [gdl.property :as property]
+            [gdl.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.db :as db]
-            [moon.property :as property]
-            [moon.schema :as schema]
             [moon.widgets.scrollpane :refer [scroll-pane-cell]]
             [moon.widgets.error-window :refer [error-window!]]))
 

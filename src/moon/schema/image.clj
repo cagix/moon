@@ -1,8 +1,8 @@
 (ns ^:no-doc moon.schema.image
   (:require [gdl.assets :as assets]
             [gdl.graphics.image :as img]
-            [gdl.ui :as ui]
-            [moon.schema :as schema])
+            [gdl.schema :as schema]
+            [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Texture)))
 
 (defmethod schema/form :s/image [_]

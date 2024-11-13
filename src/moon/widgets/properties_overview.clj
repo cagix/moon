@@ -1,9 +1,9 @@
 (ns moon.widgets.properties-overview
-  (:require [gdl.ui :as ui]
+  (:require [gdl.db :as db]
+            [gdl.property :as property]
+            [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.db :as db]
-            [moon.info :as info]
-            [moon.property :as property]))
+            [moon.info :as info]))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)

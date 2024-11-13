@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.schema.string
-  (:require [gdl.ui :as ui]
-            [moon.schema :as schema])
+  (:require [gdl.schema :as schema]
+            [gdl.ui :as ui] )
   (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
 (defmethod schema/widget :string [schema v]

@@ -1,5 +1,6 @@
 (ns moon.screens.world
   (:require [data.grid2d :as g2d]
+            [gdl.db :as db]
             [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.cursors :as cursors]
@@ -13,7 +14,6 @@
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
             [moon.controls :as controls]
-            [moon.db :as db]
             [moon.entity.movement :as movement]
             [moon.level :as level]
             [moon.player :as player]

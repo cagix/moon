@@ -1,5 +1,5 @@
 (ns dev.migrations
-  (:require [moon.db :refer [migrate]]))
+  (:require [gdl.db :refer [migrate]]))
 
 (comment
 
