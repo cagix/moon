@@ -14,7 +14,7 @@
  :effect/projectile [:s/one-to-one :properties/projectiles],
  :effect/spawn      [:s/one-to-one :properties/creatures],
  :effect/target-entity [:s/map [:entity-effects :maxrange]],
- :effect/target-all [:s/map [:entity-effects]],
+ :effect/target-all    [:s/map [:entity-effects]],
 
  :effect.entity/audiovisual [:s/one-to-one :properties/audiovisuals]
  :effect.entity/damage [:s/map [:damage/min-max]],
@@ -106,15 +106,15 @@
                       :skill/start-action-sound
                       :skill/effects
                       [:skill/cooldown {:optional true}]
-                      [:skill/cost {:optional true}]
+                      [:skill/cost     {:optional true}]
                       :property/id]],
  :properties/worlds [:s/map
                      [:world/generator
                       :world/player-creature
-                      [:world/tiled-map {:optional true}]
-                      [:world/map-size {:optional true}]
+                      [:world/tiled-map      {:optional true}]
+                      [:world/map-size       {:optional true}]
                       [:world/max-area-level {:optional true}]
-                      [:world/spawn-rate {:optional true}]
+                      [:world/spawn-rate     {:optional true}]
                       :property/id]],
 
  :property/id :qualified-keyword,
