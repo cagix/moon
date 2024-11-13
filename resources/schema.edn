@@ -1,15 +1,59 @@
 {
  :property/id :qualified-keyword,
 
+ :tx/sound :s/sound,
+ :entity/animation :s/animation,
+
  :properties/audiovisuals [:s/map [:property/id
                                    :tx/sound
                                    :entity/animation]],
 
+ :property/pretty-name :string,
+ :creature/species [:qualified-keyword {:namespace :species}],
+ :creature/level :s/pos-int,
+
+ :body/width :s/pos,
+ :body/height :s/pos,
+ :body/flying? :boolean,
+
+ :entity/body [:s/map [:body/width :body/height :body/flying?]],
+
+ :entity/hp :s/pos-int,
+ :entity/movement-speed :s/pos,
+ :entity/aggro-range :s/nat-int,
+ :entity/reaction-time :s/pos-int,
+ :entity/skills [:s/one-to-many :properties/skills],
+ :entity/mana :s/nat-int,
+ :entity/strength :s/nat-int,
+ :entity/cast-speed :s/pos,
+ :entity/attack-speed :s/pos,
+ :entity/armor-save :s/number,
+ :entity/armor-pierce :s/number,
+
+ :op/inc  :s/int,
+ :op/mult :s/int,
+
+ :modifier/armor-pierce       [:s/map-optional [:op/inc]],
+ :modifier/armor-save         [:s/map-optional [:op/inc]],
+ :modifier/attack-speed       [:s/map-optional [:op/inc]],
+ :modifier/cast-speed         [:s/map-optional [:op/inc]],
+ :modifier/damage-deal-min    [:s/map-optional [:op/inc :op/mult]]
+ :modifier/damage-deal-max    [:s/map-optional [:op/inc :op/mult]]
+ :modifier/damage-receive-max [:s/map-optional [:op/inc :op/mult]],
+ :modifier/movement-speed     [:s/map-optional [:op/inc :op/mult]],
+ :modifier/strength           [:s/map-optional [:op/inc]],
+ :modifier/hp-max             [:s/map-optional [:op/inc :op/mult]],
+ :modifier/mana-max           [:s/map-optional [:op/inc :op/mult]],
+
+ :entity/modifiers [:s/components-ns :modifier],
+
+ :entity/inventory [:s/one-to-many :properties/items],
+
  :properties/creatures [:s/map [:property/id
-                                :entity/body
                                 :property/pretty-name
                                 :creature/species
                                 :creature/level
+                                :entity/body
                                 :entity/animation
                                 :entity/hp
                                 :entity/movement-speed
@@ -25,70 +69,7 @@
                                 [:entity/modifiers    {:optional true}]
                                 [:entity/inventory    {:optional true}]]],
 
- :properties/items [:s/map [:property/id
-                            :property/pretty-name
-                            :entity/image
-                            :item/slot
-                            [:entity/modifiers {:optional true}]]],
-
- :properties/projectiles [:s/map [:property/id
-                                  :entity/image
-                                  :projectile/max-range
-                                  :projectile/speed
-                                  :projectile/piercing?
-                                  :entity-effects]],
-
- :properties/skills [:s/map [:property/id
-                             :entity/image
-                             :property/pretty-name
-                             :skill/action-time-modifier-key
-                             :skill/action-time
-                             :skill/start-action-sound
-                             :skill/effects
-                             [:skill/cooldown {:optional true}]
-                             [:skill/cost     {:optional true}]]],
-
- :properties/worlds [:s/map [:property/id
-                             :world/generator
-                             :world/player-creature
-                             [:world/tiled-map      {:optional true}]
-                             [:world/map-size       {:optional true}]
-                             [:world/max-area-level {:optional true}]
-                             [:world/spawn-rate     {:optional true}]]],
-
- :entity-effects [:s/components-ns :effects.target],
- :maxrange :s/pos,
-
- :body/flying? :boolean,
- :body/height :s/pos,
- :body/width :s/pos,
-
- :creature/level :s/pos-int,
- :creature/species [:qualified-keyword {:namespace :species}],
-
- :damage/min-max :s/val-max,
-
- :effects/projectile [:s/one-to-one :properties/projectiles],
- :effects/spawn      [:s/one-to-one :properties/creatures],
- :effects/target-entity [:s/map [:entity-effects :maxrange]],
- :effects/target-all    [:s/map [:entity-effects]],
-
- :effects.target/audiovisual [:s/one-to-one :properties/audiovisuals]
- :effects.target/damage [:s/map [:damage/min-max]],
- :effects.target/convert :some,
- :effects.target/kill :some,
- :effects.target/melee-damage :some,
- :effects.target/spiderweb :some,
- :effects.target/stun :s/pos,
-
  :entity/image :s/image,
- :entity/animation :s/animation,
- :entity/body [:s/map [:body/width :body/height :body/flying?]],
- :entity/faction [:enum :good :evil],
- :entity/modifiers [:s/components-ns :modifier],
- :entity/inventory [:s/one-to-many :properties/items],
- :entity/skills    [:s/one-to-many :properties/skills],
-
  :item/slot [:enum
              :inventory.slot/cloak
              :inventory.slot/chest
@@ -102,55 +83,74 @@
              :inventory.slot/weapon
              :inventory.slot/boot],
 
- :modifier/armor-pierce       [:s/map-optional [:op/inc]],
- :modifier/armor-save         [:s/map-optional [:op/inc]],
- :modifier/attack-speed       [:s/map-optional [:op/inc]],
- :modifier/cast-speed         [:s/map-optional [:op/inc]],
- :modifier/damage-deal-min    [:s/map-optional [:op/inc :op/mult]]
- :modifier/damage-deal-max    [:s/map-optional [:op/inc :op/mult]]
- :modifier/damage-receive-max [:s/map-optional [:op/inc :op/mult]],
- :modifier/movement-speed     [:s/map-optional [:op/inc :op/mult]],
- :modifier/strength           [:s/map-optional [:op/inc]],
- :modifier/hp-max             [:s/map-optional [:op/inc :op/mult]],
- :modifier/mana-max           [:s/map-optional [:op/inc :op/mult]],
-
- :op/inc  :s/int,
- :op/mult :s/int,
+ :properties/items [:s/map [:property/id
+                            :property/pretty-name
+                            :entity/image
+                            :item/slot
+                            [:entity/modifiers {:optional true}]]],
 
  :projectile/max-range :s/pos-int,
- :projectile/piercing? :boolean,
  :projectile/speed :s/pos-int,
+ :projectile/piercing? :boolean,
+ :entity-effects [:s/components-ns :effects.target],
 
+ :properties/projectiles [:s/map [:property/id
+                                  :entity/image
+                                  :projectile/max-range
+                                  :projectile/speed
+                                  :projectile/piercing?
+                                  :entity-effects]],
 
- :property/pretty-name :string,
-
- :skill/action-time :s/pos,
  :skill/action-time-modifier-key [:enum :entity/cast-speed :entity/attack-speed],
+ :skill/action-time :s/pos,
+ :skill/start-action-sound :s/sound,
+ :skill/effects [:s/components-ns :effects],
  :skill/cooldown :s/nat-int,
  :skill/cost :s/nat-int,
- :skill/effects [:s/components-ns :effects],
- :skill/start-action-sound :s/sound,
 
- :entity/aggro-range :s/nat-int,
- :entity/armor-pierce :s/number,
- :entity/armor-save :s/number,
- :entity/attack-speed :s/pos,
- :entity/cast-speed :s/pos,
- :entity/hp   :s/pos-int,
- :entity/mana :s/nat-int,
- :entity/movement-speed :s/pos,
- :entity/reaction-time :s/pos-int,
- :entity/strength :s/nat-int,
+ :properties/skills [:s/map [:property/id
+                             :property/pretty-name
+                             :entity/image
+                             :skill/action-time-modifier-key
+                             :skill/action-time
+                             :skill/start-action-sound
+                             :skill/effects
+                             [:skill/cooldown {:optional true}]
+                             [:skill/cost     {:optional true}]]],
 
- :tx/sound :s/sound,
-
- :world/components [:s/map []],
  :world/generator [:enum
                    :world.generator/tiled-map
                    :world.generator/modules
                    :world.generator/uf-caves],
+ :world/player-creature :some,
+ :world/tiled-map :string
  :world/map-size :s/pos-int,
  :world/max-area-level :s/pos-int,
- :world/player-creature :some,
  :world/spawn-rate :s/pos,
- :world/tiled-map :string}
+
+ :properties/worlds [:s/map [:property/id
+                             :world/generator
+                             :world/player-creature
+                             [:world/tiled-map      {:optional true}]
+                             [:world/map-size       {:optional true}]
+                             [:world/max-area-level {:optional true}]
+                             [:world/spawn-rate     {:optional true}]]],
+
+ :damage/min-max :s/val-max,
+ :effects.target/damage [:s/map [:damage/min-max]],
+
+ :effects/projectile [:s/one-to-one :properties/projectiles],
+ :effects/spawn      [:s/one-to-one :properties/creatures],
+
+ :maxrange :s/pos,
+ :effects/target-entity [:s/map [:entity-effects :maxrange]],
+
+ :effects/target-all [:s/map [:entity-effects]],
+
+ :effects.target/audiovisual [:s/one-to-one :properties/audiovisuals]
+ :effects.target/convert :some,
+ :effects.target/kill :some,
+ :effects.target/melee-damage :some,
+ :effects.target/spiderweb :some,
+ :effects.target/stun :s/pos,
+ }
