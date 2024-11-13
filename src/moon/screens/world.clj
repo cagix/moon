@@ -145,6 +145,9 @@
                       :fill-y? true}]]
              :fill-parent? true}))
 
+; FIXME camera/viewport used @ line of sight & raycaster explored tiles
+; fixed player viewing range use & for opponents too
+
 (defn- widgets []
   [(if dev-mode?
      (dev-menu)
@@ -232,7 +235,8 @@
 
 (deftype WorldScreen []
   screen/Screen
-  (screen/enter [_])
+  (screen/enter [_]
+    (cam/set-zoom! (world-view/camera) 0.8))
 
   (screen/exit [_]
     (cursors/set :cursors/default))
