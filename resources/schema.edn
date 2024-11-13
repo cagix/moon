@@ -1,4 +1,6 @@
 {
+ :property/id :qualified-keyword,
+
  :properties/audiovisuals [:s/map [:property/id
                                    :tx/sound
                                    :entity/animation]],
@@ -120,7 +122,6 @@
  :projectile/speed :s/pos-int,
 
 
- :property/id :qualified-keyword,
  :property/pretty-name :string,
 
  :skill/action-time :s/pos,
