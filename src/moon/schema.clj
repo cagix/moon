@@ -1,16 +1,15 @@
 (ns moon.schema
   (:refer-clojure :exclude [type])
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [safe-get truncate ->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
-(def schemas (-> "schema.edn"
-                 io/resource
-                 slurp
-                 edn/read-string))
+(declare schemas)
+
+(defn init [schema-data]
+  (bind-root #'schemas schema-data))
 
 (defn of [k]
   (safe-get schemas k))

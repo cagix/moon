@@ -7,11 +7,13 @@
             [moon.property :as property]
             [moon.schema :as schema]))
 
-(def ^:private properties-file (io/resource "properties.edn"))
+(declare ^:private properties-file)
 
 (declare ^:private db)
 
-(defn init []
+(defn init [& {:keys [schema properties]}]
+  (schema/init (-> schema io/resource slurp edn/read-string))
+  (bind-root #'properties-file (io/resource properties))
   (let [properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))

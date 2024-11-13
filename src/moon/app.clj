@@ -20,7 +20,8 @@
             moon.install))
 
 (defn -main []
-  (db/init)
+  (db/init :schema "schema.edn"
+           :properties "properties.edn")
   (app/start {:title "Moon"
               :fps 60
               :width 1440
