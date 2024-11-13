@@ -4125,15 +4125,15 @@
   :property/id :items/shield-mystic-heater,
   :property/pretty-name "Heater Mystic Shield"}
  {:entity-effects
-  {:effects.entity/damage {:damage/min-max [4 8]},
-   :effects.entity/stun 0.5},
+  {:effects.target/damage {:damage/min-max [4 8]},
+   :effects.target/stun 0.5},
   :entity/image
   {:file "images/uf_FX.png", :sub-image-bounds [24 288 24 24]},
   :projectile/max-range 10,
   :projectile/piercing? true,
   :projectile/speed 9,
   :property/id :projectiles/black}
- {:entity-effects {:effects.entity/kill true},
+ {:entity-effects {:effects.target/kill true},
   :entity/image
   {:file "images/oryx_16bit_scifi_FX_lg_trans.png",
    :sub-image-bounds [32 192 32 32]},
@@ -4172,8 +4172,8 @@
   :skill/effects
   {:effects/target-entity
    {:entity-effects
-    {:effects.entity/audiovisual :audiovisuals/convert,
-     :effects.entity/convert true},
+    {:effects.target/audiovisual :audiovisuals/convert,
+     :effects.target/convert true},
     :maxrange 10}},
   :skill/start-action-sound "sounds/bfxr_portaluse.wav"}
  {:entity/image
@@ -4196,7 +4196,7 @@
   :skill/cost 0,
   :skill/effects
   {:effects/target-entity
-   {:entity-effects {:effects.entity/damage {:damage/min-max [1 10]}},
+   {:entity-effects {:effects.target/damage {:damage/min-max [1 10]}},
     :maxrange 5}},
   :skill/start-action-sound "sounds/slash.wav"}
  {:entity/image
@@ -4209,7 +4209,7 @@
   :skill/cost 5,
   :skill/effects
   {:effects/target-entity
-   {:entity-effects {:effects.entity/spiderweb true}, :maxrange 10}},
+   {:entity-effects {:effects.target/spiderweb true}, :maxrange 10}},
   :skill/start-action-sound "sounds/bfxr_monkheal.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [64 96 32 32]},
@@ -4231,7 +4231,7 @@
   :skill/cost 10,
   :skill/effects
   {:effects/target-entity
-   {:entity-effects {:effects.entity/kill true}, :maxrange 10}},
+   {:entity-effects {:effects.target/kill true}, :maxrange 10}},
   :skill/start-action-sound "sounds/bfxr_bossdeath.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [96 32 32 32]},
@@ -4253,7 +4253,7 @@
   :skill/cost 0,
   :skill/effects
   {:effects/target-entity
-   {:entity-effects {:effects.entity/melee-damage true},
+   {:entity-effects {:effects.target/melee-damage true},
     :maxrange 0.5}},
   :skill/start-action-sound "sounds/slash.wav"}
  {:property/id :worlds/vampire,

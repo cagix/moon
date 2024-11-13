@@ -56,7 +56,7 @@
                              [:world/max-area-level {:optional true}]
                              [:world/spawn-rate     {:optional true}]]],
 
- :entity-effects [:s/components-ns :effects.entity],
+ :entity-effects [:s/components-ns :effects.target],
  :maxrange :s/pos,
 
  :body/flying? :boolean,
@@ -73,13 +73,13 @@
  :effects/target-entity [:s/map [:entity-effects :maxrange]],
  :effects/target-all    [:s/map [:entity-effects]],
 
- :effects.entity/audiovisual [:s/one-to-one :properties/audiovisuals]
- :effects.entity/damage [:s/map [:damage/min-max]],
- :effects.entity/convert :some,
- :effects.entity/kill :some,
- :effects.entity/melee-damage :some,
- :effects.entity/spiderweb :some,
- :effects.entity/stun :s/pos,
+ :effects.target/audiovisual [:s/one-to-one :properties/audiovisuals]
+ :effects.target/damage [:s/map [:damage/min-max]],
+ :effects.target/convert :some,
+ :effects.target/kill :some,
+ :effects.target/melee-damage :some,
+ :effects.target/spiderweb :some,
+ :effects.target/stun :s/pos,
 
  :entity/image :s/image,
  :entity/animation :s/animation,

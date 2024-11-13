@@ -1,4 +1,4 @@
-(ns moon.effects.entity.hp)
+(ns moon.effects.target.hp)
 
 #_(defn- stat-k [effect-k]
     (keyword "stats" (name effect-k)))

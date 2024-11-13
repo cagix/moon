@@ -1,4 +1,4 @@
-(ns moon.effects.entity.kill
+(ns moon.effects.target.kill
   (:require [moon.entity.fsm :as fsm]))
 
 (defn info [_]

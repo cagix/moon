@@ -1,4 +1,4 @@
-(ns moon.effects.entity.damage
+(ns moon.effects.target.damage
   (:require [gdl.rand :refer [rand-int-between]]
             [moon.damage :as damage]
             [moon.db :as db]
