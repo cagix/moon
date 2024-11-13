@@ -22,7 +22,7 @@
           (when (seq creatures)
             (t/set-tile! layer position (creatures/tile (rand-nth creatures)))))))))
 
-(defn generate-modules
+(defn- generate-modules
   "The generated tiled-map needs to be disposed."
   [{:keys [world/map-size
            world/max-area-level
