@@ -1,4 +1,4 @@
-(ns moon.effect.spawn
+(ns moon.effects.spawn
   "🚧 Under construction ⚠️
 
   https://github.com/damn/core/issues/29"

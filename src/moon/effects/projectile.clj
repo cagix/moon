@@ -1,4 +1,4 @@
-(ns moon.effect.projectile
+(ns moon.effects.projectile
   (:require [gdl.assets :refer [play-sound]]
             [gdl.math.vector :as v]
             [moon.projectile :as projectile]

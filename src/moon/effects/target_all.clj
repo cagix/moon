@@ -1,4 +1,4 @@
-(ns moon.effect.target-all
+(ns moon.effects.target-all
   "🚧 Under construction ⚠️"
   (:require [gdl.graphics.shape-drawer :as sd]
             [moon.effects :as effects]

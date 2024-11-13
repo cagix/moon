@@ -32,9 +32,9 @@
               (last ns-parts))))
 
 (comment
- (and (= (namespace->component-key "moon.effect.projectile")
+ (and (= (namespace->component-key "moon.effects.projectile")
          :effect/projectile)
-      (= (namespace->component-key "moon.effect.entity.convert")
+      (= (namespace->component-key "moon.effects.entity.convert")
          :effect.entity/convert)))
 
 (defn- install
@@ -57,18 +57,18 @@
               #'effect/render]})
 
 (install-all effect
-             '[moon.effect.projectile
-               moon.effect.spawn
-               moon.effect.target-all
-               moon.effect.target-entity
+             '[moon.effects.projectile
+               moon.effects.spawn
+               moon.effects.target-all
+               moon.effects.target-entity
 
-               moon.effect.entity.audiovisual
-               moon.effect.entity.convert
-               moon.effect.entity.damage
-               moon.effect.entity.kill
-               moon.effect.entity.melee-damage
-               moon.effect.entity.spiderweb
-               moon.effect.entity.stun])
+               moon.effects.entity.audiovisual
+               moon.effects.entity.convert
+               moon.effects.entity.damage
+               moon.effects.entity.kill
+               moon.effects.entity.melee-damage
+               moon.effects.entity.spiderweb
+               moon.effects.entity.stun])
 
 (def ^:private entity
   {:optional [#'info/info

@@ -4125,15 +4125,15 @@
   :property/id :items/shield-mystic-heater,
   :property/pretty-name "Heater Mystic Shield"}
  {:entity-effects
-  {:effect.entity/damage {:damage/min-max [4 8]},
-   :effect.entity/stun 0.5},
+  {:effects.entity/damage {:damage/min-max [4 8]},
+   :effects.entity/stun 0.5},
   :entity/image
   {:file "images/uf_FX.png", :sub-image-bounds [24 288 24 24]},
   :projectile/max-range 10,
   :projectile/piercing? true,
   :projectile/speed 9,
   :property/id :projectiles/black}
- {:entity-effects {:effect.entity/kill true},
+ {:entity-effects {:effects.entity/kill true},
   :entity/image
   {:file "images/oryx_16bit_scifi_FX_lg_trans.png",
    :sub-image-bounds [32 192 32 32]},
@@ -4149,7 +4149,7 @@
   :skill/action-time-modifier-key :entity/cast-speed,
   :skill/cooldown 0,
   :skill/cost 0,
-  :skill/effects {:effect/projectile :projectiles/double-fireball},
+  :skill/effects {:effects/projectile :projectiles/double-fireball},
   :skill/start-action-sound "sounds/bfxr_cast.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [160 64 32 32]},
@@ -4159,7 +4159,7 @@
   :skill/action-time-modifier-key :entity/cast-speed,
   :skill/cooldown 0,
   :skill/cost 0,
-  :skill/effects {:effect/spawn :creatures/skeleton-warrior},
+  :skill/effects {:effects/spawn :creatures/skeleton-warrior},
   :skill/start-action-sound "sounds/bfxr_minedeath.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [0 64 32 32]},
@@ -4170,10 +4170,10 @@
   :skill/cooldown 0,
   :skill/cost 0,
   :skill/effects
-  {:effect/target-entity
+  {:effects/target-entity
    {:entity-effects
-    {:effect.entity/audiovisual :audiovisuals/convert,
-     :effect.entity/convert true},
+    {:effects.entity/audiovisual :audiovisuals/convert,
+     :effects.entity/convert true},
     :maxrange 10}},
   :skill/start-action-sound "sounds/bfxr_portaluse.wav"}
  {:entity/image
@@ -4195,8 +4195,8 @@
   :skill/cooldown 0,
   :skill/cost 0,
   :skill/effects
-  {:effect/target-entity
-   {:entity-effects {:effect.entity/damage {:damage/min-max [1 10]}},
+  {:effects/target-entity
+   {:entity-effects {:effects.entity/damage {:damage/min-max [1 10]}},
     :maxrange 5}},
   :skill/start-action-sound "sounds/slash.wav"}
  {:entity/image
@@ -4208,8 +4208,8 @@
   :skill/cooldown 0,
   :skill/cost 5,
   :skill/effects
-  {:effect/target-entity
-   {:entity-effects {:effect.entity/spiderweb true}, :maxrange 10}},
+  {:effects/target-entity
+   {:entity-effects {:effects.entity/spiderweb true}, :maxrange 10}},
   :skill/start-action-sound "sounds/bfxr_monkheal.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [64 96 32 32]},
@@ -4230,8 +4230,8 @@
   :skill/cooldown 3,
   :skill/cost 10,
   :skill/effects
-  {:effect/target-entity
-   {:entity-effects {:effect.entity/kill true}, :maxrange 10}},
+  {:effects/target-entity
+   {:entity-effects {:effects.entity/kill true}, :maxrange 10}},
   :skill/start-action-sound "sounds/bfxr_bossdeath.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [96 32 32 32]},
@@ -4241,7 +4241,7 @@
   :skill/action-time-modifier-key :entity/cast-speed,
   :skill/cooldown 0,
   :skill/cost 4,
-  :skill/effects {:effect/projectile :projectiles/black},
+  :skill/effects {:effects/projectile :projectiles/black},
   :skill/start-action-sound "sounds/bfxr_cast.wav"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [0 0 32 32]},
@@ -4252,8 +4252,8 @@
   :skill/cooldown 0,
   :skill/cost 0,
   :skill/effects
-  {:effect/target-entity
-   {:entity-effects {:effect.entity/melee-damage true},
+  {:effects/target-entity
+   {:entity-effects {:effects.entity/melee-damage true},
     :maxrange 0.5}},
   :skill/start-action-sound "sounds/slash.wav"}
  {:property/id :worlds/vampire,

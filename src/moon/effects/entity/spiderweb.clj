@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.effect.entity.spiderweb
+(ns ^:no-doc moon.effects.entity.spiderweb
   (:require [moon.entity.modifiers :as mods]
             [moon.world.time :refer [timer]]))
 

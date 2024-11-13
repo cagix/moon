@@ -1,4 +1,4 @@
-(ns moon.effect.entity.stun
+(ns moon.effects.entity.stun
   (:require [gdl.utils :refer [readable-number]]
             [moon.entity.fsm :as fsm]))
 

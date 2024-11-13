@@ -1,4 +1,4 @@
-(ns moon.effect.target-entity
+(ns moon.effects.target-entity
   (:require [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
             [moon.db :as db]
