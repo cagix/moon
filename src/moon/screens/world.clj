@@ -4,7 +4,6 @@
             [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.cursors :as cursors]
-            [gdl.graphics.image :as img]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
             [gdl.screen :as screen]
@@ -19,6 +18,7 @@
             [moon.level :as level]
             [moon.player :as player]
             [moon.widgets.action-bar :as action-bar]
+            [moon.widgets.dev-menu :as dev-menu]
             [moon.widgets.entity-info-window :as entity-info-window]
             [moon.widgets.hp-mana :as hp-mana]
             [moon.widgets.inventory :as inventory]
@@ -31,8 +31,7 @@
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.raycaster :as raycaster]
             [moon.world.tiled-map :as tiled-map]
-            [moon.world.time :as time])
-  (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
+            [moon.world.time :as time]))
 
 (defn- create-grid [tiled-map]
   (g2d/create-grid
@@ -72,78 +71,42 @@
                                            :entity/faction :evil}})))]
     (entities/creature (update creature :position tile->middle))))
 
-(defn- menu-item [text on-clicked]
-  (doto (MenuItem. text)
-    (.addListener (ui/change-listener on-clicked))))
-
-(defn- add-upd-label
-  ([table text-fn icon]
-   (let [icon (ui/image->widget (img/image (str "images/" icon ".png")) {})
-         label (ui/label "")
-         sub-table (ui/table {:rows [[icon label]]})]
-     (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
-     (.expandX (.right (.add table sub-table)))))
-  ([table text-fn]
-   (let [label (ui/label "")]
-     (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
-     (.expandX (.right (.add table label))))))
-
-(defn- add-debug-infos [mb]
-  (let [table (.getTable mb)
-        add! #(add-upd-label table %)]
-    ;"Mouseover-Actor: "
-    #_(when-let [actor (mouse-on-actor?)]
-        (str "TRUE - name:" (.getName actor)
-             "id: " (actor/id actor)))
-    (add-upd-label table
-                   #(str "Mouseover-entity id: " (when-let [entity (mouseover/entity)] (:entity/id entity)))
-                   "mouseover")
-    (add-upd-label table
-                   #(str "elapsed-time " (readable-number time/elapsed) " seconds")
-                   "clock")
-    (add! #(str "paused? " paused?))
-    (add! #(str "GUI: " (gui-view/mouse-position)))
-    (add! #(str "World: "(mapv int (world-view/mouse-position))))
-    (add-upd-label table
-                   #(str "Zoom: " (cam/zoom (world-view/camera)))
-                   "zoom")
-    (add-upd-label table
-                   #(str "FPS: " (gdl.graphics/frames-per-second))
-                   "fps")))
-
 (declare start)
 
-(defn- add-menu [menu-bar {:keys [label items]}]
-  (let [app-menu (Menu. label)]
-    (doseq [{:keys [label on-click]} items]
-      (.addItem app-menu (menu-item label (or on-click (fn [])))))
-    (.addMenu menu-bar app-menu)))
+;"Mouseover-Actor: "
+#_(when-let [actor (mouse-on-actor?)]
+    (str "TRUE - name:" (.getName actor)
+         "id: " (actor/id actor)))
 
-(defn- create-menu-bar [menus]
-  (let [menu-bar (MenuBar.)]
-    (run! #(add-menu menu-bar %) menus)
-    menu-bar))
-
-(defn- ->menu-bar []
-  (let [menu-bar (create-menu-bar
-                  [{:label "App"
-                    :items [{:label "Map-editor"
-                             :on-click (partial screen/change :screens/map-editor)}
-                            {:label "Editor"
-                             :on-click (partial screen/change :screens/editor)}
-                            {:label "Main-Menu"
-                             :on-click (partial screen/change :screens/main-menu)}]}
-                   {:label "World"
-                    :items (for [{:keys [property/id]} (db/all :properties/worlds)]
-                             {:label (str "Start " id)
-                              :on-click #(start id)})}
-                   {:label "Help"
-                    :items [{:label controls/help-text}]}])]
-    (add-debug-infos menu-bar)
-    menu-bar))
+(defn- dev-menu-bar []
+  (dev-menu/create
+   {:menus [{:label "App"
+             :items [{:label "Map-editor"
+                      :on-click (partial screen/change :screens/map-editor)}
+                     {:label "Editor"
+                      :on-click (partial screen/change :screens/editor)}
+                     {:label "Main-Menu"
+                      :on-click (partial screen/change :screens/main-menu)}]}
+            {:label "World"
+             :items (for [{:keys [property/id]} (db/all :properties/worlds)]
+                      {:label (str "Start " id)
+                       :on-click #(start id)})}
+            {:label "Help"
+             :items [{:label controls/help-text}]}]
+    :update-labels [{:update-fn #(str "Mouseover-entity id: " (when-let [entity (mouseover/entity)] (:entity/id entity)))
+                     :icon "images/mouseover.png"}
+                    {:update-fn #(str "elapsed-time " (readable-number time/elapsed) " seconds")
+                     :icon "images/clock.png"}
+                    {:update-fn #(str "paused? " paused?)}
+                    {:update-fn #(str "GUI: " (gui-view/mouse-position))}
+                    {:update-fn #(str "World: "(mapv int (world-view/mouse-position)))}
+                    {:update-fn #(str "Zoom: " (cam/zoom (world-view/camera)))
+                     :icon "images/zoom.png"}
+                    {:update-fn #(str "FPS: " (gdl.graphics/frames-per-second))
+                     :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
-  (ui/table {:rows [[{:actor (.getTable (->menu-bar))
+  (ui/table {:rows [[{:actor (.getTable (dev-menu-bar))
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]
