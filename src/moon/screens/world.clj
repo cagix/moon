@@ -46,8 +46,7 @@
                           "all"  :all))))))
 
 (declare tick-error
-         paused?
-         ^{:doc "The game-logic frame number, starting with 1. (not counting when game is paused)"})
+         paused?)
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
