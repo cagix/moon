@@ -95,7 +95,6 @@
                moon.entity.inventory
                moon.entity.line-render
                moon.entity.mouseover?
-               moon.entity.player?
                moon.entity.projectile-collision
                moon.entity.skills
                moon.entity.string-effect

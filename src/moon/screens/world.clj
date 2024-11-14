@@ -51,24 +51,24 @@
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
+(defn- spawn-player [start-position]
+  (entities/creature {:position (tile->middle start-position)
+                      :creature-id :creatures/vampire
+                      :components {:entity/fsm {:fsm :fsms/player
+                                                :initial-state :player-idle}
+                                   :entity/faction :good
+                                   :entity/player? true
+                                   :entity/free-skill-points 3
+                                   :entity/clickable {:type :clickable/player}
+                                   :entity/click-distance-tiles 1.5}}))
 
-(defn- spawn-creatures [{:keys [tiled-map start-position]}]
-  (doseq [creature (cons {:position start-position
-                          :creature-id :creatures/vampire
-                          :components {:entity/fsm {:fsm :fsms/player
-                                                    :initial-state :player-idle}
-                                       :entity/faction :good
-                                       :entity/player? true
-                                       :entity/free-skill-points 3
-                                       :entity/clickable {:type :clickable/player}
-                                       :entity/click-distance-tiles 1.5}}
-                         (when spawn-enemies?
-                           (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                             {:position position
-                              :creature-id (keyword creature-id)
-                              :components {:entity/fsm {:fsm :fsms/npc
-                                                        :initial-state :npc-sleeping}
-                                           :entity/faction :evil}})))]
+(defn- spawn-enemies [tiled-map]
+  (doseq [creature (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                     {:position position
+                      :creature-id (keyword creature-id)
+                      :components {:entity/fsm {:fsm :fsms/npc
+                                                :initial-state :npc-sleeping}
+                                   :entity/faction :evil}})]
     (entities/creature (update creature :position tile->middle))))
 
 (declare start)
@@ -160,7 +160,7 @@
 (defn start [world-id]
   (screen/change :screens/world)
   (stage/reset (widgets))
-  (let [{:keys [tiled-map] :as level} (level/generate world-id)]
+  (let [{:keys [tiled-map start-position]} (level/generate world-id)]
     (tiled-map/clear)
     (tiled-map/init tiled-map)
     (bind-root #'grid/grid (create-grid tiled-map))
@@ -173,7 +173,9 @@
     (bind-root #'tick-error nil)
     (bind-root #'entities/ids->eids {})
     (time/init)
-    (spawn-creatures level)))
+    (bind-root #'player/eid (spawn-player start-position))
+    (when spawn-enemies?
+      (spawn-enemies tiled-map))))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
