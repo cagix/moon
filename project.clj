@@ -2,7 +2,12 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
                  [gdl "0.2"]
-                 [com.github.damn/reduce-fsm "eb1a2c1ff0"]]
+                 [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
+
+                 #_[com.github.electronstudio/sdl2gdx "1.0.5"]
+                 [com.badlogicgames.gdx-controllers/gdx-controllers-core    "2.2.3"]
+                 [com.badlogicgames.gdx-controllers/gdx-controllers-desktop "2.2.3"]
+                 ]
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
   :target-path "target/%s/" ; https://stackoverflow.com/questions/44246924/clojure-tools-namespace-refresh-fails-with-no-namespace-foo
