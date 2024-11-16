@@ -3,7 +3,7 @@
 ; https://javadoc.io/doc/com.badlogicgames.gdx/gdx-controllers/latest/index.html
 ; https://github.com/libgdx/gdx-controllers/blob/master/gdx-controllers-core/src/com/badlogic/gdx/controllers/ControllerMapping.java
 
-(ns moon.screens.controller-test
+(ns moon.controller-test
   (:require [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.batch :as batch]
@@ -26,6 +26,10 @@
 
 (comment
  (.isConnected controller)
+
+ ; this is not in javadoc
+ ; latest version only github:
+ ; https://github.com/libgdx/gdx-controllers/blob/29ddbc0639dd1defb839e79a224f77f8f2e4760b/gdx-controllers-core/src/com/badlogic/gdx/controllers/Controller.java#L72
  (.startVibration 500 0.5)
  )
 
