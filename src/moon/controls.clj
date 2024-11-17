@@ -1,7 +1,7 @@
 (ns moon.controls
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.world-view :as world-view]
-            [gdl.input :refer [key-pressed? key-just-pressed?]]))
+            [gdl.input :refer [key-pressed? key-just-pressed? WASD-movement-vector]]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)
@@ -29,6 +29,9 @@
 
 (defn toggle-visible? [window-id]
   (key-just-pressed? (get window-hotkeys window-id)))
+
+(defn movement-vector []
+  (WASD-movement-vector))
 
 (def help-text
   "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")

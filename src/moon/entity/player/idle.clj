@@ -2,11 +2,12 @@
   (:require [gdl.assets :refer [play-sound]]
             [gdl.graphics.cursors :as cursors]
             [gdl.graphics.world-view :as world-view]
-            [gdl.input :refer [button-just-pressed? WASD-movement-vector]]
+            [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
+            [moon.controls :as controls]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
             [moon.entity.inventory :as inventory]
@@ -126,7 +127,7 @@
   true)
 
 (defn manual-tick [{:keys [eid]}]
-  (if-let [movement-vector (WASD-movement-vector)]
+  (if-let [movement-vector (controls/movement-vector)]
     (fsm/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
       (cursors/set cursor)

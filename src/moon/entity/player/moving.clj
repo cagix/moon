@@ -1,5 +1,5 @@
 (ns moon.entity.player.moving
-  (:require [gdl.input :refer [WASD-movement-vector]]
+  (:require [moon.controls :as controls]
             [moon.entity.fsm :as fsm]
             [moon.entity.stat :as stat]))
 
@@ -21,7 +21,7 @@
   (swap! eid dissoc :entity/movement))
 
 (defn tick [{:keys [movement-vector]} eid]
-  (if-let [movement-vector (WASD-movement-vector)]
+  (if-let [movement-vector (controls/movement-vector)]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (stat/value @eid :entity/movement-speed)})
     (fsm/event eid :no-movement-input)))
