@@ -22,7 +22,6 @@
 (bind-root #'gdl.schema.map/property-k-sort-order
            [:property/id
             :property/pretty-name
-            :app/lwjgl3
             :entity/image
             :entity/animation
             :creature/species
