@@ -18,7 +18,7 @@
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (grid/point->entities
                       (world-view/mouse-position)))]
-    (->> body/render-order
+    (->> body/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse
          (filter #(line-of-sight? player @%))

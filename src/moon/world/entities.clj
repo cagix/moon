@@ -49,7 +49,7 @@
   (let [player @player/eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
-                                              body/render-order)
+                                              body/render-z-order)
             system entity/render-systems
             entity entities
             :when (or (= z-order :z-order/effect)

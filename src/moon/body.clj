@@ -13,7 +13,7 @@
                          :z-order/flying
                          :z-order/effect])
 
-(def render-order (define-order z-orders))
+(def render-z-order (define-order z-orders))
 
 (defrecord Body [position
                  left-bottom
