@@ -17,7 +17,21 @@
             [moon.screens.map-editor :as map-editor]
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
-            moon.install))
+            moon.info
+            moon.install
+
+            (gdl.schema animation ; FIXME @ editor-screen (move to gdl also?)
+                        boolean
+                        enum
+                        image
+                        map
+                        number
+                        one-to-many
+                        one-to-one
+                        sound
+                        string)
+
+            ))
 
 (bind-root #'gdl.schema.map/property-k-sort-order
            [:property/id
