@@ -10,6 +10,7 @@
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
+            gdl.schemas
             [gdl.screen :as screen]
             [gdl.ui :as ui]
             [moon.screens.main :as main-menu]
@@ -18,20 +19,7 @@
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
             moon.info
-            moon.install
-
-            (gdl.schema animation ; FIXME @ editor-screen (move to gdl also?)
-                        boolean
-                        enum
-                        image
-                        map
-                        number
-                        one-to-many
-                        one-to-one
-                        sound
-                        string)
-
-            ))
+            moon.install))
 
 (bind-root #'gdl.schema.map/property-k-sort-order
            [:property/id
