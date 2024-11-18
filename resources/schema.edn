@@ -1,4 +1,3 @@
-;:entity/color [:enum :entity.color/black :entity.color/white :entity.color/green :entity.color/blue :entity.color/red :entity.color/black]
 
 ; TODO speed is 10 tiles/s but I checked moves 8 tiles/sec ... after delta time change ?
 
@@ -54,6 +53,12 @@
 
  :entity/body [:s/map [:body/width :body/height :body/flying?]],
 
+ :entity/color [:enum
+                :entity.color/black
+                :entity.color/white
+                :entity.color/green
+                :entity.color/blue
+                :entity.color/red]
  :entity/hp :s/pos-int,
  :entity/movement-speed :s/pos,
  :entity/aggro-range :s/nat-int,
@@ -103,7 +108,8 @@
                                 [:entity/armor-save   {:optional true}]
                                 [:entity/armor-pierce {:optional true}]
                                 [:entity/modifiers    {:optional true}]
-                                [:entity/inventory    {:optional true}]]],
+                                [:entity/inventory    {:optional true}]
+                                [:entity/color        {:optional true}]]],
 
  :entity/image :s/image,
  :item/slot [:enum

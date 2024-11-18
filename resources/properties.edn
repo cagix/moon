@@ -900,6 +900,7 @@
    :looping? true},
   :entity/body
   {:body/flying? true, :body/height 35/48, :body/width 13/24},
+  :entity/color :entity.color/black,
   :entity/hp 1,
   :entity/movement-speed 6,
   :entity/reaction-time 5,
@@ -1633,6 +1634,7 @@
    :looping? true},
   :entity/body
   {:body/flying? true, :body/height 35/48, :body/width 13/24},
+  :entity/color :entity.color/white,
   :entity/hp 8,
   :entity/movement-speed 4,
   :entity/reaction-time 12,
