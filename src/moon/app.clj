@@ -1,25 +1,74 @@
 (ns moon.app
-  (:require [gdl.assets :as assets]
+  (:require [clojure.string :as str]
+            [gdl.assets :as assets]
             [gdl.app :as app]
             [gdl.db :as db]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.batch :as batch]
+            [gdl.graphics.color :as color]
             [gdl.graphics.cursors :as cursors]
             [gdl.graphics.tiled :as graphics.tiled]
             [gdl.graphics.text :as font]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
+            [gdl.info :as info :refer [info]]
             gdl.schemas
             [gdl.screen :as screen]
             [gdl.screens.editor :as editor]
             [gdl.ui :as ui]
+            [gdl.utils :refer [k->pretty-name readable-number]]
+            [moon.entity.stat :as stat]
             [moon.screens.main :as main-menu]
             [moon.screens.map-editor :as map-editor]
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
-            moon.info
             moon.install))
+
+(color/put "MODIFIERS" :cyan)
+(color/put "PRETTY_NAME" [0.84 0.8 0.52])
+
+(defmethod info :property/pretty-name [[_ value]]
+  (str "[PRETTY_NAME]"value"[]"))
+
+(defmethod info :maxrange [[_ maxrange]]
+  (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
+
+(defmethod info :creature/species [[_ species]]
+  (str "[LIGHT_GRAY]Creature - " (str/capitalize (name species)) "[]"))
+
+(defmethod info :creature/level [[_ lvl]]
+  (str "[GRAY]Level " lvl "[]"))
+
+(defmethod info :projectile/piercing? [_] ; TODO also when false ?!
+  "[LIME]Piercing[]")
+
+(defmethod info :skill/action-time-modifier-key [[_ v]]
+  (str "[VIOLET]" (case v
+                    :entity/cast-speed "Spell"
+                    :entity/attack-speed "Attack") "[]"))
+
+(defmethod info :skill/action-time [[_ v]]
+  (str "[GOLD]Action-Time: " (readable-number v) " seconds[]"))
+
+(defmethod info :skill/cooldown [[_ v]]
+  (when-not (zero? v)
+    (str "[SKY]Cooldown: " (readable-number v) " seconds[]")))
+
+(defmethod info :skill/cost [[_ v]]
+  (when-not (zero? v)
+    (str "[CYAN]Cost: " v " Mana[]")))
+
+(defmethod info ::stat [[k _]]
+  (str (k->pretty-name k) ": " (stat/value info/*entity* k)))
+
+(derive :entity/reaction-time  ::stat)
+(derive :entity/movement-speed ::stat)
+(derive :entity/strength       ::stat)
+(derive :entity/cast-speed     ::stat)
+(derive :entity/attack-speed   ::stat)
+(derive :entity/armor-save     ::stat)
+(derive :entity/armor-pierce   ::stat)
 
 (bind-root #'gdl.schema.map/property-k-sort-order
            [:property/id
