@@ -10,7 +10,7 @@
 ; same code as in render entities on world view screens/world
 (defn- creatures-in-los-of-player []
   (->> (entities/active)
-       (filter #(:creature/species @%))
+       (filter #(:entity/species @%))
        (filter #(line-of-sight? @player/eid @%))
        (remove #(:entity/player? @%))))
 

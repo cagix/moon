@@ -44,7 +44,7 @@
                                    :entity/animation]],
 
  :property/pretty-name :string,
- :creature/species [:qualified-keyword {:namespace :species}],
+ :entity/species [:qualified-keyword {:namespace :species}],
  :creature/level :s/pos-int,
 
  :body/width :s/pos,
@@ -92,7 +92,7 @@
 
  :properties/creatures [:s/map [:property/id
                                 :property/pretty-name
-                                :creature/species
+                                :entity/species
                                 :creature/level
                                 :entity/body
                                 :entity/animation

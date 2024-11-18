@@ -143,7 +143,7 @@
 (defmethod info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
 
-(defmethod info :creature/species [[_ species]]
+(defmethod info :entity/species [[_ species]]
   (str "[LIGHT_GRAY]Creature - " (str/capitalize (name species)) "[]"))
 
 (defmethod info :creature/level [[_ lvl]]
@@ -184,7 +184,7 @@
             :property/pretty-name
             :entity/image
             :entity/animation
-            :creature/species
+            :entity/species
             :creature/level
             :entity/body
             :item/slot
@@ -203,7 +203,7 @@
             :properties/creatures {:columns 15
                                    :image/scale 1.5
                                    :sort-by-fn #(vector (:creature/level %)
-                                                        (name (:creature/species %))
+                                                        (name (:entity/species %))
                                                         (name (:property/id %)))
                                    :extra-info-text #(str (:creature/level %))}
             :properties/items {:columns 20
@@ -225,7 +225,7 @@
             :skill/cooldown
             :skill/cost
             :skill/effects
-            :creature/species
+            :entity/species
             :creature/level
             :entity/hp
             :entity/mana
