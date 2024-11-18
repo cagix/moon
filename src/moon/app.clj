@@ -12,9 +12,9 @@
             [gdl.graphics.world-view :as world-view]
             gdl.schemas
             [gdl.screen :as screen]
+            [gdl.screens.editor :as editor]
             [gdl.ui :as ui]
             [moon.screens.main :as main-menu]
-            [moon.screens.editor :as editor]
             [moon.screens.map-editor :as map-editor]
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
