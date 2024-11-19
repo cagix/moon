@@ -15,10 +15,9 @@
 
 (defn init [tmap]
   (.bindRoot #'tiled-map tmap)
-  (.bindRoot #'explored-tile-corners
-             (atom (g2d/create-grid (tiled/width  tmap)
-                                    (tiled/height tmap)
-                                    (constantly false)))))
+  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/width  tmap)
+                                                            (tiled/height tmap)
+                                                            (constantly false)))))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 

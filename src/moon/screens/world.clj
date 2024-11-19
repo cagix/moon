@@ -21,6 +21,7 @@
             [moon.widgets.hp-mana :as hp-mana]
             [moon.widgets.inventory :as inventory]
             [moon.widgets.player-message :as player-message]
+            [moon.world :refer [tick-error paused?]]
             [moon.world.content-grid :as content-grid]
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
@@ -41,9 +42,6 @@
                           "none" :none
                           "air"  :air
                           "all"  :all))))))
-
-(declare tick-error
-         paused?)
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
