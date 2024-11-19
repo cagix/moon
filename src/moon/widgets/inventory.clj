@@ -3,12 +3,11 @@
             [gdl.graphics.color :as color]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.image :as image]
-            [gdl.graphics.shape-drawer :as sd]
             [gdl.info :as info]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [sprite-sheet]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle sprite-sheet]]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]))
@@ -22,14 +21,14 @@
 (def ^:private not-allowed-color  [0.6 0   0 0.8])
 
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
-  (sd/rectangle x y cell-size cell-size :gray)
+  (draw-rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (fsm/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (sd/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (draw-filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??

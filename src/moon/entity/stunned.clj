@@ -1,5 +1,5 @@
 (ns moon.entity.stunned
-  (:require [gdl.graphics.shape-drawer :as sd]
+  (:require [moon.core :refer [draw-circle]]
             [moon.entity.fsm :as fsm]
             [moon.world.time :refer [timer stopped?]]))
 
@@ -18,4 +18,4 @@
     (fsm/event eid :effect-wears-off)))
 
 (defn render-below [_ entity]
-  (sd/circle (:position entity) 0.5 [1 1 1 0.6]))
+  (draw-circle (:position entity) 0.5 [1 1 1 0.6]))

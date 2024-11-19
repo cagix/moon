@@ -1,7 +1,7 @@
 (ns moon.entity.temp-modifier
-  (:require [gdl.graphics.shape-drawer :as sd]
-            [gdl.system :refer [*k*]]
+  (:require [gdl.system :refer [*k*]]
             [gdl.utils :refer [readable-number]]
+            [moon.core :refer [draw-filled-circle]]
             [moon.entity.modifiers :as mods]
             [moon.world.time :refer [stopped? finished-ratio]]))
 
@@ -15,4 +15,4 @@
 
 ; TODO draw opacity as of counter ratio?
 (defn render-above [_ entity]
-  (sd/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
+  (draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))

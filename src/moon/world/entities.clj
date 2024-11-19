@@ -1,11 +1,10 @@
 (ns moon.world.entities
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [gdl.db :as db]
-            [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
             [gdl.math.vector :as v]
             [gdl.utils :refer [sort-by-order safe-merge]]
-            [moon.core :refer [play-sound]]
+            [moon.core :refer [draw-rectangle play-sound]]
             [moon.body :as body]
             [moon.entity :as entity]
             [moon.player :as player]
@@ -32,7 +31,7 @@
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (sd/rectangle x y (:width entity) (:height entity) color)))
+    (draw-rectangle x y (:width entity) (:height entity) color)))
 
 (defn- render-entity! [system entity]
   (try

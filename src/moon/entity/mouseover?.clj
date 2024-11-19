@@ -1,5 +1,5 @@
 (ns moon.entity.mouseover?
-  (:require [gdl.graphics.shape-drawer :as sd]
+  (:require [moon.core :refer [draw-ellipse with-line-width]]
             [moon.entity.faction :as faction]
             [moon.player :as player]))
 
@@ -10,13 +10,13 @@
 
 (defn render-below [_ {:keys [entity/faction] :as entity}]
   (let [player @player/eid]
-    (sd/with-line-width 3
-      #(sd/ellipse (:position entity)
-                   (:half-width entity)
-                   (:half-height entity)
-                   (cond (= faction (faction/enemy player))
-                         enemy-color
-                         (= faction (:entity/faction player))
-                         friendly-color
-                         :else
-                         neutral-color)))))
+    (with-line-width 3
+      #(draw-ellipse (:position entity)
+                     (:half-width entity)
+                     (:half-height entity)
+                     (cond (= faction (faction/enemy player))
+                           enemy-color
+                           (= faction (:entity/faction player))
+                           friendly-color
+                           :else
+                           neutral-color)))))

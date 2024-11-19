@@ -1,12 +1,11 @@
 (ns ^:no-doc moon.screens.minimap
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
-            [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.tiled :as renderer]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.screen :as screen]
-            [moon.core :refer [draw-on-world-view]]
+            [moon.core :refer [draw-filled-circle draw-on-world-view]]
             [moon.world.tiled-map :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
@@ -50,7 +49,7 @@
                    (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
      (fn []
-       (sd/filled-circle (cam/position (world-view/camera)) 0.5 :green)))
+       (draw-filled-circle (cam/position (world-view/camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
       (screen/change :screens/world)))

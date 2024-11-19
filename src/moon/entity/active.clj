@@ -1,6 +1,5 @@
 (ns moon.entity.active
-  (:require [gdl.graphics.shape-drawer :as sd]
-            [moon.core :refer [draw-image play-sound]]
+  (:require [moon.core :refer [draw-image draw-filled-circle draw-sector play-sound]]
             [moon.effect :as effect]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
@@ -15,11 +14,11 @@
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (sd/filled-circle center radius [1 1 1 0.125])
-    (sd/sector center radius
-                   90 ; start-angle
-                   (* (float action-counter-ratio) 360) ; degree
-                   [1 1 1 0.5])
+    (draw-filled-circle center radius [1 1 1 0.125])
+    (draw-sector center radius
+                 90 ; start-angle
+                 (* (float action-counter-ratio) 360) ; degree
+                 [1 1 1 0.5])
     (draw-image image [(- (float x) radius) y])))
 
 (defn- apply-action-speed-modifier [entity skill action-time]

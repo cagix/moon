@@ -18,7 +18,7 @@
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :refer [k->pretty-name readable-number]]
-            [moon.core :refer [asset-manager batch]]
+            [moon.core :refer [asset-manager batch shape-drawer]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -250,6 +250,8 @@
             :maxrange
             :entity-effects])
 
+(declare ^:private shape-drawer-texture)
+
 (defn -main []
   (db/init :schema "schema.edn"
            :properties "properties.edn")
@@ -262,7 +264,8 @@
                (create [_]
                  (.bindRoot #'asset-manager (assets/load-all (assets/search "resources/")))
                  (.bindRoot #'batch (SpriteBatch.))
-                 (shape-drawer/init batch)
+                 (.bindRoot #'shape-drawer-texture (shape-drawer/white-pixel-texture))
+                 (.bindRoot #'shape-drawer (shape-drawer/create batch shape-drawer-texture))
                  (cursors/init {:cursors/bag                   ["bag001"       [0   0]]
                                 :cursors/black-x               ["black_x"      [0   0]]
                                 :cursors/default               ["default"      [0   0]]
@@ -298,7 +301,7 @@
                (dispose [_]
                  (.dispose asset-manager)
                  (.dispose batch)
-                 (shape-drawer/dispose)
+                 (.dispose shape-drawer-texture)
                  (cursors/dispose)
                  (ui/dispose!)
                  (font/dispose)

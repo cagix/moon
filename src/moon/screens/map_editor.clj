@@ -3,7 +3,6 @@
             [gdl.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
-            [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.tiled :as tiled-map-renderer]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
@@ -14,7 +13,7 @@
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [gdl.widgets.error-window :refer [error-window!]]
-            [moon.core :refer [draw-on-world-view]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view]]
             [moon.controls :as controls]
             [moon.level :as level]
             [moon.level.modules :as modules]))
@@ -93,21 +92,21 @@ direction keys: move")
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world-view/camera))
         [x y] (mapv int (world-view/mouse-position))]
-    (sd/rectangle x y 1 1 :white)
+    (draw-rectangle x y 1 1 :white)
     (when start-position
-      (sd/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (level/movement-property tiled-map [x y])]]
-        (sd/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
-        (sd/filled-circle [(+ x 0.5) (+ y 0.5)]
+        (draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
+        (draw-filled-circle [(+ x 0.5) (+ y 0.5)]
                           0.05
                           (case prop
                             "all"   :green
                             "air"   :orange
                             "none"  :red))))
     (when show-grid-lines
-      (sd/grid 0 0 (t/width  tiled-map) (t/height tiled-map) 1 1 [1 1 1 0.5]))))
+      (draw-grid 0 0 (t/width  tiled-map) (t/height tiled-map) 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 

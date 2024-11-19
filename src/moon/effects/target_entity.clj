@@ -1,7 +1,7 @@
 (ns moon.effects.target-entity
   (:require [gdl.db :as db]
-            [gdl.graphics.shape-drawer :as sd]
             [gdl.math.vector :as v]
+            [moon.core :refer [draw-line]]
             [moon.body :as body]
             [moon.effects :as effects]
             [moon.world.entities :as entities]))
@@ -48,8 +48,8 @@
   (when target
     (let [source* @source
           target* @target]
-      (sd/line (start-point source* target*)
-               (end-point source* target* maxrange)
-               (if (in-range? source* target* maxrange)
-                 [1 0 0 0.5]
-                 [1 1 0 0.5])))))
+      (draw-line (start-point source* target*)
+                 (end-point source* target* maxrange)
+                 (if (in-range? source* target* maxrange)
+                   [1 0 0 0.5]
+                   [1 1 0 0.5])))))

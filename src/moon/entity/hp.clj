@@ -1,7 +1,7 @@
 (ns moon.entity.hp
-  (:require [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.world-view :as world-view]
+  (:require [gdl.graphics.world-view :as world-view]
             [gdl.info :as info]
+            [moon.core :refer [draw-filled-rectangle]]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -28,12 +28,12 @@
           y (+ y half-height)
           height (world-view/pixels->units 5)
           border (world-view/pixels->units borders-px)]
-      (sd/filled-rectangle x y width height :black)
-      (sd/filled-rectangle (+ x border)
-                           (+ y border)
-                           (- (* width ratio) (* 2 border))
-                           (- height (* 2 border))
-                           (hpbar-color ratio)))))
+      (draw-filled-rectangle x y width height :black)
+      (draw-filled-rectangle (+ x border)
+                             (+ y border)
+                             (- (* width ratio) (* 2 border))
+                             (- height (* 2 border))
+                             (hpbar-color ratio)))))
 
 (defn value
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

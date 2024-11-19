@@ -1,6 +1,5 @@
 (ns moon.effects.target-all
-  "🚧 Under construction ⚠️"
-  (:require [gdl.graphics.shape-drawer :as sd]
+  (:require [moon.core :refer [draw-line]]
             [moon.effects :as effects]
             [moon.player :as player]
             [moon.world.entities :as entities]
@@ -59,6 +58,6 @@
 (defn render [_ {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target* (map deref (creatures-in-los-of-player))]
-      (sd/line (:position source*) #_(start-point source* target*)
-               (:position target*)
-               [1 0 0 0.5]))))
+      (draw-line (:position source*) #_(start-point source* target*)
+                 (:position target*)
+                 [1 0 0 0.5]))))
