@@ -1,23 +1,7 @@
-(ns moon.world.tiled-map
-  (:require [data.grid2d :as g2d]
-            [gdl.graphics.color :as color]
-            [gdl.utils :refer [dispose ->tile]]
-            [gdl.tiled :as tiled]
-            [moon.app :refer [draw-tiled-map]]
+(ns moon.world.tile-color-setter
+  (:require [gdl.graphics.color :as color]
+            [gdl.utils :refer [->tile]]
             [moon.world.raycaster :refer [ray-blocked?]]))
-
-(declare tiled-map
-         explored-tile-corners)
-
-(defn clear []
-  (when (bound? #'tiled-map)
-    (dispose tiled-map)))
-
-(defn init [tmap]
-  (.bindRoot #'tiled-map tmap)
-  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/width  tmap)
-                                                            (tiled/height tmap)
-                                                            (constantly false)))))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
@@ -37,7 +21,8 @@
  2432
  )
 
-(defn- ->tile-color-setter [light-cache light-position]
+(defn- create* [explored-tile-corners light-cache light-position]
+  #_(reset! do-once false)
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
           explored? (get @explored-tile-corners position) ; TODO needs int call ?
@@ -56,7 +41,5 @@
               (swap! explored-tile-corners assoc (->tile position) true))
             color/white)))))
 
-(defn render [light-position]
-  (draw-tiled-map tiled-map
-                  (->tile-color-setter (atom nil) light-position))
-  #_(reset! do-once false))
+(defn create [explored-tile-color light-position]
+  (create* explored-tile-color (atom {}) light-position))

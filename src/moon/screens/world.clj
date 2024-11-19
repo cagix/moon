@@ -9,7 +9,7 @@
             [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
-            [moon.app :refer [draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
+            [moon.app :refer [draw-tiled-map draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
             [moon.level :as level]
@@ -28,8 +28,8 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.raycaster :as raycaster]
-            [moon.world.tiled-map :as tiled-map]
-            [moon.world.time :as time]))
+            [moon.world.time :as time]
+            [moon.world.tile-color-setter :as tile-color-setter]))
 
 (defn- create-grid [tiled-map]
   (g2d/create-grid
@@ -156,8 +156,8 @@
   (change-screen :screens/world)
   (stage/reset (stage) (widgets))
   (let [{:keys [tiled-map start-position]} (level/generate world-id)]
-    (tiled-map/clear)
-    (tiled-map/init tiled-map)
+    (world/clear)
+    (world/init tiled-map)
     (.bindRoot #'world/grid (create-grid tiled-map))
     (raycaster/init world/grid world/blocks-vision?)
     (let [width  (tiled/width  tiled-map)
@@ -200,7 +200,10 @@
   ; FIXME position DRY
   (cam/set-position! (world-camera) (:position @player/eid))
   ; FIXME position DRY
-  (tiled-map/render (cam/position (world-camera)))
+  (draw-tiled-map world/tiled-map
+                  (tile-color-setter/create
+                   world/explored-tile-corners
+                   (cam/position (world-camera))))
   (draw-on-world-view (fn []
                        (debug-render/before-entities)
                        ; FIXME position DRY (from player)
@@ -227,7 +230,7 @@
           (change-screen :screens/minimap)))
 
   (screen/dispose [_]
-    (tiled-map/clear)))
+    (world/clear)))
 
 (defn create []
   {:screen (->WorldScreen)})

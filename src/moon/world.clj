@@ -1,10 +1,24 @@
 (ns moon.world
-  (:require [gdl.utils :refer [tile->middle]]
+  (:require [data.grid2d :as g2d]
+            [gdl.utils :refer [dispose tile->middle]]
+            [gdl.tiled :as tiled]
             [moon.world.grid :as grid]))
 
-(declare grid
+(declare tiled-map
+         explored-tile-corners
+         grid
          tick-error
          paused?)
+
+(defn clear [] ; responsibility of screen? we are not creating the tiled-map here ...
+  (when (bound? #'tiled-map)
+    (dispose tiled-map)))
+
+(defn init [tiled-map]
+  (.bindRoot #'tiled-map tiled-map)
+  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/width  tiled-map)
+                                                            (tiled/height tiled-map)
+                                                            (constantly false)))))
 
 (defn cell [position]
   (get grid position))
