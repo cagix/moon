@@ -2,7 +2,7 @@
   "🚧 Under construction ⚠️
 
   https://github.com/damn/core/issues/29"
-  (:require [gdl.assets :refer [play-sound]]
+  (:require [moon.core :refer [play-sound]]
             [moon.world.entities :as entities]))
 
 (defn applicable? [_ {:keys [effect/source effect/target-position]}]

@@ -1,6 +1,6 @@
 (ns moon.widgets.dev-menu
-  (:require [gdl.graphics.image :as img]
-            [gdl.ui :as ui])
+  (:require [gdl.ui :as ui]
+            [moon.core :refer [image]])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 
 (defn- menu-item [text on-clicked]
@@ -9,7 +9,7 @@
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (img/image icon) {})
+   (let [icon (ui/image->widget (image icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (.addActor table (ui/actor {:act #(.setText label (text-fn))}))

@@ -19,7 +19,7 @@
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :refer [k->pretty-name readable-number]]
-            [moon.core :refer [batch]]
+            [moon.core :refer [asset-manager batch]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -29,6 +29,9 @@
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
             [moon.player :as player]
+            (moon.schema animation
+                         image
+                         sound)
             (moon.level generate
                         uf-caves
                         tiled-map))
@@ -251,7 +254,7 @@
               :dock-icon "moon.png"}
              (reify app/Listener
                (create [_]
-                 (assets/init "resources/")
+                 (.bindRoot #'asset-manager (assets/load-all (assets/search "resources/")))
                  (.bindRoot #'batch (SpriteBatch.))
                  (shape-drawer/init batch)
                  (cursors/init {:cursors/bag                   ["bag001"       [0   0]]
@@ -287,7 +290,7 @@
                  (world/start :worlds/vampire))
 
                (dispose [_]
-                 (assets/dispose)
+                 (.dispose asset-manager)
                  (.dispose batch)
                  (shape-drawer/dispose)
                  (cursors/dispose)

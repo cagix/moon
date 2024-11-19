@@ -8,6 +8,7 @@
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
+            [moon.core :refer [sprite-sheet]]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]))
@@ -59,7 +60,7 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (-> (image/sprite-sheet "images/items.png" 48 48)
+  (-> (sprite-sheet "images/items.png" 48 48)
       (image/sprite (slot->sprite-idx slot))))
 
 (defn- slot->background [slot]

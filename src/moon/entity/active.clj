@@ -1,7 +1,6 @@
 (ns moon.entity.active
-  (:require [gdl.assets :refer [play-sound]]
-            [gdl.graphics.shape-drawer :as sd]
-            [moon.core :refer [draw-image]]
+  (:require [gdl.graphics.shape-drawer :as sd]
+            [moon.core :refer [draw-image play-sound]]
             [moon.effect :as effect]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]

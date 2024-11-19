@@ -6,13 +6,13 @@
 (ns moon.controller-test
   (:require [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
-            [gdl.graphics.batch :as batch]
             [gdl.graphics.view :as view]
             [gdl.graphics.gui-view :as gui-view]
-            [gdl.graphics.text :as text]
             [gdl.graphics.shape-drawer :as shape-drawer]
+            [gdl.graphics.text :as text]
             [gdl.input :refer [key-just-pressed?]]
-            [gdl.math.vector :as v])
+            [gdl.math.vector :as v]
+            [moon.core :refer [batch draw-text]])
   (:import (com.badlogic.gdx.controllers Controllers)))
 
 (declare ^:private controller)
@@ -36,7 +36,7 @@
 (defn- draw-info []
   (if (and (bound? #'controller) controller)
     (do
-     (text/draw {:x (- (/ (gui-view/width) 2) 300)
+     (draw-text {:x (- (/ (gui-view/width) 2) 300)
                  :y (- (/ (gui-view/height) 2) 200)
                  :text
                  (str
@@ -50,7 +50,7 @@
          (shape-drawer/line start
                             (v/add start (v/scale (movement-vector) 100))
                             :cyan))))
-    (text/draw {:x (- (/ (gui-view/width) 2) 300)
+    (draw-text {:x (- (/ (gui-view/width) 2) 300)
                 :y (- (/ (gui-view/height) 2) 200)
                 :text (str "controller: " (pr-str controller) "\n press X to try to connect again." )}))
   #_(when (.getButton my-controller Xbox/A)
@@ -62,7 +62,7 @@
               :height 800}
              (reify app/Listener
                (create [_]
-                 (batch/init)
+                 ;(batch/init)
                  (shape-drawer/init)
                  (text/init nil)
                  (gui-view/init {:world-width 1440 :world-height 900})
@@ -71,13 +71,14 @@
                    (println "Controller bound - " controller)))
 
                (dispose [_]
-                 (batch/dispose)
+                 ;(batch/dispose)
                  (shape-drawer/dispose)
                  (text/dispose))
 
                (render [_]
                  (clear-screen :black)
-                 (view/render (deref (var gui-view/view))
+                 (view/render batch
+                              (deref (var gui-view/view))
                               draw-info)
                  (when (key-just-pressed? :x)
                    (when-not (or (bound? #'controller)

@@ -1,6 +1,6 @@
 (ns moon.entity.player.dead
-  (:require [gdl.assets :refer [play-sound]]
-            [gdl.screen :as screen]
+  (:require [gdl.screen :as screen]
+            [moon.core :refer [play-sound]]
             [moon.widgets.modal :as modal]))
 
 (defn cursor [_]

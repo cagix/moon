@@ -1,9 +1,9 @@
 (ns ^:no-doc moon.widgets.background-image
-  (:require [gdl.graphics.image :as img]
-            [gdl.ui :as ui]))
+  (:require [gdl.ui :as ui]
+            [moon.core :refer [image]]))
 
 (defn create []
-  (ui/image->widget (img/image "images/moon_background.png")
+  (ui/image->widget (image "images/moon_background.png")
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))

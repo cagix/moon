@@ -1,11 +1,10 @@
 (ns moon.entity.player.item-on-cursor
-  (:require [gdl.assets :refer [play-sound]]
-            [gdl.graphics.gui-view :as gui-view]
+  (:require [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.stage :refer [mouse-on-actor?]]
-            [moon.core :refer [draw-centered]]
+            [moon.core :refer [draw-centered play-sound]]
             [moon.entity.fsm :as fsm]
             [moon.entity.inventory :as inventory]
             [moon.player :as player]

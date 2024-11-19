@@ -4,6 +4,7 @@
             [gdl.graphics.texture :as texture]
             [gdl.rand :refer [get-rand-weighted-item]]
             [gdl.tiled :as t]
+            [moon.core :refer [texture-region]]
             [moon.level :as level]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
@@ -37,7 +38,7 @@
 (def ^:private sprite-size 48)
 
 (defn- terrain-texture-region []
-  (texture/region "maps/uf_terrain.png"))
+  (texture-region "maps/uf_terrain.png"))
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
   (tm-tile (texture/region (terrain-texture-region)

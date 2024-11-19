@@ -3,7 +3,7 @@
             [gdl.graphics.image :as image]
             [gdl.ui :as ui]
             [gdl.utils :refer [readable-number]]
-            [moon.core :refer [draw-text draw-image]]
+            [moon.core :refer [draw-text draw-image image]]
             [moon.entity.hp :as hp]
             [moon.entity.mana :as mana]
             [moon.player :as player]
@@ -16,9 +16,9 @@
               :up? true}))
 
 (defn actor []
-  (let [rahmen      (image/image "images/rahmen.png")
-        hpcontent   (image/image "images/hp.png")
-        manacontent (image/image "images/mana.png")
+  (let [rahmen      (image "images/rahmen.png")
+        hpcontent   (image "images/hp.png")
+        manacontent (image "images/mana.png")
         x (/ (gui-view/width) 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size

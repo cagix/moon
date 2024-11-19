@@ -1,11 +1,11 @@
 (ns moon.world.entities
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.world-view :as world-view]
             [gdl.math.vector :as v]
             [gdl.utils :refer [sort-by-order safe-merge]]
+            [moon.core :refer [play-sound]]
             [moon.body :as body]
             [moon.entity :as entity]
             [moon.player :as player]
