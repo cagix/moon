@@ -1,12 +1,12 @@
 (ns ^:no-doc moon.schema.one-to-many
   (:require [gdl.db :as db]
-            [gdl.editor.overview :as properties-overview]
             [gdl.info :as info]
             [gdl.property :as property]
             [gdl.schema :as schema]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as a]))
+            [gdl.ui.actor :as a]
+            [moon.editor.overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-many [[_ property-type]]
   [:set [:qualified-keyword {:namespace (property/type->id-namespace property-type)}]])

@@ -12,7 +12,6 @@
             [gdl.graphics.viewport :as vp]
             [gdl.info :as info :refer [info]]
             [gdl.screen :as screen]
-            [gdl.screens.editor :as editor]
             [gdl.stage :as stage]
             [gdl.system :as system]
             [gdl.ui :as ui]
@@ -22,6 +21,7 @@
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
             [moon.entity.stat :as stat]
+            [moon.screens.editor :as editor]
             [moon.screens.main :as main-menu]
             [moon.screens.map-editor :as map-editor]
             [moon.screens.minimap :as minimap]
@@ -209,7 +209,7 @@
             :skill/cost
             :skill/cooldown])
 
-(bind-root #'gdl.editor.overview/overview
+(bind-root #'moon.editor.overview/overview
            {:properties/audiovisuals {:columns 10
                                       :image/scale 2}
             :properties/creatures {:columns 15

@@ -1,12 +1,12 @@
 (ns ^:no-doc moon.schema.sound
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.editor.scrollpane :refer [scrollable-choose-window]]
             [gdl.schema :as schema]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [asset-manager play-sound]])
+            [moon.core :refer [asset-manager play-sound]]
+            [moon.editor.scrollpane :refer [scrollable-choose-window]])
   (:import (com.badlogic.gdx.audio Sound)))
 
 (defmethod schema/form :s/sound [_]
