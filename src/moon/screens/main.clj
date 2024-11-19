@@ -2,10 +2,10 @@
   (:require [gdl.app :as app]
             [gdl.db :as db]
             [gdl.input :refer [key-just-pressed?]]
-            [gdl.graphics.cursors :as cursors]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
+            [moon.core :refer [set-cursor]]
             [moon.screens.world :as world]
             [moon.widgets.background-image :as background-image]))
 
@@ -27,7 +27,7 @@
 (deftype MainMenuScreen []
   screen/Screen
   (screen/enter [_]
-    (cursors/set :cursors/default))
+    (set-cursor :cursors/default))
   (screen/exit [_])
   (screen/render [_])
   (screen/dispose [_]))

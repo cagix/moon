@@ -3,7 +3,6 @@
             [gdl.db :as db]
             [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
-            [gdl.graphics.cursors :as cursors]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
             [gdl.screen :as screen]
@@ -13,7 +12,7 @@
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
             [gdl.widgets.error-window :refer [error-window!]]
-            [moon.core :refer [draw-on-world-view]]
+            [moon.core :refer [draw-on-world-view set-cursor]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
             [moon.level :as level]
@@ -219,7 +218,7 @@
     (cam/set-zoom! (world-view/camera) 0.8))
 
   (screen/exit [_]
-    (cursors/set :cursors/default))
+    (set-cursor :cursors/default))
 
   (screen/render [_]
     (render-world)

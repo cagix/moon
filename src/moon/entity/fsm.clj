@@ -1,6 +1,6 @@
 (ns moon.entity.fsm
-  (:require [gdl.graphics.cursors :as cursors]
-            [gdl.system :refer [defsystem *k*]]
+  (:require [gdl.system :refer [defsystem *k*]]
+            [moon.core :refer [set-cursor]]
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))
 
@@ -87,7 +87,7 @@
                                                        [new-state-k eid]))]]
           (when (:entity/player? @eid)
             (when-let [crs (cursor new-state-obj)]
-              (cursors/set crs)))
+              (set-cursor crs)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))

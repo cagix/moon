@@ -3,9 +3,8 @@
             [gdl.assets :as assets]
             [gdl.app :as app]
             [gdl.db :as db]
-            [gdl.graphics :refer [clear-screen]]
+            [gdl.graphics :as graphics :refer [clear-screen]]
             [gdl.graphics.color :as color]
-            [gdl.graphics.cursors :as cursors]
             [gdl.graphics.tiled :as graphics.tiled]
             [gdl.graphics.text :as font]
             [gdl.graphics.shape-drawer :as shape-drawer]
@@ -17,8 +16,8 @@
             [gdl.stage :as stage]
             [gdl.system :as system]
             [gdl.ui :as ui]
-            [gdl.utils :refer [k->pretty-name readable-number]]
-            [moon.core :refer [asset-manager batch shape-drawer]]
+            [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
+            [moon.core :refer [asset-manager batch shape-drawer cursors]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -266,20 +265,22 @@
                  (.bindRoot #'batch (SpriteBatch.))
                  (.bindRoot #'shape-drawer-texture (shape-drawer/white-pixel-texture))
                  (.bindRoot #'shape-drawer (shape-drawer/create batch shape-drawer-texture))
-                 (cursors/init {:cursors/bag                   ["bag001"       [0   0]]
-                                :cursors/black-x               ["black_x"      [0   0]]
-                                :cursors/default               ["default"      [0   0]]
-                                :cursors/denied                ["denied"       [16 16]]
-                                :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                :cursors/hand-grab             ["hand003"      [4  16]]
-                                :cursors/move-window           ["move002"      [16 16]]
-                                :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                :cursors/over-button           ["hand002"      [0   0]]
-                                :cursors/sandclock             ["sandclock"    [16 16]]
-                                :cursors/skill-not-usable      ["x007"         [0   0]]
-                                :cursors/use-skill             ["pointer004"   [0   0]]
-                                :cursors/walking               ["walking"      [16 16]]})
+                 (.bindRoot #'cursors (mapvals (fn [[file hotspot]]
+                                                 (graphics/cursor (str "cursors/" file ".png") hotspot))
+                                               {:cursors/bag                   ["bag001"       [0   0]]
+                                                :cursors/black-x               ["black_x"      [0   0]]
+                                                :cursors/default               ["default"      [0   0]]
+                                                :cursors/denied                ["denied"       [16 16]]
+                                                :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                :cursors/hand-grab             ["hand003"      [4  16]]
+                                                :cursors/move-window           ["move002"      [16 16]]
+                                                :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                :cursors/over-button           ["hand002"      [0   0]]
+                                                :cursors/sandclock             ["sandclock"    [16 16]]
+                                                :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                :cursors/use-skill             ["pointer004"   [0   0]]
+                                                :cursors/walking               ["walking"      [16 16]]}))
                  (gui-view/init {:world-width 1440
                                  :world-height 900})
                  (world-view/init {:world-width 1440
@@ -302,7 +303,7 @@
                  (.dispose asset-manager)
                  (.dispose batch)
                  (.dispose shape-drawer-texture)
-                 (cursors/dispose)
+                 (run! utils/dispose (vals cursors))
                  (ui/dispose!)
                  (font/dispose)
                  (screen/dispose-all))

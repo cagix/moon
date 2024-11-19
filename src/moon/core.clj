@@ -1,8 +1,10 @@
 (ns moon.core
-  (:require [gdl.graphics.image :as image]
+  (:require [gdl.graphics :as graphics]
+            [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.text :as text]
-            [gdl.graphics.world-view :as world-view])
+            [gdl.graphics.world-view :as world-view]
+            [gdl.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -10,7 +12,8 @@
 
 (declare asset-manager
          batch
-         shape-drawer)
+         shape-drawer
+         cursors)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -94,3 +97,6 @@
 
 (defn draw-on-world-view [render-fn]
   (draw-with world-view/view render-fn))
+
+(defn set-cursor [cursor-key]
+  (graphics/set-cursor (safe-get cursors cursor-key)))

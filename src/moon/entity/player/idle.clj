@@ -1,12 +1,11 @@
 (ns moon.entity.player.idle
-  (:require [gdl.graphics.cursors :as cursors]
-            [gdl.graphics.world-view :as world-view]
+  (:require [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [play-sound]]
+            [moon.core :refer [play-sound set-cursor]]
             [moon.controls :as controls]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
@@ -130,7 +129,7 @@
   (if-let [movement-vector (controls/movement-vector)]
     (fsm/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
-      (cursors/set cursor)
+      (set-cursor cursor)
       (when (button-just-pressed? :left)
         (on-click)))))
 
