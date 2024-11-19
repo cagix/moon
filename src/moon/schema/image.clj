@@ -1,9 +1,8 @@
 (ns ^:no-doc moon.schema.image
   (:require [gdl.assets :as assets]
-            [gdl.graphics.image :as image]
             [gdl.schema :as schema]
             [gdl.ui :as ui]
-            [moon.core :refer [asset-manager image sprite-sheet]])
+            [moon.core :refer [asset-manager image sprite sprite-sheet]])
   (:import (com.badlogic.gdx.graphics Texture)))
 
 (defmethod schema/form :s/image [_]
@@ -15,9 +14,9 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (image/sprite (sprite-sheet file tilew tileh)
-                    [(int (/ sprite-x tilew))
-                     (int (/ sprite-y tileh))]))
+      (sprite (sprite-sheet file tilew tileh)
+              [(int (/ sprite-x tilew))
+               (int (/ sprite-y tileh))]))
     (image file)))
 
 (defmethod schema/edn->value :s/image [_ edn]

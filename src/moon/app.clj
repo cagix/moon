@@ -5,7 +5,7 @@
             [gdl.db :as db]
             [gdl.graphics :as graphics :refer [clear-screen]]
             [gdl.graphics.color :as color]
-            [gdl.graphics.tiled :as graphics.tiled]
+            [gdl.graphics.tiled :as tiled]
             [gdl.graphics.text :as text]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.gui-view :as gui-view]
@@ -288,7 +288,7 @@
                  (.bindRoot #'cached-map-renderer
                             (memoize
                              (fn [tiled-map]
-                               (graphics.tiled/renderer tiled-map (world-view/unit-scale) batch))))
+                               (tiled/renderer tiled-map (world-view/unit-scale) batch))))
                  (gui-view/init {:world-width 1440
                                  :world-height 900})
                  (world-view/init {:world-width 1440

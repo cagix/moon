@@ -27,12 +27,23 @@
   (TextureRegion. ^Texture (get asset-manager path)))
 
 (defn image [path]
-  (image/create (texture-region path)))
+  (image/create (world-view/unit-scale)
+                (texture-region path)))
+
+(defn sub-image [image bounds]
+  (image/sub-image (world-view/unit-scale)
+                   image
+                   bounds))
 
 (defn sprite-sheet [path tilew tileh]
   {:image (image path)
    :tilew tilew
    :tileh tileh})
+
+(defn sprite [sprite-sheet index]
+  (image/sprite (world-view/unit-scale)
+                sprite-sheet
+                index))
 
 (defn draw-text [opts]
   (text/draw batch *unit-scale* default-font opts))

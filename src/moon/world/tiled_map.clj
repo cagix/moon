@@ -1,9 +1,9 @@
 (ns moon.world.tiled-map
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
-            [gdl.graphics.tiled :as renderer]
             [gdl.utils :refer [dispose ->tile]]
             [gdl.tiled :as tiled]
+            [moon.core :refer [draw-tiled-map]]
             [moon.world.raycaster :refer [ray-blocked?]]))
 
 (declare tiled-map
@@ -58,6 +58,6 @@
             color/white)))))
 
 (defn render [light-position]
-  (renderer/draw tiled-map
-                 (->tile-color-setter (atom nil) light-position))
+  (draw-tiled-map tiled-map
+                  (->tile-color-setter (atom nil) light-position))
   #_(reset! do-once false))

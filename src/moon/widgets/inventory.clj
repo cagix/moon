@@ -2,12 +2,11 @@
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
             [gdl.graphics.gui-view :as gui-view]
-            [gdl.graphics.image :as image]
             [gdl.info :as info]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [draw-rectangle draw-filled-rectangle sprite-sheet]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle sprite sprite-sheet]]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]))
@@ -60,7 +59,7 @@
 
 (defn- slot->sprite [slot]
   (-> (sprite-sheet "images/items.png" 48 48)
-      (image/sprite (slot->sprite-idx slot))))
+      (sprite (slot->sprite-idx slot))))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)

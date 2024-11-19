@@ -3,7 +3,6 @@
             [gdl.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
-            [gdl.graphics.tiled :as tiled-map-renderer]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
@@ -13,7 +12,7 @@
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [gdl.widgets.error-window :refer [error-window!]]
-            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map]]
             [moon.controls :as controls]
             [moon.level :as level]
             [moon.level.modules :as modules]))
@@ -140,8 +139,8 @@ direction keys: move")
     (cam/reset-zoom! (world-view/camera)))
 
   (screen/render [_]
-    (tiled-map-renderer/draw (:tiled-map @current-data)
-                             (constantly color/white))
+    (draw-tiled-map (:tiled-map @current-data)
+                    (constantly color/white))
     (draw-on-world-view render-on-map)
     (if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
