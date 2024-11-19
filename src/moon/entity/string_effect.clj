@@ -1,7 +1,7 @@
 (ns moon.entity.string-effect
-  (:require [gdl.graphics.text :as text]
-            [gdl.graphics.world-view :as world-view]
+  (:require [gdl.graphics.world-view :as world-view]
             [gdl.system :refer [*k*]]
+            [moon.core :refer [draw-text]]
             [moon.world.time :as time :refer [timer stopped?]]))
 
 (defn tick [{:keys [counter]} eid]
@@ -10,7 +10,7 @@
 
 (defn render-above [{:keys [text]} entity]
   (let [[x y] (:position entity)]
-    (text/draw {:text text
+    (draw-text {:text text
                 :x x
                 :y (+ y (:half-height entity) (world-view/pixels->units 5))
                 :scale 2

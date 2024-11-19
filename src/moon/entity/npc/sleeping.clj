@@ -1,5 +1,5 @@
 (ns moon.entity.npc.sleeping
-  (:require [gdl.graphics.text :as text]
+  (:require [moon.core :refer [draw-text]]
             [moon.body :as body]
             [moon.entity.faction :as faction]
             [moon.entity.fsm :as fsm]
@@ -24,7 +24,7 @@
 
 (defn render-above [_ entity]
   (let [[x y] (:position entity)]
-    (text/draw {:text "zzz"
+    (draw-text {:text "zzz"
                 :x x
                 :y (+ y (:half-height entity))
                 :up? true})))

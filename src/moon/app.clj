@@ -4,7 +4,6 @@
             [gdl.app :as app]
             [gdl.db :as db]
             [gdl.graphics :refer [clear-screen]]
-            [gdl.graphics.batch :as batch]
             [gdl.graphics.color :as color]
             [gdl.graphics.cursors :as cursors]
             [gdl.graphics.tiled :as graphics.tiled]
@@ -16,9 +15,11 @@
             gdl.schemas
             [gdl.screen :as screen]
             [gdl.screens.editor :as editor]
+            [gdl.stage :as stage]
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :refer [k->pretty-name readable-number]]
+            [moon.core :refer [batch]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -30,7 +31,8 @@
             [moon.player :as player]
             (moon.level generate
                         uf-caves
-                        tiled-map)))
+                        tiled-map))
+  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (defn- namespace->component-key [ns-str]
    (let [ns-parts (-> ns-str
@@ -250,8 +252,8 @@
              (reify app/Listener
                (create [_]
                  (assets/init "resources/")
-                 (batch/init)
-                 (shape-drawer/init)
+                 (.bindRoot #'batch (SpriteBatch.))
+                 (shape-drawer/init batch)
                  (cursors/init {:cursors/bag                   ["bag001"       [0   0]]
                                 :cursors/black-x               ["black_x"      [0   0]]
                                 :cursors/default               ["default"      [0   0]]
@@ -272,21 +274,21 @@
                                    :world-height 900
                                    :tile-size 48})
                  (ui/load! :skin-scale/x1)
-                 (graphics.tiled/init)
+                 (graphics.tiled/init batch)
                  (font/init {:file "fonts/exocet/films.EXL_____.ttf"
                              :size 16
                              :quality-scaling 2})
                  (screen/set-screens
-                  {:screens/main-menu (main-menu/create)
-                   :screens/map-editor (map-editor/create)
-                   :screens/editor (editor/create)
-                   :screens/minimap (minimap/create)
-                   :screens/world (world/create)})
+                  {:screens/main-menu  (stage/create batch (main-menu/create))
+                   :screens/map-editor (stage/create batch (map-editor/create))
+                   :screens/editor     (stage/create batch (editor/create))
+                   :screens/minimap    (minimap/create)
+                   :screens/world      (stage/create batch (world/create))})
                  (world/start :worlds/vampire))
 
                (dispose [_]
                  (assets/dispose)
-                 (batch/dispose)
+                 (.dispose batch)
                  (shape-drawer/dispose)
                  (cursors/dispose)
                  (ui/dispose!)

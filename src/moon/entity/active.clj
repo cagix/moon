@@ -1,7 +1,7 @@
 (ns moon.entity.active
   (:require [gdl.assets :refer [play-sound]]
-            [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
+            [moon.core :refer [draw-image]]
             [moon.effect :as effect]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
@@ -21,7 +21,7 @@
                    90 ; start-angle
                    (* (float action-counter-ratio) 360) ; degree
                    [1 1 1 0.5])
-    (image/draw image [(- (float x) radius) y])))
+    (draw-image image [(- (float x) radius) y])))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time

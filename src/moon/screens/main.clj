@@ -4,7 +4,6 @@
             [gdl.input :refer [key-just-pressed?]]
             [gdl.graphics.cursors :as cursors]
             [gdl.screen :as screen]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
             [moon.screens.world :as world]
@@ -34,10 +33,9 @@
   (screen/dispose [_]))
 
 (defn create []
-  (stage/create :actors
-                [(background-image/create)
-                 (buttons)
-                 (ui/actor {:act (fn []
-                                   (when (key-just-pressed? :keys/escape)
-                                     (app/exit)))})]
-                :screen (->MainMenuScreen)))
+  {:actors [(background-image/create)
+            (buttons)
+            (ui/actor {:act (fn []
+                              (when (key-just-pressed? :keys/escape)
+                                (app/exit)))})]
+   :screen (->MainMenuScreen)})

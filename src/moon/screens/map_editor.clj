@@ -9,12 +9,12 @@
             [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.screen :as screen]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [gdl.widgets.error-window :refer [error-window!]]
+            [moon.core :refer [draw-on-world-view]]
             [moon.controls :as controls]
             [moon.level :as level]
             [moon.level.modules :as modules]))
@@ -143,7 +143,7 @@ direction keys: move")
   (screen/render [_]
     (tiled-map-renderer/draw (:tiled-map @current-data)
                              (constantly color/white))
-    (world-view/render render-on-map)
+    (draw-on-world-view render-on-map)
     (if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
     (if (key-just-pressed? :keys/m)
@@ -157,8 +157,8 @@ direction keys: move")
     (dispose (:tiled-map @current-data))))
 
 (defn create []
-  (stage/create :actors [(->generate-map-window world-id)
-                         (->info-window)]
-                :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)
-                                                  :show-movement-properties false
-                                                  :show-grid-lines false}))))
+  {:actors [(->generate-map-window world-id)
+            (->info-window)]
+   :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)
+                                     :show-movement-properties false
+                                     :show-grid-lines false}))})

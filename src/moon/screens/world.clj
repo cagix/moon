@@ -13,6 +13,7 @@
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
             [gdl.widgets.error-window :refer [error-window!]]
+            [moon.core :refer [draw-on-world-view]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
             [moon.level :as level]
@@ -206,7 +207,7 @@
   (cam/set-position! (world-view/camera) (:position @player/eid))
   ; FIXME position DRY
   (tiled-map/render (cam/position (world-view/camera)))
-  (world-view/render (fn []
+  (draw-on-world-view (fn []
                        (debug-render/before-entities)
                        ; FIXME position DRY (from player)
                        (entities/render (map deref (entities/active)))
@@ -235,4 +236,4 @@
     (tiled-map/clear)))
 
 (defn create []
-  (stage/create :screen (->WorldScreen)))
+  {:screen (->WorldScreen)})
