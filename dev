@@ -1,1 +1,1 @@
-DEV_MODE=true lein run -m gdl.dev moon.app
+DEV_MODE=true lein run -m gdl.dev moon.start
