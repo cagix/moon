@@ -2,7 +2,6 @@
   (:require [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.text :as text]
-            [gdl.graphics.view]
             [gdl.graphics.world-view :as world-view])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color Texture)
@@ -12,6 +11,8 @@
 (declare asset-manager
          batch
          shape-drawer)
+
+(def ^:dynamic ^:private *unit-scale* 1)
 
 (defn play-sound [path]
   (Sound/.play (get asset-manager path)))
@@ -28,16 +29,16 @@
    :tileh tileh})
 
 (defn draw-text [opts]
-  (text/draw batch opts))
+  (text/draw batch *unit-scale* opts))
 
 (defn draw-image [image position]
-  (image/draw batch image position))
+  (image/draw batch *unit-scale* image position))
 
 (defn draw-centered [image position]
-  (image/draw-centered batch image position))
+  (image/draw-centered batch *unit-scale* image position))
 
 (defn draw-rotated-centered [image rotation position]
-  (image/draw-rotated-centered batch image rotation position))
+  (image/draw-rotated-centered batch *unit-scale* image rotation position))
 
 (defn draw-ellipse [position radius-x radius-y color]
   (sd/set-color shape-drawer color)
@@ -87,7 +88,7 @@
   (.setProjectionMatrix batch (.combined (.getCamera viewport)))
   (.begin batch)
   (with-line-width unit-scale
-    #(binding [gdl.graphics.view/*unit-scale* unit-scale]
+    #(binding [*unit-scale* unit-scale]
        (draw-fn)))
   (.end batch))
 

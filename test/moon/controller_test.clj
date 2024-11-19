@@ -3,21 +3,20 @@
 ; https://javadoc.io/doc/com.badlogicgames.gdx/gdx-controllers/latest/index.html
 ; https://github.com/libgdx/gdx-controllers/blob/master/gdx-controllers-core/src/com/badlogic/gdx/controllers/ControllerMapping.java
 
-(ns moon.controller-test
+#_(ns moon.controller-test
   (:require [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
             [gdl.graphics.view :as view]
             [gdl.graphics.gui-view :as gui-view]
-            [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.text :as text]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.math.vector :as v]
-            [moon.core :refer [batch draw-text]])
+            [moon.core :refer [batch draw-text shape-drawer]])
   (:import (com.badlogic.gdx.controllers Controllers)))
 
 (declare ^:private controller)
 
-(defn movement-vector []
+#_(defn movement-vector []
   (let [v (v/normalise [   (.getAxis controller (.axisLeftX (.getMapping controller)))
                         (- (.getAxis controller (.axisLeftY (.getMapping controller))))])]
     (if (zero? (v/length v))
@@ -33,7 +32,7 @@
  (.startVibration 500 0.5)
  )
 
-(defn- draw-info []
+#_(defn- draw-info []
   (if (and (bound? #'controller) controller)
     (do
      (draw-text {:x (- (/ (gui-view/width) 2) 300)
@@ -47,23 +46,23 @@
      (let [start [(/ (gui-view/width) 2)
                     (/ (gui-view/width) 2)]]
        (when (movement-vector)
-         (shape-drawer/line start
-                            (v/add start (v/scale (movement-vector) 100))
-                            :cyan))))
+         (draw-line start
+                    (v/add start (v/scale (movement-vector) 100))
+                    :cyan))))
     (draw-text {:x (- (/ (gui-view/width) 2) 300)
                 :y (- (/ (gui-view/height) 2) 200)
                 :text (str "controller: " (pr-str controller) "\n press X to try to connect again." )}))
   #_(when (.getButton my-controller Xbox/A)
       (println "<a>")))
 
-(defn -main []
+#_(defn -main []
   (app/start {:title "Controller Test"
               :width 800
               :height 800}
              (reify app/Listener
                (create [_]
                  ;(batch/init)
-                 (shape-drawer/init)
+                 ;(shape-drawer/init)
                  (text/init nil)
                  (gui-view/init {:world-width 1440 :world-height 900})
                  (when-not (bound? #'controller)
@@ -72,12 +71,13 @@
 
                (dispose [_]
                  ;(batch/dispose)
-                 (shape-drawer/dispose)
+                 ;(shape-drawer/dispose)
                  (text/dispose))
 
                (render [_]
                  (clear-screen :black)
                  (view/render batch
+                              shape-drawer
                               (deref (var gui-view/view))
                               draw-info)
                  (when (key-just-pressed? :x)
