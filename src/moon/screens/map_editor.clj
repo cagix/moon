@@ -9,11 +9,11 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
-            [gdl.widgets.error-window :refer [error-window!]]
             [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
             [moon.controls :as controls]
             [moon.level :as level]
-            [moon.level.modules :as modules]))
+            [moon.level.modules :as modules]
+            [moon.widgets.error-window :refer [error-window!]]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera

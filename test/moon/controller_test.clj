@@ -6,8 +6,6 @@
 #_(ns moon.controller-test
   (:require [gdl.app :as app]
             [gdl.graphics :refer [clear-screen]]
-            [gdl.graphics.view :as view]
-            [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.text :as text]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.math.vector :as v]
@@ -35,22 +33,22 @@
 #_(defn- draw-info []
   (if (and (bound? #'controller) controller)
     (do
-     (draw-text {:x (- (/ (gui-view/width) 2) 300)
-                 :y (- (/ (gui-view/height) 2) 200)
+     (draw-text {:x (- (/ (gui-viewport-width) 2) 300)
+                 :y (- (/ (gui-viewport-height) 2) 200)
                  :text
                  (str
                   "(.isConnected my-controller): " (.isConnected controller) "\n"
                   "(.getAxis my-controller (.axisLeftX (.getMapping my-controller))): " (.getAxis controller (.axisLeftX (.getMapping controller))) "\n"
                   "(.getAxis my-controller (.axisLeftY (.getMapping my-controller))): " (.getAxis controller (.axisLeftY (.getMapping controller))) "\n"
                   "(moon.controls/movement-vector): " (movement-vector))})
-     (let [start [(/ (gui-view/width) 2)
-                    (/ (gui-view/width) 2)]]
+     (let [start [(/ (gui-viewport-width) 2)
+                    (/ (gui-viewport-width) 2)]]
        (when (movement-vector)
          (draw-line start
                     (v/add start (v/scale (movement-vector) 100))
                     :cyan))))
-    (draw-text {:x (- (/ (gui-view/width) 2) 300)
-                :y (- (/ (gui-view/height) 2) 200)
+    (draw-text {:x (- (/ (gui-viewport-width) 2) 300)
+                :y (- (/ (gui-viewport-height) 2) 200)
                 :text (str "controller: " (pr-str controller) "\n press X to try to connect again." )}))
   #_(when (.getButton my-controller Xbox/A)
       (println "<a>")))
