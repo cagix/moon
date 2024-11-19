@@ -12,7 +12,6 @@
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
             [gdl.info :as info :refer [info]]
-            gdl.schemas
             [gdl.screen :as screen]
             [gdl.screens.editor :as editor]
             [gdl.stage :as stage]
@@ -30,8 +29,15 @@
             [moon.screens.world :as world]
             [moon.player :as player]
             (moon.schema animation
+                         boolean
+                         enum
                          image
-                         sound)
+                         map
+                         number
+                         one-to-many
+                         one-to-one
+                         sound
+                         string)
             (moon.level generate
                         uf-caves
                         tiled-map))
@@ -184,7 +190,7 @@
 (derive :entity/armor-save     ::stat)
 (derive :entity/armor-pierce   ::stat)
 
-(bind-root #'gdl.schema.map/property-k-sort-order
+(bind-root #'moon.schema.map/property-k-sort-order
            [:property/id
             :property/pretty-name
             :entity/image
