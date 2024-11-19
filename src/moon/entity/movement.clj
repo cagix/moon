@@ -2,8 +2,7 @@
   (:require [gdl.math.vector :as v]
             [malli.core :as m]
             [moon.body :as body]
-            [moon.world :as world]
-            [moon.world.time :as time]))
+            [moon.world :as world]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
@@ -58,7 +57,7 @@
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time time/delta)
+    (let [movement (assoc movement :delta-time world/delta)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)

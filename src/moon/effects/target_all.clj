@@ -2,8 +2,7 @@
   (:require [moon.app :refer [draw-line]]
             [moon.effects :as effects]
             [moon.player :as player]
-            [moon.world :as world]
-            [moon.world.line-of-sight :refer [line-of-sight?]]))
+            [moon.world :as world :refer [line-of-sight?]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
 ; same code as in render entities on world view screens/world

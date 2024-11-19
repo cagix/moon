@@ -2,8 +2,7 @@
   (:require [gdl.math.vector :as v]
             [moon.app :refer [play-sound]]
             [moon.projectile :as projectile]
-            [moon.world :as world]
-            [moon.world.raycaster :refer [path-blocked?]]))
+            [moon.world :as world :refer [path-blocked?]]))
 
 (defn- start-point [entity direction size]
   (v/add (:position entity)

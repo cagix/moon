@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.effects.target.spiderweb
   (:require [moon.entity.modifiers :as mods]
-            [moon.world.time :refer [timer]]))
+            [moon.world :refer [timer]]))
 
 (def modifiers {:modifier/movement-speed {:op/mult -0.5}})
 (def duration 5)

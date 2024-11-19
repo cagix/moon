@@ -3,7 +3,7 @@
             [gdl.utils :refer [readable-number]]
             [moon.app :refer [draw-filled-circle]]
             [moon.entity.modifiers :as mods]
-            [moon.world.time :refer [stopped? finished-ratio]]))
+            [moon.world :refer [stopped? finished-ratio]]))
 
 (defn info [{:keys [counter]}]
   (str "[LIGHT_GRAY]Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1[]"))

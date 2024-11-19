@@ -4,7 +4,7 @@
             [moon.effects :as effects]
             [moon.entity.mana :as mana]
             [moon.widgets.action-bar :as action-bar]
-            [moon.world.time :refer [stopped?]]))
+            [moon.world :refer [stopped?]]))
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))

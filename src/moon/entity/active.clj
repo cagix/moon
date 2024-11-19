@@ -5,8 +5,7 @@
             [moon.entity.fsm :as fsm]
             [moon.entity.mana :as entity.mana]
             [moon.entity.stat :as stat]
-            [moon.world.line-of-sight :refer [line-of-sight?]]
-            [moon.world.time :refer [timer stopped? finished-ratio]]))
+            [moon.world :refer [timer stopped? finished-ratio line-of-sight?]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)

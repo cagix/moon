@@ -1,7 +1,7 @@
 (ns moon.entity.stunned
   (:require [moon.app :refer [draw-circle]]
             [moon.entity.fsm :as fsm]
-            [moon.world.time :refer [timer stopped?]]))
+            [moon.world :refer [timer stopped?]]))
 
 (defn ->v [eid duration]
   {:eid eid

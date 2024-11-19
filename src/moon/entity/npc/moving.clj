@@ -1,7 +1,7 @@
 (ns moon.entity.npc.moving
   (:require [moon.entity.fsm :as fsm]
             [moon.entity.stat :as stat]
-            [moon.world.time :refer [timer stopped?]]))
+            [moon.world :refer [timer stopped?]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; usable skills every frame

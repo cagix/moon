@@ -5,8 +5,7 @@
             [moon.entity.fsm :as fsm]
             [moon.entity.skills :as skills]
             [moon.follow-ai :as follow-ai]
-            [moon.world :as world]
-            [moon.world.line-of-sight :refer [line-of-sight?]]))
+            [moon.world :as world :refer [line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
   (world/nearest-entity @(world/cell (body/tile entity))

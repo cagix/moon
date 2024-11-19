@@ -1,10 +1,12 @@
 (ns moon.world
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [data.grid2d :as g2d]
+            [gdl.graphics.camera :as cam]
+            [gdl.math.raycaster :as raycaster]
             [gdl.math.vector :as v]
             [gdl.utils :refer [dispose tile->middle sort-by-order safe-merge]]
             [gdl.tiled :as tiled]
-            [moon.app :refer [draw-rectangle play-sound]]
+            [moon.app :refer [draw-rectangle play-sound world-camera world-viewport-width world-viewport-height]]
             [moon.body :as body]
             [moon.db :as db]
             [moon.entity :as entity]
@@ -12,10 +14,7 @@
             [moon.player :as player]
             [moon.projectile :as projectile]
             [moon.world.content-grid :as content-grid]
-            [moon.world.grid :as grid]
-            [moon.world.line-of-sight :refer [line-of-sight?]]
-            [moon.world.time :as time]
-            [moon.world.raycaster :as raycaster]))
+            [moon.world.grid :as grid]))
 
 (declare tiled-map
          explored-tile-corners
@@ -23,7 +22,30 @@
          tick-error
          paused?
          ids->eids
-         content-grid)
+         content-grid
+         ^:private raycaster
+         ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
+         elapsed-time
+         ^{:doc "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
+         delta)
+
+(defn timer [duration]
+  {:pre [(>= duration 0)]}
+  {:duration duration
+   :stop-time (+ elapsed-time duration)})
+
+(defn stopped? [{:keys [stop-time]}]
+  (>= elapsed-time stop-time))
+
+(defn reset-timer [{:keys [duration] :as counter}]
+  (assoc counter :stop-time (+ elapsed-time duration)))
+
+(defn finished-ratio [{:keys [duration stop-time] :as counter}]
+  {:post [(<= 0 % 1)]}
+  (if (stopped? counter)
+    0
+    ; min 1 because floating point math inaccuracies
+    (min 1 (/ (- stop-time elapsed-time) duration))))
 
 (defn clear [] ; responsibility of screen? we are not creating the tiled-map here ...
   (when (bound? #'tiled-map)
@@ -100,19 +122,6 @@
    (catch Throwable t
      (draw-body-rect entity :red)
      (pretty-pst t 12))))
-
-(defn render-entities
-  "Draws entities in the correct z-order and in the order of render-systems for each z-order."
-  [entities]
-  (let [player @player/eid]
-    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
-                                              first
-                                              body/render-z-order)
-            system entity/render-systems
-            entity entities
-            :when (or (= z-order :z-order/effect)
-                      (line-of-sight? player entity))]
-      (render-entity! system entity))))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
@@ -236,7 +245,7 @@
   (create position
           effect-body-props
           {:entity/alert-friendlies-after-duration
-           {:counter (time/timer duration)
+           {:counter (timer duration)
             :faction faction}}))
 
 (defn line-render [{:keys [start end duration color thick?]}]
@@ -304,7 +313,7 @@
                                        "none" :none
                                        "air"  :air
                                        "all"  :all))))))
-  (raycaster/init grid blocks-vision?)
+  (.bindRoot #'raycaster (raycaster/create grid blocks-vision?))
   (let [width  (tiled/width  tiled-map)
         height (tiled/height tiled-map)]
     (.bindRoot #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
@@ -312,10 +321,59 @@
                                                     :height height})))
   (.bindRoot #'tick-error nil)
   (.bindRoot #'ids->eids {})
-  (time/init)
+  (.bindRoot #'elapsed-time 0)
+  (.bindRoot #'delta nil)
   (.bindRoot #'player/eid (spawn-player start-position))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 
 (defn active-entities []
   (content-grid/active-entities content-grid @player/eid))
+
+(defn ray-blocked? [start target]
+  (raycaster/blocked? raycaster start target))
+
+(defn path-blocked?
+  "path-w in tiles. casts two rays."
+  [start target path-w]
+  (raycaster/path-blocked? raycaster start target path-w))
+
+; does not take into account zoom - but zoom is only for debug ???
+; vision range?
+(defn- on-screen? [entity]
+  (let [[x y] (:position entity)
+        x (float x)
+        y (float y)
+        [cx cy] (cam/position (world-camera))
+        px (float cx)
+        py (float cy)
+        xdist (Math/abs (- x px))
+        ydist (Math/abs (- y py))]
+    (and
+     (<= xdist (inc (/ (float (world-viewport-width))  2)))
+     (<= ydist (inc (/ (float (world-viewport-height)) 2))))))
+
+; TODO at wrong point , this affects targeting logic of npcs
+; move the debug flag to either render or mouseover or lets see
+(def ^:private ^:dbg-flag los-checks? true)
+
+; does not take into account size of entity ...
+; => assert bodies <1 width then
+(defn line-of-sight? [source target]
+  (and (or (not (:entity/player? source))
+           (on-screen? target))
+       (not (and los-checks?
+                 (ray-blocked? (:position source) (:position target))))))
+
+(defn render-entities
+  "Draws entities in the correct z-order and in the order of render-systems for each z-order."
+  [entities]
+  (let [player @player/eid]
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              body/render-z-order)
+            system entity/render-systems
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (line-of-sight? player entity))]
+      (render-entity! system entity))))

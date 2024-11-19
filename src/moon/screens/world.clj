@@ -25,7 +25,6 @@
             [moon.world.debug-render :as debug-render]
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
-            [moon.world.time :as time]
             [moon.world.tile-color-setter :as tile-color-setter]))
 
 (declare start)
@@ -54,7 +53,7 @@
                      :update-fn #(when-let [entity (mouseover/entity)] (:entity/id entity))
                      :icon "images/mouseover.png"}
                     {:label "elapsed-time"
-                     :update-fn #(str (readable-number time/elapsed) " seconds")
+                     :update-fn #(str (readable-number world/elapsed-time) " seconds")
                      :icon "images/clock.png"}
                     {:label "paused?"
                      :update-fn (fn [] paused?)}
@@ -135,7 +134,9 @@
   (mouseover/update) ; this do always so can get debug info even when game not running
   (update-game-paused)
   (when-not paused?
-    (time/pass (min (delta-time) movement/max-delta-time))
+    (let [delta-ms (min (delta-time) movement/max-delta-time)]
+      (alter-var-root #'world/elapsed-time + delta-ms)
+      (.bindRoot #'world/delta delta-ms) )
     (let [entities (world/active-entities)]
       (update-potential-fields! entities)
       (try (world/tick-entities entities)

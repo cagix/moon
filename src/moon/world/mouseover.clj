@@ -4,8 +4,7 @@
             [moon.app :refer [mouse-on-actor? world-mouse-position]]
             [moon.body :as body]
             [moon.player :as player]
-            [moon.world :as world]
-            [moon.world.line-of-sight :refer [line-of-sight?]]))
+            [moon.world :as world :refer [line-of-sight?]]))
 
 (def eid nil)
 
