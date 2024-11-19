@@ -1,6 +1,6 @@
 (ns moon.entity.animation
   (:require [gdl.animation :as animation]
-            [gdl.system :refer [*k*]]
+            [moon.system :refer [*k*]]
             [moon.world.time :as time]))
 
 (defn- assoc-image-current-frame [entity animation]

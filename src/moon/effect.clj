@@ -1,5 +1,5 @@
 (ns moon.effect
-  (:require [gdl.system :refer [defsystem]]))
+  (:require [moon.system :refer [defsystem]]))
 
 (defsystem handle [_ ctx])
 

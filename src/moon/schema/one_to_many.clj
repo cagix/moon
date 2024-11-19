@@ -1,8 +1,8 @@
 (ns ^:no-doc moon.schema.one-to-many
-  (:require [gdl.db :as db]
-            [gdl.info :as info]
-            [gdl.property :as property]
-            [gdl.schema :as schema]
+  (:require [moon.db :as db]
+            [moon.info :as info]
+            [moon.property :as property]
+            [moon.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.core :refer [add-actor]]

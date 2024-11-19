@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.screens.main
   (:require [gdl.app :as app]
-            [gdl.db :as db]
+            [moon.db :as db]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.screen :as screen]
             [gdl.ui :as ui]

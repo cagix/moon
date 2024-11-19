@@ -1,5 +1,5 @@
 (ns moon.effects.target-entity
-  (:require [gdl.db :as db]
+  (:require [moon.db :as db]
             [gdl.math.vector :as v]
             [moon.core :refer [draw-line]]
             [moon.body :as body]

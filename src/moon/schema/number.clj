@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.schema.number
-  (:require [gdl.schema :as schema]))
+  (:require [moon.schema :as schema]))
 
 (defmethod schema/form :s/number  [_] number?)
 (defmethod schema/form :s/nat-int [_] nat-int?)

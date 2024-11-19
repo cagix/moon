@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [remove])
   (:require [clojure.string :as str]
             [clojure.pprint]
-            [gdl.system :refer [*k*]]
+            [moon.system :refer [*k*]]
             [moon.operations :as ops]))
 
 (defn- dbg-info [mods]

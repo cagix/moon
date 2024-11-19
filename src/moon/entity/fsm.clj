@@ -1,5 +1,5 @@
 (ns moon.entity.fsm
-  (:require [gdl.system :refer [defsystem *k*]]
+  (:require [moon.system :refer [defsystem *k*]]
             [moon.core :refer [set-cursor]]
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))

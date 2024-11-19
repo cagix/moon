@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.schema.boolean
-  (:require [gdl.schema :as schema]
+  (:require [moon.schema :as schema]
             [gdl.ui :as ui]))
 
 (defmethod schema/widget :boolean [_ checked?]

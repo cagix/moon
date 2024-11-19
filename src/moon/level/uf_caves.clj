@@ -1,6 +1,6 @@
 (ns moon.level.uf-caves
   (:require [data.grid2d :as g2d]
-            [gdl.db :as db]
+            [moon.db :as db]
             [gdl.graphics.texture :as texture]
             [gdl.rand :refer [get-rand-weighted-item]]
             [gdl.tiled :as t]

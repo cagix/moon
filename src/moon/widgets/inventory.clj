@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.widgets.inventory
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
-            [gdl.info :as info]
+            [moon.info :as info]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.core :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]

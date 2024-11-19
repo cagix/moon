@@ -1,5 +1,5 @@
 (ns moon.entity.hp
-  (:require [gdl.info :as info]
+  (:require [moon.info :as info]
             [moon.core :refer [draw-filled-rectangle pixels->world-units]]
             [moon.val-max :as val-max]))
 

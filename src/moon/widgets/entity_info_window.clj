@@ -1,5 +1,5 @@
 (ns moon.widgets.entity-info-window
-  (:require [gdl.info :as info]
+  (:require [moon.info :as info]
             [gdl.ui :as ui]
             [moon.core :refer [gui-viewport-width]]
             [moon.world.mouseover :as mouseover]))

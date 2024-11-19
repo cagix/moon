@@ -1,5 +1,5 @@
 (ns moon.entity.string-effect
-  (:require [gdl.system :refer [*k*]]
+  (:require [moon.system :refer [*k*]]
             [moon.core :refer [draw-text pixels->world-units]]
             [moon.world.time :as time :refer [timer stopped?]]))
 

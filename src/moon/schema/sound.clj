@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.schema.sound
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
-            [gdl.schema :as schema]
+            [moon.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.core :refer [asset-manager add-actor play-sound]]

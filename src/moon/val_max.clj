@@ -1,5 +1,5 @@
 (ns moon.val-max
-  (:require [gdl.schema :as schema]
+  (:require [moon.schema :as schema]
             [malli.core :as m]
             [moon.entity.modifiers :as mods]))
 

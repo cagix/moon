@@ -1,5 +1,5 @@
 (ns moon.entity.temp-modifier
-  (:require [gdl.system :refer [*k*]]
+  (:require [moon.system :refer [*k*]]
             [gdl.utils :refer [readable-number]]
             [moon.core :refer [draw-filled-circle]]
             [moon.entity.modifiers :as mods]

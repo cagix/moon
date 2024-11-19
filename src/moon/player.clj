@@ -1,5 +1,5 @@
 (ns moon.player
-  (:require [gdl.system :refer [defsystem]]
+  (:require [moon.system :refer [defsystem]]
             [moon.entity.fsm :as fsm]))
 
 (declare eid)

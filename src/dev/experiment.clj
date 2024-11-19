@@ -1,6 +1,6 @@
 (ns ^:no-doc dev.experiment
   (:require [gdl.app :refer [post-runnable]]
-            [gdl.db :as db]
+            [moon.db :as db]
             [moon.entity.skills :as skills]
             [moon.player :as player]
             [moon.world.entities :as entities]))

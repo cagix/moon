@@ -1,8 +1,8 @@
 (ns moon.screens.editor
   (:require [clojure.string :as str]
-            [gdl.db :as db]
+            [moon.db :as db]
             [gdl.input :refer [key-just-pressed?]]
-            [gdl.property :as property]
+            [moon.property :as property]
             [gdl.ui :as ui]
             [moon.core :refer [add-actor change-screen]]
             [moon.editor.property :as widgets.property]

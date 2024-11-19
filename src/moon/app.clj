@@ -2,17 +2,17 @@
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.app :as app]
-            [gdl.db :as db]
+            [moon.db :as db]
             [gdl.graphics :as graphics :refer [clear-screen]]
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled :as tiled]
             [gdl.graphics.text :as text]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.viewport :as vp]
-            [gdl.info :as info :refer [info]]
+            [moon.info :as info :refer [info]]
             [gdl.screen :as screen]
             [gdl.stage :as stage]
-            [gdl.system :as system]
+            [moon.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
             [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer world-unit-scale world-viewport gui-viewport screens change-screen current-screen]]
@@ -229,7 +229,7 @@
                                 :image/scale 2}
             :properties/worlds {:columns 10}})
 
-(bind-root #'gdl.info/info-text-k-order
+(bind-root #'moon.info/info-text-k-order
            [:property/pretty-name
             :skill/action-time-modifier-key
             :skill/action-time

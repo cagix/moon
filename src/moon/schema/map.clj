@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.schema.map
-  (:require [gdl.schema :as schema]
+  (:require [moon.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]

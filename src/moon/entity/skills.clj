@@ -1,6 +1,6 @@
 (ns moon.entity.skills
   (:refer-clojure :exclude [remove])
-  (:require [gdl.system :refer [*k*]]
+  (:require [moon.system :refer [*k*]]
             [moon.effects :as effects]
             [moon.entity.mana :as mana]
             [moon.widgets.action-bar :as action-bar]

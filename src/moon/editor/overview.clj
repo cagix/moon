@@ -1,7 +1,7 @@
 (ns moon.editor.overview
-  (:require [gdl.db :as db]
-            [gdl.info :as info]
-            [gdl.property :as property]
+  (:require [moon.db :as db]
+            [moon.info :as info]
+            [moon.property :as property]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]))
 

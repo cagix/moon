@@ -1,8 +1,8 @@
 (ns moon.editor.property
-  (:require [gdl.db :as db]
+  (:require [moon.db :as db]
             [gdl.input :refer [key-just-pressed?]]
-            [gdl.property :as property]
-            [gdl.schema :as schema]
+            [moon.property :as property]
+            [moon.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.editor.scrollpane :refer [scroll-pane-cell]]

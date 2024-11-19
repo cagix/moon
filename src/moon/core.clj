@@ -1,4 +1,8 @@
 (ns moon.core
+  ; this is an abstraction over the application environment
+  ; do also for world/entity?
+  ; 'wiring' namespaces ...
+  ; so also input?
   (:require [gdl.graphics :as graphics]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
