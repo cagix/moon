@@ -8,7 +8,6 @@
             [gdl.graphics.tiled :as tiled]
             [gdl.graphics.text :as text]
             [gdl.graphics.shape-drawer :as shape-drawer]
-            [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.viewport :as vp]
             [gdl.info :as info :refer [info]]
             [gdl.screen :as screen]
@@ -16,7 +15,7 @@
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
-            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer world-unit-scale world-viewport]]
+            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer world-unit-scale world-viewport gui-viewport]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -298,16 +297,16 @@
                             (memoize
                              (fn [tiled-map]
                                (tiled/renderer tiled-map world-unit-scale batch))))
-                 (gui-view/init {:world-width 1440
-                                 :world-height 900})
-
+                 (.bindRoot #'gui-viewport (FitViewport. 1440
+                                                         900
+                                                         (OrthographicCamera.)))
                  (ui/load! :skin-scale/x1)
                  (screen/set-screens
-                  {:screens/main-menu  (stage/create (gui-view/viewport) batch (main-menu/create))
-                   :screens/map-editor (stage/create (gui-view/viewport) batch (map-editor/create))
-                   :screens/editor     (stage/create (gui-view/viewport) batch (editor/create))
+                  {:screens/main-menu  (stage/create gui-viewport batch (main-menu/create))
+                   :screens/map-editor (stage/create gui-viewport batch (map-editor/create))
+                   :screens/editor     (stage/create gui-viewport batch (editor/create))
                    :screens/minimap    (minimap/create)
-                   :screens/world      (stage/create (gui-view/viewport) batch (world/create))})
+                   :screens/world      (stage/create gui-viewport batch (world/create))})
                  (world/start :worlds/vampire))
 
                (dispose [_]
@@ -324,5 +323,5 @@
                  (screen/render (screen/current)))
 
                (resize [_ dimensions]
-                 (gui-view/resize dimensions)
+                 (vp/update gui-viewport   dimensions :center-camera? true)
                  (vp/update world-viewport dimensions)))))

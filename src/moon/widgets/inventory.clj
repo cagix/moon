@@ -1,12 +1,11 @@
 (ns ^:no-doc moon.widgets.inventory
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
-            [gdl.graphics.gui-view :as gui-view]
             [gdl.info :as info]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [draw-rectangle draw-filled-rectangle sprite sprite-sheet]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]))
@@ -38,7 +37,7 @@
      (draw-cell-rect @player/eid
                      (a/x this)
                      (a/y this)
-                     (a/mouseover? this (gui-view/mouse-position))
+                     (a/mouseover? this (gui-mouse-position))
                      (a/id (a/parent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -109,7 +108,7 @@
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [(gui-view/width) (gui-view/height)]
+              :position [(gui-viewport-width) (gui-viewport-height)]
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 

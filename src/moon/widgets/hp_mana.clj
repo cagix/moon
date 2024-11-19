@@ -1,8 +1,7 @@
 (ns moon.widgets.hp-mana
-  (:require [gdl.graphics.gui-view :as gui-view]
-            [gdl.ui :as ui]
+  (:require [gdl.ui :as ui]
             [gdl.utils :refer [readable-number]]
-            [moon.core :refer [draw-text draw-image image sub-image]]
+            [moon.core :refer [draw-text draw-image gui-viewport-width image sub-image]]
             [moon.entity.hp :as hp]
             [moon.entity.mana :as mana]
             [moon.player :as player]
@@ -18,7 +17,7 @@
   (let [rahmen      (image "images/rahmen.png")
         hpcontent   (image "images/hp.png")
         manacontent (image "images/mana.png")
-        x (/ (gui-view/width) 2)
+        x (/ (gui-viewport-width) 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)

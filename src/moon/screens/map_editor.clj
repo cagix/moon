@@ -3,7 +3,6 @@
             [gdl.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
-            [gdl.graphics.gui-view :as gui-view]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
@@ -11,7 +10,7 @@
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [gdl.widgets.error-window :refer [error-window!]]
-            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map world-camera world-mouse-position]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
             [moon.controls :as controls]
             [moon.level :as level]
             [moon.level.modules :as modules]))
@@ -64,7 +63,7 @@ direction keys: move")
     (ui/add-actor! window (ui/actor {:act #(do
                                             (.setText label (map-infos))
                                             (.pack window))}))
-    (a/set-position! window 0 (gui-view/height))
+    (a/set-position! window 0 (gui-viewport-height))
     window))
 
 (def ^:private camera-movement-speed 1)

@@ -1,8 +1,8 @@
 (ns moon.widgets.modal
-  (:require [gdl.graphics.gui-view :as gui-view]
-            [gdl.stage :as stage]
+  (:require [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as a]))
+            [gdl.ui.actor :as a]
+            [moon.core :refer [gui-viewport-width gui-viewport-height]]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -19,6 +19,6 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ (gui-view/width) 2)
-                                 (* (gui-view/height) (/ 3 4))]
+               :center-position [(/ (gui-viewport-width) 2)
+                                 (* (gui-viewport-height) (/ 3 4))]
                :pack? true})))

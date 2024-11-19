@@ -1,8 +1,7 @@
 (ns moon.widgets.player-message
   (:require [gdl.graphics :as gdx.graphics]
-            [gdl.graphics.gui-view :as gui-view]
             [gdl.ui :as ui]
-            [moon.core :refer [draw-text]]))
+            [moon.core :refer [draw-text gui-viewport-width gui-viewport-height]]))
 
 (def ^:private duration-seconds 1.5)
 
@@ -10,8 +9,8 @@
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ (gui-view/width) 2)
-                :y (+ (/ (gui-view/height) 2) 200)
+    (draw-text {:x (/ (gui-viewport-width) 2)
+                :y (+ (/ (gui-viewport-height) 2) 200)
                 :text message
                 :scale 2.5
                 :up? true})))

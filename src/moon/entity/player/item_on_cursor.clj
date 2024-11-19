@@ -1,8 +1,7 @@
 (ns moon.entity.player.item-on-cursor
-  (:require [gdl.graphics.gui-view :as gui-view]
-            [gdl.input :refer [button-just-pressed?]]
+  (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
-            [moon.core :refer [draw-centered play-sound mouse-on-actor? world-mouse-position]]
+            [moon.core :refer [draw-centered gui-mouse-position play-sound mouse-on-actor? world-mouse-position]]
             [moon.entity.fsm :as fsm]
             [moon.entity.inventory :as inventory]
             [moon.player :as player]
@@ -107,4 +106,4 @@
     (when (and (= :player-item-on-cursor (fsm/state-k entity))
                (not (world-item?)))
       (draw-centered (:entity/image (:entity/item-on-cursor entity))
-                     (gui-view/mouse-position)))))
+                     (gui-mouse-position)))))

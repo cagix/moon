@@ -1,10 +1,9 @@
 (ns ^:no-doc dev.tree
   (:require [dev.app-values-tree :refer [ns-value-vars]]
-            [gdl.graphics.gui-view :as gui-view]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.stage]
-            [moon.core :refer [world-mouse-position]]
+            [moon.core :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
             [moon.world.mouseover :as mouseover]
             [moon.world.grid :as grid]))
 
@@ -112,10 +111,10 @@
                          :pack? true})
         scroll-pane (ui/scroll-pane table)]
     {:actor scroll-pane
-     :width (/ (gui-view/width) 2)
+     :width (/ (gui-viewport-width) 2)
      :height
-     (- (gui-view/height) 50)
-     #_(min (- (gui-view/height) 50) (height table))}))
+     (- (gui-viewport-height) 50)
+     #_(min (- (gui-viewport-height) 50) (height table))}))
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}

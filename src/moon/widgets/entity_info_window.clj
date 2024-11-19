@@ -1,7 +1,7 @@
 (ns moon.widgets.entity-info-window
-  (:require [gdl.graphics.gui-view :as gui-view]
-            [gdl.info :as info]
+  (:require [gdl.info :as info]
             [gdl.ui :as ui]
+            [moon.core :refer [gui-viewport-width]]
             [moon.world.mouseover :as mouseover]))
 
 (def ^:private disallowed-keys [:entity/skills
@@ -14,7 +14,7 @@
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [(gui-view/width) 0]
+                           :position [(gui-viewport-width) 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.

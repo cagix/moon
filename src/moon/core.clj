@@ -1,6 +1,5 @@
 (ns moon.core
   (:require [gdl.graphics :as graphics]
-            [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.text :as text]
@@ -20,7 +19,8 @@
          default-font
          cached-map-renderer
          world-unit-scale
-         world-viewport)
+         world-viewport
+         gui-viewport)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -29,6 +29,13 @@
 
 (defn texture-region [path]
   (TextureRegion. ^Texture (get asset-manager path)))
+
+(defn gui-mouse-position []
+  ; TODO mapv int needed?
+  (mapv int (vp/unproject-mouse-posi gui-viewport)))
+
+(defn gui-viewport-width  [] (vp/world-width  gui-viewport))
+(defn gui-viewport-height [] (vp/world-height gui-viewport))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
@@ -146,4 +153,4 @@
                 tiled-map))
 
 (defn mouse-on-actor? []
-  (stage/mouse-on-actor? (gui-view/mouse-position)))
+  (stage/mouse-on-actor? (gui-mouse-position)))
