@@ -1,8 +1,8 @@
 (ns moon.world.mouseover
   (:refer-clojure :exclude [update])
-  (:require [gdl.graphics.world-view :as world-view]
-            [gdl.stage :as stage]
+  (:require [gdl.stage :as stage]
             [gdl.utils :refer [sort-by-order]]
+            [moon.core :refer [world-mouse-position]]
             [moon.body :as body]
             [moon.player :as player]
             [moon.world.grid :as grid]
@@ -17,7 +17,7 @@
   (let [player @player/eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (grid/point->entities
-                      (world-view/mouse-position)))]
+                      (world-mouse-position)))]
     (->> body/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse

@@ -1,7 +1,6 @@
 (ns moon.world.entities
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [gdl.db :as db]
-            [gdl.graphics.world-view :as world-view]
             [gdl.math.vector :as v]
             [gdl.utils :refer [sort-by-order safe-merge]]
             [moon.core :refer [draw-rectangle play-sound]]

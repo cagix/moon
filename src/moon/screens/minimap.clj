@@ -1,10 +1,9 @@
 (ns ^:no-doc moon.screens.minimap
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
-            [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.screen :as screen]
-            [moon.core :refer [draw-tiled-map draw-filled-circle draw-on-world-view]]
+            [moon.core :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
             [moon.world.tiled-map :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
@@ -25,7 +24,7 @@
         top    (apply max-key (fn [[x y]] y) positions-explored)
         right  (apply max-key (fn [[x y]] x) positions-explored)
         bottom (apply min-key (fn [[x y]] y) positions-explored)]
-    (cam/calculate-zoom (world-view/camera)
+    (cam/calculate-zoom (world-camera)
                        :left left
                        :top top
                        :right right
@@ -38,17 +37,17 @@
 (deftype Minimap []
   screen/Screen
   (enter [_]
-    (cam/set-zoom! (world-view/camera) (minimap-zoom)))
+    (cam/set-zoom! (world-camera) (minimap-zoom)))
 
   (exit [_]
-    (cam/reset-zoom! (world-view/camera)))
+    (cam/reset-zoom! (world-camera)))
 
   (render [_]
     (draw-tiled-map tiled-map
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
      (fn []
-       (draw-filled-circle (cam/position (world-view/camera)) 0.5 :green)))
+       (draw-filled-circle (cam/position (world-camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
       (screen/change :screens/world)))

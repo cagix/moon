@@ -1,11 +1,10 @@
 (ns moon.entity.player.idle
-  (:require [gdl.graphics.world-view :as world-view]
-            [gdl.input :refer [button-just-pressed?]]
+  (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [play-sound set-cursor]]
+            [moon.core :refer [play-sound set-cursor world-mouse-position]]
             [moon.controls :as controls]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
@@ -78,7 +77,7 @@
 
 (defn- effect-ctx [eid]
   (let [target-position (or (and mouseover/eid (:position @mouseover/eid))
-                            (world-view/mouse-position))]
+                            (world-mouse-position))]
     {:effect/source eid
      :effect/target mouseover/eid
      :effect/target-position target-position

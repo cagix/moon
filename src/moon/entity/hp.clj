@@ -1,7 +1,6 @@
 (ns moon.entity.hp
-  (:require [gdl.graphics.world-view :as world-view]
-            [gdl.info :as info]
-            [moon.core :refer [draw-filled-rectangle]]
+  (:require [gdl.info :as info]
+            [moon.core :refer [draw-filled-rectangle pixels->world-units]]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -26,8 +25,8 @@
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (world-view/pixels->units 5)
-          border (world-view/pixels->units borders-px)]
+          height (pixels->world-units 5)
+          border (pixels->world-units borders-px)]
       (draw-filled-rectangle x y width height :black)
       (draw-filled-rectangle (+ x border)
                              (+ y border)

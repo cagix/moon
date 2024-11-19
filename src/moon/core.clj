@@ -4,7 +4,7 @@
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.text :as text]
             [gdl.graphics.tiled :as tiled]
-            [gdl.graphics.world-view :as world-view]
+            [gdl.graphics.viewport :as vp]
             [gdl.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color Texture)
@@ -16,7 +16,9 @@
          shape-drawer
          cursors
          default-font
-         cached-map-renderer)
+         cached-map-renderer
+         world-unit-scale
+         world-viewport)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -26,12 +28,24 @@
 (defn texture-region [path]
   (TextureRegion. ^Texture (get asset-manager path)))
 
+(defn pixels->world-units [pixels]
+  (* (int pixels) world-unit-scale))
+
+(defn world-mouse-position []
+  ; TODO clamping only works for gui-viewport ? check. comment if true
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (vp/unproject-mouse-posi world-viewport))
+
+(defn world-camera          [] (vp/camera       world-viewport))
+(defn world-viewport-width  [] (vp/world-width  world-viewport))
+(defn world-viewport-height [] (vp/world-height world-viewport))
+
 (defn image [path]
-  (image/create (world-view/unit-scale)
+  (image/create world-unit-scale
                 (texture-region path)))
 
 (defn sub-image [image bounds]
-  (image/sub-image (world-view/unit-scale)
+  (image/sub-image world-unit-scale
                    image
                    bounds))
 
@@ -41,7 +55,7 @@
    :tileh tileh})
 
 (defn sprite [sprite-sheet index]
-  (image/sprite (world-view/unit-scale)
+  (image/sprite world-unit-scale
                 sprite-sheet
                 index))
 
@@ -100,7 +114,7 @@
 (defn with-line-width [width draw-fn]
   (sd/with-line-width shape-drawer width draw-fn))
 
-(defn draw-with [{:keys [^Viewport viewport unit-scale]} draw-fn]
+(defn- draw-with [^Viewport viewport unit-scale draw-fn]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (.combined (.getCamera viewport)))
   (.begin batch)
@@ -110,7 +124,7 @@
   (.end batch))
 
 (defn draw-on-world-view [render-fn]
-  (draw-with world-view/view render-fn))
+  (draw-with world-viewport world-unit-scale render-fn))
 
 (defn set-cursor [cursor-key]
   (graphics/set-cursor (safe-get cursors cursor-key)))
@@ -126,5 +140,5 @@
   [tiled-map color-setter]
   (tiled/render (cached-map-renderer tiled-map)
                 color-setter
-                (world-view/camera)
+                (world-camera)
                 tiled-map))

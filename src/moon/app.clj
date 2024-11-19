@@ -9,7 +9,7 @@
             [gdl.graphics.text :as text]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.gui-view :as gui-view]
-            [gdl.graphics.world-view :as world-view]
+            [gdl.graphics.viewport :as vp]
             [gdl.info :as info :refer [info]]
             [gdl.screen :as screen]
             [gdl.screens.editor :as editor]
@@ -17,7 +17,7 @@
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
-            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer]]
+            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer world-unit-scale world-viewport]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -40,7 +40,9 @@
             (moon.level generate
                         uf-caves
                         tiled-map))
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
+  (:import (com.badlogic.gdx.graphics OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn- namespace->component-key [ns-str]
    (let [ns-parts (-> ns-str
@@ -285,15 +287,20 @@
                                             {:file "fonts/exocet/films.EXL_____.ttf"
                                              :size 16
                                              :quality-scaling 2}))
+                 (.bindRoot #'world-unit-scale (float (/ 48)))
+                 (.bindRoot #'world-viewport (let [world-width  (* 1440 world-unit-scale)
+                                                   world-height (* 900 world-unit-scale)
+                                                   camera (OrthographicCamera.)
+                                                   y-down? false]
+                                               (.setToOrtho camera y-down? world-width world-height)
+                                               (FitViewport. world-width world-height camera)))
                  (.bindRoot #'cached-map-renderer
                             (memoize
                              (fn [tiled-map]
-                               (tiled/renderer tiled-map (world-view/unit-scale) batch))))
+                               (tiled/renderer tiled-map world-unit-scale batch))))
                  (gui-view/init {:world-width 1440
                                  :world-height 900})
-                 (world-view/init {:world-width 1440
-                                   :world-height 900
-                                   :tile-size 48})
+
                  (ui/load! :skin-scale/x1)
                  (screen/set-screens
                   {:screens/main-menu  (stage/create batch (main-menu/create))
@@ -317,5 +324,5 @@
                  (screen/render (screen/current)))
 
                (resize [_ dimensions]
-                 (gui-view/resize   dimensions)
-                 (world-view/resize dimensions)))))
+                 (gui-view/resize dimensions)
+                 (vp/update world-viewport dimensions)))))

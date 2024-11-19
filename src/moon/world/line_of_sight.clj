@@ -1,6 +1,6 @@
 (ns moon.world.line-of-sight
   (:require [gdl.graphics.camera :as cam]
-            [gdl.graphics.world-view :as world-view]
+            [moon.core :refer [world-camera world-viewport-width world-viewport-height]]
             [moon.world.raycaster :refer [ray-blocked?]]))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -9,14 +9,14 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position (world-view/camera))
+        [cx cy] (cam/position (world-camera))
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float (world-view/width))  2)))
-     (<= ydist (inc (/ (float (world-view/height)) 2))))))
+     (<= xdist (inc (/ (float (world-viewport-width))  2)))
+     (<= ydist (inc (/ (float (world-viewport-height)) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see

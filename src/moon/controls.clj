@@ -1,7 +1,7 @@
 (ns moon.controls
   (:require [gdl.graphics.camera :as cam]
-            [gdl.graphics.world-view :as world-view]
-            [gdl.input :refer [key-pressed? key-just-pressed? WASD-movement-vector]]))
+            [gdl.input :refer [key-pressed? key-just-pressed? WASD-movement-vector]]
+            [moon.core :refer [world-camera]]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)
@@ -13,7 +13,7 @@
   (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
 
 (defn world-camera-zoom []
-  (let [camera (world-view/camera)]
+  (let [camera (world-camera)]
     (when (key-pressed? :keys/minus)  (inc-zoom camera    zoom-speed))
     (when (key-pressed? :keys/equals) (inc-zoom camera (- zoom-speed)))))
 

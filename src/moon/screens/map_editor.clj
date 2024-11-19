@@ -4,7 +4,6 @@
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.graphics.gui-view :as gui-view]
-            [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
@@ -12,7 +11,7 @@
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [gdl.widgets.error-window :refer [error-window!]]
-            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map world-camera world-mouse-position]]
             [moon.controls :as controls]
             [moon.level :as level]
             [moon.level.modules :as modules]))
@@ -39,14 +38,14 @@ ESCAPE: leave
 direction keys: move")
 
 (defn- map-infos ^String []
-  (let [tile (mapv int (world-view/mouse-position))
+  (let [tile (mapv int (world-mouse-position))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (world-view/mouse-position)
+                                 (world-mouse-position)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (t/property-value tiled-map :creatures tile :id)))
@@ -89,8 +88,8 @@ direction keys: move")
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles (world-view/camera))
-        [x y] (mapv int (world-view/mouse-position))]
+        visible-tiles (cam/visible-tiles (world-camera))
+        [x y] (mapv int (world-mouse-position))]
     (draw-rectangle x y 1 1 :white)
     (when start-position
       (draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
@@ -117,7 +116,7 @@ direction keys: move")
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! (world-view/camera) tiled-map)
+    (show-whole-map! (world-camera) tiled-map)
     (.setVisible (t/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
@@ -133,10 +132,10 @@ direction keys: move")
 (defrecord MapEditorScreen [current-data]
   screen/Screen
   (screen/enter [_]
-    (show-whole-map! (world-view/camera) (:tiled-map @current-data)))
+    (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
   (screen/exit [_]
-    (cam/reset-zoom! (world-view/camera)))
+    (cam/reset-zoom! (world-camera)))
 
   (screen/render [_]
     (draw-tiled-map (:tiled-map @current-data)
@@ -147,7 +146,7 @@ direction keys: move")
     (if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
     (controls/world-camera-zoom)
-    (camera-controls (world-view/camera))
+    (camera-controls (world-camera))
     (when (key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))
 

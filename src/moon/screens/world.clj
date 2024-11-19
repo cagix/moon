@@ -4,7 +4,6 @@
             [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.gui-view :as gui-view]
-            [gdl.graphics.world-view :as world-view]
             [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
@@ -12,7 +11,7 @@
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
             [gdl.widgets.error-window :refer [error-window!]]
-            [moon.core :refer [draw-on-world-view set-cursor]]
+            [moon.core :refer [draw-on-world-view set-cursor world-camera world-mouse-position]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
             [moon.level :as level]
@@ -104,9 +103,9 @@
                     {:label "GUI"
                      :update-fn gui-view/mouse-position}
                     {:label "World"
-                     :update-fn #(mapv int (world-view/mouse-position))}
+                     :update-fn #(mapv int (world-mouse-position))}
                     {:label "Zoom"
-                     :update-fn #(cam/zoom (world-view/camera))
+                     :update-fn #(cam/zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
                      :update-fn gdl.graphics/frames-per-second
@@ -203,9 +202,9 @@
 
 (defn- render-world []
   ; FIXME position DRY
-  (cam/set-position! (world-view/camera) (:position @player/eid))
+  (cam/set-position! (world-camera) (:position @player/eid))
   ; FIXME position DRY
-  (tiled-map/render (cam/position (world-view/camera)))
+  (tiled-map/render (cam/position (world-camera)))
   (draw-on-world-view (fn []
                        (debug-render/before-entities)
                        ; FIXME position DRY (from player)
@@ -215,7 +214,7 @@
 (deftype WorldScreen []
   screen/Screen
   (screen/enter [_]
-    (cam/set-zoom! (world-view/camera) 0.8))
+    (cam/set-zoom! (world-camera) 0.8))
 
   (screen/exit [_]
     (set-cursor :cursors/default))

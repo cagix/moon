@@ -1,10 +1,9 @@
 (ns moon.entity.player.item-on-cursor
   (:require [gdl.graphics.gui-view :as gui-view]
-            [gdl.graphics.world-view :as world-view]
             [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.stage :refer [mouse-on-actor?]]
-            [moon.core :refer [draw-centered play-sound]]
+            [moon.core :refer [draw-centered play-sound world-mouse-position]]
             [moon.entity.fsm :as fsm]
             [moon.entity.inventory :as inventory]
             [moon.player :as player]
@@ -60,7 +59,7 @@
 
 (defn- item-place-position [entity]
   (placement-point (:position entity)
-                   (world-view/mouse-position)
+                   (world-mouse-position)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
