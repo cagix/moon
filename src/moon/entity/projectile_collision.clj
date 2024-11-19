@@ -3,7 +3,7 @@
             [gdl.utils :refer [find-first]]
             [moon.body :as body]
             [moon.effects :as effects]
-            [moon.world.grid :as grid]))
+            [moon.world :as world]))
 
 (defn ->v [v]
   (assoc v :already-hit-bodies #{}))
@@ -15,15 +15,15 @@
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (grid/rectangle->cells entity)) ; just use cached-touched -cells
+        cells* (map deref (world/rectangle->cells entity)) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
                                      (:collides? @%)
                                      (body/collides? entity @%))
-                               (grid/cells->entities cells*))
+                               (world/cells->entities cells*))
         destroy? (or (and hit-entity (not piercing?))
-                     (some #(grid/blocked? % (:z-order entity)) cells*))]
+                     (some #(world/blocked? % (:z-order entity)) cells*))]
     (when destroy?
       (swap! eid assoc :entity/destroyed? true))
     (when hit-entity

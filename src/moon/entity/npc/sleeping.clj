@@ -5,8 +5,8 @@
             [moon.entity.fsm :as fsm]
             [moon.entity.stat :as stat]
             [moon.entity.string-effect :as string-effect]
-            [moon.world.entities :as entities]
-            [moon.world.grid :as grid]))
+            [moon.world :as world]
+            [moon.world.entities :as entities]))
 
 (defn ->v [eid]
   {:eid eid})
@@ -17,8 +17,8 @@
 
 (defn tick [_ eid]
   (let [entity @eid
-        cell (grid/cell (body/tile entity))] ; pattern!
-    (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
+        cell (world/cell (body/tile entity))] ; pattern!
+    (when-let [distance (world/nearest-entity-distance @cell (faction/enemy entity))]
       (when (<= distance (stat/value entity :entity/aggro-range))
         (fsm/event eid :alert)))))
 

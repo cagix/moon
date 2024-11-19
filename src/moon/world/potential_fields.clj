@@ -1,10 +1,6 @@
 (ns moon.world.potential-fields
   (:require [moon.body :as body]
-            [moon.world.grid :refer [blocked?
-                                     cached-adjacent-cells
-                                     grid
-                                     nearest-entity
-                                     nearest-entity-distance]]))
+            [moon.world :refer [blocked? cached-adjacent-cells grid nearest-entity nearest-entity-distance]]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})

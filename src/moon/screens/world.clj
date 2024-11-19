@@ -21,11 +21,10 @@
             [moon.widgets.hp-mana :as hp-mana]
             [moon.widgets.inventory :as inventory]
             [moon.widgets.player-message :as player-message]
-            [moon.world :refer [tick-error paused?]]
+            [moon.world :as world :refer [tick-error paused?]]
             [moon.world.content-grid :as content-grid]
             [moon.world.debug-render :as debug-render]
             [moon.world.entities :as entities]
-            [moon.world.grid :as grid]
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.raycaster :as raycaster]
@@ -37,7 +36,7 @@
    (tiled/width tiled-map)
    (tiled/height tiled-map)
    (fn [position]
-     (atom (grid/->cell position
+     (atom (world/->cell position
                         (case (level/movement-property tiled-map position)
                           "none" :none
                           "air"  :air
@@ -159,8 +158,8 @@
   (let [{:keys [tiled-map start-position]} (level/generate world-id)]
     (tiled-map/clear)
     (tiled-map/init tiled-map)
-    (.bindRoot #'grid/grid (create-grid tiled-map))
-    (raycaster/init grid/grid grid/blocks-vision?)
+    (.bindRoot #'world/grid (create-grid tiled-map))
+    (raycaster/init world/grid world/blocks-vision?)
     (let [width  (tiled/width  tiled-map)
           height (tiled/height tiled-map)]
       (.bindRoot #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config

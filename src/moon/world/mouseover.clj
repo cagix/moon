@@ -4,7 +4,7 @@
             [moon.app :refer [mouse-on-actor? world-mouse-position]]
             [moon.body :as body]
             [moon.player :as player]
-            [moon.world.grid :as grid]
+            [moon.world :as world]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
 
 (def eid nil)
@@ -15,7 +15,7 @@
 (defn- calculate-eid []
   (let [player @player/eid
         hits (remove #(= (:z-order @%) :z-order/effect)
-                     (grid/point->entities
+                     (world/point->entities
                       (world-mouse-position)))]
     (->> body/render-z-order
          (sort-by-order hits #(:z-order @%))

@@ -8,8 +8,8 @@
             [moon.entity :as entity]
             [moon.player :as player]
             [moon.projectile :as projectile]
+            [moon.world :as world]
             [moon.world.content-grid :as content-grid]
-            [moon.world.grid :as grid]
             [moon.world.line-of-sight :refer [line-of-sight?]]
             [moon.world.time :refer [timer]]))
 
@@ -79,18 +79,18 @@
   (content-grid/update-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (grid/add-entity eid))
+  (world/add-entity eid))
 
 (defn- remove-from-world [eid]
   (let [id (:entity/id @eid)]
     (assert (contains? ids->eids id))
     (alter-var-root #'ids->eids dissoc id))
   (content-grid/remove-entity! eid)
-  (grid/remove-entity eid))
+  (world/remove-entity eid))
 
 (defn position-changed [eid]
   (content-grid/update-entity! content-grid eid)
-  (grid/entity-position-changed eid))
+  (world/entity-position-changed eid))
 
 (defn remove-destroyed []
   (doseq [eid (filter (comp :entity/destroyed? deref) (all))]

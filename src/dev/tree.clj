@@ -3,11 +3,11 @@
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
             [moon.app :refer [gui-viewport-width gui-viewport-height add-actor world-mouse-position]]
-            [moon.world.mouseover :as mouseover]
-            [moon.world.grid :as grid]))
+            [moon.world :as world]
+            [moon.world.mouseover :as mouseover]))
 
 (defn- mouseover-grid-cell []
-  @(grid/cell (mapv int (world-mouse-position))))
+  @(world/cell (mapv int (world-mouse-position))))
 
 (comment
 

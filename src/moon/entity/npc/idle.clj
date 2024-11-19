@@ -5,12 +5,12 @@
             [moon.entity.fsm :as fsm]
             [moon.entity.skills :as skills]
             [moon.follow-ai :as follow-ai]
-            [moon.world.grid :as grid]
+            [moon.world :as world]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
-  (grid/nearest-entity @(grid/cell (body/tile entity))
-                       (faction/enemy entity)))
+  (world/nearest-entity @(world/cell (body/tile entity))
+                        (faction/enemy entity)))
 
 (defn- effect-ctx [eid]
   (let [entity @eid

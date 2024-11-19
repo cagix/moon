@@ -1,6 +1,6 @@
 (ns moon.entity.alert-friendlies-after-duration
   (:require [moon.entity.fsm :as fsm]
-            [moon.world.grid :as grid]
+            [moon.world :as world]
             [moon.world.time :refer [stopped?]]))
 
 (def ^:private shout-radius 4)
@@ -8,7 +8,7 @@
 (defn- friendlies-in-radius [position faction]
   (->> {:position position
         :radius shout-radius}
-       grid/circle->entities
+       world/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
 (defn tick [{:keys [counter faction]} eid]

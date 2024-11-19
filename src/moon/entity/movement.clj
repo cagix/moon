@@ -2,8 +2,8 @@
   (:require [gdl.math.vector :as v]
             [malli.core :as m]
             [moon.body :as body]
+            [moon.world :as world]
             [moon.world.entities :as entities]
-            [moon.world.grid :as grid]
             [moon.world.time :as time]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
@@ -24,10 +24,10 @@
 
 (defn- valid-position? [{:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
-  (let [cells* (into [] (map deref) (grid/rectangle->cells body))]
-    (and (not-any? #(grid/blocked? % z-order) cells*)
+  (let [cells* (into [] (map deref) (world/rectangle->cells body))]
+    (and (not-any? #(world/blocked? % z-order) cells*)
          (->> cells*
-              grid/cells->entities
+              world/cells->entities
               (not-any? (fn [other-entity]
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
