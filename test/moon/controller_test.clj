@@ -9,7 +9,7 @@
             [gdl.graphics.text :as text]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.math.vector :as v]
-            [moon.core :refer [batch draw-text shape-drawer]])
+            [moon.app :refer [batch draw-text shape-drawer]])
   (:import (com.badlogic.gdx.controllers Controllers)))
 
 (declare ^:private controller)

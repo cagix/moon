@@ -4,7 +4,7 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [malli.generator :as mg]
-            [moon.core :refer [stage add-actor]]
+            [moon.app :refer [stage add-actor]]
             [moon.editor.malli :as malli]
             [moon.editor.property :as widgets.property]
             [moon.editor.scrollpane :refer [scroll-pane-cell]]))

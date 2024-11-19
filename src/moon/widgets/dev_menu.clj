@@ -1,6 +1,6 @@
 (ns moon.widgets.dev-menu
   (:require [gdl.ui :as ui]
-            [moon.core :refer [image]])
+            [moon.app :refer [image]])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 
 (defn- menu-item [text on-clicked]

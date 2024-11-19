@@ -31,8 +31,8 @@
                 ;*assert* false
                 *print-level* 3
                 }
-  :profiles {:uberjar {:aot [moon.app]}}
-  :main moon.app)
+  :profiles {:uberjar {:aot [moon.start]}}
+  :main moon.start)
 
 ; * Notes
 

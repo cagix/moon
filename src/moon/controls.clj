@@ -1,7 +1,7 @@
 (ns moon.controls
   (:require [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-pressed? key-just-pressed? WASD-movement-vector]]
-            [moon.core :refer [world-camera]]))
+            [moon.app :refer [world-camera]]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

@@ -4,7 +4,7 @@
             [moon.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [asset-manager add-actor play-sound]]
+            [moon.app :refer [asset-manager add-actor play-sound]]
             [moon.editor.scrollpane :refer [scrollable-choose-window]])
   (:import (com.badlogic.gdx.audio Sound)))
 

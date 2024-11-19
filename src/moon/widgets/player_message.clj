@@ -1,7 +1,7 @@
 (ns moon.widgets.player-message
   (:require [gdl.graphics :as gdx.graphics]
             [gdl.ui :as ui]
-            [moon.core :refer [draw-text gui-viewport-width gui-viewport-height]]))
+            [moon.app :refer [draw-text gui-viewport-width gui-viewport-height]]))
 
 (def ^:private duration-seconds 1.5)
 

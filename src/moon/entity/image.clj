@@ -1,5 +1,5 @@
 (ns moon.entity.image
-  (:require [moon.core :refer [draw-rotated-centered]]))
+  (:require [moon.app :refer [draw-rotated-centered]]))
 
 (defn render [image entity]
   (draw-rotated-centered image

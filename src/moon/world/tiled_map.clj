@@ -3,7 +3,7 @@
             [gdl.graphics.color :as color]
             [gdl.utils :refer [dispose ->tile]]
             [gdl.tiled :as tiled]
-            [moon.core :refer [draw-tiled-map]]
+            [moon.app :refer [draw-tiled-map]]
             [moon.world.raycaster :refer [ray-blocked?]]))
 
 (declare tiled-map

@@ -4,7 +4,7 @@
             [gdl.input :refer [key-just-pressed?]]
             [moon.property :as property]
             [gdl.ui :as ui]
-            [moon.core :refer [add-actor change-screen]]
+            [moon.app :refer [add-actor change-screen]]
             [moon.editor.property :as widgets.property]
             [moon.editor.overview :as properties-overview]
             [moon.widgets.background-image :as background-image])

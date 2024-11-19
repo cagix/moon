@@ -3,7 +3,7 @@
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.screen :as screen]
-            [moon.core :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera change-screen]]
+            [moon.app :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera change-screen]]
             [moon.world.tiled-map :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth

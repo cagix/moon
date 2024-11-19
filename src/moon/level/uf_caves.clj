@@ -4,7 +4,7 @@
             [gdl.graphics.texture :as texture]
             [gdl.rand :refer [get-rand-weighted-item]]
             [gdl.tiled :as t]
-            [moon.core :refer [texture-region]]
+            [moon.app :refer [texture-region]]
             [moon.level :as level]
             [moon.level.creatures :as creatures]
             [moon.level.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]

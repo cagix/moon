@@ -1,6 +1,6 @@
 (ns moon.entity.hp
   (:require [moon.info :as info]
-            [moon.core :refer [draw-filled-rectangle pixels->world-units]]
+            [moon.app :refer [draw-filled-rectangle pixels->world-units]]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors

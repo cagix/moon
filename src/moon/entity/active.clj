@@ -1,5 +1,5 @@
 (ns moon.entity.active
-  (:require [moon.core :refer [draw-image draw-filled-circle draw-sector play-sound]]
+  (:require [moon.app :refer [draw-image draw-filled-circle draw-sector play-sound]]
             [moon.effect :as effect]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]

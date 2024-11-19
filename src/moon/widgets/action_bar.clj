@@ -2,7 +2,7 @@
   (:require [moon.info :as info]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [stage]]))
+            [moon.app :refer [stage]]))
 
 (def ^:private image-scale 2)
 

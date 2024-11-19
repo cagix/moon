@@ -1,5 +1,5 @@
 (ns moon.entity.mouseover?
-  (:require [moon.core :refer [draw-ellipse with-line-width]]
+  (:require [moon.app :refer [draw-ellipse with-line-width]]
             [moon.entity.faction :as faction]
             [moon.player :as player]))
 

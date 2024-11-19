@@ -1,6 +1,6 @@
 (ns moon.entity.fsm
   (:require [moon.system :refer [defsystem *k*]]
-            [moon.core :refer [set-cursor]]
+            [moon.app :refer [set-cursor]]
             [moon.entity :as entity]
             [reduce-fsm :as fsm]))
 

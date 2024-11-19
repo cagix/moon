@@ -3,7 +3,7 @@
             [moon.db :as db]
             [gdl.math.vector :as v]
             [gdl.utils :refer [sort-by-order safe-merge]]
-            [moon.core :refer [draw-rectangle play-sound]]
+            [moon.app :refer [draw-rectangle play-sound]]
             [moon.body :as body]
             [moon.entity :as entity]
             [moon.player :as player]

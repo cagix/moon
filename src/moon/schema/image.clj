@@ -2,7 +2,7 @@
   (:require [gdl.assets :as assets]
             [moon.schema :as schema]
             [gdl.ui :as ui]
-            [moon.core :refer [asset-manager image sprite sprite-sheet]])
+            [moon.app :refer [asset-manager image sprite sprite-sheet]])
   (:import (com.badlogic.gdx.graphics Texture)))
 
 (defmethod schema/form :s/image [_]

@@ -1,5 +1,5 @@
 (ns moon.effects.target-all
-  (:require [moon.core :refer [draw-line]]
+  (:require [moon.app :refer [draw-line]]
             [moon.effects :as effects]
             [moon.player :as player]
             [moon.world.entities :as entities]

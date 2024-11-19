@@ -1,5 +1,5 @@
 (ns moon.entity.line-render
-  (:require [moon.core :refer [draw-line with-line-width]]))
+  (:require [moon.app :refer [draw-line with-line-width]]))
 
 (defn render [{:keys [thick? end color]} entity]
   (let [position (:position entity)]

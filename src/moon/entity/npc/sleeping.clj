@@ -1,5 +1,5 @@
 (ns moon.entity.npc.sleeping
-  (:require [moon.core :refer [draw-text]]
+  (:require [moon.app :refer [draw-text]]
             [moon.body :as body]
             [moon.entity.faction :as faction]
             [moon.entity.fsm :as fsm]

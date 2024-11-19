@@ -5,7 +5,7 @@
             [moon.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [add-actor]]
+            [moon.app :refer [add-actor]]
             [moon.editor.overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-many [[_ property-type]]

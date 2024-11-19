@@ -1,7 +1,7 @@
 (ns moon.widgets.hp-mana
   (:require [gdl.ui :as ui]
             [gdl.utils :refer [readable-number]]
-            [moon.core :refer [draw-text draw-image gui-viewport-width image sub-image]]
+            [moon.app :refer [draw-text draw-image gui-viewport-width image sub-image]]
             [moon.entity.hp :as hp]
             [moon.entity.mana :as mana]
             [moon.player :as player]

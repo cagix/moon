@@ -1,6 +1,6 @@
 (ns moon.editor.scrollpane
   (:require [gdl.ui :as ui]
-            [moon.core :refer [gui-viewport-height]]))
+            [moon.app :refer [gui-viewport-height]]))
 
 (defn scroll-pane-cell [rows]
   (let [table (ui/table {:rows rows

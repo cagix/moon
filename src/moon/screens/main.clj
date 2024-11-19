@@ -5,7 +5,7 @@
             [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
-            [moon.core :refer [change-screen set-cursor]]
+            [moon.app :refer [change-screen set-cursor]]
             [moon.screens.world :as world]
             [moon.widgets.background-image :as background-image]))
 

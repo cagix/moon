@@ -1,7 +1,7 @@
 (ns moon.world.mouseover
   (:refer-clojure :exclude [update])
   (:require [gdl.utils :refer [sort-by-order]]
-            [moon.core :refer [mouse-on-actor? world-mouse-position]]
+            [moon.app :refer [mouse-on-actor? world-mouse-position]]
             [moon.body :as body]
             [moon.player :as player]
             [moon.world.grid :as grid]

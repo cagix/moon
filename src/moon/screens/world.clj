@@ -9,7 +9,7 @@
             [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
-            [moon.core :refer [draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
+            [moon.app :refer [draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
             [moon.level :as level]
