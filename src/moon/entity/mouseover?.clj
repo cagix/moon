@@ -1,7 +1,7 @@
 (ns moon.entity.mouseover?
   (:require [moon.app :refer [draw-ellipse with-line-width]]
             [moon.entity.faction :as faction]
-            [moon.player :as player]))
+            [moon.world :refer [player-eid]]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -9,7 +9,7 @@
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
 (defn render-below [_ {:keys [entity/faction] :as entity}]
-  (let [player @player/eid]
+  (let [player @player-eid]
     (with-line-width 3
       #(draw-ellipse (:position entity)
                      (:half-width entity)

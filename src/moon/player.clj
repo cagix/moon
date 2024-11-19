@@ -1,8 +1,7 @@
 (ns moon.player
   (:require [moon.system :refer [defsystem]]
-            [moon.entity.fsm :as fsm]))
-
-(declare eid)
+            [moon.entity.fsm :as fsm]
+            [moon.world :refer [player-eid]]))
 
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
@@ -20,7 +19,7 @@
 (defmethod draw-gui-view :default [_])
 
 (defn- state []
-  (fsm/state-obj @eid))
+  (fsm/state-obj @player-eid))
 
 (defn state-pauses-game?  []      (pause-game?             (state)))
 (defn update-state        []      (manual-tick             (state)))

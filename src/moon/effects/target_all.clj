@@ -1,15 +1,14 @@
 (ns moon.effects.target-all
   (:require [moon.app :refer [draw-line]]
             [moon.effects :as effects]
-            [moon.player :as player]
-            [moon.world :as world :refer [line-of-sight?]]))
+            [moon.world :as world :refer [player-eid line-of-sight?]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
 ; same code as in render entities on world view screens/world
 (defn- creatures-in-los-of-player []
   (->> (world/active-entities)
        (filter #(:entity/species @%))
-       (filter #(line-of-sight? @player/eid @%))
+       (filter #(line-of-sight? @player-eid @%))
        (remove #(:entity/player? @%))))
 
 ; TODO targets projectiles with -50% hp !!

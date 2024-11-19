@@ -9,10 +9,10 @@
             [moon.entity.fsm :as fsm]
             [moon.entity.inventory :as inventory]
             [moon.entity.skills :as skills]
-            [moon.player :as player]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.inventory :as widgets.inventory]
             [moon.widgets.player-message :as player-message]
+            [moon.world :refer [player-eid]]
             [moon.world.mouseover :as mouseover]))
 
 (defn- denied [text]
@@ -30,13 +30,13 @@
      (do
       (play-sound "sounds/bfxr_takeit.wav")
       (swap! eid assoc :entity/destroyed? true)
-      (fsm/event player/eid :pickup-item item))
+      (fsm/event player-eid :pickup-item item))
 
-     (inventory/can-pickup-item? @player/eid item)
+     (inventory/can-pickup-item? @player-eid item)
      (do
       (play-sound "sounds/bfxr_pickup.wav")
       (swap! eid assoc :entity/destroyed? true)
-      (inventory/pickup-item player/eid item))
+      (inventory/pickup-item player-eid item))
 
      :else
      (do
@@ -63,7 +63,7 @@
 (defn- inventory-cell-with-item? [actor]
   (and (a/parent actor)
        (= "inventory-cell" (a/name (a/parent actor)))
-       (get-in (:entity/inventory @player/eid)
+       (get-in (:entity/inventory @player-eid)
                (a/id (a/parent actor)))))
 
 (defn- mouseover-actor->cursor []

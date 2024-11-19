@@ -21,7 +21,7 @@
             [moon.widgets.hp-mana :as hp-mana]
             [moon.widgets.inventory :as inventory]
             [moon.widgets.player-message :as player-message]
-            [moon.world :as world :refer [tick-error paused?]]
+            [moon.world :as world :refer [tick-error paused? player-eid]]
             [moon.world.debug-render :as debug-render]
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
@@ -122,17 +122,13 @@
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn- update-game-paused []
+(defn- update-world []
+  (player/update-state)
+  (mouseover/update) ; this do always so can get debug info even when game not running
   (.bindRoot #'paused? (or tick-error
                            (and pausing?
                                 (player/state-pauses-game?)
                                 (not (controls/unpaused?)))))
-  nil)
-
-(defn- update-world []
-  (player/update-state)
-  (mouseover/update) ; this do always so can get debug info even when game not running
-  (update-game-paused)
   (when-not paused?
     (let [delta-ms (min (delta-time) movement/max-delta-time)]
       (alter-var-root #'world/elapsed-time + delta-ms)
@@ -147,7 +143,7 @@
 
 (defn- render-world []
   ; FIXME position DRY
-  (cam/set-position! (world-camera) (:position @player/eid))
+  (cam/set-position! (world-camera) (:position @player-eid))
   ; FIXME position DRY
   (draw-tiled-map world/tiled-map
                   (tile-color-setter/create

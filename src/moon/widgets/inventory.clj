@@ -7,7 +7,8 @@
             [moon.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
-            [moon.player :as player]))
+            [moon.player :as player]
+            [moon.world :refer [player-eid]]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -33,7 +34,7 @@
 (defn- draw-rect-actor []
   (ui/widget
    (fn [this]
-     (draw-cell-rect @player/eid
+     (draw-cell-rect @player-eid
                      (a/x this)
                      (a/y this)
                      (a/mouseover? this (gui-mouse-position))

@@ -4,8 +4,8 @@
             [moon.app :refer [draw-text draw-image gui-viewport-width image sub-image]]
             [moon.entity.hp :as hp]
             [moon.entity.mana :as mana]
-            [moon.player :as player]
-            [moon.val-max :as val-max]))
+            [moon.val-max :as val-max]
+            [moon.world :refer [player-eid]]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (draw-text {:text infostr
@@ -27,7 +27,7 @@
                                         [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui/actor {:draw (fn []
-                       (let [player-entity @player/eid
+                       (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (hp/value   player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (mana/value player-entity) "MP")))})))

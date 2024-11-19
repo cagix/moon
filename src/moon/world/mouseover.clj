@@ -3,8 +3,7 @@
   (:require [gdl.utils :refer [sort-by-order]]
             [moon.app :refer [mouse-on-actor? world-mouse-position]]
             [moon.body :as body]
-            [moon.player :as player]
-            [moon.world :as world :refer [line-of-sight?]]))
+            [moon.world :as world :refer [player-eid line-of-sight?]]))
 
 (def eid nil)
 
@@ -12,7 +11,7 @@
   (and eid @eid))
 
 (defn- calculate-eid []
-  (let [player @player/eid
+  (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities
                       (world-mouse-position)))]

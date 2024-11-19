@@ -11,7 +11,6 @@
             [moon.db :as db]
             [moon.entity :as entity]
             [moon.level :as level]
-            [moon.player :as player]
             [moon.projectile :as projectile]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))
@@ -27,7 +26,8 @@
          ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time
          ^{:doc "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
-         delta)
+         delta
+         player-eid)
 
 (defn timer [duration]
   {:pre [(>= duration 0)]}
@@ -323,12 +323,12 @@
   (.bindRoot #'ids->eids {})
   (.bindRoot #'elapsed-time 0)
   (.bindRoot #'delta nil)
-  (.bindRoot #'player/eid (spawn-player start-position))
+  (.bindRoot #'player-eid (spawn-player start-position))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 
 (defn active-entities []
-  (content-grid/active-entities content-grid @player/eid))
+  (content-grid/active-entities content-grid @player-eid))
 
 (defn ray-blocked? [start target]
   (raycaster/blocked? raycaster start target))
@@ -368,7 +368,7 @@
 (defn render-entities
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."
   [entities]
-  (let [player @player/eid]
+  (let [player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               body/render-z-order)
