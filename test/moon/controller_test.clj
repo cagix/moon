@@ -64,7 +64,7 @@
                  (text/init nil)
                  (gui-view/init {:world-width 1440 :world-height 900})
                  (when-not (bound? #'controller)
-                   (bind-root #'controller (first (Controllers/getControllers)))
+                   (.bindRoot #'controller (first (Controllers/getControllers)))
                    (println "Controller bound - " controller)))
 
                (dispose [_]
@@ -81,7 +81,7 @@
                  (when (key-just-pressed? :x)
                    (when-not (or (bound? #'controller)
                                  (nil? controller))
-                     (bind-root #'controller (first (Controllers/getControllers)))
+                     (.bindRoot #'controller (first (Controllers/getControllers)))
                      (println "Controller bound - " controller))))
 
                (resize [_ dimensions]
