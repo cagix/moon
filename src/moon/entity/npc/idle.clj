@@ -22,7 +22,7 @@
      :effect/target-direction (when target (body/direction entity @target))}))
 
 (comment
- (let [eid (entity/get-entity 76)
+ (let [eid (world/ids->eids 76)
        effect-ctx (effect-ctx eid)]
    (npc-choose-skill effect-ctx @eid))
  )

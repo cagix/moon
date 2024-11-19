@@ -2,13 +2,13 @@
   (:require [moon.app :refer [draw-line]]
             [moon.effects :as effects]
             [moon.player :as player]
-            [moon.world.entities :as entities]
+            [moon.world :as world]
             [moon.world.line-of-sight :refer [line-of-sight?]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
 ; same code as in render entities on world view screens/world
 (defn- creatures-in-los-of-player []
-  (->> (entities/active)
+  (->> (world/active-entities)
        (filter #(:entity/species @%))
        (filter #(line-of-sight? @player/eid @%))
        (remove #(:entity/player? @%))))
@@ -41,11 +41,11 @@
               {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target (creatures-in-los-of-player)]
-      (entities/line-render {:start (:position source*) #_(start-point source* target*)
-                             :end (:position @target)
-                             :duration 0.05
-                             :color [1 0 0 0.75]
-                             :thick? true})
+      (world/line-render {:start (:position source*) #_(start-point source* target*)
+                          :end (:position @target)
+                          :duration 0.05
+                          :color [1 0 0 0.75]
+                          :thick? true})
       ; some sound .... or repeat smae sound???
       ; skill do sound  / skill start sound >?
       ; problem : nested tx/effect , we are still having direction/target-position

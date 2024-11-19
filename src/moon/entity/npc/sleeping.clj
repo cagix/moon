@@ -5,14 +5,13 @@
             [moon.entity.fsm :as fsm]
             [moon.entity.stat :as stat]
             [moon.entity.string-effect :as string-effect]
-            [moon.world :as world]
-            [moon.world.entities :as entities]))
+            [moon.world :as world]))
 
 (defn ->v [eid]
   {:eid eid})
 
 (defn exit [{:keys [eid]}]
-  (entities/shout (:position @eid) (:entity/faction @eid) 0.2)
+  (world/shout (:position @eid) (:entity/faction @eid) 0.2)
   (swap! eid string-effect/add "[WHITE]!"))
 
 (defn tick [_ eid]

@@ -55,7 +55,7 @@
 
  (def max-iterations 1)
 
- (let [entities (map entity/get-entity [140 110 91])
+ (let [entities (map world/ids->eids [140 110 91])
        tl->es (:good (faction->tiles->entities-map* entities))]
    tl->es
    (def last-marked-cells (generate-potential-field :good tl->es)))

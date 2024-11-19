@@ -2,7 +2,7 @@
   (:require [gdl.math.vector :as v]
             [moon.app :refer [play-sound]]
             [moon.projectile :as projectile]
-            [moon.world.entities :as entities]
+            [moon.world :as world]
             [moon.world.raycaster :refer [path-blocked?]]))
 
 (defn- start-point [entity direction size]
@@ -32,10 +32,10 @@
 (defn handle [projectile
               {:keys [effect/source effect/target-direction]}]
   (play-sound "sounds/bfxr_waypointunlock.wav")
-  (entities/projectile {:position (start-point @source target-direction (projectile/size projectile))
-                        :direction target-direction
-                        :faction (:entity/faction @source)}
-                       projectile))
+  (world/projectile {:position (start-point @source target-direction (projectile/size projectile))
+                     :direction target-direction
+                     :faction (:entity/faction @source)}
+                    projectile))
 
 (comment
  ; mass shooting

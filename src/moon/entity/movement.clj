@@ -3,7 +3,6 @@
             [malli.core :as m]
             [moon.body :as body]
             [moon.world :as world]
-            [moon.world.entities :as entities]
             [moon.world.time :as time]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
@@ -64,7 +63,7 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)
                         (move-body body movement))]
-        (entities/position-changed eid)
+        (world/position-changed eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))

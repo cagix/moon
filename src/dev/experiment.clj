@@ -3,7 +3,7 @@
             [moon.db :as db]
             [moon.entity.skills :as skills]
             [moon.player :as player]
-            [moon.world.entities :as entities]))
+            [moon.world :as world]))
 
 (comment
 
@@ -25,14 +25,14 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable (entities/creature {:position [35 73]
+ (post-runnable (world/creature {:position [35 73]
                                     :creature-id :creatures/dragon-red
                                     :components {:entity/fsm {:fsm :fsms/npc
                                                               :initial-state :npc-sleeping}
                                                  :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
- (post-tx! [:e/destroy (moon.world.entities/get-entity 168)]) ; TODO how to get id ?
+ (post-tx! [:e/destroy (world/ids->eids 168)]) ; TODO how to get id ?
  ; check state is normal ... omg...
 
  ; start world - small empty test room
@@ -51,4 +51,4 @@
 
 (defn- create-item! [item-id]
   (post-runnable
-   (entities/item (:position @player/eid) (db/get item-id))))
+   (world/item (:position @player/eid) (db/get item-id))))

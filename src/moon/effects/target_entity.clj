@@ -4,7 +4,7 @@
             [moon.app :refer [draw-line]]
             [moon.body :as body]
             [moon.effects :as effects]
-            [moon.world.entities :as entities]))
+            [moon.world :as world]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)
@@ -36,13 +36,13 @@
         target* @target]
     (if (in-range? source* target* maxrange)
       (do
-       (entities/line-render {:start (start-point source* target*)
-                              :end (:position target*)
-                              :duration 0.05
-                              :color [1 0 0 0.75]
-                              :thick? true})
+       (world/line-render {:start (start-point source* target*)
+                           :end (:position target*)
+                           :duration 0.05
+                           :color [1 0 0 0.75]
+                           :thick? true})
        (effects/do! ctx entity-effects))
-      (entities/audiovisual (end-point source* target* maxrange) (db/get :audiovisuals/hit-ground)))))
+      (world/audiovisual (end-point source* target* maxrange) (db/get :audiovisuals/hit-ground)))))
 
 (defn render [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (when target

@@ -1,6 +1,6 @@
 (ns moon.entity.destroy-audiovisual
   (:require [moon.db :as db]
-            [moon.world.entities :as entities]))
+            [moon.world :as world]))
 
 (defn destroy [audiovisuals-id eid]
-  (entities/audiovisual (:position @eid) (db/get audiovisuals-id)))
+  (world/audiovisual (:position @eid) (db/get audiovisuals-id)))

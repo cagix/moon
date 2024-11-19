@@ -3,7 +3,7 @@
 
   https://github.com/damn/core/issues/29"
   (:require [moon.app :refer [play-sound]]
-            [moon.world.entities :as entities]))
+            [moon.world :as world]))
 
 (defn applicable? [_ {:keys [effect/source effect/target-position]}]
   (and (:entity/faction @source)
@@ -12,8 +12,8 @@
 (defn handle [{:keys [property/id]}
               {:keys [effect/source effect/target-position]}]
   (play-sound "sounds/bfxr_shield_consume.wav")
-  (entities/creature {:position target-position
-                      :creature-id id ; already properties/get called through one-to-one, now called again.
-                      :components {:entity/fsm {:fsm :fsms/npc
-                                                :initial-state :npc-idle}
-                                   :entity/faction (:entity/faction @source)}}))
+  (world/creature {:position target-position
+                   :creature-id id ; already properties/get called through one-to-one, now called again.
+                   :components {:entity/fsm {:fsm :fsms/npc
+                                             :initial-state :npc-idle}
+                                :entity/faction (:entity/faction @source)}}))

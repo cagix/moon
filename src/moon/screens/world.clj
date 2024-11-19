@@ -8,7 +8,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]
-            [gdl.utils :refer [readable-number tile->middle dev-mode?]]
+            [gdl.utils :refer [readable-number dev-mode?]]
             [moon.app :refer [draw-tiled-map draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
@@ -22,49 +22,11 @@
             [moon.widgets.inventory :as inventory]
             [moon.widgets.player-message :as player-message]
             [moon.world :as world :refer [tick-error paused?]]
-            [moon.world.content-grid :as content-grid]
             [moon.world.debug-render :as debug-render]
-            [moon.world.entities :as entities]
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
-            [moon.world.raycaster :as raycaster]
             [moon.world.time :as time]
             [moon.world.tile-color-setter :as tile-color-setter]))
-
-(defn- create-grid [tiled-map]
-  (g2d/create-grid
-   (tiled/width tiled-map)
-   (tiled/height tiled-map)
-   (fn [position]
-     (atom (world/->cell position
-                        (case (level/movement-property tiled-map position)
-                          "none" :none
-                          "air"  :air
-                          "all"  :all))))))
-
-(def ^:private ^:dbg-flag spawn-enemies? true)
-
-; player-creature needs mana & inventory
-; till then hardcode :creatures/vampire
-(defn- spawn-player [start-position]
-  (entities/creature {:position (tile->middle start-position)
-                      :creature-id :creatures/vampire
-                      :components {:entity/fsm {:fsm :fsms/player
-                                                :initial-state :player-idle}
-                                   :entity/faction :good
-                                   :entity/player? true
-                                   :entity/free-skill-points 3
-                                   :entity/clickable {:type :clickable/player}
-                                   :entity/click-distance-tiles 1.5}}))
-
-(defn- spawn-enemies [tiled-map]
-  (doseq [creature (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                     {:position position
-                      :creature-id (keyword creature-id)
-                      :components {:entity/fsm {:fsm :fsms/npc
-                                                :initial-state :npc-sleeping}
-                                   :entity/faction :evil}})]
-    (entities/creature (update creature :position tile->middle))))
 
 (declare start)
 
@@ -155,22 +117,8 @@
 (defn start [world-id]
   (change-screen :screens/world)
   (stage/reset (stage) (widgets))
-  (let [{:keys [tiled-map start-position]} (level/generate world-id)]
-    (world/clear)
-    (world/init tiled-map)
-    (.bindRoot #'world/grid (create-grid tiled-map))
-    (raycaster/init world/grid world/blocks-vision?)
-    (let [width  (tiled/width  tiled-map)
-          height (tiled/height tiled-map)]
-      (.bindRoot #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config
-                                                               :width  width
-                                                               :height height})))
-    (.bindRoot #'tick-error nil)
-    (.bindRoot #'entities/ids->eids {})
-    (time/init)
-    (.bindRoot #'player/eid (spawn-player start-position))
-    (when spawn-enemies?
-      (spawn-enemies tiled-map))))
+  (world/clear)
+  (world/init (level/generate world-id)))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
@@ -188,13 +136,13 @@
   (update-game-paused)
   (when-not paused?
     (time/pass (min (delta-time) movement/max-delta-time))
-    (let [entities (entities/active)]
+    (let [entities (world/active-entities)]
       (update-potential-fields! entities)
-      (try (entities/tick entities)
+      (try (world/tick-entities entities)
            (catch Throwable t
              (error-window! t)
              (.bindRoot #'tick-error t)))))
-  (entities/remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
+  (world/remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
 
 (defn- render-world []
   ; FIXME position DRY
@@ -207,7 +155,7 @@
   (draw-on-world-view (fn []
                        (debug-render/before-entities)
                        ; FIXME position DRY (from player)
-                       (entities/render (map deref (entities/active)))
+                       (world/render-entities (map deref (world/active-entities)))
                        (debug-render/after-entities))))
 
 (deftype WorldScreen []

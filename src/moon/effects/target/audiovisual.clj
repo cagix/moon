@@ -1,5 +1,5 @@
 (ns moon.effects.target.audiovisual
-  (:require [moon.world.entities :as entities]))
+  (:require [moon.world :as world]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   target)
@@ -8,4 +8,4 @@
   false)
 
 (defn handle [audiovisual {:keys [effect/target]}]
-  (entities/audiovisual (:position @target) audiovisual))
+  (world/audiovisual (:position @target) audiovisual))

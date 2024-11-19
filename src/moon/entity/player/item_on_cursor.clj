@@ -6,7 +6,7 @@
             [moon.entity.inventory :as inventory]
             [moon.player :as player]
             [moon.item :refer [valid-slot? stackable?]]
-            [moon.world.entities :as entities]))
+            [moon.world :as world]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -94,7 +94,7 @@
     (when (:entity/item-on-cursor entity)
       (play-sound "sounds/bfxr_itemputground.wav")
       (swap! eid dissoc :entity/item-on-cursor)
-      (entities/item (item-place-position entity) (:entity/item-on-cursor entity)))))
+      (world/item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
 (defn render-below [{:keys [item]} entity]
   (when (world-item?)
