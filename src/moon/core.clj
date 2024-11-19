@@ -3,6 +3,7 @@
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.text :as text]
+            [gdl.graphics.tiled :as tiled]
             [gdl.graphics.world-view :as world-view]
             [gdl.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.audio Sound)
@@ -14,7 +15,8 @@
          batch
          shape-drawer
          cursors
-         default-font)
+         default-font
+         cached-map-renderer)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -101,3 +103,17 @@
 
 (defn set-cursor [cursor-key]
   (graphics/set-cursor (safe-get cursors cursor-key)))
+
+(defn draw-tiled-map
+  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
+
+  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
+
+  Can be used for lights & shadows.
+
+  Renders only visible layers."
+  [tiled-map color-setter]
+  (tiled/render (cached-map-renderer tiled-map)
+                color-setter
+                (world-view/camera)
+                tiled-map))

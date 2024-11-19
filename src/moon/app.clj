@@ -17,7 +17,7 @@
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
-            [moon.core :refer [asset-manager batch shape-drawer cursors default-font]]
+            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -285,13 +285,16 @@
                                             {:file "fonts/exocet/films.EXL_____.ttf"
                                              :size 16
                                              :quality-scaling 2}))
+                 (.bindRoot #'cached-map-renderer
+                            (memoize
+                             (fn [tiled-map]
+                               (graphics.tiled/renderer tiled-map (world-view/unit-scale) batch))))
                  (gui-view/init {:world-width 1440
                                  :world-height 900})
                  (world-view/init {:world-width 1440
                                    :world-height 900
                                    :tile-size 48})
                  (ui/load! :skin-scale/x1)
-                 (graphics.tiled/init batch)
                  (screen/set-screens
                   {:screens/main-menu  (stage/create batch (main-menu/create))
                    :screens/map-editor (stage/create batch (map-editor/create))
