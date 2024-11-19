@@ -1,21 +1,20 @@
 (ns moon.widgets.modal
-  (:require [gdl.stage :as stage]
-            [gdl.ui :as ui]
+  (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [gui-viewport-width gui-viewport-height]]))
+            [moon.core :refer [gui-viewport-width gui-viewport-height stage add-actor]]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show [{:keys [title text button-text on-click]}]
-  (assert (not (::modal (stage/get))))
-  (stage/add!
+  (assert (not (::modal (stage))))
+  (add-actor
    (ui/window {:title title
                :rows [[(ui/label text)]
                       [(ui/text-button button-text
                                        (fn []
-                                         (a/remove! (::modal (stage/get)))
+                                         (a/remove! (::modal (stage)))
                                          (on-click)))]]
                :id ::modal
                :modal? true

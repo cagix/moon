@@ -1,8 +1,8 @@
 (ns moon.widgets.action-bar
   (:require [gdl.info :as info]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as a]))
+            [gdl.ui.actor :as a]
+            [moon.core :refer [stage]]))
 
 (def ^:private image-scale 2)
 
@@ -16,7 +16,7 @@
   (.getUserObject (.findActor group "action-bar/button-group")))
 
 (defn- get-action-bar []
-  (let [group (::action-bar (:action-bar-table (stage/get)))]
+  (let [group (::action-bar (:action-bar-table (stage)))]
     {:horizontal-group group
      :button-group (group->button-group group)}))
 

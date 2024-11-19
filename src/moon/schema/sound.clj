@@ -2,10 +2,9 @@
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.schema :as schema]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [asset-manager play-sound]]
+            [moon.core :refer [asset-manager add-actor play-sound]]
             [moon.editor.scrollpane :refer [scrollable-choose-window]])
   (:import (com.badlogic.gdx.audio Sound)))
 
@@ -28,7 +27,7 @@
                                   (let [[k _] (.getUserObject table)]
                                     (.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
-    (stage/add! (scrollable-choose-window rows))))
+    (add-actor (scrollable-choose-window rows))))
 
 (defn- columns [table sound-file]
   [(ui/text-button (name sound-file) #(choose-window table))

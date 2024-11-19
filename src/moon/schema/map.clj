@@ -1,10 +1,10 @@
 (ns ^:no-doc moon.schema.map
   (:require [gdl.schema :as schema]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [malli.generator :as mg]
+            [moon.core :refer [stage add-actor]]
             [moon.editor.malli :as malli]
             [moon.editor.property :as widgets.property]
             [moon.editor.scrollpane :refer [scroll-pane-cell]]))
@@ -38,7 +38,7 @@
   (schema/form [:s/map-optional (namespaced-ks ns-name-k)]))
 
 (defn- editor-window []
-  (:property-editor-window (stage/get)))
+  (:property-editor-window (stage)))
 
 (defn- property-value []
  (let [window (editor-window)
@@ -50,7 +50,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
     (a/remove! (editor-window))
-    (stage/add! (widgets.property/editor-window prop-value))))
+    (add-actor (widgets.property/editor-window prop-value))))
 
 (defn- k->default-value [k]
   (let [schema (schema/of k)]
@@ -120,7 +120,7 @@
                                                            map-widget-table)])
                           (rebuild-editor-window)))]))
     (.pack window)
-    (stage/add! window)))
+    (add-actor window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))

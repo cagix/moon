@@ -4,8 +4,8 @@
             [gdl.input :refer [key-just-pressed?]]
             [gdl.property :as property]
             [gdl.screen :as screen]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
+            [moon.core :refer [add-actor]]
             [moon.editor.property :as widgets.property]
             [moon.editor.overview :as properties-overview]
             [moon.widgets.background-image :as background-image])
@@ -14,7 +14,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (stage/add! (widgets.property/editor-window (db/get-raw id))))
+  (add-actor (widgets.property/editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
   (for [property-type (sort (property/types))]

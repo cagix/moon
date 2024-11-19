@@ -2,10 +2,9 @@
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
             [gdl.info :as info]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.player :as player]))
@@ -113,7 +112,7 @@
                        :pad 4}]]}))
 
 (defn window []
-  (get (:windows (stage/get)) :inventory-window))
+  (get (:windows (stage)) :inventory-window))
 
 (defn- cell-widget [cell]
   (get (::table (window)) cell))

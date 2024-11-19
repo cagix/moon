@@ -5,7 +5,8 @@
             [gdl.graphics.text :as text]
             [gdl.graphics.tiled :as tiled]
             [gdl.graphics.viewport :as vp]
-            [gdl.stage :as stage]
+            [gdl.screen :as screen]
+            [gdl.ui.stage :as stage]
             [gdl.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color Texture)
@@ -152,5 +153,11 @@
                 (world-camera)
                 tiled-map))
 
+(defn stage []
+  (:stage (screen/current)))
+
 (defn mouse-on-actor? []
-  (stage/mouse-on-actor? (gui-mouse-position)))
+  (stage/hit (stage) (gui-mouse-position) :touchable? true))
+
+(defn add-actor [actor]
+  (stage/add! (stage) actor))

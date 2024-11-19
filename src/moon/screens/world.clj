@@ -4,12 +4,12 @@
             [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.screen :as screen]
-            [gdl.stage :as stage]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
+            [gdl.ui.stage :as stage]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
-            [moon.core :refer [draw-on-world-view gui-mouse-position set-cursor world-camera world-mouse-position]]
+            [moon.core :refer [draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
             [moon.level :as level]
@@ -143,7 +143,7 @@
    (player-message/create)])
 
 (defn- windows []
-  (:windows (stage/get)))
+  (:windows (stage)))
 
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]
@@ -157,7 +157,7 @@
 
 (defn start [world-id]
   (screen/change :screens/world)
-  (stage/reset (widgets))
+  (stage/reset (stage) (widgets))
   (let [{:keys [tiled-map start-position]} (level/generate world-id)]
     (tiled-map/clear)
     (tiled-map/init tiled-map)

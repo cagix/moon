@@ -3,9 +3,9 @@
             [gdl.info :as info]
             [gdl.property :as property]
             [gdl.schema :as schema]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
+            [moon.core :refer [add-actor]]
             [moon.editor.overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]
@@ -34,7 +34,7 @@
                                                  (redo-rows id))]
                              (.add window (properties-overview/table property-type clicked-id-fn))
                              (.pack window)
-                             (stage/add! window)))))]
+                             (add-actor window)))))]
       [(when property-id
          (let [property (db/get property-id)
                image-widget (ui/image->widget (property/->image property) {:id property-id})]

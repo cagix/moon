@@ -1,7 +1,7 @@
 (ns moon.widgets.error-window
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [gdl.stage :as stage]
-            [gdl.ui :as ui]))
+            [gdl.ui :as ui]
+            [moon.core :refer [add-actor stage]]))
 
 (defmacro ^:private with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh
@@ -16,7 +16,7 @@
 (defn error-window! [throwable]
   (binding [*print-level* 5]
     (pretty-pst throwable 24))
-  (stage/add!
+  (add-actor
    (ui/window {:title "Error"
                :rows [[(ui/label (binding [*print-level* 3]
                                    (with-err-str
