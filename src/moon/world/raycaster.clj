@@ -4,7 +4,7 @@
 (declare ^:private raycaster)
 
 (defn init [grid blocks-vision?]
-  (bind-root #'raycaster (raycaster/create grid blocks-vision?)))
+  (.bindRoot #'raycaster (raycaster/create grid blocks-vision?)))
 
 (defn ray-blocked? [start target]
   (raycaster/blocked? raycaster start target))

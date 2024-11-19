@@ -14,8 +14,8 @@
     (dispose tiled-map)))
 
 (defn init [tmap]
-  (bind-root #'tiled-map tmap)
-  (bind-root #'explored-tile-corners
+  (.bindRoot #'tiled-map tmap)
+  (.bindRoot #'explored-tile-corners
              (atom (g2d/create-grid (tiled/width  tmap)
                                     (tiled/height tmap)
                                     (constantly false)))))

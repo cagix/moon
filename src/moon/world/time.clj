@@ -26,8 +26,8 @@
 
 (defn pass [delta-ms]
   (alter-var-root #'elapsed + delta-ms)
-  (bind-root #'delta delta-ms))
+  (.bindRoot #'delta delta-ms))
 
 (defn init []
-  (bind-root #'elapsed 0)
-  (bind-root #'delta nil))
+  (.bindRoot #'elapsed 0)
+  (.bindRoot #'delta nil))

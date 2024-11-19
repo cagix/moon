@@ -1,25 +1,25 @@
 (ns moon.core
-  ; this is an abstraction over the application environment
-  ; do also for world/entity?
-  ; 'wiring' namespaces ...
-  ; so also input?
-  (:require [gdl.graphics :as graphics]
+  (:require [gdl.app :as app]
+            [gdl.assets :as assets]
+            [gdl.graphics :as graphics]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.text :as text]
             [gdl.graphics.tiled :as tiled]
             [gdl.graphics.viewport :as vp]
             [gdl.screen :as screen]
+            [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
-            [gdl.utils :refer [safe-get]])
+            [gdl.utils :refer [dispose safe-get mapvals]])
   (:import (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Color Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+           (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
 (declare asset-manager
          batch
          shape-drawer
+         ^:private shape-drawer-texture
          cursors
          default-font
          cached-map-renderer
@@ -42,6 +42,63 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (.bindRoot #'current-screen-key new-k)
     (screen/enter screen)))
+
+(defn start-app [{:keys [app-config
+                         asset-folder
+                         cursors
+                         default-font
+                         tile-size
+                         world-viewport-width
+                         world-viewport-height
+                         gui-viewport-width
+                         gui-viewport-height
+                         ui-skin-scale
+                         init-screens
+                         first-screen-k]}]
+  (app/start app-config
+             (reify app/Listener
+               (create [_]
+                 (.bindRoot #'asset-manager (assets/load-all (assets/search asset-folder)))
+                 (.bindRoot #'batch (SpriteBatch.))
+                 (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
+                 (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
+                 (.bindRoot #'cursors (mapvals (fn [[file hotspot]]
+                                                 (graphics/cursor (str "cursors/" file ".png") hotspot))
+                                               cursors))
+                 (.bindRoot #'default-font (text/truetype-font default-font))
+                 (.bindRoot #'world-unit-scale (float (/ tile-size)))
+                 (.bindRoot #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
+                                                   world-height (* world-viewport-height world-unit-scale)
+                                                   camera (OrthographicCamera.)
+                                                   y-down? false]
+                                               (.setToOrtho camera y-down? world-width world-height)
+                                               (FitViewport. world-width world-height camera)))
+                 (.bindRoot #'cached-map-renderer (memoize
+                                                   (fn [tiled-map]
+                                                     (tiled/renderer tiled-map world-unit-scale batch))))
+                 (.bindRoot #'gui-viewport (FitViewport. gui-viewport-width
+                                                         gui-viewport-height
+                                                         (OrthographicCamera.)))
+                 (ui/load! ui-skin-scale)
+                 (.bindRoot #'screens (init-screens))
+                 (change-screen first-screen-k))
+
+               (dispose [_]
+                 (dispose asset-manager)
+                 (dispose batch)
+                 (dispose shape-drawer-texture)
+                 (dispose default-font)
+                 (run! dispose (vals cursors))
+                 (run! screen/dispose (vals screens))
+                 (ui/dispose!))
+
+               (render [_]
+                 (graphics/clear-screen :black)
+                 (screen/render (current-screen)))
+
+               (resize [_ dimensions]
+                 (vp/update gui-viewport   dimensions :center-camera? true)
+                 (vp/update world-viewport dimensions)))))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 

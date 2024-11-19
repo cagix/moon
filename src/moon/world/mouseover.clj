@@ -31,5 +31,5 @@
       (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (bind-root #'eid new-eid)
+    (.bindRoot #'eid new-eid)
     nil))

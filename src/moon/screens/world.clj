@@ -161,17 +161,17 @@
   (let [{:keys [tiled-map start-position]} (level/generate world-id)]
     (tiled-map/clear)
     (tiled-map/init tiled-map)
-    (bind-root #'grid/grid (create-grid tiled-map))
+    (.bindRoot #'grid/grid (create-grid tiled-map))
     (raycaster/init grid/grid grid/blocks-vision?)
     (let [width  (tiled/width  tiled-map)
           height (tiled/height tiled-map)]
-      (bind-root #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config
+      (.bindRoot #'entities/content-grid (content-grid/create {:cell-size 16  ; FIXME global config
                                                                :width  width
                                                                :height height})))
-    (bind-root #'tick-error nil)
-    (bind-root #'entities/ids->eids {})
+    (.bindRoot #'tick-error nil)
+    (.bindRoot #'entities/ids->eids {})
     (time/init)
-    (bind-root #'player/eid (spawn-player start-position))
+    (.bindRoot #'player/eid (spawn-player start-position))
     (when spawn-enemies?
       (spawn-enemies tiled-map))))
 
@@ -179,7 +179,7 @@
 (def ^:private ^:dbg-flag pausing? true)
 
 (defn- update-game-paused []
-  (bind-root #'paused? (or tick-error
+  (.bindRoot #'paused? (or tick-error
                            (and pausing?
                                 (player/state-pauses-game?)
                                 (not (controls/unpaused?)))))
@@ -196,7 +196,7 @@
       (try (entities/tick entities)
            (catch Throwable t
              (error-window! t)
-             (bind-root #'tick-error t)))))
+             (.bindRoot #'tick-error t)))))
   (entities/remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
 
 (defn- render-world []

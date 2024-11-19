@@ -19,11 +19,11 @@
   (when-let [{:keys [counter]} message-to-player]
     (alter-var-root #'message-to-player update :counter + (gdx.graphics/delta-time))
     (when (>= counter duration-seconds)
-      (bind-root #'message-to-player nil))))
+      (.bindRoot #'message-to-player nil))))
 
 (defn create []
   (ui/actor {:draw draw-player-message
              :act check-remove-message}))
 
 (defn show [message]
-  (bind-root #'message-to-player {:message message :counter 0}))
+  (.bindRoot #'message-to-player {:message message :counter 0}))

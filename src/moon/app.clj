@@ -1,21 +1,12 @@
 (ns moon.app
   (:require [clojure.string :as str]
-            [gdl.assets :as assets]
-            [gdl.app :as app]
             [moon.db :as db]
-            [gdl.graphics :as graphics :refer [clear-screen]]
             [gdl.graphics.color :as color]
-            [gdl.graphics.tiled :as tiled]
-            [gdl.graphics.text :as text]
-            [gdl.graphics.shape-drawer :as shape-drawer]
-            [gdl.graphics.viewport :as vp]
             [moon.info :as info :refer [info]]
-            [gdl.screen :as screen]
             [gdl.stage :as stage]
             [moon.system :as system]
-            [gdl.ui :as ui]
-            [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
-            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer world-unit-scale world-viewport gui-viewport screens change-screen current-screen]]
+            [gdl.utils :as utils :refer [k->pretty-name readable-number]]
+            [moon.core :as core :refer [batch gui-viewport]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -38,10 +29,7 @@
                          string)
             (moon.level generate
                         uf-caves
-                        tiled-map))
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+                        tiled-map)))
 
 (defn- namespace->component-key [ns-str]
    (let [ns-parts (-> ns-str
@@ -190,7 +178,7 @@
 (derive :entity/armor-save     ::stat)
 (derive :entity/armor-pierce   ::stat)
 
-(bind-root #'moon.schema.map/property-k-sort-order
+(.bindRoot #'moon.schema.map/property-k-sort-order
            [:property/id
             :property/pretty-name
             :entity/image
@@ -208,7 +196,7 @@
             :skill/cost
             :skill/cooldown])
 
-(bind-root #'moon.editor.overview/overview
+(.bindRoot #'moon.editor.overview/overview
            {:properties/audiovisuals {:columns 10
                                       :image/scale 2}
             :properties/creatures {:columns 15
@@ -229,7 +217,7 @@
                                 :image/scale 2}
             :properties/worlds {:columns 10}})
 
-(bind-root #'moon.info/info-text-k-order
+(.bindRoot #'moon.info/info-text-k-order
            [:property/pretty-name
             :skill/action-time-modifier-key
             :skill/action-time
@@ -250,78 +238,44 @@
             :maxrange
             :entity-effects])
 
-(declare ^:private shape-drawer-texture)
+(def ^:private config
+  {:app-config {:title "Moon"
+                :fps 60
+                :width 1440
+                :height 900
+                :dock-icon "moon.png"}
+   :asset-folder "resources/"
+   :cursors {:cursors/bag                   ["bag001"       [0   0]]
+             :cursors/black-x               ["black_x"      [0   0]]
+             :cursors/default               ["default"      [0   0]]
+             :cursors/denied                ["denied"       [16 16]]
+             :cursors/hand-before-grab      ["hand004"      [4  16]]
+             :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+             :cursors/hand-grab             ["hand003"      [4  16]]
+             :cursors/move-window           ["move002"      [16 16]]
+             :cursors/no-skill-selected     ["denied003"    [0   0]]
+             :cursors/over-button           ["hand002"      [0   0]]
+             :cursors/sandclock             ["sandclock"    [16 16]]
+             :cursors/skill-not-usable      ["x007"         [0   0]]
+             :cursors/use-skill             ["pointer004"   [0   0]]
+             :cursors/walking               ["walking"      [16 16]]}
+   :default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                  :size 16
+                  :quality-scaling 2}
+   :tile-size 48
+   :world-viewport-width 1440
+   :world-viewport-height 900
+   :gui-viewport-width 1440
+   :gui-viewport-height 900
+   :ui-skin-scale :skin-scale/x1
+   :init-screens (fn []
+                   {:screens/main-menu  (stage/create gui-viewport batch (main-menu/create))
+                    :screens/map-editor (stage/create gui-viewport batch (map-editor/create))
+                    :screens/editor     (stage/create gui-viewport batch (editor/create))
+                    :screens/minimap    (minimap/create)
+                    :screens/world      (stage/create gui-viewport batch (world/create))})
+   :first-screen-k :screens/main-menu})
 
 (defn -main []
-  (db/init :schema "schema.edn"
-           :properties "properties.edn")
-  (app/start {:title "Moon"
-              :fps 60
-              :width 1440
-              :height 900
-              :dock-icon "moon.png"}
-             (reify app/Listener
-               (create [_]
-                 (.bindRoot #'asset-manager (assets/load-all (assets/search "resources/")))
-                 (.bindRoot #'batch (SpriteBatch.))
-                 (.bindRoot #'shape-drawer-texture (shape-drawer/white-pixel-texture))
-                 (.bindRoot #'shape-drawer (shape-drawer/create batch shape-drawer-texture))
-                 (.bindRoot #'cursors (mapvals (fn [[file hotspot]]
-                                                 (graphics/cursor (str "cursors/" file ".png") hotspot))
-                                               {:cursors/bag                   ["bag001"       [0   0]]
-                                                :cursors/black-x               ["black_x"      [0   0]]
-                                                :cursors/default               ["default"      [0   0]]
-                                                :cursors/denied                ["denied"       [16 16]]
-                                                :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                :cursors/hand-grab             ["hand003"      [4  16]]
-                                                :cursors/move-window           ["move002"      [16 16]]
-                                                :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                :cursors/over-button           ["hand002"      [0   0]]
-                                                :cursors/sandclock             ["sandclock"    [16 16]]
-                                                :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                :cursors/use-skill             ["pointer004"   [0   0]]
-                                                :cursors/walking               ["walking"      [16 16]]}))
-                 (.bindRoot #'default-font (text/truetype-font
-                                            {:file "fonts/exocet/films.EXL_____.ttf"
-                                             :size 16
-                                             :quality-scaling 2}))
-                 (.bindRoot #'world-unit-scale (float (/ 48)))
-                 (.bindRoot #'world-viewport (let [world-width  (* 1440 world-unit-scale)
-                                                   world-height (* 900 world-unit-scale)
-                                                   camera (OrthographicCamera.)
-                                                   y-down? false]
-                                               (.setToOrtho camera y-down? world-width world-height)
-                                               (FitViewport. world-width world-height camera)))
-                 (.bindRoot #'cached-map-renderer
-                            (memoize
-                             (fn [tiled-map]
-                               (tiled/renderer tiled-map world-unit-scale batch))))
-                 (.bindRoot #'gui-viewport (FitViewport. 1440
-                                                         900
-                                                         (OrthographicCamera.)))
-                 (ui/load! :skin-scale/x1)
-                 (.bindRoot #'screens {:screens/main-menu  (stage/create gui-viewport batch (main-menu/create))
-                                       :screens/map-editor (stage/create gui-viewport batch (map-editor/create))
-                                       :screens/editor     (stage/create gui-viewport batch (editor/create))
-                                       :screens/minimap    (minimap/create)
-                                       :screens/world      (stage/create gui-viewport batch (world/create))})
-                 (change-screen :screens/world)
-                 (world/start :worlds/vampire))
-
-               (dispose [_]
-                 (.dispose asset-manager)
-                 (.dispose batch)
-                 (.dispose shape-drawer-texture)
-                 (.dispose default-font)
-                 (run! utils/dispose (vals cursors))
-                 (run! screen/dispose (vals screens))
-                 (ui/dispose!))
-
-               (render [_]
-                 (clear-screen :black)
-                 (screen/render (current-screen)))
-
-               (resize [_ dimensions]
-                 (vp/update gui-viewport   dimensions :center-camera? true)
-                 (vp/update world-viewport dimensions)))))
+  (db/init :schema "schema.edn" :properties "properties.edn")
+  (core/start-app config))

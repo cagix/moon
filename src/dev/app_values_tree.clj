@@ -28,5 +28,5 @@
   (spit "app-values-tree.clj"
         (with-out-str
          (clojure.pprint/pprint
-          (for [[ns-name vars] (ns-value-vars #{"moon" "gdl"})]
+          (for [[ns-name vars] (ns-value-vars #{"moon"})]
             [ns-name (map #(:name (meta %)) vars)])))))
