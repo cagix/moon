@@ -1,4 +1,4 @@
-(ns dev.migrations
+(ns ^:no-doc dev.migrations
   (:require [moon.db :refer [migrate]]))
 
 (comment

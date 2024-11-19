@@ -1,10 +1,8 @@
 (ns moon.screens.world
-  (:require [data.grid2d :as g2d]
-            [moon.db :as db]
+  (:require [moon.db :as db]
             [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
             [gdl.screen :as screen]
-            [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]
