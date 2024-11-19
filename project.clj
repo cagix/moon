@@ -31,7 +31,7 @@
           :metadata {:doc/format :markdown}}
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
-  :global-vars {*warn-on-reflection* false
+  :global-vars {*warn-on-reflection* true
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
                 *print-level* 3
