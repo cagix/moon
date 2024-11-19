@@ -13,7 +13,8 @@
 (declare asset-manager
          batch
          shape-drawer
-         cursors)
+         cursors
+         default-font)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -32,7 +33,7 @@
    :tileh tileh})
 
 (defn draw-text [opts]
-  (text/draw batch *unit-scale* opts))
+  (text/draw batch *unit-scale* default-font opts))
 
 (defn draw-image [image position]
   (image/draw batch *unit-scale* image position))

@@ -6,7 +6,7 @@
             [gdl.graphics :as graphics :refer [clear-screen]]
             [gdl.graphics.color :as color]
             [gdl.graphics.tiled :as graphics.tiled]
-            [gdl.graphics.text :as font]
+            [gdl.graphics.text :as text]
             [gdl.graphics.shape-drawer :as shape-drawer]
             [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.world-view :as world-view]
@@ -17,7 +17,7 @@
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
-            [moon.core :refer [asset-manager batch shape-drawer cursors]]
+            [moon.core :refer [asset-manager batch shape-drawer cursors default-font]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -281,6 +281,10 @@
                                                 :cursors/skill-not-usable      ["x007"         [0   0]]
                                                 :cursors/use-skill             ["pointer004"   [0   0]]
                                                 :cursors/walking               ["walking"      [16 16]]}))
+                 (.bindRoot #'default-font (text/truetype-font
+                                            {:file "fonts/exocet/films.EXL_____.ttf"
+                                             :size 16
+                                             :quality-scaling 2}))
                  (gui-view/init {:world-width 1440
                                  :world-height 900})
                  (world-view/init {:world-width 1440
@@ -288,9 +292,6 @@
                                    :tile-size 48})
                  (ui/load! :skin-scale/x1)
                  (graphics.tiled/init batch)
-                 (font/init {:file "fonts/exocet/films.EXL_____.ttf"
-                             :size 16
-                             :quality-scaling 2})
                  (screen/set-screens
                   {:screens/main-menu  (stage/create batch (main-menu/create))
                    :screens/map-editor (stage/create batch (map-editor/create))
@@ -303,9 +304,9 @@
                  (.dispose asset-manager)
                  (.dispose batch)
                  (.dispose shape-drawer-texture)
+                 (.dispose default-font)
                  (run! utils/dispose (vals cursors))
                  (ui/dispose!)
-                 (font/dispose)
                  (screen/dispose-all))
 
                (render [_]
