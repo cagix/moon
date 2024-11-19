@@ -1,10 +1,9 @@
 (ns moon.entity.player.idle
   (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.core :refer [play-sound set-cursor world-mouse-position]]
+            [moon.core :refer [play-sound set-cursor world-mouse-position mouse-on-actor?]]
             [moon.controls :as controls]
             [moon.effects :as effects]
             [moon.entity.fsm :as fsm]
@@ -68,7 +67,7 @@
                (a/id (a/parent actor)))))
 
 (defn- mouseover-actor->cursor []
-  (let [actor (stage/mouse-on-actor?)]
+  (let [actor (mouse-on-actor?)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)      :cursors/move-window
@@ -86,7 +85,7 @@
 (defn- interaction-state [eid]
   (let [entity @eid]
     (cond
-     (stage/mouse-on-actor?)
+     (mouse-on-actor?)
      [(mouseover-actor->cursor) (fn [] nil)] ; handled by actors themself, they check player state
 
      (and mouseover/eid (:entity/clickable @mouseover/eid))

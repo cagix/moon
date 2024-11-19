@@ -303,11 +303,11 @@
 
                  (ui/load! :skin-scale/x1)
                  (screen/set-screens
-                  {:screens/main-menu  (stage/create batch (main-menu/create))
-                   :screens/map-editor (stage/create batch (map-editor/create))
-                   :screens/editor     (stage/create batch (editor/create))
+                  {:screens/main-menu  (stage/create (gui-view/viewport) batch (main-menu/create))
+                   :screens/map-editor (stage/create (gui-view/viewport) batch (map-editor/create))
+                   :screens/editor     (stage/create (gui-view/viewport) batch (editor/create))
                    :screens/minimap    (minimap/create)
-                   :screens/world      (stage/create batch (world/create))})
+                   :screens/world      (stage/create (gui-view/viewport) batch (world/create))})
                  (world/start :worlds/vampire))
 
                (dispose [_]

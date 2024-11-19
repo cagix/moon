@@ -1,10 +1,12 @@
 (ns moon.core
   (:require [gdl.graphics :as graphics]
+            [gdl.graphics.gui-view :as gui-view]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.text :as text]
             [gdl.graphics.tiled :as tiled]
             [gdl.graphics.viewport :as vp]
+            [gdl.stage :as stage]
             [gdl.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color Texture)
@@ -142,3 +144,6 @@
                 color-setter
                 (world-camera)
                 tiled-map))
+
+(defn mouse-on-actor? []
+  (stage/mouse-on-actor? (gui-view/mouse-position)))
