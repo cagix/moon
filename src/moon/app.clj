@@ -15,7 +15,7 @@
             [gdl.system :as system]
             [gdl.ui :as ui]
             [gdl.utils :as utils :refer [k->pretty-name readable-number mapvals]]
-            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer world-unit-scale world-viewport gui-viewport]]
+            [moon.core :refer [asset-manager batch shape-drawer cursors default-font cached-map-renderer world-unit-scale world-viewport gui-viewport screens change-screen current-screen]]
             [moon.effect :as effect]
             [moon.entity :as entity]
             [moon.entity.fsm :as fsm]
@@ -301,12 +301,12 @@
                                                          900
                                                          (OrthographicCamera.)))
                  (ui/load! :skin-scale/x1)
-                 (screen/set-screens
-                  {:screens/main-menu  (stage/create gui-viewport batch (main-menu/create))
-                   :screens/map-editor (stage/create gui-viewport batch (map-editor/create))
-                   :screens/editor     (stage/create gui-viewport batch (editor/create))
-                   :screens/minimap    (minimap/create)
-                   :screens/world      (stage/create gui-viewport batch (world/create))})
+                 (.bindRoot #'screens {:screens/main-menu  (stage/create gui-viewport batch (main-menu/create))
+                                       :screens/map-editor (stage/create gui-viewport batch (map-editor/create))
+                                       :screens/editor     (stage/create gui-viewport batch (editor/create))
+                                       :screens/minimap    (minimap/create)
+                                       :screens/world      (stage/create gui-viewport batch (world/create))})
+                 (change-screen :screens/world)
                  (world/start :worlds/vampire))
 
                (dispose [_]
@@ -315,12 +315,12 @@
                  (.dispose shape-drawer-texture)
                  (.dispose default-font)
                  (run! utils/dispose (vals cursors))
-                 (ui/dispose!)
-                 (screen/dispose-all))
+                 (run! screen/dispose (vals screens))
+                 (ui/dispose!))
 
                (render [_]
                  (clear-screen :black)
-                 (screen/render (screen/current)))
+                 (screen/render (current-screen)))
 
                (resize [_ dimensions]
                  (vp/update gui-viewport   dimensions :center-camera? true)

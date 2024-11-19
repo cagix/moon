@@ -1,6 +1,5 @@
 (ns moon.entity.player.dead
-  (:require [gdl.screen :as screen]
-            [moon.core :refer [play-sound]]
+  (:require [moon.core :refer [change-screen play-sound]]
             [moon.widgets.modal :as modal]))
 
 (defn cursor [_]
@@ -14,4 +13,4 @@
   (modal/show {:title "YOU DIED"
                :text "\nGood luck next time"
                :button-text ":("
-               :on-click #(screen/change :screens/main-menu)}))
+               :on-click #(change-screen :screens/main-menu)}))

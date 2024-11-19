@@ -9,7 +9,7 @@
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
-            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
+            [moon.core :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position current-screen change-screen]]
             [moon.controls :as controls]
             [moon.level :as level]
             [moon.level.modules :as modules]
@@ -26,8 +26,8 @@
                                      :right [(t/width tiled-map) 0]
                                      :bottom [0 0])))
 
-(defn- current-data []
-  (-> (screen/current) :sub-screen :current-data))
+(defn- current-data [] ; TODO just use vars
+  (-> (current-screen) :sub-screen :current-data))
 
 (def ^:private infotext
   "L: grid lines
@@ -147,7 +147,7 @@ direction keys: move")
     (controls/world-camera-zoom)
     (camera-controls (world-camera))
     (when (key-just-pressed? :keys/escape)
-      (screen/change :screens/main-menu)))
+      (change-screen :screens/main-menu)))
 
   (dispose [_]
     (dispose (:tiled-map @current-data))))

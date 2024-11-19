@@ -21,7 +21,23 @@
          cached-map-renderer
          world-unit-scale
          world-viewport
-         gui-viewport)
+         gui-viewport
+         current-screen-key
+         screens)
+
+(defn current-screen []
+  (and (bound? #'current-screen-key)
+       (current-screen-key screens)))
+
+(defn change-screen
+  "Calls `exit` on the current-screen and `enter` on the new screen."
+  [new-k]
+  (when-let [screen (current-screen)]
+    (screen/exit screen))
+  (let [screen (new-k screens)]
+    (assert screen (str "Cannot find screen with key: " new-k))
+    (.bindRoot #'current-screen-key new-k)
+    (screen/enter screen)))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -154,7 +170,7 @@
                 tiled-map))
 
 (defn stage []
-  (:stage (screen/current)))
+  (:stage (current-screen)))
 
 (defn mouse-on-actor? []
   (stage/hit (stage) (gui-mouse-position) :touchable? true))

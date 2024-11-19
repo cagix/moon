@@ -3,7 +3,7 @@
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.screen :as screen]
-            [moon.core :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
+            [moon.core :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera change-screen]]
             [moon.world.tiled-map :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
@@ -50,7 +50,7 @@
        (draw-filled-circle (cam/position (world-camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
-      (screen/change :screens/world)))
+      (change-screen :screens/world)))
 
   (dispose [_]))
 

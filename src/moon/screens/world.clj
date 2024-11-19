@@ -9,7 +9,7 @@
             [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]
             [gdl.utils :refer [readable-number tile->middle dev-mode?]]
-            [moon.core :refer [draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position]]
+            [moon.core :refer [draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
             [moon.level :as level]
@@ -80,11 +80,11 @@
   (dev-menu/create
    {:menus [{:label "Screens"
              :items [{:label "Map-editor"
-                      :on-click (partial screen/change :screens/map-editor)}
+                      :on-click (partial change-screen :screens/map-editor)}
                      {:label "Editor"
-                      :on-click (partial screen/change :screens/editor)}
+                      :on-click (partial change-screen :screens/editor)}
                      {:label "Main-Menu"
-                      :on-click (partial screen/change :screens/main-menu)}]}
+                      :on-click (partial change-screen :screens/main-menu)}]}
             {:label "World"
              :items (for [{:keys [property/id]} (db/all :properties/worlds)]
                       {:label (str "Start " id)
@@ -156,7 +156,7 @@
       (run! #(actor/set-visible! % false) windows))))
 
 (defn start [world-id]
-  (screen/change :screens/world)
+  (change-screen :screens/world)
   (stage/reset (stage) (widgets))
   (let [{:keys [tiled-map start-position]} (level/generate world-id)]
     (tiled-map/clear)
@@ -227,7 +227,7 @@
           (close-all-windows)
 
           (controls/minimap?)
-          (screen/change :screens/minimap)))
+          (change-screen :screens/minimap)))
 
   (screen/dispose [_]
     (tiled-map/clear)))

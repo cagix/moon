@@ -3,9 +3,8 @@
             [gdl.db :as db]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.property :as property]
-            [gdl.screen :as screen]
             [gdl.ui :as ui]
-            [moon.core :refer [add-actor]]
+            [moon.core :refer [add-actor change-screen]]
             [moon.editor.property :as widgets.property]
             [moon.editor.overview :as properties-overview]
             [moon.widgets.background-image :as background-image])
@@ -49,4 +48,4 @@
             (tabs-table)
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :shift-left)
-                                (screen/change :screens/main-menu)))})]})
+                                (change-screen :screens/main-menu)))})]})
