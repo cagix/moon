@@ -2,7 +2,7 @@
   (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [moon.app :refer [draw-centered gui-mouse-position play-sound mouse-on-actor? world-mouse-position]]
-            [moon.entity.fsm :as fsm]
+            [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.item :refer [valid-slot? stackable?]]
             [moon.world :as world]))
@@ -20,7 +20,7 @@
       (play-sound "sounds/bfxr_itemput.wav")
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/set-item eid cell item-on-cursor)
-      (fsm/event eid :dropped-item))
+      (entity/event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -29,7 +29,7 @@
       (play-sound "sounds/bfxr_itemput.wav")
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/stack-item eid cell item-on-cursor)
-      (fsm/event eid :dropped-item))
+      (entity/event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -41,8 +41,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/remove-item eid cell)
       (inventory/set-item eid cell item-on-cursor)
-      (fsm/event eid :dropped-item)
-      (fsm/event eid :pickup-item item-in-cell)))))
+      (entity/event eid :dropped-item)
+      (entity/event eid :pickup-item item-in-cell)))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -73,7 +73,7 @@
 (defn manual-tick [{:keys [eid]}]
   (when (and (button-just-pressed? :left)
              (world-item?))
-    (fsm/event eid :drop-item)))
+    (entity/event eid :drop-item)))
 
 (defn clicked-inventory-cell [{:keys [eid]} cell]
   (clicked-cell eid cell))
@@ -102,7 +102,7 @@
 
 (defn draw-gui-view [{:keys [eid]}]
   (let [entity @eid]
-    (when (and (= :player-item-on-cursor (fsm/state-k entity))
+    (when (and (= :player-item-on-cursor (entity/state-k entity))
                (not (world-item?)))
       (draw-centered (:entity/image (:entity/item-on-cursor entity))
                      (gui-mouse-position)))))

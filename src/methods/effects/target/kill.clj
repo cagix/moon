@@ -1,5 +1,5 @@
 (ns methods.effects.target.kill
-  (:require [moon.entity.fsm :as fsm]))
+  (:require [moon.entity :as entity]))
 
 (defn info [_]
   "Kills target")
@@ -9,4 +9,4 @@
        (:entity/fsm @target)))
 
 (defn handle [_ {:keys [effect/target]}]
-  (fsm/event target :kill))
+  (entity/event target :kill))

@@ -1,6 +1,7 @@
 (ns moon.entity.hp
   (:require [moon.info :as info]
             [moon.app :refer [draw-filled-rectangle pixels->world-units]]
+            [moon.entity :as entity]
             [moon.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -34,21 +35,13 @@
                              (- height (* 2 border))
                              (hpbar-color ratio)))))
 
-(defn value
-  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-hp is capped by max-hp."
-  [entity]
-  (-> entity
-      :entity/hp
-      (val-max/apply-max-modifier entity :modifier/hp-max)))
-
 (defn info [_]
-  (str "Hitpoints: " (value info/*entity*)))
+  (str "Hitpoints: " (entity/hitpoints info/*entity*)))
 
 (defn ->v [v]
   [v v])
 
 (defn render-info [_ entity]
-  (let [ratio (val-max/ratio (value entity))]
+  (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))

@@ -1,7 +1,7 @@
 (ns moon.entity.inventory
   (:require [moon.system :refer [*k*]]
             [gdl.utils :refer [find-first]]
-            [moon.entity.modifiers :as mods]
+            [moon.entity :as entity]
             [moon.item :as item]
             [moon.widgets.inventory :as inventory]))
 
@@ -17,7 +17,7 @@
       (inventory/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
-      (swap! eid mods/add (:entity/modifiers item)))))
+      (swap! eid entity/add-mods (:entity/modifiers item)))))
 
 (defn remove-item [eid cell]
   (let [entity @eid
@@ -27,7 +27,7 @@
       (inventory/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
-      (swap! eid mods/remove (:entity/modifiers item)))))
+      (swap! eid entity/remove-mods (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]

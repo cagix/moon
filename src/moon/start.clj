@@ -7,12 +7,11 @@
             [moon.system :as system]
             [gdl.utils :as utils :refer [k->pretty-name readable-number]]
             [moon.app :as core :refer [batch gui-viewport]]
+            [moon.entity :as entity]
             [moon.systems.component :as component]
             [moon.systems.effect :as effect]
-            [moon.systems.entity :as entity]
+            [moon.systems.entity :as entity-sys]
             [moon.systems.entity-state :as state]
-            [moon.entity.fsm :as fsm]
-            [moon.entity.stat :as stat]
             [moon.screens.editor :as editor]
             [moon.screens.main :as main-menu]
             [moon.screens.map-editor :as map-editor]
@@ -89,14 +88,14 @@
 
 (def ^:private entity
   {:optional [#'component/info
-              #'entity/->v
-              #'entity/create
-              #'entity/destroy
-              #'entity/tick
-              #'entity/render-below
-              #'entity/render
-              #'entity/render-above
-              #'entity/render-info]})
+              #'entity-sys/->v
+              #'entity-sys/create
+              #'entity-sys/destroy
+              #'entity-sys/tick
+              #'entity-sys/render-below
+              #'entity-sys/render
+              #'entity-sys/render-above
+              #'entity-sys/render-info]})
 
 (install-all entity
              '[moon.entity.alert-friendlies-after-duration
@@ -178,7 +177,7 @@
     (str "[CYAN]Cost: " v " Mana[]")))
 
 (defmethod component/info ::stat [[k _]]
-  (str (k->pretty-name k) ": " (stat/value info/*entity* k)))
+  (str (k->pretty-name k) ": " (entity/stat info/*entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)

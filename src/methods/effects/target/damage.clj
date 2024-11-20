@@ -2,15 +2,12 @@
   (:require [moon.db :as db]
             [gdl.rand :refer [rand-int-between]]
             [moon.damage :as damage]
-            [moon.entity.fsm :as fsm]
-            [moon.entity.hp :as hp]
-            [moon.entity.stat :as stat]
-            [moon.entity.string-effect :as string-effect]
+            [moon.entity :as entity]
             [moon.world :as world]))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (stat/value target* :entity/armor-save) 0)
-          (or (stat/value source* :entity/armor-pierce) 0))
+  (max (- (or (entity/stat target* :entity/armor-save) 0)
+          (or (entity/stat source* :entity/armor-pierce) 0))
        0))
 
 (comment
@@ -40,13 +37,13 @@
 (defn handle [damage {:keys [effect/source effect/target]}]
   (let [source* @source
         target* @target
-        hp (hp/value target*)]
+        hp (entity/hitpoints target*)]
     (cond
      (zero? (hp 0))
      nil
 
      (armor-saves? source* target*)
-     (swap! target string-effect/add "[WHITE]ARMOR")
+     (swap! target entity/add-text-effect "[WHITE]ARMOR")
 
      :else
      (let [min-max (:damage/min-max (damage/modified source* target* damage))
@@ -54,5 +51,5 @@
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
        (world/audiovisual (:position target*) (db/get :audiovisuals/damage))
-       (fsm/event target (if (zero? new-hp-val) :kill :alert))
-       (swap! target string-effect/add (str "[RED]" dmg-amount "[]"))))))
+       (entity/event target (if (zero? new-hp-val) :kill :alert))
+       (swap! target entity/add-text-effect (str "[RED]" dmg-amount "[]"))))))

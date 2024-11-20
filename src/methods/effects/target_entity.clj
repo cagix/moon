@@ -2,8 +2,8 @@
   (:require [moon.db :as db]
             [gdl.math.vector :as v]
             [moon.app :refer [draw-line]]
-            [moon.body :as body]
             [moon.effects :as effects]
+            [moon.entity :as entity]
             [moon.world :as world]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
@@ -16,12 +16,12 @@
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
   (v/add (:position entity)
-         (v/scale (body/direction entity target*)
+         (v/scale (entity/direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
   (v/add (start-point entity target*)
-         (v/scale (body/direction entity target*)
+         (v/scale (entity/direction entity target*)
                   maxrange)))
 
 (defn applicable? [{:keys [entity-effects]} {:keys [effect/target] :as ctx}]

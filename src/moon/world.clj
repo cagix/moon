@@ -4,10 +4,10 @@
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.vector :as v]
-            [gdl.utils :refer [dispose tile->middle sort-by-order safe-merge]]
+            [gdl.utils :refer [dispose tile->middle define-order sort-by-order safe-merge]]
             [gdl.tiled :as tiled]
+            [malli.core :as m]
             [moon.app :refer [draw-rectangle play-sound world-camera world-viewport-width world-viewport-height]]
-            [moon.body :as body]
             [moon.db :as db]
             [moon.systems.entity :as entity]
             [moon.level :as level]
@@ -180,12 +180,74 @@
           {}
           components))
 
+(defrecord Body [position
+                 left-bottom
+                 width
+                 height
+                 half-width
+                 half-height
+                 radius
+                 collides?
+                 z-order
+                 rotation-angle])
+
+; setting a min-size for colliding bodies so movement can set a max-speed for not
+; skipping bodies at too fast movement
+; TODO assert at properties load
+(def minimum-body-size 0.39) ; == spider smallest creature size.
+
+; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
+(def max-delta-time 0.04)
+
+; set max speed so small entities are not skipped by projectiles
+; could set faster than max-speed if I just do multiple smaller movement steps in one frame
+(def ^:private max-speed (/ minimum-body-size max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
+
+
+(def ^:private z-orders [:z-order/on-ground
+                         :z-order/ground
+                         :z-order/flying
+                         :z-order/effect])
+
+(def render-z-order (define-order z-orders))
+
+(defn- create-body [{[x y] :position
+                     :keys [position
+                            width
+                            height
+                            collides?
+                            z-order
+                            rotation-angle]}]
+  (assert position)
+  (assert width)
+  (assert height)
+  (assert (>= width  (if collides? minimum-body-size 0)))
+  (assert (>= height (if collides? minimum-body-size 0)))
+  (assert (or (boolean? collides?) (nil? collides?)))
+  (assert ((set z-orders) z-order))
+  (assert (or (nil? rotation-angle)
+              (<= 0 rotation-angle 360)))
+  (map->Body
+   {:position (mapv float position)
+    :left-bottom [(float (- x (/ width  2)))
+                  (float (- y (/ height 2)))]
+    :width  (float width)
+    :height (float height)
+    :half-width  (float (/ width  2))
+    :half-height (float (/ height 2))
+    :radius (float (max (/ width  2)
+                        (/ height 2)))
+    :collides? collides?
+    :z-order z-order
+    :rotation-angle (or rotation-angle 0)}))
+
 (defn- create [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      body/create
+                      create-body
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
                                       (create-vs)))))]
@@ -371,7 +433,7 @@
   (let [player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
-                                              body/render-z-order)
+                                              render-z-order)
             system [entity/render-below
                     entity/render
                     entity/render-above

@@ -1,11 +1,9 @@
 (ns moon.entity.fsm
   (:require [moon.system :refer [*k*]]
-            [moon.app :refer [set-cursor]]
             [moon.systems.entity :as entity]
-            [moon.systems.entity-state :as state]
             [reduce-fsm :as fsm]))
 
-(def ^:private npc-fsm
+(def ^:private npc-fsm ; this also app config ...
   (fsm/fsm-inc
    [[:npc-sleeping
      :kill -> :npc-dead
@@ -55,37 +53,10 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defn state-k [entity]
-  (-> entity :entity/fsm :state))
-
-(defn state-obj [entity]
-  (let [k (state-k entity)]
-    [k (k entity)]))
-
 ; fsm throws when initial-state is not part of states, so no need to assert initial-state
 ; initial state is nil, so associng it. make bug report at reduce-fsm?
 (defn- ->init-fsm [fsm initial-state]
   (assoc (fsm initial-state nil) :state initial-state))
-
-(defn- send-event! [eid event params]
-  (when-let [fsm (:entity/fsm @eid)]
-    (let [old-state-k (:state fsm)
-          new-fsm (fsm/fsm-event fsm event)
-          new-state-k (:state new-fsm)]
-      (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (entity/->v (if params
-                                                       [new-state-k eid params]
-                                                       [new-state-k eid]))]]
-          (when (:entity/player? @eid)
-            (when-let [crs (state/cursor new-state-obj)]
-              (set-cursor crs)))
-          (swap! eid #(-> %
-                          (assoc :entity/fsm new-fsm
-                                 new-state-k (new-state-obj 1))
-                          (dissoc old-state-k)))
-          (state/exit old-state-obj)
-          (state/enter new-state-obj))))))
 
 (defn create [{:keys [fsm initial-state]} eid]
   (swap! eid assoc
@@ -97,9 +68,3 @@
 
 (defn info [fsm]
   (str "[YELLOW]State: " (name (:state fsm)) "[]"))
-
-(defn event
-  ([eid event]
-   (send-event! eid event nil))
-  ([eid event params]
-   (send-event! eid event params)))

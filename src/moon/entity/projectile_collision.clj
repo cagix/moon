@@ -1,8 +1,8 @@
 (ns moon.entity.projectile-collision
   (:require [moon.system :refer [*k*]]
             [gdl.utils :refer [find-first]]
-            [moon.body :as body]
             [moon.effects :as effects]
+            [moon.entity :as entity]
             [moon.world :as world]))
 
 (defn ->v [v]
@@ -20,7 +20,7 @@
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
                                      (:collides? @%)
-                                     (body/collides? entity @%))
+                                     (entity/collides? entity @%))
                                (world/cells->entities cells*))
         destroy? (or (and hit-entity (not piercing?))
                      (some #(world/blocked? % (:z-order entity)) cells*))]

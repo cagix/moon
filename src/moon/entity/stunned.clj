@@ -1,6 +1,6 @@
 (ns moon.entity.stunned
   (:require [moon.app :refer [draw-circle]]
-            [moon.entity.fsm :as fsm]
+            [moon.entity :as entity]
             [moon.world :refer [timer stopped?]]))
 
 (defn ->v [eid duration]
@@ -15,7 +15,7 @@
 
 (defn tick [{:keys [counter]} eid]
   (when (stopped? counter)
-    (fsm/event eid :effect-wears-off)))
+    (entity/event eid :effect-wears-off)))
 
 (defn render-below [_ entity]
   (draw-circle (:position entity) 0.5 [1 1 1 0.6]))

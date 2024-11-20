@@ -1,5 +1,5 @@
 (ns moon.entity.alert-friendlies-after-duration
-  (:require [moon.entity.fsm :as fsm]
+  (:require [moon.entity :as entity]
             [moon.world :as world :refer [stopped?]]))
 
 (def ^:private shout-radius 4)
@@ -14,5 +14,5 @@
   (when (stopped? counter)
     (swap! eid assoc :entity/destroyed? true)
     (doseq [friendly-eid (friendlies-in-radius (:position @eid) faction)]
-      (fsm/event friendly-eid :alert))))
+      (entity/event friendly-eid :alert))))
 

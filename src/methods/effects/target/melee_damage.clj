@@ -1,9 +1,9 @@
 (ns methods.effects.target.melee-damage
   (:require [methods.effects.target.damage :as damage]
-            [moon.entity.stat :as stat]))
+            [moon.entity :as entity]))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (stat/value entity :entity/strength) 0)]
+  (let [strength (or (entity/stat entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 ; FIXME no source

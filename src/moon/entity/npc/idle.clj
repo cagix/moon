@@ -1,15 +1,12 @@
 (ns moon.entity.npc.idle
   (:require [moon.effects :as effects]
-            [moon.body :as body]
-            [moon.entity.faction :as faction]
-            [moon.entity.fsm :as fsm]
-            [moon.entity.skills :as skills]
+            [moon.entity :as entity]
             [moon.follow-ai :as follow-ai]
             [moon.world :as world :refer [line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
-  (world/nearest-entity @(world/cell (body/tile entity))
-                        (faction/enemy entity)))
+  (world/nearest-entity @(world/cell (entity/tile entity))
+                        (entity/enemy entity)))
 
 (defn- effect-ctx [eid]
   (let [entity @eid
@@ -18,7 +15,7 @@
                  target)]
     {:effect/source eid
      :effect/target target
-     :effect/target-direction (when target (body/direction entity @target))}))
+     :effect/target-direction (when target (entity/direction entity @target))}))
 
 (comment
  (let [eid (world/ids->eids 76)
@@ -32,7 +29,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (skills/usable-state entity % ctx))
+       (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
                      (effects/useful? ctx (:skill/effects %))))
        first))
 
@@ -42,5 +39,5 @@
 (defn tick [_ eid]
   (let [effect-ctx (effect-ctx eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
-      (fsm/event eid :start-action [skill effect-ctx])
-      (fsm/event eid :movement-direction (or (follow-ai/direction-vector eid) [0 0])))))
+      (entity/event eid :start-action [skill effect-ctx])
+      (entity/event eid :movement-direction (or (follow-ai/direction-vector eid) [0 0])))))

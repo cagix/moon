@@ -2,8 +2,7 @@
   (:require [gdl.ui :as ui]
             [gdl.utils :refer [readable-number]]
             [moon.app :refer [draw-text draw-image gui-viewport-width image sub-image]]
-            [moon.entity.hp :as hp]
-            [moon.entity.mana :as mana]
+            [moon.entity :as entity]
             [moon.val-max :as val-max]
             [moon.world :refer [player-eid]]))
 
@@ -29,5 +28,5 @@
     (ui/actor {:draw (fn []
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (hp/value   player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (mana/value player-entity) "MP")))})))
+                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
+                         (render-hpmana-bar x y-mana manacontent (entity/mana player-entity) "MP")))})))

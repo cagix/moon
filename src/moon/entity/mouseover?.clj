@@ -1,6 +1,6 @@
 (ns moon.entity.mouseover?
   (:require [moon.app :refer [draw-ellipse with-line-width]]
-            [moon.entity.faction :as faction]
+            [moon.entity :as entity]
             [moon.world :refer [player-eid]]))
 
 (def ^:private outline-alpha 0.4)
@@ -14,7 +14,7 @@
       #(draw-ellipse (:position entity)
                      (:half-width entity)
                      (:half-height entity)
-                     (cond (= faction (faction/enemy player))
+                     (cond (= faction (entity/enemy player))
                            enemy-color
                            (= faction (:entity/faction player))
                            friendly-color

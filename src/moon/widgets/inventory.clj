@@ -5,7 +5,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
-            [moon.entity.fsm :as fsm]
+            [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
             [moon.systems.entity-state :as state]
             [moon.world :refer [player-eid]]))
@@ -21,7 +21,7 @@
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
   (draw-rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
-             (= :player-item-on-cursor (fsm/state-k player-entity)))
+             (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
@@ -76,7 +76,7 @@
     (a/set-id! stack cell)
     (a/add-listener! stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
-                               (state/clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
+                               (state/clicked-inventory-cell (entity/state-obj @player-eid) cell))))
     stack))
 
 (defn- inventory-table []

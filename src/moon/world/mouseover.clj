@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [update])
   (:require [gdl.utils :refer [sort-by-order]]
             [moon.app :refer [mouse-on-actor? world-mouse-position]]
-            [moon.body :as body]
             [moon.world :as world :refer [player-eid line-of-sight?]]))
 
 (def eid nil)
@@ -15,7 +14,7 @@
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities
                       (world-mouse-position)))]
-    (->> body/render-z-order
+    (->> world/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse
          (filter #(line-of-sight? player @%))

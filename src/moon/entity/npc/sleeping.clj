@@ -1,10 +1,6 @@
 (ns moon.entity.npc.sleeping
   (:require [moon.app :refer [draw-text]]
-            [moon.body :as body]
-            [moon.entity.faction :as faction]
-            [moon.entity.fsm :as fsm]
-            [moon.entity.stat :as stat]
-            [moon.entity.string-effect :as string-effect]
+            [moon.entity :as entity]
             [moon.world :as world]))
 
 (defn ->v [eid]
@@ -12,14 +8,14 @@
 
 (defn exit [{:keys [eid]}]
   (world/shout (:position @eid) (:entity/faction @eid) 0.2)
-  (swap! eid string-effect/add "[WHITE]!"))
+  (swap! eid entity/add-text-effect "[WHITE]!"))
 
 (defn tick [_ eid]
   (let [entity @eid
-        cell (world/cell (body/tile entity))] ; pattern!
-    (when-let [distance (world/nearest-entity-distance @cell (faction/enemy entity))]
-      (when (<= distance (stat/value entity :entity/aggro-range))
-        (fsm/event eid :alert)))))
+        cell (world/cell (entity/tile entity))] ; pattern!
+    (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
+      (when (<= distance (entity/stat entity :entity/aggro-range))
+        (entity/event eid :alert)))))
 
 (defn render-above [_ entity]
   (let [[x y] (:position entity)]

@@ -1,7 +1,7 @@
 (ns moon.entity.string-effect
   (:require [moon.system :refer [*k*]]
             [moon.app :refer [draw-text pixels->world-units]]
-            [moon.world :refer [timer stopped? reset-timer]]))
+            [moon.world :refer [stopped?]]))
 
 (defn tick [{:keys [counter]} eid]
   (when (stopped? counter)
@@ -15,12 +15,4 @@
                 :scale 2
                 :up? true})))
 
-(defn add [entity text]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (*k* entity)] ; wrong *k*
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter reset-timer))
-           {:text text
-            :counter (timer 0.4)})))
+

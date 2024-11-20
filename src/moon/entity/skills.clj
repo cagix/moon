@@ -1,30 +1,13 @@
 (ns moon.entity.skills
   (:refer-clojure :exclude [remove])
   (:require [moon.system :refer [*k*]]
-            [moon.effects :as effects]
-            [moon.entity.mana :as mana]
-            [moon.widgets.action-bar :as action-bar]
+            [moon.entity :as entity]
             [moon.world :refer [stopped?]]))
-
-(defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
-  (contains? skills id))
-
-(defn add [entity {:keys [property/id] :as skill}]
-  {:pre [(not (has-skill? entity skill))]}
-  (when (:entity/player? entity)
-    (action-bar/add-skill skill))
-  (assoc-in entity [:entity/skills id] skill))
-
-(defn remove [entity {:keys [property/id] :as skill}]
-  {:pre [(has-skill? entity skill)]}
-  (when (:entity/player? entity)
-    (action-bar/remove-skill skill))
-  (update entity :entity/skills dissoc id))
 
 (defn create [skills eid]
   (swap! eid assoc *k* nil)
   (doseq [skill skills]
-    (swap! eid add skill)))
+    (swap! eid entity/add-skill skill)))
 
 (defn info [skills]
   ; => recursive info-text leads to endless text wall
@@ -36,28 +19,3 @@
           :when (and cooling-down?
                      (stopped? cooling-down?))]
     (swap! eid assoc-in [*k* (:property/id skill) :skill/cooling-down?] false)))
-
-(defn- mana-value [entity]
-  (if-let [mana (:entity/mana entity)]
-    ((mana/value entity) 0)
-    0))
-
-(defn- not-enough-mana? [entity {:keys [skill/cost]}]
-  (and cost (> cost (mana-value entity))))
-
-(defn usable-state
-  [entity
-   {:keys [skill/cooling-down? skill/effects] :as skill}
-   effect-ctx]
-  (cond
-   cooling-down?
-   :cooldown
-
-   (not-enough-mana? entity skill)
-   :not-enough-mana
-
-   (not (effects/applicable? effect-ctx effects))
-   :invalid-params
-
-   :else
-   :usable))

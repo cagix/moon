@@ -6,9 +6,8 @@
             [moon.app :refer [play-sound set-cursor world-mouse-position mouse-on-actor?]]
             [moon.controls :as controls]
             [moon.effects :as effects]
-            [moon.entity.fsm :as fsm]
+            [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
-            [moon.entity.skills :as skills]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.inventory :as widgets.inventory]
             [moon.widgets.player-message :as player-message]
@@ -30,7 +29,7 @@
      (do
       (play-sound "sounds/bfxr_takeit.wav")
       (swap! eid assoc :entity/destroyed? true)
-      (fsm/event player-eid :pickup-item item))
+      (entity/event player-eid :pickup-item item))
 
      (inventory/can-pickup-item? @player-eid item)
      (do
@@ -95,14 +94,14 @@
      (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (effect-ctx eid)
-             state (skills/usable-state entity skill effect-ctx)]
+             state (entity/skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
             ; different color ?
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
-             (fn [] (fsm/event eid :start-action [skill effect-ctx]))])
+             (fn [] (entity/event eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -125,7 +124,7 @@
 
 (defn manual-tick [{:keys [eid]}]
   (if-let [movement-vector (controls/movement-vector)]
-    (fsm/event eid :movement-input movement-vector)
+    (entity/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
       (set-cursor cursor)
       (when (button-just-pressed? :left)
@@ -135,13 +134,13 @@
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play-sound "sounds/bfxr_takeit.wav")
-    (fsm/event eid :pickup-item item)
+    (entity/event eid :pickup-item item)
     (inventory/remove-item eid cell)))
 
 (defn clicked-skillmenu-skill [{:keys [eid]} skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
-               (not (skills/has-skill? @eid skill)))
+               (not (entity/has-skill? @eid skill)))
       (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-      (swap! eid skills/add skill))))
+      (swap! eid entity/add-skill skill))))

@@ -2,7 +2,7 @@
   (:require [data.grid2d :as g2d]
             [gdl.math.vector :as v]
             [gdl.utils :refer [->tile indexed utils-positions when-seq]]
-            [moon.entity.faction :as faction]
+            [moon.entity :as entity]
             [moon.world :as world :refer [occupied-by-other?
                                           nearest-entity-distance
                                           nearest-entity
@@ -56,7 +56,7 @@
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [eid own-cell]
-  (let [faction (faction/enemy @eid)
+  (let [faction (entity/enemy @eid)
         distance-to    #(nearest-entity-distance @% faction)
         nearest-entity #(nearest-entity          @% faction)
         own-dist (distance-to own-cell)

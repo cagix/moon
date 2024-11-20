@@ -2,9 +2,7 @@
   (:require [moon.app :refer [draw-image draw-filled-circle draw-sector play-sound]]
             [moon.systems.effect :as effect]
             [moon.effects :as effects]
-            [moon.entity.fsm :as fsm]
-            [moon.entity.mana :as entity.mana]
-            [moon.entity.stat :as stat]
+            [moon.entity :as entity]
             [moon.world :refer [timer stopped? finished-ratio line-of-sight?]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
@@ -22,7 +20,7 @@
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (stat/value entity (:skill/action-time-modifier-key skill))
+     (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
@@ -58,21 +56,21 @@
            (timer (:skill/cooldown skill))))
   (when (and (:skill/cost skill)
              (not (zero? (:skill/cost skill))))
-    (swap! eid entity.mana/pay-cost (:skill/cost skill))))
+    (swap! eid entity/pay-mana-cost (:skill/cost skill))))
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
    (not (effects/applicable? (check-update-ctx effect-ctx)
                              (:skill/effects skill)))
    (do
-    (fsm/event eid :action-done)
+    (entity/event eid :action-done)
     ; TODO some sound ?
     )
 
    (stopped? counter)
    (do
     (effects/do! effect-ctx (:skill/effects skill))
-    (fsm/event eid :action-done))))
+    (entity/event eid :action-done))))
 
 (defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]

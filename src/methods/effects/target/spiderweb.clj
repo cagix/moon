@@ -1,5 +1,5 @@
 (ns ^:no-doc methods.effects.target.spiderweb
-  (:require [moon.entity.modifiers :as mods]
+  (:require [moon.entity :as entity]
             [moon.world :refer [timer]]))
 
 (def modifiers {:modifier/movement-speed {:op/mult -0.5}})
@@ -20,4 +20,4 @@
   (when-not (:entity/temp-modifier @target)
     (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                :counter (timer duration)})
-    (swap! target mods/add modifiers)))
+    (swap! target entity/add-mods modifiers)))

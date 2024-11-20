@@ -1,4 +1,4 @@
-(ns moon.editor.scrollpane
+(ns ^:no-doc moon.editor.scrollpane
   (:require [gdl.ui :as ui]
             [moon.app :refer [gui-viewport-height]]))
 

@@ -1,7 +1,7 @@
 (ns ^:no-doc dev.experiment
   (:require [gdl.app :refer [post-runnable]]
             [moon.db :as db]
-            [moon.entity.skills :as skills]
+            [moon.entity :as entity]
             [moon.world :as world :refer [player-eid]]))
 
 (comment
@@ -46,7 +46,7 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! player-eid skills/add (db/get skill-id))))
+   (swap! player-eid entity/add-skill (db/get skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable
