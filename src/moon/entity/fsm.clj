@@ -1,7 +1,8 @@
 (ns moon.entity.fsm
-  (:require [moon.system :refer [defsystem *k*]]
+  (:require [moon.system :refer [*k*]]
             [moon.app :refer [set-cursor]]
             [moon.systems.entity :as entity]
+            [moon.systems.entity-state :as state]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -54,15 +55,6 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defsystem enter)
-(defmethod enter :default [_])
-
-(defsystem exit)
-(defmethod exit :default [_])
-
-(defsystem cursor)
-(defmethod cursor :default [_])
-
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
 
@@ -86,14 +78,14 @@
                                                        [new-state-k eid params]
                                                        [new-state-k eid]))]]
           (when (:entity/player? @eid)
-            (when-let [crs (cursor new-state-obj)]
+            (when-let [crs (state/cursor new-state-obj)]
               (set-cursor crs)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (exit old-state-obj)
-          (enter new-state-obj))))))
+          (state/exit old-state-obj)
+          (state/enter new-state-obj))))))
 
 (defn create [{:keys [fsm initial-state]} eid]
   (swap! eid assoc

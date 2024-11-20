@@ -1,4 +1,4 @@
-(ns moon.effect
+(ns moon.systems.effect
   (:require [moon.system :refer [defsystem]]))
 
 (defsystem handle [_ ctx])

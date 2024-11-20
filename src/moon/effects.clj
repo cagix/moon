@@ -1,5 +1,5 @@
 (ns moon.effects
-  (:require [moon.effect :as effect]))
+  (:require [moon.systems.effect :as effect]))
 
 (defn- filter-applicable? [ctx effects]
   (filter #(effect/applicable? % ctx) effects))

@@ -7,8 +7,9 @@
             [moon.system :as system]
             [gdl.utils :as utils :refer [k->pretty-name readable-number]]
             [moon.app :as core :refer [batch gui-viewport]]
-            [moon.effect :as effect]
+            [moon.systems.effect :as effect]
             [moon.systems.entity :as entity]
+            [moon.systems.entity-state :as state]
             [moon.entity.fsm :as fsm]
             [moon.entity.stat :as stat]
             [moon.screens.editor :as editor]
@@ -122,14 +123,14 @@
 (def ^:private entity-state
   (merge-with concat
               entity
-              {:optional [#'fsm/enter
-                          #'fsm/exit
-                          #'fsm/cursor
-                          #'player/pause-game?
-                          #'player/manual-tick
-                          #'player/clicked-inventory-cell
-                          #'player/clicked-skillmenu-skill
-                          #'player/draw-gui-view]}))
+              {:optional [#'state/enter
+                          #'state/exit
+                          #'state/cursor
+                          #'state/pause-game?
+                          #'state/manual-tick
+                          #'state/clicked-inventory-cell
+                          #'state/clicked-skillmenu-skill
+                          #'state/draw-gui-view]}))
 
 (install entity-state 'moon.entity.npc.dead              :npc-dead)
 (install entity-state 'moon.entity.npc.idle              :npc-idle)
