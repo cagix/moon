@@ -1,6 +1,5 @@
 (ns moon.start
-  (:require [clojure.string :as str]
-            [moon.db :as db]
+  (:require [moon.db :as db]
             [gdl.graphics.color :as color]
             [moon.info :as info]
             [gdl.stage :as stage]
@@ -87,6 +86,7 @@
                       moon.entity.mouseover?
                       moon.entity.projectile-collision
                       moon.entity.skills
+                      moon.entity.species
                       moon.entity.string-effect
                       moon.entity.modifiers
                       moon.entity.movement
@@ -125,9 +125,6 @@
 
 (defmethod component/info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
-
-(defmethod component/info :entity/species [[_ species]]
-  (str "[LIGHT_GRAY]Creature - " (str/capitalize (name species)) "[]"))
 
 (defmethod component/info :creature/level [[_ lvl]]
   (str "[GRAY]Level " lvl "[]"))
