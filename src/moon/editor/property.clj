@@ -1,4 +1,4 @@
-(ns moon.editor.property
+(ns ^:no-doc moon.editor.property
   (:require [moon.db :as db]
             [gdl.input :refer [key-just-pressed?]]
             [moon.property :as property]

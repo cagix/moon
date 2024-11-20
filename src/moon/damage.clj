@@ -1,4 +1,4 @@
-(ns moon.damage
+(ns ^:no-doc moon.damage
   (:require [moon.val-max :as val-max]))
 
 (defn modified

@@ -1,4 +1,4 @@
-(ns moon.editor.overview
+(ns ^:no-doc moon.editor.overview
   (:require [moon.db :as db]
             [moon.info :as info]
             [moon.property :as property]
