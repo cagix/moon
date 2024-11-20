@@ -1,4 +1,4 @@
-(ns systems.effects.target.hp)
+(ns methods.effects.target.hp)
 
 #_(defn- stat-k [effect-k]
     (keyword "stats" (name effect-k)))

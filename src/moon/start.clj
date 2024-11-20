@@ -2,11 +2,12 @@
   (:require [clojure.string :as str]
             [moon.db :as db]
             [gdl.graphics.color :as color]
-            [moon.info :as info :refer [info]]
+            [moon.info :as info]
             [gdl.stage :as stage]
             [moon.system :as system]
             [gdl.utils :as utils :refer [k->pretty-name readable-number]]
             [moon.app :as core :refer [batch gui-viewport]]
+            [moon.systems.component :as component]
             [moon.systems.effect :as effect]
             [moon.systems.entity :as entity]
             [moon.systems.entity-state :as state]
@@ -60,7 +61,7 @@
 (def ^:private effect
   {:required [#'effect/applicable?
               #'effect/handle]
-   :optional [#'info/info
+   :optional [#'component/info
               #'effect/useful?
               #'effect/render]})
 
@@ -68,27 +69,27 @@
   (doseq [ns-sym ns-syms]
     (system/install effect
                     ns-sym
-                    (namespace->component-key #"^systems." (str ns-sym)))))
+                    (namespace->component-key #"^methods." (str ns-sym)))))
 
 (install-effects
- '[systems.effects.projectile
-   systems.effects.spawn
-   systems.effects.target-all
-   systems.effects.target-entity
+ '[methods.effects.projectile
+   methods.effects.spawn
+   methods.effects.target-all
+   methods.effects.target-entity
 
-   systems.effects.target.audiovisual
-   systems.effects.target.convert
-   systems.effects.target.damage
-   systems.effects.target.kill
-   systems.effects.target.melee-damage
-   systems.effects.target.spiderweb
-   systems.effects.target.stun])
+   methods.effects.target.audiovisual
+   methods.effects.target.convert
+   methods.effects.target.damage
+   methods.effects.target.kill
+   methods.effects.target.melee-damage
+   methods.effects.target.spiderweb
+   methods.effects.target.stun])
 
 
 ; TODO check _only_ systems as public fns (private?)
 
 (def ^:private entity
-  {:optional [#'info/info
+  {:optional [#'component/info
               #'entity/->v
               #'entity/create
               #'entity/destroy
@@ -146,38 +147,38 @@
 (color/put "MODIFIERS" :cyan)
 (color/put "PRETTY_NAME" [0.84 0.8 0.52])
 
-(defmethod info :property/pretty-name [[_ value]]
+(defmethod component/info :property/pretty-name [[_ value]]
   (str "[PRETTY_NAME]"value"[]"))
 
-(defmethod info :maxrange [[_ maxrange]]
+(defmethod component/info :maxrange [[_ maxrange]]
   (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
 
-(defmethod info :entity/species [[_ species]]
+(defmethod component/info :entity/species [[_ species]]
   (str "[LIGHT_GRAY]Creature - " (str/capitalize (name species)) "[]"))
 
-(defmethod info :creature/level [[_ lvl]]
+(defmethod component/info :creature/level [[_ lvl]]
   (str "[GRAY]Level " lvl "[]"))
 
-(defmethod info :projectile/piercing? [_] ; TODO also when false ?!
+(defmethod component/info :projectile/piercing? [_] ; TODO also when false ?!
   "[LIME]Piercing[]")
 
-(defmethod info :skill/action-time-modifier-key [[_ v]]
+(defmethod component/info :skill/action-time-modifier-key [[_ v]]
   (str "[VIOLET]" (case v
                     :entity/cast-speed "Spell"
                     :entity/attack-speed "Attack") "[]"))
 
-(defmethod info :skill/action-time [[_ v]]
+(defmethod component/info :skill/action-time [[_ v]]
   (str "[GOLD]Action-Time: " (readable-number v) " seconds[]"))
 
-(defmethod info :skill/cooldown [[_ v]]
+(defmethod component/info :skill/cooldown [[_ v]]
   (when-not (zero? v)
     (str "[SKY]Cooldown: " (readable-number v) " seconds[]")))
 
-(defmethod info :skill/cost [[_ v]]
+(defmethod component/info :skill/cost [[_ v]]
   (when-not (zero? v)
     (str "[CYAN]Cost: " v " Mana[]")))
 
-(defmethod info ::stat [[k _]]
+(defmethod component/info ::stat [[k _]]
   (str (k->pretty-name k) ": " (stat/value info/*entity* k)))
 
 (derive :entity/reaction-time  ::stat)

@@ -1,10 +1,7 @@
 (ns moon.info
   (:require [clojure.string :as str]
             [gdl.utils :refer [index-of]]
-            [moon.system :refer [defsystem]]))
-
-(defsystem info)
-(defmethod info :default [_])
+            [moon.systems.component :as component]))
 
 (declare info-text-k-order)
 
@@ -28,7 +25,7 @@
        sort-k-order
        (keep (fn [{v 1 :as component}]
                (str (try (binding [*entity* components]
-                           (info component))
+                           (component/info component))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create
