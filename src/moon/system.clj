@@ -1,4 +1,5 @@
-(ns moon.system)
+(ns moon.system
+  (:require [clojure.string :as str]))
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
@@ -62,7 +63,7 @@
 (defn- ns-publics-without-no-doc? [ns]
   (some #(not (:no-doc (meta %))) (vals (ns-publics ns))))
 
-(defn install [component-systems ns-sym k]
+(defn- install* [component-systems ns-sym k]
   (require ns-sym)
   (add-methods (:required component-systems) ns-sym k)
   (add-methods (:optional component-systems) ns-sym k :optional? true)
@@ -71,4 +72,27 @@
       (alter-meta! ns assoc :no-doc true)
       (alter-meta! ns update :doc str "\n component: `" k "`"))))
 
-; TODO :schema ?!
+(defn namespace->component-key [prefix ns-str]
+   (let [ns-parts (-> ns-str
+                      (str/replace prefix "")
+                      (str/split #"\."))]
+     (keyword (str/join "." (drop-last ns-parts))
+              (last ns-parts))))
+
+(comment
+ (and (= (namespace->component-key "moon.effects.projectile")
+         :effects/projectile)
+      (= (namespace->component-key "moon.effects.target.convert")
+         :effects.target/convert)))
+
+(defn install
+  ([component-systems ns-sym]
+   (install* component-systems
+             ns-sym
+             (namespace->component-key #"^moon." (str ns-sym))))
+  ([component-systems ns-sym k]
+   (install* component-systems ns-sym k)))
+
+(defn install-all [component-systems ns-syms]
+  (doseq [ns-sym ns-syms]
+    (install component-systems ns-sym)))
