@@ -18,7 +18,6 @@
             [moon.screens.map-editor :as map-editor]
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
-            [moon.player :as player]
             (moon.schema animation
                          boolean
                          enum
