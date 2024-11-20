@@ -1,6 +1,5 @@
 (ns moon.entity.hp
-  (:require [moon.info :as info]
-            [moon.app :refer [draw-filled-rectangle pixels->world-units]]
+  (:require [moon.app :refer [draw-filled-rectangle pixels->world-units]]
             [moon.entity :as entity]
             [moon.val-max :as val-max]))
 
@@ -34,9 +33,6 @@
                              (- (* width ratio) (* 2 border))
                              (- height (* 2 border))
                              (hpbar-color ratio)))))
-
-(defn info [_]
-  (str "Hitpoints: " (entity/hitpoints info/*entity*)))
 
 (defn ->v [v]
   [v v])

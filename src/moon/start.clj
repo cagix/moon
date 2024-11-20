@@ -1,13 +1,8 @@
 (ns moon.start
   (:require [moon.db :as db]
-            [gdl.graphics.color :as color]
-            [moon.info :as info]
             [gdl.stage :as stage]
             [moon.system :as system]
-            [gdl.utils :as utils :refer [k->pretty-name readable-number]]
             [moon.app :as core :refer [batch gui-viewport]]
-            [moon.entity :as entity]
-            [moon.systems.component :as component]
             [moon.systems.effect :as effect]
             [moon.systems.entity :as entity-sys]
             [moon.systems.entity-state :as state]
@@ -16,6 +11,7 @@
             [moon.screens.map-editor :as map-editor]
             [moon.screens.minimap :as minimap]
             [moon.screens.world :as world]
+            moon.methods.info
             (moon.schema animation
                          boolean
                          enum
@@ -33,8 +29,7 @@
 (def ^:private effect
   {:required [#'effect/applicable?
               #'effect/handle]
-   :optional [#'component/info
-              #'effect/useful?
+   :optional [#'effect/useful?
               #'effect/render]})
 
 (defn- install-effects [ns-syms]
@@ -59,10 +54,10 @@
 
 
 ; TODO check _only_ systems as public fns (private?)
+; e.g. no info which isnt possible anymore
 
 (def ^:private entity
-  {:optional [#'component/info
-              #'entity-sys/->v
+  {:optional [#'entity-sys/->v
               #'entity-sys/create
               #'entity-sys/destroy
               #'entity-sys/tick
@@ -78,7 +73,6 @@
                       moon.entity.delete-after-animation-stopped
                       moon.entity.delete-after-duration
                       moon.entity.destroy-audiovisual
-                      moon.entity.faction
                       moon.entity.fsm
                       moon.entity.image
                       moon.entity.inventory
@@ -86,9 +80,7 @@
                       moon.entity.mouseover?
                       moon.entity.projectile-collision
                       moon.entity.skills
-                      moon.entity.species
                       moon.entity.string-effect
-                      moon.entity.modifiers
                       moon.entity.movement
                       moon.entity.temp-modifier
                       moon.entity.hp
@@ -116,48 +108,6 @@
 (system/install entity-state 'moon.entity.player.moving         :player-moving)
 (system/install entity-state 'moon.entity.active                :active-skill)
 (system/install entity-state 'moon.entity.stunned               :stunned)
-
-(color/put "MODIFIERS" :cyan)
-(color/put "PRETTY_NAME" [0.84 0.8 0.52])
-
-(defmethod component/info :property/pretty-name [[_ value]]
-  (str "[PRETTY_NAME]"value"[]"))
-
-(defmethod component/info :maxrange [[_ maxrange]]
-  (str "[LIGHT_GRAY]Range " maxrange " meters[]"))
-
-(defmethod component/info :creature/level [[_ lvl]]
-  (str "[GRAY]Level " lvl "[]"))
-
-(defmethod component/info :projectile/piercing? [_] ; TODO also when false ?!
-  "[LIME]Piercing[]")
-
-(defmethod component/info :skill/action-time-modifier-key [[_ v]]
-  (str "[VIOLET]" (case v
-                    :entity/cast-speed "Spell"
-                    :entity/attack-speed "Attack") "[]"))
-
-(defmethod component/info :skill/action-time [[_ v]]
-  (str "[GOLD]Action-Time: " (readable-number v) " seconds[]"))
-
-(defmethod component/info :skill/cooldown [[_ v]]
-  (when-not (zero? v)
-    (str "[SKY]Cooldown: " (readable-number v) " seconds[]")))
-
-(defmethod component/info :skill/cost [[_ v]]
-  (when-not (zero? v)
-    (str "[CYAN]Cost: " v " Mana[]")))
-
-(defmethod component/info ::stat [[k _]]
-  (str (k->pretty-name k) ": " (entity/stat info/*entity* k)))
-
-(derive :entity/reaction-time  ::stat)
-(derive :entity/movement-speed ::stat)
-(derive :entity/strength       ::stat)
-(derive :entity/cast-speed     ::stat)
-(derive :entity/attack-speed   ::stat)
-(derive :entity/armor-save     ::stat)
-(derive :entity/armor-pierce   ::stat)
 
 (def ^:private config
   {:app-config {:title "Moon"
@@ -193,7 +143,7 @@
                    {:screens/main-menu  (stage/create gui-viewport batch (main-menu/create))
                     :screens/map-editor (stage/create gui-viewport batch (map-editor/create))
                     :screens/editor     (stage/create gui-viewport batch (editor/create))
-                    :screens/minimap    (minimap/create)
+                    :screens/minimap    (minimap/create) ; align w. other stuff and call @ there
                     :screens/world      (stage/create gui-viewport batch (world/create))})
    :first-screen-k :screens/main-menu})
 

@@ -1,9 +1,5 @@
 (ns methods.effects.target.stun
-  (:require [gdl.utils :refer [readable-number]]
-            [moon.entity :as entity]))
-
-(defn info [duration]
-  (str "Stuns for " (readable-number duration) " seconds"))
+  (:require [moon.entity :as entity]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target

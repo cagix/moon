@@ -20,16 +20,6 @@
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
 
-; FIXME no source
-(defn info [damage]
-  (damage/info damage)
-  #_(if source
-    (let [modified (damage/modified @source damage)]
-      (if (= damage modified)
-        (damage/info damage)
-        (str (damage/info damage) "\nModified: " (damage/info modified))))
-    (damage/info damage))) ; property menu no source,modifiers
-
 (defn applicable? [_ {:keys [effect/target]}]
   (and target
        (:entity/hp @target)))

@@ -32,10 +32,6 @@
                           {:damage/min-max [5 5]})
          #:damage{:min-max [2 2]})))
 
-(deftest info
-  (is (= (damage/info {:damage/min-max [10 12]})
-         "10-12 damage")))
-
 (deftest max-decrease-lowers-min
   (is (= (damage/modified
           {:entity/modifiers {:modifier/damage-deal-max {:op/inc -5}}}

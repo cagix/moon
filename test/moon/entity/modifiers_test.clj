@@ -1,7 +1,7 @@
 (ns moon.entity.modifiers-test
   (:require [clojure.test :refer :all]
             [moon.systems.entity :as entity]
-            [moon.entity.modifiers :as mods]))
+            #_[moon.entity.modifiers :as mods]))
 
 #_(deftest add-mods
   (is (= (mods/add {:modifier/movement-speed {:op/mult 10}}

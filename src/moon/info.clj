@@ -1,27 +1,18 @@
 (ns moon.info
   (:require [clojure.string :as str]
             [gdl.utils :refer [index-of]]
-            [moon.systems.component :as component]))
+            [moon.system :refer [defsystem]]))
 
-(def ^:private info-text-k-order [:property/pretty-name
-                                  :skill/action-time-modifier-key
-                                  :skill/action-time
-                                  :skill/cooldown
-                                  :skill/cost
-                                  :skill/effects
-                                  :entity/species
-                                  :creature/level
-                                  :entity/hp
-                                  :entity/mana
-                                  :entity/strength
-                                  :entity/cast-speed
-                                  :entity/attack-speed
-                                  :entity/armor-save
-                                  :entity/delete-after-duration
-                                  :projectile/piercing?
-                                  :entity/projectile-collision
-                                  :maxrange
-                                  :entity-effects])
+(defsystem info)
+(defmethod info :default [_])
+
+(declare info-color
+         info-text-k-order)
+
+(defn- apply-color [k info-text]
+  (if-let [color (info-color k)]
+    (str "[" color "]" info-text "[]")
+    info-text))
 
 (defn- sort-k-order [components]
   (sort-by (fn [[k _]] (or (index-of k info-text-k-order) 99))
@@ -36,14 +27,14 @@
       s
       (remove-newlines new-s))))
 
-(declare ^:dynamic *entity*)
+(declare ^:dynamic *entity*) ; just pass
 
 (defn text [components]
   (->> components
        sort-k-order
-       (keep (fn [{v 1 :as component}]
+       (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*entity* components]
-                           (component/info component))
+                           (apply-color k (info component)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create

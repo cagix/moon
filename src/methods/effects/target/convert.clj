@@ -1,9 +1,6 @@
 (ns methods.effects.target.convert
   (:require [moon.entity :as entity]))
 
-(defn info [_]
-  "Converts target to your side.")
-
 (defn applicable? [_ {:keys [effect/source effect/target]}]
   (and target
        (= (:entity/faction @target)

@@ -65,6 +65,3 @@
                            :fsms/npc npc-fsm)
                          initial-state)
          initial-state (entity/->v [initial-state eid])))
-
-(defn info [fsm]
-  (str "[YELLOW]State: " (name (:state fsm)) "[]"))

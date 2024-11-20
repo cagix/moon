@@ -1,12 +1,8 @@
 (ns moon.entity.temp-modifier
   (:require [moon.system :refer [*k*]]
-            [gdl.utils :refer [readable-number]]
             [moon.app :refer [draw-filled-circle]]
             [moon.entity :as entity]
-            [moon.world :refer [stopped? finished-ratio]]))
-
-(defn info [{:keys [counter]}]
-  (str "[LIGHT_GRAY]Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1[]"))
+            [moon.world :refer [stopped?]]))
 
 (defn tick [{:keys [modifiers counter]} eid]
   (when (stopped? counter)

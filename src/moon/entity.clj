@@ -126,7 +126,7 @@
             :counter (timer 0.4)})))
 
 (defn- mana-value [entity]
-  (if-let [mana (:entity/mana entity)]
+  (if (:entity/mana entity)
     ((mana entity) 0)
     0))
 

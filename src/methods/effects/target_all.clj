@@ -24,9 +24,6 @@
 
  )
 
-(defn info [_]
-  "[LIGHT_GRAY]All visible targets[]")
-
 (defn applicable? [_ _]
   true)
 

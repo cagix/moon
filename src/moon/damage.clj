@@ -15,6 +15,3 @@
            entity/apply-max-modifier
            target
            :modifier/damage-receive-max)))
-
-(defn info [{[min max] :damage/min-max}]
-  (str min "-" max " damage"))

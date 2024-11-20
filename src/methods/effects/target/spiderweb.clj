@@ -5,12 +5,6 @@
 (def modifiers {:modifier/movement-speed {:op/mult -0.5}})
 (def duration 5)
 
-(defn info [_]
-  "Spiderweb slows 50% for 5 seconds."
-  ; modifiers same like item/modifiers has info-text
-  ; counter ?
-  )
-
 (defn applicable? [_ _]
   ; ?
   true)
