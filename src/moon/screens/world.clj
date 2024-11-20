@@ -10,8 +10,9 @@
             [moon.app :refer [draw-tiled-map draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [moon.controls :as controls]
             [moon.entity.movement :as movement]
+            [moon.entity.fsm :as fsm]
             [moon.level :as level]
-            [moon.player :as player]
+            [moon.systems.entity-state :as state]
             [moon.widgets.error-window :refer [error-window!]]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.dev-menu :as dev-menu]
@@ -95,7 +96,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window/create)
                        (inventory/create)]})
-   (ui/actor {:draw player/draw-state})
+   (ui/actor {:draw #(state/draw-gui-view (fsm/state-obj @player-eid))})
    (player-message/create)])
 
 (defn- windows []
@@ -121,11 +122,11 @@
 (def ^:private ^:dbg-flag pausing? true)
 
 (defn- update-world []
-  (player/update-state)
+  (state/manual-tick (fsm/state-obj @player-eid))
   (mouseover/update) ; this do always so can get debug info even when game not running
   (.bindRoot #'paused? (or tick-error
                            (and pausing?
-                                (player/state-pauses-game?)
+                                (state/pause-game? (fsm/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
     (let [delta-ms (min (delta-time) movement/max-delta-time)]

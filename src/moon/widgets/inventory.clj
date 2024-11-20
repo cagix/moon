@@ -7,7 +7,7 @@
             [moon.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
             [moon.entity.fsm :as fsm]
             [moon.item :refer [valid-slot? empty-inventory]]
-            [moon.player :as player]
+            [moon.systems.entity-state :as state]
             [moon.world :refer [player-eid]]))
 
 ; Items are also smaller than 48x48 all of them
@@ -76,7 +76,7 @@
     (a/set-id! stack cell)
     (a/add-listener! stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
-                               (player/clicked-inventory cell))))
+                               (state/clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
     stack))
 
 (defn- inventory-table []
