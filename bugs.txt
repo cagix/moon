@@ -1,4 +1,4 @@
-
+string-effect wrong *k* -> anyway weird? see w. tests..
 
 ; FIXME at one-to-many remove chosen options
 ; from choose window voerview

@@ -18,7 +18,7 @@
 (defn add [entity text]
   (assoc entity
          :entity/string-effect
-         (if-let [string-effect (*k* entity)]
+         (if-let [string-effect (*k* entity)] ; wrong *k*
            (-> string-effect
                (update :text str "\n" text)
                (update :counter reset-timer))
