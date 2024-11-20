@@ -187,66 +187,6 @@
 (derive :entity/armor-save     ::stat)
 (derive :entity/armor-pierce   ::stat)
 
-(.bindRoot #'moon.schema.map/property-k-sort-order
-           [:property/id
-            :property/pretty-name
-            :entity/image
-            :entity/animation
-            :entity/species
-            :creature/level
-            :entity/body
-            :item/slot
-            :projectile/speed
-            :projectile/max-range
-            :projectile/piercing?
-            :skill/action-time-modifier-key
-            :skill/action-time
-            :skill/start-action-sound
-            :skill/cost
-            :skill/cooldown])
-
-(.bindRoot #'moon.editor.overview/overview
-           {:properties/audiovisuals {:columns 10
-                                      :image/scale 2}
-            :properties/creatures {:columns 15
-                                   :image/scale 1.5
-                                   :sort-by-fn #(vector (:creature/level %)
-                                                        (name (:entity/species %))
-                                                        (name (:property/id %)))
-                                   :extra-info-text #(str (:creature/level %))}
-            :properties/items {:columns 20
-                               :image/scale 1.1
-                               :sort-by-fn #(vector (if-let [slot (:item/slot %)]
-                                                      (name slot)
-                                                      "")
-                                                    (name (:property/id %)))}
-            :properties/projectiles {:columns 16
-                                     :image/scale 2}
-            :properties/skills {:columns 16
-                                :image/scale 2}
-            :properties/worlds {:columns 10}})
-
-(.bindRoot #'moon.info/info-text-k-order
-           [:property/pretty-name
-            :skill/action-time-modifier-key
-            :skill/action-time
-            :skill/cooldown
-            :skill/cost
-            :skill/effects
-            :entity/species
-            :creature/level
-            :entity/hp
-            :entity/mana
-            :entity/strength
-            :entity/cast-speed
-            :entity/attack-speed
-            :entity/armor-save
-            :entity/delete-after-duration
-            :projectile/piercing?
-            :entity/projectile-collision
-            :maxrange
-            :entity-effects])
-
 (def ^:private config
   {:app-config {:title "Moon"
                 :fps 60

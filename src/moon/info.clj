@@ -3,7 +3,25 @@
             [gdl.utils :refer [index-of]]
             [moon.systems.component :as component]))
 
-(declare info-text-k-order)
+(def ^:private info-text-k-order [:property/pretty-name
+                                  :skill/action-time-modifier-key
+                                  :skill/action-time
+                                  :skill/cooldown
+                                  :skill/cost
+                                  :skill/effects
+                                  :entity/species
+                                  :creature/level
+                                  :entity/hp
+                                  :entity/mana
+                                  :entity/strength
+                                  :entity/cast-speed
+                                  :entity/attack-speed
+                                  :entity/armor-save
+                                  :entity/delete-after-duration
+                                  :projectile/piercing?
+                                  :entity/projectile-collision
+                                  :maxrange
+                                  :entity-effects])
 
 (defn- sort-k-order [components]
   (sort-by (fn [[k _]] (or (index-of k info-text-k-order) 99))

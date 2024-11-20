@@ -16,7 +16,25 @@
     (a/set-touchable! top-widget :disabled)
     stack))
 
-(declare overview)
+(def ^:private overview {:properties/audiovisuals {:columns 10
+                                                   :image/scale 2}
+                         :properties/creatures {:columns 15
+                                                :image/scale 1.5
+                                                :sort-by-fn #(vector (:creature/level %)
+                                                                     (name (:entity/species %))
+                                                                     (name (:property/id %)))
+                                                :extra-info-text #(str (:creature/level %))}
+                         :properties/items {:columns 20
+                                            :image/scale 1.1
+                                            :sort-by-fn #(vector (if-let [slot (:item/slot %)]
+                                                                   (name slot)
+                                                                   "")
+                                                                 (name (:property/id %)))}
+                         :properties/projectiles {:columns 16
+                                                  :image/scale 2}
+                         :properties/skills {:columns 16
+                                             :image/scale 2}
+                         :properties/worlds {:columns 10}})
 
 (defn table [property-type clicked-id-fn]
   (let [{:keys [sort-by-fn
