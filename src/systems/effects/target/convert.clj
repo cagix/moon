@@ -1,4 +1,4 @@
-(ns moon.effects.target.convert
+(ns systems.effects.target.convert
   (:require [moon.entity.faction :as faction]))
 
 (defn info [_]

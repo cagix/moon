@@ -1,4 +1,4 @@
-(ns moon.effects.target.hp)
+(ns systems.effects.target.hp)
 
 #_(defn- stat-k [effect-k]
     (keyword "stats" (name effect-k)))

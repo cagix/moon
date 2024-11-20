@@ -1,4 +1,4 @@
-(ns moon.effects.target-entity
+(ns systems.effects.target-entity
   (:require [moon.db :as db]
             [gdl.math.vector :as v]
             [moon.app :refer [draw-line]]

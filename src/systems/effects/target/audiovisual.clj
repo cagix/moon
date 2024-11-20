@@ -1,4 +1,4 @@
-(ns moon.effects.target.audiovisual
+(ns systems.effects.target.audiovisual
   (:require [moon.world :as world]))
 
 (defn applicable? [_ {:keys [effect/target]}]

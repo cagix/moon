@@ -1,4 +1,4 @@
-(ns moon.effects.target-all
+(ns systems.effects.target-all
   (:require [moon.app :refer [draw-line]]
             [moon.effects :as effects]
             [moon.world :as world :refer [player-eid line-of-sight?]]))

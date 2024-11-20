@@ -31,9 +31,9 @@
                         uf-caves
                         tiled-map)))
 
-(defn- namespace->component-key [ns-str]
+(defn- namespace->component-key [prefix ns-str]
    (let [ns-parts (-> ns-str
-                      (str/replace #"^moon." "")
+                      (str/replace prefix "")
                       (str/split #"\."))]
      (keyword (str/join "." (drop-last ns-parts))
               (last ns-parts))))
@@ -48,7 +48,7 @@
   ([component-systems ns-sym]
    (system/install component-systems
                    ns-sym
-                   (namespace->component-key (str ns-sym))))
+                   (namespace->component-key #"^moon." (str ns-sym))))
   ([component-systems ns-sym k]
    (system/install component-systems ns-sym k)))
 
@@ -63,19 +63,25 @@
               #'effect/useful?
               #'effect/render]})
 
-(install-all effect
-             '[moon.effects.projectile
-               moon.effects.spawn
-               moon.effects.target-all
-               moon.effects.target-entity
+(defn- install-effects [ns-syms]
+  (doseq [ns-sym ns-syms]
+    (system/install effect
+                    ns-sym
+                    (namespace->component-key #"^systems." (str ns-sym)))))
 
-               moon.effects.target.audiovisual
-               moon.effects.target.convert
-               moon.effects.target.damage
-               moon.effects.target.kill
-               moon.effects.target.melee-damage
-               moon.effects.target.spiderweb
-               moon.effects.target.stun])
+(install-effects
+ '[systems.effects.projectile
+   systems.effects.spawn
+   systems.effects.target-all
+   systems.effects.target-entity
+
+   systems.effects.target.audiovisual
+   systems.effects.target.convert
+   systems.effects.target.damage
+   systems.effects.target.kill
+   systems.effects.target.melee-damage
+   systems.effects.target.spiderweb
+   systems.effects.target.stun])
 
 (def ^:private entity
   {:optional [#'info/info
