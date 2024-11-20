@@ -1,7 +1,7 @@
 (ns moon.entity.fsm
   (:require [moon.system :refer [defsystem *k*]]
             [moon.app :refer [set-cursor]]
-            [moon.entity :as entity]
+            [moon.systems.entity :as entity]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm

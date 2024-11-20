@@ -9,7 +9,7 @@
             [moon.app :refer [draw-rectangle play-sound world-camera world-viewport-width world-viewport-height]]
             [moon.body :as body]
             [moon.db :as db]
-            [moon.entity :as entity]
+            [moon.systems.entity :as entity]
             [moon.level :as level]
             [moon.projectile :as projectile]
             [moon.world.content-grid :as content-grid]

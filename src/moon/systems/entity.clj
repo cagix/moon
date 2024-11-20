@@ -1,4 +1,4 @@
-(ns moon.entity
+(ns moon.systems.entity
   (:require [moon.system :refer [defsystem]]))
 
 (defsystem ->v "Create component value. Default returns v.")

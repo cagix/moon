@@ -8,7 +8,7 @@
             [gdl.utils :as utils :refer [k->pretty-name readable-number]]
             [moon.app :as core :refer [batch gui-viewport]]
             [moon.effect :as effect]
-            [moon.entity :as entity]
+            [moon.systems.entity :as entity]
             [moon.entity.fsm :as fsm]
             [moon.entity.stat :as stat]
             [moon.screens.editor :as editor]
@@ -82,6 +82,9 @@
    systems.effects.target.melee-damage
    systems.effects.target.spiderweb
    systems.effects.target.stun])
+
+
+; TODO check _only_ systems as public fns (private?)
 
 (def ^:private entity
   {:optional [#'info/info
