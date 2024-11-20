@@ -24,5 +24,3 @@
 
 (defsystem render-info [_ entity])
 (defmethod render-info :default [_ entity])
-
-(def render-systems [render-below render render-above render-info])
