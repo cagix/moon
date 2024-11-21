@@ -18,17 +18,17 @@
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
 (declare asset-manager
-         batch
-         shape-drawer
+         ^:private batch
+         ^:private shape-drawer
          ^:private shape-drawer-texture
-         cursors
-         default-font
-         cached-map-renderer
-         world-unit-scale
-         world-viewport
-         gui-viewport
-         current-screen-key
-         screens)
+         ^:private cursors
+         ^:private default-font
+         ^:private cached-map-renderer
+         ^:private world-unit-scale
+         ^:private world-viewport
+         ^:private gui-viewport
+         ^:private current-screen-key
+         ^:private screens)
 
 (defn current-screen []
   (and (bound? #'current-screen-key)
