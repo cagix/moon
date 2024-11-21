@@ -55,4 +55,4 @@
   (dispose [_]))
 
 (defn create []
-  (->Minimap))
+  {:screen (->Minimap)})

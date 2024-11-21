@@ -1,8 +1,7 @@
 (ns moon.start
   (:require [moon.db :as db]
-            [gdl.stage :as stage]
+            [moon.app :refer [start-app]]
             [moon.system :as system]
-            [moon.app :as core :refer [batch gui-viewport]]
             [moon.systems.effect :as effect]
             [moon.systems.entity :as entity-sys]
             [moon.systems.entity-state :as state]
@@ -140,13 +139,14 @@
    :gui-viewport-height 900
    :ui-skin-scale :skin-scale/x1
    :init-screens (fn []
-                   {:screens/main-menu  (stage/create gui-viewport batch (main-menu/create))
-                    :screens/map-editor (stage/create gui-viewport batch (map-editor/create))
-                    :screens/editor     (stage/create gui-viewport batch (editor/create))
-                    :screens/minimap    (minimap/create) ; align w. other stuff and call @ there
-                    :screens/world      (stage/create gui-viewport batch (world/create))})
+                   {:screens/main-menu  (main-menu/create)
+                    :screens/map-editor (map-editor/create)
+                    :screens/editor     (editor/create)
+                    :screens/minimap    (minimap/create)
+                    :screens/world      (world/create)})
    :first-screen-k :screens/main-menu})
 
 (defn -main []
-  (db/init :schema "schema.edn" :properties "properties.edn")
-  (core/start-app config))
+  (db/init :schema "schema.edn"
+           :properties "properties.edn")
+  (start-app config))

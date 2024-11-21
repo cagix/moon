@@ -7,6 +7,7 @@
             [gdl.graphics.text :as text]
             [gdl.graphics.tiled :as tiled]
             [gdl.graphics.viewport :as vp]
+            [gdl.input :as input]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
@@ -42,6 +43,36 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (.bindRoot #'current-screen-key new-k)
     (screen/enter screen)))
+
+(defrecord StageScreen [stage sub-screen]
+  screen/Screen
+  (screen/enter [_]
+    (input/set-processor stage)
+    (when sub-screen (screen/enter sub-screen)))
+
+  (screen/exit [_]
+    (input/set-processor nil)
+    (when sub-screen (screen/exit sub-screen)))
+
+  (screen/render [_]
+    ; stage act first so sub-screen calls screen/change
+    ; -> is the end of frame
+    ; otherwise would need render-after-stage
+    ; or on screen/change the stage of the current screen would still .act
+    (stage/act! stage)
+    (when sub-screen (screen/render sub-screen))
+    (stage/draw! stage))
+
+  (screen/dispose [_]
+    (dispose stage)
+    (when sub-screen (screen/dispose sub-screen))))
+
+(defn- create-stage
+  "Actors or screen can be nil."
+  [viewport batch {:keys [actors screen]}]
+  (let [stage (stage/create viewport batch)]
+    (run! #(stage/add! stage %) actors)
+    (->StageScreen stage screen)))
 
 (defn start-app [{:keys [app-config
                          asset-folder
@@ -80,7 +111,8 @@
                                                          gui-viewport-height
                                                          (OrthographicCamera.)))
                  (ui/load! ui-skin-scale)
-                 (.bindRoot #'screens (init-screens))
+                 (.bindRoot #'screens (mapvals #(create-stage gui-viewport batch %)
+                                               (init-screens)))
                  (change-screen first-screen-k))
 
                (dispose [_]

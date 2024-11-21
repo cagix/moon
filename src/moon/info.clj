@@ -27,7 +27,7 @@
       s
       (remove-newlines new-s))))
 
-(declare ^:dynamic *entity*) ; just pass
+(declare ^:dynamic *entity*)
 
 (defn text [components]
   (->> components
