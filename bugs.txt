@@ -1,3 +1,6 @@
+; TODO check _only_ systems as public fns (private?)
+; e.g. no info which isnt possible anymore
+
 editor effects-target-all add -> default- gen schema shit -> audiovisuals/NT cannot be found.
 
 string-effect wrong *k* -> anyway weird? see w. tests..
