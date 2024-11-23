@@ -1,4 +1,4 @@
-(ns moon.entity.player.item-on-cursor
+(ns ^:no-doc moon.entity.player.item-on-cursor
   (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [moon.app :refer [draw-centered gui-mouse-position play-sound mouse-on-actor? world-mouse-position]]

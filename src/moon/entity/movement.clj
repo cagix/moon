@@ -1,4 +1,4 @@
-(ns moon.entity.movement
+(ns ^:no-doc moon.entity.movement
   (:require [gdl.math.vector :as v]
             [malli.core :as m]
             [moon.entity :as entity]

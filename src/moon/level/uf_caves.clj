@@ -1,4 +1,4 @@
-(ns moon.level.uf-caves
+(ns ^:no-doc moon.level.uf-caves
   (:require [data.grid2d :as g2d]
             [moon.db :as db]
             [gdl.graphics.texture :as texture]

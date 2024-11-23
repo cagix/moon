@@ -1,4 +1,4 @@
-(ns moon.entity.player.idle
+(ns ^:no-doc moon.entity.player.idle
   (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.ui :as ui]

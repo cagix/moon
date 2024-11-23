@@ -1,4 +1,4 @@
-(ns moon.entity.fsm
+(ns ^:no-doc moon.entity.fsm
   (:require [moon.system :refer [*k*]]
             [moon.systems.entity :as entity]
             [reduce-fsm :as fsm]))

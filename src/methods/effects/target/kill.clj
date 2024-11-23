@@ -1,4 +1,4 @@
-(ns methods.effects.target.kill
+(ns ^:no-doc methods.effects.target.kill
   (:require [moon.entity :as entity]))
 
 (defn applicable? [_ {:keys [effect/target]}]

@@ -1,4 +1,4 @@
-(ns moon.entity.player.dead
+(ns ^:no-doc moon.entity.player.dead
   (:require [moon.app :refer [change-screen play-sound]]
             [moon.widgets.modal :as modal]))
 

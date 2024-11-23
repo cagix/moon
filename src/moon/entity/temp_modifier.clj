@@ -1,4 +1,4 @@
-(ns moon.entity.temp-modifier
+(ns ^:no-doc moon.entity.temp-modifier
   (:require [moon.system :refer [*k*]]
             [moon.app :refer [draw-filled-circle]]
             [moon.entity :as entity]

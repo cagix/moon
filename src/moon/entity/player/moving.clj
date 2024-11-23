@@ -1,4 +1,4 @@
-(ns moon.entity.player.moving
+(ns ^:no-doc moon.entity.player.moving
   (:require [moon.controls :as controls]
             [moon.entity :as entity]))
 

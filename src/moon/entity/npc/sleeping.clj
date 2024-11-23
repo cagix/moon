@@ -1,4 +1,4 @@
-(ns moon.entity.npc.sleeping
+(ns ^:no-doc moon.entity.npc.sleeping
   (:require [moon.app :refer [draw-text]]
             [moon.entity :as entity]
             [moon.world :as world]))

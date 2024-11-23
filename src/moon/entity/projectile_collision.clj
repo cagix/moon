@@ -1,4 +1,4 @@
-(ns moon.entity.projectile-collision
+(ns ^:no-doc moon.entity.projectile-collision
   (:require [moon.system :refer [*k*]]
             [gdl.utils :refer [find-first]]
             [moon.effects :as effects]

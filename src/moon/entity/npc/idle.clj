@@ -1,4 +1,4 @@
-(ns moon.entity.npc.idle
+(ns ^:no-doc moon.entity.npc.idle
   (:require [moon.effects :as effects]
             [moon.entity :as entity]
             [moon.follow-ai :as follow-ai]

@@ -1,4 +1,4 @@
-(ns moon.entity.npc.dead)
+(ns ^:no-doc moon.entity.npc.dead)
 
 (defn ->v [eid]
   {:eid eid})

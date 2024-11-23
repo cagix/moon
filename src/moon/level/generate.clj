@@ -1,4 +1,4 @@
-(ns moon.level.generate
+(ns ^:no-doc moon.level.generate
   (:require [data.grid2d :as g2d]
             [moon.db :as db]
             [gdl.tiled :as t]

@@ -1,4 +1,4 @@
-(ns methods.effects.target.stun
+(ns ^:no-doc methods.effects.target.stun
   (:require [moon.entity :as entity]))
 
 (defn applicable? [_ {:keys [effect/target]}]

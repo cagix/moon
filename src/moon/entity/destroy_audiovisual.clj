@@ -1,4 +1,4 @@
-(ns moon.entity.destroy-audiovisual
+(ns ^:no-doc moon.entity.destroy-audiovisual
   (:require [moon.db :as db]
             [moon.world :as world]))
 

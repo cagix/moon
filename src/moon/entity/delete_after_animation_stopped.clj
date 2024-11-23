@@ -1,4 +1,4 @@
-(ns moon.entity.delete-after-animation-stopped
+(ns ^:no-doc moon.entity.delete-after-animation-stopped
   (:require [gdl.animation :as animation]))
 
 (defn create [_ eid]

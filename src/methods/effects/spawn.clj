@@ -1,4 +1,4 @@
-(ns methods.effects.spawn
+(ns ^:no-doc methods.effects.spawn
   "https://github.com/damn/core/issues/29"
   (:require [moon.app :refer [play-sound]]
             [moon.world :as world]))

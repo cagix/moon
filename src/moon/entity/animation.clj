@@ -1,4 +1,4 @@
-(ns moon.entity.animation
+(ns ^:no-doc moon.entity.animation
   (:require [gdl.animation :as animation]
             [moon.system :refer [*k*]]
             [moon.world :as world]))

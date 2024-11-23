@@ -1,4 +1,4 @@
-(ns moon.entity.delete-after-duration
+(ns ^:no-doc moon.entity.delete-after-duration
   (:require [moon.world :refer [timer stopped?]]))
 
 (defn ->v [duration]

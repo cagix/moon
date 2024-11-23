@@ -1,12 +1,12 @@
-(ns ^:no-doc moon.widgets.inventory
+(ns moon.widgets.inventory
   (:require [data.grid2d :as g2d]
             [gdl.graphics.color :as color]
-            [moon.info :as info]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [moon.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
+            [moon.info :as info]
             [moon.systems.entity-state :as state]
             [moon.world :refer [player-eid]]))
 

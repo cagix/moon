@@ -1,4 +1,4 @@
-(ns moon.entity.alert-friendlies-after-duration
+(ns ^:no-doc moon.entity.alert-friendlies-after-duration
   (:require [moon.entity :as entity]
             [moon.world :as world :refer [stopped?]]))
 

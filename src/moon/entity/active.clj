@@ -1,4 +1,4 @@
-(ns moon.entity.active
+(ns ^:no-doc moon.entity.active
   (:require [moon.app :refer [draw-image draw-filled-circle draw-sector play-sound]]
             [moon.systems.effect :as effect]
             [moon.effects :as effects]
