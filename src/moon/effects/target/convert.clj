@@ -1,4 +1,4 @@
-(ns ^:no-doc methods.effects.target.convert
+(ns ^:no-doc moon.effects.target.convert
   (:require [moon.entity :as entity]))
 
 (defn applicable? [_ {:keys [effect/source effect/target]}]

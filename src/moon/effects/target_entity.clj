@@ -1,4 +1,4 @@
-(ns ^:no-doc methods.effects.target-entity
+(ns ^:no-doc moon.effects.target-entity
   (:require [moon.db :as db]
             [gdl.math.vector :as v]
             [moon.app :refer [draw-line]]

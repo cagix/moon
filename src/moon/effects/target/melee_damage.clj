@@ -1,5 +1,5 @@
-(ns ^:no-doc methods.effects.target.melee-damage
-  (:require [methods.effects.target.damage :as damage]
+(ns ^:no-doc moon.effects.target.melee-damage
+  (:require [moon.effects.target.damage :as damage]
             [moon.entity :as entity]))
 
 (defn- entity->melee-damage [entity]

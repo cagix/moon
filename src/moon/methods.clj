@@ -24,25 +24,19 @@
    :optional [#'effect/useful?
               #'effect/render]})
 
-(defn- install-effects [ns-syms]
-  (doseq [ns-sym ns-syms]
-    (system/install effect
-                    ns-sym
-                    (system/namespace->component-key #"^methods." (str ns-sym)))))
+(system/install-all effect
+                    '[moon.effects.projectile
+                      moon.effects.spawn
+                      moon.effects.target-all
+                      moon.effects.target-entity
 
-(install-effects
- '[methods.effects.projectile
-   methods.effects.spawn
-   methods.effects.target-all
-   methods.effects.target-entity
-
-   methods.effects.target.audiovisual
-   methods.effects.target.convert
-   methods.effects.target.damage
-   methods.effects.target.kill
-   methods.effects.target.melee-damage
-   methods.effects.target.spiderweb
-   methods.effects.target.stun])
+                      moon.effects.target.audiovisual
+                      moon.effects.target.convert
+                      moon.effects.target.damage
+                      moon.effects.target.kill
+                      moon.effects.target.melee-damage
+                      moon.effects.target.spiderweb
+                      moon.effects.target.stun])
 
 (def ^:private entity
   {:optional [#'entity-sys/->v
