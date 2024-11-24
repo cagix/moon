@@ -1,5 +1,5 @@
 (ns moon.val-max
-  (:require [moon.schema :as schema]
+  (:require [forge.schema :as schema]
             [malli.core :as m]))
 
 (def schema

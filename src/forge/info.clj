@@ -1,7 +1,7 @@
-(ns moon.info
+(ns forge.info
   (:require [clojure.string :as str]
             [gdl.utils :refer [index-of]]
-            [moon.system :refer [defsystem]]))
+            [forge.system :refer [defsystem]]))
 
 (defsystem info)
 (defmethod info :default [_])

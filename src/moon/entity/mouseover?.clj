@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.mouseover?
-  (:require [moon.app :refer [draw-ellipse with-line-width]]
+  (:require [forge.app :refer [draw-ellipse with-line-width]]
             [moon.entity :as entity]
             [moon.world :refer [player-eid]]))
 

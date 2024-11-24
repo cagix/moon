@@ -5,8 +5,8 @@
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [app.screens.world :as world]
-            [moon.app :refer [start-app]]
-            [moon.db :as db]))
+            [forge.app :refer [start-app]]
+            [forge.db :as db]))
 
 (def ^:private config
   {:app-config {:title "Moon"

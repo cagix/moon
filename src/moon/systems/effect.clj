@@ -1,5 +1,5 @@
 (ns moon.systems.effect
-  (:require [moon.system :refer [defsystem]]))
+  (:require [forge.system :refer [defsystem]]))
 
 (defsystem handle [_ ctx])
 

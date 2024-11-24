@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.level.generate
   (:require [data.grid2d :as g2d]
-            [moon.db :as db]
+            [forge.db :as db]
             [gdl.tiled :as t]
             [moon.level :as level]
             [moon.level.area-level-grid :as area-level-grid]

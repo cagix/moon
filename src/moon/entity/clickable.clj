@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.clickable
-  (:require [moon.app :refer [draw-text]]))
+  (:require [forge.app :refer [draw-text]]))
 
 (defn render [{:keys [text]} {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)

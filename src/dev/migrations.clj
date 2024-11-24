@@ -1,5 +1,5 @@
 (ns ^:no-doc dev.migrations
-  (:require [moon.db :refer [migrate]]))
+  (:require [forge.db :refer [migrate]]))
 
 (comment
 

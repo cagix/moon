@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.stunned
-  (:require [moon.app :refer [draw-circle]]
+  (:require [forge.app :refer [draw-circle]]
             [moon.entity :as entity]
             [moon.world :refer [timer stopped?]]))
 

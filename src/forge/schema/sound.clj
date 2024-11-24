@@ -1,11 +1,11 @@
-(ns ^:no-doc moon.schema.sound
+(ns ^:no-doc forge.schema.sound
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
-            [moon.schema :as schema]
+            [forge.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.app :refer [asset-manager add-actor play-sound]]
-            [moon.editor.scrollpane :refer [scrollable-choose-window]])
+            [forge.app :refer [asset-manager add-actor play-sound]]
+            [forge.editor.scrollpane :refer [scrollable-choose-window]])
   (:import (com.badlogic.gdx.audio Sound)))
 
 (defmethod schema/form :s/sound [_]

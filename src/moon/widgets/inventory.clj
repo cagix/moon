@@ -3,10 +3,10 @@
             [gdl.graphics.color :as color]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
+            [forge.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
-            [moon.info :as info]
+            [forge.info :as info]
             [moon.systems.entity-state :as state]
             [moon.world :refer [player-eid]]))
 

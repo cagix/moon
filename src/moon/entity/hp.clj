@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.hp
-  (:require [moon.app :refer [draw-filled-rectangle pixels->world-units]]
+  (:require [forge.app :refer [draw-filled-rectangle pixels->world-units]]
             [moon.entity :as entity]
             [moon.val-max :as val-max]))
 

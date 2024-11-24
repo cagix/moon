@@ -1,8 +1,8 @@
-(ns ^:no-doc moon.schema.image
+(ns ^:no-doc forge.schema.image
   (:require [gdl.assets :as assets]
-            [moon.schema :as schema]
+            [forge.schema :as schema]
             [gdl.ui :as ui]
-            [moon.app :refer [asset-manager image sprite sprite-sheet]])
+            [forge.app :refer [asset-manager image sprite sprite-sheet]])
   (:import (com.badlogic.gdx.graphics Texture)))
 
 (defmethod schema/form :s/image [_]

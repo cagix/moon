@@ -4,7 +4,7 @@
             [gdl.utils :refer [k->pretty-name readable-number]]
             [moon.damage :as damage]
             [moon.entity :as entity]
-            [moon.info :as info :refer [info]]
+            [forge.info :as info :refer [info]]
             [moon.operations :as ops]
             [moon.world :refer [finished-ratio]]))
 
@@ -14,7 +14,7 @@
 
 (color/put "PRETTY_NAME" [0.84 0.8 0.52])
 
-(.bindRoot #'moon.info/info-color
+(.bindRoot #'forge.info/info-color
            {:property/pretty-name "PRETTY_NAME"
             :entity/modifiers "CYAN"
             :maxrange "LIGHT_GRAY"
@@ -30,7 +30,7 @@
             :entity/species "LIGHT_GRAY"
             :entity/temp-modifier "LIGHT_GRAY"})
 
-(.bindRoot #'moon.info/info-text-k-order
+(.bindRoot #'forge.info/info-text-k-order
            [:property/pretty-name
             :skill/action-time-modifier-key
             :skill/action-time

@@ -1,6 +1,6 @@
-(ns moon.property
+(ns forge.property
   (:refer-clojure :exclude [type])
-  (:require [moon.schema :as schema]
+  (:require [forge.schema :as schema]
             [malli.core :as m]
             [malli.error :as me]))
 

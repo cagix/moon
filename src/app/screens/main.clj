@@ -1,11 +1,11 @@
 (ns ^:no-doc app.screens.main
   (:require [gdl.app :as app]
-            [moon.db :as db]
+            [forge.db :as db]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
-            [moon.app :refer [change-screen set-cursor]]
+            [forge.app :refer [change-screen set-cursor]]
             [app.screens.world :as world]
             [moon.widgets.background-image :as background-image]))
 

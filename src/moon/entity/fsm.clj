@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.fsm
-  (:require [moon.system :refer [*k*]]
+  (:require [forge.system :refer [*k*]]
             [moon.systems.entity :as entity]
             [reduce-fsm :as fsm]))
 

@@ -1,5 +1,5 @@
-(ns ^:no-doc moon.schema.boolean
-  (:require [moon.schema :as schema]
+(ns ^:no-doc forge.schema.boolean
+  (:require [forge.schema :as schema]
             [gdl.ui :as ui]))
 
 (defmethod schema/widget :boolean [_ checked?]

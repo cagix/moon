@@ -2,7 +2,7 @@
   (:require [dev.app-values-tree :refer [ns-value-vars]]
             [gdl.ui :as ui]
             [gdl.ui.stage :as stage]
-            [moon.app :refer [gui-viewport-width gui-viewport-height add-actor world-mouse-position]]
+            [forge.app :refer [gui-viewport-width gui-viewport-height add-actor world-mouse-position]]
             [moon.world :as world]
             [moon.world.mouseover :as mouseover]))
 

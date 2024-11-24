@@ -1,5 +1,5 @@
 (ns moon.systems.entity
-  (:require [moon.system :refer [defsystem]]))
+  (:require [forge.system :refer [defsystem]]))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)

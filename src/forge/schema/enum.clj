@@ -1,6 +1,6 @@
-(ns ^:no-doc moon.schema.enum
+(ns ^:no-doc forge.schema.enum
   (:require [clojure.edn :as edn]
-            [moon.schema :as schema]
+            [forge.schema :as schema]
             [gdl.ui :as ui]
             [gdl.utils :refer [->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisSelectBox)))

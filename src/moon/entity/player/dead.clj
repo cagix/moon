@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.player.dead
-  (:require [moon.app :refer [change-screen play-sound]]
+  (:require [forge.app :refer [change-screen play-sound]]
             [moon.widgets.modal :as modal]))
 
 (defn cursor [_]

@@ -1,8 +1,8 @@
-(ns ^:no-doc moon.schema.animation
-  (:require [gdl.animation :as animation]
-            [moon.schema :as schema]
-            [gdl.ui :as ui]
-            [moon.schema.image :as image]))
+(ns ^:no-doc forge.schema.animation
+  (:require [forge.schema :as schema]
+            [forge.schema.image :as image]
+            [gdl.animation :as animation]
+            [gdl.ui :as ui]))
 
 (defmethod schema/form :s/animation [_]
   [:map {:closed true}

@@ -2,11 +2,11 @@
   (:require [clojure.string :as str]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
-            [moon.app :refer [add-actor change-screen]]
-            [moon.db :as db]
-            [moon.editor.property :as widgets.property]
-            [moon.editor.overview :as properties-overview]
-            [moon.property :as property]
+            [forge.app :refer [add-actor change-screen]]
+            [forge.db :as db]
+            [forge.editor.property :as widgets.property]
+            [forge.editor.overview :as properties-overview]
+            [forge.property :as property]
             [moon.widgets.background-image :as background-image])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 

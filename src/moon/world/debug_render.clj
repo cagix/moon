@@ -2,7 +2,7 @@
   (:require [gdl.graphics.camera :as cam]
             [gdl.math.shape :as shape]
             [gdl.utils :refer [->tile]]
-            [moon.app :refer [draw-circle draw-rectangle draw-filled-rectangle draw-grid world-camera world-mouse-position world-viewport-width world-viewport-height]]
+            [forge.app :refer [draw-circle draw-rectangle draw-filled-rectangle draw-grid world-camera world-mouse-position world-viewport-width world-viewport-height]]
             [moon.world :refer [circle->cells grid]]
             [moon.world.potential-fields :refer [factions-iterations]]))
 

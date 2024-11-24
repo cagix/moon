@@ -3,7 +3,7 @@
             [gdl.math.vector :as v]
             [gdl.utils :refer [->tile]]
             [malli.core :as m]
-            [moon.app :refer [set-cursor]]
+            [forge.app :refer [set-cursor]]
             [moon.effects :as effects]
             [moon.systems.entity :as entity]
             [moon.systems.entity-state :as state]

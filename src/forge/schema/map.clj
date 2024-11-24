@@ -1,13 +1,13 @@
-(ns ^:no-doc moon.schema.map
-  (:require [moon.schema :as schema]
+(ns ^:no-doc forge.schema.map
+  (:require [forge.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [index-of]]
             [malli.generator :as mg]
-            [moon.app :refer [stage add-actor]]
-            [moon.editor.malli :as malli]
-            [moon.editor.property :as widgets.property]
-            [moon.editor.scrollpane :refer [scroll-pane-cell]]))
+            [forge.app :refer [stage add-actor]]
+            [forge.editor.malli :as malli]
+            [forge.editor.property :as widgets.property]
+            [forge.editor.scrollpane :refer [scroll-pane-cell]]))
 
 (defn- attribute-form
   "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."

@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.skills
-  (:require [moon.system :refer [*k*]]
+  (:require [forge.system :refer [*k*]]
             [moon.entity :as entity]
             [moon.world :refer [stopped?]]))
 

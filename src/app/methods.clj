@@ -1,19 +1,19 @@
 (ns app.methods
-  (:require [moon.system :as system]
+  (:require (forge.schema animation
+                          boolean
+                          enum
+                          image
+                          map
+                          number
+                          one-to-many
+                          one-to-one
+                          sound
+                          string)
+            [forge.system :as system]
             [moon.systems.effect :as effect]
             [moon.systems.entity :as entity-sys]
             [moon.systems.entity-state :as state]
             moon.methods.info
-            (moon.schema animation
-                         boolean
-                         enum
-                         image
-                         map
-                         number
-                         one-to-many
-                         one-to-one
-                         sound
-                         string)
             (moon.level generate
                         uf-caves
                         tiled-map)))

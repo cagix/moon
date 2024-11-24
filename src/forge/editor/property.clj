@@ -1,11 +1,11 @@
-(ns ^:no-doc moon.editor.property
-  (:require [moon.db :as db]
+(ns ^:no-doc forge.editor.property
+  (:require [forge.db :as db]
             [gdl.input :refer [key-just-pressed?]]
-            [moon.property :as property]
-            [moon.schema :as schema]
+            [forge.property :as property]
+            [forge.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.editor.scrollpane :refer [scroll-pane-cell]]
+            [forge.editor.scrollpane :refer [scroll-pane-cell]]
             [moon.widgets.error-window :refer [error-window!]]))
 
 (defn- apply-context-fn [window f]

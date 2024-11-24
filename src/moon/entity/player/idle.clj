@@ -3,7 +3,7 @@
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.app :refer [play-sound set-cursor world-mouse-position mouse-on-actor?]]
+            [forge.app :refer [play-sound set-cursor world-mouse-position mouse-on-actor?]]
             [moon.controls :as controls]
             [moon.effects :as effects]
             [moon.entity :as entity]

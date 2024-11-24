@@ -1,5 +1,5 @@
 (ns moon.level.creatures
-  (:require [moon.property :as property]
+  (:require [forge.property :as property]
             [gdl.tiled :as t]))
 
 (defn with-level [creature-properties level]

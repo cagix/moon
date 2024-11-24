@@ -1,5 +1,5 @@
 (ns moon.entity.inventory
-  (:require [moon.system :refer [*k*]]
+  (:require [forge.system :refer [*k*]]
             [gdl.utils :refer [find-first]]
             [moon.entity :as entity]
             [moon.item :as item]

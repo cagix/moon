@@ -1,6 +1,6 @@
 (ns moon.operation
   (:refer-clojure :exclude [apply])
-  (:require [moon.system :refer [defsystem defmethods]]))
+  (:require [forge.system :refer [defsystem defmethods]]))
 
 (defsystem value-text)
 

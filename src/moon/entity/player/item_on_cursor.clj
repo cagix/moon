@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.entity.player.item-on-cursor
   (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
-            [moon.app :refer [draw-centered gui-mouse-position play-sound mouse-on-actor? world-mouse-position]]
+            [forge.app :refer [draw-centered gui-mouse-position play-sound mouse-on-actor? world-mouse-position]]
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.item :refer [valid-slot? stackable?]]

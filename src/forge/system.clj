@@ -1,4 +1,4 @@
-(ns moon.system
+(ns forge.system
   (:require [clojure.string :as str]))
 
 (defmacro defsystem

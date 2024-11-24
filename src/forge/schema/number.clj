@@ -1,5 +1,5 @@
-(ns ^:no-doc moon.schema.number
-  (:require [moon.schema :as schema]))
+(ns ^:no-doc forge.schema.number
+  (:require [forge.schema :as schema]))
 
 (defmethod schema/form :s/number  [_] number?)
 (defmethod schema/form :s/nat-int [_] nat-int?)

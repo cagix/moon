@@ -1,6 +1,6 @@
-(ns ^:no-doc moon.editor.scrollpane
+(ns ^:no-doc forge.editor.scrollpane
   (:require [gdl.ui :as ui]
-            [moon.app :refer [gui-viewport-height]]))
+            [forge.app :refer [gui-viewport-height]]))
 
 (defn scroll-pane-cell [rows]
   (let [table (ui/table {:rows rows

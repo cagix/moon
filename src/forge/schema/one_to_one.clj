@@ -1,12 +1,12 @@
-(ns ^:no-doc moon.schema.one-to-one
-  (:require [moon.db :as db]
-            [moon.info :as info]
-            [moon.property :as property]
-            [moon.schema :as schema]
+(ns ^:no-doc forge.schema.one-to-one
+  (:require [forge.db :as db]
+            [forge.info :as info]
+            [forge.property :as property]
+            [forge.schema :as schema]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.app :refer [add-actor]]
-            [moon.editor.overview :as properties-overview]))
+            [forge.app :refer [add-actor]]
+            [forge.editor.overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]
   [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])

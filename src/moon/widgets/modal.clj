@@ -1,7 +1,7 @@
 (ns moon.widgets.modal
   (:require [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [moon.app :refer [gui-viewport-width gui-viewport-height stage add-actor]]))
+            [forge.app :refer [gui-viewport-width gui-viewport-height stage add-actor]]))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
