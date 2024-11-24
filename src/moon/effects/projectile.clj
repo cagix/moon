@@ -1,8 +1,7 @@
 (ns ^:no-doc moon.effects.projectile
   (:require [gdl.math.vector :as v]
             [forge.app :refer [play-sound]]
-            [moon.projectile :as projectile]
-            [moon.world :as world :refer [path-blocked?]]))
+            [moon.world :as world :refer [path-blocked? projectile-size]]))
 
 (defn- start-point [entity direction size]
   (v/add (:position entity)
@@ -22,7 +21,7 @@
     (and (not (path-blocked? ; TODO test
                              source-p
                              target-p
-                             (projectile/size projectile)))
+                             (projectile-size projectile)))
          ; TODO not taking into account body sizes
          (< (v/distance source-p ; entity/distance function protocol EntityPosition
                         target-p)
@@ -31,7 +30,7 @@
 (defn handle [projectile
               {:keys [effect/source effect/target-direction]}]
   (play-sound "sounds/bfxr_waypointunlock.wav")
-  (world/projectile {:position (start-point @source target-direction (projectile/size projectile))
+  (world/projectile {:position (start-point @source target-direction (projectile-size projectile))
                      :direction target-direction
                      :faction (:entity/faction @source)}
                     projectile))

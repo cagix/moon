@@ -1,17 +1,16 @@
 (ns moon.world
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [data.grid2d :as g2d]
+            [forge.app :refer [draw-rectangle play-sound world-camera world-viewport-width world-viewport-height]]
+            [forge.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.vector :as v]
             [gdl.utils :refer [dispose tile->middle define-order sort-by-order safe-merge]]
             [gdl.tiled :as tiled]
             [malli.core :as m]
-            [forge.app :refer [draw-rectangle play-sound world-camera world-viewport-width world-viewport-height]]
-            [forge.db :as db]
-            [moon.systems.entity :as entity]
             [mapgen.level :as level]
-            [moon.projectile :as projectile]
+            [moon.systems.entity :as entity]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))
 
@@ -316,13 +315,17 @@
           #:entity {:line-render {:thick? thick? :end end :color color}
                     :delete-after-duration duration}))
 
+(defn projectile-size [projectile]
+  {:pre [(:entity/image projectile)]}
+  (first (:world-unit-dimensions (:entity/image projectile))))
+
 (defn projectile [{:keys [position direction faction]}
                   {:keys [entity/image
                           projectile/max-range
                           projectile/speed
                           entity-effects
                           projectile/piercing?] :as projectile}]
-  (let [size (projectile/size projectile)]
+  (let [size (projectile-size projectile)]
     (create position
             {:width size
              :height size
