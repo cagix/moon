@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.level.uf-caves
+(ns ^:no-doc mapgen.uf-caves
   (:require [data.grid2d :as g2d]
             [forge.db :as db]
             [gdl.graphics.texture :as texture]
@@ -6,9 +6,9 @@
             [gdl.tiled :as t]
             [forge.app :refer [texture-region]]
             [moon.level :as level]
-            [moon.level.creatures :as creatures]
-            [moon.level.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [moon.level.tiled :refer [wgt-grid->tiled-map]]))
+            [mapgen.creatures :as creatures]
+            [mapgen.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
+            [mapgen.tiled :refer [wgt-grid->tiled-map]]))
 
 (def ^:private scaling 4)
 

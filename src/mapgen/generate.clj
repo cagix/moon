@@ -1,12 +1,12 @@
-(ns ^:no-doc moon.level.generate
+(ns ^:no-doc mapgen.generate
   (:require [data.grid2d :as g2d]
             [forge.db :as db]
             [gdl.tiled :as t]
             [moon.level :as level]
-            [moon.level.area-level-grid :as area-level-grid]
-            [moon.level.creatures :as creatures]
-            [moon.level.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [moon.level.modules :as modules]))
+            [mapgen.area-level-grid :as area-level-grid]
+            [mapgen.creatures :as creatures]
+            [mapgen.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
+            [mapgen.modules :as modules]))
 
 (def ^:private spawn-creatures? true)
 

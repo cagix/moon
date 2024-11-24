@@ -1,4 +1,4 @@
-(ns moon.level.nads
+(ns mapgen.nads
   (:require [data.grid2d :as g]
             [gdl.utils :refer [assoc-ks]]))
 

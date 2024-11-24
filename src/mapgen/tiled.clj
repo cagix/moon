@@ -1,4 +1,4 @@
-(ns moon.level.tiled
+(ns mapgen.tiled
   (:require [data.grid2d :as g]
             [gdl.tiled :as t]))
 

@@ -14,9 +14,9 @@
             [moon.systems.entity :as entity-sys]
             [moon.systems.entity-state :as state]
             moon.methods.info
-            (moon.level generate
-                        uf-caves
-                        tiled-map)))
+            (mapgen generate
+                    uf-caves
+                    tiled-map)))
 
 (def ^:private effect
   {:required [#'effect/applicable?

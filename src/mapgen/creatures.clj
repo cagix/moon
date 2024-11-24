@@ -1,4 +1,4 @@
-(ns moon.level.creatures
+(ns mapgen.creatures
   (:require [forge.property :as property]
             [gdl.tiled :as t]))
 

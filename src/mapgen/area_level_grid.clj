@@ -1,4 +1,4 @@
-(ns moon.level.area-level-grid
+(ns mapgen.area-level-grid
   (:require [data.grid2d :as g]))
 
 ; can adjust:

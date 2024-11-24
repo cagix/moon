@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.level.tiled-map
+(ns ^:no-doc mapgen.tiled-map
   (:require [gdl.tiled :as t]
             [moon.level :as level]))
 

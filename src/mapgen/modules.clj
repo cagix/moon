@@ -1,7 +1,7 @@
-(ns moon.level.modules
+(ns mapgen.modules
   (:require [gdl.tiled :as t]
-            [moon.level.grid :refer [transition-idx-value]]
-            [moon.level.tiled :refer [grid->tiled-map]]))
+            [mapgen.grid :refer [transition-idx-value]]
+            [mapgen.tiled :refer [grid->tiled-map]]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
 ; * at the beginning enemies very close, different area different spawn-rate !
