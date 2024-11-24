@@ -1,6 +1,6 @@
 (ns ^:no-doc mapgen.tiled-map
   (:require [gdl.tiled :as t]
-            [moon.level :as level]))
+            [mapgen.level :as level]))
 
 (defmethod level/generate* :world.generator/tiled-map [world]
   {:tiled-map (t/load-map (:world/tiled-map world))

@@ -10,7 +10,7 @@
             [forge.app :refer [draw-rectangle play-sound world-camera world-viewport-width world-viewport-height]]
             [forge.db :as db]
             [moon.systems.entity :as entity]
-            [moon.level :as level]
+            [mapgen.level :as level]
             [moon.projectile :as projectile]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))

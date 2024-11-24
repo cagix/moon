@@ -1,4 +1,4 @@
-(ns moon.level
+(ns mapgen.level
   (:require [data.grid2d :as g]
             [forge.db :as db]
             [gdl.tiled :as t]))

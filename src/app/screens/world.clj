@@ -10,7 +10,7 @@
             [forge.app :refer [draw-tiled-map draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [moon.controls :as controls]
             [moon.entity :as entity]
-            [moon.level :as level]
+            [mapgen.level :as level]
             [moon.systems.entity-state :as state]
             [forge.widgets.error-window :refer [error-window!]]
             [moon.widgets.action-bar :as action-bar]

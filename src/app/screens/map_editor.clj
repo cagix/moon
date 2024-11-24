@@ -11,7 +11,7 @@
             [gdl.tiled :as t]
             [forge.app :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position current-screen change-screen]]
             [moon.controls :as controls]
-            [moon.level :as level]
+            [mapgen.level :as level]
             [mapgen.modules :as modules]
             [forge.widgets.error-window :refer [error-window!]]))
 
