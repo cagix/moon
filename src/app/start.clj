@@ -1,12 +1,12 @@
-(ns moon.start
-  (:require [moon.app :refer [start-app]]
-            [moon.db :as db]
-            moon.methods
-            [moon.screens.editor :as editor]
-            [moon.screens.main :as main-menu]
-            [moon.screens.map-editor :as map-editor]
-            [moon.screens.minimap :as minimap]
-            [moon.screens.world :as world]))
+(ns app.start
+  (:require app.methods
+            [app.screens.editor :as editor]
+            [app.screens.main :as main-menu]
+            [app.screens.map-editor :as map-editor]
+            [app.screens.minimap :as minimap]
+            [app.screens.world :as world]
+            [moon.app :refer [start-app]]
+            [moon.db :as db]))
 
 (def ^:private config
   {:app-config {:title "Moon"

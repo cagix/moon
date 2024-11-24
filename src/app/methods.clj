@@ -1,4 +1,4 @@
-(ns moon.methods
+(ns app.methods
   (:require [moon.system :as system]
             [moon.systems.effect :as effect]
             [moon.systems.entity :as entity-sys]

@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.screens.main
+(ns ^:no-doc app.screens.main
   (:require [gdl.app :as app]
             [moon.db :as db]
             [gdl.input :refer [key-just-pressed?]]
@@ -6,7 +6,7 @@
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
             [moon.app :refer [change-screen set-cursor]]
-            [moon.screens.world :as world]
+            [app.screens.world :as world]
             [moon.widgets.background-image :as background-image]))
 
 (defn- buttons []

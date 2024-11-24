@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.screens.minimap
+(ns ^:no-doc app.screens.minimap
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-just-pressed?]]

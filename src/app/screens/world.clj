@@ -1,4 +1,4 @@
-(ns moon.screens.world
+(ns app.screens.world
   (:require [moon.db :as db]
             [gdl.graphics :refer [frames-per-second delta-time]]
             [gdl.graphics.camera :as cam]
