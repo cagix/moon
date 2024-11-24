@@ -1,4 +1,4 @@
-(ns moon.widgets.error-window
+(ns forge.widgets.error-window
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [gdl.ui :as ui]
             [forge.app :refer [add-actor stage]]))

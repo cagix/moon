@@ -6,7 +6,7 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [forge.editor.scrollpane :refer [scroll-pane-cell]]
-            [moon.widgets.error-window :refer [error-window!]]))
+            [forge.widgets.error-window :refer [error-window!]]))
 
 (defn- apply-context-fn [window f]
   #(try (f)

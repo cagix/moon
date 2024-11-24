@@ -12,7 +12,7 @@
             [moon.entity :as entity]
             [moon.level :as level]
             [moon.systems.entity-state :as state]
-            [moon.widgets.error-window :refer [error-window!]]
+            [forge.widgets.error-window :refer [error-window!]]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.dev-menu :as dev-menu]
             [moon.widgets.entity-info-window :as entity-info-window]

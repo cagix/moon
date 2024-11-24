@@ -13,7 +13,7 @@
             [moon.controls :as controls]
             [moon.level :as level]
             [moon.level.modules :as modules]
-            [moon.widgets.error-window :refer [error-window!]]))
+            [forge.widgets.error-window :refer [error-window!]]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
