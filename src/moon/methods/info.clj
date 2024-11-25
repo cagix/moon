@@ -2,7 +2,6 @@
   (:require [clojure.string :as str]
             [gdl.graphics.color :as color]
             [gdl.utils :refer [k->pretty-name readable-number]]
-            [moon.damage :as damage]
             [moon.entity :as entity]
             [forge.info :as info :refer [info]]
             [moon.operations :as ops]
@@ -60,7 +59,7 @@
 (defmethod info :effects.target/damage [[_ damage]]
   (damage-info damage)
   #_(if source
-      (let [modified (damage/modified @source damage)]
+      (let [modified (entity/damage-mods @source damage)]
         (if (= damage modified)
           (damage-info damage)
           (str (damage-info damage) "\nModified: " (damage/info modified))))

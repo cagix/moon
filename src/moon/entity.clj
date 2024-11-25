@@ -164,3 +164,18 @@
   (when (:entity/player? entity)
     (action-bar/remove-skill skill))
   (update entity :entity/skills dissoc id))
+
+(defn damage-mods
+  ([source damage]
+   (update damage
+           :damage/min-max
+           #(-> %
+                (apply-min-modifier source :modifier/damage-deal-min)
+                (apply-max-modifier source :modifier/damage-deal-max))))
+
+  ([source target damage]
+   (update (damage-mods source damage)
+           :damage/min-max
+           apply-max-modifier
+           target
+           :modifier/damage-receive-max)))

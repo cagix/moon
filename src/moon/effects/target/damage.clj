@@ -1,7 +1,6 @@
 (ns ^:no-doc moon.effects.target.damage
   (:require [forge.db :as db]
             [gdl.rand :refer [rand-int-between]]
-            [moon.damage :as damage]
             [moon.entity :as entity]
             [moon.world :as world]))
 
@@ -36,7 +35,7 @@
      (swap! target entity/add-text-effect "[WHITE]ARMOR")
 
      :else
-     (let [min-max (:damage/min-max (damage/modified source* target* damage))
+     (let [min-max (:damage/min-max (entity/damage-mods source* target* damage))
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
