@@ -1,8 +1,8 @@
 (ns ^:no-doc app.screens.main
   (:require [gdl.app :as app]
             [forge.db :as db]
+            [forge.screen :as screen]
             [gdl.input :refer [key-just-pressed?]]
-            [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
             [forge.app :refer [change-screen set-cursor]]

@@ -1,10 +1,10 @@
 (ns ^:no-doc app.screens.map-editor
   (:require [clojure.string :as str]
             [forge.db :as db]
+            [forge.screen :as screen]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
-            [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]

@@ -1,7 +1,7 @@
 (ns forge.screen
-  (:require [gdl.input :as input]
-            [gdl.ui.stage :as stage]
-            [gdl.utils :refer [dispose]]))
+  (:require [gdl.ui.stage :as stage]
+            [gdl.utils :refer [dispose]])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defprotocol Screen
   (enter   [_])
@@ -12,11 +12,11 @@
 (defrecord StageScreen [stage sub-screen]
   Screen
   (enter [_]
-    (input/set-processor stage)
+    (.setInputProcessor Gdx/input stage)
     (when sub-screen (enter sub-screen)))
 
   (exit [_]
-    (input/set-processor nil)
+    (.setInputProcessor Gdx/input nil)
     (when sub-screen (exit sub-screen)))
 
   (render [_]
@@ -32,7 +32,7 @@
     (dispose stage)
     (when sub-screen (dispose sub-screen))))
 
-(defn- stage-screen
+(defn stage-screen
   "Actors or screen can be nil."
   [viewport batch {:keys [actors screen]}]
   (let [stage (stage/create viewport batch)]

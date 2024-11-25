@@ -2,8 +2,8 @@
   (:require [gdl.graphics.camera :as cam]
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-just-pressed?]]
-            [gdl.screen :as screen]
             [forge.app :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera change-screen]]
+            [forge.screen :as screen]
             [moon.world :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
