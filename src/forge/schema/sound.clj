@@ -2,6 +2,7 @@
   (:require [clojure.string :as str]
             [gdl.assets :as assets]
             [forge.schema :as schema]
+            [forge.editor.widget :as widget]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
             [forge.app :refer [asset-manager add-actor play-sound]]
@@ -33,7 +34,7 @@
   [(ui/text-button (name sound-file) #(choose-window table))
    (play-button sound-file)])
 
-(defmethod schema/widget :s/sound [_ sound-file]
+(defmethod widget/create :s/sound [_ sound-file]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (ui/add-rows! table [(if sound-file
                            (columns table sound-file)

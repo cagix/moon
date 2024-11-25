@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.schema.one-to-one
   (:require [forge.db :as db]
+            [forge.editor.widget :as widget]
             [forge.info :as info]
             [forge.property :as property]
             [forge.schema :as schema]
@@ -43,12 +44,12 @@
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))
 
-(defmethod schema/widget :s/one-to-one [[_ property-type] property-id]
+(defmethod widget/create :s/one-to-one [[_ property-type] property-id]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows table property-type property-id)
     table))
 
-(defmethod schema/widget-value :s/one-to-one [_ widget]
+(defmethod widget/->value :s/one-to-one [_ widget]
   (->> (ui/children widget)
        (keep a/id)
        first))

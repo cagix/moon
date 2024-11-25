@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.schema.animation
-  (:require [forge.schema :as schema]
+  (:require [forge.editor.widget :as widget]
+            [forge.schema :as schema]
             [forge.schema.image :as image]
             [gdl.animation :as animation]
             [gdl.ui :as ui]))
@@ -15,7 +16,7 @@
                     :frame-duration frame-duration
                     :looping? looping?))
 
-(defmethod schema/widget :s/animation [_ animation]
+(defmethod widget/create :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
                       (ui/image-button (image/edn->image image)
                                        (fn on-clicked [])

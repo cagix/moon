@@ -1,11 +1,11 @@
 (ns forge.schema.string
-  (:require [forge.schema :as schema]
+  (:require [forge.editor.widget :as widget]
             [gdl.ui :as ui])
   (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
-(defmethod schema/widget :string [schema v]
+(defmethod widget/create :string [schema v]
   (ui/add-tooltip! (ui/text-field v {})
                    (str schema)))
 
-(defmethod schema/widget-value :string [_ widget]
+(defmethod widget/->value :string [_ widget]
   (VisTextField/.getText widget))

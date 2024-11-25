@@ -1,12 +1,13 @@
 (ns ^:no-doc forge.editor.property
   (:require [forge.db :as db]
-            [gdl.input :refer [key-just-pressed?]]
-            [forge.property :as property]
-            [forge.schema :as schema]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
             [forge.editor.scrollpane :refer [scroll-pane-cell]]
-            [forge.widgets.error-window :refer [error-window!]]))
+            [forge.editor.widget :as widget]
+            [forge.schema :as schema]
+            [forge.property :as property]
+            [forge.widgets.error-window :refer [error-window!]]
+            [gdl.input :refer [key-just-pressed?]]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as a]))
 
 (defn- apply-context-fn [window f]
   #(try (f)
@@ -26,8 +27,8 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        widget (schema/widget schema props)
-        save!   (apply-context-fn window #(db/update! (schema/widget-value schema widget)))
+        widget (widget/create schema props)
+        save!   (apply-context-fn window #(db/update! (widget/->value schema widget)))
         delete! (apply-context-fn window #(db/delete! (:property/id props)))]
     (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                               [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]" save!)

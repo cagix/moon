@@ -1,6 +1,7 @@
 (ns ^:no-doc forge.schema.image
-  (:require [gdl.assets :as assets]
+  (:require [forge.editor.widget :as widget]
             [forge.schema :as schema]
+            [gdl.assets :as assets]
             [gdl.ui :as ui]
             [forge.app :refer [asset-manager image sprite sprite-sheet]])
   (:import (com.badlogic.gdx.graphics Texture)))
@@ -29,7 +30,7 @@
     [(ui/image-button (image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
-(defmethod schema/widget :s/image [_ image]
+(defmethod widget/create :s/image [_ image]
   (ui/image-button (edn->image image)
                    (fn on-clicked [])
                    {:scale 2})

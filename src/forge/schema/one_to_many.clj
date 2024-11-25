@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.schema.one-to-many
   (:require [forge.db :as db]
+            [forge.editor.widget :as widget]
             [forge.info :as info]
             [forge.property :as property]
             [forge.schema :as schema]
@@ -42,12 +43,12 @@
       (for [id property-ids]
         (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
 
-(defmethod schema/widget :s/one-to-many [[_ property-type] property-ids]
+(defmethod widget/create :s/one-to-many [[_ property-type] property-ids]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows table property-type property-ids)
     table))
 
-(defmethod schema/widget-value :s/one-to-many [_ widget]
+(defmethod widget/->value :s/one-to-many [_ widget]
   (->> (ui/children widget)
        (keep a/id)
        set))
