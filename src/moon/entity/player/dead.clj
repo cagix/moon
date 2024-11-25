@@ -1,5 +1,6 @@
 (ns ^:no-doc moon.entity.player.dead
-  (:require [forge.app :refer [change-screen play-sound show-modal]]))
+  (:require [forge.assets :refer [play-sound]]
+            [forge.app :refer [change-screen show-modal]]))
 
 (defn cursor [_]
   :cursors/black-x)
@@ -8,7 +9,7 @@
   true)
 
 (defn enter [_]
-  (play-sound "sounds/bfxr_playerdeath.wav")
+  (play-sound "bfxr_playerdeath")
   (show-modal {:title "YOU DIED"
                :text "\nGood luck next time"
                :button-text ":("

@@ -1,13 +1,12 @@
 (ns ^:no-doc forge.schema.sound
   (:require [clojure.string :as str]
-            [gdl.assets :as assets]
+            [forge.assets :as assets :refer [play-sound]]
             [forge.schema :as schema]
             [forge.editor.widget :as widget]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [forge.app :refer [asset-manager add-actor play-sound]]
-            [forge.editor.scrollpane :refer [scrollable-choose-window]])
-  (:import (com.badlogic.gdx.audio Sound)))
+            [forge.app :refer [add-actor]]
+            [forge.editor.scrollpane :refer [scrollable-choose-window]]))
 
 (defmethod schema/form :s/sound [_] :string)
 
@@ -17,7 +16,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (assets/all-of-class asset-manager Sound)]
+  (let [rows (for [sound-file (assets/all-sounds)]
                [(ui/text-button (str/replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)

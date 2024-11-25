@@ -1,9 +1,10 @@
 (ns ^:no-doc moon.entity.player.idle
-  (:require [gdl.input :refer [button-just-pressed?]]
+  (:require [forge.app :refer [set-cursor world-mouse-position mouse-on-actor?]]
+            [forge.assets :refer [play-sound]]
+            [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
             [gdl.ui :as ui]
             [gdl.ui.actor :as a]
-            [forge.app :refer [play-sound set-cursor world-mouse-position mouse-on-actor?]]
             [moon.controls :as controls]
             [moon.effects :as effects]
             [moon.entity :as entity]
@@ -15,7 +16,7 @@
             [moon.world.mouseover :as mouseover]))
 
 (defn- denied [text]
-  (play-sound "sounds/bfxr_denied.wav")
+  (play-sound "bfxr_denied")
   (player-message/show text))
 
 (defmulti ^:private on-clicked
@@ -27,19 +28,19 @@
     (cond
      (a/visible? (widgets.inventory/window))
      (do
-      (play-sound "sounds/bfxr_takeit.wav")
+      (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
       (entity/event player-eid :pickup-item item))
 
      (inventory/can-pickup-item? @player-eid item)
      (do
-      (play-sound "sounds/bfxr_pickup.wav")
+      (play-sound "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
       (inventory/pickup-item player-eid item))
 
      :else
      (do
-      (play-sound "sounds/bfxr_denied.wav")
+      (play-sound "bfxr_denied")
       (player-message/show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
@@ -133,7 +134,7 @@
 (defn clicked-inventory-cell [{:keys [eid]} cell]
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
-    (play-sound "sounds/bfxr_takeit.wav")
+    (play-sound "bfxr_takeit")
     (entity/event eid :pickup-item item)
     (inventory/remove-item eid cell)))
 

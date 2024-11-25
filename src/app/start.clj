@@ -14,7 +14,6 @@
                 :width 1440
                 :height 900
                 :dock-icon "moon.png"}
-   :asset-folder "resources/"
    :cursors {:cursors/bag                   ["bag001"       [0   0]]
              :cursors/black-x               ["black_x"      [0   0]]
              :cursors/default               ["default"      [0   0]]

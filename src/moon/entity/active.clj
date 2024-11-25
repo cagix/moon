@@ -1,5 +1,6 @@
 (ns ^:no-doc moon.entity.active
-  (:require [forge.app :refer [draw-image draw-filled-circle draw-sector play-sound]]
+  (:require [forge.assets :refer [play-sound]]
+            [forge.app :refer [draw-image draw-filled-circle draw-sector]]
             [moon.systems.effect :as effect]
             [moon.effects :as effects]
             [moon.entity :as entity]

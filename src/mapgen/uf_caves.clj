@@ -4,7 +4,7 @@
             [gdl.graphics.texture :as texture]
             [gdl.rand :refer [get-rand-weighted-item]]
             [gdl.tiled :as t]
-            [forge.app :refer [texture-region]]
+            [forge.assets :refer [texture-region]]
             [forge.level :as level]
             [mapgen.creatures :as creatures]
             [mapgen.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]

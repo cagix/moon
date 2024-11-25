@@ -1,6 +1,6 @@
 (ns forge.app
-  (:require [gdl.app :as app]
-            [gdl.assets :as assets]
+  (:require [forge.assets :as assets]
+            [gdl.app :as app]
             [gdl.graphics :as graphics]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
@@ -13,13 +13,11 @@
             [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]
             [gdl.utils :refer [dispose safe-get mapvals]])
-  (:import (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+  (:import (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
-(declare asset-manager
-         ^:private batch
+(declare ^:private batch
          ^:private shape-drawer
          ^:private shape-drawer-texture
          ^:private cursors
@@ -90,7 +88,7 @@
   (app/start app-config
              (reify app/Listener
                (create [_]
-                 (.bindRoot #'asset-manager (assets/load-all (assets/search asset-folder)))
+                 (assets/init)
                  (.bindRoot #'batch (SpriteBatch.))
                  (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
                  (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
@@ -117,7 +115,7 @@
                  (change-screen first-screen-k))
 
                (dispose [_]
-                 (dispose asset-manager)
+                 (assets/dispose)
                  (dispose batch)
                  (dispose shape-drawer-texture)
                  (dispose default-font)
@@ -134,12 +132,6 @@
                  (vp/update world-viewport dimensions)))))
 
 (def ^:dynamic ^:private *unit-scale* 1)
-
-(defn play-sound [path]
-  (Sound/.play (get asset-manager path)))
-
-(defn texture-region [path]
-  (TextureRegion. ^Texture (get asset-manager path)))
 
 (defn gui-mouse-position []
   ; TODO mapv int needed?
@@ -162,7 +154,7 @@
 
 (defn image [path]
   (image/create world-unit-scale
-                (texture-region path)))
+                (assets/texture-region path)))
 
 (defn sub-image [image bounds]
   (image/sub-image world-unit-scale

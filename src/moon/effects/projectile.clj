@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.effects.projectile
   (:require [gdl.math.vector :as v]
-            [forge.app :refer [play-sound]]
+            [forge.assets :refer [play-sound]]
             [moon.world :as world :refer [path-blocked? projectile-size]]))
 
 (defn- start-point [entity direction size]
@@ -29,7 +29,7 @@
 
 (defn handle [projectile
               {:keys [effect/source effect/target-direction]}]
-  (play-sound "sounds/bfxr_waypointunlock.wav")
+  (play-sound "bfxr_waypointunlock")
   (world/projectile {:position (start-point @source target-direction (projectile-size projectile))
                      :direction target-direction
                      :faction (:entity/faction @source)}

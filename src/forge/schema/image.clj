@@ -1,11 +1,10 @@
 (ns ^:no-doc forge.schema.image
-  (:require [forge.db :as db]
+  (:require [forge.assets :as assets]
+            [forge.db :as db]
             [forge.editor.widget :as widget]
             [forge.schema :as schema]
-            [gdl.assets :as assets]
             [gdl.ui :as ui]
-            [forge.app :refer [asset-manager image sprite sprite-sheet]])
-  (:import (com.badlogic.gdx.graphics Texture)))
+            [forge.app :refer [image sprite sprite-sheet]]))
 
 (defmethod schema/form :s/image [_]
   [:map {:closed true}
@@ -27,7 +26,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 (defn- texture-rows []
-  (for [file (sort (assets/all-of-class asset-manager Texture))]
+  (for [file (sort (assets/all-textures))]
     [(ui/image-button (image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 

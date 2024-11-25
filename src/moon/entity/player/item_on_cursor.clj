@@ -1,7 +1,8 @@
 (ns ^:no-doc moon.entity.player.item-on-cursor
   (:require [gdl.input :refer [button-just-pressed?]]
             [gdl.math.vector :as v]
-            [forge.app :refer [draw-centered gui-mouse-position play-sound mouse-on-actor? world-mouse-position]]
+            [forge.app :refer [draw-centered gui-mouse-position mouse-on-actor? world-mouse-position]]
+            [forge.assets :refer [play-sound]]
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.item :refer [valid-slot? stackable?]]
@@ -17,7 +18,7 @@
      (and (not item-in-cell)
           (valid-slot? cell item-on-cursor))
      (do
-      (play-sound "sounds/bfxr_itemput.wav")
+      (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/set-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
@@ -26,7 +27,7 @@
      (and item-in-cell
           (stackable? item-in-cell item-on-cursor))
      (do
-      (play-sound "sounds/bfxr_itemput.wav")
+      (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/stack-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
@@ -35,7 +36,7 @@
      (and item-in-cell
           (valid-slot? cell item-on-cursor))
      (do
-      (play-sound "sounds/bfxr_itemput.wav")
+      (play-sound "bfxr_itemput")
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -91,7 +92,7 @@
   ; on the ground
   (let [entity @eid]
     (when (:entity/item-on-cursor entity)
-      (play-sound "sounds/bfxr_itemputground.wav")
+      (play-sound "bfxr_itemputground")
       (swap! eid dissoc :entity/item-on-cursor)
       (world/item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
