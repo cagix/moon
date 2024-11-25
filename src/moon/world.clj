@@ -9,7 +9,7 @@
             [gdl.utils :refer [dispose tile->middle define-order sort-by-order safe-merge]]
             [gdl.tiled :as tiled]
             [malli.core :as m]
-            [mapgen.level :as level]
+            [forge.level :as level]
             [moon.systems.entity :as entity]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))

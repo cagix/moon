@@ -1,4 +1,4 @@
-(ns mapgen.level
+(ns forge.level
   (:require [data.grid2d :as g]
             [gdl.tiled :as t]))
 

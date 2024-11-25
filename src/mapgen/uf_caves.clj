@@ -5,7 +5,7 @@
             [gdl.rand :refer [get-rand-weighted-item]]
             [gdl.tiled :as t]
             [forge.app :refer [texture-region]]
-            [mapgen.level :as level]
+            [forge.level :as level]
             [mapgen.creatures :as creatures]
             [mapgen.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [mapgen.tiled :refer [wgt-grid->tiled-map]]))
