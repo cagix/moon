@@ -1,4 +1,4 @@
-(ns app.start
+(ns ^:no-doc app.start
   (:require [app.screens.editor :as editor]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
@@ -6,7 +6,7 @@
             [forge.app :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [forge.db :as db]
             [forge.level :as level]
-            (forge.schema animation boolean enum image map number one-to-many one-to-one sound string)
+            (forge.schema boolean enum image map number one-to-many one-to-one sound string)
             [forge.screen :as screen]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics :refer [frames-per-second delta-time]]
@@ -23,6 +23,9 @@
             [forge.entity :as entity-sys]
             [moon.systems.entity-state :as state]
             moon.methods.info
+
+            forge.entity.animation
+
             [moon.widgets.background-image :as background-image]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.dev-menu :as dev-menu]
@@ -281,9 +284,7 @@
               #'entity-sys/render-info]})
 
 (install-all entity '[moon.entity.alert-friendlies-after-duration
-                      moon.entity.animation
                       moon.entity.clickable
-                      moon.entity.delete-after-animation-stopped
                       moon.entity.delete-after-duration
                       moon.entity.destroy-audiovisual
                       moon.entity.fsm

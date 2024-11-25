@@ -1,4 +1,4 @@
-(ns app.screens.editor
+(ns ^:no-doc app.screens.editor
   (:require [clojure.string :as str]
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
