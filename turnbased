@@ -1,7 +1,0 @@
-# If you make turnbased
-You can use datomic
-and make it multiplayer easily
-and time-travel easily
-and undo/redo easily at editor
-
-* tests easier ( no need even graphics?, no need wait X ms ...  )
