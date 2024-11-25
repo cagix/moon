@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.widgets.background-image
-  (:require [gdl.ui :as ui]
+  (:require [forge.ui :as ui]
             [forge.app :refer [image]]))
 
 (defn create []

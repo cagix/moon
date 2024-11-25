@@ -1,6 +1,6 @@
 (ns moon.world.mouseover
   (:refer-clojure :exclude [update])
-  (:require [gdl.utils :refer [sort-by-order]]
+  (:require [forge.utils :refer [sort-by-order]]
             [forge.app :refer [mouse-on-actor? world-mouse-position]]
             [moon.world :as world :refer [player-eid line-of-sight?]]))
 

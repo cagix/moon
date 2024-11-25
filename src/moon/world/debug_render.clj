@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.world.debug-render
-  (:require [gdl.graphics.camera :as cam]
-            [gdl.math.shape :as shape]
-            [gdl.utils :refer [->tile]]
+  (:require [forge.graphics.camera :as cam]
+            [forge.math.shape :as shape]
+            [forge.utils :refer [->tile]]
             [forge.app :refer [draw-circle draw-rectangle draw-filled-rectangle draw-grid world-camera world-mouse-position world-viewport-width world-viewport-height]]
             [moon.world :refer [circle->cells grid]]
             [moon.world.potential-fields :refer [factions-iterations]]))

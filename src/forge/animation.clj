@@ -1,4 +1,4 @@
-(ns gdl.animation)
+(ns forge.animation)
 
 (defprotocol Animation
   (tick [_ delta])

@@ -2,9 +2,9 @@
   (:require [forge.db :as db]
             [forge.schema :as schema]
             [forge.editor.widget :as widget]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
-            [gdl.utils :refer [index-of]]
+            [forge.ui :as ui]
+            [forge.ui.actor :as a]
+            [forge.utils :refer [index-of]]
             [malli.generator :as mg]
             [forge.app :refer [stage add-actor]]
             [forge.editor.malli :as malli]
@@ -71,7 +71,7 @@
 (def ^:private value-widget? (comp vector? a/id))
 
 (defn- find-kv-widget [table k]
-  (gdl.utils/find-first (fn [actor]
+  (forge.utils/find-first (fn [actor]
                            (and (a/id actor)
                                 (= k ((a/id actor) 0))))
                          (ui/children table)))

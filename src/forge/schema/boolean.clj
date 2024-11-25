@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.schema.boolean
   (:require [forge.editor.widget :as widget]
-            [gdl.ui :as ui]))
+            [forge.ui :as ui]))
 
 (defmethod widget/create :boolean [_ checked?]
   (assert (boolean? checked?))

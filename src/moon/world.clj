@@ -4,11 +4,11 @@
             [forge.app :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
             [forge.assets :refer [play-sound]]
             [forge.db :as db]
-            [gdl.graphics.camera :as cam]
-            [gdl.math.raycaster :as raycaster]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [dispose tile->middle define-order sort-by-order safe-merge]]
-            [gdl.tiled :as tiled]
+            [forge.graphics.camera :as cam]
+            [forge.math.raycaster :as raycaster]
+            [forge.math.vector :as v]
+            [forge.utils :refer [dispose tile->middle define-order sort-by-order safe-merge]]
+            [forge.tiled :as tiled]
             [malli.core :as m]
             [forge.level :as level]
             [moon.systems.entity :as entity]
@@ -25,7 +25,7 @@
          ^:private raycaster
          ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time
-         ^{:doc "The game logic update delta-time. Different then gdl.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
+         ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
          delta
          player-eid)
 

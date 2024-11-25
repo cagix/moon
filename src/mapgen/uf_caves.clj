@@ -1,9 +1,9 @@
 (ns ^:no-doc mapgen.uf-caves
   (:require [data.grid2d :as g2d]
             [forge.db :as db]
-            [gdl.graphics.texture :as texture]
-            [gdl.rand :refer [get-rand-weighted-item]]
-            [gdl.tiled :as t]
+            [forge.graphics.texture :as texture]
+            [forge.rand :refer [get-rand-weighted-item]]
+            [forge.tiled :as t]
             [forge.assets :refer [texture-region]]
             [forge.level :as level]
             [mapgen.creatures :as creatures]

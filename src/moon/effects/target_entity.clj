@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.effects.target-entity
   (:require [forge.db :as db]
-            [gdl.math.vector :as v]
+            [forge.math.vector :as v]
             [forge.app :refer [draw-line]]
             [moon.effects :as effects]
             [moon.entity :as entity]

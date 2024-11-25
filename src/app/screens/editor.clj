@@ -1,7 +1,7 @@
 (ns app.screens.editor
   (:require [clojure.string :as str]
-            [gdl.input :refer [key-just-pressed?]]
-            [gdl.ui :as ui]
+            [forge.input :refer [key-just-pressed?]]
+            [forge.ui :as ui]
             [forge.app :refer [add-actor change-screen]]
             [forge.db :as db]
             [forge.editor.property :as widgets.property]

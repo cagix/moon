@@ -1,4 +1,4 @@
-(ns gdl.utils
+(ns forge.utils
   (:require [clojure.string :as str])
   (:import (com.badlogic.gdx.utils Disposable)))
 

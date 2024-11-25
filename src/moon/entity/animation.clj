@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.animation
-  (:require [gdl.animation :as animation]
+  (:require [forge.animation :as animation]
             [forge.system :refer [*k*]]
             [moon.world :as world]))
 

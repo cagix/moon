@@ -1,6 +1,6 @@
-(ns gdl.graphics.tiled
-  (:require [gdl.tiled :as tiled])
-  (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
+(ns forge.graphics.tiled
+  (:require [forge.tiled :as tiled])
+  (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn renderer
   "OrthogonalTiledMapRenderer extends BatchTiledMapRenderer

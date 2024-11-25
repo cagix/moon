@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.world.grid
   (:require #_[data.grid2d :as g2d]
-            [gdl.math.shape :as shape]
-            [gdl.utils :refer [->tile]]))
+            [forge.math.shape :as shape]
+            [forge.utils :refer [->tile]]))
 
 (defn- rectangle->tiles
   [{[x y] :left-bottom :keys [left-bottom width height]}]

@@ -1,6 +1,6 @@
 (ns moon.widgets.entity-info-window
   (:require [forge.info :as info]
-            [gdl.ui :as ui]
+            [forge.ui :as ui]
             [forge.app :refer [gui-viewport-width]]
             [moon.world.mouseover :as mouseover]))
 

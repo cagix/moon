@@ -1,5 +1,5 @@
 (ns ^:no-doc dev.app-values-tree
-  (:require [gdl.utils :refer [get-namespaces get-vars]]))
+  (:require [forge.utils :refer [get-namespaces get-vars]]))
 
 (defn- protocol? [value]
   (and (instance? clojure.lang.PersistentArrayMap value)

@@ -1,9 +1,9 @@
 (ns forge.editor.widget
   (:require [clojure.edn :as edn]
             [forge.schema :as schema]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
-            [gdl.utils :refer [truncate ->edn-str]])
+            [forge.ui :as ui]
+            [forge.ui.actor :as actor]
+            [forge.utils :refer [truncate ->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
 (defn- widget-type [schema _]

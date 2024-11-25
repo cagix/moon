@@ -1,7 +1,7 @@
 (ns moon.controls
-  (:require [gdl.graphics.camera :as cam]
-            [gdl.input :refer [key-pressed? key-just-pressed?]]
-            [gdl.math.vector :as v]
+  (:require [forge.graphics.camera :as cam]
+            [forge.input :refer [key-pressed? key-just-pressed?]]
+            [forge.math.vector :as v]
             [forge.app :refer [world-camera]]))
 
 (defn unpaused? []

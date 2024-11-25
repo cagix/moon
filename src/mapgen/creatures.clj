@@ -1,6 +1,6 @@
 (ns mapgen.creatures
   (:require [forge.property :as property]
-            [gdl.tiled :as t]))
+            [forge.tiled :as t]))
 
 (defn with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

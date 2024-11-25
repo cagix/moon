@@ -1,7 +1,7 @@
 (ns moon.methods.info
   (:require [clojure.string :as str]
-            [gdl.graphics.color :as color]
-            [gdl.utils :refer [k->pretty-name readable-number]]
+            [forge.graphics.color :as color]
+            [forge.utils :refer [k->pretty-name readable-number]]
             [moon.entity :as entity]
             [forge.info :as info :refer [info]]
             [moon.operations :as ops]

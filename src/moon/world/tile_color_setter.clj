@@ -1,6 +1,6 @@
 (ns moon.world.tile-color-setter
-  (:require [gdl.graphics.color :as color]
-            [gdl.utils :refer [->tile]]
+  (:require [forge.graphics.color :as color]
+            [forge.utils :refer [->tile]]
             [moon.world :refer [ray-blocked?]]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))

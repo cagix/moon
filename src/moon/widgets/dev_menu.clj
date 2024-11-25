@@ -1,5 +1,5 @@
 (ns moon.widgets.dev-menu
-  (:require [gdl.ui :as ui]
+  (:require [forge.ui :as ui]
             [forge.app :refer [image]])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 

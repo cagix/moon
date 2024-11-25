@@ -3,8 +3,8 @@
             [forge.assets :as assets :refer [play-sound]]
             [forge.schema :as schema]
             [forge.editor.widget :as widget]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
+            [forge.ui :as ui]
+            [forge.ui.actor :as a]
             [forge.app :refer [add-actor]]
             [forge.editor.scrollpane :refer [scrollable-choose-window]]))
 

@@ -1,5 +1,5 @@
-(ns gdl.input
-  (:require [gdl.utils :refer [gdx-field]])
+(ns forge.input
+  (:require [forge.utils :refer [gdx-field]])
   (:import (com.badlogic.gdx Gdx)))
 
 (def ^:private gdx-input-button (partial gdx-field "Input$Buttons"))

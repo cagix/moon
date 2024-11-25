@@ -3,7 +3,7 @@
             [forge.db :as db]
             [forge.editor.widget :as widget]
             [forge.schema :as schema]
-            [gdl.ui :as ui]
+            [forge.ui :as ui]
             [forge.app :refer [image sprite sprite-sheet]]))
 
 (defmethod schema/form :s/image [_]

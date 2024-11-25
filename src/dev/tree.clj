@@ -1,7 +1,7 @@
 (ns ^:no-doc dev.tree
   (:require [dev.app-values-tree :refer [ns-value-vars]]
-            [gdl.ui :as ui]
-            [gdl.ui.stage :as stage]
+            [forge.ui :as ui]
+            [forge.ui.stage :as stage]
             [forge.app :refer [gui-viewport-width gui-viewport-height add-actor world-mouse-position]]
             [moon.world :as world]
             [moon.world.mouseover :as mouseover]))

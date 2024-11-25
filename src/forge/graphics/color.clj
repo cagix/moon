@@ -1,6 +1,6 @@
-(ns gdl.graphics.color
+(ns forge.graphics.color
   (:refer-clojure :exclude [munge])
-  (:require [gdl.utils :refer [gdx-field]])
+  (:require [forge.utils :refer [gdx-field]])
   (:import (com.badlogic.gdx.graphics Color Colors)))
 
 (def white Color/WHITE)

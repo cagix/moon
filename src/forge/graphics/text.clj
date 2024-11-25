@@ -1,4 +1,4 @@
-(ns gdl.graphics.text
+(ns forge.graphics.text
   (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Texture$TextureFilter)

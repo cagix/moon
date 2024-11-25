@@ -1,5 +1,5 @@
-(ns gdl.graphics
-  (:require [gdl.graphics.color :as color])
+(ns forge.graphics
+  (:require [forge.graphics.color :as color])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Pixmap)
            (com.badlogic.gdx.utils ScreenUtils)))

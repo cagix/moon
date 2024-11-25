@@ -1,5 +1,5 @@
-(ns gdl.graphics.shape-drawer
-  (:require [gdl.graphics.color :as color])
+(ns forge.graphics.shape-drawer
+  (:require [forge.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics Color Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.math MathUtils)

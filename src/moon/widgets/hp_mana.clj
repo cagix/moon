@@ -1,6 +1,6 @@
 (ns moon.widgets.hp-mana
-  (:require [gdl.ui :as ui]
-            [gdl.utils :refer [readable-number]]
+  (:require [forge.ui :as ui]
+            [forge.utils :refer [readable-number]]
             [forge.app :refer [draw-text draw-image gui-viewport-width image sub-image]]
             [moon.entity :as entity]
             [moon.val-max :as val-max]

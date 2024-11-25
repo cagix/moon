@@ -1,4 +1,4 @@
-(ns gdl.graphics.texture
+(ns forge.graphics.texture
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn region [^TextureRegion texture-region [x y w h]]

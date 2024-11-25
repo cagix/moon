@@ -1,7 +1,7 @@
 (ns moon.entity
-  (:require [gdl.math.shape :as shape]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [->tile]]
+  (:require [forge.math.shape :as shape]
+            [forge.math.vector :as v]
+            [forge.utils :refer [->tile]]
             [malli.core :as m]
             [forge.app :refer [set-cursor]]
             [moon.effects :as effects]

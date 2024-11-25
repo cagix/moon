@@ -1,6 +1,6 @@
 (ns forge.level
   (:require [data.grid2d :as g]
-            [gdl.tiled :as t]))
+            [forge.tiled :as t]))
 
 (defmulti generate* (fn [world] (:world/generator world)))
 

@@ -1,6 +1,6 @@
 (ns mapgen.tiled
   (:require [data.grid2d :as g]
-            [gdl.tiled :as t]))
+            [forge.tiled :as t]))
 
 (defn grid->tiled-map
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.

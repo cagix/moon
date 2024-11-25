@@ -1,5 +1,5 @@
-(ns gdl.graphics.image
-  (:require [gdl.graphics.texture :as texture])
+(ns forge.graphics.image
+  (:require [forge.graphics.texture :as texture])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 

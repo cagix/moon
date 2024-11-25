@@ -4,9 +4,9 @@
             [forge.editor.widget :as widget]
             [forge.property :as property]
             [forge.widgets.error-window :refer [error-window!]]
-            [gdl.input :refer [key-just-pressed?]]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]))
+            [forge.input :refer [key-just-pressed?]]
+            [forge.ui :as ui]
+            [forge.ui.actor :as a]))
 
 (defn- apply-context-fn [window f]
   #(try (f)

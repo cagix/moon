@@ -1,5 +1,5 @@
-(ns gdl.ui.stage
-  (:require [gdl.ui :refer [find-actor-with-id]])
+(ns forge.ui.stage
+  (:require [forge.ui :refer [find-actor-with-id]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defn act!   [^Stage s]   (.act      s))

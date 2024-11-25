@@ -1,8 +1,8 @@
 (ns moon.widgets.inventory
   (:require [data.grid2d :as g2d]
-            [gdl.graphics.color :as color]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
+            [forge.graphics.color :as color]
+            [forge.ui :as ui]
+            [forge.ui.actor :as a]
             [forge.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]

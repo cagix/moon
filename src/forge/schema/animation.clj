@@ -3,8 +3,8 @@
             [forge.editor.widget :as widget]
             [forge.schema :as schema]
             [forge.schema.image :as image]
-            [gdl.animation :as animation]
-            [gdl.ui :as ui]))
+            [forge.animation :as animation]
+            [forge.ui :as ui]))
 
 (defmethod schema/form :s/animation [_]
   [:map {:closed true}

@@ -1,7 +1,7 @@
-(ns gdl.math.raycaster
-  (:require [gdl.math.vector :as v]
+(ns forge.math.raycaster
+  (:require [forge.math.vector :as v]
             [data.grid2d :as g2d])
-  (:import (gdl RayCaster)))
+  (:import (forge RayCaster)))
 
 ; boolean array used because 10x faster than access to clojure grid data structure
 

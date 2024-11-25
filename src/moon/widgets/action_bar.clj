@@ -1,7 +1,7 @@
 (ns moon.widgets.action-bar
   (:require [forge.info :as info]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
+            [forge.ui :as ui]
+            [forge.ui.actor :as a]
             [forge.app :refer [stage]]))
 
 (def ^:private image-scale 2)

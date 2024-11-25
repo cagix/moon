@@ -2,8 +2,8 @@
   (:require [forge.db :as db]
             [forge.info :as info]
             [forge.property :as property]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as a]))
+            [forge.ui :as ui]
+            [forge.ui.actor :as a]))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)

@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.editor.scrollpane
-  (:require [gdl.ui :as ui]
+  (:require [forge.ui :as ui]
             [forge.app :refer [gui-viewport-height]]))
 
 (defn scroll-pane-cell [rows]

@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.entity.projectile-collision
   (:require [forge.system :refer [*k*]]
-            [gdl.utils :refer [find-first]]
+            [forge.utils :refer [find-first]]
             [moon.effects :as effects]
             [moon.entity :as entity]
             [moon.world :as world]))

@@ -1,6 +1,6 @@
 (ns forge.schema.string
   (:require [forge.editor.widget :as widget]
-            [gdl.ui :as ui])
+            [forge.ui :as ui])
   (:import (com.kotcrab.vis.ui.widget VisTextField)))
 
 (defmethod widget/create :string [schema v]

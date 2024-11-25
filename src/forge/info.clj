@@ -1,6 +1,6 @@
 (ns forge.info
   (:require [clojure.string :as str]
-            [gdl.utils :refer [index-of]]
+            [forge.utils :refer [index-of]]
             [forge.system :refer [defsystem]]))
 
 (defsystem info)

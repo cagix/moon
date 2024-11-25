@@ -2,12 +2,12 @@
   (:require [clojure.string :as str]
             [forge.db :as db]
             [forge.screen :as screen]
-            [gdl.graphics.camera :as cam]
-            [gdl.graphics.color :as color]
-            [gdl.input :refer [key-pressed? key-just-pressed?]]
-            [gdl.ui :as ui]
-            [gdl.utils :refer [dispose]]
-            [gdl.tiled :as t]
+            [forge.graphics.camera :as cam]
+            [forge.graphics.color :as color]
+            [forge.input :refer [key-pressed? key-just-pressed?]]
+            [forge.ui :as ui]
+            [forge.utils :refer [dispose]]
+            [forge.tiled :as t]
             [forge.app :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position current-screen change-screen]]
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
@@ -107,7 +107,7 @@ direction keys: move")
 (def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [properties]
-  (let [{:keys [tiled-map start-position]} (level/generate world-id)
+  (let [{:keys [tiled-map start-position]} (level/generate (db/get world-id))
         atom-data (current-data)]
     (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc

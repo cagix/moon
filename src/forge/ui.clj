@@ -1,5 +1,5 @@
-(ns gdl.ui
-  (:require [gdl.ui.actor :as a])
+(ns forge.ui
+  (:require [forge.ui.actor :as a])
   (:import (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)

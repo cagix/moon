@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.schema.enum
   (:require [clojure.edn :as edn]
             [forge.editor.widget :as widget]
-            [gdl.ui :as ui]
-            [gdl.utils :refer [->edn-str]])
+            [forge.ui :as ui]
+            [forge.utils :refer [->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisSelectBox)))
 
 (defmethod widget/create :enum [schema v]

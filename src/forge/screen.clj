@@ -1,6 +1,6 @@
 (ns forge.screen
-  (:require [gdl.ui.stage :as stage]
-            [gdl.utils :refer [dispose]])
+  (:require [forge.ui.stage :as stage]
+            [forge.utils :refer [dispose]])
   (:import (com.badlogic.gdx Gdx)))
 
 (defprotocol Screen

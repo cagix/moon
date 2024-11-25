@@ -5,7 +5,7 @@
             [clojure.pprint :refer [pprint]]
             [forge.property :as property]
             [forge.schema :as schema]
-            [gdl.utils :refer [safe-get]]
+            [forge.utils :refer [safe-get]]
             [malli.core :as m]
             [malli.error :as me]))
 

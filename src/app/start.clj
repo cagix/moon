@@ -9,13 +9,13 @@
             [forge.system :as system]
             [forge.screen :as screen]
             [forge.widgets.error-window :refer [error-window!]]
-            [gdl.graphics :refer [frames-per-second delta-time]]
-            [gdl.graphics.camera :as cam]
-            [gdl.input :refer [key-just-pressed?]]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.stage :as stage]
-            [gdl.utils :refer [readable-number dev-mode?]]
+            [forge.graphics :refer [frames-per-second delta-time]]
+            [forge.graphics.camera :as cam]
+            [forge.input :refer [key-just-pressed?]]
+            [forge.ui :as ui]
+            [forge.ui.actor :as actor]
+            [forge.ui.stage :as stage]
+            [forge.utils :refer [readable-number dev-mode?]]
             (mapgen generate uf-caves tiled-map)
             [moon.controls :as controls]
             [moon.entity :as entity]
@@ -75,7 +75,7 @@
                      :update-fn #(cam/zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn gdl.graphics/frames-per-second
+                     :update-fn forge.graphics/frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []

@@ -1,5 +1,5 @@
 (ns ^:no-doc mapgen.tiled-map
-  (:require [gdl.tiled :as t]
+  (:require [forge.tiled :as t]
             [forge.level :as level]))
 
 (defmethod level/generate* :world.generator/tiled-map [world]

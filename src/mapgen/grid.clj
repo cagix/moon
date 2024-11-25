@@ -1,6 +1,6 @@
 (ns mapgen.grid
   (:require [data.grid2d :as g]
-            [gdl.utils :refer [assoc-ks]]
+            [forge.utils :refer [assoc-ks]]
             [mapgen.caves :as caves]
             [mapgen.nads :as nads]))
 

@@ -2,16 +2,16 @@
   (:require [clojure.java.io :as io]
             [forge.assets :as assets]
             [forge.screen :as screen]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.image :as image]
-            [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.text :as text]
-            [gdl.graphics.tiled :as tiled]
-            [gdl.graphics.viewport :as vp]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.stage :as stage]
-            [gdl.utils :refer [dispose safe-get mapvals]])
+            [forge.graphics :as graphics]
+            [forge.graphics.image :as image]
+            [forge.graphics.shape-drawer :as sd]
+            [forge.graphics.text :as text]
+            [forge.graphics.tiled :as tiled]
+            [forge.graphics.viewport :as vp]
+            [forge.ui :as ui]
+            [forge.ui.actor :as actor]
+            [forge.ui.stage :as stage]
+            [forge.utils :refer [dispose safe-get mapvals]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)

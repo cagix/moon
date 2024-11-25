@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.effects.target.damage
   (:require [forge.db :as db]
-            [gdl.rand :refer [rand-int-between]]
+            [forge.rand :refer [rand-int-between]]
             [moon.entity :as entity]
             [moon.world :as world]))
 
