@@ -11,7 +11,7 @@
                           string)
             [forge.system :as system]
             [moon.systems.effect :as effect]
-            [moon.systems.entity :as entity-sys]
+            [moon.systems.entity :as entity]
             [moon.systems.entity-state :as state]
             moon.methods.info
             (mapgen generate
@@ -39,14 +39,14 @@
                       moon.effects.target.stun])
 
 (def ^:private entity
-  {:optional [#'entity-sys/->v
-              #'entity-sys/create
-              #'entity-sys/destroy
-              #'entity-sys/tick
-              #'entity-sys/render-below
-              #'entity-sys/render
-              #'entity-sys/render-above
-              #'entity-sys/render-info]})
+  {:optional [#'entity/->v
+              #'entity/create
+              #'entity/destroy
+              #'entity/tick
+              #'entity/render-below
+              #'entity/render
+              #'entity/render-above
+              #'entity/render-info]})
 
 (system/install-all entity
                     '[moon.entity.alert-friendlies-after-duration
