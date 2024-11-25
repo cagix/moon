@@ -1,13 +1,16 @@
 (ns ^:no-doc app.screens.main
-  (:require [gdl.app :as app]
-            [forge.db :as db]
+  (:require [forge.db :as db]
             [forge.screen :as screen]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.ui :as ui]
             [gdl.utils :refer [dev-mode?]]
             [forge.app :refer [change-screen set-cursor]]
             [app.screens.world :as world]
-            [moon.widgets.background-image :as background-image]))
+            [moon.widgets.background-image :as background-image])
+  (:import (com.badlogic.gdx Gdx)))
+
+(defn- exit []
+  (.exit Gdx/app))
 
 (defn- buttons []
   (ui/table
@@ -21,7 +24,7 @@
                 [(ui/text-button "Map editor" #(change-screen :screens/map-editor))])
               (when dev-mode?
                 [(ui/text-button "Property editor" #(change-screen :screens/editor))])
-              [(ui/text-button "Exit" app/exit)]]))
+              [(ui/text-button "Exit" exit)]]))
     :cell-defaults {:pad-bottom 25}
     :fill-parent? true}))
 
@@ -38,5 +41,5 @@
             (buttons)
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
-                                (app/exit)))})]
+                                (exit)))})]
    :screen (->MainMenuScreen)})

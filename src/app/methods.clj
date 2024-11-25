@@ -1,4 +1,10 @@
 (ns app.methods
+  ; forge.schema just widgets?
+  ; then editor screen loads it ....
+  ; independent from the schema forms themself
+  ; -> editor is one component
+  ; -> separate package for editor
+  ; => schema/form where?!
   (:require (forge.schema animation
                           boolean
                           enum

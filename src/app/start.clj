@@ -9,12 +9,7 @@
             [forge.db :as db]))
 
 (def ^:private config
-  {:app-config {:title "Moon"
-                :fps 60
-                :width 1440
-                :height 900
-                :dock-icon "moon.png"}
-   :cursors {:cursors/bag                   ["bag001"       [0   0]]
+  {:cursors {:cursors/bag                   ["bag001"       [0   0]]
              :cursors/black-x               ["black_x"      [0   0]]
              :cursors/default               ["default"      [0   0]]
              :cursors/denied                ["denied"       [16 16]]
@@ -28,9 +23,6 @@
              :cursors/skill-not-usable      ["x007"         [0   0]]
              :cursors/use-skill             ["pointer004"   [0   0]]
              :cursors/walking               ["walking"      [16 16]]}
-   :default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                  :size 16
-                  :quality-scaling 2}
    :tile-size 48
    :world-viewport-width 1440
    :world-viewport-height 900

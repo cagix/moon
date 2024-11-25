@@ -1,7 +1,7 @@
 (ns forge.app
-  (:require [forge.assets :as assets]
+  (:require [clojure.java.io :as io]
+            [forge.assets :as assets]
             [forge.screen :as screen]
-            [gdl.app :as app]
             [gdl.graphics :as graphics]
             [gdl.graphics.image :as image]
             [gdl.graphics.shape-drawer :as sd]
@@ -12,7 +12,13 @@
             [gdl.ui.actor :as actor]
             [gdl.ui.stage :as stage]
             [gdl.utils :refer [dispose safe-get mapvals]])
-  (:import (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (org.lwjgl.system Configuration)
+           (java.awt Taskbar Toolkit)
+
+           (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
@@ -42,10 +48,13 @@
     (.bindRoot #'current-screen-key new-k)
     (screen/enter screen)))
 
-(defn start-app [{:keys [app-config
-                         asset-folder
-                         cursors
-                         default-font
+(defn- set-dock-icon [image-path]
+  (let [toolkit (Toolkit/getDefaultToolkit)
+        image (.getImage toolkit (io/resource image-path))
+        taskbar (Taskbar/getTaskbar)]
+    (.setIconImage taskbar image)))
+
+(defn start-app [{:keys [cursors
                          tile-size
                          world-viewport-width
                          world-viewport-height
@@ -54,51 +63,61 @@
                          ui-skin-scale
                          init-screens
                          first-screen-k]}]
-  (app/start app-config
-             (reify app/Listener
-               (create [_]
-                 (assets/init)
-                 (.bindRoot #'batch (SpriteBatch.))
-                 (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
-                 (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
-                 (.bindRoot #'cursors (mapvals (fn [[file hotspot]]
-                                                 (graphics/cursor (str "cursors/" file ".png") hotspot))
-                                               cursors))
-                 (.bindRoot #'default-font (text/truetype-font default-font))
-                 (.bindRoot #'world-unit-scale (float (/ tile-size)))
-                 (.bindRoot #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
-                                                   world-height (* world-viewport-height world-unit-scale)
-                                                   camera (OrthographicCamera.)
-                                                   y-down? false]
-                                               (.setToOrtho camera y-down? world-width world-height)
-                                               (FitViewport. world-width world-height camera)))
-                 (.bindRoot #'cached-map-renderer (memoize
-                                                   (fn [tiled-map]
-                                                     (tiled/renderer tiled-map world-unit-scale batch))))
-                 (.bindRoot #'gui-viewport (FitViewport. gui-viewport-width
-                                                         gui-viewport-height
-                                                         (OrthographicCamera.)))
-                 (ui/load! ui-skin-scale)
-                 (.bindRoot #'screens (mapvals #(screen/stage-screen gui-viewport batch %)
-                                               (init-screens)))
-                 (change-screen first-screen-k))
+  (set-dock-icon "moon.png")
+  (when SharedLibraryLoader/isMac
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+    (.set Configuration/GLFW_CHECK_THREAD0 false))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create []
+                          (assets/init)
+                          (.bindRoot #'batch (SpriteBatch.))
+                          (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
+                          (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
+                          (.bindRoot #'cursors (mapvals (fn [[file hotspot]]
+                                                          (graphics/cursor (str "cursors/" file ".png") hotspot))
+                                                        cursors))
+                          (.bindRoot #'default-font (text/truetype-font
+                                                     {:file "fonts/exocet/films.EXL_____.ttf"
+                                                      :size 16
+                                                      :quality-scaling 2}))
+                          (.bindRoot #'world-unit-scale (float (/ tile-size)))
+                          (.bindRoot #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
+                                                            world-height (* world-viewport-height world-unit-scale)
+                                                            camera (OrthographicCamera.)
+                                                            y-down? false]
+                                                        (.setToOrtho camera y-down? world-width world-height)
+                                                        (FitViewport. world-width world-height camera)))
+                          (.bindRoot #'cached-map-renderer (memoize
+                                                            (fn [tiled-map]
+                                                              (tiled/renderer tiled-map world-unit-scale batch))))
+                          (.bindRoot #'gui-viewport (FitViewport. gui-viewport-width
+                                                                  gui-viewport-height
+                                                                  (OrthographicCamera.)))
+                          (ui/load! ui-skin-scale)
+                          (.bindRoot #'screens (mapvals #(screen/stage-screen gui-viewport batch %)
+                                                        (init-screens)))
+                          (change-screen first-screen-k))
 
-               (dispose [_]
-                 (assets/dispose)
-                 (dispose batch)
-                 (dispose shape-drawer-texture)
-                 (dispose default-font)
-                 (run! dispose (vals cursors))
-                 (run! screen/dispose (vals screens))
-                 (ui/dispose!))
+                        (dispose []
+                          (assets/dispose)
+                          (dispose batch)
+                          (dispose shape-drawer-texture)
+                          (dispose default-font)
+                          (run! dispose (vals cursors))
+                          (run! screen/dispose (vals screens))
+                          (ui/dispose!))
 
-               (render [_]
-                 (graphics/clear-screen :black)
-                 (screen/render (current-screen)))
+                        (render []
+                          (graphics/clear-screen :black)
+                          (screen/render (current-screen)))
 
-               (resize [_ dimensions]
-                 (vp/update gui-viewport   dimensions :center-camera? true)
-                 (vp/update world-viewport dimensions)))))
+                        (resize [w h]
+                          (vp/update gui-viewport   [w h] :center-camera? true)
+                          (vp/update world-viewport [w h])))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle "Moon")
+                        (.setForegroundFPS 60)
+                        (.setWindowedMode 1440 900))))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
