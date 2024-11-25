@@ -8,7 +8,6 @@
             [forge.level :as level]
             (forge.schema animation boolean enum image map number one-to-many one-to-one sound string)
             [forge.screen :as screen]
-            [forge.system :as system]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics :refer [frames-per-second delta-time]]
             [forge.graphics.camera :as cam]
@@ -52,7 +51,7 @@
     (when (k (methods system))
       (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
     (clojure.lang.MultiFn/.addMethod system k (fn call-method [[k & vs] & args]
-                                                (binding [system/*k* k]
+                                                (binding [*k* k]
                                                   (apply avar (into (vec vs) args)))))))
 
 (defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]

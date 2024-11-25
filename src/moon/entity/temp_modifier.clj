@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.temp-modifier
-  (:require [forge.system :refer [*k*]]
-            [forge.app :refer [draw-filled-circle]]
+  (:require [forge.app :refer [draw-filled-circle]]
             [moon.entity :as entity]
             [moon.world :refer [stopped?]]))
 
