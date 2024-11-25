@@ -1,6 +1,6 @@
 (ns moon.entity.modifiers-test
   (:require [clojure.test :refer :all]
-            [moon.systems.entity :as entity]
+            [forge.entity :as entity]
             #_[moon.entity.modifiers :as mods]))
 
 #_(deftest add-mods

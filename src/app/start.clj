@@ -20,7 +20,7 @@
             [moon.controls :as controls]
             [moon.entity :as entity]
             [moon.systems.effect :as effect]
-            [moon.systems.entity :as entity-sys]
+            [forge.entity :as entity-sys]
             [moon.systems.entity-state :as state]
             moon.methods.info
             [moon.widgets.background-image :as background-image]

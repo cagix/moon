@@ -5,7 +5,7 @@
             [malli.core :as m]
             [forge.app :refer [set-cursor]]
             [moon.effects :as effects]
-            [moon.systems.entity :as entity]
+            [forge.entity :as entity]
             [moon.systems.entity-state :as state]
             [moon.operations :as ops]
             [moon.val-max :as val-max]

@@ -1,4 +1,4 @@
-(ns moon.systems.entity
+(ns forge.entity
   (:require [forge.system :refer [defsystem]]))
 
 (defsystem ->v "Create component value. Default returns v.")

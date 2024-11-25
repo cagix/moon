@@ -11,7 +11,7 @@
             [forge.level :as level]
             [forge.world.raycaster :as raycaster :refer [ray-blocked?]]
             [malli.core :as m]
-            [moon.systems.entity :as entity]
+            [forge.entity :as entity]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))
 
