@@ -9,7 +9,14 @@
             [malli.core :as m]
             [malli.error :as me]))
 
-(declare ^:private properties-file)
+(declare ^:private properties-file
+         schemas)
+
+(defn schema [k]
+  (safe-get schemas k))
+
+(defn property-types []
+  (filter #(= "properties" (namespace %)) (keys schemas)))
 
 (declare ^:private db)
 
@@ -21,13 +28,14 @@
 (defn- validate! [property]
   (let [m-schema (-> property
                      property/type
-                     schema/form-of
+                     schema
+                     schema/form
                      m/schema)]
     (when-not (m/validate m-schema property)
       (throw (invalid-ex-info m-schema property)))))
 
 (defn init [& {:keys [schema properties]}]
-  (.bindRoot #'schema/schemas (-> schema io/resource slurp edn/read-string))
+  (.bindRoot #'schemas (-> schema io/resource slurp edn/read-string))
   (.bindRoot #'properties-file (io/resource properties))
   (let [properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
@@ -94,7 +102,7 @@
 (defn- build [property]
   (apply-kvs property
              (fn [k v]
-               (let [schema (try (schema/of k)
+               (let [schema (try (schema k)
                                  (catch Throwable _t
                                    (swap! undefined-data-ks conj k)
                                    nil))

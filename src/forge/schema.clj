@@ -1,11 +1,5 @@
 (ns forge.schema
-  (:refer-clojure :exclude [type])
-  (:require [gdl.utils :refer [safe-get]]))
-
-(declare schemas)
-
-(defn of [k]
-  (safe-get schemas k))
+  (:refer-clojure :exclude [type]))
 
 (defn type [schema]
   (if (vector? schema)
@@ -14,5 +8,3 @@
 
 (defmulti form type)
 (defmethod form :default [schema] schema)
-
-(def form-of (comp form of))

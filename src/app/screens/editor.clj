@@ -16,7 +16,7 @@
   (add-actor (widgets.property/editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
-  (for [property-type (sort (property/types))]
+  (for [property-type (sort (db/property-types))]
     {:title (str/capitalize (name property-type))
      :content (properties-overview/table property-type edit-property)}))
 
