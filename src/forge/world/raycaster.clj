@@ -1,4 +1,4 @@
-(ns forge.math.raycaster
+(ns forge.world.raycaster
   (:require [forge.math.vector :as v]
             [data.grid2d :as g2d])
   (:import (forge RayCaster)))
@@ -10,7 +10,7 @@
 ;(def ^:private height (comp alength first))
 
 ; does not show warning on reflection, but shows cast-double a lot.
-(defn blocked? [[arr width height] [start-x start-y] [target-x target-y]]
+(defn- blocked? [[arr width height] [start-x start-y] [target-x target-y]]
   (RayCaster/rayBlocked (double start-x)
                         (double start-y)
                         (double target-x)
@@ -101,20 +101,6 @@
     (g/draw-line start1screenx start1screeny target1screenx target1screeny color)
     (g/draw-line start2screenx start2screeny target2screenx target2screeny color)))
 
-;;
-
-(defn- set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn create [grid position->blocked?]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
-      (set-arr arr @cell position->blocked?))
-    [arr width height]))
-
 ; TO math.... // not tested
 (defn- create-double-ray-endpositions
   "path-w in tiles."
@@ -132,10 +118,32 @@
         target2 (v/add [target-x target-y] normal2)]
     [start1,target1,start2,target2]))
 
-(defn path-blocked?
+(defn- path-blocked?*
   "path-w in tiles. casts two rays."
   [raycaster start target path-w]
   (let [[start1,target1,start2,target2] (create-double-ray-endpositions start target path-w)]
     (or
      (blocked? raycaster start1 target1)
      (blocked? raycaster start2 target2))))
+
+(defn- set-arr [arr cell cell->blocked?]
+  (let [[x y] (:position cell)]
+    (aset arr x y (boolean (cell->blocked? cell)))))
+
+(declare ^:private ray-caster)
+
+(defn init [grid position->blocked?]
+  (let [width  (g2d/width  grid)
+        height (g2d/height grid)
+        arr (make-array Boolean/TYPE width height)]
+    (doseq [cell (g2d/cells grid)]
+      (set-arr arr @cell position->blocked?))
+    (.bindRoot #'ray-caster [arr width height])))
+
+(defn ray-blocked? [start target]
+  (blocked? ray-caster start target))
+
+(defn path-blocked?
+  "path-w in tiles. casts two rays."
+  [start target path-w]
+  (path-blocked?* ray-caster start target path-w))

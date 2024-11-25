@@ -5,12 +5,12 @@
             [forge.assets :refer [play-sound]]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
-            [forge.math.raycaster :as raycaster]
             [forge.math.vector :as v]
             [forge.utils :refer [dispose tile->middle define-order sort-by-order safe-merge]]
             [forge.tiled :as tiled]
-            [malli.core :as m]
             [forge.level :as level]
+            [forge.world.raycaster :as raycaster :refer [ray-blocked?]]
+            [malli.core :as m]
             [moon.systems.entity :as entity]
             [moon.world.content-grid :as content-grid]
             [moon.world.grid :as grid]))
@@ -379,7 +379,8 @@
                                        "none" :none
                                        "air"  :air
                                        "all"  :all))))))
-  (.bindRoot #'raycaster (raycaster/create grid blocks-vision?))
+
+  (raycaster/init grid blocks-vision?)
   (let [width  (tiled/width  tiled-map)
         height (tiled/height tiled-map)]
     (.bindRoot #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
@@ -395,14 +396,6 @@
 
 (defn active-entities []
   (content-grid/active-entities content-grid @player-eid))
-
-(defn ray-blocked? [start target]
-  (raycaster/blocked? raycaster start target))
-
-(defn path-blocked?
-  "path-w in tiles. casts two rays."
-  [start target path-w]
-  (raycaster/path-blocked? raycaster start target path-w))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?

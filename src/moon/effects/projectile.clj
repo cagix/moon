@@ -1,7 +1,8 @@
 (ns ^:no-doc moon.effects.projectile
-  (:require [forge.math.vector :as v]
-            [forge.assets :refer [play-sound]]
-            [moon.world :as world :refer [path-blocked? projectile-size]]))
+  (:require [forge.assets :refer [play-sound]]
+            [forge.math.vector :as v]
+            [forge.world.raycaster :refer [path-blocked?]]
+            [moon.world :as world :refer [projectile-size]]))
 
 (defn- start-point [entity direction size]
   (v/add (:position entity)
