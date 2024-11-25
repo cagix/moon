@@ -6,7 +6,6 @@
             [gdl.graphics.color :as color]
             [gdl.input :refer [key-pressed? key-just-pressed?]]
             [gdl.ui :as ui]
-            [gdl.ui.actor :as a]
             [gdl.utils :refer [dispose]]
             [gdl.tiled :as t]
             [forge.app :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position current-screen change-screen]]
@@ -63,7 +62,7 @@ direction keys: move")
     (ui/add-actor! window (ui/actor {:act #(do
                                             (.setText label (map-infos))
                                             (.pack window))}))
-    (a/set-position! window 0 (gui-viewport-height))
+    (.setPosition window 0 (gui-viewport-height))
     window))
 
 (def ^:private camera-movement-speed 1)
