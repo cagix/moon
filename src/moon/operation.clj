@@ -1,6 +1,6 @@
 (ns moon.operation
   (:refer-clojure :exclude [apply])
-  (:require [forge.system :refer [defsystem defmethods]]))
+  (:require [forge.system :refer [defsystem]]))
 
 (defsystem value-text)
 
@@ -8,22 +8,10 @@
 
 (defsystem order)
 
-(defmethods :op/inc
-  (value-text [[_ value]]
-    (str value))
+(defmethod value-text :op/inc [[_ value]] (str value))
+(defmethod apply      :op/inc [[_ value] base-value] (+ base-value value))
+(defmethod order      :op/inc [_] 0)
 
-  (apply [[_ value] base-value]
-    (+ base-value value))
-
-  (order [_]
-    0))
-
-(defmethods :op/mult
-  (value-text [[_ value]]
-    (str value "%"))
-
-  (apply [[_ value] base-value]
-    (* base-value (inc (/ value 100))))
-
-  (order [_]
-    1))
+(defmethod value-text :op/mult [[_ value]] (str value "%"))
+(defmethod apply      :op/mult [[_ value] base-value] (* base-value (inc (/ value 100))))
+(defmethod order      :op/mult [_] 1)

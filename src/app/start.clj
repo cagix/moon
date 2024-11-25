@@ -2,12 +2,13 @@
   (:require [app.screens.editor :as editor]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
+            [clojure.string :as str]
             [forge.app :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
             [forge.db :as db]
             [forge.level :as level]
             (forge.schema animation boolean enum image map number one-to-many one-to-one sound string)
-            [forge.system :as system]
             [forge.screen :as screen]
+            [forge.system :as system]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics :refer [frames-per-second delta-time]]
             [forge.graphics.camera :as cam]
@@ -36,6 +37,68 @@
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
   (:import (com.badlogic.gdx Gdx)))
+
+(def ^:private no-doc? true)
+
+; check fn-params ... ? compare with sys-params ?
+; #_(first (:arglists (meta #'render)))
+(defn- add-method [system-var k avar]
+  (assert (keyword? k))
+  (assert (var? avar) (pr-str avar))
+  (if no-doc?
+    (alter-meta! avar assoc :no-doc true)
+    (alter-meta! avar update :doc str "\n installed as defmethod for " system-var))
+  (let [system @system-var]
+    (when (k (methods system))
+      (println "WARNING: Overwriting method" (:name (meta avar)) "on" k))
+    (clojure.lang.MultiFn/.addMethod system k (fn call-method [[k & vs] & args]
+                                                (binding [system/*k* k]
+                                                  (apply avar (into (vec vs) args)))))))
+
+(defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
+  (doseq [system-var system-vars
+          :let [method-var (ns-resolve ns-sym (:name (meta system-var)))]]
+    (assert (or optional? method-var)
+            (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym))
+    (when method-var
+      (add-method system-var k method-var))))
+
+(defn- ns-publics-without-no-doc? [ns]
+  (some #(not (:no-doc (meta %))) (vals (ns-publics ns))))
+
+(defn- install* [component-systems ns-sym k]
+  (require ns-sym)
+  (add-methods (:required component-systems) ns-sym k)
+  (add-methods (:optional component-systems) ns-sym k :optional? true)
+  (let [ns (find-ns ns-sym)]
+    (if (and no-doc? (not (ns-publics-without-no-doc? ns)))
+      (alter-meta! ns assoc :no-doc true)
+      (alter-meta! ns update :doc str "\n component: `" k "`"))))
+
+(defn- namespace->component-key [prefix ns-str]
+   (let [ns-parts (-> ns-str
+                      (str/replace prefix "")
+                      (str/split #"\."))]
+     (keyword (str/join "." (drop-last ns-parts))
+              (last ns-parts))))
+
+(comment
+ (and (= (namespace->component-key "moon.effects.projectile")
+         :effects/projectile)
+      (= (namespace->component-key "moon.effects.target.convert")
+         :effects.target/convert)))
+
+(defn- install
+  ([component-systems ns-sym]
+   (install* component-systems
+             ns-sym
+             (namespace->component-key #"^moon." (str ns-sym))))
+  ([component-systems ns-sym k]
+   (install* component-systems ns-sym k)))
+
+(defn- install-all [component-systems ns-syms]
+  (doseq [ns-sym ns-syms]
+    (install component-systems ns-sym)))
 
 (declare start-world)
 
@@ -196,12 +259,10 @@
    :optional [#'effect/useful?
               #'effect/render]})
 
-(system/install-all effect
-                    '[moon.effects.projectile
+(install-all effect '[moon.effects.projectile
                       moon.effects.spawn
                       moon.effects.target-all
                       moon.effects.target-entity
-
                       moon.effects.target.audiovisual
                       moon.effects.target.convert
                       moon.effects.target.damage
@@ -220,8 +281,7 @@
               #'entity-sys/render-above
               #'entity-sys/render-info]})
 
-(system/install-all entity
-                    '[moon.entity.alert-friendlies-after-duration
+(install-all entity '[moon.entity.alert-friendlies-after-duration
                       moon.entity.animation
                       moon.entity.clickable
                       moon.entity.delete-after-animation-stopped
@@ -252,16 +312,16 @@
                           #'state/clicked-skillmenu-skill
                           #'state/draw-gui-view]}))
 
-(system/install entity-state 'moon.entity.npc.dead              :npc-dead)
-(system/install entity-state 'moon.entity.npc.idle              :npc-idle)
-(system/install entity-state 'moon.entity.npc.moving            :npc-moving)
-(system/install entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
-(system/install entity-state 'moon.entity.player.dead           :player-dead)
-(system/install entity-state 'moon.entity.player.idle           :player-idle)
-(system/install entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
-(system/install entity-state 'moon.entity.player.moving         :player-moving)
-(system/install entity-state 'moon.entity.active                :active-skill)
-(system/install entity-state 'moon.entity.stunned               :stunned)
+(install entity-state 'moon.entity.npc.dead              :npc-dead)
+(install entity-state 'moon.entity.npc.idle              :npc-idle)
+(install entity-state 'moon.entity.npc.moving            :npc-moving)
+(install entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
+(install entity-state 'moon.entity.player.dead           :player-dead)
+(install entity-state 'moon.entity.player.idle           :player-idle)
+(install entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
+(install entity-state 'moon.entity.player.moving         :player-moving)
+(install entity-state 'moon.entity.active                :active-skill)
+(install entity-state 'moon.entity.stunned               :stunned)
 
 (defn- main-menu []
   {:actors [(background-image/create)
