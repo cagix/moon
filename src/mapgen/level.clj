@@ -1,15 +1,13 @@
 (ns mapgen.level
   (:require [data.grid2d :as g]
-            [forge.db :as db]
             [gdl.tiled :as t]))
 
 (defmulti generate* (fn [world] (:world/generator world)))
 
-(defn generate [world-id]
-  (let [prop (db/get world-id)]
-    (assoc (generate* prop)
-           :world/player-creature
-           (:world/player-creature prop))))
+(defn generate [world-props]
+  (assoc (generate* world-props)
+         :world/player-creature
+         (:world/player-creature world-props)))
 
 ; TODO performance bottleneck -> every time getting same layers
 ; takes 600 ms to read movement-properties

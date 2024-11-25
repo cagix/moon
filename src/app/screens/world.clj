@@ -42,9 +42,9 @@
                      {:label "Main-Menu"
                       :on-click (partial change-screen :screens/main-menu)}]}
             {:label "World"
-             :items (for [{:keys [property/id]} (db/all :properties/worlds)]
-                      {:label (str "Start " id)
-                       :on-click #(start id)})}
+             :items (for [world (db/all :properties/worlds)]
+                      {:label (str "Start " (:property/id world))
+                       :on-click #(start world)})}
             {:label "Help"
              :items [{:label controls/help-text}]}]
     :update-labels [{:label "Mouseover-entity id"
@@ -111,11 +111,11 @@
     (when (some actor/visible? windows)
       (run! #(actor/set-visible! % false) windows))))
 
-(defn start [world-id]
+(defn start [world-props]
   (change-screen :screens/world)
   (stage/reset (stage) (widgets))
   (world/clear)
-  (world/init (level/generate world-id)))
+  (world/init (level/generate world-props)))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)

@@ -14,8 +14,9 @@
    {:rows
     (remove nil?
             (concat
-             (for [{:keys [property/id]} (db/all :properties/worlds)]
-               [(ui/text-button (str "Start " id) #(world/start id))])
+             (for [world (db/all :properties/worlds)]
+               [(ui/text-button (str "Start " (:property/id world))
+                                #(world/start world))])
              [(when dev-mode?
                 [(ui/text-button "Map editor" #(change-screen :screens/map-editor))])
               (when dev-mode?
