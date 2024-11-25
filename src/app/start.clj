@@ -3,13 +3,13 @@
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [clojure.string :as str]
-            [forge.app :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position set-cursor stage world-camera world-mouse-position change-screen]]
+            [forge.app :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position stage world-camera world-mouse-position change-screen]]
             [forge.db :as db]
+            [forge.graphics.cursors :as cursors]
             [forge.level :as level]
             (forge.schema boolean enum image map number one-to-many one-to-one sound string)
             [forge.screen :as screen]
             [forge.widgets.error-window :refer [error-window!]]
-            [forge.graphics :refer [frames-per-second delta-time]]
             [forge.graphics.camera :as cam]
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
@@ -140,7 +140,7 @@
                      :update-fn #(cam/zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn forge.graphics/frames-per-second
+                     :update-fn #(.getFramesPerSecond Gdx/graphics)
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
@@ -205,7 +205,7 @@
                                 (state/pause-game? (entity/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
-    (let [delta-ms (min (delta-time) world/max-delta-time)]
+    (let [delta-ms (min (.getDeltaTime Gdx/graphics) world/max-delta-time)]
       (alter-var-root #'world/elapsed-time + delta-ms)
       (.bindRoot #'world/delta delta-ms) )
     (let [entities (world/active-entities)]
@@ -236,7 +236,7 @@
     (cam/set-zoom! (world-camera) 0.8))
 
   (screen/exit [_]
-    (set-cursor :cursors/default))
+    (cursors/set :cursors/default))
 
   (screen/render [_]
     (render-world)
@@ -347,27 +347,13 @@
                                 (.exit Gdx/app)))})]
    :screen (reify screen/Screen
              (screen/enter [_]
-               (set-cursor :cursors/default))
+               (cursors/set :cursors/default))
              (screen/exit [_])
              (screen/render [_])
              (screen/dispose [_]))})
 
 (def ^:private config
-  {:cursors {:cursors/bag                   ["bag001"       [0   0]]
-             :cursors/black-x               ["black_x"      [0   0]]
-             :cursors/default               ["default"      [0   0]]
-             :cursors/denied                ["denied"       [16 16]]
-             :cursors/hand-before-grab      ["hand004"      [4  16]]
-             :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-             :cursors/hand-grab             ["hand003"      [4  16]]
-             :cursors/move-window           ["move002"      [16 16]]
-             :cursors/no-skill-selected     ["denied003"    [0   0]]
-             :cursors/over-button           ["hand002"      [0   0]]
-             :cursors/sandclock             ["sandclock"    [16 16]]
-             :cursors/skill-not-usable      ["x007"         [0   0]]
-             :cursors/use-skill             ["pointer004"   [0   0]]
-             :cursors/walking               ["walking"      [16 16]]}
-   :tile-size 48
+  {:tile-size 48
    :world-viewport-width 1440
    :world-viewport-height 900
    :gui-viewport-width 1440

@@ -1,6 +1,7 @@
 (ns ^:no-doc moon.entity.player.idle
-  (:require [forge.app :refer [set-cursor world-mouse-position mouse-on-actor?]]
+  (:require [forge.app :refer [world-mouse-position mouse-on-actor?]]
             [forge.assets :refer [play-sound]]
+            [forge.graphics.cursors :as cursors]
             [forge.input :refer [button-just-pressed?]]
             [forge.math.vector :as v]
             [forge.ui :as ui]
@@ -127,7 +128,7 @@
   (if-let [movement-vector (controls/movement-vector)]
     (entity/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
-      (set-cursor cursor)
+      (cursors/set cursor)
       (when (button-just-pressed? :left)
         (on-click)))))
 

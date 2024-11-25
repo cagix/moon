@@ -2,7 +2,7 @@
   (:require [clojure.java.io :as io]
             [forge.assets :as assets]
             [forge.screen :as screen]
-            [forge.graphics :as graphics]
+            [forge.graphics.cursors :as cursors]
             [forge.graphics.image :as image]
             [forge.graphics.shape-drawer :as sd]
             [forge.graphics.text :as text]
@@ -11,10 +11,10 @@
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
             [forge.ui.stage :as stage]
-            [forge.utils :refer [dispose safe-get mapvals]])
+            [forge.utils :refer [dispose mapvals]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (org.lwjgl.system Configuration)
            (java.awt Taskbar Toolkit)
 
@@ -25,7 +25,6 @@
 (declare ^:private batch
          ^:private shape-drawer
          ^:private shape-drawer-texture
-         ^:private cursors
          ^:private default-font
          ^:private cached-map-renderer
          ^:private world-unit-scale
@@ -54,8 +53,7 @@
         taskbar (Taskbar/getTaskbar)]
     (.setIconImage taskbar image)))
 
-(defn start-app [{:keys [cursors
-                         tile-size
+(defn start-app [{:keys [tile-size
                          world-viewport-width
                          world-viewport-height
                          gui-viewport-width
@@ -70,12 +68,10 @@
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (assets/init)
+                          (cursors/init)
                           (.bindRoot #'batch (SpriteBatch.))
                           (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
                           (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
-                          (.bindRoot #'cursors (mapvals (fn [[file hotspot]]
-                                                          (graphics/cursor (str "cursors/" file ".png") hotspot))
-                                                        cursors))
                           (.bindRoot #'default-font (text/truetype-font
                                                      {:file "fonts/exocet/films.EXL_____.ttf"
                                                       :size 16
@@ -100,15 +96,15 @@
 
                         (dispose []
                           (assets/dispose)
+                          (cursors/dispose)
                           (dispose batch)
                           (dispose shape-drawer-texture)
                           (dispose default-font)
-                          (run! dispose (vals cursors))
                           (run! screen/dispose (vals screens))
                           (ui/dispose!))
 
                         (render []
-                          (graphics/clear-screen :black)
+                          (ScreenUtils/clear Color/BLACK)
                           (screen/render (current-screen)))
 
                         (resize [w h]
@@ -225,9 +221,6 @@
 
 (defn draw-on-world-view [render-fn]
   (draw-with world-viewport world-unit-scale render-fn))
-
-(defn set-cursor [cursor-key]
-  (graphics/set-cursor (safe-get cursors cursor-key)))
 
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
