@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.effects.target-all
   (:require [forge.app :refer [draw-line]]
-            [moon.effects :as effects]
+            [forge.effects :as effects]
             [moon.world :as world :refer [player-eid line-of-sight?]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check

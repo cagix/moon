@@ -19,7 +19,7 @@
             (mapgen generate uf-caves tiled-map)
             [moon.controls :as controls]
             [moon.entity :as entity]
-            [moon.systems.effect :as effect]
+            [forge.effects :as effects]
             [forge.entity :as entity-sys]
             [moon.systems.entity-state :as state]
             moon.methods.info
@@ -253,10 +253,10 @@
   {:screen (->WorldScreen)})
 
 (def ^:private effect
-  {:required [#'effect/applicable?
-              #'effect/handle]
-   :optional [#'effect/useful?
-              #'effect/render]})
+  {:required [#'effects/applicable?
+              #'effects/handle]
+   :optional [#'effects/useful?
+              #'effects/render]})
 
 (install-all effect '[moon.effects.projectile
                       moon.effects.spawn

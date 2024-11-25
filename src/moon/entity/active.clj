@@ -1,8 +1,7 @@
 (ns ^:no-doc moon.entity.active
   (:require [forge.assets :refer [play-sound]]
             [forge.app :refer [draw-image draw-filled-circle draw-sector]]
-            [moon.systems.effect :as effect]
-            [moon.effects :as effects]
+            [forge.effects :as effects]
             [moon.entity :as entity]
             [moon.world :refer [timer stopped? finished-ratio line-of-sight?]]))
 
@@ -61,8 +60,8 @@
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
-   (not (effects/applicable? (check-update-ctx effect-ctx)
-                             (:skill/effects skill)))
+   (not (effects/*applicable? (check-update-ctx effect-ctx)
+                              (:skill/effects skill)))
    (do
     (entity/event eid :action-done)
     ; TODO some sound ?
@@ -76,4 +75,4 @@
 (defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (run! #(effect/render % (check-update-ctx effect-ctx)) effects)))
+    (effects/*render (check-update-ctx effect-ctx) effects)))

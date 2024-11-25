@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.npc.idle
-  (:require [moon.effects :as effects]
+  (:require [forge.effects :as effects]
             [moon.entity :as entity]
             [moon.follow-ai :as follow-ai]
             [moon.world :as world :refer [line-of-sight?]]))
@@ -30,7 +30,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
-                     (effects/useful? ctx (:skill/effects %))))
+                     (effects/*useful? ctx (:skill/effects %))))
        first))
 
 (defn ->v [eid]

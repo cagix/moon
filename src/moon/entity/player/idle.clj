@@ -6,7 +6,7 @@
             [forge.ui :as ui]
             [forge.ui.actor :as a]
             [moon.controls :as controls]
-            [moon.effects :as effects]
+            [forge.effects :as effects]
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.widgets.action-bar :as action-bar]

@@ -2,7 +2,7 @@
   (:require [forge.db :as db]
             [forge.math.vector :as v]
             [forge.app :refer [draw-line]]
-            [moon.effects :as effects]
+            [forge.effects :as effects]
             [moon.entity :as entity]
             [moon.world :as world]))
 
@@ -26,7 +26,7 @@
 
 (defn applicable? [{:keys [entity-effects]} {:keys [effect/target] :as ctx}]
   (and target
-       (effects/applicable? ctx entity-effects)))
+       (effects/*applicable? ctx entity-effects)))
 
 (defn useful? [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (in-range? @source @target maxrange))

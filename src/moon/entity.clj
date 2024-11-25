@@ -4,7 +4,7 @@
             [forge.utils :refer [->tile]]
             [malli.core :as m]
             [forge.app :refer [set-cursor]]
-            [moon.effects :as effects]
+            [forge.effects :as effects]
             [forge.entity :as entity]
             [moon.systems.entity-state :as state]
             [moon.operations :as ops]
@@ -144,7 +144,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effects/applicable? effect-ctx effects))
+   (not (effects/*applicable? effect-ctx effects))
    :invalid-params
 
    :else
