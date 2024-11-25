@@ -12,7 +12,7 @@
 (defmethod schema/form :s/one-to-one [[_ property-type]]
   [:qualified-keyword {:namespace (property/type->id-namespace property-type)}])
 
-(defmethod schema/edn->value :s/one-to-one [_ property-id]
+(defmethod db/edn->value :s/one-to-one [_ property-id]
   (db/get property-id))
 
 (defn- add-one-to-one-rows [table property-type property-id]

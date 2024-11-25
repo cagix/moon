@@ -86,6 +86,11 @@
           m
           (keys m)))
 
+(defmulti edn->value (fn [schema v]
+                       (when schema  ; undefined-data-ks
+                         (schema/type schema))))
+(defmethod edn->value :default [_schema v] v)
+
 (defn- build [property]
   (apply-kvs property
              (fn [k v]
@@ -96,7 +101,7 @@
                      v (if (map? v)
                          (build v)
                          v)]
-                 (try (schema/edn->value schema v)
+                 (try (edn->value schema v)
                       (catch Throwable t
                         (throw (ex-info " " {:k k :v v} t))))))))
 

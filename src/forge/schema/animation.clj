@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.schema.animation
-  (:require [forge.editor.widget :as widget]
+  (:require [forge.db :as db]
+            [forge.editor.widget :as widget]
             [forge.schema :as schema]
             [forge.schema.image :as image]
             [gdl.animation :as animation]
@@ -11,7 +12,7 @@
    [:frame-duration pos?]
    [:looping? :boolean]])
 
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
+(defmethod db/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
   (animation/create (map image/edn->image frames)
                     :frame-duration frame-duration
                     :looping? looping?))

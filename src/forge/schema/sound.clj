@@ -9,8 +9,7 @@
             [forge.editor.scrollpane :refer [scrollable-choose-window]])
   (:import (com.badlogic.gdx.audio Sound)))
 
-(defmethod schema/form :s/sound [_]
-  :string)
+(defmethod schema/form :s/sound [_] :string)
 
 (defn- play-button [sound-file]
   (ui/text-button "play!" #(play-sound sound-file)))

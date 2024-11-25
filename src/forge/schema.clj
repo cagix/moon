@@ -16,8 +16,3 @@
 (defmethod form :default [schema] schema)
 
 (def form-of (comp form of))
-
-(defmulti edn->value (fn [schema v]
-                       (when schema  ; undefined-data-ks
-                         (type schema))))
-(defmethod edn->value :default [_schema v] v)

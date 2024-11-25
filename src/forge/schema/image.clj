@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.schema.image
-  (:require [forge.editor.widget :as widget]
+  (:require [forge.db :as db]
+            [forge.editor.widget :as widget]
             [forge.schema :as schema]
             [gdl.assets :as assets]
             [gdl.ui :as ui]
@@ -20,7 +21,7 @@
                (int (/ sprite-y tileh))]))
     (image file)))
 
-(defmethod schema/edn->value :s/image [_ edn]
+(defmethod db/edn->value :s/image [_ edn]
   (edn->image edn))
 
 ; too many ! too big ! scroll ... only show files first & preview?

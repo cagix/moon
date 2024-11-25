@@ -12,7 +12,7 @@
 (defmethod schema/form :s/one-to-many [[_ property-type]]
   [:set [:qualified-keyword {:namespace (property/type->id-namespace property-type)}]])
 
-(defmethod schema/edn->value :s/one-to-many [_ property-ids]
+(defmethod db/edn->value :s/one-to-many [_ property-ids]
   (set (map db/get property-ids)))
 
 (defn- add-one-to-many-rows [table property-type property-ids]
