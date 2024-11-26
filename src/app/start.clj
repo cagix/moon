@@ -3,8 +3,7 @@
             app.info
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
-            [forge.app :as app]
-            [forge.assets :as assets]
+            [app.world :as world]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.color :as color]
@@ -12,34 +11,19 @@
             [clojure.gdx.utils :refer [mac? clear-screen]]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.graphics :as graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
+            [forge.app :as app]
+            [forge.assets :as assets]
+            [forge.graphics :as graphics]
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
-            [forge.level :as level]
-            [forge.widgets.error-window :refer [error-window!]]
-            [forge.graphics.camera :as cam]
             [forge.ui :as ui]
-            [forge.ui.actor :as actor]
-            [forge.utils :refer [readable-number dev-mode? mapvals]]
+            [forge.utils :refer [dev-mode? mapvals]]
             (mapgen generate uf-caves tiled-map)
-            [moon.controls :as controls]
-            [moon.entity :as entity]
             [forge.effects :as effects]
-            [forge.entity :as entity-sys]
+            [forge.entity :as entity]
             [moon.systems.entity-state :as state]
             forge.entity.animation
-            [moon.widgets.background-image :as background-image]
-            [moon.widgets.action-bar :as action-bar]
-            [moon.widgets.dev-menu :as dev-menu]
-            [moon.widgets.entity-info-window :as entity-info-window]
-            [moon.widgets.hp-mana :as hp-mana]
-            [moon.widgets.inventory :as inventory]
-            [moon.widgets.player-message :as player-message]
-            [moon.world :as world :refer [tick-error paused? player-eid]]
-            [moon.world.debug-render :as debug-render]
-            [moon.world.mouseover :as mouseover]
-            [moon.world.potential-fields :refer [update-potential-fields!]]
-            [moon.world.tile-color-setter :as tile-color-setter])
+            [moon.widgets.background-image :as background-image])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
@@ -106,160 +90,6 @@
   (doseq [ns-sym ns-syms]
     (install component-systems ns-sym)))
 
-(declare start-world)
-
-;"Mouseover-Actor: "
-#_(when-let [actor (mouse-on-actor?)]
-    (str "TRUE - name:" (.getName actor)
-         "id: " (actor/id actor)))
-
-(defn- dev-menu-bar []
-  (dev-menu/create
-   {:menus [{:label "Screens"
-             :items [{:label "Map-editor"
-                      :on-click (partial app/change-screen :screens/map-editor)}
-                     {:label "Editor"
-                      :on-click (partial app/change-screen :screens/editor)}
-                     {:label "Main-Menu"
-                      :on-click (partial app/change-screen :screens/main-menu)}]}
-            {:label "World"
-             :items (for [world (db/all :properties/worlds)]
-                      {:label (str "Start " (:property/id world))
-                       :on-click #(start-world world)})}
-            {:label "Help"
-             :items [{:label controls/help-text}]}]
-    :update-labels [{:label "Mouseover-entity id"
-                     :update-fn #(when-let [entity (mouseover/entity)] (:entity/id entity))
-                     :icon "images/mouseover.png"}
-                    {:label "elapsed-time"
-                     :update-fn #(str (readable-number world/elapsed-time) " seconds")
-                     :icon "images/clock.png"}
-                    {:label "paused?"
-                     :update-fn (fn [] paused?)}
-                    {:label "GUI"
-                     :update-fn gui-mouse-position}
-                    {:label "World"
-                     :update-fn #(mapv int (world-mouse-position))}
-                    {:label "Zoom"
-                     :update-fn #(cam/zoom (world-camera))
-                     :icon "images/zoom.png"}
-                    {:label "FPS"
-                     :update-fn gdx/frames-per-second
-                     :icon "images/fps.png"}]}))
-
-(defn- dev-menu []
-  (ui/table {:rows [[{:actor (.getTable (dev-menu-bar))
-                      :expand-x? true
-                      :fill-x? true
-                      :colspan 1}]
-                    [{:actor (doto (ui/label "")
-                               (actor/set-touchable! :disabled))
-                      :expand? true
-                      :fill-x? true
-                      :fill-y? true}]]
-             :fill-parent? true}))
-
-; FIXME camera/viewport used @ line of sight & raycaster explored tiles
-; fixed player viewing range use & for opponents too
-
-(defn- widgets []
-  [(if dev-mode?
-     (dev-menu)
-     (ui/actor {}))
-   (ui/table {:rows [[{:actor (action-bar/create)
-                       :expand? true
-                       :bottom? true}]]
-              :id :action-bar-table
-              :cell-defaults {:pad 2}
-              :fill-parent? true})
-   (hp-mana/actor)
-   (ui/group {:id :windows
-              :actors [(entity-info-window/create)
-                       (inventory/create)]})
-   (ui/actor {:draw #(state/draw-gui-view (entity/state-obj @player-eid))})
-   (player-message/create)])
-
-(defn- windows []
-  (:windows (app/stage)))
-
-(defn- check-window-hotkeys []
-  (doseq [window-id [:inventory-window :entity-info-window]
-          :when (controls/toggle-visible? window-id)]
-    (actor/toggle-visible! (get (windows) window-id))))
-
-(defn- close-all-windows []
-  (let [windows (ui/children (windows))]
-    (when (some actor/visible? windows)
-      (run! #(actor/set-visible! % false) windows))))
-
-(defn- start-world [world-props]
-  (app/change-screen :screens/world)
-  (stage/clear (app/stage))
-  (run! #(stage/add (app/stage) %) (widgets))
-  (world/clear)
-  (world/init (level/generate world-props)))
-
-; FIXME config/changeable inside the app (dev-menu ?)
-(def ^:private ^:dbg-flag pausing? true)
-
-(defn- update-world []
-  (state/manual-tick (entity/state-obj @player-eid))
-  (mouseover/update) ; this do always so can get debug info even when game not running
-  (.bindRoot #'paused? (or tick-error
-                           (and pausing?
-                                (state/pause-game? (entity/state-obj @player-eid))
-                                (not (controls/unpaused?)))))
-  (when-not paused?
-    (let [delta-ms (min (gdx/delta-time) world/max-delta-time)]
-      (alter-var-root #'world/elapsed-time + delta-ms)
-      (.bindRoot #'world/delta delta-ms) )
-    (let [entities (world/active-entities)]
-      (update-potential-fields! entities)
-      (try (world/tick-entities entities)
-           (catch Throwable t
-             (error-window! t)
-             (.bindRoot #'tick-error t)))))
-  (world/remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
-
-(defn- render-world []
-  ; FIXME position DRY
-  (cam/set-position! (world-camera) (:position @player-eid))
-  ; FIXME position DRY
-  (draw-tiled-map world/tiled-map
-                  (tile-color-setter/create
-                   world/explored-tile-corners
-                   (cam/position (world-camera))))
-  (draw-on-world-view (fn []
-                       (debug-render/before-entities)
-                       ; FIXME position DRY (from player)
-                       (world/render-entities (map deref (world/active-entities)))
-                       (debug-render/after-entities))))
-
-(deftype WorldScreen []
-  app/Screen
-  (enter [_]
-    (cam/set-zoom! (world-camera) 0.8))
-
-  (exit [_]
-    (cursors/set :cursors/default))
-
-  (render [_]
-    (render-world)
-    (update-world)
-    (controls/world-camera-zoom)
-    (check-window-hotkeys)
-    (cond (controls/close-windows?)
-          (close-all-windows)
-
-          (controls/minimap?)
-          (app/change-screen :screens/minimap)))
-
-  (dispose [_]
-    (world/clear)))
-
-(defn- world-screen []
-  {:screen (->WorldScreen)})
-
 (def ^:private effect
   {:required [#'effects/applicable?
               #'effects/handle]
@@ -279,14 +109,14 @@
                       moon.effects.target.stun])
 
 (def ^:private entity
-  {:optional [#'entity-sys/->v
-              #'entity-sys/create
-              #'entity-sys/destroy
-              #'entity-sys/tick
-              #'entity-sys/render-below
-              #'entity-sys/render
-              #'entity-sys/render-above
-              #'entity-sys/render-info]})
+  {:optional [#'entity/->v
+              #'entity/create
+              #'entity/destroy
+              #'entity/tick
+              #'entity/render-below
+              #'entity/render
+              #'entity/render-above
+              #'entity/render-info]})
 
 (install-all entity '[moon.entity.alert-friendlies-after-duration
                       moon.entity.clickable
@@ -336,7 +166,7 @@
                       (concat
                        (for [world (db/all :properties/worlds)]
                          [(ui/text-button (str "Start " (:property/id world))
-                                          #(start-world world))])
+                                          #(world/start world))])
                        [(when dev-mode?
                           [(ui/text-button "Map editor"
                                            #(app/change-screen :screens/map-editor))])
@@ -429,7 +259,7 @@
                                                :screens/map-editor (map-editor/create)
                                                :screens/editor     (editor-screen)
                                                :screens/minimap    (minimap/create)
-                                               :screens/world      (world-screen)}))
+                                               :screens/world      (world/screen)}))
                           (app/change-screen :screens/main-menu))
 
                         (dispose []
