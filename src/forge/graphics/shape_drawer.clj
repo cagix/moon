@@ -1,6 +1,6 @@
 (ns forge.graphics.shape-drawer
   (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.math.utils :refer [degree->radians]]
+            [clojure.gdx.math :refer [degree->radians]]
             [forge.graphics.color])
   (:import (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d TextureRegion)

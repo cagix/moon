@@ -1,6 +1,6 @@
 (ns forge.graphics.viewport
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.math.utils :refer [clamp]])
+            [clojure.gdx.math :refer [clamp]])
   (:import (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
