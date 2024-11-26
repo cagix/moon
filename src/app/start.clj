@@ -432,7 +432,8 @@
                             (app/render (app/current-screen)))
 
                           (resize [w h]
-                            (graphics/resize [w h])))
+                            (.update graphics/gui-viewport   w h true)
+                            (.update graphics/world-viewport w h)))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle "Moon")
                           (.setForegroundFPS 60)

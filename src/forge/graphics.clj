@@ -24,14 +24,14 @@
          ^:private default-font
          ^:private cached-map-renderer
          ^:private world-unit-scale
-         ^:private world-viewport
+         world-viewport
          gui-viewport)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
 (defn gui-mouse-position []
   ; TODO mapv int needed?
-  (mapv int (vp/unproject-mouse-posi gui-viewport)))
+  (mapv int (vp/unproject-mouse-position gui-viewport)))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
@@ -39,10 +39,10 @@
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-posi world-viewport))
+  (vp/unproject-mouse-position world-viewport))
 
 (defn world-camera []
-  (vp/camera world-viewport))
+  (.getCamera world-viewport))
 
 (defn image [path]
   (image/create world-unit-scale
@@ -170,7 +170,3 @@
   (.dispose batch)
   (.dispose shape-drawer-texture)
   (.dispose default-font))
-
-(defn resize [dimensions]
-  (vp/update gui-viewport   dimensions :center-camera? true)
-  (vp/update world-viewport dimensions))
