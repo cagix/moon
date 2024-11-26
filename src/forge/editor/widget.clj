@@ -4,7 +4,7 @@
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
             [forge.utils :refer [truncate ->edn-str]])
-  (:import (com.kotcrab.vis.ui.widget VisTextField)))
+  (:import (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)))
 
 (defn- widget-type [schema _]
   (let [stype (schema/type schema)]
@@ -32,3 +32,24 @@
 
 (defmethod ->value :widget/edn [_ widget]
   (edn/read-string (VisTextField/.getText widget)))
+
+(defmethod create :string [schema v]
+  (ui/add-tooltip! (ui/text-field v {})
+                   (str schema)))
+
+(defmethod ->value :string [_ widget]
+  (VisTextField/.getText widget))
+
+(defmethod create :boolean [_ checked?]
+  (assert (boolean? checked?))
+  (ui/check-box "" (fn [_]) checked?))
+
+(defmethod ->value :boolean [_ widget]
+  (VisCheckBox/.isChecked widget))
+
+(defmethod create :enum [schema v]
+  (ui/select-box {:items (map ->edn-str (rest schema))
+                  :selected (->edn-str v)}))
+
+(defmethod ->value :enum [_ widget]
+  (edn/read-string (VisSelectBox/.getSelected widget)))
