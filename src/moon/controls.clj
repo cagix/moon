@@ -2,7 +2,7 @@
   (:require [forge.graphics.camera :as cam]
             [forge.input :refer [key-pressed? key-just-pressed?]]
             [forge.math.vector :as v]
-            [forge.app :refer [world-camera]]))
+            [forge.graphics :refer [world-camera]]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

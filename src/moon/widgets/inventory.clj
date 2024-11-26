@@ -3,7 +3,7 @@
             [forge.graphics.color :as color]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.app :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
+            [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
             [forge.info :as info]

@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.effects.target-entity
   (:require [forge.db :as db]
             [forge.math.vector :as v]
-            [forge.app :refer [draw-line]]
+            [forge.graphics :refer [draw-line]]
             [forge.effects :as effects]
             [moon.entity :as entity]
             [moon.world :as world]))

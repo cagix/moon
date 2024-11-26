@@ -5,7 +5,7 @@
             [forge.editor.widget :as widget]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.app :refer [add-actor]]
+            [forge.graphics :refer [add-actor]]
             [forge.editor.scrollpane :refer [scrollable-choose-window]]))
 
 (defmethod schema/form :s/sound [_] :string)

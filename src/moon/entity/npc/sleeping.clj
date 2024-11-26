@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.npc.sleeping
-  (:require [forge.app :refer [draw-text]]
+  (:require [forge.graphics :refer [draw-text]]
             [moon.entity :as entity]
             [moon.world :as world]))
 

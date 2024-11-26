@@ -1,6 +1,6 @@
 (ns moon.widgets.player-message
   (:require [forge.ui :as ui]
-            [forge.app :refer [draw-text gui-viewport-width gui-viewport-height]])
+            [forge.graphics :refer [draw-text gui-viewport-width gui-viewport-height]])
   (:import (com.badlogic.gdx Gdx)))
 
 (def ^:private duration-seconds 1.5)

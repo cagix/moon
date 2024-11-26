@@ -4,12 +4,12 @@
 ; https://github.com/libgdx/gdx-controllers/blob/master/gdx-controllers-core/src/com/badlogic/gdx/controllers/ControllerMapping.java
 
 #_(ns moon.controller-test
-  (:require [forge.app :as app]
+  (:require [forge.graphics :as app]
             [forge.graphics :refer [clear-screen]]
             [forge.graphics.text :as text]
             [forge.input :refer [key-just-pressed?]]
             [forge.math.vector :as v]
-            [forge.app :refer [batch draw-text shape-drawer]])
+            [forge.graphics :refer [batch draw-text shape-drawer]])
   (:import (com.badlogic.gdx.controllers Controllers)))
 
 (declare ^:private controller)

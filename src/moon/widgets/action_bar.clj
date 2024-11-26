@@ -2,7 +2,7 @@
   (:require [forge.info :as info]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.app :refer [stage]]))
+            [forge.graphics :refer [stage]]))
 
 (def ^:private image-scale 2)
 

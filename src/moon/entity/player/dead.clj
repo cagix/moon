@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.entity.player.dead
   (:require [forge.assets :refer [play-sound]]
-            [forge.app :refer [change-screen show-modal]]))
+            [forge.graphics :refer [change-screen show-modal]]))
 
 (defn cursor [_]
   :cursors/black-x)

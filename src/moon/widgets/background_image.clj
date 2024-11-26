@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.widgets.background-image
   (:require [forge.ui :as ui]
-            [forge.app :refer [image]]))
+            [forge.graphics :refer [image]]))
 
 (defn create []
   (ui/image->widget (image "images/moon_background.png")

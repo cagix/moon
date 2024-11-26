@@ -6,7 +6,7 @@
             [forge.schema :as schema]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.app :refer [add-actor]]
+            [forge.graphics :refer [add-actor]]
             [forge.editor.overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]

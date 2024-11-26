@@ -2,7 +2,7 @@
   (:require [forge.graphics.camera :as cam]
             [forge.graphics.color :as color]
             [forge.input :refer [key-just-pressed?]]
-            [forge.app :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera change-screen]]
+            [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera change-screen]]
             [forge.screen :as screen]
             [moon.world :refer [tiled-map explored-tile-corners]]))
 

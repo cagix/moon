@@ -1,4 +1,4 @@
-(ns forge.app
+(ns forge.graphics
   (:require [forge.assets :as assets]
             [forge.screen :as screen]
             [forge.graphics.cursors :as cursors]

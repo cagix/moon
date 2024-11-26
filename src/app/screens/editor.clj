@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
-            [forge.app :refer [add-actor change-screen]]
+            [forge.graphics :refer [add-actor change-screen]]
             [forge.db :as db]
             [forge.editor.property :as widgets.property]
             [forge.editor.overview :as properties-overview]

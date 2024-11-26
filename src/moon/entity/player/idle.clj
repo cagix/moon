@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.player.idle
-  (:require [forge.app :refer [world-mouse-position mouse-on-actor?]]
+  (:require [forge.graphics :refer [world-mouse-position mouse-on-actor?]]
             [forge.assets :refer [play-sound]]
             [forge.graphics.cursors :as cursors]
             [forge.input :refer [button-just-pressed?]]

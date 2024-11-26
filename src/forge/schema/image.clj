@@ -4,7 +4,7 @@
             [forge.editor.widget :as widget]
             [forge.schema :as schema]
             [forge.ui :as ui]
-            [forge.app :refer [image sprite sprite-sheet]]))
+            [forge.graphics :refer [image sprite sprite-sheet]]))
 
 (defmethod schema/form :s/image [_]
   [:map {:closed true}

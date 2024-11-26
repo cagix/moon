@@ -6,7 +6,7 @@
             [forge.ui.actor :as a]
             [forge.utils :refer [index-of]]
             [malli.generator :as mg]
-            [forge.app :refer [stage add-actor]]
+            [forge.graphics :refer [stage add-actor]]
             [forge.editor.malli :as malli]
             [forge.editor.property :as widgets.property]
             [forge.editor.scrollpane :refer [scroll-pane-cell]]))

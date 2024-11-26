@@ -1,7 +1,7 @@
 (ns forge.widgets.error-window
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [forge.ui :as ui]
-            [forge.app :refer [add-actor stage]]))
+            [forge.graphics :refer [add-actor stage]]))
 
 (defmacro ^:private with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh

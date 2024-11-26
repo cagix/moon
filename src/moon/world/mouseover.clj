@@ -1,7 +1,7 @@
 (ns moon.world.mouseover
   (:refer-clojure :exclude [update])
   (:require [forge.utils :refer [sort-by-order]]
-            [forge.app :refer [mouse-on-actor? world-mouse-position]]
+            [forge.graphics :refer [mouse-on-actor? world-mouse-position]]
             [moon.world :as world :refer [player-eid line-of-sight?]]))
 
 (def eid nil)

@@ -1,6 +1,6 @@
 (ns moon.widgets.dev-menu
   (:require [forge.ui :as ui]
-            [forge.app :refer [image]])
+            [forge.graphics :refer [image]])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 
 (defn- menu-item [text on-clicked]
