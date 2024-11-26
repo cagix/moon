@@ -1,5 +1,6 @@
 (ns ^:no-doc app.start
-  (:require [app.editor :as editor]
+  (:require [app.screens.editor :as editor]
+            [app.screens.main :as main]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [app.world :as world]
@@ -21,57 +22,10 @@
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [forge.ui :as ui]
-            [forge.utils :refer [dev-mode? mapvals]])
+            [forge.utils :refer [mapvals]])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
-
-(defn- background-image []
-  (ui/image->widget (graphics/image "images/moon_background.png")
-                    {:fill-parent? true
-                     :scaling :fill
-                     :align :center}))
-
-(defn- main-menu []
-  {:actors [(background-image)
-            (ui/table
-             {:rows
-              (remove nil?
-                      (concat
-                       (for [world (db/all :properties/worlds)]
-                         [(ui/text-button (str "Start " (:property/id world))
-                                          #(world/start world))])
-                       [(when dev-mode?
-                          [(ui/text-button "Map editor"
-                                           #(app/change-screen :screens/map-editor))])
-                        (when dev-mode?
-                          [(ui/text-button "Property editor"
-                                           #(app/change-screen :screens/editor))])
-                        [(ui/text-button "Exit"
-                                         gdx/exit-app)]]))
-              :cell-defaults {:pad-bottom 25}
-              :fill-parent? true})
-            (ui/actor {:act (fn []
-                              (when (gdx/key-just-pressed? :keys/escape)
-                                (gdx/exit-app)))})]
-   :screen (reify app/Screen
-             (enter [_]
-               (cursors/set :cursors/default))
-             (exit [_])
-             (render [_])
-             (dispose [_]))})
-
-(defn- editor-screen []
-  {:actors [(background-image)
-            (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
-            (ui/actor {:act (fn []
-                              (when (gdx/key-just-pressed? :shift-left)
-                                (app/change-screen :screens/main-menu)))})]
-   :screen (reify app/Screen
-             (enter [_])
-             (exit [_])
-             (render [_])
-             (dispose [_]))})
 
 (defn- set-dock-icon [image-path]
   (let [toolkit (Toolkit/getDefaultToolkit)
@@ -129,9 +83,9 @@
                           (ui/load! :skin-scale/x1)
                           (.bindRoot #'app/screens
                                      (mapvals stage-screen
-                                              {:screens/main-menu  (main-menu)
+                                              {:screens/main-menu  (main/create)
                                                :screens/map-editor (map-editor/create)
-                                               :screens/editor     (editor-screen)
+                                               :screens/editor     (editor/create)
                                                :screens/minimap    (minimap/create)
                                                :screens/world      (world/screen)}))
                           (app/change-screen :screens/main-menu))
