@@ -1,9 +1,9 @@
 (ns forge.graphics.shape-drawer
   (:require [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.math.utils :refer [degree->radians]]
             [forge.graphics.color])
   (:import (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.math MathUtils)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn white-pixel-texture []
@@ -16,9 +16,6 @@
 
 (defn create [batch sd-texture]
   (ShapeDrawer. batch (TextureRegion. sd-texture 1 0 1 1)))
-
-(defn- degree->radians [degree]
-  (* (float degree) MathUtils/degreesToRadians))
 
 (defn set-color [^ShapeDrawer sd color]
   (.setColor sd (forge.graphics.color/munge color)))

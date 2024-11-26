@@ -1,5 +1,6 @@
 (ns forge.math.vector
-  (:import (com.badlogic.gdx.math MathUtils Vector2)))
+  (:require [clojure.gdx.math.utils :as utils])
+  (:import (com.badlogic.gdx.math Vector2)))
 
 (defn- ^Vector2 ->v [[x y]]
   (Vector2. x y))
@@ -23,7 +24,7 @@
   (.dst ^Vector2 (->v v1) ^Vector2 (->v v2)))
 
 (defn normalised? [v]
-  (MathUtils/isEqual 1 (length v)))
+  (utils/equal? 1 (length v)))
 
 (defn normal-vectors [[x y]]
   [[(- (float y))         x]

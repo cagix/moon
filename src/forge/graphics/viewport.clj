@@ -1,10 +1,8 @@
 (ns forge.graphics.viewport
-  (:require [clojure.gdx :as gdx])
-  (:import (com.badlogic.gdx.math MathUtils Vector2)
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.math.utils :refer [clamp]])
+  (:import (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport Viewport)))
-
-(defn- clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
