@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.entity.animation
-  (:require [forge.animation :as animation]
-            [forge.entity :as entity]
+  (:require [forge.entity :as entity]
+            [forge.graphics.animation :as animation]
             [moon.world :as world]))
 
 (defn- assoc-image-current-frame [entity animation]

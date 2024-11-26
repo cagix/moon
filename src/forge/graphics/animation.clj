@@ -1,4 +1,4 @@
-(ns forge.animation)
+(ns forge.graphics.animation)
 
 (defprotocol Animation
   (tick [_ delta])
@@ -27,8 +27,8 @@
 
 (defn create [frames & {:keys [frame-duration looping?]}]
   (map->ImmutableAnimation
-    {:frames (vec frames)
-     :frame-duration frame-duration
-     :looping? looping?
-     :cnt 0
-     :maxcnt (* (count frames) (float frame-duration))}))
+   {:frames (vec frames)
+    :frame-duration frame-duration
+    :looping? looping?
+    :cnt 0
+    :maxcnt (* (count frames) (float frame-duration))}))
