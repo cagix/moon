@@ -18,7 +18,6 @@
             (forge.schema boolean enum image map number one-to-many one-to-one sound string)
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
-            [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
             [forge.utils :refer [readable-number dev-mode? mapvals]]
@@ -352,7 +351,7 @@
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui/actor {:act (fn []
-                              (when (key-just-pressed? :keys/escape)
+                              (when (gdx/key-just-pressed? :keys/escape)
                                 (gdx/exit-app)))})]
    :screen (reify app/Screen
              (enter [_]

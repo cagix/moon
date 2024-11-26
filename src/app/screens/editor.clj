@@ -1,7 +1,7 @@
 (ns ^:no-doc app.screens.editor
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx :as gdx]
+            [clojure.string :as str]
             [forge.app :as app]
-            [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
             [forge.stage :as stage]
             [forge.db :as db]
@@ -48,5 +48,5 @@
   {:actors [(background-image/create)
             (tabs-table)
             (ui/actor {:act (fn []
-                              (when (key-just-pressed? :shift-left)
+                              (when (gdx/key-just-pressed? :shift-left)
                                 (app/change-screen :screens/main-menu)))})]})

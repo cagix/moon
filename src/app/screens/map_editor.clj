@@ -1,11 +1,11 @@
 (ns ^:no-doc app.screens.map-editor
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx :refer [key-pressed? key-just-pressed?]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :refer [dispose]]
             [clojure.string :as str]
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
-            [forge.input :refer [key-pressed? key-just-pressed?]]
             [forge.ui :as ui]
             [forge.tiled :as t]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]

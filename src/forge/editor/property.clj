@@ -1,10 +1,10 @@
 (ns ^:no-doc forge.editor.property
-  (:require [forge.db :as db]
+  (:require [clojure.gdx :refer [key-just-pressed?]]
+            [forge.db :as db]
             [forge.editor.scrollpane :refer [scroll-pane-cell]]
             [forge.editor.widget :as widget]
             [forge.property :as property]
             [forge.widgets.error-window :refer [error-window!]]
-            [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
             [forge.ui.actor :as a]))
 

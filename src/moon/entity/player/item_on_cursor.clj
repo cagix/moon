@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.player.item-on-cursor
-  (:require [forge.input :refer [button-just-pressed?]]
+  (:require [clojure.gdx :refer [button-just-pressed?]]
             [forge.math.vector :as v]
             [forge.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
             [forge.assets :refer [play-sound]]
