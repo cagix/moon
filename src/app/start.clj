@@ -1,9 +1,11 @@
 (ns ^:no-doc app.start
   (:require [app.editor :as editor]
-            app.info
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [app.world :as world]
+
+            app.info
+
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.color :as color]
@@ -11,6 +13,7 @@
             [clojure.gdx.utils :refer [mac? clear-screen]]
             [clojure.java.io :as io]
             [clojure.string :as str]
+
             [forge.app :as app]
             [forge.assets :as assets]
             [forge.graphics :as graphics]
@@ -18,12 +21,14 @@
             [forge.graphics.cursors :as cursors]
             [forge.ui :as ui]
             [forge.utils :refer [dev-mode? mapvals]]
+
             (mapgen generate uf-caves tiled-map)
+
             [forge.effects :as effects]
             [forge.entity :as entity]
             [moon.systems.entity-state :as state]
-            forge.entity.animation
-            [moon.widgets.background-image :as background-image])
+
+            forge.entity.animation)
   (:import (com.badlogic.gdx ApplicationAdapter)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
@@ -158,8 +163,14 @@
 (install entity-state 'moon.entity.active                :active-skill)
 (install entity-state 'moon.entity.stunned               :stunned)
 
+(defn- background-image []
+  (ui/image->widget (image "images/moon_background.png")
+                    {:fill-parent? true
+                     :scaling :fill
+                     :align :center}))
+
 (defn- main-menu []
-  {:actors [(background-image/create)
+  {:actors [(background-image)
             (ui/table
              {:rows
               (remove nil?
@@ -183,6 +194,18 @@
    :screen (reify app/Screen
              (enter [_]
                (cursors/set :cursors/default))
+             (exit [_])
+             (render [_])
+             (dispose [_]))})
+
+(defn- editor-screen []
+  {:actors [(background-image)
+            (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
+            (ui/actor {:act (fn []
+                              (when (gdx/key-just-pressed? :shift-left)
+                                (app/change-screen :screens/main-menu)))})]
+   :screen (reify app/Screen
+             (enter [_])
              (exit [_])
              (render [_])
              (dispose [_]))})
@@ -227,18 +250,6 @@
   (let [stage (stage-create graphics/gui-viewport graphics/batch)]
     (run! #(stage/add stage %) actors)
     (->StageScreen stage screen)))
-
-(defn- editor-screen []
-  {:actors [(background-image/create)
-            (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
-            (ui/actor {:act (fn []
-                              (when (gdx/key-just-pressed? :shift-left)
-                                (app/change-screen :screens/main-menu)))})]
-   :screen (reify app/Screen
-             (enter [_])
-             (exit [_])
-             (render [_])
-             (dispose [_]))})
 
 (defn -main []
   (db/init :schema "schema.edn"
