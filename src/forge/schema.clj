@@ -1,6 +1,15 @@
 (ns forge.schema
   (:refer-clojure :exclude [type]))
 
+(declare schemas)
+
+(defn property-types []
+  (filter #(= "properties" (namespace %)) (keys schemas)))
+
+(defn of [k]
+  {:pre [(contains? schemas k)]}
+  (get schemas k))
+
 (defn type [schema]
   (if (vector? schema)
     (schema 0)
@@ -36,3 +45,31 @@
 
 (defmethod form :s/one-to-many [[_ property-type]]
   [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
+
+(defn- attribute-form
+  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
+  [ks]
+  (for [k ks
+        :let [k? (keyword? k)
+              schema-props (if k? nil (k 1))
+              k (if k? k (k 0))]]
+    (do
+     (assert (keyword? k))
+     (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
+     [k schema-props (form (of k))])))
+
+(defn- map-form [ks]
+  (apply vector :map {:closed true} (attribute-form ks)))
+
+(defmethod form :s/map [[_ ks]]
+  (map-form ks))
+
+(defmethod form :s/map-optional [[_ ks]]
+  (map-form (map (fn [k] [k {:optional true}]) ks)))
+
+(defn- namespaced-ks [ns-name-k]
+  (filter #(= (name ns-name-k) (namespace %))
+          (keys schemas)))
+
+(defmethod form :s/components-ns [[_ ns-name-k]]
+  (form [:s/map-optional (namespaced-ks ns-name-k)]))

@@ -12,34 +12,6 @@
             [forge.editor.property :as widgets.property]
             [forge.editor.scrollpane :refer [scroll-pane-cell]]))
 
-(defn- attribute-form
-  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
-  [ks]
-  (for [k ks
-        :let [k? (keyword? k)
-              schema-props (if k? nil (k 1))
-              k (if k? k (k 0))]]
-    (do
-     (assert (keyword? k))
-     (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
-     [k schema-props (schema/form (db/schema k))])))
-
-(defn- map-form [ks]
-  (apply vector :map {:closed true} (attribute-form ks)))
-
-(defmethod schema/form :s/map [[_ ks]]
-  (map-form ks))
-
-(defmethod schema/form :s/map-optional [[_ ks]]
-  (map-form (map (fn [k] [k {:optional true}]) ks)))
-
-(defn- namespaced-ks [ns-name-k]
-  (filter #(= (name ns-name-k) (namespace %))
-          (keys db/schemas)))
-
-(defmethod schema/form :s/components-ns [[_ ns-name-k]]
-  (schema/form [:s/map-optional (namespaced-ks ns-name-k)]))
-
 (defn- editor-window []
   (:property-editor-window (app/stage)))
 
@@ -56,7 +28,7 @@
     (stage/add-actor (widgets.property/editor-window prop-value))))
 
 (defn- k->default-value [k]
-  (let [schema (db/schema k)]
+  (let [schema (schema/of k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
@@ -65,7 +37,7 @@
      :else (mg/generate (schema/form schema) {:size 3}))))
 
 (defn- value-widget [[k v]]
-  (let [widget (widget/create (db/schema k) v)]
+  (let [widget (widget/create (schema/of k) v)]
     (.setUserObject widget [k v])
     widget))
 
@@ -171,4 +143,4 @@
   (into {}
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (a/id widget)]]
-          [k (widget/->value (db/schema k) widget)])))
+          [k (widget/->value (schema/of k) widget)])))

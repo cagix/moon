@@ -3,6 +3,7 @@
             [clojure.string :as str]
             [forge.app :as app]
             [forge.ui :as ui]
+            [forge.schema :as schema]
             [forge.stage :as stage]
             [forge.db :as db]
             [forge.editor.property :as widgets.property]
@@ -17,7 +18,7 @@
   (stage/add-actor (widgets.property/editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
-  (for [property-type (sort (db/property-types))]
+  (for [property-type (sort (schema/property-types))]
     {:title (str/capitalize (name property-type))
      :content (properties-overview/table property-type edit-property)}))
 
