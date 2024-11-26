@@ -1,8 +1,8 @@
 (ns forge.assets
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.assets :as assets]
             [clojure.string :as str])
-  (:import (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.audio Sound)
+  (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
@@ -29,19 +29,12 @@
 (defn- load-all
   "Assets are a collection of vectors `[file class]`.
   All assets are loaded immediately.
-  Returns an `com.badlogic.gdx.assets.AssetManager` which supports `get`
-  (implements `clojure.lang.ILookup`).
-
   Has to be disposed."
   [assets]
-  (let [manager (proxy [AssetManager clojure.lang.ILookup] []
-                  (valAt [^String path]
-                    (if (.contains this path)
-                      (.get this path)
-                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
+  (let [manager (assets/manager)]
     (doseq [[file class] assets]
-      (.load manager ^String file ^Class class))
-    (.finishLoading manager)
+      (assets/load manager file class))
+    (assets/finish-loading manager)
     manager))
 
 (defn- search
@@ -56,9 +49,9 @@
 (defn- all-of-class
   "Returns all asset paths with the specific class."
   [manager class]
-  (filter #(= (.getAssetType manager %)
+  (filter #(= (assets/asset-type manager %)
               class)
-          (.getAssetNames manager)))
+          (assets/asset-names manager)))
 
 (defn init []
   (.bindRoot #'asset-manager (load-all (search asset-folder))))
