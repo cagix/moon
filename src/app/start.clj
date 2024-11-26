@@ -15,7 +15,7 @@
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [forge.level :as level]
-            (forge.schema image map one-to-many one-to-one sound)
+            (forge.schema image )
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]

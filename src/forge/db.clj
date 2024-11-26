@@ -1,6 +1,5 @@
 (ns forge.db
   (:refer-clojure :exclude [get])
-  ; TODO just build no get
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
@@ -173,10 +172,18 @@
           m
           (keys m)))
 
+(declare get)
+
 (defmulti edn->value (fn [schema v]
                        (when schema  ; undefined-data-ks
                          (schema-type schema))))
 (defmethod edn->value :default [_schema v] v)
+
+(defmethod edn->value :s/one-to-many [_ property-ids]
+  (set (map get property-ids)))
+
+(defmethod edn->value :s/one-to-one [_ property-id]
+  (get property-id))
 
 (defn- build [property]
   (apply-kvs property

@@ -5,7 +5,7 @@
             [forge.db :as db]
             [forge.ui :as ui]
             [forge.stage :as stage]
-            [forge.editor.property :as widgets.property]
+            [forge.editor.widget :as widgets.property]
             [forge.editor.overview :as properties-overview]
             [forge.property :as property]
             [moon.widgets.background-image :as background-image])
@@ -49,4 +49,9 @@
             (tabs-table)
             (ui/actor {:act (fn []
                               (when (gdx/key-just-pressed? :shift-left)
-                                (app/change-screen :screens/main-menu)))})]})
+                                (app/change-screen :screens/main-menu)))})]
+   :screen (reify app/Screen
+             (enter [_])
+             (exit [_])
+             (render [_])
+             (dispose [_])) })

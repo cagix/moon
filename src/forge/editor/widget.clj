@@ -1,9 +1,22 @@
 (ns forge.editor.widget
   (:require [clojure.edn :as edn]
+            [clojure.gdx :refer [key-just-pressed?]]
+            [clojure.string :as str]
+            [forge.app :as app]
+            [forge.assets :as assets :refer [play-sound]]
             [forge.db :as db]
+            [forge.editor.scrollpane :refer [scrollable-choose-window]]
+            [forge.editor.scrollpane :refer [scroll-pane-cell]]
+            [forge.editor.malli :as malli]
+            [forge.editor.overview :as properties-overview]
+            [forge.info :as info]
+            [forge.property :as property]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
-            [forge.utils :refer [truncate ->edn-str]])
+            [forge.utils :refer [index-of]]
+            [forge.stage :as stage]
+            [forge.utils :refer [truncate ->edn-str]]
+            [forge.widgets.error-window :refer [error-window!]])
   (:import (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)))
 
 (defn- widget-type [schema _]
@@ -19,6 +32,38 @@
 
 (defmulti create   widget-type)
 (defmulti ->value  widget-type)
+
+(defn- apply-context-fn [window f]
+  #(try (f)
+        (actor/remove! window)
+        (catch Throwable t
+          (error-window! t))))
+
+; We are working with raw property data without edn->value and db/build
+; otherwise at db/update! we would have to convert again from edn->value back to edn
+; for example at images/relationships
+(defn editor-window [props]
+  (let [schema (db/schema-of-property props)
+        window (ui/window {:title (str "[SKY]Property[]")
+                           :id :property-editor-window
+                           :modal? true
+                           :close-button? true
+                           :center? true
+                           :close-on-escape? true
+                           :cell-defaults {:pad 5}})
+        widget (create schema props)
+        save!   (apply-context-fn window #(db/update! (->value schema widget)))
+        delete! (apply-context-fn window #(db/delete! (:property/id props)))]
+    (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
+                                              [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
+                                                :center? true}
+                                               {:actor (ui/text-button "Delete" delete!)
+                                                :center? true}]])]])
+    (ui/add-actor! window (ui/actor {:act (fn []
+                                            (when (key-just-pressed? :enter)
+                                              (save!)))}))
+    (.pack window)
+    window))
 
 (defmethod create :default [_ v]
   (ui/label (truncate (->edn-str v) 60)))
@@ -53,3 +98,233 @@
 
 (defmethod ->value :enum [_ widget]
   (edn/read-string (VisSelectBox/.getSelected widget)))
+
+(defn- play-button [sound-file]
+  (ui/text-button "play!" #(play-sound sound-file)))
+
+(declare columns)
+
+(defn- choose-window [table]
+  (let [rows (for [sound-file (assets/all-sounds)]
+               [(ui/text-button (str/replace-first sound-file "sounds/" "")
+                                (fn []
+                                  (ui/clear-children! table)
+                                  (ui/add-rows! table [(columns table sound-file)])
+                                  (actor/remove! (ui/find-ancestor-window ui/*on-clicked-actor*))
+                                  (ui/pack-ancestor-window! table)
+                                  (let [[k _] (.getUserObject table)]
+                                    (.setUserObject table [k sound-file]))))
+                (play-button sound-file)])]
+    (stage/add-actor (scrollable-choose-window rows))))
+
+(defn- columns [table sound-file]
+  [(ui/text-button (name sound-file) #(choose-window table))
+   (play-button sound-file)])
+
+(defmethod create :s/sound [_ sound-file]
+  (let [table (ui/table {:cell-defaults {:pad 5}})]
+    (ui/add-rows! table [(if sound-file
+                           (columns table sound-file)
+                           [(ui/text-button "No sound" #(choose-window table))])])
+    table))
+
+(defn- add-one-to-many-rows [table property-type property-ids]
+  (let [redo-rows (fn [property-ids]
+                    (ui/clear-children! table)
+                    (add-one-to-many-rows table property-type property-ids)
+                    (ui/pack-ancestor-window! table))]
+    (ui/add-rows!
+     table
+     [[(ui/text-button "+"
+                       (fn []
+                         (let [window (ui/window {:title "Choose"
+                                                  :modal? true
+                                                  :close-button? true
+                                                  :center? true
+                                                  :close-on-escape? true})
+                               clicked-id-fn (fn [id]
+                                               (actor/remove! window)
+                                               (redo-rows (conj property-ids id)))]
+                           (.add window (properties-overview/table property-type clicked-id-fn))
+                           (.pack window)
+                           (stage/add-actor window))))]
+      (for [property-id property-ids]
+        (let [property (db/get property-id)
+              image-widget (ui/image->widget (property/->image property)
+                                             {:id property-id})]
+          (ui/add-tooltip! image-widget #(info/text property))))
+      (for [id property-ids]
+        (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
+
+(defmethod create :s/one-to-many [[_ property-type] property-ids]
+  (let [table (ui/table {:cell-defaults {:pad 5}})]
+    (add-one-to-many-rows table property-type property-ids)
+    table))
+
+(defmethod ->value :s/one-to-many [_ widget]
+  (->> (ui/children widget)
+       (keep actor/id)
+       set))
+
+(defn- add-one-to-one-rows [table property-type property-id]
+  (let [redo-rows (fn [id]
+                    (ui/clear-children! table)
+                    (add-one-to-one-rows table property-type id)
+                    (ui/pack-ancestor-window! table))]
+    (ui/add-rows!
+     table
+     [[(when-not property-id
+         (ui/text-button "+"
+                         (fn []
+                           (let [window (ui/window {:title "Choose"
+                                                    :modal? true
+                                                    :close-button? true
+                                                    :center? true
+                                                    :close-on-escape? true})
+                                 clicked-id-fn (fn [id]
+                                                 (actor/remove! window)
+                                                 (redo-rows id))]
+                             (.add window (properties-overview/table property-type clicked-id-fn))
+                             (.pack window)
+                             (stage/add-actor window)))))]
+      [(when property-id
+         (let [property (db/get property-id)
+               image-widget (ui/image->widget (property/->image property) {:id property-id})]
+           (ui/add-tooltip! image-widget #(info/text property))
+           image-widget))]
+      [(when property-id
+         (ui/text-button "-" #(redo-rows nil)))]])))
+
+(defmethod create :s/one-to-one [[_ property-type] property-id]
+  (let [table (ui/table {:cell-defaults {:pad 5}})]
+    (add-one-to-one-rows table property-type property-id)
+    table))
+
+(defmethod ->value :s/one-to-one [_ widget]
+  (->> (ui/children widget)
+       (keep actor/id)
+       first))
+
+(defn- get-editor-window []
+  (:property-editor-window (app/stage)))
+
+(defn- property-value []
+ (let [window (get-editor-window)
+       scroll-pane-table (.findActor (:scroll-pane window) "scroll-pane-table")
+       m-widget-cell (first (seq (.getCells scroll-pane-table)))
+       table (:map-widget scroll-pane-table)]
+   (->value [:s/map] table)))
+
+(defn- rebuild-editor-window []
+  (let [prop-value (property-value)]
+    (actor/remove! (get-editor-window))
+    (stage/add-actor (editor-window prop-value))))
+
+(defn- value-widget [[k v]]
+  (let [widget (create (db/schema-of k) v)]
+    (.setUserObject widget [k v])
+    widget))
+
+(def ^:private value-widget? (comp vector? actor/id))
+
+(defn- find-kv-widget [table k]
+  (forge.utils/find-first (fn [actor]
+                           (and (actor/id actor)
+                                (= k ((actor/id actor) 0))))
+                         (ui/children table)))
+
+(defn- attribute-label [k m-schema table]
+  (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
+                        (name k))
+        delete-button (when (malli/optional? k m-schema)
+                        (ui/text-button "-"
+                                        (fn []
+                                          (actor/remove! (find-kv-widget table k))
+                                          (rebuild-editor-window))))]
+    (ui/table {:cell-defaults {:pad 2}
+               :rows [[{:actor delete-button :left? true}
+                       label]]})))
+
+(def ^:private component-row-cols 3)
+
+(defn- component-row [[k v] m-schema table]
+  [{:actor (attribute-label k m-schema table)
+    :right? true}
+   (ui/vertical-separator-cell)
+   {:actor (value-widget [k v])
+    :left? true}])
+
+(defn- horiz-sep []
+  [(ui/horizontal-separator-cell component-row-cols)])
+
+(defn- choose-component-window [schema map-widget-table]
+  (let [window (ui/window {:title "Choose"
+                           :modal? true
+                           :close-button? true
+                           :center? true
+                           :close-on-escape? true
+                           :cell-defaults {:pad 5}})
+        malli-form (db/malli-form schema)
+        remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
+                                   (malli/map-keys malli-form)))]
+    (ui/add-rows!
+     window
+     (for [k remaining-ks]
+       [(ui/text-button (name k)
+                        (fn []
+                          (actor/remove! window)
+                          (ui/add-rows! map-widget-table [(component-row
+                                                           [k (db/k->default-value k)]
+                                                           malli-form
+                                                           map-widget-table)])
+                          (rebuild-editor-window)))]))
+    (.pack window)
+    (stage/add-actor window)))
+
+(defn- interpose-f [f coll]
+  (drop 1 (interleave (repeatedly f) coll)))
+
+(def ^:private property-k-sort-order
+  [:property/id
+   :property/pretty-name
+   :entity/image
+   :entity/animation
+   :entity/species
+   :creature/level
+   :entity/body
+   :item/slot
+   :projectile/speed
+   :projectile/max-range
+   :projectile/piercing?
+   :skill/action-time-modifier-key
+   :skill/action-time
+   :skill/start-action-sound
+   :skill/cost
+   :skill/cooldown])
+
+(defn- component-order [[k _v]]
+  (or (index-of k property-k-sort-order) 99))
+
+(defmethod create :s/map [schema m]
+  (let [table (ui/table {:cell-defaults {:pad 5}
+                         :id :map-widget})
+        component-rows (interpose-f horiz-sep
+                          (map #(component-row % (db/malli-form schema) table)
+                               (sort-by component-order m)))
+        colspan component-row-cols
+        opt? (malli/optional-keys-left (db/malli-form schema) m)]
+    (ui/add-rows!
+     table
+     (concat [(when opt?
+                [{:actor (ui/text-button "Add component" #(choose-component-window schema table))
+                  :colspan colspan}])]
+             [(when opt?
+                [(ui/horizontal-separator-cell colspan)])]
+             component-rows))
+    table))
+
+(defmethod ->value :s/map [_ table]
+  (into {}
+        (for [widget (filter value-widget? (ui/children table))
+              :let [[k _] (actor/id widget)]]
+          [k (->value (db/schema-of k) widget)])))
