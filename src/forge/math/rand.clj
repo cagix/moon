@@ -1,4 +1,4 @@
-(ns forge.rand)
+(ns forge.math.rand)
 
 ;; rename to 'shuffle', rand and rand-int without the 's'-> just use with require :as.
 ;; maybe even remove the when coll pred?

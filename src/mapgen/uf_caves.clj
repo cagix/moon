@@ -2,7 +2,7 @@
   (:require [data.grid2d :as g2d]
             [forge.db :as db]
             [forge.graphics.texture :as texture]
-            [forge.rand :refer [get-rand-weighted-item]]
+            [forge.math.rand :refer [get-rand-weighted-item]]
             [forge.tiled :as t]
             [forge.assets :refer [texture-region]]
             [forge.level :as level]
