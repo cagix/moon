@@ -3,9 +3,6 @@
 
 (declare schemas)
 
-(defn property-types []
-  (filter #(= "properties" (namespace %)) (keys schemas)))
-
 (defn of [k]
   {:pre [(contains? schemas k)]}
   (get schemas k))
@@ -73,3 +70,6 @@
 
 (defmethod form :s/components-ns [[_ ns-name-k]]
   (form [:s/map-optional (namespaced-ks ns-name-k)]))
+
+(defn property-type [{:keys [property/id]}]
+  (keyword "properties" (namespace id)))

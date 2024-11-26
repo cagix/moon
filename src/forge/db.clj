@@ -3,7 +3,6 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
-            [forge.property :as property]
             [forge.schema :as schema]
             [forge.utils :refer [safe-get]]
             [malli.core :as m]
@@ -20,7 +19,7 @@
 
 (defn- validate! [property]
   (let [m-schema (-> property
-                     property/type
+                     schema/property-type
                      schema/of
                      schema/form
                      m/schema)]
@@ -57,7 +56,7 @@
 (defn- async-write-to-file! []
   (->> db
        vals
-       (sort-by property/type)
+       (sort-by schema/property-type)
        (map recur-sort-map)
        doall
        async-pprint-spit!))
@@ -67,7 +66,7 @@
 
 (defn all-raw [type]
   (->> (vals db)
-       (filter #(= type (property/type %)))))
+       (filter #(= type (schema/property-type %)))))
 
 (def ^:private undefined-data-ks (atom #{}))
 

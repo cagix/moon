@@ -4,7 +4,6 @@
             [forge.editor.scrollpane :refer [scroll-pane-cell]]
             [forge.editor.widget :as widget]
             [forge.schema :as schema]
-            [forge.property :as property]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.ui :as ui]
             [forge.ui.actor :as a]))
@@ -19,7 +18,7 @@
 ; otherwise at db/update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn editor-window [props]
-  (let [schema (schema/of (property/type props))
+  (let [schema (schema/of (schema/property-type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
