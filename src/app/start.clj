@@ -406,36 +406,36 @@
   (when SharedLibraryLoader/isMac
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
-    (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                          (create []
-                            (assets/init)
-                            (cursors/init)
-                            (graphics/init)
-                            (ui/load! :skin-scale/x1)
-                            (.bindRoot #'app/screens
-                                       (mapvals stage-screen
-                                                {:screens/main-menu  (main-menu)
-                                                 :screens/map-editor (map-editor/create)
-                                                 :screens/editor     (editor/create)
-                                                 :screens/minimap    (minimap/create)
-                                                 :screens/world      (world-screen)}))
-                            (app/change-screen :screens/main-menu))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create []
+                          (assets/init)
+                          (cursors/init)
+                          (graphics/init)
+                          (ui/load! :skin-scale/x1)
+                          (.bindRoot #'app/screens
+                                     (mapvals stage-screen
+                                              {:screens/main-menu  (main-menu)
+                                               :screens/map-editor (map-editor/create)
+                                               :screens/editor     (editor/create)
+                                               :screens/minimap    (minimap/create)
+                                               :screens/world      (world-screen)}))
+                          (app/change-screen :screens/main-menu))
 
-                          (dispose []
-                            (assets/dispose)
-                            (cursors/dispose)
-                            (graphics/dispose)
-                            (run! app/dispose (vals app/screens))
-                            (ui/dispose!))
+                        (dispose []
+                          (assets/dispose)
+                          (cursors/dispose)
+                          (graphics/dispose)
+                          (run! app/dispose (vals app/screens))
+                          (ui/dispose!))
 
-                          (render []
-                            (ScreenUtils/clear Color/BLACK)
-                            (app/render (app/current-screen)))
+                        (render []
+                          (ScreenUtils/clear Color/BLACK)
+                          (app/render (app/current-screen)))
 
-                          (resize [w h]
-                            (.update graphics/gui-viewport   w h true)
-                            (.update graphics/world-viewport w h)))
-                        (doto (Lwjgl3ApplicationConfiguration.)
-                          (.setTitle "Moon")
-                          (.setForegroundFPS 60)
-                          (.setWindowedMode 1440 900))))
+                        (resize [w h]
+                          (.update graphics/gui-viewport   w h true)
+                          (.update graphics/world-viewport w h)))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle "Moon")
+                        (.setForegroundFPS 60)
+                        (.setWindowedMode 1440 900))))
