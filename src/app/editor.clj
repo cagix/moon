@@ -59,7 +59,7 @@
 ; We are working with raw property data without edn->value and db/build
 ; otherwise at db/update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
-(defn editor-window [props]
+(defn- editor-window [props]
   (let [schema (db/schema-of-property props)
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
@@ -176,7 +176,7 @@
                                              :image/scale 2}
                          :properties/worlds {:columns 10}})
 
-(defn overview-table [property-type clicked-id-fn]
+(defn- overview-table [property-type clicked-id-fn]
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
