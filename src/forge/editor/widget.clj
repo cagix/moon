@@ -1,13 +1,13 @@
 (ns forge.editor.widget
   (:require [clojure.edn :as edn]
-            [forge.schema :as schema]
+            [forge.db :as db]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
             [forge.utils :refer [truncate ->edn-str]])
   (:import (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)))
 
 (defn- widget-type [schema _]
-  (let [stype (schema/type schema)]
+  (let [stype (db/schema-type schema)]
     (cond
      (#{:s/map-optional :s/components-ns} stype)
      :s/map

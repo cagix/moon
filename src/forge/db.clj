@@ -1,22 +1,125 @@
 (ns forge.db
   (:refer-clojure :exclude [get])
+  ; TODO just build no get
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
-            [forge.schema :as schema]
-            [forge.utils :refer [safe-get]]))
+            [forge.utils :refer [safe-get]]
+            [malli.core :as m]
+            [malli.error :as me]
+            [malli.generator :as mg]))
 
-(declare ^:private properties-file)
+(declare ^:private schemas
+         ^:private properties-file
+         ^:private db)
 
-(declare ^:private db)
+(defn schema-of [k]
+  {:pre [(contains? schemas k)]}
+  (clojure.core/get schemas k))
+
+(defn schema-type [schema]
+  (if (vector? schema)
+    (schema 0)
+    schema))
+
+(defmulti malli-form schema-type)
+(defmethod malli-form :default [schema] schema)
+
+(defmethod malli-form :s/number  [_] number?)
+(defmethod malli-form :s/nat-int [_] nat-int?)
+(defmethod malli-form :s/int     [_] int?)
+(defmethod malli-form :s/pos     [_] pos?)
+(defmethod malli-form :s/pos-int [_] pos-int?)
+
+(defmethod malli-form :s/sound [_] :string)
+
+(defmethod malli-form :s/image [_]
+  [:map {:closed true}
+   [:file :string]
+   [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
+
+(defmethod malli-form :s/animation [_]
+  [:map {:closed true}
+   [:frames :some] ; FIXME actually images
+   [:frame-duration pos?]
+   [:looping? :boolean]])
+
+(defn- type->id-namespace [property-type]
+  (keyword (name property-type)))
+
+(defmethod malli-form :s/one-to-one [[_ property-type]]
+  [:qualified-keyword {:namespace (type->id-namespace property-type)}])
+
+(defmethod malli-form :s/one-to-many [[_ property-type]]
+  [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
+
+(defn- attribute-form
+  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
+  [ks]
+  (for [k ks
+        :let [k? (keyword? k)
+              schema-props (if k? nil (k 1))
+              k (if k? k (k 0))]]
+    (do
+     (assert (keyword? k))
+     (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
+     [k schema-props (malli-form (schema-of k))])))
+
+(defn- map-form [ks]
+  (apply vector :map {:closed true} (attribute-form ks)))
+
+(defmethod malli-form :s/map [[_ ks]]
+  (map-form ks))
+
+(defmethod malli-form :s/map-optional [[_ ks]]
+  (map-form (map (fn [k] [k {:optional true}]) ks)))
+
+(defn- namespaced-ks [ns-name-k]
+  (filter #(= (name ns-name-k) (namespace %))
+          (keys schemas)))
+
+(defmethod malli-form :s/components-ns [[_ ns-name-k]]
+  (malli-form [:s/map-optional (namespaced-ks ns-name-k)]))
+
+(defn property-type [{:keys [property/id]}]
+  (keyword "properties" (namespace id)))
+
+(defn property-types []
+  (filter #(= "properties" (namespace %))
+          (keys schemas)))
+
+(defn schema-of-property [property]
+  (schema-of (property-type property)))
+
+(defn- invalid-ex-info [m-schema value]
+  (ex-info (str (me/humanize (m/explain m-schema value)))
+           {:value value
+            :schema (m/form m-schema)}))
+
+(defn- validate! [property]
+  (let [m-schema (-> property
+                     schema-of-property
+                     malli-form
+                     m/schema)]
+    (when-not (m/validate m-schema property)
+      (throw (invalid-ex-info m-schema property)))))
+
+(defn k->default-value [k]
+  (let [schema (schema-of k)]
+    (cond
+     (#{:s/one-to-one :s/one-to-many} (schema-type schema)) nil
+
+     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
+
+     :else (mg/generate (malli-form schema) {:size 3}))))
 
 (defn init [& {:keys [schema properties]}]
-  (schema/init (-> schema io/resource slurp edn/read-string))
+  (.bindRoot #'schemas (-> schema io/resource slurp edn/read-string))
   (.bindRoot #'properties-file (io/resource properties))
   (let [properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! schema/validate! properties)
+    (run! validate! properties)
     (.bindRoot #'db (zipmap (map :property/id properties) properties))))
 
 (defn- async-pprint-spit! [properties]
@@ -40,7 +143,7 @@
 (defn- async-write-to-file! []
   (->> db
        vals
-       (sort-by schema/property-type)
+       (sort-by property-type)
        (map recur-sort-map)
        doall
        async-pprint-spit!))
@@ -50,7 +153,7 @@
 
 (defn all-raw [type]
   (->> (vals db)
-       (filter #(= type (schema/property-type %)))))
+       (filter #(= type (property-type %)))))
 
 (def ^:private undefined-data-ks (atom #{}))
 
@@ -72,13 +175,13 @@
 
 (defmulti edn->value (fn [schema v]
                        (when schema  ; undefined-data-ks
-                         (schema/type schema))))
+                         (schema-type schema))))
 (defmethod edn->value :default [_schema v] v)
 
 (defn- build [property]
   (apply-kvs property
              (fn [k v]
-               (let [schema (try (schema/of k)
+               (let [schema (try (schema-of k)
                                  (catch Throwable _t
                                    (swap! undefined-data-ks conj k)
                                    nil))
@@ -98,7 +201,7 @@
 (defn update! [{:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
          (contains? db id)]}
-  (schema/validate! property)
+  (validate! property)
   (alter-var-root #'db assoc id property)
   (async-write-to-file!))
 

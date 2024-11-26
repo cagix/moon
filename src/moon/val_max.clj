@@ -1,5 +1,5 @@
 (ns moon.val-max
-  (:require [forge.schema :as schema]
+  (:require [forge.db :as db]
             [malli.core :as m]))
 
 (def schema
@@ -10,7 +10,7 @@
                                  (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
               (fn [[^int a ^int b]] (<= a b))]]))
 
-(defmethod schema/form :s/val-max [_]
+(defmethod db/malli-form :s/val-max [_]
   (m/form schema))
 
 (defn ratio

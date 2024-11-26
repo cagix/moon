@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.schema.map
   (:require [forge.app :as app]
             [forge.db :as db]
-            [forge.schema :as schema]
             [forge.editor.widget :as widget]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
@@ -27,7 +26,7 @@
     (stage/add-actor (widgets.property/editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (widget/create (schema/of k) v)]
+  (let [widget (widget/create (db/schema-of k) v)]
     (.setUserObject widget [k v])
     widget))
 
@@ -70,7 +69,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        malli-form (schema/form schema)
+        malli-form (db/malli-form schema)
         remaining-ks (sort (remove (set (keys (widget/->value schema map-widget-table)))
                                    (malli/map-keys malli-form)))]
     (ui/add-rows!
@@ -80,7 +79,7 @@
                         (fn []
                           (a/remove! window)
                           (ui/add-rows! map-widget-table [(component-row
-                                                           [k (schema/k->default-value k)]
+                                                           [k (db/k->default-value k)]
                                                            malli-form
                                                            map-widget-table)])
                           (rebuild-editor-window)))]))
@@ -115,10 +114,10 @@
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
-                          (map #(component-row % (schema/form schema) table)
+                          (map #(component-row % (db/malli-form schema) table)
                                (sort-by component-order m)))
         colspan component-row-cols
-        opt? (malli/optional-keys-left (schema/form schema) m)]
+        opt? (malli/optional-keys-left (db/malli-form schema) m)]
     (ui/add-rows!
      table
      (concat [(when opt?
@@ -133,4 +132,4 @@
   (into {}
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (a/id widget)]]
-          [k (widget/->value (schema/of k) widget)])))
+          [k (widget/->value (db/schema-of k) widget)])))
