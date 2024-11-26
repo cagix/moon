@@ -8,6 +8,7 @@
             [forge.graphics :as graphics]
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
+            [app.screens :as screens]
             [forge.ui :as ui]
             [forge.utils :refer [mapvals]]))
 
@@ -51,8 +52,8 @@
   (cursors/init)
   (graphics/init)
   (ui/load! :skin-scale/x1)
-  (.bindRoot #'app/screens (mapvals stage-screen (screens)))
-  (app/change-screen first-screen))
+  (.bindRoot #'app/screens (mapvals stage-screen (screens/init)))
+  (app/change-screen screens/first-screen))
 
 (defn dispose []
   (assets/dispose)

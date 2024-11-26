@@ -3,7 +3,10 @@
             [clojure.string :as str]
             [forge.effects :as effects]
             [forge.entity :as entity]
-            [moon.systems.entity-state :as state]))
+            [moon.systems.entity-state :as state]
+
+            forge.entity.animation
+            (mapgen generate uf-caves)))
 
 (defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
   (doseq [system-var system-vars
