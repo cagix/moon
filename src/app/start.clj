@@ -1,9 +1,10 @@
 (ns ^:no-doc app.start
-  (:require [forge.app :as app]
-            [forge.assets :as assets]
+  (:require app.info
             [app.screens.editor :as editor]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
+            [forge.app :as app]
+            [forge.assets :as assets]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.color :as color]
@@ -26,7 +27,6 @@
             [forge.effects :as effects]
             [forge.entity :as entity-sys]
             [moon.systems.entity-state :as state]
-            moon.methods.info
             forge.entity.animation
             [moon.widgets.background-image :as background-image]
             [moon.widgets.action-bar :as action-bar]

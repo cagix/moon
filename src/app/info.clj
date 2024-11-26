@@ -1,4 +1,4 @@
-(ns moon.methods.info
+(ns app.info
   (:require [clojure.string :as str]
             [forge.graphics.color :as color]
             [forge.utils :refer [k->pretty-name readable-number]]
