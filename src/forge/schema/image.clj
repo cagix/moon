@@ -2,14 +2,8 @@
   (:require [forge.assets :as assets]
             [forge.db :as db]
             [forge.editor.widget :as widget]
-            [forge.schema :as schema]
             [forge.ui :as ui]
             [forge.graphics :refer [image sprite sprite-sheet]]))
-
-(defmethod schema/form :s/image [_]
-  [:map {:closed true}
-   [:file :string]
-   [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
 
 (defn edn->image [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds

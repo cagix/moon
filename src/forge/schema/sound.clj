@@ -1,14 +1,11 @@
 (ns ^:no-doc forge.schema.sound
   (:require [clojure.string :as str]
             [forge.assets :as assets :refer [play-sound]]
-            [forge.schema :as schema]
             [forge.editor.widget :as widget]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
             [forge.stage :as stage]
             [forge.editor.scrollpane :refer [scrollable-choose-window]]))
-
-(defmethod schema/form :s/sound [_] :string)
 
 (defn- play-button [sound-file]
   (ui/text-button "play!" #(play-sound sound-file)))

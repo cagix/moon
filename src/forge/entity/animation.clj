@@ -2,7 +2,6 @@
   (:require [forge.db :as db]
             [forge.editor.widget :as widget]
             [forge.entity :as entity]
-            [forge.schema :as schema]
             [forge.schema.image :as image]
             [forge.ui :as ui]
             [moon.world :as world]))
@@ -39,12 +38,6 @@
      :looping? looping?
      :cnt 0
      :maxcnt (* (count frames) (float frame-duration))}))
-
-(defmethod schema/form :s/animation [_]
-  [:map {:closed true}
-   [:frames :some] ; FIXME actually images
-   [:frame-duration pos?]
-   [:looping? :boolean]])
 
 (defmethod db/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
   (create (map image/edn->image frames)
