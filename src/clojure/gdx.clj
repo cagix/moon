@@ -1,6 +1,7 @@
 (ns clojure.gdx
   (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.utils Disposable)))
 
 (defmacro post-runnable [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -55,3 +56,6 @@
   Numbers via :num-3, etc."
   [k]
   (.isKeyPressed Gdx/input (input-key k)))
+
+(def dispose Disposable/.dispose)
+

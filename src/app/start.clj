@@ -8,7 +8,7 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.utils :refer [dispose mac? clear-screen]]
+            [clojure.gdx.utils :refer [mac? clear-screen]]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.graphics :as graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
@@ -382,7 +382,7 @@
     (stage/draw stage))
 
   (dispose [_]
-    (dispose stage)
+    (gdx/dispose stage)
     (app/dispose sub-screen)))
 
 (defn- stage-create [viewport batch]
