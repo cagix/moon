@@ -5,7 +5,7 @@
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled]
             [forge.graphics.viewport :as vp]
-            [forge.utils :refer [dispose mapvals]])
+            [forge.utils :refer [mapvals]])
   (:import (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))

@@ -6,7 +6,7 @@
             [forge.db :as db]
             [forge.graphics.camera :as cam]
             [forge.math.vector :as v]
-            [forge.utils :refer [dispose tile->middle define-order sort-by-order safe-merge]]
+            [forge.utils :refer [tile->middle define-order sort-by-order safe-merge]]
             [forge.tiled :as tiled]
             [forge.level :as level]
             [forge.world.raycaster :as raycaster :refer [ray-blocked?]]
@@ -49,7 +49,7 @@
 
 (defn clear [] ; responsibility of screen? we are not creating the tiled-map here ...
   (when (bound? #'tiled-map)
-    (dispose tiled-map)))
+    (.dispose tiled-map)))
 
 (defn cell [position]
   (get grid position))

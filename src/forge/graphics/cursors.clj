@@ -1,6 +1,7 @@
 (ns forge.graphics.cursors
   (:refer-clojure :exclude [set])
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.utils :as utils]
             [forge.utils :refer [safe-get mapvals]])
   (:import (com.badlogic.gdx.graphics Pixmap)))
 
@@ -33,7 +34,7 @@
             props)))
 
 (defn ^:no-doc dispose []
-  (run! dispose (vals cursors)))
+  (run! utils/dispose (vals cursors)))
 
 (defn set [cursor-key]
   (gdx/set-cursor (safe-get cursors cursor-key)))
