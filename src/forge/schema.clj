@@ -1,7 +1,13 @@
 (ns forge.schema
+  (:require [malli.core :as m]
+            [malli.error :as me]
+            [malli.generator :as mg])
   (:refer-clojure :exclude [type]))
 
-(declare schemas)
+(declare ^:private schemas)
+
+(defn init [data]
+  (.bindRoot #'schemas data))
 
 (defn of [k]
   {:pre [(contains? schemas k)]}
@@ -73,3 +79,32 @@
 
 (defn property-type [{:keys [property/id]}]
   (keyword "properties" (namespace id)))
+
+(defn property-types []
+  (filter #(= "properties" (namespace %))
+          (keys schemas)))
+
+(defn of-property [property]
+  (of (property-type property)))
+
+(defn- invalid-ex-info [m-schema value]
+  (ex-info (str (me/humanize (m/explain m-schema value)))
+           {:value value
+            :schema (m/form m-schema)}))
+
+(defn validate! [property]
+  (let [m-schema (-> property
+                     of-property
+                     form
+                     m/schema)]
+    (when-not (m/validate m-schema property)
+      (throw (invalid-ex-info m-schema property)))))
+
+(defn k->default-value [k]
+  (let [schema (of k)]
+    (cond
+     (#{:s/one-to-one :s/one-to-many} (type schema)) nil
+
+     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
+
+     :else (mg/generate (form schema) {:size 3}))))

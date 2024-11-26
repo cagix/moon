@@ -18,8 +18,7 @@
   (stage/add-actor (widgets.property/editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
-  (for [property-type (sort (filter #(= "properties" (namespace %))
-                                    (keys schema/schemas)))]
+  (for [property-type (sort (schema/property-types))]
     {:title (str/capitalize (name property-type))
      :content (properties-overview/table property-type edit-property)}))
 

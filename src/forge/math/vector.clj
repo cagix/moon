@@ -12,7 +12,8 @@
   (->p (.nor ^Vector2 (v2 v))))
 
 (defn add [v1 v2]
-  (->p (.add ^Vector2 (v2 v1) ^Vector2 (v2 v2))))
+  (->p (.add ^Vector2 (v2 v1)
+             ^Vector2 (v2 v2))))
 
 (defn length [v]
   (.len ^Vector2 (v2 v)))

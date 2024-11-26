@@ -6,7 +6,6 @@
             [forge.ui :as ui]
             [forge.ui.actor :as a]
             [forge.utils :refer [index-of]]
-            [malli.generator :as mg]
             [forge.stage :as stage]
             [forge.editor.malli :as malli]
             [forge.editor.property :as widgets.property]
@@ -26,15 +25,6 @@
   (let [prop-value (property-value)]
     (a/remove! (editor-window))
     (stage/add-actor (widgets.property/editor-window prop-value))))
-
-(defn- k->default-value [k]
-  (let [schema (schema/of k)]
-    (cond
-     (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
-
-     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
-
-     :else (mg/generate (schema/form schema) {:size 3}))))
 
 (defn- value-widget [[k v]]
   (let [widget (widget/create (schema/of k) v)]
@@ -90,7 +80,7 @@
                         (fn []
                           (a/remove! window)
                           (ui/add-rows! map-widget-table [(component-row
-                                                           [k (k->default-value k)]
+                                                           [k (schema/k->default-value k)]
                                                            malli-form
                                                            map-widget-table)])
                           (rebuild-editor-window)))]))

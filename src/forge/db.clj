@@ -4,35 +4,19 @@
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
             [forge.schema :as schema]
-            [forge.utils :refer [safe-get]]
-            [malli.core :as m]
-            [malli.error :as me]))
+            [forge.utils :refer [safe-get]]))
 
 (declare ^:private properties-file)
 
 (declare ^:private db)
 
-(defn- invalid-ex-info [m-schema value]
-  (ex-info (str (me/humanize (m/explain m-schema value)))
-           {:value value
-            :schema (m/form m-schema)}))
-
-(defn- validate! [property]
-  (let [m-schema (-> property
-                     schema/property-type
-                     schema/of
-                     schema/form
-                     m/schema)]
-    (when-not (m/validate m-schema property)
-      (throw (invalid-ex-info m-schema property)))))
-
 (defn init [& {:keys [schema properties]}]
-  (.bindRoot #'schema/schemas (-> schema io/resource slurp edn/read-string))
+  (schema/init (-> schema io/resource slurp edn/read-string))
   (.bindRoot #'properties-file (io/resource properties))
   (let [properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! validate! properties)
+    (run! schema/validate! properties)
     (.bindRoot #'db (zipmap (map :property/id properties) properties))))
 
 (defn- async-pprint-spit! [properties]
@@ -114,7 +98,7 @@
 (defn update! [{:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
          (contains? db id)]}
-  (validate! property)
+  (schema/validate! property)
   (alter-var-root #'db assoc id property)
   (async-write-to-file!))
 
