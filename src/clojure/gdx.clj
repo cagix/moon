@@ -1,9 +1,5 @@
 (ns clojure.gdx
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)))
-
-(defmacro application [& functions]
-  `(proxy [ApplicationAdapter] []
-     ~@functions))
+  (:import (com.badlogic.gdx Gdx)))
 
 (defmacro post-runnable [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))

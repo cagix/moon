@@ -44,7 +44,8 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
-  (:import (java.awt Taskbar Toolkit)
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
 (def ^:private no-doc? true)
@@ -408,7 +409,7 @@
   (when mac?
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (lwjgl3/application (gdx/application
+  (lwjgl3/application (proxy [ApplicationAdapter] []
                         (create []
                           (assets/init)
                           (cursors/init)
