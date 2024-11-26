@@ -236,13 +236,13 @@
 
 (deftype WorldScreen []
   screen/Screen
-  (screen/enter [_]
+  (enter [_]
     (cam/set-zoom! (world-camera) 0.8))
 
-  (screen/exit [_]
+  (exit [_]
     (cursors/set :cursors/default))
 
-  (screen/render [_]
+  (render [_]
     (render-world)
     (update-world)
     (controls/world-camera-zoom)
@@ -253,7 +253,7 @@
           (controls/minimap?)
           (change-screen :screens/minimap)))
 
-  (screen/dispose [_]
+  (dispose [_]
     (world/clear)))
 
 (defn- world-screen []
@@ -350,11 +350,11 @@
                               (when (key-just-pressed? :keys/escape)
                                 (.exit Gdx/app)))})]
    :screen (reify screen/Screen
-             (screen/enter [_]
+             (enter [_]
                (cursors/set :cursors/default))
-             (screen/exit [_])
-             (screen/render [_])
-             (screen/dispose [_]))})
+             (exit [_])
+             (render [_])
+             (dispose [_]))})
 
 (def ^:private config
   {:tile-size 48

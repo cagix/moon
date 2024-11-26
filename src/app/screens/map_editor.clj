@@ -129,13 +129,13 @@ direction keys: move")
 
 (defrecord MapEditorScreen [current-data]
   screen/Screen
-  (screen/enter [_]
+  (enter [_]
     (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
-  (screen/exit [_]
+  (exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (screen/render [_]
+  (render [_]
     (draw-tiled-map (:tiled-map @current-data)
                     (constantly color/white))
     (draw-on-world-view render-on-map)
