@@ -5,6 +5,7 @@
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [clojure.gdx :as gdx]
+            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.graphics :as graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
@@ -42,7 +43,6 @@
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
   (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
@@ -406,7 +406,7 @@
   (when SharedLibraryLoader/isMac
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+  (lwjgl3/application (proxy [ApplicationAdapter] []
                         (create []
                           (assets/init)
                           (cursors/init)
@@ -435,7 +435,7 @@
                         (resize [w h]
                           (.update graphics/gui-viewport   w h true)
                           (.update graphics/world-viewport w h)))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle "Moon")
-                        (.setForegroundFPS 60)
-                        (.setWindowedMode 1440 900))))
+                      (lwjgl3/config {:title "Moon"
+                                      :fps 60
+                                      :width 1440
+                                      :height 900})))
