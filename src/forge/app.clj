@@ -54,8 +54,8 @@
     (when sub-screen (screen/exit sub-screen)))
 
   (render [_]
-    ; stage act first so sub-screen calls change
-    ; -> is the end of frame
+    ; stage act first so sub-screen calls change-screen
+    ; -> is the end of frame logic
     ; otherwise would need render-after-stage
     ; or on change the stage of the current screen would still .act
     (stage/act! stage)
