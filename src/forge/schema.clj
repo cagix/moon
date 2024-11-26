@@ -27,3 +27,12 @@
    [:frames :some] ; FIXME actually images
    [:frame-duration pos?]
    [:looping? :boolean]])
+
+(defn- type->id-namespace [property-type]
+  (keyword (name property-type)))
+
+(defmethod form :s/one-to-one [[_ property-type]]
+  [:qualified-keyword {:namespace (type->id-namespace property-type)}])
+
+(defmethod form :s/one-to-many [[_ property-type]]
+  [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])

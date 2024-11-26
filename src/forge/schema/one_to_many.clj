@@ -3,14 +3,10 @@
             [forge.editor.widget :as widget]
             [forge.info :as info]
             [forge.property :as property]
-            [forge.schema :as schema]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
             [forge.stage :as stage]
             [forge.editor.overview :as properties-overview]))
-
-(defmethod schema/form :s/one-to-many [[_ property-type]]
-  [:set [:qualified-keyword {:namespace (property/type->id-namespace property-type)}]])
 
 (defmethod db/edn->value :s/one-to-many [_ property-ids]
   (set (map db/get property-ids)))
