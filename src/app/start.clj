@@ -1,15 +1,15 @@
 (ns ^:no-doc app.start
-  (:require [app.screens.editor :as editor]
+  (:require [forge.app :as app]
+            [app.screens.editor :as editor]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.graphics :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position stage world-camera world-mouse-position change-screen]]
+            [forge.graphics :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position stage world-camera world-mouse-position]]
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [forge.level :as level]
             (forge.schema boolean enum image map number one-to-many one-to-one sound string)
-            [forge.screen :as screen]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
             [forge.input :refer [key-just-pressed?]]
@@ -117,11 +117,11 @@
   (dev-menu/create
    {:menus [{:label "Screens"
              :items [{:label "Map-editor"
-                      :on-click (partial change-screen :screens/map-editor)}
+                      :on-click (partial app/change-screen :screens/map-editor)}
                      {:label "Editor"
-                      :on-click (partial change-screen :screens/editor)}
+                      :on-click (partial app/change-screen :screens/editor)}
                      {:label "Main-Menu"
-                      :on-click (partial change-screen :screens/main-menu)}]}
+                      :on-click (partial app/change-screen :screens/main-menu)}]}
             {:label "World"
              :items (for [world (db/all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
@@ -193,7 +193,7 @@
       (run! #(actor/set-visible! % false) windows))))
 
 (defn- start-world [world-props]
-  (change-screen :screens/world)
+  (app/change-screen :screens/world)
   (stage/reset (stage) (widgets))
   (world/clear)
   (world/init (level/generate world-props)))
@@ -235,7 +235,7 @@
                        (debug-render/after-entities))))
 
 (deftype WorldScreen []
-  screen/Screen
+  app/Screen
   (enter [_]
     (cam/set-zoom! (world-camera) 0.8))
 
@@ -251,7 +251,7 @@
           (close-all-windows)
 
           (controls/minimap?)
-          (change-screen :screens/minimap)))
+          (app/change-screen :screens/minimap)))
 
   (dispose [_]
     (world/clear)))
@@ -338,10 +338,10 @@
                                           #(start-world world))])
                        [(when dev-mode?
                           [(ui/text-button "Map editor"
-                                           #(change-screen :screens/map-editor))])
+                                           #(app/change-screen :screens/map-editor))])
                         (when dev-mode?
                           [(ui/text-button "Property editor"
-                                           #(change-screen :screens/editor))])
+                                           #(app/change-screen :screens/editor))])
                         [(ui/text-button "Exit"
                                          #(.exit Gdx/app))]]))
               :cell-defaults {:pad-bottom 25}
@@ -349,7 +349,7 @@
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
                                 (.exit Gdx/app)))})]
-   :screen (reify screen/Screen
+   :screen (reify app/Screen
              (enter [_]
                (cursors/set :cursors/default))
              (exit [_])

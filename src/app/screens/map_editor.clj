@@ -1,14 +1,14 @@
 (ns ^:no-doc app.screens.map-editor
   (:require [clojure.string :as str]
+            [forge.app :as app]
             [forge.db :as db]
-            [forge.screen :as screen]
             [forge.graphics.camera :as cam]
             [forge.graphics.color :as color]
             [forge.input :refer [key-pressed? key-just-pressed?]]
             [forge.ui :as ui]
             [forge.utils :refer [dispose]]
             [forge.tiled :as t]
-            [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position current-screen change-screen]]
+            [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
             [moon.controls :as controls]
@@ -26,7 +26,7 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> (current-screen) :sub-screen :current-data))
+  (-> (app/current-screen) :sub-screen :current-data))
 
 (def ^:private infotext
   "L: grid lines
@@ -128,7 +128,7 @@ direction keys: move")
               :pack? true}))
 
 (defrecord MapEditorScreen [current-data]
-  screen/Screen
+  app/Screen
   (enter [_]
     (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
@@ -146,7 +146,7 @@ direction keys: move")
     (controls/world-camera-zoom)
     (camera-controls (world-camera))
     (when (key-just-pressed? :keys/escape)
-      (change-screen :screens/main-menu)))
+      (app/change-screen :screens/main-menu)))
 
   (dispose [_]
     (dispose (:tiled-map @current-data))))

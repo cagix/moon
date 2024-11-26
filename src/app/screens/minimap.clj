@@ -1,9 +1,9 @@
 (ns ^:no-doc app.screens.minimap
-  (:require [forge.graphics.camera :as cam]
+  (:require [forge.app :as app]
+            [forge.graphics.camera :as cam]
             [forge.graphics.color :as color]
             [forge.input :refer [key-just-pressed?]]
-            [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera change-screen]]
-            [forge.screen :as screen]
+            [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
             [moon.world :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
@@ -35,7 +35,7 @@
     (if (get explored? [x y]) color/white color/black)))
 
 (deftype Minimap []
-  screen/Screen
+  app/Screen
   (enter [_]
     (cam/set-zoom! (world-camera) (minimap-zoom)))
 
@@ -50,7 +50,7 @@
        (draw-filled-circle (cam/position (world-camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
-      (change-screen :screens/world)))
+      (app/change-screen :screens/world)))
 
   (dispose [_]))
 

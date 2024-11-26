@@ -1,6 +1,6 @@
 (ns forge.graphics
-  (:require [forge.assets :as assets]
-            [forge.screen :as screen]
+  (:require [forge.app :as app]
+            [forge.assets :as assets]
             [forge.graphics.cursors :as cursors]
             [forge.graphics.image :as image]
             [forge.graphics.shape-drawer :as sd]
@@ -25,33 +25,17 @@
          ^:private cached-map-renderer
          ^:private world-unit-scale
          ^:private world-viewport
-         ^:private gui-viewport
-         ^:private current-screen-key
-         ^:private screens)
-
-(defn current-screen []
-  (and (bound? #'current-screen-key)
-       (current-screen-key screens)))
-
-(defn change-screen
-  "Calls `exit` on the current-screen and `enter` on the new screen."
-  [new-k]
-  (when-let [screen (current-screen)]
-    (screen/exit screen))
-  (let [screen (new-k screens)]
-    (assert screen (str "Cannot find screen with key: " new-k))
-    (.bindRoot #'current-screen-key new-k)
-    (screen/enter screen)))
+         ^:private gui-viewport)
 
 (defrecord StageScreen [stage sub-screen]
-  screen/Screen
+  app/Screen
   (enter [_]
     (.setInputProcessor Gdx/input stage)
-    (when sub-screen (screen/enter sub-screen)))
+    (when sub-screen (app/enter sub-screen)))
 
   (exit [_]
     (.setInputProcessor Gdx/input nil)
-    (when sub-screen (screen/exit sub-screen)))
+    (when sub-screen (app/exit sub-screen)))
 
   (render [_]
     ; stage act first so sub-screen calls change-screen
@@ -59,12 +43,12 @@
     ; otherwise would need render-after-stage
     ; or on change the stage of the current screen would still .act
     (stage/act! stage)
-    (when sub-screen (screen/render sub-screen))
+    (when sub-screen (app/render sub-screen))
     (stage/draw! stage))
 
   (dispose [_]
     (dispose stage)
-    (when sub-screen (screen/dispose sub-screen))))
+    (when sub-screen (app/dispose sub-screen))))
 
 (defn- stage-screen
   "Actors or screen can be nil."
@@ -106,9 +90,10 @@
                                                                   gui-viewport-height
                                                                   (OrthographicCamera.)))
                           (ui/load! ui-skin-scale)
-                          (.bindRoot #'screens (mapvals #(stage-screen gui-viewport batch %)
-                                                        (init-screens)))
-                          (change-screen first-screen-k))
+                          (.bindRoot #'app/screens
+                                     (mapvals #(stage-screen gui-viewport batch %)
+                                              (init-screens)))
+                          (app/change-screen first-screen-k))
 
                         (dispose []
                           (assets/dispose)
@@ -116,12 +101,12 @@
                           (dispose batch)
                           (dispose shape-drawer-texture)
                           (dispose default-font)
-                          (run! screen/dispose (vals screens))
+                          (run! app/dispose (vals app/screens))
                           (ui/dispose!))
 
                         (render []
                           (ScreenUtils/clear Color/BLACK)
-                          (screen/render (current-screen)))
+                          (app/render (app/current-screen)))
 
                         (resize [w h]
                           (vp/update gui-viewport   [w h] :center-camera? true)
@@ -253,7 +238,7 @@
                 tiled-map))
 
 (defn stage []
-  (:stage (current-screen)))
+  (:stage (app/current-screen)))
 
 (defn mouse-on-actor? []
   (stage/hit (stage) (gui-mouse-position) :touchable? true))

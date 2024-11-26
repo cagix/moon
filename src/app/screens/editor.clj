@@ -1,8 +1,9 @@
 (ns ^:no-doc app.screens.editor
   (:require [clojure.string :as str]
+            [forge.app :as app]
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
-            [forge.graphics :refer [add-actor change-screen]]
+            [forge.graphics :refer [add-actor]]
             [forge.db :as db]
             [forge.editor.property :as widgets.property]
             [forge.editor.overview :as properties-overview]
@@ -48,4 +49,4 @@
             (tabs-table)
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :shift-left)
-                                (change-screen :screens/main-menu)))})]})
+                                (app/change-screen :screens/main-menu)))})]})
