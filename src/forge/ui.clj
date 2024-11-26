@@ -1,31 +1,13 @@
 (ns forge.ui
-  (:require [clojure.gdx.utils :as utils]
+  (:require [clojure.gdx.scene2d.ui.cell :as cell]
+            [clojure.gdx.utils :as utils]
+            [clojure.visui :as vis]
             [forge.ui.actor :as a])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table Cell WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
+           (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)))
-
-(defn- set-cell-opts [^Cell cell opts]
-  (doseq [[option arg] opts]
-    (case option
-      :fill-x?    (.fillX     cell)
-      :fill-y?    (.fillY     cell)
-      :expand?    (.expand    cell)
-      :expand-x?  (.expandX   cell)
-      :expand-y?  (.expandY   cell)
-      :bottom?    (.bottom    cell)
-      :colspan    (.colspan   cell (int arg))
-      :pad        (.pad       cell (float arg))
-      :pad-top    (.padTop    cell (float arg))
-      :pad-bottom (.padBottom cell (float arg))
-      :width      (.width     cell (float arg))
-      :height     (.height    cell (float arg))
-      :center?    (.center    cell)
-      :right?     (.right     cell)
-      :left?      (.left      cell))))
 
 (defn add-rows!
   "rows is a seq of seqs of columns.
@@ -36,13 +18,13 @@
     (doseq [props-or-actor row]
       (cond
        (map? props-or-actor) (-> (.add table ^Actor (:actor props-or-actor))
-                                 (set-cell-opts (dissoc props-or-actor :actor)))
+                                 (cell/set-opts (dissoc props-or-actor :actor)))
        :else (.add table ^Actor props-or-actor)))
     (.row table))
   table)
 
 (defn- set-table-opts [^Table table {:keys [rows cell-defaults]}]
-  (set-cell-opts (.defaults table) cell-defaults)
+  (cell/set-opts (.defaults table) cell-defaults)
   (add-rows! table rows))
 
 (defn horizontal-separator-cell [colspan]
@@ -158,11 +140,11 @@
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
-  (when (VisUI/isLoaded)
-    (VisUI/dispose)))
+  (when (vis/loaded?)
+    (vis/dispose)))
 
 (defn- font-enable-markup! []
-  (-> (VisUI/getSkin)
+  (-> (vis/skin)
       (.getFont "default-font")
       .getData
       .markupEnabled
@@ -177,14 +159,12 @@
 
 (defn load! [skin-scale]
   (check-cleanup-visui!)
-  (VisUI/load (case skin-scale
-                :skin-scale/x1 VisUI$SkinScale/X1
-                :skin-scale/x2 VisUI$SkinScale/X2))
+  (vis/load skin-scale)
   (font-enable-markup!)
   (set-tooltip-config!))
 
 (defn dispose! []
-  (VisUI/dispose))
+  (vis/dispose))
 
 (defn button-group [{:keys [max-check-count min-check-count]}]
   (let [bg (ButtonGroup.)]
