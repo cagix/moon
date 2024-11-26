@@ -5,7 +5,7 @@
             [forge.editor.widget :as widget]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.graphics :refer [add-actor]]
+            [forge.stage :as stage]
             [forge.editor.scrollpane :refer [scrollable-choose-window]]))
 
 (defmethod schema/form :s/sound [_] :string)
@@ -26,7 +26,7 @@
                                   (let [[k _] (.getUserObject table)]
                                     (.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
-    (add-actor (scrollable-choose-window rows))))
+    (stage/add-actor (scrollable-choose-window rows))))
 
 (defn- columns [table sound-file]
   [(ui/text-button (name sound-file) #(choose-window table))

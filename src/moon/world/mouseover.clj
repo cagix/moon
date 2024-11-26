@@ -1,7 +1,8 @@
 (ns moon.world.mouseover
   (:refer-clojure :exclude [update])
   (:require [forge.utils :refer [sort-by-order]]
-            [forge.graphics :refer [mouse-on-actor? world-mouse-position]]
+            [forge.graphics :refer [world-mouse-position]]
+            [forge.stage :as stage]
             [moon.world :as world :refer [player-eid line-of-sight?]]))
 
 (def eid nil)
@@ -21,7 +22,7 @@
          first)))
 
 (defn update []
-  (let [new-eid (if (mouse-on-actor?)
+  (let [new-eid (if (stage/mouse-on-actor?)
                   nil
                   (calculate-eid))]
     (when eid

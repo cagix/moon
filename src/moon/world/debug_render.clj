@@ -27,8 +27,8 @@
 
     (when tile-grid?
       (draw-grid (int left-x) (int bottom-y)
-                 (inc (int (world-viewport-width)))
-                 (+ 2 (int (world-viewport-height)))
+                 (inc (int world-viewport-width))
+                 (+ 2 (int world-viewport-height))
                  1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)

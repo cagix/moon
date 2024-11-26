@@ -9,8 +9,8 @@
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ (gui-viewport-width) 2)
-                :y (+ (/ (gui-viewport-height) 2) 200)
+    (draw-text {:x (/ gui-viewport-width 2)
+                :y (+ (/ gui-viewport-height 2) 200)
                 :text message
                 :scale 2.5
                 :up? true})))

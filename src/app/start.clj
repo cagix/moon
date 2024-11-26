@@ -1,11 +1,12 @@
 (ns ^:no-doc app.start
   (:require [forge.app :as app]
+            [forge.assets :as assets]
             [app.screens.editor :as editor]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.graphics :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position stage world-camera world-mouse-position]]
+            [forge.graphics :as graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [forge.level :as level]
@@ -15,8 +16,8 @@
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
-            [forge.ui.stage :as stage]
-            [forge.utils :refer [readable-number dev-mode?]]
+            [forge.stage :as stage]
+            [forge.utils :refer [readable-number dev-mode? mapvals]]
             (mapgen generate uf-caves tiled-map)
             [moon.controls :as controls]
             [moon.entity :as entity]
@@ -39,8 +40,11 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.scenes.scene2d Stage)
+           (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
@@ -180,7 +184,7 @@
    (player-message/create)])
 
 (defn- windows []
-  (:windows (stage)))
+  (:windows (app/stage)))
 
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]
@@ -194,7 +198,7 @@
 
 (defn- start-world [world-props]
   (app/change-screen :screens/world)
-  (stage/reset (stage) (widgets))
+  (stage/reset (widgets))
   (world/clear)
   (world/init (level/generate world-props)))
 
@@ -356,26 +360,43 @@
              (render [_])
              (dispose [_]))})
 
-(def ^:private config
-  {:tile-size 48
-   :world-viewport-width 1440
-   :world-viewport-height 900
-   :gui-viewport-width 1440
-   :gui-viewport-height 900
-   :ui-skin-scale :skin-scale/x1
-   :init-screens (fn []
-                   {:screens/main-menu  (main-menu)
-                    :screens/map-editor (map-editor/create)
-                    :screens/editor     (editor/create)
-                    :screens/minimap    (minimap/create)
-                    :screens/world      (world-screen)})
-   :first-screen-k :screens/main-menu})
-
 (defn- set-dock-icon [image-path]
   (let [toolkit (Toolkit/getDefaultToolkit)
         image (.getImage toolkit (io/resource image-path))
         taskbar (Taskbar/getTaskbar)]
     (.setIconImage taskbar image)))
+
+(defrecord StageScreen [^Stage stage sub-screen]
+  app/Screen
+  (enter [_]
+    (.setInputProcessor Gdx/input stage)
+    (app/enter sub-screen))
+
+  (exit [_]
+    (.setInputProcessor Gdx/input nil)
+    (app/exit sub-screen))
+
+  (render [_]
+    (.act stage)
+    (app/render sub-screen)
+    (.draw stage))
+
+  (dispose [_]
+    (.dispose stage)
+    (app/dispose sub-screen)))
+
+(defn- stage-screen
+  "Actors or screen can be nil."
+  [{:keys [actors screen]}]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [graphics/gui-viewport graphics/batch]
+                (valAt
+                  ([id]
+                   (ui/find-actor-with-id (.getRoot this) id))
+                  ([id not-found]
+                   (or (ui/find-actor-with-id (.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    (->StageScreen stage screen)))
 
 (defn -main []
   (db/init :schema "schema.edn"
@@ -384,4 +405,35 @@
   (when SharedLibraryLoader/isMac
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (start-app config))
+    (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                          (create []
+                            (assets/init)
+                            (cursors/init)
+                            (graphics/init)
+                            (ui/load! :skin-scale/x1)
+                            (.bindRoot #'app/screens
+                                       (mapvals stage-screen
+                                                {:screens/main-menu  (main-menu)
+                                                 :screens/map-editor (map-editor/create)
+                                                 :screens/editor     (editor/create)
+                                                 :screens/minimap    (minimap/create)
+                                                 :screens/world      (world-screen)}))
+                            (app/change-screen :screens/main-menu))
+
+                          (dispose []
+                            (assets/dispose)
+                            (cursors/dispose)
+                            (graphics/dispose)
+                            (run! app/dispose (vals app/screens))
+                            (ui/dispose!))
+
+                          (render []
+                            (ScreenUtils/clear Color/BLACK)
+                            (app/render (app/current-screen)))
+
+                          (resize [w h]
+                            (graphics/resize [w h])))
+                        (doto (Lwjgl3ApplicationConfiguration.)
+                          (.setTitle "Moon")
+                          (.setForegroundFPS 60)
+                          (.setWindowedMode 1440 900))))

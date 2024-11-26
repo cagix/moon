@@ -1,9 +1,10 @@
 (ns moon.widgets.inventory
   (:require [data.grid2d :as g2d]
+            [forge.app :as app]
             [forge.graphics.color :as color]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height stage sprite sprite-sheet]]
+            [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
             [forge.info :as info]
@@ -108,12 +109,12 @@
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [(gui-viewport-width) (gui-viewport-height)]
+              :position [gui-viewport-width gui-viewport-height]
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
 (defn window []
-  (get (:windows (stage)) :inventory-window))
+  (get (:windows (app/stage)) :inventory-window))
 
 (defn- cell-widget [cell]
   (get (::table (window)) cell))

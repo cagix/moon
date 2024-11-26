@@ -62,7 +62,7 @@ direction keys: move")
     (ui/add-actor! window (ui/actor {:act #(do
                                             (.setText label (map-infos))
                                             (.pack window))}))
-    (.setPosition window 0 (gui-viewport-height))
+    (.setPosition window 0 gui-viewport-height)
     window))
 
 (def ^:private camera-movement-speed 1)

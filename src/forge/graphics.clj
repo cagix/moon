@@ -1,129 +1,37 @@
 (ns forge.graphics
-  (:require [forge.app :as app]
-            [forge.assets :as assets]
-            [forge.graphics.cursors :as cursors]
+  (:require [forge.assets :as assets]
             [forge.graphics.image :as image]
             [forge.graphics.shape-drawer :as sd]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled]
             [forge.graphics.viewport :as vp]
-            [forge.ui :as ui]
-            [forge.ui.actor :as actor]
-            [forge.ui.stage :as stage]
             [forge.utils :refer [dispose mapvals]])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils ScreenUtils)
-           (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
+  (:import (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
-(declare ^:private batch
+(def tile-size 48)
+
+(def world-viewport-width 1440)
+(def world-viewport-height 900)
+
+(def gui-viewport-width 1440)
+(def gui-viewport-height 900)
+
+(declare batch
          ^:private shape-drawer
          ^:private shape-drawer-texture
          ^:private default-font
          ^:private cached-map-renderer
          ^:private world-unit-scale
          ^:private world-viewport
-         ^:private gui-viewport)
-
-(defrecord StageScreen [stage sub-screen]
-  app/Screen
-  (enter [_]
-    (.setInputProcessor Gdx/input stage)
-    (when sub-screen (app/enter sub-screen)))
-
-  (exit [_]
-    (.setInputProcessor Gdx/input nil)
-    (when sub-screen (app/exit sub-screen)))
-
-  (render [_]
-    ; stage act first so sub-screen calls change-screen
-    ; -> is the end of frame logic
-    ; otherwise would need render-after-stage
-    ; or on change the stage of the current screen would still .act
-    (stage/act! stage)
-    (when sub-screen (app/render sub-screen))
-    (stage/draw! stage))
-
-  (dispose [_]
-    (dispose stage)
-    (when sub-screen (app/dispose sub-screen))))
-
-(defn- stage-screen
-  "Actors or screen can be nil."
-  [viewport batch {:keys [actors screen]}]
-  (let [stage (stage/create viewport batch)]
-    (run! #(stage/add! stage %) actors)
-    (->StageScreen stage screen)))
-
-(defn start-app [{:keys [tile-size
-                         world-viewport-width
-                         world-viewport-height
-                         gui-viewport-width
-                         gui-viewport-height
-                         ui-skin-scale
-                         init-screens
-                         first-screen-k]}]
-  (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create []
-                          (assets/init)
-                          (cursors/init)
-                          (.bindRoot #'batch (SpriteBatch.))
-                          (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
-                          (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
-                          (.bindRoot #'default-font (text/truetype-font
-                                                     {:file "fonts/exocet/films.EXL_____.ttf"
-                                                      :size 16
-                                                      :quality-scaling 2}))
-                          (.bindRoot #'world-unit-scale (float (/ tile-size)))
-                          (.bindRoot #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
-                                                            world-height (* world-viewport-height world-unit-scale)
-                                                            camera (OrthographicCamera.)
-                                                            y-down? false]
-                                                        (.setToOrtho camera y-down? world-width world-height)
-                                                        (FitViewport. world-width world-height camera)))
-                          (.bindRoot #'cached-map-renderer (memoize
-                                                            (fn [tiled-map]
-                                                              (tiled/renderer tiled-map world-unit-scale batch))))
-                          (.bindRoot #'gui-viewport (FitViewport. gui-viewport-width
-                                                                  gui-viewport-height
-                                                                  (OrthographicCamera.)))
-                          (ui/load! ui-skin-scale)
-                          (.bindRoot #'app/screens
-                                     (mapvals #(stage-screen gui-viewport batch %)
-                                              (init-screens)))
-                          (app/change-screen first-screen-k))
-
-                        (dispose []
-                          (assets/dispose)
-                          (cursors/dispose)
-                          (dispose batch)
-                          (dispose shape-drawer-texture)
-                          (dispose default-font)
-                          (run! app/dispose (vals app/screens))
-                          (ui/dispose!))
-
-                        (render []
-                          (ScreenUtils/clear Color/BLACK)
-                          (app/render (app/current-screen)))
-
-                        (resize [w h]
-                          (vp/update gui-viewport   [w h] :center-camera? true)
-                          (vp/update world-viewport [w h])))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle "Moon")
-                        (.setForegroundFPS 60)
-                        (.setWindowedMode 1440 900))))
+         gui-viewport)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
 (defn gui-mouse-position []
   ; TODO mapv int needed?
   (mapv int (vp/unproject-mouse-posi gui-viewport)))
-
-(defn gui-viewport-width  [] (vp/world-width  gui-viewport))
-(defn gui-viewport-height [] (vp/world-height gui-viewport))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
@@ -133,9 +41,8 @@
   ; TODO ? "Can be negative coordinates, undefined cells."
   (vp/unproject-mouse-posi world-viewport))
 
-(defn world-camera          [] (vp/camera       world-viewport))
-(defn world-viewport-width  [] (vp/world-width  world-viewport))
-(defn world-viewport-height [] (vp/world-height world-viewport))
+(defn world-camera []
+  (vp/camera world-viewport))
 
 (defn image [path]
   (image/create world-unit-scale
@@ -237,30 +144,33 @@
                 (world-camera)
                 tiled-map))
 
-(defn stage []
-  (:stage (app/current-screen)))
+(defn init []
+  (.bindRoot #'batch (SpriteBatch.))
+  (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
+  (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
+  (.bindRoot #'default-font (text/truetype-font
+                             {:file "fonts/exocet/films.EXL_____.ttf"
+                              :size 16
+                              :quality-scaling 2}))
+  (.bindRoot #'world-unit-scale (float (/ tile-size)))
+  (.bindRoot #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
+                                    world-height (* world-viewport-height world-unit-scale)
+                                    camera (OrthographicCamera.)
+                                    y-down? false]
+                                (.setToOrtho camera y-down? world-width world-height)
+                                (FitViewport. world-width world-height camera)))
+  (.bindRoot #'cached-map-renderer (memoize
+                                    (fn [tiled-map]
+                                      (tiled/renderer tiled-map world-unit-scale batch))))
+  (.bindRoot #'gui-viewport (FitViewport. gui-viewport-width
+                                          gui-viewport-height
+                                          (OrthographicCamera.))))
 
-(defn mouse-on-actor? []
-  (stage/hit (stage) (gui-mouse-position) :touchable? true))
+(defn dispose []
+  (.dispose batch)
+  (.dispose shape-drawer-texture)
+  (.dispose default-font))
 
-(defn add-actor [actor]
-  (stage/add! (stage) actor))
-
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (::modal (stage))))
-  (add-actor
-   (ui/window {:title title
-               :rows [[(ui/label text)]
-                      [(ui/text-button button-text
-                                       (fn []
-                                         (actor/remove! (::modal (stage)))
-                                         (on-click)))]]
-               :id ::modal
-               :modal? true
-               :center-position [(/ (gui-viewport-width) 2)
-                                 (* (gui-viewport-height) (/ 3 4))]
-               :pack? true})))
+(defn resize [dimensions]
+  (vp/update gui-viewport   dimensions :center-camera? true)
+  (vp/update world-viewport dimensions))

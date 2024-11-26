@@ -6,7 +6,7 @@
             [forge.schema :as schema]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.graphics :refer [add-actor]]
+            [forge.stage :as stage]
             [forge.editor.overview :as properties-overview]))
 
 (defmethod schema/form :s/one-to-one [[_ property-type]]
@@ -35,7 +35,7 @@
                                                  (redo-rows id))]
                              (.add window (properties-overview/table property-type clicked-id-fn))
                              (.pack window)
-                             (add-actor window)))))]
+                             (stage/add-actor window)))))]
       [(when property-id
          (let [property (db/get property-id)
                image-widget (ui/image->widget (property/->image property) {:id property-id})]

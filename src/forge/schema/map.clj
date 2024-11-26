@@ -1,12 +1,13 @@
 (ns ^:no-doc forge.schema.map
-  (:require [forge.db :as db]
+  (:require [forge.app :as app]
+            [forge.db :as db]
             [forge.schema :as schema]
             [forge.editor.widget :as widget]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
             [forge.utils :refer [index-of]]
             [malli.generator :as mg]
-            [forge.graphics :refer [stage add-actor]]
+            [forge.stage :as stage]
             [forge.editor.malli :as malli]
             [forge.editor.property :as widgets.property]
             [forge.editor.scrollpane :refer [scroll-pane-cell]]))
@@ -40,7 +41,7 @@
   (schema/form [:s/map-optional (namespaced-ks ns-name-k)]))
 
 (defn- editor-window []
-  (:property-editor-window (stage)))
+  (:property-editor-window (app/stage)))
 
 (defn- property-value []
  (let [window (editor-window)
@@ -52,7 +53,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
     (a/remove! (editor-window))
-    (add-actor (widgets.property/editor-window prop-value))))
+    (stage/add-actor (widgets.property/editor-window prop-value))))
 
 (defn- k->default-value [k]
   (let [schema (db/schema k)]
@@ -122,7 +123,7 @@
                                                            map-widget-table)])
                           (rebuild-editor-window)))]))
     (.pack window)
-    (add-actor window)))
+    (stage/add-actor window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))

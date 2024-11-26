@@ -1,8 +1,9 @@
 (ns ^:no-doc moon.entity.player.item-on-cursor
   (:require [forge.input :refer [button-just-pressed?]]
             [forge.math.vector :as v]
-            [forge.graphics :refer [draw-centered gui-mouse-position mouse-on-actor? world-mouse-position]]
+            [forge.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
             [forge.assets :refer [play-sound]]
+            [forge.stage :as stage]
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.item :refer [valid-slot? stackable?]]
@@ -62,7 +63,7 @@
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
 (defn- world-item? []
-  (not (mouse-on-actor?)))
+  (not (stage/mouse-on-actor?)))
 
 (defn ->v [eid item]
   {:eid eid

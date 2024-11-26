@@ -1,8 +1,8 @@
 (ns ^:no-doc dev.tree
   (:require [dev.app-values-tree :refer [ns-value-vars]]
             [forge.ui :as ui]
-            [forge.ui.stage :as stage]
-            [forge.graphics :refer [gui-viewport-width gui-viewport-height add-actor world-mouse-position]]
+            [forge.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
+            [forge.stage :as stage]
             [moon.world :as world]
             [moon.world.mouseover :as mouseover]))
 
@@ -71,7 +71,7 @@
     (add-elements! node v))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
-    (add-map-nodes! node (children->str-map (ui/children (stage/root v))) level))
+    (add-map-nodes! node (children->str-map (ui/children (.getRoot v))) level))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
     (add-map-nodes! node (children->str-map (ui/children v)) level))
@@ -81,7 +81,7 @@
     (add-map-nodes! node (bean @v) level)))
 
 (comment
- (let [vis-image (first (ui/children (stage/root (stage-get))))]
+ (let [vis-image (first (ui/children (.getRoot (stage-get))))]
    (supers (class vis-image))
    (str vis-image)
    )
@@ -110,19 +110,20 @@
                          :pack? true})
         scroll-pane (ui/scroll-pane table)]
     {:actor scroll-pane
-     :width (/ (gui-viewport-width) 2)
+     :width (/ gui-viewport-width 2)
      :height
-     (- (gui-viewport-height) 50)
-     #_(min (- (gui-viewport-height) 50) (height table))}))
+     (- gui-viewport-height 50)
+     #_(min (- gui-viewport-height 50) (height table))}))
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}
   (let [tree (ui/tree)]
     (add-map-nodes! tree (into (sorted-map) m) 0)
-    (add-actor (ui/window {:title "Tree View"
-                           :close-button? true
-                           :close-on-escape? true
-                           :center? true
-                           :rows [[(scroll-pane-cell [[tree]])]]
-                           :pack? true}))
+    (stage/add-actor
+     (ui/window {:title "Tree View"
+                 :close-button? true
+                 :close-on-escape? true
+                 :center? true
+                 :rows [[(scroll-pane-cell [[tree]])]]
+                 :pack? true}))
     nil))

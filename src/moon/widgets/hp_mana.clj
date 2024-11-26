@@ -16,7 +16,7 @@
   (let [rahmen      (image "images/rahmen.png")
         hpcontent   (image "images/hp.png")
         manacontent (image "images/mana.png")
-        x (/ (gui-viewport-width) 2)
+        x (/ gui-viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)

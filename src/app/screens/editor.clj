@@ -3,7 +3,7 @@
             [forge.app :as app]
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
-            [forge.graphics :refer [add-actor]]
+            [forge.stage :as stage]
             [forge.db :as db]
             [forge.editor.property :as widgets.property]
             [forge.editor.overview :as properties-overview]
@@ -14,7 +14,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (add-actor (widgets.property/editor-window (db/get-raw id))))
+  (stage/add-actor (widgets.property/editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
   (for [property-type (sort (db/property-types))]

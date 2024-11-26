@@ -1,7 +1,7 @@
 (ns ^:no-doc moon.entity.player.dead
   (:require [forge.app :as app]
             [forge.assets :refer [play-sound]]
-            [forge.graphics :refer [show-modal]]))
+            [forge.stage :refer [show-modal]]))
 
 (defn cursor [_]
   :cursors/black-x)

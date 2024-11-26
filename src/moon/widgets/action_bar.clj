@@ -1,8 +1,8 @@
 (ns moon.widgets.action-bar
-  (:require [forge.info :as info]
+  (:require [forge.app :as app]
+            [forge.info :as info]
             [forge.ui :as ui]
-            [forge.ui.actor :as a]
-            [forge.graphics :refer [stage]]))
+            [forge.ui.actor :as a]))
 
 (def ^:private image-scale 2)
 
@@ -16,7 +16,7 @@
   (.getUserObject (.findActor group "action-bar/button-group")))
 
 (defn- get-action-bar []
-  (let [group (::action-bar (:action-bar-table (stage)))]
+  (let [group (::action-bar (:action-bar-table (app/stage)))]
     {:horizontal-group group
      :button-group (group->button-group group)}))
 

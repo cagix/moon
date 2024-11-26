@@ -409,8 +409,8 @@
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float (world-viewport-width))  2)))
-     (<= ydist (inc (/ (float (world-viewport-height)) 2))))))
+     (<= xdist (inc (/ (float world-viewport-width)  2)))
+     (<= ydist (inc (/ (float world-viewport-height) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see

@@ -1,13 +1,13 @@
 (ns forge.app)
 
+(declare current-screen-key
+         screens)
+
 (defprotocol Screen
   (enter   [_])
   (exit    [_])
   (render  [_])
   (dispose [_]))
-
-(declare current-screen-key
-         screens)
 
 (defn current-screen []
   (and (bound? #'current-screen-key)
@@ -22,3 +22,6 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (.bindRoot #'current-screen-key new-k)
     (enter screen)))
+
+(defn stage []
+  (:stage (current-screen)))
