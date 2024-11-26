@@ -1,9 +1,9 @@
 (ns app.systems
-  (:require [clojure.string :as str]
+  (:require app.systems.info
+            [clojure.string :as str]
             [forge.effects :as effects]
             [forge.entity :as entity]
             forge.entity.animation
-            app.info
             (mapgen generate uf-caves tiled-map)
             [moon.systems.entity-state :as state]))
 

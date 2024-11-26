@@ -1,9 +1,9 @@
-(ns app.info
+(ns app.systems.info
   (:require [clojure.string :as str]
             [forge.graphics.color :as color]
+            [forge.info :as info :refer [info]]
             [forge.utils :refer [k->pretty-name readable-number]]
             [moon.entity :as entity]
-            [forge.info :as info :refer [info]]
             [moon.operations :as ops]
             [moon.world :refer [finished-ratio]]))
 
