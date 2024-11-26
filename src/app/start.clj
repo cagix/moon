@@ -5,9 +5,10 @@
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [clojure.gdx :as gdx]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.gdx.utils :refer [mac? clear-screen]]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.scene2d.stage :as stage]
+            [clojure.gdx.utils :refer [dispose mac? clear-screen]]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.graphics :as graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
@@ -20,7 +21,6 @@
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
-            [forge.stage :as stage]
             [forge.utils :refer [readable-number dev-mode? mapvals]]
             (mapgen generate uf-caves tiled-map)
             [moon.controls :as controls]
@@ -44,8 +44,7 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)
-           (java.awt Taskbar Toolkit)
+  (:import (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
 (def ^:private no-doc? true)
@@ -198,7 +197,8 @@
 
 (defn- start-world [world-props]
   (app/change-screen :screens/world)
-  (stage/reset (widgets))
+  (stage/clear (app/stage))
+  (run! #(stage/add (app/stage) %) (widgets))
   (world/clear)
   (world/init (level/generate world-props)))
 
@@ -366,7 +366,7 @@
         taskbar (Taskbar/getTaskbar)]
     (.setIconImage taskbar image)))
 
-(defrecord StageScreen [^Stage stage sub-screen]
+(defrecord StageScreen [stage sub-screen]
   app/Screen
   (enter [_]
     (gdx/set-input-processor stage)
@@ -377,25 +377,28 @@
     (app/exit sub-screen))
 
   (render [_]
-    (.act stage)
+    (stage/act stage)
     (app/render sub-screen)
-    (.draw stage))
+    (stage/draw stage))
 
   (dispose [_]
-    (.dispose stage)
+    (dispose stage)
     (app/dispose sub-screen)))
+
+(defn- stage-create [viewport batch]
+  (proxy [com.badlogic.gdx.scenes.scene2d.Stage clojure.lang.ILookup] [viewport batch]
+    (valAt
+      ([id]
+       (ui/find-actor-with-id (.getRoot this) id))
+      ([id not-found]
+       (or (ui/find-actor-with-id (.getRoot this) id)
+           not-found)))))
 
 (defn- stage-screen
   "Actors or screen can be nil."
   [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [graphics/gui-viewport graphics/batch]
-                (valAt
-                  ([id]
-                   (ui/find-actor-with-id (.getRoot this) id))
-                  ([id not-found]
-                   (or (ui/find-actor-with-id (.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
+  (let [stage (stage-create graphics/gui-viewport graphics/batch)]
+    (run! #(stage/add stage %) actors)
     (->StageScreen stage screen)))
 
 (defn -main []

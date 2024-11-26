@@ -1,28 +1,17 @@
 (ns forge.stage
-  (:require [forge.app :as app]
+  (:require [clojure.gdx.scene2d.stage :as stage]
+            [forge.app :as app]
             [forge.graphics :refer [gui-mouse-position
                                     gui-viewport-width
                                     gui-viewport-height]]
             [forge.ui :as ui]
-            [forge.ui.actor :as actor])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
-
-(defn add-actor [actor]
-  (.addActor (app/stage) actor))
-
-(defn- hit [^Stage stage [x y] & {:keys [touchable?]}]
-  (.hit stage x y (boolean touchable?)))
+            [forge.ui.actor :as actor]))
 
 (defn mouse-on-actor? []
-  (hit (app/stage) (gui-mouse-position) :touchable? true))
+  (stage/hit (app/stage) (gui-mouse-position) :touchable? true))
 
 (defn add-actor [actor]
-  (.addActor (app/stage) actor))
-
-(defn reset [new-actors]
-  (let [stage (app/stage)]
-    (.clear stage)
-    (run! #(.addActor stage %) new-actors)))
+  (stage/add (app/stage) actor))
 
 ; TODO the below code is an addition, not interependent with above logic
 
