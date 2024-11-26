@@ -1,7 +1,7 @@
 (ns moon.widgets.inventory
-  (:require [data.grid2d :as g2d]
+  (:require [clojure.gdx.graphics.color :as color]
+            [data.grid2d :as g2d]
             [forge.app :as app]
-            [forge.graphics.color :as color]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]

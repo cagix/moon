@@ -5,6 +5,7 @@
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils :refer [mac? clear-screen]]
             [clojure.java.io :as io]
@@ -43,8 +44,7 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
-  (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d Stage)
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
@@ -428,7 +428,7 @@
                           (ui/dispose!))
 
                         (render []
-                          (clear-screen Color/BLACK)
+                          (clear-screen color/black)
                           (app/render (app/current-screen)))
 
                         (resize [w h]

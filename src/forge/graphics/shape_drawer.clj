@@ -1,13 +1,14 @@
 (ns forge.graphics.shape-drawer
-  (:require [forge.graphics.color :as color])
-  (:import (com.badlogic.gdx.graphics Color Texture Pixmap Pixmap$Format)
+  (:require [clojure.gdx.graphics.color :as color]
+            [forge.graphics.color])
+  (:import (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.math MathUtils)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
+                 (.setColor color/white)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)
@@ -20,7 +21,7 @@
   (* (float degree) MathUtils/degreesToRadians))
 
 (defn set-color [^ShapeDrawer sd color]
-  (.setColor sd (color/munge color)))
+  (.setColor sd (forge.graphics.color/munge color)))
 
 (defn ellipse [^ShapeDrawer sd [x y] radius-x radius-y]
   (.ellipse sd (float x) (float y) (float radius-x) (float radius-y)))

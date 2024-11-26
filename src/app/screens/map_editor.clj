@@ -1,10 +1,10 @@
 (ns ^:no-doc app.screens.map-editor
-  (:require [clojure.gdx.utils :refer [dispose]]
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.utils :refer [dispose]]
             [clojure.string :as str]
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
-            [forge.graphics.color :as color]
             [forge.input :refer [key-pressed? key-just-pressed?]]
             [forge.ui :as ui]
             [forge.tiled :as t]

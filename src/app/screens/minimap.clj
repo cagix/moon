@@ -1,7 +1,7 @@
 (ns ^:no-doc app.screens.minimap
-  (:require [forge.app :as app]
+  (:require [clojure.gdx.graphics.color :as color]
+            [forge.app :as app]
             [forge.graphics.camera :as cam]
-            [forge.graphics.color :as color]
             [forge.input :refer [key-just-pressed?]]
             [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
             [moon.world :refer [tiled-map explored-tile-corners]]))

@@ -1,5 +1,5 @@
 (ns moon.world.tile-color-setter
-  (:require [forge.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [forge.utils :refer [->tile]]
             [forge.world.raycaster :refer [ray-blocked?]]))
 

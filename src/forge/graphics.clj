@@ -1,12 +1,13 @@
 (ns forge.graphics
-  (:require [forge.assets :as assets]
+  (:require [clojure.gdx.graphics.color :as color]
+            [forge.assets :as assets]
             [forge.graphics.image :as image]
             [forge.graphics.shape-drawer :as sd]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled]
             [forge.graphics.viewport :as vp]
             [forge.utils :refer [mapvals]])
-  (:import (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
+  (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
@@ -119,7 +120,7 @@
   (sd/with-line-width shape-drawer width draw-fn))
 
 (defn- draw-with [^Viewport viewport unit-scale draw-fn]
-  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (.combined (.getCamera viewport)))
   (.begin batch)
   (with-line-width unit-scale
