@@ -2,6 +2,7 @@
   (:require [app.screens.editor :as editor]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.app :refer [start-app draw-tiled-map draw-on-world-view gui-mouse-position stage world-camera world-mouse-position change-screen]]
             [forge.db :as db]
@@ -38,7 +39,10 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
-  (:import (com.badlogic.gdx Gdx)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration)))
 
 (def ^:private no-doc? true)
 
@@ -367,7 +371,17 @@
                     :screens/world      (world-screen)})
    :first-screen-k :screens/main-menu})
 
+(defn- set-dock-icon [image-path]
+  (let [toolkit (Toolkit/getDefaultToolkit)
+        image (.getImage toolkit (io/resource image-path))
+        taskbar (Taskbar/getTaskbar)]
+    (.setIconImage taskbar image)))
+
 (defn -main []
   (db/init :schema "schema.edn"
            :properties "properties.edn")
+  (set-dock-icon "moon.png")
+  (when SharedLibraryLoader/isMac
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+    (.set Configuration/GLFW_CHECK_THREAD0 false))
   (start-app config))

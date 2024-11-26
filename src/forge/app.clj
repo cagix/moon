@@ -1,6 +1,5 @@
 (ns forge.app
-  (:require [clojure.java.io :as io]
-            [forge.assets :as assets]
+  (:require [forge.assets :as assets]
             [forge.screen :as screen]
             [forge.graphics.cursors :as cursors]
             [forge.graphics.image :as image]
@@ -14,10 +13,7 @@
             [forge.utils :refer [dispose mapvals]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
-           (org.lwjgl.system Configuration)
-           (java.awt Taskbar Toolkit)
-
+           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.graphics Color OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
@@ -47,12 +43,6 @@
     (.bindRoot #'current-screen-key new-k)
     (screen/enter screen)))
 
-(defn- set-dock-icon [image-path]
-  (let [toolkit (Toolkit/getDefaultToolkit)
-        image (.getImage toolkit (io/resource image-path))
-        taskbar (Taskbar/getTaskbar)]
-    (.setIconImage taskbar image)))
-
 (defn start-app [{:keys [tile-size
                          world-viewport-width
                          world-viewport-height
@@ -61,10 +51,6 @@
                          ui-skin-scale
                          init-screens
                          first-screen-k]}]
-  (set-dock-icon "moon.png")
-  (when SharedLibraryLoader/isMac
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (assets/init)
