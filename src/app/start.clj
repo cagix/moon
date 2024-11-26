@@ -4,6 +4,7 @@
             [app.screens.editor :as editor]
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
+            [clojure.gdx :as gdx]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.graphics :as graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
@@ -40,7 +41,7 @@
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
             [moon.world.tile-color-setter :as tile-color-setter])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Stage)
@@ -148,7 +149,7 @@
                      :update-fn #(cam/zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn #(.getFramesPerSecond Gdx/graphics)
+                     :update-fn gdx/frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
@@ -213,7 +214,7 @@
                                 (state/pause-game? (entity/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
-    (let [delta-ms (min (.getDeltaTime Gdx/graphics) world/max-delta-time)]
+    (let [delta-ms (min (gdx/delta-time) world/max-delta-time)]
       (alter-var-root #'world/elapsed-time + delta-ms)
       (.bindRoot #'world/delta delta-ms) )
     (let [entities (world/active-entities)]
@@ -347,12 +348,12 @@
                           [(ui/text-button "Property editor"
                                            #(app/change-screen :screens/editor))])
                         [(ui/text-button "Exit"
-                                         #(.exit Gdx/app))]]))
+                                         gdx/exit-app)]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
-                                (.exit Gdx/app)))})]
+                                (gdx/exit-app)))})]
    :screen (reify app/Screen
              (enter [_]
                (cursors/set :cursors/default))
@@ -369,11 +370,11 @@
 (defrecord StageScreen [^Stage stage sub-screen]
   app/Screen
   (enter [_]
-    (.setInputProcessor Gdx/input stage)
+    (gdx/set-input-processor stage)
     (app/enter sub-screen))
 
   (exit [_]
-    (.setInputProcessor Gdx/input nil)
+    (gdx/set-input-processor nil)
     (app/exit sub-screen))
 
   (render [_]

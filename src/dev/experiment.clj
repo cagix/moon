@@ -1,8 +1,8 @@
 (ns ^:no-doc dev.experiment
-  (:require [forge.db :as db]
+  (:require [clojure.gdx :refer [post-runnable]]
+            [forge.db :as db]
             [moon.entity :as entity]
-            [moon.world :as world :refer [player-eid]])
-  (:import (com.badlogic.gdx Gdx)))
+            [moon.world :as world :refer [player-eid]]))
 
 (comment
 
@@ -43,9 +43,6 @@
 
 
  )
-
-(defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (defn- learn-skill! [skill-id]
   (post-runnable

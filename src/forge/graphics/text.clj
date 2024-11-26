@@ -1,7 +1,7 @@
 (ns forge.graphics.text
-  (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Texture$TextureFilter)
+  (:require [clojure.gdx :as gdx]
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Align)))
@@ -17,7 +17,7 @@
     params))
 
 (defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
+  (let [generator (FreeTypeFontGenerator. (gdx/internal-file file))
         font (.generateFont generator (ttf-params size quality-scaling))]
     (.dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))

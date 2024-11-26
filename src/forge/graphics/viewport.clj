@@ -1,6 +1,6 @@
 (ns forge.graphics.viewport
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.math MathUtils Vector2)
+  (:require [clojure.gdx :as gdx])
+  (:import (com.badlogic.gdx.math MathUtils Vector2)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn- clamp [value min max]
@@ -11,10 +11,10 @@
 (defn unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
+  (let [mouse-x (clamp (gdx/mouse-x)
                        (.getLeftGutterWidth viewport)
                        (.getRightGutterX viewport))
-        mouse-y (clamp (.getY Gdx/input)
+        mouse-y (clamp (gdx/mouse-y)
                        (.getTopGutterHeight viewport)
                        (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]

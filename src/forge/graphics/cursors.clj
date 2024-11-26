@@ -1,8 +1,8 @@
 (ns forge.graphics.cursors
   (:refer-clojure :exclude [set])
-  (:require [forge.utils :refer [safe-get mapvals]])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Pixmap)))
+  (:require [clojure.gdx :as gdx]
+            [forge.utils :refer [safe-get mapvals]])
+  (:import (com.badlogic.gdx.graphics Pixmap)))
 
 (def ^:private props
   {:cursors/bag                   ["bag001"       [0   0]]
@@ -25,9 +25,9 @@
 (defn ^:no-doc init []
   (.bindRoot
    #'cursors
-   (mapvals (fn [[file [hotspot-x hotspot-y]]]
-              (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                    cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+   (mapvals (fn [[file hotspot]]
+              (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
+                    cursor (gdx/new-cursor pixmap hotspot)]
                 (.dispose pixmap)
                 cursor))
             props)))
@@ -36,4 +36,4 @@
   (run! dispose (vals cursors)))
 
 (defn set [cursor-key]
-  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
+  (gdx/set-cursor (safe-get cursors cursor-key)))

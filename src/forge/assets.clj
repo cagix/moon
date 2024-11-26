@@ -1,7 +1,7 @@
 (ns forge.assets
-  (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
+  (:require [clojure.gdx :as gdx]
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)
@@ -12,7 +12,7 @@
 (def ^:private asset-manager)
 
 (defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+  (loop [[^FileHandle file & remaining] (.list (gdx/internal-file folder))
          result []]
     (cond (nil? file)
           result
