@@ -5,6 +5,8 @@
             [app.world :as world]
 
             app.systems
+            forge.entity.animation
+            (mapgen generate uf-caves)
 
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]

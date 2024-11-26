@@ -4,6 +4,10 @@
 
 (defmulti generate* (fn [world] (:world/generator world)))
 
+(defmethod generate* :world.generator/tiled-map [world]
+  {:tiled-map (t/load-map (:world/tiled-map world))
+   :start-position [32 71]})
+
 (defn generate [world-props]
   (assoc (generate* world-props)
          :world/player-creature
