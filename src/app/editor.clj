@@ -1,23 +1,21 @@
-(ns forge.editor.widget
+(ns ^:no-doc app.editor
   (:require [clojure.edn :as edn]
-            [clojure.gdx :refer [key-just-pressed?]]
+            [clojure.gdx :as gdx]
             [clojure.string :as str]
             [forge.app :as app]
-            [forge.assets :as assets :refer [play-sound]]
+            [forge.assets :as assets]
             [forge.db :as db]
-            [forge.editor.scrollpane :refer [scrollable-choose-window]]
-            [forge.editor.scrollpane :refer [scroll-pane-cell]]
             [forge.editor.malli :as malli]
-            [forge.editor.overview :as properties-overview]
+            [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
-            [forge.property :as property]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
-            [forge.utils :refer [index-of]]
+            [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.stage :as stage]
-            [forge.utils :refer [truncate ->edn-str]]
+            [forge.property :as property]
             [forge.widgets.error-window :refer [error-window!]])
-  (:import (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)))
+  (:import (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
+           (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 (defn- widget-type [schema _]
   (let [stype (db/schema-type schema)]
@@ -32,6 +30,25 @@
 
 (defmulti create   widget-type)
 (defmulti ->value  widget-type)
+
+(defn- scroll-pane-cell [rows]
+  (let [table (ui/table {:rows rows
+                         :name "scroll-pane-table"
+                         :cell-defaults {:pad 5}
+                         :pack? true})]
+    {:actor (ui/scroll-pane table)
+     :width  (+ (.getWidth table) 50)
+     :height (min (- gui-viewport-height 50)
+                  (.getHeight table))}))
+
+(defn- scrollable-choose-window [rows]
+  (ui/window {:title "Choose"
+              :modal? true
+              :close-button? true
+              :center? true
+              :close-on-escape? true
+              :rows [[(scroll-pane-cell rows)]]
+              :pack? true}))
 
 (defn- apply-context-fn [window f]
   #(try (f)
@@ -60,7 +77,7 @@
                                                {:actor (ui/text-button "Delete" delete!)
                                                 :center? true}]])]])
     (ui/add-actor! window (ui/actor {:act (fn []
-                                            (when (key-just-pressed? :enter)
+                                            (when (gdx/key-just-pressed? :enter)
                                               (save!)))}))
     (.pack window)
     window))
@@ -100,7 +117,7 @@
   (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
-  (ui/text-button "play!" #(play-sound sound-file)))
+  (ui/text-button "play!" #(assets/play-sound sound-file)))
 
 (declare columns)
 
@@ -128,6 +145,54 @@
                            [(ui/text-button "No sound" #(choose-window table))])])
     table))
 
+(defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
+  (let [on-clicked #(clicked-id-fn id)
+        button (if-let [image (property/->image props)]
+                 (ui/image-button image on-clicked {:scale scale})
+                 (ui/text-button (name id) on-clicked))
+        top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
+        stack (ui/stack [button top-widget])]
+    (ui/add-tooltip! button #(info/text props))
+    (actor/set-touchable! top-widget :disabled)
+    stack))
+
+(def ^:private overview {:properties/audiovisuals {:columns 10
+                                                   :image/scale 2}
+                         :properties/creatures {:columns 15
+                                                :image/scale 1.5
+                                                :sort-by-fn #(vector (:creature/level %)
+                                                                     (name (:entity/species %))
+                                                                     (name (:property/id %)))
+                                                :extra-info-text #(str (:creature/level %))}
+                         :properties/items {:columns 20
+                                            :image/scale 1.1
+                                            :sort-by-fn #(vector (if-let [slot (:item/slot %)]
+                                                                   (name slot)
+                                                                   "")
+                                                                 (name (:property/id %)))}
+                         :properties/projectiles {:columns 16
+                                                  :image/scale 2}
+                         :properties/skills {:columns 16
+                                             :image/scale 2}
+                         :properties/worlds {:columns 10}})
+
+(defn overview-table [property-type clicked-id-fn]
+  (let [{:keys [sort-by-fn
+                extra-info-text
+                columns
+                image/scale]} (overview property-type)
+        properties (db/all property-type)
+        properties (if sort-by-fn
+                     (sort-by sort-by-fn properties)
+                     properties)]
+    (ui/table
+     {:cell-defaults {:pad 5}
+      :rows (for [properties (partition-all columns properties)]
+              (for [property properties]
+                (try (property-widget property clicked-id-fn extra-info-text scale)
+                     (catch Throwable t
+                       (throw (ex-info "" {:property property} t))))))})))
+
 (defn- add-one-to-many-rows [table property-type property-ids]
   (let [redo-rows (fn [property-ids]
                     (ui/clear-children! table)
@@ -145,7 +210,7 @@
                                clicked-id-fn (fn [id]
                                                (actor/remove! window)
                                                (redo-rows (conj property-ids id)))]
-                           (.add window (properties-overview/table property-type clicked-id-fn))
+                           (.add window (overview-table property-type clicked-id-fn))
                            (.pack window)
                            (stage/add-actor window))))]
       (for [property-id property-ids]
@@ -184,7 +249,7 @@
                                  clicked-id-fn (fn [id]
                                                  (actor/remove! window)
                                                  (redo-rows id))]
-                             (.add window (properties-overview/table property-type clicked-id-fn))
+                             (.add window (overview-table property-type clicked-id-fn))
                              (.pack window)
                              (stage/add-actor window)))))]
       [(when property-id
@@ -350,3 +415,36 @@
                                        (fn on-clicked [])
                                        {:scale 2}))]
              :cell-defaults {:pad 1}}))
+
+; FIXME overview table not refreshed after changes in properties
+
+(defn- edit-property [id]
+  (stage/add-actor (editor-window (db/get-raw id))))
+
+(defn- property-type-tabs []
+  (for [property-type (sort (db/property-types))]
+    {:title (str/capitalize (name property-type))
+     :content (overview-table property-type edit-property)}))
+
+(defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
+  (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
+    (getTabTitle [] title)
+    (getContentTable [] content)))
+
+(defn tabs-table [label]
+  (let [table (ui/table {:fill-parent? true})
+        container (ui/table {})
+        tabbed-pane (TabbedPane.)]
+    (.addListener tabbed-pane
+                  (proxy [TabbedPaneAdapter] []
+                    (switchedTab [^Tab tab]
+                      (.clearChildren container)
+                      (.fill (.expand (.add container (.getContentTable tab)))))))
+    (.fillX (.expandX (.add table (.getTable tabbed-pane))))
+    (.row table)
+    (.fill (.expand (.add table container)))
+    (.row table)
+    (.pad (.left (.add table (ui/label label))) (float 10))
+    (doseq [tab-data (property-type-tabs)]
+      (.add tabbed-pane (tab-widget tab-data)))
+    table))

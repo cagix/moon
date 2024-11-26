@@ -1,6 +1,6 @@
 (ns ^:no-doc app.start
-  (:require app.info
-            [app.screens.editor :as editor]
+  (:require [app.editor :as editor]
+            app.info
             [app.screens.map-editor :as map-editor]
             [app.screens.minimap :as minimap]
             [forge.app :as app]
@@ -398,6 +398,18 @@
     (run! #(stage/add stage %) actors)
     (->StageScreen stage screen)))
 
+(defn- editor-screen []
+  {:actors [(background-image/create)
+            (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
+            (ui/actor {:act (fn []
+                              (when (gdx/key-just-pressed? :shift-left)
+                                (app/change-screen :screens/main-menu)))})]
+   :screen (reify app/Screen
+             (enter [_])
+             (exit [_])
+             (render [_])
+             (dispose [_]))})
+
 (defn -main []
   (db/init :schema "schema.edn"
            :properties "properties.edn")
@@ -415,7 +427,7 @@
                                      (mapvals stage-screen
                                               {:screens/main-menu  (main-menu)
                                                :screens/map-editor (map-editor/create)
-                                               :screens/editor     (editor/create)
+                                               :screens/editor     (editor-screen)
                                                :screens/minimap    (minimap/create)
                                                :screens/world      (world-screen)}))
                           (app/change-screen :screens/main-menu))
