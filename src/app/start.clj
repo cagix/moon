@@ -6,6 +6,7 @@
             [app.screens.minimap :as minimap]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.utils :refer [mac? clear-screen]]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.graphics :as graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
@@ -45,7 +46,6 @@
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Stage)
-           (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
@@ -403,7 +403,7 @@
   (db/init :schema "schema.edn"
            :properties "properties.edn")
   (set-dock-icon "moon.png")
-  (when SharedLibraryLoader/isMac
+  (when mac?
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (lwjgl3/application (proxy [ApplicationAdapter] []
@@ -429,7 +429,7 @@
                           (ui/dispose!))
 
                         (render []
-                          (ScreenUtils/clear Color/BLACK)
+                          (clear-screen Color/BLACK)
                           (app/render (app/current-screen)))
 
                         (resize [w h]

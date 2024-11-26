@@ -1,10 +1,10 @@
 (ns forge.graphics.text
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.utils :as utils]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.utils Align)))
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)))
 
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -49,9 +49,6 @@
            (float x)
            (+ (float y) (float (if up? (height font text) 0)))
            (float 0) ; target-width
-           (case (or h-align :center)
-             :center Align/center
-             :left   Align/left
-             :right  Align/right)
+           (utils/align (or h-align :center))
            false) ; wrap false, no need target-width
     (.setScale data old-scale)))

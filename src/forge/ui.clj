@@ -1,7 +1,7 @@
 (ns forge.ui
-  (:require [forge.ui.actor :as a])
-  (:import (com.badlogic.gdx.utils Align Scaling)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
+  (:require [clojure.gdx.utils :as utils]
+            [forge.ui.actor :as a])
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table Cell WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
@@ -146,7 +146,7 @@
                       (when-not text?
                         (.setText this (str (tooltip-text))))
                       (proxy-super getWidth))))]
-    (.setAlignment label Align/center)
+    (.setAlignment label (utils/align :center))
     (.setTarget  tooltip ^Actor a)
     (.setContent tooltip ^Actor label))
   a)
@@ -239,8 +239,8 @@
   "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
   [object {:keys [scaling align fill-parent?] :as opts}]
   (-> (let [^Image image (->vis-image object)]
-        (when (= :center align) (.setAlign image Align/center))
-        (when (= :fill scaling) (.setScaling image Scaling/fill))
+        (when (= :center align) (.setAlign image (utils/align :center)))
+        (when (= :fill scaling) (.setScaling image (utils/scaling :fill)))
         (when fill-parent? (.setFillParent image true))
         image)
       (set-opts opts)))
