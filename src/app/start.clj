@@ -15,7 +15,6 @@
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [forge.level :as level]
-            (forge.schema image )
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]
@@ -28,9 +27,7 @@
             [forge.entity :as entity-sys]
             [moon.systems.entity-state :as state]
             moon.methods.info
-
             forge.entity.animation
-
             [moon.widgets.background-image :as background-image]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.dev-menu :as dev-menu]

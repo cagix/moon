@@ -328,3 +328,25 @@
         (for [widget (filter value-widget? (ui/children table))
               :let [[k _] (actor/id widget)]]
           [k (->value (db/schema-of k) widget)])))
+
+; too many ! too big ! scroll ... only show files first & preview?
+; make tree view from folders, etc. .. !! all creatures animations showing...
+#_(defn- texture-rows []
+  (for [file (sort (assets/all-textures))]
+    [(ui/image-button (image file) (fn []))]
+    #_[(ui/text-button file (fn []))]))
+
+(defmethod create :s/image [schema image]
+  (ui/image-button (db/edn->value schema image)
+                   (fn on-clicked [])
+                   {:scale 2})
+  #_(ui/image-button image
+                     #(stage/add! (scrollable-choose-window (texture-rows)))
+                     {:dimensions [96 96]})) ; x2  , not hardcoded here
+
+(defmethod create :s/animation [_ animation]
+  (ui/table {:rows [(for [image (:frames animation)]
+                      (ui/image-button (db/edn->value :s/image image)
+                                       (fn on-clicked [])
+                                       {:scale 2}))]
+             :cell-defaults {:pad 1}}))
