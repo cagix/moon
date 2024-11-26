@@ -1,7 +1,7 @@
 (ns forge.ui.actor
   (:refer-clojure :exclude [name])
-  (:import (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.scenes.scene2d Actor Touchable)))
+  (:require [clojure.gdx.math :refer [v2]])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)))
 
 (defn x             [^Actor a]      (.getX          a))
 (defn y             [^Actor a]      (.getY          a))
@@ -43,7 +43,7 @@
   (.getParent a))
 
 (defn mouseover? [^Actor a [x y]]
-  (let [v (.stageToLocalCoordinates a (Vector2. x y))]
+  (let [v (.stageToLocalCoordinates a (v2 x y))]
     (.hit a (.x v) (.y v) true)))
 
 (defn set-opts! [a {:keys [id name visible? touchable center-position position] :as opts}]

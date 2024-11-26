@@ -1,8 +1,7 @@
 (ns forge.graphics.viewport
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.math :refer [clamp]])
-  (:import (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+            [clojure.gdx.math :refer [v2 clamp]])
+  (:import (com.badlogic.gdx.utils.viewport Viewport)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -15,5 +14,5 @@
         mouse-y (clamp (gdx/mouse-y)
                        (.getTopGutterHeight viewport)
                        (.getTopGutterY viewport))
-        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
+        coords (.unproject viewport (v2 mouse-x mouse-y))]
     [(.x coords) (.y coords)]))

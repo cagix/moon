@@ -3,7 +3,8 @@
   (:import (com.badlogic.gdx.math Circle
                                   Intersector
                                   MathUtils
-                                  Rectangle)))
+                                  Rectangle
+                                  Vector2)))
 
 (defn equal? [a b]
   (MathUtils/isEqual a b))
@@ -40,3 +41,10 @@
 (defmethod overlaps? [Circle Rectangle]
   [^Circle circle ^Rectangle rect]
   (Intersector/overlaps circle rect))
+
+(defn v2
+  ([[x y]]
+   (v2 x y))
+  ([x y]
+   (Vector2. x y)))
+; proxy with 0,1 or :x/:y lookup ?
