@@ -58,4 +58,3 @@
   (.isKeyPressed Gdx/input (input-key k)))
 
 (def dispose Disposable/.dispose)
-
