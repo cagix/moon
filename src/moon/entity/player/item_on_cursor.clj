@@ -1,9 +1,9 @@
 (ns ^:no-doc moon.entity.player.item-on-cursor
-  (:require [clojure.gdx :refer [button-just-pressed?]]
-            [forge.math.vector :as v]
+  (:require [forge.assets :refer [play-sound]]
             [forge.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
-            [forge.assets :refer [play-sound]]
+            [forge.input :refer [button-just-pressed?]]
             [forge.stage :as stage]
+            [forge.math.vector :as v]
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.item :refer [valid-slot? stackable?]]

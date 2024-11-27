@@ -1,12 +1,12 @@
 (ns forge.graphics.color
   (:refer-clojure :exclude [munge])
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.graphics.color :as color])
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.interop :as interop])
   (:import (com.badlogic.gdx.graphics Colors)))
 
 (defn munge [color]
   (cond (= com.badlogic.gdx.graphics.Color (class color)) color
-        (keyword? color) (gdx/field "graphics.Color" color)
+        (keyword? color) (interop/field "graphics.Color" color)
         (vector? color) (apply color/create color)
         :else (throw (ex-info "Cannot understand color" {:color color}))))
 

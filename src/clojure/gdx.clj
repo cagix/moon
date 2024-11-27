@@ -1,5 +1,4 @@
 (ns clojure.gdx
-  (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)))
 
 (defmacro post-runnable [& exprs]
@@ -32,26 +31,11 @@
 (defn internal-file [path]
   (.internal Gdx/files path))
 
-(defn field [klass-str k]
-  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
+(defn button-just-pressed? [b]
+  (.isButtonJustPressed Gdx/input b))
 
-(def ^:private input-button (partial field "Input$Buttons"))
-(def ^:private input-key    (partial field "Input$Keys"))
+(defn key-just-pressed? [k]
+  (.isKeyJustPressed Gdx/input k))
 
-(defn button-just-pressed?
-  ":left, :right, :middle, :back or :forward."
-  [b]
-  (.isButtonJustPressed Gdx/input (input-button b)))
-
-(defn key-just-pressed?
-  "See [[key-pressed?]]."
-  [k]
-  (.isKeyJustPressed Gdx/input (input-key k)))
-
-(defn key-pressed?
-  "For options see [libgdx Input$Keys docs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Input.Keys.html).
-  Keys are upper-cased and dashes replaced by underscores.
-  For example Input$Keys/ALT_LEFT can be used with :alt-left.
-  Numbers via :num-3, etc."
-  [k]
-  (.isKeyPressed Gdx/input (input-key k)))
+(defn key-pressed? [k]
+  (.isKeyPressed Gdx/input k))

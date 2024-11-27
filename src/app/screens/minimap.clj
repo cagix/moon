@@ -1,9 +1,9 @@
 (ns ^:no-doc app.screens.minimap
-  (:require [clojure.gdx :refer [key-just-pressed?]]
-            [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [forge.app :as app]
             [forge.graphics.camera :as cam]
             [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
+            [forge.input :refer [key-just-pressed?]]
             [moon.world :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth

@@ -5,6 +5,7 @@
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
+            [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
             [forge.utils :refer [dev-mode?]]))
 
@@ -28,7 +29,7 @@
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui/actor {:act (fn []
-                              (when (gdx/key-just-pressed? :keys/escape)
+                              (when (key-just-pressed? :keys/escape)
                                 (gdx/exit-app)))})]
    :screen (reify app/Screen
              (enter [_]

@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.entity.player.idle
-  (:require [clojure.gdx :refer [button-just-pressed?]]
-            [forge.graphics :refer [world-mouse-position]]
+  (:require [forge.graphics :refer [world-mouse-position]]
+            [forge.input :refer [button-just-pressed?]]
             [forge.assets :refer [play-sound]]
             [forge.graphics.cursors :as cursors]
             [forge.math.vector :as v]

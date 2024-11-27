@@ -1,6 +1,5 @@
 (ns ^:no-doc app.editor
   (:require [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [clojure.set :as set]
             [clojure.string :as str]
             [forge.app :as app]
@@ -8,6 +7,7 @@
             [forge.db :as db]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
+            [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
             [forge.utils :refer [index-of truncate ->edn-str]]
@@ -111,7 +111,7 @@
                                                {:actor (ui/text-button "Delete" delete!)
                                                 :center? true}]])]])
     (ui/add-actor! window (ui/actor {:act (fn []
-                                            (when (gdx/key-just-pressed? :enter)
+                                            (when (key-just-pressed? :enter)
                                               (save!)))}))
     (.pack window)
     window))
