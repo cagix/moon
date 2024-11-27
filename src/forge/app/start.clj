@@ -1,4 +1,4 @@
-(ns app.start
+(ns forge.app.start
   (:require [app.lifecycle :as lifecycle]
             [app.systems]
             [clojure.gdx :as gdx]
