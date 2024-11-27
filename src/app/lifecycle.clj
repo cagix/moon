@@ -1,6 +1,5 @@
 (ns app.lifecycle
-  (:require [app.screens :as screens]
-            [clojure.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :as utils :refer [clear-screen]]
             [forge.app :as app]
@@ -8,6 +7,11 @@
             [forge.db :as db]
             [forge.graphics :as graphics]
             [forge.graphics.cursors :as cursors]
+            [forge.screens.editor :as editor]
+            [forge.screens.main :as main]
+            [forge.screens.map-editor :as map-editor]
+            [forge.screens.minimap :as minimap]
+            [forge.screens.world :as world]
             [forge.stage :as stage]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx.graphics Pixmap)))
@@ -38,8 +42,12 @@
                                         props))
   (graphics/init)
   (ui/load! :skin-scale/x1)
-  (bind-root #'app/screens (mapvals stage/create (screens/init)))
-  (app/change-screen screens/first-k))
+  (bind-root #'app/screens (mapvals stage/create {:screens/main-menu  (main/create)
+                                                  :screens/map-editor (map-editor/create)
+                                                  :screens/editor     (editor/create)
+                                                  :screens/minimap    (minimap/create)
+                                                  :screens/world      (world/screen)}))
+  (app/change-screen :screens/main-menu))
 
 (defn dispose []
   (assets/dispose)

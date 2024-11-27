@@ -1,10 +1,10 @@
 (ns forge.screens.main
-  (:require [app.world :as world]
-            [clojure.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [forge.input :refer [key-just-pressed?]]
+            [forge.screens.world :as world]
             [forge.ui :as ui]
             [forge.ui.background-image :as background-image]
             [forge.utils :refer [dev-mode?]]))

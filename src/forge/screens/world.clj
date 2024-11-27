@@ -1,4 +1,4 @@
-(ns app.world
+(ns forge.screens.world
   (:require [clojure.gdx :as gdx]
             [forge.app :as app]
             [forge.graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
