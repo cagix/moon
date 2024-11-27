@@ -52,12 +52,11 @@
   (when mac?
     (lwjgl3/configure-glfw-for-mac))
   (lwjgl3/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
-                        (create  []    (lifecycle/create
-                                        cursors
-                                        :skin-scale/x1
-                                        screens
-                                        :screens/main-menu
-                                        ))
+                        (create  []    (lifecycle/create "resources/"
+                                                         cursors
+                                                         :skin-scale/x1
+                                                         screens
+                                                         :screens/main-menu))
                         (dispose []    (lifecycle/dispose))
                         (render  []    (lifecycle/render))
                         (resize  [w h] (lifecycle/resize w h)))

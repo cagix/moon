@@ -7,8 +7,6 @@
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-(def ^:private asset-folder "resources/")
-
 (def ^:private asset-manager)
 
 (defn- recursively-search [folder extensions]
@@ -53,7 +51,7 @@
               class)
           (assets/asset-names manager)))
 
-(defn init []
+(defn init [asset-folder]
   (bind-root #'asset-manager (load-all (search asset-folder))))
 
 (defn dispose []

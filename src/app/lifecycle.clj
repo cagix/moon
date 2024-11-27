@@ -8,11 +8,12 @@
             [forge.stage :as stage]
             [forge.ui :as ui]))
 
-(defn create [cursors
+(defn create [asset-folder
+              cursors
               ui-skin-scale
               screens
               first-screen-k]
-  (assets/init)
+  (assets/init asset-folder)
   (bind-root #'cursors/cursors (cursors))
   (graphics/init)
   (ui/load! ui-skin-scale)
