@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [get])
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.utils :as utils]
+            [clojure.gdx.utils :refer [dispose]]
             [forge.app :as app]
             [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
             [forge.ui :as ui])
@@ -27,7 +27,7 @@
     (stage/draw stage))
 
   (dispose [_]
-    (utils/dispose stage)
+    (dispose stage)
     (app/dispose sub-screen)))
 
 (defn- stage-create [viewport batch]
