@@ -7,7 +7,7 @@
 (def ^:private manager)
 
 (defn- class-k->class [k]
-  (case class-k
+  (case k
     :sound Sound
     :texture Texture))
 
