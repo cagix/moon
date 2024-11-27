@@ -5,8 +5,7 @@
             [forge.graphics.shape-drawer :as sd]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled]
-            [forge.graphics.viewport :as vp]
-            [forge.utils :refer [mapvals]])
+            [forge.graphics.viewport :as vp])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))

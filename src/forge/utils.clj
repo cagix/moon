@@ -122,7 +122,3 @@
 (defn dissoc-in [m ks]
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
-
-(defn mapvals [f m]
-  (into {} (for [[k v] m]
-             [k (f v)])))

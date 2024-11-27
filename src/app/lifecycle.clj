@@ -9,8 +9,7 @@
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [app.screens :as screens]
-            [forge.ui :as ui]
-            [forge.utils :refer [mapvals]]))
+            [forge.ui :as ui]))
 
 (defrecord StageScreen [stage sub-screen]
   app/Screen

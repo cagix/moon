@@ -1,7 +1,6 @@
 (ns forge.graphics.cursors
   (:refer-clojure :exclude [set])
-  (:require [clojure.gdx :as gdx]
-            [forge.utils :refer [mapvals]])
+  (:require [clojure.gdx :as gdx])
   (:import (com.badlogic.gdx.graphics Pixmap)))
 
 (def ^:private props
@@ -23,14 +22,12 @@
 (declare ^:private cursors)
 
 (defn ^:no-doc init []
-  (bind-root
-   #'cursors
-   (mapvals (fn [[file hotspot]]
-              (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
-                    cursor (gdx/new-cursor pixmap hotspot)]
-                (.dispose pixmap)
-                cursor))
-            props)))
+  (bind-root #'cursors (mapvals (fn [[file hotspot]]
+                                  (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
+                                        cursor (gdx/new-cursor pixmap hotspot)]
+                                    (.dispose pixmap)
+                                    cursor))
+                                props)))
 
 (defn ^:no-doc dispose []
   (run! gdx/dispose (vals cursors)))
