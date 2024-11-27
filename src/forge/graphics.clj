@@ -146,24 +146,24 @@
                 tiled-map))
 
 (defn init []
-  (.bindRoot #'batch (SpriteBatch.))
-  (.bindRoot #'shape-drawer-texture (sd/white-pixel-texture))
-  (.bindRoot #'shape-drawer (sd/create batch shape-drawer-texture))
-  (.bindRoot #'default-font (text/truetype-font
+  (bind-root #'batch (SpriteBatch.))
+  (bind-root #'shape-drawer-texture (sd/white-pixel-texture))
+  (bind-root #'shape-drawer (sd/create batch shape-drawer-texture))
+  (bind-root #'default-font (text/truetype-font
                              {:file "fonts/exocet/films.EXL_____.ttf"
                               :size 16
                               :quality-scaling 2}))
-  (.bindRoot #'world-unit-scale (float (/ tile-size)))
-  (.bindRoot #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
+  (bind-root #'world-unit-scale (float (/ tile-size)))
+  (bind-root #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
                                     world-height (* world-viewport-height world-unit-scale)
                                     camera (OrthographicCamera.)
                                     y-down? false]
                                 (.setToOrtho camera y-down? world-width world-height)
                                 (FitViewport. world-width world-height camera)))
-  (.bindRoot #'cached-map-renderer (memoize
+  (bind-root #'cached-map-renderer (memoize
                                     (fn [tiled-map]
                                       (tiled/renderer tiled-map world-unit-scale batch))))
-  (.bindRoot #'gui-viewport (FitViewport. gui-viewport-width
+  (bind-root #'gui-viewport (FitViewport. gui-viewport-width
                                           gui-viewport-height
                                           (OrthographicCamera.))))
 

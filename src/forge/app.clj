@@ -20,7 +20,7 @@
     (exit screen))
   (let [screen (new-k screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
-    (.bindRoot #'current-screen-key new-k)
+    (bind-root #'current-screen-key new-k)
     (enter screen)))
 
 (defn stage []

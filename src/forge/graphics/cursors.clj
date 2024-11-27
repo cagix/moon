@@ -23,7 +23,7 @@
 (declare ^:private cursors)
 
 (defn ^:no-doc init []
-  (.bindRoot
+  (bind-root
    #'cursors
    (mapvals (fn [[file hotspot]]
               (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))

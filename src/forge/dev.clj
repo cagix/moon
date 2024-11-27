@@ -60,7 +60,7 @@
   (loop []
     (when-not @thrown
       (do
-       (.bindRoot #'refresh-error (refresh :after 'forge.dev/start-dev-loop!))
+       (bind-root #'refresh-error (refresh :after 'forge.dev/start-dev-loop!))
        (handle-throwable! refresh-error)))
     (wait!)
     (recur)))
@@ -81,8 +81,8 @@
 (declare ^:private nrepl-server)
 
 (defn -main [& [app-ns]]
-  (.bindRoot #'app-ns-sym (symbol app-ns))
-  (.bindRoot #'nrepl-server (nrepl/start-server))
+  (bind-root #'app-ns-sym (symbol app-ns))
+  (bind-root #'nrepl-server (nrepl/start-server))
   (save-port-file! nrepl-server)
   ;(println "Started nrepl server on port" (:port nrepl-server))
   (start-dev-loop!))

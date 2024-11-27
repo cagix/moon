@@ -138,7 +138,7 @@
         arr (make-array Boolean/TYPE width height)]
     (doseq [cell (g2d/cells grid)]
       (set-arr arr @cell position->blocked?))
-    (.bindRoot #'ray-caster [arr width height])))
+    (bind-root #'ray-caster [arr width height])))
 
 (defn ray-blocked? [start target]
   (blocked? ray-caster start target))

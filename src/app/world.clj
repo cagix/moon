@@ -125,20 +125,20 @@
 (defn- update-world []
   (state/manual-tick (entity/state-obj @player-eid))
   (mouseover/update) ; this do always so can get debug info even when game not running
-  (.bindRoot #'paused? (or tick-error
+  (bind-root #'paused? (or tick-error
                            (and pausing?
                                 (state/pause-game? (entity/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
     (let [delta-ms (min (gdx/delta-time) world/max-delta-time)]
       (alter-var-root #'world/elapsed-time + delta-ms)
-      (.bindRoot #'world/delta delta-ms) )
+      (bind-root #'world/delta delta-ms) )
     (let [entities (world/active-entities)]
       (update-potential-fields! entities)
       (try (world/tick-entities entities)
            (catch Throwable t
              (error-window! t)
-             (.bindRoot #'tick-error t)))))
+             (bind-root #'tick-error t)))))
   (world/remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
 
 (defn- render-world []

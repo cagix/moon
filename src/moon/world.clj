@@ -366,11 +366,11 @@
     (creature (update props :position tile->middle))))
 
 (defn init [{:keys [tiled-map start-position]}]
-  (.bindRoot #'tiled-map tiled-map)
-  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/width  tiled-map)
+  (bind-root #'tiled-map tiled-map)
+  (bind-root #'explored-tile-corners (atom (g2d/create-grid (tiled/width  tiled-map)
                                                             (tiled/height tiled-map)
                                                             (constantly false))))
-  (.bindRoot #'grid (g2d/create-grid
+  (bind-root #'grid (g2d/create-grid
                      (tiled/width tiled-map)
                      (tiled/height tiled-map)
                      (fn [position]
@@ -383,14 +383,14 @@
   (raycaster/init grid blocks-vision?)
   (let [width  (tiled/width  tiled-map)
         height (tiled/height tiled-map)]
-    (.bindRoot #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
+    (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
                                                     :width  width
                                                     :height height})))
-  (.bindRoot #'tick-error nil)
-  (.bindRoot #'ids->eids {})
-  (.bindRoot #'elapsed-time 0)
-  (.bindRoot #'delta nil)
-  (.bindRoot #'player-eid (spawn-player start-position))
+  (bind-root #'tick-error nil)
+  (bind-root #'ids->eids {})
+  (bind-root #'elapsed-time 0)
+  (bind-root #'delta nil)
+  (bind-root #'player-eid (spawn-player start-position))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 

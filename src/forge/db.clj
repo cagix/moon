@@ -115,13 +115,13 @@
      :else (mg/generate (malli-form schema) {:size 3}))))
 
 (defn init [& {:keys [schema properties]}]
-  (.bindRoot #'schemas (-> schema io/resource slurp edn/read-string))
-  (.bindRoot #'properties-file (io/resource properties))
+  (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
+  (bind-root #'properties-file (io/resource properties))
   (let [properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! validate! properties)
-    (.bindRoot #'db (zipmap (map :property/id properties) properties))))
+    (bind-root #'db (zipmap (map :property/id properties) properties))))
 
 (defn- async-pprint-spit! [properties]
   (.start

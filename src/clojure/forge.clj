@@ -1,5 +1,8 @@
 (in-ns 'clojure.core)
 
+(defn bind-root [avar value]
+  (.bindRoot avar value))
+
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
   [name-sym & args]

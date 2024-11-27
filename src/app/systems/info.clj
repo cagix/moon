@@ -13,7 +13,7 @@
 
 (color/put "PRETTY_NAME" [0.84 0.8 0.52])
 
-(.bindRoot #'forge.info/info-color
+(bind-root #'forge.info/info-color
            {:property/pretty-name "PRETTY_NAME"
             :entity/modifiers "CYAN"
             :maxrange "LIGHT_GRAY"
@@ -29,7 +29,7 @@
             :entity/species "LIGHT_GRAY"
             :entity/temp-modifier "LIGHT_GRAY"})
 
-(.bindRoot #'forge.info/info-text-k-order
+(bind-root #'forge.info/info-text-k-order
            [:property/pretty-name
             :skill/action-time-modifier-key
             :skill/action-time

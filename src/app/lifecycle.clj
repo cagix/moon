@@ -52,7 +52,7 @@
   (cursors/init)
   (graphics/init)
   (ui/load! :skin-scale/x1)
-  (.bindRoot #'app/screens (mapvals stage-screen (screens/init)))
+  (bind-root #'app/screens (mapvals stage-screen (screens/init)))
   (app/change-screen screens/first-k))
 
 (defn dispose []

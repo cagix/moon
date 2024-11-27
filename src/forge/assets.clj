@@ -54,7 +54,7 @@
           (assets/asset-names manager)))
 
 (defn init []
-  (.bindRoot #'asset-manager (load-all (search asset-folder))))
+  (bind-root #'asset-manager (load-all (search asset-folder))))
 
 (defn dispose []
   (.dispose asset-manager))
