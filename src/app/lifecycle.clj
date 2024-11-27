@@ -47,13 +47,13 @@
     (run! #(stage/add stage %) actors)
     (->StageScreen stage screen)))
 
-(defn create [first-screen screens]
+(defn create []
   (assets/init)
   (cursors/init)
   (graphics/init)
   (ui/load! :skin-scale/x1)
   (.bindRoot #'app/screens (mapvals stage-screen (screens/init)))
-  (app/change-screen screens/first-screen))
+  (app/change-screen screens/first-k))
 
 (defn dispose []
   (assets/dispose)

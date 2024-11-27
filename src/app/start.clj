@@ -1,15 +1,16 @@
-(ns ^:no-doc app.start
-  (:require [app.dock-icon :as dock-icon]
-            [app.lifecycle :as lifecycle]
+(ns app.start
+  (:require [app.lifecycle :as lifecycle]
             [app.systems]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils :refer [mac?]]
+            [clojure.java.awt :as awt]
+            [clojure.java.io :as io]
             [forge.db :as db]))
 
 (defn -main []
+  (awt/set-dock-icon "moon.png")
   (db/init :schema "schema.edn"
            :properties "properties.edn")
-  (dock-icon/set-image "moon.png")
   (when mac?
     (lwjgl3/configure-glfw-for-mac))
   (lwjgl3/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
