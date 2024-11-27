@@ -9,9 +9,7 @@
             [forge.graphics.cursors :as cursors]
             [forge.stage :as stage]
             [forge.ui :as ui])
-  (:import (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Texture)))
+  (:import (com.badlogic.gdx.files FileHandle)))
 
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (.list (gdx/internal-file folder))
@@ -29,10 +27,10 @@
           (recur remaining result))))
 
 (defn- search
-  "Returns a collection of `[file-path class]` after recursively searching `folder` and matches all `.wav` with `com.badlogic.gdx.audio.Sound` and all `.png`/`.bmp` files with `com.badlogic.gdx.graphics.Texture`."
+  "Returns a collection of `[file-path class]` after recursively searching `folder` and matches all `.wav` with `:sound` and all `.png`/`.bmp` files with `:texture`."
   [folder]
-  (for [[class exts] [[Sound   #{"wav"}]
-                      [Texture #{"png" "bmp"}]]
+  (for [[class exts] [[:sound   #{"wav"}]
+                      [:texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
                   (recursively-search folder exts))]
     [file class]))

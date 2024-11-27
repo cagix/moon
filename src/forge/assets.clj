@@ -4,37 +4,38 @@
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-(def ^:private asset-manager)
+(def ^:private manager)
+
+(defn- class-k->class [k]
+  (case class-k
+    :sound Sound
+    :texture Texture))
 
 (defn init
-  "Assets are a collection of vectors `[file class]`.
+  "Assets are a collection of vectors `[file class-k]`.
+  `class-k` is either :sound or :texture.
   All assets are loaded immediately.
   Has to be disposed."
   [assets]
   (let [manager (assets/manager)]
-    (doseq [[file class] assets]
-      (assets/load manager file class))
+    (doseq [[file class-k] assets]
+      (assets/load manager file (class-k->class class-k)))
     (assets/finish-loading manager)
-    (bind-root #'asset-manager manager)))
+    (bind-root #'manager manager)))
 
 (defn dispose []
-  (.dispose asset-manager))
+  (.dispose manager))
 
-(defn- all-of-class
-  "Returns all asset paths with the specific class."
-  [manager class]
+(defn all-of-class
+  "Returns all asset paths with the specific class-k.
+  (Either :sound or :texture)."
+  [class-k]
   (filter #(= (assets/asset-type manager %)
-              class)
+              (class-k->class class-k))
           (assets/asset-names manager)))
 
-(defn all-textures []
-  (all-of-class asset-manager Texture))
-
-(defn all-sounds []
-  (all-of-class asset-manager Sound))
-
 (defn play-sound [name]
-  (Sound/.play (get asset-manager (str "sounds/" name ".wav"))))
+  (Sound/.play (get manager (str "sounds/" name ".wav"))))
 
 (defn texture-region [path]
-  (TextureRegion. ^Texture (get asset-manager path)))
+  (TextureRegion. ^Texture (get manager path)))

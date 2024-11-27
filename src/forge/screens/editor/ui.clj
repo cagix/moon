@@ -155,7 +155,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (assets/all-sounds)]
+  (let [rows (for [sound-file (assets/all-of-class :sound)]
                [(ui/text-button (str/replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)
@@ -430,7 +430,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-textures))]
+  (for [file (sort (assets/all-of-class :texture))]
     [(ui/image-button (image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
