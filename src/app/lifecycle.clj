@@ -29,8 +29,8 @@
 (defn- search
   "Returns a collection of `[file-path class]` after recursively searching `folder` and matches all `.wav` with `:sound` and all `.png`/`.bmp` files with `:texture`."
   [folder]
-  (for [[class exts] [[:sound   #{"wav"}]
-                      [:texture #{"png" "bmp"}]]
+  (for [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
                   (recursively-search folder exts))]
     [file class]))

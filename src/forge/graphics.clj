@@ -7,7 +7,7 @@
             [forge.graphics.tiled :as tiled]
             [forge.graphics.viewport :as vp])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
 (def tile-size 48)
@@ -44,9 +44,11 @@
 (defn world-camera []
   (.getCamera world-viewport))
 
+(defn texture-region [path]
+  (TextureRegion. ^Texture (assets/get path)))
+
 (defn image [path]
-  (image/create world-unit-scale
-                (assets/texture-region path)))
+  (image/create world-unit-scale (texture-region path)))
 
 (defn sub-image [image bounds]
   (image/sub-image world-unit-scale

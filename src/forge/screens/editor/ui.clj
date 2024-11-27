@@ -2,6 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
+            [forge.audio :as audio]
             [forge.assets :as assets]
             [forge.db :as db]
             [forge.graphics :refer [gui-viewport-height]]
@@ -150,12 +151,12 @@
   (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
-  (ui/text-button "play!" #(assets/play-sound sound-file)))
+  (ui/text-button "play!" #(audio/play-sound sound-file)))
 
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (assets/all-of-class :sound)]
+  (let [rows (for [sound-file (assets/all-of-class com.badlogic.gdx.audio.Sound)]
                [(ui/text-button (str/replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)
@@ -430,7 +431,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-of-class :texture))]
+  (for [file (sort (assets/all-of-class com.badlogic.gdx.graphics.Texture))]
     [(ui/image-button (image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 

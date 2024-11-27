@@ -1,8 +1,8 @@
 (ns moon.world
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [data.grid2d :as g2d]
+            [forge.audio :refer [play-sound]]
             [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
-            [forge.assets :refer [play-sound]]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
             [forge.math.vector :as v]
