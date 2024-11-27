@@ -1,6 +1,5 @@
 (ns app.lifecycle
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :as utils :refer [clear-screen]]
             [forge.app :as app]
             [forge.assets :as assets]

@@ -1,6 +1,7 @@
 (ns app.start
   (:require [app.lifecycle :as lifecycle]
             [app.systems]
+            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils :refer [mac?]]
             [clojure.java.awt :as awt]
