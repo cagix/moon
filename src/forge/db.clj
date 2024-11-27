@@ -5,7 +5,6 @@
             [clojure.pprint :refer [pprint]]
             [forge.graphics :as g]
             [forge.graphics.animation :as animation]
-            [forge.utils :refer [safe-get]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))
@@ -15,8 +14,7 @@
          ^:private db)
 
 (defn schema-of [k]
-  {:pre [(contains? schemas k)]}
-  (clojure.core/get schemas k))
+  (safe-get schemas k))
 
 (defn schema-type [schema]
   (if (vector? schema)

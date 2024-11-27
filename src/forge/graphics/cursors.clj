@@ -1,7 +1,7 @@
 (ns forge.graphics.cursors
   (:refer-clojure :exclude [set])
   (:require [clojure.gdx :as gdx]
-            [forge.utils :refer [safe-get mapvals]])
+            [forge.utils :refer [mapvals]])
   (:import (com.badlogic.gdx.graphics Pixmap)))
 
 (def ^:private props
