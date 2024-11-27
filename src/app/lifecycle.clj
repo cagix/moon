@@ -1,14 +1,14 @@
 (ns app.lifecycle
-  (:require [clojure.gdx :as gdx]
+  (:require [app.screens :as screens]
+            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils :as utils :refer [clear-screen]]
             [forge.app :as app]
             [forge.assets :as assets]
-            [forge.graphics :as graphics]
             [forge.db :as db]
+            [forge.graphics :as graphics]
             [forge.graphics.cursors :as cursors]
-            [app.screens :as screens]
+            [forge.stage :as stage]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx.graphics Pixmap)))
 
@@ -28,41 +28,6 @@
    :cursors/use-skill             ["pointer004"   [0   0]]
    :cursors/walking               ["walking"      [16 16]]})
 
-(defrecord StageScreen [stage sub-screen]
-  app/Screen
-  (enter [_]
-    (gdx/set-input-processor stage)
-    (app/enter sub-screen))
-
-  (exit [_]
-    (gdx/set-input-processor nil)
-    (app/exit sub-screen))
-
-  (render [_]
-    (stage/act stage)
-    (app/render sub-screen)
-    (stage/draw stage))
-
-  (dispose [_]
-    (utils/dispose stage)
-    (app/dispose sub-screen)))
-
-(defn- stage-create [viewport batch]
-  (proxy [com.badlogic.gdx.scenes.scene2d.Stage clojure.lang.ILookup] [viewport batch]
-    (valAt
-      ([id]
-       (ui/find-actor-with-id (.getRoot this) id))
-      ([id not-found]
-       (or (ui/find-actor-with-id (.getRoot this) id)
-           not-found)))))
-
-(defn- stage-screen
-  "Actors or screen can be nil."
-  [{:keys [actors screen]}]
-  (let [stage (stage-create graphics/gui-viewport graphics/batch)]
-    (run! #(stage/add stage %) actors)
-    (->StageScreen stage screen)))
-
 (defn create []
   (assets/init)
   (bind-root #'cursors/cursors (mapvals (fn [[file hotspot]]
@@ -73,7 +38,7 @@
                                         props))
   (graphics/init)
   (ui/load! :skin-scale/x1)
-  (bind-root #'app/screens (mapvals stage-screen (screens/init)))
+  (bind-root #'app/screens (mapvals stage/create (screens/init)))
   (app/change-screen screens/first-k))
 
 (defn dispose []

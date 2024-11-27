@@ -1,6 +1,5 @@
 (ns app.world
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.scene2d.stage :as stage]
             [forge.app :as app]
             [forge.graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
             [forge.db :as db]
@@ -8,6 +7,7 @@
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
+            [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
             [forge.utils :refer [readable-number dev-mode?]]
@@ -114,8 +114,7 @@
 
 (defn start [world-props]
   (app/change-screen :screens/world)
-  (stage/clear (app/stage))
-  (run! #(stage/add (app/stage) %) (widgets))
+  (stage/reset (widgets))
   (world/clear)
   (world/init (level/generate world-props)))
 
