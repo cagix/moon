@@ -1,8 +1,8 @@
 (ns app.screens
-  (:require [app.screens.editor :as editor]
-            [app.screens.main :as main]
-            [app.screens.map-editor :as map-editor]
-            [app.screens.minimap :as minimap]
+  (:require [forge.screens.editor :as editor]
+            [forge.screens.main :as main]
+            [forge.screens.map-editor :as map-editor]
+            [forge.screens.minimap :as minimap]
             [app.world :as world]))
 
 (defn init []

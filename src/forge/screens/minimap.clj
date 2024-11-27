@@ -1,4 +1,4 @@
-(ns ^:no-doc app.screens.minimap
+(ns ^:no-doc forge.screens.minimap
   (:require [clojure.gdx.graphics.color :as color]
             [forge.app :as app]
             [forge.graphics.camera :as cam]

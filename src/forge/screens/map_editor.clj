@@ -1,4 +1,4 @@
-(ns ^:no-doc app.screens.map-editor
+(ns ^:no-doc forge.screens.map-editor
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :refer [dispose]]
             [clojure.string :as str]

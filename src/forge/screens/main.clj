@@ -1,4 +1,4 @@
-(ns app.screens.main
+(ns forge.screens.main
   (:require [app.world :as world]
             [clojure.gdx :as gdx]
             [forge.app :as app]

@@ -1,4 +1,4 @@
-(ns app.screens.editor
+(ns forge.screens.editor
   (:require [app.editor :as editor]
             [forge.app :as app]
             [forge.input :refer [key-just-pressed?]]
