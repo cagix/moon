@@ -1,12 +1,12 @@
 (ns app.screens.main
-  (:require [app.screens.background-image :as background-image]
-            [app.world :as world]
+  (:require [app.world :as world]
             [clojure.gdx :as gdx]
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.cursors :as cursors]
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
+            [forge.ui.background-image :as background-image]
             [forge.utils :refer [dev-mode?]]))
 
 (defn create []

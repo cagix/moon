@@ -1,4 +1,4 @@
-(ns app.screens.background-image
+(ns forge.ui.background-image
   (:require [forge.graphics :as graphics]
             [forge.ui :as ui]))
 

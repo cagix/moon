@@ -1,9 +1,9 @@
 (ns app.screens.editor
   (:require [app.editor :as editor]
-            [app.screens.background-image :as background-image]
             [forge.app :as app]
             [forge.input :refer [key-just-pressed?]]
-            [forge.ui :as ui]))
+            [forge.ui :as ui]
+            [forge.ui.background-image :as background-image]))
 
 (defn create []
   {:actors [(background-image/create)
