@@ -1,9 +1,6 @@
 (ns clojure.gdx.scene2d.stage
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
-(defn dispose [^Stage stage]
-  (.dispose stage))
-
 (defn clear [^Stage stage]
   (.clear stage))
 

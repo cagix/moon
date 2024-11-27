@@ -2,7 +2,7 @@
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.utils :refer [clear-screen]]
+            [clojure.gdx.utils :as utils :refer [clear-screen]]
             [forge.app :as app]
             [forge.assets :as assets]
             [forge.graphics :as graphics]
@@ -44,7 +44,7 @@
     (stage/draw stage))
 
   (dispose [_]
-    (stage/dispose stage)
+    (utils/dispose stage)
     (app/dispose sub-screen)))
 
 (defn- stage-create [viewport batch]
@@ -78,7 +78,7 @@
 
 (defn dispose []
   (assets/dispose)
-  (run! gdx/dispose (vals cursors/cursors))
+  (run! utils/dispose (vals cursors/cursors))
   (graphics/dispose)
   (run! app/dispose (vals app/screens))
   (ui/dispose!))
