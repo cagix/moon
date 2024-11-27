@@ -4,7 +4,6 @@
             [clojure.gdx.utils :as utils :refer [clear-screen]]
             [forge.app :as app]
             [forge.assets :as assets]
-            [forge.db :as db]
             [forge.graphics :as graphics]
             [forge.graphics.cursors :as cursors]
             [forge.screens.editor :as editor]
