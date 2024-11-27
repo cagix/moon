@@ -1,4 +1,4 @@
-(ns app.systems.info
+(ns forge.info.impl
   (:require [clojure.string :as str]
             [forge.graphics.color :as color]
             [forge.info :as info :refer [info]]

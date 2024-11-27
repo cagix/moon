@@ -1,12 +1,11 @@
 (ns app.systems
-  (:require app.systems.info
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [forge.effects :as effects]
             [forge.entity :as entity]
-            [moon.systems.entity-state :as state]
-
-            forge.entity.animation
-            (mapgen generate uf-caves)))
+            [forge.entity.animation]
+            [forge.info.impl]
+            (mapgen generate uf-caves)
+            [moon.systems.entity-state :as state]))
 
 (defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
   (doseq [system-var system-vars
