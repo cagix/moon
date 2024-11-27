@@ -44,7 +44,7 @@
     (stage/draw stage))
 
   (dispose [_]
-    (gdx/dispose stage)
+    (stage/dispose stage)
     (app/dispose sub-screen)))
 
 (defn- stage-create [viewport batch]

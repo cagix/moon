@@ -1,5 +1,6 @@
 (ns clojure.gdx.utils
   (:import (com.badlogic.gdx.utils Align
+                                   Disposable
                                    Scaling
                                    ScreenUtils
                                    SharedLibraryLoader)))
@@ -18,3 +19,5 @@
   (ScreenUtils/clear color))
 
 (def mac? SharedLibraryLoader/isMac)
+
+(def dispose Disposable/.dispose)
