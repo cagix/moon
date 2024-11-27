@@ -1,6 +1,6 @@
 (ns moon.widgets.action-bar
-  (:require [forge.app :as app]
-            [forge.info :as info]
+  (:require [forge.info :as info]
+            [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.ui.actor :as a]))
 
@@ -16,7 +16,7 @@
   (.getUserObject (.findActor group "action-bar/button-group")))
 
 (defn- get-action-bar []
-  (let [group (::action-bar (:action-bar-table (app/stage)))]
+  (let [group (::action-bar (:action-bar-table (stage/get)))]
     {:horizontal-group group
      :button-group (group->button-group group)}))
 

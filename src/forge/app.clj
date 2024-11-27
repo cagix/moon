@@ -22,6 +22,3 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root #'current-screen-key new-k)
     (enter screen)))
-
-(defn stage []
-  (:stage (current-screen)))

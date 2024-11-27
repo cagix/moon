@@ -100,7 +100,7 @@
    (player-message/create)])
 
 (defn- windows []
-  (:windows (app/stage)))
+  (:windows (stage/get)))
 
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]

@@ -1,7 +1,7 @@
 (ns moon.widgets.inventory
   (:require [clojure.gdx.graphics.color :as color]
             [data.grid2d :as g2d]
-            [forge.app :as app]
+            [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
@@ -114,7 +114,7 @@
                        :pad 4}]]}))
 
 (defn window []
-  (get (:windows (app/stage)) :inventory-window))
+  (get (:windows (stage/get)) :inventory-window))
 
 (defn- cell-widget [cell]
   (get (::table (window)) cell))

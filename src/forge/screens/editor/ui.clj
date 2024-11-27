@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.app :as app]
             [forge.assets :as assets]
             [forge.db :as db]
             [forge.graphics :refer [gui-viewport-height]]
@@ -305,7 +304,7 @@
        first))
 
 (defn- get-editor-window []
-  (:property-editor-window (app/stage)))
+  (:property-editor-window (stage/get)))
 
 (defn- property-value []
  (let [window (get-editor-window)

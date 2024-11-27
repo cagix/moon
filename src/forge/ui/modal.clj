@@ -1,6 +1,5 @@
 (ns forge.ui.modal
-  (:require [forge.app :as app]
-            [forge.graphics :refer [gui-viewport-width gui-viewport-height]]
+  (:require [forge.graphics :refer [gui-viewport-width gui-viewport-height]]
             [forge.ui :as ui]
             [forge.ui.actor :as actor]
             [forge.stage :as stage]))
@@ -10,13 +9,13 @@
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show [{:keys [title text button-text on-click]}]
-  (assert (not (::modal (app/stage))))
+  (assert (not (::modal (stage/get))))
   (stage/add-actor
    (ui/window {:title title
                :rows [[(ui/label text)]
                       [(ui/text-button button-text
                                        (fn []
-                                         (actor/remove! (::modal (app/stage)))
+                                         (actor/remove! (::modal (stage/get)))
                                          (on-click)))]]
                :id ::modal
                :modal? true
