@@ -8,7 +8,7 @@
             [clojure.java.io :as io]
             [forge.app :as app]
             [forge.assets :as assets]
-            [forge.assets.search :refer [search-assets]]
+            [forge.assets.manager :as asset-manager]
             [forge.db :as db]
             [forge.graphics :as graphics]
             [forge.graphics.cursors :as cursors]
@@ -18,7 +18,8 @@
             [forge.screens.minimap :as minimap]
             [forge.screens.world :as world]
             [forge.stage :as stage]
-            [forge.ui :as ui])
+            [forge.ui :as ui]
+            [forge.utils.files :as files])
   (:import (com.badlogic.gdx.graphics Pixmap)))
 
 (def ^:private cursors*
@@ -60,9 +61,10 @@
     (lwjgl3/configure-glfw-for-mac))
   (lwjgl3/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
                         (create  []
-                          (assets/init (search-assets "resources/"
-                                                      [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                                                       [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]))
+                          (bind-root #'assets/manager (asset-manager/init
+                                                       (files/search "resources/"
+                                                                     [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                                                                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])))
                           (bind-root #'cursors/cursors (cursors))
                           (graphics/init)
                           (ui/load! :skin-scale/x1)
@@ -70,7 +72,7 @@
                           (app/change-screen :screens/main-menu))
 
                         (dispose []
-                          (assets/dispose)
+                          (dispose assets/manager)
                           (run! dispose (vals cursors/cursors))
                           (graphics/dispose)
                           (run! app/dispose (vals app/screens))

@@ -45,7 +45,7 @@
   (.getCamera world-viewport))
 
 (defn texture-region [path]
-  (TextureRegion. ^Texture (assets/get path)))
+  (TextureRegion. ^Texture (get assets/manager path)))
 
 (defn image [path]
   (image/create world-unit-scale (texture-region path)))

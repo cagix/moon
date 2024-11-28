@@ -1,4 +1,4 @@
-(ns forge.assets.search
+(ns forge.utils.files
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.files.handle :as fh]
             [clojure.string :as str]))
@@ -18,8 +18,8 @@
           :else
           (recur remaining result))))
 
-(defn search-assets
-  "Returns a collection of `[file-path class]` after recursively searching `folder` and matching file extensions with class as of `asset-description`."
+(defn search
+  "Returns a collection of `[file-path class]` after recursively searching `folder` and matching file extensions with class as of `asset-description`, a collcetion of `[class file-extensions-set]`."
   [folder asset-description]
   (for [[class exts] asset-description
         file (map #(str/replace-first % folder "")

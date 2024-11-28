@@ -3,4 +3,4 @@
   (:import (com.badlogic.gdx.audio Sound)))
 
 (defn play-sound [name]
-  (Sound/.play (assets/get (str "sounds/" name ".wav"))))
+  (Sound/.play (get assets/manager (str "sounds/" name ".wav"))))
