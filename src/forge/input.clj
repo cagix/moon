@@ -1,6 +1,6 @@
 (ns forge.input
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.interop :as interop]))
+            [forge.utils.gdx :as interop]))
 
 (def ^:private input-button (partial interop/field "Input$Buttons"))
 (def ^:private input-key    (partial interop/field "Input$Keys"))

@@ -1,4 +1,4 @@
-(ns clojure.gdx.interop
+(ns forge.utils.gdx
   (:require [clojure.string :as str]))
 
 (defn field [klass-str k]

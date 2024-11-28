@@ -1,7 +1,7 @@
 (ns forge.graphics.color
   (:refer-clojure :exclude [munge])
   (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.interop :as interop])
+            [forge.utils.gdx :as interop])
   (:import (com.badlogic.gdx.graphics Colors)))
 
 (defn munge [color]
