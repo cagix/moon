@@ -47,4 +47,3 @@
    (v2 x y))
   ([x y]
    (Vector2. x y)))
-; proxy with 0,1 or :x/:y lookup ?
