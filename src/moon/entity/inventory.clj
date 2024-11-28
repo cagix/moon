@@ -1,5 +1,6 @@
 (ns moon.entity.inventory
-  (:require [forge.utils :refer [find-first]]
+  (:require [forge.component :refer [*k*]]
+            [forge.utils :refer [find-first]]
             [moon.entity :as entity]
             [moon.item :as item]
             [moon.widgets.inventory :as inventory]))

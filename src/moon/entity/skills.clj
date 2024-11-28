@@ -1,5 +1,6 @@
 (ns ^:no-doc moon.entity.skills
-  (:require [moon.entity :as entity]
+  (:require [forge.component :refer [*k*]]
+            [moon.entity :as entity]
             [moon.world :refer [stopped?]]))
 
 (defn create [skills eid]

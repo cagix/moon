@@ -1,31 +1,12 @@
 (ns app.systems
   (:require [clojure.string :as str]
+            [forge.component :as component]
             [forge.effects :as effects]
             [forge.entity :as entity]
             [forge.entity.animation]
             [forge.info.impl]
             (mapgen generate uf-caves)
             [moon.systems.entity-state :as state]))
-
-(defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
-  (doseq [system-var system-vars
-          :let [method-var (ns-resolve ns-sym (:name (meta system-var)))]]
-    (assert (or optional? method-var)
-            (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym))
-    (when method-var
-      (assert (keyword? k))
-      (assert (var? method-var) (pr-str method-var))
-      (let [system @system-var]
-        (when (k (methods system))
-          (println "WARNING: Overwriting method" (:name (meta method-var)) "on" k))
-        (clojure.lang.MultiFn/.addMethod system k (fn call-method [[k & vs] & args]
-                                                    (binding [*k* k]
-                                                      (apply method-var (into (vec vs) args)))))))))
-
-(defn- install* [component-systems ns-sym k]
-  (require ns-sym)
-  (add-methods (:required component-systems) ns-sym k)
-  (add-methods (:optional component-systems) ns-sym k :optional? true))
 
 (defn- namespace->component-key [prefix ns-str]
    (let [ns-parts (-> ns-str
@@ -42,11 +23,11 @@
 
 (defn- install
   ([component-systems ns-sym]
-   (install* component-systems
-             ns-sym
-             (namespace->component-key #"^moon." (str ns-sym))))
+   (component/install component-systems
+                      ns-sym
+                      (namespace->component-key #"^moon." (str ns-sym))))
   ([component-systems ns-sym k]
-   (install* component-systems ns-sym k)))
+   (component/install component-systems ns-sym k)))
 
 (defn- install-all [component-systems ns-syms]
   (doseq [ns-sym ns-syms]
