@@ -1,17 +1,24 @@
 (ns forge.app.start
-  (:require [app.lifecycle :as lifecycle]
-            [app.systems]
+  (:require [app.systems]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.gdx.utils :refer [mac?]]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.utils :refer [dispose mac? clear-screen]]
             [clojure.java.awt :as awt]
             [clojure.java.io :as io]
+            [forge.app :as app]
+            [forge.assets :as assets]
+            [forge.assets.search :refer [search-assets]]
             [forge.db :as db]
+            [forge.graphics :as graphics]
+            [forge.graphics.cursors :as cursors]
             [forge.screens.editor :as editor]
             [forge.screens.main :as main]
             [forge.screens.map-editor :as map-editor]
             [forge.screens.minimap :as minimap]
-            [forge.screens.world :as world])
+            [forge.screens.world :as world]
+            [forge.stage :as stage]
+            [forge.ui :as ui])
   (:import (com.badlogic.gdx.graphics Pixmap)))
 
 (def ^:private cursors*
@@ -34,7 +41,7 @@
   (mapvals (fn [[file hotspot]]
              (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
                    cursor (gdx/new-cursor pixmap hotspot)]
-               (.dispose pixmap)
+               (dispose pixmap)
                cursor))
            cursors*))
 
@@ -52,14 +59,30 @@
   (when mac?
     (lwjgl3/configure-glfw-for-mac))
   (lwjgl3/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
-                        (create  []    (lifecycle/create "resources/"
-                                                         cursors
-                                                         :skin-scale/x1
-                                                         screens
-                                                         :screens/main-menu))
-                        (dispose []    (lifecycle/dispose))
-                        (render  []    (lifecycle/render))
-                        (resize  [w h] (lifecycle/resize w h)))
+                        (create  []
+                          (assets/init (search-assets "resources/"
+                                                      [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                                                       [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]))
+                          (bind-root #'cursors/cursors (cursors))
+                          (graphics/init)
+                          (ui/load! :skin-scale/x1)
+                          (bind-root #'app/screens (mapvals stage/create (screens)))
+                          (app/change-screen :screens/main-menu))
+
+                        (dispose []
+                          (assets/dispose)
+                          (run! dispose (vals cursors/cursors))
+                          (graphics/dispose)
+                          (run! app/dispose (vals app/screens))
+                          (ui/dispose!))
+
+                        (render  []
+                          (clear-screen color/black)
+                          (app/render (app/current-screen)))
+
+                        (resize  [w h]
+                          (.update graphics/gui-viewport   w h true)
+                          (.update graphics/world-viewport w h)))
                       (lwjgl3/config {:title "Moon"
                                       :fps 60
                                       :width 1440
