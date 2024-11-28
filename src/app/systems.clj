@@ -1,12 +1,16 @@
 (ns app.systems
   (:require [clojure.string :as str]
+
             [forge.component :as component]
+
             [forge.effects :as effects]
             [forge.entity :as entity]
+            [moon.systems.entity-state :as state]
+
             [forge.entity.animation]
             [forge.info.impl]
             (mapgen generate uf-caves)
-            [moon.systems.entity-state :as state]))
+            ))
 
 (defn- namespace->component-key [prefix ns-str]
    (let [ns-parts (-> ns-str
