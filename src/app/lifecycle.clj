@@ -1,46 +1,22 @@
 (ns app.lifecycle
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :as utils :refer [clear-screen]]
-            [clojure.string :as str]
             [forge.app :as app]
             [forge.assets :as assets]
+            [forge.assets.search :refer [search-assets]]
             [forge.graphics :as graphics]
             [forge.graphics.cursors :as cursors]
             [forge.stage :as stage]
-            [forge.ui :as ui])
-  (:import (com.badlogic.gdx.files FileHandle)))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (gdx/internal-file folder))
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- search
-  "Returns a collection of `[file-path class]` after recursively searching `folder` and matches all `.wav` with `:sound` and all `.png`/`.bmp` files with `:texture`."
-  [folder]
-  (for [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
-        file (map #(str/replace-first % folder "")
-                  (recursively-search folder exts))]
-    [file class]))
+            [forge.ui :as ui]))
 
 (defn create [asset-folder
               cursors
               ui-skin-scale
               screens
               first-screen-k]
-  (assets/init (search asset-folder))
+  (assets/init (search-assets asset-folder
+                              [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                               [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]))
   (bind-root #'cursors/cursors (cursors))
   (graphics/init)
   (ui/load! ui-skin-scale)
