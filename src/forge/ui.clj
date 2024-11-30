@@ -1,12 +1,24 @@
 (ns forge.ui
-  (:require [forge.ui.actor :as a]
-            [forge.utils.gdx :as gdx])
+  (:require [forge.utils.gdx :as gdx])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Group)
+           (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
+           (com.badlogic.gdx.math Vector2)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)))
+
+(defn toggle-visible! [^Actor actor]
+  (.setVisible actor (not (.isVisible actor))))
+
+(defn set-center [^Actor actor x y]
+  (.setPosition actor
+                (- x (/ (.getWidth  actor) 2))
+                (- y (/ (.getHeight actor) 2))))
+
+(defn mouseover? [^Actor actor [x y]]
+  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+    (.hit actor (.x v) (.y v) true)))
 
 (defn- set-cell-opts [^Cell cell opts]
   (doseq [[option arg] opts]
@@ -73,8 +85,20 @@
     (.pack widget-group))
   widget-group)
 
+(defn- set-actor-opts [a {:keys [id name visible? touchable center-position position] :as opts}]
+  (when id                          (.setUserObject        a id))
+  (when name                        (.setName      a name))
+  (when (contains? opts :visible?)  (.setVisible   a (boolean visible?)))
+  (when touchable                   (.setTouchable a (case touchable
+                                                       :children-only Touchable/childrenOnly
+                                                       :disabled      Touchable/disabled
+                                                       :enabled       Touchable/enabled)))
+  (when-let [[x y] center-position] (set-center    a x y))
+  (when-let [[x y] position]        (.setPosition  a x y))
+  a)
+
 (defn- set-opts [actor opts]
-  (a/set-opts! actor opts)
+  (set-actor-opts actor opts)
   (when (instance? Table actor)
     (set-table-opts actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
@@ -98,11 +122,11 @@
 
 (defn find-actor-with-id [group id]
   (let [actors (children group)
-        ids (keep a/id actors)]
+        ids (keep Actor/.getUserObject actors)]
     (assert (or (empty? ids)
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (a/id %)) actors))))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
 (defmacro ^:private proxy-ILookup
   "For actors inheriting from Group."
@@ -258,7 +282,7 @@
 
 (defn scroll-pane [actor]
   (let [scroll-pane (VisScrollPane. actor)]
-    (a/set-id! scroll-pane :scroll-pane)
+    (Actor/.setUserObject scroll-pane :scroll-pane)
     (.setFlickScroll scroll-pane false)
     (.setFadeScrollBars scroll-pane false)
     scroll-pane))
@@ -270,20 +294,20 @@
   "Returns true if the actor or its parent is a button."
   [actor]
   (or (button-class? actor)
-      (and (a/parent actor)
-           (button-class? (a/parent actor)))))
+      (and (.getParent actor)
+           (button-class? (.getParent actor)))))
 
 (defn window-title-bar?
   "Returns true if the actor is a window title bar."
   [actor]
   (when (instance? Label actor)
-    (when-let [p (a/parent actor)]
-      (when-let [p (a/parent p)]
+    (when-let [p (.getParent actor)]
+      (when-let [p (.getParent p)]
         (and (instance? VisWindow p)
              (= (.getTitleLabel ^Window p) actor))))))
 
 (defn find-ancestor-window ^Window [^Actor actor]
-  (if-let [p (a/parent actor)]
+  (if-let [p (.getParent actor)]
     (if (instance? Window p)
       p
       (find-ancestor-window p))

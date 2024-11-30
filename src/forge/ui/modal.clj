@@ -1,8 +1,8 @@
 (ns forge.ui.modal
   (:require [forge.graphics :refer [gui-viewport-width gui-viewport-height]]
             [forge.ui :as ui]
-            [forge.ui.actor :as actor]
-            [forge.stage :as stage]))
+            [forge.stage :as stage])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -15,7 +15,7 @@
                :rows [[(ui/label text)]
                       [(ui/text-button button-text
                                        (fn []
-                                         (actor/remove! (::modal (stage/get)))
+                                         (Actor/.remove (::modal (stage/get)))
                                          (on-click)))]]
                :id ::modal
                :modal? true

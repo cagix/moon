@@ -2,13 +2,13 @@
   (:require [data.grid2d :as g2d]
             [forge.stage :as stage]
             [forge.ui :as ui]
-            [forge.ui.actor :as a]
             [forge.graphics :as g :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
             [forge.info :as info]
             [moon.systems.entity-state :as state]
-            [moon.world :refer [player-eid]]))
+            [moon.world :refer [player-eid]])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -35,10 +35,10 @@
   (ui/widget
    (fn [this]
      (draw-cell-rect @player-eid
-                     (a/x this)
-                     (a/y this)
-                     (a/mouseover? this (gui-mouse-position))
-                     (a/id (a/parent this))))))
+                     (.getX this)
+                     (.getY this)
+                     (ui/mouseover? this (gui-mouse-position))
+                     (.getUserObject (.getParent this))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -72,9 +72,9 @@
         image-widget (ui/image-widget (slot->background slot) {:id :image})
         stack (ui/stack [(draw-rect-actor)
                          image-widget])]
-    (a/set-name! stack "inventory-cell")
-    (a/set-id! stack cell)
-    (a/add-listener! stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
+    (.setName stack "inventory-cell")
+    (.setUserObject stack cell)
+    (.addListener stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
                                (state/clicked-inventory-cell (entity/state-obj @player-eid) cell))))
     stack))

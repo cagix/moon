@@ -8,7 +8,6 @@
             [forge.graphics.camera :as cam]
             [forge.stage :as stage]
             [forge.ui :as ui]
-            [forge.ui.actor :as actor]
             [forge.utils :refer [readable-number dev-mode?]]
             [moon.controls :as controls]
             [moon.entity :as entity]
@@ -23,14 +22,15 @@
             [moon.world.debug-render :as debug-render]
             [moon.world.mouseover :as mouseover]
             [moon.world.potential-fields :refer [update-potential-fields!]]
-            [moon.world.tile-color-setter :as tile-color-setter]))
+            [moon.world.tile-color-setter :as tile-color-setter])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)))
 
 (declare start)
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor?)]
     (str "TRUE - name:" (.getName actor)
-         "id: " (actor/id actor)))
+         "id: " (.getUserObject actor)))
 
 (defn- dev-menu-bar []
   (dev-menu/create
@@ -72,7 +72,7 @@
                       :fill-x? true
                       :colspan 1}]
                     [{:actor (doto (ui/label "")
-                               (actor/set-touchable! :disabled))
+                               (.setTouchable Touchable/disabled))
                       :expand? true
                       :fill-x? true
                       :fill-y? true}]]
@@ -104,12 +104,12 @@
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]
           :when (controls/toggle-visible? window-id)]
-    (actor/toggle-visible! (get (windows) window-id))))
+    (ui/toggle-visible! (get (windows) window-id))))
 
 (defn- close-all-windows []
   (let [windows (ui/children (windows))]
-    (when (some actor/visible? windows)
-      (run! #(actor/set-visible! % false) windows))))
+    (when (some Actor/.isVisible windows)
+      (run! #(Actor/.setVisible % false) windows))))
 
 (defn start [world-props]
   (app/change-screen :screens/world)

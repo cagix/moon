@@ -8,12 +8,12 @@
             [forge.info :as info]
             [forge.input :refer [key-just-pressed?]]
             [forge.ui :as ui]
-            [forge.ui.actor :as actor]
             [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.stage :as stage]
             [forge.property :as property]
             [forge.widgets.error-window :refer [error-window!]])
-  (:import (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+           (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 (defn- map-keys [m-schema]
@@ -85,7 +85,7 @@
 
 (defn- apply-context-fn [window f]
   #(try (f)
-        (actor/remove! window)
+        (Actor/.remove window)
         (catch Throwable t
           (error-window! t))))
 
@@ -119,7 +119,7 @@
   (ui/label (truncate (->edn-str v) 60)))
 
 (defmethod ->value :default [_ widget]
-  ((actor/id widget) 1))
+  ((Actor/.getUserObject widget) 1))
 
 (defmethod create :widget/edn [schema v]
   (ui/add-tooltip! (ui/text-field (->edn-str v) {})
@@ -160,10 +160,10 @@
                                 (fn []
                                   (ui/clear-children! table)
                                   (ui/add-rows! table [(columns table sound-file)])
-                                  (actor/remove! (ui/find-ancestor-window ui/*on-clicked-actor*))
+                                  (Actor/.remove (ui/find-ancestor-window ui/*on-clicked-actor*))
                                   (ui/pack-ancestor-window! table)
-                                  (let [[k _] (.getUserObject table)]
-                                    (.setUserObject table [k sound-file]))))
+                                  (let [[k _] (Actor/.getUserObject table)]
+                                    (Actor/.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
     (stage/add-actor (scrollable-choose-window rows))))
 
@@ -186,7 +186,7 @@
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui/stack [button top-widget])]
     (ui/add-tooltip! button #(info/text props))
-    (actor/set-touchable! top-widget :disabled)
+    (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
 
 (def ^:private overview {:properties/audiovisuals {:columns 10
@@ -241,7 +241,7 @@
                                                   :center? true
                                                   :close-on-escape? true})
                                clicked-id-fn (fn [id]
-                                               (actor/remove! window)
+                                               (Actor/.remove window)
                                                (redo-rows (conj property-ids id)))]
                            (.add window (overview-table property-type clicked-id-fn))
                            (.pack window)
@@ -261,7 +261,7 @@
 
 (defmethod ->value :s/one-to-many [_ widget]
   (->> (ui/children widget)
-       (keep actor/id)
+       (keep Actor/.getUserObject)
        set))
 
 (defn- add-one-to-one-rows [table property-type property-id]
@@ -280,7 +280,7 @@
                                                     :center? true
                                                     :close-on-escape? true})
                                  clicked-id-fn (fn [id]
-                                                 (actor/remove! window)
+                                                 (Actor/.remove window)
                                                  (redo-rows id))]
                              (.add window (overview-table property-type clicked-id-fn))
                              (.pack window)
@@ -300,7 +300,7 @@
 
 (defmethod ->value :s/one-to-one [_ widget]
   (->> (ui/children widget)
-       (keep actor/id)
+       (keep Actor/.getUserObject)
        first))
 
 (defn- get-editor-window []
@@ -315,7 +315,7 @@
 
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
-    (actor/remove! (get-editor-window))
+    (Actor/.remove (get-editor-window))
     (stage/add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
@@ -323,12 +323,12 @@
     (.setUserObject widget [k v])
     widget))
 
-(def ^:private value-widget? (comp vector? actor/id))
+(def ^:private value-widget? (comp vector? Actor/.getUserObject))
 
 (defn- find-kv-widget [table k]
   (forge.utils/find-first (fn [actor]
-                           (and (actor/id actor)
-                                (= k ((actor/id actor) 0))))
+                           (and (Actor/.getUserObject actor)
+                                (= k ((Actor/.getUserObject actor) 0))))
                          (ui/children table)))
 
 (defn- attribute-label [k m-schema table]
@@ -337,7 +337,7 @@
         delete-button (when (optional? k m-schema)
                         (ui/text-button "-"
                                         (fn []
-                                          (actor/remove! (find-kv-widget table k))
+                                          (Actor/.remove (find-kv-widget table k))
                                           (rebuild-editor-window))))]
     (ui/table {:cell-defaults {:pad 2}
                :rows [[{:actor delete-button :left? true}
@@ -370,7 +370,7 @@
      (for [k remaining-ks]
        [(ui/text-button (name k)
                         (fn []
-                          (actor/remove! window)
+                          (Actor/.remove window)
                           (ui/add-rows! map-widget-table [(component-row
                                                            [k (db/k->default-value k)]
                                                            malli-form
@@ -424,7 +424,7 @@
 (defmethod ->value :s/map [_ table]
   (into {}
         (for [widget (filter value-widget? (ui/children table))
-              :let [[k _] (actor/id widget)]]
+              :let [[k _] (Actor/.getUserObject widget)]]
           [k (->value (db/schema-of k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?

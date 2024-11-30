@@ -1,8 +1,8 @@
 (ns moon.widgets.action-bar
   (:require [forge.info :as info]
             [forge.stage :as stage]
-            [forge.ui :as ui]
-            [forge.ui.actor :as a]))
+            [forge.ui :as ui])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (def ^:private image-scale 2)
 
@@ -23,7 +23,7 @@
 (defn add-skill [{:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (ui/image-button image (fn []) {:scale image-scale})]
-    (a/set-id! button id)
+    (.setUserObject button id)
     (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (ui/add-actor! horizontal-group button)
     (ui/bg-add! button-group button)
@@ -32,19 +32,19 @@
 (defn remove-skill [{:keys [property/id]}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (get horizontal-group id)]
-    (a/remove! button)
+    (.remove button)
     (ui/bg-remove! button-group button)
     nil))
 
 (defn create []
   (let [group (ui/horizontal-group {:pad 2 :space 2})]
-    (a/set-id! group ::action-bar)
+    (.setUserObject group ::action-bar)
     (ui/add-actor! group (action-bar-button-group))
     group))
 
 (defn selected-skill []
   (when-let [skill-button (ui/bg-checked (:button-group (get-action-bar)))]
-    (a/id skill-button)))
+    (.getUserObject skill-button)))
 
 (comment
 

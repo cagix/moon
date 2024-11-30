@@ -5,7 +5,6 @@
             [forge.math.vector :as v]
             [forge.stage :as stage]
             [forge.ui :as ui]
-            [forge.ui.actor :as a]
             [moon.controls :as controls]
             [forge.effects :as effects]
             [moon.entity :as entity]
@@ -14,7 +13,8 @@
             [moon.widgets.inventory :as widgets.inventory]
             [moon.widgets.player-message :as player-message]
             [moon.world :refer [player-eid]]
-            [moon.world.mouseover :as mouseover]))
+            [moon.world.mouseover :as mouseover])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- denied [text]
   (play-sound "bfxr_denied")
@@ -27,7 +27,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (a/visible? (widgets.inventory/window))
+     (.isVisible (widgets.inventory/window))
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
@@ -45,7 +45,7 @@
       (player-message/show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (a/toggle-visible! (widgets.inventory/window)))
+  (ui/toggle-visible! (widgets.inventory/window)))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -62,10 +62,10 @@
     [(clickable->cursor @clicked-eid true)  (fn [] (denied "Too far away"))]))
 
 (defn- inventory-cell-with-item? [actor]
-  (and (a/parent actor)
-       (= "inventory-cell" (a/name (a/parent actor)))
+  (and (.getParent actor)
+       (= "inventory-cell" (.getName (.getParent actor)))
        (get-in (:entity/inventory @player-eid)
-               (a/id (a/parent actor)))))
+               (.getUserObject (.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
   (let [actor (stage/mouse-on-actor?)]
