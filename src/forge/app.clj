@@ -1,7 +1,6 @@
 (ns forge.app)
-; hi
 
-(declare ^:private screens
+(declare screens
          ^:private current-screen-key)
 
 (defn current-screen []
@@ -23,13 +22,3 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root #'current-screen-key new-k)
     (enter screen)))
-
-(defn init-screens [{:keys [screens first-screen-k]}]
-  (bind-root #'screens screens)
-  (change-screen first-screen-k))
-
-(defn render-current-screen []
-  (render (current-screen)))
-
-(defn dispose-screens []
-  (run! dispose (vals screens)))

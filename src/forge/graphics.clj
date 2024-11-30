@@ -1,11 +1,10 @@
-(ns forge.graphics
+(cns forge.graphics
   (:require [clojure.gdx.tiled :as tiled]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.badlogic.gdx.math Vector2)
            (space.earlygrey.shapedrawer ShapeDrawer)
@@ -92,9 +91,6 @@
 
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
-
-(defn clear-screen []
-  (ScreenUtils/clear black))
 
 (def world-viewport-width 1440)
 (def world-viewport-height 900)

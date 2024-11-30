@@ -3,8 +3,8 @@
           :fps 60
           :width 1440
           :height 900}
- :db {:schema "schema.edn"
-      :properties "properties.edn"}
+ :db/schema "schema.edn"
+ :db/properties "properties.edn"
  :assets "resources/"
  :cursors {:cursors/bag                   ["bag001"       [0   0]]
            :cursors/black-x               ["black_x"      [0   0]]

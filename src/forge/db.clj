@@ -1,17 +1,15 @@
 (ns forge.db
   (:refer-clojure :exclude [get])
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.pprint :refer [pprint]]
+  (:require [clojure.pprint :refer [pprint]]
             [forge.graphics :as g]
             [forge.graphics.animation :as animation]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))
 
-(declare ^:private schemas
-         ^:private properties-file
-         ^:private db)
+(declare schemas
+         properties-file
+         db)
 
 (defn schema-of [k]
   (safe-get schemas k))
@@ -95,7 +93,7 @@
            {:value value
             :schema (m/form m-schema)}))
 
-(defn- validate! [property]
+(defn validate! [property]
   (let [m-schema (-> property
                      schema-of-property
                      malli-form
@@ -111,15 +109,6 @@
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
      :else (mg/generate (malli-form schema) {:size 3}))))
-
-(defn init [{:keys [schema properties]}]
-  (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
-  (bind-root #'properties-file (io/resource properties))
-  (let [properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! validate! properties)
-    (bind-root #'db (zipmap (map :property/id properties) properties))))
 
 (defn- async-pprint-spit! [properties]
   (.start

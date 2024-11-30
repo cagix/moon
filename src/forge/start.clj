@@ -25,7 +25,7 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture OrthographicCamera Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils Disposable SharedLibraryLoader)
+           (com.badlogic.gdx.utils Disposable SharedLibraryLoader ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
@@ -179,18 +179,17 @@
     (.dispose pixmap)
     texture))
 
-(defn- make-cursors [cursors]
-  (mapvals (fn [[file [hotspot-x hotspot-y]]]
-             (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                   cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-               (.dispose pixmap)
-               cursor))
-           cursors))
+(defn- make-cursor [[file [hotspot-x hotspot-y]]]
+  (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+    (.dispose pixmap)
+    cursor))
 
 (defn -main []
   (let [{:keys [dock-icon
                 lwjgl3
-                db
+                db/schema
+                db/properties
                 assets
                 cursors
                 ui]} (-> config io/resource slurp edn/read-string)]
@@ -201,7 +200,13 @@
     (Lwjgl3Application.
      (proxy [ApplicationAdapter] []
        (create []
-         (db/init db)
+         (bind-root #'db/schemas (-> schema io/resource slurp edn/read-string))
+         (bind-root #'db/properties-file (io/resource properties))
+         (let [properties (-> db/properties-file slurp edn/read-string)]
+           (assert (or (empty? properties)
+                       (apply distinct? (map :property/id properties))))
+           (run! db/validate! properties)
+           (bind-root #'db/db (zipmap (map :property/id properties) properties)))
          (bind-root #'asset-manager (load-assets assets))
          (bind-root #'graphics/batch (SpriteBatch.))
          (bind-root #'shape-drawer-texture (white-pixel-texture))
@@ -225,16 +230,15 @@
          (bind-root #'graphics/gui-viewport (FitViewport. graphics/gui-viewport-width
                                                           graphics/gui-viewport-height
                                                           (OrthographicCamera.)))
-         (bind-root #'graphics/cursors (make-cursors cursors))
+         (bind-root #'graphics/cursors (mapvals make-cursor cursors))
          (ui/init ui)
-         (app/init-screens
-          {:screens (mapvals stage/create
-                             {:screens/main-menu  (main/create)
-                              :screens/map-editor (map-editor/create)
-                              :screens/editor     (editor/create)
-                              :screens/minimap    (minimap/create)
-                              :screens/world      (world/screen)})
-           :first-screen-k :screens/main-menu}))
+         (bind-root #'app/screens (mapvals stage/create
+                                           {:screens/main-menu  (main/create)
+                                            :screens/map-editor (map-editor/create)
+                                            :screens/editor     (editor/create)
+                                            :screens/minimap    (minimap/create)
+                                            :screens/world      (world/screen)}))
+         (app/change-screen :screens/main-menu))
 
        (dispose []
          (.dispose asset-manager)
@@ -243,11 +247,11 @@
          (.dispose graphics/default-font)
          (run! Disposable/.dispose (vals graphics/cursors))
          (ui/dispose)
-         (app/dispose-screens))
+         (run! app/dispose (vals app/screens)))
 
        (render []
-         (graphics/clear-screen)
-         (app/render-current-screen))
+         (ScreenUtils/clear graphics/black)
+         (app/render (app/current-screen)))
 
        (resize [w h]
          (.update graphics/gui-viewport   w h true)
