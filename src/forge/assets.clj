@@ -7,7 +7,7 @@
            (com.badlogic.gdx.graphics Texture)))
 
 (defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (.list folder)
+  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
          result []]
     (cond (nil? file)
           result
@@ -21,13 +21,13 @@
           :else
           (recur remaining result))))
 
-(declare ^:private manager)
+(declare ^:private ^AssetManager manager)
 
 (defn init [folder]
   (bind-root #'manager (proxy [AssetManager clojure.lang.ILookup] []
                          (valAt [^String path]
-                           (if (.contains this path)
-                             (.get this path)
+                           (if (AssetManager/.contains this path)
+                             (AssetManager/.get this path)
                              (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
   (doseq [[class exts] [[Sound   #{"wav"}]
                         [Texture #{"png" "bmp"}]]

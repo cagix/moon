@@ -44,7 +44,8 @@
 (defn width  [tiled-map] (get-property tiled-map :width))
 (defn height [tiled-map] (get-property tiled-map :height))
 
-(defn layers ^MapLayers [tiled-map] (.getLayers tiled-map))
+(defn layers ^MapLayers [tiled-map]
+  (TiledMap/.getLayers tiled-map))
 
 (defn layer-index
   "Returns nil or the integer index of the layer.

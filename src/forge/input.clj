@@ -19,6 +19,3 @@
   Numbers via :num-3, etc."
   [k]
   (.isKeyPressed Gdx/input (gdx/k->input-key k)))
-
-(defn set-processor [processor]
-  (.setInputProcessor Gdx/input processor))

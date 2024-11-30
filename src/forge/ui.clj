@@ -318,7 +318,7 @@
      (.addListener button (change-listener on-clicked))
      button)))
 
-(defn actor [{:keys [draw act]}]
+(defn actor ^Actor [{:keys [draw act]}]
   (proxy [Actor] []
     (draw [_batch _parent-alpha]
       (when draw (draw)))

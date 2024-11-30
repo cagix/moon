@@ -4,19 +4,20 @@
             [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
             [forge.input :as input]
             [forge.ui :as ui])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Stage)))
 
-(defn get []
+(defn get ^Stage []
   (:stage (app/current-screen)))
 
-(defrecord StageScreen [stage sub-screen]
+(defrecord StageScreen [^Stage stage sub-screen]
   app/Screen
   (enter [_]
-    (input/set-processor stage)
+    (.setInputProcessor Gdx/input stage)
     (app/enter sub-screen))
 
   (exit [_]
-    (input/set-processor nil)
+    (.setInputProcessor Gdx/input nil)
     (app/exit sub-screen))
 
   (render [_]
@@ -28,13 +29,13 @@
     (.dispose stage)
     (app/dispose sub-screen)))
 
-(defn- stage-create [viewport batch]
+(defn- stage-create ^Stage [viewport batch]
   (proxy [Stage clojure.lang.ILookup] [viewport batch]
     (valAt
       ([id]
-       (ui/find-actor-with-id (.getRoot this) id))
+       (ui/find-actor-with-id (Stage/.getRoot this) id))
       ([id not-found]
-       (or (ui/find-actor-with-id (.getRoot this) id)
+       (or (ui/find-actor-with-id (Stage/.getRoot this) id)
            not-found)))))
 
 (defn create

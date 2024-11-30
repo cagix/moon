@@ -1,8 +1,8 @@
 (ns forge.graphics.image
   (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+           (com.badlogic.gdx.graphics.g2d Batch TextureRegion)))
 
-(defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
+(defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
   (.draw batch
          texture-region

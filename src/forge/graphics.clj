@@ -7,7 +7,7 @@
             [forge.math.utils :as math])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap Pixmap$Format)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d BitmapFont Batch SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils Disposable ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.badlogic.gdx.math Vector2)
@@ -19,8 +19,8 @@
 (defn delta-time []
   (.getDeltaTime Gdx/graphics))
 
-(def black Color/BLACK)
-(def white Color/WHITE)
+(def ^Color black Color/BLACK)
+(def ^Color white Color/WHITE)
 
 (defn color
   ([r g b]
@@ -28,7 +28,7 @@
   ([r g b a]
    (Color. (float r) (float g) (float b) (float a))))
 
-(defn- munge-color [c]
+(defn- munge-color ^Color [c]
   (cond (= Color (class c)) c
         (keyword? c) (gdx/k->color c)
         (vector? c) (apply color c)
@@ -52,14 +52,14 @@
 (def gui-viewport-width 1440)
 (def gui-viewport-height 900)
 
-(declare batch
-         ^:private shape-drawer
-         ^:private shape-drawer-texture
-         ^:private default-font
+(declare ^Batch batch
+         ^:private ^ShapeDrawer shape-drawer
+         ^:private ^Texture shape-drawer-texture
+         ^:private ^BitmapFont default-font
          ^:private cached-map-renderer
          ^:private world-unit-scale
-         world-viewport
-         gui-viewport
+         ^Viewport world-viewport
+         ^Viewport gui-viewport
          cursors)
 
 (def ^:dynamic ^:private *unit-scale* 1)
