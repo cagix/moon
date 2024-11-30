@@ -3,7 +3,7 @@
             [forge.app :as app]
             [forge.graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
             [forge.db :as db]
-            [forge.graphics.cursors :as cursors]
+            [forge.graphics :as g]
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
@@ -160,7 +160,7 @@
     (cam/set-zoom! (world-camera) 0.8))
 
   (exit [_]
-    (cursors/set :cursors/default))
+    (g/set-cursor :cursors/default))
 
   (render [_]
     (render-world)

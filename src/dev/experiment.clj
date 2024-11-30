@@ -1,5 +1,5 @@
 (ns ^:no-doc dev.experiment
-  (:require [clojure.gdx :as gdx]
+  (:require [forge.application :as app]
             [forge.db :as db]
             [moon.entity :as entity]
             [moon.world :as world :refer [player-eid]]))
@@ -24,11 +24,11 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable (world/creature {:position [35 73]
-                                 :creature-id :creatures/dragon-red
-                                 :components {:entity/fsm {:fsm :fsms/npc
-                                                           :initial-state :npc-sleeping}
-                                              :entity/faction :evil}}))
+ (app/do (world/creature {:position [35 73]
+                          :creature-id :creatures/dragon-red
+                          :components {:entity/fsm {:fsm :fsms/npc
+                                                    :initial-state :npc-sleeping}
+                                       :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (world/ids->eids 168)]) ; TODO how to get id ?
@@ -44,12 +44,9 @@
  )
 
 (defn- learn-skill! [skill-id]
-  (post-runnable
+  (app/do
    (swap! player-eid entity/add-skill (db/get skill-id))))
 
 (defn- create-item! [item-id]
-  (post-runnable
+  (app/do
    (world/item (:position @player-eid) (db/get item-id))))
-
-(defmacro post-runnable [& exprs]
-  `(gdx/post-runnable (fn [] ~@exprs)))

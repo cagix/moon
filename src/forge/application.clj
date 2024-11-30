@@ -1,5 +1,7 @@
 (ns forge.application
-  (:require [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+  (:refer-clojure :exclude [do])
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils :refer [mac?]]
             [clojure.java.awt :as awt]
             [clojure.java.io :as io])
@@ -31,3 +33,8 @@
                                       :fps fps
                                       :width width
                                       :height height})))
+
+(def exit gdx/exit)
+
+(defmacro do [& exprs]
+  `(gdx/post-runnable (fn [] ~@exprs)))

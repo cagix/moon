@@ -3,7 +3,7 @@
             [forge.math.vector :as v]
             [forge.utils :refer [->tile]]
             [malli.core :as m]
-            [forge.graphics.cursors :as cursors]
+            [forge.graphics :as g]
             [forge.effects :as effects]
             [forge.entity :as entity]
             [moon.systems.entity-state :as state]
@@ -45,8 +45,8 @@
                                                        [new-state-k eid params]
                                                        [new-state-k eid]))]]
           (when (:entity/player? @eid)
-            (when-let [crs (state/cursor new-state-obj)]
-              (cursors/set crs)))
+            (when-let [cursor (state/cursor new-state-obj)]
+              (g/set-cursor cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))

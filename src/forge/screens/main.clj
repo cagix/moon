@@ -1,8 +1,8 @@
 (ns forge.screens.main
-  (:require [clojure.gdx :as gdx]
+  (:require [forge.application :as application]
             [forge.app :as app]
             [forge.db :as db]
-            [forge.graphics.cursors :as cursors]
+            [forge.graphics :as g]
             [forge.input :refer [key-just-pressed?]]
             [forge.screens.world :as world]
             [forge.ui :as ui]
@@ -25,15 +25,15 @@
                           [(ui/text-button "Property editor"
                                            #(app/change-screen :screens/editor))])
                         [(ui/text-button "Exit"
-                                         gdx/exit)]]))
+                                         application/exit)]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
-                                (gdx/exit)))})]
+                                (application/exit)))})]
    :screen (reify app/Screen
              (enter [_]
-               (cursors/set :cursors/default))
+               (g/set-cursor :cursors/default))
              (exit [_])
              (render [_])
              (dispose [_]))})

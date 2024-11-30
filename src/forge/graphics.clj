@@ -1,12 +1,14 @@
 (ns forge.graphics
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.utils :as utils]
             [forge.assets :as assets]
             [forge.graphics.image :as image]
             [forge.graphics.shape-drawer :as sd]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled]
             [forge.graphics.viewport :as vp])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera Texture)
+  (:import (com.badlogic.gdx.graphics OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
@@ -25,7 +27,8 @@
          ^:private cached-map-renderer
          ^:private world-unit-scale
          world-viewport
-         gui-viewport)
+         gui-viewport
+         cursors)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -146,7 +149,18 @@
                 (world-camera)
                 tiled-map))
 
-(defn init []
+(defn- make-cursors [cursors]
+  (mapvals (fn [[file [hotspot-x hotspot-y]]]
+             (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
+                   cursor (gdx/new-cursor pixmap hotspot-x hotspot-y)]
+               (utils/dispose pixmap)
+               cursor))
+           cursors))
+
+(defn set-cursor [cursor-key]
+  (gdx/set-cursor (safe-get cursors cursor-key)))
+
+(defn init [{:keys [cursors]}]
   (bind-root #'batch (SpriteBatch.))
   (bind-root #'shape-drawer-texture (sd/white-pixel-texture))
   (bind-root #'shape-drawer (sd/create batch shape-drawer-texture))
@@ -166,9 +180,11 @@
                                       (tiled/renderer tiled-map world-unit-scale batch))))
   (bind-root #'gui-viewport (FitViewport. gui-viewport-width
                                           gui-viewport-height
-                                          (OrthographicCamera.))))
+                                          (OrthographicCamera.)))
+  (bind-root #'cursors (make-cursors cursors)))
 
 (defn dispose []
   (.dispose batch)
   (.dispose shape-drawer-texture)
-  (.dispose default-font))
+  (.dispose default-font)
+  (run! utils/dispose (vals cursors)))
