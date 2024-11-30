@@ -1,5 +1,5 @@
 (ns forge.input
-  (:require [forge.utils.gdx :as gdx])
+  (:require [forge.gdx :as gdx])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn button-just-pressed?

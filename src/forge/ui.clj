@@ -1,5 +1,5 @@
 (ns forge.ui
-  (:require [forge.utils.gdx :as gdx])
+  (:require [forge.gdx :as gdx])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
