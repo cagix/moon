@@ -3,8 +3,7 @@
             [forge.assets :as assets]
             [forge.graphics.image :as image]
             [forge.gdx :as gdx]
-            [forge.tiled :as tiled]
-            [forge.math.utils :as math])
+            [forge.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Texture$TextureFilter Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch SpriteBatch TextureRegion)
@@ -80,12 +79,12 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (math/clamp (.getX Gdx/input)
-                            (.getLeftGutterWidth viewport)
-                            (.getRightGutterX viewport))
-        mouse-y (math/clamp (.getY Gdx/input)
-                            (.getTopGutterHeight viewport)
-                            (.getTopGutterY viewport))
+  (let [mouse-x (clamp (.getX Gdx/input)
+                       (.getLeftGutterWidth viewport)
+                       (.getRightGutterX viewport))
+        mouse-y (clamp (.getY Gdx/input)
+                       (.getTopGutterHeight viewport)
+                       (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]
     [(.x coords) (.y coords)]))
 
@@ -178,11 +177,11 @@
 
 (defn draw-arc [[centre-x centre-y] radius start-angle degree color]
   (sd-color color)
-  (.arc shape-drawer (float centre-x) (float centre-y) (float radius) (math/degree->radians start-angle) (math/degree->radians degree)))
+  (.arc shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
 
 (defn draw-sector [[centre-x centre-y] radius start-angle degree color]
   (sd-color color)
-  (.sector shape-drawer (float centre-x) (float centre-y) (float radius) (math/degree->radians start-angle) (math/degree->radians degree)))
+  (.sector shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
 
 (defn draw-rectangle [x y w h color]
   (sd-color color)

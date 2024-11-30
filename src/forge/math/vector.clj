@@ -1,5 +1,4 @@
 (ns forge.math.vector
-  (:require [forge.math.utils :refer [equal?]])
   (:import (com.badlogic.gdx.math Vector2)))
 
 (defn- m-v2
