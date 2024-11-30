@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.assets :as assets :refer [play-sound]]
             [forge.db :as db]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
@@ -153,8 +152,14 @@
 
 (declare columns)
 
+(defn- all-of-class
+  "Returns all asset paths with the specific class."
+  [class]
+  (filter #(= (.getAssetType asset-manager %) class)
+          (.getAssetNames asset-manager)))
+
 (defn- choose-window [table]
-  (let [rows (for [sound-file (assets/all-sounds)]
+  (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]
                [(ui/text-button (str/replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)
@@ -429,7 +434,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-textures))]
+  (for [file (sort (all-of-class com.badlogic.gdx.graphics.Texture))]
     [(ui/image-button (image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 

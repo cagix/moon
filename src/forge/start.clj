@@ -3,7 +3,6 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.app :as app]
-            [forge.assets :as assets]
             [forge.component :as component]
             [forge.db :as db]
             [forge.effects :as effects]
@@ -21,10 +20,16 @@
             [forge.info.impl]
             (mapgen generate uf-caves))
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
+
+(def ^:private config "app.edn")
 
 (defn- namespace->component-key [prefix ns-str]
    (let [ns-parts (-> ns-str
@@ -130,7 +135,34 @@
     (.setForegroundFPS fps)
     (.setWindowedMode width height)))
 
-(def ^:private config "app.edn")
+(defn- recursively-search [folder extensions]
+  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- load-assets [folder]
+  (let [manager (proxy [AssetManager clojure.lang.ILookup] []
+                  (valAt [^String path]
+                    (if (AssetManager/.contains this path)
+                      (AssetManager/.get this path)
+                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
+    (doseq [[class exts] [[Sound   #{"wav"}]
+                          [Texture #{"png" "bmp"}]]
+            file (map #(str/replace-first % folder "")
+                      (recursively-search (.internal Gdx/files folder) exts))]
+      (.load manager ^String file ^Class class))
+    (.finishLoading manager)
+    manager))
 
 (defn -main []
   (let [{:keys [dock-icon
@@ -147,7 +179,7 @@
      (proxy [ApplicationAdapter] []
        (create []
          (db/init db)
-         (assets/init assets)
+         (bind-root #'asset-manager (load-assets assets))
          (graphics/init graphics)
          (ui/init ui)
          (app/init-screens
@@ -160,7 +192,7 @@
            :first-screen-k :screens/main-menu}))
 
        (dispose []
-         (assets/dispose)
+         (.dispose asset-manager)
          (graphics/dispose)
          (ui/dispose)
          (app/dispose-screens))

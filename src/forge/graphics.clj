@@ -1,6 +1,5 @@
 (ns forge.graphics
   (:require [clojure.string :as str]
-            [forge.assets :as assets]
             [forge.graphics.image :as image]
             [forge.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
@@ -104,7 +103,7 @@
 
 (defn texture-region
   ([path]
-   (TextureRegion. (assets/texture path)))
+   (TextureRegion. ^Texture (get asset-manager path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 

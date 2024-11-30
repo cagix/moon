@@ -11,7 +11,7 @@
       result)))
 
 (defn bind-root [avar value]
-  (.bindRoot avar value))
+  (clojure.lang.Var/.bindRoot avar value))
 
 (import 'com.badlogic.gdx.math.MathUtils)
 
@@ -75,3 +75,10 @@
   Numbers via :num-3, etc."
   [k]
   (.isKeyPressed Gdx/input (k->input-key k)))
+
+(declare ^com.badlogic.gdx.assets.AssetManager asset-manager)
+
+(import 'com.badlogic.gdx.audio.Sound)
+
+(defn play-sound [name]
+  (Sound/.play (get asset-manager (str "sounds/" name ".wav"))))

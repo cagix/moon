@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.player.dead
   (:require [forge.app :as app]
-            [forge.assets :refer [play-sound]]
             [forge.ui.modal :as modal]))
 
 (defn cursor [_]
