@@ -1,4 +1,4 @@
-(ns moon.entity.hp-test
+(ns forge.entity.hp-test
   (:require [clojure.test :refer :all]
             [moon.entity :as entity]))
 

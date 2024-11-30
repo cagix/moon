@@ -78,16 +78,16 @@
               (last ns-parts))))
 
 (comment
- (and (= (namespace->component-key "moon.effects.projectile")
+ (and (= (namespace->component-key #"^forge." "forge.effects.projectile")
          :effects/projectile)
-      (= (namespace->component-key "moon.effects.target.convert")
+      (= (namespace->component-key #"^forge." "forge.effects.target.convert")
          :effects.target/convert)))
 
 (defn- install
   ([component-systems ns-sym]
    (install-component component-systems
                       ns-sym
-                      (namespace->component-key #"^moon." (str ns-sym))))
+                      (namespace->component-key #"^forge." (str ns-sym))))
   ([component-systems ns-sym k]
    (install-component component-systems ns-sym k)))
 
@@ -101,17 +101,17 @@
    :optional [#'effect/useful?
               #'effect/render]})
 
-(install-all effect '[moon.effects.projectile
-                      moon.effects.spawn
-                      moon.effects.target-all
-                      moon.effects.target-entity
-                      moon.effects.target.audiovisual
-                      moon.effects.target.convert
-                      moon.effects.target.damage
-                      moon.effects.target.kill
-                      moon.effects.target.melee-damage
-                      moon.effects.target.spiderweb
-                      moon.effects.target.stun])
+(install-all effect '[forge.effects.projectile
+                      forge.effects.spawn
+                      forge.effects.target-all
+                      forge.effects.target-entity
+                      forge.effects.target.audiovisual
+                      forge.effects.target.convert
+                      forge.effects.target.damage
+                      forge.effects.target.kill
+                      forge.effects.target.melee-damage
+                      forge.effects.target.spiderweb
+                      forge.effects.target.stun])
 
 (def ^:private entity
   {:optional [#'entity/->v
@@ -123,22 +123,22 @@
               #'entity/render-above
               #'entity/render-info]})
 
-(install-all entity '[moon.entity.alert-friendlies-after-duration
-                      moon.entity.clickable
-                      moon.entity.delete-after-duration
-                      moon.entity.destroy-audiovisual
-                      moon.entity.fsm
-                      moon.entity.image
-                      moon.entity.inventory
-                      moon.entity.line-render
-                      moon.entity.mouseover?
-                      moon.entity.projectile-collision
-                      moon.entity.skills
-                      moon.entity.string-effect
-                      moon.entity.movement
-                      moon.entity.temp-modifier
-                      moon.entity.hp
-                      moon.entity.mana])
+(install-all entity '[forge.entity.alert-friendlies-after-duration
+                      forge.entity.clickable
+                      forge.entity.delete-after-duration
+                      forge.entity.destroy-audiovisual
+                      forge.entity.fsm
+                      forge.entity.image
+                      forge.entity.inventory
+                      forge.entity.line-render
+                      forge.entity.mouseover?
+                      forge.entity.projectile-collision
+                      forge.entity.skills
+                      forge.entity.string-effect
+                      forge.entity.movement
+                      forge.entity.temp-modifier
+                      forge.entity.hp
+                      forge.entity.mana])
 
 (def ^:private entity-state
   (merge-with concat
@@ -152,16 +152,16 @@
                           #'state/clicked-skillmenu-skill
                           #'state/draw-gui-view]}))
 
-(install entity-state 'moon.entity.npc.dead              :npc-dead)
-(install entity-state 'moon.entity.npc.idle              :npc-idle)
-(install entity-state 'moon.entity.npc.moving            :npc-moving)
-(install entity-state 'moon.entity.npc.sleeping          :npc-sleeping)
-(install entity-state 'moon.entity.player.dead           :player-dead)
-(install entity-state 'moon.entity.player.idle           :player-idle)
-(install entity-state 'moon.entity.player.item-on-cursor :player-item-on-cursor)
-(install entity-state 'moon.entity.player.moving         :player-moving)
-(install entity-state 'moon.entity.active                :active-skill)
-(install entity-state 'moon.entity.stunned               :stunned)
+(install entity-state 'forge.entity.npc.dead              :npc-dead)
+(install entity-state 'forge.entity.npc.idle              :npc-idle)
+(install entity-state 'forge.entity.npc.moving            :npc-moving)
+(install entity-state 'forge.entity.npc.sleeping          :npc-sleeping)
+(install entity-state 'forge.entity.player.dead           :player-dead)
+(install entity-state 'forge.entity.player.idle           :player-idle)
+(install entity-state 'forge.entity.player.item-on-cursor :player-item-on-cursor)
+(install entity-state 'forge.entity.player.moving         :player-moving)
+(install entity-state 'forge.entity.active                :active-skill)
+(install entity-state 'forge.entity.stunned               :stunned)
 
 (defn- set-dock-icon [image-resource]
   (.setIconImage (Taskbar/getTaskbar)

@@ -41,7 +41,7 @@
  ; start skill w. applicable needs target (bow)
  ; this command:
  ; check skill has stopped using
- ; => this is basically a test for 'moon.entity.active'
+ ; => this is basically a test for 'forge.entity.active'
 
  )
 
