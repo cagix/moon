@@ -2,8 +2,7 @@
   (:import (com.badlogic.gdx.utils Align
                                    Disposable
                                    Scaling
-                                   ScreenUtils
-                                   SharedLibraryLoader)))
+                                   ScreenUtils)))
 
 (defn align [k]
   (case k
@@ -17,7 +16,5 @@
 
 (defn clear-screen [color]
   (ScreenUtils/clear color))
-
-(def mac? SharedLibraryLoader/isMac)
 
 (def dispose Disposable/.dispose)

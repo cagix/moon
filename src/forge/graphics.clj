@@ -1,6 +1,5 @@
 (ns forge.graphics
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.utils :as utils]
             [clojure.gdx.math :as math :refer [degree->radians]]
@@ -9,12 +8,16 @@
             [forge.graphics.image :as image]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera Texture Pixmap Pixmap$Format)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics OrthographicCamera Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
-(def delta-time        gdx/delta-time)
-(def frames-per-second gdx/frames-per-second)
+(defn frames-per-second []
+  (.getFramesPerSecond Gdx/graphics))
+
+(defn delta-time []
+  (.getDeltaTime Gdx/graphics))
 
 (defn clear-screen []
   (utils/clear-screen color/black))
@@ -44,10 +47,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (math/clamp (gdx/mouse-x)
+  (let [mouse-x (math/clamp (.getX Gdx/input)
                             (.getLeftGutterWidth viewport)
                             (.getRightGutterX viewport))
-        mouse-y (math/clamp (gdx/mouse-y)
+        mouse-y (math/clamp (.getY Gdx/input)
                             (.getTopGutterHeight viewport)
                             (.getTopGutterY viewport))
         coords (.unproject viewport (math/v2 mouse-x mouse-y))]
@@ -188,14 +191,14 @@
 
 (defn- make-cursors [cursors]
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
-             (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
-                   cursor (gdx/new-cursor pixmap hotspot-x hotspot-y)]
+             (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                   cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                (utils/dispose pixmap)
                cursor))
            cursors))
 
 (defn set-cursor [cursor-key]
-  (gdx/set-cursor (safe-get cursors cursor-key)))
+  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -210,7 +213,7 @@
   (bind-root #'shape-drawer-texture (white-pixel-texture))
   (bind-root #'shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (bind-root #'default-font (text/truetype-font
-                             {:file (gdx/internal-file "fonts/exocet/films.EXL_____.ttf")
+                             {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
                               :size 16
                               :quality-scaling 2}))
   (bind-root #'world-unit-scale (float (/ tile-size)))
