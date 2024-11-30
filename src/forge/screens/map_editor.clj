@@ -107,7 +107,7 @@ direction keys: move")
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (level/generate (db/get world-id))
         atom-data (current-data)]
-    (Disposable/.dispose (:tiled-map @atom-data))
+    (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
@@ -146,8 +146,8 @@ direction keys: move")
     (when (key-just-pressed? :keys/escape)
       (app/change-screen :screens/main-menu)))
 
-  (dispose [_]
-    (Disposable/.dispose (:tiled-map @current-data))))
+  (destroy [_]
+    (dispose (:tiled-map @current-data))))
 
 (defn create []
   {:actors [(->generate-map-window world-id)

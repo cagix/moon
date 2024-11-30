@@ -11,7 +11,7 @@
   (enter   [_])
   (exit    [_])
   (render  [_])
-  (dispose [_]))
+  (destroy [_]))
 
 (defn change-screen
   "Calls `exit` on the current-screen and `enter` on the new screen."

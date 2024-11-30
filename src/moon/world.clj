@@ -48,7 +48,7 @@
 
 (defn clear [] ; responsibility of screen? we are not creating the tiled-map here ...
   (when (bound? #'tiled-map)
-    (.dispose tiled-map)))
+    (dispose tiled-map)))
 
 (defn cell [position]
   (get grid position))

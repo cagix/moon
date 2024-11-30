@@ -38,9 +38,6 @@
                      :scaling :fill
                      :align :center}))
 
-(defn- exit []
-  (.exit Gdx/app))
-
 (defn- main-screen []
   {:actors [(background-image)
             (ui/table
@@ -56,18 +53,18 @@
                         (when dev-mode?
                           [(ui/text-button "Property editor"
                                            #(app/change-screen :screens/editor))])
-                        [(ui/text-button "Exit" exit)]]))
+                        [(ui/text-button "Exit" exit-app)]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
-                                (exit)))})]
+                                (exit-app)))})]
    :screen (reify app/Screen
              (enter [_]
                (g/set-cursor :cursors/default))
              (exit [_])
              (render [_])
-             (dispose [_]))})
+             (destroy [_]))})
 
 (def tile-size 48)
 
@@ -213,13 +210,13 @@
                  (.setColor g/white)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
-    (.dispose pixmap)
+    (dispose pixmap)
     texture))
 
 (defn- make-cursor [[file [hotspot-x hotspot-y]]]
   (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
         cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (.dispose pixmap)
+    (dispose pixmap)
     cursor))
 
 (defn -main []
@@ -278,13 +275,13 @@
          (app/change-screen :screens/main-menu))
 
        (dispose []
-         (.dispose asset-manager)
-         (.dispose g/batch)
-         (.dispose shape-drawer-texture)
-         (.dispose g/default-font)
-         (run! Disposable/.dispose (vals g/cursors))
-         (ui/dispose)
-         (run! app/dispose (vals app/screens)))
+         (dispose asset-manager)
+         (dispose g/batch)
+         (dispose shape-drawer-texture)
+         (dispose g/default-font)
+         (run! dispose (vals g/cursors))
+         (ui/destroy)
+         (run! app/destroy (vals app/screens)))
 
        (render []
          (ScreenUtils/clear g/black)

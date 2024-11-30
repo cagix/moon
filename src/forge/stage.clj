@@ -24,9 +24,9 @@
     (app/render sub-screen)
     (.draw stage))
 
-  (dispose [_]
-    (.dispose stage)
-    (app/dispose sub-screen)))
+  (destroy [_]
+    (dispose stage)
+    (app/destroy sub-screen)))
 
 (defn- stage-create ^Stage [viewport batch]
   (proxy [Stage clojure.lang.ILookup] [viewport batch]

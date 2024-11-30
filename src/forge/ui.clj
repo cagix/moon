@@ -206,7 +206,7 @@
   (font-enable-markup!)
   (set-tooltip-config!))
 
-(defn dispose []
+(defn destroy []
   (VisUI/dispose))
 
 (defn button-group [{:keys [max-check-count min-check-count]}]

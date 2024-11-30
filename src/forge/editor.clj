@@ -497,4 +497,4 @@
              (enter [_])
              (exit [_])
              (render [_])
-             (dispose [_]))})
+             (destroy [_]))})

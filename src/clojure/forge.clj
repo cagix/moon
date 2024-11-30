@@ -13,7 +13,7 @@
         '(com.badlogic.gdx.assets AssetManager)
         '(com.badlogic.gdx.audio Sound)
         '(com.badlogic.gdx.graphics Color)
-        '(com.badlogic.gdx.utils Align Scaling))
+        '(com.badlogic.gdx.utils Align Scaling Disposable))
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
@@ -136,3 +136,8 @@
 
 (defn delta-time []
   (.getDeltaTime Gdx/graphics))
+
+(defn exit-app []
+  (.exit Gdx/app))
+
+(def dispose Disposable/.dispose)

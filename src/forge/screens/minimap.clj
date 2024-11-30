@@ -50,7 +50,7 @@
               (key-just-pressed? :keys/escape))
       (app/change-screen :screens/world)))
 
-  (dispose [_]))
+  (destroy [_]))
 
 (defn create []
   {:screen (->Minimap)})

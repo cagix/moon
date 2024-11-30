@@ -172,7 +172,7 @@
           (controls/minimap?)
           (app/change-screen :screens/minimap)))
 
-  (dispose [_]
+  (destroy [_]
     (world/clear)))
 
 (defn screen []

@@ -10,6 +10,11 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
+(def world-viewport-width 1440)
+(def world-viewport-height 900)
+(def gui-viewport-width 1440)
+(def gui-viewport-height 900)
+
 (defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
   (.draw batch
@@ -74,7 +79,7 @@
 (defn truetype-font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. file)
         font (.generateFont generator (ttf-params size quality-scaling))]
-    (.dispose generator)
+    (dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
@@ -91,12 +96,6 @@
 
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
-
-(def world-viewport-width 1440)
-(def world-viewport-height 900)
-
-(def gui-viewport-width 1440)
-(def gui-viewport-height 900)
 
 (declare ^Batch batch
          ^ShapeDrawer shape-drawer
