@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.app :as app]
             [forge.db :as db]
             [forge.editor :as editor]
             [forge.effects :as effects]
@@ -11,6 +10,7 @@
             [forge.screens.map-editor :as map-editor]
             [forge.screens.minimap :as minimap]
             [forge.screens.world :as world]
+            [forge.screen :as screen]
             [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.utils :refer [dev-mode?]]
@@ -18,7 +18,7 @@
             [forge.entity.animation]
             [forge.info.impl]
             (mapgen generate uf-caves))
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
@@ -49,17 +49,17 @@
                                           #(world/start world))])
                        [(when dev-mode?
                           [(ui/text-button "Map editor"
-                                           #(app/change-screen :screens/map-editor))])
+                                           #(change-screen :screens/map-editor))])
                         (when dev-mode?
                           [(ui/text-button "Property editor"
-                                           #(app/change-screen :screens/editor))])
+                                           #(change-screen :screens/editor))])
                         [(ui/text-button "Exit" exit-app)]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
                                 (exit-app)))})]
-   :screen (reify app/Screen
+   :screen (reify screen/Screen
              (enter [_]
                (g/set-cursor :cursors/default))
              (exit [_])
@@ -198,7 +198,7 @@
     (doseq [[class exts] [[Sound   #{"wav"}]
                           [Texture #{"png" "bmp"}]]
             file (map #(str/replace-first % folder "")
-                      (recursively-search (.internal Gdx/files folder) exts))]
+                      (recursively-search (internal-file folder) exts))]
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
     manager))
@@ -213,12 +213,6 @@
     (dispose pixmap)
     texture))
 
-(defn- make-cursor [[file [hotspot-x hotspot-y]]]
-  (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (dispose pixmap)
-    cursor))
-
 (defn -main []
   (let [{:keys [dock-icon
                 lwjgl3
@@ -227,6 +221,13 @@
                 assets
                 cursors
                 ui]} (-> config io/resource slurp edn/read-string)]
+    (bind-root #'db/schemas (-> schema io/resource slurp edn/read-string))
+    (bind-root #'db/properties-file (io/resource properties))
+    (let [properties (-> db/properties-file slurp edn/read-string)]
+      (assert (or (empty? properties)
+                  (apply distinct? (map :property/id properties))))
+      (run! db/validate! properties)
+      (bind-root #'db/db (zipmap (map :property/id properties) properties)))
     (set-dock-icon dock-icon)
     (when SharedLibraryLoader/isMac
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
@@ -234,19 +235,12 @@
     (Lwjgl3Application.
      (proxy [ApplicationAdapter] []
        (create []
-         (bind-root #'db/schemas (-> schema io/resource slurp edn/read-string))
-         (bind-root #'db/properties-file (io/resource properties))
-         (let [properties (-> db/properties-file slurp edn/read-string)]
-           (assert (or (empty? properties)
-                       (apply distinct? (map :property/id properties))))
-           (run! db/validate! properties)
-           (bind-root #'db/db (zipmap (map :property/id properties) properties)))
          (bind-root #'asset-manager (load-assets assets))
          (bind-root #'g/batch (SpriteBatch.))
          (bind-root #'shape-drawer-texture (white-pixel-texture))
          (bind-root #'g/shape-drawer (ShapeDrawer. g/batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
          (bind-root #'g/default-font (g/truetype-font
-                                      {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
+                                      {:file (internal-file "fonts/exocet/films.EXL_____.ttf")
                                        :size 16
                                        :quality-scaling 2}))
          (bind-root #'g/world-unit-scale (float (/ tile-size)))
@@ -264,15 +258,15 @@
          (bind-root #'g/gui-viewport (FitViewport. g/gui-viewport-width
                                                    g/gui-viewport-height
                                                    (OrthographicCamera.)))
-         (bind-root #'g/cursors (mapvals make-cursor cursors))
+         (bind-root #'g/cursors (mapvals gdx-cursor cursors))
          (ui/init ui)
-         (bind-root #'app/screens (mapvals stage/create
-                                           {:screens/main-menu  (main-screen)
-                                            :screens/map-editor (map-editor/create)
-                                            :screens/editor     (editor/screen (background-image))
-                                            :screens/minimap    (minimap/create)
-                                            :screens/world      (world/screen)}))
-         (app/change-screen :screens/main-menu))
+         (bind-root #'screens (mapvals stage/create
+                                       {:screens/main-menu  (main-screen)
+                                        :screens/map-editor (map-editor/create)
+                                        :screens/editor     (editor/screen (background-image))
+                                        :screens/minimap    (minimap/create)
+                                        :screens/world      (world/screen)}))
+         (change-screen :screens/main-menu))
 
        (dispose []
          (dispose asset-manager)
@@ -281,11 +275,11 @@
          (dispose g/default-font)
          (run! dispose (vals g/cursors))
          (ui/destroy)
-         (run! app/destroy (vals app/screens)))
+         (run! screen/destroy (vals screens)))
 
        (render []
          (clear-screen black)
-         (app/render (app/current-screen)))
+         (screen/render (current-screen)))
 
        (resize [w h]
          (.update g/gui-viewport   w h true)

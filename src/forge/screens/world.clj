@@ -1,11 +1,11 @@
 (ns forge.screens.world
-  (:require [forge.app :as app]
-            [forge.graphics :as g :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
+  (:require [forge.graphics :as g :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
             [forge.db :as db]
             [forge.graphics :as g]
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
+            [forge.screen :as screen]
             [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.utils :refer [readable-number dev-mode?]]
@@ -36,11 +36,11 @@
   (dev-menu/create
    {:menus [{:label "Screens"
              :items [{:label "Map-editor"
-                      :on-click (partial app/change-screen :screens/map-editor)}
+                      :on-click (partial change-screen :screens/map-editor)}
                      {:label "Editor"
-                      :on-click (partial app/change-screen :screens/editor)}
+                      :on-click (partial change-screen :screens/editor)}
                      {:label "Main-Menu"
-                      :on-click (partial app/change-screen :screens/main-menu)}]}
+                      :on-click (partial change-screen :screens/main-menu)}]}
             {:label "World"
              :items (for [world (db/all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
@@ -112,7 +112,7 @@
       (run! #(Actor/.setVisible % false) windows))))
 
 (defn start [world-props]
-  (app/change-screen :screens/world)
+  (change-screen :screens/world)
   (stage/reset (widgets))
   (world/clear)
   (world/init (level/generate world-props)))
@@ -154,7 +154,7 @@
                        (debug-render/after-entities))))
 
 (deftype WorldScreen []
-  app/Screen
+  screen/Screen
   (enter [_]
     (cam/set-zoom! (world-camera) 0.8))
 
@@ -170,7 +170,7 @@
           (close-all-windows)
 
           (controls/minimap?)
-          (app/change-screen :screens/minimap)))
+          (change-screen :screens/minimap)))
 
   (destroy [_]
     (world/clear)))

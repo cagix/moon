@@ -2,12 +2,12 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.app :as app]
             [forge.db :as db]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]
             [forge.utils :refer [index-of truncate ->edn-str]]
+            [forge.screen :as screen]
             [forge.stage :as stage]
             [forge.widgets.error-window :refer [error-window!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -491,8 +491,8 @@
             (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :shift-left)
-                                (app/change-screen :screens/main-menu)))})]
-   :screen (reify app/Screen
+                                (change-screen :screens/main-menu)))})]
+   :screen (reify screen/Screen
              (enter [_])
              (exit [_])
              (render [_])

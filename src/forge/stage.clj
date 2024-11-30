@@ -1,32 +1,32 @@
 (ns forge.stage
   (:refer-clojure :exclude [get])
-  (:require [forge.app :as app]
-            [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
+  (:require [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
+            [forge.screen :as screen]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defn get ^Stage []
-  (:stage (app/current-screen)))
+  (:stage (current-screen)))
 
 (defrecord StageScreen [^Stage stage sub-screen]
-  app/Screen
+  screen/Screen
   (enter [_]
     (.setInputProcessor Gdx/input stage)
-    (app/enter sub-screen))
+    (screen/enter sub-screen))
 
   (exit [_]
     (.setInputProcessor Gdx/input nil)
-    (app/exit sub-screen))
+    (screen/exit sub-screen))
 
   (render [_]
     (.act stage)
-    (app/render sub-screen)
+    (screen/render sub-screen)
     (.draw stage))
 
   (destroy [_]
     (dispose stage)
-    (app/destroy sub-screen)))
+    (screen/destroy sub-screen)))
 
 (defn- stage-create ^Stage [viewport batch]
   (proxy [Stage clojure.lang.ILookup] [viewport batch]

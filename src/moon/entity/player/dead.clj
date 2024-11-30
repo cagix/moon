@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.player.dead
-  (:require [forge.app :as app]
-            [forge.ui.modal :as modal]))
+  (:require [forge.ui.modal :as modal]))
 
 (defn cursor [_]
   :cursors/black-x)
@@ -13,4 +12,4 @@
   (modal/show {:title "YOU DIED"
                :text "\nGood luck next time"
                :button-text ":("
-               :on-click #(app/change-screen :screens/main-menu)}))
+               :on-click #(change-screen :screens/main-menu)}))

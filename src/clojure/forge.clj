@@ -1,18 +1,12 @@
 (in-ns 'clojure.core)
 
-; what is my environment ?
-; app & world ....
-; => all dependencies in 'project.clj', e.g. malli/validate ...
-; => everything I refer or even v-add  ....
-; all my aliases o.o
-; tiled/foo
-
 (require '[clojure.string :as str])
+(require '[forge.screen :as screen])
 (import 'com.badlogic.gdx.math.MathUtils)
 (import '(com.badlogic.gdx Gdx)
         '(com.badlogic.gdx.assets AssetManager)
         '(com.badlogic.gdx.audio Sound)
-        '(com.badlogic.gdx.graphics Color)
+        '(com.badlogic.gdx.graphics Color Pixmap)
         '(com.badlogic.gdx.scenes.scene2d Actor)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
@@ -150,3 +144,29 @@
 
 (defn clear-screen [color]
   (ScreenUtils/clear color))
+
+(defn internal-file [path]
+  (.internal Gdx/files path))
+
+(defn gdx-cursor [[file [hotspot-x hotspot-y]]]
+  (let [pixmap (Pixmap. (internal-file (str "cursors/" file ".png")))
+        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+    (dispose pixmap)
+    cursor))
+
+(declare screens
+         ^:private current-screen-key)
+
+(defn current-screen []
+  (and (bound? #'current-screen-key)
+       (current-screen-key screens)))
+
+(defn change-screen
+  "Calls `exit` on the current-screen and `enter` on the new screen."
+  [new-k]
+  (when-let [screen (current-screen)]
+    (screen/exit screen))
+  (let [screen (new-k screens)]
+    (assert screen (str "Cannot find screen with key: " new-k))
+    (bind-root #'current-screen-key new-k)
+    (screen/enter screen)))

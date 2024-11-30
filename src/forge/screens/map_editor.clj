@@ -1,12 +1,12 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.gdx.tiled :as t]
             [clojure.string :as str]
-            [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
             [forge.level :as level]
+            [forge.screen :as screen]
             [forge.widgets.error-window :refer [error-window!]]
             [moon.controls :as controls]
             [mapgen.modules :as modules])
@@ -24,7 +24,7 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> (app/current-screen) :sub-screen :current-data))
+  (-> (current-screen) :sub-screen :current-data))
 
 (def ^:private infotext
   "L: grid lines
@@ -126,7 +126,7 @@ direction keys: move")
               :pack? true}))
 
 (defrecord MapEditorScreen [current-data]
-  app/Screen
+  screen/Screen
   (enter [_]
     (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
@@ -144,7 +144,7 @@ direction keys: move")
     (controls/world-camera-zoom)
     (camera-controls (world-camera))
     (when (key-just-pressed? :keys/escape)
-      (app/change-screen :screens/main-menu)))
+      (change-screen :screens/main-menu)))
 
   (destroy [_]
     (dispose (:tiled-map @current-data))))
