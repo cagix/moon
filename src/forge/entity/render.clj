@@ -2,9 +2,9 @@
   (:require [forge.effects :as effects]
             [forge.entity :as entity]
             [forge.entity.active :refer [check-update-ctx]]
-            [forge.entity.components :as entity]
+            [forge.entity.components :refer [hitpoints enemy]]
             [forge.entity.player.item-on-cursor :refer [item-place-position world-item?]]
-            [forge.graphics :refer [draw-filled-circle draw-image draw-sector draw-text draw-filled-rectangle pixels->world-units draw-rotated-centered draw-line with-line-width draw-ellipse draw-circle]]
+            [forge.graphics :refer [draw-filled-circle draw-image draw-sector draw-text draw-filled-rectangle pixels->world-units draw-rotated-centered draw-line with-line-width draw-ellipse draw-circle draw-centered]]
             [forge.val-max :as val-max]
             [forge.world :refer [player-eid finished-ratio]]))
 
@@ -42,7 +42,7 @@
       #(draw-ellipse (:position entity)
                      (:half-width entity)
                      (:half-height entity)
-                     (cond (= faction (entity/enemy player))
+                     (cond (= faction (enemy player))
                            enemy-color
                            (= faction (:entity/faction player))
                            friendly-color
@@ -123,6 +123,6 @@
                              (hpbar-color ratio)))))
 
 (defmethod entity/render-info :entity/hp [_ entity]
-  (let [ratio (val-max/ratio (entity/hitpoints entity))]
+  (let [ratio (val-max/ratio (hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))
