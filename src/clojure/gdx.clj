@@ -1,10 +1,10 @@
 (ns clojure.gdx
   (:import (com.badlogic.gdx Gdx)))
 
-(defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+(defn post-runnable [runnable]
+  (.postRunnable Gdx/app runnable))
 
-(defn exit-app []
+(defn exit []
   (.exit Gdx/app))
 
 (defn internal-file [path]
@@ -16,7 +16,7 @@
 (defn delta-time []
   (.getDeltaTime Gdx/graphics))
 
-(defn new-cursor [pixmap [hotspot-x hotspot-y]]
+(defn new-cursor [pixmap hotspot-x hotspot-y]
   (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y))
 
 (defn set-cursor [cursor]

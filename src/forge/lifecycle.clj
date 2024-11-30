@@ -21,9 +21,9 @@
   (:import (com.badlogic.gdx.graphics Pixmap)))
 
 (defn- make-cursors [cursors]
-  (mapvals (fn [[file hotspot]]
+  (mapvals (fn [[file [hotspot-x hotspot-y]]]
              (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
-                   cursor (gdx/new-cursor pixmap hotspot)]
+                   cursor (gdx/new-cursor pixmap hotspot-x hotspot-y)]
                (utils/dispose pixmap)
                cursor))
            cursors))
