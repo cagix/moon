@@ -84,4 +84,4 @@
 (declare ^AssetManager asset-manager)
 
 (defn play-sound [name]
-  (Sound/.play (asset-manager (str "sounds/" name ".wav"))))
+  (Sound/.play (get asset-manager (str "sounds/" name ".wav"))))

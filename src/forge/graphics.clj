@@ -1,7 +1,6 @@
 (ns forge.graphics
   (:require [clojure.gdx.tiled :as tiled]
-            [clojure.string :as str]
-            [forge.graphics.image :as image])
+            [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Texture$TextureFilter Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch SpriteBatch TextureRegion)
@@ -11,6 +10,57 @@
            (com.badlogic.gdx.math Vector2)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
+
+(defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
+  (if color (.setColor batch color))
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; rotation origin
+         (/ (float h) 2)
+         w ; width height
+         h
+         1 ; scaling factor
+         1
+         rotation)
+  (if color (.setColor batch Color/WHITE)))
+
+(defn- unit-dimensions [image unit-scale]
+  (if (= unit-scale 1)
+    (:pixel-dimensions image)
+    (:world-unit-dimensions image)))
+
+(defn- scale-dimensions [dimensions scale]
+  (mapv (comp float (partial * scale)) dimensions))
+
+(defn- texture-dimensions [^TextureRegion texture-region]
+  [(.getRegionWidth  texture-region)
+   (.getRegionHeight texture-region)])
+
+(defn- assoc-dimensions
+  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+  [{:keys [texture-region] :as image} world-unit-scale scale]
+  {:pre [(or (number? scale)
+             (and (vector? scale)
+                  (number? (scale 0))
+                  (number? (scale 1))))]}
+  (let [pixel-dimensions (if (number? scale)
+                           (scale-dimensions (texture-dimensions texture-region) scale)
+                           scale)]
+    (assoc image
+           :pixel-dimensions pixel-dimensions
+           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
+
+(defrecord Sprite [texture-region
+                   pixel-dimensions
+                   world-unit-dimensions
+                   color]) ; optional
+
+(defn- sprite* [world-unit-scale texture-region]
+  (-> {:texture-region texture-region}
+      (assoc-dimensions world-unit-scale 1) ; = scale 1
+      map->Sprite))
 
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -103,16 +153,16 @@
 
 (defn texture-region
   ([path]
-   (TextureRegion. ^Texture (asset-manager path)))
+   (TextureRegion. ^Texture (get asset-manager path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
 (defn image [path]
-  (image/create world-unit-scale (texture-region path)))
+  (sprite* world-unit-scale (texture-region path)))
 
 (defn sub-image [image bounds]
-  (image/create world-unit-scale
-                (texture-region (:texture-region image) bounds)))
+  (sprite* world-unit-scale
+           (texture-region (:texture-region image) bounds)))
 
 (defn sprite-sheet [path tilew tileh]
   {:image (image path)
@@ -145,14 +195,27 @@
            false) ; wrap false, no need target-width
     (.setScale data old-scale)))
 
-(defn draw-image [image position]
-  (image/draw batch *unit-scale* image position))
+(defn draw-image [{:keys [texture-region color] :as image} position]
+  (draw-texture-region batch
+                       texture-region
+                       position
+                       (unit-dimensions image *unit-scale*)
+                       0 ; rotation
+                       color))
+
+(defn draw-rotated-centered
+  [{:keys [texture-region color] :as image} rotation [x y]]
+  (let [[w h] (unit-dimensions image *unit-scale*)]
+    (draw-texture-region batch
+                         texture-region
+                         [(- (float x) (/ (float w) 2))
+                          (- (float y) (/ (float h) 2))]
+                         [w h]
+                         rotation
+                         color)))
 
 (defn draw-centered [image position]
-  (image/draw-centered batch *unit-scale* image position))
-
-(defn draw-rotated-centered [image rotation position]
-  (image/draw-rotated-centered batch *unit-scale* image rotation position))
+  (draw-rotated-centered image 0 position))
 
 (defn- sd-color [color]
   (.setColor shape-drawer (->gdx-color color)))
