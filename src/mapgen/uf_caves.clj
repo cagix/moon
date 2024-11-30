@@ -1,10 +1,9 @@
 (ns ^:no-doc mapgen.uf-caves
   (:require [data.grid2d :as g2d]
             [forge.db :as db]
-            [forge.graphics.texture :as texture]
             [forge.math.rand :refer [get-rand-weighted-item]]
             [forge.tiled :as t]
-            [forge.graphics :refer [texture-region]]
+            [forge.graphics :as g]
             [forge.level :as level]
             [mapgen.creatures :as creatures]
             [mapgen.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
@@ -38,14 +37,14 @@
 (def ^:private sprite-size 48)
 
 (defn- terrain-texture-region []
-  (texture-region "maps/uf_terrain.png"))
+  (g/texture-region "maps/uf_terrain.png"))
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (texture/region (terrain-texture-region)
-                           [(* sprite-x sprite-size)
-                            (* sprite-y sprite-size)
-                            sprite-size
-                            sprite-size])
+  (tm-tile (g/texture-region (terrain-texture-region)
+                             [(* sprite-x sprite-size)
+                              (* sprite-y sprite-size)
+                              sprite-size
+                              sprite-size])
            movement))
 
 (def ^:private uf-grounds

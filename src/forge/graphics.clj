@@ -68,26 +68,27 @@
 (defn world-camera []
   (.getCamera world-viewport))
 
-(defn texture-region [path]
-  (TextureRegion. ^Texture (assets/get path)))
+(defn texture-region
+  ([path]
+   (TextureRegion. ^Texture (assets/get path)))
+  ([^TextureRegion texture-region [x y w h]]
+   (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
 (defn image [path]
   (image/create world-unit-scale (texture-region path)))
 
 (defn sub-image [image bounds]
-  (image/sub-image world-unit-scale
-                   image
-                   bounds))
+  (image/create world-unit-scale
+                (texture-region (:texture-region image) bounds)))
 
 (defn sprite-sheet [path tilew tileh]
   {:image (image path)
    :tilew tilew
    :tileh tileh})
 
-(defn sprite [sprite-sheet index]
-  (image/sprite world-unit-scale
-                sprite-sheet
-                index))
+(defn sprite [{:keys [image tilew tileh]} [x y]]
+  (sub-image image
+             [(* x tilew) (* y tileh) tilew tileh]))
 
 (defn draw-text [opts]
   (text/draw batch *unit-scale* default-font opts))

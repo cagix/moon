@@ -1,6 +1,5 @@
 (ns forge.graphics.image
-  (:require [clojure.gdx.graphics.color :as color]
-            [forge.graphics.texture :as texture])
+  (:require [clojure.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
@@ -75,11 +74,3 @@
   (-> {:texture-region texture-region}
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
-
-(defn sub-image [world-unit-scale {:keys [texture-region]} bounds]
-  (create world-unit-scale (texture/region texture-region bounds)))
-
-(defn sprite
-  "x,y index starting top-left"
-  [world-unit-scale {:keys [image tilew tileh]} [x y]]
-  (sub-image world-unit-scale image [(* x tilew) (* y tileh) tilew tileh]))
