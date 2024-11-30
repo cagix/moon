@@ -23,10 +23,16 @@
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (com.badlogic.gdx.graphics Texture OrthographicCamera Pixmap Pixmap$Format)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+           (com.badlogic.gdx.utils Disposable SharedLibraryLoader)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)))
+           (org.lwjgl.system Configuration)
+           (space.earlygrey.shapedrawer ShapeDrawer)
+           (forge OrthogonalTiledMapRenderer)))
+
+(def tile-size 48)
 
 (def ^:private config "app.edn")
 
@@ -163,12 +169,30 @@
     (.finishLoading manager)
     manager))
 
+(declare ^:private ^Texture shape-drawer-texture)
+
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor graphics/white)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
+
+(defn- make-cursors [cursors]
+  (mapvals (fn [[file [hotspot-x hotspot-y]]]
+             (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                   cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+               (.dispose pixmap)
+               cursor))
+           cursors))
+
 (defn -main []
   (let [{:keys [dock-icon
                 lwjgl3
                 db
                 assets
-                graphics
+                cursors
                 ui]} (-> config io/resource slurp edn/read-string)]
     (set-dock-icon dock-icon)
     (when SharedLibraryLoader/isMac
@@ -179,7 +203,29 @@
        (create []
          (db/init db)
          (bind-root #'asset-manager (load-assets assets))
-         (graphics/init graphics)
+         (bind-root #'graphics/batch (SpriteBatch.))
+         (bind-root #'shape-drawer-texture (white-pixel-texture))
+         (bind-root #'graphics/shape-drawer (ShapeDrawer. graphics/batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
+         (bind-root #'graphics/default-font (graphics/truetype-font
+                                             {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
+                                              :size 16
+                                              :quality-scaling 2}))
+         (bind-root #'graphics/world-unit-scale (float (/ tile-size)))
+         (bind-root #'graphics/world-viewport (let [world-width  (* graphics/world-viewport-width  graphics/world-unit-scale)
+                                                    world-height (* graphics/world-viewport-height graphics/world-unit-scale)
+                                                    camera (OrthographicCamera.)
+                                                    y-down? false]
+                                                (.setToOrtho camera y-down? world-width world-height)
+                                                (FitViewport. world-width world-height camera)))
+         (bind-root #'graphics/cached-map-renderer (memoize
+                                                    (fn [tiled-map]
+                                                      (OrthogonalTiledMapRenderer. tiled-map
+                                                                                   (float graphics/world-unit-scale)
+                                                                                   graphics/batch))))
+         (bind-root #'graphics/gui-viewport (FitViewport. graphics/gui-viewport-width
+                                                          graphics/gui-viewport-height
+                                                          (OrthographicCamera.)))
+         (bind-root #'graphics/cursors (make-cursors cursors))
          (ui/init ui)
          (app/init-screens
           {:screens (mapvals stage/create
@@ -192,7 +238,10 @@
 
        (dispose []
          (.dispose asset-manager)
-         (graphics/dispose)
+         (.dispose graphics/batch)
+         (.dispose shape-drawer-texture)
+         (.dispose graphics/default-font)
+         (run! Disposable/.dispose (vals graphics/cursors))
          (ui/dispose)
          (app/dispose-screens))
 
@@ -201,5 +250,6 @@
          (app/render-current-screen))
 
        (resize [w h]
-         (graphics/resize w h)))
+         (.update graphics/gui-viewport   w h true)
+         (.update graphics/world-viewport w h)))
      (lwjgl3-config lwjgl3))))

@@ -136,4 +136,3 @@
 
 (defn delta-time []
   (.getDeltaTime Gdx/graphics))
-

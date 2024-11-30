@@ -2,11 +2,11 @@
   (:require [clojure.gdx.tiled :as tiled]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Texture$TextureFilter Pixmap Pixmap$Format)
-           (com.badlogic.gdx.graphics.g2d BitmapFont Batch SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.utils Disposable ScreenUtils)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
+           (com.badlogic.gdx.utils ScreenUtils)
+           (com.badlogic.gdx.utils.viewport Viewport)
            (com.badlogic.gdx.math Vector2)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
@@ -72,7 +72,7 @@
     (set! (.magFilter params) Texture$TextureFilter/Linear)
     params))
 
-(defn- truetype-font [{:keys [file size quality-scaling]}]
+(defn truetype-font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. file)
         font (.generateFont generator (ttf-params size quality-scaling))]
     (.dispose generator)
@@ -96,8 +96,6 @@
 (defn clear-screen []
   (ScreenUtils/clear black))
 
-(def tile-size 48)
-
 (def world-viewport-width 1440)
 (def world-viewport-height 900)
 
@@ -105,11 +103,10 @@
 (def gui-viewport-height 900)
 
 (declare ^Batch batch
-         ^:private ^ShapeDrawer shape-drawer
-         ^:private ^Texture shape-drawer-texture
-         ^:private ^BitmapFont default-font
-         ^:private cached-map-renderer
-         ^:private world-unit-scale
+         ^ShapeDrawer shape-drawer
+         ^BitmapFont default-font
+         cached-map-renderer
+         world-unit-scale
          ^Viewport world-viewport
          ^Viewport gui-viewport
          cursors)
@@ -302,54 +299,5 @@
          int-array
          (.render map-renderer))))
 
-(defn- make-cursors [cursors]
-  (mapvals (fn [[file [hotspot-x hotspot-y]]]
-             (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                   cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-               (.dispose pixmap)
-               cursor))
-           cursors))
-
 (defn set-cursor [cursor-key]
   (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor white)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
-    texture))
-
-(defn init [{:keys [cursors]}]
-  (bind-root #'batch (SpriteBatch.))
-  (bind-root #'shape-drawer-texture (white-pixel-texture))
-  (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-  (bind-root #'default-font (truetype-font
-                             {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
-                              :size 16
-                              :quality-scaling 2}))
-  (bind-root #'world-unit-scale (float (/ tile-size)))
-  (bind-root #'world-viewport (let [world-width  (* world-viewport-width world-unit-scale)
-                                    world-height (* world-viewport-height world-unit-scale)
-                                    camera (OrthographicCamera.)
-                                    y-down? false]
-                                (.setToOrtho camera y-down? world-width world-height)
-                                (FitViewport. world-width world-height camera)))
-  (bind-root #'cached-map-renderer (memoize
-                                    (fn [tiled-map]
-                                      (OrthogonalTiledMapRenderer. tiled-map (float world-unit-scale) batch))))
-  (bind-root #'gui-viewport (FitViewport. gui-viewport-width
-                                          gui-viewport-height
-                                          (OrthographicCamera.)))
-  (bind-root #'cursors (make-cursors cursors)))
-
-(defn dispose []
-  (.dispose batch)
-  (.dispose shape-drawer-texture)
-  (.dispose default-font)
-  (run! Disposable/.dispose (vals cursors)))
-
-(defn resize [w h]
-  (.update gui-viewport   w h true)
-  (.update world-viewport w h))
