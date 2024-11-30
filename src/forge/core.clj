@@ -1,27 +1,25 @@
-(in-ns 'clojure.core)
+(ns clojure.core
+  (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.pprint]
+            [clojure.string :as str]
+            [forge.screen :as screen]
+            [malli.core :as m]
+            [malli.error :as me]
+            [malli.generator :as mg])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics Color Pixmap)
+           (com.badlogic.gdx.scenes.scene2d Actor Stage)
+           (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
+           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils)))
 
-(require '[clj-commons.pretty.repl :as pretty-repl])
-(require '[clojure.pprint])
-(require '[clojure.string :as str])
-(require '[forge.screen :as screen])
-(require '[malli.core :as m]
-         '[malli.error :as me]
-         '[malli.generator :as mg])
-(import 'com.badlogic.gdx.math.MathUtils)
-(import '(com.badlogic.gdx Gdx)
-        '(com.badlogic.gdx.assets AssetManager)
-        '(com.badlogic.gdx.audio Sound)
-        '(com.badlogic.gdx.graphics Color Pixmap)
-        '(com.badlogic.gdx.scenes.scene2d Actor Stage)
-        '(com.badlogic.gdx.math Circle Intersector Rectangle Vector2)
-        '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
-
-(def str-split  str/split)
-(def str-join   str/join)
-(def capitalize str/capitalize)
-(def str-replace str/replace)
+(def str-split         str/split)
+(def str-join          str/join)
+(def capitalize        str/capitalize)
+(def str-replace       str/replace)
 (def str-replace-first str/replace-first)
-(def str-trim-newline str/trim-newline)
+(def str-trim-newline  str/trim-newline)
 
 (defn pretty-pst [t]
   (binding [*print-level* 3]
