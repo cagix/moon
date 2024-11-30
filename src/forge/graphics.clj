@@ -1,17 +1,16 @@
 (ns forge.graphics
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.utils :as utils]
-            [clojure.gdx.math :as math :refer [degree->radians]]
+  (:require [clojure.gdx.math :as math]
             [forge.assets :as assets]
-            [forge.graphics.color]
             [forge.graphics.image :as image]
             [forge.graphics.text :as text]
-            [forge.graphics.tiled :as tiled])
+            [forge.graphics.tiled :as tiled]
+            [forge.utils.gdx :as interop])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics OrthographicCamera Texture Pixmap Pixmap$Format)
+           (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
+           (com.badlogic.gdx.utils Disposable ScreenUtils)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
@@ -19,8 +18,30 @@
 (defn delta-time []
   (.getDeltaTime Gdx/graphics))
 
+(def black Color/BLACK)
+(def white Color/WHITE)
+
+(defn color
+  ([r g b]
+   (color r g b 1))
+  ([r g b a]
+   (Color. (float r) (float g) (float b) (float a))))
+
+(defn- munge-color [c]
+  (cond (= Color (class c)) c
+        (keyword? c) (interop/field "graphics.Color" c)
+        (vector? c) (apply color c)
+        :else (throw (ex-info "Cannot understand color" c))))
+
+(defn add-color
+  "A general purpose class containing named colors that can be changed at will. For example, the markup language defined by the BitmapFontCache class uses this class to retrieve colors and the user can define his own colors.
+
+  [javadoc](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Colors.html)"
+  [name-str color]
+  (Colors/put name-str (munge-color color)))
+
 (defn clear-screen []
-  (utils/clear-screen color/black))
+  (ScreenUtils/clear black))
 
 (def tile-size 48)
 
@@ -106,43 +127,43 @@
   (image/draw-rotated-centered batch *unit-scale* image rotation position))
 
 (defn- sd-color [color]
-  (sd/set-color shape-drawer (forge.graphics.color/munge color)))
+  (.setColor shape-drawer (munge-color color)))
 
 (defn draw-ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (sd/ellipse shape-drawer x y radius-x radius-y))
+  (.ellipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
 
 (defn draw-filled-ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (sd/filled-ellipse shape-drawer x y radius-x radius-y))
+  (.filledEllipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
 
 (defn draw-circle [[x y] radius color]
   (sd-color color)
-  (sd/circle shape-drawer x y radius))
+  (.circle shape-drawer (float x) (float y) (float radius)))
 
 (defn draw-filled-circle [[x y] radius color]
   (sd-color color)
-  (sd/filled-circle shape-drawer x y radius))
+  (.filledCircle shape-drawer (float x) (float y) (float radius)))
 
 (defn draw-arc [[centre-x centre-y] radius start-angle degree color]
   (sd-color color)
-  (sd/arc shape-drawer centre-x centre-y radius (degree->radians start-angle) (degree->radians degree)))
+  (.arc shape-drawer (float centre-x) (float centre-y) (float radius) (math/degree->radians start-angle) (math/degree->radians degree)))
 
 (defn draw-sector [[centre-x centre-y] radius start-angle degree color]
   (sd-color color)
-  (sd/sector shape-drawer centre-x centre-y radius (degree->radians start-angle) (degree->radians degree)))
+  (.sector shape-drawer (float centre-x) (float centre-y) (float radius) (math/degree->radians start-angle) (math/degree->radians degree)))
 
 (defn draw-rectangle [x y w h color]
   (sd-color color)
-  (sd/rectangle shape-drawer x y w h))
+  (.rectangle shape-drawer (float x) (float y) (float w) (float h)))
 
 (defn draw-filled-rectangle [x y w h color]
   (sd-color color)
-  (sd/filled-rectangle shape-drawer x y w h))
+  (.filledRectangle shape-drawer (float x) (float y) (float w) (float h)))
 
 (defn draw-line [[sx sy] [ex ey] color]
   (sd-color color)
-  (sd/line shape-drawer sx sy ex ey))
+  (.line shape-drawer (float sx) (float sy) (float ex) (float ey)))
 
 (defn draw-grid [leftx bottomy gridw gridh cellw cellh color]
   (sd-color color)
@@ -158,13 +179,13 @@
       (draw-line shape-drawer [leftx liney] [rightx liney]))))
 
 (defn with-line-width [width draw-fn]
-  (let [old-line-width (sd/default-line-width shape-drawer)]
-    (sd/set-default-line-width shape-drawer (* width old-line-width))
+  (let [old-line-width (.getDefaultLineWidth shape-drawer)]
+    (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
     (draw-fn)
-    (sd/set-default-line-width shape-drawer old-line-width)))
+    (.setDefaultLineWidth shape-drawer (float old-line-width))))
 
 (defn- draw-with [^Viewport viewport unit-scale draw-fn]
-  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
+  (.setColor batch white) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (.combined (.getCamera viewport)))
   (.begin batch)
   (with-line-width unit-scale
@@ -193,7 +214,7 @@
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
              (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
                    cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-               (utils/dispose pixmap)
+               (.dispose pixmap)
                cursor))
            cursors))
 
@@ -202,7 +223,7 @@
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor color/white)
+                 (.setColor white)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)
@@ -211,7 +232,7 @@
 (defn init [{:keys [cursors]}]
   (bind-root #'batch (SpriteBatch.))
   (bind-root #'shape-drawer-texture (white-pixel-texture))
-  (bind-root #'shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
+  (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (bind-root #'default-font (text/truetype-font
                              {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
                               :size 16
@@ -235,7 +256,7 @@
   (.dispose batch)
   (.dispose shape-drawer-texture)
   (.dispose default-font)
-  (run! utils/dispose (vals cursors)))
+  (run! Disposable/.dispose (vals cursors)))
 
 (defn resize [w h]
   (.update gui-viewport   w h true)

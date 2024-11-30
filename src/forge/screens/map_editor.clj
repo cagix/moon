@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.utils :refer [dispose]]
+  (:require [clojure.gdx.utils :refer [dispose]]
             [clojure.string :as str]
             [forge.app :as app]
             [forge.db :as db]
@@ -8,7 +7,7 @@
             [forge.input :refer [key-pressed? key-just-pressed?]]
             [forge.ui :as ui]
             [forge.tiled :as t]
-            [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
+            [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position white]]
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
             [moon.controls :as controls]
@@ -137,7 +136,7 @@ direction keys: move")
 
   (render [_]
     (draw-tiled-map (:tiled-map @current-data)
-                    (constantly color/white))
+                    (constantly white))
     (draw-on-world-view render-on-map)
     (if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))

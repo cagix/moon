@@ -1,8 +1,7 @@
 (ns clojure.gdx.utils
   (:import (com.badlogic.gdx.utils Align
                                    Disposable
-                                   Scaling
-                                   ScreenUtils)))
+                                   Scaling)))
 
 (defn align [k]
   (case k
@@ -13,8 +12,5 @@
 (defn scaling [k]
   (case k
     :fill Scaling/fill))
-
-(defn clear-screen [color]
-  (ScreenUtils/clear color))
 
 (def dispose Disposable/.dispose)

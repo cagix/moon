@@ -1,6 +1,6 @@
 (ns forge.info.impl
   (:require [clojure.string :as str]
-            [forge.graphics.color :as color]
+            [forge.graphics :as g]
             [forge.info :as info :refer [info]]
             [forge.utils :refer [k->pretty-name readable-number]]
             [moon.entity :as entity]
@@ -11,7 +11,7 @@
 ; value-text/info/etc.
 ; +?
 
-(color/put "PRETTY_NAME" [0.84 0.8 0.52])
+(g/add-color "PRETTY_NAME" [0.84 0.8 0.52])
 
 (bind-root #'forge.info/info-color
            {:property/pretty-name "PRETTY_NAME"

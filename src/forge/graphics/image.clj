@@ -1,6 +1,6 @@
 (ns forge.graphics.image
-  (:require [clojure.gdx.graphics.color :as color])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
+  (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -15,7 +15,7 @@
          1 ; scaling factor
          1
          rotation)
-  (if color (.setColor batch color/white)))
+  (if color (.setColor batch Color/WHITE)))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)

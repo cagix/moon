@@ -1,10 +1,9 @@
 (ns moon.widgets.inventory
-  (:require [clojure.gdx.graphics.color :as color]
-            [data.grid2d :as g2d]
+  (:require [data.grid2d :as g2d]
             [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.ui.actor :as a]
-            [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
+            [forge.graphics :as g :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
             [forge.info :as info]
@@ -66,7 +65,7 @@
                      :texture-region
                      ui/texture-region-drawable)]
     (ui/set-min-size! drawable cell-size)
-    (ui/tinted-drawable drawable (color/create 1 1 1 0.4))))
+    (ui/tinted-drawable drawable (g/color 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]

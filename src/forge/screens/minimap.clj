@@ -1,8 +1,7 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [clojure.gdx.graphics.color :as color]
-            [forge.app :as app]
+  (:require [forge.app :as app]
             [forge.graphics.camera :as cam]
-            [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
+            [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera white black]]
             [forge.input :refer [key-just-pressed?]]
             [moon.world :refer [tiled-map explored-tile-corners]]))
 
@@ -32,7 +31,7 @@
 
 (defn- ->tile-corner-color-setter [explored?]
   (fn tile-corner-color-setter [color x y]
-    (if (get explored? [x y]) color/white color/black)))
+    (if (get explored? [x y]) white black)))
 
 (deftype Minimap []
   app/Screen
