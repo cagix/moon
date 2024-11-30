@@ -46,15 +46,6 @@
     (int x)
     (round-n-decimals x 2)))
 
-(defn get-namespaces [packages]
-  (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
-          (all-ns)))
-
-(defn get-vars [nmspace condition]
-  (for [[sym avar] (ns-interns nmspace)
-       :when (condition avar)]
-    avar))
-
 (defn define-order [order-k-vector]
   (apply hash-map (interleave order-k-vector (range))))
 

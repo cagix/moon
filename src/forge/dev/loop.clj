@@ -1,4 +1,4 @@
-(ns forge.dev
+(ns forge.dev.loop
   "Starts a dev loop using clojure.tools.namespace.repl/refresh in order to restart the app without
   restarting the JVM.
   Also starts an nrepl server which will keep up even between app crashes and restarts.
@@ -8,7 +8,7 @@
 
   You can bind this on a key for smooth dev experience, here in VIM:
   ``` vimscript
-  nmap <F5> :Eval (do (in-ns 'forge.dev)(restart!))
+  nmap <F5> :Eval (do (in-ns 'forge.dev.loop)(restart!))
   ```"
   (:require [clojure.java.io :as io]
             [nrepl.server :as nrepl]
@@ -60,7 +60,7 @@
   (loop []
     (when-not @thrown
       (do
-       (bind-root #'refresh-error (refresh :after 'forge.dev/start-dev-loop!))
+       (bind-root #'refresh-error (refresh :after 'forge.dev.loop/start-dev-loop!))
        (handle-throwable! refresh-error)))
     (wait!)
     (recur)))

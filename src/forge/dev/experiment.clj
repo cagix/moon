@@ -1,4 +1,4 @@
-(ns ^:no-doc dev.experiment
+(ns ^:no-doc forge.dev.experiment
   (:require [forge.db :as db]
             [moon.entity :as entity]
             [moon.world :as world :refer [player-eid]]))

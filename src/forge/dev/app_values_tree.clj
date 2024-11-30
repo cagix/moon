@@ -1,5 +1,15 @@
-(ns ^:no-doc dev.app-values-tree
-  (:require [forge.utils :refer [get-namespaces get-vars]]))
+(ns ^:no-doc forge.dev.app-values-tree
+  (:require [clojure.string :as str]))
+
+(defn get-namespaces [packages]
+  (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
+          (all-ns)))
+
+(defn get-vars [nmspace condition]
+  (for [[sym avar] (ns-interns nmspace)
+       :when (condition avar)]
+    avar))
+
 
 (defn- protocol? [value]
   (and (instance? clojure.lang.PersistentArrayMap value)
