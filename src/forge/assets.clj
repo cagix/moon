@@ -1,4 +1,5 @@
 (ns forge.assets
+  (:refer-clojure :exclude [get])
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.assets :as assets]
             [clojure.string :as str]
@@ -6,7 +7,7 @@
   (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)))
 
-(declare manager)
+(declare ^:private manager)
 
 (defn init [folder]
   (bind-root #'manager (assets/manager))
@@ -19,6 +20,9 @@
 
 (defn dispose []
   (.dispose manager))
+
+(defn get [asset-path]
+  (clojure.core/get manager asset-path))
 
 (defn- all-of-class
   "Returns all asset paths with the specific class."
