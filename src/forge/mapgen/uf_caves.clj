@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.uf-caves
   (:require [data.grid2d :as g2d]
-            [forge.math.rand :refer [get-rand-weighted-item]]
             [forge.graphics :as g]
             [forge.level :as level]
             [forge.tiled :as t]

@@ -1,6 +1,5 @@
 (ns forge.mapgen.caves
-  (:require [data.grid2d :as g]
-            [forge.math.rand :refer [sshuffle srand srand-int]]))
+  (:require [data.grid2d :as g]))
 
 ;Cave Algorithmus.
 ;http://properundead.com/2009/03/cave-generator.html

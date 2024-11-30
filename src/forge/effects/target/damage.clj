@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.effects.target.damage
-  (:require [forge.math.rand :refer [rand-int-between]]
-            [forge.entity.components :as entity]
+  (:require [forge.entity.components :as entity]
             [forge.world :as world]))
 
 (defn- effective-armor-save [source* target*]
