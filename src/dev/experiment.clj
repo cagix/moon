@@ -41,10 +41,7 @@
  ; check skill has stopped using
  ; => this is basically a test for 'moon.entity.active'
 
-
  )
-
-(defn spawn-creature [])
 
 (defn- learn-skill! [skill-id]
   (post-runnable
