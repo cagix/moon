@@ -1,15 +1,16 @@
 (ns forge.graphics
-  (:require [clojure.gdx.math :as math]
-            [forge.assets :as assets]
+  (:require [forge.assets :as assets]
             [forge.graphics.image :as image]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled]
-            [forge.utils.gdx :as interop])
+            [forge.utils.gdx :as interop]
+            [forge.math.utils :as math])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils Disposable ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
+           (com.badlogic.gdx.math Vector2)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn frames-per-second []
@@ -74,7 +75,7 @@
         mouse-y (math/clamp (.getY Gdx/input)
                             (.getTopGutterHeight viewport)
                             (.getTopGutterY viewport))
-        coords (.unproject viewport (math/v2 mouse-x mouse-y))]
+        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
     [(.x coords) (.y coords)]))
 
 (defn gui-mouse-position []
