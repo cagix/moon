@@ -7,8 +7,7 @@
             [forge.graphics.image :as image]
             [forge.graphics.shape-drawer :as sd]
             [forge.graphics.text :as text]
-            [forge.graphics.tiled :as tiled]
-            [forge.graphics.viewport :as vp])
+            [forge.graphics.tiled :as tiled])
   (:import (com.badlogic.gdx.graphics OrthographicCamera Texture Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))

@@ -24,7 +24,7 @@
   [folder asset-description]
   (for [[class exts] asset-description
         file (map #(str/replace-first % folder "")
-                  (files/recursively-search folder exts))]
+                  (files/recursively-search (gdx/internal-file folder) exts))]
     [file class]))
 
 (defn- screens []
@@ -40,7 +40,7 @@
                       ui-skin-scale]}]
   (db/init db)
   (bind-root #'assets/manager (asset-manager/init
-                               (search (gdx/internal-file asset-folder)
+                               (search asset-folder
                                        [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                                         [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])))
   (graphics/init graphics)

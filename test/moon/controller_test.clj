@@ -4,8 +4,7 @@
 ; https://github.com/libgdx/gdx-controllers/blob/master/gdx-controllers-core/src/com/badlogic/gdx/controllers/ControllerMapping.java
 
 #_(ns moon.controller-test
-  (:require [clojure.gdx :refer [key-just-pressed?]]
-            [forge.graphics :as app]
+  (:require [forge.graphics :as app]
             [forge.graphics :refer [clear-screen]]
             [forge.graphics.text :as text]
             [forge.math.vector :as v]
