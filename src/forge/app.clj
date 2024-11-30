@@ -1,6 +1,6 @@
 (ns forge.app)
 
-(declare screens
+(declare ^:private screens
          ^:private current-screen-key)
 
 (defn current-screen []
@@ -23,5 +23,12 @@
     (bind-root #'current-screen-key new-k)
     (enter screen)))
 
+(defn init-screens [{:keys [screens first-screen-k]}]
+  (bind-root #'screens screens)
+  (change-screen first-screen-k))
+
 (defn render-current-screen []
   (render (current-screen)))
+
+(defn dispose-screens []
+  (run! dispose (vals screens)))

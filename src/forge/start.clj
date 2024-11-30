@@ -50,20 +50,20 @@
          (assets/init assets)
          (graphics/init graphics)
          (ui/init ui)
-         (bind-root #'app/screens
-                    (mapvals stage/create
+         (app/init-screens
+          {:screens (mapvals stage/create
                              {:screens/main-menu  (main/create)
                               :screens/map-editor (map-editor/create)
                               :screens/editor     (editor/create)
                               :screens/minimap    (minimap/create)
-                              :screens/world      (world/screen)}))
-         (app/change-screen :screens/main-menu))
+                              :screens/world      (world/screen)})
+           :first-screen-k :screens/main-menu}))
 
        (dispose []
          (assets/dispose)
          (graphics/dispose)
-         (run! app/dispose (vals app/screens))
-         (ui/dispose))
+         (ui/dispose)
+         (app/dispose-screens))
 
        (render []
          (graphics/clear-screen)
