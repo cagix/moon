@@ -116,7 +116,7 @@
 (defn- render-entity! [system entity]
   (try
    (when show-body-bounds
-     (draw-body-rect entity (if (:collides? entity) :white :gray)))
+     (draw-body-rect entity (if (:collides? entity) white :gray)))
    (run! #(system % entity) entity)
    (catch Throwable t
      (draw-body-rect entity :red)

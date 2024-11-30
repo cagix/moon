@@ -5,7 +5,7 @@
             [forge.db :as db]
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]
-            [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position white]]
+            [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
             [moon.controls :as controls]
@@ -86,13 +86,13 @@ direction keys: move")
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world-camera))
         [x y] (mapv int (world-mouse-position))]
-    (draw-rectangle x y 1 1 :white)
+    (draw-rectangle x y 1 1 white)
     (when start-position
       (draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (level/movement-property tiled-map [x y])]]
-        (draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
+        (draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 black)
         (draw-filled-circle [(+ x 0.5) (+ y 0.5)]
                           0.05
                           (case prop

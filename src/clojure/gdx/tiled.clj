@@ -1,4 +1,5 @@
 (ns clojure.gdx.tiled
+  (:refer-clojure :exclude [visible?])
   (:import com.badlogic.gdx.graphics.g2d.TextureRegion
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)

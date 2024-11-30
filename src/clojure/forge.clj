@@ -13,7 +13,8 @@
         '(com.badlogic.gdx.assets AssetManager)
         '(com.badlogic.gdx.audio Sound)
         '(com.badlogic.gdx.graphics Color)
-        '(com.badlogic.gdx.utils Align Scaling Disposable))
+        '(com.badlogic.gdx.scenes.scene2d Actor)
+        '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
@@ -99,6 +100,9 @@
   ([r g b a]
    (Color. (float r) (float g) (float b) (float a))))
 
+(def ^Color black Color/BLACK)
+(def ^Color white Color/WHITE)
+
 (defn ->gdx-color ^Color [c]
   (cond (= Color (class c)) c
         (keyword? c) (gdx-field "graphics.Color" c)
@@ -141,3 +145,8 @@
   (.exit Gdx/app))
 
 (def dispose Disposable/.dispose)
+
+(def visible? Actor/.isVisible)
+
+(defn clear-screen [color]
+  (ScreenUtils/clear color))

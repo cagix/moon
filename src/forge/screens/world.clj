@@ -108,7 +108,7 @@
 
 (defn- close-all-windows []
   (let [windows (ui/children (windows))]
-    (when (some Actor/.isVisible windows)
+    (when (some visible? windows)
       (run! #(Actor/.setVisible % false) windows))))
 
 (defn start [world-props]

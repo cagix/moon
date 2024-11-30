@@ -25,7 +25,7 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture OrthographicCamera Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils Disposable SharedLibraryLoader ScreenUtils)
+           (com.badlogic.gdx.utils Disposable SharedLibraryLoader)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
@@ -207,7 +207,7 @@
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor g/white)
+                 (.setColor white)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (dispose pixmap)
@@ -284,7 +284,7 @@
          (run! app/destroy (vals app/screens)))
 
        (render []
-         (ScreenUtils/clear g/black)
+         (clear-screen black)
          (app/render (app/current-screen)))
 
        (resize [w h]

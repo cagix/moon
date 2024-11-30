@@ -27,7 +27,7 @@
           y (+ y half-height)
           height (pixels->world-units 5)
           border (pixels->world-units borders-px)]
-      (draw-filled-rectangle x y width height :black)
+      (draw-filled-rectangle x y width height black)
       (draw-filled-rectangle (+ x border)
                              (+ y border)
                              (- (* width ratio) (* 2 border))

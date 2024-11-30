@@ -8,7 +8,7 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)))
 
 (defn toggle-visible! [^Actor actor]
-  (.setVisible actor (not (.isVisible actor))))
+  (.setVisible actor (not (visible? actor))))
 
 (defn set-center [^Actor actor x y]
   (.setPosition actor

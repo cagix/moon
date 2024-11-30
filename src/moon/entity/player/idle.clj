@@ -25,7 +25,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (.isVisible (widgets.inventory/window))
+     (visible? (widgets.inventory/window))
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
@@ -59,7 +59,7 @@
     [(clickable->cursor @clicked-eid false) (fn [] (on-clicked clicked-eid))]
     [(clickable->cursor @clicked-eid true)  (fn [] (denied "Too far away"))]))
 
-(defn- inventory-cell-with-item? [actor]
+(defn- inventory-cell-with-item? [^Actor actor]
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
        (get-in (:entity/inventory @player-eid)

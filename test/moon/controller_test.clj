@@ -72,7 +72,7 @@
                  (text/dispose))
 
                (render [_]
-                 (clear-screen :black)
+                 (clear-screen black)
                  (view/render batch
                               shape-drawer
                               (deref (var gui-view/view))

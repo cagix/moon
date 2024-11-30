@@ -91,9 +91,6 @@
       count
       (* (.getLineHeight font))))
 
-(def ^Color black Color/BLACK)
-(def ^Color white Color/WHITE)
-
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
