@@ -1,11 +1,11 @@
 (ns forge.ui
-  (:require [clojure.gdx.utils :as utils]
-            [clojure.visui :as vis]
-            [forge.ui.actor :as a])
+  (:require [forge.ui.actor :as a]
+            [forge.utils.gdx :as utils])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)))
 
 (defn- set-cell-opts [^Cell cell opts]
@@ -158,11 +158,11 @@
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
-  (when (vis/loaded?)
-    (vis/dispose)))
+  (when (VisUI/isLoaded)
+    (VisUI/dispose)))
 
 (defn- font-enable-markup! []
-  (-> (vis/skin)
+  (-> (VisUI/getSkin)
       (.getFont "default-font")
       .getData
       .markupEnabled
@@ -177,11 +177,14 @@
 
 (defn init [skin-scale]
   (check-cleanup-visui!)
-  (vis/load skin-scale)
+  (VisUI/load (case skin-scale
+                :skin-scale/x1 VisUI$SkinScale/X1
+                :skin-scale/x2 VisUI$SkinScale/X2))
   (font-enable-markup!)
   (set-tooltip-config!))
 
-(def dispose vis/dispose)
+(defn dispose []
+  (VisUI/dispose))
 
 (defn button-group [{:keys [max-check-count min-check-count]}]
   (let [bg (ButtonGroup.)]

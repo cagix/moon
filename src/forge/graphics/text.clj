@@ -1,6 +1,6 @@
 (ns forge.graphics.text
-  (:require [clojure.gdx.utils :as utils]
-            [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [forge.utils.gdx :as utils])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)))

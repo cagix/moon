@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.gdx.utils :refer [dispose]]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
@@ -11,7 +10,8 @@
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]
             [moon.controls :as controls]
-            [mapgen.modules :as modules]))
+            [mapgen.modules :as modules])
+  (:import (com.badlogic.gdx.utils Disposable)))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
@@ -108,7 +108,7 @@ direction keys: move")
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (level/generate (db/get world-id))
         atom-data (current-data)]
-    (dispose (:tiled-map @atom-data))
+    (Disposable/.dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
@@ -148,7 +148,7 @@ direction keys: move")
       (app/change-screen :screens/main-menu)))
 
   (dispose [_]
-    (dispose (:tiled-map @current-data))))
+    (Disposable/.dispose (:tiled-map @current-data))))
 
 (defn create []
   {:actors [(->generate-map-window world-id)
