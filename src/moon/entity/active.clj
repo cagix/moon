@@ -59,7 +59,7 @@
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
-   (not (effects/*applicable? (check-update-ctx effect-ctx)
+   (not (effects/applicable? (check-update-ctx effect-ctx)
                               (:skill/effects skill)))
    (do
     (entity/event eid :action-done)
@@ -74,4 +74,4 @@
 (defn render-info [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effects/*render (check-update-ctx effect-ctx) effects)))
+    (effects/render (check-update-ctx effect-ctx) effects)))

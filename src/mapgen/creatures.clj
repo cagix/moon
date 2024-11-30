@@ -1,6 +1,6 @@
 (ns mapgen.creatures
-  (:require [clojure.gdx.tiled :as t]
-            [forge.db :as db]))
+  (:require [forge.db :as db]
+            [forge.tiled :as t]))
 
 (defn with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

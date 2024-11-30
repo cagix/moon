@@ -1,6 +1,6 @@
 (ns forge.graphics
-  (:require [clojure.gdx.tiled :as tiled]
-            [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [forge.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)

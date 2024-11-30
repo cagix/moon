@@ -1,6 +1,5 @@
 (ns moon.world
-  (:require [clojure.gdx.tiled :as tiled]
-            [clj-commons.pretty.repl :refer [pretty-pst]]
+  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [data.grid2d :as g2d]
             [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
             [forge.db :as db]
@@ -8,6 +7,7 @@
             [forge.math.vector :as v]
             [forge.utils :refer [tile->middle define-order sort-by-order safe-merge]]
             [forge.level :as level]
+            [forge.tiled :as tiled]
             [forge.world.raycaster :as raycaster :refer [ray-blocked?]]
             [malli.core :as m]
             [forge.entity :as entity]

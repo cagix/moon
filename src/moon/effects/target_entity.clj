@@ -26,7 +26,7 @@
 
 (defn applicable? [{:keys [entity-effects]} {:keys [effect/target] :as ctx}]
   (and target
-       (effects/*applicable? ctx entity-effects)))
+       (effects/applicable? ctx entity-effects)))
 
 (defn useful? [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (in-range? @source @target maxrange))

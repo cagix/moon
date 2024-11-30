@@ -4,7 +4,6 @@
             [forge.stage :as stage]
             [forge.ui :as ui]
             [moon.controls :as controls]
-            [forge.effects :as effects]
             [moon.entity :as entity]
             [moon.entity.inventory :as inventory]
             [moon.widgets.action-bar :as action-bar]

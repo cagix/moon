@@ -4,7 +4,7 @@
             [clojure.string :as str]
             [forge.db :as db]
             [forge.editor :as editor]
-            [forge.effects :as effects]
+            [forge.effect :as effect]
             [forge.entity :as entity]
             [forge.graphics :as g]
             [forge.screens.map-editor :as map-editor]
@@ -96,10 +96,10 @@
     (install component-systems ns-sym)))
 
 (def ^:private effect
-  {:required [#'effects/applicable?
-              #'effects/handle]
-   :optional [#'effects/useful?
-              #'effects/render]})
+  {:required [#'effect/applicable?
+              #'effect/handle]
+   :optional [#'effect/useful?
+              #'effect/render]})
 
 (install-all effect '[moon.effects.projectile
                       moon.effects.spawn

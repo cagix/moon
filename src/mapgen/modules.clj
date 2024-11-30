@@ -1,5 +1,5 @@
 (ns mapgen.modules
-  (:require [clojure.gdx.tiled :as t]
+  (:require [forge.tiled :as t]
             [mapgen.grid :refer [transition-idx-value]]
             [mapgen.tiled :refer [grid->tiled-map]]))
 

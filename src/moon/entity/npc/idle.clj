@@ -30,7 +30,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
-                     (effects/*useful? ctx (:skill/effects %))))
+                     (effects/useful? ctx (:skill/effects %))))
        first))
 
 (defn ->v [eid]

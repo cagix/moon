@@ -1,25 +1,18 @@
-(ns forge.effects)
+(ns forge.effects
+  (:require [forge.effect :as effect]))
 
-(defsystem handle [_ ctx])
+(defn applicable? [ctx effects]
+  (seq (filter #(effect/applicable? % ctx) effects)))
 
-(defsystem applicable? [_ ctx])
-
-(defsystem useful?          [_  ctx])
-(defmethod useful? :default [_ _ctx] true)
-
-(defsystem render           [_  ctx])
-(defmethod render :default  [_ _ctx])
-
-(defn *applicable? [ctx effects]
-  (seq (filter #(applicable? % ctx) effects)))
-
-(defn *useful? [ctx effects]
+(defn useful? [ctx effects]
   (->> effects
-       (*applicable? ctx)
-       (some #(useful? % ctx))))
+       (applicable? ctx)
+       (some #(effect/useful? % ctx))))
 
 (defn do! [ctx effects]
-  (run! #(handle % ctx) (*applicable? ctx effects)))
+  (run! #(effect/handle % ctx)
+        (applicable? ctx effects)))
 
-(defn *render [ctx effects]
-  (run! #(render % ctx) effects)) ; TODO applicable?!
+(defn render [ctx effects]
+  (run! #(effect/render % ctx)
+        effects))

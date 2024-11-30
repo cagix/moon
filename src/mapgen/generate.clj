@@ -1,8 +1,8 @@
 (ns ^:no-doc mapgen.generate
-  (:require [clojure.gdx.tiled :as t]
-            [data.grid2d :as g2d]
+  (:require [data.grid2d :as g2d]
             [forge.db :as db]
             [forge.level :as level]
+            [forge.tiled :as t]
             [mapgen.area-level-grid :as area-level-grid]
             [mapgen.creatures :as creatures]
             [mapgen.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
