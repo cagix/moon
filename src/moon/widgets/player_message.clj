@@ -1,7 +1,6 @@
 (ns moon.widgets.player-message
-  (:require [clojure.gdx :as gdx]
-            [forge.ui :as ui]
-            [forge.graphics :refer [draw-text gui-viewport-width gui-viewport-height]]))
+  (:require [forge.ui :as ui]
+            [forge.graphics :as g :refer [draw-text gui-viewport-width gui-viewport-height]]))
 
 (def ^:private duration-seconds 1.5)
 
@@ -17,7 +16,7 @@
 
 (defn- check-remove-message []
   (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (gdx/delta-time))
+    (alter-var-root #'message-to-player update :counter + (g/delta-time))
     (when (>= counter duration-seconds)
       (bind-root #'message-to-player nil))))
 

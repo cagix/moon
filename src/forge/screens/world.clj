@@ -1,7 +1,6 @@
 (ns forge.screens.world
-  (:require [clojure.gdx :as gdx]
-            [forge.app :as app]
-            [forge.graphics :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
+  (:require [forge.app :as app]
+            [forge.graphics :as g :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
             [forge.db :as db]
             [forge.graphics :as g]
             [forge.level :as level]
@@ -64,7 +63,7 @@
                      :update-fn #(cam/zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn gdx/frames-per-second
+                     :update-fn g/frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
@@ -129,7 +128,7 @@
                                 (state/pause-game? (entity/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
-    (let [delta-ms (min (gdx/delta-time) world/max-delta-time)]
+    (let [delta-ms (min (g/delta-time) world/max-delta-time)]
       (alter-var-root #'world/elapsed-time + delta-ms)
       (bind-root #'world/delta delta-ms) )
     (let [entities (world/active-entities)]

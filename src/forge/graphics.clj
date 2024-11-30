@@ -12,6 +12,9 @@
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
+(def delta-time        gdx/delta-time)
+(def frames-per-second gdx/frames-per-second)
+
 (def tile-size 48)
 
 (def world-viewport-width 1440)

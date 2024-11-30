@@ -22,3 +22,5 @@
   Numbers via :num-3, etc."
   [k]
   (gdx/key-pressed? (input-key k)))
+
+(def set-processor gdx/set-input-processor)
