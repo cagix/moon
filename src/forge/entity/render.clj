@@ -1,6 +1,5 @@
 (ns forge.entity.render
-  (:require [forge.effects :as effects]
-            [forge.entity :as entity]
+  (:require [forge.entity :as entity]
             [forge.entity.active :refer [check-update-ctx]]
             [forge.entity.components :refer [hitpoints enemy]]
             [forge.entity.player.item-on-cursor :refer [item-place-position world-item?]]
@@ -81,7 +80,7 @@
 (defmethod entity/render-info :active-skill [{:keys [skill effect-ctx counter]} entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effects/render (check-update-ctx effect-ctx) effects)))
+    (effects-render (check-update-ctx effect-ctx) effects)))
 
 (defmethod entity/render :entity/clickable [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)

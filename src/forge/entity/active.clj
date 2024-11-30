@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.active
-  (:require [forge.effects :as effects]
-            [forge.entity.components :as entity]
+  (:require [forge.entity.components :as entity]
             [forge.world :refer [timer stopped? line-of-sight?]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
@@ -45,7 +44,7 @@
 
 (defn tick [{:keys [skill effect-ctx counter]} eid]
   (cond
-   (not (effects/applicable? (check-update-ctx effect-ctx)
+   (not (effects-applicable? (check-update-ctx effect-ctx)
                               (:skill/effects skill)))
    (do
     (entity/event eid :action-done)
@@ -54,5 +53,5 @@
 
    (stopped? counter)
    (do
-    (effects/do! effect-ctx (:skill/effects skill))
+    (effects-do! effect-ctx (:skill/effects skill))
     (entity/event eid :action-done))))

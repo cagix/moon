@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.projectile-collision
-  (:require [forge.effects :as effects]
-            [forge.entity.components :as entity]
+  (:require [forge.entity.components :as entity]
             [forge.world :as world]))
 
 (defn ->v [v]
@@ -27,4 +26,4 @@
     (when hit-entity
       (swap! eid assoc-in [*k* :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
-      (effects/do! {:effect/source eid :effect/target hit-entity} entity-effects))))
+      (effects-do! {:effect/source eid :effect/target hit-entity} entity-effects))))

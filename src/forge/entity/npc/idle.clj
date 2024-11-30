@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.npc.idle
-  (:require [forge.effects :as effects]
-            [forge.entity.components :as entity]
+  (:require [forge.entity.components :as entity]
             [forge.follow-ai :as follow-ai]
             [forge.world :as world :refer [line-of-sight?]]))
 
@@ -30,7 +29,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
-                     (effects/useful? ctx (:skill/effects %))))
+                     (effects-useful? ctx (:skill/effects %))))
        first))
 
 (defn ->v [eid]

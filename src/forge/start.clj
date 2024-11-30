@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.effect :as effect]
             [forge.entity :as entity]
             [forge.graphics :as g]
             [forge.screens.editor :as editor]
@@ -95,10 +94,10 @@
     (install component-systems ns-sym)))
 
 (def ^:private effect
-  {:required [#'effect/applicable?
-              #'effect/handle]
-   :optional [#'effect/useful?
-              #'effect/render]})
+  {:required [#'applicable?
+              #'handle]
+   :optional [#'useful?
+              #'render-effect]})
 
 (install-all effect '[forge.effects.projectile
                       forge.effects.spawn

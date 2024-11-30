@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.effects.target-all
   (:require [forge.graphics :refer [draw-line]]
-            [forge.effects :as effects]
             [forge.world :as world :refer [player-eid line-of-sight?]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
@@ -47,7 +46,7 @@
       ; at sub-effects
       ; and no more safe - merge
       ; find a way to pass ctx / effect-ctx separate ?
-      (effects/do! {:effect/source source :effect/target target}
+      (effects-do! {:effect/source source :effect/target target}
                    entity-effects))))
 
 (defn render [_ {:keys [effect/source]}]

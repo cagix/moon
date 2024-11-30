@@ -3,7 +3,6 @@
             [forge.math.vector :as v]
             [malli.core :as m]
             [forge.graphics :as g]
-            [forge.effects :as effects]
             [forge.entity :as entity]
             [forge.entity.state :as state]
             [forge.operations :as ops]
@@ -143,7 +142,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effects/applicable? effect-ctx effects))
+   (not (effects-applicable? effect-ctx effects))
    :invalid-params
 
    :else
