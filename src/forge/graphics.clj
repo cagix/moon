@@ -22,24 +22,8 @@
 (def ^Color black Color/BLACK)
 (def ^Color white Color/WHITE)
 
-(defn color
-  ([r g b]
-   (color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a))))
-
-(defn- munge-color ^Color [c]
-  (cond (= Color (class c)) c
-        (keyword? c) (gdx/k->color c)
-        (vector? c) (apply color c)
-        :else (throw (ex-info "Cannot understand color" c))))
-
-(defn add-color
-  "A general purpose class containing named colors that can be changed at will. For example, the markup language defined by the BitmapFontCache class uses this class to retrieve colors and the user can define his own colors.
-
-  [javadoc](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Colors.html)"
-  [name-str color]
-  (Colors/put name-str (munge-color color)))
+(defn add-color [name-str color]
+  (Colors/put name-str (gdx/->color color)))
 
 (defn clear-screen []
   (ScreenUtils/clear black))
@@ -128,7 +112,7 @@
   (image/draw-rotated-centered batch *unit-scale* image rotation position))
 
 (defn- sd-color [color]
-  (.setColor shape-drawer (munge-color color)))
+  (.setColor shape-drawer (gdx/->color color)))
 
 (defn draw-ellipse [[x y] radius-x radius-y color]
   (sd-color color)

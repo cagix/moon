@@ -1,6 +1,7 @@
-(ns forge.utils.gdx
+(ns forge.gdx
   (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx.utils Align Scaling)))
+  (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.utils Align Scaling)))
 
 (defn align [k]
   (case k
@@ -18,3 +19,15 @@
 (def k->color        (partial field "graphics.Color"))
 (def k->input-button (partial field "Input$Buttons"))
 (def k->input-key    (partial field "Input$Keys"))
+
+(defn color
+  ([r g b]
+   (color r g b 1))
+  ([r g b a]
+   (Color. (float r) (float g) (float b) (float a))))
+
+(defn ->color ^Color [c]
+  (cond (= Color (class c)) c
+        (keyword? c) (k->color c)
+        (vector? c) (apply color c)
+        :else (throw (ex-info "Cannot understand color" c))))

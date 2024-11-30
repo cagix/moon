@@ -1,9 +1,10 @@
 (ns moon.world.tile-color-setter
-  (:require [forge.graphics :as g]
+  (:require [forge.gdx :as gdx]
             [forge.utils :refer [->tile]]
-            [forge.world.raycaster :refer [ray-blocked?]]))
+            [forge.world.raycaster :refer [ray-blocked?]])
+  (:import (com.badlogic.gdx.graphics Color)))
 
-(def ^:private explored-tile-color (g/color 0.5 0.5 0.5 1))
+(def ^:private explored-tile-color (gdx/color 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 
@@ -26,7 +27,7 @@
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
           explored? (get @explored-tile-corners position) ; TODO needs int call ?
-          base-color (if explored? explored-tile-color g/black)
+          base-color (if explored? explored-tile-color Color/BLACK)
           cache-entry (get @light-cache position :not-found)
           blocked? (if (= cache-entry :not-found)
                      (let [blocked? (ray-blocked? light-position position)]
@@ -36,10 +37,10 @@
       #_(when @do-once
           (swap! ray-positions conj position))
       (if blocked?
-        (if see-all-tiles? g/white base-color)
+        (if see-all-tiles? Color/WHITE base-color)
         (do (when-not explored?
               (swap! explored-tile-corners assoc (->tile position) true))
-            g/white)))))
+            Color/WHITE)))))
 
 (defn create [explored-tile-color light-position]
   (create* explored-tile-color (atom {}) light-position))
