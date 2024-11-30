@@ -1,6 +1,6 @@
 (ns moon.controls
   (:require [forge.graphics.camera :as cam]
-            [forge.input :refer [key-pressed? key-just-pressed?]]
+            [forge.gdx :refer [key-pressed? key-just-pressed?]]
             [forge.math.vector :as v]
             [forge.graphics :refer [world-camera]]))
 
