@@ -1,7 +1,8 @@
 (ns forge.application
   (:require [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils :refer [mac?]]
-            [clojure.java.awt :as awt])
+            [clojure.java.awt :as awt]
+            [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter)))
 
 (defprotocol Listener
@@ -11,7 +12,7 @@
   (resize [_ w h]))
 
 (defn start [{:keys [dock-icon title fps width height]} listener]
-  (awt/set-dock-icon dock-icon)
+  (awt/set-dock-icon (io/resource dock-icon))
   (when mac?
     (lwjgl3/configure-glfw-for-mac))
   (lwjgl3/application (proxy [ApplicationAdapter] []
