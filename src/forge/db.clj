@@ -228,3 +228,7 @@
     (println id)
     (alter-var-root #'db update id update-fn))
   (async-write-to-file!))
+
+(defn property->image [{:keys [entity/image entity/animation]}]
+  (or image
+      (first (:frames animation))))

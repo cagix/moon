@@ -9,7 +9,6 @@
             [forge.ui :as ui]
             [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.stage :as stage]
-            [forge.property :as property]
             [forge.widgets.error-window :refer [error-window!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
@@ -185,7 +184,7 @@
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
-        button (if-let [image (property/->image props)]
+        button (if-let [image (db/property->image props)]
                  (ui/image-button image on-clicked {:scale scale})
                  (ui/text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
@@ -253,7 +252,7 @@
                            (stage/add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/get property-id)
-              image-widget (ui/image->widget (property/->image property)
+              image-widget (ui/image->widget (db/property->image property)
                                              {:id property-id})]
           (ui/add-tooltip! image-widget #(info/text property))))
       (for [id property-ids]
@@ -292,7 +291,7 @@
                              (stage/add-actor window)))))]
       [(when property-id
          (let [property (db/get property-id)
-               image-widget (ui/image->widget (property/->image property) {:id property-id})]
+               image-widget (ui/image->widget (db/property->image property) {:id property-id})]
            (ui/add-tooltip! image-widget #(info/text property))
            image-widget))]
       [(when property-id
