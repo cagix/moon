@@ -1,5 +1,4 @@
-(ns forge.entity
-  (:require [forge.component :refer [defsystem]]))
+(ns forge.entity)
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)

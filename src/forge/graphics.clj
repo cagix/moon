@@ -87,12 +87,6 @@
       count
       (* (.getLineHeight font))))
 
-(defn frames-per-second []
-  (.getFramesPerSecond Gdx/graphics))
-
-(defn delta-time []
-  (.getDeltaTime Gdx/graphics))
-
 (def ^Color black Color/BLACK)
 (def ^Color white Color/WHITE)
 

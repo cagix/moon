@@ -1,5 +1,4 @@
 (ns moon.operation
-  (:require [forge.component :refer [defsystem]])
   (:refer-clojure :exclude [apply]))
 
 (defsystem value-text)

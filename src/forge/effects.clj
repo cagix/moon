@@ -1,5 +1,4 @@
-(ns forge.effects
-  (:require [forge.component :refer [defsystem]]))
+(ns forge.effects)
 
 (defsystem handle [_ ctx])
 

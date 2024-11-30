@@ -1,6 +1,5 @@
 (ns ^:no-doc moon.entity.fsm
-  (:require [forge.component :refer [*k*]]
-            [forge.entity :as entity]
+  (:require [forge.entity :as entity]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm ; this also app config ...

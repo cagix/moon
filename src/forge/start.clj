@@ -3,7 +3,6 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [forge.app :as app]
-            [forge.component :as component]
             [forge.db :as db]
             [forge.effects :as effects]
             [forge.entity :as entity]
@@ -46,11 +45,11 @@
 
 (defn- install
   ([component-systems ns-sym]
-   (component/install component-systems
+   (install-component component-systems
                       ns-sym
                       (namespace->component-key #"^moon." (str ns-sym))))
   ([component-systems ns-sym k]
-   (component/install component-systems ns-sym k)))
+   (install-component component-systems ns-sym k)))
 
 (defn- install-all [component-systems ns-syms]
   (doseq [ns-sym ns-syms]

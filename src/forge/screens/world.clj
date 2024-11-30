@@ -63,7 +63,7 @@
                      :update-fn #(cam/zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn g/frames-per-second
+                     :update-fn frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
@@ -128,7 +128,7 @@
                                 (state/pause-game? (entity/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
-    (let [delta-ms (min (g/delta-time) world/max-delta-time)]
+    (let [delta-ms (min (delta-time) world/max-delta-time)]
       (alter-var-root #'world/elapsed-time + delta-ms)
       (bind-root #'world/delta delta-ms) )
     (let [entities (world/active-entities)]
