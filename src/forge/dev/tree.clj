@@ -3,15 +3,14 @@
             [forge.ui :as ui]
             [forge.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
             [forge.stage :as stage]
-            [forge.world :as world]
-            [forge.world.mouseover :as mouseover]))
+            [forge.world :as world]))
 
 (defn- mouseover-grid-cell []
   @(world/cell (mapv int (world-mouse-position))))
 
 (comment
 
- (show-tree-view! (mouseover/entity))
+ (show-tree-view! (world/mouseover-entity))
  (show-tree-view! (mouseover-grid-cell))
  (show-tree-view! (ns-value-vars #{"forge"}))
 

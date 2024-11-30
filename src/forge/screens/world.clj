@@ -6,8 +6,9 @@
             [forge.ui.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
             [forge.screen :as screen]
+            [forge.stage :as stage]
             [forge.ui :as ui]
-            [forge.utils :refer [readable-number dev-mode?]]
+            [forge.utils :refer [readable-number dev-mode? sort-by-order]]
             [forge.controls :as controls]
             [forge.entity.components :as entity]
             [forge.entity.state :as state]
@@ -17,9 +18,8 @@
             [forge.ui.hp-mana :as hp-mana]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.world :as world :refer [tick-error paused? player-eid]]
+            [forge.world :as world :refer [tick-error paused? player-eid mouseover-entity]]
             [forge.world.debug-render :as debug-render]
-            [forge.world.mouseover :as mouseover]
             [forge.world.potential-fields :refer [update-potential-fields!]]
             [forge.world.tile-color-setter :as tile-color-setter])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)))
@@ -47,7 +47,7 @@
             {:label "Help"
              :items [{:label controls/help-text}]}]
     :update-labels [{:label "Mouseover-entity id"
-                     :update-fn #(when-let [entity (mouseover/entity)] (:entity/id entity))
+                     :update-fn #(when-let [entity (mouseover-entity)] (:entity/id entity))
                      :icon "images/mouseover.png"}
                     {:label "elapsed-time"
                      :update-fn #(str (readable-number world/elapsed-time) " seconds")
@@ -119,9 +119,30 @@
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
+(defn- calculate-eid []
+  (let [player @player-eid
+        hits (remove #(= (:z-order @%) :z-order/effect)
+                     (world/point->entities
+                      (world-mouse-position)))]
+    (->> world/render-z-order
+         (sort-by-order hits #(:z-order @%))
+         reverse
+         (filter #(world/line-of-sight? player @%))
+         first)))
+
+(defn- update-mouseover-entity []
+  (let [new-eid (if (stage/mouse-on-actor?)
+                  nil
+                  (calculate-eid))]
+    (when world/mouseover-eid
+      (swap! world/mouseover-eid dissoc :entity/mouseover?))
+    (when new-eid
+      (swap! new-eid assoc :entity/mouseover? true))
+    (bind-root #'world/mouseover-eid new-eid)))
+
 (defn- update-world []
   (state/manual-tick (entity/state-obj @player-eid))
-  (mouseover/update) ; this do always so can get debug info even when game not running
+  (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root #'paused? (or tick-error
                            (and pausing?
                                 (state/pause-game? (entity/state-obj @player-eid))

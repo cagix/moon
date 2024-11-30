@@ -1,5 +1,6 @@
 (ns forge.world
-  (:require [data.grid2d :as g2d]
+  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
+            [data.grid2d :as g2d]
             [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
@@ -26,6 +27,12 @@
          ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
          delta
          player-eid)
+
+(def mouseover-eid nil)
+
+(defn mouseover-entity []
+  (and mouseover-eid
+       @mouseover-eid))
 
 (defn timer [duration]
   {:pre [(>= duration 0)]}

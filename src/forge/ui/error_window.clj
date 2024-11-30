@@ -1,5 +1,6 @@
 (ns forge.ui.error-window
-  (:require [forge.ui :as ui]))
+  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
+            [forge.ui :as ui]))
 
 (defmacro ^:private with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh

@@ -9,8 +9,7 @@
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as widgets.inventory]
             [forge.ui.player-message :as player-message]
-            [forge.world :refer [player-eid]]
-            [forge.world.mouseover :as mouseover])
+            [forge.world :refer [player-eid mouseover-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- denied [text]
@@ -73,10 +72,10 @@
      :else                             :cursors/default)))
 
 (defn- effect-ctx [eid]
-  (let [target-position (or (and mouseover/eid (:position @mouseover/eid))
+  (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
                             (world-mouse-position))]
     {:effect/source eid
-     :effect/target mouseover/eid
+     :effect/target mouseover-eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
@@ -86,8 +85,8 @@
      (stage/mouse-on-actor?)
      [(mouseover-actor->cursor) (fn [] nil)] ; handled by actors themself, they check player state
 
-     (and mouseover/eid (:entity/clickable @mouseover/eid))
-     (clickable-entity-interaction entity mouseover/eid)
+     (and mouseover-eid (:entity/clickable @mouseover-eid))
+     (clickable-entity-interaction entity mouseover-eid)
 
      :else
      (if-let [skill-id (action-bar/selected-skill)]
