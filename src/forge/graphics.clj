@@ -95,7 +95,7 @@
 
 (defn texture-region
   ([path]
-   (TextureRegion. ^Texture (assets/get path)))
+   (TextureRegion. (assets/texture path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
