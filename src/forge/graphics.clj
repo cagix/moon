@@ -1,14 +1,15 @@
 (ns forge.graphics
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.utils :as utils]
-            [clojure.gdx.math :as math]
+            [clojure.gdx.math :as math :refer [degree->radians]]
             [forge.assets :as assets]
+            [forge.graphics.color]
             [forge.graphics.image :as image]
-            [forge.graphics.shape-drawer :as sd]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera Texture Pixmap)
+  (:import (com.badlogic.gdx.graphics OrthographicCamera Texture Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
@@ -100,48 +101,63 @@
 (defn draw-rotated-centered [image rotation position]
   (image/draw-rotated-centered batch *unit-scale* image rotation position))
 
-(defn draw-ellipse [position radius-x radius-y color]
-  (sd/set-color shape-drawer color)
-  (sd/ellipse shape-drawer position radius-x radius-y))
+(defn- sd-color [color]
+  (sd/set-color shape-drawer (forge.graphics.color/munge color)))
 
-(defn draw-filled-ellipse [position radius-x radius-y color]
-  (sd/set-color shape-drawer color)
-  (sd/filled-ellipse shape-drawer position radius-x radius-y))
+(defn draw-ellipse [[x y] radius-x radius-y color]
+  (sd-color color)
+  (sd/ellipse shape-drawer x y radius-x radius-y))
 
-(defn draw-circle [position radius color]
-  (sd/set-color shape-drawer color)
-  (sd/circle shape-drawer position radius))
+(defn draw-filled-ellipse [[x y] radius-x radius-y color]
+  (sd-color color)
+  (sd/filled-ellipse shape-drawer x y radius-x radius-y))
 
-(defn draw-filled-circle [position radius color]
-  (sd/set-color shape-drawer color)
-  (sd/filled-circle shape-drawer position radius))
+(defn draw-circle [[x y] radius color]
+  (sd-color color)
+  (sd/circle shape-drawer x y radius))
 
-(defn draw-arc [center radius start-angle degree color]
-  (sd/set-color shape-drawer color)
-  (sd/arc shape-drawer center radius start-angle degree))
+(defn draw-filled-circle [[x y] radius color]
+  (sd-color color)
+  (sd/filled-circle shape-drawer x y radius))
 
-(defn draw-sector [center radius start-angle degree color]
-  (sd/set-color shape-drawer color)
-  (sd/sector shape-drawer center radius start-angle degree))
+(defn draw-arc [[centre-x centre-y] radius start-angle degree color]
+  (sd-color color)
+  (sd/arc shape-drawer centre-x centre-y radius (degree->radians start-angle) (degree->radians degree)))
+
+(defn draw-sector [[centre-x centre-y] radius start-angle degree color]
+  (sd-color color)
+  (sd/sector shape-drawer centre-x centre-y radius (degree->radians start-angle) (degree->radians degree)))
 
 (defn draw-rectangle [x y w h color]
-  (sd/set-color shape-drawer color)
+  (sd-color color)
   (sd/rectangle shape-drawer x y w h))
 
 (defn draw-filled-rectangle [x y w h color]
-  (sd/set-color shape-drawer color)
+  (sd-color color)
   (sd/filled-rectangle shape-drawer x y w h))
 
-(defn draw-line [start end color]
-  (sd/set-color shape-drawer color)
-  (sd/line shape-drawer start end))
+(defn draw-line [[sx sy] [ex ey] color]
+  (sd-color color)
+  (sd/line shape-drawer sx sy ex ey))
 
 (defn draw-grid [leftx bottomy gridw gridh cellw cellh color]
-  (sd/set-color shape-drawer color)
-  (sd/grid shape-drawer leftx bottomy gridw gridh cellw cellh color))
+  (sd-color color)
+  (let [w (* (float gridw) (float cellw))
+        h (* (float gridh) (float cellh))
+        topy (+ (float bottomy) (float h))
+        rightx (+ (float leftx) (float w))]
+    (doseq [idx (range (inc (float gridw)))
+            :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
+      (draw-line shape-drawer [linex topy] [linex bottomy]))
+    (doseq [idx (range (inc (float gridh)))
+            :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
+      (draw-line shape-drawer [leftx liney] [rightx liney]))))
 
 (defn with-line-width [width draw-fn]
-  (sd/with-line-width shape-drawer width draw-fn))
+  (let [old-line-width (sd/default-line-width shape-drawer)]
+    (sd/set-default-line-width shape-drawer (* width old-line-width))
+    (draw-fn)
+    (sd/set-default-line-width shape-drawer old-line-width)))
 
 (defn- draw-with [^Viewport viewport unit-scale draw-fn]
   (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
@@ -180,10 +196,18 @@
 (defn set-cursor [cursor-key]
   (gdx/set-cursor (safe-get cursors cursor-key)))
 
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor color/white)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
+
 (defn init [{:keys [cursors]}]
   (bind-root #'batch (SpriteBatch.))
-  (bind-root #'shape-drawer-texture (sd/white-pixel-texture))
-  (bind-root #'shape-drawer (sd/create batch shape-drawer-texture))
+  (bind-root #'shape-drawer-texture (white-pixel-texture))
+  (bind-root #'shape-drawer (sd/create batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (bind-root #'default-font (text/truetype-font
                              {:file (gdx/internal-file "fonts/exocet/films.EXL_____.ttf")
                               :size 16
