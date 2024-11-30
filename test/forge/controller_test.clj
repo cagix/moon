@@ -7,16 +7,15 @@
   (:require [forge.graphics :as app]
             [forge.graphics :refer [clear-screen]]
             [forge.graphics.text :as text]
-            [forge.math.vector :as v]
             [forge.graphics :refer [batch draw-text shape-drawer]])
   (:import (com.badlogic.gdx.controllers Controllers)))
 
 (declare ^:private controller)
 
 #_(defn movement-vector []
-  (let [v (v/normalise [   (.getAxis controller (.axisLeftX (.getMapping controller)))
+  (let [v (v-normalise [   (.getAxis controller (.axisLeftX (.getMapping controller)))
                         (- (.getAxis controller (.axisLeftY (.getMapping controller))))])]
-    (if (zero? (v/length v))
+    (if (zero? (v-length v))
       nil
       v)))
 
@@ -44,7 +43,7 @@
                     (/ gui-viewport-width 2)]]
        (when (movement-vector)
          (draw-line start
-                    (v/add start (v/scale (movement-vector) 100))
+                    (v-add start (v-scale (movement-vector) 100))
                     :cyan))))
     (draw-text {:x (- (/ gui-viewport-width 2) 300)
                 :y (- (/ gui-viewport-height 2) 200)
