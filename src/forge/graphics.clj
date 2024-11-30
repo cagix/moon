@@ -2,6 +2,7 @@
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :as utils]
+            [clojure.gdx.math :as math]
             [forge.assets :as assets]
             [forge.graphics.image :as image]
             [forge.graphics.shape-drawer :as sd]
@@ -35,9 +36,23 @@
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+(defn- unproject-mouse-position
+  "Returns vector of [x y]."
+  [^Viewport viewport]
+  (let [mouse-x (math/clamp (gdx/mouse-x)
+                            (.getLeftGutterWidth viewport)
+                            (.getRightGutterX viewport))
+        mouse-y (math/clamp (gdx/mouse-y)
+                            (.getTopGutterHeight viewport)
+                            (.getTopGutterY viewport))
+        coords (.unproject viewport (math/v2 mouse-x mouse-y))]
+    [(.x coords) (.y coords)]))
+
 (defn gui-mouse-position []
   ; TODO mapv int needed?
-  (mapv int (vp/unproject-mouse-position gui-viewport)))
+  (mapv int (unproject-mouse-position gui-viewport)))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
@@ -45,7 +60,7 @@
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-position world-viewport))
+  (unproject-mouse-position world-viewport))
 
 (defn world-camera []
   (.getCamera world-viewport))
@@ -168,7 +183,7 @@
   (bind-root #'shape-drawer-texture (sd/white-pixel-texture))
   (bind-root #'shape-drawer (sd/create batch shape-drawer-texture))
   (bind-root #'default-font (text/truetype-font
-                             {:file "fonts/exocet/films.EXL_____.ttf"
+                             {:file (gdx/internal-file "fonts/exocet/films.EXL_____.ttf")
                               :size 16
                               :quality-scaling 2}))
   (bind-root #'world-unit-scale (float (/ tile-size)))

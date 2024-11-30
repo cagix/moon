@@ -1,7 +1,9 @@
 (ns forge.lifecycle
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :refer [clear-screen]]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [forge.app :as app]
             [forge.app.systems]
             [forge.screens.editor :as editor]
@@ -17,6 +19,14 @@
             [forge.ui :as ui]
             [forge.utils.files :as files]))
 
+(defn- search
+  "Returns a collection of `[file-path class]` after recursively searching `folder` and matching file extensions with class as of `asset-description`, a collcetion of `[class file-extensions-set]`."
+  [folder asset-description]
+  (for [[class exts] asset-description
+        file (map #(str/replace-first % folder "")
+                  (files/recursively-search folder exts))]
+    [file class]))
+
 (defn- screens []
   {:screens/main-menu  (main/create)
    :screens/map-editor (map-editor/create)
@@ -30,9 +40,9 @@
                       ui-skin-scale]}]
   (db/init db)
   (bind-root #'assets/manager (asset-manager/init
-                               (files/search asset-folder
-                                             [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                                              [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])))
+                               (search (gdx/internal-file asset-folder)
+                                       [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                                        [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])))
   (graphics/init graphics)
   (ui/load! ui-skin-scale)
   (bind-root #'app/screens (mapvals stage/create (screens)))
