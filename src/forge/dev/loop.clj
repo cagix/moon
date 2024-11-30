@@ -10,8 +10,7 @@
   ``` vimscript
   nmap <F5> :Eval (do (in-ns 'forge.dev.loop)(restart!))
   ```"
-  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.tools.namespace.repl :refer [disable-reload! refresh]]
             [nrepl.server :as nrepl]))
 
@@ -35,8 +34,7 @@
 (def ^:private thrown (atom false))
 
 (defn- handle-throwable! [t]
-  (binding [*print-level* 5]
-    (pretty-pst t 12))
+  (pretty-pst t)
   (reset! thrown t))
 
 (defn restart!

@@ -1,7 +1,6 @@
 (ns forge.operations
   (:refer-clojure :exclude [remove apply])
   (:require [clojure.math :as math]
-            [clojure.string :as str]
             [forge.operation :as op]))
 
 (defn add    [ops other-ops] (merge-with + ops other-ops))
@@ -14,7 +13,7 @@
     -1.0 ""))
 
 (defn info [ops k]
-  (str/join "\n"
+  (str-join "\n"
             (keep
              (fn [{v 1 :as op}]
                (when-not (zero? v)

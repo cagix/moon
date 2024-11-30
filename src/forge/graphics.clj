@@ -1,6 +1,5 @@
 (ns forge.graphics
-  (:require [clojure.string :as str]
-            [forge.tiled :as tiled])
+  (:require [forge.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
@@ -87,7 +86,7 @@
 
 (defn- text-height [^BitmapFont font text]
   (-> text
-      (str/split #"\n")
+      (str-split #"\n")
       count
       (* (.getLineHeight font))))
 

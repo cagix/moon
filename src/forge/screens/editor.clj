@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
-            [clojure.string :as str]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]
@@ -157,7 +156,7 @@
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]
-               [(ui/text-button (str/replace-first sound-file "sounds/" "")
+               [(ui/text-button (str-replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)
                                   (ui/add-rows! table [(columns table sound-file)])
@@ -457,7 +456,7 @@
 
 (defn- property-type-tabs []
   (for [property-type (sort (property-types))]
-    {:title (str/capitalize (name property-type))
+    {:title (capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]

@@ -1,7 +1,6 @@
 (ns forge.start
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str]
             [forge.entity :as entity]
             [forge.graphics :as g]
             [forge.screens.editor :as editor]
@@ -70,9 +69,9 @@
 
 (defn- namespace->component-key [prefix ns-str]
    (let [ns-parts (-> ns-str
-                      (str/replace prefix "")
-                      (str/split #"\."))]
-     (keyword (str/join "." (drop-last ns-parts))
+                      (str-replace prefix "")
+                      (str-split #"\."))]
+     (keyword (str-join "." (drop-last ns-parts))
               (last ns-parts))))
 
 (comment
@@ -191,7 +190,7 @@
                       (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
     (doseq [[class exts] [[Sound   #{"wav"}]
                           [Texture #{"png" "bmp"}]]
-            file (map #(str/replace-first % folder "")
+            file (map #(str-replace-first % folder "")
                       (recursively-search (internal-file folder) exts))]
       (.load manager ^String file ^Class class))
     (.finishLoading manager)

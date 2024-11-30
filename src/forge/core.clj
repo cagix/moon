@@ -1,6 +1,6 @@
 (in-ns 'clojure.core)
 
-#_(require '[clj-commons.pretty.repl :as pretty-repl])
+(require '[clj-commons.pretty.repl :as pretty-repl])
 (require '[clojure.pprint])
 (require '[clojure.string :as str])
 (require '[forge.screen :as screen])
@@ -16,7 +16,14 @@
         '(com.badlogic.gdx.math Circle Intersector Rectangle Vector2)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
-#_(defn pretty-pst [t]
+(def str-split  str/split)
+(def str-join   str/join)
+(def capitalize str/capitalize)
+(def str-replace str/replace)
+(def str-replace-first str/replace-first)
+(def str-trim-newline str/trim-newline)
+
+(defn pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
 

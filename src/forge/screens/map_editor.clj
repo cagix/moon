@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.string :as str]
-            [forge.graphics.camera :as cam]
+  (:require [forge.graphics.camera :as cam]
             [forge.ui :as ui]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
             [forge.level :as level]
@@ -51,7 +50,7 @@ direction keys: move")
           (str "Movement properties " (level/movement-property tiled-map tile) "\n"
                (apply vector (level/movement-properties tiled-map tile)))]
          (remove nil?)
-         (str/join "\n"))))
+         (str-join "\n"))))
 
 (defn- ->info-window []
   (let [label (ui/label "")

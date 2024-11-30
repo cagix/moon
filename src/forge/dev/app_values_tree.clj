@@ -1,8 +1,7 @@
-(ns ^:no-doc forge.dev.app-values-tree
-  (:require [clojure.string :as str]))
+(ns ^:no-doc forge.dev.app-values-tree)
 
 (defn get-namespaces [packages]
-  (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
+  (filter #(packages (first (str-split (name (ns-name %)) #"\.")))
           (all-ns)))
 
 (defn get-vars [nmspace condition]

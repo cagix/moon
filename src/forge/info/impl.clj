@@ -1,6 +1,5 @@
 (ns forge.info.impl
-  (:require [clojure.string :as str]
-            [forge.graphics :as g]
+  (:require [forge.graphics :as g]
             [forge.info :as info :refer [info]]
             [forge.entity.components :as entity]
             [forge.operations :as ops]
@@ -104,16 +103,16 @@
 
 (defmethod info :entity/modifiers [[_ mods]]
   (when (seq mods)
-    (str/join "\n" (keep (fn [[k ops]]
+    (str-join "\n" (keep (fn [[k ops]]
                            (ops/info ops k)) mods))))
 
 #_(defmethod info [skills]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
-      (str "Skills: " (str/join "," (map name (keys skills))))))
+      (str "Skills: " (str-join "," (map name (keys skills))))))
 
 (defmethod info :entity/species [[_ species]]
-  (str "Creature - " (str/capitalize (name species))))
+  (str "Creature - " (capitalize (name species))))
 
 (defmethod info :entity/temp-modifier [[_ {:keys [counter]}]]
   (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))
