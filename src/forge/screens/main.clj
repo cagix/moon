@@ -25,12 +25,12 @@
                           [(ui/text-button "Property editor"
                                            #(app/change-screen :screens/editor))])
                         [(ui/text-button "Exit"
-                                         gdx/exit-app)]]))
+                                         gdx/exit)]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
-                                (gdx/exit-app)))})]
+                                (gdx/exit)))})]
    :screen (reify app/Screen
              (enter [_]
                (cursors/set :cursors/default))
