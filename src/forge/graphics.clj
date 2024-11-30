@@ -1,17 +1,44 @@
 (ns forge.graphics
-  (:require [forge.assets :as assets]
+  (:require [clojure.string :as str]
+            [forge.assets :as assets]
             [forge.graphics.image :as image]
-            [forge.graphics.text :as text]
-            [forge.graphics.tiled :as tiled]
             [forge.gdx :as gdx]
+            [forge.tiled :as tiled]
             [forge.math.utils :as math])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap Pixmap$Format)
+           (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Texture$TextureFilter Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils Disposable ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.badlogic.gdx.math Vector2)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (space.earlygrey.shapedrawer ShapeDrawer)
+           (forge OrthogonalTiledMapRenderer ColorSetter)))
+
+(defn- ttf-params [size quality-scaling]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) (* size quality-scaling))
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
+    (set! (.magFilter params) Texture$TextureFilter/Linear)
+    params))
+
+(defn- truetype-font [{:keys [file size quality-scaling]}]
+  (let [generator (FreeTypeFontGenerator. file)
+        font (.generateFont generator (ttf-params size quality-scaling))]
+    (.dispose generator)
+    (.setScale (.getData font) (float (/ quality-scaling)))
+    (set! (.markupEnabled (.getData font)) true)
+    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
+    font))
+
+(defn- text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
 
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
@@ -99,8 +126,27 @@
   (sub-image image
              [(* x tilew) (* y tileh) tilew tileh]))
 
-(defn draw-text [opts]
-  (text/draw batch *unit-scale* default-font opts))
+(defn draw-text
+  "font, h-align, up? and scale are optional.
+  h-align one of: :center, :left, :right. Default :center.
+  up? renders the font over y, otherwise under.
+  scale will multiply the drawn text size with the scale."
+  [{:keys [font x y text h-align up? scale]}]
+  (let [^BitmapFont font (or font default-font)
+        data (.getData font)
+        old-scale (float (.scaleX data))]
+    (.setScale data (* old-scale
+                       (float *unit-scale*)
+                       (float (or scale 1))))
+    (.draw font
+           batch
+           (str text)
+           (float x)
+           (+ (float y) (float (if up? (text-height font text) 0)))
+           (float 0) ; target-width
+           (gdx/align (or h-align :center))
+           false) ; wrap false, no need target-width
+    (.setScale data old-scale)))
 
 (defn draw-image [image position]
   (image/draw batch *unit-scale* image position))
@@ -190,10 +236,17 @@
 
   Renders only visible layers."
   [tiled-map color-setter]
-  (tiled/render (cached-map-renderer tiled-map)
-                color-setter
-                (world-camera)
-                tiled-map))
+  (let [^OrthogonalTiledMapRenderer map-renderer (cached-map-renderer tiled-map)]
+    (.setColorSetter map-renderer (reify ColorSetter
+                                    (apply [_ color x y]
+                                      (color-setter color x y))))
+    (.setView map-renderer (world-camera))
+    (->> tiled-map
+         tiled/layers
+         (filter tiled/visible?)
+         (map (partial tiled/layer-index tiled-map))
+         int-array
+         (.render map-renderer))))
 
 (defn- make-cursors [cursors]
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
@@ -218,7 +271,7 @@
   (bind-root #'batch (SpriteBatch.))
   (bind-root #'shape-drawer-texture (white-pixel-texture))
   (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-  (bind-root #'default-font (text/truetype-font
+  (bind-root #'default-font (truetype-font
                              {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
                               :size 16
                               :quality-scaling 2}))
@@ -231,7 +284,7 @@
                                 (FitViewport. world-width world-height camera)))
   (bind-root #'cached-map-renderer (memoize
                                     (fn [tiled-map]
-                                      (tiled/renderer tiled-map world-unit-scale batch))))
+                                      (OrthogonalTiledMapRenderer. tiled-map (float world-unit-scale) batch))))
   (bind-root #'gui-viewport (FitViewport. gui-viewport-width
                                           gui-viewport-height
                                           (OrthographicCamera.)))
