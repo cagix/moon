@@ -6,7 +6,7 @@
             [forge.graphics :as g]
             [forge.effects :as effects]
             [forge.entity :as entity]
-            [moon.systems.entity-state :as state]
+            [forge.entity.state :as state]
             [moon.operations :as ops]
             [moon.val-max :as val-max]
             [moon.widgets.action-bar :as action-bar]

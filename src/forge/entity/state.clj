@@ -1,4 +1,4 @@
-(ns moon.systems.entity-state)
+(ns forge.entity.state)
 
 (defsystem enter)
 (defmethod enter :default [_])

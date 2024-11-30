@@ -5,7 +5,7 @@
             [moon.entity :as entity]
             [moon.item :refer [valid-slot? empty-inventory]]
             [forge.info :as info]
-            [moon.systems.entity-state :as state]
+            [forge.entity.state :as state]
             [moon.world :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 

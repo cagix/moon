@@ -14,7 +14,7 @@
             [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.utils :refer [dev-mode?]]
-            [moon.systems.entity-state :as state]
+            [forge.entity.state :as state]
             [forge.entity.animation]
             [forge.info.impl]
             (forge.mapgen generate uf-caves))

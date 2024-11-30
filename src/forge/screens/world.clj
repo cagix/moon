@@ -10,7 +10,7 @@
             [forge.utils :refer [readable-number dev-mode?]]
             [moon.controls :as controls]
             [moon.entity :as entity]
-            [moon.systems.entity-state :as state]
+            [forge.entity.state :as state]
             [moon.widgets.action-bar :as action-bar]
             [moon.widgets.dev-menu :as dev-menu]
             [moon.widgets.entity-info-window :as entity-info-window]
