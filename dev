@@ -1,1 +1,1 @@
-DEV_MODE=true lein run -m forge.dev forge.app.start
+DEV_MODE=true lein run -m forge.dev forge.start

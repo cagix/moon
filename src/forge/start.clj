@@ -1,4 +1,4 @@
-(ns forge.app.start
+(ns forge.start
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [forge.application :as application]
