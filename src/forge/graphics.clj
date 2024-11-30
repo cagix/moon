@@ -3,7 +3,7 @@
             [forge.graphics.image :as image]
             [forge.graphics.text :as text]
             [forge.graphics.tiled :as tiled]
-            [forge.utils.gdx :as interop]
+            [forge.utils.gdx :as gdx]
             [forge.math.utils :as math])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Pixmap Pixmap$Format)
@@ -30,7 +30,7 @@
 
 (defn- munge-color [c]
   (cond (= Color (class c)) c
-        (keyword? c) (interop/field "graphics.Color" c)
+        (keyword? c) (gdx/k->color c)
         (vector? c) (apply color c)
         :else (throw (ex-info "Cannot understand color" c))))
 

@@ -1,6 +1,6 @@
 (ns forge.ui
   (:require [forge.ui.actor :as a]
-            [forge.utils.gdx :as utils])
+            [forge.utils.gdx :as gdx])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -146,7 +146,7 @@
                       (when-not text?
                         (.setText this (str (tooltip-text))))
                       (proxy-super getWidth))))]
-    (.setAlignment label (utils/align :center))
+    (.setAlignment label (gdx/align :center))
     (.setTarget  tooltip ^Actor a)
     (.setContent tooltip ^Actor label))
   a)
@@ -239,9 +239,12 @@
   "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
   [object {:keys [scaling align fill-parent?] :as opts}]
   (-> (let [^Image image (->vis-image object)]
-        (when (= :center align) (.setAlign image (utils/align :center)))
-        (when (= :fill scaling) (.setScaling image (utils/scaling :fill)))
-        (when fill-parent? (.setFillParent image true))
+        (when (= :center align)
+          (.setAlign image (gdx/align :center)))
+        (when (= :fill scaling)
+          (.setScaling image (gdx/scaling :fill)))
+        (when fill-parent?
+          (.setFillParent image true))
         image)
       (set-opts opts)))
 
