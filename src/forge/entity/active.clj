@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.entity.active
   (:require [forge.graphics :refer [draw-image draw-filled-circle draw-sector]]
             [forge.effects :as effects]
-            [moon.entity :as entity]
-            [moon.world :refer [timer stopped? finished-ratio line-of-sight?]]))
+            [forge.entity.components :as entity]
+            [forge.world :refer [timer stopped? finished-ratio line-of-sight?]]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)

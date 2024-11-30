@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.entity.alert-friendlies-after-duration
-  (:require [moon.entity :as entity]
-            [moon.world :as world :refer [stopped?]]))
+  (:require [forge.entity.components :as entity]
+            [forge.world :as world :refer [stopped?]]))
 
 (def ^:private shout-radius 4)
 

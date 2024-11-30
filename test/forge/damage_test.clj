@@ -1,6 +1,6 @@
-(ns moon.damage-test
+(ns forge.damage-test
   (:require [clojure.test :refer :all]
-            [moon.entity :as entity]))
+            [forge.entity.components :as entity]))
 
 (deftest modify-source-damage
   (is (= (entity/damage-mods {:entity/modifiers {:modifier/damage-deal-min {:op/inc 1

@@ -3,14 +3,14 @@
             [forge.math.vector :as v]
             [forge.stage :as stage]
             [forge.ui :as ui]
-            [moon.controls :as controls]
-            [moon.entity :as entity]
+            [forge.controls :as controls]
+            [forge.entity.components :as entity]
             [forge.entity.inventory :as inventory]
-            [moon.widgets.action-bar :as action-bar]
-            [moon.widgets.inventory :as widgets.inventory]
-            [moon.widgets.player-message :as player-message]
-            [moon.world :refer [player-eid]]
-            [moon.world.mouseover :as mouseover])
+            [forge.ui.action-bar :as action-bar]
+            [forge.ui.inventory :as widgets.inventory]
+            [forge.ui.player-message :as player-message]
+            [forge.world :refer [player-eid]]
+            [forge.world.mouseover :as mouseover])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn- denied [text]

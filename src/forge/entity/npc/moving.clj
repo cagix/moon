@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.entity.npc.moving
-  (:require [moon.entity :as entity]
-            [moon.world :refer [timer stopped?]]))
+  (:require [forge.entity.components :as entity]
+            [forge.world :refer [timer stopped?]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; usable skills every frame

@@ -8,7 +8,7 @@
             [forge.ui :as ui]
             [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.screen :as screen]
-            [forge.widgets.error-window :refer [error-window!]])
+            [forge.ui.error-window :refer [error-window!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))

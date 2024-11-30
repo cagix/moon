@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.entity.npc.idle
   (:require [forge.effects :as effects]
-            [moon.entity :as entity]
-            [moon.follow-ai :as follow-ai]
-            [moon.world :as world :refer [line-of-sight?]]))
+            [forge.entity.components :as entity]
+            [forge.follow-ai :as follow-ai]
+            [forge.world :as world :refer [line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
   (world/nearest-entity @(world/cell (entity/tile entity))

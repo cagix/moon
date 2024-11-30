@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.effects.target.convert
-  (:require [moon.entity :as entity]))
+  (:require [forge.entity.components :as entity]))
 
 (defn applicable? [_ {:keys [effect/source effect/target]}]
   (and target

@@ -3,8 +3,8 @@
             [forge.ui :as ui]
             [forge.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
             [forge.stage :as stage]
-            [moon.world :as world]
-            [moon.world.mouseover :as mouseover]))
+            [forge.world :as world]
+            [forge.world.mouseover :as mouseover]))
 
 (defn- mouseover-grid-cell []
   @(world/cell (mapv int (world-mouse-position))))
@@ -13,7 +13,7 @@
 
  (show-tree-view! (mouseover/entity))
  (show-tree-view! (mouseover-grid-cell))
- (show-tree-view! (ns-value-vars #{"moon"}))
+ (show-tree-view! (ns-value-vars #{"forge"}))
 
  ; Idea:
  ; * Generate the tree as data-structure first

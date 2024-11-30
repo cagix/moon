@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.entity.temp-modifier
   (:require [forge.graphics :refer [draw-filled-circle]]
-            [moon.entity :as entity]
-            [moon.world :refer [stopped?]]))
+            [forge.entity.components :as entity]
+            [forge.world :refer [stopped?]]))
 
 (defn tick [{:keys [modifiers counter]} eid]
   (when (stopped? counter)

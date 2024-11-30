@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.effects.target.spiderweb
-  (:require [moon.entity :as entity]
-            [moon.world :refer [timer]]))
+  (:require [forge.entity.components :as entity]
+            [forge.world :refer [timer]]))
 
 (def modifiers {:modifier/movement-speed {:op/mult -0.5}})
 (def duration 5)

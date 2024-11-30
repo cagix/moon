@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.entity.string-effect
   (:require [forge.graphics :refer [draw-text pixels->world-units]]
-            [moon.world :refer [stopped?]]))
+            [forge.world :refer [stopped?]]))
 
 (defn tick [{:keys [counter]} eid]
   (when (stopped? counter)

@@ -1,6 +1,6 @@
 (ns forge.entity.hp-test
   (:require [clojure.test :refer :all]
-            [moon.entity :as entity]))
+            [forge.entity.components :as entity]))
 
 (deftest max-modifier
   (is (= (entity/hitpoints {:entity/hp [100 100]

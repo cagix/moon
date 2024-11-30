@@ -3,8 +3,8 @@
             [forge.math.vector :as v]
             [forge.graphics :refer [draw-line]]
             [forge.effects :as effects]
-            [moon.entity :as entity]
-            [moon.world :as world]))
+            [forge.entity.components :as entity]
+            [forge.world :as world]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)

@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.entity.player.moving
-  (:require [moon.controls :as controls]
-            [moon.entity :as entity]))
+  (:require [forge.controls :as controls]
+            [forge.entity.components :as entity]))
 
 (defn ->v [eid movement-vector]
   {:eid eid

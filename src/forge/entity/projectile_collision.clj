@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.entity.projectile-collision
   (:require [forge.utils :refer [find-first]]
             [forge.effects :as effects]
-            [moon.entity :as entity]
-            [moon.world :as world]))
+            [forge.entity.components :as entity]
+            [forge.world :as world]))
 
 (defn ->v [v]
   (assoc v :already-hit-bodies #{}))

@@ -2,7 +2,7 @@
   (:require [forge.graphics.camera :as cam]
             [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
             [forge.screen :as screen]
-            [moon.world :refer [tiled-map explored-tile-corners]]))
+            [forge.world :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight

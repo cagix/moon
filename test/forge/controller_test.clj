@@ -3,7 +3,7 @@
 ; https://javadoc.io/doc/com.badlogicgames.gdx/gdx-controllers/latest/index.html
 ; https://github.com/libgdx/gdx-controllers/blob/master/gdx-controllers-core/src/com/badlogic/gdx/controllers/ControllerMapping.java
 
-#_(ns moon.controller-test
+#_(ns forge.controller-test
   (:require [forge.graphics :as app]
             [forge.graphics :refer [clear-screen]]
             [forge.graphics.text :as text]
@@ -39,7 +39,7 @@
                   "(.isConnected my-controller): " (.isConnected controller) "\n"
                   "(.getAxis my-controller (.axisLeftX (.getMapping my-controller))): " (.getAxis controller (.axisLeftX (.getMapping controller))) "\n"
                   "(.getAxis my-controller (.axisLeftY (.getMapping my-controller))): " (.getAxis controller (.axisLeftY (.getMapping controller))) "\n"
-                  "(moon.controls/movement-vector): " (movement-vector))})
+                  "(forge.controls/movement-vector): " (movement-vector))})
      (let [start [(/ gui-viewport-width 2)
                     (/ gui-viewport-width 2)]]
        (when (movement-vector)

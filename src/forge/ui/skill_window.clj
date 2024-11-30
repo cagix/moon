@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.widgets.skill-window)
+(ns ^:no-doc forge.ui.skill-window)
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))

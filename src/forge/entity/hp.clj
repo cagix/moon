@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.entity.hp
   (:require [forge.graphics :refer [draw-filled-rectangle pixels->world-units]]
-            [moon.entity :as entity]
-            [moon.val-max :as val-max]))
+            [forge.entity.components :as entity]
+            [forge.val-max :as val-max]))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]

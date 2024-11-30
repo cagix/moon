@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.entity.movement
   (:require [forge.math.vector :as v]
             [malli.core :as m]
-            [moon.entity :as entity]
-            [moon.world :as world]))
+            [forge.entity.components :as entity]
+            [forge.world :as world]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

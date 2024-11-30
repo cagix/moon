@@ -1,8 +1,8 @@
-(ns moon.widgets.entity-info-window
+(ns forge.ui.entity-info-window
   (:require [forge.info :as info]
             [forge.ui :as ui]
             [forge.graphics :refer [gui-viewport-width]]
-            [moon.world.mouseover :as mouseover]))
+            [forge.world.mouseover :as mouseover]))
 
 (def ^:private disallowed-keys [:entity/skills
                                 #_:entity/fsm

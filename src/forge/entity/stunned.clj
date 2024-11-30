@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.entity.stunned
   (:require [forge.graphics :refer [draw-circle]]
-            [moon.entity :as entity]
-            [moon.world :refer [timer stopped?]]))
+            [forge.entity.components :as entity]
+            [forge.world :refer [timer stopped?]]))
 
 (defn ->v [eid duration]
   {:eid eid

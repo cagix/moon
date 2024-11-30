@@ -2,7 +2,7 @@
   (:require [forge.db :as db]
             [forge.graphics :as g]
             [forge.entity :as entity]
-            [moon.world :as world]))
+            [forge.world :as world]))
 
 (defprotocol Animation
   (tick [_ delta])

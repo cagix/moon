@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.effects.target.stun
-  (:require [moon.entity :as entity]))
+  (:require [forge.entity.components :as entity]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target

@@ -1,4 +1,4 @@
-(ns forge.widgets.error-window
+(ns forge.ui.error-window
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [forge.ui :as ui]))
 

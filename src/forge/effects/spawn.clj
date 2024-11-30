@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.effects.spawn
   "https://github.com/damn/core/issues/29"
-  (:require [moon.world :as world]))
+  (:require [forge.world :as world]))
 
 (defn applicable? [_ {:keys [effect/source effect/target-position]}]
   (and (:entity/faction @source)

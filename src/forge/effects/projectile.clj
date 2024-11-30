@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.effects.projectile
   (:require [forge.math.vector :as v]
             [forge.world.raycaster :refer [path-blocked?]]
-            [moon.world :as world :refer [projectile-size]]))
+            [forge.world :as world :refer [projectile-size]]))
 
 (defn- start-point [entity direction size]
   (v/add (:position entity)

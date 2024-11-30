@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.entity.delete-after-duration
-  (:require [moon.world :refer [timer stopped?]]))
+  (:require [forge.world :refer [timer stopped?]]))
 
 (defn ->v [duration]
   (timer duration))

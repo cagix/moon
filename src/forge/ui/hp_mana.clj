@@ -1,10 +1,10 @@
-(ns moon.widgets.hp-mana
+(ns forge.ui.hp-mana
   (:require [forge.ui :as ui]
             [forge.utils :refer [readable-number]]
             [forge.graphics :refer [draw-text draw-image gui-viewport-width image sub-image]]
-            [moon.entity :as entity]
-            [moon.val-max :as val-max]
-            [moon.world :refer [player-eid]]))
+            [forge.entity.components :as entity]
+            [forge.val-max :as val-max]
+            [forge.world :refer [player-eid]]))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (draw-text {:text infostr

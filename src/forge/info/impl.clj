@@ -3,9 +3,9 @@
             [forge.graphics :as g]
             [forge.info :as info :refer [info]]
             [forge.utils :refer [k->pretty-name readable-number]]
-            [moon.entity :as entity]
-            [moon.operations :as ops]
-            [moon.world :refer [finished-ratio]]))
+            [forge.entity.components :as entity]
+            [forge.operations :as ops]
+            [forge.world :refer [finished-ratio]]))
 
 ; TODO ops/info also here move
 ; value-text/info/etc.

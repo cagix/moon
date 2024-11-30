@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.dev.experiment
   (:require [forge.db :as db]
-            [moon.entity :as entity]
-            [moon.world :as world :refer [player-eid]]))
+            [forge.entity.components :as entity]
+            [forge.world :as world :refer [player-eid]]))
 
 (defmacro app-do [& exprs]
   `(post-runnable (fn [] ~@exprs)))

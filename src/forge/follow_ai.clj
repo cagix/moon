@@ -1,14 +1,14 @@
-(ns moon.follow-ai
+(ns forge.follow-ai
   (:require [data.grid2d :as g2d]
             [forge.math.vector :as v]
             [forge.utils :refer [->tile indexed utils-positions when-seq]]
-            [moon.entity :as entity]
-            [moon.world :as world :refer [occupied-by-other?
+            [forge.entity.components :as entity]
+            [forge.world :as world :refer [occupied-by-other?
                                           nearest-entity-distance
                                           nearest-entity
                                           cached-adjacent-cells
                                           rectangle->cells]]
-            [moon.world.potential-fields :refer [pf-cell-blocked?]]))
+            [forge.world.potential-fields :refer [pf-cell-blocked?]]))
 
 (let [order (g2d/get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

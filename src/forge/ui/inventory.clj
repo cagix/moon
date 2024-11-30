@@ -1,12 +1,12 @@
-(ns moon.widgets.inventory
+(ns forge.ui.inventory
   (:require [data.grid2d :as g2d]
             [forge.ui :as ui]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
-            [moon.entity :as entity]
-            [moon.item :refer [valid-slot? empty-inventory]]
+            [forge.entity.components :as entity]
+            [forge.item :refer [valid-slot? empty-inventory]]
             [forge.info :as info]
             [forge.entity.state :as state]
-            [moon.world :refer [player-eid]])
+            [forge.world :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 ; Items are also smaller than 48x48 all of them

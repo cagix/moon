@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.entity.mouseover?
   (:require [forge.graphics :refer [draw-ellipse with-line-width]]
-            [moon.entity :as entity]
-            [moon.world :refer [player-eid]]))
+            [forge.entity.components :as entity]
+            [forge.world :refer [player-eid]]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])

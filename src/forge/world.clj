@@ -1,4 +1,4 @@
-(ns moon.world
+(ns forge.world
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [data.grid2d :as g2d]
             [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
@@ -11,8 +11,8 @@
             [forge.world.raycaster :as raycaster :refer [ray-blocked?]]
             [malli.core :as m]
             [forge.entity :as entity]
-            [moon.world.content-grid :as content-grid]
-            [moon.world.grid :as grid]))
+            [forge.world.content-grid :as content-grid]
+            [forge.world.grid :as grid]))
 
 (declare tiled-map
          explored-tile-corners

@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.effects.target.audiovisual
-  (:require [moon.world :as world]))
+  (:require [forge.world :as world]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   target)

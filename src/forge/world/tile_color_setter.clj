@@ -1,4 +1,4 @@
-(ns moon.world.tile-color-setter
+(ns forge.world.tile-color-setter
   (:require [forge.utils :refer [->tile]]
             [forge.world.raycaster :refer [ray-blocked?]])
   (:import (com.badlogic.gdx.graphics Color)))

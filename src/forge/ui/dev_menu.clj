@@ -1,4 +1,4 @@
-(ns moon.widgets.dev-menu
+(ns forge.ui.dev-menu
   (:require [forge.ui :as ui]
             [forge.graphics :refer [image]])
   (:import (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))

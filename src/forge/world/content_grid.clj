@@ -1,4 +1,4 @@
-(ns ^:no-doc moon.world.content-grid
+(ns ^:no-doc forge.world.content-grid
   (:require [data.grid2d :as g2d]))
 
 (defn create [{:keys [cell-size width height]}]

@@ -1,8 +1,8 @@
 (ns forge.entity.inventory
   (:require [forge.utils :refer [find-first]]
-            [moon.entity :as entity]
-            [moon.item :as item]
-            [moon.widgets.inventory :as inventory]))
+            [forge.entity.components :as entity]
+            [forge.item :as item]
+            [forge.ui.inventory :as inventory]))
 
 (defn- applies-modifiers? [[slot _]]
   (not= :inventory.slot/bag slot))

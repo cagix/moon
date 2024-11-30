@@ -1,4 +1,4 @@
-(ns moon.entity
+(ns forge.entity.components
   (:require [forge.math.shape :as shape]
             [forge.math.vector :as v]
             [forge.utils :refer [->tile]]
@@ -7,10 +7,10 @@
             [forge.effects :as effects]
             [forge.entity :as entity]
             [forge.entity.state :as state]
-            [moon.operations :as ops]
-            [moon.val-max :as val-max]
-            [moon.widgets.action-bar :as action-bar]
-            [moon.world :refer [timer reset-timer]]
+            [forge.operations :as ops]
+            [forge.val-max :as val-max]
+            [forge.ui.action-bar :as action-bar]
+            [forge.world :refer [timer reset-timer]]
             [reduce-fsm :as fsm]))
 
 (defn tile [entity]

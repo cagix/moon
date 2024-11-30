@@ -1,4 +1,4 @@
-(ns moon.item
+(ns forge.item
   (:require [data.grid2d :as g2d]))
 
 (def empty-inventory

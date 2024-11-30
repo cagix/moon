@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.effects.target.melee-damage
   (:require [forge.effects.target.damage :as damage]
-            [moon.entity :as entity]))
+            [forge.entity.components :as entity]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]

@@ -2,10 +2,10 @@
   (:require [forge.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
             [forge.stage :as stage]
             [forge.math.vector :as v]
-            [moon.entity :as entity]
+            [forge.entity.components :as entity]
             [forge.entity.inventory :as inventory]
-            [moon.item :refer [valid-slot? stackable?]]
-            [moon.world :as world]))
+            [forge.item :refer [valid-slot? stackable?]]
+            [forge.world :as world]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid

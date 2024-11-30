@@ -27,7 +27,7 @@
   "Returns a map of ns-name to value-vars (non-function vars).
   Use to understand the state of your application.
 
-  Example: `(ns-value-vars #{\"moon\"})`"
+  Example: `(ns-value-vars #{\"forge\"})`"
   [packages]
   (into {} (for [nmspace (get-namespaces packages)
                  :let [value-vars (get-non-fn-vars nmspace)]
@@ -38,5 +38,5 @@
   (spit "app-values-tree.clj"
         (with-out-str
          (pprint
-          (for [[ns-name vars] (ns-value-vars #{"moon"})]
+          (for [[ns-name vars] (ns-value-vars #{"forge"})]
             [ns-name (map #(:name (meta %)) vars)])))))

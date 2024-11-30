@@ -1,4 +1,4 @@
-(ns moon.controls
+(ns forge.controls
   (:require [forge.graphics.camera :as cam]
             [forge.math.vector :as v]
             [forge.graphics :refer [world-camera]]))

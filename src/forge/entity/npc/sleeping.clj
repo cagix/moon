@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.entity.npc.sleeping
   (:require [forge.graphics :refer [draw-text]]
-            [moon.entity :as entity]
-            [moon.world :as world]))
+            [forge.entity.components :as entity]
+            [forge.world :as world]))
 
 (defn ->v [eid]
   {:eid eid})

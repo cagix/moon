@@ -7,8 +7,8 @@
             [forge.level :as level]
             [forge.screen :as screen]
             [forge.tiled :as t]
-            [forge.widgets.error-window :refer [error-window!]]
-            [moon.controls :as controls]
+            [forge.ui.error-window :refer [error-window!]]
+            [forge.controls :as controls]
             [forge.mapgen.modules :as modules])
   (:import (com.badlogic.gdx.utils Disposable)))
 

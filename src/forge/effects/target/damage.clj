@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.effects.target.damage
   (:require [forge.db :as db]
             [forge.math.rand :refer [rand-int-between]]
-            [moon.entity :as entity]
-            [moon.world :as world]))
+            [forge.entity.components :as entity]
+            [forge.world :as world]))
 
 (defn- effective-armor-save [source* target*]
   (max (- (or (entity/stat target* :entity/armor-save) 0)

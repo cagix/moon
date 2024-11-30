@@ -1,4 +1,4 @@
-(ns moon.widgets.action-bar
+(ns forge.ui.action-bar
   (:require [forge.info :as info]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
