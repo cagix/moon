@@ -1,5 +1,18 @@
 (in-ns 'clojure.core)
 
+; what is my environment ?
+; app & world ....
+; => all dependencies in 'project.clj', e.g. malli/validate ...
+
+(require '[clojure.string :as str])
+(import 'com.badlogic.gdx.math.MathUtils)
+(import '(com.badlogic.gdx Gdx)
+        '(com.badlogic.gdx.assets AssetManager)
+        '(com.badlogic.gdx.audio Sound)
+        '(com.badlogic.gdx.graphics Color)
+        '(com.badlogic.gdx.utils Align Scaling))
+
+
 (defn mapvals [f m]
   (into {} (for [[k v] m]
              [k (f v)])))
@@ -13,8 +26,6 @@
 (defn bind-root [avar value]
   (clojure.lang.Var/.bindRoot avar value))
 
-(import 'com.badlogic.gdx.math.MathUtils)
-
 (defn equal? [a b]
   (MathUtils/isEqual a b))
 
@@ -23,12 +34,6 @@
 
 (defn degree->radians [degree]
   (* MathUtils/degreesToRadians (float degree)))
-
-(require '[clojure.string :as str])
-
-(import '(com.badlogic.gdx Gdx)
-        '(com.badlogic.gdx.graphics Color)
-        '(com.badlogic.gdx.utils Align Scaling))
 
 (defn gdx-align [k]
   (case k
@@ -76,9 +81,7 @@
   [k]
   (.isKeyPressed Gdx/input (k->input-key k)))
 
-(declare ^com.badlogic.gdx.assets.AssetManager asset-manager)
-
-(import 'com.badlogic.gdx.audio.Sound)
+(declare ^AssetManager asset-manager)
 
 (defn play-sound [name]
-  (Sound/.play (get asset-manager (str "sounds/" name ".wav"))))
+  (Sound/.play (asset-manager (str "sounds/" name ".wav"))))

@@ -103,7 +103,7 @@
 
 (defn texture-region
   ([path]
-   (TextureRegion. ^Texture (get asset-manager path)))
+   (TextureRegion. ^Texture (asset-manager path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
