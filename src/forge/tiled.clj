@@ -32,9 +32,11 @@
   TiledMap
   (m-props [tiled-map] (.getProperties tiled-map))
   (get-property [tiled-map key] (lookup tiled-map key))
+
   MapLayer
   (m-props [layer] (.getProperties layer))
   (get-property [layer key] (lookup layer key))
+
   TiledMapTile
   (m-props [tile] (.getProperties tile))
   (get-property [tile key] (lookup tile key)))
@@ -136,7 +138,8 @@
     (.add ^MapLayers (layers tiled-map) layer)
     layer))
 
-(defn ->empty-tiled-map [] (TiledMap.))
+(defn empty-tiled-map []
+  (TiledMap.))
 
 (defn put! [^MapProperties properties key value]
   (.put properties key value))

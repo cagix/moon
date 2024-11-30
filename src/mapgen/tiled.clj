@@ -6,7 +6,7 @@
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
   The size of the map is as of the grid, which contains also the tile information from the schema-tiled-map."
   [schema-tiled-map grid]
-  (let [tiled-map (t/->empty-tiled-map)
+  (let [tiled-map (t/empty-tiled-map)
         properties (t/m-props tiled-map)]
     (t/put-all! properties (t/m-props schema-tiled-map))
     (t/put! properties "width"  (g/width  grid))
@@ -27,7 +27,7 @@
     tiled-map))
 
 (defn wgt-grid->tiled-map [tile-size grid position->tile]
-  (let [tiled-map (t/->empty-tiled-map)
+  (let [tiled-map (t/empty-tiled-map)
         properties (t/m-props tiled-map)]
     (t/put! properties "width"  (g/width  grid))
     (t/put! properties "height" (g/height grid))
