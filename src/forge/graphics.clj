@@ -1,4 +1,4 @@
-(cns forge.graphics
+(ns forge.graphics
   (:require [clojure.gdx.tiled :as tiled]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)

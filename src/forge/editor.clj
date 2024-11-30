@@ -1,11 +1,13 @@
-(ns ^:no-doc forge.screens.editor.ui
+(ns ^:no-doc forge.editor
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
+            [forge.app :as app]
             [forge.db :as db]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]
+            [forge.ui.background-image :as background-image]
             [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.stage :as stage]
             [forge.property :as property]
@@ -468,7 +470,7 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn tabs-table [label]
+(defn- tabs-table [label]
   (let [table (ui/table {:fill-parent? true})
         container (ui/table {})
         tabbed-pane (TabbedPane.)]
@@ -485,3 +487,15 @@
     (doseq [tab-data (property-type-tabs)]
       (.add tabbed-pane (tab-widget tab-data)))
     table))
+
+(defn screen []
+  {:actors [(background-image/create)
+            (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
+            (ui/actor {:act (fn []
+                              (when (key-just-pressed? :shift-left)
+                                (app/change-screen :screens/main-menu)))})]
+   :screen (reify app/Screen
+             (enter [_])
+             (exit [_])
+             (render [_])
+             (dispose [_]))})

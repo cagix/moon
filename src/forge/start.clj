@@ -4,10 +4,10 @@
             [clojure.string :as str]
             [forge.app :as app]
             [forge.db :as db]
+            [forge.editor :as editor]
             [forge.effects :as effects]
             [forge.entity :as entity]
             [forge.graphics :as graphics]
-            [forge.screens.editor :as editor]
             [forge.screens.main :as main]
             [forge.screens.map-editor :as map-editor]
             [forge.screens.minimap :as minimap]
@@ -235,7 +235,7 @@
          (bind-root #'app/screens (mapvals stage/create
                                            {:screens/main-menu  (main/create)
                                             :screens/map-editor (map-editor/create)
-                                            :screens/editor     (editor/create)
+                                            :screens/editor     (editor/screen)
                                             :screens/minimap    (minimap/create)
                                             :screens/world      (world/screen)}))
          (app/change-screen :screens/main-menu))
