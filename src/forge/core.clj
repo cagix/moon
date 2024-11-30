@@ -170,3 +170,13 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root #'current-screen-key new-k)
     (screen/enter screen)))
+
+(defn screen-stage ^Stage []
+  (:stage (current-screen)))
+
+(defn add-actor [actor]
+  (.addActor (screen-stage) actor))
+
+(defn reset-stage [new-actors]
+  (.clear (screen-stage))
+  (run! add-actor new-actors))

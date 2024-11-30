@@ -1,6 +1,5 @@
 (ns moon.widgets.action-bar
   (:require [forge.info :as info]
-            [forge.stage :as stage]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -16,7 +15,7 @@
   (.getUserObject (.findActor group "action-bar/button-group")))
 
 (defn- get-action-bar []
-  (let [group (::action-bar (:action-bar-table (stage/get)))]
+  (let [group (::action-bar (:action-bar-table (screen-stage)))]
     {:horizontal-group group
      :button-group (group->button-group group)}))
 

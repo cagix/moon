@@ -1,6 +1,5 @@
 (ns moon.widgets.inventory
   (:require [data.grid2d :as g2d]
-            [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
             [moon.entity :as entity]
@@ -113,7 +112,7 @@
                        :pad 4}]]}))
 
 (defn window []
-  (get (:windows (stage/get)) :inventory-window))
+  (get (:windows (screen-stage)) :inventory-window))
 
 (defn- cell-widget [cell]
   (get (::table (window)) cell))

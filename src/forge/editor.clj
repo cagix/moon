@@ -8,7 +8,6 @@
             [forge.ui :as ui]
             [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.screen :as screen]
-            [forge.stage :as stage]
             [forge.widgets.error-window :refer [error-window!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
@@ -169,7 +168,7 @@
                                   (let [[k _] (Actor/.getUserObject table)]
                                     (Actor/.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
-    (stage/add-actor (scrollable-choose-window rows))))
+    (add-actor (scrollable-choose-window rows))))
 
 (defn- columns [table sound-file]
   [(ui/text-button (name sound-file) #(choose-window table))
@@ -249,7 +248,7 @@
                                                (redo-rows (conj property-ids id)))]
                            (.add window (overview-table property-type clicked-id-fn))
                            (.pack window)
-                           (stage/add-actor window))))]
+                           (add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/get property-id)
               image-widget (ui/image->widget (db/property->image property)
@@ -288,7 +287,7 @@
                                                  (redo-rows id))]
                              (.add window (overview-table property-type clicked-id-fn))
                              (.pack window)
-                             (stage/add-actor window)))))]
+                             (add-actor window)))))]
       [(when property-id
          (let [property (db/get property-id)
                image-widget (ui/image->widget (db/property->image property) {:id property-id})]
@@ -308,7 +307,7 @@
        first))
 
 (defn- get-editor-window []
-  (:property-editor-window (stage/get)))
+  (:property-editor-window (screen-stage)))
 
 (defn- property-value []
  (let [window (get-editor-window)
@@ -320,7 +319,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (property-value)]
     (Actor/.remove (get-editor-window))
-    (stage/add-actor (editor-window prop-value))))
+    (add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (create (db/schema-of k) v)]
@@ -381,7 +380,7 @@
                                                            map-widget-table)])
                           (rebuild-editor-window)))]))
     (.pack window)
-    (stage/add-actor window)))
+    (add-actor window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -456,7 +455,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (stage/add-actor (editor-window (db/get-raw id))))
+  (add-actor (editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
   (for [property-type (sort (db/property-types))]

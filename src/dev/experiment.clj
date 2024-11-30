@@ -1,11 +1,10 @@
 (ns ^:no-doc dev.experiment
   (:require [forge.db :as db]
             [moon.entity :as entity]
-            [moon.world :as world :refer [player-eid]])
-  (:import (com.badlogic.gdx Gdx)))
+            [moon.world :as world :refer [player-eid]]))
 
 (defmacro app-do [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+  `(post-runnable (fn [] ~@exprs)))
 
 (comment
 

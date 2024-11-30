@@ -6,7 +6,6 @@
             [forge.widgets.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
             [forge.screen :as screen]
-            [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.utils :refer [readable-number dev-mode?]]
             [moon.controls :as controls]
@@ -99,7 +98,7 @@
    (player-message/create)])
 
 (defn- windows []
-  (:windows (stage/get)))
+  (:windows (screen-stage)))
 
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]
@@ -113,7 +112,7 @@
 
 (defn start [world-props]
   (change-screen :screens/world)
-  (stage/reset (widgets))
+  (reset-stage (widgets))
   (world/clear)
   (world/init (level/generate world-props)))
 

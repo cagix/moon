@@ -1,22 +1,17 @@
 (ns forge.stage
-  (:refer-clojure :exclude [get])
   (:require [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
             [forge.screen :as screen]
             [forge.ui :as ui])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Stage)))
-
-(defn get ^Stage []
-  (:stage (current-screen)))
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defrecord StageScreen [^Stage stage sub-screen]
   screen/Screen
   (enter [_]
-    (.setInputProcessor Gdx/input stage)
+    (set-input-processor stage)
     (screen/enter sub-screen))
 
   (exit [_]
-    (.setInputProcessor Gdx/input nil)
+    (set-input-processor nil)
     (screen/exit sub-screen))
 
   (render [_]
@@ -46,11 +41,4 @@
 
 (defn mouse-on-actor? []
   (let [[x y] (gui-mouse-position)]
-    (.hit (get) x y true)))
-
-(defn add-actor [actor]
-  (.addActor (get) actor))
-
-(defn reset [new-actors]
-  (.clear (get))
-  (run! add-actor new-actors))
+    (.hit (screen-stage) x y true)))
