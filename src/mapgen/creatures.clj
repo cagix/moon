@@ -10,7 +10,7 @@
    (fn [{:keys [property/id] :as prop}]
      (assert id)
      (let [image (property/->image prop)
-           tile (t/->static-tiled-map-tile (:texture-region image))]
+           tile (t/static-tiled-map-tile (:texture-region image))]
        (t/put! (t/m-props tile) "id" id)
        tile))))
 

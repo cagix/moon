@@ -114,7 +114,7 @@
      (assert tile)
      (StaticTiledMapTile. tile))))
 
-(defn ->static-tiled-map-tile [texture-region]
+(defn static-tiled-map-tile [texture-region]
   (assert texture-region)
   (StaticTiledMapTile. ^TextureRegion texture-region))
 

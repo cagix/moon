@@ -30,7 +30,7 @@
   (memoize
    (fn [texture-region movement]
      {:pre [#{"all" "air" "none"} movement]}
-     (let [tile (t/->static-tiled-map-tile texture-region)]
+     (let [tile (t/static-tiled-map-tile texture-region)]
        (t/put! (t/m-props tile) "movement" movement)
        tile))))
 
