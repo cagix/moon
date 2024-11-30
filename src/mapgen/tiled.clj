@@ -1,6 +1,6 @@
 (ns mapgen.tiled
-  (:require [data.grid2d :as g]
-            [forge.tiled :as t]))
+  (:require [clojure.gdx.tiled :as t]
+            [data.grid2d :as g]))
 
 (defn grid->tiled-map
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.

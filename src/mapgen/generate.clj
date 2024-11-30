@@ -1,7 +1,7 @@
 (ns ^:no-doc mapgen.generate
-  (:require [data.grid2d :as g2d]
+  (:require [clojure.gdx.tiled :as t]
+            [data.grid2d :as g2d]
             [forge.db :as db]
-            [forge.tiled :as t]
             [forge.level :as level]
             [mapgen.area-level-grid :as area-level-grid]
             [mapgen.creatures :as creatures]

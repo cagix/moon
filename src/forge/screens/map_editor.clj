@@ -1,10 +1,10 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx.tiled :as t]
+            [clojure.string :as str]
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]
-            [forge.tiled :as t]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position white]]
             [forge.level :as level]
             [forge.widgets.error-window :refer [error-window!]]

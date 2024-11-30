@@ -1,6 +1,6 @@
 (ns forge.level
-  (:require [data.grid2d :as g]
-            [forge.tiled :as t]))
+  (:require [clojure.gdx.tiled :as t]
+            [data.grid2d :as g]))
 
 (defmulti generate* (fn [world] (:world/generator world)))
 

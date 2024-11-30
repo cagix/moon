@@ -1,8 +1,8 @@
 (ns ^:no-doc mapgen.uf-caves
-  (:require [data.grid2d :as g2d]
+  (:require [clojure.gdx.tiled :as t]
+            [data.grid2d :as g2d]
             [forge.db :as db]
             [forge.math.rand :refer [get-rand-weighted-item]]
-            [forge.tiled :as t]
             [forge.graphics :as g]
             [forge.level :as level]
             [mapgen.creatures :as creatures]
