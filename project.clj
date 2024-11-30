@@ -36,7 +36,7 @@
              ;"-Dcom.sun.management.jmxremote.ssl=false"
              ;"-Dcom.sun.management.jmxremote.authenticate=false"
              ]
-  :injections [(load "clojure/forge")]
+  :injections [(load "forge/core")]
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
   ; this from engine, what purpose?
