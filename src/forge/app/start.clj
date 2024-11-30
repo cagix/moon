@@ -1,10 +1,9 @@
 (ns forge.app.start
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.utils :refer [dispose mac? clear-screen]]
-            [clojure.java.awt :as awt]
+            [clojure.gdx.utils :refer [dispose clear-screen]]
             [clojure.java.io :as io]
+            [forge.application :as application]
             [forge.app :as app]
             [forge.app.systems]
             [forge.screens.editor :as editor]
@@ -54,38 +53,36 @@
    :screens/world      (world/screen)})
 
 (defn -main []
-  (awt/set-dock-icon "moon.png")
-  (db/init :schema "schema.edn"
-           :properties "properties.edn")
-  (when mac?
-    (lwjgl3/configure-glfw-for-mac))
-  (lwjgl3/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
-                        (create  []
-                          (bind-root #'assets/manager (asset-manager/init
-                                                       (files/search "resources/"
-                                                                     [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                                                                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])))
-                          (bind-root #'cursors/cursors (cursors))
-                          (graphics/init)
-                          (ui/load! :skin-scale/x1)
-                          (bind-root #'app/screens (mapvals stage/create (screens)))
-                          (app/change-screen :screens/main-menu))
+  (application/start {:dock-icon "moon.png"
+                      :title "Moon"
+                      :fps 60
+                      :width 1440
+                      :height 900}
+                     (reify application/Listener
+                       (create [_]
+                         (db/init :schema "schema.edn"
+                                  :properties "properties.edn")
+                         (bind-root #'assets/manager (asset-manager/init
+                                                      (files/search "resources/"
+                                                                    [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                                                                     [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])))
+                         (bind-root #'cursors/cursors (cursors))
+                         (graphics/init)
+                         (ui/load! :skin-scale/x1)
+                         (bind-root #'app/screens (mapvals stage/create (screens)))
+                         (app/change-screen :screens/main-menu))
 
-                        (dispose []
-                          (dispose assets/manager)
-                          (run! dispose (vals cursors/cursors))
-                          (graphics/dispose)
-                          (run! app/dispose (vals app/screens))
-                          (ui/dispose!))
+                       (dispose [_]
+                         (dispose assets/manager)
+                         (run! dispose (vals cursors/cursors))
+                         (graphics/dispose)
+                         (run! app/dispose (vals app/screens))
+                         (ui/dispose!))
 
-                        (render  []
-                          (clear-screen color/black)
-                          (app/render (app/current-screen)))
+                       (render [_]
+                         (clear-screen color/black)
+                         (app/render (app/current-screen)))
 
-                        (resize  [w h]
-                          (.update graphics/gui-viewport   w h true)
-                          (.update graphics/world-viewport w h)))
-                      (lwjgl3/config {:title "Moon"
-                                      :fps 60
-                                      :width 1440
-                                      :height 900})))
+                       (resize [_ w h]
+                         (.update graphics/gui-viewport   w h true)
+                         (.update graphics/world-viewport w h)))))
