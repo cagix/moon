@@ -1,4 +1,4 @@
-(ns ^:no-doc forge.editor
+(ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
