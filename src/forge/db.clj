@@ -112,7 +112,7 @@
 
      :else (mg/generate (malli-form schema) {:size 3}))))
 
-(defn init [& {:keys [schema properties]}]
+(defn init [{:keys [schema properties]}]
   (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
   (bind-root #'properties-file (io/resource properties))
   (let [properties (-> properties-file slurp edn/read-string)]

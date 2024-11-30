@@ -3,9 +3,9 @@
                :fps 60
                :width 1440
                :height 900}
- :lifecycle {:schema "schema.edn"
-             :properties "properties.edn"
-             :resources "resources/"
+ :lifecycle {:db {:schema "schema.edn"
+                  :properties "properties.edn"}
+             :asset-folder "resources/"
              :cursors {:cursors/bag                   ["bag001"       [0   0]]
                        :cursors/black-x               ["black_x"      [0   0]]
                        :cursors/default               ["default"      [0   0]]

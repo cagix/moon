@@ -35,15 +35,13 @@
    :screens/minimap    (minimap/create)
    :screens/world      (world/screen)})
 
-(defn create [{:keys [schema
-                      properties
-                      resources
+(defn create [{:keys [db
+                      asset-folder
                       cursors
                       ui-skin-scale]}]
-  (db/init :schema schema
-           :properties properties)
+  (db/init db)
   (bind-root #'assets/manager (asset-manager/init
-                               (files/search resources
+                               (files/search asset-folder
                                              [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                                               [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])))
   (bind-root #'cursors/cursors (make-cursors cursors))
