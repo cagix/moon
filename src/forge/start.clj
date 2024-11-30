@@ -12,7 +12,6 @@
             [forge.screen :as screen]
             [forge.stage :as stage]
             [forge.ui :as ui]
-            [forge.utils :refer [dev-mode?]]
             [forge.entity.state :as state]
             [forge.entity.animation]
             [forge.entity.render]

@@ -1,6 +1,5 @@
 (ns forge.world.tile-color-setter
-  (:require [forge.utils :refer [->tile]]
-            [forge.world.raycaster :refer [ray-blocked?]])
+  (:require [forge.world.raycaster :refer [ray-blocked?]])
   (:import (com.badlogic.gdx.graphics Color)))
 
 (def ^:private explored-tile-color (gdx-color 0.5 0.5 0.5 1))

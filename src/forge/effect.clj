@@ -9,4 +9,3 @@
 
 (defsystem render           [_  ctx])
 (defmethod render :default  [_ _ctx])
-

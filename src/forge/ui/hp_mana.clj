@@ -1,6 +1,5 @@
 (ns forge.ui.hp-mana
   (:require [forge.ui :as ui]
-            [forge.utils :refer [readable-number]]
             [forge.graphics :refer [draw-text draw-image gui-viewport-width image sub-image]]
             [forge.entity.components :as entity]
             [forge.val-max :as val-max]

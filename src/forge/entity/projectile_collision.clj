@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.projectile-collision
-  (:require [forge.utils :refer [find-first]]
-            [forge.effects :as effects]
+  (:require [forge.effects :as effects]
             [forge.entity.components :as entity]
             [forge.world :as world]))
 

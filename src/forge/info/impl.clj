@@ -2,7 +2,6 @@
   (:require [clojure.string :as str]
             [forge.graphics :as g]
             [forge.info :as info :refer [info]]
-            [forge.utils :refer [k->pretty-name readable-number]]
             [forge.entity.components :as entity]
             [forge.operations :as ops]
             [forge.world :refer [finished-ratio]]))

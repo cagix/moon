@@ -1,7 +1,6 @@
 (ns forge.follow-ai
   (:require [data.grid2d :as g2d]
             [forge.math.vector :as v]
-            [forge.utils :refer [->tile indexed utils-positions when-seq]]
             [forge.entity.components :as entity]
             [forge.world :as world :refer [occupied-by-other?
                                           nearest-entity-distance

@@ -1,7 +1,6 @@
 (ns forge.entity.components
   (:require [forge.math.shape :as shape]
             [forge.math.vector :as v]
-            [forge.utils :refer [->tile]]
             [malli.core :as m]
             [forge.graphics :as g]
             [forge.effects :as effects]

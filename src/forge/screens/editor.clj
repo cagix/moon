@@ -5,7 +5,6 @@
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]
-            [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.screen :as screen]
             [forge.ui.error-window :refer [error-window!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -328,10 +327,10 @@
 (def ^:private value-widget? (comp vector? Actor/.getUserObject))
 
 (defn- find-kv-widget [table k]
-  (forge.utils/find-first (fn [actor]
-                           (and (Actor/.getUserObject actor)
-                                (= k ((Actor/.getUserObject actor) 0))))
-                         (ui/children table)))
+  (find-first (fn [actor]
+                (and (Actor/.getUserObject actor)
+                     (= k ((Actor/.getUserObject actor) 0))))
+              (ui/children table)))
 
 (defn- attribute-label [k m-schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))

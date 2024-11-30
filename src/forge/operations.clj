@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [remove apply])
   (:require [clojure.math :as math]
             [clojure.string :as str]
-            [forge.utils :refer [k->pretty-name]]
             [forge.operation :as op]))
 
 (defn add    [ops other-ops] (merge-with + ops other-ops))

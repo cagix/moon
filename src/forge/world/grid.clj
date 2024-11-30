@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.world.grid
   (:require #_[data.grid2d :as g2d]
-            [forge.math.shape :as shape]
-            [forge.utils :refer [->tile]]))
+            [forge.math.shape :as shape]))
 
 (defn- rectangle->tiles
   [{[x y] :left-bottom :keys [left-bottom width height]}]

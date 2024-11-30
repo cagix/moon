@@ -1,6 +1,5 @@
 (ns forge.mapgen.nads
-  (:require [data.grid2d :as g]
-            [forge.utils :refer [assoc-ks]]))
+  (:require [data.grid2d :as g]))
 
 (defn- wall-at? [grid posi]
   (= :wall (get grid posi)))

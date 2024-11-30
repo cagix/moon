@@ -1,6 +1,5 @@
 (ns forge.info
-  (:require [clojure.string :as str]
-            [forge.utils :refer [index-of]]))
+  (:require [clojure.string :as str]))
 
 (defsystem info)
 (defmethod info :default [_])

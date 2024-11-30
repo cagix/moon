@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.world.debug-render
   (:require [forge.graphics.camera :as cam]
             [forge.math.shape :as shape]
-            [forge.utils :refer [->tile]]
             [forge.graphics :refer [draw-circle draw-rectangle draw-filled-rectangle draw-grid world-camera world-mouse-position world-viewport-width world-viewport-height]]
             [forge.world :refer [circle->cells grid]]
             [forge.world.potential-fields :refer [factions-iterations]]))

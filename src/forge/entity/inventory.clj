@@ -1,6 +1,5 @@
 (ns forge.entity.inventory
-  (:require [forge.utils :refer [find-first]]
-            [forge.entity.components :as entity]
+  (:require [forge.entity.components :as entity]
             [forge.item :as item]
             [forge.ui.inventory :as inventory]))
 
