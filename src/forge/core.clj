@@ -1,7 +1,10 @@
 (ns clojure.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
             [clojure.pprint]
             [clojure.string :as str]
+            [clojure.java.io :as io]
+            [clojure.math :as math]
             [data.grid2d :as g2d]
             [forge.screen :as screen]
             [malli.core :as m]
@@ -14,6 +17,12 @@
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
            (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils)))
+
+(def signum math/signum)
+
+(def io-resource io/resource)
+
+(def edn-read-string edn/read-string)
 
 (def str-split         str/split)
 (def str-join          str/join)

@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [clojure.edn :as edn]
-            [clojure.set :as set]
+  (:require [clojure.set :as set]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]
@@ -120,7 +119,7 @@
                    (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn/read-string (VisTextField/.getText widget)))
+  (edn-read-string (VisTextField/.getText widget)))
 
 (defmethod create :string [schema v]
   (ui/add-tooltip! (ui/text-field v {})
@@ -141,7 +140,7 @@
                   :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn/read-string (VisSelectBox/.getSelected widget)))
+  (edn-read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
   (ui/text-button "play!" #(play-sound sound-file)))
