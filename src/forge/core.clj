@@ -7,7 +7,7 @@
         '(com.badlogic.gdx.assets AssetManager)
         '(com.badlogic.gdx.audio Sound)
         '(com.badlogic.gdx.graphics Color Pixmap)
-        '(com.badlogic.gdx.scenes.scene2d Actor)
+        '(com.badlogic.gdx.scenes.scene2d Actor Stage)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
 (defmacro defsystem
@@ -180,3 +180,9 @@
 (defn reset-stage [new-actors]
   (.clear (screen-stage))
   (run! add-actor new-actors))
+
+(defn set-input-processor [processor]
+  (.setInputProcessor Gdx/input processor))
+
+(defn post-runnable [runnable]
+  (.postRunnable Gdx/app runnable))
