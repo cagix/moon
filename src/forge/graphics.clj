@@ -15,6 +15,9 @@
 (def delta-time        gdx/delta-time)
 (def frames-per-second gdx/frames-per-second)
 
+(defn clear-screen []
+  (utils/clear-screen color/black))
+
 (def tile-size 48)
 
 (def world-viewport-width 1440)
@@ -205,3 +208,7 @@
   (.dispose shape-drawer-texture)
   (.dispose default-font)
   (run! utils/dispose (vals cursors)))
+
+(defn resize [w h]
+  (.update gui-viewport   w h true)
+  (.update world-viewport w h))

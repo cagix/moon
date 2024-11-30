@@ -157,14 +157,13 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   )
 
-(defn load! [skin-scale]
+(defn init [skin-scale]
   (check-cleanup-visui!)
   (vis/load skin-scale)
   (font-enable-markup!)
   (set-tooltip-config!))
 
-(defn dispose! []
-  (vis/dispose))
+(def dispose vis/dispose)
 
 (defn button-group [{:keys [max-check-count min-check-count]}]
   (let [bg (ButtonGroup.)]
