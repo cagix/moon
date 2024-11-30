@@ -7,7 +7,6 @@
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]
-            [forge.ui.background-image :as background-image]
             [forge.utils :refer [index-of truncate ->edn-str]]
             [forge.stage :as stage]
             [forge.property :as property]
@@ -488,8 +487,8 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn screen []
-  {:actors [(background-image/create)
+(defn screen [background-image]
+  {:actors [background-image
             (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :shift-left)

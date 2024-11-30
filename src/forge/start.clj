@@ -7,13 +7,13 @@
             [forge.editor :as editor]
             [forge.effects :as effects]
             [forge.entity :as entity]
-            [forge.graphics :as graphics]
-            [forge.screens.main :as main]
+            [forge.graphics :as g]
             [forge.screens.map-editor :as map-editor]
             [forge.screens.minimap :as minimap]
             [forge.screens.world :as world]
             [forge.stage :as stage]
             [forge.ui :as ui]
+            [forge.utils :refer [dev-mode?]]
             [moon.systems.entity-state :as state]
             [forge.entity.animation]
             [forge.info.impl]
@@ -31,6 +31,43 @@
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)))
+
+(defn- background-image []
+  (ui/image->widget (g/image "images/moon_background.png")
+                    {:fill-parent? true
+                     :scaling :fill
+                     :align :center}))
+
+(defn- exit []
+  (.exit Gdx/app))
+
+(defn- main-screen []
+  {:actors [(background-image)
+            (ui/table
+             {:rows
+              (remove nil?
+                      (concat
+                       (for [world (db/all :properties/worlds)]
+                         [(ui/text-button (str "Start " (:property/id world))
+                                          #(world/start world))])
+                       [(when dev-mode?
+                          [(ui/text-button "Map editor"
+                                           #(app/change-screen :screens/map-editor))])
+                        (when dev-mode?
+                          [(ui/text-button "Property editor"
+                                           #(app/change-screen :screens/editor))])
+                        [(ui/text-button "Exit" exit)]]))
+              :cell-defaults {:pad-bottom 25}
+              :fill-parent? true})
+            (ui/actor {:act (fn []
+                              (when (key-just-pressed? :keys/escape)
+                                (exit)))})]
+   :screen (reify app/Screen
+             (enter [_]
+               (g/set-cursor :cursors/default))
+             (exit [_])
+             (render [_])
+             (dispose [_]))})
 
 (def tile-size 48)
 
@@ -173,7 +210,7 @@
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor graphics/white)
+                 (.setColor g/white)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)
@@ -208,52 +245,52 @@
            (run! db/validate! properties)
            (bind-root #'db/db (zipmap (map :property/id properties) properties)))
          (bind-root #'asset-manager (load-assets assets))
-         (bind-root #'graphics/batch (SpriteBatch.))
+         (bind-root #'g/batch (SpriteBatch.))
          (bind-root #'shape-drawer-texture (white-pixel-texture))
-         (bind-root #'graphics/shape-drawer (ShapeDrawer. graphics/batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-         (bind-root #'graphics/default-font (graphics/truetype-font
-                                             {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
-                                              :size 16
-                                              :quality-scaling 2}))
-         (bind-root #'graphics/world-unit-scale (float (/ tile-size)))
-         (bind-root #'graphics/world-viewport (let [world-width  (* graphics/world-viewport-width  graphics/world-unit-scale)
-                                                    world-height (* graphics/world-viewport-height graphics/world-unit-scale)
-                                                    camera (OrthographicCamera.)
-                                                    y-down? false]
-                                                (.setToOrtho camera y-down? world-width world-height)
-                                                (FitViewport. world-width world-height camera)))
-         (bind-root #'graphics/cached-map-renderer (memoize
-                                                    (fn [tiled-map]
-                                                      (OrthogonalTiledMapRenderer. tiled-map
-                                                                                   (float graphics/world-unit-scale)
-                                                                                   graphics/batch))))
-         (bind-root #'graphics/gui-viewport (FitViewport. graphics/gui-viewport-width
-                                                          graphics/gui-viewport-height
-                                                          (OrthographicCamera.)))
-         (bind-root #'graphics/cursors (mapvals make-cursor cursors))
+         (bind-root #'g/shape-drawer (ShapeDrawer. g/batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
+         (bind-root #'g/default-font (g/truetype-font
+                                      {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf")
+                                       :size 16
+                                       :quality-scaling 2}))
+         (bind-root #'g/world-unit-scale (float (/ tile-size)))
+         (bind-root #'g/world-viewport (let [world-width  (* g/world-viewport-width  g/world-unit-scale)
+                                             world-height (* g/world-viewport-height g/world-unit-scale)
+                                             camera (OrthographicCamera.)
+                                             y-down? false]
+                                         (.setToOrtho camera y-down? world-width world-height)
+                                         (FitViewport. world-width world-height camera)))
+         (bind-root #'g/cached-map-renderer (memoize
+                                             (fn [tiled-map]
+                                               (OrthogonalTiledMapRenderer. tiled-map
+                                                                            (float g/world-unit-scale)
+                                                                            g/batch))))
+         (bind-root #'g/gui-viewport (FitViewport. g/gui-viewport-width
+                                                   g/gui-viewport-height
+                                                   (OrthographicCamera.)))
+         (bind-root #'g/cursors (mapvals make-cursor cursors))
          (ui/init ui)
          (bind-root #'app/screens (mapvals stage/create
-                                           {:screens/main-menu  (main/create)
+                                           {:screens/main-menu  (main-screen)
                                             :screens/map-editor (map-editor/create)
-                                            :screens/editor     (editor/screen)
+                                            :screens/editor     (editor/screen (background-image))
                                             :screens/minimap    (minimap/create)
                                             :screens/world      (world/screen)}))
          (app/change-screen :screens/main-menu))
 
        (dispose []
          (.dispose asset-manager)
-         (.dispose graphics/batch)
+         (.dispose g/batch)
          (.dispose shape-drawer-texture)
-         (.dispose graphics/default-font)
-         (run! Disposable/.dispose (vals graphics/cursors))
+         (.dispose g/default-font)
+         (run! Disposable/.dispose (vals g/cursors))
          (ui/dispose)
          (run! app/dispose (vals app/screens)))
 
        (render []
-         (ScreenUtils/clear graphics/black)
+         (ScreenUtils/clear g/black)
          (app/render (app/current-screen)))
 
        (resize [w h]
-         (.update graphics/gui-viewport   w h true)
-         (.update graphics/world-viewport w h)))
+         (.update g/gui-viewport   w h true)
+         (.update g/world-viewport w h)))
      (lwjgl3-config lwjgl3))))
