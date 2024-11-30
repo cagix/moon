@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.string :as str]
-            [forge.db :as db]
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
@@ -105,7 +104,7 @@ direction keys: move")
 (def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [properties]
-  (let [{:keys [tiled-map start-position]} (level/generate (db/build world-id))
+  (let [{:keys [tiled-map start-position]} (level/generate (build world-id))
         atom-data (current-data)]
     (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
@@ -118,8 +117,8 @@ direction keys: move")
 (defn ->generate-map-window [level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (pprint (db/build level-id))))]
-                     [(ui/text-button "Generate" #(try (generate-screen-ctx (db/build level-id))
+              :rows [[(ui/label (with-out-str (pprint (build level-id))))]
+                     [(ui/text-button "Generate" #(try (generate-screen-ctx (build level-id))
                                                        (catch Throwable t
                                                          (error-window! t)
                                                          (println t))))]]

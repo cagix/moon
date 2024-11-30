@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.uf-caves
   (:require [data.grid2d :as g2d]
-            [forge.db :as db]
             [forge.math.rand :refer [get-rand-weighted-item]]
             [forge.graphics :as g]
             [forge.level :as level]
@@ -19,7 +18,7 @@
 
 (defn- set-creatures-tiles [spawn-rate tiled-map spawn-positions]
   (let [layer (t/add-layer! tiled-map :name "creatures" :visible false)
-        creatures (db/build-all :properties/creatures)
+        creatures (build-all :properties/creatures)
         level (inc (rand-int 6))
         creatures (creatures/with-level creatures level)]
     (doseq [position spawn-positions

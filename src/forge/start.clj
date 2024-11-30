@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.db :as db]
             [forge.editor :as editor]
             [forge.effect :as effect]
             [forge.entity :as entity]
@@ -45,7 +44,7 @@
              {:rows
               (remove nil?
                       (concat
-                       (for [world (db/build-all :properties/worlds)]
+                       (for [world (build-all :properties/worlds)]
                          [(ui/text-button (str "Start " (:property/id world))
                                           #(world/start world))])
                        [(when dev-mode?
@@ -218,13 +217,13 @@
                 assets
                 cursors
                 ui]} (-> config io/resource slurp edn/read-string)]
-    (bind-root #'db/schemas (-> schema io/resource slurp edn/read-string))
-    (bind-root #'db/properties-file (io/resource properties))
-    (let [properties (-> db/properties-file slurp edn/read-string)]
+    (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
+    (bind-root #'db-properties-file (io/resource properties))
+    (let [properties (-> db-properties-file slurp edn/read-string)]
       (assert (or (empty? properties)
                   (apply distinct? (map :property/id properties))))
-      (run! db/validate! properties)
-      (bind-root #'db/db (zipmap (map :property/id properties) properties)))
+      (run! validate! properties)
+      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))
     (set-dock-icon dock-icon)
     (when SharedLibraryLoader/isMac
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")

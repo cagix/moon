@@ -2,7 +2,6 @@
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [data.grid2d :as g2d]
             [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
-            [forge.db :as db]
             [forge.graphics.camera :as cam]
             [forge.math.vector :as v]
             [forge.utils :refer [tile->middle define-order sort-by-order safe-merge]]
@@ -290,7 +289,7 @@
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
 (defn creature [{:keys [position creature-id components]}]
-  (let [props (db/build creature-id)]
+  (let [props (build creature-id)]
     (create position
             (->body (:entity/body props))
             (-> props

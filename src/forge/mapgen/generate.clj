@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.generate
   (:require [data.grid2d :as g2d]
-            [forge.db :as db]
             [forge.level :as level]
             [forge.tiled :as t]
             [forge.mapgen.area-level-grid :as area-level-grid]
@@ -12,7 +11,7 @@
 
 (defn- place-creatures! [spawn-rate tiled-map spawn-positions area-level-grid]
   (let [layer (t/add-layer! tiled-map :name "creatures" :visible false)
-        creature-properties (db/build-all :properties/creatures)]
+        creature-properties (build-all :properties/creatures)]
     (when spawn-creatures?
       (doseq [position spawn-positions
               :let [area-level (get area-level-grid position)]

@@ -1,7 +1,5 @@
 (ns forge.screens.world
   (:require [forge.graphics :as g :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position]]
-            [forge.db :as db]
-            [forge.graphics :as g]
             [forge.level :as level]
             [forge.ui.error-window :refer [error-window!]]
             [forge.graphics.camera :as cam]
@@ -41,7 +39,7 @@
                      {:label "Main-Menu"
                       :on-click (partial change-screen :screens/main-menu)}]}
             {:label "World"
-             :items (for [world (db/build-all :properties/worlds)]
+             :items (for [world (build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
                        :on-click #(start world)})}
             {:label "Help"

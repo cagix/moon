@@ -1,6 +1,5 @@
 (ns forge.graphics
   (:require [clojure.string :as str]
-            [forge.db :as db]
             [forge.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter)
@@ -304,5 +303,5 @@
                (int (/ sprite-y tileh))]))
     (image file)))
 
-(defmethod db/edn->value :s/image [_ edn]
+(defmethod edn->value :s/image [_ edn]
   (edn->image edn))

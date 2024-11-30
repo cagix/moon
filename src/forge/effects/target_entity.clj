@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.effects.target-entity
-  (:require [forge.db :as db]
-            [forge.math.vector :as v]
+  (:require [forge.math.vector :as v]
             [forge.graphics :refer [draw-line]]
             [forge.effects :as effects]
             [forge.entity.components :as entity]
@@ -42,7 +41,7 @@
                            :color [1 0 0 0.75]
                            :thick? true})
        (effects/do! ctx entity-effects))
-      (world/audiovisual (end-point source* target* maxrange) (db/build :audiovisuals/hit-ground)))))
+      (world/audiovisual (end-point source* target* maxrange) (build :audiovisuals/hit-ground)))))
 
 (defn render [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (when target
