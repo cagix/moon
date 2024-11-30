@@ -2,8 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.audio :as audio]
-            [forge.assets :as assets]
+            [forge.assets :as assets :refer [play-sound]]
             [forge.db :as db]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
@@ -151,7 +150,7 @@
   (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
-  (ui/text-button "play!" #(audio/play-sound sound-file)))
+  (ui/text-button "play!" #(play-sound sound-file)))
 
 (declare columns)
 

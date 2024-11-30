@@ -1,5 +1,5 @@
 (ns ^:no-doc moon.entity.player.idle
-  (:require [forge.audio :refer [play-sound]]
+  (:require [forge.assets :refer [play-sound]]
             [forge.graphics :as g :refer [world-mouse-position]]
             [forge.input :refer [button-just-pressed?]]
             [forge.math.vector :as v]

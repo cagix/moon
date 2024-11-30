@@ -1,6 +1,6 @@
 (ns ^:no-doc moon.effects.spawn
   "https://github.com/damn/core/issues/29"
-  (:require [forge.audio :refer [play-sound]]
+  (:require [forge.assets :refer [play-sound]]
             [moon.world :as world]))
 
 (defn applicable? [_ {:keys [effect/source effect/target-position]}]

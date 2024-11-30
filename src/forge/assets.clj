@@ -51,3 +51,6 @@
 
 (defn all-sounds   [] (all-of-class Sound))
 (defn all-textures [] (all-of-class Texture))
+
+(defn play-sound [name]
+  (Sound/.play (get (str "sounds/" name ".wav"))))
