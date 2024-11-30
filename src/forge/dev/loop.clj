@@ -12,9 +12,7 @@
   ```"
   (:require [clojure.java.io :as io]
             [nrepl.server :as nrepl]
-            [clojure.tools.namespace.repl :refer [disable-reload!
-                                                  refresh]]
-            [clj-commons.pretty.repl :as p]))
+            [clojure.tools.namespace.repl :refer [disable-reload! refresh]]))
 
 (disable-reload!) ; keep same connection/nrepl-server up throughout refreshs
 
@@ -36,8 +34,7 @@
 (def ^:private thrown (atom false))
 
 (defn- handle-throwable! [t]
-  (binding [*print-level* 3]
-    (p/pretty-pst t 24))
+  (pretty-pst t)
   (reset! thrown t))
 
 (defn restart!

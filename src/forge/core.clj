@@ -9,6 +9,7 @@
 ; or str-split
 ; or v-add ...
 
+(require '[clj-commons.pretty.repl :as pretty-repl])
 (require '[clojure.pprint])
 (require '[clojure.string :as str])
 (require '[forge.screen :as screen])
@@ -19,6 +20,10 @@
         '(com.badlogic.gdx.graphics Color Pixmap)
         '(com.badlogic.gdx.scenes.scene2d Actor Stage)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
+
+(defn pretty-pst [t]
+  (binding [*print-level* 3]
+    (pretty-repl/pretty-pst t 24)))
 
 (def pprint clojure.pprint/pprint)
 

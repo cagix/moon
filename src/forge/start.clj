@@ -16,6 +16,7 @@
             [forge.utils :refer [dev-mode?]]
             [forge.entity.state :as state]
             [forge.entity.animation]
+            [forge.entity.render]
             [forge.info.impl]
             (forge.mapgen generate uf-caves))
   (:import (com.badlogic.gdx ApplicationAdapter)
@@ -124,14 +125,10 @@
               #'entity/render-info]})
 
 (install-all entity '[forge.entity.alert-friendlies-after-duration
-                      forge.entity.clickable
                       forge.entity.delete-after-duration
                       forge.entity.destroy-audiovisual
                       forge.entity.fsm
-                      forge.entity.image
                       forge.entity.inventory
-                      forge.entity.line-render
-                      forge.entity.mouseover?
                       forge.entity.projectile-collision
                       forge.entity.skills
                       forge.entity.string-effect

@@ -54,13 +54,13 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn- item-place-position [entity]
+(defn item-place-position [entity]
   (placement-point (:position entity)
                    (world-mouse-position)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn- world-item? []
+(defn world-item? []
   (not (stage/mouse-on-actor?)))
 
 (defn ->v [eid item]
@@ -94,11 +94,6 @@
       (play-sound "bfxr_itemputground")
       (swap! eid dissoc :entity/item-on-cursor)
       (world/item (item-place-position entity) (:entity/item-on-cursor entity)))))
-
-(defn render-below [{:keys [item]} entity]
-  (when (world-item?)
-    (draw-centered (:entity/image item)
-                   (item-place-position entity))))
 
 (defn draw-gui-view [{:keys [eid]}]
   (let [entity @eid]

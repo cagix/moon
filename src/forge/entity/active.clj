@@ -1,21 +1,7 @@
 (ns ^:no-doc forge.entity.active
-  (:require [forge.graphics :refer [draw-image draw-filled-circle draw-sector]]
-            [forge.effects :as effects]
+  (:require [forge.effects :as effects]
             [forge.entity.components :as entity]
-            [forge.world :refer [timer stopped? finished-ratio line-of-sight?]]))
-
-(defn- draw-skill-image [image entity [x y] action-counter-ratio]
-  (let [[width height] (:world-unit-dimensions image)
-        _ (assert (= width height))
-        radius (/ (float width) 2)
-        y (+ (float y) (float (:half-height entity)) (float 0.15))
-        center [x (+ y radius)]]
-    (draw-filled-circle center radius [1 1 1 0.125])
-    (draw-sector center radius
-                 90 ; start-angle
-                 (* (float action-counter-ratio) 360) ; degree
-                 [1 1 1 0.5])
-    (draw-image image [(- (float x) radius) y])))
+            [forge.world :refer [timer stopped? line-of-sight?]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
@@ -23,7 +9,7 @@
          1)))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
-(defn- check-update-ctx
+(defn check-update-ctx
   "Call this on effect-context if the time of using the context is not the time when context was built."
   [{:keys [effect/source effect/target] :as ctx}]
   (if (and target
@@ -70,8 +56,3 @@
    (do
     (effects/do! effect-ctx (:skill/effects skill))
     (entity/event eid :action-done))))
-
-(defn render-info [{:keys [skill effect-ctx counter]} entity]
-  (let [{:keys [entity/image skill/effects]} skill]
-    (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effects/render (check-update-ctx effect-ctx) effects)))

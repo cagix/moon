@@ -1,6 +1,5 @@
 (ns forge.world
-  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [data.grid2d :as g2d]
+  (:require [data.grid2d :as g2d]
             [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
@@ -120,7 +119,7 @@
    (run! #(system % entity) entity)
    (catch Throwable t
      (draw-body-rect entity :red)
-     (pretty-pst t 12))))
+     (pretty-pst t))))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?

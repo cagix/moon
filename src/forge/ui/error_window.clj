@@ -1,6 +1,5 @@
 (ns forge.ui.error-window
-  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [forge.ui :as ui]))
+  (:require [forge.ui :as ui]))
 
 (defmacro ^:private with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh
@@ -13,8 +12,7 @@
        (str s#))))
 
 (defn error-window! [throwable]
-  (binding [*print-level* 5]
-    (pretty-pst throwable 24))
+  (pretty-pst throwable)
   (add-actor
    (ui/window {:title "Error"
                :rows [[(ui/label (binding [*print-level* 3]

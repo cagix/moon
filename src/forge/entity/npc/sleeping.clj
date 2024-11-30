@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.npc.sleeping
-  (:require [forge.graphics :refer [draw-text]]
-            [forge.entity.components :as entity]
+  (:require [forge.entity.components :as entity]
             [forge.world :as world]))
 
 (defn ->v [eid]
@@ -16,10 +15,3 @@
     (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
         (entity/event eid :alert)))))
-
-(defn render-above [_ entity]
-  (let [[x y] (:position entity)]
-    (draw-text {:text "zzz"
-                :x x
-                :y (+ y (:half-height entity))
-                :up? true})))
