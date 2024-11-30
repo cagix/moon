@@ -1,8 +1,6 @@
 (ns forge.stage
   (:refer-clojure :exclude [get])
-  (:require [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.utils :refer [dispose]]
-            [forge.app :as app]
+  (:require [forge.app :as app]
             [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
             [forge.input :as input]
             [forge.ui :as ui])
@@ -22,12 +20,12 @@
     (app/exit sub-screen))
 
   (render [_]
-    (stage/act stage)
+    (.act stage)
     (app/render sub-screen)
-    (stage/draw stage))
+    (.draw stage))
 
   (dispose [_]
-    (dispose stage)
+    (.dispose stage)
     (app/dispose sub-screen)))
 
 (defn- stage-create [viewport batch]
@@ -43,15 +41,16 @@
   "Actors or screen can be nil."
   [{:keys [actors screen]}]
   (let [stage (stage-create gui-viewport batch)]
-    (run! #(stage/add stage %) actors)
+    (run! #(.addActor stage %) actors)
     (->StageScreen stage screen)))
 
 (defn mouse-on-actor? []
-  (stage/hit (get) (gui-mouse-position) :touchable? true))
+  (let [[x y] (gui-mouse-position)]
+    (.hit (get) x y true)))
 
 (defn add-actor [actor]
-  (stage/add (get) actor))
+  (.addActor (get) actor))
 
 (defn reset [new-actors]
-  (stage/clear (get))
+  (.clear (get))
   (run! add-actor new-actors))
