@@ -13,6 +13,7 @@
         '(com.badlogic.gdx.audio Sound)
         '(com.badlogic.gdx.graphics Color Pixmap)
         '(com.badlogic.gdx.scenes.scene2d Actor Stage)
+        '(com.badlogic.gdx.math Circle Intersector Rectangle Vector2)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
 #_(defn pretty-pst [t]
@@ -630,3 +631,114 @@
 
 (defn high-weighted-rand-nth [coll]
   (nth coll (high-weighted-rand-int (count coll))))
+
+(defn- m-v2
+  ([[x y]] (Vector2. x y))
+  ([x y]   (Vector2. x y)))
+
+(defn- ->p [^Vector2 v]
+  [(.x ^Vector2 v) (.y ^Vector2 v)])
+
+(defn v-scale [v n]
+  (->p (.scl ^Vector2 (m-v2 v) (float n))))
+
+(defn v-normalise [v]
+  (->p (.nor ^Vector2 (m-v2 v))))
+
+(defn v-add [v1 v2]
+  (->p (.add ^Vector2 (m-v2 v1)
+             ^Vector2 (m-v2 v2))))
+
+(defn v-length [v]
+  (.len ^Vector2 (m-v2 v)))
+
+(defn v-distance [v1 v2]
+  (.dst ^Vector2 (m-v2 v1) ^Vector2 (m-v2 v2)))
+
+(defn v-normalised? [v]
+  (equal? 1 (v-length v)))
+
+(defn v-normal-vectors [[x y]]
+  [[(- (float y))         x]
+   [          y (- (float x))]])
+
+(defn v-direction [[sx sy] [tx ty]]
+  (v-normalise [(- (float tx) (float sx))
+                (- (float ty) (float sy))]))
+
+(defn v-angle-from-vector
+  "converts theta of Vector2 to angle from top (top is 0 degree, moving left is 90 degree etc.), counterclockwise"
+  [v]
+  (.angleDeg (m-v2 v) (Vector2. 0 1)))
+
+(comment
+
+ (pprint
+  (for [v [[0 1]
+           [1 1]
+           [1 0]
+           [1 -1]
+           [0 -1]
+           [-1 -1]
+           [-1 0]
+           [-1 1]]]
+    [v
+     (.angleDeg (m-v2 v) (Vector2. 0 1))
+     (get-angle-from-vector (m-v2 v))]))
+
+ )
+
+(defn v-diagonal-direction? [[x y]]
+  (and (not (zero? (float x)))
+       (not (zero? (float y)))))
+
+(defn- rectangle? [{[x y] :left-bottom :keys [width height]}]
+  (and x y width height))
+
+(defn- circle? [{[x y] :position :keys [radius]}]
+  (and x y radius))
+
+(defn- m->shape [m]
+  (cond
+   (rectangle? m) (let [{:keys [left-bottom width height]} m
+                        [x y] left-bottom]
+                    (Rectangle. x y width height))
+
+   (circle? m) (let [{:keys [position radius]} m
+                     [x y] position]
+                 (Circle. x y radius))
+
+   :else (throw (Error. (str m)))))
+
+(defmulti ^:private overlaps?* (fn [a b] [(class a) (class b)]))
+
+(defmethod overlaps?* [Circle Circle]
+  [^Circle a ^Circle b]
+  (Intersector/overlaps a b))
+
+(defmethod overlaps?* [Rectangle Rectangle]
+  [^Rectangle a ^Rectangle b]
+  (Intersector/overlaps a b))
+
+(defmethod overlaps?* [Rectangle Circle]
+  [^Rectangle rect ^Circle circle]
+  (Intersector/overlaps circle rect))
+
+(defmethod overlaps?* [Circle Rectangle]
+  [^Circle circle ^Rectangle rect]
+  (Intersector/overlaps circle rect))
+
+(defn overlaps? [a b]
+  (overlaps?* (m->shape a) (m->shape b)))
+
+(defn rect-contains? [rectangle [x y]]
+  (Rectangle/.contains (m->shape rectangle) x y))
+
+(defn circle->outer-rectangle [{[x y] :position :keys [radius] :as circle}]
+  {:pre [(circle? circle)]}
+  (let [radius (float radius)
+        size (* radius 2)]
+    {:left-bottom [(- (float x) radius)
+                   (- (float y) radius)]
+     :width  size
+     :height size}))

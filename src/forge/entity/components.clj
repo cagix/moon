@@ -1,7 +1,5 @@
 (ns forge.entity.components
-  (:require [forge.math.shape :as shape]
-            [forge.math.vector :as v]
-            [malli.core :as m]
+  (:require [malli.core :as m]
             [forge.graphics :as g]
             [forge.entity :as entity]
             [forge.entity.state :as state]
@@ -15,10 +13,10 @@
   (->tile (:position entity)))
 
 (defn direction [entity other-entity]
-  (v/direction (:position entity) (:position other-entity)))
+  (v-direction (:position entity) (:position other-entity)))
 
 (defn collides? [entity other-entity]
-  (shape/overlaps? entity other-entity))
+  (overlaps? entity other-entity))
 
 (defn enemy [{:keys [entity/faction]}]
   (case faction

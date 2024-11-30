@@ -3,7 +3,6 @@
             [data.grid2d :as g2d]
             [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
             [forge.graphics.camera :as cam]
-            [forge.math.vector :as v]
             [forge.level :as level]
             [forge.tiled :as tiled]
             [forge.world.raycaster :as raycaster :refer [ray-blocked?]]
@@ -334,7 +333,7 @@
             {:width size
              :height size
              :z-order :z-order/flying
-             :rotation-angle (v/angle-from-vector direction)}
+             :rotation-angle (v-angle-from-vector direction)}
             {:entity/movement {:direction direction
                                :speed speed}
              :entity/image image

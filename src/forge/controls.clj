@@ -1,6 +1,5 @@
 (ns forge.controls
   (:require [forge.graphics.camera :as cam]
-            [forge.math.vector :as v]
             [forge.graphics :refer [world-camera]]))
 
 (defn unpaused? []
@@ -31,7 +30,7 @@
   (key-just-pressed? (get window-hotkeys window-id)))
 
 (defn- add-vs [vs]
-  (v/normalise (reduce v/add [0 0] vs)))
+  (v-normalise (reduce v-add [0 0] vs)))
 
 (defn- WASD-movement-vector []
   (let [r (when (key-pressed? :d) [1  0])
@@ -40,7 +39,7 @@
         d (when (key-pressed? :s) [0 -1])]
     (when (or r l u d)
       (let [v (add-vs (remove nil? [r l u d]))]
-        (when (pos? (v/length v))
+        (when (pos? (v-length v))
           v)))))
 
 (defn movement-vector []

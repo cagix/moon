@@ -1,11 +1,10 @@
 (ns ^:no-doc forge.effects.projectile
-  (:require [forge.math.vector :as v]
-            [forge.world.raycaster :refer [path-blocked?]]
+  (:require [forge.world.raycaster :refer [path-blocked?]]
             [forge.world :as world :refer [projectile-size]]))
 
 (defn- start-point [entity direction size]
-  (v/add (:position entity)
-         (v/scale direction
+  (v-add (:position entity)
+         (v-scale direction
                   (+ (:radius entity) size 0.1))))
 
 ; TODO for npcs need target -- anyway only with direction
@@ -23,7 +22,7 @@
                              target-p
                              (projectile-size projectile)))
          ; TODO not taking into account body sizes
-         (< (v/distance source-p ; entity/distance function protocol EntityPosition
+         (< (v-distance source-p ; entity/distance function protocol EntityPosition
                         target-p)
             max-range))))
 

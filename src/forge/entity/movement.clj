@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.movement
-  (:require [forge.math.vector :as v]
-            [malli.core :as m]
+  (:require [malli.core :as m]
             [forge.entity.components :as entity]
             [forge.world :as world]))
 
@@ -43,10 +42,10 @@
 (defn tick [{:keys [direction speed rotate-in-movement-direction?] :as movement} eid]
   (assert (m/validate world/speed-schema speed)
           (pr-str speed))
-  (assert (or (zero? (v/length direction))
-              (v/normalised? direction))
+  (assert (or (zero? (v-length direction))
+              (v-normalised? direction))
           (str "cannot understand direction: " (pr-str direction)))
-  (when-not (or (zero? (v/length direction))
+  (when-not (or (zero? (v-length direction))
                 (nil? speed)
                 (zero? speed))
     (let [movement (assoc movement :delta-time world/delta)
@@ -59,4 +58,4 @@
                :position (:position body)
                :left-bottom (:left-bottom body))
         (when rotate-in-movement-direction?
-          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
+          (swap! eid assoc :rotation-angle (v-angle-from-vector direction)))))))

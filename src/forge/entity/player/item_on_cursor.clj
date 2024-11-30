@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.entity.player.item-on-cursor
   (:require [forge.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
             [forge.stage :as stage]
-            [forge.math.vector :as v]
             [forge.entity.components :as entity]
             [forge.entity.inventory :as inventory]
             [forge.item :refer [valid-slot? stackable?]]
@@ -49,10 +48,10 @@
 ; this is okay, you have thrown the item over a hill, thats possible.
 
 (defn- placement-point [player target maxrange]
-  (v/add player
-         (v/scale (v/direction player target)
+  (v-add player
+         (v-scale (v-direction player target)
                   (min maxrange
-                       (v/distance player target)))))
+                       (v-distance player target)))))
 
 (defn item-place-position [entity]
   (placement-point (:position entity)

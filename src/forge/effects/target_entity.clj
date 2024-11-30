@@ -1,11 +1,10 @@
 (ns ^:no-doc forge.effects.target-entity
-  (:require [forge.math.vector :as v]
-            [forge.graphics :refer [draw-line]]
+  (:require [forge.graphics :refer [draw-line]]
             [forge.entity.components :as entity]
             [forge.world :as world]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
-  (< (- (float (v/distance (:position entity)
+  (< (- (float (v-distance (:position entity)
                            (:position target*)))
         (float (:radius entity))
         (float (:radius target*)))
@@ -13,13 +12,13 @@
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
-  (v/add (:position entity)
-         (v/scale (entity/direction entity target*)
+  (v-add (:position entity)
+         (v-scale (entity/direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
-  (v/add (start-point entity target*)
-         (v/scale (entity/direction entity target*)
+  (v-add (start-point entity target*)
+         (v-scale (entity/direction entity target*)
                   maxrange)))
 
 (defn applicable? [{:keys [entity-effects]} {:keys [effect/target] :as ctx}]

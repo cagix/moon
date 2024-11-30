@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.player.idle
   (:require [forge.graphics :as g :refer [world-mouse-position]]
-            [forge.math.vector :as v]
             [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.controls :as controls]
@@ -51,7 +50,7 @@
     :clickable/player :cursors/bag))
 
 (defn- clickable-entity-interaction [player-entity clicked-eid]
-  (if (< (v/distance (:position player-entity)
+  (if (< (v-distance (:position player-entity)
                      (:position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
     [(clickable->cursor @clicked-eid false) (fn [] (on-clicked clicked-eid))]
@@ -77,7 +76,7 @@
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position
-     :effect/target-direction (v/direction (:position @eid) target-position)}))
+     :effect/target-direction (v-direction (:position @eid) target-position)}))
 
 (defn- interaction-state [eid]
   (let [entity @eid]

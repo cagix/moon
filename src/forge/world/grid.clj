@@ -1,6 +1,4 @@
-(ns ^:no-doc forge.world.grid
-  (:require #_[data.grid2d :as g2d]
-            [forge.math.shape :as shape]))
+(ns ^:no-doc forge.world.grid)
 
 (defn- rectangle->tiles
   [{[x y] :left-bottom :keys [left-bottom width height]}]
@@ -25,7 +23,7 @@
 
 (defn circle->cells [grid circle]
   (->> circle
-       shape/circle->outer-rectangle
+       circle->outer-rectangle
        (rectangle->cells grid)))
 
 (defn cells->entities [cells]
@@ -35,7 +33,7 @@
   (->> (circle->cells grid circle)
        (map deref)
        cells->entities
-       (filter #(shape/overlaps? circle @%))))
+       (filter #(overlaps? circle @%))))
 
 (defn- set-cells! [grid eid]
   (let [cells (rectangle->cells grid @eid)]
@@ -92,7 +90,7 @@
 
 (defn point->entities [grid position]
   (when-let [cell (get grid (->tile position))]
-    (filter #(shape/contains? @% position)
+    (filter #(rect-contains? @% position)
             (:entities @cell))))
 
 (defn add-entity [grid eid]

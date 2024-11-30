@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.world.debug-render
   (:require [forge.graphics.camera :as cam]
-            [forge.math.shape :as shape]
             [forge.graphics :refer [draw-circle draw-rectangle draw-filled-rectangle draw-grid world-camera world-mouse-position world-viewport-width world-viewport-height]]
             [forge.world :refer [circle->cells grid]]
             [forge.world.potential-fields :refer [factions-iterations]]))
@@ -12,7 +11,7 @@
     (draw-circle position radius [1 0 0 0.5])
     (doseq [[x y] (map #(:position @%) (circle->cells circle))]
       (draw-rectangle x y 1 1 [1 0 0 0.5]))
-    (let [{[x y] :left-bottom :keys [width height]} (shape/circle->outer-rectangle circle)]
+    (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
       (draw-rectangle x y width height [0 0 1 1]))))
 
 (def ^:private ^:dbg-flag tile-grid? false)
