@@ -41,7 +41,7 @@
                      {:label "Main-Menu"
                       :on-click (partial change-screen :screens/main-menu)}]}
             {:label "World"
-             :items (for [world (db/all :properties/worlds)]
+             :items (for [world (db/build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
                        :on-click #(start world)})}
             {:label "Help"

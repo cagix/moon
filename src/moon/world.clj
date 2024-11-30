@@ -284,7 +284,7 @@
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
 (defn creature [{:keys [position creature-id components]}]
-  (let [props (db/get creature-id)]
+  (let [props (db/build creature-id)]
     (create position
             (->body (:entity/body props))
             (-> props

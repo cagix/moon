@@ -119,7 +119,7 @@
   {:pre [(map? m)]}
   (let [tree (ui/tree)]
     (add-map-nodes! tree (into (sorted-map) m) 0)
-    (stage/add-actor
+    (add-actor
      (ui/window {:title "Tree View"
                  :close-button? true
                  :close-on-escape? true

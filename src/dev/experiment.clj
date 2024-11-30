@@ -47,10 +47,10 @@
 
 (defn- learn-skill! [skill-id]
   (app-do
-   (swap! player-eid entity/add-skill (db/get skill-id))))
+   (swap! player-eid entity/add-skill (db/build skill-id))))
 
 (defn- create-item! [item-id]
   (app-do
-   (world/item (:position @player-eid) (db/get item-id))))
+   (world/item (:position @player-eid) (db/build item-id))))
 
 

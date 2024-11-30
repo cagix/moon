@@ -105,7 +105,7 @@ direction keys: move")
 (def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [properties]
-  (let [{:keys [tiled-map start-position]} (level/generate (db/get world-id))
+  (let [{:keys [tiled-map start-position]} (level/generate (db/build world-id))
         atom-data (current-data)]
     (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
@@ -118,8 +118,8 @@ direction keys: move")
 (defn ->generate-map-window [level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (clojure.pprint/pprint (db/get level-id))))]
-                     [(ui/text-button "Generate" #(try (generate-screen-ctx (db/get level-id))
+              :rows [[(ui/label (with-out-str (clojure.pprint/pprint (db/build level-id))))]
+                     [(ui/text-button "Generate" #(try (generate-screen-ctx (db/build level-id))
                                                        (catch Throwable t
                                                          (error-window! t)
                                                          (println t))))]]

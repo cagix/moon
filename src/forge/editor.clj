@@ -217,7 +217,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/all property-type)
+        properties (db/build-all property-type)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -250,7 +250,7 @@
                            (.pack window)
                            (add-actor window))))]
       (for [property-id property-ids]
-        (let [property (db/get property-id)
+        (let [property (db/build property-id)
               image-widget (ui/image->widget (db/property->image property)
                                              {:id property-id})]
           (ui/add-tooltip! image-widget #(info/text property))))
@@ -289,7 +289,7 @@
                              (.pack window)
                              (add-actor window)))))]
       [(when property-id
-         (let [property (db/get property-id)
+         (let [property (db/build property-id)
                image-widget (ui/image->widget (db/property->image property) {:id property-id})]
            (ui/add-tooltip! image-widget #(info/text property))
            image-widget))]

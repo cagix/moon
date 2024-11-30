@@ -44,7 +44,7 @@
              {:rows
               (remove nil?
                       (concat
-                       (for [world (db/all :properties/worlds)]
+                       (for [world (db/build-all :properties/worlds)]
                          [(ui/text-button (str "Start " (:property/id world))
                                           #(world/start world))])
                        [(when dev-mode?

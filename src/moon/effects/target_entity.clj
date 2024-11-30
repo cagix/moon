@@ -42,7 +42,7 @@
                            :color [1 0 0 0.75]
                            :thick? true})
        (effects/do! ctx entity-effects))
-      (world/audiovisual (end-point source* target* maxrange) (db/get :audiovisuals/hit-ground)))))
+      (world/audiovisual (end-point source* target* maxrange) (db/build :audiovisuals/hit-ground)))))
 
 (defn render [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (when target

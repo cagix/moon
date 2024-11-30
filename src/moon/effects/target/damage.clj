@@ -39,6 +39,6 @@
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
-       (world/audiovisual (:position target*) (db/get :audiovisuals/damage))
+       (world/audiovisual (:position target*) (db/build :audiovisuals/damage))
        (entity/event target (if (zero? new-hp-val) :kill :alert))
        (swap! target entity/add-text-effect (str "[RED]" dmg-amount "[]"))))))

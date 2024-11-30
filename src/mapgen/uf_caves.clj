@@ -19,7 +19,7 @@
 
 (defn- set-creatures-tiles [spawn-rate tiled-map spawn-positions]
   (let [layer (t/add-layer! tiled-map :name "creatures" :visible false)
-        creatures (db/all :properties/creatures)
+        creatures (db/build-all :properties/creatures)
         level (inc (rand-int 6))
         creatures (creatures/with-level creatures level)]
     (doseq [position spawn-positions

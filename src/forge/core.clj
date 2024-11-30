@@ -1,5 +1,14 @@
 (in-ns 'clojure.core)
 
+; Rationale:
+; * I define the same language/aliases/imports in 100 namespaces!
+; * I create my own environment
+; e.g. db/get everywhere - just 'build' ...
+; or even pprint
+; or error
+; or str-split
+; or v-add ...
+
 (require '[clojure.string :as str])
 (require '[forge.screen :as screen])
 (import 'com.badlogic.gdx.math.MathUtils)

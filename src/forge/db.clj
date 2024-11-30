@@ -1,5 +1,4 @@
 (ns forge.db
-  (:refer-clojure :exclude [get])
   (:require [clojure.pprint :refer [pprint]]
             [forge.graphics :as g]
             [forge.graphics.animation :as animation]
@@ -157,11 +156,11 @@
   "Calls for every key in map (f k v) to calculate new value at k."
   [m f]
   (reduce (fn [m k]
-            (assoc m k (f k (clojure.core/get m k)))) ; using assoc because non-destructive for records
+            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
           m
           (keys m)))
 
-(declare get)
+(declare build)
 
 (defmulti edn->value (fn [schema v]
                        (when schema  ; undefined-data-ks
@@ -169,10 +168,10 @@
 (defmethod edn->value :default [_schema v] v)
 
 (defmethod edn->value :s/one-to-many [_ property-ids]
-  (set (map get property-ids)))
+  (set (map build property-ids)))
 
 (defmethod edn->value :s/one-to-one [_ property-id]
-  (get property-id))
+  (build property-id))
 
 (defn- edn->image [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds
@@ -191,7 +190,7 @@
                     :frame-duration frame-duration
                     :looping? looping?))
 
-(defn- build [property]
+(defn- build* [property]
   (apply-kvs property
              (fn [k v]
                (let [schema (try (schema-of k)
@@ -199,17 +198,17 @@
                                    (swap! undefined-data-ks conj k)
                                    nil))
                      v (if (map? v)
-                         (build v)
+                         (build* v)
                          v)]
                  (try (edn->value schema v)
                       (catch Throwable t
                         (throw (ex-info " " {:k k :v v} t))))))))
 
-(defn get [id]
-  (build (get-raw id)))
+(defn build [id]
+  (build* (get-raw id)))
 
-(defn all [type]
-  (map build (all-raw type)))
+(defn build-all [type]
+  (map build* (all-raw type)))
 
 (defn update! [{:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
