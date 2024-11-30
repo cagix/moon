@@ -1,5 +1,4 @@
-(ns forge.item
-  (:require [data.grid2d :as g2d]))
+(ns forge.item)
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
@@ -14,7 +13,7 @@
                         :necklace [1 1]
                         :rings    [2 1]}
        (map (fn [[slot [width height]]]
-              [slot (g2d/create-grid width height (constantly nil))]))
+              [slot (grid2d width height (constantly nil))]))
        (into {})))
 
 (defn cells-and-items [inventory slot]

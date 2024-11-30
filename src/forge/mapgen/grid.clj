@@ -183,18 +183,18 @@
             (finished grid (last posi-seq) cell-cnt)))))))
 
 (defn scale-grid [grid [w h]]
-  (g/create-grid (* (g/width grid)  w)
-                 (* (g/height grid) h)
-                 (fn [[x y]]
-                   (get grid
-                        [(int (/ x w))
-                         (int (/ y h))]))))
+  (grid2d (* (g/width grid)  w)
+          (* (g/height grid) h)
+          (fn [[x y]]
+            (get grid
+                 [(int (/ x w))
+                  (int (/ y h))]))))
 
 (defn scalegrid [grid factor]
-  (g/create-grid (* (g/width grid) factor)
-                 (* (g/height grid) factor)
-                 (fn [posi]
-                   (get grid (mapv #(int (/ % factor)) posi)))))
+  (grid2d (* (g/width grid) factor)
+          (* (g/height grid) factor)
+          (fn [posi]
+            (get grid (mapv #(int (/ % factor)) posi)))))
 
 (defn- print-cell [celltype]
   (print (if (number? celltype)
@@ -253,7 +253,7 @@
 (defn adjacent-wall-positions [grid]
   (filter (fn [p] (and (= :wall (get grid p))
                        (some #(= :ground (get grid %))
-                             (g/get-8-neighbour-positions p))))
+                             (get-8-neighbour-positions p))))
           (g/posis grid)))
 
 (defn flood-fill [grid start walk-on-position?]
@@ -264,7 +264,7 @@
       (recur (filter #(and (get grid %)
                            (walk-on-position? %))
                      (distinct
-                      (mapcat g/get-8-neighbour-positions
+                      (mapcat get-8-neighbour-positions
                               next-positions)))
              (concat filled next-positions)
              (assoc-ks grid next-positions nil))

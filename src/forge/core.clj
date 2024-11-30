@@ -2,6 +2,7 @@
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.pprint]
             [clojure.string :as str]
+            [data.grid2d :as g2d]
             [forge.screen :as screen]
             [malli.core :as m]
             [malli.error :as me]
@@ -747,3 +748,17 @@
                    (- (float y) radius)]
      :width  size
      :height size}))
+
+(def ^:private offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]])
+
+; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
+(defn get-8-neighbour-positions [position]
+  (mapv #(mapv + position %) offsets))
+
+#_(defn- get-8-neighbour-positions [[x y]]
+  (mapv (fn [tx ty]
+          [tx ty])
+   (range (dec x) (+ x 2))
+   (range (dec y) (+ y 2))))
+
+(def grid2d g2d/create-grid)

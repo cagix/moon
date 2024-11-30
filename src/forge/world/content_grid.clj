@@ -1,12 +1,11 @@
-(ns ^:no-doc forge.world.content-grid
-  (:require [data.grid2d :as g2d]))
+(ns ^:no-doc forge.world.content-grid)
 
 (defn create [{:keys [cell-size width height]}]
-  {:grid (g2d/create-grid (inc (int (/ width  cell-size))) ; inc because corners
-                          (inc (int (/ height cell-size)))
-                          (fn [idx]
-                            (atom {:idx idx,
-                                   :entities #{}})))
+  {:grid (grid2d (inc (int (/ width  cell-size))) ; inc because corners
+                 (inc (int (/ height cell-size)))
+                 (fn [idx]
+                   (atom {:idx idx,
+                          :entities #{}})))
    :cell-w cell-size
    :cell-h cell-size})
 
@@ -31,6 +30,6 @@
                      ::content-cell
                      deref
                      :idx)]
-         (cons idx (g2d/get-8-neighbour-positions idx)))
+         (cons idx (get-8-neighbour-positions idx)))
        (keep grid)
        (mapcat (comp :entities deref))))

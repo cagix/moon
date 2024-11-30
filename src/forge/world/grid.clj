@@ -69,18 +69,6 @@
     (assert (get (:occupied @cell) eid))
     (swap! cell update :occupied disj eid)))
 
-(defn- get-8-neighbour-positions [[x y]]
-  (mapv (fn [tx ty]
-          [tx ty])
-   (range (dec x) (+ x 2))
-   (range (dec y) (+ y 2))))
-
-(def ^:private offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]])
-
-; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
-(defn- get-8-neighbour-positions [position]
-  (mapv #(mapv + position %) offsets))
-
 (defn cached-adjacent-cells [grid cell]
   (if-let [result (:adjacent-cells @cell)]
     result

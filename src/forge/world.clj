@@ -1,6 +1,5 @@
 (ns forge.world
-  (:require [data.grid2d :as g2d]
-            [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
+  (:require [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
             [forge.graphics.camera :as cam]
             [forge.level :as level]
             [forge.tiled :as tiled]
@@ -368,18 +367,17 @@
 
 (defn init [{:keys [tiled-map start-position]}]
   (bind-root #'tiled-map tiled-map)
-  (bind-root #'explored-tile-corners (atom (g2d/create-grid (tiled/width  tiled-map)
-                                                            (tiled/height tiled-map)
-                                                            (constantly false))))
-  (bind-root #'grid (g2d/create-grid
-                     (tiled/width tiled-map)
-                     (tiled/height tiled-map)
-                     (fn [position]
-                       (atom (->cell position
-                                     (case (level/movement-property tiled-map position)
-                                       "none" :none
-                                       "air"  :air
-                                       "all"  :all))))))
+  (bind-root #'explored-tile-corners (atom (grid2d (tiled/width  tiled-map)
+                                                   (tiled/height tiled-map)
+                                                   (constantly false))))
+  (bind-root #'grid (grid2d (tiled/width tiled-map)
+                            (tiled/height tiled-map)
+                            (fn [position]
+                              (atom (->cell position
+                                            (case (level/movement-property tiled-map position)
+                                              "none" :none
+                                              "air"  :air
+                                              "all"  :all))))))
 
   (raycaster/init grid blocks-vision?)
   (let [width  (tiled/width  tiled-map)

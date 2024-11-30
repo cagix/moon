@@ -1,6 +1,5 @@
 (ns forge.follow-ai
-  (:require [data.grid2d :as g2d]
-            [forge.entity.components :as entity]
+  (:require [forge.entity.components :as entity]
             [forge.world :as world :refer [occupied-by-other?
                                           nearest-entity-distance
                                           nearest-entity
@@ -8,7 +7,7 @@
                                           rectangle->cells]]
             [forge.world.potential-fields :refer [pf-cell-blocked?]]))
 
-(let [order (g2d/get-8-neighbour-positions [0 0])]
+(let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes
     (into {} (for [[x y] (filter v-diagonal-direction? order)]
                [(first (utils-positions #(= % [x y]) order))
