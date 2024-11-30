@@ -1,8 +1,5 @@
 (ns forge.db
-  (:require [clojure.pprint :refer [pprint]]
-            [forge.graphics :as g]
-            [forge.graphics.animation :as animation]
-            [malli.core :as m]
+  (:require [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))
 
@@ -172,23 +169,6 @@
 
 (defmethod edn->value :s/one-to-one [_ property-id]
   (build property-id))
-
-(defn- edn->image [{:keys [file sub-image-bounds]}]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (g/sprite (g/sprite-sheet file tilew tileh)
-                [(int (/ sprite-x tilew))
-                 (int (/ sprite-y tileh))]))
-    (g/image file)))
-
-(defmethod edn->value :s/image [_ edn]
-  (edn->image edn))
-
-(defmethod edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
-  (animation/create (map edn->image frames)
-                    :frame-duration frame-duration
-                    :looping? looping?))
 
 (defn- build* [property]
   (apply-kvs property

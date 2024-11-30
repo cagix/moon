@@ -27,6 +27,6 @@
 (defn print-app-values-tree []
   (spit "app-values-tree.clj"
         (with-out-str
-         (clojure.pprint/pprint
+         (pprint
           (for [[ns-name vars] (ns-value-vars #{"moon"})]
             [ns-name (map #(:name (meta %)) vars)])))))

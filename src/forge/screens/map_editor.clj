@@ -118,7 +118,7 @@ direction keys: move")
 (defn ->generate-map-window [level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (clojure.pprint/pprint (db/build level-id))))]
+              :rows [[(ui/label (with-out-str (pprint (db/build level-id))))]
                      [(ui/text-button "Generate" #(try (generate-screen-ctx (db/build level-id))
                                                        (catch Throwable t
                                                          (error-window! t)

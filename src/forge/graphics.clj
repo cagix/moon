@@ -1,5 +1,6 @@
 (ns forge.graphics
   (:require [clojure.string :as str]
+            [forge.db :as db]
             [forge.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter)
@@ -293,3 +294,15 @@
 
 (defn set-cursor [cursor-key]
   (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
+
+(defn edn->image [{:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (sprite (sprite-sheet file tilew tileh)
+              [(int (/ sprite-x tilew))
+               (int (/ sprite-y tileh))]))
+    (image file)))
+
+(defmethod db/edn->value :s/image [_ edn]
+  (edn->image edn))

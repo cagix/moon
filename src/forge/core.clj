@@ -9,6 +9,7 @@
 ; or str-split
 ; or v-add ...
 
+(require '[clojure.pprint])
 (require '[clojure.string :as str])
 (require '[forge.screen :as screen])
 (import 'com.badlogic.gdx.math.MathUtils)
@@ -18,6 +19,8 @@
         '(com.badlogic.gdx.graphics Color Pixmap)
         '(com.badlogic.gdx.scenes.scene2d Actor Stage)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
+
+(def pprint clojure.pprint/pprint)
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
