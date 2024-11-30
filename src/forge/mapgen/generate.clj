@@ -1,12 +1,12 @@
-(ns ^:no-doc mapgen.generate
+(ns ^:no-doc forge.mapgen.generate
   (:require [data.grid2d :as g2d]
             [forge.db :as db]
             [forge.level :as level]
             [forge.tiled :as t]
-            [mapgen.area-level-grid :as area-level-grid]
-            [mapgen.creatures :as creatures]
-            [mapgen.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [mapgen.modules :as modules]))
+            [forge.mapgen.area-level-grid :as area-level-grid]
+            [forge.mapgen.creatures :as creatures]
+            [forge.mapgen.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
+            [forge.mapgen.modules :as modules]))
 
 (def ^:private spawn-creatures? true)
 

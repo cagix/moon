@@ -1,8 +1,8 @@
-(ns mapgen.grid
+(ns forge.mapgen.grid
   (:require [data.grid2d :as g]
             [forge.utils :refer [assoc-ks]]
-            [mapgen.caves :as caves]
-            [mapgen.nads :as nads]))
+            [forge.mapgen.caves :as caves]
+            [forge.mapgen.nads :as nads]))
 
 (defn scale-grid [grid [w h]]
   (g/create-grid (* (g/width grid)  w)

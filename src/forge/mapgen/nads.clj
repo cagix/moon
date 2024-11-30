@@ -1,4 +1,4 @@
-(ns mapgen.nads
+(ns forge.mapgen.nads
   (:require [data.grid2d :as g]
             [forge.utils :refer [assoc-ks]]))
 

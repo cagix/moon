@@ -1,7 +1,7 @@
-(ns mapgen.modules
+(ns forge.mapgen.modules
   (:require [forge.tiled :as t]
-            [mapgen.grid :refer [transition-idx-value]]
-            [mapgen.tiled :refer [grid->tiled-map]]))
+            [forge.mapgen.grid :refer [transition-idx-value]]
+            [forge.mapgen.tiled :refer [grid->tiled-map]]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
 ; * at the beginning enemies very close, different area different spawn-rate !

@@ -1,4 +1,4 @@
-(ns mapgen.area-level-grid
+(ns forge.mapgen.area-level-grid
   (:require [data.grid2d :as g]))
 
 ; can adjust:

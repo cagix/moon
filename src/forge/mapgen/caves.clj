@@ -1,4 +1,4 @@
-(ns mapgen.caves
+(ns forge.mapgen.caves
   (:require [data.grid2d :as g]
             [forge.math.rand :refer [sshuffle srand srand-int]]
             [forge.utils :refer [assoc-ks]]))

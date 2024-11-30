@@ -9,7 +9,7 @@
             [forge.tiled :as t]
             [forge.widgets.error-window :refer [error-window!]]
             [moon.controls :as controls]
-            [mapgen.modules :as modules])
+            [forge.mapgen.modules :as modules])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (defn- show-whole-map! [camera tiled-map]

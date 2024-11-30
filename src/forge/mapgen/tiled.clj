@@ -1,4 +1,4 @@
-(ns mapgen.tiled
+(ns forge.mapgen.tiled
   (:require [data.grid2d :as g]
             [forge.tiled :as t]))
 

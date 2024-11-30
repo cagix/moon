@@ -1,4 +1,4 @@
-(ns mapgen.creatures
+(ns forge.mapgen.creatures
   (:require [forge.db :as db]
             [forge.tiled :as t]))
 

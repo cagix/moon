@@ -17,7 +17,7 @@
             [moon.systems.entity-state :as state]
             [forge.entity.animation]
             [forge.info.impl]
-            (mapgen generate uf-caves))
+            (forge.mapgen generate uf-caves))
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
