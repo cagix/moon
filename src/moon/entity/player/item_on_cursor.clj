@@ -1,7 +1,6 @@
 (ns ^:no-doc moon.entity.player.item-on-cursor
   (:require [forge.assets :refer [play-sound]]
             [forge.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
-            [forge.gdx :refer [button-just-pressed?]]
             [forge.stage :as stage]
             [forge.math.vector :as v]
             [moon.entity :as entity]

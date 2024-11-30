@@ -2,7 +2,6 @@
   (:require [forge.app :as app]
             [forge.graphics.camera :as cam]
             [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera white black]]
-            [forge.gdx :refer [key-just-pressed?]]
             [moon.world :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth

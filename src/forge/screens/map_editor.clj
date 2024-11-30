@@ -3,7 +3,6 @@
             [forge.app :as app]
             [forge.db :as db]
             [forge.graphics.camera :as cam]
-            [forge.gdx :refer [key-pressed? key-just-pressed?]]
             [forge.ui :as ui]
             [forge.tiled :as t]
             [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position white]]

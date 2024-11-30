@@ -4,7 +4,6 @@
             [clojure.string :as str]
             [forge.assets :as assets :refer [play-sound]]
             [forge.db :as db]
-            [forge.gdx :refer [key-just-pressed?]]
             [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]

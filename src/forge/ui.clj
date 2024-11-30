@@ -1,5 +1,4 @@
 (ns forge.ui
-  (:require [forge.gdx :as gdx])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -170,7 +169,7 @@
                       (when-not text?
                         (.setText this (str (tooltip-text))))
                       (proxy-super getWidth))))]
-    (.setAlignment label (gdx/align :center))
+    (.setAlignment label (gdx-align :center))
     (.setTarget  tooltip ^Actor a)
     (.setContent tooltip ^Actor label))
   a)
@@ -264,9 +263,9 @@
   [object {:keys [scaling align fill-parent?] :as opts}]
   (-> (let [^Image image (->vis-image object)]
         (when (= :center align)
-          (.setAlign image (gdx/align :center)))
+          (.setAlign image (gdx-align :center)))
         (when (= :fill scaling)
-          (.setScaling image (gdx/scaling :fill)))
+          (.setScaling image (gdx-scaling :fill)))
         (when fill-parent?
           (.setFillParent image true))
         image)

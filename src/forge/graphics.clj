@@ -2,7 +2,6 @@
   (:require [clojure.string :as str]
             [forge.assets :as assets]
             [forge.graphics.image :as image]
-            [forge.gdx :as gdx]
             [forge.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera Texture Texture$TextureFilter Pixmap Pixmap$Format)
@@ -49,7 +48,7 @@
 (def ^Color white Color/WHITE)
 
 (defn add-color [name-str color]
-  (Colors/put name-str (gdx/->color color)))
+  (Colors/put name-str (->gdx-color color)))
 
 (defn clear-screen []
   (ScreenUtils/clear black))
@@ -143,7 +142,7 @@
            (float x)
            (+ (float y) (float (if up? (text-height font text) 0)))
            (float 0) ; target-width
-           (gdx/align (or h-align :center))
+           (gdx-align (or h-align :center))
            false) ; wrap false, no need target-width
     (.setScale data old-scale)))
 
@@ -157,7 +156,7 @@
   (image/draw-rotated-centered batch *unit-scale* image rotation position))
 
 (defn- sd-color [color]
-  (.setColor shape-drawer (gdx/->color color)))
+  (.setColor shape-drawer (->gdx-color color)))
 
 (defn draw-ellipse [[x y] radius-x radius-y color]
   (sd-color color)

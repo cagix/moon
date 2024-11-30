@@ -1,6 +1,5 @@
 (ns forge.screens.editor
   (:require [forge.app :as app]
-            [forge.gdx :refer [key-just-pressed?]]
             [forge.screens.editor.ui :as editor]
             [forge.ui :as ui]
             [forge.ui.background-image :as background-image]))

@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [get])
   (:require [forge.app :as app]
             [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
-            [forge.gdx :as input]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d Stage)))

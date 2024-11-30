@@ -2,7 +2,6 @@
   (:require [forge.app :as app]
             [forge.db :as db]
             [forge.graphics :as g]
-            [forge.gdx :refer [key-just-pressed?]]
             [forge.screens.world :as world]
             [forge.ui :as ui]
             [forge.ui.background-image :as background-image]

@@ -1,10 +1,9 @@
 (ns moon.world.tile-color-setter
-  (:require [forge.gdx :as gdx]
-            [forge.utils :refer [->tile]]
+  (:require [forge.utils :refer [->tile]]
             [forge.world.raycaster :refer [ray-blocked?]])
   (:import (com.badlogic.gdx.graphics Color)))
 
-(def ^:private explored-tile-color (gdx/color 0.5 0.5 0.5 1))
+(def ^:private explored-tile-color (gdx-color 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 
