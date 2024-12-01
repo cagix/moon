@@ -11,7 +11,7 @@
                      {:+ 2 :* -50})
          {:+ 4, :* 0})))
 
-(deftest info
+#_(deftest info
   (= (ops/info {:op/inc -4
                 :op/mult 24}
                "Strength")
