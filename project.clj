@@ -47,7 +47,7 @@
                 *print-level* 3
                 }
   :profiles {:uberjar {:aot [forge.start]}}
-  :main forge.start)
+  #_:main #_forge.start)
 
 ; * Notes
 

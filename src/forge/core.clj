@@ -20,6 +20,15 @@
         '(com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
+(comment
+ ; Change namespace to forge.core then call this.  And start with lein repl and without :main set so other ns don't get loaded
+ (->> *ns*
+      ns-publics
+      (remove (fn [[k v]] (:macro (meta v))))
+      (map (fn [s] (str "\"" (name (first s)) "\"")))
+      (str-join ", ")
+      (spit "vimrc_names")))
+
 (def signum math/signum)
 
 (def io-resource io/resource)
