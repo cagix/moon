@@ -1,22 +1,24 @@
-(ns clojure.core
-  (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.edn :as edn]
-            [clojure.pprint]
-            [clojure.string :as str]
-            [clojure.java.io :as io]
-            [clojure.math :as math]
-            [data.grid2d :as g2d]
-            [forge.screen :as screen]
-            [malli.core :as m]
-            [malli.error :as me]
-            [malli.generator :as mg])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Color Pixmap)
-           (com.badlogic.gdx.scenes.scene2d Actor Stage)
-           (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
-           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils)))
+(in-ns 'clojure.core)
+
+(require '[clj-commons.pretty.repl :as pretty-repl]
+         '[clojure.edn :as edn]
+         '[clojure.pprint]
+         '[clojure.string :as str]
+         '[clojure.java.io :as io]
+         '[clojure.math :as math]
+         '[data.grid2d :as g2d]
+         '[forge.screen :as screen]
+         '[malli.core :as m]
+         '[malli.error :as me]
+         '[malli.generator :as mg])
+
+(import '(com.badlogic.gdx Gdx)
+        '(com.badlogic.gdx.assets AssetManager)
+        '(com.badlogic.gdx.audio Sound)
+        '(com.badlogic.gdx.graphics Color Pixmap)
+        '(com.badlogic.gdx.scenes.scene2d Actor Stage)
+        '(com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
+        '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
 (def signum math/signum)
 

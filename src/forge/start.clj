@@ -1,5 +1,9 @@
 (ns forge.start
   (:require [forge.entity :as entity]
+            [forge.entity.components :refer [damage-mods hitpoints mana stat remove-mods]]
+            [forge.entity.state :as state]
+            [forge.entity.animation]
+            [forge.entity.render]
             [forge.graphics :as g]
             [forge.info :as info :refer [info]]
             [forge.screens.editor :as editor]
@@ -9,14 +13,10 @@
             [forge.screen :as screen]
             [forge.stage :as stage]
             [forge.ui :as ui]
-            [forge.entity.components :refer [damage-mods hitpoints mana stat]]
-            [forge.entity.state :as state]
-            [forge.entity.animation]
-            [forge.entity.render]
             [forge.operation :as op]
             (forge.mapgen generate
                           uf-caves)
-            [forge.world :refer [finished-ratio]])
+            [forge.world :refer [audiovisual stopped? finished-ratio]])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
@@ -30,6 +30,27 @@
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)))
+
+(defmethod entity/tick :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
+  (when (stopped? counter)
+    (swap! eid dissoc k)
+    (swap! eid remove-mods modifiers)))
+
+(defmethod entity/->v :npc-dead [[_ eid]]
+  {:eid eid})
+
+(defmethod state/enter :npc-dead [[_ {:keys [eid]}]]
+  (swap! eid assoc :entity/destroyed? true))
+
+(defmethod entity/->v :entity/hp   [[_ v]] [v v])
+(defmethod entity/->v :entity/mana [[_ v]] [v v])
+
+(defmethod entity/tick :entity/string-effect [[k {:keys [counter]}] eid]
+  (when (stopped? counter)
+    (swap! eid dissoc k)))
+
+(defmethod entity/destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
+  (audiovisual (:position @eid) (build audiovisuals-id)))
 
 (g/add-color "PRETTY_NAME" [0.84 0.8 0.52])
 
@@ -290,16 +311,11 @@
 
 (install-all entity '[forge.entity.alert-friendlies-after-duration
                       forge.entity.delete-after-duration
-                      forge.entity.destroy-audiovisual
                       forge.entity.fsm
                       forge.entity.inventory
                       forge.entity.projectile-collision
                       forge.entity.skills
-                      forge.entity.string-effect
-                      forge.entity.movement
-                      forge.entity.temp-modifier
-                      forge.entity.hp
-                      forge.entity.mana])
+                      forge.entity.movement])
 
 (def ^:private entity-state
   (merge-with concat
@@ -313,7 +329,6 @@
                           #'state/clicked-skillmenu-skill
                           #'state/draw-gui-view]}))
 
-(install entity-state 'forge.entity.npc.dead              :npc-dead)
 (install entity-state 'forge.entity.npc.idle              :npc-idle)
 (install entity-state 'forge.entity.npc.moving            :npc-moving)
 (install entity-state 'forge.entity.npc.sleeping          :npc-sleeping)
