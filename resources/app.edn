@@ -23,7 +23,6 @@
  :ui :skin-scale/x1
  :requires [forge.effects
             forge.entity.impl
-            forge.entity.states
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
