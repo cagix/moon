@@ -1,7 +1,6 @@
 (ns forge.effects
   (:require [forge.core :refer :all]
-            [forge.entity.components :as entity]
-            [forge.world :refer [spawn-audiovisual spawn-creature spawn-projectile spawn-line-render active-entities timer projectile-size player-eid line-of-sight? path-blocked?]]))
+            [forge.entity.components :as entity]))
 
 (comment
 

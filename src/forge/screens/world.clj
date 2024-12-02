@@ -4,7 +4,6 @@
             [forge.entity.components :as entity]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
-            [forge.world :refer [world-tiled-map explored-tile-corners tick-error paused? player-eid mouseover-entity ray-blocked? circle->cells world-grid point->entities render-z-order line-of-sight? mouseover-eid max-delta-time elapsed-time world-delta active-entities tick-entities remove-destroyed render-entities world-clear world-init]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))

@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.dev.experiment
   (:require [forge.core :refer :all]
-            [forge.entity.components :as entity]
-            [forge.world :refer [spawn-creature spawn-item player-eid ids->eids]]))
+            [forge.entity.components :as entity]))
 
 (defmacro app-do [& exprs]
   `(post-runnable (fn [] ~@exprs)))

@@ -1,8 +1,7 @@
 (ns forge.ui.inventory
   (:require [data.grid2d :as g2d]
             [forge.core :refer :all]
-            [forge.entity.components :as entity]
-            [forge.world :refer [player-eid]])
+            [forge.entity.components :as entity])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 ; Items are also smaller than 48x48 all of them

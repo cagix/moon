@@ -1,7 +1,6 @@
 (ns forge.world.potential-fields
   (:require [forge.core :refer :all]
-            [forge.entity.components :as entity]
-            [forge.world :refer [occupied-by-other? nearest-entity-distance nearest-entity rectangle->cells cell-blocked? cached-adjacent-cells world-grid nearest-entity nearest-entity-distance]]))
+            [forge.entity.components :as entity]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})

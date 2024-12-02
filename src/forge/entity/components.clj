@@ -2,7 +2,6 @@
   (:require [malli.core :as m]
             [forge.core :refer :all]
             [forge.ui.action-bar :as action-bar]
-            [forge.world :refer [timer reset-timer]]
             [reduce-fsm :as fsm]))
 
 (defn tile [entity]

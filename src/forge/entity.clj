@@ -4,7 +4,6 @@
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
-            [forge.world :refer [spawn-audiovisual timer stopped? player-eid line-of-sight? finished-ratio mouseover-eid circle->entities rectangle->cells cells->entities cell-blocked? speed-schema world-delta world-grid spawn-item position-changed nearest-entity delayed-alert nearest-entity-distance]]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
             [reduce-fsm :as fsm]))
