@@ -22,7 +22,6 @@
            :cursors/walking               ["walking"      [16 16]]}
  :ui :skin-scale/x1
  :requires [forge.effects
-            forge.entity.animation
             forge.entity.impl
             forge.entity.states
             forge.info.impl
@@ -34,5 +33,4 @@
              :screens/minimap    forge.screens.minimap
              :screens/world      forge.screens.world}
  :first-screen-k :screens/main-menu
- :tile-size 48
- }
+ :tile-size 48}
