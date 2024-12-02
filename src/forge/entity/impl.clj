@@ -186,10 +186,10 @@
       (event friendly-eid :alert))))
 
 (defmethods :entity/delete-after-duration
-  (->v [duration]
+  (->v [[_ duration]]
     (timer duration))
 
-  (tick [counter eid]
+  (tick [[_ counter] eid]
     (when (stopped? counter)
       (swap! eid assoc :entity/destroyed? true))))
 
@@ -508,14 +508,14 @@
      :movement-vector movement-vector
      :counter (timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
-  (state/enter [{:keys [eid movement-vector]}]
+  (state/enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
-  (state/exit [{:keys [eid]}]
+  (state/exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
-  (tick [{:keys [counter]} eid]
+  (tick [[_ {:keys [counter]}] eid]
     (when (stopped? counter)
       (entity/event eid :timer-finished))))
 
