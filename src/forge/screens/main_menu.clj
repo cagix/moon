@@ -1,6 +1,5 @@
 (ns forge.screens.main-menu
-  (:require [forge.ui :as ui]
-            [forge.screen :as screen]))
+  (:require [forge.ui :as ui]))
 
 (defn create [background-image]
   {:actors [background-image
@@ -23,9 +22,9 @@
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
                                 (exit-app)))})]
-   :screen (reify screen/Screen
-             (enter [_]
+   :screen (reify Screen
+             (screen-enter [_]
                (set-cursor :cursors/default))
-             (exit [_])
-             (render [_])
-             (destroy [_]))})
+             (screen-exit [_])
+             (screen-render [_])
+             (screen-destroy [_]))})

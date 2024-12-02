@@ -3,7 +3,6 @@
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]
             [forge.level :as level]
-            [forge.screen :as screen]
             [forge.tiled :as t]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules])
@@ -123,14 +122,14 @@ direction keys: move")
               :pack? true}))
 
 (defrecord MapEditorScreen [current-data]
-  screen/Screen
-  (enter [_]
+  Screen
+  (screen-enter [_]
     (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
-  (exit [_]
+  (screen-exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (render [_]
+  (screen-render [_]
     (draw-tiled-map (:tiled-map @current-data)
                     (constantly white))
     (draw-on-world-view render-on-map)
@@ -143,7 +142,7 @@ direction keys: move")
     (when (key-just-pressed? :keys/escape)
       (change-screen :screens/main-menu)))
 
-  (destroy [_]
+  (screen-destroy [_]
     (dispose (:tiled-map @current-data))))
 
 (defn create [_]

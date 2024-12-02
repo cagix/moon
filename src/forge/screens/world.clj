@@ -4,7 +4,6 @@
             [forge.entity.components :as entity]
             [forge.entity.state :as state]
             [forge.level :as level]
-            [forge.screen :as screen]
             [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
@@ -355,14 +354,14 @@
                        (debug-render-after-entities))))
 
 (deftype WorldScreen []
-  screen/Screen
-  (enter [_]
+  Screen
+  (screen-enter [_]
     (cam/set-zoom! (world-camera) 0.8))
 
-  (exit [_]
+  (screen-exit [_]
     (set-cursor :cursors/default))
 
-  (render [_]
+  (screen-render [_]
     (render-world)
     (update-world)
     (controls/world-camera-zoom)
@@ -373,7 +372,7 @@
           (controls/minimap?)
           (change-screen :screens/minimap)))
 
-  (destroy [_]
+  (screen-destroy [_]
     (world/clear)))
 
 (defn create [_]

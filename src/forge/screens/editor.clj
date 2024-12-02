@@ -2,8 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.ui :as ui]
-            [forge.screen :as screen])
+            [forge.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
@@ -486,8 +485,8 @@
             (ui/actor {:act (fn []
                               (when (key-just-pressed? :shift-left)
                                 (change-screen :screens/main-menu)))})]
-   :screen (reify screen/Screen
-             (enter [_])
-             (exit [_])
-             (render [_])
-             (destroy [_]))})
+   :screen (reify Screen
+             (screen-enter [_])
+             (screen-exit [_])
+             (screen-render [_])
+             (screen-destroy [_]))})

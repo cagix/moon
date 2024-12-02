@@ -8,7 +8,6 @@
          '[clojure.string :as str]
          '[clojure.java.io :as io]
          '[data.grid2d :as g2d]
-         '[forge.screen :as screen] ; FIXME breaks reloading
          '[forge.tiled :as tiled]
          '[forge.ui :as ui]
          '[malli.core :as m]
@@ -41,6 +40,12 @@
       (map (fn [s] (str "\"" (name (first s)) "\"")))
       (str/join ", ")
       (spit "vimrc_names")))
+
+(defprotocol Screen
+  (screen-enter   [_])
+  (screen-exit    [_])
+  (screen-render  [_])
+  (screen-destroy [_]))
 
 (defn pretty-pst [t]
   (binding [*print-level* 3]
@@ -181,11 +186,11 @@
   "Calls `exit` on the current-screen and `enter` on the new screen."
   [new-k]
   (when-let [screen (current-screen)]
-    (screen/exit screen))
+    (screen-exit screen))
   (let [screen (new-k app-screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root #'current-screen-key new-k)
-    (screen/enter screen)))
+    (screen-enter screen)))
 
 (defn screen-stage ^Stage []
   (:stage (current-screen)))
@@ -1152,23 +1157,23 @@
     texture))
 
 (defrecord StageScreen [^Stage stage sub-screen]
-  screen/Screen
-  (enter [_]
+  Screen
+  (screen-enter [_]
     (.setInputProcessor Gdx/input stage)
-    (screen/enter sub-screen))
+    (screen-enter sub-screen))
 
-  (exit [_]
+  (screen-exit [_]
     (.setInputProcessor Gdx/input nil)
-    (screen/exit sub-screen))
+    (screen-exit sub-screen))
 
-  (render [_]
+  (screen-render [_]
     (.act stage)
-    (screen/render sub-screen)
+    (screen-render sub-screen)
     (.draw stage))
 
-  (destroy [_]
+  (screen-destroy [_]
     (dispose stage)
-    (screen/destroy sub-screen)))
+    (screen-destroy sub-screen)))
 
 (defn- stage-screen
   "Actors or screen can be nil."
@@ -1251,13 +1256,13 @@
        (dispose batch)
        (dispose shape-drawer-texture)
        (dispose default-font)
-       (run! dispose (vals cursors))
+       (run! dispose (vals @#'cursors))
        (ui/destroy)
-       (run! screen/destroy (vals app-screens)))
+       (run! screen-destroy (vals app-screens)))
 
      (render []
        (clear-screen black)
-       (screen/render (current-screen)))
+       (screen-render (current-screen)))
 
      (resize [w h]
        (.update gui-viewport   w h true)

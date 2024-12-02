@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [forge.graphics.camera :as cam]
-            [forge.screen :as screen]
             [forge.world :refer [tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
@@ -32,14 +31,14 @@
     (if (get explored? [x y]) white black)))
 
 (deftype Minimap []
-  screen/Screen
-  (enter [_]
+  Screen
+  (screen-enter [_]
     (cam/set-zoom! (world-camera) (minimap-zoom)))
 
-  (exit [_]
+  (screen-exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (render [_]
+  (screen-render [_]
     (draw-tiled-map tiled-map
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
@@ -49,7 +48,7 @@
               (key-just-pressed? :keys/escape))
       (change-screen :screens/world)))
 
-  (destroy [_]))
+  (screen-destroy [_]))
 
 (defn create [_]
   {:screen (->Minimap)})
