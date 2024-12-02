@@ -2,7 +2,6 @@
   (:require [data.grid2d :as g2d]
             [forge.graphics.camera :as cam]
             [forge.level :as level]
-            [forge.tiled :as tiled]
             [forge.entity :as entity]
             [malli.core :as m])
   (:import (forge RayCaster)))
@@ -414,7 +413,7 @@
   (content-grid-update-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (grid-add-entity grid eid))
+  (grid-add-entity eid))
 
 (defn- remove-from-world [eid]
   (let [id (:entity/id @eid)]
@@ -425,7 +424,7 @@
 
 (defn position-changed [eid]
   (content-grid-update-entity! content-grid eid)
-  (grid-entity-position-changed grid eid))
+  (grid-entity-position-changed eid))
 
 (defn all-entities []
   (vals ids->eids))
@@ -623,7 +622,7 @@
                           :entity/click-distance-tiles 1.5}}))
 
 (defn- spawn-enemies [tiled-map]
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+  (doseq [props (for [[position creature-id] (positions-with-property tiled-map :creatures :id)]
                   {:position position
                    :creature-id (keyword creature-id)
                    :components {:entity/fsm {:fsm :fsms/npc
@@ -633,11 +632,11 @@
 
 (defn init [{:keys [tiled-map start-position]}]
   (bind-root #'tiled-map tiled-map)
-  (bind-root #'explored-tile-corners (atom (grid2d (tiled/width  tiled-map)
-                                                   (tiled/height tiled-map)
+  (bind-root #'explored-tile-corners (atom (grid2d (tm-width  tiled-map)
+                                                   (tm-height tiled-map)
                                                    (constantly false))))
-  (bind-root #'grid (grid2d (tiled/width tiled-map)
-                            (tiled/height tiled-map)
+  (bind-root #'grid (grid2d (tm-width tiled-map)
+                            (tm-height tiled-map)
                             (fn [position]
                               (atom (->cell position
                                             (case (level/movement-property tiled-map position)
@@ -646,8 +645,8 @@
                                               "all"  :all))))))
 
   (init-raycaster grid blocks-vision?)
-  (let [width  (tiled/width  tiled-map)
-        height (tiled/height tiled-map)]
+  (let [width  (tm-width  tiled-map)
+        height (tm-height tiled-map)]
     (bind-root #'content-grid (content-grid-create {:cell-size 16  ; FIXME global config
                                                     :width  width
                                                     :height height})))

@@ -17,7 +17,7 @@
    {:optional [#'->v
                #'create
                #'destroy
-               #'->v
+               #'tick
                #'render-below
                #'render
                #'render-above
@@ -145,7 +145,7 @@
 (defmethod ->v :entity/mana [[_ v]] [v v])
 
 (defmethods :entity/temp-modifier
-  (->v [[k {:keys [modifiers counter]}] eid]
+  (tick [[k {:keys [modifiers counter]}] eid]
     (when (stopped? counter)
       (swap! eid dissoc k)
       (swap! eid remove-mods modifiers)))
@@ -155,7 +155,7 @@
     (draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
 
 (defmethods :entity/string-effect
-  (->v  [[k {:keys [counter]}] eid]
+  (tick [[k {:keys [counter]}] eid]
     (when (stopped? counter)
       (swap! eid dissoc k)))
 
@@ -178,7 +178,7 @@
        world/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
-(defmethod ->v :entity/alert-friendlies-after-duration
+(defmethod tick :entity/alert-friendlies-after-duration
   [[_ {:keys [counter faction]}] eid]
   (when (stopped? counter)
     (swap! eid assoc :entity/destroyed? true)
@@ -189,7 +189,7 @@
   (->v [duration]
     (timer duration))
 
-  (->v [counter eid]
+  (tick [counter eid]
     (when (stopped? counter)
       (swap! eid assoc :entity/destroyed? true))))
 
@@ -260,7 +260,7 @@
   (->v [[_ v]]
     (assoc v :already-hit-bodies #{}))
 
-  (->v [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
+  (tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
     ; TODO this could be called from body on collision
     ; for non-solid
     ; means non colliding with other entities
@@ -318,7 +318,7 @@
         (try-move body (assoc movement :direction [xdir 0]))
         (try-move body (assoc movement :direction [0 ydir])))))
 
-(defmethod ->v :entity/movement
+(defmethod tick :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
    eid]
   (assert (m/validate world/speed-schema speed)
@@ -347,7 +347,7 @@
     (doseq [skill skills]
       (swap! eid add-skill skill)))
 
-  (->v [[k skills] eid]
+  (tick [[k skills] eid]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
             :when (and cooling-down?
                        (stopped? cooling-down?))]
@@ -441,7 +441,7 @@
   (create [[_ animation] eid]
     (swap! eid assoc-image-current-frame animation))
 
-  (->v [[k animation] eid]
+  (tick [[k animation] eid]
     (swap! eid #(-> %
                     (assoc-image-current-frame animation)
                     (assoc k (animation-tick animation world/delta))))))
@@ -450,7 +450,7 @@
   (create  [_ eid]
     (-> @eid :entity/animation :looping? not assert))
 
-  (->v [_ eid]
+  (tick [_ eid]
     (when (animation-stopped? (:entity/animation @eid))
       (swap! eid assoc :entity/destroyed? true))))
 

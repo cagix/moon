@@ -3,20 +3,19 @@
             [forge.graphics.camera :as cam]
             [forge.ui :as ui]
             [forge.level :as level]
-            [forge.tiled :as t]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules])
   (:import (com.badlogic.gdx.utils Disposable)))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
-                     [(/ (t/width  tiled-map) 2)
-                      (/ (t/height tiled-map) 2)])
+                     [(/ (tm-width  tiled-map) 2)
+                      (/ (tm-height tiled-map) 2)])
   (cam/set-zoom! camera
                  (cam/calculate-zoom camera
                                      :left [0 0]
-                                     :top [0 (t/height tiled-map)]
-                                     :right [(t/width tiled-map) 0]
+                                     :top [0 (tm-height tiled-map)]
+                                     :right [(tm-width tiled-map) 0]
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
@@ -40,7 +39,7 @@ direction keys: move")
                                  (world-mouse-position)
                                  [modules/width modules/height])))
           (when area-level-grid
-            (str "Creature id: " (t/property-value tiled-map :creatures tile :id)))
+            (str "Creature id: " (property-value tiled-map :creatures tile :id)))
           (when area-level-grid
             (let [level (get area-level-grid tile)]
               (when (number? level)
@@ -96,7 +95,7 @@ direction keys: move")
                             "air"   :orange
                             "none"  :red))))
     (when show-grid-lines
-      (draw-grid 0 0 (t/width  tiled-map) (t/height tiled-map) 1 1 [1 1 1 0.5]))))
+      (draw-grid 0 0 (tm-width  tiled-map) (tm-height tiled-map) 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 
@@ -109,7 +108,7 @@ direction keys: move")
            ;:area-level-grid area-level-grid
            :start-position start-position)
     (show-whole-map! (world-camera) tiled-map)
-    (set-visible (t/get-layer tiled-map "creatures") true)))
+    (set-visible (get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
   (ui/window {:title "Properties"
