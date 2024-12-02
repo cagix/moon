@@ -1946,3 +1946,40 @@
 (defn player-message-show [message]
   (bind-root #'message-to-player {:message message :counter 0}))
 
+(defn ops-add    [ops other-ops] (merge-with + ops other-ops))
+(defn ops-remove [ops other-ops] (merge-with - ops other-ops))
+
+(defsystem op-apply [_ base-value])
+
+(defmethod op-apply :op/inc [[_ value] base-value]
+  (+ base-value value))
+
+(defmethod op-apply :op/mult [[_ value] base-value]
+  (* base-value (inc (/ value 100))))
+
+(defsystem op-order)
+
+(defmethod op-order :op/inc [_]
+  0)
+
+(defmethod op-order :op/mult [_]
+  1)
+
+(defn ops-apply [ops value]
+  (reduce (fn [value op]
+            (op-apply op value))
+          value
+          (sort-by op-order ops)))
+
+(defn cells-and-items [inventory slot]
+  (for [[position item] (slot inventory)]
+    [[slot position] item]))
+
+(defn valid-slot? [[slot _] item]
+  (or (= :inventory.slot/bag slot)
+      (= (:item/slot item) slot)))
+
+(defn stackable? [item-a item-b]
+  (and (:count item-a)
+       (:count item-b) ; this is not required but can be asserted, all of one name should have count if others have count
+       (= (:property/id item-a) (:property/id item-b))))

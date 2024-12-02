@@ -2,7 +2,6 @@
   (:require [forge.controls :as controls]
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
             [forge.entity.state :as state]
-            [forge.item :as item :refer [valid-slot? stackable?]]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world :as world :refer [audiovisual timer stopped? player-eid line-of-sight? finished-ratio mouseover-eid]]
@@ -42,7 +41,7 @@
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
-                 (item/valid-slot? cell item)))
+                 (valid-slot? cell item)))
     (when (:entity/player? entity)
       (inventory/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
@@ -74,7 +73,7 @@
 ; TODO no items which stack are available
 (defn stack-item [eid cell item]
   (let [cell-item (get-in (:entity/inventory @eid) cell)]
-    (assert (item/stackable? item cell-item))
+    (assert (stackable? item cell-item))
     ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
     ; first remove and then place, just update directly  item ...
     (concat (remove-item eid cell)
@@ -82,9 +81,9 @@
 
 (defn- free-cell [inventory slot item]
   (find-first (fn [[_cell cell-item]]
-                (or (item/stackable? item cell-item)
+                (or (stackable? item cell-item)
                     (nil? cell-item)))
-              (item/cells-and-items inventory slot)))
+              (cells-and-items inventory slot)))
 
 (defn can-pickup-item? [{:keys [entity/inventory]} item]
   (or
@@ -94,9 +93,9 @@
 (defn pickup-item [eid item]
   (let [[cell cell-item] (can-pickup-item? @eid item)]
     (assert cell)
-    (assert (or (item/stackable? item cell-item)
+    (assert (or (stackable? item cell-item)
                 (nil? cell-item)))
-    (if (item/stackable? item cell-item)
+    (if (stackable? item cell-item)
       (stack-item eid cell item)
       (set-item   eid cell item))))
 
@@ -352,7 +351,7 @@
       (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false))))
 
 (defmethod e-create :entity/inventory [[k items] eid]
-  (swap! eid assoc k item/empty-inventory)
+  (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
     (pickup-item eid item)))
 

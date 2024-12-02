@@ -2,7 +2,6 @@
   (:require [clojure.string :as str]
             [clojure.math :as math]
             [forge.entity.components :refer [damage-mods hitpoints mana stat]]
-            [forge.operations :refer [op-order]]
             [forge.world :refer [finished-ratio]]))
 
 (add-color "PRETTY_NAME" [0.84 0.8 0.52])

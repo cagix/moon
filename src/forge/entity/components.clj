@@ -1,7 +1,6 @@
 (ns forge.entity.components
   (:require [malli.core :as m]
             [forge.entity.state :as state]
-            [forge.operations :as ops]
             [forge.ui.action-bar :as action-bar]
             [forge.world :refer [timer reset-timer]]
             [reduce-fsm :as fsm]))
@@ -53,15 +52,15 @@
   ([eid event params]
    (send-event! eid event params)))
 
-(defn- mods-add    [mods other-mods] (merge-with ops/add    mods other-mods))
-(defn- mods-remove [mods other-mods] (merge-with ops/remove mods other-mods))
+(defn- mods-add    [mods other-mods] (merge-with ops-add    mods other-mods))
+(defn- mods-remove [mods other-mods] (merge-with ops-remove mods other-mods))
 
 (defn add-mods    [entity mods] (update entity :entity/modifiers mods-add    mods))
 (defn remove-mods [entity mods] (update entity :entity/modifiers mods-remove mods))
 
 (defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
-  (ops/apply (modifier-k modifiers)
+  (ops-apply (modifier-k modifiers)
              base-value))
 
 (defn stat [entity k]
