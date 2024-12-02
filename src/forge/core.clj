@@ -1102,3 +1102,7 @@
 
 (defmethod edn->value :s/image [_ edn]
   (edn->image edn))
+
+(defn mouse-on-actor? []
+  (let [[x y] (gui-mouse-position)]
+    (.hit (screen-stage) x y true)))

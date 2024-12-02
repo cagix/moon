@@ -6,7 +6,6 @@
             [forge.entity.state :as state]
             [forge.follow-ai :as follow-ai]
             [forge.item :refer [valid-slot? stackable?]]
-            [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as widgets.inventory]
@@ -295,7 +294,7 @@
                (.getUserObject (.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
-  (let [actor (stage/mouse-on-actor?)]
+  (let [actor (mouse-on-actor?)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)      :cursors/move-window
@@ -313,7 +312,7 @@
 (defn- interaction-state [eid]
   (let [entity @eid]
     (cond
-     (stage/mouse-on-actor?)
+     (mouse-on-actor?)
      [(mouseover-actor->cursor) (fn [] nil)] ; handled by actors themself, they check player state
 
      (and mouseover-eid (:entity/clickable @mouseover-eid))
@@ -429,7 +428,7 @@
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
 (defn- world-item? []
-  (not (stage/mouse-on-actor?)))
+  (not (mouse-on-actor?)))
 
 (defmethods :player-item-on-cursor
   (->v [[_ eid item]]

@@ -1,6 +1,5 @@
 (ns forge.start
   (:require [forge.screen :as screen]
-            [forge.stage :as stage]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.assets AssetManager)
@@ -9,6 +8,7 @@
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture OrthographicCamera Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+           (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils Disposable SharedLibraryLoader)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (java.awt Taskbar Toolkit)
@@ -76,8 +76,40 @@
     (dispose pixmap)
     texture))
 
+(defrecord StageScreen [^Stage stage sub-screen]
+  screen/Screen
+  (enter [_]
+    (set-input-processor stage)
+    (screen/enter sub-screen))
+
+  (exit [_]
+    (set-input-processor nil)
+    (screen/exit sub-screen))
+
+  (render [_]
+    (.act stage)
+    (screen/render sub-screen)
+    (.draw stage))
+
+  (destroy [_]
+    (dispose stage)
+    (screen/destroy sub-screen)))
+
+(defn- stage-screen
+  "Actors or screen can be nil."
+  [{:keys [actors screen]}]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
+                (valAt
+                  ([id]
+                   (ui/find-actor-with-id (Stage/.getRoot this) id))
+                  ([id not-found]
+                   (or (ui/find-actor-with-id (Stage/.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    (->StageScreen stage screen)))
+
 (defn- create-screens [screen-ks]
-  (mapvals stage/create
+  (mapvals stage-screen
            (mapvals
             (fn [ns-sym]
               (require ns-sym)

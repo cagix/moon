@@ -6,7 +6,6 @@
             [forge.entity.state :as state]
             [forge.level :as level]
             [forge.screen :as screen]
-            [forge.stage :as stage]
             [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.error-window :refer [error-window!]]
@@ -319,7 +318,7 @@
          first)))
 
 (defn- update-mouseover-entity []
-  (let [new-eid (if (stage/mouse-on-actor?)
+  (let [new-eid (if (mouse-on-actor?)
                   nil
                   (calculate-eid))]
     (when world/mouseover-eid
