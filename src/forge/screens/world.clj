@@ -4,7 +4,6 @@
             [forge.entity.components :as entity]
             [forge.entity.state :as state]
             [forge.level :as level]
-            [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity ray-blocked?]]
@@ -31,7 +30,7 @@
                             (draw-image (sub-image contentimage [0 0 (* rahmenw (val-max-ratio minmaxval)) rahmenh])
                                         [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui/actor {:draw (fn []
+    (ui-actor {:draw (fn []
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
@@ -39,18 +38,18 @@
 
 (defn- menu-item [text on-clicked]
   (doto (MenuItem. text)
-    (.addListener (ui/change-listener on-clicked))))
+    (.addListener (change-listener on-clicked))))
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (->image icon) {})
-         label (ui/label "")
-         sub-table (ui/table {:rows [[icon label]]})]
-     (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
+   (let [icon (image->widget (->image icon) {})
+         label (label "")
+         sub-table (ui-table {:rows [[icon label]]})]
+     (.addActor table (ui-actor {:act #(.setText label (text-fn))}))
      (.expandX (.right (.add table sub-table)))))
   ([table text-fn]
-   (let [label (ui/label "")]
-     (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
+   (let [label (label "")]
+     (.addActor table (ui-actor {:act #(.setText label (text-fn))}))
      (.expandX (.right (.add table label))))))
 
 (defn- add-update-labels [menu-bar update-labels]
@@ -83,26 +82,26 @@
                                 :active-skill])
 
 (defn- entity-info-window []
-  (let [label (ui/label "")
-        window (ui/window {:title "Info"
+  (let [label (label "")
+        window (ui-window {:title "Info"
                            :id :entity-info-window
                            :visible? false
                            :position [gui-viewport-width 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (ui/add-actor! window (ui/actor {:act (fn update-label-text []
-                                            ; items then have 2x pretty-name
-                                            #_(.setText (.getTitleLabel window)
-                                                        (if-let [entity (mouseover-entity)]
-                                                          (info-text [:property/pretty-name (:property/pretty-name entity)])
-                                                          "Entity Info"))
-                                            (.setText label
-                                                      (str (when-let [entity (mouseover-entity)]
-                                                             (info-text
-                                                              ; don't use select-keys as it loses Entity record type
-                                                              (apply dissoc entity disallowed-keys)))))
-                                            (.pack window))}))
+    (add-actor! window (ui-actor {:act (fn update-label-text []
+                                         ; items then have 2x pretty-name
+                                         #_(.setText (.getTitleLabel window)
+                                                     (if-let [entity (mouseover-entity)]
+                                                       (info-text [:property/pretty-name (:property/pretty-name entity)])
+                                                       "Entity Info"))
+                                         (.setText label
+                                                   (str (when-let [entity (mouseover-entity)]
+                                                          (info-text
+                                                           ; don't use select-keys as it loses Entity record type
+                                                           (apply dissoc entity disallowed-keys)))))
+                                         (.pack window))}))
     window))
 
 (defn- geom-test []
@@ -248,11 +247,11 @@
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
-  (ui/table {:rows [[{:actor (.getTable (dev-menu-bar))
+  (ui-table {:rows [[{:actor (.getTable (dev-menu-bar))
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]
-                    [{:actor (doto (ui/label "")
+                    [{:actor (doto (label "")
                                (.setTouchable Touchable/disabled))
                       :expand? true
                       :fill-x? true
@@ -265,18 +264,18 @@
 (defn- widgets []
   [(if dev-mode?
      (dev-menu)
-     (ui/actor {}))
-   (ui/table {:rows [[{:actor (action-bar/create)
+     (ui-actor {}))
+   (ui-table {:rows [[{:actor (action-bar/create)
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table
               :cell-defaults {:pad 2}
               :fill-parent? true})
    (hp-mana-bar)
-   (ui/group {:id :windows
+   (ui-group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui/actor {:draw #(state/draw-gui-view (entity/state-obj @player-eid))})
+   (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @player-eid))})
    (player-message-actor)])
 
 (defn- windows []
@@ -285,10 +284,10 @@
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]
           :when (controls/toggle-visible? window-id)]
-    (ui/toggle-visible! (get (windows) window-id))))
+    (toggle-visible! (get (windows) window-id))))
 
 (defn- close-all-windows []
-  (let [windows (ui/children (windows))]
+  (let [windows (children (windows))]
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
@@ -375,5 +374,5 @@
   (screen-destroy [_]
     (world/clear)))
 
-(defn create [_]
+(defn create []
   {:screen (->WorldScreen)})

@@ -1,25 +1,24 @@
-(ns forge.screens.main-menu
-  (:require [forge.ui :as ui]))
+(ns forge.screens.main-menu)
 
-(defn create [background-image]
-  {:actors [background-image
-            (ui/table
+(defn create []
+  {:actors [(background-image)
+            (ui-table
              {:rows
               (remove nil?
                       (concat
                        (for [world (build-all :properties/worlds)]
-                         [(ui/text-button (str "Start " (:property/id world))
-                                          #(start-world world))])
+                         [(text-button (str "Start " (:property/id world))
+                                       #(start-world world))])
                        [(when dev-mode?
-                          [(ui/text-button "Map editor"
-                                           #(change-screen :screens/map-editor))])
+                          [(text-button "Map editor"
+                                        #(change-screen :screens/map-editor))])
                         (when dev-mode?
-                          [(ui/text-button "Property editor"
-                                           #(change-screen :screens/editor))])
-                        [(ui/text-button "Exit" exit-app)]]))
+                          [(text-button "Property editor"
+                                        #(change-screen :screens/editor))])
+                        [(text-button "Exit" exit-app)]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
-            (ui/actor {:act (fn []
+            (ui-actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
                                 (exit-app)))})]
    :screen (reify Screen

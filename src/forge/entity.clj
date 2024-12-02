@@ -3,7 +3,6 @@
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
             [forge.entity.state :as state]
             [forge.item :as item :refer [valid-slot? stackable?]]
-            [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world :as world :refer [audiovisual timer stopped? player-eid line-of-sight? finished-ratio mouseover-eid]]
@@ -698,7 +697,7 @@
       (player-message-show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (ui/toggle-visible! (inventory/window)))
+  (toggle-visible! (inventory/window)))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -724,8 +723,8 @@
   (let [actor (mouse-on-actor?)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
-     (ui/window-title-bar? actor)      :cursors/move-window
-     (ui/button? actor)                :cursors/over-button
+     (window-title-bar? actor)      :cursors/move-window
+     (button? actor)                :cursors/over-button
      :else                             :cursors/default)))
 
 (defn- player-effect-ctx [eid]

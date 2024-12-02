@@ -1,8 +1,7 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
-            [clojure.string :as str]
-            [forge.ui :as ui])
+            [clojure.string :as str])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
@@ -56,17 +55,17 @@
 (defmulti ->value  widget-type)
 
 (defn- scroll-pane-cell [rows]
-  (let [table (ui/table {:rows rows
+  (let [table (ui-table {:rows rows
                          :name "scroll-pane-table"
                          :cell-defaults {:pad 5}
                          :pack? true})]
-    {:actor (ui/scroll-pane table)
+    {:actor (scroll-pane table)
      :width  (+ (.getWidth table) 50)
      :height (min (- gui-viewport-height 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
-  (ui/window {:title "Choose"
+  (ui-window {:title "Choose"
               :modal? true
               :close-button? true
               :center? true
@@ -85,7 +84,7 @@
 ; for example at images/relationships
 (defn- editor-window [props]
   (let [schema (schema-of-property props)
-        window (ui/window {:title (str "[SKY]Property[]")
+        window (ui-window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
                            :close-button? true
@@ -95,53 +94,53 @@
         widget (schema->widget schema props)
         save!   (apply-context-fn window #(db-update! (->value schema widget)))
         delete! (apply-context-fn window #(db-delete! (:property/id props)))]
-    (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
-                                              [{:actor (ui/text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
-                                                :center? true}
-                                               {:actor (ui/text-button "Delete" delete!)
-                                                :center? true}]])]])
-    (ui/add-actor! window (ui/actor {:act (fn []
-                                            (when (key-just-pressed? :enter)
-                                              (save!)))}))
+    (add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
+                                           [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
+                                             :center? true}
+                                            {:actor (text-button "Delete" delete!)
+                                             :center? true}]])]])
+    (add-actor! window (ui-actor {:act (fn []
+                                         (when (key-just-pressed? :enter)
+                                           (save!)))}))
     (.pack window)
     window))
 
 (defmethod schema->widget :default [_ v]
-  (ui/label (truncate (->edn-str v) 60)))
+  (label (truncate (->edn-str v) 60)))
 
 (defmethod ->value :default [_ widget]
   ((Actor/.getUserObject widget) 1))
 
 (defmethod schema->widget :widget/edn [schema v]
-  (ui/add-tooltip! (ui/text-field (->edn-str v) {})
-                   (str schema)))
+  (add-tooltip! (text-field (->edn-str v) {})
+                (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
   (edn/read-string (VisTextField/.getText widget)))
 
 (defmethod schema->widget :string [schema v]
-  (ui/add-tooltip! (ui/text-field v {})
-                   (str schema)))
+  (add-tooltip! (text-field v {})
+                (str schema)))
 
 (defmethod ->value :string [_ widget]
   (VisTextField/.getText widget))
 
 (defmethod schema->widget :boolean [_ checked?]
   (assert (boolean? checked?))
-  (ui/check-box "" (fn [_]) checked?))
+  (check-box "" (fn [_]) checked?))
 
 (defmethod ->value :boolean [_ widget]
   (VisCheckBox/.isChecked widget))
 
 (defmethod schema->widget :enum [schema v]
-  (ui/select-box {:items (map ->edn-str (rest schema))
-                  :selected (->edn-str v)}))
+  (select-box {:items (map ->edn-str (rest schema))
+               :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
   (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
-  (ui/text-button "play!" #(play-sound sound-file)))
+  (text-button "play!" #(play-sound sound-file)))
 
 (declare columns)
 
@@ -153,36 +152,36 @@
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]
-               [(ui/text-button (str/replace-first sound-file "sounds/" "")
-                                (fn []
-                                  (ui/clear-children! table)
-                                  (ui/add-rows! table [(columns table sound-file)])
-                                  (Actor/.remove (ui/find-ancestor-window ui/*on-clicked-actor*))
-                                  (ui/pack-ancestor-window! table)
-                                  (let [[k _] (Actor/.getUserObject table)]
-                                    (Actor/.setUserObject table [k sound-file]))))
+               [(text-button (str/replace-first sound-file "sounds/" "")
+                             (fn []
+                               (clear-children! table)
+                               (add-rows! table [(columns table sound-file)])
+                               (Actor/.remove (find-ancestor-window *on-clicked-actor*))
+                               (pack-ancestor-window! table)
+                               (let [[k _] (Actor/.getUserObject table)]
+                                 (Actor/.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
     (add-actor (scrollable-choose-window rows))))
 
 (defn- columns [table sound-file]
-  [(ui/text-button (name sound-file) #(choose-window table))
+  [(text-button (name sound-file) #(choose-window table))
    (play-button sound-file)])
 
 (defmethod schema->widget :s/sound [_ sound-file]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
-    (ui/add-rows! table [(if sound-file
-                           (columns table sound-file)
-                           [(ui/text-button "No sound" #(choose-window table))])])
+  (let [table (ui-table {:cell-defaults {:pad 5}})]
+    (add-rows! table [(if sound-file
+                        (columns table sound-file)
+                        [(text-button "No sound" #(choose-window table))])])
     table))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
         button (if-let [image (property->image props)]
-                 (ui/image-button image on-clicked {:scale scale})
-                 (ui/text-button (name id) on-clicked))
-        top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
-        stack (ui/stack [button top-widget])]
-    (ui/add-tooltip! button #(info-text props))
+                 (image-button image on-clicked {:scale scale})
+                 (text-button (name id) on-clicked))
+        top-widget (label (or (and extra-info-text (extra-info-text props)) ""))
+        stack (ui-stack [button top-widget])]
+    (add-tooltip! button #(info-text props))
     (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
 
@@ -215,7 +214,7 @@
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
-    (ui/table
+    (ui-table
      {:cell-defaults {:pad 5}
       :rows (for [properties (partition-all columns properties)]
               (for [property properties]
@@ -225,78 +224,78 @@
 
 (defn- add-one-to-many-rows [table property-type property-ids]
   (let [redo-rows (fn [property-ids]
-                    (ui/clear-children! table)
+                    (clear-children! table)
                     (add-one-to-many-rows table property-type property-ids)
-                    (ui/pack-ancestor-window! table))]
-    (ui/add-rows!
+                    (pack-ancestor-window! table))]
+    (add-rows!
      table
-     [[(ui/text-button "+"
-                       (fn []
-                         (let [window (ui/window {:title "Choose"
-                                                  :modal? true
-                                                  :close-button? true
-                                                  :center? true
-                                                  :close-on-escape? true})
-                               clicked-id-fn (fn [id]
-                                               (Actor/.remove window)
-                                               (redo-rows (conj property-ids id)))]
-                           (.add window (overview-table property-type clicked-id-fn))
-                           (.pack window)
-                           (add-actor window))))]
+     [[(text-button "+"
+                    (fn []
+                      (let [window (ui-window {:title "Choose"
+                                               :modal? true
+                                               :close-button? true
+                                               :center? true
+                                               :close-on-escape? true})
+                            clicked-id-fn (fn [id]
+                                            (Actor/.remove window)
+                                            (redo-rows (conj property-ids id)))]
+                        (.add window (overview-table property-type clicked-id-fn))
+                        (.pack window)
+                        (add-actor window))))]
       (for [property-id property-ids]
         (let [property (build property-id)
-              image-widget (ui/image->widget (property->image property)
-                                             {:id property-id})]
-          (ui/add-tooltip! image-widget #(info-text property))))
+              image-widget (image->widget (property->image property)
+                                          {:id property-id})]
+          (add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
-        (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
+        (text-button "-" #(redo-rows (disj property-ids id))))])))
 
 (defmethod schema->widget :s/one-to-many [[_ property-type] property-ids]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
+  (let [table (ui-table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows table property-type property-ids)
     table))
 
 (defmethod ->value :s/one-to-many [_ widget]
-  (->> (ui/children widget)
+  (->> (children widget)
        (keep Actor/.getUserObject)
        set))
 
 (defn- add-one-to-one-rows [table property-type property-id]
   (let [redo-rows (fn [id]
-                    (ui/clear-children! table)
+                    (clear-children! table)
                     (add-one-to-one-rows table property-type id)
-                    (ui/pack-ancestor-window! table))]
-    (ui/add-rows!
+                    (pack-ancestor-window! table))]
+    (add-rows!
      table
      [[(when-not property-id
-         (ui/text-button "+"
-                         (fn []
-                           (let [window (ui/window {:title "Choose"
-                                                    :modal? true
-                                                    :close-button? true
-                                                    :center? true
-                                                    :close-on-escape? true})
-                                 clicked-id-fn (fn [id]
-                                                 (Actor/.remove window)
-                                                 (redo-rows id))]
-                             (.add window (overview-table property-type clicked-id-fn))
-                             (.pack window)
-                             (add-actor window)))))]
+         (text-button "+"
+                      (fn []
+                        (let [window (ui-window {:title "Choose"
+                                                 :modal? true
+                                                 :close-button? true
+                                                 :center? true
+                                                 :close-on-escape? true})
+                              clicked-id-fn (fn [id]
+                                              (Actor/.remove window)
+                                              (redo-rows id))]
+                          (.add window (overview-table property-type clicked-id-fn))
+                          (.pack window)
+                          (add-actor window)))))]
       [(when property-id
          (let [property (build property-id)
-               image-widget (ui/image->widget (property->image property) {:id property-id})]
-           (ui/add-tooltip! image-widget #(info-text property))
+               image-widget (image->widget (property->image property) {:id property-id})]
+           (add-tooltip! image-widget #(info-text property))
            image-widget))]
       [(when property-id
-         (ui/text-button "-" #(redo-rows nil)))]])))
+         (text-button "-" #(redo-rows nil)))]])))
 
 (defmethod schema->widget :s/one-to-one [[_ property-type] property-id]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
+  (let [table (ui-table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows table property-type property-id)
     table))
 
 (defmethod ->value :s/one-to-one [_ widget]
-  (->> (ui/children widget)
+  (->> (children widget)
        (keep Actor/.getUserObject)
        first))
 
@@ -326,17 +325,17 @@
   (find-first (fn [actor]
                 (and (Actor/.getUserObject actor)
                      (= k ((Actor/.getUserObject actor) 0))))
-              (ui/children table)))
+              (children table)))
 
 (defn- attribute-label [k m-schema table]
-  (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
-                        (name k))
+  (let [label (label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
+                     (name k))
         delete-button (when (optional? k m-schema)
-                        (ui/text-button "-"
-                                        (fn []
-                                          (Actor/.remove (find-kv-widget table k))
-                                          (rebuild-editor-window))))]
-    (ui/table {:cell-defaults {:pad 2}
+                        (text-button "-"
+                                     (fn []
+                                       (Actor/.remove (find-kv-widget table k))
+                                       (rebuild-editor-window))))]
+    (ui-table {:cell-defaults {:pad 2}
                :rows [[{:actor delete-button :left? true}
                        label]]})))
 
@@ -345,15 +344,15 @@
 (defn- component-row [[k v] m-schema table]
   [{:actor (attribute-label k m-schema table)
     :right? true}
-   (ui/vertical-separator-cell)
+   (vertical-separator-cell)
    {:actor (value-widget [k v])
     :left? true}])
 
 (defn- horiz-sep []
-  [(ui/horizontal-separator-cell component-row-cols)])
+  [(horizontal-separator-cell component-row-cols)])
 
 (defn- choose-component-window [schema map-widget-table]
-  (let [window (ui/window {:title "Choose"
+  (let [window (ui-window {:title "Choose"
                            :modal? true
                            :close-button? true
                            :center? true
@@ -362,17 +361,17 @@
         malli-form (malli-form schema)
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
                                    (map-keys malli-form)))]
-    (ui/add-rows!
+    (add-rows!
      window
      (for [k remaining-ks]
-       [(ui/text-button (name k)
-                        (fn []
-                          (Actor/.remove window)
-                          (ui/add-rows! map-widget-table [(component-row
-                                                           [k (k->default-value k)]
-                                                           malli-form
-                                                           map-widget-table)])
-                          (rebuild-editor-window)))]))
+       [(text-button (name k)
+                     (fn []
+                       (Actor/.remove window)
+                       (add-rows! map-widget-table [(component-row
+                                                     [k (k->default-value k)]
+                                                     malli-form
+                                                     map-widget-table)])
+                       (rebuild-editor-window)))]))
     (.pack window)
     (add-actor window)))
 
@@ -401,26 +400,26 @@
   (or (index-of k property-k-sort-order) 99))
 
 (defmethod schema->widget :s/map [schema m]
-  (let [table (ui/table {:cell-defaults {:pad 5}
+  (let [table (ui-table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
                           (map #(component-row % (malli-form schema) table)
                                (sort-by component-order m)))
         colspan component-row-cols
         opt? (optional-keys-left (malli-form schema) m)]
-    (ui/add-rows!
+    (add-rows!
      table
      (concat [(when opt?
-                [{:actor (ui/text-button "Add component" #(choose-component-window schema table))
+                [{:actor (text-button "Add component" #(choose-component-window schema table))
                   :colspan colspan}])]
              [(when opt?
-                [(ui/horizontal-separator-cell colspan)])]
+                [(horizontal-separator-cell colspan)])]
              component-rows))
     table))
 
 (defmethod ->value :s/map [_ table]
   (into {}
-        (for [widget (filter value-widget? (ui/children table))
+        (for [widget (filter value-widget? (children table))
               :let [[k _] (Actor/.getUserObject widget)]]
           [k (->value (schema-of k) widget)])))
 
@@ -428,22 +427,22 @@
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
   (for [file (sort (all-of-class com.badlogic.gdx.graphics.Texture))]
-    [(ui/image-button (image file) (fn []))]
-    #_[(ui/text-button file (fn []))]))
+    [(image-button (image file) (fn []))]
+    #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (ui/image-button (edn->value schema image)
-                   (fn on-clicked [])
-                   {:scale 2})
-  #_(ui/image-button image
-                     #(stage/add! (scrollable-choose-window (texture-rows)))
-                     {:dimensions [96 96]})) ; x2  , not hardcoded here
+  (image-button (edn->value schema image)
+                (fn on-clicked [])
+                {:scale 2})
+  #_(image-button image
+                  #(stage/add! (scrollable-choose-window (texture-rows)))
+                  {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
-  (ui/table {:rows [(for [image (:frames animation)]
-                      (ui/image-button (edn->value :s/image image)
-                                       (fn on-clicked [])
-                                       {:scale 2}))]
+  (ui-table {:rows [(for [image (:frames animation)]
+                      (image-button (edn->value :s/image image)
+                                    (fn on-clicked [])
+                                    {:scale 2}))]
              :cell-defaults {:pad 1}}))
 
 ; FIXME overview table not refreshed after changes in properties
@@ -461,9 +460,9 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn- tabs-table [label]
-  (let [table (ui/table {:fill-parent? true})
-        container (ui/table {})
+(defn- tabs-table [label-str]
+  (let [table (ui-table {:fill-parent? true})
+        container (ui-table {})
         tabbed-pane (TabbedPane.)]
     (.addListener tabbed-pane
                   (proxy [TabbedPaneAdapter] []
@@ -474,15 +473,15 @@
     (.row table)
     (.fill (.expand (.add table container)))
     (.row table)
-    (.pad (.left (.add table (ui/label label))) (float 10))
+    (.pad (.left (.add table (label label-str))) (float 10))
     (doseq [tab-data (property-type-tabs)]
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn create [background-image]
-  {:actors [background-image
+(defn create []
+  {:actors [(background-image)
             (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
-            (ui/actor {:act (fn []
+            (ui-actor {:act (fn []
                               (when (key-just-pressed? :shift-left)
                                 (change-screen :screens/main-menu)))})]
    :screen (reify Screen

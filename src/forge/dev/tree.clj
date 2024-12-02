@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.dev.tree
   (:require [forge.dev.app-values-tree :refer [ns-value-vars]]
-            [forge.ui :as ui]
             [forge.world :as world]))
 
 (defn- mouseover-grid-cell []
@@ -48,7 +47,7 @@
 
 (defn- add-elements! [node elements]
   (doseq [element elements]
-    (.add node (ui/t-node (ui/label (str (->v-str element)))))))
+    (.add node (t-node (label (str (->v-str element)))))))
 
 #_(let [ns-sym (first (first (into {} (ns-value-vars))))]
   ;(map ->v-str vars)
@@ -68,17 +67,17 @@
     (add-elements! node v))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
-    (add-map-nodes! node (children->str-map (ui/children (.getRoot v))) level))
+    (add-map-nodes! node (children->str-map (children (.getRoot v))) level))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
-    (add-map-nodes! node (children->str-map (ui/children v)) level))
+    (add-map-nodes! node (children->str-map (children v)) level))
 
   (when (and (var? v)
              (instance? com.badlogic.gdx.assets.AssetManager @v))
     (add-map-nodes! node (bean @v) level)))
 
 (comment
- (let [vis-image (first (ui/children (.getRoot (stage-get))))]
+ (let [vis-image (first (children (.getRoot (stage-get))))]
    (supers (class vis-image))
    (str vis-image)
    )
@@ -90,22 +89,22 @@
     (doseq [[k v] (into (sorted-map) m)]
       ;(println "add-map-nodes! k " k)
       (try
-       (let [node (ui/t-node (ui/label (labelstr k v)))]
+       (let [node (t-node (label (labelstr k v)))]
          (.add parent-node node) ; no t-node-add!: tree cannot be casted to tree-node ... , Tree itself different .add
          #_(when (instance? clojure.lang.Atom v) ; StackOverFLow
            (add-nodes node level @v))
          (add-nodes node level v))
        (catch Throwable t
          (throw (ex-info "" {:k k :v v} t))
-         #_(.add parent-node (ui/t-node (ui/label (str "[RED] "k " - " t))))
+         #_(.add parent-node (t-node (label (str "[RED] "k " - " t))))
 
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [table (ui/table {:rows rows
+  (let [table (ui-table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
-        scroll-pane (ui/scroll-pane table)]
+        scroll-pane (scroll-pane table)]
     {:actor scroll-pane
      :width (/ gui-viewport-width 2)
      :height
@@ -114,10 +113,10 @@
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}
-  (let [tree (ui/tree)]
+  (let [tree (ui-tree)]
     (add-map-nodes! tree (into (sorted-map) m) 0)
     (add-actor
-     (ui/window {:title "Tree View"
+     (ui-window {:title "Tree View"
                  :close-button? true
                  :close-on-escape? true
                  :center? true

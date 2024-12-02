@@ -17,7 +17,6 @@
          '[clojure.string :as str]
          '[clojure.java.io :as io]
          '[data.grid2d :as g2d]
-         '[forge.ui :as ui]
          '[malli.core :as m]
          '[malli.error :as me]
          '[malli.generator :as mg])
@@ -30,13 +29,17 @@
         '(com.badlogic.gdx.graphics Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
         '(com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
         '(com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-        '(com.badlogic.gdx.scenes.scene2d Actor Stage)
+        '(com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
+        '(com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
+        '(com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
         '(com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
         '(com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
         '(com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
         '(com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils SharedLibraryLoader)
         '(com.badlogic.gdx.utils.viewport Viewport FitViewport)
+        '(com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+        '(com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
         '(java.awt Taskbar Toolkit)
         '(org.lwjgl.system Configuration)
         '(space.earlygrey.shapedrawer ShapeDrawer)
@@ -1105,12 +1108,6 @@
   (let [[x y] (gui-mouse-position)]
     (.hit (screen-stage) x y true)))
 
-(defn- background-image []
-  (ui/image->widget (->image "images/moon_background.png")
-                    {:fill-parent? true
-                     :scaling :fill
-                     :align :center}))
-
 (defn- set-dock-icon [image-resource]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
@@ -1180,15 +1177,38 @@
     (dispose stage)
     (screen-destroy sub-screen)))
 
+(defn children
+  "Returns an ordered list of child actors in this group."
+  [^Group group]
+  (seq (.getChildren group)))
+
+(defn clear-children!
+  "Removes all actors from this group and unfocuses them."
+  [^Group group]
+  (.clearChildren group))
+
+(defn add-actor!
+  "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made."
+  [^Group group actor]
+  (.addActor group actor))
+
+(defn find-actor-with-id [group id]
+  (let [actors (children group)
+        ids (keep Actor/.getUserObject actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+
 (defn- stage-screen
   "Actors or screen can be nil."
   [{:keys [actors screen]}]
   (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
                 (valAt
                   ([id]
-                   (ui/find-actor-with-id (Stage/.getRoot this) id))
+                   (find-actor-with-id (Stage/.getRoot this) id))
                   ([id not-found]
-                   (or (ui/find-actor-with-id (Stage/.getRoot this) id)
+                   (or (find-actor-with-id (Stage/.getRoot this) id)
                        not-found))))]
     (run! #(.addActor stage %) actors)
     (->StageScreen stage screen)))
@@ -1198,9 +1218,40 @@
            (mapvals
             (fn [ns-sym]
               (require ns-sym)
-              (let [create-fn (ns-resolve ns-sym 'create)]
-                (create-fn (background-image))))
+              ((ns-resolve ns-sym 'create)))
             screen-ks)))
+
+(defn- check-cleanup-visui! []
+  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
+  ; => actually there is a deeper issue at play
+  ; we need to dispose ALL resources which were loaded already ...
+  (when (VisUI/isLoaded)
+    (VisUI/dispose)))
+
+(defn- font-enable-markup! []
+  (-> (VisUI/getSkin)
+      (.getFont "default-font")
+      .getData
+      .markupEnabled
+      (set! true)))
+
+(defn- set-tooltip-config! []
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+  ;Controls whether to fade out tooltip when mouse was moved. (default false)
+  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+  )
+
+(defn- init-visui [skin-scale]
+  (check-cleanup-visui!)
+  (VisUI/load (case skin-scale
+                :skin-scale/x1 VisUI$SkinScale/X1
+                :skin-scale/x2 VisUI$SkinScale/X2))
+  (font-enable-markup!)
+  (set-tooltip-config!))
+
+(defn- dispose-visui []
+  (VisUI/dispose))
 
 (defn- start-app* [{:keys [dock-icon
                            lwjgl3
@@ -1252,7 +1303,7 @@
                                                gui-viewport-height
                                                (OrthographicCamera.)))
        (bind-root #'cursors (mapvals gdx-cursor cursors))
-       (ui/init ui)
+       (init-visui ui)
        (bind-root #'app-screens (create-screens screen-ks))
        (change-screen first-screen-k))
 
@@ -1262,7 +1313,7 @@
        (dispose shape-drawer-texture)
        (dispose default-font)
        (run! dispose (vals @#'cursors))
-       (ui/destroy)
+       (dispose-visui)
        (run! screen-destroy (vals app-screens)))
 
      (render []
@@ -1280,73 +1331,6 @@
       slurp
       edn/read-string
       start-app*))
-
-(def ^:private player-message-duration-seconds 1.5)
-
-(def ^:private message-to-player nil)
-
-(defn- draw-player-message []
-  (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ gui-viewport-width 2)
-                :y (+ (/ gui-viewport-height 2) 200)
-                :text message
-                :scale 2.5
-                :up? true})))
-
-(defn- check-remove-message []
-  (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (delta-time))
-    (when (>= counter player-message-duration-seconds)
-      (bind-root #'message-to-player nil))))
-
-(defn player-message-actor []
-  (ui/actor {:draw draw-player-message
-             :act check-remove-message}))
-
-(defn player-message-show [message]
-  (bind-root #'message-to-player {:message message :counter 0}))
-
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (::modal (screen-stage))))
-  (add-actor
-   (ui/window {:title title
-               :rows [[(ui/label text)]
-                      [(ui/text-button button-text
-                                       (fn []
-                                         (Actor/.remove (::modal (screen-stage)))
-                                         (on-click)))]]
-               :id ::modal
-               :modal? true
-               :center-position [(/ gui-viewport-width 2)
-                                 (* gui-viewport-height (/ 3 4))]
-               :pack? true})))
-
-(defmacro ^:private with-err-str
-  "Evaluates exprs in a context in which *err* is bound to a fresh
-  StringWriter.  Returns the string created by any nested printing
-  calls."
-  [& body]
-  `(let [s# (new java.io.StringWriter)]
-     (binding [*err* s#]
-       ~@body
-       (str s#))))
-
-(defn error-window! [throwable]
-  (pretty-pst throwable)
-  (add-actor
-   (ui/window {:title "Error"
-               :rows [[(ui/label (binding [*print-level* 3]
-                                   (with-err-str
-                                     (clojure.repl/pst throwable))))]]
-               :modal? true
-               :close-button? true
-               :close-on-escape? true
-               :center? true
-               :pack? true})))
 
 (defsystem component-info)
 (defmethod component-info :default [_])
@@ -1573,3 +1557,392 @@
 
 (defsystem render-info [_ entity])
 (defmethod render-info :default [_ entity])
+
+(defn toggle-visible! [^Actor actor]
+  (.setVisible actor (not (.isVisible actor))))
+
+(defn- set-center [^Actor actor x y]
+  (.setPosition actor
+                (- x (/ (.getWidth  actor) 2))
+                (- y (/ (.getHeight actor) 2))))
+
+(defn actor-hit [^Actor actor [x y]]
+  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+    (.hit actor (.x v) (.y v) true)))
+
+(defn- set-cell-opts [^Cell cell opts]
+  (doseq [[option arg] opts]
+    (case option
+      :fill-x?    (.fillX     cell)
+      :fill-y?    (.fillY     cell)
+      :expand?    (.expand    cell)
+      :expand-x?  (.expandX   cell)
+      :expand-y?  (.expandY   cell)
+      :bottom?    (.bottom    cell)
+      :colspan    (.colspan   cell (int   arg))
+      :pad        (.pad       cell (float arg))
+      :pad-top    (.padTop    cell (float arg))
+      :pad-bottom (.padBottom cell (float arg))
+      :width      (.width     cell (float arg))
+      :height     (.height    cell (float arg))
+      :center?    (.center    cell)
+      :right?     (.right     cell)
+      :left?      (.left      cell))))
+
+(defn add-rows!
+  "rows is a seq of seqs of columns.
+  Elements are actors or nil (for just adding empty cells ) or a map of
+  {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."
+  [^Table table rows]
+  (doseq [row rows]
+    (doseq [props-or-actor row]
+      (cond
+       (map? props-or-actor) (-> (.add table ^Actor (:actor props-or-actor))
+                                 (set-cell-opts (dissoc props-or-actor :actor)))
+       :else (.add table ^Actor props-or-actor)))
+    (.row table))
+  table)
+
+(defn- set-table-opts [^Table table {:keys [rows cell-defaults]}]
+  (set-cell-opts (.defaults table) cell-defaults)
+  (add-rows! table rows))
+
+(defn horizontal-separator-cell [colspan]
+  {:actor (Separator. "default")
+   :pad-top 2
+   :pad-bottom 2
+   :colspan colspan
+   :fill-x? true
+   :expand-x? true})
+
+(defn vertical-separator-cell []
+  {:actor (Separator. "vertical")
+   :pad-top 2
+   :pad-bottom 2
+   :fill-y? true
+   :expand-y? true})
+
+(comment
+ ; fill parent & pack is from Widget TODO ( not widget-group ?)
+ com.badlogic.gdx.scenes.scene2d.ui.Widget
+ ; about .pack :
+ ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
+ )
+
+(defn- set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
+  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
+  (when pack?
+    (.pack widget-group))
+  widget-group)
+
+(defn- set-actor-opts [a {:keys [id name visible? touchable center-position position] :as opts}]
+  (when id                          (.setUserObject        a id))
+  (when name                        (.setName      a name))
+  (when (contains? opts :visible?)  (.setVisible   a (boolean visible?)))
+  (when touchable                   (.setTouchable a (case touchable
+                                                       :children-only Touchable/childrenOnly
+                                                       :disabled      Touchable/disabled
+                                                       :enabled       Touchable/enabled)))
+  (when-let [[x y] center-position] (set-center    a x y))
+  (when-let [[x y] position]        (.setPosition  a x y))
+  a)
+
+(defn- set-opts [actor opts]
+  (set-actor-opts actor opts)
+  (when (instance? Table actor)
+    (set-table-opts actor opts)) ; before widget-group-opts so pack is packing rows
+  (when (instance? WidgetGroup actor)
+    (set-widget-group-opts actor opts))
+  actor)
+
+(defmacro ^:private proxy-ILookup
+  "For actors inheriting from Group."
+  [class args]
+  `(proxy [~class clojure.lang.ILookup] ~args
+     (valAt
+       ([id#]
+        (find-actor-with-id ~'this id#))
+       ([id# not-found#]
+        (or (find-actor-with-id ~'this id#) not-found#)))))
+
+(defn ui-group [{:keys [actors] :as opts}]
+  (let [group (proxy-ILookup Group [])]
+    (run! #(add-actor! group %) actors)
+    (set-opts group opts)))
+
+(defn horizontal-group [{:keys [space pad]}]
+  (let [group (proxy-ILookup HorizontalGroup [])]
+    (when space (.space group (float space)))
+    (when pad   (.pad   group (float pad)))
+    group))
+
+(defn vertical-group [actors]
+  (let [group (proxy-ILookup VerticalGroup [])]
+    (run! #(add-actor! group %) actors)
+    group))
+
+(defn add-tooltip!
+  "tooltip-text is a (fn []) or a string. If it is a function will be-recalculated every show.
+  Returns the actor."
+  [^Actor a tooltip-text]
+  (let [text? (string? tooltip-text)
+        label (VisLabel. (if text? tooltip-text ""))
+        tooltip (proxy [Tooltip] []
+                  ; hooking into getWidth because at
+                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                  ; when tooltip position gets calculated we setText (which calls pack) before that
+                  ; so that the size is correct for the newly calculated text.
+                  (getWidth []
+                    (let [^Tooltip this this]
+                      (when-not text?
+                        (.setText this (str (tooltip-text))))
+                      (proxy-super getWidth))))]
+    (.setAlignment label Align/center)
+    (.setTarget  tooltip ^Actor a)
+    (.setContent tooltip ^Actor label))
+  a)
+
+(defn remove-tooltip! [^Actor a]
+  (Tooltip/removeTooltip a))
+
+(defn button-group [{:keys [max-check-count min-check-count]}]
+  (let [bg (ButtonGroup.)]
+    (.setMaxCheckCount bg max-check-count)
+    (.setMinCheckCount bg min-check-count)
+    bg))
+
+(defn check-box
+  "on-clicked is a fn of one arg, taking the current isChecked state"
+  [text on-clicked checked?]
+  (let [^Button button (VisCheckBox. ^String text)]
+    (.setChecked button checked?)
+    (.addListener button
+                  (proxy [ChangeListener] []
+                    (changed [event ^Button actor]
+                      (on-clicked (.isChecked actor)))))
+    button))
+
+(defn select-box [{:keys [items selected]}]
+  (doto (VisSelectBox.)
+    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
+    (.setSelected selected)))
+
+(defn ui-table ^Table [opts]
+  (-> (proxy-ILookup VisTable [])
+      (set-opts opts)))
+
+(defn ui-window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
+  (-> (let [window (doto (proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
+                     (.setModal (boolean modal?)))]
+        (when close-button?    (.addCloseButton window))
+        (when center?          (.centerWindow   window))
+        (when close-on-escape? (.closeOnEscape  window))
+        window)
+      (set-opts opts)))
+
+(defn label ^VisLabel [text]
+  (VisLabel. ^CharSequence text))
+
+(defn text-field [^String text opts]
+  (-> (VisTextField. text)
+      (set-opts opts)))
+
+(defn ui-stack [actors]
+  (proxy-ILookup Stack [(into-array Actor actors)]))
+
+(defmulti ^:private ->vis-image type)
+(defmethod ->vis-image Drawable      [^Drawable d      ] (VisImage.  d))
+(defmethod ->vis-image TextureRegion [^TextureRegion tr] (VisImage. tr))
+
+(defn image-widget ; TODO widget also make, for fill parent
+  "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
+  [object {:keys [scaling align fill-parent?] :as opts}]
+  (-> (let [^Image image (->vis-image object)]
+        (when (= :center align)
+          (.setAlign image Align/center))
+        (when (= :fill scaling)
+          (.setScaling image Scaling/fill))
+        (when fill-parent?
+          (.setFillParent image true))
+        image)
+      (set-opts opts)))
+
+(defn image->widget
+  "Same opts as [[image-widget]]."
+  [image opts]
+  (image-widget (:texture-region image) opts))
+
+(defn texture-region-drawable [^TextureRegion texture-region]
+  (TextureRegionDrawable. texture-region))
+
+(defn scroll-pane [actor]
+  (let [scroll-pane (VisScrollPane. actor)]
+    (Actor/.setUserObject scroll-pane :scroll-pane)
+    (.setFlickScroll scroll-pane false)
+    (.setFadeScrollBars scroll-pane false)
+    scroll-pane))
+
+(defn- button-class? [actor]
+  (some #(= Button %) (supers (class actor))))
+
+(defn button?
+  "Returns true if the actor or its parent is a button."
+  [actor]
+  (or (button-class? actor)
+      (and (.getParent actor)
+           (button-class? (.getParent actor)))))
+
+(defn window-title-bar?
+  "Returns true if the actor is a window title bar."
+  [actor]
+  (when (instance? Label actor)
+    (when-let [p (.getParent actor)]
+      (when-let [p (.getParent p)]
+        (and (instance? VisWindow p)
+             (= (.getTitleLabel ^Window p) actor))))))
+
+(defn find-ancestor-window ^Window [^Actor actor]
+  (if-let [p (.getParent actor)]
+    (if (instance? Window p)
+      p
+      (find-ancestor-window p))
+    (throw (Error. (str "Actor has no parent window " actor)))))
+
+(defn pack-ancestor-window! [^Actor actor]
+  (.pack (find-ancestor-window actor)))
+
+(declare ^:dynamic *on-clicked-actor*)
+
+(defn change-listener [on-clicked]
+  (proxy [ChangeListener] []
+    (changed [event actor]
+      (binding [*on-clicked-actor* actor]
+        (on-clicked)))))
+
+(defn text-button [text on-clicked]
+  (let [button (VisTextButton. ^String text)]
+    (.addListener button (change-listener on-clicked))
+    button))
+
+(defn image-button
+  ([image on-clicked]
+   (image-button image on-clicked {}))
+  ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
+   (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)
+         button (VisImageButton. drawable)]
+     (when scale
+       (let [[w h] [(.getRegionWidth  texture-region)
+                    (.getRegionHeight texture-region)]]
+         (.setMinSize drawable (float (* scale w)) (float (* scale h)))))
+     (.addListener button (change-listener on-clicked))
+     button)))
+
+(defn ui-actor ^Actor [{:keys [draw act]}]
+  (proxy [Actor] []
+    (draw [_batch _parent-alpha]
+      (when draw (draw)))
+    (act [_delta]
+      (when act (act)))))
+
+(defn ui-widget [draw!]
+  (proxy [Widget] []
+    (draw [_batch _parent-alpha]
+      (draw! this))))
+
+(defn set-drawable! [^Image image drawable]
+  (.setDrawable image drawable))
+
+(defn set-min-size! [^TextureRegionDrawable drawable size]
+  (.setMinSize drawable (float size) (float size)))
+
+(defn tinted-drawable
+  "Creates a new drawable that renders the same as this drawable tinted the specified color."
+  [drawable color]
+  (.tint ^TextureRegionDrawable drawable color))
+
+(defn bg-add!    [bg button] (.add    ^ButtonGroup bg ^Button button))
+(defn bg-remove! [bg button] (.remove ^ButtonGroup bg ^Button button))
+(defn bg-checked
+  "The first checked button, or nil."
+  [bg]
+  (.getChecked ^ButtonGroup bg))
+
+(defn ui-tree []
+  (VisTree.))
+
+(defn t-node ^Tree$Node [actor]
+  (proxy [Tree$Node] [actor]))
+
+(defn background-image []
+  (image->widget (->image "images/moon_background.png")
+                 {:fill-parent? true
+                  :scaling :fill
+                  :align :center}))
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn show-modal [{:keys [title text button-text on-click]}]
+  (assert (not (::modal (screen-stage))))
+  (add-actor
+   (ui-window {:title title
+               :rows [[(label text)]
+                      [(text-button button-text
+                                    (fn []
+                                      (Actor/.remove (::modal (screen-stage)))
+                                      (on-click)))]]
+               :id ::modal
+               :modal? true
+               :center-position [(/ gui-viewport-width 2)
+                                 (* gui-viewport-height (/ 3 4))]
+               :pack? true})))
+
+(defmacro ^:private with-err-str
+  "Evaluates exprs in a context in which *err* is bound to a fresh
+  StringWriter.  Returns the string created by any nested printing
+  calls."
+  [& body]
+  `(let [s# (new java.io.StringWriter)]
+     (binding [*err* s#]
+       ~@body
+       (str s#))))
+
+(defn error-window! [throwable]
+  (pretty-pst throwable)
+  (add-actor
+   (ui-window {:title "Error"
+               :rows [[(label (binding [*print-level* 3]
+                                (with-err-str
+                                  (clojure.repl/pst throwable))))]]
+               :modal? true
+               :close-button? true
+               :close-on-escape? true
+               :center? true
+               :pack? true})))
+
+(def ^:private player-message-duration-seconds 1.5)
+
+(def ^:private message-to-player nil)
+
+(defn- draw-player-message []
+  (when-let [{:keys [message]} message-to-player]
+    (draw-text {:x (/ gui-viewport-width 2)
+                :y (+ (/ gui-viewport-height 2) 200)
+                :text message
+                :scale 2.5
+                :up? true})))
+
+(defn- check-remove-message []
+  (when-let [{:keys [counter]} message-to-player]
+    (alter-var-root #'message-to-player update :counter + (delta-time))
+    (when (>= counter player-message-duration-seconds)
+      (bind-root #'message-to-player nil))))
+
+(defn player-message-actor []
+  (ui-actor {:draw draw-player-message
+             :act check-remove-message}))
+
+(defn player-message-show [message]
+  (bind-root #'message-to-player {:message message :counter 0}))
+

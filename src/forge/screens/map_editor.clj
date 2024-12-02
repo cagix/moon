@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.string :as str]
             [forge.graphics.camera :as cam]
-            [forge.ui :as ui]
             [forge.level :as level]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules])
@@ -50,11 +49,11 @@ direction keys: move")
          (str/join "\n"))))
 
 (defn- ->info-window []
-  (let [label (ui/label "")
-        window (ui/window {:title "Info" :rows [[label]]})]
-    (ui/add-actor! window (ui/actor {:act #(do
-                                            (.setText label (map-infos))
-                                            (.pack window))}))
+  (let [label (label "")
+        window (ui-window {:title "Info" :rows [[label]]})]
+    (add-actor! window (ui-actor {:act #(do
+                                         (.setText label (map-infos))
+                                         (.pack window))}))
     (.setPosition window 0 gui-viewport-height)
     window))
 
@@ -111,13 +110,13 @@ direction keys: move")
     (set-visible (get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
-  (ui/window {:title "Properties"
+  (ui-window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (pprint (build level-id))))]
-                     [(ui/text-button "Generate" #(try (generate-screen-ctx (build level-id))
-                                                       (catch Throwable t
-                                                         (error-window! t)
-                                                         (println t))))]]
+              :rows [[(label (with-out-str (pprint (build level-id))))]
+                     [(text-button "Generate" #(try (generate-screen-ctx (build level-id))
+                                                    (catch Throwable t
+                                                      (error-window! t)
+                                                      (println t))))]]
               :pack? true}))
 
 (defrecord MapEditorScreen [current-data]
@@ -144,7 +143,7 @@ direction keys: move")
   (screen-destroy [_]
     (dispose (:tiled-map @current-data))))
 
-(defn create [_]
+(defn create []
   {:actors [(->generate-map-window world-id)
             (->info-window)]
    :screen (->MapEditorScreen (atom {:tiled-map (load-tmx-map modules/file)

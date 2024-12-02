@@ -3,7 +3,7 @@
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))
 #_(defn ->skill-window []
-    (ui/window {:title "Skills"
+    (ui-window {:title "Skills"
                 :id :skill-window
                 :visible? false
                 :cell-defaults {:pad 10}
@@ -12,12 +12,12 @@
                                  :skills/spawn
                                  :skills/melee-attack]
                              :let [; get-property in callbacks if they get changed, this is part of context permanently
-                                   button (ui/image-button ; TODO reuse actionbar button scale?
-                                                           (:entity/image (db/build id)) ; TODO here anyway taken
-                                                           ; => should probably build this window @ game start
-                                                           (fn []
-                                                             (state/clicked-skillmenu-skill (entity/state-obj @player-eid) (db/build id))))]]
+                                   button (image-button ; TODO reuse actionbar button scale?
+                                                        (:entity/image (db/build id)) ; TODO here anyway taken
+                                                        ; => should probably build this window @ game start
+                                                        (fn []
+                                                          (state/clicked-skillmenu-skill (entity/state-obj @player-eid) (db/build id))))]]
                          (do
-                          (ui/add-tooltip! button #(info/->text (db/build id))) ; TODO no player modifiers applied (see actionbar)
+                          (add-tooltip! button #(info/->text (db/build id))) ; TODO no player modifiers applied (see actionbar)
                           button))]
                 :pack? true}))

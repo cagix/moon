@@ -1,6 +1,5 @@
 (ns forge.ui.inventory
   (:require [data.grid2d :as g2d]
-            [forge.ui :as ui]
             [forge.entity.components :as entity]
             [forge.item :refer [valid-slot? empty-inventory]]
             [forge.entity.state :as state]
@@ -29,12 +28,12 @@
 ; is not layouted automatically to cell , use 0/0 ??
 ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
 (defn- draw-rect-actor []
-  (ui/widget
+  (ui-widget
    (fn [this]
      (draw-cell-rect @player-eid
                      (.getX this)
                      (.getY this)
-                     (ui/mouseover? this (gui-mouse-position))
+                     (actor-hit this (gui-mouse-position))
                      (.getUserObject (.getParent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -60,14 +59,14 @@
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
                      :texture-region
-                     ui/texture-region-drawable)]
-    (ui/set-min-size! drawable cell-size)
-    (ui/tinted-drawable drawable (gdx-color 1 1 1 0.4))))
+                     texture-region-drawable)]
+    (set-min-size! drawable cell-size)
+    (tinted-drawable drawable (gdx-color 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
-        image-widget (ui/image-widget (slot->background slot) {:id :image})
-        stack (ui/stack [(draw-rect-actor)
+        image-widget (image-widget (slot->background slot) {:id :image})
+        stack (ui-stack [(draw-rect-actor)
                          image-widget])]
     (.setName stack "inventory-cell")
     (.setUserObject stack cell)
@@ -77,7 +76,7 @@
     stack))
 
 (defn- inventory-table []
-  (let [table (ui/table {:id ::table})]
+  (let [table (ui-table {:id ::table})]
     (.clear table) ; no need as we create new table ... TODO
     (doto table .add .add
       (.add (->cell :inventory.slot/helm))
@@ -101,7 +100,7 @@
     table))
 
 (defn create []
-  (ui/window {:title "Inventory"
+  (ui-window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
@@ -118,13 +117,13 @@
 (defn set-item-image-in-widget [cell item]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)
-        drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
-    (ui/set-min-size! drawable cell-size)
-    (ui/set-drawable! image-widget drawable)
-    (ui/add-tooltip! cell-widget #(info-text item))))
+        drawable (texture-region-drawable (:texture-region (:entity/image item)))]
+    (set-min-size! drawable cell-size)
+    (set-drawable! image-widget drawable)
+    (add-tooltip! cell-widget #(info-text item))))
 
 (defn remove-item-from-widget [cell]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)]
-    (ui/set-drawable! image-widget (slot->background (cell 0)))
-    (ui/remove-tooltip! cell-widget)))
+    (set-drawable! image-widget (slot->background (cell 0)))
+    (remove-tooltip! cell-widget)))
