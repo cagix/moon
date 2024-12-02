@@ -1,4 +1,5 @@
-(ns forge.info)
+(ns forge.info
+  (:require [clojure.string :as str]))
 
 (defsystem info)
 (defmethod info :default [_])
@@ -17,9 +18,9 @@
 
 (defn- remove-newlines [s]
   (let [new-s (-> s
-                  (str-replace "\n\n" "\n")
-                  (str-replace #"^\n" "")
-                  str-trim-newline)]
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
     (if (= (count new-s) (count s))
       s
       (remove-newlines new-s))))
@@ -39,5 +40,5 @@
                            (pr-str component)))
                     (when (map? v)
                       (str "\n" (text v))))))
-       (str-join "\n")
+       (str/join "\n")
        remove-newlines))

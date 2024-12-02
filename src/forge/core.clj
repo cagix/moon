@@ -7,7 +7,6 @@
          '[clojure.pprint]
          '[clojure.string :as str]
          '[clojure.java.io :as io]
-         '[clojure.math :as math]
          '[data.grid2d :as g2d]
          '[forge.screen :as screen] ; FIXME breaks reloading
          '[forge.tiled :as tiled]
@@ -40,21 +39,8 @@
       ns-publics
       (remove (fn [[k v]] (:macro (meta v))))
       (map (fn [s] (str "\"" (name (first s)) "\"")))
-      (str-join ", ")
+      (str/join ", ")
       (spit "vimrc_names")))
-
-(def signum math/signum)
-
-(def io-resource io/resource)
-
-(def edn-read-string edn/read-string)
-
-(def str-split         str/split)
-(def str-join          str/join)
-(def capitalize        str/capitalize)
-(def str-replace       str/replace)
-(def str-replace-first str/replace-first)
-(def str-trim-newline  str/trim-newline)
 
 (defn pretty-pst [t]
   (binding [*print-level* 3]
@@ -184,19 +170,19 @@
     (dispose pixmap)
     cursor))
 
-(declare screens
+(declare ^:private app-screens
          ^:private current-screen-key)
 
 (defn current-screen []
   (and (bound? #'current-screen-key)
-       (current-screen-key screens)))
+       (current-screen-key app-screens)))
 
 (defn change-screen
   "Calls `exit` on the current-screen and `enter` on the new screen."
   [new-k]
   (when-let [screen (current-screen)]
     (screen/exit screen))
-  (let [screen (new-k screens)]
+  (let [screen (new-k app-screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root #'current-screen-key new-k)
     (screen/enter screen)))
@@ -211,15 +197,12 @@
   (.clear (screen-stage))
   (run! add-actor new-actors))
 
-(defn set-input-processor [processor]
-  (.setInputProcessor Gdx/input processor))
-
 (defn post-runnable [runnable]
   (.postRunnable Gdx/app runnable))
 
-(declare db-schemas
-         db-properties-file
-         db-properties)
+(declare ^:private db-schemas
+         ^:private db-properties-file
+         ^:private db-properties)
 
 (defn schema-of [k]
   (safe-get db-schemas k))
@@ -889,21 +872,21 @@
 
 (defn- text-height [^BitmapFont font text]
   (-> text
-      (str-split #"\n")
+      (str/split #"\n")
       count
       (* (.getLineHeight font))))
 
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(declare ^Batch batch
-         ^ShapeDrawer shape-drawer
-         ^BitmapFont default-font
-         cached-map-renderer
-         world-unit-scale
-         ^Viewport world-viewport
-         ^Viewport gui-viewport
-         cursors)
+(declare ^Batch ^:private batch
+         ^ShapeDrawer ^:private shape-drawer
+         ^BitmapFont ^:private default-font
+         ^:private cached-map-renderer
+         ^:private world-unit-scale
+         ^Viewport ^:private world-viewport
+         ^Viewport ^:private gui-viewport
+         ^:private cursors)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -1121,7 +1104,7 @@
 (defn- set-dock-icon [image-resource]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
-                            (io-resource image-resource))))
+                            (io/resource image-resource))))
 
 (defn- lwjgl3-config [{:keys [title fps width height]}]
   (doto (Lwjgl3ApplicationConfiguration.)
@@ -1152,7 +1135,7 @@
                       (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
     (doseq [[class exts] [[Sound   #{"wav"}]
                           [Texture #{"png" "bmp"}]]
-            file (map #(str-replace-first % folder "")
+            file (map #(str/replace-first % folder "")
                       (recursively-search (internal-file folder) exts))]
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
@@ -1171,11 +1154,11 @@
 (defrecord StageScreen [^Stage stage sub-screen]
   screen/Screen
   (enter [_]
-    (set-input-processor stage)
+    (.setInputProcessor Gdx/input stage)
     (screen/enter sub-screen))
 
   (exit [_]
-    (set-input-processor nil)
+    (.setInputProcessor Gdx/input nil)
     (screen/exit sub-screen))
 
   (render [_]
@@ -1209,21 +1192,21 @@
                 (create-fn (background-image))))
             screen-ks)))
 
-(defn start-app [{:keys [dock-icon
-                         lwjgl3
-                         db/schema
-                         db/properties
-                         assets
-                         cursors
-                         ui
-                         requires
-                         screen-ks
-                         first-screen-k
-                         tile-size]}]
+(defn- start-app* [{:keys [dock-icon
+                           lwjgl3
+                           db/schema
+                           db/properties
+                           assets
+                           cursors
+                           ui
+                           requires
+                           screen-ks
+                           first-screen-k
+                           tile-size]}]
   (run! require requires)
-  (bind-root #'db-schemas (-> schema io-resource slurp edn-read-string))
-  (bind-root #'db-properties-file (io-resource properties))
-  (let [properties (-> db-properties-file slurp edn-read-string)]
+  (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
+  (bind-root #'db-properties-file (io/resource properties))
+  (let [properties (-> db-properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! validate! properties)
@@ -1260,7 +1243,7 @@
                                                (OrthographicCamera.)))
        (bind-root #'cursors (mapvals gdx-cursor cursors))
        (ui/init ui)
-       (bind-root #'screens (create-screens screen-ks))
+       (bind-root #'app-screens (create-screens screen-ks))
        (change-screen first-screen-k))
 
      (dispose []
@@ -1270,7 +1253,7 @@
        (dispose default-font)
        (run! dispose (vals cursors))
        (ui/destroy)
-       (run! screen/destroy (vals screens)))
+       (run! screen/destroy (vals app-screens)))
 
      (render []
        (clear-screen black)
@@ -1280,3 +1263,10 @@
        (.update gui-viewport   w h true)
        (.update world-viewport w h)))
    (lwjgl3-config lwjgl3)))
+
+(defn start-app [config-file-path]
+  (-> config-file-path
+      io/resource
+      slurp
+      edn/read-string
+      start-app*))

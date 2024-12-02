@@ -1,5 +1,7 @@
 (ns forge.info.impl
-  (:require [forge.entity.components :refer [damage-mods hitpoints mana stat]]
+  (:require [clojure.string :as str]
+            [clojure.math :as math]
+            [forge.entity.components :refer [damage-mods hitpoints mana stat]]
             [forge.info :as info :refer [info]]
             [forge.operation :as op]
             [forge.world :refer [finished-ratio]]))
@@ -97,7 +99,7 @@
   (str "Mana: " (mana info/*entity*)))
 
 (defn- +? [n]
-  (case (signum n)
+  (case (math/signum n)
     0.0 ""
     1.0 "+"
     -1.0 ""))
@@ -111,7 +113,7 @@
   (str value "%"))
 
 (defn- ops-info [ops k]
-  (str-join "\n"
+  (str/join "\n"
             (keep
              (fn [{v 1 :as op}]
                (when-not (zero? v)
@@ -120,16 +122,16 @@
 
 (defmethod info :entity/modifiers [[_ mods]]
   (when (seq mods)
-    (str-join "\n" (keep (fn [[k ops]]
+    (str/join "\n" (keep (fn [[k ops]]
                            (ops-info ops k)) mods))))
 
 #_(defmethod info [skills]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
-      (str "Skills: " (str-join "," (map name (keys skills))))))
+      (str "Skills: " (str/join "," (map name (keys skills))))))
 
 (defmethod info :entity/species [[_ species]]
-  (str "Creature - " (capitalize (name species))))
+  (str "Creature - " (str/capitalize (name species))))
 
 (defmethod info :entity/temp-modifier [[_ {:keys [counter]}]]
   (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))

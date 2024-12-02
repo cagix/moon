@@ -1,5 +1,7 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [clojure.set :as set]
+  (:require [clojure.edn :as edn]
+            [clojure.set :as set]
+            [clojure.string :as str]
             [forge.info :as info]
             [forge.ui :as ui]
             [forge.screen :as screen]
@@ -118,7 +120,7 @@
                    (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn-read-string (VisTextField/.getText widget)))
+  (edn/read-string (VisTextField/.getText widget)))
 
 (defmethod schema->widget :string [schema v]
   (ui/add-tooltip! (ui/text-field v {})
@@ -139,7 +141,7 @@
                   :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn-read-string (VisSelectBox/.getSelected widget)))
+  (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
   (ui/text-button "play!" #(play-sound sound-file)))
@@ -154,7 +156,7 @@
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]
-               [(ui/text-button (str-replace-first sound-file "sounds/" "")
+               [(ui/text-button (str/replace-first sound-file "sounds/" "")
                                 (fn []
                                   (ui/clear-children! table)
                                   (ui/add-rows! table [(columns table sound-file)])
@@ -454,7 +456,7 @@
 
 (defn- property-type-tabs []
   (for [property-type (sort (property-types))]
-    {:title (capitalize (name property-type))
+    {:title (str/capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
