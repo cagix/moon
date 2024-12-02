@@ -1,6 +1,5 @@
 (ns forge.entity.render
   (:require [forge.entity :as entity]
-            [forge.entity.active :refer [check-update-ctx]]
             [forge.entity.components :refer [hitpoints enemy]]
             [forge.entity.player.item-on-cursor :refer [item-place-position world-item?]]
             [forge.graphics :refer [draw-filled-circle draw-image draw-sector draw-text draw-filled-rectangle pixels->world-units draw-rotated-centered draw-line with-line-width draw-ellipse draw-circle draw-centered]]
@@ -60,27 +59,9 @@
                          (or (:rotation-angle entity) 0)
                          (:position entity)))
 
-(defn- draw-skill-image [image entity [x y] action-counter-ratio]
-  (let [[width height] (:world-unit-dimensions image)
-        _ (assert (= width height))
-        radius (/ (float width) 2)
-        y (+ (float y) (float (:half-height entity)) (float 0.15))
-        center [x (+ y radius)]]
-    (draw-filled-circle center radius [1 1 1 0.125])
-    (draw-sector center radius
-                 90 ; start-angle
-                 (* (float action-counter-ratio) 360) ; degree
-                 [1 1 1 0.5])
-    (draw-image image [(- (float x) radius) y])))
-
 ; TODO draw opacity as of counter ratio?
 (defmethod entity/render-above :entity/temp-modifier [_ entity]
   (draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
-
-(defmethod entity/render-info :active-skill [[_ {:keys [skill effect-ctx counter]}] entity]
-  (let [{:keys [entity/image skill/effects]} skill]
-    (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effects-render (check-update-ctx effect-ctx) effects)))
 
 (defmethod entity/render :entity/clickable [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)

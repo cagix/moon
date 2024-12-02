@@ -1,5 +1,7 @@
 (ns forge.start
   (:require [forge.effects]
+            [forge.entity.animation]
+            [forge.entity.render]
             [forge.entity.impl]
             [forge.entity.states]
             [forge.info.impl]
@@ -7,8 +9,6 @@
 
             [forge.entity :as entity]
             [forge.entity.state :as state]
-            [forge.entity.animation]
-            [forge.entity.render]
             [forge.graphics :as g]
             [forge.screens.editor :as editor]
             [forge.screens.map-editor :as map-editor]
@@ -116,15 +116,8 @@
                           #'state/clicked-skillmenu-skill
                           #'state/draw-gui-view]}))
 
-(install entity-state 'forge.entity.npc.idle              :npc-idle)
-(install entity-state 'forge.entity.npc.moving            :npc-moving)
-(install entity-state 'forge.entity.npc.sleeping          :npc-sleeping)
-(install entity-state 'forge.entity.player.dead           :player-dead)
 (install entity-state 'forge.entity.player.idle           :player-idle)
 (install entity-state 'forge.entity.player.item-on-cursor :player-item-on-cursor)
-(install entity-state 'forge.entity.player.moving         :player-moving)
-(install entity-state 'forge.entity.active                :active-skill)
-(install entity-state 'forge.entity.stunned               :stunned)
 
 (defn- set-dock-icon [image-resource]
   (.setIconImage (Taskbar/getTaskbar)
