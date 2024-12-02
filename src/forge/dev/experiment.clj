@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.dev.experiment
-  (:require [forge.core :refer :all]
-            [forge.entity.components :as entity]))
+  (:require [forge.core :refer :all]))
 
 (defmacro app-do [& exprs]
   `(post-runnable (fn [] ~@exprs)))
@@ -46,7 +45,7 @@
 
 (defn- learn-skill! [skill-id]
   (app-do
-   (swap! player-eid entity/add-skill (build skill-id))))
+   (swap! player-eid add-skill (build skill-id))))
 
 (defn- create-item! [item-id]
   (app-do

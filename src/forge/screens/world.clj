@@ -1,7 +1,6 @@
 (ns forge.screens.world
   (:require [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -261,7 +260,7 @@
   [(if dev-mode?
      (dev-menu)
      (ui-actor {}))
-   (ui-table {:rows [[{:actor (action-bar/create)
+   (ui-table {:rows [[{:actor (actionbar-create)
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table

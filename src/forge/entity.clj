@@ -1,8 +1,6 @@
 (ns forge.entity
   (:require [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.entity.components :as entity]
-            [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
@@ -341,7 +339,7 @@
   (e-create [[k skills] eid]
     (swap! eid assoc k nil)
     (doseq [skill skills]
-      (swap! eid entity/add-skill skill)))
+      (swap! eid add-skill skill)))
 
   (e-tick [[k skills] eid]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
@@ -743,7 +741,7 @@
      (clickable-entity-interaction entity mouseover-eid)
 
      :else
-     (if-let [skill-id (action-bar/selected-skill)]
+     (if-let [skill-id (actionbar-selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill-usable-state entity skill effect-ctx)]
@@ -796,7 +794,7 @@
       (when (and (pos? free-skill-points)
                  (not (has-skill? @eid skill)))
         (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-        (swap! eid entity/add-skill skill)))))
+        (swap! eid add-skill skill)))))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
