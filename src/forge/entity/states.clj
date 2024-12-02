@@ -4,14 +4,14 @@
             [forge.entity.components :as entity]
             [forge.entity.inventory :as inventory]
             [forge.entity.state :as state]
-            [forge.follow-ai :as follow-ai]
             [forge.item :refer [valid-slot? stackable?]]
             [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as widgets.inventory]
             [forge.ui.player-message :as player-message]
             [forge.ui.modal :as modal]
-            [forge.world :as world :refer [timer stopped? line-of-sight? finished-ratio player-eid mouseover-eid]]))
+            [forge.world :as world :refer [timer stopped? line-of-sight? finished-ratio player-eid mouseover-eid]]
+            [forge.world.potential-fields :as potential-fields]))
 
 (comment
  (def ^:private entity-state
@@ -69,7 +69,7 @@
     (let [effect-ctx (npc-effect-ctx eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
         (entity/event eid :start-action [skill effect-ctx])
-        (entity/event eid :movement-direction (or (follow-ai/direction-vector eid) [0 0]))))))
+        (entity/event eid :movement-direction (or (potential-fields/find-direction eid) [0 0]))))))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; usable skills every frame

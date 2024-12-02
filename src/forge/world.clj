@@ -5,8 +5,41 @@
             [forge.world.raycaster :as raycaster :refer [ray-blocked?]]
             [malli.core :as m]
             [forge.entity :as entity]
-            [forge.world.content-grid :as content-grid]
             [forge.world.grid :as grid]))
+
+(defn- content-grid-create [{:keys [cell-size width height]}]
+  {:grid (grid2d (inc (int (/ width  cell-size))) ; inc because corners
+                 (inc (int (/ height cell-size)))
+                 (fn [idx]
+                   (atom {:idx idx,
+                          :entities #{}})))
+   :cell-w cell-size
+   :cell-h cell-size})
+
+(defn- content-grid-update-entity! [{:keys [grid cell-w cell-h]} eid]
+  (let [{::keys [content-cell] :as entity} @eid
+        [x y] (:position entity)
+        new-cell (get grid [(int (/ x cell-w))
+                            (int (/ y cell-h))])]
+    (when-not (= content-cell new-cell)
+      (swap! new-cell update :entities conj eid)
+      (swap! eid assoc ::content-cell new-cell)
+      (when content-cell
+        (swap! content-cell update :entities disj eid)))))
+
+(defn- content-grid-remove-entity! [eid]
+  (-> @eid
+      ::content-cell
+      (swap! update :entities disj eid)))
+
+(defn- content-grid-active-entities [{:keys [grid]} center-entity]
+  (->> (let [idx (-> center-entity
+                     ::content-cell
+                     deref
+                     :idx)]
+         (cons idx (get-8-neighbour-positions idx)))
+       (keep grid)
+       (mapcat (comp :entities deref))))
 
 (declare tiled-map
          explored-tile-corners
@@ -144,7 +177,7 @@
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (alter-var-root #'ids->eids assoc id eid))
-  (content-grid/update-entity! content-grid eid)
+  (content-grid-update-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (grid/add-entity grid eid))
@@ -153,11 +186,11 @@
   (let [id (:entity/id @eid)]
     (assert (contains? ids->eids id))
     (alter-var-root #'ids->eids dissoc id))
-  (content-grid/remove-entity! eid)
+  (content-grid-remove-entity! eid)
   (grid/remove-entity eid))
 
 (defn position-changed [eid]
-  (content-grid/update-entity! content-grid eid)
+  (content-grid-update-entity! content-grid eid)
   (grid/entity-position-changed grid eid))
 
 (defn all-entities []
@@ -381,7 +414,7 @@
   (raycaster/init grid blocks-vision?)
   (let [width  (tiled/width  tiled-map)
         height (tiled/height tiled-map)]
-    (bind-root #'content-grid (content-grid/create {:cell-size 16  ; FIXME global config
+    (bind-root #'content-grid (content-grid-create {:cell-size 16  ; FIXME global config
                                                     :width  width
                                                     :height height})))
   (bind-root #'tick-error nil)
@@ -393,7 +426,7 @@
     (spawn-enemies tiled-map)))
 
 (defn active-entities []
-  (content-grid/active-entities content-grid @player-eid))
+  (content-grid-active-entities content-grid @player-eid))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
