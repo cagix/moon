@@ -372,7 +372,8 @@
   [bg]
   (.getChecked ^ButtonGroup bg))
 
-(defn tree [] (VisTree.))
+(defn tree []
+  (VisTree.))
 
 (defn t-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))

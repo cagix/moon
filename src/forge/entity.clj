@@ -1,4 +1,4 @@
-(ns forge.entity.impl
+(ns forge.entity
   (:require [forge.controls :as controls]
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
             [forge.entity.state :as state]
