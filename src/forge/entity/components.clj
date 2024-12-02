@@ -1,6 +1,5 @@
 (ns forge.entity.components
   (:require [malli.core :as m]
-            [forge.entity :as entity]
             [forge.entity.state :as state]
             [forge.operations :as ops]
             [forge.ui.action-bar :as action-bar]
@@ -35,9 +34,9 @@
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (entity/->v (if params
-                                                       [new-state-k eid params]
-                                                       [new-state-k eid]))]]
+              new-state-obj [new-state-k (->v (if params
+                                                [new-state-k eid params]
+                                                [new-state-k eid]))]]
           (when (:entity/player? @eid)
             (when-let [cursor (state/cursor new-state-obj)]
               (set-cursor cursor)))

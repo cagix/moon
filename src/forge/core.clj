@@ -1549,3 +1549,27 @@
          (map (partial layer-index tiled-map))
          int-array
          (.render map-renderer))))
+
+(defsystem ->v "Create component value. Default returns v.")
+(defmethod ->v :default [[_ v]] v)
+
+(defsystem e-create [_ eid])
+(defmethod e-create :default [_ eid])
+
+(defsystem e-destroy [_ eid])
+(defmethod e-destroy :default [_ eid])
+
+(defsystem e-tick [_ eid])
+(defmethod e-tick :default [_ eid])
+
+(defsystem render-below [_ entity])
+(defmethod render-below :default [_ entity])
+
+(defsystem render-default [_ entity])
+(defmethod render-default :default [_ entity])
+
+(defsystem render-above [_ entity])
+(defmethod render-above :default [_ entity])
+
+(defsystem render-info [_ entity])
+(defmethod render-info :default [_ entity])

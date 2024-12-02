@@ -1,6 +1,5 @@
 (ns forge.entity.impl
   (:require [forge.controls :as controls]
-            [forge.entity :refer [create destroy ->v tick render-below render-above render-info render]]
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
             [forge.entity.state :as state]
             [forge.item :as item :refer [valid-slot? stackable?]]
@@ -15,11 +14,11 @@
 (comment
  (def ^:private entity
    {:optional [#'->v
-               #'create
-               #'destroy
-               #'tick
+               #'e-create
+               #'e-destroy
+               #'e-tick
                #'render-below
-               #'render
+               #'render-default
                #'render-above
                #'render-info]})
 
@@ -145,7 +144,7 @@
 (defmethod ->v :entity/mana [[_ v]] [v v])
 
 (defmethods :entity/temp-modifier
-  (tick [[k {:keys [modifiers counter]}] eid]
+  (e-tick [[k {:keys [modifiers counter]}] eid]
     (when (stopped? counter)
       (swap! eid dissoc k)
       (swap! eid remove-mods modifiers)))
@@ -155,7 +154,7 @@
     (draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
 
 (defmethods :entity/string-effect
-  (tick [[k {:keys [counter]}] eid]
+  (e-tick [[k {:keys [counter]}] eid]
     (when (stopped? counter)
       (swap! eid dissoc k)))
 
@@ -167,7 +166,7 @@
                   :scale 2
                   :up? true}))))
 
-(defmethod destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
+(defmethod e-destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
   (audiovisual (:position @eid) (build audiovisuals-id)))
 
 (def ^:private shout-radius 4)
@@ -178,7 +177,7 @@
        world/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
-(defmethod tick :entity/alert-friendlies-after-duration
+(defmethod e-tick :entity/alert-friendlies-after-duration
   [[_ {:keys [counter faction]}] eid]
   (when (stopped? counter)
     (swap! eid assoc :entity/destroyed? true)
@@ -189,7 +188,7 @@
   (->v [[_ duration]]
     (timer duration))
 
-  (tick [[_ counter] eid]
+  (e-tick [[_ counter] eid]
     (when (stopped? counter)
       (swap! eid assoc :entity/destroyed? true))))
 
@@ -248,7 +247,7 @@
 (defn- ->init-fsm [fsm initial-state]
   (assoc (fsm initial-state nil) :state initial-state))
 
-(defmethod create :entity/fsm [[k {:keys [fsm initial-state]}] eid]
+(defmethod e-create :entity/fsm [[k {:keys [fsm initial-state]}] eid]
   (swap! eid assoc
          k (->init-fsm (case fsm
                          :fsms/player player-fsm
@@ -260,7 +259,7 @@
   (->v [[_ v]]
     (assoc v :already-hit-bodies #{}))
 
-  (tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
+  (e-tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
     ; TODO this could be called from body on collision
     ; for non-solid
     ; means non colliding with other entities
@@ -318,7 +317,7 @@
         (try-move body (assoc movement :direction [xdir 0]))
         (try-move body (assoc movement :direction [0 ydir])))))
 
-(defmethod tick :entity/movement
+(defmethod e-tick :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
    eid]
   (assert (m/validate world/speed-schema speed)
@@ -342,23 +341,23 @@
           (swap! eid assoc :rotation-angle (v-angle-from-vector direction)))))))
 
 (defmethods :entity/skills
-  (create [[k skills] eid]
+  (e-create [[k skills] eid]
     (swap! eid assoc k nil)
     (doseq [skill skills]
       (swap! eid add-skill skill)))
 
-  (tick [[k skills] eid]
+  (e-tick [[k skills] eid]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
             :when (and cooling-down?
                        (stopped? cooling-down?))]
       (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false))))
 
-(defmethod create :entity/inventory [[k items] eid]
+(defmethod e-create :entity/inventory [[k items] eid]
   (swap! eid assoc k item/empty-inventory)
   (doseq [item items]
     (pickup-item eid item)))
 
-(defmethod render :entity/clickable [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
+(defmethod render-default :entity/clickable [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
       (draw-text {:text text
@@ -366,14 +365,14 @@
                   :y (+ y (:half-height entity))
                   :up? true}))))
 
-(defmethod render :entity/line-render [[_ {:keys [thick? end color]}] entity]
+(defmethod render-default :entity/line-render [[_ {:keys [thick? end color]}] entity]
   (let [position (:position entity)]
     (if thick?
       (with-line-width 4
         #(draw-line position end color))
       (draw-line position end color))))
 
-(defmethod render :entity/image [[_ image] entity]
+(defmethod render-default :entity/image [[_ image] entity]
   (draw-rotated-centered image
                          (or (:rotation-angle entity) 0)
                          (:position entity)))
@@ -438,19 +437,19 @@
   (assoc entity :entity/image (current-frame animation)))
 
 (defmethods :entity/animation
-  (create [[_ animation] eid]
+  (e-create [[_ animation] eid]
     (swap! eid assoc-image-current-frame animation))
 
-  (tick [[k animation] eid]
+  (e-tick [[k animation] eid]
     (swap! eid #(-> %
                     (assoc-image-current-frame animation)
                     (assoc k (animation-tick animation world/delta))))))
 
 (defmethods :entity/delete-after-animation-stopped
-  (create  [_ eid]
+  (e-create  [_ eid]
     (-> @eid :entity/animation :looping? not assert))
 
-  (tick [_ eid]
+  (e-tick [_ eid]
     (when (animation-stopped? (:entity/animation @eid))
       (swap! eid assoc :entity/destroyed? true))))
 
@@ -493,7 +492,7 @@
   (->v [[_ eid]]
     {:eid eid})
 
-  (tick [_ eid]
+  (e-tick [_ eid]
     (let [effect-ctx (npc-effect-ctx eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
         (entity/event eid :start-action [skill effect-ctx])
@@ -515,7 +514,7 @@
   (state/exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
-  (tick [[_ {:keys [counter]}] eid]
+  (e-tick [[_ {:keys [counter]}] eid]
     (when (stopped? counter)
       (entity/event eid :timer-finished))))
 
@@ -527,7 +526,7 @@
     (world/shout (:position @eid) (:entity/faction @eid) 0.2)
     (swap! eid entity/add-text-effect "[WHITE]!"))
 
-  (tick [_ eid]
+  (e-tick [_ eid]
     (let [entity @eid
           cell (world/cell (entity/tile entity))] ; pattern!
       (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
@@ -566,7 +565,7 @@
   (state/pause-game? [_]
     false)
 
-  (tick [[_ {:keys [counter]}] eid]
+  (e-tick [[_ {:keys [counter]}] eid]
     (when (stopped? counter)
       (entity/event eid :effect-wears-off)))
 
@@ -591,7 +590,7 @@
   (state/exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
-  (tick [[_ {:keys [movement-vector]}] eid]
+  (e-tick [[_ {:keys [movement-vector]}] eid]
     (if-let [movement-vector (controls/movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
@@ -651,7 +650,7 @@
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill))))
 
-  (tick [[_ {:keys [skill effect-ctx counter]}] eid]
+  (e-tick [[_ {:keys [skill effect-ctx counter]}] eid]
     (cond
      (not (effects-applicable? (check-update-ctx effect-ctx)
                                (:skill/effects skill)))

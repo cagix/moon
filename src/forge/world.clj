@@ -2,7 +2,6 @@
   (:require [data.grid2d :as g2d]
             [forge.graphics.camera :as cam]
             [forge.level :as level]
-            [forge.entity :as entity]
             [malli.core :as m])
   (:import (forge RayCaster)))
 
@@ -397,9 +396,9 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (entity/tick [k v] eid))
+            (e-tick [k v] eid))
           (catch Throwable t
-            (throw (ex-info "entity/tick" {:k k} t)))))
+            (throw (ex-info "e-tick" {:k k} t)))))
    (catch Throwable t
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
 
@@ -433,7 +432,7 @@
   (doseq [eid (filter (comp :entity/destroyed? deref) (all-entities))]
     (remove-from-world eid)
     (doseq [component @eid]
-      (entity/destroy component eid))))
+      (e-destroy component eid))))
 
 (let [cnt (atom 0)]
   (defn- unique-number! []
@@ -441,7 +440,7 @@
 
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
-            (assoc m k (entity/->v [k v])))
+            (assoc m k (->v [k v])))
           {}
           components))
 
@@ -518,7 +517,7 @@
                                       (create-vs)))))]
     (add-to-world eid)
     (doseq [component @eid]
-      (entity/create component eid))
+      (e-create component eid))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
@@ -695,10 +694,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [entity/render-below
-                    entity/render
-                    entity/render-above
-                    entity/render-info]
+            system [render-below
+                    render-default
+                    render-above
+                    render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? player entity))]
