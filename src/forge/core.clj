@@ -17,6 +17,7 @@
         '(com.badlogic.gdx.audio Sound)
         '(com.badlogic.gdx.graphics Color Pixmap)
         '(com.badlogic.gdx.scenes.scene2d Actor Stage)
+        '(com.badlogic.gdx.maps.tiled TmxMapLoader)
         '(com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils))
 
@@ -792,3 +793,8 @@
     (/ v mx)))
 
 (declare start-world)
+
+(defn load-tmx-map
+  "Has to be disposed."
+  [file]
+  (.load (TmxMapLoader.) file))

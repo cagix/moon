@@ -150,6 +150,6 @@ direction keys: move")
 (defn create [_]
   {:actors [(->generate-map-window world-id)
             (->info-window)]
-   :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)
+   :screen (->MapEditorScreen (atom {:tiled-map (load-tmx-map modules/file)
                                      :show-movement-properties false
                                      :show-grid-lines false}))})

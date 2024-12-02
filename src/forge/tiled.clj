@@ -2,13 +2,8 @@
   (:refer-clojure :exclude [visible?])
   (:import com.badlogic.gdx.graphics.g2d.TextureRegion
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
-           (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
+           (com.badlogic.gdx.maps.tiled TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile))
-
-(defn load-map
-  "Has to be disposed."
-  [file]
-  (.load (TmxMapLoader.) file))
 
 (defprotocol HasProperties
   (m-props ^MapProperties [_] "Returns instance of com.badlogic.gdx.maps.MapProperties")
