@@ -1,9 +1,5 @@
 (ns forge.start
   (:require [forge.graphics :as g]
-            [forge.screens.editor :as editor]
-            [forge.screens.map-editor :as map-editor]
-            [forge.screens.minimap :as minimap]
-            [forge.screens.world :as world]
             [forge.screen :as screen]
             [forge.stage :as stage]
             [forge.ui :as ui])
@@ -26,34 +22,6 @@
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))
-
-(defn- main-screen []
-  {:actors [(background-image)
-            (ui/table
-             {:rows
-              (remove nil?
-                      (concat
-                       (for [world (build-all :properties/worlds)]
-                         [(ui/text-button (str "Start " (:property/id world))
-                                          #(world/start world))])
-                       [(when dev-mode?
-                          [(ui/text-button "Map editor"
-                                           #(change-screen :screens/map-editor))])
-                        (when dev-mode?
-                          [(ui/text-button "Property editor"
-                                           #(change-screen :screens/editor))])
-                        [(ui/text-button "Exit" exit-app)]]))
-              :cell-defaults {:pad-bottom 25}
-              :fill-parent? true})
-            (ui/actor {:act (fn []
-                              (when (key-just-pressed? :keys/escape)
-                                (exit-app)))})]
-   :screen (reify screen/Screen
-             (enter [_]
-               (g/set-cursor :cursors/default))
-             (exit [_])
-             (render [_])
-             (destroy [_]))})
 
 (def tile-size 48)
 
@@ -109,6 +77,15 @@
     (dispose pixmap)
     texture))
 
+(defn- create-screens [screen-ks]
+  (mapvals stage/create
+           (mapvals
+            (fn [ns-sym]
+              (require ns-sym)
+              (let [create-fn (ns-resolve ns-sym 'create)]
+                (create-fn (background-image))))
+            screen-ks)))
+
 (defn -main []
   (let [{:keys [dock-icon
                 lwjgl3
@@ -117,7 +94,9 @@
                 assets
                 cursors
                 ui
-                requires]} (-> config io-resource slurp edn-read-string)]
+                requires
+                screen-ks
+                first-screen-k]} (-> config io-resource slurp edn-read-string)]
     (run! require requires)
     (bind-root #'db-schemas (-> schema io-resource slurp edn-read-string))
     (bind-root #'db-properties-file (io-resource properties))
@@ -158,13 +137,8 @@
                                                    (OrthographicCamera.)))
          (bind-root #'g/cursors (mapvals gdx-cursor cursors))
          (ui/init ui)
-         (bind-root #'screens (mapvals stage/create
-                                       {:screens/main-menu  (main-screen)
-                                        :screens/map-editor (map-editor/create)
-                                        :screens/editor     (editor/screen (background-image))
-                                        :screens/minimap    (minimap/create)
-                                        :screens/world      (world/screen)}))
-         (change-screen :screens/main-menu))
+         (bind-root #'screens (create-screens screen-ks))
+         (change-screen first-screen-k))
 
        (dispose []
          (dispose asset-manager)

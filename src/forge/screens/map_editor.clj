@@ -147,7 +147,7 @@ direction keys: move")
   (destroy [_]
     (dispose (:tiled-map @current-data))))
 
-(defn create []
+(defn create [_]
   {:actors [(->generate-map-window world-id)
             (->info-window)]
    :screen (->MapEditorScreen (atom {:tiled-map (t/load-map modules/file)

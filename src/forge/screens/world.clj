@@ -384,5 +384,5 @@
   (destroy [_]
     (world/clear)))
 
-(defn screen []
+(defn create [_]
   {:screen (->WorldScreen)})

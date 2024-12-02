@@ -54,7 +54,7 @@
 
      :else stype)))
 
-(defmulti create   widget-type)
+(defmulti schema->widget   widget-type)
 (defmulti ->value  widget-type)
 
 (defn- scroll-pane-cell [rows]
@@ -94,7 +94,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        widget (create schema props)
+        widget (schema->widget schema props)
         save!   (apply-context-fn window #(db-update! (->value schema widget)))
         delete! (apply-context-fn window #(db-delete! (:property/id props)))]
     (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
@@ -108,34 +108,34 @@
     (.pack window)
     window))
 
-(defmethod create :default [_ v]
+(defmethod schema->widget :default [_ v]
   (ui/label (truncate (->edn-str v) 60)))
 
 (defmethod ->value :default [_ widget]
   ((Actor/.getUserObject widget) 1))
 
-(defmethod create :widget/edn [schema v]
+(defmethod schema->widget :widget/edn [schema v]
   (ui/add-tooltip! (ui/text-field (->edn-str v) {})
                    (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
   (edn-read-string (VisTextField/.getText widget)))
 
-(defmethod create :string [schema v]
+(defmethod schema->widget :string [schema v]
   (ui/add-tooltip! (ui/text-field v {})
                    (str schema)))
 
 (defmethod ->value :string [_ widget]
   (VisTextField/.getText widget))
 
-(defmethod create :boolean [_ checked?]
+(defmethod schema->widget :boolean [_ checked?]
   (assert (boolean? checked?))
   (ui/check-box "" (fn [_]) checked?))
 
 (defmethod ->value :boolean [_ widget]
   (VisCheckBox/.isChecked widget))
 
-(defmethod create :enum [schema v]
+(defmethod schema->widget :enum [schema v]
   (ui/select-box {:items (map ->edn-str (rest schema))
                   :selected (->edn-str v)}))
 
@@ -170,7 +170,7 @@
   [(ui/text-button (name sound-file) #(choose-window table))
    (play-button sound-file)])
 
-(defmethod create :s/sound [_ sound-file]
+(defmethod schema->widget :s/sound [_ sound-file]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (ui/add-rows! table [(if sound-file
                            (columns table sound-file)
@@ -253,7 +253,7 @@
       (for [id property-ids]
         (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
 
-(defmethod create :s/one-to-many [[_ property-type] property-ids]
+(defmethod schema->widget :s/one-to-many [[_ property-type] property-ids]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows table property-type property-ids)
     table))
@@ -292,7 +292,7 @@
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))
 
-(defmethod create :s/one-to-one [[_ property-type] property-id]
+(defmethod schema->widget :s/one-to-one [[_ property-type] property-id]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows table property-type property-id)
     table))
@@ -318,7 +318,7 @@
     (add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (create (schema-of k) v)]
+  (let [widget (schema->widget (schema-of k) v)]
     (.setUserObject widget [k v])
     widget))
 
@@ -402,7 +402,7 @@
 (defn- component-order [[k _v]]
   (or (index-of k property-k-sort-order) 99))
 
-(defmethod create :s/map [schema m]
+(defmethod schema->widget :s/map [schema m]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
@@ -433,7 +433,7 @@
     [(ui/image-button (image file) (fn []))]
     #_[(ui/text-button file (fn []))]))
 
-(defmethod create :s/image [schema image]
+(defmethod schema->widget :s/image [schema image]
   (ui/image-button (edn->value schema image)
                    (fn on-clicked [])
                    {:scale 2})
@@ -441,7 +441,7 @@
                      #(stage/add! (scrollable-choose-window (texture-rows)))
                      {:dimensions [96 96]})) ; x2  , not hardcoded here
 
-(defmethod create :s/animation [_ animation]
+(defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
                       (ui/image-button (edn->value :s/image image)
                                        (fn on-clicked [])
@@ -481,7 +481,7 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn screen [background-image]
+(defn create [background-image]
   {:actors [background-image
             (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
             (ui/actor {:act (fn []

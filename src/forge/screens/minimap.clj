@@ -52,5 +52,5 @@
 
   (destroy [_]))
 
-(defn create []
+(defn create [_]
   {:screen (->Minimap)})
