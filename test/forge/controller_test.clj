@@ -4,9 +4,7 @@
 ; https://github.com/libgdx/gdx-controllers/blob/master/gdx-controllers-core/src/com/badlogic/gdx/controllers/ControllerMapping.java
 
 #_(ns forge.controller-test
-  (:require [forge.graphics :as app]
-            [forge.graphics :refer [clear-screen]]
-            [forge.graphics.text :as text]
+  (:require [forge.graphics.text :as text]
             [forge.graphics :refer [batch draw-text shape-drawer]])
   (:import (com.badlogic.gdx.controllers Controllers)))
 
