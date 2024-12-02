@@ -1,6 +1,5 @@
 (ns forge.effects
-  (:require [forge.core :refer :all]
-            [forge.entity.components :as entity]))
+  (:require [forge.core :refer :all]))
 
 (comment
 
@@ -46,14 +45,14 @@
   (applicable? [_ {:keys [effect/source effect/target]}]
     (and target
          (= (:entity/faction @target)
-            (entity/enemy @source))))
+            (e-enemy @source))))
 
   (handle [_ {:keys [effect/source effect/target]}]
     (swap! target assoc :entity/faction (:entity/faction @source))))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (entity/stat target* :entity/armor-save) 0)
-          (or (entity/stat source* :entity/armor-pierce) 0))
+  (max (- (or (e-stat target* :entity/armor-save) 0)
+          (or (e-stat source* :entity/armor-pierce) 0))
        0))
 
 (comment
@@ -74,22 +73,22 @@
   (handle [[_ damage] {:keys [effect/source effect/target]}]
     (let [source* @source
           target* @target
-          hp (entity/hitpoints target*)]
+          hp (hitpoints target*)]
       (cond
        (zero? (hp 0))
        nil
 
        (armor-saves? source* target*)
-       (swap! target entity/add-text-effect "[WHITE]ARMOR")
+       (swap! target add-text-effect "[WHITE]ARMOR")
 
        :else
-       (let [min-max (:damage/min-max (entity/damage-mods source* target* damage))
+       (let [min-max (:damage/min-max (damage-mods source* target* damage))
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (spawn-audiovisual (:position target*) (build :audiovisuals/damage))
-         (entity/event target (if (zero? new-hp-val) :kill :alert))
-         (swap! target entity/add-text-effect (str "[RED]" dmg-amount "[]")))))))
+         (send-event target (if (zero? new-hp-val) :kill :alert))
+         (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))
 
 (defmethods :effects.target/kill
   (applicable? [_ {:keys [effect/target]}]
@@ -97,10 +96,10 @@
          (:entity/fsm @target)))
 
   (handle [_ {:keys [effect/target]}]
-    (entity/event target :kill)))
+    (send-event target :kill)))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (entity/stat entity :entity/strength) 0)]
+  (let [strength (or (e-stat entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defmethods :effects.target/melee-damage
@@ -122,7 +121,7 @@
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                    :counter (timer duration)})
-        (swap! target entity/add-mods modifiers)))))
+        (swap! target add-mods modifiers)))))
 
 (defmethods :effects.target/stun
   (applicable? [_ {:keys [effect/target]}]
@@ -130,7 +129,7 @@
          (:entity/fsm @target)))
 
   (handle [[_ duration] {:keys [effect/target]}]
-    (entity/event target :stun duration)))
+    (send-event target :stun duration)))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v-distance (:position entity)
@@ -142,12 +141,12 @@
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
   (v-add (:position entity)
-         (v-scale (entity/direction entity target*)
+         (v-scale (e-direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
   (v-add (start-point entity target*)
-         (v-scale (entity/direction entity target*)
+         (v-scale (e-direction entity target*)
                   maxrange)))
 
 (defmethods :effects/target-entity

@@ -1,7 +1,6 @@
 (ns forge.ui.inventory
   (:require [data.grid2d :as g2d]
-            [forge.core :refer :all]
-            [forge.entity.components :as entity])
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 ; Items are also smaller than 48x48 all of them
@@ -15,7 +14,7 @@
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
   (draw-rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
-             (= :player-item-on-cursor (entity/state-k player-entity)))
+             (= :player-item-on-cursor (e-state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
@@ -70,7 +69,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
-                               (clicked-inventory-cell (entity/state-obj @player-eid) cell))))
+                               (clicked-inventory-cell (e-state-obj @player-eid) cell))))
     stack))
 
 (def empty-inventory

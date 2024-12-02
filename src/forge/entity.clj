@@ -1,7 +1,7 @@
 (ns forge.entity
   (:require [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
+            [forge.entity.components :as entity]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]
@@ -45,7 +45,7 @@
       (inventory/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
-      (swap! eid entity/add-mods (:entity/modifiers item)))))
+      (swap! eid add-mods (:entity/modifiers item)))))
 
 (defn remove-item [eid cell]
   (let [entity @eid
@@ -55,7 +55,7 @@
       (inventory/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
-      (swap! eid entity/remove-mods (:entity/modifiers item)))))
+      (swap! eid remove-mods (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]
@@ -179,7 +179,7 @@
   (when (stopped? counter)
     (swap! eid assoc :entity/destroyed? true)
     (doseq [friendly-eid (friendlies-in-radius (:position @eid) faction)]
-      (event friendly-eid :alert))))
+      (send-event friendly-eid :alert))))
 
 (defmethods :entity/delete-after-duration
   (->v [[_ duration]]
@@ -267,7 +267,7 @@
                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                              (:entity/faction @%))
                                        (:collides? @%)
-                                       (collides? entity @%))
+                                       (e-collides? entity @%))
                                  (cells->entities cells*))
           destroy? (or (and hit-entity (not piercing?))
                        (some #(cell-blocked? % (:z-order entity)) cells*))]
@@ -296,7 +296,7 @@
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
                                  (:collides? other-entity)
-                                 (collides? other-entity body)))))))))
+                                 (e-collides? other-entity body)))))))))
 
 (defn- try-move [body movement]
   (let [new-body (move-body body movement)]
@@ -341,7 +341,7 @@
   (e-create [[k skills] eid]
     (swap! eid assoc k nil)
     (doseq [skill skills]
-      (swap! eid add-skill skill)))
+      (swap! eid entity/add-skill skill)))
 
   (e-tick [[k skills] eid]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
@@ -385,7 +385,7 @@
       #(draw-ellipse (:position entity)
                      (:half-width entity)
                      (:half-height entity)
-                     (cond (= faction (enemy player))
+                     (cond (= faction (e-enemy player))
                            enemy-color
                            (= faction (:entity/faction player))
                            friendly-color
@@ -457,8 +457,8 @@
   (swap! eid assoc :entity/destroyed? true))
 
 (defn- nearest-enemy [entity]
-  (nearest-entity @(get world-grid (entity/tile entity))
-                  (entity/enemy entity)))
+  (nearest-entity @(get world-grid (e-tile entity))
+                  (e-enemy entity)))
 
 (defn- npc-effect-ctx [eid]
   (let [entity @eid
@@ -467,7 +467,7 @@
                  target)]
     {:effect/source eid
      :effect/target target
-     :effect/target-direction (when target (entity/direction entity @target))}))
+     :effect/target-direction (when target (e-direction entity @target))}))
 
 (comment
  (let [eid (ids->eids 76)
@@ -481,7 +481,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
+       (filter #(and (= :usable (skill-usable-state entity % ctx))
                      (effects-useful? ctx (:skill/effects %))))
        first))
 
@@ -492,8 +492,8 @@
   (e-tick [_ eid]
     (let [effect-ctx (npc-effect-ctx eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
-        (entity/event eid :start-action [skill effect-ctx])
-        (entity/event eid :movement-direction (or (potential-fields/find-direction eid) [0 0]))))))
+        (send-event eid :start-action [skill effect-ctx])
+        (send-event eid :movement-direction (or (potential-fields/find-direction eid) [0 0]))))))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; usable skills every frame
@@ -502,18 +502,18 @@
   (->v [[_ eid movement-vector]]
     {:eid eid
      :movement-vector movement-vector
-     :counter (timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
+     :counter (timer (* (e-stat @eid :entity/reaction-time) 0.016))})
 
   (state-enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
+                                       :speed (or (e-stat @eid :entity/movement-speed) 0)}))
 
   (state-exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
   (e-tick [[_ {:keys [counter]}] eid]
     (when (stopped? counter)
-      (entity/event eid :timer-finished))))
+      (send-event eid :timer-finished))))
 
 (defmethods :npc-sleeping
   (->v [[_ eid]]
@@ -521,14 +521,14 @@
 
   (state-exit [[_ {:keys [eid]}]]
     (delayed-alert (:position @eid) (:entity/faction @eid) 0.2)
-    (swap! eid entity/add-text-effect "[WHITE]!"))
+    (swap! eid add-text-effect "[WHITE]!"))
 
   (e-tick [_ eid]
     (let [entity @eid
-          cell (get world-grid (entity/tile entity))] ; pattern!
-      (when-let [distance (nearest-entity-distance @cell (entity/enemy entity))]
-        (when (<= distance (entity/stat entity :entity/aggro-range))
-          (entity/event eid :alert)))))
+          cell (get world-grid (e-tile entity))] ; pattern!
+      (when-let [distance (nearest-entity-distance @cell (e-enemy entity))]
+        (when (<= distance (e-stat entity :entity/aggro-range))
+          (send-event eid :alert)))))
 
   (render-above [_ entity]
     (let [[x y] (:position entity)]
@@ -564,7 +564,7 @@
 
   (e-tick [[_ {:keys [counter]}] eid]
     (when (stopped? counter)
-      (entity/event eid :effect-wears-off)))
+      (send-event eid :effect-wears-off)))
 
   (render-below [_ entity]
     (draw-circle (:position entity) 0.5 [1 1 1 0.6])))
@@ -582,7 +582,7 @@
 
   (state-enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (entity/stat @eid :entity/movement-speed)}))
+                                       :speed (e-stat @eid :entity/movement-speed)}))
 
   (state-exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
@@ -590,12 +590,12 @@
   (e-tick [[_ {:keys [movement-vector]}] eid]
     (if-let [movement-vector (controls/movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
-                                         :speed (entity/stat @eid :entity/movement-speed)})
-      (entity/event eid :no-movement-input))))
+                                         :speed (e-stat @eid :entity/movement-speed)})
+      (send-event eid :no-movement-input))))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (entity/stat entity (:skill/action-time-modifier-key skill))
+     (or (e-stat entity (:skill/action-time-modifier-key skill))
          1)))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
@@ -645,21 +645,21 @@
              (timer (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
-      (swap! eid entity/pay-mana-cost (:skill/cost skill))))
+      (swap! eid pay-mana-cost (:skill/cost skill))))
 
   (e-tick [[_ {:keys [skill effect-ctx counter]}] eid]
     (cond
      (not (effects-applicable? (check-update-ctx effect-ctx)
                                (:skill/effects skill)))
      (do
-      (entity/event eid :action-done)
+      (send-event eid :action-done)
       ; TODO some sound ?
       )
 
      (stopped? counter)
      (do
       (effects-do! effect-ctx (:skill/effects skill))
-      (entity/event eid :action-done))))
+      (send-event eid :action-done))))
 
   (render-info [[_ {:keys [skill effect-ctx counter]}] entity]
     (let [{:keys [entity/image skill/effects]} skill]
@@ -681,7 +681,7 @@
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/event player-eid :pickup-item item))
+      (send-event player-eid :pickup-item item))
 
      (can-pickup-item? @player-eid item)
      (do
@@ -746,14 +746,14 @@
      (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
-             state (entity/skill-usable-state entity skill effect-ctx)]
+             state (skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
             ; different color ?
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
-             (fn [] (entity/event eid :start-action [skill effect-ctx]))])
+             (fn [] (send-event eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -777,7 +777,7 @@
 
   (manual-tick [[_ {:keys [eid]}]]
     (if-let [movement-vector (controls/movement-vector)]
-      (entity/event eid :movement-input movement-vector)
+      (send-event eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
         (set-cursor cursor)
         (when (button-just-pressed? :left)
@@ -787,14 +787,14 @@
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (play-sound "bfxr_takeit")
-      (entity/event eid :pickup-item item)
+      (send-event eid :pickup-item item)
       (remove-item eid cell)))
 
   (clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
     (let [free-skill-points (:entity/free-skill-points @eid)]
       ; TODO no else case, no visible free-skill-points
       (when (and (pos? free-skill-points)
-                 (not (entity/has-skill? @eid skill)))
+                 (not (has-skill? @eid skill)))
         (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
         (swap! eid entity/add-skill skill)))))
 
@@ -811,7 +811,7 @@
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item))
+      (send-event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -820,7 +820,7 @@
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item))
+      (send-event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -832,8 +832,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (remove-item eid cell)
       (set-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item)
-      (entity/event eid :pickup-item item-in-cell)))))
+      (send-event eid :dropped-item)
+      (send-event eid :pickup-item item-in-cell)))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -865,7 +865,7 @@
   (manual-tick [[_ {:keys [eid]}]]
     (when (and (button-just-pressed? :left)
                (world-item?))
-      (entity/event eid :drop-item)))
+      (send-event eid :drop-item)))
 
   (clicked-inventory-cell [[_ {:keys [eid]}] cell]
     (clicked-cell eid cell))
@@ -889,7 +889,7 @@
 
   (draw-gui-view [[_ {:keys [eid]}]]
     (let [entity @eid]
-      (when (and (= :player-item-on-cursor (entity/state-k entity))
+      (when (and (= :player-item-on-cursor (e-state-k entity))
                  (not (world-item?)))
         (draw-centered (:entity/image (:entity/item-on-cursor entity))
                        (gui-mouse-position)))))

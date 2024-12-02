@@ -1,7 +1,6 @@
 (ns forge.screens.world
   (:require [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.entity.components :as entity]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
@@ -30,8 +29,8 @@
     (ui-actor {:draw (fn []
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (entity/mana player-entity) "MP")))})))
+                         (render-hpmana-bar x y-hp   hpcontent   (hitpoints   player-entity) "HP")
+                         (render-hpmana-bar x y-mana manacontent (e-mana player-entity) "MP")))})))
 
 (defn- menu-item [text on-clicked]
   (doto (MenuItem. text)
@@ -272,7 +271,7 @@
    (ui-group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(draw-gui-view (entity/state-obj @player-eid))})
+   (ui-actor {:draw #(draw-gui-view (e-state-obj @player-eid))})
    (player-message-actor)])
 
 (defn- windows []
@@ -319,11 +318,11 @@
     (bind-root #'mouseover-eid new-eid)))
 
 (defn- update-world []
-  (manual-tick (entity/state-obj @player-eid))
+  (manual-tick (e-state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root #'paused? (or tick-error
                            (and pausing?
-                                (pause-game? (entity/state-obj @player-eid))
+                                (pause-game? (e-state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
     (let [delta-ms (min (delta-time) max-delta-time)]

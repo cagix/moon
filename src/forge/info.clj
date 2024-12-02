@@ -1,8 +1,7 @@
 (ns forge.info
   (:require [clojure.string :as str]
             [clojure.math :as math]
-            [forge.core :refer :all]
-            [forge.entity.components :refer [damage-mods hitpoints mana stat]]))
+            [forge.core :refer :all]))
 
 (add-color "PRETTY_NAME" [0.84 0.8 0.52])
 
@@ -91,10 +90,10 @@
   (str "State: " (name (:state fsm))))
 
 (defmethod component-info :entity/hp [_]
-  (str "Hitpoints: " (hitpoints *info-entity*)))
+  (str "Hitpoints: " (hitpoints *info-text-entity*)))
 
 (defmethod component-info :entity/mana [_]
-  (str "Mana: " (mana *info-entity*)))
+  (str "Mana: " (e-mana *info-text-entity*)))
 
 (defn- +? [n]
   (case (math/signum n)
@@ -160,7 +159,7 @@
     (str "Cost: " v " Mana")))
 
 (defmethod component-info ::stat [[k _]]
-  (str (k->pretty-name k) ": " (stat *info-entity* k)))
+  (str (k->pretty-name k) ": " (e-stat *info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)

@@ -1,6 +1,5 @@
 (ns forge.world.potential-fields
-  (:require [forge.core :refer :all]
-            [forge.entity.components :as entity]))
+  (:require [forge.core :refer :all]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})
@@ -50,7 +49,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(entity/tile @%) entities)
+            (zipmap (map #(e-tile @%) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -124,7 +123,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(entity/tile @%) entities)
+    (zipmap (map #(e-tile @%) entities)
             entities)))
 
 (defn- update-faction-potential-field [faction entities max-iterations]
@@ -190,7 +189,7 @@
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [eid own-cell]
-  (let [faction (entity/enemy @eid)
+  (let [faction (e-enemy @eid)
         distance-to    #(nearest-entity-distance @% faction)
         nearest-entity #(nearest-entity          @% faction)
         own-dist (distance-to own-cell)
