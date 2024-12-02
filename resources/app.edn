@@ -33,4 +33,6 @@
              :screens/editor     forge.screens.editor
              :screens/minimap    forge.screens.minimap
              :screens/world      forge.screens.world}
- :first-screen-k :screens/main-menu}
+ :first-screen-k :screens/main-menu
+ :tile-size 48
+ }

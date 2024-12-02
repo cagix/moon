@@ -4,11 +4,12 @@
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
            (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)))
 
 (defn toggle-visible! [^Actor actor]
-  (.setVisible actor (not (visible? actor))))
+  (.setVisible actor (not (.isVisible actor))))
 
 (defn set-center [^Actor actor x y]
   (.setPosition actor
@@ -169,7 +170,7 @@
                       (when-not text?
                         (.setText this (str (tooltip-text))))
                       (proxy-super getWidth))))]
-    (.setAlignment label (gdx-align :center))
+    (.setAlignment label Align/center)
     (.setTarget  tooltip ^Actor a)
     (.setContent tooltip ^Actor label))
   a)
@@ -263,9 +264,9 @@
   [object {:keys [scaling align fill-parent?] :as opts}]
   (-> (let [^Image image (->vis-image object)]
         (when (= :center align)
-          (.setAlign image (gdx-align :center)))
+          (.setAlign image Align/center))
         (when (= :fill scaling)
-          (.setScaling image (gdx-scaling :fill)))
+          (.setScaling image Scaling/fill))
         (when fill-parent?
           (.setFillParent image true))
         image)
