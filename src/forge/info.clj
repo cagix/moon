@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.math :as math]
             [forge.entity.components :refer [damage-mods hitpoints mana stat]]
-            [forge.operation :as op]
+            [forge.operations :refer [op-order]]
             [forge.world :refer [finished-ratio]]))
 
 (add-color "PRETTY_NAME" [0.84 0.8 0.52])
@@ -117,7 +117,7 @@
              (fn [{v 1 :as op}]
                (when-not (zero? v)
                  (str (+? v) (op-value-text op) " " (k->pretty-name k))))
-             (sort-by op/order ops))))
+             (sort-by op-order ops))))
 
 (defmethod component-info :entity/modifiers [[_ mods]]
   (when (seq mods)

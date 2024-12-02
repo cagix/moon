@@ -2,12 +2,11 @@
   (:require [forge.controls :as controls]
             [forge.entity :refer [create destroy ->v tick render-below render-above render-info render]]
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
-            [forge.entity.inventory :as inventory]
             [forge.entity.state :as state]
             [forge.item :as item :refer [valid-slot? stackable?]]
             [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
-            [forge.ui.inventory :as widgets.inventory]
+            [forge.ui.inventory :as inventory]
             [forge.world :as world :refer [audiovisual timer stopped? player-eid line-of-sight? finished-ratio mouseover-eid]]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
@@ -36,6 +35,72 @@
                            #'state/clicked-skillmenu-skill
                            #'state/draw-gui-view]}))
  )
+
+
+(defn- applies-modifiers? [[slot _]]
+  (not= :inventory.slot/bag slot))
+
+(defn set-item [eid cell item]
+  (let [entity @eid
+        inventory (:entity/inventory entity)]
+    (assert (and (nil? (get-in inventory cell))
+                 (item/valid-slot? cell item)))
+    (when (:entity/player? entity)
+      (inventory/set-item-image-in-widget cell item))
+    (swap! eid assoc-in (cons :entity/inventory cell) item)
+    (when (applies-modifiers? cell)
+      (swap! eid entity/add-mods (:entity/modifiers item)))))
+
+(defn remove-item [eid cell]
+  (let [entity @eid
+        item (get-in (:entity/inventory entity) cell)]
+    (assert item)
+    (when (:entity/player? entity)
+      (inventory/remove-item-from-widget cell))
+    (swap! eid assoc-in (cons :entity/inventory cell) nil)
+    (when (applies-modifiers? cell)
+      (swap! eid entity/remove-mods (:entity/modifiers item)))))
+
+; TODO doesnt exist, stackable, usable items with action/skillbar thingy
+#_(defn remove-one-item [eid cell]
+  (let [item (get-in (:entity/inventory @eid) cell)]
+    (if (and (:count item)
+             (> (:count item) 1))
+      (do
+       ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
+       ; first remove and then place, just update directly  item ...
+       (remove-item! eid cell)
+       (set-item! eid cell (update item :count dec)))
+      (remove-item! eid cell))))
+
+; TODO no items which stack are available
+(defn stack-item [eid cell item]
+  (let [cell-item (get-in (:entity/inventory @eid) cell)]
+    (assert (item/stackable? item cell-item))
+    ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
+    ; first remove and then place, just update directly  item ...
+    (concat (remove-item eid cell)
+            (set-item eid cell (update cell-item :count + (:count item))))))
+
+(defn- free-cell [inventory slot item]
+  (find-first (fn [[_cell cell-item]]
+                (or (item/stackable? item cell-item)
+                    (nil? cell-item)))
+              (item/cells-and-items inventory slot)))
+
+(defn can-pickup-item? [{:keys [entity/inventory]} item]
+  (or
+   (free-cell inventory (:item/slot item)   item)
+   (free-cell inventory :inventory.slot/bag item)))
+
+(defn pickup-item [eid item]
+  (let [[cell cell-item] (can-pickup-item? @eid item)]
+    (assert cell)
+    (assert (or (item/stackable? item cell-item)
+                (nil? cell-item)))
+    (if (item/stackable? item cell-item)
+      (stack-item eid cell item)
+      (set-item   eid cell item))))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
@@ -291,7 +356,7 @@
 (defmethod create :entity/inventory [[k items] eid]
   (swap! eid assoc k item/empty-inventory)
   (doseq [item items]
-    (inventory/pickup-item eid item)))
+    (pickup-item eid item)))
 
 (defmethod render :entity/clickable [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
@@ -616,17 +681,17 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (visible? (widgets.inventory/window))
+     (visible? (inventory/window))
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
       (entity/event player-eid :pickup-item item))
 
-     (inventory/can-pickup-item? @player-eid item)
+     (can-pickup-item? @player-eid item)
      (do
       (play-sound "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (inventory/pickup-item player-eid item))
+      (pickup-item player-eid item))
 
      :else
      (do
@@ -634,7 +699,7 @@
       (player-message-show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (ui/toggle-visible! (widgets.inventory/window)))
+  (ui/toggle-visible! (inventory/window)))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -727,7 +792,7 @@
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (play-sound "bfxr_takeit")
       (entity/event eid :pickup-item item)
-      (inventory/remove-item eid cell)))
+      (remove-item eid cell)))
 
   (state/clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
     (let [free-skill-points (:entity/free-skill-points @eid)]
@@ -749,7 +814,7 @@
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (inventory/set-item eid cell item-on-cursor)
+      (set-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
 
      ; STACK ITEMS
@@ -758,7 +823,7 @@
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (inventory/stack-item eid cell item-on-cursor)
+      (stack-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
 
      ; SWAP ITEMS
@@ -769,8 +834,8 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (inventory/remove-item eid cell)
-      (inventory/set-item eid cell item-on-cursor)
+      (remove-item eid cell)
+      (set-item eid cell item-on-cursor)
       (entity/event eid :dropped-item)
       (entity/event eid :pickup-item item-in-cell)))))
 
