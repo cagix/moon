@@ -5,7 +5,6 @@
             [forge.entity.inventory :as inventory]
             [forge.entity.state :as state]
             [forge.follow-ai :as follow-ai]
-            [forge.graphics :as g :refer [gui-mouse-position world-mouse-position draw-filled-circle draw-sector draw-image draw-circle draw-text draw-centered]]
             [forge.item :refer [valid-slot? stackable?]]
             [forge.stage :as stage]
             [forge.ui :as ui]
@@ -357,7 +356,7 @@
     (if-let [movement-vector (controls/movement-vector)]
       (entity/event eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
-        (g/set-cursor cursor)
+        (set-cursor cursor)
         (when (button-just-pressed? :left)
           (on-click)))))
 

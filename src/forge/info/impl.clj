@@ -1,11 +1,10 @@
 (ns forge.info.impl
   (:require [forge.entity.components :refer [damage-mods hitpoints mana stat]]
-            [forge.graphics :as g]
             [forge.info :as info :refer [info]]
             [forge.operation :as op]
             [forge.world :refer [finished-ratio]]))
 
-(g/add-color "PRETTY_NAME" [0.84 0.8 0.52])
+(add-color "PRETTY_NAME" [0.84 0.8 0.52])
 
 (bind-root #'forge.info/info-color
            {:property/pretty-name "PRETTY_NAME"

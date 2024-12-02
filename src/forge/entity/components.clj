@@ -1,6 +1,5 @@
 (ns forge.entity.components
   (:require [malli.core :as m]
-            [forge.graphics :as g]
             [forge.entity :as entity]
             [forge.entity.state :as state]
             [forge.operations :as ops]
@@ -41,7 +40,7 @@
                                                        [new-state-k eid]))]]
           (when (:entity/player? @eid)
             (when-let [cursor (state/cursor new-state-obj)]
-              (g/set-cursor cursor)))
+              (set-cursor cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))

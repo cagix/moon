@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.dev.tree
   (:require [forge.dev.app-values-tree :refer [ns-value-vars]]
             [forge.ui :as ui]
-            [forge.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
             [forge.stage :as stage]
             [forge.world :as world]))
 

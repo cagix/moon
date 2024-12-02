@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [forge.graphics.camera :as cam]
-            [forge.graphics :refer [draw-tiled-map draw-filled-circle draw-on-world-view world-camera]]
             [forge.screen :as screen]
             [forge.world :refer [tiled-map explored-tile-corners]]))
 

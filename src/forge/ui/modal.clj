@@ -1,6 +1,5 @@
 (ns forge.ui.modal
-  (:require [forge.graphics :refer [gui-viewport-width gui-viewport-height]]
-            [forge.ui :as ui])
+  (:require [forge.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 ; no window movable type cursor appears here like in player idle

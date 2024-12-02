@@ -1,6 +1,5 @@
 (ns forge.ui.player-message
-  (:require [forge.ui :as ui]
-            [forge.graphics :refer [draw-text gui-viewport-width gui-viewport-height]]))
+  (:require [forge.ui :as ui]))
 
 (def ^:private duration-seconds 1.5)
 

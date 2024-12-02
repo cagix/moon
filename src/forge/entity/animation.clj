@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.entity.animation
-  (:require [forge.graphics :as g]
-            [forge.entity :as entity]
+  (:require [forge.entity :as entity]
             [forge.world :as world]))
 
 (defprotocol Animation
@@ -37,7 +36,7 @@
     :maxcnt (* (count frames) (float frame-duration))}))
 
 (defmethod edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
-  (create (map g/edn->image frames)
+  (create (map edn->image frames)
           :frame-duration frame-duration
           :looping? looping?))
 

@@ -1,6 +1,5 @@
 (ns forge.effects
   (:require [forge.entity.components :as entity]
-            [forge.graphics :refer [draw-line]]
             [forge.world :as world :refer [timer projectile-size player-eid line-of-sight?]]
             [forge.world.raycaster :refer [path-blocked?]]))
 

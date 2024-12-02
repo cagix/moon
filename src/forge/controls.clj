@@ -1,6 +1,5 @@
 (ns forge.controls
-  (:require [forge.graphics.camera :as cam]
-            [forge.graphics :refer [world-camera]]))
+  (:require [forge.graphics.camera :as cam]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

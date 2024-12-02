@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.set :as set]
-            [forge.graphics :refer [gui-viewport-height]]
             [forge.info :as info]
             [forge.ui :as ui]
             [forge.screen :as screen]

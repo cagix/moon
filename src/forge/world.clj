@@ -1,6 +1,5 @@
 (ns forge.world
-  (:require [forge.graphics :refer [draw-rectangle world-camera world-viewport-width world-viewport-height]]
-            [forge.graphics.camera :as cam]
+  (:require [forge.graphics.camera :as cam]
             [forge.level :as level]
             [forge.tiled :as tiled]
             [forge.world.raycaster :as raycaster :refer [ray-blocked?]]

@@ -1,6 +1,5 @@
 (ns forge.stage
-  (:require [forge.graphics :refer [gui-mouse-position gui-viewport batch]]
-            [forge.screen :as screen]
+  (:require [forge.screen :as screen]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 

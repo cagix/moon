@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.uf-caves
   (:require [data.grid2d :as g2d]
-            [forge.graphics :as g]
             [forge.level :as level]
             [forge.tiled :as t]
             [forge.mapgen.creatures :as creatures]
@@ -35,14 +34,14 @@
 (def ^:private sprite-size 48)
 
 (defn- terrain-texture-region []
-  (g/->texture-region "maps/uf_terrain.png"))
+  (->texture-region "maps/uf_terrain.png"))
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (g/->texture-region (terrain-texture-region)
-                               [(* sprite-x sprite-size)
-                                (* sprite-y sprite-size)
-                                sprite-size
-                                sprite-size])
+  (tm-tile (->texture-region (terrain-texture-region)
+                             [(* sprite-x sprite-size)
+                              (* sprite-y sprite-size)
+                              sprite-size
+                              sprite-size])
            movement))
 
 (def ^:private uf-grounds

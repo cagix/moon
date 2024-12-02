@@ -1,6 +1,5 @@
 (ns forge.start
-  (:require [forge.graphics :as g]
-            [forge.screen :as screen]
+  (:require [forge.screen :as screen]
             [forge.stage :as stage]
             [forge.ui :as ui])
   (:import (com.badlogic.gdx ApplicationAdapter)
@@ -18,7 +17,7 @@
            (forge OrthogonalTiledMapRenderer)))
 
 (defn- background-image []
-  (ui/image->widget (g/image "images/moon_background.png")
+  (ui/image->widget (->image "images/moon_background.png")
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))
@@ -113,39 +112,39 @@
      (proxy [ApplicationAdapter] []
        (create []
          (bind-root #'asset-manager (load-assets assets))
-         (bind-root #'g/batch (SpriteBatch.))
+         (bind-root #'batch (SpriteBatch.))
          (bind-root #'shape-drawer-texture (white-pixel-texture))
-         (bind-root #'g/shape-drawer (ShapeDrawer. g/batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-         (bind-root #'g/default-font (g/truetype-font
-                                      {:file (internal-file "fonts/exocet/films.EXL_____.ttf")
-                                       :size 16
-                                       :quality-scaling 2}))
-         (bind-root #'g/world-unit-scale (float (/ tile-size)))
-         (bind-root #'g/world-viewport (let [world-width  (* g/world-viewport-width  g/world-unit-scale)
-                                             world-height (* g/world-viewport-height g/world-unit-scale)
-                                             camera (OrthographicCamera.)
-                                             y-down? false]
-                                         (.setToOrtho camera y-down? world-width world-height)
-                                         (FitViewport. world-width world-height camera)))
-         (bind-root #'g/cached-map-renderer (memoize
-                                             (fn [tiled-map]
-                                               (OrthogonalTiledMapRenderer. tiled-map
-                                                                            (float g/world-unit-scale)
-                                                                            g/batch))))
-         (bind-root #'g/gui-viewport (FitViewport. g/gui-viewport-width
-                                                   g/gui-viewport-height
-                                                   (OrthographicCamera.)))
-         (bind-root #'g/cursors (mapvals gdx-cursor cursors))
+         (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
+         (bind-root #'default-font (truetype-font
+                                    {:file (internal-file "fonts/exocet/films.EXL_____.ttf")
+                                     :size 16
+                                     :quality-scaling 2}))
+         (bind-root #'world-unit-scale (float (/ tile-size)))
+         (bind-root #'world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
+                                           world-height (* world-viewport-height world-unit-scale)
+                                           camera (OrthographicCamera.)
+                                           y-down? false]
+                                       (.setToOrtho camera y-down? world-width world-height)
+                                       (FitViewport. world-width world-height camera)))
+         (bind-root #'cached-map-renderer (memoize
+                                           (fn [tiled-map]
+                                             (OrthogonalTiledMapRenderer. tiled-map
+                                                                          (float world-unit-scale)
+                                                                          batch))))
+         (bind-root #'gui-viewport (FitViewport. gui-viewport-width
+                                                 gui-viewport-height
+                                                 (OrthographicCamera.)))
+         (bind-root #'cursors (mapvals gdx-cursor cursors))
          (ui/init ui)
          (bind-root #'screens (create-screens screen-ks))
          (change-screen first-screen-k))
 
        (dispose []
          (dispose asset-manager)
-         (dispose g/batch)
+         (dispose batch)
          (dispose shape-drawer-texture)
-         (dispose g/default-font)
-         (run! dispose (vals g/cursors))
+         (dispose default-font)
+         (run! dispose (vals cursors))
          (ui/destroy)
          (run! screen/destroy (vals screens)))
 
@@ -154,6 +153,6 @@
          (screen/render (current-screen)))
 
        (resize [w h]
-         (.update g/gui-viewport   w h true)
-         (.update g/world-viewport w h)))
+         (.update gui-viewport   w h true)
+         (.update world-viewport w h)))
      (lwjgl3-config lwjgl3))))

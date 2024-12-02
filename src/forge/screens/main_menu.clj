@@ -1,6 +1,5 @@
 (ns forge.screens.main-menu
-  (:require [forge.graphics :as g]
-            [forge.ui :as ui]
+  (:require [forge.ui :as ui]
             [forge.screen :as screen]))
 
 (defn create [background-image]
@@ -26,7 +25,7 @@
                                 (exit-app)))})]
    :screen (reify screen/Screen
              (enter [_]
-               (g/set-cursor :cursors/default))
+               (set-cursor :cursors/default))
              (exit [_])
              (render [_])
              (destroy [_]))})

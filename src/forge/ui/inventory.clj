@@ -1,7 +1,6 @@
 (ns forge.ui.inventory
   (:require [data.grid2d :as g2d]
             [forge.ui :as ui]
-            [forge.graphics :refer [draw-rectangle draw-filled-rectangle gui-mouse-position gui-viewport-width gui-viewport-height sprite sprite-sheet]]
             [forge.entity.components :as entity]
             [forge.item :refer [valid-slot? empty-inventory]]
             [forge.info :as info]
@@ -57,7 +56,7 @@
 
 (defn- slot->sprite [slot]
   (-> (sprite-sheet "images/items.png" 48 48)
-      (sprite (slot->sprite-idx slot))))
+      (->sprite (slot->sprite-idx slot))))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)

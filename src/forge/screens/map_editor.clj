@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [forge.graphics.camera :as cam]
             [forge.ui :as ui]
-            [forge.graphics :refer [draw-rectangle draw-filled-rectangle draw-filled-circle draw-grid draw-on-world-view draw-tiled-map gui-viewport-height world-camera world-mouse-position]]
             [forge.level :as level]
             [forge.screen :as screen]
             [forge.tiled :as t]

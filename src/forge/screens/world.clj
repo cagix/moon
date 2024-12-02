@@ -1,6 +1,5 @@
 (ns forge.screens.world
-  (:require [forge.graphics :as g :refer [draw-tiled-map draw-on-world-view gui-mouse-position world-camera world-mouse-position draw-circle draw-rectangle draw-filled-rectangle draw-grid world-viewport-width world-viewport-height draw-text draw-image gui-viewport-width]]
-            [forge.graphics.camera :as cam]
+  (:require [forge.graphics.camera :as cam]
             [forge.info :as info]
             [forge.controls :as controls]
             [forge.entity.components :as entity]
@@ -26,16 +25,16 @@
               :up? true}))
 
 (defn- hp-mana-bar []
-  (let [rahmen      (g/image "images/rahmen.png")
-        hpcontent   (g/image "images/hp.png")
-        manacontent (g/image "images/mana.png")
+  (let [rahmen      (->image "images/rahmen.png")
+        hpcontent   (->image "images/hp.png")
+        manacontent (->image "images/mana.png")
         x (/ gui-viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
                             (draw-image rahmen [x y])
-                            (draw-image (g/sub-image contentimage [0 0 (* rahmenw (val-max-ratio minmaxval)) rahmenh])
+                            (draw-image (sub-image contentimage [0 0 (* rahmenw (val-max-ratio minmaxval)) rahmenh])
                                         [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui/actor {:draw (fn []
@@ -50,7 +49,7 @@
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (g/image icon) {})
+   (let [icon (ui/image->widget (->image icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (.addActor table (ui/actor {:act #(.setText label (text-fn))}))
@@ -366,7 +365,7 @@
     (cam/set-zoom! (world-camera) 0.8))
 
   (exit [_]
-    (g/set-cursor :cursors/default))
+    (set-cursor :cursors/default))
 
   (render [_]
     (render-world)
