@@ -36,6 +36,6 @@
 (defn print-app-values-tree []
   (spit "app-values-tree.clj"
         (with-out-str
-         (pprint
+         (clojure.pprint/pprint
           (for [[ns-name vars] (ns-value-vars #{"forge"})]
             [ns-name (map #(:name (meta %)) vars)])))))

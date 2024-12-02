@@ -45,8 +45,8 @@
                 ;*assert* false
                 *print-level* 3
                 }
-  :profiles {:uberjar {:aot [forge.start]}}
-  #_:main #_forge.start)
+  :profiles {:uberjar {:aot [forge.core]}}
+  #_:main #_forge.core)
 
 ; * Notes
 

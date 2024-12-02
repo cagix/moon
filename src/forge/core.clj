@@ -1326,8 +1326,8 @@
        (.update world-viewport w h)))
    (lwjgl3-config lwjgl3)))
 
-(defn start-app [config-file-path]
-  (-> config-file-path
+(defn -main []
+  (-> "app.edn"
       io/resource
       slurp
       edn/read-string
