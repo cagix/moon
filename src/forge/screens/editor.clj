@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.info :as info]
             [forge.ui :as ui]
             [forge.screen :as screen])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -184,7 +183,7 @@
                  (ui/text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui/stack [button top-widget])]
-    (ui/add-tooltip! button #(info/text props))
+    (ui/add-tooltip! button #(info-text props))
     (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
 
@@ -249,7 +248,7 @@
         (let [property (build property-id)
               image-widget (ui/image->widget (property->image property)
                                              {:id property-id})]
-          (ui/add-tooltip! image-widget #(info/text property))))
+          (ui/add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
         (ui/text-button "-" #(redo-rows (disj property-ids id))))])))
 
@@ -287,7 +286,7 @@
       [(when property-id
          (let [property (build property-id)
                image-widget (ui/image->widget (property->image property) {:id property-id})]
-           (ui/add-tooltip! image-widget #(info/text property))
+           (ui/add-tooltip! image-widget #(info-text property))
            image-widget))]
       [(when property-id
          (ui/text-button "-" #(redo-rows nil)))]])))

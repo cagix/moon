@@ -1,6 +1,5 @@
 (ns forge.screens.world
   (:require [forge.graphics.camera :as cam]
-            [forge.info :as info]
             [forge.controls :as controls]
             [forge.entity.components :as entity]
             [forge.entity.state :as state]
@@ -97,11 +96,11 @@
                                             ; items then have 2x pretty-name
                                             #_(.setText (.getTitleLabel window)
                                                         (if-let [entity (mouseover-entity)]
-                                                          (info/text [:property/pretty-name (:property/pretty-name entity)])
+                                                          (info-text [:property/pretty-name (:property/pretty-name entity)])
                                                           "Entity Info"))
                                             (.setText label
                                                       (str (when-let [entity (mouseover-entity)]
-                                                             (info/text
+                                                             (info-text
                                                               ; don't use select-keys as it loses Entity record type
                                                               (apply dissoc entity disallowed-keys)))))
                                             (.pack window))}))

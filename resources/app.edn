@@ -24,7 +24,7 @@
  :requires [forge.effects
             forge.entity.impl
             forge.entity.states
-            forge.info.impl
+            forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
  :screen-ks {:screens/main-menu  forge.screens.main-menu

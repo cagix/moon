@@ -1,6 +1,5 @@
 (ns forge.ui.action-bar
-  (:require [forge.info :as info]
-            [forge.ui :as ui])
+  (:require [forge.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (def ^:private image-scale 2)
@@ -23,7 +22,7 @@
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (ui/image-button image (fn []) {:scale image-scale})]
     (.setUserObject button id)
-    (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (ui/add-tooltip! button #(info-text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (ui/add-actor! horizontal-group button)
     (ui/bg-add! button-group button)
     nil))

@@ -3,7 +3,6 @@
             [forge.ui :as ui]
             [forge.entity.components :as entity]
             [forge.item :refer [valid-slot? empty-inventory]]
-            [forge.info :as info]
             [forge.entity.state :as state]
             [forge.world :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -122,7 +121,7 @@
         drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
     (ui/set-min-size! drawable cell-size)
     (ui/set-drawable! image-widget drawable)
-    (ui/add-tooltip! cell-widget #(info/text item))))
+    (ui/add-tooltip! cell-widget #(info-text item))))
 
 (defn remove-item-from-widget [cell]
   (let [cell-widget (cell-widget cell)
