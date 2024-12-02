@@ -1,8 +1,7 @@
 (ns ^:no-doc forge.mapgen.generate
   (:require [data.grid2d :as g2d]
             [forge.core :refer :all]
-            [forge.mapgen.creatures :as creatures]
-            [forge.mapgen.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
+            [forge.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))
 
 ; can adjust:
@@ -64,9 +63,9 @@
               :let [area-level (get area-level-grid position)]
               :when (and (number? area-level)
                          (<= (rand) spawn-rate))]
-        (let [creatures (creatures/with-level creature-properties area-level)]
+        (let [creatures (creatures-with-level creature-properties area-level)]
           (when (seq creatures)
-            (set-tile! layer position (creatures/tile (rand-nth creatures)))))))))
+            (set-tile! layer position (creature-tile (rand-nth creatures)))))))))
 
 (defn- generate-modules
   "The generated tiled-map needs to be disposed."

@@ -1,9 +1,7 @@
 (ns ^:no-doc forge.mapgen.uf-caves
   (:require [data.grid2d :as g2d]
             [forge.core :refer :all]
-            [forge.mapgen.creatures :as creatures]
-            [forge.mapgen.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [forge.mapgen.tiled :refer [wgt-grid->tiled-map]]))
+            [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
 
 (def ^:private scaling 4)
 
@@ -17,10 +15,10 @@
   (let [layer (add-layer! tiled-map :name "creatures" :visible false)
         creatures (build-all :properties/creatures)
         level (inc (rand-int 6))
-        creatures (creatures/with-level creatures level)]
+        creatures (creatures-with-level creatures level)]
     (doseq [position spawn-positions
             :when (<= (rand) spawn-rate)]
-      (set-tile! layer position (creatures/tile (rand-nth creatures))))))
+      (set-tile! layer position (creature-tile (rand-nth creatures))))))
 
 (def ^:private tm-tile
   (memoize
