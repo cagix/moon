@@ -11,9 +11,8 @@
             [forge.ui.error-window :refer [error-window!]]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity]]
-            [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]]
-            [forge.world.raycaster :refer [ray-blocked?]])
+            [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity] ray-blocked?]
+            [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 
