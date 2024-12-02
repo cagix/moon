@@ -1,7 +1,8 @@
 (ns forge.ui.inventory
   (:require [data.grid2d :as g2d]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -26,7 +27,7 @@
 ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
 (defn- draw-rect-actor []
   (ui-widget
-   (fn [this]
+   (fn [^Actor this]
      (draw-cell-rect @player-eid
                      (.getX this)
                      (.getY this)
@@ -60,16 +61,16 @@
     (set-min-size! drawable cell-size)
     (tinted-drawable drawable (gdx-color 1 1 1 0.4))))
 
-(defn- ->cell [slot & {:keys [position]}]
+(defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background slot) {:id :image})
         stack (ui-stack [(draw-rect-actor)
                          image-widget])]
     (.setName stack "inventory-cell")
     (.setUserObject stack cell)
-    (.addListener stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
-                             (clicked [event x y]
-                               (clicked-inventory-cell (e-state-obj @player-eid) cell))))
+    (.addListener stack (proxy [ClickListener] []
+                          (clicked [event x y]
+                            (clicked-inventory-cell (e-state-obj @player-eid) cell))))
     stack))
 
 (def empty-inventory

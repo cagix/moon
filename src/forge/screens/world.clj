@@ -4,6 +4,7 @@
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+           (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
 
 (defn- render-infostr-on-bar [infostr x y h]
@@ -40,15 +41,15 @@
    (let [icon (image->widget (->image icon) {})
          label (label "")
          sub-table (ui-table {:rows [[icon label]]})]
-     (.addActor table (ui-actor {:act #(.setText label (text-fn))}))
-     (.expandX (.right (.add table sub-table)))))
+     (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
+     (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
    (let [label (label "")]
-     (.addActor table (ui-actor {:act #(.setText label (text-fn))}))
-     (.expandX (.right (.add table label))))))
+     (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
+     (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels [menu-bar update-labels]
-  (let [table (.getTable menu-bar)]
+  (let [table (MenuBar/.getTable menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
       (let [update-fn #(str label ": " (update-fn))]
         (if icon
@@ -59,7 +60,7 @@
   (let [app-menu (Menu. label)]
     (doseq [{:keys [label on-click]} items]
       (.addItem app-menu (menu-item label (or on-click (fn [])))))
-    (.addMenu menu-bar app-menu)))
+    (MenuBar/.addMenu menu-bar app-menu)))
 
 (defn- create-menu-bar [menus]
   (let [menu-bar (MenuBar.)]
@@ -207,7 +208,7 @@
     (str "TRUE - name:" (.getName actor)
          "id: " (.getUserObject actor)))
 
-(defn- dev-menu-bar []
+(defn- dev-menu-bar ^MenuBar []
   (dev-menu*
    {:menus [{:label "Screens"
              :items [{:label "Map-editor"

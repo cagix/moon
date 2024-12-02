@@ -3,7 +3,8 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
+           (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
@@ -52,8 +53,8 @@
 
      :else stype)))
 
-(defmulti schema->widget   widget-type)
-(defmulti ->value  widget-type)
+(defmulti schema->widget widget-type)
+(defmulti ->value        widget-type)
 
 (defn- scroll-pane-cell [rows]
   (let [table (ui-table {:rows rows
@@ -206,7 +207,7 @@
                                              :image/scale 2}
                          :properties/worlds {:columns 10}})
 
-(defn- overview-table [property-type clicked-id-fn]
+(defn- overview-table ^Actor [property-type clicked-id-fn]
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
@@ -303,21 +304,21 @@
 (defn- get-editor-window []
   (:property-editor-window (screen-stage)))
 
-(defn- property-value []
+(defn- window->property-value []
  (let [window (get-editor-window)
-       scroll-pane-table (.findActor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (.getCells scroll-pane-table)))
+       scroll-pane-table (Group/.findActor (:scroll-pane window) "scroll-pane-table")
+       m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (->value [:s/map] table)))
 
 (defn- rebuild-editor-window []
-  (let [prop-value (property-value)]
+  (let [prop-value (window->property-value)]
     (Actor/.remove (get-editor-window))
     (add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (schema-of k) v)]
-    (.setUserObject widget [k v])
+    (Actor/.setUserObject widget [k v])
     widget))
 
 (def ^:private value-widget? (comp vector? Actor/.getUserObject))

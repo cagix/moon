@@ -174,10 +174,10 @@
 (defn clear-screen [color]
   (ScreenUtils/clear color))
 
-(defn internal-file [path]
+(defn internal-file ^FileHandle [path]
   (.internal Gdx/files path))
 
-(defn gdx-cursor [[file [hotspot-x hotspot-y]]]
+(defn- gdx-cursor [[file [hotspot-x hotspot-y]]]
   (let [pixmap (Pixmap. (internal-file (str "cursors/" file ".png")))
         cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
     (dispose pixmap)
@@ -647,27 +647,26 @@
   (nth coll (high-weighted-rand-int (count coll))))
 
 (defn- m-v2
-  ([[x y]] (Vector2. x y))
-  ([x y]   (Vector2. x y)))
+  (^Vector2 [[x y]] (Vector2. x y))
+  (^Vector2 [x y]   (Vector2. x y)))
 
 (defn- ->p [^Vector2 v]
-  [(.x ^Vector2 v) (.y ^Vector2 v)])
+  [(.x v) (.y v)])
 
 (defn v-scale [v n]
-  (->p (.scl ^Vector2 (m-v2 v) (float n))))
+  (->p (.scl (m-v2 v) (float n))))
 
 (defn v-normalise [v]
-  (->p (.nor ^Vector2 (m-v2 v))))
+  (->p (.nor (m-v2 v))))
 
 (defn v-add [v1 v2]
-  (->p (.add ^Vector2 (m-v2 v1)
-             ^Vector2 (m-v2 v2))))
+  (->p (.add (m-v2 v1) (m-v2 v2))))
 
 (defn v-length [v]
-  (.len ^Vector2 (m-v2 v)))
+  (.len (m-v2 v)))
 
 (defn v-distance [v1 v2]
-  (.dst ^Vector2 (m-v2 v1) ^Vector2 (m-v2 v2)))
+  (.dst (m-v2 v1) (m-v2 v2)))
 
 (defn v-normalised? [v]
   (equal? 1 (v-length v)))
@@ -1614,7 +1613,7 @@
     (.pack widget-group))
   widget-group)
 
-(defn- set-actor-opts [a {:keys [id name visible? touchable center-position position] :as opts}]
+(defn- set-actor-opts [^Actor a {:keys [id name visible? touchable center-position position] :as opts}]
   (when id                          (.setUserObject        a id))
   (when name                        (.setName      a name))
   (when (contains? opts :visible?)  (.setVisible   a (boolean visible?)))
@@ -1649,7 +1648,7 @@
     (run! #(add-actor! group %) actors)
     (set-opts group opts)))
 
-(defn horizontal-group [{:keys [space pad]}]
+(defn horizontal-group ^HorizontalGroup [{:keys [space pad]}]
   (let [group (proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
@@ -1726,7 +1725,7 @@
   (-> (VisTextField. text)
       (set-opts opts)))
 
-(defn ui-stack [actors]
+(defn ui-stack ^Stack [actors]
   (proxy-ILookup Stack [(into-array Actor actors)]))
 
 (defmulti ^:private ->vis-image type)
@@ -1766,14 +1765,14 @@
 
 (defn button?
   "Returns true if the actor or its parent is a button."
-  [actor]
+  [^Actor actor]
   (or (button-class? actor)
       (and (.getParent actor)
            (button-class? (.getParent actor)))))
 
 (defn window-title-bar?
   "Returns true if the actor is a window title bar."
-  [actor]
+  [^Actor actor]
   (when (instance? Label actor)
     (when-let [p (.getParent actor)]
       (when-let [p (.getParent p)]
@@ -1804,9 +1803,9 @@
     button))
 
 (defn image-button
-  ([image on-clicked]
+  (^VisImageButton [image on-clicked]
    (image-button image on-clicked {}))
-  ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
+  (^VisImageButton[{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
    (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)
          button (VisImageButton. drawable)]
      (when scale
@@ -1838,13 +1837,6 @@
   "Creates a new drawable that renders the same as this drawable tinted the specified color."
   [drawable color]
   (.tint ^TextureRegionDrawable drawable color))
-
-(defn bg-add!    [bg button] (.add    ^ButtonGroup bg ^Button button))
-(defn bg-remove! [bg button] (.remove ^ButtonGroup bg ^Button button))
-(defn bg-checked
-  "The first checked button, or nil."
-  [bg]
-  (.getChecked ^ButtonGroup bg))
 
 (defn ui-tree []
   (VisTree.))
@@ -2947,7 +2939,7 @@
     actor))
 
 (defn- group->button-group [group]
-  (.getUserObject (.findActor group "action-bar/button-group")))
+  (.getUserObject (Group/.findActor group "action-bar/button-group")))
 
 (defn- get-action-bar []
   (let [group (::action-bar (:action-bar-table (screen-stage)))]
@@ -2960,14 +2952,14 @@
     (.setUserObject button id)
     (add-tooltip! button #(info-text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (add-actor! horizontal-group button)
-    (bg-add! button-group button)
+    (ButtonGroup/.add button-group button)
     nil))
 
 (defn actionbar-remove-skill [{:keys [property/id]}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
-        button (get horizontal-group id)]
+        ^Button button (get horizontal-group id)]
     (.remove button)
-    (bg-remove! button-group button)
+    (ButtonGroup/.remove button-group button)
     nil))
 
 (defn actionbar-create []
@@ -2977,7 +2969,7 @@
     group))
 
 (defn actionbar-selected-skill []
-  (when-let [skill-button (bg-checked (:button-group (get-action-bar)))]
+  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar)))]
     (.getUserObject skill-button)))
 
 (defn add-skill [entity {:keys [property/id] :as skill}]

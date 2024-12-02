@@ -1,6 +1,7 @@
 (ns forge.dev.tools
   (:require [clojure.string :as str]
-            [forge.core :refer :all]))
+            [forge.core :refer :all])
+  (:import (com.badlogic.gdx.scenes.scene2d Stage Group)))
 
 (comment
 
@@ -115,10 +116,10 @@
   (when (coll? v)
     (add-elements! node v))
 
-  (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
-    (add-map-nodes! node (children->str-map (children (.getRoot v))) level))
+  (when (instance? Stage v)
+    (add-map-nodes! node (children->str-map (children (Stage/.getRoot v))) level))
 
-  (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
+  (when (instance? Group v)
     (add-map-nodes! node (children->str-map (children v)) level))
 
   (when (and (var? v)
@@ -214,7 +215,7 @@
             [ns-name (map #(:name (meta %)) vars)])))))
 
 (defn print-vimrc-names-forge-core-publics [file]
-  (->> *ns*
+  (->> (find-ns 'forge.core)
        ns-publics
        (remove (fn [[k v]]
                  (or (:macro (meta v))

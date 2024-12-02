@@ -30,7 +30,7 @@
                "Hitpoints")
      "-30 Hitpoints\n+5% Hitpoints"))
 
-(deftest ops-apply
+(deftest ops-apply-test
   (is (= (ops-apply {:op/inc 6
                      :op/mult 50}
                     10)
