@@ -1,4 +1,5 @@
-(ns forge.controls)
+(ns forge.controls
+  (:require [forge.core :refer :all]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

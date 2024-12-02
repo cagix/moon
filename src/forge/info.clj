@@ -1,6 +1,7 @@
 (ns forge.info
   (:require [clojure.string :as str]
             [clojure.math :as math]
+            [forge.core :refer :all]
             [forge.entity.components :refer [damage-mods hitpoints mana stat]]
             [forge.world :refer [finished-ratio]]))
 

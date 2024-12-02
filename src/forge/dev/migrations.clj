@@ -1,4 +1,5 @@
-(ns ^:no-doc forge.dev.migrations)
+(ns ^:no-doc forge.dev.migrations
+  (:require [forge.core :refer [db-migrate]]))
 
 (comment
 

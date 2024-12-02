@@ -1,5 +1,6 @@
 (ns forge.entity.components
   (:require [malli.core :as m]
+            [forge.core :refer :all]
             [forge.entity.state :as state]
             [forge.ui.action-bar :as action-bar]
             [forge.world :refer [timer reset-timer]]

@@ -1,5 +1,6 @@
 (ns forge.world.potential-fields
-  (:require [forge.entity.components :as entity]
+  (:require [forge.core :refer :all]
+            [forge.entity.components :as entity]
             [forge.world :as world :refer [occupied-by-other?  nearest-entity-distance nearest-entity rectangle->cells blocked? cached-adjacent-cells grid nearest-entity nearest-entity-distance]]))
 
 ; FIXME config !

@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.dev.experiment
-  (:require [forge.entity.components :as entity]
+  (:require [forge.core :refer :all]
+            [forge.entity.components :as entity]
             [forge.world :as world :refer [player-eid]]))
 
 (defmacro app-do [& exprs]
@@ -51,5 +52,3 @@
 (defn- create-item! [item-id]
   (app-do
    (world/item (:position @player-eid) (build item-id))))
-
-

@@ -1,4 +1,5 @@
-(ns ^:no-doc forge.ui.skill-window)
+(ns ^:no-doc forge.ui.skill-window
+  (:require [forge.core :refer :all]))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))

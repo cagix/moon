@@ -1,7 +1,8 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))

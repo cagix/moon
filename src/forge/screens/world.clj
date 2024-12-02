@@ -1,5 +1,6 @@
 (ns forge.screens.world
-  (:require [forge.controls :as controls]
+  (:require [forge.core :refer :all]
+            [forge.controls :as controls]
             [forge.entity.components :as entity]
             [forge.entity.state :as state]
             [forge.ui.action-bar :as action-bar]

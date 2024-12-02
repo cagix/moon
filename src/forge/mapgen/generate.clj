@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.mapgen.generate
   (:require [data.grid2d :as g2d]
+            [forge.core :refer :all]
             [forge.mapgen.creatures :as creatures]
             [forge.mapgen.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))

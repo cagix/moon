@@ -10,7 +10,8 @@
   ``` vimscript
   nmap <F5> :Eval (do (in-ns 'forge.dev.loop)(restart!))
   ```"
-  (:require [clojure.java.io :as io]
+  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
+            [clojure.java.io :as io]
             [clojure.tools.namespace.repl :refer [disable-reload! refresh]]
             [nrepl.server :as nrepl]))
 
@@ -34,7 +35,8 @@
 (def ^:private thrown (atom false))
 
 (defn- handle-throwable! [t]
-  (pretty-pst t)
+  (binding [*print-level* 3]
+    (pretty-pst t 24))
   (reset! thrown t))
 
 (defn restart!
@@ -57,7 +59,7 @@
   (loop []
     (when-not @thrown
       (do
-       (bind-root #'refresh-error (refresh :after 'forge.dev.loop/start-dev-loop!))
+       (.bindRoot #'refresh-error (refresh :after 'forge.dev.loop/start-dev-loop!))
        (handle-throwable! refresh-error)))
     (wait!)
     (recur)))
@@ -78,8 +80,8 @@
 (declare ^:private nrepl-server)
 
 (defn -main [& [app-ns]]
-  (bind-root #'app-ns-sym (symbol app-ns))
-  (bind-root #'nrepl-server (nrepl/start-server))
+  (.bindRoot #'app-ns-sym (symbol app-ns))
+  (.bindRoot #'nrepl-server (nrepl/start-server))
   (save-port-file! nrepl-server)
   ;(println "Started nrepl server on port" (:port nrepl-server))
   (start-dev-loop!))

@@ -1,5 +1,6 @@
 (ns forge.mapgen.modules
-  (:require [forge.mapgen.grid :refer [transition-idx-value]]
+  (:require [forge.core :refer :all]
+            [forge.mapgen.grid :refer [transition-idx-value]]
             [forge.mapgen.tiled :refer [grid->tiled-map]]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...

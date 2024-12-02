@@ -9,41 +9,42 @@
 ; accessing camera/viewport/tiledmap/actor via keywords to get data
 ; would be the end result?
 
-(in-ns 'clojure.core)
+; => actually it is also more like 'stable'
+; or well define names.... working,...
 
-(require '[clj-commons.pretty.repl :as pretty-repl]
-         '[clojure.edn :as edn]
-         '[clojure.pprint]
-         '[clojure.string :as str]
-         '[clojure.java.io :as io]
-         '[data.grid2d :as g2d]
-         '[malli.core :as m]
-         '[malli.error :as me]
-         '[malli.generator :as mg])
-
-(import '(com.badlogic.gdx ApplicationAdapter Gdx)
-        '(com.badlogic.gdx.assets AssetManager)
-        '(com.badlogic.gdx.audio Sound)
-        '(com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-        '(com.badlogic.gdx.files FileHandle)
-        '(com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-        '(com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
-        '(com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-        '(com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
-        '(com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
-        '(com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
-        '(com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
-        '(com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
-        '(com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
-        '(com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
-        '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils SharedLibraryLoader)
-        '(com.badlogic.gdx.utils.viewport Viewport FitViewport)
-        '(com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-        '(com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
-        '(java.awt Taskbar Toolkit)
-        '(org.lwjgl.system Configuration)
-        '(space.earlygrey.shapedrawer ShapeDrawer)
-        '(forge OrthogonalTiledMapRenderer ColorSetter))
+(ns forge.core
+  (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
+            [clojure.pprint]
+            [clojure.string :as str]
+            [clojure.java.io :as io]
+            [data.grid2d :as g2d]
+            [malli.core :as m]
+            [malli.error :as me]
+            [malli.generator :as mg])
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
+           (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
+           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
+           (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
+           (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
+           (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
+           (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
+           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils SharedLibraryLoader)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+           (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration)
+           (space.earlygrey.shapedrawer ShapeDrawer)
+           (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (comment
  ; Change namespace to forge.core then call this.  And start with lein repl and without :main set so other ns don't get loaded

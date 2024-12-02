@@ -1,5 +1,6 @@
 (ns forge.world
-  (:require [data.grid2d :as g2d]
+  (:require [forge.core :refer :all]
+            [data.grid2d :as g2d]
             [malli.core :as m])
   (:import (forge RayCaster)))
 

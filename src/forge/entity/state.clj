@@ -1,4 +1,5 @@
-(ns forge.entity.state)
+(ns forge.entity.state
+  (:require [forge.core :refer :all]))
 
 (defsystem enter)
 (defmethod enter :default [_])

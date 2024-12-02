@@ -1,4 +1,5 @@
-(ns forge.screens.main-menu)
+(ns forge.screens.main-menu
+  (:require [forge.core :refer :all]))
 
 (defn create []
   {:actors [(background-image)

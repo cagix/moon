@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.string :as str]
+            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules])
   (:import (com.badlogic.gdx.utils Disposable)))

@@ -1,4 +1,5 @@
 (ns forge.ui.action-bar
+  (:require [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (def ^:private image-scale 2)

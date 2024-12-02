@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.dev.tree
-  (:require [forge.dev.app-values-tree :refer [ns-value-vars]]
+  (:require [forge.core :refer :all]
+            [forge.dev.app-values-tree :refer [ns-value-vars]]
             [forge.world :as world]))
 
 (defn- mouseover-grid-cell []

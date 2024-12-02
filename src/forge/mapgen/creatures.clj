@@ -1,4 +1,5 @@
-(ns forge.mapgen.creatures)
+(ns forge.mapgen.creatures
+  (:require [forge.core :refer :all]))
 
 (defn with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

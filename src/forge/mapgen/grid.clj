@@ -1,5 +1,6 @@
 (ns forge.mapgen.grid
-  (:require [data.grid2d :as g]))
+  (:require [data.grid2d :as g]
+            [forge.core :refer :all]))
 
 (defn- wall-at? [grid posi]
   (= :wall (get grid posi)))
