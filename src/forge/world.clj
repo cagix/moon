@@ -1,6 +1,5 @@
 (ns forge.world
   (:require [data.grid2d :as g2d]
-            [forge.graphics.camera :as cam]
             [forge.level :as level]
             [malli.core :as m])
   (:import (forge RayCaster)))
@@ -666,7 +665,7 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position (world-camera))
+        [cx cy] (cam-position (world-camera))
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
