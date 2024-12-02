@@ -4,7 +4,6 @@
             [forge.entity.inventory :as inventory]
             [forge.graphics :refer [draw-filled-circle draw-text draw-filled-rectangle pixels->world-units draw-rotated-centered draw-line with-line-width draw-ellipse draw-centered]]
             [forge.item :as item]
-            [forge.val-max :as val-max]
             [forge.world :as world :refer [audiovisual timer stopped? player-eid]]
             [malli.core :as m]
             [reduce-fsm :as fsm]))
@@ -56,7 +55,7 @@
     [v v])
 
   (entity/render-info [_ entity]
-    (let [ratio (val-max/ratio (hitpoints entity))]
+    (let [ratio (val-max-ratio (hitpoints entity))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
         (draw-hpbar entity ratio)))))
 

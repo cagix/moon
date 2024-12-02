@@ -13,7 +13,6 @@
             [forge.ui.error-window :refer [error-window!]]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.val-max :as val-max]
             [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]]
             [forge.world.raycaster :refer [ray-blocked?]])
@@ -36,7 +35,7 @@
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
                             (draw-image rahmen [x y])
-                            (draw-image (g/sub-image contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                            (draw-image (g/sub-image contentimage [0 0 (* rahmenw (val-max-ratio minmaxval)) rahmenh])
                                         [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui/actor {:draw (fn []

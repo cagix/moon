@@ -25,7 +25,7 @@
   level 0 to max-level, so the player has to decide which areas to do in which order."
   [& {:keys [grid start max-level walk-on]}]
   (let [maxcount (->> grid
-                      g/cells
+                      g2d/cells
                       (filter walk-on)
                       count)
         ; -> assume all :ground cells can be reached from start
@@ -34,7 +34,7 @@
         step->level #(int (Math/ceil (/ % level-step)))
         walkable-neighbours (fn [grid position]
                               (filter #(walk-on (get grid %))
-                                      (g/get-4-neighbour-positions position)))]
+                                      (g2d/get-4-neighbour-positions position)))]
     (loop [next-positions #{start}
            steps          [[0 start]]
            grid           (assoc grid start 0)]

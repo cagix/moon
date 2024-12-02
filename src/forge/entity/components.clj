@@ -4,7 +4,6 @@
             [forge.entity :as entity]
             [forge.entity.state :as state]
             [forge.operations :as ops]
-            [forge.val-max :as val-max]
             [forge.ui.action-bar :as action-bar]
             [forge.world :refer [timer reset-timer]]
             [reduce-fsm :as fsm]))
@@ -77,15 +76,15 @@
   (mapv #(-> % int (max 0)) val-max))
 
 (defn apply-max-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
+  {:pre  [(m/validate val-max-schema val-max)]
+   :post [(m/validate val-max-schema val-max)]}
   (let [val-max (update val-max 1 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn apply-min-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
+  {:pre  [(m/validate val-max-schema val-max)]
+   :post [(m/validate val-max-schema val-max)]}
   (let [val-max (update val-max 0 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))

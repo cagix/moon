@@ -13,7 +13,6 @@
             [forge.ui.inventory :as widgets.inventory]
             [forge.ui.player-message :as player-message]
             [forge.ui.modal :as modal]
-            [forge.val-max :as val-max]
             [forge.world :as world :refer [timer stopped? line-of-sight? finished-ratio player-eid mouseover-eid]]))
 
 (comment
