@@ -22,7 +22,7 @@
            :cursors/walking               ["walking"      [16 16]]}
  :ui :skin-scale/x1
  :requires [forge.effects
-            forge.entity.impl
+            forge.entity
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
