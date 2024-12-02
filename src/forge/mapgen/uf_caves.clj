@@ -35,14 +35,14 @@
 (def ^:private sprite-size 48)
 
 (defn- terrain-texture-region []
-  (g/texture-region "maps/uf_terrain.png"))
+  (g/->texture-region "maps/uf_terrain.png"))
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (g/texture-region (terrain-texture-region)
-                             [(* sprite-x sprite-size)
-                              (* sprite-y sprite-size)
-                              sprite-size
-                              sprite-size])
+  (tm-tile (g/->texture-region (terrain-texture-region)
+                               [(* sprite-x sprite-size)
+                                (* sprite-y sprite-size)
+                                sprite-size
+                                sprite-size])
            movement))
 
 (def ^:private uf-grounds

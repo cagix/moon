@@ -133,18 +133,18 @@
 (defn world-camera []
   (.getCamera world-viewport))
 
-(defn texture-region
+(defn ->texture-region
   ([path]
    (TextureRegion. ^Texture (get asset-manager path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
 (defn image [path]
-  (sprite* world-unit-scale (texture-region path)))
+  (sprite* world-unit-scale (->texture-region path)))
 
 (defn sub-image [image bounds]
   (sprite* world-unit-scale
-           (texture-region (:texture-region image) bounds)))
+           (->texture-region (:texture-region image) bounds)))
 
 (defn sprite-sheet [path tilew tileh]
   {:image (image path)

@@ -14,7 +14,7 @@
     (name layer)
     (.getName ^MapLayer layer)))
 
-(defn- lookup [has-properties key]
+(defn- props-lookup [has-properties key]
   (.get (m-props has-properties) (name key)))
 
 (comment
@@ -27,15 +27,15 @@
 (extend-protocol HasProperties
   TiledMap
   (m-props [tiled-map] (.getProperties tiled-map))
-  (get-property [tiled-map key] (lookup tiled-map key))
+  (get-property [tiled-map key] (props-lookup tiled-map key))
 
   MapLayer
   (m-props [layer] (.getProperties layer))
-  (get-property [layer key] (lookup layer key))
+  (get-property [layer key] (props-lookup layer key))
 
   TiledMapTile
   (m-props [tile] (.getProperties tile))
-  (get-property [tile key] (lookup tile key)))
+  (get-property [tile key] (props-lookup tile key)))
 
 (defn width  [tiled-map] (get-property tiled-map :width))
 (defn height [tiled-map] (get-property tiled-map :height))
