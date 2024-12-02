@@ -1,12 +1,5 @@
 (ns forge.start
-  (:require [forge.effects]
-            [forge.entity.animation]
-            [forge.entity.impl]
-            [forge.entity.states]
-            [forge.info.impl]
-            (forge.mapgen generate uf-caves)
-
-            [forge.graphics :as g]
+  (:require [forge.graphics :as g]
             [forge.screens.editor :as editor]
             [forge.screens.map-editor :as map-editor]
             [forge.screens.minimap :as minimap]
@@ -123,7 +116,9 @@
                 db/properties
                 assets
                 cursors
-                ui]} (-> config io-resource slurp edn-read-string)]
+                ui
+                requires]} (-> config io-resource slurp edn-read-string)]
+    (run! require requires)
     (bind-root #'db-schemas (-> schema io-resource slurp edn-read-string))
     (bind-root #'db-properties-file (io-resource properties))
     (let [properties (-> db-properties-file slurp edn-read-string)]

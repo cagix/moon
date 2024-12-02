@@ -20,4 +20,11 @@
            :cursors/skill-not-usable      ["x007"         [0   0]]
            :cursors/use-skill             ["pointer004"   [0   0]]
            :cursors/walking               ["walking"      [16 16]]}
- :ui :skin-scale/x1}
+ :ui :skin-scale/x1
+ :requires [forge.effects
+            forge.entity.animation
+            forge.entity.impl
+            forge.entity.states
+            forge.info.impl
+            forge.mapgen.generate
+            forge.mapgen.uf-caves]}
