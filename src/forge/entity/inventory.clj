@@ -67,8 +67,3 @@
     (if (item/stackable? item cell-item)
       (stack-item eid cell item)
       (set-item   eid cell item))))
-
-(defn create [items eid]
-  (swap! eid assoc *k* item/empty-inventory)
-  (doseq [item items]
-    (pickup-item eid item)))

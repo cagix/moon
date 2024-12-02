@@ -104,14 +104,6 @@
               #'entity/render-above
               #'entity/render-info]})
 
-(install-all entity '[forge.entity.alert-friendlies-after-duration
-                      forge.entity.delete-after-duration
-                      forge.entity.fsm
-                      forge.entity.inventory
-                      forge.entity.projectile-collision
-                      forge.entity.skills
-                      forge.entity.movement])
-
 (def ^:private entity-state
   (merge-with concat
               entity
