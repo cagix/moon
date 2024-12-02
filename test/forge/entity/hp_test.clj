@@ -1,30 +1,30 @@
 (ns forge.entity.hp-test
   (:require [clojure.test :refer :all]
-            [forge.entity.components :as entity]))
+            [forge.core :refer [hitpoints]]))
 
 (deftest max-modifier
-  (is (= (entity/hitpoints {:entity/hp [100 100]
-                            :entity/modifiers {:modifier/hp-max {:op/inc 1}}})
+  (is (= (hitpoints {:entity/hp [100 100]
+                     :entity/modifiers {:modifier/hp-max {:op/inc 1}}})
          [100 101]))
 
-  (is (= (entity/hitpoints {:entity/hp [100 100]
-                            :entity/modifiers {:modifier/hp-max {:op/mult 10}}})
+  (is (= (hitpoints {:entity/hp [100 100]
+                     :entity/modifiers {:modifier/hp-max {:op/mult 10}}})
          [100 110]))
 
-  (is (= (entity/hitpoints {:entity/hp [100 100]
-                            :entity/modifiers {:modifier/hp-max {:op/inc 10
-                                                                 :op/mult 50}}})
+  (is (= (hitpoints {:entity/hp [100 100]
+                     :entity/modifiers {:modifier/hp-max {:op/inc 10
+                                                          :op/mult 50}}})
          [100 165]))
 
-  (is (= (entity/hitpoints {:entity/hp [100 100]
-                            :entity/modifiers {:modifier/hp-max {:op/inc -10}}})
+  (is (= (hitpoints {:entity/hp [100 100]
+                     :entity/modifiers {:modifier/hp-max {:op/inc -10}}})
          [90 90]))
 
-  (is (= (entity/hitpoints {:entity/hp [100 100]
-                            :entity/modifiers {:modifier/hp-max {:op/mult -50}}})
+  (is (= (hitpoints {:entity/hp [100 100]
+                     :entity/modifiers {:modifier/hp-max {:op/mult -50}}})
          [50 50]))
 
-  (is (= (entity/hitpoints {:entity/hp [100 100]
-                            :entity/modifiers {:modifier/hp-max {:op/mult -50
-                                                                 :op/inc 200}}})
+  (is (= (hitpoints {:entity/hp [100 100]
+                     :entity/modifiers {:modifier/hp-max {:op/mult -50
+                                                          :op/inc 200}}})
          [100 150])))
