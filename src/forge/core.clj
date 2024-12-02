@@ -23,7 +23,7 @@
         '(com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
         '(com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
         '(com.badlogic.gdx.scenes.scene2d Actor Stage)
-        '(com.badlogic.gdx.maps.tiled TmxMapLoader)
+        '(com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
         '(com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2)
         '(com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils SharedLibraryLoader)
         '(com.badlogic.gdx.utils.viewport Viewport FitViewport)
@@ -161,7 +161,23 @@
 
 (def dispose Disposable/.dispose)
 
-(def visible? Actor/.isVisible)
+(defprotocol HasVisible
+  (set-visible [_ bool])
+  (visible? [_]))
+
+(extend-type Actor
+  HasVisible
+  (set-visible [actor bool]
+    (.setVisible actor bool))
+  (visible? [actor]
+    (.isVisible actor)))
+
+(extend-type TiledMapTileLayer
+  HasVisible
+  (set-visible [layer bool]
+    (.setVisible layer bool))
+  (visible? [layer]
+    (.isVisible layer)))
 
 (defn clear-screen [color]
   (ScreenUtils/clear color))
@@ -1076,7 +1092,7 @@
     (.setView map-renderer (world-camera))
     (->> tiled-map
          tiled/layers
-         (filter tiled/visible?)
+         (filter visible?)
          (map (partial tiled/layer-index tiled-map))
          int-array
          (.render map-renderer))))

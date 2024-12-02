@@ -290,7 +290,7 @@
 (defn- close-all-windows []
   (let [windows (ui/children (windows))]
     (when (some visible? windows)
-      (run! #(Actor/.setVisible % false) windows))))
+      (run! #(set-visible % false) windows))))
 
 (bind-root #'start-world (fn start-world [world-props]
                            (change-screen :screens/world)

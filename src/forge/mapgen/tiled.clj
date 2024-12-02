@@ -14,7 +14,7 @@
     (doseq [layer (t/layers schema-tiled-map)
             :let [new-layer (t/add-layer! tiled-map
                                           :name (t/layer-name layer)
-                                          :visible (t/visible? layer)
+                                          :visible (visible? layer)
                                           :properties (t/m-props layer))]]
       (doseq [position (g/posis grid)
               :let [local-position (get grid position)]

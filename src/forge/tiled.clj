@@ -1,5 +1,4 @@
 (ns forge.tiled
-  (:refer-clojure :exclude [visible?])
   (:import com.badlogic.gdx.graphics.g2d.TextureRegion
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
@@ -143,6 +142,3 @@
 
 (defn put-all! [^MapProperties properties other-properties]
   (.putAll properties other-properties))
-
-(defn visible? [^TiledMapTileLayer layer]
-  (.isVisible layer))

@@ -109,7 +109,7 @@ direction keys: move")
            ;:area-level-grid area-level-grid
            :start-position start-position)
     (show-whole-map! (world-camera) tiled-map)
-    (.setVisible (t/get-layer tiled-map "creatures") true)))
+    (set-visible (t/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
   (ui/window {:title "Properties"
