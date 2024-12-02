@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.generate
   (:require [data.grid2d :as g2d]
-            [forge.level :as level]
             [forge.mapgen.creatures :as creatures]
             [forge.mapgen.grid :refer [scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))
@@ -92,7 +91,7 @@
                                  (filter #(= :ground     (get grid %)) (g2d/posis grid))
                                  (filter #(= :transition (get grid %)) (g2d/posis grid)))
         start-position (mapv * start scale)
-        can-spawn? #(= "all" (level/movement-property tiled-map %))
+        can-spawn? #(= "all" (movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill scaled-grid start-position can-spawn?)
         ;_ (println "scaled grid with filled nil: '?' \n")
@@ -123,5 +122,5 @@
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
 
-(defmethod level/generate* :world.generator/modules [world]
+(defmethod generate-level* :world.generator/modules [world]
   (generate-modules world))

@@ -2,7 +2,6 @@
   (:require [forge.controls :as controls]
             [forge.entity.components :as entity]
             [forge.entity.state :as state]
-            [forge.level :as level]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity ray-blocked?]]
@@ -294,7 +293,7 @@
                            (change-screen :screens/world)
                            (reset-stage (widgets))
                            (world/clear)
-                           (world/init (level/generate world-props))))
+                           (world/init (generate-level world-props))))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)

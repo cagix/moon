@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.string :as str]
-            [forge.level :as level]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules])
   (:import (com.badlogic.gdx.utils Disposable)))
@@ -42,8 +41,8 @@ direction keys: move")
             (let [level (get area-level-grid tile)]
               (when (number? level)
                 (str "Area level:" level))))
-          (str "Movement properties " (level/movement-property tiled-map tile) "\n"
-               (apply vector (level/movement-properties tiled-map tile)))]
+          (str "Movement properties " (movement-property tiled-map tile) "\n"
+               (apply vector (movement-properties tiled-map tile)))]
          (remove nil?)
          (str/join "\n"))))
 
@@ -84,7 +83,7 @@ direction keys: move")
       (draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
-              :let [prop (level/movement-property tiled-map [x y])]]
+              :let [prop (movement-property tiled-map [x y])]]
         (draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 black)
         (draw-filled-circle [(+ x 0.5) (+ y 0.5)]
                           0.05
@@ -98,7 +97,7 @@ direction keys: move")
 (def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [properties]
-  (let [{:keys [tiled-map start-position]} (level/generate (build world-id))
+  (let [{:keys [tiled-map start-position]} (generate-level (build world-id))
         atom-data (current-data)]
     (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc

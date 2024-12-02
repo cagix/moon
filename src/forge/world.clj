@@ -1,6 +1,5 @@
 (ns forge.world
   (:require [data.grid2d :as g2d]
-            [forge.level :as level]
             [malli.core :as m])
   (:import (forge RayCaster)))
 
@@ -637,7 +636,7 @@
                             (tm-height tiled-map)
                             (fn [position]
                               (atom (->cell position
-                                            (case (level/movement-property tiled-map position)
+                                            (case (movement-property tiled-map position)
                                               "none" :none
                                               "air"  :air
                                               "all"  :all))))))

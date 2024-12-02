@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.uf-caves
   (:require [data.grid2d :as g2d]
-            [forge.level :as level]
             [forge.mapgen.creatures :as creatures]
             [forge.mapgen.grid :refer [scalegrid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.tiled :refer [wgt-grid->tiled-map]]))
@@ -110,12 +109,16 @@
         {:keys [start-position grid]} (scale-grid grid start scaling)
         grid (assoc-transition-cells grid)
         tiled-map (generate-tiled-map grid)
-        can-spawn? #(= "all" (level/movement-property tiled-map %))
+        can-spawn? #(= "all" (movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill grid start-position can-spawn?)]
     (set-creatures-tiles spawn-rate tiled-map spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))
 
-(defmethod level/generate* :world.generator/uf-caves [world]
+(defmethod generate-level* :world.generator/uf-caves [world]
   (create world))
+
+(defmethod generate-level* :world.generator/tiled-map [world]
+  {:tiled-map (load-tmx-map (:world/tiled-map world))
+   :start-position [32 71]})
