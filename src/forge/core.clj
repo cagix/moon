@@ -1270,3 +1270,70 @@
       slurp
       edn/read-string
       start-app*))
+
+(def ^:private player-message-duration-seconds 1.5)
+
+(def ^:private message-to-player nil)
+
+(defn- draw-player-message []
+  (when-let [{:keys [message]} message-to-player]
+    (draw-text {:x (/ gui-viewport-width 2)
+                :y (+ (/ gui-viewport-height 2) 200)
+                :text message
+                :scale 2.5
+                :up? true})))
+
+(defn- check-remove-message []
+  (when-let [{:keys [counter]} message-to-player]
+    (alter-var-root #'message-to-player update :counter + (delta-time))
+    (when (>= counter player-message-duration-seconds)
+      (bind-root #'message-to-player nil))))
+
+(defn player-message-actor []
+  (ui/actor {:draw draw-player-message
+             :act check-remove-message}))
+
+(defn player-message-show [message]
+  (bind-root #'message-to-player {:message message :counter 0}))
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn show-modal [{:keys [title text button-text on-click]}]
+  (assert (not (::modal (screen-stage))))
+  (add-actor
+   (ui/window {:title title
+               :rows [[(ui/label text)]
+                      [(ui/text-button button-text
+                                       (fn []
+                                         (Actor/.remove (::modal (screen-stage)))
+                                         (on-click)))]]
+               :id ::modal
+               :modal? true
+               :center-position [(/ gui-viewport-width 2)
+                                 (* gui-viewport-height (/ 3 4))]
+               :pack? true})))
+
+(defmacro ^:private with-err-str
+  "Evaluates exprs in a context in which *err* is bound to a fresh
+  StringWriter.  Returns the string created by any nested printing
+  calls."
+  [& body]
+  `(let [s# (new java.io.StringWriter)]
+     (binding [*err* s#]
+       ~@body
+       (str s#))))
+
+(defn error-window! [throwable]
+  (pretty-pst throwable)
+  (add-actor
+   (ui/window {:title "Error"
+               :rows [[(ui/label (binding [*print-level* 3]
+                                   (with-err-str
+                                     (clojure.repl/pst throwable))))]]
+               :modal? true
+               :close-button? true
+               :close-on-escape? true
+               :center? true
+               :pack? true})))

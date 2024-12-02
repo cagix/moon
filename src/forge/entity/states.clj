@@ -8,8 +8,6 @@
             [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as widgets.inventory]
-            [forge.ui.player-message :as player-message]
-            [forge.ui.modal :as modal]
             [forge.world :as world :refer [timer stopped? line-of-sight? finished-ratio player-eid mouseover-eid]]
             [forge.world.potential-fields :as potential-fields]))
 
@@ -122,7 +120,7 @@
 
   (state/enter [_]
     (play-sound "bfxr_playerdeath")
-    (modal/show {:title "YOU DIED"
+    (show-modal {:title "YOU DIED"
                  :text "\nGood luck next time"
                  :button-text ":("
                  :on-click #(change-screen :screens/main-menu)})))
@@ -244,7 +242,7 @@
 
 (defn- denied [text]
   (play-sound "bfxr_denied")
-  (player-message/show text))
+  (player-message-show text))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -268,7 +266,7 @@
      :else
      (do
       (play-sound "bfxr_denied")
-      (player-message/show "Your Inventory is full")))))
+      (player-message-show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
   (ui/toggle-visible! (widgets.inventory/window)))

@@ -8,10 +8,8 @@
             [forge.screen :as screen]
             [forge.ui :as ui]
             [forge.ui.action-bar :as action-bar]
-            [forge.ui.error-window :refer [error-window!]]
             [forge.ui.inventory :as inventory]
-            [forge.ui.player-message :as player-message]
-            [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity] ray-blocked?]
+            [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity ray-blocked?]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
@@ -281,7 +279,7 @@
               :actors [(entity-info-window)
                        (inventory/create)]})
    (ui/actor {:draw #(state/draw-gui-view (entity/state-obj @player-eid))})
-   (player-message/create)])
+   (player-message-actor)])
 
 (defn- windows []
   (:windows (screen-stage)))

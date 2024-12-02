@@ -4,8 +4,7 @@
             [clojure.string :as str]
             [forge.info :as info]
             [forge.ui :as ui]
-            [forge.screen :as screen]
-            [forge.ui.error-window :refer [error-window!]])
+            [forge.screen :as screen])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
