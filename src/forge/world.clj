@@ -467,7 +467,6 @@
 (def ^:private max-speed (/ minimum-body-size max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
-
 (def ^:private z-orders [:z-order/on-ground
                          :z-order/ground
                          :z-order/flying

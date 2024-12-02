@@ -50,7 +50,9 @@
  ; Change namespace to forge.core then call this.  And start with lein repl and without :main set so other ns don't get loaded
  (->> *ns*
       ns-publics
-      (remove (fn [[k v]] (:macro (meta v))))
+      (remove (fn [[k v]]
+                (or (:macro (meta v))
+                    (instance? java.lang.Class @v))))
       (map (fn [s] (str "\"" (name (first s)) "\"")))
       (str/join ", ")
       (spit "vimrc_names")))
