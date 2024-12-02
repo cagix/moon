@@ -48,14 +48,14 @@
                            :else
                            neutral-color)))))
 
-(defmethod entity/render :entity/line-render [{:keys [thick? end color]} entity]
+(defmethod entity/render :entity/line-render [[_ {:keys [thick? end color]}] entity]
   (let [position (:position entity)]
     (if thick?
       (with-line-width 4
         #(draw-line position end color))
       (draw-line position end color))))
 
-(defmethod entity/render :entity/image [image entity]
+(defmethod entity/render :entity/image [[_ image] entity]
   (draw-rotated-centered image
                          (or (:rotation-angle entity) 0)
                          (:position entity)))
@@ -77,7 +77,7 @@
 (defmethod entity/render-above :entity/temp-modifier [_ entity]
   (draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
-(defmethod entity/render-info :active-skill [{:keys [skill effect-ctx counter]} entity]
+(defmethod entity/render-info :active-skill [[_ {:keys [skill effect-ctx counter]}] entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
     (effects-render (check-update-ctx effect-ctx) effects)))

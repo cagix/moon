@@ -49,7 +49,7 @@
       (effects-do! {:effect/source source :effect/target target}
                    entity-effects))))
 
-(defn render [_ {:keys [effect/source]}]
+(defn render-effect [_ {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target* (map deref (creatures-in-los-of-player))]
       (draw-line (:position source*) #_(start-point source* target*)

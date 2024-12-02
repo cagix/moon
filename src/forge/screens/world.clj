@@ -202,9 +202,7 @@
   (cam/set-position! (world-camera) (:position @player-eid))
   ; FIXME position DRY
   (draw-tiled-map world/tiled-map
-                  (tile-color-setter
-                   world/explored-tile-corners
-                   (cam/position (world-camera))))
+                  (tile-color-setter (cam/position (world-camera))))
   (draw-on-world-view (fn []
                        (debug-render/before-entities)
                        ; FIXME position DRY (from player)

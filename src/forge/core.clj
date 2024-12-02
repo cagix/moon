@@ -562,12 +562,12 @@
 
 (defn effects-useful? [ctx effects]
   (->> effects
-       (applicable? ctx)
+       (effects-applicable? ctx)
        (some #(useful? % ctx))))
 
 (defn effects-do! [ctx effects]
   (run! #(handle % ctx)
-        (applicable? ctx effects)))
+        (effects-applicable? ctx effects)))
 
 (defn effects-render [ctx effects]
   (run! #(render-effect % ctx)

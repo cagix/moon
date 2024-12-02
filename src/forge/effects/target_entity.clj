@@ -41,7 +41,7 @@
        (effects-do! ctx entity-effects))
       (world/audiovisual (end-point source* target* maxrange) (build :audiovisuals/hit-ground)))))
 
-(defn render [{:keys [maxrange]} {:keys [effect/source effect/target]}]
+(defn render-effect [{:keys [maxrange]} {:keys [effect/source effect/target]}]
   (when target
     (let [source* @source
           target* @target]
