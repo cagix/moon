@@ -2,7 +2,6 @@
   (:require [data.grid2d :as g2d]
             [forge.core :refer :all]
             [forge.entity.components :as entity]
-            [forge.entity.state :as state]
             [forge.world :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
@@ -72,7 +71,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [com.badlogic.gdx.scenes.scene2d.utils.ClickListener] []
                              (clicked [event x y]
-                               (state/clicked-inventory-cell (entity/state-obj @player-eid) cell))))
+                               (clicked-inventory-cell (entity/state-obj @player-eid) cell))))
     stack))
 
 (def empty-inventory

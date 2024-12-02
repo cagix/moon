@@ -2085,3 +2085,27 @@
            movement-property-layers
            (some #(tile-movement-property tiled-map % position)))
       "none"))
+
+(defsystem state-enter)
+(defmethod state-enter :default [_])
+
+(defsystem state-exit)
+(defmethod state-exit :default [_])
+
+(defsystem state-cursor)
+(defmethod state-cursor :default [_])
+
+(defsystem pause-game?)
+(defmethod pause-game? :default [_])
+
+(defsystem manual-tick)
+(defmethod manual-tick :default [_])
+
+(defsystem clicked-inventory-cell [_ cell])
+(defmethod clicked-inventory-cell :default [_ cell])
+
+(defsystem clicked-skillmenu-skill [_ skill])
+(defmethod clicked-skillmenu-skill :default [_ skill])
+
+(defsystem draw-gui-view [_])
+(defmethod draw-gui-view :default [_])

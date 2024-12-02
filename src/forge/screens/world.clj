@@ -2,7 +2,6 @@
   (:require [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.entity.components :as entity]
-            [forge.entity.state :as state]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity ray-blocked?]]
@@ -274,7 +273,7 @@
    (ui-group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @player-eid))})
+   (ui-actor {:draw #(draw-gui-view (entity/state-obj @player-eid))})
    (player-message-actor)])
 
 (defn- windows []
@@ -321,11 +320,11 @@
     (bind-root #'world/mouseover-eid new-eid)))
 
 (defn- update-world []
-  (state/manual-tick (entity/state-obj @player-eid))
+  (manual-tick (entity/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root #'paused? (or tick-error
                            (and pausing?
-                                (state/pause-game? (entity/state-obj @player-eid))
+                                (pause-game? (entity/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
     (let [delta-ms (min (delta-time) world/max-delta-time)]

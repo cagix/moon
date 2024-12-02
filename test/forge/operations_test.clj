@@ -1,13 +1,13 @@
 (ns forge.operations-test
   (:require [clojure.test :refer :all]
-            [forge.operations :as ops]))
+            [forge.core :Refer [ops-apply ops-add ops-remove]]))
 
 (deftest add-and-remove
-  (is (= (ops/add {:+ 6}
+  (is (= (ops-add {:+ 6}
                   {:* -5 :+ -1})
          {:+ 5, :* -5}))
 
-  (is (= (ops/remove {:+ 6 :* -50}
+  (is (= (ops-remove {:+ 6 :* -50}
                      {:+ 2 :* -50})
          {:+ 4, :* 0})))
 
@@ -31,12 +31,12 @@
      "-30 Hitpoints\n+5% Hitpoints"))
 
 (deftest ops-apply
-  (is (= (ops/apply {:op/inc 6
+  (is (= (ops-apply {:op/inc 6
                      :op/mult 50}
                     10)
          24))
 
-  (is (= (ops/apply {:op/inc -5
+  (is (= (ops-apply {:op/inc -5
                      :op/mult 20}
                     10)
          6)))

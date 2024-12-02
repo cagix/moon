@@ -1,7 +1,6 @@
 (ns forge.entity.components
   (:require [malli.core :as m]
             [forge.core :refer :all]
-            [forge.entity.state :as state]
             [forge.ui.action-bar :as action-bar]
             [forge.world :refer [timer reset-timer]]
             [reduce-fsm :as fsm]))
@@ -38,14 +37,14 @@
                                                 [new-state-k eid params]
                                                 [new-state-k eid]))]]
           (when (:entity/player? @eid)
-            (when-let [cursor (state/cursor new-state-obj)]
+            (when-let [cursor (state-cursor new-state-obj)]
               (set-cursor cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (state/exit old-state-obj)
-          (state/enter new-state-obj))))))
+          (state-exit old-state-obj)
+          (state-enter new-state-obj))))))
 
 (defn event
   ([eid event]

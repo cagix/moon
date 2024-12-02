@@ -2,7 +2,6 @@
   (:require [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
-            [forge.entity.state :as state]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.world :as world :refer [audiovisual timer stopped? player-eid line-of-sight? finished-ratio mouseover-eid]]
@@ -24,14 +23,14 @@
  (def ^:private entity-state
    (merge-with concat
                entity
-               {:optional [#'state/enter
-                           #'state/exit
-                           #'state/cursor
-                           #'state/pause-game?
-                           #'state/manual-tick
-                           #'state/clicked-inventory-cell
-                           #'state/clicked-skillmenu-skill
-                           #'state/draw-gui-view]}))
+               {:optional [#'state-enter
+                           #'state-exit
+                           #'state-cursor
+                           #'pause-game?
+                           #'manual-tick
+                           #'clicked-inventory-cell
+                           #'clicked-skillmenu-skill
+                           #'draw-gui-view]}))
  )
 
 
@@ -455,7 +454,7 @@
 (defmethod ->v :npc-dead [[_ eid]]
   {:eid eid})
 
-(defmethod state/enter :npc-dead [[_ {:keys [eid]}]]
+(defmethod state-enter :npc-dead [[_ {:keys [eid]}]]
   (swap! eid assoc :entity/destroyed? true))
 
 (defn- nearest-enemy [entity]
@@ -506,11 +505,11 @@
      :movement-vector movement-vector
      :counter (timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
-  (state/enter [[_ {:keys [eid movement-vector]}]]
+  (state-enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
-  (state/exit [[_ {:keys [eid]}]]
+  (state-exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
   (e-tick [[_ {:keys [counter]}] eid]
@@ -521,7 +520,7 @@
   (->v [[_ eid]]
     {:eid eid})
 
-  (state/exit [[_ {:keys [eid]}]]
+  (state-exit [[_ {:keys [eid]}]]
     (world/shout (:position @eid) (:entity/faction @eid) 0.2)
     (swap! eid entity/add-text-effect "[WHITE]!"))
 
@@ -540,13 +539,13 @@
                   :up? true}))))
 
 (defmethods :player-dead
-  (state/cursor [_]
+  (state-cursor [_]
     :cursors/black-x)
 
-  (state/pause-game? [_]
+  (pause-game? [_]
     true)
 
-  (state/enter [_]
+  (state-enter [_]
     (play-sound "bfxr_playerdeath")
     (show-modal {:title "YOU DIED"
                  :text "\nGood luck next time"
@@ -558,10 +557,10 @@
     {:eid eid
      :counter (timer duration)})
 
-  (state/cursor [_]
+  (state-cursor [_]
     :cursors/denied)
 
-  (state/pause-game? [_]
+  (pause-game? [_]
     false)
 
   (e-tick [[_ {:keys [counter]}] eid]
@@ -576,17 +575,17 @@
     {:eid eid
      :movement-vector movement-vector})
 
-  (state/cursor [_]
+  (state-cursor [_]
     :cursors/walking)
 
-  (state/pause-game? [_]
+  (pause-game? [_]
     false)
 
-  (state/enter [[_ {:keys [eid movement-vector]}]]
+  (state-enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)}))
 
-  (state/exit [[_ {:keys [eid]}]]
+  (state-exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
   (e-tick [[_ {:keys [movement-vector]}] eid]
@@ -633,13 +632,13 @@
                    (apply-action-speed-modifier @eid skill)
                    timer)})
 
-  (state/cursor [_]
+  (state-cursor [_]
     :cursors/sandclock)
 
-  (state/pause-game? [_]
+  (pause-game? [_]
     false)
 
-  (state/enter [[_ {:keys [eid skill]}]]
+  (state-enter [[_ {:keys [eid skill]}]]
     (play-sound (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
@@ -774,10 +773,10 @@
   (->v [[_ eid]]
     {:eid eid})
 
-  (state/pause-game? [_]
+  (pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}]]
+  (manual-tick [[_ {:keys [eid]}]]
     (if-let [movement-vector (controls/movement-vector)]
       (entity/event eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
@@ -785,14 +784,14 @@
         (when (button-just-pressed? :left)
           (on-click)))))
 
-  (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  (clicked-inventory-cell [[_ {:keys [eid]}] cell]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (play-sound "bfxr_takeit")
       (entity/event eid :pickup-item item)
       (remove-item eid cell)))
 
-  (state/clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
+  (clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
     (let [free-skill-points (:entity/free-skill-points @eid)]
       ; TODO no else case, no visible free-skill-points
       (when (and (pos? free-skill-points)
@@ -861,24 +860,24 @@
     {:eid eid
      :item item})
 
-  (state/pause-game? [_]
+  (pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}]]
+  (manual-tick [[_ {:keys [eid]}]]
     (when (and (button-just-pressed? :left)
                (world-item?))
       (entity/event eid :drop-item)))
 
-  (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  (clicked-inventory-cell [[_ {:keys [eid]}] cell]
     (clicked-cell eid cell))
 
-  (state/cursor [_]
+  (state-cursor [_]
     :cursors/hand-grab)
 
-  (state/enter [[_ {:keys [eid item]}]]
+  (state-enter [[_ {:keys [eid item]}]]
     (swap! eid assoc :entity/item-on-cursor item))
 
-  (state/exit [[_ {:keys [eid]}]]
+  (state-exit [[_ {:keys [eid]}]]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
@@ -889,7 +888,7 @@
         (swap! eid dissoc :entity/item-on-cursor)
         (world/item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
-  (state/draw-gui-view [[_ {:keys [eid]}]]
+  (draw-gui-view [[_ {:keys [eid]}]]
     (let [entity @eid]
       (when (and (= :player-item-on-cursor (entity/state-k entity))
                  (not (world-item?)))
