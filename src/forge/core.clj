@@ -33,17 +33,6 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
 
-(comment
- (->> *ns*
-      ns-publics
-      (remove (fn [[k v]]
-                (or (:macro (meta v))
-                    (instance? java.lang.Class @v))))
-      (map (fn [s] (str "\"" (name (first s)) "\"")))
-      (str/join ", ")
-      (spit "vimrc_names"))
- )
-
 (defprotocol Screen
   (screen-enter   [_])
   (screen-exit    [_])

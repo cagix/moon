@@ -4,6 +4,8 @@
 
 (comment
 
+ (print-vimrc-names-forge-core-publics "vimrc")
+
  (print-app-values-tree "app-values-tree.clj")
 
  (show-tree-view! (mouseover-entity))
@@ -210,3 +212,13 @@
          (clojure.pprint/pprint
           (for [[ns-name vars] (ns-value-vars #{"forge"})]
             [ns-name (map #(:name (meta %)) vars)])))))
+
+(defn print-vimrc-names-forge-core-publics [file]
+  (->> *ns*
+       ns-publics
+       (remove (fn [[k v]]
+                 (or (:macro (meta v))
+                     (instance? java.lang.Class @v))))
+       (map (fn [s] (str "\"" (name (first s)) "\"")))
+       (str/join ", ")
+       (spit file)))
