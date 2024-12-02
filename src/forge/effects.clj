@@ -19,18 +19,18 @@
     (keyword "stats" (name effect-k)))
 
 #_(defmethods :effects.target/hp
-  (info [ops]
-    (ops/info ops *k*))
+  (info [[k ops]]
+    (ops/info ops k))
 
-  (applicable? [_ {:keys [effect/source effect/target]}]
+  (applicable? [[k _] {:keys [effect/source effect/target]}]
     (and effect/target
-         (mods/value @target (stat-k *k*))))
+         (mods/value @target (stat-k k))))
 
   (useful? [_ _]
     true)
 
-  (handle [operations {:keys [effect/source effect/target]}]
-    (let [stat-k (stat-k *k*)]
+  (handle [[k operations] {:keys [effect/source effect/target]}]
+    (let [stat-k (stat-k k)]
       (when-let [value (mods/value @target stat-k)]
         (swap! target assoc stat-k (ops/apply operations value))))))
 

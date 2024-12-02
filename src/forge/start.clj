@@ -1,14 +1,11 @@
 (ns forge.start
   (:require [forge.effects]
             [forge.entity.animation]
-            [forge.entity.render]
             [forge.entity.impl]
             [forge.entity.states]
             [forge.info.impl]
             (forge.mapgen generate uf-caves)
 
-            [forge.entity :as entity]
-            [forge.entity.state :as state]
             [forge.graphics :as g]
             [forge.screens.editor :as editor]
             [forge.screens.map-editor :as map-editor]
@@ -68,56 +65,6 @@
 (def tile-size 48)
 
 (def ^:private config "app.edn")
-
-(defn- namespace->component-key [prefix ns-str]
-   (let [ns-parts (-> ns-str
-                      (str-replace prefix "")
-                      (str-split #"\."))]
-     (keyword (str-join "." (drop-last ns-parts))
-              (last ns-parts))))
-
-(comment
- (and (= (namespace->component-key #"^forge." "forge.effects.projectile")
-         :effects/projectile)
-      (= (namespace->component-key #"^forge." "forge.effects.target.convert")
-         :effects.target/convert)))
-
-(defn- install
-  ([component-systems ns-sym]
-   (install-component component-systems
-                      ns-sym
-                      (namespace->component-key #"^forge." (str ns-sym))))
-  ([component-systems ns-sym k]
-   (install-component component-systems ns-sym k)))
-
-(defn- install-all [component-systems ns-syms]
-  (doseq [ns-sym ns-syms]
-    (install component-systems ns-sym)))
-
-(def ^:private entity
-  {:optional [#'entity/->v
-              #'entity/create
-              #'entity/destroy
-              #'entity/tick
-              #'entity/render-below
-              #'entity/render
-              #'entity/render-above
-              #'entity/render-info]})
-
-(def ^:private entity-state
-  (merge-with concat
-              entity
-              {:optional [#'state/enter
-                          #'state/exit
-                          #'state/cursor
-                          #'state/pause-game?
-                          #'state/manual-tick
-                          #'state/clicked-inventory-cell
-                          #'state/clicked-skillmenu-skill
-                          #'state/draw-gui-view]}))
-
-(install entity-state 'forge.entity.player.idle           :player-idle)
-(install entity-state 'forge.entity.player.item-on-cursor :player-item-on-cursor)
 
 (defn- set-dock-icon [image-resource]
   (.setIconImage (Taskbar/getTaskbar)

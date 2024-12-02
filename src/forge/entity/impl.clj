@@ -1,23 +1,89 @@
 (ns forge.entity.impl
   (:require [forge.entity :as entity]
-            [forge.entity.components :refer [add-skill collides? remove-mods event ]]
+            [forge.entity.components :refer [hitpoints enemy add-skill collides? remove-mods event]]
             [forge.entity.inventory :as inventory]
+            [forge.graphics :refer [draw-filled-circle draw-text draw-filled-rectangle pixels->world-units draw-rotated-centered draw-line with-line-width draw-ellipse draw-centered]]
             [forge.item :as item]
-            [forge.world :as world :refer [audiovisual timer stopped?]]
+            [forge.val-max :as val-max]
+            [forge.world :as world :refer [audiovisual timer stopped? player-eid]]
             [malli.core :as m]
             [reduce-fsm :as fsm]))
 
-(defmethod entity/->v :entity/hp   [[_ v]] [v v])
+(comment
+ (def ^:private entity
+   {:optional [#'entity/->v
+               #'entity/create
+               #'entity/destroy
+               #'entity/tick
+               #'entity/render-below
+               #'entity/render
+               #'entity/render-above
+               #'entity/render-info]}))
+
+(def ^:private hpbar-colors
+  {:green     [0 0.8 0]
+   :darkgreen [0 0.5 0]
+   :yellow    [0.5 0.5 0]
+   :red       [0.5 0 0]})
+
+(defn- hpbar-color [ratio]
+  (let [ratio (float ratio)
+        color (cond
+               (> ratio 0.75) :green
+               (> ratio 0.5)  :darkgreen
+               (> ratio 0.25) :yellow
+               :else          :red)]
+    (color hpbar-colors)))
+
+(def ^:private borders-px 1)
+
+(defn- draw-hpbar [{:keys [position width half-width half-height]}
+                   ratio]
+  (let [[x y] position]
+    (let [x (- x half-width)
+          y (+ y half-height)
+          height (pixels->world-units 5)
+          border (pixels->world-units borders-px)]
+      (draw-filled-rectangle x y width height black)
+      (draw-filled-rectangle (+ x border)
+                             (+ y border)
+                             (- (* width ratio) (* 2 border))
+                             (- height (* 2 border))
+                             (hpbar-color ratio)))))
+
+(defmethods :entity/hp
+  (entity/->v [[_ v]]
+    [v v])
+
+  (entity/render-info [_ entity]
+    (let [ratio (val-max/ratio (hitpoints entity))]
+      (when (or (< ratio 1) (:entity/mouseover? entity))
+        (draw-hpbar entity ratio)))))
+
 (defmethod entity/->v :entity/mana [[_ v]] [v v])
 
-(defmethod entity/tick :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
-  (when (stopped? counter)
-    (swap! eid dissoc k)
-    (swap! eid remove-mods modifiers)))
+(defmethods :entity/temp-modifier
+  (entity/tick [[k {:keys [modifiers counter]}] eid]
+    (when (stopped? counter)
+      (swap! eid dissoc k)
+      (swap! eid remove-mods modifiers)))
 
-(defmethod entity/tick :entity/string-effect [[k {:keys [counter]}] eid]
-  (when (stopped? counter)
-    (swap! eid dissoc k)))
+  ; TODO draw opacity as of counter ratio?
+  (entity/render-above [_ entity]
+    (draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
+
+(defmethods :entity/string-effect
+  (entity/tick  [[k {:keys [counter]}] eid]
+    (when (stopped? counter)
+      (swap! eid dissoc k)))
+
+  (entity/render-above [[_ {:keys [text]}] entity]
+    (let [[x y] (:position entity)]
+      (draw-text {:text text
+                  :x x
+                  :y (+ y (:half-height entity) (pixels->world-units 5))
+                  :scale 2
+                  :up? true}))))
 
 (defmethod entity/destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
   (audiovisual (:position @eid) (build audiovisuals-id)))
@@ -209,3 +275,41 @@
   (swap! eid assoc k item/empty-inventory)
   (doseq [item items]
     (inventory/pickup-item eid item)))
+
+(defmethod entity/render :entity/clickable [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
+  (when (and mouseover? text)
+    (let [[x y] (:position entity)]
+      (draw-text {:text text
+                  :x x
+                  :y (+ y (:half-height entity))
+                  :up? true}))))
+
+(defmethod entity/render :entity/line-render [[_ {:keys [thick? end color]}] entity]
+  (let [position (:position entity)]
+    (if thick?
+      (with-line-width 4
+        #(draw-line position end color))
+      (draw-line position end color))))
+
+(defmethod entity/render :entity/image [[_ image] entity]
+  (draw-rotated-centered image
+                         (or (:rotation-angle entity) 0)
+                         (:position entity)))
+
+(def ^:private outline-alpha 0.4)
+(def ^:private enemy-color    [1 0 0 outline-alpha])
+(def ^:private friendly-color [0 1 0 outline-alpha])
+(def ^:private neutral-color  [1 1 1 outline-alpha])
+
+(defmethod entity/render-below :entity/mouseover? [_ {:keys [entity/faction] :as entity}]
+  (let [player @player-eid]
+    (with-line-width 3
+      #(draw-ellipse (:position entity)
+                     (:half-width entity)
+                     (:half-height entity)
+                     (cond (= faction (enemy player))
+                           enemy-color
+                           (= faction (:entity/faction player))
+                           friendly-color
+                           :else
+                           neutral-color)))))
