@@ -34,7 +34,6 @@
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
 
 (comment
- ; Change namespace to forge.core then call this.  And start with lein repl and without :main set so other ns don't get loaded
  (->> *ns*
       ns-publics
       (remove (fn [[k v]]
@@ -42,7 +41,8 @@
                     (instance? java.lang.Class @v))))
       (map (fn [s] (str "\"" (name (first s)) "\"")))
       (str/join ", ")
-      (spit "vimrc_names")))
+      (spit "vimrc_names"))
+ )
 
 (defprotocol Screen
   (screen-enter   [_])
@@ -221,8 +221,8 @@
   (.clear (screen-stage))
   (run! add-actor new-actors))
 
-(defn post-runnable [runnable]
-  (.postRunnable Gdx/app runnable))
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (declare ^:private db-schemas
          ^:private db-properties-file
