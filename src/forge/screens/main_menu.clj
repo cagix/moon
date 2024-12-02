@@ -1,8 +1,7 @@
 (ns forge.screens.main-menu
   (:require [forge.graphics :as g]
             [forge.ui :as ui]
-            [forge.screen :as screen]
-            [forge.screens.world :as world]))
+            [forge.screen :as screen]))
 
 (defn create [background-image]
   {:actors [background-image
@@ -12,7 +11,7 @@
                       (concat
                        (for [world (build-all :properties/worlds)]
                          [(ui/text-button (str "Start " (:property/id world))
-                                          #(world/start world))])
+                                          #(start-world world))])
                        [(when dev-mode?
                           [(ui/text-button "Map editor"
                                            #(change-screen :screens/map-editor))])

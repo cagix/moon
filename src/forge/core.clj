@@ -790,3 +790,5 @@
   (if (and (zero? v) (zero? mx))
     0
     (/ v mx)))
+
+(declare start-world)

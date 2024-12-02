@@ -215,8 +215,6 @@
 (defn tile-color-setter [light-position]
   (tile-color-setter* (atom {}) light-position))
 
-(declare start)
-
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor?)]
     (str "TRUE - name:" (.getName actor)
@@ -234,7 +232,7 @@
             {:label "World"
              :items (for [world (build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
-                       :on-click #(start world)})}
+                       :on-click #(start-world world)})}
             {:label "Help"
              :items [{:label controls/help-text}]}]
     :update-labels [{:label "Mouseover-entity id"
@@ -301,11 +299,11 @@
     (when (some visible? windows)
       (run! #(Actor/.setVisible % false) windows))))
 
-(defn start [world-props]
-  (change-screen :screens/world)
-  (reset-stage (widgets))
-  (world/clear)
-  (world/init (level/generate world-props)))
+(bind-root #'start-world (fn start-world [world-props]
+                           (change-screen :screens/world)
+                           (reset-stage (widgets))
+                           (world/clear)
+                           (world/init (level/generate world-props))))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
