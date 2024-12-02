@@ -7,7 +7,7 @@
          '[clojure.java.io :as io]
          '[clojure.math :as math]
          '[data.grid2d :as g2d]
-         '[forge.screen :as screen]
+         '[forge.screen :as screen] ; FIXME breaks reloading
          '[malli.core :as m]
          '[malli.error :as me]
          '[malli.generator :as mg])
@@ -782,3 +782,14 @@
    (range (dec y) (+ y 2))))
 
 (def grid2d g2d/create-grid)
+
+(defmacro defmethods [k & sys-impls]
+  `(do
+    ~@(for [[sys & fn-body] sys-impls
+            :let [sys-var (resolve sys)]]
+        `(do
+          (when (get (methods @~sys-var) ~k)
+            (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
+          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
+            ~@fn-body)))
+    ~k))

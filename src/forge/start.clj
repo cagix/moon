@@ -1,5 +1,6 @@
 (ns forge.start
-  (:require [forge.entity :as entity]
+  (:require [forge.effects]
+            [forge.entity :as entity]
             [forge.entity.components :refer [damage-mods hitpoints mana stat remove-mods]]
             [forge.entity.state :as state]
             [forge.entity.animation]
@@ -280,24 +281,6 @@
 (defn- install-all [component-systems ns-syms]
   (doseq [ns-sym ns-syms]
     (install component-systems ns-sym)))
-
-(def ^:private effect
-  {:required [#'applicable?
-              #'handle]
-   :optional [#'useful?
-              #'render-effect]})
-
-(install-all effect '[forge.effects.projectile
-                      forge.effects.spawn
-                      forge.effects.target-all
-                      forge.effects.target-entity
-                      forge.effects.target.audiovisual
-                      forge.effects.target.convert
-                      forge.effects.target.damage
-                      forge.effects.target.kill
-                      forge.effects.target.melee-damage
-                      forge.effects.target.spiderweb
-                      forge.effects.target.stun])
 
 (def ^:private entity
   {:optional [#'entity/->v
