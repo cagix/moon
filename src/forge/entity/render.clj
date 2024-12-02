@@ -2,9 +2,9 @@
   (:require [forge.entity :as entity]
             [forge.entity.components :refer [hitpoints enemy]]
             [forge.entity.player.item-on-cursor :refer [item-place-position world-item?]]
-            [forge.graphics :refer [draw-filled-circle draw-image draw-sector draw-text draw-filled-rectangle pixels->world-units draw-rotated-centered draw-line with-line-width draw-ellipse draw-circle draw-centered]]
+            [forge.graphics :refer [draw-filled-circle draw-text draw-filled-rectangle pixels->world-units draw-rotated-centered draw-line with-line-width draw-ellipse draw-circle draw-centered]]
             [forge.val-max :as val-max]
-            [forge.world :refer [player-eid finished-ratio]]))
+            [forge.world :refer [player-eid]]))
 
 (defmethod entity/render-below :stunned [_ entity]
   (draw-circle (:position entity) 0.5 [1 1 1 0.6]))
