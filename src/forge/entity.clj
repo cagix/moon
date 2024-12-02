@@ -4,7 +4,7 @@
             [forge.entity.components :as entity :refer [hitpoints enemy add-skill collides? remove-mods event]]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
-            [forge.world :as world :refer [audiovisual timer stopped? player-eid line-of-sight? finished-ratio mouseover-eid]]
+            [forge.world :refer [spawn-audiovisual timer stopped? player-eid line-of-sight? finished-ratio mouseover-eid circle->entities rectangle->cells cells->entities cell-blocked? speed-schema world-delta world-grid spawn-item position-changed nearest-entity delayed-alert nearest-entity-distance]]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
             [reduce-fsm :as fsm]))
@@ -165,14 +165,14 @@
                   :up? true}))))
 
 (defmethod e-destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
-  (audiovisual (:position @eid) (build audiovisuals-id)))
+  (spawn-audiovisual (:position @eid) (build audiovisuals-id)))
 
 (def ^:private shout-radius 4)
 
 (defn- friendlies-in-radius [position faction]
   (->> {:position position
         :radius shout-radius}
-       world/circle->entities
+       circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
 (defmethod e-tick :entity/alert-friendlies-after-duration
@@ -263,15 +263,15 @@
     ; means non colliding with other entities
     ; but still collding with other stuff here ? o.o
     (let [entity @eid
-          cells* (map deref (world/rectangle->cells entity)) ; just use cached-touched -cells
+          cells* (map deref (rectangle->cells entity)) ; just use cached-touched -cells
           hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                              (:entity/faction @%))
                                        (:collides? @%)
                                        (collides? entity @%))
-                                 (world/cells->entities cells*))
+                                 (cells->entities cells*))
           destroy? (or (and hit-entity (not piercing?))
-                       (some #(world/blocked? % (:z-order entity)) cells*))]
+                       (some #(cell-blocked? % (:z-order entity)) cells*))]
       (when destroy?
         (swap! eid assoc :entity/destroyed? true))
       (when hit-entity
@@ -289,10 +289,10 @@
 
 (defn- valid-position? [{:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
-  (let [cells* (into [] (map deref) (world/rectangle->cells body))]
-    (and (not-any? #(world/blocked? % z-order) cells*)
+  (let [cells* (into [] (map deref) (rectangle->cells body))]
+    (and (not-any? #(cell-blocked? % z-order) cells*)
          (->> cells*
-              world/cells->entities
+              cells->entities
               (not-any? (fn [other-entity]
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
@@ -318,7 +318,7 @@
 (defmethod e-tick :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
    eid]
-  (assert (m/validate world/speed-schema speed)
+  (assert (m/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v-length direction))
               (v-normalised? direction))
@@ -326,12 +326,12 @@
   (when-not (or (zero? (v-length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time world/delta)
+    (let [movement (assoc movement :delta-time world-delta)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)
                         (move-body body movement))]
-        (world/position-changed eid)
+        (position-changed eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))
@@ -441,7 +441,7 @@
   (e-tick [[k animation] eid]
     (swap! eid #(-> %
                     (assoc-image-current-frame animation)
-                    (assoc k (animation-tick animation world/delta))))))
+                    (assoc k (animation-tick animation world-delta))))))
 
 (defmethods :entity/delete-after-animation-stopped
   (e-create  [_ eid]
@@ -458,8 +458,8 @@
   (swap! eid assoc :entity/destroyed? true))
 
 (defn- nearest-enemy [entity]
-  (world/nearest-entity @(world/cell (entity/tile entity))
-                        (entity/enemy entity)))
+  (nearest-entity @(get world-grid (entity/tile entity))
+                  (entity/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
   (let [entity @eid
@@ -471,7 +471,7 @@
      :effect/target-direction (when target (entity/direction entity @target))}))
 
 (comment
- (let [eid (world/ids->eids 76)
+ (let [eid (ids->eids 76)
        effect-ctx (npc-effect-ctx eid)]
    (npc-choose-skill effect-ctx @eid))
  )
@@ -521,13 +521,13 @@
     {:eid eid})
 
   (state-exit [[_ {:keys [eid]}]]
-    (world/shout (:position @eid) (:entity/faction @eid) 0.2)
+    (delayed-alert (:position @eid) (:entity/faction @eid) 0.2)
     (swap! eid entity/add-text-effect "[WHITE]!"))
 
   (e-tick [_ eid]
     (let [entity @eid
-          cell (world/cell (entity/tile entity))] ; pattern!
-      (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
+          cell (get world-grid (entity/tile entity))] ; pattern!
+      (when-let [distance (nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           (entity/event eid :alert)))))
 
@@ -886,7 +886,7 @@
       (when (:entity/item-on-cursor entity)
         (play-sound "bfxr_itemputground")
         (swap! eid dissoc :entity/item-on-cursor)
-        (world/item (item-place-position entity) (:entity/item-on-cursor entity)))))
+        (spawn-item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
   (draw-gui-view [[_ {:keys [eid]}]]
     (let [entity @eid]

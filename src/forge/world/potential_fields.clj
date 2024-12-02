@@ -1,7 +1,7 @@
 (ns forge.world.potential-fields
   (:require [forge.core :refer :all]
             [forge.entity.components :as entity]
-            [forge.world :as world :refer [occupied-by-other?  nearest-entity-distance nearest-entity rectangle->cells blocked? cached-adjacent-cells grid nearest-entity nearest-entity-distance]]))
+            [forge.world :refer [occupied-by-other? nearest-entity-distance nearest-entity rectangle->cells cell-blocked? cached-adjacent-cells world-grid nearest-entity nearest-entity-distance]]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})
@@ -18,7 +18,7 @@
 (def ^:private pf-cache (atom nil))
 
 (defn- pf-cell-blocked? [cell*]
-  (blocked? cell* :z-order/ground))
+  (cell-blocked? cell* :z-order/ground))
 
 ; FIXME assert @ mapload no NAD's and @ potential field init & remove from
 ; potential-field-following the removal of NAD's.
@@ -56,7 +56,7 @@
 
  (def max-iterations 1)
 
- (let [entities (map world/ids->eids [140 110 91])
+ (let [entities (map ids->eids [140 110 91])
        tl->es (:good (faction->tiles->entities-map* entities))]
    tl->es
    (def last-marked-cells (generate-potential-field :good tl->es)))
@@ -108,7 +108,7 @@
   "returns the marked-cells"
   [faction tiles->entities max-iterations]
   (let [entity-cell-seq (for [[tile eid] tiles->entities] ; FIXME lazy seq
-                          [eid (get grid tile)])
+                          [eid (get world-grid tile)])
         marked (map second entity-cell-seq)]
     (doseq [[eid cell] entity-cell-seq]
       (add-field-data! cell faction 0 eid))
@@ -230,7 +230,7 @@
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
 (defn find-direction [eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
-        own-cell (world/cell (->tile position))
+        own-cell (get world-grid (->tile position))
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
     (cond
      target-entity

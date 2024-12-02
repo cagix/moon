@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [forge.core :refer :all]
-            [forge.world :refer [tiled-map explored-tile-corners]]))
+            [forge.world :refer [world-tiled-map explored-tile-corners]]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight
@@ -39,7 +39,7 @@
     (reset-zoom! (world-camera)))
 
   (screen-render [_]
-    (draw-tiled-map tiled-map
+    (draw-tiled-map world-tiled-map
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
      (fn []

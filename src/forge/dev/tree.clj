@@ -1,14 +1,14 @@
 (ns ^:no-doc forge.dev.tree
   (:require [forge.core :refer :all]
             [forge.dev.app-values-tree :refer [ns-value-vars]]
-            [forge.world :as world]))
+            [forge.world :refer [world-grid mouseover-entity]]))
 
 (defn- mouseover-grid-cell []
-  @(world/cell (mapv int (world-mouse-position))))
+  @(get world-grid (mapv int (world-mouse-position))))
 
 (comment
 
- (show-tree-view! (world/mouseover-entity))
+ (show-tree-view! (mouseover-entity))
  (show-tree-view! (mouseover-grid-cell))
  (show-tree-view! (ns-value-vars #{"forge"}))
 

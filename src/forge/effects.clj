@@ -1,7 +1,7 @@
 (ns forge.effects
   (:require [forge.core :refer :all]
             [forge.entity.components :as entity]
-            [forge.world :as world :refer [timer projectile-size player-eid line-of-sight? path-blocked?]]))
+            [forge.world :refer [spawn-audiovisual spawn-creature spawn-projectile spawn-line-render active-entities timer projectile-size player-eid line-of-sight? path-blocked?]]))
 
 (comment
 
@@ -41,7 +41,7 @@
     false)
 
   (handle [[_ audiovisual] {:keys [effect/target]}]
-    (world/audiovisual (:position @target) audiovisual)))
+    (spawn-audiovisual (:position @target) audiovisual)))
 
 (defmethods :effects.target/convert
   (applicable? [_ {:keys [effect/source effect/target]}]
@@ -88,7 +88,7 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
-         (world/audiovisual (:position target*) (build :audiovisuals/damage))
+         (spawn-audiovisual (:position target*) (build :audiovisuals/damage))
          (entity/event target (if (zero? new-hp-val) :kill :alert))
          (swap! target entity/add-text-effect (str "[RED]" dmg-amount "[]")))))))
 
@@ -164,13 +164,13 @@
           target* @target]
       (if (in-range? source* target* maxrange)
         (do
-         (world/line-render {:start (start-point source* target*)
+         (spawn-line-render {:start (start-point source* target*)
                              :end (:position target*)
                              :duration 0.05
                              :color [1 0 0 0.75]
                              :thick? true})
          (effects-do! ctx entity-effects))
-        (world/audiovisual (end-point source* target* maxrange) (build :audiovisuals/hit-ground)))))
+        (spawn-audiovisual (end-point source* target* maxrange) (build :audiovisuals/hit-ground)))))
 
   (render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (when target
@@ -209,7 +209,7 @@
 
   (handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
     (play-sound "bfxr_waypointunlock")
-    (world/projectile {:position (projectile-start-point @source
+    (spawn-projectile {:position (projectile-start-point @source
                                                          target-direction
                                                          (projectile-size projectile))
                        :direction target-direction
@@ -240,7 +240,7 @@
   (handle [[_ {:keys [property/id]}]
            {:keys [effect/source effect/target-position]}]
     (play-sound "bfxr_shield_consume")
-    (world/creature {:position target-position
+    (spawn-creature {:position target-position
                      :creature-id id ; already properties/get called through one-to-one, now called again.
                      :components {:entity/fsm {:fsm :fsms/npc
                                                :initial-state :npc-idle}
@@ -249,7 +249,7 @@
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
 ; same code as in render entities on world view screens/world
 (defn- creatures-in-los-of-player []
-  (->> (world/active-entities)
+  (->> (active-entities)
        (filter #(:entity/species @%))
        (filter #(line-of-sight? @player-eid @%))
        (remove #(:entity/player? @%))))
@@ -279,7 +279,7 @@
   (handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target (creatures-in-los-of-player)]
-        (world/line-render {:start (:position source*) #_(start-point source* target*)
+        (spawn-line-render {:start (:position source*) #_(start-point source* target*)
                             :end (:position @target)
                             :duration 0.05
                             :color [1 0 0 0.75]

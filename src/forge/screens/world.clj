@@ -4,7 +4,7 @@
             [forge.entity.components :as entity]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
-            [forge.world :as world :refer [explored-tile-corners tick-error paused? player-eid mouseover-entity ray-blocked?]]
+            [forge.world :refer [world-tiled-map explored-tile-corners tick-error paused? player-eid mouseover-entity ray-blocked? circle->cells world-grid point->entities render-z-order line-of-sight? mouseover-eid max-delta-time elapsed-time world-delta active-entities tick-entities remove-destroyed render-entities world-clear world-init]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
@@ -107,7 +107,7 @@
         radius 0.8
         circle {:position position :radius radius}]
     (draw-circle position radius [1 0 0 0.5])
-    (doseq [[x y] (map #(:position @%) (world/circle->cells circle))]
+    (doseq [[x y] (map #(:position @%) (circle->cells circle))]
       (draw-rectangle x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
       (draw-rectangle x y width height [0 0 1 1]))))
@@ -128,7 +128,7 @@
                  1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (visible-tiles cam)
-            :let [cell (world/grid [x y])]
+            :let [cell (world-grid [x y])]
             :when cell
             :let [cell* @cell]]
 
@@ -150,7 +150,7 @@
 (defn- highlight-mouseover-tile []
   (when highlight-blocked-cell?
     (let [[x y] (->tile (world-mouse-position))
-          cell (get world/grid [x y])]
+          cell (get world-grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (draw-rectangle x y 1 1
                         (case (:movement @cell)
@@ -229,7 +229,7 @@
                      :update-fn #(when-let [entity (mouseover-entity)] (:entity/id entity))
                      :icon "images/mouseover.png"}
                     {:label "elapsed-time"
-                     :update-fn #(str (readable-number world/elapsed-time) " seconds")
+                     :update-fn #(str (readable-number elapsed-time) " seconds")
                      :icon "images/clock.png"}
                     {:label "paused?"
                      :update-fn (fn [] paused?)}
@@ -292,8 +292,8 @@
 (bind-root #'start-world (fn start-world [world-props]
                            (change-screen :screens/world)
                            (reset-stage (widgets))
-                           (world/clear)
-                           (world/init (generate-level world-props))))
+                           (world-clear)
+                           (world-init (generate-level world-props))))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
@@ -301,23 +301,23 @@
 (defn- calculate-eid []
   (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
-                     (world/point->entities
+                     (point->entities
                       (world-mouse-position)))]
-    (->> world/render-z-order
+    (->> render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse
-         (filter #(world/line-of-sight? player @%))
+         (filter #(line-of-sight? player @%))
          first)))
 
 (defn- update-mouseover-entity []
   (let [new-eid (if (mouse-on-actor?)
                   nil
                   (calculate-eid))]
-    (when world/mouseover-eid
-      (swap! world/mouseover-eid dissoc :entity/mouseover?))
+    (when mouseover-eid
+      (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (bind-root #'world/mouseover-eid new-eid)))
+    (bind-root #'mouseover-eid new-eid)))
 
 (defn- update-world []
   (manual-tick (entity/state-obj @player-eid))
@@ -327,27 +327,27 @@
                                 (pause-game? (entity/state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
-    (let [delta-ms (min (delta-time) world/max-delta-time)]
-      (alter-var-root #'world/elapsed-time + delta-ms)
-      (bind-root #'world/delta delta-ms) )
-    (let [entities (world/active-entities)]
+    (let [delta-ms (min (delta-time) max-delta-time)]
+      (alter-var-root #'elapsed-time + delta-ms)
+      (bind-root #'world-delta delta-ms) )
+    (let [entities (active-entities)]
       (update-potential-fields! entities)
-      (try (world/tick-entities entities)
+      (try (tick-entities entities)
            (catch Throwable t
              (error-window! t)
              (bind-root #'tick-error t)))))
-  (world/remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
+  (remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
 
 (defn- render-world []
   ; FIXME position DRY
   (set-position! (world-camera) (:position @player-eid))
   ; FIXME position DRY
-  (draw-tiled-map world/tiled-map
+  (draw-tiled-map world-tiled-map
                   (tile-color-setter (cam-position (world-camera))))
   (draw-on-world-view (fn []
                        (debug-render-before-entities)
                        ; FIXME position DRY (from player)
-                       (world/render-entities (map deref (world/active-entities)))
+                       (render-entities (map deref (active-entities)))
                        (debug-render-after-entities))))
 
 (deftype WorldScreen []
@@ -370,7 +370,7 @@
           (change-screen :screens/minimap)))
 
   (screen-destroy [_]
-    (world/clear)))
+    (world-clear)))
 
 (defn create []
   {:screen (->WorldScreen)})

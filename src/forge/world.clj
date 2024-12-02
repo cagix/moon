@@ -56,9 +56,9 @@
        (keep grid)
        (mapcat (comp :entities deref))))
 
-(declare tiled-map
+(declare world-tiled-map
          explored-tile-corners
-         grid
+         world-grid
          tick-error
          paused?
          ids->eids
@@ -67,7 +67,7 @@
          ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time
          ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
-         delta
+         world-delta
          player-eid)
 
 ; boolean array used because 10x faster than access to clojure grid data structure
@@ -237,15 +237,15 @@
     ; min 1 because floating point math inaccuracies
     (min 1 (/ (- stop-time elapsed-time) duration))))
 
-(defn clear [] ; responsibility of screen? we are not creating the tiled-map here ...
-  (when (bound? #'tiled-map)
-    (dispose tiled-map)))
+(defn world-clear [] ; responsibility of screen? we are not creating the tiled-map here ...
+  (when (bound? #'world-tiled-map)
+    (dispose world-tiled-map)))
 
 (defn cell [position]
-  (get grid position))
+  (get world-grid position))
 
 (defn rectangle->cells [rectangle]
-  (into [] (keep grid) (rectangle->tiles rectangle)))
+  (into [] (keep world-grid) (rectangle->tiles rectangle)))
 
 (defn circle->cells [circle]
   (->> circle
@@ -279,7 +279,7 @@
 (defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
   (if (or (> (float width) 1) (> (float height) 1))
     (rectangle->cells rectangle)
-    [(get grid
+    [(get world-grid
           [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
            (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
 
@@ -298,12 +298,12 @@
 (defn cached-adjacent-cells [cell]
   (if-let [result (:adjacent-cells @cell)]
     result
-    (let [result (into [] (keep grid) (-> @cell :position get-8-neighbour-positions))]
+    (let [result (into [] (keep world-grid) (-> @cell :position get-8-neighbour-positions))]
       (swap! cell assoc :adjacent-cells result)
       result)))
 
 (defn point->entities [position]
-  (when-let [cell (get grid (->tile position))]
+  (when-let [cell (get world-grid (->tile position))]
     (filter #(rect-contains? @% position)
             (:entities @cell))))
 
@@ -325,7 +325,7 @@
     (set-occupied-cells! eid)))
 
 (defprotocol GridCell
-  (blocked? [cell* z-order])
+  (cell-blocked? [cell* z-order])
   (blocks-vision? [cell*])
   (occupied-by-other? [cell* eid]
                       "returns true if there is some occupying body with center-tile = this cell
@@ -342,7 +342,7 @@
                   good
                   evil]
   GridCell
-  (blocked? [_ z-order]
+  (cell-blocked? [_ z-order]
     (case movement
       :none true ; wall
       :air (case z-order ; water/doodads
@@ -504,7 +504,7 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
-(defn- create [position body components]
+(defn- spawn-entity [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
@@ -525,12 +525,12 @@
    :height 0.5
    :z-order :z-order/effect})
 
-(defn audiovisual [position {:keys [tx/sound entity/animation]}]
+(defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
   (play-sound sound)
-  (create position
-          effect-body-props
-          {:entity/animation animation
-           :entity/delete-after-animation-stopped true}))
+  (spawn-entity position
+                effect-body-props
+                {:entity/animation animation
+                 :entity/delete-after-animation-stopped true}))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)
@@ -546,77 +546,77 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn creature [{:keys [position creature-id components]}]
+(defn spawn-creature [{:keys [position creature-id components]}]
   (let [props (build creature-id)]
-    (create position
-            (->body (:entity/body props))
-            (-> props
-                (dissoc :entity/body)
-                (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                (safe-merge components)))))
+    (spawn-entity position
+                  (->body (:entity/body props))
+                  (-> props
+                      (dissoc :entity/body)
+                      (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
+                      (safe-merge components)))))
 
-(defn item [position item]
-  (create position
-          {:width 0.75
-           :height 0.75
-           :z-order :z-order/on-ground}
-          {:entity/image (:entity/image item)
-           :entity/item item
-           :entity/clickable {:type :clickable/item
-                              :text (:property/pretty-name item)}}))
+(defn spawn-item [position item]
+  (spawn-entity position
+                {:width 0.75
+                 :height 0.75
+                 :z-order :z-order/on-ground}
+                {:entity/image (:entity/image item)
+                 :entity/item item
+                 :entity/clickable {:type :clickable/item
+                                    :text (:property/pretty-name item)}}))
 
-(defn shout [position faction duration]
-  (create position
-          effect-body-props
-          {:entity/alert-friendlies-after-duration
-           {:counter (timer duration)
-            :faction faction}}))
+(defn delayed-alert [position faction duration]
+  (spawn-entity position
+                effect-body-props
+                {:entity/alert-friendlies-after-duration
+                 {:counter (timer duration)
+                  :faction faction}}))
 
-(defn line-render [{:keys [start end duration color thick?]}]
-  (create start
-          effect-body-props
-          #:entity {:line-render {:thick? thick? :end end :color color}
-                    :delete-after-duration duration}))
+(defn spawn-line-render [{:keys [start end duration color thick?]}]
+  (spawn-entity start
+                effect-body-props
+                #:entity {:line-render {:thick? thick? :end end :color color}
+                          :delete-after-duration duration}))
 
 (defn projectile-size [projectile]
   {:pre [(:entity/image projectile)]}
   (first (:world-unit-dimensions (:entity/image projectile))))
 
-(defn projectile [{:keys [position direction faction]}
-                  {:keys [entity/image
-                          projectile/max-range
-                          projectile/speed
-                          entity-effects
-                          projectile/piercing?] :as projectile}]
+(defn spawn-projectile [{:keys [position direction faction]}
+                        {:keys [entity/image
+                                projectile/max-range
+                                projectile/speed
+                                entity-effects
+                                projectile/piercing?] :as projectile}]
   (let [size (projectile-size projectile)]
-    (create position
-            {:width size
-             :height size
-             :z-order :z-order/flying
-             :rotation-angle (v-angle-from-vector direction)}
-            {:entity/movement {:direction direction
-                               :speed speed}
-             :entity/image image
-             :entity/faction faction
-             :entity/delete-after-duration (/ max-range speed)
-             :entity/destroy-audiovisual :audiovisuals/hit-wall
-             :entity/projectile-collision {:entity-effects entity-effects
-                                           :piercing? piercing?}})))
+    (spawn-entity position
+                  {:width size
+                   :height size
+                   :z-order :z-order/flying
+                   :rotation-angle (v-angle-from-vector direction)}
+                  {:entity/movement {:direction direction
+                                     :speed speed}
+                   :entity/image image
+                   :entity/faction faction
+                   :entity/delete-after-duration (/ max-range speed)
+                   :entity/destroy-audiovisual :audiovisuals/hit-wall
+                   :entity/projectile-collision {:entity-effects entity-effects
+                                                 :piercing? piercing?}})))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
 (defn- spawn-player [start-position]
-  (creature {:position (tile->middle start-position)
-             :creature-id :creatures/vampire
-             :components {:entity/fsm {:fsm :fsms/player
-                                       :initial-state :player-idle}
-                          :entity/faction :good
-                          :entity/player? true
-                          :entity/free-skill-points 3
-                          :entity/clickable {:type :clickable/player}
-                          :entity/click-distance-tiles 1.5}}))
+  (spawn-creature {:position (tile->middle start-position)
+                   :creature-id :creatures/vampire
+                   :components {:entity/fsm {:fsm :fsms/player
+                                             :initial-state :player-idle}
+                                :entity/faction :good
+                                :entity/player? true
+                                :entity/free-skill-points 3
+                                :entity/clickable {:type :clickable/player}
+                                :entity/click-distance-tiles 1.5}}))
 
 (defn- spawn-enemies [tiled-map]
   (doseq [props (for [[position creature-id] (positions-with-property tiled-map :creatures :id)]
@@ -625,23 +625,23 @@
                    :components {:entity/fsm {:fsm :fsms/npc
                                              :initial-state :npc-sleeping}
                                 :entity/faction :evil}})]
-    (creature (update props :position tile->middle))))
+    (spawn-creature (update props :position tile->middle))))
 
-(defn init [{:keys [tiled-map start-position]}]
-  (bind-root #'tiled-map tiled-map)
+(defn world-init [{:keys [tiled-map start-position]}]
+  (bind-root #'world-tiled-map tiled-map)
   (bind-root #'explored-tile-corners (atom (grid2d (tm-width  tiled-map)
                                                    (tm-height tiled-map)
                                                    (constantly false))))
-  (bind-root #'grid (grid2d (tm-width tiled-map)
-                            (tm-height tiled-map)
-                            (fn [position]
-                              (atom (->cell position
-                                            (case (movement-property tiled-map position)
-                                              "none" :none
-                                              "air"  :air
-                                              "all"  :all))))))
+  (bind-root #'world-grid (grid2d (tm-width tiled-map)
+                                  (tm-height tiled-map)
+                                  (fn [position]
+                                    (atom (->cell position
+                                                  (case (movement-property tiled-map position)
+                                                    "none" :none
+                                                    "air"  :air
+                                                    "all"  :all))))))
 
-  (init-raycaster grid blocks-vision?)
+  (init-raycaster world-grid blocks-vision?)
   (let [width  (tm-width  tiled-map)
         height (tm-height tiled-map)]
     (bind-root #'content-grid (content-grid-create {:cell-size 16  ; FIXME global config
@@ -650,7 +650,7 @@
   (bind-root #'tick-error nil)
   (bind-root #'ids->eids {})
   (bind-root #'elapsed-time 0)
-  (bind-root #'delta nil)
+  (bind-root #'world-delta nil)
   (bind-root #'player-eid (spawn-player start-position))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))

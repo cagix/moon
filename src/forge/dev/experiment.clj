@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.dev.experiment
   (:require [forge.core :refer :all]
             [forge.entity.components :as entity]
-            [forge.world :as world :refer [player-eid]]))
+            [forge.world :refer [spawn-creature spawn-item player-eid ids->eids]]))
 
 (defmacro app-do [& exprs]
   `(post-runnable (fn [] ~@exprs)))
@@ -26,14 +26,14 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (app-do (world/creature {:position [35 73]
+ (app-do (spawn-creature {:position [35 73]
                           :creature-id :creatures/dragon-red
                           :components {:entity/fsm {:fsm :fsms/npc
                                                     :initial-state :npc-sleeping}
                                        :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
- (post-tx! [:e/destroy (world/ids->eids 168)]) ; TODO how to get id ?
+ (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
  ; check state is normal ... omg...
 
  ; start world - small empty test room
@@ -51,4 +51,4 @@
 
 (defn- create-item! [item-id]
   (app-do
-   (world/item (:position @player-eid) (build item-id))))
+   (spawn-item (:position @player-eid) (build item-id))))
