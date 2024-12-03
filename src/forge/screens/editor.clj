@@ -2,8 +2,8 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.context :refer [assets]]
-            [forge.core :refer :all])
+            [forge.core :refer :all]
+            [forge.system :as system])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
@@ -150,8 +150,8 @@
 (defn- all-of-class
   "Returns all asset paths with the specific class."
   [class]
-  (filter #(= (.getAssetType assets %) class)
-          (.getAssetNames assets)))
+  (filter #(= (.getAssetType system/assets %) class)
+          (.getAssetNames system/assets)))
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]

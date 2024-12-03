@@ -38,3 +38,20 @@
 (defn mapvals [f m]
   (into {} (for [[k v] m]
              [k (f v)])))
+
+(defsystem create)
+
+(defsystem dispose)
+(defmethod dispose :default [_])
+
+(defsystem render)
+(defmethod render :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ w h])
+
+(declare assets
+         batch
+         shape-drawer
+         default-font
+         cursors)

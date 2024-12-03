@@ -7,9 +7,7 @@
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
-            [forge.context :refer [assets batch shape-drawer default-font cursors]]
-            [forge.lifecycle :as lifecycle]
-            [forge.system :refer [defsystem defmethods bind-root mapvals]]
+            [forge.system :as system :refer [defsystem defmethods bind-root mapvals batch shape-drawer]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
@@ -784,7 +782,7 @@
   (Colors/put name-str (->gdx-color color)))
 
 (defn play-sound [name]
-  (audio/play (get assets (str "sounds/" name ".wav"))))
+  (audio/play (get system/assets (str "sounds/" name ".wav"))))
 
 (defn- draw-texture-region [texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -900,7 +898,7 @@
 
 (defn ->texture-region
   ([path]
-   (TextureRegion. ^Texture (get assets path)))
+   (TextureRegion. ^Texture (get system/assets path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
@@ -997,7 +995,7 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font default-font)
+  (let [^BitmapFont font (or font system/default-font)
         data (.getData font)
         old-scale (float (.scaleX data))]
     (.setScale data (* old-scale
@@ -1014,10 +1012,10 @@
     (.setScale data old-scale)))
 
 (defn set-cursor [cursor-key]
-  (gdx/set-cursor (safe-get cursors cursor-key)))
+  (gdx/set-cursor (safe-get system/cursors cursor-key)))
 
 (defmethods :app/cached-map-renderer
-  (lifecycle/create [_]
+  (system/create [_]
     (def cached-map-renderer (memoize
                               (fn [tiled-map]
                                 (OrthogonalTiledMapRenderer. tiled-map
@@ -2690,7 +2688,7 @@
   (update entity :entity/skills dissoc id))
 
 (defmethods :app/db
-  (lifecycle/create [[_ {:keys [schema properties]}]]
+  (system/create [[_ {:keys [schema properties]}]]
     (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
     (bind-root #'db-properties-file (io/resource properties))
     (let [properties (-> db-properties-file slurp edn/read-string)]
@@ -2700,15 +2698,15 @@
       (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
 
 (defmethods :app/gui-viewport
-  (lifecycle/create [[_ [width height]]]
+  (system/create [[_ [width height]]]
     (bind-root #'gui-viewport-width  width)
     (bind-root #'gui-viewport-height height)
     (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
-  (lifecycle/resize [_ w h]
+  (system/resize [_ w h]
     (.update gui-viewport w h true)))
 
 (defmethods :app/world-viewport
-  (lifecycle/create [[_ [width height tile-size]]]
+  (system/create [[_ [width height tile-size]]]
     (bind-root #'world-unit-scale (float (/ tile-size)))
     (bind-root #'world-viewport-width  width)
     (bind-root #'world-viewport-height height)
@@ -2718,7 +2716,7 @@
                                       y-down? false]
                                   (.setToOrtho camera y-down? world-width world-height)
                                   (FitViewport. world-width world-height camera))))
-  (lifecycle/resize [_ w h]
+  (system/resize [_ w h]
     (.update world-viewport w h true)))
 
 (defrecord StageScreen [^Stage stage sub-screen]
@@ -2754,15 +2752,15 @@
     (->StageScreen stage screen)))
 
 (defmethods :app/screens
-  (lifecycle/create [[_ {:keys [ks first-k]}]]
+  (system/create [[_ {:keys [ks first-k]}]]
     (bind-root #'app-screens (mapvals stage-screen (mapvals
                                                     (fn [ns-sym]
                                                       (require ns-sym)
                                                       ((ns-resolve ns-sym 'create)))
                                                     ks)))
     (change-screen first-k))
-  (lifecycle/dispose [_]
+  (system/dispose [_]
     (run! screen-destroy (vals app-screens)))
-  (lifecycle/render [_]
+  (system/render [_]
     (ScreenUtils/clear black)
     (screen-render (current-screen))))

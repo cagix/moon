@@ -1,9 +1,7 @@
 (ns forge.app.assets
   (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [forge.context :as context]
-            [forge.lifecycle :as lifecycle]
-            [forge.system :refer [defmethods bind-root]])
+            [forge.system :as system :refer [defmethods bind-root]])
   (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
@@ -39,7 +37,7 @@
     manager))
 
 (defmethods :app/assets
-  (lifecycle/create [[_ folder]]
-    (bind-root #'context/assets (asset-manager folder)))
-  (lifecycle/dispose [_]
-    (.dispose context/assets)))
+  (system/create [[_ folder]]
+    (bind-root #'system/assets (asset-manager folder)))
+  (system/dispose [_]
+    (.dispose system/assets)))
