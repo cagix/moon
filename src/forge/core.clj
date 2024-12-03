@@ -7,7 +7,7 @@
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
-            [forge.system :as system :refer [defsystem defmethods bind-root mapvals batch shape-drawer]]
+            [forge.system :as system :refer [defsystem defmethods bind-root batch shape-drawer]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
@@ -21,8 +21,8 @@
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils)
-           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
+           (com.badlogic.gdx.utils Align Scaling Disposable)
+           (com.badlogic.gdx.utils.viewport Viewport)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
            (space.earlygrey.shapedrawer ShapeDrawer)))
@@ -326,12 +326,9 @@
   (visible? [layer]
     (.isVisible layer)))
 
-(declare app-screens
-         current-screen-key)
-
 (defn current-screen []
-  (and (bound? #'current-screen-key)
-       (current-screen-key app-screens)))
+  (and (bound? #'system/current-screen-key)
+       (system/current-screen-key system/screens)))
 
 (defprotocol Screen
   (screen-enter   [_])
@@ -344,9 +341,9 @@
   [new-k]
   (when-let [screen (current-screen)]
     (screen-exit screen))
-  (let [screen (new-k app-screens)]
+  (let [screen (new-k system/screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
-    (bind-root #'current-screen-key new-k)
+    (bind-root #'system/current-screen-key new-k)
     (screen-enter screen)))
 
 (defn screen-stage ^Stage []
@@ -857,14 +854,6 @@
     (draw-fn)
     (.setDefaultLineWidth shape-drawer (float old-line-width))))
 
-(declare world-unit-scale
-         world-viewport-width
-         world-viewport-height
-         ^Viewport world-viewport
-         gui-viewport-width
-         gui-viewport-height
-         ^Viewport gui-viewport)
-
 (def ^:dynamic ^:private *unit-scale* 1)
 
 ; touch coordinates are y-down, while screen coordinates are y-up
@@ -883,18 +872,18 @@
 
 (defn gui-mouse-position []
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position gui-viewport)))
+  (mapv int (unproject-mouse-position system/gui-viewport)))
 
 (defn pixels->world-units [pixels]
-  (* (int pixels) world-unit-scale))
+  (* (int pixels) system/world-unit-scale))
 
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position world-viewport))
+  (unproject-mouse-position system/world-viewport))
 
 (defn world-camera []
-  (.getCamera world-viewport))
+  (.getCamera system/world-viewport))
 
 (defn ->texture-region
   ([path]
@@ -903,10 +892,11 @@
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
 (defn ->image [path]
-  (sprite* world-unit-scale (->texture-region path)))
+  (sprite* system/world-unit-scale
+           (->texture-region path)))
 
 (defn sub-image [image bounds]
-  (sprite* world-unit-scale
+  (sprite* system/world-unit-scale
            (->texture-region (:texture-region image) bounds)))
 
 (defn sprite-sheet [path tilew tileh]
@@ -948,7 +938,9 @@
   (.end batch))
 
 (defn draw-on-world-view [render-fn]
-  (draw-with world-viewport world-unit-scale render-fn))
+  (draw-with system/world-viewport
+             system/world-unit-scale
+             render-fn))
 
 (defn edn->image [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds
@@ -1013,14 +1005,6 @@
 
 (defn set-cursor [cursor-key]
   (gdx/set-cursor (safe-get system/cursors cursor-key)))
-
-(defmethods :app/cached-map-renderer
-  (system/create [_]
-    (def cached-map-renderer (memoize
-                              (fn [tiled-map]
-                                (OrthogonalTiledMapRenderer. tiled-map
-                                                             (float world-unit-scale)
-                                                             batch))))))
 
 (defsystem component-info)
 (defmethod component-info :default [_])
@@ -1203,7 +1187,7 @@
 
   Renders only visible layers."
   [tiled-map color-setter]
-  (let [^OrthogonalTiledMapRenderer map-renderer (cached-map-renderer tiled-map)]
+  (let [^OrthogonalTiledMapRenderer map-renderer (system/cached-map-renderer tiled-map)]
     (.setColorSetter map-renderer (reify ColorSetter
                                     (apply [_ color x y]
                                       (color-setter color x y))))
@@ -1568,8 +1552,8 @@
                                       (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ gui-viewport-width 2)
-                                 (* gui-viewport-height (/ 3 4))]
+               :center-position [(/ system/gui-viewport-width 2)
+                                 (* system/gui-viewport-height (/ 3 4))]
                :pack? true})))
 
 (defmacro ^:private with-err-str
@@ -1601,8 +1585,8 @@
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ gui-viewport-width 2)
-                :y (+ (/ gui-viewport-height 2) 200)
+    (draw-text {:x (/ system/gui-viewport-width 2)
+                :y (+ (/ system/gui-viewport-height 2) 200)
                 :text message
                 :scale 2.5
                 :up? true})))
@@ -2449,8 +2433,8 @@
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float world-viewport-width)  2)))
-     (<= ydist (inc (/ (float world-viewport-height) 2))))))
+     (<= xdist (inc (/ (float system/world-viewport-width)  2)))
+     (<= ydist (inc (/ (float system/world-viewport-height) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see
@@ -2696,71 +2680,3 @@
                   (apply distinct? (map :property/id properties))))
       (run! validate! properties)
       (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
-
-(defmethods :app/gui-viewport
-  (system/create [[_ [width height]]]
-    (bind-root #'gui-viewport-width  width)
-    (bind-root #'gui-viewport-height height)
-    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
-  (system/resize [_ w h]
-    (.update gui-viewport w h true)))
-
-(defmethods :app/world-viewport
-  (system/create [[_ [width height tile-size]]]
-    (bind-root #'world-unit-scale (float (/ tile-size)))
-    (bind-root #'world-viewport-width  width)
-    (bind-root #'world-viewport-height height)
-    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
-                                      world-height (* height world-unit-scale)
-                                      camera (OrthographicCamera.)
-                                      y-down? false]
-                                  (.setToOrtho camera y-down? world-width world-height)
-                                  (FitViewport. world-width world-height camera))))
-  (system/resize [_ w h]
-    (.update world-viewport w h true)))
-
-(defrecord StageScreen [^Stage stage sub-screen]
-  Screen
-  (screen-enter [_]
-    (gdx/set-input-processor stage)
-    (screen-enter sub-screen))
-
-  (screen-exit [_]
-    (gdx/set-input-processor nil)
-    (screen-exit sub-screen))
-
-  (screen-render [_]
-    (.act stage)
-    (screen-render sub-screen)
-    (.draw stage))
-
-  (screen-destroy [_]
-    (dispose stage)
-    (screen-destroy sub-screen)))
-
-(defn- stage-screen
-  "Actors or screen can be nil."
-  [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    (->StageScreen stage screen)))
-
-(defmethods :app/screens
-  (system/create [[_ {:keys [ks first-k]}]]
-    (bind-root #'app-screens (mapvals stage-screen (mapvals
-                                                    (fn [ns-sym]
-                                                      (require ns-sym)
-                                                      ((ns-resolve ns-sym 'create)))
-                                                    ks)))
-    (change-screen first-k))
-  (system/dispose [_]
-    (run! screen-destroy (vals app-screens)))
-  (system/render [_]
-    (ScreenUtils/clear black)
-    (screen-render (current-screen))))

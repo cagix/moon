@@ -1,5 +1,21 @@
 (ns forge.system)
 
+(declare assets
+         batch
+         shape-drawer
+         default-font
+         cursors
+         cached-map-renderer
+         world-unit-scale
+         world-viewport-width
+         world-viewport-height
+         world-viewport
+         gui-viewport-width
+         gui-viewport-height
+         gui-viewport
+         screens
+         current-screen-key)
+
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
   [name-sym & args]
@@ -49,9 +65,3 @@
 
 (defsystem resize)
 (defmethod resize :default [_ w h])
-
-(declare assets
-         batch
-         shape-drawer
-         default-font
-         cursors)

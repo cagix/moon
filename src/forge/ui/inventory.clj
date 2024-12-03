@@ -1,6 +1,7 @@
 (ns forge.ui.inventory
   (:require [data.grid2d :as g2d]
-            [forge.core :refer :all])
+            [forge.core :refer :all]
+            [forge.system :as system])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
@@ -118,7 +119,8 @@
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [gui-viewport-width gui-viewport-height]
+              :position [system/gui-viewport-width
+                         system/gui-viewport-height]
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
