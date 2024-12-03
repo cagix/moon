@@ -1,4 +1,4 @@
-(ns forge.roots.truetype-font
+(ns clojure.gdx.graphics.g2d.freetype
   (:refer-clojure :exclude [load])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Texture$TextureFilter)
@@ -14,7 +14,7 @@
     (set! (.magFilter params) Texture$TextureFilter/Linear)
     params))
 
-(defn load [{:keys [file size quality-scaling]}]
+(defn font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
         font (.generateFont generator (ttf-params size quality-scaling))]
     (.dispose generator)

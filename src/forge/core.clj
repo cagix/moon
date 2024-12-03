@@ -3,6 +3,7 @@
             [clojure.awt :as awt]
             [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.lwjgl :as lwjgl]
             [clojure.java.io :as io]
             [clojure.pprint]
@@ -10,7 +11,6 @@
             [data.grid2d :as g2d]
             [forge.roots.assets :as assets]
             [forge.roots.gdx :as gdx]
-            [forge.roots.truetype-font :as truetype-font]
             [forge.roots.vis-ui :as vis-ui]
             [malli.core :as m]
             [malli.error :as me]
@@ -1092,7 +1092,7 @@
 
 (defmethods :app/default-font
   (app-create [[_ font]]
-    (def default-font (truetype-font/load font)))
+    (def default-font (freetype/font font)))
   (app-destroy [_]
     (dispose default-font)))
 
