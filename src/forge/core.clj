@@ -521,6 +521,15 @@
     (when-not (m/validate m-schema property)
       (throw (invalid-ex-info m-schema property)))))
 
+(defn- init-db [{:keys [schema properties]}]
+  (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
+  (bind-root #'db-properties-file (io/resource properties))
+  (let [properties (-> db-properties-file slurp edn/read-string)]
+    (assert (or (empty? properties)
+                (apply distinct? (map :property/id properties))))
+    (run! validate! properties)
+    (bind-root #'db-properties (zipmap (map :property/id properties) properties))))
+
 (defn k->default-value [k]
   (let [schema (schema-of k)]
     (cond
@@ -1087,12 +1096,6 @@
                  (.getImage (Toolkit/getDefaultToolkit)
                             (io/resource image-resource))))
 
-(defn- lwjgl3-config [{:keys [title fps width height]}]
-  (doto (Lwjgl3ApplicationConfiguration.)
-    (.setTitle title)
-    (.setForegroundFPS fps)
-    (.setWindowedMode width height)))
-
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
          result []]
@@ -1219,99 +1222,94 @@
 (defn- dispose-visui []
   (VisUI/dispose))
 
-(defn- start-app* [{:keys [dock-icon
-                           lwjgl3
-                           db/schema
-                           db/properties
-                           assets
-                           cursors
-                           default-font
-                           world-viewport-width
-                           world-viewport-height
-                           gui-viewport-width
-                           gui-viewport-height
-                           ui
-                           requires
-                           screen-ks
-                           first-screen-k
-                           tile-size]}]
-  (run! require requires)
-  (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
-  (bind-root #'db-properties-file (io/resource properties))
-  (let [properties (-> db-properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! validate! properties)
-    (bind-root #'db-properties (zipmap (map :property/id properties) properties)))
-  (set-dock-icon dock-icon)
+(defn- start-application [{:keys [title fps width height]} listener]
   (when SharedLibraryLoader/isMac
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (Lwjgl3Application.
-   (proxy [ApplicationAdapter] []
-     (create []
-       (bind-root #'asset-manager (load-assets assets))
-       (bind-root #'batch (SpriteBatch.))
-       (bind-root #'shape-drawer-texture (white-pixel-texture))
-       (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-       (bind-root #'default-font (truetype-font default-font))
-       (bind-root #'world-unit-scale (float (/ tile-size)))
-       (bind-root #'world-viewport-width  world-viewport-width)
-       (bind-root #'world-viewport-height world-viewport-height)
-       (bind-root #'gui-viewport-width  gui-viewport-width)
-       (bind-root #'gui-viewport-height gui-viewport-height)
-       (bind-root #'world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
-                                         world-height (* world-viewport-height world-unit-scale)
-                                         camera (OrthographicCamera.)
-                                         y-down? false]
-                                     (.setToOrtho camera y-down? world-width world-height)
-                                     (FitViewport. world-width world-height camera)))
-       (bind-root #'cached-map-renderer (memoize
-                                         (fn [tiled-map]
-                                           (OrthogonalTiledMapRenderer. tiled-map
-                                                                        (float world-unit-scale)
-                                                                        batch))))
-       (bind-root #'gui-viewport (FitViewport. gui-viewport-width
-                                               gui-viewport-height
-                                               (OrthographicCamera.)))
-       (bind-root #'k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                         (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                               cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                           (dispose pixmap)
-                                           cursor))
-                                       cursors))
-       (init-visui ui)
-       (bind-root #'app-screens (mapvals stage-screen (mapvals
-                                                       (fn [ns-sym]
-                                                         (require ns-sym)
-                                                         ((ns-resolve ns-sym 'create)))
-                                                       screen-ks)))
-       (change-screen first-screen-k))
+  (Lwjgl3Application. listener
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle title)
+                        (.setForegroundFPS fps)
+                        (.setWindowedMode width height))))
 
-     (dispose []
-       (dispose asset-manager)
-       (dispose batch)
-       (dispose shape-drawer-texture)
-       (dispose default-font)
-       (run! dispose (vals k->cursor))
-       (dispose-visui)
-       (run! screen-destroy (vals app-screens)))
+(defn- application-listener [{:keys [assets
+                                     cursors
+                                     default-font
+                                     world-viewport-width
+                                     world-viewport-height
+                                     gui-viewport-width
+                                     gui-viewport-height
+                                     ui
+                                     screen-ks
+                                     first-screen-k
+                                     tile-size]}]
+  (proxy [ApplicationAdapter] []
+    (create []
+      (bind-root #'asset-manager (load-assets assets))
+      (bind-root #'batch (SpriteBatch.))
+      (bind-root #'shape-drawer-texture (white-pixel-texture))
+      (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
+      (bind-root #'default-font (truetype-font default-font))
+      (bind-root #'world-unit-scale (float (/ tile-size)))
+      (bind-root #'world-viewport-width  world-viewport-width)
+      (bind-root #'world-viewport-height world-viewport-height)
+      (bind-root #'gui-viewport-width  gui-viewport-width)
+      (bind-root #'gui-viewport-height gui-viewport-height)
+      (bind-root #'world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
+                                        world-height (* world-viewport-height world-unit-scale)
+                                        camera (OrthographicCamera.)
+                                        y-down? false]
+                                    (.setToOrtho camera y-down? world-width world-height)
+                                    (FitViewport. world-width world-height camera)))
+      (bind-root #'cached-map-renderer (memoize
+                                        (fn [tiled-map]
+                                          (OrthogonalTiledMapRenderer. tiled-map
+                                                                       (float world-unit-scale)
+                                                                       batch))))
+      (bind-root #'gui-viewport (FitViewport. gui-viewport-width
+                                              gui-viewport-height
+                                              (OrthographicCamera.)))
+      (bind-root #'k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                        (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                              cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                          (dispose pixmap)
+                                          cursor))
+                                      cursors))
+      (init-visui ui)
+      (bind-root #'app-screens (mapvals stage-screen (mapvals
+                                                      (fn [ns-sym]
+                                                        (require ns-sym)
+                                                        ((ns-resolve ns-sym 'create)))
+                                                      screen-ks)))
+      (change-screen first-screen-k))
 
-     (render []
-       (ScreenUtils/clear black)
-       (screen-render (current-screen)))
+    (dispose []
+      (dispose asset-manager)
+      (dispose batch)
+      (dispose shape-drawer-texture)
+      (dispose default-font)
+      (run! dispose (vals k->cursor))
+      (dispose-visui)
+      (run! screen-destroy (vals app-screens)))
 
-     (resize [w h]
-       (.update gui-viewport   w h true)
-       (.update world-viewport w h)))
-   (lwjgl3-config lwjgl3)))
+    (render []
+      (ScreenUtils/clear black)
+      (screen-render (current-screen)))
+
+    (resize [w h]
+      (.update gui-viewport   w h true)
+      (.update world-viewport w h))))
 
 (defn -main []
-  (-> "app.edn"
-      io/resource
-      slurp
-      edn/read-string
-      start-app*))
+  (let [{:keys [requires
+                db
+                dock-icon
+                app
+                lifecycle]} (-> "app.edn" io/resource slurp edn/read-string)]
+    (run! require requires)
+    (init-db db)
+    (set-dock-icon dock-icon)
+    (start-application app (application-listener lifecycle))))
 
 (defsystem component-info)
 (defmethod component-info :default [_])
