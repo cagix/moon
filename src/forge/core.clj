@@ -1,22 +1,17 @@
 (ns forge.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.edn :as edn]
             [clojure.pprint]
             [clojure.string :as str]
-            [clojure.java.io :as io]
             [data.grid2d :as g2d]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
@@ -24,14 +19,11 @@
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils SharedLibraryLoader)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+           (com.badlogic.gdx.utils Align Scaling Disposable)
+           (com.badlogic.gdx.utils.viewport Viewport)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
-           (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)
-           (space.earlygrey.shapedrawer ShapeDrawer)
-           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
+           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
@@ -394,8 +386,8 @@
   (visible? [layer]
     (.isVisible layer)))
 
-(declare ^:private app-screens
-         ^:private current-screen-key)
+(declare app-screens
+         current-screen-key)
 
 (defn current-screen []
   (and (bound? #'current-screen-key)
@@ -427,9 +419,9 @@
   (.clear (screen-stage))
   (run! add-actor new-actors))
 
-(declare ^:private db-schemas
-         ^:private db-properties-file
-         ^:private db-properties)
+(declare db-schemas
+         db-properties-file
+         db-properties)
 
 (defn schema-of [k]
   (safe-get db-schemas k))
@@ -520,15 +512,6 @@
                      m/schema)]
     (when-not (m/validate m-schema property)
       (throw (invalid-ex-info m-schema property)))))
-
-(defn- init-db [{:keys [schema properties]}]
-  (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
-  (bind-root #'db-properties-file (io/resource properties))
-  (let [properties (-> db-properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! validate! properties)
-    (bind-root #'db-properties (zipmap (map :property/id properties) properties))))
 
 (defn k->default-value [k]
   (let [schema (schema-of k)]
@@ -873,35 +856,9 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(defsystem lifecycle-create)
+(declare ^Batch batch)
 
-(defsystem lifecycle-dispose)
-(defmethod lifecycle-dispose :default [_])
-
-(defsystem lifecycle-resize)
-(defmethod lifecycle-resize :default [_ w h])
-
-(defsystem lifecycle-render)
-(defmethod lifecycle-render :default [_])
-
-(declare ^:private ^Batch batch)
-
-(defmethods :lifecycle/sprite-batch
-  (lifecycle-create [_]
-    (bind-root #'batch (SpriteBatch.)))
-  (lifecycle-dispose [_]
-    (dispose batch)))
-
-(declare ^:private ^ShapeDrawer shape-drawer
-         ^:private ^Texture shape-drawer-texture)
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor white)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (dispose pixmap)
-    texture))
+(declare ^ShapeDrawer shape-drawer)
 
 (defn- sd-color [color]
   (.setColor shape-drawer (->gdx-color color)))
@@ -961,21 +918,13 @@
     (draw-fn)
     (.setDefaultLineWidth shape-drawer (float old-line-width))))
 
-
-(defmethods :lifecycle/shape-drawer
-  (lifecycle-create [_]
-    (bind-root #'shape-drawer-texture (white-pixel-texture))
-    (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
-  (lifecycle-dispose [_]
-    (dispose shape-drawer-texture)))
-
-(declare ^:private world-unit-scale
+(declare world-unit-scale
          world-viewport-width
          world-viewport-height
-         ^:private ^Viewport world-viewport
+         ^Viewport world-viewport
          gui-viewport-width
          gui-viewport-height
-         ^:private ^Viewport gui-viewport)
+         ^Viewport gui-viewport)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -1080,30 +1029,6 @@
   (let [[x y] (gui-mouse-position)]
     (.hit (screen-stage) x y true)))
 
-(defn- set-dock-icon [image-resource]
-  (.setIconImage (Taskbar/getTaskbar)
-                 (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource image-resource))))
-
-(defrecord StageScreen [^Stage stage sub-screen]
-  Screen
-  (screen-enter [_]
-    (.setInputProcessor Gdx/input stage)
-    (screen-enter sub-screen))
-
-  (screen-exit [_]
-    (.setInputProcessor Gdx/input nil)
-    (screen-exit sub-screen))
-
-  (screen-render [_]
-    (.act stage)
-    (screen-render sub-screen)
-    (.draw stage))
-
-  (screen-destroy [_]
-    (dispose stage)
-    (screen-destroy sub-screen)))
-
 (defn children
   "Returns an ordered list of child actors in this group."
   [^Group group]
@@ -1127,117 +1052,7 @@
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
-(defn- stage-screen
-  "Actors or screen can be nil."
-  [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    (->StageScreen stage screen)))
-
-(defn- check-cleanup-visui! []
-  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
-  ; => actually there is a deeper issue at play
-  ; we need to dispose ALL resources which were loaded already ...
-  (when (VisUI/isLoaded)
-    (VisUI/dispose)))
-
-(defn- font-enable-markup! []
-  (-> (VisUI/getSkin)
-      (.getFont "default-font")
-      .getData
-      .markupEnabled
-      (set! true)))
-
-(defn- set-tooltip-config! []
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
-  ;Controls whether to fade out tooltip when mouse was moved. (default false)
-  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  )
-
-(defn- init-visui [skin-scale]
-  (check-cleanup-visui!)
-  (VisUI/load (case skin-scale
-                :skin-scale/x1 VisUI$SkinScale/X1
-                :skin-scale/x2 VisUI$SkinScale/X2))
-  (font-enable-markup!)
-  (set-tooltip-config!))
-
-(defn- dispose-visui []
-  (VisUI/dispose))
-
-(defn- start-application [{:keys [title fps width height]} listener]
-  (when SharedLibraryLoader/isMac
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (Lwjgl3Application. listener
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setForegroundFPS fps)
-                        (.setWindowedMode width height))))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- load-assets [folder]
-  (let [manager (proxy [AssetManager clojure.lang.ILookup] []
-                  (valAt [^String path]
-                    (if (AssetManager/.contains this path)
-                      (AssetManager/.get this path)
-                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
-    (doseq [[class exts] [[Sound   #{"wav"}]
-                          [Texture #{"png" "bmp"}]]
-            file (map #(str/replace-first % folder "")
-                      (recursively-search (.internal Gdx/files folder) exts))]
-      (.load manager ^String file ^Class class))
-    (.finishLoading manager)
-    manager))
-
-
-(defmethods :lifecycle/asset-manager
-  (lifecycle-create [[_ folder]]
-    (bind-root #'asset-manager (load-assets folder)))
-  (lifecycle-dispose [_]
-    (dispose asset-manager)))
-
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (dispose generator)
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
-
-(declare ^:private ^BitmapFont default-font)
+(declare ^BitmapFont default-font)
 
 (defn draw-text
   "font, h-align, up? and scale are optional.
@@ -1261,102 +1076,12 @@
            false) ; wrap false, no need target-width
     (.setScale data old-scale)))
 
-(defmethods :lifecycle/default-font
-  (lifecycle-create [[_ font]]
-    (bind-root #'default-font (truetype-font font)))
-  (lifecycle-dispose [_]
-    (dispose default-font)))
-
-(declare ^:private k->cursor)
+(declare k->cursor)
 
 (defn set-cursor [cursor-key]
   (.setCursor Gdx/graphics (safe-get k->cursor cursor-key)))
 
-(defmethods :lifecycle/cursors
-  (lifecycle-create [[_ cursors]]
-    (bind-root #'k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                      (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                            cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                        (dispose pixmap)
-                                        cursor))
-                                    cursors)))
-  (lifecycle-dispose [_]
-    (run! dispose (vals k->cursor))))
-
-(declare ^:private cached-map-renderer)
-
-(defmethods :lifecycle/cached-map-renderer
-  (lifecycle-create [_]
-    (bind-root #'cached-map-renderer (memoize
-                                      (fn [tiled-map]
-                                        (OrthogonalTiledMapRenderer. tiled-map
-                                                                     (float world-unit-scale)
-                                                                     batch))))))
-
-(defmethods :lifecycle/vis-ui
-  (lifecycle-create [[_ config]]
-    (init-visui config))
-  (lifecycle-dispose [_]
-    (dispose-visui)))
-
-(defmethods :lifecycle/gui-viewport
-  (lifecycle-create [[_ [width height]]]
-    (bind-root #'gui-viewport-width  width)
-    (bind-root #'gui-viewport-height height)
-    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
-  (lifecycle-resize [_ w h]
-    (.update gui-viewport w h true)))
-
-(defmethods :lifecycle/world-viewport
-  (lifecycle-create [[_ [width height tile-size]]]
-    (bind-root #'world-unit-scale (float (/ tile-size)))
-    (bind-root #'world-viewport-width  width)
-    (bind-root #'world-viewport-height height)
-    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
-                                      world-height (* height world-unit-scale)
-                                      camera (OrthographicCamera.)
-                                      y-down? false]
-                                  (.setToOrtho camera y-down? world-width world-height)
-                                  (FitViewport. world-width world-height camera))))
-  (lifecycle-resize [_ w h]
-    (.update world-viewport w h true)))
-
-(defmethods :lifecycle/screens
-  (lifecycle-create [[_ {:keys [ks first-k]}]]
-    (bind-root #'app-screens (mapvals stage-screen (mapvals
-                                                    (fn [ns-sym]
-                                                      (require ns-sym)
-                                                      ((ns-resolve ns-sym 'create)))
-                                                    ks)))
-    (change-screen first-k))
-  (lifecycle-dispose [_]
-    (run! screen-destroy (vals app-screens)))
-  (lifecycle-render [_]
-    (ScreenUtils/clear black)
-    (screen-render (current-screen))))
-
-(defn -main []
-  (let [{:keys [requires
-                db
-                dock-icon
-                app
-                lifecycle]} (-> "app.edn" io/resource slurp edn/read-string)]
-    (run! require requires)
-    (init-db db)
-    (set-dock-icon dock-icon)
-    (start-application app
-                       (proxy [ApplicationAdapter] []
-                         (create []
-                           (run! lifecycle-create lifecycle))
-
-                         (dispose []
-                           (run! lifecycle-dispose lifecycle))
-
-                         (render []
-                           (run! lifecycle-render lifecycle))
-
-                         (resize [w h]
-                           (run! #(lifecycle-resize % w h) lifecycle))))))
+(declare cached-map-renderer)
 
 (defsystem component-info)
 (defmethod component-info :default [_])

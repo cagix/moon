@@ -3,40 +3,41 @@
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
- :db {:schema "schema.edn"
-      :properties "properties.edn"}
  :dock-icon "moon.png"
- :app {:title "Moon"
-       :fps 60
-       :width 1440
-       :height 900}
- :lifecycle [[:lifecycle/sprite-batch]
-             [:lifecycle/shape-drawer]
-             [:lifecycle/asset-manager "resources/"]
-             [:lifecycle/default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                       :size 16
-                                       :quality-scaling 2}]
-             [:lifecycle/cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                  :cursors/black-x               ["black_x"      [0   0]]
-                                  :cursors/default               ["default"      [0   0]]
-                                  :cursors/denied                ["denied"       [16 16]]
-                                  :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                  :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                  :cursors/hand-grab             ["hand003"      [4  16]]
-                                  :cursors/move-window           ["move002"      [16 16]]
-                                  :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                  :cursors/over-button           ["hand002"      [0   0]]
-                                  :cursors/sandclock             ["sandclock"    [16 16]]
-                                  :cursors/skill-not-usable      ["x007"         [0   0]]
-                                  :cursors/use-skill             ["pointer004"   [0   0]]
-                                  :cursors/walking               ["walking"      [16 16]]}]
-             [:lifecycle/cached-map-renderer]
-             [:lifecycle/vis-ui :skin-scale/x1]
-             [:lifecycle/gui-viewport   [1440 900]]
-             [:lifecycle/world-viewport [1440 900 48]]
-             [:lifecycle/screens {:ks {:screens/main-menu  forge.screens.main-menu
-                                       :screens/map-editor forge.screens.map-editor
-                                       :screens/editor     forge.screens.editor
-                                       :screens/minimap    forge.screens.minimap
-                                       :screens/world      forge.screens.world}
-                                  :first-k :screens/main-menu}]]}
+ :title "Moon"
+ :fps 60
+ :width 1440
+ :height 900
+ :components
+ [[:lifecycle/db {:schema "schema.edn"
+                  :properties "properties.edn"}]
+  [:lifecycle/sprite-batch]
+  [:lifecycle/shape-drawer]
+  [:lifecycle/asset-manager "resources/"]
+  [:lifecycle/default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                            :size 16
+                            :quality-scaling 2}]
+  [:lifecycle/cursors {:cursors/bag                   ["bag001"       [0   0]]
+                       :cursors/black-x               ["black_x"      [0   0]]
+                       :cursors/default               ["default"      [0   0]]
+                       :cursors/denied                ["denied"       [16 16]]
+                       :cursors/hand-before-grab      ["hand004"      [4  16]]
+                       :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                       :cursors/hand-grab             ["hand003"      [4  16]]
+                       :cursors/move-window           ["move002"      [16 16]]
+                       :cursors/no-skill-selected     ["denied003"    [0   0]]
+                       :cursors/over-button           ["hand002"      [0   0]]
+                       :cursors/sandclock             ["sandclock"    [16 16]]
+                       :cursors/skill-not-usable      ["x007"         [0   0]]
+                       :cursors/use-skill             ["pointer004"   [0   0]]
+                       :cursors/walking               ["walking"      [16 16]]}]
+  [:lifecycle/cached-map-renderer]
+  [:lifecycle/vis-ui :skin-scale/x1]
+  [:lifecycle/gui-viewport   [1440 900]]
+  [:lifecycle/world-viewport [1440 900 48]]
+  [:lifecycle/screens {:ks {:screens/main-menu  forge.screens.main-menu
+                            :screens/map-editor forge.screens.map-editor
+                            :screens/editor     forge.screens.editor
+                            :screens/minimap    forge.screens.minimap
+                            :screens/world      forge.screens.world}
+                       :first-k :screens/main-menu}]]}
