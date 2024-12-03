@@ -1,11 +1,9 @@
 (ns forge.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.awt :as awt]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.audio :as audio]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.lwjgl :as lwjgl]
             [clojure.java.io :as io]
             [clojure.pprint]
             [clojure.string :as str]
@@ -16,9 +14,7 @@
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
+  (:import (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -826,15 +822,15 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(defsystem ^:private app-create)
+(defsystem app-create)
 
-(defsystem ^:private app-destroy)
+(defsystem app-destroy)
 (defmethod app-destroy :default [_])
 
-(defsystem ^:private app-render)
+(defsystem app-render)
 (defmethod app-render :default [_])
 
-(defsystem ^:private app-resize)
+(defsystem app-resize)
 (defmethod app-resize :default [_ w h])
 
 (defmethods :app/vis-ui
@@ -850,7 +846,7 @@
     (dispose assets)))
 
 (defn play-sound [name]
-  (Sound/.play (get assets (str "sounds/" name ".wav"))))
+  (audio/play (get assets (str "sounds/" name ".wav"))))
 
 (defmethods :app/sprite-batch
   (app-create [_]
@@ -2870,19 +2866,3 @@
   (app-render [_]
     (ScreenUtils/clear black)
     (screen-render (current-screen))))
-
-(defn -main []
-  (let [{:keys [requires
-                dock-icon
-                glfw
-                lwjgl3
-                components]} (-> "app.edn" io/resource slurp edn/read-string)]
-    (run! require requires)
-    (awt/set-dock-icon (io/resource dock-icon))
-    (lwjgl/set-glfw-config glfw)
-    (lwjgl3/start-app (proxy [ApplicationAdapter] []
-                        (create  []    (run! app-create          components))
-                        (dispose []    (run! app-destroy         components))
-                        (render  []    (run! app-render          components))
-                        (resize  [w h] (run! #(app-resize % w h) components)))
-                      lwjgl3)))
