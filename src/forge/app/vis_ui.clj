@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.app.vis-ui
-  (:require [forge.system :as system :refer [defmethods]])
+  (:require [forge.system :as system])
   (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)))
 

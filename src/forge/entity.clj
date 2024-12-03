@@ -1,7 +1,6 @@
 (ns forge.entity
   (:require [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.system :refer [defmethods]]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]

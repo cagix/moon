@@ -4,7 +4,7 @@
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
-            [forge.system :as system :refer [defsystem bind-root batch shape-drawer]]
+            [forge.system :as system :refer [batch shape-drawer]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]

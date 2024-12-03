@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [forge.core :refer [validate!]]
-            [forge.system :as system :refer [defmethods bind-root]]))
+            [forge.system :as system]))
 
 (defmethods :app/db
   (system/create [[_ {:keys [schema properties]}]]

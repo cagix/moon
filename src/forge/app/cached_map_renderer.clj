@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.app.cached-map-renderer
-  (:require [forge.system :as system :refer [bind-root defmethods]])
+  (:require [forge.system :as system])
   (:import (forge OrthogonalTiledMapRenderer)))
 
 (defmethods :app/cached-map-renderer

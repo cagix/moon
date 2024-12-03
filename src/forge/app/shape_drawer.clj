@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.app.shape-drawer
-  (:require [forge.system :as system :refer [defmethods bind-root]])
+  (:require [forge.system :as system])
   (:import (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (space.earlygrey.shapedrawer ShapeDrawer)))

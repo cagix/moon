@@ -2,7 +2,7 @@
   (:require [clojure.gdx :as gdx]
             [forge.core :refer [screen-enter screen-exit screen-render screen-destroy find-actor-with-id
                                 change-screen current-screen]]
-            [forge.system :as system :refer [bind-root mapvals defmethods]])
+            [forge.system :as system])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils ScreenUtils)))
 

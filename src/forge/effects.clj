@@ -1,6 +1,5 @@
 (ns forge.effects
-  (:require [forge.core :refer :all]
-            [forge.system :refer [defmethods]]))
+  (:require [forge.core :refer :all]))
 
 (comment
 

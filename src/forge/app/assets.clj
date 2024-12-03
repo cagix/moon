@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.app.assets
   (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [forge.system :as system :refer [defmethods bind-root]]
+            [forge.system :as system]
             [forge.utils.files :as files]))
 
 (defn- load-assets [folder]
