@@ -10,8 +10,7 @@
             [data.grid2d :as g2d]
             [forge.lifecycle :as lifecycle]
             [forge.roots.assets :as assets]
-            [forge.roots.vis-ui :as vis-ui]
-            [forge.system :refer [defsystem]]
+            [forge.system :refer [defsystem defmethods]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
@@ -30,17 +29,6 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defmacro defmethods [k & sys-impls]
-  `(do
-    ~@(for [[sys & fn-body] sys-impls
-            :let [sys-var (resolve sys)]]
-        `(do
-          (when (get (methods @~sys-var) ~k)
-            (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
-          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
-            ~@fn-body)))
-    ~k))
 
 (defn mapvals [f m]
   (into {} (for [[k v] m]
@@ -802,12 +790,6 @@
 
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
-
-(defmethods :app/vis-ui
-  (lifecycle/create [[_ skin-scale]]
-    (vis-ui/init skin-scale))
-  (lifecycle/dispose [_]
-    (vis-ui/dispose)))
 
 (defmethods :app/assets
   (lifecycle/create [[_ folder]]

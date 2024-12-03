@@ -1,4 +1,6 @@
-(ns forge.roots.vis-ui
+(ns forge.app.vis-ui
+  (:require [forge.lifecycle :as lifecycle]
+            [forge.system :refer [defmethods]])
   (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)))
 
@@ -23,13 +25,13 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   )
 
-(defn init [skin-scale]
-  (check-cleanup-visui!)
-  (VisUI/load (case skin-scale
-                :skin-scale/x1 VisUI$SkinScale/X1
-                :skin-scale/x2 VisUI$SkinScale/X2))
-  (font-enable-markup!)
-  (set-tooltip-config!))
-
-(defn dispose []
-  (VisUI/dispose))
+(defmethods :app/vis-ui
+  (lifecycle/create [[_ skin-scale]]
+    (check-cleanup-visui!)
+    (VisUI/load (case skin-scale
+                  :skin-scale/x1 VisUI$SkinScale/X1
+                  :skin-scale/x2 VisUI$SkinScale/X2))
+    (font-enable-markup!)
+    (set-tooltip-config!))
+  (lifecycle/dispose [_]
+    (VisUI/dispose)))
