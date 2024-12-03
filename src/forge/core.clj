@@ -804,11 +804,6 @@
   [file]
   (.load (TmxMapLoader.) file))
 
-(def world-viewport-width 1440)
-(def world-viewport-height 900)
-(def gui-viewport-width 1440)
-(def gui-viewport-height 900)
-
 (defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
   (.draw batch
@@ -888,12 +883,16 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(declare ^:private ^Batch  batch
+(declare ^:private ^Batch batch
          ^:private ^ShapeDrawer shape-drawer
          ^:private ^BitmapFont default-font
          ^:private cached-map-renderer
          ^:private world-unit-scale
+         world-viewport-width
+         world-viewport-height
          ^:private ^Viewport world-viewport
+         gui-viewport-width
+         gui-viewport-height
          ^:private ^Viewport gui-viewport
          ^:private cursors)
 
@@ -1233,6 +1232,10 @@
                            db/schema
                            db/properties
                            assets
+                           world-viewport-width
+                           world-viewport-height
+                           gui-viewport-width
+                           gui-viewport-height
                            cursors
                            ui
                            requires
@@ -1263,6 +1266,10 @@
                                    :size 16
                                    :quality-scaling 2}))
        (bind-root #'world-unit-scale (float (/ tile-size)))
+       (bind-root #'world-viewport-width world-viewport-width)
+       (bind-root #'world-viewport-height world-viewport-height)
+       (bind-root #'gui-viewport-width gui-viewport-width)
+       (bind-root #'gui-viewport-height gui-viewport-height)
        (bind-root #'world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
                                          world-height (* world-viewport-height world-unit-scale)
                                          camera (OrthographicCamera.)

@@ -20,6 +20,10 @@
            :cursors/skill-not-usable      ["x007"         [0   0]]
            :cursors/use-skill             ["pointer004"   [0   0]]
            :cursors/walking               ["walking"      [16 16]]}
+ :world-viewport-width 1440
+ :world-viewport-height 900
+ :gui-viewport-width 1440
+ :gui-viewport-height 900
  :ui :skin-scale/x1
  :requires [forge.effects
             forge.entity
