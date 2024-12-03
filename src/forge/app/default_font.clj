@@ -1,9 +1,9 @@
 (ns ^:no-doc forge.app.default-font
   (:require [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [forge.system :as system]))
+            [forge.core :refer :all]))
 
 (defmethods :app/default-font
-  (system/create [[_ font]]
-    (bind-root #'system/default-font (freetype/font font)))
-  (system/dispose [_]
-    (.dispose system/default-font)))
+  (app-create [[_ font]]
+    (bind-root #'default-font (freetype/font font)))
+  (app-dispose [_]
+    (.dispose default-font)))

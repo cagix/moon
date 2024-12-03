@@ -1,8 +1,6 @@
 (ns ^:no-doc forge.app.screens
   (:require [clojure.gdx :as gdx]
-            [forge.core :refer [screen-enter screen-exit screen-render screen-destroy find-actor-with-id
-                                change-screen current-screen]]
-            [forge.system :as system])
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils ScreenUtils)))
 
@@ -28,7 +26,7 @@
 (defn- stage-screen
   "Actors or screen can be nil."
   [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [system/gui-viewport system/batch]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
                 (valAt
                   ([id]
                    (find-actor-with-id (Stage/.getRoot this) id))
@@ -39,15 +37,15 @@
     (->StageScreen stage screen)))
 
 (defmethods :app/screens
-  (system/create [[_ {:keys [ks first-k]}]]
-    (bind-root #'system/screens (mapvals stage-screen (mapvals
-                                                       (fn [ns-sym]
-                                                         (require ns-sym)
-                                                         ((ns-resolve ns-sym 'create)))
-                                                       ks)))
+  (app-create [[_ {:keys [ks first-k]}]]
+    (bind-root #'screens (mapvals stage-screen (mapvals
+                                                (fn [ns-sym]
+                                                  (require ns-sym)
+                                                  ((ns-resolve ns-sym 'create)))
+                                                ks)))
     (change-screen first-k))
-  (system/dispose [_]
-    (run! screen-destroy (vals system/screens)))
-  (system/render [_]
+  (app-dispose [_]
+    (run! screen-destroy (vals screens)))
+  (app-render [_]
     (ScreenUtils/clear forge.core/black)
     (screen-render (current-screen))))

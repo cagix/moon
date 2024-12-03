@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.app.vis-ui
-  (:require [forge.system :as system])
+  (:require [forge.core :refer :all])
   (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)))
 
@@ -25,12 +25,12 @@
   )
 
 (defmethods :app/vis-ui
-  (system/create [[_ skin-scale]]
+  (app-create [[_ skin-scale]]
     (check-cleanup-visui!)
     (VisUI/load (case skin-scale
                   :skin-scale/x1 VisUI$SkinScale/X1
                   :skin-scale/x2 VisUI$SkinScale/X2))
     (font-enable-markup!)
     (set-tooltip-config!))
-  (system/dispose [_]
+  (app-dispose [_]
     (VisUI/dispose)))

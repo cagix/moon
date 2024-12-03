@@ -3,8 +3,7 @@
             [clojure.gdx :refer [key-just-pressed?]]
             [clojure.set :as set]
             [clojure.string :as str]
-            [forge.core :refer :all]
-            [forge.system :as system])
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
@@ -65,7 +64,7 @@
                          :pack? true})]
     {:actor (scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- system/gui-viewport-height 50)
+     :height (min (- gui-viewport-height 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -151,8 +150,8 @@
 (defn- all-of-class
   "Returns all asset paths with the specific class."
   [class]
-  (filter #(= (.getAssetType system/assets %) class)
-          (.getAssetNames system/assets)))
+  (filter #(= (.getAssetType assets %) class)
+          (.getAssetNames assets)))
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]

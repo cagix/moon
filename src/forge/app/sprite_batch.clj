@@ -1,9 +1,9 @@
 (ns ^:no-doc forge.app.sprite-batch
-  (:require [forge.system :as system])
+  (:require [forge.core :refer :all])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (defmethods :app/sprite-batch
-  (system/create [_]
-    (bind-root #'system/batch (SpriteBatch.)))
-  (system/dispose [_]
-    (.dispose system/batch)))
+  (app-create [_]
+    (bind-root #'batch (SpriteBatch.)))
+  (app-dispose [_]
+    (.dispose batch)))

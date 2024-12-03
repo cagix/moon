@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.app.assets
   (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [forge.system :as system]
+            [forge.core :refer :all]
             [forge.utils.files :as files]))
 
 (defn- load-assets [folder]
@@ -15,7 +15,7 @@
     manager))
 
 (defmethods :app/assets
-  (system/create [[_ folder]]
-    (bind-root #'system/assets (load-assets folder)))
-  (system/dispose [_]
-    (.dispose system/assets)))
+  (app-create [[_ folder]]
+    (bind-root #'assets (load-assets folder)))
+  (app-dispose [_]
+    (.dispose assets)))

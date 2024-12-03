@@ -3,7 +3,6 @@
             [clojure.string :as str]
             [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.system :as system]
             [forge.mapgen.modules :as modules])
   (:import (com.badlogic.gdx.utils Disposable)))
 
@@ -55,7 +54,7 @@ direction keys: move")
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos))
                                          (.pack window))}))
-    (.setPosition window 0 system/gui-viewport-height)
+    (.setPosition window 0 gui-viewport-height)
     window))
 
 (def ^:private camera-movement-speed 1)

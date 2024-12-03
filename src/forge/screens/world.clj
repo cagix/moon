@@ -2,7 +2,6 @@
   (:require [clojure.gdx :as gdx]
             [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.system :as system]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -19,7 +18,7 @@
   (let [rahmen      (->image "images/rahmen.png")
         hpcontent   (->image "images/hp.png")
         manacontent (->image "images/mana.png")
-        x (/ system/gui-viewport-width 2)
+        x (/ gui-viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
@@ -84,7 +83,7 @@
         window (ui-window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [system/gui-viewport-width 0]
+                           :position [gui-viewport-width 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
@@ -123,8 +122,8 @@
 
     (when tile-grid?
       (draw-grid (int left-x) (int bottom-y)
-                 (inc (int system/world-viewport-width))
-                 (+ 2 (int system/world-viewport-height))
+                 (inc (int world-viewport-width))
+                 (+ 2 (int world-viewport-height))
                  1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (visible-tiles cam)

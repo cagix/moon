@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [forge.application :as app]
-            [forge.system :as system]))
+            [forge.core :refer :all]))
 
 (defn -main []
   (let [{:keys [requires
@@ -10,8 +10,8 @@
                 components]} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require requires)
     (app/start (reify app/Listener
-                 (create  [_]     (run! system/create          components))
-                 (dispose [_]     (run! system/dispose         components))
-                 (render  [_]     (run! system/render          components))
-                 (resize  [_ w h] (run! #(system/resize % w h) components)))
+                 (create  [_]     (run! app-create          components))
+                 (dispose [_]     (run! app-dispose         components))
+                 (render  [_]     (run! app-render          components))
+                 (resize  [_ w h] (run! #(app-resize % w h) components)))
                config)))
