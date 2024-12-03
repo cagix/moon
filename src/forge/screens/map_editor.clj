@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx :refer [key-just-pressed? key-pressed?]]
+            [clojure.string :as str]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.system :as system]

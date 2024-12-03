@@ -1,5 +1,6 @@
 (ns forge.entity
-  (:require [forge.core :refer :all]
+  (:require [clojure.gdx :refer [button-just-pressed?]]
+            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]

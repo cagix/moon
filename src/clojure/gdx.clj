@@ -1,12 +1,20 @@
 (ns clojure.gdx
+  (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.assets AssetManager)))
+
+(defn static-field [klass-str k]
+  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
+
+(def ^:private k->input-button (partial static-field "Input$Buttons"))
+(def ^:private k->input-key    (partial static-field "Input$Keys"))
+
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (defn exit-app []
   (.exit Gdx/app))
-
-(defn post-runnable [runnable]
-  (.postRunnable Gdx/app runnable))
 
 (defn internal-file [path]
   (.internal Gdx/files path))
@@ -30,13 +38,13 @@
   (.getY Gdx/input))
 
 (defn button-just-pressed? [b]
-  (.isButtonJustPressed Gdx/input b))
+  (.isButtonJustPressed Gdx/input (k->input-button b)))
 
 (defn key-just-pressed? [k]
-  (.isKeyJustPressed Gdx/input k))
+  (.isKeyJustPressed Gdx/input (k->input-key k)))
 
 (defn key-pressed? [k]
-  (.isKeyPressed Gdx/input k))
+  (.isKeyPressed Gdx/input (k->input-key k)))
 
 (defn set-input-processor [processor]
   (.setInputProcessor Gdx/input processor))
@@ -47,3 +55,5 @@
       (if (AssetManager/.contains this path)
         (AssetManager/.get this path)
         (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
+
+(def play Sound/.play)

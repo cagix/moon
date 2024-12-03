@@ -1,5 +1,6 @@
 (ns forge.dev.tools
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx :refer [post-runnable]]
+            [clojure.string :as str]
             [forge.core :refer :all]
             [forge.system :refer [gui-viewport-width gui-viewport-height]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage Group)))

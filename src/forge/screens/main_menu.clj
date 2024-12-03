@@ -21,7 +21,7 @@
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui-actor {:act (fn []
-                              (when (key-just-pressed? :keys/escape)
+                              (when (gdx/key-just-pressed? :keys/escape)
                                 (gdx/exit-app)))})]
    :screen (reify Screen
              (screen-enter [_]
