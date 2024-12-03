@@ -2,6 +2,7 @@
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.awt :as awt]
             [clojure.edn :as edn]
+            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.lwjgl :as lwjgl]
@@ -10,13 +11,12 @@
             [clojure.string :as str]
             [data.grid2d :as g2d]
             [forge.roots.assets :as assets]
-            [forge.roots.gdx :as gdx]
             [forge.roots.vis-ui :as vis-ui]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
@@ -299,35 +299,23 @@
 
 (def grid2d g2d/create-grid)
 
-(defn button-just-pressed?
-  ":left, :right, :middle, :back or :forward."
-  [b]
-  (.isButtonJustPressed Gdx/input (gdx/k->input-button b)))
+(defn- gdx-static-field [klass-str k]
+  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
 
-(defn key-just-pressed?
-  "See [[key-pressed?]]."
-  [k]
-  (.isKeyJustPressed Gdx/input (gdx/k->input-key k)))
+(def ^:private k->input-button (partial gdx-static-field "Input$Buttons"))
+(def ^:private k->input-key    (partial gdx-static-field "Input$Keys"))
 
-(defn key-pressed?
-  "For options see [libgdx Input$Keys docs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Input.Keys.html).
-  Keys are upper-cased and dashes replaced by underscores.
-  For example Input$Keys/ALT_LEFT can be used with :alt-left.
-  Numbers via :num-3, etc."
-  [k]
-  (.isKeyPressed Gdx/input (gdx/k->input-key k)))
+(defn button-just-pressed? [b]
+  (gdx/button-just-pressed? (k->input-button b)))
 
-(defn frames-per-second []
-  (.getFramesPerSecond Gdx/graphics))
+(defn key-just-pressed? [k]
+  (gdx/key-just-pressed? (k->input-key k)))
 
-(defn delta-time []
-  (.getDeltaTime Gdx/graphics))
-
-(defn exit-app []
-  (.exit Gdx/app))
+(defn key-pressed? [k]
+  (gdx/key-pressed? (k->input-key k)))
 
 (defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+  `(gdx/post-runnable (fn [] ~@exprs)))
 
 (defn equal? [a b]
   (MathUtils/isEqual a b))
@@ -359,7 +347,7 @@
 
 (defn ->gdx-color ^Color [c]
   (cond (= Color (class c)) c
-        (keyword? c) (gdx/static-field "graphics.Color" c)
+        (keyword? c) (gdx-static-field "graphics.Color" c)
         (vector? c) (apply gdx-color c)
         :else (throw (ex-info "Cannot understand color" c))))
 
@@ -973,10 +961,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
+  (let [mouse-x (clamp (gdx/input-x)
                        (.getLeftGutterWidth viewport)
                        (.getRightGutterX viewport))
-        mouse-y (clamp (.getY Gdx/input)
+        mouse-y (clamp (gdx/input-y)
                        (.getTopGutterHeight viewport)
                        (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]
@@ -1120,14 +1108,17 @@
 
 (defmethods :app/cursors
   (app-create [[_ cursors]]
-    (def k->cursor (mapvals (fn [[file hotspot]]
-                              (gdx/cursor (str "cursors/" file ".png") hotspot))
+    (def k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                              (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
+                                    cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
+                                (.dispose pixmap)
+                                cursor))
                             cursors)))
   (app-destroy [_]
     (run! dispose (vals k->cursor))))
 
 (defn set-cursor [cursor-key]
-  (.setCursor Gdx/graphics (safe-get k->cursor cursor-key)))
+  (gdx/set-cursor (safe-get k->cursor cursor-key)))
 
 (defmethods :app/cached-map-renderer
   (app-create [_]
@@ -1724,7 +1715,7 @@
 
 (defn- check-remove-message []
   (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (delta-time))
+    (alter-var-root #'message-to-player update :counter + (gdx/delta-time))
     (when (>= counter player-message-duration-seconds)
       (bind-root #'message-to-player nil))))
 
@@ -2837,11 +2828,11 @@
 (defrecord StageScreen [^Stage stage sub-screen]
   Screen
   (screen-enter [_]
-    (.setInputProcessor Gdx/input stage)
+    (gdx/set-input-processor stage)
     (screen-enter sub-screen))
 
   (screen-exit [_]
-    (.setInputProcessor Gdx/input nil)
+    (gdx/set-input-processor nil)
     (screen-exit sub-screen))
 
   (screen-render [_]

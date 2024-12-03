@@ -1,8 +1,8 @@
 (ns forge.roots.assets
   (:refer-clojure :exclude [load])
-  (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
+  (:require [clojure.gdx :as gdx]
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)))
@@ -31,7 +31,7 @@
     (doseq [[class exts] [[Sound   #{"wav"}]
                           [Texture #{"png" "bmp"}]]
             file (map #(str/replace-first % folder "")
-                      (recursively-search (.internal Gdx/files folder) exts))]
+                      (recursively-search (gdx/internal-file folder) exts))]
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
     manager))
