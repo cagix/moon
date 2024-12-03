@@ -1,7 +1,9 @@
-(ns forge.roots.assets
-  (:refer-clojure :exclude [load])
+(ns forge.app.assets
   (:require [clojure.gdx :as gdx]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [forge.context :as context]
+            [forge.lifecycle :as lifecycle]
+            [forge.system :refer [defmethods bind-root]])
   (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
@@ -22,7 +24,7 @@
           :else
           (recur remaining result))))
 
-(defn load [folder]
+(defn- asset-manager [folder]
   (let [manager (proxy [AssetManager clojure.lang.ILookup] []
                   (valAt [^String path]
                     (if (AssetManager/.contains this path)
@@ -35,3 +37,9 @@
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
     manager))
+
+(defmethods :app/assets
+  (lifecycle/create [[_ folder]]
+    (bind-root #'context/assets (asset-manager folder)))
+  (lifecycle/dispose [_]
+    (.dispose context/assets)))

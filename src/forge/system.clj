@@ -31,3 +31,6 @@
           (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
             ~@fn-body)))
     ~k))
+
+(defn bind-root [avar value]
+  (clojure.lang.Var/.bindRoot avar value))

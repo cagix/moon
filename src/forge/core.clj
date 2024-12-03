@@ -8,9 +8,9 @@
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
+            [forge.context :refer [assets]]
             [forge.lifecycle :as lifecycle]
-            [forge.roots.assets :as assets]
-            [forge.system :refer [defsystem defmethods]]
+            [forge.system :refer [defsystem defmethods bind-root]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
@@ -39,9 +39,6 @@
     (if (= result ::not-found)
       (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
       result)))
-
-(defn bind-root [avar value]
-  (clojure.lang.Var/.bindRoot avar value))
 
 (defn- recur-sort-map [m]
   (into (sorted-map)
@@ -790,12 +787,6 @@
 
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
-
-(defmethods :app/assets
-  (lifecycle/create [[_ folder]]
-    (def assets (assets/load folder)))
-  (lifecycle/dispose [_]
-    (dispose assets)))
 
 (defn play-sound [name]
   (audio/play (get assets (str "sounds/" name ".wav"))))

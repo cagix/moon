@@ -1,4 +1,5 @@
 {:requires [forge.core
+            forge.app.assets
             forge.app.vis-ui
             forge.effects
             forge.entity

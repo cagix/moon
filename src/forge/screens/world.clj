@@ -2,6 +2,7 @@
   (:require [clojure.gdx :as gdx]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.system :refer [bind-root]]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
