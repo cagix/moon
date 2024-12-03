@@ -20,6 +20,9 @@
            :cursors/skill-not-usable      ["x007"         [0   0]]
            :cursors/use-skill             ["pointer004"   [0   0]]
            :cursors/walking               ["walking"      [16 16]]}
+ :default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                :size 16
+                :quality-scaling 2}
  :world-viewport-width 1440
  :world-viewport-height 900
  :gui-viewport-width 1440

@@ -865,8 +865,8 @@
     (set! (.magFilter params) Texture$TextureFilter/Linear)
     params))
 
-(defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. file)
+(defn- truetype-font [{:keys [file size quality-scaling]}]
+  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
         font (.generateFont generator (ttf-params size quality-scaling))]
     (dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
@@ -1187,14 +1187,6 @@
     (run! #(.addActor stage %) actors)
     (->StageScreen stage screen)))
 
-(defn- create-screens [screen-ks]
-  (mapvals stage-screen
-           (mapvals
-            (fn [ns-sym]
-              (require ns-sym)
-              ((ns-resolve ns-sym 'create)))
-            screen-ks)))
-
 (defn- check-cleanup-visui! []
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
@@ -1232,11 +1224,12 @@
                            db/schema
                            db/properties
                            assets
+                           cursors
+                           default-font
                            world-viewport-width
                            world-viewport-height
                            gui-viewport-width
                            gui-viewport-height
-                           cursors
                            ui
                            requires
                            screen-ks
@@ -1261,14 +1254,11 @@
        (bind-root #'batch (SpriteBatch.))
        (bind-root #'shape-drawer-texture (white-pixel-texture))
        (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-       (bind-root #'default-font (truetype-font
-                                  {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf") ; TODO config
-                                   :size 16
-                                   :quality-scaling 2}))
+       (bind-root #'default-font (truetype-font default-font))
        (bind-root #'world-unit-scale (float (/ tile-size)))
-       (bind-root #'world-viewport-width world-viewport-width)
+       (bind-root #'world-viewport-width  world-viewport-width)
        (bind-root #'world-viewport-height world-viewport-height)
-       (bind-root #'gui-viewport-width gui-viewport-width)
+       (bind-root #'gui-viewport-width  gui-viewport-width)
        (bind-root #'gui-viewport-height gui-viewport-height)
        (bind-root #'world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
                                          world-height (* world-viewport-height world-unit-scale)
@@ -1291,7 +1281,12 @@
                                          cursor))
                                      cursors))
        (init-visui ui)
-       (bind-root #'app-screens (create-screens screen-ks))
+       (bind-root #'app-screens (mapvals stage-screen
+                                         (mapvals
+                                          (fn [ns-sym]
+                                            (require ns-sym)
+                                            ((ns-resolve ns-sym 'create)))
+                                          screen-ks)))
        (change-screen first-screen-k))
 
      (dispose []
