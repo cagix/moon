@@ -6,14 +6,16 @@
             [clojure.string :as str]
             [data.grid2d :as g2d]
             [forge.roots.assets :as assets]
+            [forge.roots.awt :as awt]
             [forge.roots.cursor :as cursor]
+            [forge.roots.lwjgl3 :as lwjgl3]
             [forge.roots.truetype-font :as truetype-font]
             [forge.roots.vis-ui :as vis-ui]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
@@ -2880,3 +2882,17 @@
   (app-render [_]
     (ScreenUtils/clear black)
     (screen-render (current-screen))))
+
+(defn -main []
+  (let [{:keys [requires
+                dock-icon
+                lwjgl3-config
+                components]} (-> "app.edn" io/resource slurp edn/read-string)]
+    (run! require requires)
+    (awt/set-dock-icon (io/resource dock-icon))
+    (lwjgl3/start-app (proxy [ApplicationAdapter] []
+                        (create  []    (run! app-create          components))
+                        (dispose []    (run! app-destroy         components))
+                        (render  []    (run! app-render          components))
+                        (resize  [w h] (run! #(app-resize % w h) components)))
+                      lwjgl3-config)))
