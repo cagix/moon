@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [clojure.gdx :refer [key-just-pressed?]]
-            [forge.core :refer :all]))
+  (:require [forge.core :refer :all]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight

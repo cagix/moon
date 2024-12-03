@@ -1,6 +1,5 @@
 (ns forge.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.gdx :as gdx]
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
@@ -8,7 +7,9 @@
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -41,6 +42,42 @@
          schemas
          properties-file
          properties)
+
+(defn- gdx-static-field [klass-str k]
+  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
+
+(def ^:private k->input-button (partial gdx-static-field "Input$Buttons"))
+(def ^:private k->input-key    (partial gdx-static-field "Input$Keys"))
+
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
+(defn exit-app []
+  (.exit Gdx/app))
+
+(defn internal-file [path]
+  (.internal Gdx/files path))
+
+(defn frames-per-second []
+  (.getFramesPerSecond Gdx/graphics))
+
+(defn delta-time []
+  (.getDeltaTime Gdx/graphics))
+
+(defn cursor [pixmap hotspot-x hotspot-y]
+  (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y))
+
+(defn button-just-pressed? [b]
+  (.isButtonJustPressed Gdx/input (k->input-button b)))
+
+(defn key-just-pressed? [k]
+  (.isKeyJustPressed Gdx/input (k->input-key k)))
+
+(defn key-pressed? [k]
+  (.isKeyPressed Gdx/input (k->input-key k)))
+
+(defn set-input-processor [processor]
+  (.setInputProcessor Gdx/input processor))
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
@@ -201,7 +238,7 @@
 (defmethod app-resize :default [_ w h])
 
 (defn play-sound [name]
-  (gdx/play (get assets (str "sounds/" name ".wav"))))
+  (Sound/.play (get assets (str "sounds/" name ".wav"))))
 
 (defn- recur-sort-map [m]
   (into (sorted-map)
@@ -352,7 +389,7 @@
 
 (defn ->gdx-color ^Color [c]
   (cond (= Color (class c)) c
-        (keyword? c) (gdx/static-field "graphics.Color" c)
+        (keyword? c) (gdx-static-field "graphics.Color" c)
         (vector? c) (apply gdx-color c)
         :else (throw (ex-info "Cannot understand color" c))))
 
@@ -904,10 +941,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (clamp (gdx/input-x)
+  (let [mouse-x (clamp (.getX Gdx/input)
                        (.getLeftGutterWidth viewport)
                        (.getRightGutterX viewport))
-        mouse-y (clamp (gdx/input-y)
+        mouse-y (clamp (.getY Gdx/input)
                        (.getTopGutterHeight viewport)
                        (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]
@@ -1047,7 +1084,7 @@
     (.setScale data old-scale)))
 
 (defn set-cursor [cursor-key]
-  (gdx/set-cursor (safe-get cursors cursor-key)))
+  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
 
 (defsystem component-info)
 (defmethod component-info :default [_])
@@ -1636,7 +1673,7 @@
 
 (defn- check-remove-message []
   (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (gdx/delta-time))
+    (alter-var-root #'message-to-player update :counter + (delta-time))
     (when (>= counter player-message-duration-seconds)
       (bind-root #'message-to-player nil))))
 

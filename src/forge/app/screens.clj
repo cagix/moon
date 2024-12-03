@@ -1,17 +1,17 @@
 (ns ^:no-doc forge.app.screens
-  (:require [clojure.gdx :as gdx]
-            [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)
+  (:require [forge.core :refer :all])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils ScreenUtils)))
 
 (defrecord StageScreen [^Stage stage sub-screen]
   forge.core/Screen
   (screen-enter [_]
-    (gdx/set-input-processor stage)
+    (.setInputProcessor Gdx/input stage)
     (screen-enter sub-screen))
 
   (screen-exit [_]
-    (gdx/set-input-processor nil)
+    (.setInputProcessor Gdx/input nil)
     (screen-exit sub-screen))
 
   (screen-render [_]

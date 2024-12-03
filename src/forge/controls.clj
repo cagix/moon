@@ -1,6 +1,5 @@
 (ns forge.controls
-  (:require [clojure.gdx :refer [key-just-pressed? key-pressed?]]
-            [forge.core :refer :all]))
+  (:require [forge.core :refer :all]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

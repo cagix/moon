@@ -1,6 +1,5 @@
 (ns forge.screens.world
-  (:require [clojure.gdx :as gdx]
-            [forge.core :refer :all]
+  (:require [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
@@ -240,7 +239,7 @@
                      :update-fn #(zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn gdx/frames-per-second
+                     :update-fn frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
@@ -326,7 +325,7 @@
                                 (pause-game? (e-state-obj @player-eid))
                                 (not (controls/unpaused?)))))
   (when-not paused?
-    (let [delta-ms (min (gdx/delta-time) max-delta-time)]
+    (let [delta-ms (min (delta-time) max-delta-time)]
       (alter-var-root #'elapsed-time + delta-ms)
       (bind-root #'world-delta delta-ms) )
     (let [entities (active-entities)]

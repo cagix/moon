@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
-            [clojure.gdx :refer [key-just-pressed?]]
             [clojure.set :as set]
             [clojure.string :as str]
             [forge.core :refer :all])

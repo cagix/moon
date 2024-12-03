@@ -1,7 +1,7 @@
 (ns clojure.gdx.graphics.g2d.freetype
   (:refer-clojure :exclude [load])
-  (:require [clojure.gdx :as gdx])
-  (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)))
 
 (defn- ttf-params [size quality-scaling]
@@ -15,7 +15,7 @@
     params))
 
 (defn font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (gdx/internal-file file))
+  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
         font (.generateFont generator (ttf-params size quality-scaling))]
     (.dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
