@@ -1,14 +1,15 @@
 (ns forge.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.awt :as awt]
             [clojure.edn :as edn]
+            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.lwjgl :as lwjgl]
             [clojure.java.io :as io]
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
             [forge.roots.assets :as assets]
-            [forge.roots.awt :as awt]
             [forge.roots.gdx :as gdx]
-            [forge.roots.lwjgl3 :as lwjgl3]
             [forge.roots.truetype-font :as truetype-font]
             [forge.roots.vis-ui :as vis-ui]
             [malli.core :as m]
@@ -2882,13 +2883,15 @@
 (defn -main []
   (let [{:keys [requires
                 dock-icon
-                lwjgl3-config
+                glfw
+                lwjgl3
                 components]} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require requires)
     (awt/set-dock-icon (io/resource dock-icon))
+    (lwjgl/set-glfw-config glfw)
     (lwjgl3/start-app (proxy [ApplicationAdapter] []
                         (create  []    (run! app-create          components))
                         (dispose []    (run! app-destroy         components))
                         (render  []    (run! app-render          components))
                         (resize  [w h] (run! #(app-resize % w h) components)))
-                      lwjgl3-config)))
+                      lwjgl3)))

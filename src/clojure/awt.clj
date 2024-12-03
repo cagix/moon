@@ -1,4 +1,4 @@
-(ns forge.roots.awt
+(ns clojure.awt
   (:import (java.awt Taskbar Toolkit)))
 
 (defn set-dock-icon [image-resource]
