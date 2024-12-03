@@ -1,13 +1,11 @@
 (ns forge.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.audio :as audio]
-            [clojure.java.io :as io]
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
-            [forge.system :as system :refer [defsystem defmethods bind-root batch shape-drawer]]
+            [forge.system :as system :refer [defsystem bind-root batch shape-drawer]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
@@ -356,12 +354,8 @@
   (.clear (screen-stage))
   (run! add-actor new-actors))
 
-(declare db-schemas
-         db-properties-file
-         db-properties)
-
 (defn schema-of [k]
-  (safe-get db-schemas k))
+  (safe-get system/schemas k))
 
 (defn schema-type [schema]
   (if (vector? schema)
@@ -422,7 +416,7 @@
 
 (defn- namespaced-ks [ns-name-k]
   (filter #(= (name ns-name-k) (namespace %))
-          (keys db-schemas)))
+          (keys system/schemas)))
 
 (defmethod malli-form :s/components-ns [[_ ns-name-k]]
   (malli-form [:s/map-optional (namespaced-ks ns-name-k)]))
@@ -432,7 +426,7 @@
 
 (defn property-types []
   (filter #(= "properties" (namespace %))
-          (keys db-schemas)))
+          (keys system/schemas)))
 
 (defn schema-of-property [property]
   (schema-of (property-type property)))
@@ -467,10 +461,10 @@
         (->> properties
              pprint
              with-out-str
-             (spit db-properties-file)))))))
+             (spit system/properties-file)))))))
 
 (defn- async-write-to-file! []
-  (->> db-properties
+  (->> system/properties
        vals
        (sort-by property-type)
        (map recur-sort-map)
@@ -478,10 +472,10 @@
        async-pprint-spit!))
 
 (defn get-raw [id]
-  (safe-get db-properties id))
+  (safe-get system/properties id))
 
 (defn all-raw [type]
-  (->> (vals db-properties)
+  (->> (vals system/properties)
        (filter #(= type (property-type %)))))
 
 (def ^:private undefined-data-ks (atom #{}))
@@ -528,20 +522,20 @@
 
 (defn db-update! [{:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
-         (contains? db-properties id)]}
+         (contains? system/properties id)]}
   (validate! property)
-  (alter-var-root #'db-properties assoc id property)
+  (alter-var-root #'system/properties assoc id property)
   (async-write-to-file!))
 
 (defn db-delete! [property-id]
-  {:pre [(contains? db-properties property-id)]}
-  (alter-var-root #'db-properties dissoc property-id)
+  {:pre [(contains? system/properties property-id)]}
+  (alter-var-root #'system/properties dissoc property-id)
   (async-write-to-file!))
 
 (defn db-migrate [property-type update-fn]
   (doseq [id (map :property/id (all-raw property-type))]
     (println id)
-    (alter-var-root #'db-properties update id update-fn))
+    (alter-var-root #'system/properties update id update-fn))
   (async-write-to-file!))
 
 (defn property->image [{:keys [entity/image entity/animation]}]
@@ -2670,13 +2664,3 @@
   (when (:entity/player? entity)
     (actionbar-remove-skill skill))
   (update entity :entity/skills dissoc id))
-
-(defmethods :app/db
-  (system/create [[_ {:keys [schema properties]}]]
-    (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
-    (bind-root #'db-properties-file (io/resource properties))
-    (let [properties (-> db-properties-file slurp edn/read-string)]
-      (assert (or (empty? properties)
-                  (apply distinct? (map :property/id properties))))
-      (run! validate! properties)
-      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))

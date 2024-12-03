@@ -14,7 +14,10 @@
          gui-viewport-height
          gui-viewport
          screens
-         current-screen-key)
+         current-screen-key
+         schemas
+         properties-file
+         properties)
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}

@@ -1,10 +1,17 @@
 {:requires [forge.core
+
             forge.app.assets
+            forge.app.cached-map-renderer
             forge.app.cursors
+            forge.app.db
             forge.app.default-font
+            forge.app.gui-viewport
+            forge.app.screens
             forge.app.shape-drawer
             forge.app.sprite-batch
             forge.app.vis-ui
+            forge.app.world-viewport
+
             forge.effects
             forge.entity
             forge.info
