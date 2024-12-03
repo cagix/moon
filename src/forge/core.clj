@@ -314,7 +314,7 @@
   For example Input$Keys/ALT_LEFT can be used with :alt-left.
   Numbers via :num-3, etc."
   [k]
-  (.isKeyPressed Gdx/input (k->input-key k)))
+  (.isKeyPressed Gdx/input (gdx/k->input-key k)))
 
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
