@@ -7,7 +7,7 @@
             [data.grid2d :as g2d]
             [forge.roots.assets :as assets]
             [forge.roots.awt :as awt]
-            [forge.roots.cursor :as cursor]
+            [forge.roots.gdx :as gdx]
             [forge.roots.lwjgl3 :as lwjgl3]
             [forge.roots.truetype-font :as truetype-font]
             [forge.roots.vis-ui :as vis-ui]
@@ -843,15 +843,15 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(defsystem app-create)
+(defsystem ^:private app-create)
 
-(defsystem app-destroy)
+(defsystem ^:private app-destroy)
 (defmethod app-destroy :default [_])
 
-(defsystem app-render)
+(defsystem ^:private app-render)
 (defmethod app-render :default [_])
 
-(defsystem app-resize)
+(defsystem ^:private app-resize)
 (defmethod app-resize :default [_ w h])
 
 (defmethods :app/vis-ui
@@ -1125,7 +1125,9 @@
 
 (defmethods :app/cursors
   (app-create [[_ cursors]]
-    (def k->cursor (mapvals cursor/create cursors)))
+    (def k->cursor (mapvals (fn [[file hotspot]]
+                              (gdx/cursor (str "cursors/" file ".png") hotspot))
+                            cursors)))
   (app-destroy [_]
     (run! dispose (vals k->cursor))))
 
