@@ -288,42 +288,19 @@
 
 (def pprint clojure.pprint/pprint)
 
-(defn equal? [a b]
-  (MathUtils/isEqual a b))
+(defn- remove-newlines [s]
+  (let [new-s (-> s
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
+    (if (= (count new-s) (count s))
+      s
+      (remove-newlines new-s))))
 
-(defn clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
-
-(defn degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
-
-(defn gdx-align [k]
-  (case k
-    :center Align/center
-    :left   Align/left
-    :right  Align/right))
-
-(defn gdx-scaling [k]
-  (case k
-    :fill Scaling/fill))
+(def grid2d g2d/create-grid)
 
 (defn- gdx-field [klass-str k]
   (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
-
-(defn gdx-color
-  ([r g b]
-   (gdx-color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a))))
-
-(def ^Color black Color/BLACK)
-(def ^Color white Color/WHITE)
-
-(defn ->gdx-color ^Color [c]
-  (cond (= Color (class c)) c
-        (keyword? c) (gdx-field "graphics.Color" c)
-        (vector? c) (apply gdx-color c)
-        :else (throw (ex-info "Cannot understand color" c))))
 
 (def ^:private k->input-button (partial gdx-field "Input$Buttons"))
 (def ^:private k->input-key    (partial gdx-field "Input$Keys"))
@@ -346,11 +323,6 @@
   [k]
   (.isKeyPressed Gdx/input (k->input-key k)))
 
-(declare ^AssetManager asset-manager)
-
-(defn play-sound [name]
-  (Sound/.play (get asset-manager (str "sounds/" name ".wav"))))
-
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
 
@@ -359,6 +331,48 @@
 
 (defn exit-app []
   (.exit Gdx/app))
+
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
+(defn equal? [a b]
+  (MathUtils/isEqual a b))
+
+(defn clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
+
+(defn degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
+
+(defn gdx-align [k]
+  (case k
+    :center Align/center
+    :left   Align/left
+    :right  Align/right))
+
+(defn gdx-scaling [k]
+  (case k
+    :fill Scaling/fill))
+
+(defn gdx-color
+  ([r g b]
+   (gdx-color r g b 1))
+  ([r g b a]
+   (Color. (float r) (float g) (float b) (float a))))
+
+(def ^Color black Color/BLACK)
+(def ^Color white Color/WHITE)
+
+(defn ->gdx-color ^Color [c]
+  (cond (= Color (class c)) c
+        (keyword? c) (gdx-field "graphics.Color" c)
+        (vector? c) (apply gdx-color c)
+        :else (throw (ex-info "Cannot understand color" c))))
+
+(declare ^AssetManager asset-manager)
+
+(defn play-sound [name]
+  (Sound/.play (get asset-manager (str "sounds/" name ".wav"))))
 
 (def dispose Disposable/.dispose)
 
@@ -379,15 +393,6 @@
     (.setVisible layer bool))
   (visible? [layer]
     (.isVisible layer)))
-
-(defn internal-file ^FileHandle [path]
-  (.internal Gdx/files path))
-
-(defn- gdx-cursor [[file [hotspot-x hotspot-y]]]
-  (let [pixmap (Pixmap. (internal-file (str "cursors/" file ".png")))
-        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-    (dispose pixmap)
-    cursor))
 
 (declare ^:private app-screens
          ^:private current-screen-key)
@@ -421,9 +426,6 @@
 (defn reset-stage [new-actors]
   (.clear (screen-stage))
   (run! add-actor new-actors))
-
-(defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (declare ^:private db-schemas
          ^:private db-properties-file
@@ -776,8 +778,6 @@
    (range (dec x) (+ x 2))
    (range (dec y) (+ y 2))))
 
-(def grid2d g2d/create-grid)
-
 (def val-max-schema
   (m/schema [:and
              [:vector {:min 2 :max 2} [:int {:min 0}]]
@@ -888,13 +888,13 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(declare ^Batch ^:private batch
-         ^ShapeDrawer ^:private shape-drawer
-         ^BitmapFont ^:private default-font
+(declare ^:private ^Batch  batch
+         ^:private ^ShapeDrawer shape-drawer
+         ^:private ^BitmapFont default-font
          ^:private cached-map-renderer
          ^:private world-unit-scale
-         ^Viewport ^:private world-viewport
-         ^Viewport ^:private gui-viewport
+         ^:private ^Viewport world-viewport
+         ^:private ^Viewport gui-viewport
          ^:private cursors)
 
 (def ^:dynamic ^:private *unit-scale* 1)
@@ -1118,7 +1118,7 @@
     (doseq [[class exts] [[Sound   #{"wav"}]
                           [Texture #{"png" "bmp"}]]
             file (map #(str/replace-first % folder "")
-                      (recursively-search (internal-file folder) exts))]
+                      (recursively-search (.internal Gdx/files folder) exts))]
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
     manager))
@@ -1259,7 +1259,7 @@
        (bind-root #'shape-drawer-texture (white-pixel-texture))
        (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
        (bind-root #'default-font (truetype-font
-                                  {:file (internal-file "fonts/exocet/films.EXL_____.ttf")
+                                  {:file (.internal Gdx/files "fonts/exocet/films.EXL_____.ttf") ; TODO config
                                    :size 16
                                    :quality-scaling 2}))
        (bind-root #'world-unit-scale (float (/ tile-size)))
@@ -1277,7 +1277,12 @@
        (bind-root #'gui-viewport (FitViewport. gui-viewport-width
                                                gui-viewport-height
                                                (OrthographicCamera.)))
-       (bind-root #'cursors (mapvals gdx-cursor cursors))
+       (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                       (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                             cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                         (dispose pixmap)
+                                         cursor))
+                                     cursors))
        (init-visui ui)
        (bind-root #'app-screens (create-screens screen-ks))
        (change-screen first-screen-k))
@@ -1321,15 +1326,6 @@
 (defn- sort-k-order [components]
   (sort-by (fn [[k _]] (or (index-of k info-text-k-order) 99))
            components))
-
-(defn- remove-newlines [s]
-  (let [new-s (-> s
-                  (str/replace "\n\n" "\n")
-                  (str/replace #"^\n" "")
-                  str/trim-newline)]
-    (if (= (count new-s) (count s))
-      s
-      (remove-newlines new-s))))
 
 (declare ^:dynamic *info-text-entity*)
 
