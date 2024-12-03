@@ -3,7 +3,8 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
+  (:import (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
@@ -149,8 +150,8 @@
 (defn- all-of-class
   "Returns all asset paths with the specific class."
   [class]
-  (filter #(= (.getAssetType asset-manager %) class)
-          (.getAssetNames asset-manager)))
+  (filter #(= (AssetManager/.getAssetType assets %) class)
+          (AssetManager/.getAssetNames assets)))
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]

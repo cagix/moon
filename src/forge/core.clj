@@ -1,17 +1,22 @@
 (ns forge.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
+            [forge.roots.assets :as assets]
+            [forge.roots.cursor :as cursor]
+            [forge.roots.truetype-font :as truetype-font]
+            [forge.roots.vis-ui :as vis-ui]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
+           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
@@ -19,8 +24,8 @@
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling Disposable)
-           (com.badlogic.gdx.utils.viewport Viewport)
+           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils)
+           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
            (space.earlygrey.shapedrawer ShapeDrawer)))
@@ -360,11 +365,6 @@
         (keyword? c) (gdx-field "graphics.Color" c)
         (vector? c) (apply gdx-color c)
         :else (throw (ex-info "Cannot understand color" c))))
-
-(declare ^AssetManager asset-manager)
-
-(defn play-sound [name]
-  (Sound/.play (get asset-manager (str "sounds/" name ".wav"))))
 
 (def dispose Disposable/.dispose)
 
@@ -796,21 +796,6 @@
   [file]
   (.load (TmxMapLoader.) file))
 
-(defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
-  (if color (.setColor batch color))
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; rotation origin
-         (/ (float h) 2)
-         w ; width height
-         h
-         1 ; scaling factor
-         1
-         rotation)
-  (if color (.setColor batch Color/WHITE)))
-
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
     (:pixel-dimensions image)
@@ -856,9 +841,67 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(declare ^Batch batch)
+(defsystem app-create)
 
-(declare ^ShapeDrawer shape-drawer)
+(defsystem app-destroy)
+(defmethod app-destroy :default [_])
+
+(defsystem app-render)
+(defmethod app-render :default [_])
+
+(defsystem app-resize)
+(defmethod app-resize :default [_ w h])
+
+(defmethods :app/vis-ui
+  (app-create [[_ skin-scale]]
+    (vis-ui/init skin-scale))
+  (app-destroy [_]
+    (vis-ui/dispose)))
+
+(defmethods :app/assets
+  (app-create [[_ folder]]
+    (def assets (assets/load folder)))
+  (app-destroy [_]
+    (dispose assets)))
+
+(defn play-sound [name]
+  (Sound/.play (get assets (str "sounds/" name ".wav"))))
+
+(defmethods :app/sprite-batch
+  (app-create [_]
+    (def batch (SpriteBatch.)))
+  (app-destroy [_]
+    (dispose batch)))
+
+(defn- draw-texture-region [texture-region [x y] [w h] rotation color]
+  (if color (.setColor batch color))
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; rotation origin
+         (/ (float h) 2)
+         w ; width height
+         h
+         1 ; scaling factor
+         1
+         rotation)
+  (if color (.setColor batch Color/WHITE)))
+
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor white)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (dispose pixmap)
+    texture))
+
+(defmethods :app/shape-drawer
+  (app-create [_]
+    (def ^:private ^Texture shape-drawer-texture (white-pixel-texture))
+    (def shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
+  (app-destroy [_]
+    (dispose shape-drawer-texture)))
 
 (defn- sd-color [color]
   (.setColor shape-drawer (->gdx-color color)))
@@ -959,7 +1002,7 @@
 
 (defn ->texture-region
   ([path]
-   (TextureRegion. ^Texture (get asset-manager path)))
+   (TextureRegion. ^Texture (get assets path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 
@@ -980,8 +1023,7 @@
              [(* x tilew) (* y tileh) tilew tileh]))
 
 (defn draw-image [{:keys [texture-region color] :as image} position]
-  (draw-texture-region batch
-                       texture-region
+  (draw-texture-region texture-region
                        position
                        (unit-dimensions image *unit-scale*)
                        0 ; rotation
@@ -990,8 +1032,7 @@
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region batch
-                         texture-region
+    (draw-texture-region texture-region
                          [(- (float x) (/ (float w) 2))
                           (- (float y) (/ (float h) 2))]
                          [w h]
@@ -1052,7 +1093,11 @@
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
-(declare ^BitmapFont default-font)
+(defmethods :app/default-font
+  (app-create [[_ font]]
+    (def default-font (truetype-font/load font)))
+  (app-destroy [_]
+    (dispose default-font)))
 
 (defn draw-text
   "font, h-align, up? and scale are optional.
@@ -1076,12 +1121,22 @@
            false) ; wrap false, no need target-width
     (.setScale data old-scale)))
 
-(declare k->cursor)
+(defmethods :app/cursors
+  (app-create [[_ cursors]]
+    (def k->cursor (mapvals cursor/create cursors)))
+  (app-destroy [_]
+    (run! dispose (vals k->cursor))))
 
 (defn set-cursor [cursor-key]
   (.setCursor Gdx/graphics (safe-get k->cursor cursor-key)))
 
-(declare cached-map-renderer)
+(defmethods :app/cached-map-renderer
+  (app-create [_]
+    (def cached-map-renderer (memoize
+                              (fn [tiled-map]
+                                (OrthogonalTiledMapRenderer. tiled-map
+                                                             (float world-unit-scale)
+                                                             batch))))))
 
 (defsystem component-info)
 (defmethod component-info :default [_])
@@ -2747,3 +2802,81 @@
   (when (:entity/player? entity)
     (actionbar-remove-skill skill))
   (update entity :entity/skills dissoc id))
+
+(defmethods :app/db
+  (app-create [[_ {:keys [schema properties]}]]
+    (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
+    (bind-root #'db-properties-file (io/resource properties))
+    (let [properties (-> db-properties-file slurp edn/read-string)]
+      (assert (or (empty? properties)
+                  (apply distinct? (map :property/id properties))))
+      (run! validate! properties)
+      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
+
+(defmethods :app/gui-viewport
+  (app-create [[_ [width height]]]
+    (bind-root #'gui-viewport-width  width)
+    (bind-root #'gui-viewport-height height)
+    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
+  (app-resize [_ w h]
+    (.update gui-viewport w h true)))
+
+(defmethods :app/world-viewport
+  (app-create [[_ [width height tile-size]]]
+    (bind-root #'world-unit-scale (float (/ tile-size)))
+    (bind-root #'world-viewport-width  width)
+    (bind-root #'world-viewport-height height)
+    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
+                                      world-height (* height world-unit-scale)
+                                      camera (OrthographicCamera.)
+                                      y-down? false]
+                                  (.setToOrtho camera y-down? world-width world-height)
+                                  (FitViewport. world-width world-height camera))))
+  (app-resize [_ w h]
+    (.update world-viewport w h true)))
+
+(defrecord StageScreen [^Stage stage sub-screen]
+  Screen
+  (screen-enter [_]
+    (.setInputProcessor Gdx/input stage)
+    (screen-enter sub-screen))
+
+  (screen-exit [_]
+    (.setInputProcessor Gdx/input nil)
+    (screen-exit sub-screen))
+
+  (screen-render [_]
+    (.act stage)
+    (screen-render sub-screen)
+    (.draw stage))
+
+  (screen-destroy [_]
+    (dispose stage)
+    (screen-destroy sub-screen)))
+
+(defn- stage-screen
+  "Actors or screen can be nil."
+  [{:keys [actors screen]}]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
+                (valAt
+                  ([id]
+                   (find-actor-with-id (Stage/.getRoot this) id))
+                  ([id not-found]
+                   (or (find-actor-with-id (Stage/.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    (->StageScreen stage screen)))
+
+(defmethods :app/screens
+  (app-create [[_ {:keys [ks first-k]}]]
+    (bind-root #'app-screens (mapvals stage-screen (mapvals
+                                                    (fn [ns-sym]
+                                                      (require ns-sym)
+                                                      ((ns-resolve ns-sym 'create)))
+                                                    ks)))
+    (change-screen first-k))
+  (app-destroy [_]
+    (run! screen-destroy (vals app-screens)))
+  (app-render [_]
+    (ScreenUtils/clear black)
+    (screen-render (current-screen))))
