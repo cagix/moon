@@ -17,13 +17,13 @@
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
- :config {:dock-icon "moon.png"
-          :glfw {:library-name "glfw_async"
-                 :check-thread0 false}
-          :lwjgl3 {:title "Moon"
-                   :fps 60
-                   :width 1440
-                   :height 900}}
+ :dock-icon "moon.png"
+ :glfw {:library-name "glfw_async"
+        :check-thread0 false}
+ :lwjgl3 {:title "Moon"
+          :fps 60
+          :width 1440
+          :height 900}
  :components [[:app/db {:schema "schema.edn"
                         :properties "properties.edn"}]
               [:app/sprite-batch]
