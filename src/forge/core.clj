@@ -894,7 +894,7 @@
          gui-viewport-width
          gui-viewport-height
          ^:private ^Viewport gui-viewport
-         ^:private cursors)
+         ^:private k->cursor)
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -1064,7 +1064,7 @@
   (draw-with world-viewport world-unit-scale render-fn))
 
 (defn set-cursor [cursor-key]
-  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
+  (.setCursor Gdx/graphics (safe-get k->cursor cursor-key)))
 
 (defn edn->image [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds
@@ -1274,19 +1274,18 @@
        (bind-root #'gui-viewport (FitViewport. gui-viewport-width
                                                gui-viewport-height
                                                (OrthographicCamera.)))
-       (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                       (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                             cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                         (dispose pixmap)
-                                         cursor))
-                                     cursors))
+       (bind-root #'k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                         (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                               cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                           (dispose pixmap)
+                                           cursor))
+                                       cursors))
        (init-visui ui)
-       (bind-root #'app-screens (mapvals stage-screen
-                                         (mapvals
-                                          (fn [ns-sym]
-                                            (require ns-sym)
-                                            ((ns-resolve ns-sym 'create)))
-                                          screen-ks)))
+       (bind-root #'app-screens (mapvals stage-screen (mapvals
+                                                       (fn [ns-sym]
+                                                         (require ns-sym)
+                                                         ((ns-resolve ns-sym 'create)))
+                                                       screen-ks)))
        (change-screen first-screen-k))
 
      (dispose []
@@ -1294,7 +1293,7 @@
        (dispose batch)
        (dispose shape-drawer-texture)
        (dispose default-font)
-       (run! dispose (vals @#'cursors))
+       (run! dispose (vals k->cursor))
        (dispose-visui)
        (run! screen-destroy (vals app-screens)))
 
