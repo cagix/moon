@@ -298,21 +298,15 @@
 
 (def grid2d g2d/create-grid)
 
-(defn- gdx-field [klass-str k]
-  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
-
-(def ^:private k->input-button (partial gdx-field "Input$Buttons"))
-(def ^:private k->input-key    (partial gdx-field "Input$Keys"))
-
 (defn button-just-pressed?
   ":left, :right, :middle, :back or :forward."
   [b]
-  (.isButtonJustPressed Gdx/input (k->input-button b)))
+  (.isButtonJustPressed Gdx/input (gdx/k->input-button b)))
 
 (defn key-just-pressed?
   "See [[key-pressed?]]."
   [k]
-  (.isKeyJustPressed Gdx/input (k->input-key k)))
+  (.isKeyJustPressed Gdx/input (gdx/k->input-key k)))
 
 (defn key-pressed?
   "For options see [libgdx Input$Keys docs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Input.Keys.html).
@@ -364,7 +358,7 @@
 
 (defn ->gdx-color ^Color [c]
   (cond (= Color (class c)) c
-        (keyword? c) (gdx-field "graphics.Color" c)
+        (keyword? c) (gdx/static-field "graphics.Color" c)
         (vector? c) (apply gdx-color c)
         :else (throw (ex-info "Cannot understand color" c))))
 
