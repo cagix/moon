@@ -864,25 +864,6 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (dispose generator)
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
-
 (defn- text-height [^BitmapFont font text]
   (-> text
       (str/split #"\n")
@@ -892,115 +873,35 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(declare ^:private ^Batch batch
-         ^:private ^ShapeDrawer shape-drawer
-         ^:private ^BitmapFont default-font
-         ^:private cached-map-renderer
-         ^:private world-unit-scale
-         world-viewport-width
-         world-viewport-height
-         ^:private ^Viewport world-viewport
-         gui-viewport-width
-         gui-viewport-height
-         ^:private ^Viewport gui-viewport
-         ^:private k->cursor)
+(defsystem lifecycle-create)
 
-(def ^:dynamic ^:private *unit-scale* 1)
+(defsystem lifecycle-dispose)
+(defmethod lifecycle-dispose :default [_])
 
-; touch coordinates are y-down, while screen coordinates are y-up
-; so the clamping of y is reverse, but as black bars are equal it does not matter
-(defn- unproject-mouse-position
-  "Returns vector of [x y]."
-  [^Viewport viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
-                       (.getLeftGutterWidth viewport)
-                       (.getRightGutterX viewport))
-        mouse-y (clamp (.getY Gdx/input)
-                       (.getTopGutterHeight viewport)
-                       (.getTopGutterY viewport))
-        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
-    [(.x coords) (.y coords)]))
+(defsystem lifecycle-resize)
+(defmethod lifecycle-resize :default [_ w h])
 
-(defn gui-mouse-position []
-  ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position gui-viewport)))
+(defsystem lifecycle-render)
+(defmethod lifecycle-render :default [_])
 
-(defn pixels->world-units [pixels]
-  (* (int pixels) world-unit-scale))
+(declare ^:private ^Batch batch)
 
-(defn world-mouse-position []
-  ; TODO clamping only works for gui-viewport ? check. comment if true
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position world-viewport))
+(defmethods :lifecycle/sprite-batch
+  (lifecycle-create [_]
+    (bind-root #'batch (SpriteBatch.)))
+  (lifecycle-dispose [_]
+    (dispose batch)))
 
-(defn world-camera []
-  (.getCamera world-viewport))
+(declare ^:private ^ShapeDrawer shape-drawer
+         ^:private ^Texture shape-drawer-texture)
 
-(defn ->texture-region
-  ([path]
-   (TextureRegion. ^Texture (get asset-manager path)))
-  ([^TextureRegion texture-region [x y w h]]
-   (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
-
-(defn ->image [path]
-  (sprite* world-unit-scale (->texture-region path)))
-
-(defn sub-image [image bounds]
-  (sprite* world-unit-scale
-           (->texture-region (:texture-region image) bounds)))
-
-(defn sprite-sheet [path tilew tileh]
-  {:image (->image path)
-   :tilew tilew
-   :tileh tileh})
-
-(defn ->sprite [{:keys [image tilew tileh]} [x y]]
-  (sub-image image
-             [(* x tilew) (* y tileh) tilew tileh]))
-
-(defn draw-text
-  "font, h-align, up? and scale are optional.
-  h-align one of: :center, :left, :right. Default :center.
-  up? renders the font over y, otherwise under.
-  scale will multiply the drawn text size with the scale."
-  [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font default-font)
-        data (.getData font)
-        old-scale (float (.scaleX data))]
-    (.setScale data (* old-scale
-                       (float *unit-scale*)
-                       (float (or scale 1))))
-    (.draw font
-           batch
-           (str text)
-           (float x)
-           (+ (float y) (float (if up? (text-height font text) 0)))
-           (float 0) ; target-width
-           (gdx-align (or h-align :center))
-           false) ; wrap false, no need target-width
-    (.setScale data old-scale)))
-
-(defn draw-image [{:keys [texture-region color] :as image} position]
-  (draw-texture-region batch
-                       texture-region
-                       position
-                       (unit-dimensions image *unit-scale*)
-                       0 ; rotation
-                       color))
-
-(defn draw-rotated-centered
-  [{:keys [texture-region color] :as image} rotation [x y]]
-  (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region batch
-                         texture-region
-                         [(- (float x) (/ (float w) 2))
-                          (- (float y) (/ (float h) 2))]
-                         [w h]
-                         rotation
-                         color)))
-
-(defn draw-centered [image position]
-  (draw-rotated-centered image 0 position))
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor white)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (dispose pixmap)
+    texture))
 
 (defn- sd-color [color]
   (.setColor shape-drawer (->gdx-color color)))
@@ -1060,6 +961,97 @@
     (draw-fn)
     (.setDefaultLineWidth shape-drawer (float old-line-width))))
 
+
+(defmethods :lifecycle/shape-drawer
+  (lifecycle-create [_]
+    (bind-root #'shape-drawer-texture (white-pixel-texture))
+    (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
+  (lifecycle-dispose [_]
+    (dispose shape-drawer-texture)))
+
+(declare ^:private world-unit-scale
+         world-viewport-width
+         world-viewport-height
+         ^:private ^Viewport world-viewport
+         gui-viewport-width
+         gui-viewport-height
+         ^:private ^Viewport gui-viewport)
+
+(def ^:dynamic ^:private *unit-scale* 1)
+
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+(defn- unproject-mouse-position
+  "Returns vector of [x y]."
+  [^Viewport viewport]
+  (let [mouse-x (clamp (.getX Gdx/input)
+                       (.getLeftGutterWidth viewport)
+                       (.getRightGutterX viewport))
+        mouse-y (clamp (.getY Gdx/input)
+                       (.getTopGutterHeight viewport)
+                       (.getTopGutterY viewport))
+        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
+    [(.x coords) (.y coords)]))
+
+(defn gui-mouse-position []
+  ; TODO mapv int needed?
+  (mapv int (unproject-mouse-position gui-viewport)))
+
+(defn pixels->world-units [pixels]
+  (* (int pixels) world-unit-scale))
+
+(defn world-mouse-position []
+  ; TODO clamping only works for gui-viewport ? check. comment if true
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (unproject-mouse-position world-viewport))
+
+(defn world-camera []
+  (.getCamera world-viewport))
+
+(defn ->texture-region
+  ([path]
+   (TextureRegion. ^Texture (get asset-manager path)))
+  ([^TextureRegion texture-region [x y w h]]
+   (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
+
+(defn ->image [path]
+  (sprite* world-unit-scale (->texture-region path)))
+
+(defn sub-image [image bounds]
+  (sprite* world-unit-scale
+           (->texture-region (:texture-region image) bounds)))
+
+(defn sprite-sheet [path tilew tileh]
+  {:image (->image path)
+   :tilew tilew
+   :tileh tileh})
+
+(defn ->sprite [{:keys [image tilew tileh]} [x y]]
+  (sub-image image
+             [(* x tilew) (* y tileh) tilew tileh]))
+
+(defn draw-image [{:keys [texture-region color] :as image} position]
+  (draw-texture-region batch
+                       texture-region
+                       position
+                       (unit-dimensions image *unit-scale*)
+                       0 ; rotation
+                       color))
+
+(defn draw-rotated-centered
+  [{:keys [texture-region color] :as image} rotation [x y]]
+  (let [[w h] (unit-dimensions image *unit-scale*)]
+    (draw-texture-region batch
+                         texture-region
+                         [(- (float x) (/ (float w) 2))
+                          (- (float y) (/ (float h) 2))]
+                         [w h]
+                         rotation
+                         color)))
+
+(defn draw-centered [image position]
+  (draw-rotated-centered image 0 position))
+
 (defn- draw-with [^Viewport viewport unit-scale draw-fn]
   (.setColor batch white) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (.combined (.getCamera viewport)))
@@ -1071,9 +1063,6 @@
 
 (defn draw-on-world-view [render-fn]
   (draw-with world-viewport world-unit-scale render-fn))
-
-(defn set-cursor [cursor-key]
-  (.setCursor Gdx/graphics (safe-get k->cursor cursor-key)))
 
 (defn edn->image [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds
@@ -1095,45 +1084,6 @@
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
                             (io/resource image-resource))))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- load-assets [folder]
-  (let [manager (proxy [AssetManager clojure.lang.ILookup] []
-                  (valAt [^String path]
-                    (if (AssetManager/.contains this path)
-                      (AssetManager/.get this path)
-                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
-    (doseq [[class exts] [[Sound   #{"wav"}]
-                          [Texture #{"png" "bmp"}]]
-            file (map #(str/replace-first % folder "")
-                      (recursively-search (.internal Gdx/files folder) exts))]
-      (.load manager ^String file ^Class class))
-    (.finishLoading manager)
-    manager))
-
-(declare ^:private ^Texture shape-drawer-texture)
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor white)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (dispose pixmap)
-    texture))
 
 (defrecord StageScreen [^Stage stage sub-screen]
   Screen
@@ -1232,73 +1182,158 @@
                         (.setForegroundFPS fps)
                         (.setWindowedMode width height))))
 
-(defn- application-listener [{:keys [assets
-                                     cursors
-                                     default-font
-                                     world-viewport-width
-                                     world-viewport-height
-                                     gui-viewport-width
-                                     gui-viewport-height
-                                     ui
-                                     screen-ks
-                                     first-screen-k
-                                     tile-size]}]
-  (proxy [ApplicationAdapter] []
-    (create []
-      (bind-root #'asset-manager (load-assets assets))
-      (bind-root #'batch (SpriteBatch.))
-      (bind-root #'shape-drawer-texture (white-pixel-texture))
-      (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-      (bind-root #'default-font (truetype-font default-font))
-      (bind-root #'world-unit-scale (float (/ tile-size)))
-      (bind-root #'world-viewport-width  world-viewport-width)
-      (bind-root #'world-viewport-height world-viewport-height)
-      (bind-root #'gui-viewport-width  gui-viewport-width)
-      (bind-root #'gui-viewport-height gui-viewport-height)
-      (bind-root #'world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
-                                        world-height (* world-viewport-height world-unit-scale)
-                                        camera (OrthographicCamera.)
-                                        y-down? false]
-                                    (.setToOrtho camera y-down? world-width world-height)
-                                    (FitViewport. world-width world-height camera)))
-      (bind-root #'cached-map-renderer (memoize
-                                        (fn [tiled-map]
-                                          (OrthogonalTiledMapRenderer. tiled-map
-                                                                       (float world-unit-scale)
-                                                                       batch))))
-      (bind-root #'gui-viewport (FitViewport. gui-viewport-width
-                                              gui-viewport-height
-                                              (OrthographicCamera.)))
-      (bind-root #'k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                        (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                              cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                          (dispose pixmap)
-                                          cursor))
-                                      cursors))
-      (init-visui ui)
-      (bind-root #'app-screens (mapvals stage-screen (mapvals
-                                                      (fn [ns-sym]
-                                                        (require ns-sym)
-                                                        ((ns-resolve ns-sym 'create)))
-                                                      screen-ks)))
-      (change-screen first-screen-k))
+(defn- recursively-search [folder extensions]
+  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
+         result []]
+    (cond (nil? file)
+          result
 
-    (dispose []
-      (dispose asset-manager)
-      (dispose batch)
-      (dispose shape-drawer-texture)
-      (dispose default-font)
-      (run! dispose (vals k->cursor))
-      (dispose-visui)
-      (run! screen-destroy (vals app-screens)))
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
 
-    (render []
-      (ScreenUtils/clear black)
-      (screen-render (current-screen)))
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
 
-    (resize [w h]
-      (.update gui-viewport   w h true)
-      (.update world-viewport w h))))
+          :else
+          (recur remaining result))))
+
+(defn- load-assets [folder]
+  (let [manager (proxy [AssetManager clojure.lang.ILookup] []
+                  (valAt [^String path]
+                    (if (AssetManager/.contains this path)
+                      (AssetManager/.get this path)
+                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
+    (doseq [[class exts] [[Sound   #{"wav"}]
+                          [Texture #{"png" "bmp"}]]
+            file (map #(str/replace-first % folder "")
+                      (recursively-search (.internal Gdx/files folder) exts))]
+      (.load manager ^String file ^Class class))
+    (.finishLoading manager)
+    manager))
+
+
+(defmethods :lifecycle/asset-manager
+  (lifecycle-create [[_ folder]]
+    (bind-root #'asset-manager (load-assets folder)))
+  (lifecycle-dispose [_]
+    (dispose asset-manager)))
+
+(defn- ttf-params [size quality-scaling]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) (* size quality-scaling))
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
+    (set! (.magFilter params) Texture$TextureFilter/Linear)
+    params))
+
+(defn- truetype-font [{:keys [file size quality-scaling]}]
+  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
+        font (.generateFont generator (ttf-params size quality-scaling))]
+    (dispose generator)
+    (.setScale (.getData font) (float (/ quality-scaling)))
+    (set! (.markupEnabled (.getData font)) true)
+    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
+    font))
+
+(declare ^:private ^BitmapFont default-font)
+
+(defn draw-text
+  "font, h-align, up? and scale are optional.
+  h-align one of: :center, :left, :right. Default :center.
+  up? renders the font over y, otherwise under.
+  scale will multiply the drawn text size with the scale."
+  [{:keys [font x y text h-align up? scale]}]
+  (let [^BitmapFont font (or font default-font)
+        data (.getData font)
+        old-scale (float (.scaleX data))]
+    (.setScale data (* old-scale
+                       (float *unit-scale*)
+                       (float (or scale 1))))
+    (.draw font
+           batch
+           (str text)
+           (float x)
+           (+ (float y) (float (if up? (text-height font text) 0)))
+           (float 0) ; target-width
+           (gdx-align (or h-align :center))
+           false) ; wrap false, no need target-width
+    (.setScale data old-scale)))
+
+(defmethods :lifecycle/default-font
+  (lifecycle-create [[_ font]]
+    (bind-root #'default-font (truetype-font font)))
+  (lifecycle-dispose [_]
+    (dispose default-font)))
+
+(declare ^:private k->cursor)
+
+(defn set-cursor [cursor-key]
+  (.setCursor Gdx/graphics (safe-get k->cursor cursor-key)))
+
+(defmethods :lifecycle/cursors
+  (lifecycle-create [[_ cursors]]
+    (bind-root #'k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                      (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                            cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                        (dispose pixmap)
+                                        cursor))
+                                    cursors)))
+  (lifecycle-dispose [_]
+    (run! dispose (vals k->cursor))))
+
+(declare ^:private cached-map-renderer)
+
+(defmethods :lifecycle/cached-map-renderer
+  (lifecycle-create [_]
+    (bind-root #'cached-map-renderer (memoize
+                                      (fn [tiled-map]
+                                        (OrthogonalTiledMapRenderer. tiled-map
+                                                                     (float world-unit-scale)
+                                                                     batch))))))
+
+(defmethods :lifecycle/vis-ui
+  (lifecycle-create [[_ config]]
+    (init-visui config))
+  (lifecycle-dispose [_]
+    (dispose-visui)))
+
+(defmethods :lifecycle/gui-viewport
+  (lifecycle-create [[_ [width height]]]
+    (bind-root #'gui-viewport-width  width)
+    (bind-root #'gui-viewport-height height)
+    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
+  (lifecycle-resize [_ w h]
+    (.update gui-viewport w h true)))
+
+(defmethods :lifecycle/world-viewport
+  (lifecycle-create [[_ [width height tile-size]]]
+    (bind-root #'world-unit-scale (float (/ tile-size)))
+    (bind-root #'world-viewport-width  width)
+    (bind-root #'world-viewport-height height)
+    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
+                                      world-height (* height world-unit-scale)
+                                      camera (OrthographicCamera.)
+                                      y-down? false]
+                                  (.setToOrtho camera y-down? world-width world-height)
+                                  (FitViewport. world-width world-height camera))))
+  (lifecycle-resize [_ w h]
+    (.update world-viewport w h true)))
+
+(defmethods :lifecycle/screens
+  (lifecycle-create [[_ {:keys [ks first-k]}]]
+    (bind-root #'app-screens (mapvals stage-screen (mapvals
+                                                    (fn [ns-sym]
+                                                      (require ns-sym)
+                                                      ((ns-resolve ns-sym 'create)))
+                                                    ks)))
+    (change-screen first-k))
+  (lifecycle-dispose [_]
+    (run! screen-destroy (vals app-screens)))
+  (lifecycle-render [_]
+    (ScreenUtils/clear black)
+    (screen-render (current-screen))))
 
 (defn -main []
   (let [{:keys [requires
@@ -1309,7 +1344,19 @@
     (run! require requires)
     (init-db db)
     (set-dock-icon dock-icon)
-    (start-application app (application-listener lifecycle))))
+    (start-application app
+                       (proxy [ApplicationAdapter] []
+                         (create []
+                           (run! lifecycle-create lifecycle))
+
+                         (dispose []
+                           (run! lifecycle-dispose lifecycle))
+
+                         (render []
+                           (run! lifecycle-render lifecycle))
+
+                         (resize [w h]
+                           (run! #(lifecycle-resize % w h) lifecycle))))))
 
 (defsystem component-info)
 (defmethod component-info :default [_])
