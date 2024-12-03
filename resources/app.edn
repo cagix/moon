@@ -1,5 +1,6 @@
 {:requires [forge.core
             forge.app.assets
+            forge.app.shape-drawer
             forge.app.sprite-batch
             forge.app.vis-ui
             forge.effects

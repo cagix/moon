@@ -8,14 +8,14 @@
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
-            [forge.context :refer [assets batch]]
+            [forge.context :refer [assets batch shape-drawer]]
             [forge.lifecycle :as lifecycle]
             [forge.system :refer [defsystem defmethods bind-root]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
+  (:import (com.badlogic.gdx.graphics Camera Color Colors Pixmap Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -805,21 +805,6 @@
          1
          rotation)
   (if color (.setColor batch Color/WHITE)))
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor white)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (dispose pixmap)
-    texture))
-
-(defmethods :app/shape-drawer
-  (lifecycle/create [_]
-    (def ^:private ^Texture shape-drawer-texture (white-pixel-texture))
-    (def shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
-  (lifecycle/dispose [_]
-    (dispose shape-drawer-texture)))
 
 (defn- sd-color [color]
   (.setColor shape-drawer (->gdx-color color)))

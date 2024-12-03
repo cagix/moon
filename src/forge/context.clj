@@ -1,4 +1,5 @@
 (ns forge.context)
 
 (declare assets
-         batch)
+         batch
+         shape-drawer)
