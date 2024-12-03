@@ -1797,7 +1797,7 @@
 (defn image-button
   (^VisImageButton [image on-clicked]
    (image-button image on-clicked {}))
-  (^VisImageButton[{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
+  (^VisImageButton [{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
    (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)
          button (VisImageButton. drawable)]
      (when scale
