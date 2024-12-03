@@ -1,3 +1,4 @@
 (ns forge.context)
 
-(declare assets)
+(declare assets
+         batch)

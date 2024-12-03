@@ -8,7 +8,7 @@
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
-            [forge.context :refer [assets]]
+            [forge.context :refer [assets batch]]
             [forge.lifecycle :as lifecycle]
             [forge.system :refer [defsystem defmethods bind-root]]
             [malli.core :as m]
@@ -16,7 +16,7 @@
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
@@ -790,12 +790,6 @@
 
 (defn play-sound [name]
   (audio/play (get assets (str "sounds/" name ".wav"))))
-
-(defmethods :app/sprite-batch
-  (lifecycle/create [_]
-    (def batch (SpriteBatch.)))
-  (lifecycle/dispose [_]
-    (dispose batch)))
 
 (defn- draw-texture-region [texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
