@@ -8,8 +8,10 @@
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
+            [forge.lifecycle :as lifecycle]
             [forge.roots.assets :as assets]
             [forge.roots.vis-ui :as vis-ui]
+            [forge.system :refer [defsystem]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
@@ -28,27 +30,6 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defmacro defsystem
-  {:arglists '([name docstring? params?])}
-  [name-sym & args]
-  (let [docstring (if (string? (first args))
-                    (first args))
-        params (if (string? (first args))
-                 (second args)
-                 (first args))
-        params (if (nil? params)
-                 '[_]
-                 params)]
-    (when (zero? (count params))
-      (throw (IllegalArgumentException. "First argument needs to be component.")))
-    (when-let [avar (resolve name-sym)]
-      (println "WARNING: Overwriting defsystem:" avar))
-    `(defmulti ~(vary-meta name-sym assoc :params (list 'quote params))
-       ~(str "[[defsystem]] `" (str params) "`"
-             (when docstring (str "\n\n" docstring)))
-       (fn [[k#] & _args#]
-         k#))))
 
 (defmacro defmethods [k & sys-impls]
   `(do
@@ -822,36 +803,25 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(defsystem app-create)
-
-(defsystem app-destroy)
-(defmethod app-destroy :default [_])
-
-(defsystem app-render)
-(defmethod app-render :default [_])
-
-(defsystem app-resize)
-(defmethod app-resize :default [_ w h])
-
 (defmethods :app/vis-ui
-  (app-create [[_ skin-scale]]
+  (lifecycle/create [[_ skin-scale]]
     (vis-ui/init skin-scale))
-  (app-destroy [_]
+  (lifecycle/dispose [_]
     (vis-ui/dispose)))
 
 (defmethods :app/assets
-  (app-create [[_ folder]]
+  (lifecycle/create [[_ folder]]
     (def assets (assets/load folder)))
-  (app-destroy [_]
+  (lifecycle/dispose [_]
     (dispose assets)))
 
 (defn play-sound [name]
   (audio/play (get assets (str "sounds/" name ".wav"))))
 
 (defmethods :app/sprite-batch
-  (app-create [_]
+  (lifecycle/create [_]
     (def batch (SpriteBatch.)))
-  (app-destroy [_]
+  (lifecycle/dispose [_]
     (dispose batch)))
 
 (defn- draw-texture-region [texture-region [x y] [w h] rotation color]
@@ -878,10 +848,10 @@
     texture))
 
 (defmethods :app/shape-drawer
-  (app-create [_]
+  (lifecycle/create [_]
     (def ^:private ^Texture shape-drawer-texture (white-pixel-texture))
     (def shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
-  (app-destroy [_]
+  (lifecycle/dispose [_]
     (dispose shape-drawer-texture)))
 
 (defn- sd-color [color]
@@ -1075,9 +1045,9 @@
     (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
 (defmethods :app/default-font
-  (app-create [[_ font]]
+  (lifecycle/create [[_ font]]
     (def default-font (freetype/font font)))
-  (app-destroy [_]
+  (lifecycle/dispose [_]
     (dispose default-font)))
 
 (defn draw-text
@@ -1103,21 +1073,21 @@
     (.setScale data old-scale)))
 
 (defmethods :app/cursors
-  (app-create [[_ cursors]]
+  (lifecycle/create [[_ cursors]]
     (def k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
                               (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
                                     cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
                                 (.dispose pixmap)
                                 cursor))
                             cursors)))
-  (app-destroy [_]
+  (lifecycle/dispose [_]
     (run! dispose (vals k->cursor))))
 
 (defn set-cursor [cursor-key]
   (gdx/set-cursor (safe-get k->cursor cursor-key)))
 
 (defmethods :app/cached-map-renderer
-  (app-create [_]
+  (lifecycle/create [_]
     (def cached-map-renderer (memoize
                               (fn [tiled-map]
                                 (OrthogonalTiledMapRenderer. tiled-map
@@ -2790,7 +2760,7 @@
   (update entity :entity/skills dissoc id))
 
 (defmethods :app/db
-  (app-create [[_ {:keys [schema properties]}]]
+  (lifecycle/create [[_ {:keys [schema properties]}]]
     (bind-root #'db-schemas (-> schema io/resource slurp edn/read-string))
     (bind-root #'db-properties-file (io/resource properties))
     (let [properties (-> db-properties-file slurp edn/read-string)]
@@ -2800,15 +2770,15 @@
       (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
 
 (defmethods :app/gui-viewport
-  (app-create [[_ [width height]]]
+  (lifecycle/create [[_ [width height]]]
     (bind-root #'gui-viewport-width  width)
     (bind-root #'gui-viewport-height height)
     (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
-  (app-resize [_ w h]
+  (lifecycle/resize [_ w h]
     (.update gui-viewport w h true)))
 
 (defmethods :app/world-viewport
-  (app-create [[_ [width height tile-size]]]
+  (lifecycle/create [[_ [width height tile-size]]]
     (bind-root #'world-unit-scale (float (/ tile-size)))
     (bind-root #'world-viewport-width  width)
     (bind-root #'world-viewport-height height)
@@ -2818,7 +2788,7 @@
                                       y-down? false]
                                   (.setToOrtho camera y-down? world-width world-height)
                                   (FitViewport. world-width world-height camera))))
-  (app-resize [_ w h]
+  (lifecycle/resize [_ w h]
     (.update world-viewport w h true)))
 
 (defrecord StageScreen [^Stage stage sub-screen]
@@ -2854,15 +2824,15 @@
     (->StageScreen stage screen)))
 
 (defmethods :app/screens
-  (app-create [[_ {:keys [ks first-k]}]]
+  (lifecycle/create [[_ {:keys [ks first-k]}]]
     (bind-root #'app-screens (mapvals stage-screen (mapvals
                                                     (fn [ns-sym]
                                                       (require ns-sym)
                                                       ((ns-resolve ns-sym 'create)))
                                                     ks)))
     (change-screen first-k))
-  (app-destroy [_]
+  (lifecycle/dispose [_]
     (run! screen-destroy (vals app-screens)))
-  (app-render [_]
+  (lifecycle/render [_]
     (ScreenUtils/clear black)
     (screen-render (current-screen))))

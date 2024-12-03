@@ -1,45 +1,45 @@
-{:requires [forge.effects
+{:requires [forge.core
+            forge.effects
             forge.entity
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
- :dock-icon "moon.png"
- :glfw-config {:library-name "glfw_async"
-               :check-thread0 false}
- :lwjgl3-config {:title "Moon"
-                 :fps 60
-                 :width 1440
-                 :height 900}
- :components
- [[:app/db {:schema "schema.edn"
-            :properties "properties.edn"}]
-  [:app/sprite-batch]
-  [:app/shape-drawer]
-  [:app/assets "resources/"]
-  [:app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                      :size 16
-                      :quality-scaling 2}]
-  [:app/cursors {:cursors/bag                   ["bag001"       [0   0]]
-                 :cursors/black-x               ["black_x"      [0   0]]
-                 :cursors/default               ["default"      [0   0]]
-                 :cursors/denied                ["denied"       [16 16]]
-                 :cursors/hand-before-grab      ["hand004"      [4  16]]
-                 :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                 :cursors/hand-grab             ["hand003"      [4  16]]
-                 :cursors/move-window           ["move002"      [16 16]]
-                 :cursors/no-skill-selected     ["denied003"    [0   0]]
-                 :cursors/over-button           ["hand002"      [0   0]]
-                 :cursors/sandclock             ["sandclock"    [16 16]]
-                 :cursors/skill-not-usable      ["x007"         [0   0]]
-                 :cursors/use-skill             ["pointer004"   [0   0]]
-                 :cursors/walking               ["walking"      [16 16]]}]
-  [:app/cached-map-renderer]
-  [:app/vis-ui :skin-scale/x1]
-  [:app/gui-viewport   [1440 900]]
-  [:app/world-viewport [1440 900 48]]
-  [:app/screens {:ks {:screens/main-menu  forge.screens.main-menu
-                      :screens/map-editor forge.screens.map-editor
-                      :screens/editor     forge.screens.editor
-                      :screens/minimap    forge.screens.minimap
-                      :screens/world      forge.screens.world}
-                 :first-k :screens/main-menu}]]}
+ :config {:dock-icon "moon.png"
+          :glfw {:library-name "glfw_async"
+                 :check-thread0 false}
+          :lwjgl3 {:title "Moon"
+                   :fps 60
+                   :width 1440
+                   :height 900}}
+ :components [[:app/db {:schema "schema.edn"
+                        :properties "properties.edn"}]
+              [:app/sprite-batch]
+              [:app/shape-drawer]
+              [:app/assets "resources/"]
+              [:app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                                  :size 16
+                                  :quality-scaling 2}]
+              [:app/cursors {:cursors/bag                   ["bag001"       [0   0]]
+                             :cursors/black-x               ["black_x"      [0   0]]
+                             :cursors/default               ["default"      [0   0]]
+                             :cursors/denied                ["denied"       [16 16]]
+                             :cursors/hand-before-grab      ["hand004"      [4  16]]
+                             :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                             :cursors/hand-grab             ["hand003"      [4  16]]
+                             :cursors/move-window           ["move002"      [16 16]]
+                             :cursors/no-skill-selected     ["denied003"    [0   0]]
+                             :cursors/over-button           ["hand002"      [0   0]]
+                             :cursors/sandclock             ["sandclock"    [16 16]]
+                             :cursors/skill-not-usable      ["x007"         [0   0]]
+                             :cursors/use-skill             ["pointer004"   [0   0]]
+                             :cursors/walking               ["walking"      [16 16]]}]
+              [:app/cached-map-renderer]
+              [:app/vis-ui :skin-scale/x1]
+              [:app/gui-viewport   [1440 900]]
+              [:app/world-viewport [1440 900 48]]
+              [:app/screens {:ks {:screens/main-menu  forge.screens.main-menu
+                                  :screens/map-editor forge.screens.map-editor
+                                  :screens/editor     forge.screens.editor
+                                  :screens/minimap    forge.screens.minimap
+                                  :screens/world      forge.screens.world}
+                             :first-k :screens/main-menu}]]}
