@@ -1,4 +1,4 @@
-(ns forge.app.sprite-batch
+(ns ^:no-doc forge.app.sprite-batch
   (:require [forge.system :as system :refer [defmethods bind-root]])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 

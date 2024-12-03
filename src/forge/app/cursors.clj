@@ -1,4 +1,4 @@
-(ns forge.app.cursors
+(ns ^:no-doc forge.app.cursors
   (:require [clojure.gdx :as gdx]
             [forge.system :as system :refer [defmethods bind-root mapvals]])
   (:import (com.badlogic.gdx.graphics Pixmap)

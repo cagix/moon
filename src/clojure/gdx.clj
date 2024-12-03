@@ -1,5 +1,6 @@
 (ns clojure.gdx
-  (:import (com.badlogic.gdx Gdx)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.assets AssetManager)))
 
 (defn exit-app []
   (.exit Gdx/app))
@@ -39,3 +40,10 @@
 
 (defn set-input-processor [processor]
   (.setInputProcessor Gdx/input processor))
+
+(defn asset-manager ^AssetManager []
+  (proxy [AssetManager clojure.lang.ILookup] []
+    (valAt [^String path]
+      (if (AssetManager/.contains this path)
+        (AssetManager/.get this path)
+        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))

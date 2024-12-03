@@ -1,4 +1,4 @@
-(ns forge.app.default-font
+(ns ^:no-doc forge.app.default-font
   (:require [clojure.gdx.graphics.g2d.freetype :as freetype]
             [forge.system :as system :refer [defmethods bind-root]]))
 

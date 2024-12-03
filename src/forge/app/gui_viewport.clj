@@ -1,4 +1,4 @@
-(ns forge.app.gui-viewport
+(ns ^:no-doc forge.app.gui-viewport
   (:require [forge.system :as system :refer [bind-root defmethods]])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils.viewport FitViewport)))

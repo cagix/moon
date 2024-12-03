@@ -1,7 +1,6 @@
 (ns forge.core
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.gdx :as gdx]
-            [clojure.gdx.audio :as audio]
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
@@ -10,7 +9,8 @@
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
+  (:import (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -773,7 +773,7 @@
   (Colors/put name-str (->gdx-color color)))
 
 (defn play-sound [name]
-  (audio/play (get system/assets (str "sounds/" name ".wav"))))
+  (Sound/.play (get system/assets (str "sounds/" name ".wav"))))
 
 (defn- draw-texture-region [texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))

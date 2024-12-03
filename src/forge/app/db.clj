@@ -1,4 +1,4 @@
-(ns forge.app.db
+(ns ^:no-doc forge.app.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [forge.core :refer [validate!]]

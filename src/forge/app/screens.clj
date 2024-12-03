@@ -1,4 +1,4 @@
-(ns forge.app.screens
+(ns ^:no-doc forge.app.screens
   (:require [clojure.gdx :as gdx]
             [forge.core :refer [screen-enter screen-exit screen-render screen-destroy find-actor-with-id
                                 change-screen current-screen]]

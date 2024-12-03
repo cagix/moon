@@ -1,4 +1,4 @@
-(ns forge.app.shape-drawer
+(ns ^:no-doc forge.app.shape-drawer
   (:require [forge.system :as system :refer [defmethods bind-root]])
   (:import (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -12,9 +12,11 @@
     (.dispose pixmap)
     texture))
 
+(declare ^:private ^Texture pixel-texture)
+
 (defmethods :app/shape-drawer
   (system/create [_]
-    (def ^:private ^Texture pixel-texture (white-pixel-texture))
+    (bind-root #'pixel-texture (white-pixel-texture))
     (bind-root #'system/shape-drawer (ShapeDrawer. system/batch (TextureRegion. pixel-texture 1 0 1 1))))
   (system/dispose [_]
     (.dispose pixel-texture)))
