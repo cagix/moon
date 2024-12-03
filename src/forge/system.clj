@@ -34,3 +34,7 @@
 
 (defn bind-root [avar value]
   (clojure.lang.Var/.bindRoot avar value))
+
+(defn mapvals [f m]
+  (into {} (for [[k v] m]
+             [k (f v)])))

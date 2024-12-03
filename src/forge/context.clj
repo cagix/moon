@@ -2,4 +2,6 @@
 
 (declare assets
          batch
-         shape-drawer)
+         shape-drawer
+         default-font
+         cursors)

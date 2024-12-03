@@ -3,19 +3,18 @@
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.audio :as audio]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.java.io :as io]
             [clojure.pprint]
             [clojure.string :as str]
             [data.grid2d :as g2d]
-            [forge.context :refer [assets batch shape-drawer]]
+            [forge.context :refer [assets batch shape-drawer default-font cursors]]
             [forge.lifecycle :as lifecycle]
-            [forge.system :refer [defsystem defmethods bind-root]]
+            [forge.system :refer [defsystem defmethods bind-root mapvals]]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx.graphics Camera Color Colors Pixmap Texture OrthographicCamera)
+  (:import (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -29,10 +28,6 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn mapvals [f m]
-  (into {} (for [[k v] m]
-             [k (f v)])))
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -996,12 +991,6 @@
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
-(defmethods :app/default-font
-  (lifecycle/create [[_ font]]
-    (def default-font (freetype/font font)))
-  (lifecycle/dispose [_]
-    (dispose default-font)))
-
 (defn draw-text
   "font, h-align, up? and scale are optional.
   h-align one of: :center, :left, :right. Default :center.
@@ -1024,19 +1013,8 @@
            false) ; wrap false, no need target-width
     (.setScale data old-scale)))
 
-(defmethods :app/cursors
-  (lifecycle/create [[_ cursors]]
-    (def k->cursor (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                              (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
-                                    cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
-                                (.dispose pixmap)
-                                cursor))
-                            cursors)))
-  (lifecycle/dispose [_]
-    (run! dispose (vals k->cursor))))
-
 (defn set-cursor [cursor-key]
-  (gdx/set-cursor (safe-get k->cursor cursor-key)))
+  (gdx/set-cursor (safe-get cursors cursor-key)))
 
 (defmethods :app/cached-map-renderer
   (lifecycle/create [_]
