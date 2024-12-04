@@ -9,6 +9,18 @@
 (def sound-asset-format "sounds/%s.wav")
 
 (declare assets
+         batch
+         shape-drawer
+         default-font
+         cursors
+         gui-viewport
+         gui-viewport-width
+         gui-viewport-height
+         world-unit-scale
+         world-viewport
+         world-viewport-width
+         world-viewport-height
+         cached-map-renderer
          screens
          current-screen-key)
 

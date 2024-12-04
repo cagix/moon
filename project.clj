@@ -16,10 +16,6 @@
                  [com.github.damn/grid2d "1.0"]
                  [metosin/malli "0.13.0"]
                  [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
-
-                 #_[com.github.electronstudio/sdl2gdx "1.0.5"]
-                 [com.badlogicgames.gdx-controllers/gdx-controllers-core    "2.2.3"]
-                 [com.badlogicgames.gdx-controllers/gdx-controllers-desktop "2.2.3"]
                  ]
   :java-source-paths ["src-java"]
   :plugins [[lein-hiera "2.0.0"]

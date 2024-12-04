@@ -185,11 +185,10 @@
     manager))
 
 ; we need a base 'language' without dependencies of gdx
-;if vector -> first, if keyword -> kw, else -> call Disposable protocol
+; if vector -> first, if keyword -> kw, else -> call Disposable protocol
 ; one language for 'verbs' - create/resize/etc....
 ; maybe for accessing stuff like fps we can do it with keywords
 ; access gdx context (:frames-per-second gdx)  ?
-
 (extend-type com.badlogic.gdx.utils.Disposable
   Disposable
   (dispose [obj]
@@ -213,7 +212,6 @@
     (.setVisible layer bool))
   (visible? [layer]
     (.isVisible layer)))
-
 
 (defn- check-cleanup-visui! []
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
@@ -255,7 +253,7 @@
 
 (defmethods :app/sprite-batch
   (app-create [_]
-    (def batch (SpriteBatch.)))
+    (bind-root #'batch (SpriteBatch.)))
   (app-dispose [_]
     (dispose batch)))
 
@@ -271,19 +269,19 @@
   (defmethods :app/shape-drawer
     (app-create [_]
       (reset! pixel-texture (white-pixel-texture))
-      (def shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
+      (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
     (app-dispose [_]
       (dispose @pixel-texture))))
 
 (defmethods :app/default-font
   (app-create [[_ font]]
-    (def default-font (freetype-font font)))
+    (bind-root #'default-font (freetype-font font)))
   (app-dispose [_]
     (dispose default-font)))
 
 (defmethods :app/cursors
   (app-create [[_ data]]
-    (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+    (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                                     (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
                                           cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                                       (dispose pixmap)
@@ -294,29 +292,29 @@
 
 (defmethods :app/gui-viewport
   (app-create [[_ [width height]]]
-    (def gui-viewport-width  width)
-    (def gui-viewport-height height)
-    (def gui-viewport (FitViewport. width height (OrthographicCamera.))))
+    (bind-root #'gui-viewport-width  width)
+    (bind-root #'gui-viewport-height height)
+    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
   (app-resize [_ w h]
     (.update gui-viewport w h true)))
 
 (defmethods :app/world-viewport
   (app-create [[_ [width height tile-size]]]
-    (def world-unit-scale (float (/ tile-size)))
-    (def world-viewport-width  width)
-    (def world-viewport-height height)
-    (def world-viewport (let [world-width  (* width  world-unit-scale)
-                              world-height (* height world-unit-scale)
-                              camera (OrthographicCamera.)
-                              y-down? false]
-                          (.setToOrtho camera y-down? world-width world-height)
-                          (FitViewport. world-width world-height camera))))
+    (bind-root #'world-unit-scale (float (/ tile-size)))
+    (bind-root #'world-viewport-width  width)
+    (bind-root #'world-viewport-height height)
+    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
+                                      world-height (* height world-unit-scale)
+                                      camera (OrthographicCamera.)
+                                      y-down? false]
+                                  (.setToOrtho camera y-down? world-width world-height)
+                                  (FitViewport. world-width world-height camera))))
   (app-resize [_ w h]
     (.update world-viewport w h true)))
 
 (defmethods :app/cached-map-renderer
   (app-create [_]
-    (def cached-map-renderer
+    (bind-root #'cached-map-renderer
       (memoize
        (fn [tiled-map]
          (OrthogonalTiledMapRenderer. tiled-map
