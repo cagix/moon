@@ -90,7 +90,36 @@
  rect-contains?
  set-glfw-config
  start-app
- components-application)
+ components-application
+ val-max-schema
+ ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
+ start-world
+ ^{:doc "Has to be disposed."} load-tmx-map
+ add-color
+ draw-ellipse
+ draw-filled-ellipse
+ draw-circle
+ draw-filled-circle
+ draw-arc
+ draw-sector
+ draw-rectangle
+ draw-filled-rectangle
+ draw-line
+ draw-grid
+ with-line-width
+ gui-mouse-position
+ world-mouse-position
+ world-camera
+ ->texture-region
+ ->image
+ sub-image
+ sprite-sheet
+ ->sprite
+ draw-image
+ draw-rotated-centered
+ draw-centered
+ draw-on-world-view
+ )
 
 (defprotocol Acting
   (act [_]))
@@ -921,3 +950,7 @@
   (screen-destroy [_]
     (dispose stage)
     (screen-destroy sub-screen)))
+
+(defn pixels->world-units [pixels]
+  (* (int pixels) world-unit-scale))
+

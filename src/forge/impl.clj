@@ -15,16 +15,16 @@
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Colors  Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.maps.tiled TiledMapTileLayer)
+           (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.utils Align Scaling ScreenUtils)
            (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
-           (com.badlogic.gdx.utils.viewport FitViewport)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)
            (org.lwjgl.system Configuration)))
@@ -496,3 +496,225 @@
                        m/schema)]
       (when-not (m/validate m-schema property)
         (throw (invalid-ex-info m-schema property))))))
+
+(def-impl val-max-schema
+  (m/schema [:and
+             [:vector {:min 2 :max 2} [:int {:min 0}]]
+             [:fn {:error/fn (fn [{[^int v ^int mx] :value} _]
+                               (when (< mx v)
+                                 (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
+              (fn [[^int a ^int b]] (<= a b))]]))
+
+(defmethod malli-form :s/val-max [_]
+  (m/form val-max-schema))
+
+(defn-impl val-max-ratio
+  [[^int v ^int mx]]
+  {:pre [(m/validate val-max-schema [v mx])]}
+  (if (and (zero? v) (zero? mx))
+    0
+    (/ v mx)))
+
+(defn-impl load-tmx-map
+  [file]
+  (.load (TmxMapLoader.) file))
+
+(defn-impl add-color [name-str color]
+  (Colors/put name-str (->color color)))
+
+(defn- unit-dimensions [image unit-scale]
+  (if (= unit-scale 1)
+    (:pixel-dimensions image)
+    (:world-unit-dimensions image)))
+
+(defn- scale-dimensions [dimensions scale]
+  (mapv (comp float (partial * scale)) dimensions))
+
+(defn- texture-dimensions [^TextureRegion texture-region]
+  [(.getRegionWidth  texture-region)
+   (.getRegionHeight texture-region)])
+
+(defn- assoc-dimensions
+  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+  [{:keys [texture-region] :as image} world-unit-scale scale]
+  {:pre [(or (number? scale)
+             (and (vector? scale)
+                  (number? (scale 0))
+                  (number? (scale 1))))]}
+  (let [pixel-dimensions (if (number? scale)
+                           (scale-dimensions (texture-dimensions texture-region) scale)
+                           scale)]
+    (assoc image
+           :pixel-dimensions pixel-dimensions
+           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
+
+(defn- sprite* [world-unit-scale texture-region]
+  (-> {:texture-region texture-region}
+      (assoc-dimensions world-unit-scale 1) ; = scale 1
+      map->Sprite))
+
+(extend-type com.badlogic.gdx.graphics.g2d.Batch
+  Batch
+  (draw-texture-region [this texture-region [x y] [w h] rotation color]
+    (if color (.setColor this color))
+    (.draw this
+           texture-region
+           x
+           y
+           (/ (float w) 2) ; rotation origin
+           (/ (float h) 2)
+           w ; width height
+           h
+           1 ; scaling factor
+           1
+           rotation)
+    (if color (.setColor this white)))
+
+  (draw-on-viewport [this viewport draw-fn]
+    (.setColor this white) ; fix scene2d.ui.tooltip flickering
+    (.setProjectionMatrix this (.combined (Viewport/.getCamera viewport)))
+    (.begin this)
+    (draw-fn)
+    (.end this)))
+
+(defn- sd-color [color]
+  (.setColor shape-drawer (->color color)))
+
+(defn-impl draw-ellipse [[x y] radius-x radius-y color]
+  (sd-color color)
+  (.ellipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
+
+(defn-impl draw-filled-ellipse [[x y] radius-x radius-y color]
+  (sd-color color)
+  (.filledEllipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
+
+(defn-impl draw-circle [[x y] radius color]
+  (sd-color color)
+  (.circle shape-drawer (float x) (float y) (float radius)))
+
+(defn-impl draw-filled-circle [[x y] radius color]
+  (sd-color color)
+  (.filledCircle shape-drawer (float x) (float y) (float radius)))
+
+(defn-impl draw-arc [[centre-x centre-y] radius start-angle degree color]
+  (sd-color color)
+  (.arc shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
+
+(defn-impl draw-sector [[centre-x centre-y] radius start-angle degree color]
+  (sd-color color)
+  (.sector shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
+
+(defn-impl draw-rectangle [x y w h color]
+  (sd-color color)
+  (.rectangle shape-drawer (float x) (float y) (float w) (float h)))
+
+(defn-impl draw-filled-rectangle [x y w h color]
+  (sd-color color)
+  (.filledRectangle shape-drawer (float x) (float y) (float w) (float h)))
+
+(defn-impl draw-line [[sx sy] [ex ey] color]
+  (sd-color color)
+  (.line shape-drawer (float sx) (float sy) (float ex) (float ey)))
+
+(defn-impl draw-grid [leftx bottomy gridw gridh cellw cellh color]
+  (sd-color color)
+  (let [w (* (float gridw) (float cellw))
+        h (* (float gridh) (float cellh))
+        topy (+ (float bottomy) (float h))
+        rightx (+ (float leftx) (float w))]
+    (doseq [idx (range (inc (float gridw)))
+            :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
+      (draw-line shape-drawer [linex topy] [linex bottomy]))
+    (doseq [idx (range (inc (float gridh)))
+            :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
+      (draw-line shape-drawer [leftx liney] [rightx liney]))))
+
+(defn-impl with-line-width [width draw-fn]
+  (let [old-line-width (.getDefaultLineWidth shape-drawer)]
+    (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
+    (draw-fn)
+    (.setDefaultLineWidth shape-drawer (float old-line-width))))
+
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+(defn- unproject-mouse-position
+  "Returns vector of [x y]."
+  [^Viewport viewport]
+  (let [mouse-x (clamp (.getX Gdx/input)
+                       (.getLeftGutterWidth viewport)
+                       (.getRightGutterX viewport))
+        mouse-y (clamp (.getY Gdx/input)
+                       (.getTopGutterHeight viewport)
+                       (.getTopGutterY viewport))
+        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
+    [(.x coords) (.y coords)]))
+
+(defn-impl gui-mouse-position []
+  ; TODO mapv int needed?
+  (mapv int (unproject-mouse-position gui-viewport)))
+
+(defn-impl world-mouse-position []
+  ; TODO clamping only works for gui-viewport ? check. comment if true
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (unproject-mouse-position world-viewport))
+
+(defn-impl world-camera []
+  (.getCamera world-viewport))
+
+(defn-impl ->texture-region
+  ([path]
+   (TextureRegion. ^Texture (get assets path)))
+  ([^TextureRegion texture-region [x y w h]]
+   (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
+
+(defn-impl ->image [path]
+  (sprite* world-unit-scale
+           (->texture-region path)))
+
+(defn-impl sub-image [image bounds]
+  (sprite* world-unit-scale
+           (->texture-region (:texture-region image) bounds)))
+
+(defn-impl sprite-sheet [path tilew tileh]
+  {:image (->image path)
+   :tilew tilew
+   :tileh tileh})
+
+(defn-impl ->sprite [{:keys [image tilew tileh]} [x y]]
+  (sub-image image
+             [(* x tilew) (* y tileh) tilew tileh]))
+
+(defn-impl draw-image [{:keys [texture-region color] :as image} position]
+  (draw-texture-region batch
+                       texture-region
+                       position
+                       (unit-dimensions image *unit-scale*)
+                       0 ; rotation
+                       color))
+
+(defn-impl draw-rotated-centered
+  [{:keys [texture-region color] :as image} rotation [x y]]
+  (let [[w h] (unit-dimensions image *unit-scale*)]
+    (draw-texture-region batch
+                         texture-region
+                         [(- (float x) (/ (float w) 2))
+                          (- (float y) (/ (float h) 2))]
+                         [w h]
+                         rotation
+                         color)))
+
+(defn-impl draw-centered [image position]
+  (draw-rotated-centered image 0 position))
+
+(defn- draw-with [viewport unit-scale draw-fn]
+  (draw-on-viewport batch
+                    viewport
+                    #(with-line-width unit-scale
+                       (fn []
+                         (binding [*unit-scale* unit-scale]
+                           (draw-fn))))))
+
+(defn-impl draw-on-world-view [render-fn]
+  (draw-with world-viewport
+             world-unit-scale
+             render-fn))
