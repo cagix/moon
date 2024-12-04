@@ -3,7 +3,7 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter Pixmap Pixmap$Format)
+           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TiledMapTileLayer)
@@ -12,7 +12,9 @@
            (com.badlogic.gdx.math MathUtils)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (com.badlogic.gdx.utils.viewport FitViewport)
+           (space.earlygrey.shapedrawer ShapeDrawer)
+           (forge OrthogonalTiledMapRenderer)))
 
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
@@ -229,3 +231,45 @@
       (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
     (app-dispose [_]
       (dispose @pixel-texture))))
+
+(defmethods :app/cursors
+  (app-create [[_ data]]
+    (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                    (let [pixmap (Pixmap. (internal-file (str "cursors/" file ".png")))
+                                          cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                      (dispose pixmap)
+                                      cursor))
+                                  data)))
+  (app-dispose [_]
+    (run! dispose (vals cursors))))
+
+(defmethods :app/gui-viewport
+  (app-create [[_ [width height]]]
+    (bind-root #'gui-viewport-width  width)
+    (bind-root #'gui-viewport-height height)
+    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
+  (app-resize [_ w h]
+    (.update gui-viewport w h true)))
+
+(defmethods :app/world-viewport
+  (app-create [[_ [width height tile-size]]]
+    (bind-root #'world-unit-scale (float (/ tile-size)))
+    (bind-root #'world-viewport-width  width)
+    (bind-root #'world-viewport-height height)
+    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
+                                      world-height (* height world-unit-scale)
+                                      camera (OrthographicCamera.)
+                                      y-down? false]
+                                  (.setToOrtho camera y-down? world-width world-height)
+                                  (FitViewport. world-width world-height camera))))
+  (app-resize [_ w h]
+    (.update world-viewport w h true)))
+
+(defmethods :app/cached-map-renderer
+  (app-create [_]
+    (bind-root #'cached-map-renderer
+      (memoize
+       (fn [tiled-map]
+         (OrthogonalTiledMapRenderer. tiled-map
+                                      (float world-unit-scale)
+                                      batch))))))

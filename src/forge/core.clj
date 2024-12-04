@@ -46,7 +46,7 @@
             [malli.core :as m] ; this
             [reduce-fsm :as fsm]) ; this
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Texture OrthographicCamera)
+           (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -56,51 +56,9 @@
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math Circle Intersector Rectangle Vector2 Vector3)
            (com.badlogic.gdx.utils Align Scaling ScreenUtils)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
+           (com.badlogic.gdx.utils.viewport Viewport)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
-
-(defmethods :app/cursors
-  (app-create [[_ data]]
-    (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (Pixmap. (internal-file (str "cursors/" file ".png")))
-                                          cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                      (dispose pixmap)
-                                      cursor))
-                                  data)))
-  (app-dispose [_]
-    (run! dispose (vals cursors))))
-
-(defmethods :app/gui-viewport
-  (app-create [[_ [width height]]]
-    (bind-root #'gui-viewport-width  width)
-    (bind-root #'gui-viewport-height height)
-    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
-  (app-resize [_ w h]
-    (.update gui-viewport w h true)))
-
-(defmethods :app/world-viewport
-  (app-create [[_ [width height tile-size]]]
-    (bind-root #'world-unit-scale (float (/ tile-size)))
-    (bind-root #'world-viewport-width  width)
-    (bind-root #'world-viewport-height height)
-    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
-                                      world-height (* height world-unit-scale)
-                                      camera (OrthographicCamera.)
-                                      y-down? false]
-                                  (.setToOrtho camera y-down? world-width world-height)
-                                  (FitViewport. world-width world-height camera))))
-  (app-resize [_ w h]
-    (.update world-viewport w h true)))
-
-(defmethods :app/cached-map-renderer
-  (app-create [_]
-    (bind-root #'cached-map-renderer
-      (memoize
-       (fn [tiled-map]
-         (OrthogonalTiledMapRenderer. tiled-map
-                                      (float world-unit-scale)
-                                      batch))))))
 
 (defrecord StageScreen [^Stage stage sub-screen]
   Screen
