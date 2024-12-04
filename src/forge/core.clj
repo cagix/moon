@@ -1,16 +1,37 @@
 (ns forge.core
+  ; ==
+  ; * library - private stuff set public, e.g. sprite-batch
+  ; => can use parts also ! (because small functions r there )
+  ; => can make really short cool examples
+  ; => colors have to be highlighted, check also that vim plugin maybe
+  ; => check private names also for collisions
+  ; => which functions depend on which context can highlight/sort like that
+  ; => world somewhere else? different deps? shouldn't dep on forge.core ?!
+  ; but world already in there!
+  ; * framework (if using existing app components)
+  ; * language
+  ; * not a wrapper -> takes ApplicationAdapter!
+
+  ; ==> worl shouldn't be in here because it has not those gdx dependencies
+  ; it shoud depend on forge.core ... ?
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.pprint]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [data.grid2d :as g2d]
+            [forge.roots.freetype :as freetype]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
@@ -18,33 +39,51 @@
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling Disposable)
-           (com.badlogic.gdx.utils.viewport Viewport)
+           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(declare assets
-         batch
-         shape-drawer
-         default-font
-         cursors
-         cached-map-renderer
-         world-unit-scale
-         world-viewport-width
-         world-viewport-height
-         world-viewport
-         gui-viewport-width
-         gui-viewport-height
-         gui-viewport
-         screens
-         current-screen-key
-         schemas
-         properties-file
-         db-properties)
+           (java.awt Taskbar Toolkit)
+           (space.earlygrey.shapedrawer ShapeDrawer)
+           (org.lwjgl.system Configuration)))
 
 (defn- gdx-static-field [klass-str k]
   (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
+
+(defn equal? [a b]
+  (MathUtils/isEqual a b))
+
+(defn clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
+
+(defn degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
+
+(defn gdx-align [k]
+  (case k
+    :center Align/center
+    :left   Align/left
+    :right  Align/right))
+
+(defn gdx-scaling [k]
+  (case k
+    :fill Scaling/fill))
+
+(defn gdx-color
+  ([r g b]
+   (gdx-color r g b 1))
+  ([r g b a]
+   (Color. (float r) (float g) (float b) (float a))))
+
+(def ^Color black Color/BLACK)
+(def ^Color white Color/WHITE)
+
+(defn ->gdx-color ^Color [c]
+  (cond (= Color (class c)) c
+        (keyword? c) (gdx-static-field "graphics.Color" c)
+        (vector? c) (apply gdx-color c)
+        :else (throw (ex-info "Cannot understand color" c))))
 
 (def ^:private k->input-button (partial gdx-static-field "Input$Buttons"))
 (def ^:private k->input-key    (partial gdx-static-field "Input$Keys"))
@@ -54,9 +93,6 @@
 
 (defn exit-app []
   (.exit Gdx/app))
-
-(defn internal-file [path]
-  (.internal Gdx/files path))
 
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
@@ -75,45 +111,6 @@
 
 (defn set-input-processor [processor]
   (.setInputProcessor Gdx/input processor))
-
-(defmacro defsystem
-  {:arglists '([name docstring? params?])}
-  [name-sym & args]
-  (let [docstring (if (string? (first args))
-                    (first args))
-        params (if (string? (first args))
-                 (second args)
-                 (first args))
-        params (if (nil? params)
-                 '[_]
-                 params)]
-    (when (zero? (count params))
-      (throw (IllegalArgumentException. "First argument needs to be component.")))
-    (when-let [avar (resolve name-sym)]
-      (println "WARNING: Overwriting defsystem:" avar))
-    `(defmulti ~(vary-meta name-sym assoc :params (list 'quote params))
-       ~(str "[[defsystem]] `" (str params) "`"
-             (when docstring (str "\n\n" docstring)))
-       (fn [[k#] & _args#]
-         k#))))
-
-(defmacro defmethods [k & sys-impls]
-  `(do
-    ~@(for [[sys & fn-body] sys-impls
-            :let [sys-var (resolve sys)]]
-        `(do
-          (when (get (methods @~sys-var) ~k)
-            (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
-          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
-            ~@fn-body)))
-    ~k))
-
-(defn bind-root [avar value]
-  (clojure.lang.Var/.bindRoot avar value))
-
-(defn mapvals [f m]
-  (into {} (for [[k v] m]
-             [k (f v)])))
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -223,6 +220,79 @@
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
 
+
+(defn bind-root [avar value]
+  (clojure.lang.Var/.bindRoot avar value))
+
+(defn- recursively-search [folder extensions]
+  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- asset-manager ^AssetManager []
+  (proxy [AssetManager clojure.lang.ILookup] []
+    (valAt [^String path]
+      (if (AssetManager/.contains this path)
+        (AssetManager/.get this path)
+        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
+
+(defn internal-file [path]
+  (.internal Gdx/files path))
+
+(defn- load-assets [folder]
+  (let [manager (asset-manager)]
+    (doseq [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                          [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
+            file (map #(str/replace-first % folder "")
+                      (recursively-search (internal-file folder) exts))]
+      (.load manager ^String file ^Class class))
+    (.finishLoading manager)
+    manager))
+
+(def dispose Disposable/.dispose)
+
+(defmacro defsystem
+  {:arglists '([name docstring? params?])}
+  [name-sym & args]
+  (let [docstring (if (string? (first args))
+                    (first args))
+        params (if (string? (first args))
+                 (second args)
+                 (first args))
+        params (if (nil? params)
+                 '[_]
+                 params)]
+    (when (zero? (count params))
+      (throw (IllegalArgumentException. "First argument needs to be component.")))
+    (when-let [avar (resolve name-sym)]
+      (println "WARNING: Overwriting defsystem:" avar))
+    `(defmulti ~(vary-meta name-sym assoc :params (list 'quote params))
+       ~(str "[[defsystem]] `" (str params) "`"
+             (when docstring (str "\n\n" docstring)))
+       (fn [[k#] & _args#]
+         k#))))
+
+(defmacro defmethods [k & sys-impls]
+  `(do
+    ~@(for [[sys & fn-body] sys-impls
+            :let [sys-var (resolve sys)]]
+        `(do
+          (when (get (methods @~sys-var) ~k)
+            (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
+          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
+            ~@fn-body)))
+    ~k))
+
 (defsystem app-create)
 
 (defsystem app-dispose)
@@ -233,6 +303,220 @@
 
 (defsystem app-resize)
 (defmethod app-resize :default [_ w h])
+
+(defn- check-cleanup-visui! []
+  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
+  ; => actually there is a deeper issue at play
+  ; we need to dispose ALL resources which were loaded already ...
+  (when (VisUI/isLoaded)
+    (VisUI/dispose)))
+
+(defn- font-enable-markup! []
+  (-> (VisUI/getSkin)
+      (.getFont "default-font")
+      .getData
+      .markupEnabled
+      (set! true)))
+
+(defn- set-tooltip-config! []
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+  ;Controls whether to fade out tooltip when mouse was moved. (default false)
+  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+  )
+
+(defmethods :app/vis-ui
+  (app-create [[_ skin-scale]]
+    (check-cleanup-visui!)
+    (VisUI/load (case skin-scale
+                  :skin-scale/x1 VisUI$SkinScale/X1
+                  :skin-scale/x2 VisUI$SkinScale/X2))
+    (font-enable-markup!)
+    (set-tooltip-config!))
+  (app-dispose [_]
+    (VisUI/dispose)))
+
+(defmethods :app/assets
+  (app-create [[_ folder]]
+    (def assets (load-assets folder)))
+  (app-dispose [_]
+    (dispose assets)))
+
+(defmethods :app/sprite-batch
+  (app-create [_]
+    (def batch (SpriteBatch.)))
+  (app-dispose [_]
+    (dispose batch)))
+
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor Color/WHITE)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (dispose pixmap)
+    texture))
+
+(let [pixel-texture (atom nil)]
+  (defmethods :app/shape-drawer
+    (app-create [_]
+      (reset! pixel-texture (white-pixel-texture))
+      (def shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
+    (app-dispose [_]
+      (dispose @pixel-texture))))
+
+(defmethods :app/default-font
+  (app-create [[_ font]]
+    (def default-font (freetype/font font)))
+  (app-dispose [_]
+    (dispose default-font)))
+
+(defn mapvals [f m]
+  (into {} (for [[k v] m]
+             [k (f v)])))
+
+(defmethods :app/cursors
+  (app-create [[_ data]]
+    (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                    (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                          cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                      (dispose pixmap)
+                                      cursor))
+                                  data)))
+  (app-dispose [_]
+    (run! dispose (vals cursors))))
+
+(defmethods :app/gui-viewport
+  (app-create [[_ [width height]]]
+    (def gui-viewport-width  width)
+    (def gui-viewport-height height)
+    (def gui-viewport (FitViewport. width height (OrthographicCamera.))))
+  (app-resize [_ w h]
+    (.update gui-viewport w h true)))
+
+(defmethods :app/world-viewport
+  (app-create [[_ [width height tile-size]]]
+    (def world-unit-scale (float (/ tile-size)))
+    (def world-viewport-width  width)
+    (def world-viewport-height height)
+    (def world-viewport (let [world-width  (* width  world-unit-scale)
+                              world-height (* height world-unit-scale)
+                              camera (OrthographicCamera.)
+                              y-down? false]
+                          (.setToOrtho camera y-down? world-width world-height)
+                          (FitViewport. world-width world-height camera))))
+  (app-resize [_ w h]
+    (.update world-viewport w h true)))
+
+(defmethods :app/cached-map-renderer
+  (app-create [_]
+    (def cached-map-renderer
+      (memoize
+       (fn [tiled-map]
+         (OrthogonalTiledMapRenderer. tiled-map
+                                      (float world-unit-scale)
+                                      batch))))))
+
+(defprotocol Screen
+  (screen-enter   [_])
+  (screen-exit    [_])
+  (screen-render  [_])
+  (screen-destroy [_]))
+
+(defrecord StageScreen [^Stage stage sub-screen]
+  Screen
+  (screen-enter [_]
+    (.setInputProcessor Gdx/input stage)
+    (screen-enter sub-screen))
+
+  (screen-exit [_]
+    (.setInputProcessor Gdx/input nil)
+    (screen-exit sub-screen))
+
+  (screen-render [_]
+    (.act stage)
+    (screen-render sub-screen)
+    (.draw stage))
+
+  (screen-destroy [_]
+    (.dispose stage)
+    (screen-destroy sub-screen)))
+
+(defn children
+  "Returns an ordered list of child actors in this group."
+  [^Group group]
+  (seq (.getChildren group)))
+
+(defn clear-children!
+  "Removes all actors from this group and unfocuses them."
+  [^Group group]
+  (.clearChildren group))
+
+(defn add-actor!
+  "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made."
+  [^Group group actor]
+  (.addActor group actor))
+
+(defn find-actor-with-id [group id]
+  (let [actors (children group)
+        ids (keep Actor/.getUserObject actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+
+(defn- stage-screen
+  "Actors or screen can be nil."
+  [{:keys [actors screen]}]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
+                (valAt
+                  ([id]
+                   (find-actor-with-id (Stage/.getRoot this) id))
+                  ([id not-found]
+                   (or (find-actor-with-id (Stage/.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    (->StageScreen stage screen)))
+
+(declare screens
+         current-screen-key)
+
+(defn current-screen []
+  (and (bound? #'current-screen-key)
+       (current-screen-key screens)))
+
+(defn change-screen
+  "Calls `exit` on the current-screen and `enter` on the new screen."
+  [new-k]
+  (when-let [screen (current-screen)]
+    (screen-exit screen))
+  (let [screen (new-k screens)]
+    (assert screen (str "Cannot find screen with key: " new-k))
+    (bind-root #'current-screen-key new-k)
+    (screen-enter screen)))
+
+(defmethods :app/screens
+  (app-create [[_ {:keys [ks first-k]}]]
+    (bind-root #'screens (mapvals stage-screen (mapvals
+                                                (fn [ns-sym]
+                                                  (require ns-sym)
+                                                  ((ns-resolve ns-sym 'create)))
+                                                ks)))
+    (change-screen first-k))
+  (app-dispose [_]
+    (run! screen-destroy (vals screens)))
+  (app-render [_]
+    (ScreenUtils/clear black)
+    (screen-render (current-screen))))
+
+(defn screen-stage ^Stage []
+  (:stage (current-screen)))
+
+(defn add-actor [actor]
+  (.addActor (screen-stage) actor))
+
+(defn reset-stage [new-actors]
+  (.clear (screen-stage))
+  (run! add-actor new-actors))
 
 (defn play-sound [name]
   (Sound/.play (get assets (str "sounds/" name ".wav"))))
@@ -356,42 +640,6 @@
 
 (def grid2d g2d/create-grid)
 
-(defn equal? [a b]
-  (MathUtils/isEqual a b))
-
-(defn clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
-
-(defn degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
-
-(defn gdx-align [k]
-  (case k
-    :center Align/center
-    :left   Align/left
-    :right  Align/right))
-
-(defn gdx-scaling [k]
-  (case k
-    :fill Scaling/fill))
-
-(defn gdx-color
-  ([r g b]
-   (gdx-color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a))))
-
-(def ^Color black Color/BLACK)
-(def ^Color white Color/WHITE)
-
-(defn ->gdx-color ^Color [c]
-  (cond (= Color (class c)) c
-        (keyword? c) (gdx-static-field "graphics.Color" c)
-        (vector? c) (apply gdx-color c)
-        :else (throw (ex-info "Cannot understand color" c))))
-
-(def dispose Disposable/.dispose)
-
 (defprotocol HasVisible
   (set-visible [_ bool])
   (visible? [_]))
@@ -410,35 +658,9 @@
   (visible? [layer]
     (.isVisible layer)))
 
-(defn current-screen []
-  (and (bound? #'current-screen-key)
-       (current-screen-key screens)))
-
-(defprotocol Screen
-  (screen-enter   [_])
-  (screen-exit    [_])
-  (screen-render  [_])
-  (screen-destroy [_]))
-
-(defn change-screen
-  "Calls `exit` on the current-screen and `enter` on the new screen."
-  [new-k]
-  (when-let [screen (current-screen)]
-    (screen-exit screen))
-  (let [screen (new-k screens)]
-    (assert screen (str "Cannot find screen with key: " new-k))
-    (bind-root #'current-screen-key new-k)
-    (screen-enter screen)))
-
-(defn screen-stage ^Stage []
-  (:stage (current-screen)))
-
-(defn add-actor [actor]
-  (.addActor (screen-stage) actor))
-
-(defn reset-stage [new-actors]
-  (.clear (screen-stage))
-  (run! add-actor new-actors))
+(declare schemas
+         properties-file
+         db-properties)
 
 (defn schema-of [k]
   (safe-get schemas k))
@@ -1034,29 +1256,6 @@
 (defn mouse-on-actor? []
   (let [[x y] (gui-mouse-position)]
     (.hit (screen-stage) x y true)))
-
-(defn children
-  "Returns an ordered list of child actors in this group."
-  [^Group group]
-  (seq (.getChildren group)))
-
-(defn clear-children!
-  "Removes all actors from this group and unfocuses them."
-  [^Group group]
-  (.clearChildren group))
-
-(defn add-actor!
-  "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made."
-  [^Group group actor]
-  (.addActor group actor))
-
-(defn find-actor-with-id [group id]
-  (let [actors (children group)
-        ids (keep Actor/.getUserObject actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
 (defn draw-text
   "font, h-align, up? and scale are optional.
@@ -2747,3 +2946,45 @@
   (when (:entity/player? entity)
     (actionbar-remove-skill skill))
   (update entity :entity/skills dissoc id))
+
+(defmethods :app/db
+  (app-create [[_ {:keys [schema properties]}]]
+    (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
+    (bind-root #'properties-file (io/resource properties))
+    (let [properties (-> properties-file slurp edn/read-string)]
+      (assert (or (empty? properties)
+                  (apply distinct? (map :property/id properties))))
+      (run! validate! properties)
+      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
+
+(defn set-dock-icon [path]
+  (.setIconImage (Taskbar/getTaskbar)
+                 (.getImage (Toolkit/getDefaultToolkit)
+                            (io/resource path))))
+
+(defn set-glfw-config [{:keys [library-name check-thread0]}]
+  (.set Configuration/GLFW_LIBRARY_NAME library-name)
+  (.set Configuration/GLFW_CHECK_THREAD0 check-thread0))
+
+(defn lwjgl3-config [{:keys [title fps width height]}]
+  (doto (Lwjgl3ApplicationConfiguration.)
+    (.setTitle title)
+    (.setForegroundFPS fps)
+    (.setWindowedMode width height)))
+
+(defn lwjgl3-app [application lwjgl3-config]
+  (Lwjgl3Application. application lwjgl3-config))
+
+(defn components-app [components]
+  (proxy [ApplicationAdapter] []
+    (create []
+      (run! app-create components))
+
+    (dispose []
+      (run! app-dispose components))
+
+    (render []
+      (run! app-render components))
+
+    (resize [w h]
+      (run! #(app-resize % w h) components))))

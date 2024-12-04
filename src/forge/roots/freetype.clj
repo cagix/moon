@@ -1,9 +1,7 @@
-(ns ^:no-doc forge.app.default-font
-  (:require [forge.core :refer :all])
+(ns ^:no-doc forge.roots.freetype
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)))
-
 
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -15,7 +13,7 @@
     (set! (.magFilter params) Texture$TextureFilter/Linear)
     params))
 
-(defn- ->font [{:keys [file size quality-scaling]}]
+(defn font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
         font (.generateFont generator (ttf-params size quality-scaling))]
     (.dispose generator)
@@ -23,9 +21,3 @@
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
-
-(defmethods :app/default-font
-  (app-create [[_ font]]
-    (bind-root #'default-font (->font font)))
-  (app-dispose [_]
-    (.dispose default-font)))

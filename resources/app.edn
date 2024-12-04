@@ -1,23 +1,9 @@
-{:requires [forge.core
-
-            forge.app.assets
-            forge.app.cached-map-renderer
-            forge.app.cursors
-            forge.app.db
-            forge.app.default-font
-            forge.app.gui-viewport
-            forge.app.screens
-            forge.app.shape-drawer
-            forge.app.sprite-batch
-            forge.app.vis-ui
-            forge.app.world-viewport
-
-            forge.effects
+{:requires [forge.effects
             forge.entity
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
- :dock-icon "moon.png"
+ :awt {:dock-icon "moon.png"}
  :glfw {:library-name "glfw_async"
         :check-thread0 false}
  :lwjgl3 {:title "Moon"
