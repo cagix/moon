@@ -4,7 +4,8 @@
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
-            [clojure.pprint :as pprint]))
+            [clojure.pprint :as pprint])
+  (:import (java.awt Taskbar Toolkit)))
 
 (def sound-asset-format "sounds/%s.wav")
 
@@ -627,3 +628,8 @@
        (format sound-asset-format)
        (get assets)
        play))
+
+(defn set-dock-icon [path]
+  (.setIconImage (Taskbar/getTaskbar)
+                 (.getImage (Toolkit/getDefaultToolkit)
+                            (io-resource path))))

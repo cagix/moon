@@ -5,14 +5,25 @@
 
 (defn -main []
   (let [{:keys [requires
-                awt
+                dock-icon
                 glfw
                 lwjgl3
                 db
                 components]} (-> "app.edn" io-resource slurp edn-read-string)]
     (run! require requires)
-    (app/set-dock-icon (:dock-icon awt))
-    (app/set-glfw-config glfw)
     (db/init db)
-    (app/lwjgl3-app (app/components-app components)
-                    (app/lwjgl3-config lwjgl3))))
+    (set-dock-icon dock-icon)
+    (app/set-glfw-config glfw)
+    (app/start (reify app/Listener
+                 (create [_]
+                   (run! app-create components))
+
+                 (dispose [_]
+                   (run! app-dispose components))
+
+                 (render [_]
+                   (run! app-render components))
+
+                 (resize [_ w h]
+                   (run! #(app-resize % w h) components)))
+               lwjgl3)))

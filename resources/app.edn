@@ -3,7 +3,7 @@
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
- :awt {:dock-icon "moon.png"}
+ :dock-icon "moon.png"
  :glfw {:library-name "glfw_async"
         :check-thread0 false}
  :lwjgl3 {:title "Moon"
