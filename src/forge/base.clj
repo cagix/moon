@@ -42,7 +42,18 @@
 
 (declare ttfont
          load-assets
-         sprite-batch)
+         sprite-batch
+         equal?
+         clamp
+         degree->radians
+         exit-app
+         frames-per-second
+         delta-time
+         button-just-pressed?
+         key-just-pressed?
+         key-pressed?
+         set-input-processor
+         internal-file)
 
 (defprotocol Batch
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])

@@ -43,6 +43,7 @@
              ; shoud
             [data.grid2d :as g2d] ; this
             [forge.base :refer :all]
+            [forge.impl.gdx :as gdx]
             [malli.core :as m] ; this
             [reduce-fsm :as fsm]) ; this
   (:import (com.badlogic.gdx Gdx)
@@ -56,25 +57,13 @@
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
-           (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
+           (com.badlogic.gdx.math Circle Intersector Rectangle Vector2 Vector3)
            (com.badlogic.gdx.utils Align Scaling ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- gdx-static-field [klass-str k]
-  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str-replace (str-upper-case (name k)) "-" "_")))))
-
-(defn equal? [a b]
-  (MathUtils/isEqual a b))
-
-(defn clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
-
-(defn degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
 
 (defn gdx-align [k]
   (case k
@@ -92,41 +81,17 @@
   ([r g b a]
    (Color. (float r) (float g) (float b) (float a))))
 
-(def ^Color black Color/BLACK)
-(def ^Color white Color/WHITE)
+(def black Color/BLACK)
+(def white Color/WHITE)
 
 (defn ->gdx-color ^Color [c]
   (cond (= Color (class c)) c
-        (keyword? c) (gdx-static-field "graphics.Color" c)
+        (keyword? c) (gdx/static-field "graphics.Color" c)
         (vector? c) (apply gdx-color c)
         :else (throw (ex-info "Cannot understand color" c))))
 
-(def ^:private k->input-button (partial gdx-static-field "Input$Buttons"))
-(def ^:private k->input-key    (partial gdx-static-field "Input$Keys"))
-
 (defmacro post-runnable [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(defn exit-app []
-  (.exit Gdx/app))
-
-(defn frames-per-second []
-  (.getFramesPerSecond Gdx/graphics))
-
-(defn delta-time []
-  (.getDeltaTime Gdx/graphics))
-
-(defn button-just-pressed? [b]
-  (.isButtonJustPressed Gdx/input (k->input-button b)))
-
-(defn key-just-pressed? [k]
-  (.isKeyJustPressed Gdx/input (k->input-key k)))
-
-(defn key-pressed? [k]
-  (.isKeyPressed Gdx/input (k->input-key k)))
-
-(defn set-input-processor [processor]
-  (.setInputProcessor Gdx/input processor))
 
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
@@ -149,9 +114,6 @@
       (if (AssetManager/.contains this path)
         (AssetManager/.get this path)
         (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
-
-(defn internal-file [path]
-  (.internal Gdx/files path))
 
 (defn-impl load-assets [folder]
   (let [manager (asset-manager)]
@@ -246,7 +208,7 @@
 (defmethods :app/cursors
   (app-create [[_ data]]
     (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                    (let [pixmap (Pixmap. (internal-file (str "cursors/" file ".png")))
                                           cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                                       (dispose pixmap)
                                       cursor))
@@ -288,11 +250,11 @@
 (defrecord StageScreen [^Stage stage sub-screen]
   Screen
   (screen-enter [_]
-    (.setInputProcessor Gdx/input stage)
+    (set-input-processor stage)
     (screen-enter sub-screen))
 
   (screen-exit [_]
-    (.setInputProcessor Gdx/input nil)
+    (set-input-processor nil)
     (screen-exit sub-screen))
 
   (screen-render [_]
