@@ -1,5 +1,6 @@
 (ns forge.entity
-  (:require [forge.core :refer :all]
+  (:require [forge.base :refer :all]
+            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.db :as db]
             [forge.ui.inventory :as inventory]

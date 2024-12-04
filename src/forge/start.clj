@@ -1,12 +1,12 @@
 (ns forge.start
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db]))
 
-(defmethods :app/db
-  (app-create [[_ config]]
-    (db/init config)))
+(defmethod app-create :app/db [[_ config]]
+  (db/init config))
 
 (defn -main []
   (let [{:keys [requires

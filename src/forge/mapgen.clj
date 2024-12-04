@@ -1,5 +1,6 @@
 (ns forge.mapgen
   (:require [data.grid2d :as g]
+            [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db]))
 

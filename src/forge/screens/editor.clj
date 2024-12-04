@@ -2,6 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]
+            [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)

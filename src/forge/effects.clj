@@ -1,5 +1,6 @@
 (ns forge.effects
-  (:require [forge.core :refer :all]
+  (:require [forge.base :refer :all]
+            [forge.core :refer :all]
             [forge.db :as db]))
 
 (comment

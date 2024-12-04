@@ -1,5 +1,6 @@
 (ns forge.screens.main-menu
-  (:require [forge.core :refer :all]
+  (:require [forge.base :refer :all]
+            [forge.core :refer :all]
             [forge.db :as db]))
 
 (defn create []

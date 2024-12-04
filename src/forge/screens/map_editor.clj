@@ -1,6 +1,7 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
+            [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db]
             [forge.controls :as controls]
