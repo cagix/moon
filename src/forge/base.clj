@@ -22,7 +22,20 @@
          world-viewport-height
          cached-map-renderer
          screens
-         current-screen-key)
+         current-screen-key
+         world-tiled-map
+         explored-tile-corners
+         world-grid
+         tick-error
+         paused?
+         ids->eids
+         content-grid
+         ray-caster
+         ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
+         elapsed-time
+         ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
+         world-delta
+         player-eid)
 
 (defprotocol Disposable
   (dispose [_]))
