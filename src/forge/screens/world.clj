@@ -1,6 +1,8 @@
 (ns forge.screens.world
-  (:require [forge.core :refer :all]
+  (:require [forge.base :refer :all]
+            [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.db :as db]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -218,7 +220,7 @@
                      {:label "Main-Menu"
                       :on-click (partial change-screen :screens/main-menu)}]}
             {:label "World"
-             :items (for [world (build-all :properties/worlds)]
+             :items (for [world (db/build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
                        :on-click #(start-world world)})}
             {:label "Help"

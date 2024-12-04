@@ -1,6 +1,7 @@
 (ns forge.dev.tools
   (:require [clojure.string :as str]
-            [forge.core :refer :all])
+            [forge.core :refer :all]
+            [forge.db :as db])
   (:import (com.badlogic.gdx.scenes.scene2d Stage Group)))
 
 (comment
@@ -60,11 +61,11 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! player-eid add-skill (build skill-id))))
+   (swap! player-eid add-skill (db/build skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable
-   (spawn-item (:position @player-eid) (build item-id))))
+   (spawn-item (:position @player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
   @(get world-grid (mapv int (world-mouse-position))))

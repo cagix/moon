@@ -1,6 +1,7 @@
 (ns forge.info
   (:require [clojure.string :as str]
             [clojure.math :as math]
+            [forge.base :refer :all]
             [forge.core :refer :all]))
 
 (add-color "PRETTY_NAME" [0.84 0.8 0.52])
