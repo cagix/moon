@@ -43,7 +43,6 @@
              ; shoud
             [data.grid2d :as g2d] ; this
             [forge.base :refer :all]
-            [forge.db :as db] ; this
             [malli.core :as m] ; this
             [reduce-fsm :as fsm]) ; this
   (:import (com.badlogic.gdx Gdx)
@@ -494,7 +493,7 @@
                                  (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
               (fn [[^int a ^int b]] (<= a b))]]))
 
-(defmethod db/malli-form :s/val-max [_]
+(defmethod malli-form :s/val-max [_]
   (m/form val-max-schema))
 
 (defn val-max-ratio
@@ -730,7 +729,7 @@
                  (int (/ sprite-y tileh))]))
     (->image file)))
 
-(defmethod db/edn->value :s/image [_ edn]
+(defmethod edn->value :s/image [_ edn]
   (edn->image edn))
 
 (defn mouse-on-actor? []
@@ -1881,7 +1880,7 @@
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
 (defn spawn-creature [{:keys [position creature-id components]}]
-  (let [props (db/build creature-id)]
+  (let [props (build creature-id)]
     (spawn-entity position
                   (->body (:entity/body props))
                   (-> props

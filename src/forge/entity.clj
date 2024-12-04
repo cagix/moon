@@ -2,7 +2,6 @@
   (:require [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.controls :as controls]
-            [forge.db :as db]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
@@ -164,7 +163,7 @@
                   :up? true}))))
 
 (defmethod e-destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
-  (spawn-audiovisual (:position @eid) (db/build audiovisuals-id)))
+  (spawn-audiovisual (:position @eid) (build audiovisuals-id)))
 
 (def ^:private shout-radius 4)
 
@@ -425,7 +424,7 @@
     :cnt 0
     :maxcnt (* (count frames) (float frame-duration))}))
 
-(defmethod db/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
+(defmethod edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
   (->animation (map edn->image frames)
                :frame-duration frame-duration
                :looping? looping?))

@@ -1,8 +1,7 @@
 (ns forge.mapgen
   (:require [data.grid2d :as g]
             [forge.base :refer :all]
-            [forge.core :refer :all]
-            [forge.db :as db]))
+            [forge.core :refer :all]))
 
 (defn creatures-with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))
@@ -11,7 +10,7 @@
   (memoize
    (fn [{:keys [property/id] :as prop}]
      (assert id)
-     (let [image (db/property->image prop)
+     (let [image (property->image prop)
            tile (static-tiled-map-tile (:texture-region image))]
        (put! (m-props tile) "id" id)
        tile))))

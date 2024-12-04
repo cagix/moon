@@ -1,7 +1,6 @@
 (ns forge.start
   (:require [forge.base :refer :all]
-            [forge.app :as app]
-            [forge.db :as db]))
+            [forge.app :as app]))
 
 (defn -main []
   (let [{:keys [requires
@@ -11,7 +10,7 @@
                 db
                 components]} (-> "app.edn" io-resource slurp edn-read-string)]
     (run! require requires)
-    (db/init db)
+    (db-init db)
     (set-dock-icon dock-icon)
     (app/set-glfw-config glfw)
     (app/start (reify app/Listener

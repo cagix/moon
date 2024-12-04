@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.screens.editor
   (:require [forge.base :refer :all]
-            [forge.core :refer :all]
-            [forge.db :as db])
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
@@ -42,7 +41,7 @@
                        (set (keys m)))))
 
 (defn- widget-type [schema _]
-  (let [stype (db/schema-type schema)]
+  (let [stype (schema-type schema)]
     (cond
      (#{:s/map-optional :s/components-ns} stype)
      :s/map
@@ -84,7 +83,7 @@
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schema (db/schema-of-property props)
+  (let [schema (schema-of-property props)
         window (ui-window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -93,8 +92,8 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (schema->widget schema props)
-        save!   (apply-context-fn window #(db/db-update! (->value schema widget)))
-        delete! (apply-context-fn window #(db/db-delete! (:property/id props)))]
+        save!   (apply-context-fn window #(db-update! (->value schema widget)))
+        delete! (apply-context-fn window #(db-delete! (:property/id props)))]
     (add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                            [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
                                              :center? true}
@@ -177,7 +176,7 @@
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
-        button (if-let [image (db/property->image props)]
+        button (if-let [image (property->image props)]
                  (image-button image on-clicked {:scale scale})
                  (text-button (name id) on-clicked))
         top-widget (label (or (and extra-info-text (extra-info-text props)) ""))
@@ -211,7 +210,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all property-type)
+        properties (build-all property-type)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -244,8 +243,8 @@
                         (.pack window)
                         (add-actor window))))]
       (for [property-id property-ids]
-        (let [property (db/build property-id)
-              image-widget (image->widget (db/property->image property)
+        (let [property (build property-id)
+              image-widget (image->widget (property->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
@@ -283,8 +282,8 @@
                           (.pack window)
                           (add-actor window)))))]
       [(when property-id
-         (let [property (db/build property-id)
-               image-widget (image->widget (db/property->image property) {:id property-id})]
+         (let [property (build property-id)
+               image-widget (image->widget (property->image property) {:id property-id})]
            (add-tooltip! image-widget #(info-text property))
            image-widget))]
       [(when property-id
@@ -316,7 +315,7 @@
     (add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (schema->widget (db/schema-of k) v)]
+  (let [widget (schema->widget (schema-of k) v)]
     (Actor/.setUserObject widget [k v])
     widget))
 
@@ -359,7 +358,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        malli-form (db/malli-form schema)
+        malli-form (malli-form schema)
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
                                    (map-keys malli-form)))]
     (add-rows!
@@ -369,7 +368,7 @@
                      (fn []
                        (Actor/.remove window)
                        (add-rows! map-widget-table [(component-row
-                                                     [k (db/k->default-value k)]
+                                                     [k (k->default-value k)]
                                                      malli-form
                                                      map-widget-table)])
                        (rebuild-editor-window)))]))
@@ -404,10 +403,10 @@
   (let [table (ui-table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
-                          (map #(component-row % (db/malli-form schema) table)
+                          (map #(component-row % (malli-form schema) table)
                                (sort-by component-order m)))
         colspan component-row-cols
-        opt? (optional-keys-left (db/malli-form schema) m)]
+        opt? (optional-keys-left (malli-form schema) m)]
     (add-rows!
      table
      (concat [(when opt?
@@ -422,7 +421,7 @@
   (into {}
         (for [widget (filter value-widget? (children table))
               :let [[k _] (Actor/.getUserObject widget)]]
-          [k (->value (db/schema-of k) widget)])))
+          [k (->value (schema-of k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
@@ -432,7 +431,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (db/edn->value schema image)
+  (image-button (edn->value schema image)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -441,7 +440,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui-table {:rows [(for [image (:frames animation)]
-                      (image-button (db/edn->value :s/image image)
+                      (image-button (edn->value :s/image image)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))
@@ -449,10 +448,10 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (add-actor (editor-window (db/get-raw id))))
+  (add-actor (editor-window (get-raw id))))
 
 (defn- property-type-tabs []
-  (for [property-type (sort (db/property-types))]
+  (for [property-type (sort (property-types))]
     {:title (str-capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 

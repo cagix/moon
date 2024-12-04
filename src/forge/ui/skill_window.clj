@@ -14,11 +14,11 @@
                                  :skills/melee-attack]
                              :let [; get-property in callbacks if they get changed, this is part of context permanently
                                    button (image-button ; TODO reuse actionbar button scale?
-                                                        (:entity/image (db/build id)) ; TODO here anyway taken
+                                                        (:entity/image (build id)) ; TODO here anyway taken
                                                         ; => should probably build this window @ game start
                                                         (fn []
-                                                          (state/clicked-skillmenu-skill (e-state-obj @player-eid) (db/build id))))]]
+                                                          (state/clicked-skillmenu-skill (e-state-obj @player-eid) (build id))))]]
                          (do
-                          (add-tooltip! button #(info/->text (db/build id))) ; TODO no player modifiers applied (see actionbar)
+                          (add-tooltip! button #(info/->text (build id))) ; TODO no player modifiers applied (see actionbar)
                           button))]
                 :pack? true}))

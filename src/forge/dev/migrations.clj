@@ -1,5 +1,4 @@
-(ns ^:no-doc forge.dev.migrations
-  (:require [forge.db :as db]))
+(ns ^:no-doc forge.dev.migrations)
 
 (comment
 

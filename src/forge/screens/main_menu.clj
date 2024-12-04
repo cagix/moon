@@ -1,7 +1,6 @@
 (ns forge.screens.main-menu
   (:require [forge.base :refer :all]
-            [forge.core :refer :all]
-            [forge.db :as db]))
+            [forge.core :refer :all]))
 
 (defn create []
   {:actors [(background-image)
@@ -9,7 +8,7 @@
              {:rows
               (remove nil?
                       (concat
-                       (for [world (db/build-all :properties/worlds)]
+                       (for [world (build-all :properties/worlds)]
                          [(text-button (str "Start " (:property/id world))
                                        #(start-world world))])
                        [(when dev-mode?
