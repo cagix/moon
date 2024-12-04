@@ -163,7 +163,7 @@
   #_(geom-test)
   (highlight-mouseover-tile))
 
-(def ^:private explored-tile-color (gdx-color 0.5 0.5 0.5 1))
+(def ^:private explored-tile-color (->color 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 

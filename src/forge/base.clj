@@ -6,54 +6,67 @@
             [clojure.string :as str]
             [clojure.pprint :as pprint]))
 
+(def ^:dynamic *unit-scale* 1)
+
 (def sound-asset-format "sounds/%s.wav")
 
-(declare assets
-         batch
-         shape-drawer
-         default-font
-         cursors
-         gui-viewport
-         gui-viewport-width
-         gui-viewport-height
-         world-unit-scale
-         world-viewport
-         world-viewport-width
-         world-viewport-height
-         cached-map-renderer
-         screens
-         current-screen-key
-         world-tiled-map
-         explored-tile-corners
-         world-grid
-         tick-error
-         paused?
-         ids->eids
-         content-grid
-         ray-caster
-         ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
-         elapsed-time
-         ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
-         world-delta
-         player-eid
-         schemas
-         properties-file
-         db-properties)
-
-(declare ttfont
-         load-assets
-         sprite-batch
-         equal?
-         clamp
-         degree->radians
-         exit-app
-         frames-per-second
-         delta-time
-         button-just-pressed?
-         key-just-pressed?
-         key-pressed?
-         set-input-processor
-         internal-file)
+(declare
+ ^{:doc "Supports clojure.lang.ILookup (get), passing an asset-name string and returns the asset."}
+ assets
+ batch
+ shape-drawer
+ default-font
+ cursors
+ gui-viewport
+ gui-viewport-width
+ gui-viewport-height
+ world-unit-scale
+ world-viewport
+ world-viewport-width
+ world-viewport-height
+ cached-map-renderer
+ screens
+ current-screen-key
+ world-tiled-map
+ explored-tile-corners
+ world-grid
+ tick-error
+ paused?
+ ids->eids
+ content-grid
+ ray-caster
+ ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
+ elapsed-time
+ ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
+ world-delta
+ player-eid
+ schemas
+ properties-file
+ db-properties
+ black
+ white
+ ->color
+ ttfont
+ load-assets
+ sprite-batch
+ equal?
+ clamp
+ degree->radians
+ exit-app
+ post-runnable
+ frames-per-second
+ delta-time
+ button-just-pressed?
+ key-just-pressed?
+ key-pressed?
+ set-input-processor
+ internal-file
+ ^{:doc "font, h-align, up? and scale are optional.
+        h-align one of: :center, :left, :right. Default :center.
+        up? renders the font over y, otherwise under.
+        scale will multiply the drawn text size with the scale.
+        `[{:keys [font x y text h-align up? scale]}`"}
+ draw-text)
 
 (defprotocol Batch
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])
@@ -433,8 +446,6 @@
                    pixel-dimensions
                    world-unit-dimensions
                    color]) ; optional
-
-(def ^:dynamic *unit-scale* 1)
 
 (defsystem component-info)
 (defmethod component-info :default [_])
@@ -831,8 +842,10 @@
     (bind-root #'db-properties (zipmap (map :property/id properties) properties))))
 
 (defmacro defn-impl [name-sym & fn-body]
-  `(bind-root (var ~name-sym)
-              (fn ~name-sym ~@fn-body)))
+  `(bind-root (var ~name-sym) (fn ~name-sym ~@fn-body)))
+
+(defmacro def-impl [name-sym value]
+  `(bind-root (var ~name-sym) ~value))
 
 (defmethods :app/default-font
   (app-create [[_ font]]
@@ -851,3 +864,6 @@
     (bind-root #'batch (sprite-batch)))
   (app-dispose [_]
     (dispose batch)))
+
+(defmacro app-do [& exprs]
+  `(post-runnable (fn [] ~@exprs)))

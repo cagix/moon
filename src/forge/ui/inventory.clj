@@ -60,7 +60,7 @@
                      :texture-region
                      texture-region-drawable)]
     (set-min-size! drawable cell-size)
-    (tinted-drawable drawable (gdx-color 1 1 1 0.4))))
+    (tinted-drawable drawable (->color 1 1 1 0.4))))
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]

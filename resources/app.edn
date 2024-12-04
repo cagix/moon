@@ -1,4 +1,5 @@
-{:requires [forge.effects
+{:requires [forge.impl.gdx ; call first - system impl.
+            forge.effects
             forge.entity
             forge.info
             forge.mapgen.generate

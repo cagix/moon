@@ -43,14 +43,11 @@
              ; shoud
             [data.grid2d :as g2d] ; this
             [forge.base :refer :all]
-            [forge.impl.gdx :as gdx]
             [malli.core :as m] ; this
             [reduce-fsm :as fsm]) ; this
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion SpriteBatch)
+           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Texture OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
@@ -60,150 +57,8 @@
            (com.badlogic.gdx.math Circle Intersector Rectangle Vector2 Vector3)
            (com.badlogic.gdx.utils Align Scaling ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
-           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn gdx-align [k]
-  (case k
-    :center Align/center
-    :left   Align/left
-    :right  Align/right))
-
-(defn gdx-scaling [k]
-  (case k
-    :fill Scaling/fill))
-
-(defn gdx-color
-  ([r g b]
-   (gdx-color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a))))
-
-(def black Color/BLACK)
-(def white Color/WHITE)
-
-(defn ->gdx-color ^Color [c]
-  (cond (= Color (class c)) c
-        (keyword? c) (gdx/static-field "graphics.Color" c)
-        (vector? c) (apply gdx-color c)
-        :else (throw (ex-info "Cannot understand color" c))))
-
-(defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- asset-manager ^AssetManager []
-  (proxy [AssetManager clojure.lang.ILookup] []
-    (valAt [^String path]
-      (if (AssetManager/.contains this path)
-        (AssetManager/.get this path)
-        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
-
-(defn-impl load-assets [folder]
-  (let [manager (asset-manager)]
-    (doseq [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                          [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
-            file (map #(str-replace-first % folder "")
-                      (recursively-search (internal-file folder) exts))]
-      (.load manager ^String file ^Class class))
-    (.finishLoading manager)
-    manager))
-
-; we need a base 'language' without dependencies of gdx
-; if vector -> first, if keyword -> kw, else -> call Disposable protocol
-; one language for 'verbs' - create/resize/etc....
-; maybe for accessing stuff like fps we can do it with keywords
-; access gdx context (:frames-per-second gdx)  ?
-(extend-type com.badlogic.gdx.utils.Disposable
-  Disposable
-  (dispose [obj]
-    (.dispose obj)))
-
-(extend-type com.badlogic.gdx.audio.Sound
-  Sound
-  (play [sound]
-    (.play sound)))
-
-(extend-type Actor
-  HasVisible
-  (set-visible [actor bool]
-    (.setVisible actor bool))
-  (visible? [actor]
-    (.isVisible actor)))
-
-(extend-type TiledMapTileLayer
-  HasVisible
-  (set-visible [layer bool]
-    (.setVisible layer bool))
-  (visible? [layer]
-    (.isVisible layer)))
-
-(defn- check-cleanup-visui! []
-  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
-  ; => actually there is a deeper issue at play
-  ; we need to dispose ALL resources which were loaded already ...
-  (when (VisUI/isLoaded)
-    (VisUI/dispose)))
-
-(defn- font-enable-markup! []
-  (-> (VisUI/getSkin)
-      (.getFont "default-font")
-      .getData
-      .markupEnabled
-      (set! true)))
-
-(defn- set-tooltip-config! []
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
-  ;Controls whether to fade out tooltip when mouse was moved. (default false)
-  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  )
-
-(defmethods :app/vis-ui
-  (app-create [[_ skin-scale]]
-    (check-cleanup-visui!)
-    (VisUI/load (case skin-scale
-                  :skin-scale/x1 VisUI$SkinScale/X1
-                  :skin-scale/x2 VisUI$SkinScale/X2))
-    (font-enable-markup!)
-    (set-tooltip-config!))
-  (app-dispose [_]
-    (VisUI/dispose)))
-
-(defn-impl sprite-batch []
-  (SpriteBatch.))
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (dispose pixmap)
-    texture))
-
-(let [pixel-texture (atom nil)]
-  (defmethods :app/shape-drawer
-    (app-create [_]
-      (reset! pixel-texture (white-pixel-texture))
-      (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
-    (app-dispose [_]
-      (dispose @pixel-texture))))
+           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
 
 (defmethods :app/cursors
   (app-create [[_ data]]
@@ -469,14 +324,8 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str-split #"\n")
-      count
-      (* (.getLineHeight font))))
-
 (defn add-color [name-str color]
-  (Colors/put name-str (->gdx-color color)))
+  (Colors/put name-str (->color color)))
 
 (extend-type com.badlogic.gdx.graphics.g2d.Batch
   Batch
@@ -493,7 +342,7 @@
            1 ; scaling factor
            1
            rotation)
-    (if color (.setColor this Color/WHITE)))
+    (if color (.setColor this white)))
 
   (draw-on-viewport [this viewport draw-fn]
     (.setColor this white) ; fix scene2d.ui.tooltip flickering
@@ -503,7 +352,7 @@
     (.end this)))
 
 (defn- sd-color [color]
-  (.setColor shape-drawer (->gdx-color color)))
+  (.setColor shape-drawer (->color color)))
 
 (defn draw-ellipse [[x y] radius-x radius-y color]
   (sd-color color)
@@ -662,28 +511,6 @@
 (defn mouse-on-actor? []
   (let [[x y] (gui-mouse-position)]
     (.hit (screen-stage) x y true)))
-
-(defn draw-text
-  "font, h-align, up? and scale are optional.
-  h-align one of: :center, :left, :right. Default :center.
-  up? renders the font over y, otherwise under.
-  scale will multiply the drawn text size with the scale."
-  [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font default-font)
-        data (.getData font)
-        old-scale (float (.scaleX data))]
-    (.setScale data (* old-scale
-                       (float *unit-scale*)
-                       (float (or scale 1))))
-    (.draw font
-           batch
-           (str text)
-           (float x)
-           (+ (float y) (float (if up? (text-height font text) 0)))
-           (float 0) ; target-width
-           (gdx-align (or h-align :center))
-           false) ; wrap false, no need target-width
-    (.setScale data old-scale)))
 
 (defn set-cursor [cursor-key]
   (.setCursor Gdx/graphics (safe-get cursors cursor-key)))

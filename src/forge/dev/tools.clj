@@ -38,7 +38,7 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable
+ (app-do
   (spawn-creature {:position [35 73]
                    :creature-id :creatures/dragon-red
                    :components {:entity/fsm {:fsm :fsms/npc
@@ -59,11 +59,11 @@
  )
 
 (defn- learn-skill! [skill-id]
-  (post-runnable
+  (app-do
    (swap! player-eid add-skill (build skill-id))))
 
 (defn- create-item! [item-id]
-  (post-runnable
+  (app-do
    (spawn-item (:position @player-eid) (build item-id))))
 
 (defn- mouseover-grid-cell []
