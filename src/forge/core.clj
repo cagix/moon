@@ -41,7 +41,7 @@
          current-screen-key
          schemas
          properties-file
-         properties)
+         db-properties)
 
 (defn- gdx-static-field [klass-str k]
   (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
@@ -63,9 +63,6 @@
 
 (defn delta-time []
   (.getDeltaTime Gdx/graphics))
-
-(defn cursor [pixmap hotspot-x hotspot-y]
-  (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y))
 
 (defn button-just-pressed? [b]
   (.isButtonJustPressed Gdx/input (k->input-button b)))
@@ -553,7 +550,7 @@
              (spit properties-file)))))))
 
 (defn- async-write-to-file! []
-  (->> properties
+  (->> db-properties
        vals
        (sort-by property-type)
        (map recur-sort-map)
@@ -561,10 +558,10 @@
        async-pprint-spit!))
 
 (defn get-raw [id]
-  (safe-get properties id))
+  (safe-get db-properties id))
 
 (defn all-raw [type]
-  (->> (vals properties)
+  (->> (vals db-properties)
        (filter #(= type (property-type %)))))
 
 (def ^:private undefined-data-ks (atom #{}))
@@ -611,20 +608,20 @@
 
 (defn db-update! [{:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
-         (contains? properties id)]}
+         (contains? db-properties id)]}
   (validate! property)
-  (alter-var-root #'properties assoc id property)
+  (alter-var-root #'db-properties assoc id property)
   (async-write-to-file!))
 
 (defn db-delete! [property-id]
-  {:pre [(contains? properties property-id)]}
-  (alter-var-root #'properties dissoc property-id)
+  {:pre [(contains? db-properties property-id)]}
+  (alter-var-root #'db-properties dissoc property-id)
   (async-write-to-file!))
 
 (defn db-migrate [property-type update-fn]
   (doseq [id (map :property/id (all-raw property-type))]
     (println id)
-    (alter-var-root #'properties update id update-fn))
+    (alter-var-root #'db-properties update id update-fn))
   (async-write-to-file!))
 
 (defn property->image [{:keys [entity/image entity/animation]}]

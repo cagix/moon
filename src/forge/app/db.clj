@@ -11,4 +11,4 @@
       (assert (or (empty? properties)
                   (apply distinct? (map :property/id properties))))
       (run! validate! properties)
-      (bind-root #'properties (zipmap (map :property/id properties) properties)))))
+      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))

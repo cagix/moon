@@ -1,16 +1,15 @@
 (ns ^:no-doc forge.app.cursors
   (:require [forge.core :refer :all])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Pixmap)
-           (com.badlogic.gdx.utils Disposable)))
+           (com.badlogic.gdx.graphics Pixmap)))
 
 (defmethods :app/cursors
-  (app-create [[_ cursors]]
+  (app-create [[_ data]]
     (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                                     (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
                                           cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                      (.dispose pixmap)
+                                      (dispose pixmap)
                                       cursor))
-                                  cursors)))
+                                  data)))
   (app-dispose [_]
-    (run! Disposable/.dispose (vals cursors))))
+    (run! dispose (vals cursors))))
