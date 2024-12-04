@@ -7,9 +7,13 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.pprint :as pprint]
-            [data.grid2d :as g2d])
-  (:import (com.badlogic.gdx Gdx)
+            [data.grid2d :as g2d]
+            [malli.core :as m]
+            [malli.error :as me]
+            [malli.generator :as mg])
+  (:import (com.badlogic.gdx Gdx ApplicationAdapter)
            (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
@@ -22,7 +26,8 @@
            (com.kotcrab.vis.ui.widget Tooltip)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
-           (forge OrthogonalTiledMapRenderer)))
+           (forge OrthogonalTiledMapRenderer)
+           (org.lwjgl.system Configuration)))
 
 (defn-impl pretty-pst [t]
   (binding [*print-level* 3]
@@ -446,3 +451,48 @@
 
 (defn-impl rect-contains? [rectangle [x y]]
   (Rectangle/.contains (m->shape rectangle) x y))
+
+(defn-impl set-glfw-config [{:keys [library-name check-thread0]}]
+  (.set Configuration/GLFW_LIBRARY_NAME library-name)
+  (.set Configuration/GLFW_CHECK_THREAD0 check-thread0))
+
+(defn-impl start-app [listener {:keys [title fps width height]}]
+  (Lwjgl3Application. listener
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle title)
+                        (.setForegroundFPS fps)
+                        (.setWindowedMode width height))))
+
+(defn-impl components-application [components]
+  (proxy [ApplicationAdapter] []
+    (create []
+      (run! app-create components))
+
+    (dispose []
+      (run! app-dispose components))
+
+    (render []
+      (run! app-render components))
+
+    (resize [w h]
+      (run! #(app-resize % w h) components))))
+
+#_(defprotocol Schema
+    (s-explain  [_ value])
+    (s-form     [_])
+    (s-validate [_ data]))
+
+(defn- invalid-ex-info [m-schema value]
+  (ex-info (str (me/humanize (m/explain m-schema value)))
+           {:value value
+            :schema (m/form m-schema)}))
+
+(extend-type clojure.lang.APersistentMap
+  Property
+  (validate! [property]
+    (let [m-schema (-> property
+                       schema-of-property
+                       malli-form
+                       m/schema)]
+      (when-not (m/validate m-schema property)
+        (throw (invalid-ex-info m-schema property))))))

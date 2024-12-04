@@ -87,7 +87,10 @@
  ^{:doc "converts theta of Vector2 to angle from top (top is 0 degree, moving left is 90 degree etc.), counterclockwise"}
  v-angle-from-vector
  overlaps?
- rect-contains?)
+ rect-contains?
+ set-glfw-config
+ start-app
+ components-application)
 
 (defprotocol Acting
   (act [_]))
