@@ -509,3 +509,13 @@
 
 (defn mods-add    [mods other-mods] (merge-with ops-add    mods other-mods))
 (defn mods-remove [mods other-mods] (merge-with ops-remove mods other-mods))
+
+(defn async-pprint-spit! [file data]
+  (.start
+   (Thread.
+    (fn []
+      (binding [*print-level* nil]
+        (->> data
+             pprint
+             with-out-str
+             (spit file)))))))

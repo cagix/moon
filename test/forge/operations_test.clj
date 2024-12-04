@@ -1,6 +1,6 @@
 (ns forge.operations-test
   (:require [clojure.test :refer :all]
-            [forge.core :refer [ops-apply ops-add ops-remove]]))
+            [forge.base :refer [ops-apply ops-add ops-remove]]))
 
 (deftest add-and-remove
   (is (= (ops-add {:+ 6}

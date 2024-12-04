@@ -110,23 +110,13 @@
 
      :else (mg/generate (malli-form schema) {:size 3}))))
 
-(defn- async-pprint-spit! [properties]
-  (.start
-   (Thread.
-    (fn []
-      (binding [*print-level* nil]
-        (->> properties
-             pprint
-             with-out-str
-             (spit properties-file)))))))
-
 (defn- async-write-to-file! []
   (->> db-properties
        vals
        (sort-by property-type)
        (map recur-sort-map)
        doall
-       async-pprint-spit!))
+       (async-pprint-spit! properties-file)))
 
 (defn get-raw [id]
   (safe-get db-properties id))
