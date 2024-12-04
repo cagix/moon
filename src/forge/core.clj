@@ -46,10 +46,9 @@
             [forge.db :as db] ; this
             [malli.core :as m] ; this
             [reduce-fsm :as fsm]) ; this
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
@@ -66,9 +65,7 @@
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
-           (java.awt Taskbar Toolkit)
-           (space.earlygrey.shapedrawer ShapeDrawer)
-           (org.lwjgl.system Configuration)))
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -2242,35 +2239,3 @@
   (when (:entity/player? entity)
     (actionbar-remove-skill skill))
   (update entity :entity/skills dissoc id))
-
-(defn set-dock-icon [path]
-  (.setIconImage (Taskbar/getTaskbar)
-                 (.getImage (Toolkit/getDefaultToolkit)
-                            (io-resource path))))
-
-(defn set-glfw-config [{:keys [library-name check-thread0]}]
-  (.set Configuration/GLFW_LIBRARY_NAME library-name)
-  (.set Configuration/GLFW_CHECK_THREAD0 check-thread0))
-
-(defn lwjgl3-config [{:keys [title fps width height]}]
-  (doto (Lwjgl3ApplicationConfiguration.)
-    (.setTitle title)
-    (.setForegroundFPS fps)
-    (.setWindowedMode width height)))
-
-(defn lwjgl3-app [application lwjgl3-config]
-  (Lwjgl3Application. application lwjgl3-config))
-
-(defn components-app [components]
-  (proxy [ApplicationAdapter] []
-    (create []
-      (run! app-create components))
-
-    (dispose []
-      (run! app-dispose components))
-
-    (render []
-      (run! app-render components))
-
-    (resize [w h]
-      (run! #(app-resize % w h) components))))

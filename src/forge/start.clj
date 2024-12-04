@@ -1,6 +1,6 @@
 (ns forge.start
   (:require [forge.base :refer :all]
-            [forge.core :refer :all]
+            [forge.app :as app]
             [forge.db :as db]))
 
 (defmethod app-create :app/db [[_ config]]
@@ -13,7 +13,7 @@
                 lwjgl3
                 components]} (-> "app.edn" io-resource slurp edn-read-string)]
     (run! require requires)
-    (set-dock-icon (:dock-icon awt))
-    (set-glfw-config glfw)
-    (lwjgl3-app (components-app components)
-                (lwjgl3-config lwjgl3))))
+    (app/set-dock-icon (:dock-icon awt))
+    (app/set-glfw-config glfw)
+    (app/lwjgl3-app (app/components-app components)
+                    (app/lwjgl3-config lwjgl3))))
