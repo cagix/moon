@@ -1,5 +1,5 @@
 (ns forge.effects
-  (:require [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
             [forge.core :refer :all]))
 
 (comment

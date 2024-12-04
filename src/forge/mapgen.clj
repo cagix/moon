@@ -1,6 +1,6 @@
 (ns forge.mapgen
-  (:require [data.grid2d :as g]
-            [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
+            [data.grid2d :as g]
             [forge.core :refer :all]))
 
 (defn creatures-with-level [creature-properties level]

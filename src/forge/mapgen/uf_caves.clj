@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.mapgen.uf-caves
-  (:require [data.grid2d :as g2d]
-            [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
+            [data.grid2d :as g2d]
             [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
 

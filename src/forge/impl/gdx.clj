@@ -1,11 +1,11 @@
 (ns forge.impl.gdx
   (:require [clojure.edn :as edn]
+            [clojure.gd :refer :all]
             [clojure.java.io :as io]
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
-            [clojure.pprint :as pprint]
-            [forge.base :refer :all])
+            [clojure.pprint :as pprint])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)

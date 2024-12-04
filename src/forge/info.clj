@@ -1,5 +1,5 @@
 (ns forge.info
-  (:require [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
             [forge.core :refer :all]))
 
 (add-color "PRETTY_NAME" [0.84 0.8 0.52])

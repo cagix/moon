@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)

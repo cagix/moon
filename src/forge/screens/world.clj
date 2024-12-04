@@ -1,5 +1,5 @@
 (ns forge.screens.world
-  (:require [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]

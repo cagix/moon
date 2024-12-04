@@ -1,5 +1,5 @@
 (ns forge.controls
-  (:require [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
             [forge.core :refer :all]))
 
 (defn unpaused? []

@@ -1,6 +1,6 @@
 (ns forge.ui.inventory
-  (:require [data.grid2d :as g2d]
-            [forge.base :refer :all]
+  (:require [clojure.gd :refer :all]
+            [data.grid2d :as g2d]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))

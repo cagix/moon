@@ -1,4 +1,6 @@
-(ns forge.base)
+(ns clojure.gd)
+
+(println "loading clojure.gd")
 
 (def ^:dynamic *unit-scale* 1)
 
