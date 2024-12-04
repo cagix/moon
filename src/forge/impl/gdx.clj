@@ -1,5 +1,11 @@
 (ns forge.impl.gdx
-  (:require [forge.base :refer :all])
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.math :as math]
+            [clojure.set :as set]
+            [clojure.string :as str]
+            [clojure.pprint :as pprint]
+            [forge.base :refer :all])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
@@ -15,6 +21,19 @@
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)))
+
+(def-impl edn-read-string   edn/read-string)
+(def-impl io-resource       io/resource)
+(def-impl str-join          str/join)
+(def-impl str-upper-case    str/upper-case)
+(def-impl str-replace       str/replace)
+(def-impl str-replace-first str/replace-first)
+(def-impl str-split         str/split)
+(def-impl str-capitalize    str/capitalize)
+(def-impl str-trim-newline  str/trim-newline)
+(def-impl signum            math/signum)
+(def-impl set-difference    set/difference)
+(def-impl pprint            pprint/pprint)
 
 (extend-type Actor
   HasUserObject

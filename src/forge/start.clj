@@ -1,5 +1,6 @@
 (ns forge.start
-  (:require [forge.base :refer :all]
+  (:require [forge.impl.gdx]
+            [forge.base :refer :all]
             [forge.app :as app]
             [malli.core :as m]
             [malli.error :as me]

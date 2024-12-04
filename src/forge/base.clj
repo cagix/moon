@@ -1,16 +1,22 @@
-(ns forge.base
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.math :as math]
-            [clojure.set :as set]
-            [clojure.string :as str]
-            [clojure.pprint :as pprint]))
+(ns forge.base)
 
 (def ^:dynamic *unit-scale* 1)
 
 (def sound-asset-format "sounds/%s.wav")
 
 (declare
+ edn-read-string
+ io-resource
+ str-join
+ str-upper-case
+ str-replace
+ str-replace-first
+ str-split
+ str-capitalize
+ str-trim-newline
+ signum
+ set-difference
+ pprint
  ^{:doc "Supports clojure.lang.ILookup (get), passing an asset-name string and returns the asset."}
  assets
  batch
@@ -115,18 +121,6 @@
                       or a multiple-cell-size body which touches this cell.")
   (nearest-entity          [cell* faction])
   (nearest-entity-distance [cell* faction]))
-
-(def edn-read-string   edn/read-string)
-(def io-resource       io/resource)
-(def str-join          str/join)
-(def str-upper-case    str/upper-case)
-(def str-replace       str/replace)
-(def str-replace-first str/replace-first)
-(def str-split         str/split)
-(def str-capitalize    str/capitalize)
-(def signum            math/signum)
-(def set-difference    set/difference)
-(def pprint            pprint/pprint)
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -481,9 +475,9 @@
 
 (defn- remove-newlines [s]
   (let [new-s (-> s
-                  (str/replace "\n\n" "\n")
-                  (str/replace #"^\n" "")
-                  str/trim-newline)]
+                  (str-replace "\n\n" "\n")
+                  (str-replace #"^\n" "")
+                  str-trim-newline)]
     (if (= (count new-s) (count s))
       s
       (remove-newlines new-s))))
@@ -501,11 +495,11 @@
                            (pr-str component)))
                     (when (map? v)
                       (str "\n" (info-text v))))))
-       (str/join "\n")
+       (str-join "\n")
        remove-newlines))
 
 (defn k->pretty-name [k]
-  (str/capitalize (name k)))
+  (str-capitalize (name k)))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)
