@@ -16,6 +16,11 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)))
 
+(extend-type Actor
+  HasUserObject
+  (user-object [actor]
+    (.getUserObject actor)))
+
 (extend-type com.badlogic.gdx.scenes.scene2d.Group
   Group
   (children [group]

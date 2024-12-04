@@ -33,7 +33,7 @@
                      (.getX this)
                      (.getY this)
                      (actor-hit this (gui-mouse-position))
-                     (.getUserObject (.getParent this))))))
+                     (user-object (.getParent this))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0

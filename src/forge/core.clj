@@ -60,33 +60,6 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
 
-(defn find-actor-with-id [group id]
-  (let [actors (children group)
-        ids (keep Actor/.getUserObject actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (Actor/.getUserObject %)) actors))))
-
-(defrecord StageScreen [stage sub-screen]
-  Screen
-  (screen-enter [_]
-    (set-input-processor stage)
-    (screen-enter sub-screen))
-
-  (screen-exit [_]
-    (set-input-processor nil)
-    (screen-exit sub-screen))
-
-  (screen-render [_]
-    (act stage)
-    (screen-render sub-screen)
-    (draw stage))
-
-  (screen-destroy [_]
-    (dispose stage)
-    (screen-destroy sub-screen)))
-
 (defn- stage-screen
   "Actors or screen can be nil."
   [{:keys [actors screen]}]
@@ -1891,7 +1864,7 @@
     actor))
 
 (defn- group->button-group [group]
-  (.getUserObject (find-actor group "action-bar/button-group")))
+  (user-object (find-actor group "action-bar/button-group")))
 
 (defn- get-action-bar []
   (let [group (::action-bar (:action-bar-table (screen-stage)))]
@@ -1922,7 +1895,7 @@
 
 (defn actionbar-selected-skill []
   (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar)))]
-    (.getUserObject skill-button)))
+    (user-object skill-button)))
 
 (defn add-skill [entity {:keys [property/id] :as skill}]
   {:pre [(not (has-skill? entity skill))]}

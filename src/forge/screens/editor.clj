@@ -109,7 +109,7 @@
   (label (truncate (->edn-str v) 60)))
 
 (defmethod ->value :default [_ widget]
-  ((Actor/.getUserObject widget) 1))
+  ((user-object widget) 1))
 
 (defmethod schema->widget :widget/edn [schema v]
   (add-tooltip! (text-field (->edn-str v) {})
@@ -158,7 +158,7 @@
                                (add-rows! table [(columns table sound-file)])
                                (Actor/.remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
-                               (let [[k _] (Actor/.getUserObject table)]
+                               (let [[k _] (user-object table)]
                                  (Actor/.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
     (add-actor (scrollable-choose-window rows))))
@@ -257,7 +257,7 @@
 
 (defmethod ->value :s/one-to-many [_ widget]
   (->> (children widget)
-       (keep Actor/.getUserObject)
+       (keep user-object)
        set))
 
 (defn- add-one-to-one-rows [table property-type property-id]
@@ -296,7 +296,7 @@
 
 (defmethod ->value :s/one-to-one [_ widget]
   (->> (children widget)
-       (keep Actor/.getUserObject)
+       (keep user-object)
        first))
 
 (defn- get-editor-window []
@@ -319,12 +319,12 @@
     (Actor/.setUserObject widget [k v])
     widget))
 
-(def ^:private value-widget? (comp vector? Actor/.getUserObject))
+(def ^:private value-widget? (comp vector? user-object))
 
 (defn- find-kv-widget [table k]
   (find-first (fn [actor]
-                (and (Actor/.getUserObject actor)
-                     (= k ((Actor/.getUserObject actor) 0))))
+                (and (user-object actor)
+                     (= k ((user-object actor) 0))))
               (children table)))
 
 (defn- attribute-label [k m-schema table]
@@ -420,7 +420,7 @@
 (defmethod ->value :s/map [_ table]
   (into {}
         (for [widget (filter value-widget? (children table))
-              :let [[k _] (Actor/.getUserObject widget)]]
+              :let [[k _] (user-object widget)]]
           [k (->value (schema-of k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?

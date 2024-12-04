@@ -207,7 +207,7 @@
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor?)]
     (str "TRUE - name:" (.getName actor)
-         "id: " (.getUserObject actor)))
+         "id: " (user-object actor)))
 
 (defn- dev-menu-bar ^MenuBar []
   (dev-menu*

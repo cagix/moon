@@ -80,6 +80,9 @@
   (add-actor! [_ actor] "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made.")
   (find-actor [_ name]))
 
+(defprotocol HasUserObject
+  (user-object [_]))
+
 (defprotocol Batch
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])
   (draw-on-viewport [_ viewport draw-fn]))
@@ -879,3 +882,30 @@
 
 (defmacro app-do [& exprs]
   `(post-runnable (fn [] ~@exprs)))
+
+(defn find-actor-with-id [group id]
+  (let [actors (children group)
+        ids (keep user-object actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (user-object %)) actors))))
+
+(defrecord StageScreen [stage sub-screen]
+  Screen
+  (screen-enter [_]
+    (set-input-processor stage)
+    (screen-enter sub-screen))
+
+  (screen-exit [_]
+    (set-input-processor nil)
+    (screen-exit sub-screen))
+
+  (screen-render [_]
+    (act stage)
+    (screen-render sub-screen)
+    (draw stage))
+
+  (screen-destroy [_]
+    (dispose stage)
+    (screen-destroy sub-screen)))

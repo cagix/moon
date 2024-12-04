@@ -714,7 +714,7 @@
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
        (get-in (:entity/inventory @player-eid)
-               (.getUserObject (.getParent actor)))))
+               (user-object (.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
   (let [actor (mouse-on-actor?)]
