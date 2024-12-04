@@ -1,50 +1,8 @@
 (ns forge.core
-  ; ==
-  ; * library - private stuff set public, e.g. sprite-batch
-  ; => can use parts also ! (because small functions r there )
-  ; => can make really short cool examples
-  ; => colors have to be highlighted, check also that vim plugin maybe
-  ; => check private names also for collisions
-  ; => which functions depend on which context can highlight/sort like that
-  ; => world somewhere else? different deps? shouldn't dep on forge.core ?!
-  ; but world already in there!
-  ; * framework (if using existing app components)
-  ; * language
-  ; * not a wrapper -> takes ApplicationAdapter!
-
-  ; ==> worl shouldn't be in here because it has not those gdx dependencies
-  ; it shoud depend on forge.core ... ?
-  ; db maybe also does not need to be there.....
-  ; db is actually a separate part with malli dependencies ?!!?!
-  ; 1. level - forge.core then
-  ; e.g. editor does not depend on world stuff ---
-  ; -> where do you draw the line ?
-  ; or multiple namespaces.........
-  ; e.g. rand could be moved smw else completely ......
-
-  ; => makes sense maybe in here only till 'components-app' ?
-
-  ; => Can I make and build mayself cool
-  ; apps now?
-  ; e.g. just world-view & tiledmap-renderer & spritebatch
-  ; no shape-drawer?!
-
-  ; but then there can also exist a library without state?
-  ; with just 'sprite-batch'/'asset-manager'/... and 'key-pressed?' and stuff?
-  ; I can do multiple :refer :all?
-
-  ; => Layer your dependencies , context namespace
-  ; a bit more coarse but still
-  ; e.g. whole gdx stuff and malli/world totally independent ..
-
-  ; 1. level : bind-root, defsystem(?) ... ?
-
-  (:require [clj-commons.pretty.repl :as pretty-repl] ; and
-            [clojure.gamedev :refer :all]
-             ; shoud
-            [data.grid2d :as g2d] ; this
-            [malli.core :as m] ; this
-            [reduce-fsm :as fsm]) ; this
+  (:require [clojure.gamedev :refer :all]
+            [data.grid2d :as g2d]
+            [malli.core :as m]
+            [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -54,98 +12,11 @@
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
-           (com.badlogic.gdx.math Circle Intersector Rectangle Vector2 Vector3)
+           (com.badlogic.gdx.math Vector2 Vector3)
            (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
-
-(defn- m-v2
-  (^Vector2 [[x y]] (Vector2. x y))
-  (^Vector2 [x y]   (Vector2. x y)))
-
-(defn- ->p [^Vector2 v]
-  [(.x v) (.y v)])
-
-(defn v-scale [v n]
-  (->p (.scl (m-v2 v) (float n))))
-
-(defn v-normalise [v]
-  (->p (.nor (m-v2 v))))
-
-(defn v-add [v1 v2]
-  (->p (.add (m-v2 v1) (m-v2 v2))))
-
-(defn v-length [v]
-  (.len (m-v2 v)))
-
-(defn v-distance [v1 v2]
-  (.dst (m-v2 v1) (m-v2 v2)))
-
-(defn v-normalised? [v]
-  (equal? 1 (v-length v)))
-
-(defn v-direction [[sx sy] [tx ty]]
-  (v-normalise [(- (float tx) (float sx))
-                (- (float ty) (float sy))]))
-
-(defn v-angle-from-vector
-  "converts theta of Vector2 to angle from top (top is 0 degree, moving left is 90 degree etc.), counterclockwise"
-  [v]
-  (.angleDeg (m-v2 v) (Vector2. 0 1)))
-
-(comment
-
- (pprint
-  (for [v [[0 1]
-           [1 1]
-           [1 0]
-           [1 -1]
-           [0 -1]
-           [-1 -1]
-           [-1 0]
-           [-1 1]]]
-    [v
-     (.angleDeg (m-v2 v) (Vector2. 0 1))
-     (get-angle-from-vector (m-v2 v))]))
-
- )
-
-(defn- m->shape [m]
-  (cond
-   (rectangle? m) (let [{:keys [left-bottom width height]} m
-                        [x y] left-bottom]
-                    (Rectangle. x y width height))
-
-   (circle? m) (let [{:keys [position radius]} m
-                     [x y] position]
-                 (Circle. x y radius))
-
-   :else (throw (Error. (str m)))))
-
-(defmulti ^:private overlaps?* (fn [a b] [(class a) (class b)]))
-
-(defmethod overlaps?* [Circle Circle]
-  [^Circle a ^Circle b]
-  (Intersector/overlaps a b))
-
-(defmethod overlaps?* [Rectangle Rectangle]
-  [^Rectangle a ^Rectangle b]
-  (Intersector/overlaps a b))
-
-(defmethod overlaps?* [Rectangle Circle]
-  [^Rectangle rect ^Circle circle]
-  (Intersector/overlaps circle rect))
-
-(defmethod overlaps?* [Circle Rectangle]
-  [^Circle circle ^Rectangle rect]
-  (Intersector/overlaps circle rect))
-
-(defn overlaps? [a b]
-  (overlaps?* (m->shape a) (m->shape b)))
-
-(defn rect-contains? [rectangle [x y]]
-  (Rectangle/.contains (m->shape rectangle) x y))
 
 (def val-max-schema
   (m/schema [:and
@@ -883,10 +754,6 @@
                :center-position [(/ gui-viewport-width 2)
                                  (* gui-viewport-height (/ 3 4))]
                :pack? true})))
-
-(defn pretty-pst [t]
-  (binding [*print-level* 3]
-    (pretty-repl/pretty-pst t 24)))
 
 (defn error-window! [throwable]
   (pretty-pst throwable)

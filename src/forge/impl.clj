@@ -1,5 +1,6 @@
 (ns forge.impl
-  (:require [clojure.edn :as edn]
+  (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
             [clojure.gamedev :refer :all]
             [clojure.java.io :as io]
             [clojure.math :as math]
@@ -16,12 +17,16 @@
            (com.badlogic.gdx.maps.tiled TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.utils Align Scaling ScreenUtils)
-           (com.badlogic.gdx.math MathUtils)
+           (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)))
+
+(defn-impl pretty-pst [t]
+  (binding [*print-level* 3]
+    (pretty-repl/pretty-pst t 24)))
 
 (def-impl edn-read-string   edn/read-string)
 (def-impl io-resource       io/resource)
@@ -356,3 +361,88 @@
   (run! add-actor new-actors))
 
 (def-impl grid2d g2d/create-grid)
+
+(defn- m-v2
+  (^Vector2 [[x y]] (Vector2. x y))
+  (^Vector2 [x y]   (Vector2. x y)))
+
+(defn- ->p [^Vector2 v]
+  [(.x v) (.y v)])
+
+(defn-impl v-scale [v n]
+  (->p (.scl (m-v2 v) (float n))))
+
+(defn-impl v-normalise [v]
+  (->p (.nor (m-v2 v))))
+
+(defn-impl v-add [v1 v2]
+  (->p (.add (m-v2 v1) (m-v2 v2))))
+
+(defn-impl v-length [v]
+  (.len (m-v2 v)))
+
+(defn-impl v-distance [v1 v2]
+  (.dst (m-v2 v1) (m-v2 v2)))
+
+(defn-impl v-normalised? [v]
+  (equal? 1 (v-length v)))
+
+(defn-impl v-direction [[sx sy] [tx ty]]
+  (v-normalise [(- (float tx) (float sx))
+                (- (float ty) (float sy))]))
+
+(defn-impl v-angle-from-vector [v]
+  (.angleDeg (m-v2 v) (Vector2. 0 1)))
+
+(comment
+
+ (pprint
+  (for [v [[0 1]
+           [1 1]
+           [1 0]
+           [1 -1]
+           [0 -1]
+           [-1 -1]
+           [-1 0]
+           [-1 1]]]
+    [v
+     (.angleDeg (m-v2 v) (Vector2. 0 1))
+     (get-angle-from-vector (m-v2 v))]))
+
+ )
+
+(defn- m->shape [m]
+  (cond
+   (rectangle? m) (let [{:keys [left-bottom width height]} m
+                        [x y] left-bottom]
+                    (Rectangle. x y width height))
+
+   (circle? m) (let [{:keys [position radius]} m
+                     [x y] position]
+                 (Circle. x y radius))
+
+   :else (throw (Error. (str m)))))
+
+(defmulti ^:private overlaps?* (fn [a b] [(class a) (class b)]))
+
+(defmethod overlaps?* [Circle Circle]
+  [^Circle a ^Circle b]
+  (Intersector/overlaps a b))
+
+(defmethod overlaps?* [Rectangle Rectangle]
+  [^Rectangle a ^Rectangle b]
+  (Intersector/overlaps a b))
+
+(defmethod overlaps?* [Rectangle Circle]
+  [^Rectangle rect ^Circle circle]
+  (Intersector/overlaps circle rect))
+
+(defmethod overlaps?* [Circle Rectangle]
+  [^Circle circle ^Rectangle rect]
+  (Intersector/overlaps circle rect))
+
+(defn-impl overlaps? [a b]
+  (overlaps?* (m->shape a) (m->shape b)))
+
+(defn-impl rect-contains? [rectangle [x y]]
+  (Rectangle/.contains (m->shape rectangle) x y))
