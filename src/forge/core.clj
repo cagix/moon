@@ -48,7 +48,6 @@
             [reduce-fsm :as fsm]) ; this
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
@@ -226,7 +225,7 @@
 
 (defmethods :app/assets
   (app-create [[_ folder]]
-    (def assets (load-assets folder)))
+    (bind-root #'assets (load-assets folder)))
   (app-dispose [_]
     (dispose assets)))
 
@@ -376,8 +375,10 @@
   (.clear (screen-stage))
   (run! add-actor new-actors))
 
-(defn play-sound [name]
-  (Sound/.play (get assets (str "sounds/" name ".wav"))))
+(extend-type com.badlogic.gdx.audio.Sound
+  Sound
+  (play [sound]
+    (.play sound)))
 
 (def grid2d g2d/create-grid)
 

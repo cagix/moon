@@ -6,6 +6,38 @@
             [clojure.string :as str]
             [clojure.pprint :as pprint]))
 
+(def sound-asset-format "sounds/%s.wav")
+
+(declare assets
+         screens
+         current-screen-key)
+
+(defprotocol Sound
+  (play [_]))
+
+(defprotocol HasVisible
+  (set-visible [_ bool])
+  (visible? [_]))
+
+(defprotocol Screen
+  (screen-enter   [_])
+  (screen-exit    [_])
+  (screen-render  [_])
+  (screen-destroy [_]))
+
+(defprotocol HasProperties
+  (m-props ^MapProperties [_] "Returns instance of com.badlogic.gdx.maps.MapProperties")
+  (get-property [_ key] "Pass keyword key, looks up in properties."))
+
+(defprotocol GridCell
+  (cell-blocked? [cell* z-order])
+  (blocks-vision? [cell*])
+  (occupied-by-other? [cell* eid]
+                      "returns true if there is some occupying body with center-tile = this cell
+                      or a multiple-cell-size body which touches this cell.")
+  (nearest-entity          [cell* faction])
+  (nearest-entity-distance [cell* faction]))
+
 (def edn-read-string   edn/read-string)
 (def io-resource       io/resource)
 (def str-join          str/join)
@@ -267,10 +299,6 @@
 (defn high-weighted-rand-nth [coll]
   (nth coll (high-weighted-rand-int (count coll))))
 
-(defprotocol HasVisible
-  (set-visible [_ bool])
-  (visible? [_]))
-
 (def dev-mode? (= (System/getenv "DEV_MODE") "true"))
 
 (defn ->tile [position]
@@ -289,12 +317,6 @@
 
 (defsystem app-resize)
 (defmethod app-resize :default [_ w h])
-
-(defprotocol Screen
-  (screen-enter   [_])
-  (screen-exit    [_])
-  (screen-render  [_])
-  (screen-destroy [_]))
 
 (defsystem handle [_ ctx])
 
@@ -408,10 +430,6 @@
 
 (defn k->pretty-name [k]
   (str/capitalize (name k)))
-
-(defprotocol HasProperties
-  (m-props ^MapProperties [_] "Returns instance of com.badlogic.gdx.maps.MapProperties")
-  (get-property [_ key] "Pass keyword key, looks up in properties."))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)
@@ -537,15 +555,6 @@
              with-out-str
              (spit file)))))))
 
-(defprotocol GridCell
-  (cell-blocked? [cell* z-order])
-  (blocks-vision? [cell*])
-  (occupied-by-other? [cell* eid]
-                      "returns true if there is some occupying body with center-tile = this cell
-                      or a multiple-cell-size body which touches this cell.")
-  (nearest-entity          [cell* faction])
-  (nearest-entity-distance [cell* faction]))
-
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?
@@ -564,9 +573,6 @@
 (defn tick-entities [entities]
   (run! tick-entity entities))
 
-(declare screens
-         current-screen-key)
-
 (defn current-screen []
   (and (bound? #'current-screen-key)
        (current-screen-key screens)))
@@ -583,3 +589,9 @@
 
 (defn screen-stage []
   (:stage (current-screen)))
+
+(defn play-sound [sound-name]
+  (->> sound-name
+       (format sound-asset-format)
+       (get assets)
+       play))
