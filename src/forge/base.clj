@@ -37,6 +37,10 @@
          world-delta
          player-eid)
 
+(defprotocol Batch
+  (draw-texture-region [_ texture-region [x y] [w h] rotation color])
+  (draw-on-viewport [_ viewport draw-fn]))
+
 (defprotocol Disposable
   (dispose [_]))
 

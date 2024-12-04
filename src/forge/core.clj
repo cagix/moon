@@ -50,7 +50,7 @@
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont Batch TextureRegion SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -552,20 +552,29 @@
 (defn add-color [name-str color]
   (Colors/put name-str (->gdx-color color)))
 
-(defn- draw-texture-region [texture-region [x y] [w h] rotation color]
-  (if color (.setColor batch color))
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; rotation origin
-         (/ (float h) 2)
-         w ; width height
-         h
-         1 ; scaling factor
-         1
-         rotation)
-  (if color (.setColor batch Color/WHITE)))
+(extend-type com.badlogic.gdx.graphics.g2d.Batch
+  Batch
+  (draw-texture-region [this texture-region [x y] [w h] rotation color]
+    (if color (.setColor this color))
+    (.draw this
+           texture-region
+           x
+           y
+           (/ (float w) 2) ; rotation origin
+           (/ (float h) 2)
+           w ; width height
+           h
+           1 ; scaling factor
+           1
+           rotation)
+    (if color (.setColor this Color/WHITE)))
+
+  (draw-on-viewport [this viewport draw-fn]
+    (.setColor this white) ; fix scene2d.ui.tooltip flickering
+    (.setProjectionMatrix this (.combined (Viewport/.getCamera viewport)))
+    (.begin this)
+    (draw-fn)
+    (.end this)))
 
 (defn- sd-color [color]
   (.setColor shape-drawer (->gdx-color color)))
@@ -678,7 +687,8 @@
              [(* x tilew) (* y tileh) tilew tileh]))
 
 (defn draw-image [{:keys [texture-region color] :as image} position]
-  (draw-texture-region texture-region
+  (draw-texture-region batch
+                       texture-region
                        position
                        (unit-dimensions image *unit-scale*)
                        0 ; rotation
@@ -687,7 +697,8 @@
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region texture-region
+    (draw-texture-region batch
+                         texture-region
                          [(- (float x) (/ (float w) 2))
                           (- (float y) (/ (float h) 2))]
                          [w h]
@@ -697,14 +708,13 @@
 (defn draw-centered [image position]
   (draw-rotated-centered image 0 position))
 
-(defn- draw-with [^Viewport viewport unit-scale draw-fn]
-  (.setColor batch white) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (.combined (.getCamera viewport)))
-  (.begin batch)
-  (with-line-width unit-scale
-    #(binding [*unit-scale* unit-scale]
-       (draw-fn)))
-  (.end batch))
+(defn- draw-with [viewport unit-scale draw-fn]
+  (draw-on-viewport batch
+                    viewport
+                    #(with-line-width unit-scale
+                       (fn []
+                         (binding [*unit-scale* unit-scale]
+                           (draw-fn))))))
 
 (defn draw-on-world-view [render-fn]
   (draw-with world-viewport
