@@ -7,7 +7,7 @@
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TiledMapTileLayer)
-           (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.math MathUtils)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
@@ -273,3 +273,11 @@
          (OrthogonalTiledMapRenderer. tiled-map
                                       (float world-unit-scale)
                                       batch))))))
+
+(extend-type Stage
+  Acting
+  (act [this]
+    (.act this))
+  Drawing
+  (draw [this]
+    (.draw this)))

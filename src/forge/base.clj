@@ -68,6 +68,12 @@
         `[{:keys [font x y text h-align up? scale]}`"}
  draw-text)
 
+(defprotocol Acting
+  (act [_]))
+
+(defprotocol Drawing
+  (draw [_]))
+
 (defprotocol Batch
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])
   (draw-on-viewport [_ viewport draw-fn]))

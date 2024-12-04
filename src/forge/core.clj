@@ -60,25 +60,6 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
 
-(defrecord StageScreen [^Stage stage sub-screen]
-  Screen
-  (screen-enter [_]
-    (set-input-processor stage)
-    (screen-enter sub-screen))
-
-  (screen-exit [_]
-    (set-input-processor nil)
-    (screen-exit sub-screen))
-
-  (screen-render [_]
-    (.act stage)
-    (screen-render sub-screen)
-    (.draw stage))
-
-  (screen-destroy [_]
-    (dispose stage)
-    (screen-destroy sub-screen)))
-
 (defn children
   "Returns an ordered list of child actors in this group."
   [^Group group]
@@ -101,6 +82,25 @@
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (Actor/.getUserObject %)) actors))))
+
+(defrecord StageScreen [stage sub-screen]
+  Screen
+  (screen-enter [_]
+    (set-input-processor stage)
+    (screen-enter sub-screen))
+
+  (screen-exit [_]
+    (set-input-processor nil)
+    (screen-exit sub-screen))
+
+  (screen-render [_]
+    (act stage)
+    (screen-render sub-screen)
+    (draw stage))
+
+  (screen-destroy [_]
+    (dispose stage)
+    (screen-destroy sub-screen)))
 
 (defn- stage-screen
   "Actors or screen can be nil."
