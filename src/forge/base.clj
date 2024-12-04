@@ -1,5 +1,6 @@
 (ns forge.base
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.pprint :refer [pprint]]))
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]

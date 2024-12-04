@@ -1,7 +1,6 @@
 (ns forge.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.pprint :refer [pprint]]
             [forge.base :refer :all]
             [malli.core :as m]
             [malli.error :as me]
