@@ -48,9 +48,8 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
+           (com.badlogic.gdx.graphics Camera Color Colors Pixmap Pixmap$Format Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion SpriteBatch)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
@@ -64,25 +63,6 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn freetype-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (dispose generator)
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
 
 (defn- gdx-static-field [klass-str k]
   (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str-replace (str-upper-case (name k)) "-" "_")))))
@@ -173,7 +153,7 @@
 (defn internal-file [path]
   (.internal Gdx/files path))
 
-(defn- load-assets [folder]
+(defn-impl load-assets [folder]
   (let [manager (asset-manager)]
     (doseq [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                           [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
@@ -244,17 +224,8 @@
   (app-dispose [_]
     (VisUI/dispose)))
 
-(defmethods :app/assets
-  (app-create [[_ folder]]
-    (bind-root #'assets (load-assets folder)))
-  (app-dispose [_]
-    (dispose assets)))
-
-(defmethods :app/sprite-batch
-  (app-create [_]
-    (bind-root #'batch (SpriteBatch.)))
-  (app-dispose [_]
-    (dispose batch)))
+(defn-impl sprite-batch []
+  (SpriteBatch.))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -271,12 +242,6 @@
       (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
     (app-dispose [_]
       (dispose @pixel-texture))))
-
-(defmethods :app/default-font
-  (app-create [[_ font]]
-    (bind-root #'default-font (freetype-font font)))
-  (app-dispose [_]
-    (dispose default-font)))
 
 (defmethods :app/cursors
   (app-create [[_ data]]

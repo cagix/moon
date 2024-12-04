@@ -40,6 +40,10 @@
          properties-file
          db-properties)
 
+(declare ttfont
+         load-assets
+         sprite-batch)
+
 (defprotocol Batch
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])
   (draw-on-viewport [_ viewport draw-fn]))
@@ -814,3 +818,25 @@
                 (apply distinct? (map :property/id properties))))
     (run! validate! properties)
     (bind-root #'db-properties (zipmap (map :property/id properties) properties))))
+
+(defmacro defn-impl [name-sym & fn-body]
+  `(bind-root (var ~name-sym)
+              (fn ~name-sym ~@fn-body)))
+
+(defmethods :app/default-font
+  (app-create [[_ font]]
+    (bind-root #'default-font (ttfont font)))
+  (app-dispose [_]
+    (dispose default-font)))
+
+(defmethods :app/assets
+  (app-create [[_ folder]]
+    (bind-root #'assets (load-assets folder)))
+  (app-dispose [_]
+    (dispose assets)))
+
+(defmethods :app/sprite-batch
+  (app-create [_]
+    (bind-root #'batch (sprite-batch)))
+  (app-dispose [_]
+    (dispose batch)))

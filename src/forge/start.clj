@@ -1,6 +1,7 @@
 (ns forge.start
   (:require [forge.base :refer :all]
             [forge.app :as app]
+            [forge.impl.gdx]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))
