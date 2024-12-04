@@ -1,6 +1,22 @@
 (ns forge.base
-  (:require [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.math :as math]
+            [clojure.set :as set]
+            [clojure.string :as str]
+            [clojure.pprint :as pprint]))
+
+(def edn-read-string   edn/read-string)
+(def io-resource       io/resource)
+(def str-join          str/join)
+(def str-upper-case    str/upper-case)
+(def str-replace       str/replace)
+(def str-replace-first str/replace-first)
+(def str-split         str/split)
+(def str-capitalize    str/capitalize)
+(def signum            math/signum)
+(def set-difference    set/difference)
+(def pprint            pprint/pprint)
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -251,15 +267,6 @@
 (defn high-weighted-rand-nth [coll]
   (nth coll (high-weighted-rand-int (count coll))))
 
-(defn- remove-newlines [s]
-  (let [new-s (-> s
-                  (str/replace "\n\n" "\n")
-                  (str/replace #"^\n" "")
-                  str/trim-newline)]
-    (if (= (count new-s) (count s))
-      s
-      (remove-newlines new-s))))
-
 (defprotocol HasVisible
   (set-visible [_ bool])
   (visible? [_]))
@@ -271,9 +278,6 @@
 
 (defn tile->middle [position]
   (mapv (partial + 0.5) position))
-
-(defn k->pretty-name [k]
-  (str/capitalize (name k)))
 
 (defsystem app-create)
 
@@ -377,6 +381,15 @@
 
 (declare ^:dynamic *info-text-entity*)
 
+(defn- remove-newlines [s]
+  (let [new-s (-> s
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
+    (if (= (count new-s) (count s))
+      s
+      (remove-newlines new-s))))
+
 (defn info-text [components]
   (->> components
        sort-k-order
@@ -392,6 +405,9 @@
                       (str "\n" (info-text v))))))
        (str/join "\n")
        remove-newlines))
+
+(defn k->pretty-name [k]
+  (str/capitalize (name k)))
 
 (defprotocol HasProperties
   (m-props ^MapProperties [_] "Returns instance of com.badlogic.gdx.maps.MapProperties")
@@ -520,3 +536,50 @@
              pprint
              with-out-str
              (spit file)))))))
+
+(defprotocol GridCell
+  (cell-blocked? [cell* z-order])
+  (blocks-vision? [cell*])
+  (occupied-by-other? [cell* eid]
+                      "returns true if there is some occupying body with center-tile = this cell
+                      or a multiple-cell-size body which touches this cell.")
+  (nearest-entity          [cell* faction])
+  (nearest-entity-distance [cell* faction]))
+
+; precaution in case a component gets removed by another component
+; the question is do we still want to update nil components ?
+; should be contains? check ?
+; but then the 'order' is important? in such case dependent components
+; should be moved together?
+(defn- tick-entity [eid]
+  (try
+   (doseq [k (keys @eid)]
+     (try (when-let [v (k @eid)]
+            (e-tick [k v] eid))
+          (catch Throwable t
+            (throw (ex-info "e-tick" {:k k} t)))))
+   (catch Throwable t
+     (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+
+(defn tick-entities [entities]
+  (run! tick-entity entities))
+
+(declare screens
+         current-screen-key)
+
+(defn current-screen []
+  (and (bound? #'current-screen-key)
+       (current-screen-key screens)))
+
+(defn change-screen
+  "Calls `exit` on the current-screen and `enter` on the new screen."
+  [new-k]
+  (when-let [screen (current-screen)]
+    (screen-exit screen))
+  (let [screen (new-k screens)]
+    (assert screen (str "Cannot find screen with key: " new-k))
+    (bind-root #'current-screen-key new-k)
+    (screen-enter screen)))
+
+(defn screen-stage []
+  (:stage (current-screen)))

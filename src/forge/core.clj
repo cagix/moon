@@ -41,8 +41,6 @@
 
   (:require [clj-commons.pretty.repl :as pretty-repl] ; and
              ; shoud
-            [clojure.java.io :as io] ; not
-            [clojure.string :as str] ; be here ?
             [data.grid2d :as g2d] ; this
             [forge.base :refer :all]
             [forge.db :as db] ; this
@@ -72,34 +70,6 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (org.lwjgl.system Configuration)))
 
-(defprotocol GridCell
-  (cell-blocked? [cell* z-order])
-  (blocks-vision? [cell*])
-  (occupied-by-other? [cell* eid]
-                      "returns true if there is some occupying body with center-tile = this cell
-                      or a multiple-cell-size body which touches this cell.")
-  (nearest-entity          [cell* faction])
-  (nearest-entity-distance [cell* faction]))
-
-; precaution in case a component gets removed by another component
-; the question is do we still want to update nil components ?
-; should be contains? check ?
-; but then the 'order' is important? in such case dependent components
-; should be moved together?
-(defn- tick-entity [eid]
-  (try
-   (doseq [k (keys @eid)]
-     (try (when-let [v (k @eid)]
-            (e-tick [k v] eid))
-          (catch Throwable t
-            (throw (ex-info "e-tick" {:k k} t)))))
-   (catch Throwable t
-     (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
-
-(defn tick-entities [entities]
-  (run! tick-entity entities))
-
-
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
     (set! (.size params) (* size quality-scaling))
@@ -120,7 +90,7 @@
     font))
 
 (defn- gdx-static-field [klass-str k]
-  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
+  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str-replace (str-upper-case (name k)) "-" "_")))))
 
 (defn equal? [a b]
   (MathUtils/isEqual a b))
@@ -212,7 +182,7 @@
   (let [manager (asset-manager)]
     (doseq [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                           [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
-            file (map #(str/replace-first % folder "")
+            file (map #(str-replace-first % folder "")
                       (recursively-search (internal-file folder) exts))]
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
@@ -388,23 +358,6 @@
     (run! #(.addActor stage %) actors)
     (->StageScreen stage screen)))
 
-(declare screens
-         current-screen-key)
-
-(defn current-screen []
-  (and (bound? #'current-screen-key)
-       (current-screen-key screens)))
-
-(defn change-screen
-  "Calls `exit` on the current-screen and `enter` on the new screen."
-  [new-k]
-  (when-let [screen (current-screen)]
-    (screen-exit screen))
-  (let [screen (new-k screens)]
-    (assert screen (str "Cannot find screen with key: " new-k))
-    (bind-root #'current-screen-key new-k)
-    (screen-enter screen)))
-
 (defmethods :app/screens
   (app-create [[_ {:keys [ks first-k]}]]
     (bind-root #'screens (mapvals stage-screen (mapvals
@@ -418,9 +371,6 @@
   (app-render [_]
     (ScreenUtils/clear black)
     (screen-render (current-screen))))
-
-(defn screen-stage ^Stage []
-  (:stage (current-screen)))
 
 (defn add-actor [actor]
   (.addActor (screen-stage) actor))
@@ -594,7 +544,7 @@
 
 (defn- text-height [^BitmapFont font text]
   (-> text
-      (str/split #"\n")
+      (str-split #"\n")
       count
       (* (.getLineHeight font))))
 
@@ -2296,7 +2246,7 @@
 (defn set-dock-icon [path]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource path))))
+                            (io-resource path))))
 
 (defn set-glfw-config [{:keys [library-name check-thread0]}]
   (.set Configuration/GLFW_LIBRARY_NAME library-name)

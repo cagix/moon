@@ -1,8 +1,5 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [clojure.edn :as edn]
-            [clojure.set :as set]
-            [clojure.string :as str]
-            [forge.base :refer :all]
+  (:require [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
@@ -41,7 +38,7 @@
  )
 
 (defn- optional-keys-left [m-schema m]
-  (seq (set/difference (optional-keyset m-schema)
+  (seq (set-difference (optional-keyset m-schema)
                        (set (keys m)))))
 
 (defn- widget-type [schema _]
@@ -120,7 +117,7 @@
                 (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn/read-string (VisTextField/.getText widget)))
+  (edn-read-string (VisTextField/.getText widget)))
 
 (defmethod schema->widget :string [schema v]
   (add-tooltip! (text-field v {})
@@ -141,7 +138,7 @@
                :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn/read-string (VisSelectBox/.getSelected widget)))
+  (edn-read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
   (text-button "play!" #(play-sound sound-file)))
@@ -156,7 +153,7 @@
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]
-               [(text-button (str/replace-first sound-file "sounds/" "")
+               [(text-button (str-replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children! table)
                                (add-rows! table [(columns table sound-file)])
@@ -456,7 +453,7 @@
 
 (defn- property-type-tabs []
   (for [property-type (sort (db/property-types))]
-    {:title (str/capitalize (name property-type))
+    {:title (str-capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]

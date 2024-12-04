@@ -1,7 +1,5 @@
 (ns forge.start
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [forge.base :refer :all]
+  (:require [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db]))
 
@@ -13,7 +11,7 @@
                 awt
                 glfw
                 lwjgl3
-                components]} (-> "app.edn" io/resource slurp edn/read-string)]
+                components]} (-> "app.edn" io-resource slurp edn-read-string)]
     (run! require requires)
     (set-dock-icon (:dock-icon awt))
     (set-glfw-config glfw)

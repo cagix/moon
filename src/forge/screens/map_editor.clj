@@ -1,7 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
-            [forge.base :refer :all]
+  (:require [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db]
             [forge.controls :as controls]
@@ -48,7 +46,7 @@ direction keys: move")
           (str "Movement properties " (movement-property tiled-map tile) "\n"
                (apply vector (movement-properties tiled-map tile)))]
          (remove nil?)
-         (str/join "\n"))))
+         (str-join "\n"))))
 
 (defn- ->info-window []
   (let [label (label "")

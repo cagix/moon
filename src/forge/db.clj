@@ -1,7 +1,5 @@
 (ns forge.db
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [forge.base :refer :all]
+  (:require [forge.base :refer :all]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))
@@ -77,7 +75,7 @@
 (defmethod malli-form :s/components-ns [[_ ns-name-k]]
   (malli-form [:s/map-optional (namespaced-ks ns-name-k)]))
 
-(defn property-type [{:keys [property/id]}]
+(defn property-type [{:keys [property/id]}] ; TODO name clashes
   (keyword "properties" (namespace id)))
 
 (defn property-types []
@@ -189,9 +187,9 @@
       (first (:frames animation))))
 
 (defn init [{:keys [schema properties]}]
-  (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
-  (bind-root #'properties-file (io/resource properties))
-  (let [properties (-> properties-file slurp edn/read-string)]
+  (bind-root #'schemas (-> schema io-resource slurp edn-read-string))
+  (bind-root #'properties-file (io-resource properties))
+  (let [properties (-> properties-file slurp edn-read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! validate! properties)

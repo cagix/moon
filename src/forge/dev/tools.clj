@@ -1,5 +1,5 @@
 (ns forge.dev.tools
-  (:require [clojure.string :as str]
+  (:require [forge.base :refer :all]
             [forge.core :refer :all]
             [forge.db :as db])
   (:import (com.badlogic.gdx.scenes.scene2d Stage Group)))
@@ -176,7 +176,7 @@
     nil))
 
 (defn get-namespaces [packages]
-  (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
+  (filter #(packages (first (str-split (name (ns-name %)) #"\.")))
           (all-ns)))
 
 (defn get-vars [nmspace condition]
@@ -211,7 +211,7 @@
 (defn print-app-values-tree [file]
   (spit file
         (with-out-str
-         (clojure.pprint/pprint
+         (pprint
           (for [[ns-name vars] (ns-value-vars #{"forge"})]
             [ns-name (map #(:name (meta %)) vars)])))))
 
@@ -222,5 +222,5 @@
                  (or (:macro (meta v))
                      (instance? java.lang.Class @v))))
        (map (fn [s] (str "\"" (name (first s)) "\"")))
-       (str/join ", ")
+       (str-join ", ")
        (spit file)))
