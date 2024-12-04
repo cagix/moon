@@ -220,7 +220,6 @@
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
 
-
 (defn bind-root [avar value]
   (clojure.lang.Var/.bindRoot avar value))
 
