@@ -1,5 +1,5 @@
 (ns forge.operations-test
-  (:require [clojure.gd :refer [ops-apply ops-add ops-remove]]
+  (:require [clojure.gamedev :refer [ops-apply ops-add ops-remove]]
             [clojure.test :refer :all]))
 
 (deftest add-and-remove

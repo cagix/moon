@@ -1,7 +1,7 @@
 (ns forge.start
-  (:require [clojure.gd :refer :all]
+  (:require [clojure.gamedev :refer :all]
             [forge.app :as app]
-            [forge.impl.gdx]
+            [forge.impl]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg]))

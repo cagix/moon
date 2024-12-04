@@ -1,5 +1,5 @@
 (ns forge.mapgen
-  (:require [clojure.gd :refer :all]
+  (:require [clojure.gamedev :refer :all]
             [data.grid2d :as g]
             [forge.core :refer :all]))
 

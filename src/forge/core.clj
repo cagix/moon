@@ -40,7 +40,7 @@
   ; 1. level : bind-root, defsystem(?) ... ?
 
   (:require [clj-commons.pretty.repl :as pretty-repl] ; and
-            [clojure.gd :refer :all]
+            [clojure.gamedev :refer :all]
              ; shoud
             [data.grid2d :as g2d] ; this
             [malli.core :as m] ; this
@@ -48,53 +48,17 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable)
+           (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math Circle Intersector Rectangle Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling ScreenUtils)
+           (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
-
-(defn- stage-screen
-  "Actors or screen can be nil."
-  [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    (->StageScreen stage screen)))
-
-(defmethods :app/screens
-  (app-create [[_ {:keys [ks first-k]}]]
-    (bind-root #'screens (mapvals stage-screen (mapvals
-                                                (fn [ns-sym]
-                                                  (require ns-sym)
-                                                  ((ns-resolve ns-sym 'create)))
-                                                ks)))
-    (change-screen first-k))
-  (app-dispose [_]
-    (run! screen-destroy (vals screens)))
-  (app-render [_]
-    (ScreenUtils/clear black)
-    (screen-render (current-screen))))
-
-(defn add-actor [actor]
-  (.addActor (screen-stage) actor))
-
-(defn reset-stage [new-actors]
-  (.clear (screen-stage))
-  (run! add-actor new-actors))
-
-(def grid2d g2d/create-grid)
 
 (defn- m-v2
   (^Vector2 [[x y]] (Vector2. x y))

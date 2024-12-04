@@ -1,5 +1,5 @@
 (ns forge.dev.tools
-  (:require [clojure.gd :refer :all]
+  (:require [clojure.gamedev :refer :all]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 

@@ -1,5 +1,5 @@
 (ns forge.entity
-  (:require [clojure.gd :refer :all]
+  (:require [clojure.gamedev :refer :all]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]

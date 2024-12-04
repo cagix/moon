@@ -1,5 +1,5 @@
 (ns forge.world.potential-fields
-  (:require [clojure.gd :refer :all]
+  (:require [clojure.gamedev :refer :all]
             [forge.core :refer :all]))
 
 ; FIXME config !

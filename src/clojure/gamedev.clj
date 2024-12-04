@@ -1,6 +1,4 @@
-(ns clojure.gd)
-
-(println "loading clojure.gd")
+(ns clojure.gamedev)
 
 (def ^:dynamic *unit-scale* 1)
 
@@ -74,7 +72,10 @@
         up? renders the font over y, otherwise under.
         scale will multiply the drawn text size with the scale.
         `[{:keys [font x y text h-align up? scale]}`"}
- draw-text)
+ draw-text
+ add-actor
+ reset-stage
+ grid2d)
 
 (defprotocol Acting
   (act [_]))

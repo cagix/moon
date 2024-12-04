@@ -1,11 +1,12 @@
-(ns forge.impl.gdx
+(ns forge.impl
   (:require [clojure.edn :as edn]
-            [clojure.gd :refer :all]
+            [clojure.gamedev :refer :all]
             [clojure.java.io :as io]
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
-            [clojure.pprint :as pprint])
+            [clojure.pprint :as pprint]
+            [data.grid2d :as g2d])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
@@ -14,7 +15,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
-           (com.badlogic.gdx.utils Align Scaling)
+           (com.badlogic.gdx.utils Align Scaling ScreenUtils)
            (com.badlogic.gdx.math MathUtils)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
@@ -319,3 +320,39 @@
   Drawing
   (draw [this]
     (.draw this)))
+
+(defn- stage-screen
+  "Actors or screen can be nil."
+  [{:keys [actors screen]}]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
+                (valAt
+                  ([id]
+                   (find-actor-with-id (Stage/.getRoot this) id))
+                  ([id not-found]
+                   (or (find-actor-with-id (Stage/.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    (->StageScreen stage screen)))
+
+(defmethods :app/screens
+  (app-create [[_ {:keys [ks first-k]}]]
+    (bind-root #'screens (mapvals stage-screen (mapvals
+                                                (fn [ns-sym]
+                                                  (require ns-sym)
+                                                  ((ns-resolve ns-sym 'create)))
+                                                ks)))
+    (change-screen first-k))
+  (app-dispose [_]
+    (run! screen-destroy (vals screens)))
+  (app-render [_]
+    (ScreenUtils/clear black)
+    (screen-render (current-screen))))
+
+(defn-impl add-actor [actor]
+  (.addActor (screen-stage) actor))
+
+(defn-impl reset-stage [new-actors]
+  (.clear (screen-stage))
+  (run! add-actor new-actors))
+
+(def-impl grid2d g2d/create-grid)

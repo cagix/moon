@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [clojure.gd :refer :all]
+  (:require [clojure.gamedev :refer :all]
             [forge.core :refer :all]))
 
 ; 28.4 viewportwidth

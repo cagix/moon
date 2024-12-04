@@ -1,5 +1,5 @@
 (ns forge.screens.main-menu
-  (:require [clojure.gd :refer :all]
+  (:require [clojure.gamedev :refer :all]
             [forge.core :refer :all]))
 
 (defn create []
