@@ -12,6 +12,9 @@
          screens
          current-screen-key)
 
+(defprotocol Disposable
+  (dispose [_]))
+
 (defprotocol Sound
   (play [_]))
 

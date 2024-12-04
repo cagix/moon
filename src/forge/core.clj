@@ -59,7 +59,7 @@
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math MathUtils Circle Intersector Rectangle Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling Disposable ScreenUtils)
+           (com.badlogic.gdx.utils Align Scaling ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
@@ -79,7 +79,7 @@
 (defn freetype-font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
         font (.generateFont generator (ttf-params size quality-scaling))]
-    (.dispose generator)
+    (dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
@@ -189,7 +189,31 @@
 ; one language for 'verbs' - create/resize/etc....
 ; maybe for accessing stuff like fps we can do it with keywords
 ; access gdx context (:frames-per-second gdx)  ?
-(def dispose Disposable/.dispose)
+
+(extend-type com.badlogic.gdx.utils.Disposable
+  Disposable
+  (dispose [obj]
+    (.dispose obj)))
+
+(extend-type com.badlogic.gdx.audio.Sound
+  Sound
+  (play [sound]
+    (.play sound)))
+
+(extend-type Actor
+  HasVisible
+  (set-visible [actor bool]
+    (.setVisible actor bool))
+  (visible? [actor]
+    (.isVisible actor)))
+
+(extend-type TiledMapTileLayer
+  HasVisible
+  (set-visible [layer bool]
+    (.setVisible layer bool))
+  (visible? [layer]
+    (.isVisible layer)))
+
 
 (defn- check-cleanup-visui! []
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
@@ -315,7 +339,7 @@
     (.draw stage))
 
   (screen-destroy [_]
-    (.dispose stage)
+    (dispose stage)
     (screen-destroy sub-screen)))
 
 (defn children
@@ -375,26 +399,7 @@
   (.clear (screen-stage))
   (run! add-actor new-actors))
 
-(extend-type com.badlogic.gdx.audio.Sound
-  Sound
-  (play [sound]
-    (.play sound)))
-
 (def grid2d g2d/create-grid)
-
-(extend-type Actor
-  HasVisible
-  (set-visible [actor bool]
-    (.setVisible actor bool))
-  (visible? [actor]
-    (.isVisible actor)))
-
-(extend-type TiledMapTileLayer
-  HasVisible
-  (set-visible [layer bool]
-    (.setVisible layer bool))
-  (visible? [layer]
-    (.isVisible layer)))
 
 (defn- m-v2
   (^Vector2 [[x y]] (Vector2. x y))

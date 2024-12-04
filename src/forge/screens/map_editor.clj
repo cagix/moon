@@ -3,8 +3,7 @@
             [forge.core :refer :all]
             [forge.db :as db]
             [forge.controls :as controls]
-            [forge.mapgen.modules :as modules])
-  (:import (com.badlogic.gdx.utils Disposable)))
+            [forge.mapgen.modules :as modules]))
 
 (defn- show-whole-map! [camera tiled-map]
   (set-position! camera
