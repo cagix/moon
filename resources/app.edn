@@ -10,8 +10,9 @@
           :fps 60
           :width 1440
           :height 900}
- :components [[:app/db {:schema "schema.edn" :properties "properties.edn"}]
-              [:app/sprite-batch]
+ :db {:schema "schema.edn"
+      :properties "properties.edn"}
+ :components [[:app/sprite-batch]
               [:app/shape-drawer]
               [:app/assets "resources/"]
               [:app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
