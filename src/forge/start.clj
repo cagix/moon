@@ -1,6 +1,29 @@
 (ns forge.start
   (:require [forge.base :refer :all]
-            [forge.app :as app]))
+            [forge.app :as app]
+            [malli.core :as m]
+            [malli.error :as me]
+            [malli.generator :as mg]))
+
+#_(defprotocol Schema
+    (s-explain  [_ value])
+    (s-form     [_])
+    (s-validate [_ data]))
+
+(defn- invalid-ex-info [m-schema value]
+  (ex-info (str (me/humanize (m/explain m-schema value)))
+           {:value value
+            :schema (m/form m-schema)}))
+
+(extend-type clojure.lang.APersistentMap
+  Property
+  (validate! [property]
+    (let [m-schema (-> property
+                       schema-of-property
+                       malli-form
+                       m/schema)]
+      (when-not (m/validate m-schema property)
+        (throw (invalid-ex-info m-schema property))))))
 
 (defn -main []
   (let [{:keys [requires

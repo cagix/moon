@@ -774,22 +774,10 @@
   (or image
       (first (:frames animation))))
 
-(require '[malli.core :as m])
-(require '[malli.error :as me])
+(defprotocol Property
+  (validate! [_]))
+
 (require '[malli.generator :as mg])
-
-(defn- invalid-ex-info [m-schema value]
-  (ex-info (str (me/humanize (m/explain m-schema value)))
-           {:value value
-            :schema (m/form m-schema)}))
-
-(defn validate! [property]
-  (let [m-schema (-> property
-                     schema-of-property
-                     malli-form
-                     m/schema)]
-    (when-not (m/validate m-schema property)
-      (throw (invalid-ex-info m-schema property)))))
 
 (defn k->default-value [k]
   (let [schema (schema-of k)]
