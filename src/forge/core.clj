@@ -48,7 +48,7 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Camera Color Colors Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable Group)
+           (com.badlogic.gdx.scenes.scene2d Actor Stage Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
@@ -59,21 +59,6 @@
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
-
-(defn children
-  "Returns an ordered list of child actors in this group."
-  [^Group group]
-  (seq (.getChildren group)))
-
-(defn clear-children!
-  "Removes all actors from this group and unfocuses them."
-  [^Group group]
-  (.clearChildren group))
-
-(defn add-actor!
-  "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made."
-  [^Group group actor]
-  (.addActor group actor))
 
 (defn find-actor-with-id [group id]
   (let [actors (children group)
@@ -737,7 +722,7 @@
         (or (find-actor-with-id ~'this id#) not-found#)))))
 
 (defn ui-group [{:keys [actors] :as opts}]
-  (let [group (proxy-ILookup Group [])]
+  (let [group (proxy-ILookup com.badlogic.gdx.scenes.scene2d.Group [])]
     (run! #(add-actor! group %) actors)
     (set-opts group opts)))
 
@@ -1906,7 +1891,7 @@
     actor))
 
 (defn- group->button-group [group]
-  (.getUserObject (Group/.findActor group "action-bar/button-group")))
+  (.getUserObject (find-actor group "action-bar/button-group")))
 
 (defn- get-action-bar []
   (let [group (::action-bar (:action-bar-table (screen-stage)))]

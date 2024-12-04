@@ -74,6 +74,12 @@
 (defprotocol Drawing
   (draw [_]))
 
+(defprotocol Group
+  (children [_] "Returns an ordered list of child actors in this group.")
+  (clear-children [_] "Removes all actors from this group and unfocuses them.")
+  (add-actor! [_ actor] "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made.")
+  (find-actor [_ name]))
+
 (defprotocol Batch
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])
   (draw-on-viewport [_ viewport draw-fn]))

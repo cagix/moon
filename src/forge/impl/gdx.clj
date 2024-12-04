@@ -16,6 +16,20 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)))
 
+(extend-type com.badlogic.gdx.scenes.scene2d.Group
+  Group
+  (children [group]
+    (seq (.getChildren group)))
+
+  (clear-children [group]
+    (.clearChildren group))
+
+  (add-actor! [group actor]
+    (.addActor group actor))
+
+  (find-actor [group name]
+    (.findActor group name)))
+
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
          result []]

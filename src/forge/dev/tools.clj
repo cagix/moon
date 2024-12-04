@@ -1,7 +1,7 @@
 (ns forge.dev.tools
   (:require [forge.base :refer :all]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage Group)))
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
 
@@ -119,7 +119,7 @@
   (when (instance? Stage v)
     (add-map-nodes! node (children->str-map (children (Stage/.getRoot v))) level))
 
-  (when (instance? Group v)
+  (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
     (add-map-nodes! node (children->str-map (children v)) level))
 
   (when (and (var? v)

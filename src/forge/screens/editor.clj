@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.screens.editor
   (:require [forge.base :refer :all]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Group)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
@@ -154,7 +154,7 @@
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]
                [(text-button (str-replace-first sound-file "sounds/" "")
                              (fn []
-                               (clear-children! table)
+                               (clear-children table)
                                (add-rows! table [(columns table sound-file)])
                                (Actor/.remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
@@ -224,7 +224,7 @@
 
 (defn- add-one-to-many-rows [table property-type property-ids]
   (let [redo-rows (fn [property-ids]
-                    (clear-children! table)
+                    (clear-children table)
                     (add-one-to-many-rows table property-type property-ids)
                     (pack-ancestor-window! table))]
     (add-rows!
@@ -262,7 +262,7 @@
 
 (defn- add-one-to-one-rows [table property-type property-id]
   (let [redo-rows (fn [id]
-                    (clear-children! table)
+                    (clear-children table)
                     (add-one-to-one-rows table property-type id)
                     (pack-ancestor-window! table))]
     (add-rows!
@@ -304,7 +304,7 @@
 
 (defn- window->property-value []
  (let [window (get-editor-window)
-       scroll-pane-table (Group/.findActor (:scroll-pane window) "scroll-pane-table")
+       scroll-pane-table (find-actor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (->value [:s/map] table)))
