@@ -1,6 +1,5 @@
 (ns forge.screens.main-menu
-  (:require [clojure.gamedev :refer :all]
-            [forge.core :refer :all]))
+  (:require [forge.core :refer :all]))
 
 (defn create []
   {:actors [(background-image)

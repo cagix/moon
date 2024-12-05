@@ -1,6 +1,5 @@
 (ns forge.world.potential-fields
-  (:require [clojure.gamedev :refer :all]
-            [forge.core :refer :all]))
+  (:require [forge.core :refer :all]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})

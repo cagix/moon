@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.generate
-  (:require [clojure.gamedev :refer :all]
-            [data.grid2d :as g2d]
+  (:require [data.grid2d :as g2d]
             [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))

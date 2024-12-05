@@ -1,13 +1,13 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
-            [clojure.gamedev :refer :all]
             [clojure.java.io :as io]
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
+            [forge.core :refer :all]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg])

@@ -1,5 +1,5 @@
 (ns forge.start
-  (:require [clojure.gamedev :refer :all]
+  (:require [forge.core :refer :all]
             [forge.impl]))
 
 (defn -main []

@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [clojure.gamedev :refer :all]
-            [forge.core :refer :all])
+  (:require [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)

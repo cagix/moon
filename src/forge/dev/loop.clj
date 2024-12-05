@@ -16,8 +16,9 @@
             [nrepl.server :as nrepl]))
 
 (disable-reload!) ; keep same connection/nrepl-server up throughout refreshs
-(require 'clojure.gamedev)
-(disable-reload! (find-ns 'clojure.gamedev))
+
+(require 'forge.core)
+(disable-reload! (find-ns 'forge.core))
 
 (declare ^:no-doc app-ns-sym)
 

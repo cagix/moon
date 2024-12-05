@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.gamedev :refer :all]
-            [forge.core :refer :all]
+  (:require [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules]))
 

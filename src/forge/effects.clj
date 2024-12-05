@@ -1,6 +1,5 @@
 (ns forge.effects
-  (:require [clojure.gamedev :refer :all]
-            [forge.core :refer :all]))
+  (:require [forge.core :refer :all]))
 
 (comment
 
