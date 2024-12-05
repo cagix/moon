@@ -4,8 +4,8 @@
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
- :dock-icon "moon.png"
- :app-config {:title "Forge"
+ :app-config {:dock-icon "moon.png"
+              :title "Forge"
               :fps 60
               :width 1440
               :height 900}

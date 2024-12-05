@@ -1,6 +1,7 @@
 (ns forge.start
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [forge.app :as app]
             [forge.core :refer :all]))
 
 (defn- start [{:keys [requires
@@ -10,11 +11,19 @@
                       app-config]}]
   (run! require requires)
   (db-init db)
-  (set-dock-icon dock-icon)
-  (when mac-os?
-    (configure-glfw-for-mac-os))
-  (lwjgl3-app (app-listener components)
-              (lwjgl3-config app-config)))
+  (app/start (reify app/Listener
+               (create [_]
+                 (run! app-create components))
+
+               (dispose [_]
+                 (run! app-dispose components))
+
+               (render [_]
+                 (run! app-render components))
+
+               (resize [_ w h]
+                 (run! #(app-resize % w h) components)))
+             app-config))
 
 (defn -main []
   (start (-> "app.edn"

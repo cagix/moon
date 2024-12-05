@@ -1,5 +1,6 @@
 (ns forge.dev.tools
-  (:require [forge.core :refer :all])
+  (:require [forge.app :refer [post-runnable]]
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
@@ -37,7 +38,7 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (app-do
+ (post-runnable
   (spawn-creature {:position [35 73]
                    :creature-id :creatures/dragon-red
                    :components {:entity/fsm {:fsm :fsms/npc
@@ -58,11 +59,11 @@
  )
 
 (defn- learn-skill! [skill-id]
-  (app-do
+  (post-runnable
    (swap! player-eid add-skill (build skill-id))))
 
 (defn- create-item! [item-id]
-  (app-do
+  (post-runnable
    (spawn-item (:position @player-eid) (build item-id))))
 
 (defn- mouseover-grid-cell []

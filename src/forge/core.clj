@@ -4,7 +4,6 @@
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Camera Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -14,30 +13,9 @@
            (com.badlogic.gdx.maps.tiled TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling SharedLibraryLoader)
+           (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
-           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
-           (org.lwjgl.system Configuration)))
-
-(defn set-dock-icon [resource]
-  (.setIconImage (java.awt.Taskbar/getTaskbar)
-                 (.getImage (java.awt.Toolkit/getDefaultToolkit)
-                            (io/resource resource))))
-
-(def mac-os? SharedLibraryLoader/isMac)
-
-(defn configure-glfw-for-mac-os []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-  (.set Configuration/GLFW_CHECK_THREAD0 false))
-
-(defn lwjgl3-app [listener lwjgl3-config]
-  (Lwjgl3Application. listener lwjgl3-config))
-
-(defn lwjgl3-config [{:keys [title fps width height]}]
-  (doto (Lwjgl3ApplicationConfiguration.)
-    (.setTitle title)
-    (.setForegroundFPS fps)
-    (.setWindowedMode width height)))
+           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
@@ -71,20 +49,6 @@
 
 (defsystem app-resize)
 (defmethod app-resize :default [_ w h])
-
-(defn app-listener [components]
-  (proxy [ApplicationAdapter] []
-    (create [[_ components]]
-      (run! app-create components))
-
-    (dispose [[_ components]]
-      (run! app-dispose components))
-
-    (render [[_ components]]
-      (run! app-render components))
-
-    (resize [[_ components] w h]
-      (run! #(app-resize % w h) components))))
 
 (def ^:dynamic *unit-scale* 1)
 
@@ -142,8 +106,6 @@
  equal?
  clamp
  degree->radians
- exit-app
- post-runnable
  frames-per-second
  delta-time
  button-just-pressed?
@@ -963,9 +925,6 @@
     (bind-root #'batch (sprite-batch)))
   (app-dispose [_]
     (dispose batch)))
-
-(defmacro app-do [& exprs]
-  `(post-runnable (fn [] ~@exprs)))
 
 (defn find-actor-with-id [group id]
   (let [actors (children group)

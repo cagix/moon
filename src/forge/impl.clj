@@ -9,7 +9,7 @@
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg])
-  (:import (com.badlogic.gdx Gdx ApplicationAdapter)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Colors  Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
@@ -133,12 +133,6 @@
 
 (defn-impl degree->radians [degree]
   (* MathUtils/degreesToRadians (float degree)))
-
-(defn-impl exit-app []
-  (.exit Gdx/app))
-
-(defn-impl post-runnable [runnable]
-  (.postRunnable Gdx/app runnable))
 
 (defn-impl frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
