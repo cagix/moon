@@ -1,5 +1,6 @@
 (ns forge.entity
-  (:require [forge.core :refer :all]
+  (:require [clojure.component :refer [defmethods]]
+            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]

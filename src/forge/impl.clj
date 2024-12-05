@@ -1,12 +1,13 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.component :refer [defmethods]]
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
-            [forge.app :as app]
             [forge.core :refer :all]
+            [forge.lifecycle :as lifecycle]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg])
@@ -93,9 +94,9 @@
     manager))
 
 (defmethods :app/assets
-  (app/create [[_ folder]]
+  (lifecycle/create [[_ folder]]
     (bind-root #'assets (load-assets folder)))
-  (app/dispose [_]
+  (lifecycle/dispose [_]
     (dispose assets)))
 
 (def-impl black Color/BLACK)
@@ -247,14 +248,14 @@
   )
 
 (defmethods :app/vis-ui
-  (app/create [[_ skin-scale]]
+  (lifecycle/create [[_ skin-scale]]
     (check-cleanup-visui!)
     (VisUI/load (case skin-scale
                   :skin-scale/x1 VisUI$SkinScale/X1
                   :skin-scale/x2 VisUI$SkinScale/X2))
     (font-enable-markup!)
     (set-tooltip-config!))
-  (app/dispose [_]
+  (lifecycle/dispose [_]
     (VisUI/dispose)))
 
 (defn-impl sprite-batch []
@@ -270,33 +271,33 @@
 
 (let [pixel-texture (atom nil)]
   (defmethods :app/shape-drawer
-    (app/create [_]
+    (lifecycle/create [_]
       (reset! pixel-texture (white-pixel-texture))
       (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
-    (app/dispose [_]
+    (lifecycle/dispose [_]
       (dispose @pixel-texture))))
 
 (defmethods :app/cursors
-  (app/create [[_ data]]
+  (lifecycle/create [[_ data]]
     (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                                     (let [pixmap (Pixmap. (internal-file (str "cursors/" file ".png")))
                                           cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                                       (dispose pixmap)
                                       cursor))
                                   data)))
-  (app/dispose [_]
+  (lifecycle/dispose [_]
     (run! dispose (vals cursors))))
 
 (defmethods :app/gui-viewport
-  (app/create [[_ [width height]]]
+  (lifecycle/create [[_ [width height]]]
     (bind-root #'gui-viewport-width  width)
     (bind-root #'gui-viewport-height height)
     (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
-  (app/resize [_ w h]
+  (lifecycle/resize [_ w h]
     (.update gui-viewport w h true)))
 
 (defmethods :app/world-viewport
-  (app/create [[_ [width height tile-size]]]
+  (lifecycle/create [[_ [width height tile-size]]]
     (bind-root #'world-unit-scale (float (/ tile-size)))
     (bind-root #'world-viewport-width  width)
     (bind-root #'world-viewport-height height)
@@ -306,11 +307,11 @@
                                       y-down? false]
                                   (.setToOrtho camera y-down? world-width world-height)
                                   (FitViewport. world-width world-height camera))))
-  (app/resize [_ w h]
+  (lifecycle/resize [_ w h]
     (.update world-viewport w h true)))
 
 (defmethods :app/cached-map-renderer
-  (app/create [_]
+  (lifecycle/create [_]
     (bind-root #'cached-map-renderer
       (memoize
        (fn [tiled-map]
@@ -340,16 +341,16 @@
     (->StageScreen stage screen)))
 
 (defmethods :app/screens
-  (app/create [[_ {:keys [ks first-k]}]]
+  (lifecycle/create [[_ {:keys [ks first-k]}]]
     (bind-root #'screens (mapvals stage-screen (mapvals
                                                 (fn [ns-sym]
                                                   (require ns-sym)
                                                   ((ns-resolve ns-sym 'create)))
                                                 ks)))
     (change-screen first-k))
-  (app/dispose [_]
+  (lifecycle/dispose [_]
     (run! screen-destroy (vals screens)))
-  (app/render [_]
+  (lifecycle/render [_]
     (ScreenUtils/clear black)
     (screen-render (current-screen))))
 
@@ -696,17 +697,17 @@
              render-fn))
 
 (defmethods :app/db
-  (app/create [[_ config]]
+  (lifecycle/create [[_ config]]
     (db-init config)))
 
 (defmethods :app/default-font
-  (app/create [[_ font]]
+  (lifecycle/create [[_ font]]
     (bind-root #'default-font (ttfont font)))
-  (app/dispose [_]
+  (lifecycle/dispose [_]
     (dispose default-font)))
 
 (defmethods :app/sprite-batch
-  (app/create [_]
+  (lifecycle/create [_]
     (bind-root #'batch (sprite-batch)))
-  (app/dispose [_]
+  (lifecycle/dispose [_]
     (dispose batch)))
