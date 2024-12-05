@@ -2,26 +2,24 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [forge.app.assets]
             [forge.app.cached-map-renderer]
+            [forge.app.cursors]
             [forge.app.default-font]
             [forge.app.db]
+            [forge.app.gui-viewport]
+            [forge.app.shape-drawer]
             [forge.app.screens]
+            [forge.app.sprite-batch]
+            [forge.app.vis-ui]
             [forge.app.world-viewport]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Texture Pixmap Pixmap$Format OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
-           (com.badlogic.gdx.utils.viewport FitViewport)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip)
            (org.lwjgl.system Configuration)
-           (java.awt Taskbar Toolkit)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (java.awt Taskbar Toolkit)))
 
 (defn- set-dock-icon [resource]
   (.setIconImage (Taskbar/getTaskbar)
@@ -40,42 +38,6 @@
   (.set Configuration/GLFW_LIBRARY_NAME  glfw-library-name)
   (.set Configuration/GLFW_CHECK_THREAD0 glfw-check-thread0))
 
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- asset-descriptons [folder]
-  (for [[class exts] [[Sound   #{"wav"}]
-                      [Texture #{"png" "bmp"}]]
-        file (map #(str/replace-first % folder "")
-                  (recursively-search folder exts))]
-    [file class]))
-
-(defn- asset-manager* ^AssetManager []
-  (proxy [AssetManager clojure.lang.IFn] []
-    (invoke [^String path]
-      (if (AssetManager/.contains this path)
-        (AssetManager/.get this path)
-        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
-
-(defn- load-assets [assets]
-  (let [manager (asset-manager*)]
-    (doseq [[file class] assets]
-      (.load manager ^String file ^Class class))
-    (.finishLoading manager)
-    manager))
-
 (defsystem create)
 (defmethod create :default [_])
 
@@ -90,76 +52,39 @@
 
 (defmethods :app/assets
   (create [[_ folder]]
-    (bind-root #'asset-manager (load-assets (asset-descriptons folder))))
+    (forge.app.assets/create folder))
   (destroy [_]
-    (dispose asset-manager)))
+    (forge.app.assets/destroy)))
 
 (defmethods :app/vis-ui
   (create [[_ skin-scale]]
-    ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
-    ; => actually there is a deeper issue at play
-    ; we need to dispose ALL resources which were loaded already ...
-    (when (VisUI/isLoaded)
-      (VisUI/dispose))
-    (VisUI/load (case skin-scale
-                  :skin-scale/x1 VisUI$SkinScale/X1
-                  :skin-scale/x2 VisUI$SkinScale/X2))
-    (-> (VisUI/getSkin)
-        (.getFont "default-font")
-        .getData
-        .markupEnabled
-        (set! true))
-    ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
-    ;Controls whether to fade out tooltip when mouse was moved. (default false)
-    ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-    (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
+    (forge.app.vis-ui/create skin-scale))
   (destroy [_]
-    (VisUI/dispose)))
+    (forge.app.vis-ui/destroy)))
 
 (defmethods :app/sprite-batch
   (create [_]
-    (bind-root #'batch (SpriteBatch.)))
+    (forge.app.sprite-batch/create))
   (destroy [_]
-    (dispose batch)))
+    (forge.app.sprite-batch/destroy)))
 
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (dispose pixmap)
-    texture))
+(defmethods :app/shape-drawer
+  (create [_]
+    (forge.app.shape-drawer/create))
+  (destroy [_]
+    (forge.app.shape-drawer/destroy)))
 
-(let [pixel-texture (atom nil)]
-  (defmethods :app/shape-drawer
-    (create [_]
-      (reset! pixel-texture (white-pixel-texture))
-      (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
-    (destroy [_]
-      (dispose @pixel-texture))))
-
-(let [cursors (atom nil)]
-  (defmethods :app/cursors
-    (create [[_ data]]
-      (reset! cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                 (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                       cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                   (dispose pixmap)
-                                   cursor))
-                               data)))
-    (destroy [_]
-      (run! dispose (vals @cursors))))
-
-  (defn-impl set-cursor [cursor-key]
-    (.setCursor Gdx/graphics (safe-get @cursors cursor-key))))
+(defmethods :app/cursors
+  (create [[_ data]]
+    (forge.app.cursors/create data))
+  (destroy [_]
+    (forge.app.cursors/destroy)))
 
 (defmethods :app/gui-viewport
-  (create [[_ [width height]]]
-    (bind-root #'gui-viewport-width  width)
-    (bind-root #'gui-viewport-height height)
-    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
+  (create [[_ config]]
+    (forge.app.gui-viewport/create config))
   (resize [_ w h]
-    (.update gui-viewport w h true)))
+    (forge.app.gui-viewport/resize w h)))
 
 (defmethods :app/world-viewport
   (create [[_ config]]

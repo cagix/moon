@@ -26,5 +26,5 @@
 (defn create [font]
   (bind-root #'default-font (ttfont font)))
 
-(defn destroy [_]
+(defn destroy []
   (dispose default-font))
