@@ -7,9 +7,9 @@
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn create [[width height]]
-  (bind-root #'gui-viewport-width  width)
-  (bind-root #'gui-viewport-height height)
-  (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
+  (bind-root gui-viewport-width  width)
+  (bind-root gui-viewport-height height)
+  (bind-root gui-viewport (FitViewport. width height (OrthographicCamera.))))
 
 (defn resize [w h]
   (.update gui-viewport w h true))

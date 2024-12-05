@@ -287,11 +287,11 @@
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
-(bind-root #'start-world (fn start-world [world-props]
-                           (change-screen :screens/world)
-                           (reset-stage (widgets))
-                           (world-clear)
-                           (world-init (generate-level world-props))))
+(defn-impl start-world [world-props]
+  (change-screen :screens/world)
+  (reset-stage (widgets))
+  (world-clear)
+  (world-init (generate-level world-props)))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
@@ -315,25 +315,25 @@
       (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (bind-root #'mouseover-eid new-eid)))
+    (bind-root mouseover-eid new-eid)))
 
 (defn- update-world []
   (manual-tick (e-state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
-  (bind-root #'paused? (or tick-error
-                           (and pausing?
-                                (pause-game? (e-state-obj @player-eid))
-                                (not (controls/unpaused?)))))
+  (bind-root paused? (or tick-error
+                         (and pausing?
+                              (pause-game? (e-state-obj @player-eid))
+                              (not (controls/unpaused?)))))
   (when-not paused?
     (let [delta-ms (min (delta-time) max-delta-time)]
       (alter-var-root #'elapsed-time + delta-ms)
-      (bind-root #'world-delta delta-ms) )
+      (bind-root world-delta delta-ms) )
     (let [entities (active-entities)]
       (update-potential-fields! entities)
       (try (tick-entities entities)
            (catch Throwable t
              (error-window! t)
-             (bind-root #'tick-error t)))))
+             (bind-root tick-error t)))))
   (remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
 
 (defn- render-world []

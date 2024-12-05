@@ -6,7 +6,7 @@
   (:import (forge OrthogonalTiledMapRenderer)))
 
 (defn create []
-  (bind-root #'cached-map-renderer
+  (bind-root cached-map-renderer
              (memoize
               (fn [tiled-map]
                 (OrthogonalTiledMapRenderer. tiled-map

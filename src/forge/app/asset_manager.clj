@@ -46,7 +46,7 @@
     manager))
 
 (defn create [folder]
-  (bind-root #'asset-manager (load-assets (asset-descriptons folder))))
+  (bind-root asset-manager (load-assets (asset-descriptons folder))))
 
 (defn destroy []
   (dispose asset-manager))

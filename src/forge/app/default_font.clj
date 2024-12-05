@@ -27,7 +27,7 @@
     font))
 
 (defn create [font]
-  (bind-root #'default-font (truetype-font font)))
+  (bind-root default-font (truetype-font font)))
 
 (defn destroy []
   (dispose default-font))

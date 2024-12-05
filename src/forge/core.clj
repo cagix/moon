@@ -237,8 +237,8 @@
           m
           (keys m)))
 
-(defn bind-root [avar value]
-  (clojure.lang.Var/.bindRoot avar value))
+(defmacro bind-root [sym value]
+  `(clojure.lang.Var/.bindRoot (var ~sym) ~value))
 
 (defn index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
@@ -703,7 +703,7 @@
     (screen-exit screen))
   (let [screen (new-k screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
-    (bind-root #'current-screen-key new-k)
+    (bind-root current-screen-key new-k)
     (screen-enter screen)))
 
 (defn screen-stage ^Stage []
@@ -880,10 +880,10 @@
   (async-write-to-file!))
 
 (defmacro defn-impl [name-sym & fn-body]
-  `(bind-root (var ~name-sym) (fn ~name-sym ~@fn-body)))
+  `(bind-root ~name-sym (fn ~name-sym ~@fn-body)))
 
 (defmacro def-impl [name-sym value]
-  `(bind-root (var ~name-sym) ~value))
+  `(bind-root ~name-sym ~value))
 
 (defn find-actor-with-id [group id]
   (let [actors (children group)
@@ -1432,14 +1432,14 @@
   (when-let [{:keys [counter]} message-to-player]
     (alter-var-root #'message-to-player update :counter + (delta-time))
     (when (>= counter player-message-duration-seconds)
-      (bind-root #'message-to-player nil))))
+      (bind-root message-to-player nil))))
 
 (defn player-message-actor []
   (ui-actor {:draw draw-player-message
              :act check-remove-message}))
 
 (defn player-message-show [message]
-  (bind-root #'message-to-player {:message message :counter 0}))
+  (bind-root message-to-player {:message message :counter 0}))
 
 (defn cells-and-items [inventory slot]
   (for [[position item] (slot inventory)]
@@ -1722,7 +1722,7 @@
         arr (make-array Boolean/TYPE width height)]
     (doseq [cell (g2d-cells grid)]
       (set-arr arr @cell position->blocked?))
-    (bind-root #'ray-caster [arr width height])))
+    (bind-root ray-caster [arr width height])))
 
 (defn ray-blocked? [start target]
   (rc-blocked? ray-caster start target))
@@ -2105,30 +2105,30 @@
     (spawn-creature (update props :position tile->middle))))
 
 (defn world-init [{:keys [tiled-map start-position]}]
-  (bind-root #'world-tiled-map tiled-map)
-  (bind-root #'explored-tile-corners (atom (grid2d (tm-width  tiled-map)
-                                                   (tm-height tiled-map)
-                                                   (constantly false))))
-  (bind-root #'world-grid (grid2d (tm-width tiled-map)
-                                  (tm-height tiled-map)
-                                  (fn [position]
-                                    (atom (->cell position
-                                                  (case (movement-property tiled-map position)
-                                                    "none" :none
-                                                    "air"  :air
-                                                    "all"  :all))))))
+  (bind-root world-tiled-map tiled-map)
+  (bind-root explored-tile-corners (atom (grid2d (tm-width  tiled-map)
+                                                 (tm-height tiled-map)
+                                                 (constantly false))))
+  (bind-root world-grid (grid2d (tm-width tiled-map)
+                                (tm-height tiled-map)
+                                (fn [position]
+                                  (atom (->cell position
+                                                (case (movement-property tiled-map position)
+                                                  "none" :none
+                                                  "air"  :air
+                                                  "all"  :all))))))
 
   (init-raycaster world-grid blocks-vision?)
   (let [width  (tm-width  tiled-map)
         height (tm-height tiled-map)]
-    (bind-root #'content-grid (content-grid-create {:cell-size 16  ; FIXME global config
-                                                    :width  width
-                                                    :height height})))
-  (bind-root #'tick-error nil)
-  (bind-root #'ids->eids {})
-  (bind-root #'elapsed-time 0)
-  (bind-root #'world-delta nil)
-  (bind-root #'player-eid (spawn-player start-position))
+    (bind-root content-grid (content-grid-create {:cell-size 16  ; FIXME global config
+                                                  :width  width
+                                                  :height height})))
+  (bind-root tick-error nil)
+  (bind-root ids->eids {})
+  (bind-root elapsed-time 0)
+  (bind-root world-delta nil)
+  (bind-root player-eid (spawn-player start-position))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 

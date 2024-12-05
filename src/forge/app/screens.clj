@@ -51,11 +51,11 @@
     (->StageScreen stage screen)))
 
 (defn create [{:keys [ks first-k]}]
-  (bind-root #'screens (mapvals stage-screen (mapvals
-                                              (fn [ns-sym]
-                                                (require ns-sym)
-                                                ((ns-resolve ns-sym 'create)))
-                                              ks)))
+  (bind-root screens (mapvals stage-screen (mapvals
+                                            (fn [ns-sym]
+                                              (require ns-sym)
+                                              ((ns-resolve ns-sym 'create)))
+                                            ks)))
   (change-screen first-k))
 
 (defn destroy []

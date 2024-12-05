@@ -13,7 +13,7 @@
     cursor))
 
 (defn create [data]
-  (bind-root #'cursors (mapvals gdx-cursor data)))
+  (bind-root cursors (mapvals gdx-cursor data)))
 
 (defn destroy []
   (run! dispose (vals cursors)))
