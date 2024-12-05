@@ -60,13 +60,10 @@
   (create [_]
     (.bindRoot #'batch (SpriteBatch.)))
   (dispose [_]
-    (.dispose batch)))
+    (SpriteBatch/.dispose batch)))
 
 (defn -main []
-  (let [{:keys [components] :as config} (-> "app.edn"
-                                            io/resource
-                                            slurp
-                                            edn/read-string)]
+  (let [{:keys [components] :as config} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require (:requires config))
     (awt/set-dock-icon (:dock-icon config))
     (when shared-library-loader/mac?

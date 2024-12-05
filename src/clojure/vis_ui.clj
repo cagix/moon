@@ -1,11 +1,17 @@
 (ns clojure.vis-ui
   (:refer-clojure :exclude [load])
-  (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Skin)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)))
 
-(defn loaded? [] (VisUI/isLoaded))
-(defn dispose [] (VisUI/dispose))
-(defn skin    [] (VisUI/getSkin))
+(defn loaded? []
+  (VisUI/isLoaded))
+
+(defn dispose []
+  (VisUI/dispose))
+
+(defn skin ^Skin []
+  (VisUI/getSkin))
 
 (defn load [skin-scale]
   (VisUI/load (case skin-scale
