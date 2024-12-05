@@ -149,8 +149,8 @@
 (defn- all-of-class
   "Returns all asset paths with the specific class."
   [class]
-  (filter #(= (.getAssetType assets/get %) class)
-          (.getAssetNames assets/get)))
+  (filter #(= (.getAssetType assets/manager %) class)
+          (.getAssetNames assets/manager)))
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]

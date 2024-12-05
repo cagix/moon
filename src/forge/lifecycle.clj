@@ -11,7 +11,16 @@
             [clojure.vis-ui :as vis]
             [forge.core :refer [batch]]
             [forge.assets :as assets]
-            [forge.utils :as utils]))
+            [forge.utils :as utils])
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)))
+
+(defn- asset-descriptons [folder]
+  (for [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                      [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
+        file (map #(str/replace-first % folder "")
+                  (utils/recursively-search folder exts))]
+    [file class]))
 
 (defsystem create)
 (defmethod create :default [_])
@@ -27,16 +36,9 @@
 
 (defmethods :app/assets
   (create [[_ folder]]
-    (.bindRoot #'assets/get (let [manager (gdx/asset-manager)]
-                              (doseq [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                                                    [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
-                                      file (map #(str/replace-first % folder "")
-                                                (utils/recursively-search folder exts))]
-                                (.load manager ^String file ^Class class))
-                              (.finishLoading manager)
-                              manager)))
+    (assets/load-all (asset-descriptons folder)))
   (dispose [_]
-    (.dispose assets/get)))
+    (assets/dispose)))
 
 (defmethods :app/vis-ui
   (create [[_ skin-scale]]
@@ -57,7 +59,7 @@
 
 (defmethods :app/sprite-batch
   (create [_]
-    (.bindRoot #'batch (gdx/sprite-batch)))
+    (.bindRoot #'batch (SpriteBatch.)))
   (dispose [_]
     (.dispose batch)))
 
@@ -71,7 +73,7 @@
     (when shared-library-loader/mac?
       (lwjgl/configure {:glfw-library-name "glfw_async"
                         :glfw-check-thread0 false}))
-    (lwjgl3/app (proxy [com.badlogic.gdx.ApplicationAdapter] []
+    (lwjgl3/app (proxy [ApplicationAdapter] []
                   (create  []    (run! create          components))
                   (dispose []    (run! dispose         components))
                   (render  []    (run! render          components))

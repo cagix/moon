@@ -1,9 +1,9 @@
 (ns forge.utils
-  (:require [clojure.gdx :as gdx])
-  (:import (com.badlogic.gdx.files FileHandle)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.files FileHandle)))
 
 (defn recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (gdx/internal-file folder))
+  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
          result []]
     (cond (nil? file)
           result

@@ -7,5 +7,5 @@
 (defn play [sound-name]
   (->> sound-name
        (format asset-format)
-       assets/get
+       assets/manager
        Sound/.play))

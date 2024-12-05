@@ -8,7 +8,7 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Camera Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+           (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
@@ -671,7 +671,7 @@
     (bind-root #'current-screen-key new-k)
     (screen-enter screen)))
 
-(defn screen-stage []
+(defn screen-stage ^Stage []
   (:stage (current-screen)))
 
 (defn schema-of [k]
