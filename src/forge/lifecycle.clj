@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.app.assets]
+            [forge.app.asset-manager]
             [forge.app.cached-map-renderer]
             [forge.app.cursors]
             [forge.app.default-font]
@@ -20,6 +20,61 @@
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (org.lwjgl.system Configuration)
            (java.awt Taskbar Toolkit)))
+
+(declare ^:dynamic *k*)
+
+(defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
+  (doseq [system-var system-vars
+          :let [method-var (ns-resolve ns-sym (:name (meta system-var)))]]
+    (assert (or optional? method-var)
+            (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym))
+    (when method-var
+      (assert (keyword? k))
+      (assert (var? method-var) (pr-str method-var))
+      (let [system @system-var]
+        (when (k (methods system))
+          (println "WARNING: Overwriting method" (:name (meta method-var)) "on" k))
+        (clojure.lang.MultiFn/.addMethod system k (fn call-method [[k & vs] & args]
+                                                    (binding [*k* k]
+                                                      (apply method-var (into (vec vs) args)))))))))
+(defn install-component [component-systems ns-sym k]
+  (require ns-sym)
+  (add-methods (:required component-systems) ns-sym k)
+  (add-methods (:optional component-systems) ns-sym k :optional? true))
+
+(defn- namespace->component-key [prefix ns-str]
+  (let [ns-parts (-> ns-str
+                     (str/replace prefix "")
+                     (str/split #"\."))]
+    (keyword (str/join "." (drop-last ns-parts))
+             (last ns-parts))))
+
+#_(install-component
+ {:optional [#'create
+             #'destroy
+             #'render
+             #'resize]}
+ (symbol (component-k->namespace :app/db))
+ :app/db)
+
+
+
+(defn- component-k->namespace [k]
+  (str "forge." (namespace k) "." (name k)))
+
+(comment
+ (and (= (namespace->component-key #"^forge." "forge.app/db")
+         :effects/projectile)
+      (= (namespace->component-key #"^forge." "forge.effects.target.convert")
+         :effects.target/convert)))
+
+(defn- install
+  ([component-systems ns-sym]
+   (install-component component-systems
+                      ns-sym
+                      (namespace->component-key #"^forge." (str ns-sym))))
+  ([component-systems ns-sym k]
+   (install-component component-systems ns-sym k)))
 
 (defn- set-dock-icon [resource]
   (.setIconImage (Taskbar/getTaskbar)
@@ -50,69 +105,48 @@
 (defsystem resize)
 (defmethod resize :default [_ w h])
 
-(defmethods :app/assets
-  (create [[_ folder]]
-    (forge.app.assets/create folder))
-  (destroy [_]
-    (forge.app.assets/destroy)))
+(defmethods :app/asset-manager
+  (create [[_ folder]] (forge.app.asset-manager/create folder))
+  (destroy [_]         (forge.app.asset-manager/destroy)))
 
 (defmethods :app/vis-ui
-  (create [[_ skin-scale]]
-    (forge.app.vis-ui/create skin-scale))
-  (destroy [_]
-    (forge.app.vis-ui/destroy)))
+  (create [[_ skin-scale]] (forge.app.vis-ui/create skin-scale))
+  (destroy [_]             (forge.app.vis-ui/destroy)))
 
 (defmethods :app/sprite-batch
-  (create [_]
-    (forge.app.sprite-batch/create))
-  (destroy [_]
-    (forge.app.sprite-batch/destroy)))
+  (create  [_] (forge.app.sprite-batch/create))
+  (destroy [_] (forge.app.sprite-batch/destroy)))
 
 (defmethods :app/shape-drawer
-  (create [_]
-    (forge.app.shape-drawer/create))
-  (destroy [_]
-    (forge.app.shape-drawer/destroy)))
+  (create  [_] (forge.app.shape-drawer/create))
+  (destroy [_] (forge.app.shape-drawer/destroy)))
 
 (defmethods :app/cursors
-  (create [[_ data]]
-    (forge.app.cursors/create data))
-  (destroy [_]
-    (forge.app.cursors/destroy)))
+  (create [[_ data]] (forge.app.cursors/create data))
+  (destroy [_]       (forge.app.cursors/destroy)))
 
 (defmethods :app/gui-viewport
-  (create [[_ config]]
-    (forge.app.gui-viewport/create config))
-  (resize [_ w h]
-    (forge.app.gui-viewport/resize w h)))
+  (create [[_ config]] (forge.app.gui-viewport/create config))
+  (resize [_ w h]      (forge.app.gui-viewport/resize w h)))
 
 (defmethods :app/world-viewport
-  (create [[_ config]]
-    (forge.app.world-viewport/create config))
-  (resize [_ w h]
-    (forge.app.world-viewport/resize w h)))
+  (create [[_ config]] (forge.app.world-viewport/create config))
+  (resize [_ w h]      (forge.app.world-viewport/resize w h)))
 
 (defmethods :app/cached-map-renderer
-  (create [_]
-    (forge.app.cached-map-renderer/create)))
+  (create [_] (forge.app.cached-map-renderer/create)))
 
 (defmethods :app/screens
-  (create [[_ config]]
-    (forge.app.screens/create config))
-  (destroy [_]
-    (forge.app.screens/destroy))
-  (render [_]
-    (forge.app.screens/render)))
+  (create [[_ config]] (forge.app.screens/create config))
+  (destroy [_]         (forge.app.screens/destroy))
+  (render [_]          (forge.app.screens/render)))
 
 (defmethods :app/db
-  (create [[_ config]]
-    (forge.app.db/create config)))
+  (create [[_ config]] (forge.app.db/create config)))
 
 (defmethods :app/default-font
-  (create [[_ font]]
-    (forge.app.default-font/create font))
-  (destroy [_]
-    (forge.app.default-font/destroy)))
+  (create [[_ font]] (forge.app.default-font/create font))
+  (destroy [_]       (forge.app.default-font/destroy)))
 
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn" io/resource slurp edn/read-string)]

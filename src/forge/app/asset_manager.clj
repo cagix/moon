@@ -1,4 +1,4 @@
-(ns forge.app.assets
+(ns forge.app.asset-manager
   (:require [clojure.string :as str]
             [forge.core :refer [asset-manager
                                 bind-root
