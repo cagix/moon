@@ -899,14 +899,15 @@
     (alter-var-root #'db-properties update id update-fn))
   (async-write-to-file!))
 
-(defn db-init [{:keys [schema properties]}]
-  (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
-  (bind-root #'properties-file (io/resource properties))
-  (let [properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! validate! properties)
-    (bind-root #'db-properties (zipmap (map :property/id properties) properties))))
+(defmethods :app/db
+  (app-create [[_ {:keys [schema properties]}]]
+    (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
+    (bind-root #'properties-file (io/resource properties))
+    (let [properties (-> properties-file slurp edn/read-string)]
+      (assert (or (empty? properties)
+                  (apply distinct? (map :property/id properties))))
+      (run! validate! properties)
+      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
 
 (defmacro defn-impl [name-sym & fn-body]
   `(bind-root (var ~name-sym) (fn ~name-sym ~@fn-body)))

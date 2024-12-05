@@ -3,19 +3,16 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.java.awt :as awt]
             [clojure.lwjgl :as lwjgl]
-            [forge.core :refer [db-init
-                                app-create
+            [forge.core :refer [app-create
                                 app-dispose
                                 app-render
                                 app-resize]])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.utils SharedLibraryLoader)))
 
-(defn start [{:keys [db
-                     dock-icon
+(defn start [{:keys [dock-icon
                      lwjgl3-config
                      components]}]
-  (db-init db) ; => also component actually?
   (awt/set-dock-icon dock-icon)
   (when SharedLibraryLoader/isMac
     (lwjgl/configure {:glfw-library-name "glfw_async"
