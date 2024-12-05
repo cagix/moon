@@ -7,10 +7,10 @@
            (com.badlogic.gdx.utils SharedLibraryLoader)))
 
 (defprotocol Listener
-  (create [_])
+  (create  [_])
   (dispose [_])
-  (render [_])
-  (resize [_ w h]))
+  (render  [_])
+  (resize  [_ w h]))
 
 (defn start [{:keys [dock-icon lwjgl3-config]} listener]
   (awt/set-dock-icon dock-icon)
@@ -18,17 +18,10 @@
     (lwjgl/configure {:glfw-library-name "glfw_async"
                       :glfw-check-thread0 false}))
   (lwjgl3/app (proxy [ApplicationAdapter] []
-                (create []
-                  (create listener))
-
-                (dispose []
-                  (dispose listener))
-
-                (render []
-                  (render listener))
-
-                (resize [w h]
-                  (resize listener w h)))
+                (create  []    (create  listener))
+                (dispose []    (dispose listener))
+                (render  []    (render  listener))
+                (resize  [w h] (resize  listener w h)))
               (lwjgl3/config lwjgl3-config)))
 
 (def exit gdx/exit)
