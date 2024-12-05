@@ -2,17 +2,18 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [forge.app.default-font]
+            [forge.app.db]
+            [forge.app.screens]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Texture Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.scenes.scene2d Stage)
-           (com.badlogic.gdx.utils ScreenUtils SharedLibraryLoader)
+           (com.badlogic.gdx.utils SharedLibraryLoader)
            (com.badlogic.gdx.utils.viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
@@ -73,57 +74,6 @@
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
     manager))
-
-(defrecord StageScreen [^Stage stage sub-screen]
-  Screen
-  (screen-enter [_]
-    (.setInputProcessor Gdx/input stage)
-    (screen-enter sub-screen))
-
-  (screen-exit [_]
-    (.setInputProcessor Gdx/input nil)
-    (screen-exit sub-screen))
-
-  (screen-render [_]
-    (.act stage)
-    (screen-render sub-screen)
-    (.draw stage))
-
-  (screen-destroy [_]
-    (dispose stage)
-    (screen-destroy sub-screen)))
-
-(defn- stage-screen
-  "Actors or screen can be nil."
-  [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    (->StageScreen stage screen)))
-
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- ttfont [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (dispose generator)
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
 
 (defsystem create)
 (defmethod create :default [_])
@@ -234,34 +184,22 @@
                                                batch))))))
 
 (defmethods :app/screens
-  (create [[_ {:keys [ks first-k]}]]
-    (bind-root #'screens (mapvals stage-screen (mapvals
-                                                (fn [ns-sym]
-                                                  (require ns-sym)
-                                                  ((ns-resolve ns-sym 'create)))
-                                                ks)))
-    (change-screen first-k))
+  (create [[_ config]]
+    (forge.app.screens/create config))
   (destroy [_]
-    (run! screen-destroy (vals screens)))
+    (forge.app.screens/destroy))
   (render [_]
-    (ScreenUtils/clear Color/BLACK)
-    (screen-render (current-screen))))
+    (forge.app.screens/render)))
 
 (defmethods :app/db
-  (create [[_ {:keys [schema properties]}]]
-    (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
-    (bind-root #'properties-file (io/resource properties))
-    (let [properties (-> properties-file slurp edn/read-string)]
-      (assert (or (empty? properties)
-                  (apply distinct? (map :property/id properties))))
-      (run! validate! properties)
-      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
+  (create [[_ config]]
+    (forge.app.db/create config)))
 
 (defmethods :app/default-font
   (create [[_ font]]
-    (bind-root #'default-font (ttfont font)))
+    (forge.app.default-font/create font))
   (destroy [_]
-    (dispose default-font)))
+    (forge.app.default-font/destroy)))
 
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn" io/resource slurp edn/read-string)]
