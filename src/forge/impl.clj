@@ -6,6 +6,7 @@
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
+            [forge.assets :as assets]
             [forge.core :refer :all]
             [forge.lifecycle :as lifecycle]
             [malli.core :as m]
@@ -77,8 +78,8 @@
           (recur remaining result))))
 
 (defn- asset-manager ^AssetManager []
-  (proxy [AssetManager clojure.lang.ILookup] []
-    (valAt [^String path]
+  (proxy [AssetManager clojure.lang.IFn] []
+    (invoke [^String path]
       (if (AssetManager/.contains this path)
         (AssetManager/.get this path)
         (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
@@ -95,9 +96,9 @@
 
 (defmethods :app/assets
   (lifecycle/create [[_ folder]]
-    (bind-root #'assets (load-assets folder)))
+    (bind-root #'assets/get (load-assets folder)))
   (lifecycle/dispose [_]
-    (dispose assets)))
+    (dispose assets/get)))
 
 (def-impl black Color/BLACK)
 (def-impl white Color/WHITE)
@@ -206,11 +207,6 @@
   Disposable
   (dispose [obj]
     (.dispose obj)))
-
-(extend-type com.badlogic.gdx.audio.Sound
-  Sound
-  (play [sound]
-    (.play sound)))
 
 (extend-type Actor
   HasVisible
@@ -640,7 +636,7 @@
 
 (defn-impl ->texture-region
   ([path]
-   (TextureRegion. ^Texture (get assets path)))
+   (TextureRegion. ^Texture (assets/get path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 

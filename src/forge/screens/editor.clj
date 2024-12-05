@@ -1,6 +1,8 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
-            [forge.core :refer :all])
+            [forge.assets :as assets]
+            [forge.core :refer :all]
+            [forge.sound :as sound])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
@@ -140,15 +142,15 @@
   (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
-  (text-button "play!" #(play-sound sound-file)))
+  (text-button "play!" #(sound/play sound-file)))
 
 (declare columns)
 
 (defn- all-of-class
   "Returns all asset paths with the specific class."
   [class]
-  (filter #(= (.getAssetType assets %) class)
-          (.getAssetNames assets)))
+  (filter #(= (.getAssetType assets/get %) class)
+          (.getAssetNames assets/get)))
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]

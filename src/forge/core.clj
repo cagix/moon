@@ -2,6 +2,7 @@
   (:require [clojure.component :refer [defsystem]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [forge.sound :as sound]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
@@ -20,8 +21,6 @@
 
 (def ^:dynamic *unit-scale* 1)
 
-(def sound-asset-format "sounds/%s.wav")
-
 (declare
  pretty-pst
  str-join
@@ -35,7 +34,6 @@
  set-difference
  pprint
  ^{:doc "Supports clojure.lang.ILookup (get), passing an asset-name string and returns the asset."}
- assets
  batch
  shape-drawer
  default-font
@@ -158,9 +156,6 @@
 
 (defprotocol Disposable
   (dispose [_]))
-
-(defprotocol Sound
-  (play [_]))
 
 (defprotocol HasVisible
   (set-visible [_ bool])
@@ -679,12 +674,6 @@
 
 (defn screen-stage []
   (:stage (current-screen)))
-
-(defn play-sound [sound-name]
-  (->> sound-name
-       (format sound-asset-format)
-       (get assets)
-       play))
 
 (defn schema-of [k]
   (safe-get schemas k))
@@ -2015,7 +2004,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (play-sound sound)
+  (sound/play sound)
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation

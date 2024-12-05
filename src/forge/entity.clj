@@ -2,6 +2,7 @@
   (:require [clojure.component :refer [defmethods]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.sound :as sound]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
@@ -544,7 +545,7 @@
     true)
 
   (state-enter [_]
-    (play-sound "bfxr_playerdeath")
+    (sound/play "bfxr_playerdeath")
     (show-modal {:title "YOU DIED"
                  :text "\nGood luck next time"
                  :button-text ":("
@@ -637,7 +638,7 @@
     false)
 
   (state-enter [[_ {:keys [eid skill]}]]
-    (play-sound (:skill/start-action-sound skill))
+    (sound/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
@@ -666,7 +667,7 @@
       (effects-render (check-update-ctx effect-ctx) effects))))
 
 (defn- denied [text]
-  (play-sound "bfxr_denied")
+  (sound/play "bfxr_denied")
   (player-message-show text))
 
 (defmulti ^:private on-clicked
@@ -678,19 +679,19 @@
     (cond
      (visible? (inventory/window))
      (do
-      (play-sound "bfxr_takeit")
+      (sound/play "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
       (send-event player-eid :pickup-item item))
 
      (can-pickup-item? @player-eid item)
      (do
-      (play-sound "bfxr_pickup")
+      (sound/play "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
       (pickup-item player-eid item))
 
      :else
      (do
-      (play-sound "bfxr_denied")
+      (sound/play "bfxr_denied")
       (player-message-show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
@@ -785,7 +786,7 @@
   (clicked-inventory-cell [[_ {:keys [eid]}] cell]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
-      (play-sound "bfxr_takeit")
+      (sound/play "bfxr_takeit")
       (send-event eid :pickup-item item)
       (remove-item eid cell)))
 
@@ -807,7 +808,7 @@
      (and (not item-in-cell)
           (valid-slot? cell item-on-cursor))
      (do
-      (play-sound "bfxr_itemput")
+      (sound/play "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item eid cell item-on-cursor)
       (send-event eid :dropped-item))
@@ -816,7 +817,7 @@
      (and item-in-cell
           (stackable? item-in-cell item-on-cursor))
      (do
-      (play-sound "bfxr_itemput")
+      (sound/play "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item eid cell item-on-cursor)
       (send-event eid :dropped-item))
@@ -825,7 +826,7 @@
      (and item-in-cell
           (valid-slot? cell item-on-cursor))
      (do
-      (play-sound "bfxr_itemput")
+      (sound/play "bfxr_itemput")
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -882,7 +883,7 @@
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (play-sound "bfxr_itemputground")
+        (sound/play "bfxr_itemputground")
         (swap! eid dissoc :entity/item-on-cursor)
         (spawn-item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
