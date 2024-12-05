@@ -355,64 +355,6 @@
     (draw-fn)
     (.end this)))
 
-(defn- sd-color [color]
-  (.setColor shape-drawer (->color color)))
-
-(defn-impl draw-ellipse [[x y] radius-x radius-y color]
-  (sd-color color)
-  (.ellipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
-
-(defn-impl draw-filled-ellipse [[x y] radius-x radius-y color]
-  (sd-color color)
-  (.filledEllipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
-
-(defn-impl draw-circle [[x y] radius color]
-  (sd-color color)
-  (.circle shape-drawer (float x) (float y) (float radius)))
-
-(defn-impl draw-filled-circle [[x y] radius color]
-  (sd-color color)
-  (.filledCircle shape-drawer (float x) (float y) (float radius)))
-
-(defn-impl draw-arc [[centre-x centre-y] radius start-angle degree color]
-  (sd-color color)
-  (.arc shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
-
-(defn-impl draw-sector [[centre-x centre-y] radius start-angle degree color]
-  (sd-color color)
-  (.sector shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
-
-(defn-impl draw-rectangle [x y w h color]
-  (sd-color color)
-  (.rectangle shape-drawer (float x) (float y) (float w) (float h)))
-
-(defn-impl draw-filled-rectangle [x y w h color]
-  (sd-color color)
-  (.filledRectangle shape-drawer (float x) (float y) (float w) (float h)))
-
-(defn-impl draw-line [[sx sy] [ex ey] color]
-  (sd-color color)
-  (.line shape-drawer (float sx) (float sy) (float ex) (float ey)))
-
-(defn-impl draw-grid [leftx bottomy gridw gridh cellw cellh color]
-  (sd-color color)
-  (let [w (* (float gridw) (float cellw))
-        h (* (float gridh) (float cellh))
-        topy (+ (float bottomy) (float h))
-        rightx (+ (float leftx) (float w))]
-    (doseq [idx (range (inc (float gridw)))
-            :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-      (draw-line shape-drawer [linex topy] [linex bottomy]))
-    (doseq [idx (range (inc (float gridh)))
-            :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-      (draw-line shape-drawer [leftx liney] [rightx liney]))))
-
-(defn-impl with-line-width [width draw-fn]
-  (let [old-line-width (.getDefaultLineWidth shape-drawer)]
-    (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
-    (draw-fn)
-    (.setDefaultLineWidth shape-drawer (float old-line-width))))
-
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position

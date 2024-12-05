@@ -78,7 +78,6 @@
  pprint
  ^{:doc "Supports clojure.lang.ILookup (get), passing an asset-name string and returns the asset."}
  batch
- shape-drawer
  default-font
  gui-viewport
  gui-viewport-width
