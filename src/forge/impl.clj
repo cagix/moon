@@ -19,9 +19,6 @@
            (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
-(defn-impl set-cursor [cursor-key]
-  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
-
 (def-impl m-schema   m/schema)
 (def-impl m-validate m/validate)
 
