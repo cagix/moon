@@ -4,13 +4,13 @@
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]
- :app-config {:dock-icon "moon.png"
-              :title "Forge"
-              :fps 60
-              :width 1440
-              :height 900}
  :db {:schema "schema.edn"
       :properties "properties.edn"}
+ :dock-icon "moon.png"
+ :lwjgl3-config {:title "Forge"
+                 :fps 60
+                 :width 1440
+                 :height 900}
  :components [[:app/assets "resources/"]
               [:app/sprite-batch]
               [:app/shape-drawer]
