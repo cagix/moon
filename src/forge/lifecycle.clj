@@ -9,6 +9,7 @@
             [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
+            [forge.core :refer [batch]]
             [forge.assets :as assets]
             [forge.utils :as utils]))
 
@@ -53,6 +54,12 @@
     (vis/configure-tooltips {:default-appear-delay-time 0}))
   (dispose [_]
     (vis/dispose)))
+
+(defmethods :app/sprite-batch
+  (create [_]
+    (.bindRoot #'batch (gdx/sprite-batch)))
+  (dispose [_]
+    (.dispose batch)))
 
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn"

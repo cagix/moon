@@ -1,6 +1,7 @@
 (ns clojure.gdx
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)))
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (defn exit []
   (.exit Gdx/app))
@@ -17,3 +18,6 @@
 
 (defn internal-file [path]
   (.internal Gdx/files path))
+
+(defn sprite-batch []
+  (SpriteBatch.))

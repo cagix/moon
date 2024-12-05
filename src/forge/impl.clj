@@ -15,7 +15,7 @@
             [malli.generator :as mg])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
@@ -177,9 +177,6 @@
     (.setVisible layer bool))
   (visible? [layer]
     (.isVisible layer)))
-
-(defn-impl sprite-batch []
-  (SpriteBatch.))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -625,9 +622,3 @@
     (bind-root #'default-font (ttfont font)))
   (lifecycle/dispose [_]
     (dispose default-font)))
-
-(defmethods :app/sprite-batch
-  (lifecycle/create [_]
-    (bind-root #'batch (sprite-batch)))
-  (lifecycle/dispose [_]
-    (dispose batch)))
