@@ -8,10 +8,9 @@
             [clojure.java.io :as io]
             [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
+            [clojure.vis-ui :as vis]
             [forge.assets :as assets]
-            [forge.utils :as utils])
-  (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip)))
+            [forge.utils :as utils]))
 
 (defsystem create)
 (defmethod create :default [_])
@@ -43,22 +42,13 @@
     ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
     ; => actually there is a deeper issue at play
     ; we need to dispose ALL resources which were loaded already ...
-    (when (VisUI/isLoaded)
-      (VisUI/dispose))
-    (VisUI/load (case skin-scale
-                  :skin-scale/x1 VisUI$SkinScale/X1
-                  :skin-scale/x2 VisUI$SkinScale/X2))
-    (-> (VisUI/getSkin)
-        (.getFont "default-font")
-        .getData
-        .markupEnabled
-        (set! true))
-    ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
-    ;Controls whether to fade out tooltip when mouse was moved. (default false)
-    ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-    (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
+    (when (vis/loaded?)
+      (vis/dispose))
+    (vis/load skin-scale)
+    (vis/font-enable-markup)
+    (vis/configure-tooltips {:default-appear-delay-time 0}))
   (dispose [_]
-    (VisUI/dispose)))
+    (vis/dispose)))
 
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn"
