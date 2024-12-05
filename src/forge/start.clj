@@ -8,10 +8,12 @@
             [forge.app :as app]))
 
 (defn -main []
-  (let [{:keys [requires dock-icon lwjgl3-config components]}
-        (-> "app.edn" io/resource slurp edn/read-string)]
-    (run! require requires)
-    (awt/set-dock-icon dock-icon)
+  (let [{:keys [components] :as config} (-> "app.edn"
+                                            io/resource
+                                            slurp
+                                            edn/read-string)]
+    (run! require (:requires config))
+    (awt/set-dock-icon (:dock-icon config))
     (when shared-library-loader/mac?
       (lwjgl/configure {:glfw-library-name "glfw_async"
                         :glfw-check-thread0 false}))
@@ -20,4 +22,4 @@
                   (dispose []    (run! app/dispose         components))
                   (render  []    (run! app/render          components))
                   (resize  [w h] (run! #(app/resize % w h) components)))
-                (lwjgl3/config lwjgl3-config))))
+                (lwjgl3/config (:lwjgl3 config)))))
