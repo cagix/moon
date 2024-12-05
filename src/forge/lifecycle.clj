@@ -2,9 +2,11 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [forge.app.cached-map-renderer]
             [forge.app.default-font]
             [forge.app.db]
             [forge.app.screens]
+            [forge.app.world-viewport]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.assets AssetManager)
@@ -19,8 +21,7 @@
            (com.kotcrab.vis.ui.widget Tooltip)
            (org.lwjgl.system Configuration)
            (java.awt Taskbar Toolkit)
-           (space.earlygrey.shapedrawer ShapeDrawer)
-           (forge OrthogonalTiledMapRenderer)))
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- set-dock-icon [resource]
   (.setIconImage (Taskbar/getTaskbar)
@@ -161,27 +162,14 @@
     (.update gui-viewport w h true)))
 
 (defmethods :app/world-viewport
-  (create [[_ [width height tile-size]]]
-    (bind-root #'world-unit-scale (float (/ tile-size)))
-    (bind-root #'world-viewport-width  width)
-    (bind-root #'world-viewport-height height)
-    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
-                                      world-height (* height world-unit-scale)
-                                      camera (OrthographicCamera.)
-                                      y-down? false]
-                                  (.setToOrtho camera y-down? world-width world-height)
-                                  (FitViewport. world-width world-height camera))))
+  (create [[_ config]]
+    (forge.app.world-viewport/create config))
   (resize [_ w h]
-    (.update world-viewport w h true)))
+    (forge.app.world-viewport/resize w h)))
 
 (defmethods :app/cached-map-renderer
   (create [_]
-    (bind-root #'cached-map-renderer
-               (memoize
-                (fn [tiled-map]
-                  (OrthogonalTiledMapRenderer. tiled-map
-                                               (float world-unit-scale)
-                                               batch))))))
+    (forge.app.cached-map-renderer/create)))
 
 (defmethods :app/screens
   (create [[_ config]]
