@@ -31,7 +31,7 @@
                               (doseq [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                                                     [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
                                       file (map #(str/replace-first % folder "")
-                                                (utils/recursively-search (gdx/internal-file folder) exts))]
+                                                (utils/recursively-search folder exts))]
                                 (.load manager ^String file ^Class class))
                               (.finishLoading manager)
                               manager)))
