@@ -1,24 +1,57 @@
 (ns forge.lifecycle
   (:require [clojure.edn :as edn]
-            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.awt :as awt]
             [clojure.java.io :as io]
-            [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
             [forge.component :refer [defsystem defmethods]]
             [forge.core :refer [batch]]
-            [forge.assets :as assets]
-            [forge.utils :as utils])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)))
+            [forge.assets :as assets])
+  (:import (com.badlogic.gdx Gdx ApplicationAdapter)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (org.lwjgl.system Configuration)
+           (java.awt Taskbar Toolkit)))
+
+(defn- set-dock-icon [resource]
+  (.setIconImage (Taskbar/getTaskbar)
+                 (.getImage (Toolkit/getDefaultToolkit)
+                            (io/resource resource))))
+
+(defn- lwjgl3-config [{:keys [title fps width height]}]
+  (doto (Lwjgl3ApplicationConfiguration.)
+    (.setTitle title)
+    (.setForegroundFPS fps)
+    (.setWindowedMode width height)))
+
+(def mac? SharedLibraryLoader/isMac)
+
+(defn- configure-lwjgl [{:keys [glfw-library-name glfw-check-thread0]}]
+  (.set Configuration/GLFW_LIBRARY_NAME  glfw-library-name)
+  (.set Configuration/GLFW_CHECK_THREAD0 glfw-check-thread0))
+
+(defn- recursively-search [folder extensions]
+  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
 
 (defn- asset-descriptons [folder]
   (for [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                       [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
         file (map #(str/replace-first % folder "")
-                  (utils/recursively-search folder exts))]
+                  (recursively-search folder exts))]
     [file class]))
 
 (defsystem create)
@@ -65,13 +98,13 @@
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require (:requires config))
-    (awt/set-dock-icon (:dock-icon config))
-    (when shared-library-loader/mac?
-      (lwjgl/configure {:glfw-library-name "glfw_async"
+    (set-dock-icon (:dock-icon config))
+    (when mac?
+      (configure-lwjgl {:glfw-library-name "glfw_async"
                         :glfw-check-thread0 false}))
-    (lwjgl3/app (proxy [ApplicationAdapter] []
-                  (create  []    (run! create          components))
-                  (dispose []    (run! dispose         components))
-                  (render  []    (run! render          components))
-                  (resize  [w h] (run! #(resize % w h) components)))
-                (lwjgl3/config (:lwjgl3 config)))))
+    (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                          (create  []    (run! create          components))
+                          (dispose []    (run! dispose         components))
+                          (render  []    (run! render          components))
+                          (resize  [w h] (run! #(resize % w h) components)))
+                        (lwjgl3-config (:lwjgl3 config)))))
