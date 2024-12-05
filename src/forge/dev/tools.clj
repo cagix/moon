@@ -1,7 +1,7 @@
 (ns forge.dev.tools
-  (:require [forge.app :refer [post-runnable]]
-            [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
+  (:require [forge.core :refer :all])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
 
@@ -57,6 +57,9 @@
  ; => this is basically a test for 'forge.entity.active'
 
  )
+
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app [] ~@exprs))
 
 (defn- learn-skill! [skill-id]
   (post-runnable

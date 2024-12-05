@@ -1,6 +1,6 @@
 (ns forge.screens.main-menu
-  (:require [forge.app :as app]
-            [forge.core :refer :all]))
+  (:require [forge.core :refer :all])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn create []
   {:actors [(background-image)
@@ -17,12 +17,12 @@
                         (when dev-mode?
                           [(text-button "Property editor"
                                         #(change-screen :screens/editor))])
-                        [(text-button "Exit" app/exit)]]))
+                        [(text-button "Exit" #(.exit Gdx/app))]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui-actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
-                                (app/exit)))})]
+                                (.exit Gdx/app)))})]
    :screen (reify Screen
              (screen-enter [_]
                (set-cursor :cursors/default))
