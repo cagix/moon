@@ -21,12 +21,6 @@
        (fn [[k#] & _args#]
          k#))))
 
-; right - we have an abstraction ? - in case we
-; dont use multimethods at somepoint?
-; so defcomponent ?
-; but [k v] is all open so there is no abstraction?
-; maybe another name for this, not 'component'
-; or 'forge.component' ?
 (defmacro defmethods [k & sys-impls]
   `(do
     ~@(for [[sys & fn-body] sys-impls
