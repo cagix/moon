@@ -953,4 +953,3 @@
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
-
