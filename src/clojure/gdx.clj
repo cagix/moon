@@ -9,6 +9,3 @@
 
 (defn internal-file [path]
   (.internal Gdx/files path))
-
-(defn sprite-batch []
-  (SpriteBatch.))
