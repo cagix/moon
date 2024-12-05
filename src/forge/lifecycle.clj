@@ -1,6 +1,5 @@
 (ns forge.lifecycle
   (:require [clojure.edn :as edn]
-            [clojure.java.awt :as awt]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
