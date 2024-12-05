@@ -13,9 +13,7 @@
             [malli.error :as me]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Colors  Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
@@ -61,44 +59,6 @@
 
   (find-actor [group name]
     (.findActor group name)))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- asset-manager ^AssetManager []
-  (proxy [AssetManager clojure.lang.IFn] []
-    (invoke [^String path]
-      (if (AssetManager/.contains this path)
-        (AssetManager/.get this path)
-        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
-
-(defn- load-assets [folder]
-  (let [manager (asset-manager)]
-    (doseq [[class exts] [[com.badlogic.gdx.audio.Sound #{"wav"}]
-                          [Texture #{"png" "bmp"}]]
-            file (map #(str-replace-first % folder "")
-                      (recursively-search (internal-file folder) exts))]
-      (.load manager ^String file ^Class class))
-    (.finishLoading manager)
-    manager))
-
-(defmethods :app/assets
-  (lifecycle/create [[_ folder]]
-    (bind-root #'assets/get (load-assets folder)))
-  (lifecycle/dispose [_]
-    (dispose assets/get)))
 
 (def-impl black Color/BLACK)
 (def-impl white Color/WHITE)
