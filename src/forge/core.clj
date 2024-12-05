@@ -15,7 +15,7 @@
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
 
-(declare start-app)
+(defn start-app [listener {:keys [title fps width height]}])
 
 (def ^:dynamic *unit-scale* 1)
 
@@ -446,6 +446,7 @@
   (mapv (partial + 0.5) position))
 
 (defsystem app-create)
+(defmethod app-create :default [_])
 
 (defsystem app-dispose)
 (defmethod app-dispose :default [_])

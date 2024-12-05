@@ -37,10 +37,10 @@
   :injections [(load "forge/impl")] ; so codox works.
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
-  :global-vars {*warn-on-reflection* true
+  :global-vars {;*warn-on-reflection* true
                 ;*unchecked-math* :warn-on-boxed
                 ;*assert* false
-                *print-level* 3
+                ;*print-level* 3
                 }
   :profiles {:uberjar {:aot [forge.start]}}
   #_:main #_forge.start)
