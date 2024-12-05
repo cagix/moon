@@ -1,47 +1,24 @@
 (ns forge.lifecycle
   (:require [clojure.component :refer [defsystem defmethods]]
             [clojure.edn :as edn]
+            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.awt :as awt]
             [clojure.java.io :as io]
             [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [forge.assets :as assets])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.files FileHandle)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+            [forge.assets :as assets]
+            [forge.utils :as utils])
+  (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)))
 
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- asset-manager ^AssetManager []
-  (proxy [AssetManager clojure.lang.IFn] []
-    (invoke [^String path]
-      (if (AssetManager/.contains this path)
-        (AssetManager/.get this path)
-        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
-
 (defn- load-assets [folder]
-  (let [manager (asset-manager)]
+  (let [manager (gdx/asset-manager)]
     (doseq [[class exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                           [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
             file (map #(str/replace-first % folder "")
-                      (recursively-search (.internal Gdx/files folder) exts))]
+                      (utils/recursively-search (gdx/internal-file folder) exts))]
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
     manager))

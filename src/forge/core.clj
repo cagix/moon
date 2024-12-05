@@ -78,7 +78,6 @@
  key-just-pressed?
  key-pressed?
  set-input-processor
- internal-file
  ^{:doc "font, h-align, up? and scale are optional.
         h-align one of: :center, :left, :right. Default :center.
         up? renders the font over y, otherwise under.
