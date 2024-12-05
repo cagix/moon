@@ -45,7 +45,11 @@
     (when (vis/loaded?)
       (vis/dispose))
     (vis/load skin-scale)
-    (vis/font-enable-markup)
+    (-> (vis/skin)
+        (.getFont "default-font")
+        .getData
+        .markupEnabled
+        (set! true))
     (vis/configure-tooltips {:default-appear-delay-time 0}))
   (dispose [_]
     (vis/dispose)))
