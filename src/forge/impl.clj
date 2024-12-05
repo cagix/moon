@@ -97,7 +97,7 @@
     (.finishLoading manager)
     manager))
 
-(defmethods ::assets
+(defmethods :app/assets
   (app-create [[_ folder]]
     (bind-root #'assets (load-assets folder)))
   (app-dispose [_]
