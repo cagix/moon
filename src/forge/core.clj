@@ -1,7 +1,5 @@
 (ns forge.core
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [forge.component :refer [defsystem]]
+  (:require [forge.component :refer [defsystem]]
             [forge.sound :as sound]
             [malli.core :as m]
             [reduce-fsm :as fsm])
@@ -67,8 +65,6 @@
  black
  white
  ->color
- ttfont
- sprite-batch
  equal?
  clamp
  degree->radians
@@ -77,7 +73,6 @@
  button-just-pressed?
  key-just-pressed?
  key-pressed?
- set-input-processor
  ^{:doc "font, h-align, up? and scale are optional.
         h-align one of: :center, :left, :right. Default :center.
         up? renders the font over y, otherwise under.
@@ -133,12 +128,6 @@
  draw-centered
  draw-on-world-view
  )
-
-(defprotocol Acting
-  (act [_]))
-
-(defprotocol Drawing
-  (draw [_]))
 
 (defprotocol Group
   (children [_] "Returns an ordered list of child actors in this group.")
@@ -844,15 +833,6 @@
     (alter-var-root #'db-properties update id update-fn))
   (async-write-to-file!))
 
-(defn db-init [{:keys [schema properties]}]
-  (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
-  (bind-root #'properties-file (io/resource properties))
-  (let [properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! validate! properties)
-    (bind-root #'db-properties (zipmap (map :property/id properties) properties))))
-
 (defmacro defn-impl [name-sym & fn-body]
   `(bind-root (var ~name-sym) (fn ~name-sym ~@fn-body)))
 
@@ -866,25 +846,6 @@
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (user-object %)) actors))))
-
-(defrecord StageScreen [stage sub-screen]
-  Screen
-  (screen-enter [_]
-    (set-input-processor stage)
-    (screen-enter sub-screen))
-
-  (screen-exit [_]
-    (set-input-processor nil)
-    (screen-exit sub-screen))
-
-  (screen-render [_]
-    (act stage)
-    (screen-render sub-screen)
-    (draw stage))
-
-  (screen-destroy [_]
-    (dispose stage)
-    (screen-destroy sub-screen)))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))

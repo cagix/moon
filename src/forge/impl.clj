@@ -6,23 +6,18 @@
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
             [forge.assets :as assets]
-            [forge.component :refer [defmethods]]
             [forge.core :refer :all]
-            [forge.lifecycle :as lifecycle]
             [malli.core :as m]
             [malli.error :as me]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Colors Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
-           (com.badlogic.gdx.scenes.scene2d Actor Stage)
-           (com.badlogic.gdx.utils Align Scaling ScreenUtils )
+           (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
-           (space.earlygrey.shapedrawer ShapeDrawer)
-           (forge OrthogonalTiledMapRenderer)))
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn-impl pretty-pst [t]
   (binding [*print-level* 3]
@@ -61,25 +56,6 @@
 (def-impl black Color/BLACK)
 (def-impl white Color/WHITE)
 
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn-impl ttfont [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (dispose generator)
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
-
 (defn- static-field [klass-str k]
   (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str-replace (str-upper-case (name k)) "-" "_")))))
 
@@ -109,9 +85,6 @@
 
 (defn-impl key-pressed? [k]
   (.isKeyPressed Gdx/input (k->input-key k)))
-
-(defn-impl set-input-processor [processor]
-  (.setInputProcessor Gdx/input processor))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -176,99 +149,6 @@
     (.setVisible layer bool))
   (visible? [layer]
     (.isVisible layer)))
-
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor white)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (dispose pixmap)
-    texture))
-
-(let [pixel-texture (atom nil)]
-  (defmethods :app/shape-drawer
-    (lifecycle/create [_]
-      (reset! pixel-texture (white-pixel-texture))
-      (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
-    (lifecycle/dispose [_]
-      (dispose @pixel-texture))))
-
-(defmethods :app/cursors
-  (lifecycle/create [[_ data]]
-    (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                          cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                      (dispose pixmap)
-                                      cursor))
-                                  data)))
-  (lifecycle/dispose [_]
-    (run! dispose (vals cursors))))
-
-(defmethods :app/gui-viewport
-  (lifecycle/create [[_ [width height]]]
-    (bind-root #'gui-viewport-width  width)
-    (bind-root #'gui-viewport-height height)
-    (bind-root #'gui-viewport (FitViewport. width height (OrthographicCamera.))))
-  (lifecycle/resize [_ w h]
-    (.update gui-viewport w h true)))
-
-(defmethods :app/world-viewport
-  (lifecycle/create [[_ [width height tile-size]]]
-    (bind-root #'world-unit-scale (float (/ tile-size)))
-    (bind-root #'world-viewport-width  width)
-    (bind-root #'world-viewport-height height)
-    (bind-root #'world-viewport (let [world-width  (* width  world-unit-scale)
-                                      world-height (* height world-unit-scale)
-                                      camera (OrthographicCamera.)
-                                      y-down? false]
-                                  (.setToOrtho camera y-down? world-width world-height)
-                                  (FitViewport. world-width world-height camera))))
-  (lifecycle/resize [_ w h]
-    (.update world-viewport w h true)))
-
-(defmethods :app/cached-map-renderer
-  (lifecycle/create [_]
-    (bind-root #'cached-map-renderer
-      (memoize
-       (fn [tiled-map]
-         (OrthogonalTiledMapRenderer. tiled-map
-                                      (float world-unit-scale)
-                                      batch))))))
-
-(extend-type Stage
-  Acting
-  (act [this]
-    (.act this))
-  Drawing
-  (draw [this]
-    (.draw this)))
-
-(defn- stage-screen
-  "Actors or screen can be nil."
-  [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    (->StageScreen stage screen)))
-
-(defmethods :app/screens
-  (lifecycle/create [[_ {:keys [ks first-k]}]]
-    (bind-root #'screens (mapvals stage-screen (mapvals
-                                                (fn [ns-sym]
-                                                  (require ns-sym)
-                                                  ((ns-resolve ns-sym 'create)))
-                                                ks)))
-    (change-screen first-k))
-  (lifecycle/dispose [_]
-    (run! screen-destroy (vals screens)))
-  (lifecycle/render [_]
-    (ScreenUtils/clear black)
-    (screen-render (current-screen))))
 
 (defn-impl add-actor [actor]
   (.addActor (screen-stage) actor))
@@ -611,13 +491,3 @@
   (draw-with world-viewport
              world-unit-scale
              render-fn))
-
-(defmethods :app/db
-  (lifecycle/create [[_ config]]
-    (db-init config)))
-
-(defmethods :app/default-font
-  (lifecycle/create [[_ font]]
-    (bind-root #'default-font (ttfont font)))
-  (lifecycle/dispose [_]
-    (dispose default-font)))
