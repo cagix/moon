@@ -5,11 +5,7 @@
             [clojure.java.awt :as awt]
             [clojure.java.io :as io]
             [clojure.lwjgl :as lwjgl]
-            [forge.app :as app]
-            [forge.core :refer [app-create
-                                app-dispose
-                                app-render
-                                app-resize]]))
+            [forge.app :as app]))
 
 (defn -main []
   (let [{:keys [requires dock-icon lwjgl3-config components]}
@@ -20,8 +16,8 @@
       (lwjgl/configure {:glfw-library-name "glfw_async"
                         :glfw-check-thread0 false}))
     (lwjgl3/app (proxy [com.badlogic.gdx.ApplicationAdapter] []
-                  (create  []    (run! app-create components))
-                  (dispose []    (run! app-dispose components))
-                  (render  []    (run! app-render components))
-                  (resize  [w h] (run! #(app-resize % w h) components)))
+                  (create  []    (run! app/create          components))
+                  (dispose []    (run! app/dispose         components))
+                  (render  []    (run! app/render          components))
+                  (resize  [w h] (run! #(app/resize % w h) components)))
                 (lwjgl3/config lwjgl3-config))))

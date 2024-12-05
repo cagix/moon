@@ -38,18 +38,6 @@
        (fn [[k#] & _args#]
          k#))))
 
-(defsystem app-create)
-(defmethod app-create :default [_])
-
-(defsystem app-dispose)
-(defmethod app-dispose :default [_])
-
-(defsystem app-render)
-(defmethod app-render :default [_])
-
-(defsystem app-resize)
-(defmethod app-resize :default [_ w h])
-
 (def ^:dynamic *unit-scale* 1)
 
 (def sound-asset-format "sounds/%s.wav")
@@ -899,33 +887,20 @@
     (alter-var-root #'db-properties update id update-fn))
   (async-write-to-file!))
 
-(defmethods :app/db
-  (app-create [[_ {:keys [schema properties]}]]
-    (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
-    (bind-root #'properties-file (io/resource properties))
-    (let [properties (-> properties-file slurp edn/read-string)]
-      (assert (or (empty? properties)
-                  (apply distinct? (map :property/id properties))))
-      (run! validate! properties)
-      (bind-root #'db-properties (zipmap (map :property/id properties) properties)))))
+(defn db-init [{:keys [schema properties]}]
+  (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
+  (bind-root #'properties-file (io/resource properties))
+  (let [properties (-> properties-file slurp edn/read-string)]
+    (assert (or (empty? properties)
+                (apply distinct? (map :property/id properties))))
+    (run! validate! properties)
+    (bind-root #'db-properties (zipmap (map :property/id properties) properties))))
 
 (defmacro defn-impl [name-sym & fn-body]
   `(bind-root (var ~name-sym) (fn ~name-sym ~@fn-body)))
 
 (defmacro def-impl [name-sym value]
   `(bind-root (var ~name-sym) ~value))
-
-(defmethods :app/default-font
-  (app-create [[_ font]]
-    (bind-root #'default-font (ttfont font)))
-  (app-dispose [_]
-    (dispose default-font)))
-
-(defmethods :app/sprite-batch
-  (app-create [_]
-    (bind-root #'batch (sprite-batch)))
-  (app-dispose [_]
-    (dispose batch)))
 
 (defn find-actor-with-id [group id]
   (let [actors (children group)
