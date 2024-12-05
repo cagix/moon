@@ -32,7 +32,7 @@
     (.setForegroundFPS fps)
     (.setWindowedMode width height)))
 
-(def mac? SharedLibraryLoader/isMac)
+(def ^:private mac? SharedLibraryLoader/isMac)
 
 (defn- configure-lwjgl [{:keys [glfw-library-name glfw-check-thread0]}]
   (.set Configuration/GLFW_LIBRARY_NAME  glfw-library-name)
@@ -187,16 +187,20 @@
     (destroy [_]
       (dispose @pixel-texture))))
 
-(defmethods :app/cursors
-  (create [[_ data]]
-    (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                          cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                      (dispose pixmap)
-                                      cursor))
-                                  data)))
-  (destroy [_]
-    (run! dispose (vals cursors))))
+(let [cursors (atom nil)]
+  (defmethods :app/cursors
+    (create [[_ data]]
+      (reset! cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                 (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                       cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                                   (dispose pixmap)
+                                   cursor))
+                               data)))
+    (destroy [_]
+      (run! dispose (vals @cursors))))
+
+  (defn-impl set-cursor [cursor-key]
+    (.setCursor Gdx/graphics (safe-get @cursors cursor-key))))
 
 (defmethods :app/gui-viewport
   (create [[_ [width height]]]

@@ -1,8 +1,9 @@
 (ns forge.core
-  (:require [malli.core :as m]
-            [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
+  "Language, has no dependencies. Dependencies are injected.
+  Symbolic computations.
+  Dependencies on symbols only.
+  The 'core' implementation itself?"
+  (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Camera Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -16,6 +17,11 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
+
+(declare m-schema
+         m-validate)
+
+(declare fsm-event)
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}
@@ -75,7 +81,6 @@
  batch
  shape-drawer
  default-font
- cursors
  gui-viewport
  gui-viewport-width
  gui-viewport-height
@@ -906,8 +911,7 @@
   (let [[x y] (gui-mouse-position)]
     (.hit (screen-stage) x y true)))
 
-(defn set-cursor [cursor-key]
-  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
+(defn set-cursor [cursor-key])
 
 (defn layer-name ^String [layer]
   (if (keyword? layer)
@@ -1939,12 +1943,6 @@
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
 
-; set max speed so small entities are not skipped by projectiles
-; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ minimum-body-size max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
-
-(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
-
 (def ^:private z-orders [:z-order/on-ground
                          :z-order/ground
                          :z-order/flying
@@ -2203,7 +2201,7 @@
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)
-          new-fsm (fsm/fsm-event fsm event)
+          new-fsm (fsm-event fsm event)
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (e-state-obj @eid)
@@ -2245,15 +2243,15 @@
   (mapv #(-> % int (max 0)) val-max))
 
 (defn- apply-max-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max-schema val-max)]
-   :post [(m/validate val-max-schema val-max)]}
+  {:pre  [(m-validate val-max-schema val-max)]
+   :post [(m-validate val-max-schema val-max)]}
   (let [val-max (update val-max 1 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn- apply-min-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max-schema val-max)]
-   :post [(m/validate val-max-schema val-max)]}
+  {:pre  [(m-validate val-max-schema val-max)]
+   :post [(m-validate val-max-schema val-max)]}
   (let [val-max (update val-max 0 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))

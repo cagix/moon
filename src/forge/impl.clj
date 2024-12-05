@@ -8,7 +8,8 @@
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.error :as me]
-            [malli.generator :as mg])
+            [malli.generator :as mg]
+            [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
@@ -17,6 +18,11 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+(def-impl m-schema   m/schema)
+(def-impl m-validate m/validate)
+
+(def-impl fsm-event fsm/fsm-event)
 
 (defn-impl pretty-pst [t]
   (binding [*print-level* 3]
@@ -254,20 +260,20 @@
     (s-form     [_])
     (s-validate [_ data]))
 
-(defn- invalid-ex-info [m-schema value]
-  (ex-info (str (me/humanize (m/explain m-schema value)))
+(defn- invalid-ex-info [schema value]
+  (ex-info (str (me/humanize (m/explain schema value)))
            {:value value
-            :schema (m/form m-schema)}))
+            :schema (m/form schema)}))
 
 (extend-type clojure.lang.APersistentMap
   Property
   (validate! [property]
-    (let [m-schema (-> property
-                       schema-of-property
-                       malli-form
-                       m/schema)]
-      (when-not (m/validate m-schema property)
-        (throw (invalid-ex-info m-schema property))))))
+    (let [schema (-> property
+                     schema-of-property
+                     malli-form
+                     m/schema)]
+      (when-not (m/validate schema property)
+        (throw (invalid-ex-info schema property))))))
 
 (def-impl val-max-schema
   (m/schema [:and
