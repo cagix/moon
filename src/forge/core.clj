@@ -1,6 +1,5 @@
 (ns forge.core
-  (:require [data.grid2d :as g2d]
-            [malli.core :as m]
+  (:require [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Camera Color Texture OrthographicCamera)
@@ -15,6 +14,8 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
+
+(declare start-app)
 
 (def ^:dynamic *unit-scale* 1)
 
@@ -92,6 +93,12 @@
  add-actor
  reset-stage
  grid2d
+ g2d-width
+ g2d-height
+ g2d-cells
+ g2d-posis
+ get-4-neighbour-positions
+ mapgrid->vectorgrid
  v-scale
  v-normalise
  v-add
@@ -103,9 +110,6 @@
  v-angle-from-vector
  overlaps?
  rect-contains?
- set-glfw-config
- start-app
- components-application
  val-max-schema
  ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
  start-world
@@ -451,6 +455,19 @@
 
 (defsystem app-resize)
 (defmethod app-resize :default [_ w h])
+
+(defmethods ::components-app
+  (app-create [[_ components]]
+    (run! app-create components))
+
+  (app-dispose [[_ components]]
+    (run! app-dispose components))
+
+  (app-render [[_ components]]
+    (run! app-render components))
+
+  (app-resize [[_ components] w h]
+    (run! #(app-resize % w h) components)))
 
 (defsystem handle [_ ctx])
 
@@ -903,8 +920,11 @@
     (alter-var-root #'db-properties update id update-fn))
   (async-write-to-file!))
 
+(defn load-edn [file]
+  (-> file io-resource slurp edn-read-string))
+
 (defn db-init [{:keys [schema properties]}]
-  (bind-root #'schemas (-> schema io-resource slurp edn-read-string))
+  (bind-root #'schemas (load-edn schema))
   (bind-root #'properties-file (io-resource properties))
   (let [properties (-> properties-file slurp edn-read-string)]
     (assert (or (empty? properties)
@@ -1785,10 +1805,10 @@
     (aset arr x y (boolean (cell->blocked? cell)))))
 
 (defn- init-raycaster [grid position->blocked?]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
+  (let [width  (g2d-width  grid)
+        height (g2d-height grid)
         arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
+    (doseq [cell (g2d-cells grid)]
       (set-arr arr @cell position->blocked?))
     (bind-root #'ray-caster [arr width height])))
 
@@ -2015,6 +2035,7 @@
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
 (def ^:private max-speed (/ minimum-body-size max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (def ^:private z-orders [:z-order/on-ground

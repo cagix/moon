@@ -1,6 +1,5 @@
 (ns forge.ui.inventory
-  (:require [data.grid2d :as g2d]
-            [forge.core :refer :all])
+  (:require [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
@@ -107,8 +106,8 @@
       (.add (->cell :inventory.slot/rings :position [0 0]))
       (.add (->cell :inventory.slot/rings :position [1 0]))
       (.add (->cell :inventory.slot/boot)) .row)
-    (doseq [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
-      (doseq [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
+    (doseq [y (range (g2d-height (:inventory.slot/bag empty-inventory)))]
+      (doseq [x (range (g2d-width (:inventory.slot/bag empty-inventory)))]
         (.add table (->cell :inventory.slot/bag :position [x y])))
       (.row table))
     table))

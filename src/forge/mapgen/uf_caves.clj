@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.mapgen.uf-caves
-  (:require [data.grid2d :as g2d]
-            [forge.core :refer :all]
+  (:require [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
 
 (def ^:private scaling 4)
@@ -74,9 +73,9 @@
   (let [grid (reduce #(assoc %1 %2 :transition) grid
                      (adjacent-wall-positions grid))]
     (assert (or
-             (= #{:wall :ground :transition} (set (g2d/cells grid)))
-             (= #{:ground :transition}       (set (g2d/cells grid))))
-            (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
+             (= #{:wall :ground :transition} (set (g2d-cells grid)))
+             (= #{:ground :transition}       (set (g2d-cells grid))))
+            (str "(set (g2d-cells grid)): " (set (g2d-cells grid))))
     ;_ (printgrid grid)
     ;_ (println)
     grid))

@@ -20,14 +20,28 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
-           (com.badlogic.gdx.utils Align Scaling ScreenUtils)
+           (com.badlogic.gdx.utils Align Scaling ScreenUtils SharedLibraryLoader)
            (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)
            (org.lwjgl.system Configuration)))
+
+(defn-impl start-app [listener {:keys [title fps width height]}]
+  (when SharedLibraryLoader/isMac
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+    (.set Configuration/GLFW_CHECK_THREAD0 false))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create  []    (app-create  listener))
+                        (dispose []    (app-dispose listener))
+                        (render  []    (app-render  listener))
+                        (resize  [w h] (app-resize  listener w h)))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle title)
+                        (.setForegroundFPS fps)
+                        (.setWindowedMode width height))))
 
 (defn-impl pretty-pst [t]
   (binding [*print-level* 3]
@@ -371,7 +385,13 @@
   (.clear (screen-stage))
   (run! add-actor new-actors))
 
-(def-impl grid2d g2d/create-grid)
+(def-impl grid2d                    g2d/create-grid)
+(def-impl g2d-width                 g2d/width)
+(def-impl g2d-height                g2d/height)
+(def-impl g2d-cells                 g2d/cells)
+(def-impl g2d-posis                 g2d/posis)
+(def-impl get-4-neighbour-positions g2d/get-4-neighbour-positions)
+(def-impl mapgrid->vectorgrid       g2d/mapgrid->vectorgrid)
 
 (defn- m-v2
   (^Vector2 [[x y]] (Vector2. x y))
@@ -457,31 +477,6 @@
 
 (defn-impl rect-contains? [rectangle [x y]]
   (Rectangle/.contains (m->shape rectangle) x y))
-
-(defn-impl set-glfw-config [{:keys [library-name check-thread0]}]
-  (.set Configuration/GLFW_LIBRARY_NAME library-name)
-  (.set Configuration/GLFW_CHECK_THREAD0 check-thread0))
-
-(defn-impl start-app [listener {:keys [title fps width height]}]
-  (Lwjgl3Application. listener
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setForegroundFPS fps)
-                        (.setWindowedMode width height))))
-
-(defn-impl components-application [components]
-  (proxy [ApplicationAdapter] []
-    (create []
-      (run! app-create components))
-
-    (dispose []
-      (run! app-dispose components))
-
-    (render []
-      (run! app-render components))
-
-    (resize [w h]
-      (run! #(app-resize % w h) components))))
 
 #_(defprotocol Schema
     (s-explain  [_ value])
