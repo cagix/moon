@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [forge.core :refer :all])
+  (:require [clojure.edn :as edn]
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
@@ -115,7 +116,7 @@
                 (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn-read-string (VisTextField/.getText widget)))
+  (edn/read-string (VisTextField/.getText widget)))
 
 (defmethod schema->widget :string [schema v]
   (add-tooltip! (text-field v {})
@@ -136,7 +137,7 @@
                :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn-read-string (VisSelectBox/.getSelected widget)))
+  (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-file]
   (text-button "play!" #(play-sound sound-file)))

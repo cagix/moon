@@ -1,7 +1,10 @@
 (ns forge.core
-  (:require [malli.core :as m]
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Camera Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -11,11 +14,77 @@
            (com.badlogic.gdx.maps.tiled TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)
            (com.badlogic.gdx.math Vector2 Vector3)
-           (com.badlogic.gdx.utils Align Scaling)
+           (com.badlogic.gdx.utils Align Scaling SharedLibraryLoader)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
-           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
+           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)
+           (org.lwjgl.system Configuration)))
 
-(defn start-app [listener {:keys [title fps width height]}])
+(defn set-dock-icon [resource]
+  (.setIconImage (java.awt.Taskbar/getTaskbar)
+                 (.getImage (java.awt.Toolkit/getDefaultToolkit)
+                            (io/resource resource))))
+
+(def mac-os? SharedLibraryLoader/isMac)
+
+(defn configure-glfw-for-mac-os []
+  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+  (.set Configuration/GLFW_CHECK_THREAD0 false))
+
+(defn lwjgl3-app [listener lwjgl3-config]
+  (Lwjgl3Application. listener lwjgl3-config))
+
+(defn lwjgl3-config [{:keys [title fps width height]}]
+  (doto (Lwjgl3ApplicationConfiguration.)
+    (.setTitle title)
+    (.setForegroundFPS fps)
+    (.setWindowedMode width height)))
+
+(defmacro defsystem
+  {:arglists '([name docstring? params?])}
+  [name-sym & args]
+  (let [docstring (if (string? (first args))
+                    (first args))
+        params (if (string? (first args))
+                 (second args)
+                 (first args))
+        params (if (nil? params)
+                 '[_]
+                 params)]
+    (when (zero? (count params))
+      (throw (IllegalArgumentException. "First argument needs to be component.")))
+    (when-let [avar (resolve name-sym)]
+      (println "WARNING: Overwriting defsystem:" avar))
+    `(defmulti ~(vary-meta name-sym assoc :params (list 'quote params))
+       ~(str "[[defsystem]] `" (str params) "`"
+             (when docstring (str "\n\n" docstring)))
+       (fn [[k#] & _args#]
+         k#))))
+
+(defsystem app-create)
+(defmethod app-create :default [_])
+
+(defsystem app-dispose)
+(defmethod app-dispose :default [_])
+
+(defsystem app-render)
+(defmethod app-render :default [_])
+
+(defsystem app-resize)
+(defmethod app-resize :default [_ w h])
+
+(defn app-listener [components]
+  (proxy [ApplicationAdapter] []
+    (create [[_ components]]
+      (run! app-create components))
+
+    (dispose [[_ components]]
+      (run! app-dispose components))
+
+    (render [[_ components]]
+      (run! app-render components))
+
+    (resize [[_ components] w h]
+      (run! #(app-resize % w h) components))))
 
 (def ^:dynamic *unit-scale* 1)
 
@@ -23,8 +92,6 @@
 
 (declare
  pretty-pst
- edn-read-string
- io-resource
  str-join
  str-upper-case
  str-replace
@@ -316,27 +383,6 @@
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
 
-(defmacro defsystem
-  {:arglists '([name docstring? params?])}
-  [name-sym & args]
-  (let [docstring (if (string? (first args))
-                    (first args))
-        params (if (string? (first args))
-                 (second args)
-                 (first args))
-        params (if (nil? params)
-                 '[_]
-                 params)]
-    (when (zero? (count params))
-      (throw (IllegalArgumentException. "First argument needs to be component.")))
-    (when-let [avar (resolve name-sym)]
-      (println "WARNING: Overwriting defsystem:" avar))
-    `(defmulti ~(vary-meta name-sym assoc :params (list 'quote params))
-       ~(str "[[defsystem]] `" (str params) "`"
-             (when docstring (str "\n\n" docstring)))
-       (fn [[k#] & _args#]
-         k#))))
-
 (defmacro defmethods [k & sys-impls]
   `(do
     ~@(for [[sys & fn-body] sys-impls
@@ -444,31 +490,6 @@
 
 (defn tile->middle [position]
   (mapv (partial + 0.5) position))
-
-(defsystem app-create)
-(defmethod app-create :default [_])
-
-(defsystem app-dispose)
-(defmethod app-dispose :default [_])
-
-(defsystem app-render)
-(defmethod app-render :default [_])
-
-(defsystem app-resize)
-(defmethod app-resize :default [_ w h])
-
-(defmethods ::components-app
-  (app-create [[_ components]]
-    (run! app-create components))
-
-  (app-dispose [[_ components]]
-    (run! app-dispose components))
-
-  (app-render [[_ components]]
-    (run! app-render components))
-
-  (app-resize [[_ components] w h]
-    (run! #(app-resize % w h) components)))
 
 (defsystem handle [_ ctx])
 
@@ -746,11 +767,6 @@
        (get assets)
        play))
 
-(defn set-dock-icon [path]
-  (.setIconImage (java.awt.Taskbar/getTaskbar)
-                 (.getImage (java.awt.Toolkit/getDefaultToolkit)
-                            (io-resource path))))
-
 (defn schema-of [k]
   (safe-get schemas k))
 
@@ -921,13 +937,10 @@
     (alter-var-root #'db-properties update id update-fn))
   (async-write-to-file!))
 
-(defn load-edn [file]
-  (-> file io-resource slurp edn-read-string))
-
 (defn db-init [{:keys [schema properties]}]
-  (bind-root #'schemas (load-edn schema))
-  (bind-root #'properties-file (io-resource properties))
-  (let [properties (-> properties-file slurp edn-read-string)]
+  (bind-root #'schemas (-> schema io/resource slurp edn/read-string))
+  (bind-root #'properties-file (io/resource properties))
+  (let [properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! validate! properties)

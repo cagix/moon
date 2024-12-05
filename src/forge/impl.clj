@@ -1,7 +1,5 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
@@ -13,42 +11,24 @@
             [malli.generator :as mg])
   (:import (com.badlogic.gdx Gdx ApplicationAdapter)
            (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Colors  Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
-           (com.badlogic.gdx.utils Align Scaling ScreenUtils SharedLibraryLoader)
+           (com.badlogic.gdx.utils Align Scaling ScreenUtils )
            (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (space.earlygrey.shapedrawer ShapeDrawer)
-           (forge OrthogonalTiledMapRenderer)
-           (org.lwjgl.system Configuration)))
-
-(defn-impl start-app [listener {:keys [title fps width height]}]
-  (when SharedLibraryLoader/isMac
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create  []    (app-create  listener))
-                        (dispose []    (app-dispose listener))
-                        (render  []    (app-render  listener))
-                        (resize  [w h] (app-resize  listener w h)))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setForegroundFPS fps)
-                        (.setWindowedMode width height))))
+           (forge OrthogonalTiledMapRenderer)))
 
 (defn-impl pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
 
-(def-impl edn-read-string   edn/read-string)
-(def-impl io-resource       io/resource)
 (def-impl str-join          str/join)
 (def-impl str-upper-case    str/upper-case)
 (def-impl str-replace       str/replace)
