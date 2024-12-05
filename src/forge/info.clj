@@ -1,5 +1,5 @@
 (ns forge.info
-  (:require [clojure.component :refer [defsystem]]
+  (:require [forge.component :refer [defsystem]]
             [forge.core :refer :all]))
 
 (add-color "PRETTY_NAME" [0.84 0.8 0.52])

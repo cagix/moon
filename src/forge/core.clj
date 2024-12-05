@@ -1,7 +1,7 @@
 (ns forge.core
-  (:require [clojure.component :refer [defsystem]]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [forge.component :refer [defsystem]]
             [forge.sound :as sound]
             [malli.core :as m]
             [reduce-fsm :as fsm])

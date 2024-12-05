@@ -1,7 +1,8 @@
 (ns forge.app
-  (:require [clojure.gdx :as gdx]))
+  (:import (com.badlogic.gdx Gdx)))
 
-(def exit gdx/exit)
+(defn exit []
+  (.exit Gdx/app))
 
 (defmacro post-runnable [& exprs]
-  `(gdx/post-runnable (fn [] ~@exprs)))
+  `(.postRunnable Gdx/app [] ~@exprs))

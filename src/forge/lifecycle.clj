@@ -1,7 +1,5 @@
 (ns forge.lifecycle
-  (:require [clojure.component :refer [defsystem defmethods]]
-            [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
+  (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.awt :as awt]
@@ -9,6 +7,7 @@
             [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
+            [forge.component :refer [defsystem defmethods]]
             [forge.core :refer [batch]]
             [forge.assets :as assets]
             [forge.utils :as utils])

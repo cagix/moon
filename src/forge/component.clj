@@ -1,4 +1,4 @@
-(ns clojure.component)
+(ns forge.component)
 
 (defmacro defsystem
   {:arglists '([name docstring? params?])}

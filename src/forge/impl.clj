@@ -1,13 +1,12 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.component :refer [defmethods]]
-            [clojure.gdx :as gdx]
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
             [forge.assets :as assets]
+            [forge.component :refer [defmethods]]
             [forge.core :refer :all]
             [forge.lifecycle :as lifecycle]
             [malli.core :as m]
@@ -73,7 +72,7 @@
     params))
 
 (defn-impl ttfont [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (gdx/internal-file file))
+  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
         font (.generateFont generator (ttf-params size quality-scaling))]
     (dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
@@ -197,7 +196,7 @@
 (defmethods :app/cursors
   (lifecycle/create [[_ data]]
     (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (Pixmap. (gdx/internal-file (str "cursors/" file ".png")))
+                                    (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
                                           cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                                       (dispose pixmap)
                                       cursor))

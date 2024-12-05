@@ -1,5 +1,5 @@
 (ns forge.entity
-  (:require [clojure.component :refer [defmethods]]
+  (:require [forge.component :refer [defmethods]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.sound :as sound]
