@@ -1,6 +1,5 @@
 (ns forge.start
-  (:require [forge.core :refer :all]
-            [forge.impl]))
+  (:require [forge.core :refer :all]))
 
 (defn -main []
   (let [{:keys [requires
