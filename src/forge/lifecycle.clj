@@ -10,7 +10,9 @@
             [forge.assets :as assets])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.files FileHandle)))
+           (com.badlogic.gdx.files FileHandle)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+           (com.kotcrab.vis.ui.widget Tooltip)))
 
 (defn- recursively-search [folder extensions]
   (loop [[^FileHandle file & remaining] (FileHandle/.list folder)
@@ -44,6 +46,27 @@
     (.finishLoading manager)
     manager))
 
+(defn- check-cleanup-visui! []
+  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
+  ; => actually there is a deeper issue at play
+  ; we need to dispose ALL resources which were loaded already ...
+  (when (VisUI/isLoaded)
+    (VisUI/dispose)))
+
+(defn- font-enable-markup! []
+  (-> (VisUI/getSkin)
+      (.getFont "default-font")
+      .getData
+      .markupEnabled
+      (set! true)))
+
+(defn- set-tooltip-config! []
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+  ;Controls whether to fade out tooltip when mouse was moved. (default false)
+  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+  )
+
 (defsystem create)
 (defmethod create :default [_])
 
@@ -61,6 +84,17 @@
     (.bindRoot #'assets/get (load-assets folder)))
   (dispose [_]
     (.dispose assets/get)))
+
+(defmethods :app/vis-ui
+  (create [[_ skin-scale]]
+    (check-cleanup-visui!)
+    (VisUI/load (case skin-scale
+                  :skin-scale/x1 VisUI$SkinScale/X1
+                  :skin-scale/x2 VisUI$SkinScale/X2))
+    (font-enable-markup!)
+    (set-tooltip-config!))
+  (dispose [_]
+    (VisUI/dispose)))
 
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn"
