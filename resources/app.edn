@@ -12,9 +12,9 @@
           :height 900}
  :db {:schema "schema.edn"
       :properties "properties.edn"}
- :components [[:app/sprite-batch]
+ :components [[:forge.impl/assets "resources/"]
+              [:app/sprite-batch]
               [:app/shape-drawer]
-              [:app/assets "resources/"]
               [:app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
                                   :size 16
                                   :quality-scaling 2}]

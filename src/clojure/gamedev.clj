@@ -54,7 +54,6 @@
  white
  ->color
  ttfont
- load-assets
  sprite-batch
  equal?
  clamp
@@ -908,12 +907,6 @@
     (bind-root #'default-font (ttfont font)))
   (app-dispose [_]
     (dispose default-font)))
-
-(defmethods :app/assets
-  (app-create [[_ folder]]
-    (bind-root #'assets (load-assets folder)))
-  (app-dispose [_]
-    (dispose assets)))
 
 (defmethods :app/sprite-batch
   (app-create [_]

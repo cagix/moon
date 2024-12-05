@@ -87,7 +87,7 @@
         (AssetManager/.get this path)
         (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
 
-(defn-impl load-assets [folder]
+(defn- load-assets [folder]
   (let [manager (asset-manager)]
     (doseq [[class exts] [[com.badlogic.gdx.audio.Sound #{"wav"}]
                           [Texture #{"png" "bmp"}]]
@@ -96,6 +96,12 @@
       (.load manager ^String file ^Class class))
     (.finishLoading manager)
     manager))
+
+(defmethods ::assets
+  (app-create [[_ folder]]
+    (bind-root #'assets (load-assets folder)))
+  (app-dispose [_]
+    (dispose assets)))
 
 (def-impl black Color/BLACK)
 (def-impl white Color/WHITE)
