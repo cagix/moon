@@ -1,7 +1,8 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+  (:import (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
@@ -147,8 +148,8 @@
 (defn- all-of-class
   "Returns all asset paths with the specific class."
   [class]
-  (filter #(= (.getAssetType asset-manager %) class)
-          (.getAssetNames asset-manager)))
+  (filter #(= (AssetManager/.getAssetType asset-manager %) class)
+          (AssetManager/.getAssetNames asset-manager)))
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]

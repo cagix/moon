@@ -3,8 +3,7 @@
   Symbolic computations.
   Dependencies on symbols only.
   The 'core' implementation itself?"
-  (:import (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.audio Sound)
+  (:import (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Camera Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -55,7 +54,7 @@
             ~@fn-body)))
     ~k))
 
-(declare ^AssetManager asset-manager)
+(declare asset-manager)
 
 (defn play-sound [sound-name]
   (->> sound-name
