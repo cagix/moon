@@ -45,8 +45,8 @@
     (.finishLoading manager)
     manager))
 
-(defn create [folder]
+(defn create [[_ folder]]
   (bind-root asset-manager (load-assets (asset-descriptons folder))))
 
-(defn destroy []
+(defn destroy [_]
   (dispose asset-manager))

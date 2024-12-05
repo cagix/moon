@@ -7,8 +7,7 @@
   (:import (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 
-
-(defn create [[width height tile-size]]
+(defn create [[_ [width height tile-size]]]
   (bind-root world-unit-scale (float (/ tile-size)))
   (bind-root world-viewport-width  width)
   (bind-root world-viewport-height height)
@@ -18,5 +17,5 @@
                                   y-down? false]
                               (.setToOrtho camera y-down? world-width world-height)
                               (FitViewport. world-width world-height camera))))
-(defn resize [w h]
+(defn resize [_ w h]
   (.update world-viewport w h true))

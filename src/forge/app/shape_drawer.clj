@@ -17,10 +17,10 @@
     (dispose pixmap)
     texture))
 
-(defn create []
+(defn create [_]
   (bind-root pixel-texture (white-pixel-texture))
   (bind-root shape-drawer (ShapeDrawer. batch
                                         (TextureRegion. ^Texture pixel-texture 1 0 1 1))))
 
-(defn destroy []
+(defn destroy [_]
   (dispose pixel-texture))

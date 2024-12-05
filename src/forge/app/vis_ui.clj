@@ -2,7 +2,7 @@
   (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)))
 
-(defn create [skin-scale]
+(defn create [[_ skin-scale]]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
@@ -21,5 +21,5 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
-(defn destroy []
+(defn destroy [_]
   (VisUI/dispose))

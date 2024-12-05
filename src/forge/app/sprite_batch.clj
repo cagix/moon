@@ -4,8 +4,8 @@
                                 batch]])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
-(defn create []
+(defn create [_]
   (bind-root batch (SpriteBatch.)))
 
-(defn destroy []
+(defn destroy [_]
   (dispose batch))

@@ -5,7 +5,7 @@
                                 batch]])
   (:import (forge OrthogonalTiledMapRenderer)))
 
-(defn create []
+(defn create [_]
   (bind-root cached-map-renderer
              (memoize
               (fn [tiled-map]

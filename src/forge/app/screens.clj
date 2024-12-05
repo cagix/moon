@@ -50,7 +50,7 @@
     (run! #(.addActor stage %) actors)
     (->StageScreen stage screen)))
 
-(defn create [{:keys [ks first-k]}]
+(defn create [[_ {:keys [ks first-k]}]]
   (bind-root screens (mapvals stage-screen (mapvals
                                             (fn [ns-sym]
                                               (require ns-sym)
@@ -58,9 +58,9 @@
                                             ks)))
   (change-screen first-k))
 
-(defn destroy []
+(defn destroy [_]
   (run! screen-destroy (vals screens)))
 
-(defn render []
+(defn render [_]
   (ScreenUtils/clear Color/BLACK)
   (screen-render (current-screen)))

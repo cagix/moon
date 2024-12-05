@@ -26,8 +26,8 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create [font]
+(defn create [[_ font]]
   (bind-root default-font (truetype-font font)))
 
-(defn destroy []
+(defn destroy [_]
   (dispose default-font))

@@ -12,8 +12,8 @@
     (dispose pixmap)
     cursor))
 
-(defn create [data]
+(defn create [[_ data]]
   (bind-root cursors (mapvals gdx-cursor data)))
 
-(defn destroy []
+(defn destroy [_]
   (run! dispose (vals cursors)))

@@ -7,7 +7,7 @@
                                 validate!
                                 db-properties]]))
 
-(defn create [{:keys [schema properties]}]
+(defn create [[_ {:keys [schema properties]}]]
   (bind-root schemas (-> schema io/resource slurp edn/read-string))
   (bind-root properties-file (io/resource properties))
   (let [properties (-> properties-file slurp edn/read-string)]
