@@ -2,66 +2,22 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [forge.component :refer [defsystem defmethods]]
-            [forge.core :refer [batch
-                                shape-drawer
-                                cursors
-                                gui-viewport
-                                gui-viewport-width
-                                gui-viewport-height
-                                world-unit-scale
-                                world-viewport
-                                world-viewport-width
-                                world-viewport-height
-                                cached-map-renderer
-
-                                bind-root
-                                mapvals
-                                find-actor-with-id
-
-                                Screen
-                                screens
-                                change-screen
-                                current-screen
-                                screen-enter
-                                screen-exit
-                                screen-render
-                                screen-destroy
-
-                                schemas
-                                properties-file
-                                validate!
-                                db-properties
-                                default-font
-                                ]]
-            [forge.assets :as assets])
-  (:import (com.badlogic.gdx ApplicationAdapter
-                             Gdx)
+            [forge.core :refer :all])
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color
-                                      Texture
-                                      Texture$TextureFilter
-                                      Pixmap
-                                      Pixmap$Format
-                                      OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch
-                                          TextureRegion)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Stage)
-           (com.badlogic.gdx.utils Disposable
-                                   ScreenUtils
-                                   SharedLibraryLoader)
+           (com.badlogic.gdx.utils ScreenUtils SharedLibraryLoader)
            (com.badlogic.gdx.utils.viewport FitViewport)
-           (com.kotcrab.vis.ui VisUI
-                               VisUI$SkinScale)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (org.lwjgl.system Configuration)
-           (java.awt Taskbar
-                     Toolkit)
+           (java.awt Taskbar Toolkit)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer)))
 
@@ -104,6 +60,20 @@
                   (recursively-search folder exts))]
     [file class]))
 
+(defn- asset-manager* ^AssetManager []
+  (proxy [AssetManager clojure.lang.IFn] []
+    (invoke [^String path]
+      (if (AssetManager/.contains this path)
+        (AssetManager/.get this path)
+        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
+
+(defn- load-assets [assets]
+  (let [manager (asset-manager*)]
+    (doseq [[file class] assets]
+      (.load manager ^String file ^Class class))
+    (.finishLoading manager)
+    manager))
+
 (defrecord StageScreen [^Stage stage sub-screen]
   Screen
   (screen-enter [_]
@@ -120,7 +90,7 @@
     (.draw stage))
 
   (screen-destroy [_]
-    (.dispose stage)
+    (dispose stage)
     (screen-destroy sub-screen)))
 
 (defn- stage-screen
@@ -149,7 +119,7 @@
 (defn- ttfont [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
         font (.generateFont generator (ttf-params size quality-scaling))]
-    (.dispose generator)
+    (dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
@@ -158,8 +128,8 @@
 (defsystem create)
 (defmethod create :default [_])
 
-(defsystem dispose)
-(defmethod dispose :default [_])
+(defsystem destroy)
+(defmethod destroy :default [_])
 
 (defsystem render)
 (defmethod render :default [_])
@@ -169,9 +139,9 @@
 
 (defmethods :app/assets
   (create [[_ folder]]
-    (assets/load-all (asset-descriptons folder)))
-  (dispose [_]
-    (assets/dispose)))
+    (bind-root #'asset-manager (load-assets (asset-descriptons folder))))
+  (destroy [_]
+    (dispose asset-manager)))
 
 (defmethods :app/vis-ui
   (create [[_ skin-scale]]
@@ -192,21 +162,21 @@
     ;Controls whether to fade out tooltip when mouse was moved. (default false)
     ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
     (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
-  (dispose [_]
+  (destroy [_]
     (VisUI/dispose)))
 
 (defmethods :app/sprite-batch
   (create [_]
     (bind-root #'batch (SpriteBatch.)))
-  (dispose [_]
-    (SpriteBatch/.dispose batch)))
+  (destroy [_]
+    (dispose batch)))
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                  (.setColor Color/WHITE)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
-    (.dispose pixmap)
+    (dispose pixmap)
     texture))
 
 (let [pixel-texture (atom nil)]
@@ -214,19 +184,19 @@
     (create [_]
       (reset! pixel-texture (white-pixel-texture))
       (bind-root #'shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture @pixel-texture 1 0 1 1))))
-    (dispose [_]
-      (Texture/.dispose @pixel-texture))))
+    (destroy [_]
+      (dispose @pixel-texture))))
 
 (defmethods :app/cursors
   (create [[_ data]]
     (bind-root #'cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                                     (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
                                           cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                      (.dispose pixmap)
+                                      (dispose pixmap)
                                       cursor))
                                   data)))
-  (dispose [_]
-    (run! Disposable/.dispose (vals cursors))))
+  (destroy [_]
+    (run! dispose (vals cursors))))
 
 (defmethods :app/gui-viewport
   (create [[_ [width height]]]
@@ -267,7 +237,7 @@
                                                   ((ns-resolve ns-sym 'create)))
                                                 ks)))
     (change-screen first-k))
-  (dispose [_]
+  (destroy [_]
     (run! screen-destroy (vals screens)))
   (render [_]
     (ScreenUtils/clear Color/BLACK)
@@ -286,8 +256,8 @@
 (defmethods :app/default-font
   (create [[_ font]]
     (bind-root #'default-font (ttfont font)))
-  (dispose [_]
-    (.dispose default-font)))
+  (destroy [_]
+    (dispose default-font)))
 
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn" io/resource slurp edn/read-string)]
@@ -298,7 +268,7 @@
                         :glfw-check-thread0 false}))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create  []    (run! create          components))
-                          (dispose []    (run! dispose         components))
+                          (dispose []    (run! destroy         components))
                           (render  []    (run! render          components))
                           (resize  [w h] (run! #(resize % w h) components)))
                         (lwjgl3-config (:lwjgl3 config)))))

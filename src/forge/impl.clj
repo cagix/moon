@@ -5,7 +5,6 @@
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
-            [forge.assets :as assets]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.error :as me]
@@ -436,7 +435,7 @@
 
 (defn-impl ->texture-region
   ([path]
-   (TextureRegion. ^Texture (assets/manager path)))
+   (TextureRegion. ^Texture (asset-manager path)))
   ([^TextureRegion texture-region [x y w h]]
    (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
 

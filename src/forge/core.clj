@@ -1,9 +1,9 @@
 (ns forge.core
-  (:require [forge.component :refer [defsystem]]
-            [forge.sound :as sound]
-            [malli.core :as m]
+  (:require [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Camera Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -16,6 +16,46 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
            (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
+
+(defmacro defsystem
+  {:arglists '([name docstring? params?])}
+  [name-sym & args]
+  (let [docstring (if (string? (first args))
+                    (first args))
+        params (if (string? (first args))
+                 (second args)
+                 (first args))
+        params (if (nil? params)
+                 '[_]
+                 params)]
+    (when (zero? (count params))
+      (throw (IllegalArgumentException. "First argument needs to be component.")))
+    (when-let [avar (resolve name-sym)]
+      (println "WARNING: Overwriting defsystem:" avar))
+    `(defmulti ~(vary-meta name-sym assoc :params (list 'quote params))
+       ~(str "[[defsystem]] `" (str params) "`"
+             (when docstring (str "\n\n" docstring)))
+       (fn [[k#] & _args#]
+         k#))))
+
+(defmacro defmethods [k & sys-impls]
+  `(do
+    ~@(for [[sys & fn-body] sys-impls
+            :let [sys-var (resolve sys)]]
+        `(do
+          (when (get (methods @~sys-var) ~k)
+            (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
+          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
+            ~@fn-body)))
+    ~k))
+
+(declare ^AssetManager asset-manager)
+
+(defn play-sound [sound-name]
+  (->> sound-name
+       (format "sounds/%s.wav")
+       asset-manager
+       Sound/.play))
 
 (def ^:dynamic *unit-scale* 1)
 
@@ -1964,7 +2004,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (sound/play sound)
+  (play-sound sound)
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation

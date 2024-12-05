@@ -1,7 +1,5 @@
 (ns forge.effects
-  (:require [forge.component :refer [defmethods]]
-            [forge.core :refer :all]
-            [forge.sound :as sound]))
+  (:require [forge.core :refer :all]))
 
 (comment
 
@@ -210,7 +208,7 @@
               max-range))))
 
   (handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
-    (sound/play "bfxr_waypointunlock")
+    (play-sound "bfxr_waypointunlock")
     (spawn-projectile {:position (projectile-start-point @source
                                                          target-direction
                                                          (projectile-size projectile))
@@ -241,7 +239,7 @@
 
   (handle [[_ {:keys [property/id]}]
            {:keys [effect/source effect/target-position]}]
-    (sound/play "bfxr_shield_consume")
+    (play-sound "bfxr_shield_consume")
     (spawn-creature {:position target-position
                      :creature-id id ; already properties/get called through one-to-one, now called again.
                      :components {:entity/fsm {:fsm :fsms/npc
