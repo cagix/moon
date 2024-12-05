@@ -15,7 +15,7 @@
            (com.badlogic.gdx.math Vector2 Vector3)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
-           (forge OrthogonalTiledMapRenderer ColorSetter RayCaster)))
+           (forge RayCaster)))
 
 (declare m-schema
          m-validate)
@@ -87,7 +87,6 @@
  world-viewport
  world-viewport-width
  world-viewport-height
- cached-map-renderer
  screens
  current-screen-key
  world-tiled-map
@@ -1055,18 +1054,7 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [tiled-map color-setter]
-  (let [^OrthogonalTiledMapRenderer map-renderer (cached-map-renderer tiled-map)]
-    (.setColorSetter map-renderer (reify ColorSetter
-                                    (apply [_ color x y]
-                                      (color-setter color x y))))
-    (.setView map-renderer (world-camera))
-    (->> tiled-map
-         layers
-         (filter visible?)
-         (map (partial layer-index tiled-map))
-         int-array
-         (.render map-renderer))))
+  [tiled-map color-setter])
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
@@ -2222,7 +2210,6 @@
    (send-event! eid event nil))
   ([eid event params]
    (send-event! eid event params)))
-
 
 (defn add-mods    [entity mods] (update entity :entity/modifiers mods-add    mods))
 (defn remove-mods [entity mods] (update entity :entity/modifiers mods-remove mods))
