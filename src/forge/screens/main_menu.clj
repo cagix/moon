@@ -1,7 +1,7 @@
 (ns forge.screens.main-menu
   (:require [clojure.gdx.app :as app]
-            [forge.core :refer :all])
-  (:import (com.badlogic.gdx Gdx)))
+            [clojure.gdx.input :refer [key-just-pressed?]]
+            [forge.core :refer :all]))
 
 (defn create []
   {:actors [(background-image)
@@ -18,7 +18,7 @@
                         (when dev-mode?
                           [(text-button "Property editor"
                                         #(change-screen :screens/editor))])
-                        [(text-button "Exit" (app/exit))]]))
+                        [(text-button "Exit" app/exit)]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui-actor {:act (fn []

@@ -1,5 +1,6 @@
 (ns forge.entity
-  (:require [forge.core :refer :all]
+  (:require [clojure.gdx.input :refer [button-just-pressed?]]
+            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.system :refer [defmethods]]
             [forge.ui.inventory :as inventory]

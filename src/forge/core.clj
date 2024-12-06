@@ -1,6 +1,6 @@
 (ns forge.core
   (:require [clojure.gdx.audio.sound :as sound]
-            [clojure.gdx.graphics :as g]
+            [clojure.gdx.graphics :as g :refer [delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
@@ -76,11 +76,6 @@
  equal?
  clamp
  degree->radians
- frames-per-second
- delta-time
- button-just-pressed?
- key-just-pressed?
- key-pressed?
  ^{:doc "font, h-align, up? and scale are optional.
         h-align one of: :center, :left, :right. Default :center.
         up? renders the font over y, otherwise under.

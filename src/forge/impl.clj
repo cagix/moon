@@ -1,5 +1,7 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.gdx.input :as input]
+            [clojure.gdx.interop :refer [static-field]]
             [clojure.math :as math]
             [clojure.set :as set]
             [clojure.string :as str]
@@ -10,8 +12,7 @@
             [malli.error :as me]
             [malli.generator :as mg]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors Texture)
+  (:import (com.badlogic.gdx.graphics Color Colors Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Align Scaling)
@@ -60,12 +61,6 @@
 (def-impl black Color/BLACK)
 (def-impl white Color/WHITE)
 
-(defn- static-field [klass-str k]
-  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str-replace (str-upper-case (name k)) "-" "_")))))
-
-(def ^:private k->input-button (partial static-field "Input$Buttons"))
-(def ^:private k->input-key    (partial static-field "Input$Keys"))
-
 (defn-impl equal? [a b]
   (MathUtils/isEqual a b))
 
@@ -74,21 +69,6 @@
 
 (defn-impl degree->radians [degree]
   (* MathUtils/degreesToRadians (float degree)))
-
-(defn-impl frames-per-second []
-  (.getFramesPerSecond Gdx/graphics))
-
-(defn-impl delta-time []
-  (.getDeltaTime Gdx/graphics))
-
-(defn-impl button-just-pressed? [b]
-  (.isButtonJustPressed Gdx/input (k->input-button b)))
-
-(defn-impl key-just-pressed? [k]
-  (.isKeyJustPressed Gdx/input (k->input-key k)))
-
-(defn-impl key-pressed? [k]
-  (.isKeyPressed Gdx/input (k->input-key k)))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -348,10 +328,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
+  (let [mouse-x (clamp (input/x)
                        (.getLeftGutterWidth viewport)
                        (.getRightGutterX viewport))
-        mouse-y (clamp (.getY Gdx/input)
+        mouse-y (clamp (input/y)
                        (.getTopGutterHeight viewport)
                        (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]

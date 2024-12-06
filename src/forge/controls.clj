@@ -1,5 +1,7 @@
 (ns forge.controls
   (:require [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.input :refer [key-just-pressed?
+                                       key-pressed?]]
             [forge.core :refer :all]))
 
 (defn unpaused? []

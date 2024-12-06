@@ -1,5 +1,7 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.input :refer [key-just-pressed?
+                                       key-pressed?]]
             [clojure.gdx.tiled :as tiled]
             [forge.core :refer :all]
             [forge.controls :as controls]

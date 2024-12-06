@@ -1,6 +1,7 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
+            [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.vis-ui :as vis]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)

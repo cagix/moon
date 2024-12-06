@@ -5,6 +5,12 @@
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils ScreenUtils)))
 
+(defn frames-per-second []
+  (.getFramesPerSecond Gdx/graphics))
+
+(defn delta-time []
+  (.getDeltaTime Gdx/graphics))
+
 (defn cursor [pixmap hotspot-x hotspot-y]
   (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y))
 
