@@ -1,12 +1,11 @@
 (ns forge.app.shape-drawer
   (:require [clojure.gdx.graphics :as g]
-            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.math.utils :refer [degree->radians]]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [forge.app.sprite-batch :refer [batch]]
-            [forge.utils :refer [bind-root]]
-            [forge.core :refer :all]))
+            [forge.utils :refer [bind-root]]))
 
 (declare ^:private pixel-texture
          ^:private sd)
@@ -29,23 +28,23 @@
 (defn- sd-color [color]
   (sd/set-color sd (->color color)))
 
-(defn-impl draw-ellipse [position radius-x radius-y color]
+(defn ellipse [position radius-x radius-y color]
   (sd-color color)
   (sd/ellipse sd position radius-x radius-y))
 
-(defn-impl draw-filled-ellipse [position radius-x radius-y color]
+(defn filled-ellipse [position radius-x radius-y color]
   (sd-color color)
   (sd/filled-ellipse sd position radius-x radius-y))
 
-(defn-impl draw-circle [position radius color]
+(defn circle [position radius color]
   (sd-color color)
   (sd/circle sd position radius))
 
-(defn-impl draw-filled-circle [position radius color]
+(defn filled-circle [position radius color]
   (sd-color color)
   (sd/filled-circle sd position radius))
 
-(defn-impl draw-arc [center radius start-angle degree color]
+(defn arc [center radius start-angle degree color]
   (sd-color color)
   (sd/arc sd
           center
@@ -53,7 +52,7 @@
           (degree->radians start-angle)
           (degree->radians degree)))
 
-(defn-impl draw-sector [center radius start-angle degree color]
+(defn sector [center radius start-angle degree color]
   (sd-color color)
   (sd/sector sd
              center
@@ -61,19 +60,19 @@
              (degree->radians start-angle)
              (degree->radians degree)))
 
-(defn-impl draw-rectangle [x y w h color]
+(defn rectangle [x y w h color]
   (sd-color color)
   (sd/rectangle sd x y w h))
 
-(defn-impl draw-filled-rectangle [x y w h color]
+(defn filled-rectangle [x y w h color]
   (sd-color color)
   (sd/filled-rectangle sd x y w h))
 
-(defn-impl draw-line [start end color]
+(defn line [start end color]
   (sd-color color)
   (sd/line sd start end))
 
-(defn-impl draw-grid [leftx bottomy gridw gridh cellw cellh color]
+(defn grid [leftx bottomy gridw gridh cellw cellh color]
   (sd-color color)
   (let [w (* (float gridw) (float cellw))
         h (* (float gridh) (float cellh))
@@ -81,12 +80,12 @@
         rightx (+ (float leftx) (float w))]
     (doseq [idx (range (inc (float gridw)))
             :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-      (draw-line [linex topy] [linex bottomy]))
+      (line [linex topy] [linex bottomy]))
     (doseq [idx (range (inc (float gridh)))
             :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-      (draw-line [leftx liney] [rightx liney]))))
+      (line [leftx liney] [rightx liney]))))
 
-(defn-impl with-line-width [width draw-fn]
+(defn with-line-width [width draw-fn]
   (let [old-line-width (sd/default-line-width sd)]
     (sd/set-default-line-width sd (* width old-line-width))
     (draw-fn)

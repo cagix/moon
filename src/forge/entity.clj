@@ -7,6 +7,7 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-mouse-position]]
             [forge.app.screens :refer [change-screen]]
+            [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.screens.stage :refer [mouse-on-actor?]]
@@ -130,12 +131,12 @@
           y (+ y half-height)
           height (pixels->world-units 5)
           border (pixels->world-units borders-px)]
-      (draw-filled-rectangle x y width height color/black)
-      (draw-filled-rectangle (+ x border)
-                             (+ y border)
-                             (- (* width ratio) (* 2 border))
-                             (- height (* 2 border))
-                             (hpbar-color ratio)))))
+      (sd/filled-rectangle x y width height color/black)
+      (sd/filled-rectangle (+ x border)
+                           (+ y border)
+                           (- (* width ratio) (* 2 border))
+                           (- height (* 2 border))
+                           (hpbar-color ratio)))))
 
 (defmethods :entity/hp
   (->v [[_ v]]
@@ -156,7 +157,7 @@
 
   ; TODO draw opacity as of counter ratio?
   (render-above [_ entity]
-    (draw-filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
+    (sd/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
 
 (defmethods :entity/string-effect
   (e-tick [[k {:keys [counter]}] eid]
@@ -380,9 +381,9 @@
 (defmethod render-default :entity/line-render [[_ {:keys [thick? end color]}] entity]
   (let [position (:position entity)]
     (if thick?
-      (with-line-width 4
-        #(draw-line position end color))
-      (draw-line position end color))))
+      (sd/with-line-width 4
+        #(sd/line position end color))
+      (sd/line position end color))))
 
 (defmethod render-default :entity/image [[_ image] entity]
   (draw-rotated-centered image
@@ -396,16 +397,16 @@
 
 (defmethod render-below :entity/mouseover? [_ {:keys [entity/faction] :as entity}]
   (let [player @player-eid]
-    (with-line-width 3
-      #(draw-ellipse (:position entity)
-                     (:half-width entity)
-                     (:half-height entity)
-                     (cond (= faction (e-enemy player))
-                           enemy-color
-                           (= faction (:entity/faction player))
-                           friendly-color
-                           :else
-                           neutral-color)))))
+    (sd/with-line-width 3
+      #(sd/ellipse (:position entity)
+                   (:half-width entity)
+                   (:half-height entity)
+                   (cond (= faction (e-enemy player))
+                         enemy-color
+                         (= faction (:entity/faction player))
+                         friendly-color
+                         :else
+                         neutral-color)))))
 
 (defprotocol Animation
   (animation-tick [_ delta])
@@ -582,7 +583,7 @@
       (send-event eid :effect-wears-off)))
 
   (render-below [_ entity]
-    (draw-circle (:position entity) 0.5 [1 1 1 0.6])))
+    (sd/circle (:position entity) 0.5 [1 1 1 0.6])))
 
 (defmethods :player-moving
   (->v [[_ eid movement-vector]]
@@ -629,11 +630,11 @@
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (draw-filled-circle center radius [1 1 1 0.125])
-    (draw-sector center radius
-                 90 ; start-angle
-                 (* (float action-counter-ratio) 360) ; degree
-                 [1 1 1 0.5])
+    (sd/filled-circle center radius [1 1 1 0.125])
+    (sd/sector center radius
+               90 ; start-angle
+               (* (float action-counter-ratio) 360) ; degree
+               [1 1 1 0.5])
     (draw-image image [(- (float x) radius) y])))
 
 (defmethods :active-skill

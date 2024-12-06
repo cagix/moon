@@ -5,6 +5,7 @@
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.screen :refer [Screen]]
             [forge.app.screens :refer [change-screen]]
+            [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]))
 
 ; 28.4 viewportwidth
@@ -48,7 +49,7 @@
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
      (fn []
-       (draw-filled-circle (cam/position (world-camera)) 0.5 :green)))
+       (sd/filled-circle (cam/position (world-camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
       (change-screen :screens/world)))

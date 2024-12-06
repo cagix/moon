@@ -1,7 +1,6 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.interop :refer [static-field]]
             [clojure.gdx.math.utils :refer [equal?]]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
@@ -10,11 +9,12 @@
             [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
             [forge.app.default-font :refer [default-font]]
+            [forge.app.shape-drawer :as sd]
             [forge.app.sprite-batch :refer [batch]]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.generator :as mg])
-  (:import (com.badlogic.gdx.graphics Color Colors Texture)
+  (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Align Scaling)
@@ -58,17 +58,6 @@
            (gdx-align (or h-align :center))
            false) ; wrap false, no need target-width
     (.setScale data old-scale)))
-
-(defn-impl ->color
-  ([r g b]
-   (->color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a)))
-  (^Color [c]
-          (cond (= Color (class c)) c
-                (keyword? c) (static-field "graphics.Color" c)
-                (vector? c) (apply ->color c)
-                :else (throw (ex-info "Cannot understand color" c)))))
 
 (extend-type Actor
   HasVisible
@@ -188,9 +177,6 @@
     0
     (/ v mx)))
 
-(defn-impl add-color [name-str color]
-  (Colors/put name-str (->color color)))
-
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
     (:pixel-dimensions image)
@@ -302,7 +288,7 @@
 (defn- draw-with [viewport unit-scale draw-fn]
   (draw-on-viewport batch
                     viewport
-                    #(with-line-width unit-scale
+                    #(sd/with-line-width unit-scale
                        (fn []
                          (binding [*unit-scale* unit-scale]
                            (draw-fn))))))

@@ -1,9 +1,11 @@
 (ns forge.ui.inventory
-  (:require [clojure.gdx.scene2d.actor :refer [user-object]]
+  (:require [clojure.gdx.graphics.color :refer [->color]]
+            [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height
                                             gui-mouse-position]]
+            [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
             [forge.screens.stage :refer [screen-stage]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
@@ -18,14 +20,14 @@
 (def ^:private not-allowed-color  [0.6 0   0 0.8])
 
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
-  (draw-rectangle x y cell-size cell-size :gray)
+  (sd/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (e-state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (draw-filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (sd/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??

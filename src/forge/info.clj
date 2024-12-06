@@ -1,11 +1,12 @@
 (ns forge.info
-  (:require [clojure.math :as math]
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.math :as math]
             [clojure.string :as str]
             [forge.core :refer :all]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root]]))
 
-(add-color "PRETTY_NAME" [0.84 0.8 0.52])
+(color/add "PRETTY_NAME" [0.84 0.8 0.52])
 
 (bind-root info-color
            {:property/pretty-name "PRETTY_NAME"

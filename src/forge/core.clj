@@ -17,6 +17,7 @@
                                          edn->value]]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
+            [forge.app.shape-drawer :as sd]
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
             [forge.system :refer [defsystem]]
@@ -53,7 +54,6 @@
  ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
  world-delta
  player-eid
- ->color
  ^{:doc "font, h-align, up? and scale are optional.
         h-align one of: :center, :left, :right. Default :center.
         up? renders the font over y, otherwise under.
@@ -81,18 +81,6 @@
  val-max-schema
  ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
  start-world
- add-color
- draw-ellipse
- draw-filled-ellipse
- draw-circle
- draw-filled-circle
- draw-arc
- draw-sector
- draw-rectangle
- draw-filled-rectangle
- draw-line
- draw-grid
- with-line-width
  world-mouse-position
  world-camera
  ->texture-region
@@ -1381,7 +1369,7 @@
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (draw-rectangle x y (:width entity) (:height entity) color)))
+    (sd/rectangle x y (:width entity) (:height entity) color)))
 
 (defn- render-entity! [system entity]
   (try

@@ -1,6 +1,7 @@
 (ns forge.effects
   (:require [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
+            [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
             [forge.system :refer [defmethods]]))
 
@@ -179,11 +180,11 @@
     (when target
       (let [source* @source
             target* @target]
-        (draw-line (start-point source* target*)
-                   (end-point source* target* maxrange)
-                   (if (in-range? source* target* maxrange)
-                     [1 0 0 0.5]
-                     [1 1 0 0.5]))))))
+        (sd/line (start-point source* target*)
+                 (end-point source* target* maxrange)
+                 (if (in-range? source* target* maxrange)
+                   [1 0 0 0.5]
+                   [1 1 0 0.5]))))))
 
 (defn- projectile-start-point [entity direction size]
   (v-add (:position entity)
@@ -299,6 +300,6 @@
   (render-effect [_ {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target* (map deref (creatures-in-los-of-player))]
-        (draw-line (:position source*) #_(start-point source* target*)
-                   (:position target*)
-                   [1 0 0 0.5])))))
+        (sd/line (:position source*) #_(start-point source* target*)
+                 (:position target*)
+                 [1 0 0 0.5])))))

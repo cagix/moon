@@ -12,6 +12,7 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]
+            [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.screen :refer [Screen]]
@@ -94,24 +95,24 @@ direction keys: move")
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world-camera))
         [x y] (mapv int (world-mouse-position))]
-    (draw-rectangle x y 1 1 color/white)
+    (sd/rectangle x y 1 1 color/white)
     (when start-position
-      (draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (sd/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (movement-property tiled-map [x y])]]
-        (draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
-        (draw-filled-circle [(+ x 0.5) (+ y 0.5)]
+        (sd/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
+        (sd/filled-circle [(+ x 0.5) (+ y 0.5)]
                           0.05
                           (case prop
                             "all"   :green
                             "air"   :orange
                             "none"  :red))))
     (when show-grid-lines
-      (draw-grid 0
-                 0
-                 (tiled/tm-width  tiled-map)
-                 (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
+      (sd/grid 0
+               0
+               (tiled/tm-width  tiled-map)
+               (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 
