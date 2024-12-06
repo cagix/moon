@@ -1,6 +1,7 @@
 (ns forge.app.screens
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.stage :as stage]
             [forge.core :refer [gui-viewport
                                 batch

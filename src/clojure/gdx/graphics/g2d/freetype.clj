@@ -17,7 +17,7 @@
 (defn generate-font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. (files/internal file))
         font (.generateFont generator (ttf-params size quality-scaling))]
-    (dispose generator)
+    (.dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
