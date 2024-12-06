@@ -25,7 +25,7 @@
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
             [forge.system :refer [defsystem]]
-            [forge.utils :refer [bind-root safe-get]]
+            [forge.utils :refer [bind-root safe-get pretty-pst]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -38,7 +38,6 @@
            (forge RayCaster)))
 
 (declare
- pretty-pst
  world-tiled-map
  explored-tile-corners
  world-grid
@@ -78,7 +77,6 @@
  val-max-schema
  ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
  start-world
- ->texture-region
  ->image
  sub-image
  sprite-sheet

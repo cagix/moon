@@ -1,5 +1,5 @@
 (ns forge.impl
-  (:require [clj-commons.pretty.repl :as pretty-repl]
+  (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.math.utils :refer [equal?]]
             [clojure.gdx.utils.viewport :as vp]
@@ -13,17 +13,8 @@
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.utils Scaling)
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.badlogic.gdx.math Vector2 Circle Intersector Rectangle)))
-
-(defn-impl pretty-pst [t]
-  (binding [*print-level* 3]
-    (pretty-repl/pretty-pst t 24)))
-
-(defn- gdx-scaling [k]
-  (case k
-    :fill Scaling/fill))
 
 (def-impl grid2d                    g2d/create-grid)
 (def-impl g2d-width                 g2d/width)
@@ -162,19 +153,13 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(defn-impl ->texture-region
-  ([path]
-   (TextureRegion. ^Texture (asset-manager path)))
-  ([^TextureRegion texture-region [x y w h]]
-   (TextureRegion. texture-region (int x) (int y) (int w) (int h))))
-
 (defn-impl ->image [path]
   (sprite* world-unit-scale
-           (->texture-region path)))
+           (g/texture-region (asset-manager path))))
 
 (defn-impl sub-image [image bounds]
   (sprite* world-unit-scale
-           (->texture-region (:texture-region image) bounds)))
+           (apply g/texture-region (:texture-region image) bounds)))
 
 (defn-impl sprite-sheet [path tilew tileh]
   {:image (->image path)

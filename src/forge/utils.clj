@@ -1,5 +1,6 @@
 (ns forge.utils
-  (:require [clojure.pprint :refer [pprint]]))
+  (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.pprint :refer [pprint]]))
 
 (defmacro bind-root [sym value]
   `(clojure.lang.Var/.bindRoot (var ~sym) ~value))
@@ -40,3 +41,7 @@
              pprint
              with-out-str
              (spit file)))))))
+
+(defn pretty-pst [t]
+  (binding [*print-level* 3]
+    (pretty-repl/pretty-pst t 24)))

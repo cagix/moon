@@ -32,8 +32,11 @@
 (defn texture [^Pixmap pixmap]
   (Texture. pixmap))
 
-(defn texture-region [^Texture texture x y w h]
-  (TextureRegion. texture (int x) (int y) (int w) (int h)))
+(defn texture-region
+  ([^Texture texture]
+   (TextureRegion. texture))
+  ([^Texture texture x y w h]
+   (TextureRegion. texture (int x) (int y) (int w) (int h))))
 
 (defn region-width [texture-region]
   (TextureRegion/.getRegionWidth texture-region))

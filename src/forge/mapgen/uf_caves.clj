@@ -1,5 +1,7 @@
 (ns ^:no-doc forge.mapgen.uf-caves
-  (:require [clojure.gdx.tiled :as tiled]
+  (:require [clojure.gdx.graphics :as g]
+            [clojure.gdx.tiled :as tiled]
+            [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
             [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
@@ -31,15 +33,12 @@
 
 (def ^:private sprite-size 48)
 
-(defn- terrain-texture-region []
-  (->texture-region "maps/uf_terrain.png"))
-
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (->texture-region (terrain-texture-region)
-                             [(* sprite-x sprite-size)
-                              (* sprite-y sprite-size)
-                              sprite-size
-                              sprite-size])
+  (tm-tile (g/texture-region (asset-manager "maps/uf_terrain.png")
+                             (* sprite-x sprite-size)
+                             (* sprite-y sprite-size)
+                             sprite-size
+                             sprite-size)
            movement))
 
 (def ^:private uf-grounds
