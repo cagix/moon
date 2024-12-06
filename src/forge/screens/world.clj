@@ -1,6 +1,7 @@
 (ns forge.screens.world
   (:require [clojure.gdx.graphics :refer [delta-time frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
             [forge.utils :refer [bind-root]]
             [clojure.vis-ui :as vis]
@@ -198,7 +199,7 @@
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
           explored? (get @explored-tile-corners position) ; TODO needs int call ?
-          base-color (if explored? explored-tile-color black)
+          base-color (if explored? explored-tile-color color/black)
           cache-entry (get @light-cache position :not-found)
           blocked? (if (= cache-entry :not-found)
                      (let [blocked? (ray-blocked? light-position position)]
@@ -208,10 +209,10 @@
       #_(when @do-once
           (swap! ray-positions conj position))
       (if blocked?
-        (if see-all-tiles? white base-color)
+        (if see-all-tiles? color/white base-color)
         (do (when-not explored?
               (swap! explored-tile-corners assoc (->tile position) true))
-            white)))))
+            color/white)))))
 
 (defn tile-color-setter [light-position]
   (tile-color-setter* (atom {}) light-position))

@@ -1,5 +1,6 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :refer [static-field]]
             [clojure.gdx.math.utils :refer [equal?]]
             [clojure.gdx.utils.viewport :as vp]
@@ -236,10 +237,10 @@
            1 ; scaling factor
            1
            rotation)
-    (if color (.setColor this white)))
+    (if color (.setColor this color/white)))
 
   (draw-on-viewport [this viewport draw-fn]
-    (.setColor this white) ; fix scene2d.ui.tooltip flickering
+    (.setColor this color/white) ; fix scene2d.ui.tooltip flickering
     (.setProjectionMatrix this (.combined (Viewport/.getCamera viewport)))
     (.begin this)
     (draw-fn)

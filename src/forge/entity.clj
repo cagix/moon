@@ -1,5 +1,6 @@
 (ns forge.entity
-  (:require [clojure.gdx.input :refer [button-just-pressed?]]
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
@@ -129,7 +130,7 @@
           y (+ y half-height)
           height (pixels->world-units 5)
           border (pixels->world-units borders-px)]
-      (draw-filled-rectangle x y width height black)
+      (draw-filled-rectangle x y width height color/black)
       (draw-filled-rectangle (+ x border)
                              (+ y border)
                              (- (* width ratio) (* 2 border))

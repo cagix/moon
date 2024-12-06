@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.screens :as screens :refer [change-screen]]
@@ -31,7 +32,7 @@
 
 (defn- ->tile-corner-color-setter [explored?]
   (fn tile-corner-color-setter [color x y]
-    (if (get explored? [x y]) white black)))
+    (if (get explored? [x y]) color/white color/black)))
 
 (deftype Minimap []
   screens/Screen

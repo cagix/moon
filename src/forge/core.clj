@@ -1,6 +1,7 @@
 (ns forge.core
   (:require [clojure.gdx.graphics :as g :refer [delta-time]]
             [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [find-actor-with-id
                                                add-actor!
@@ -52,8 +53,6 @@
  ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
  world-delta
  player-eid
- black
- white
  ->color
  ^{:doc "font, h-align, up? and scale are optional.
         h-align one of: :center, :left, :right. Default :center.
@@ -1387,7 +1386,7 @@
 (defn- render-entity! [system entity]
   (try
    (when show-body-bounds
-     (draw-body-rect entity (if (:collides? entity) white :gray)))
+     (draw-body-rect entity (if (:collides? entity) color/white :gray)))
    (run! #(system % entity) entity)
    (catch Throwable t
      (draw-body-rect entity :red)

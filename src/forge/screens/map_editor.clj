@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?
                                        key-pressed?]]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
@@ -92,13 +93,13 @@ direction keys: move")
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world-camera))
         [x y] (mapv int (world-mouse-position))]
-    (draw-rectangle x y 1 1 white)
+    (draw-rectangle x y 1 1 color/white)
     (when start-position
       (draw-filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (movement-property tiled-map [x y])]]
-        (draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 black)
+        (draw-filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
         (draw-filled-circle [(+ x 0.5) (+ y 0.5)]
                           0.05
                           (case prop
@@ -144,7 +145,7 @@ direction keys: move")
 
   (render* [_]
     (draw-tiled-map (:tiled-map @current-data)
-                    (constantly white))
+                    (constantly color/white))
     (draw-on-world-view render-on-map)
     (if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
