@@ -5,8 +5,7 @@
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.io :as io]
             [clojure.lwjgl :as lwjgl]
-            [forge.core :refer [defsystem]]
-            [forge.system :as system]))
+            [forge.system :as system :refer [defsystem]]))
 
 (defsystem create)
 (defmethod create :default [_])
