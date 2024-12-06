@@ -3,6 +3,7 @@
             [clojure.gdx.input :refer [key-just-pressed?
                                        key-pressed?]]
             [clojure.gdx.tiled :as tiled]
+            [clojure.string :as str]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules]))
@@ -47,7 +48,7 @@ direction keys: move")
           (str "Movement properties " (movement-property tiled-map tile) "\n"
                (apply vector (movement-properties tiled-map tile)))]
          (remove nil?)
-         (str-join "\n"))))
+         (str/join "\n"))))
 
 (defn- ->info-window []
   (let [label (label "")

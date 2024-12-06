@@ -1,5 +1,6 @@
 (ns forge.info
-  (:require [forge.core :refer :all]
+  (:require [clojure.string :as str]
+            [forge.core :refer :all]
             [forge.system :refer [defsystem]]))
 
 (add-color "PRETTY_NAME" [0.84 0.8 0.52])
@@ -109,7 +110,7 @@
   (str value "%"))
 
 (defn- ops-info [ops k]
-  (str-join "\n"
+  (str/join "\n"
             (keep
              (fn [{v 1 :as op}]
                (when-not (zero? v)
@@ -118,16 +119,16 @@
 
 (defmethod component-info :entity/modifiers [[_ mods]]
   (when (seq mods)
-    (str-join "\n" (keep (fn [[k ops]]
+    (str/join "\n" (keep (fn [[k ops]]
                            (ops-info ops k)) mods))))
 
 #_(defmethod component-info [skills]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
-      (str "Skills: " (str-join "," (map name (keys skills))))))
+      (str "Skills: " (str/join "," (map name (keys skills))))))
 
 (defmethod component-info :entity/species [[_ species]]
-  (str "Creature - " (str-capitalize (name species))))
+  (str "Creature - " (str/capitalize (name species))))
 
 (defmethod component-info :entity/temp-modifier [[_ {:keys [counter]}]]
   (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))

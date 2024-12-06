@@ -1,5 +1,6 @@
 (ns forge.dev.tools
   (:require [clojure.gdx.app :refer [post-runnable]]
+            [clojure.string :as str]
             [clojure.vis-ui :as vis]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
@@ -176,7 +177,7 @@
     nil))
 
 (defn get-namespaces [packages]
-  (filter #(packages (first (str-split (name (ns-name %)) #"\.")))
+  (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
           (all-ns)))
 
 (defn get-vars [nmspace condition]
@@ -222,5 +223,5 @@
                  (or (:macro (meta v))
                      (instance? java.lang.Class @v))))
        (map (fn [s] (str "\"" (name (first s)) "\"")))
-       (str-join ", ")
+       (str/join ", ")
        (spit file)))

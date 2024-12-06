@@ -4,6 +4,7 @@
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
+            [clojure.string :as str]
             [clojure.vis-ui :as vis]
             [forge.system :refer [defsystem]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -32,13 +33,6 @@
 
 (declare
  pretty-pst
- str-join
- str-upper-case
- str-replace
- str-replace-first
- str-split
- str-capitalize
- str-trim-newline
  signum
  set-difference
  pprint
@@ -476,9 +470,9 @@
 
 (defn- remove-newlines [s]
   (let [new-s (-> s
-                  (str-replace "\n\n" "\n")
-                  (str-replace #"^\n" "")
-                  str-trim-newline)]
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
     (if (= (count new-s) (count s))
       s
       (remove-newlines new-s))))
@@ -496,11 +490,11 @@
                            (pr-str component)))
                     (when (map? v)
                       (str "\n" (info-text v))))))
-       (str-join "\n")
+       (str/join "\n")
        remove-newlines))
 
 (defn k->pretty-name [k]
-  (str-capitalize (name k)))
+  (str/capitalize (name k)))
 
 (defsystem ->v "Create component value. Default returns v.")
 (defmethod ->v :default [[_ v]] v)

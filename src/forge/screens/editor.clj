@@ -2,6 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.input :refer [key-just-pressed?]]
+            [clojure.string :as str]
             [clojure.vis-ui :as vis]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -147,7 +148,7 @@
 
 (defn- choose-window [table]
   (let [rows (for [sound-file (asset-manager/all-of-class asset-manager :sound)]
-               [(text-button (str-replace-first sound-file "sounds/" "")
+               [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
                                (add-rows! table [(columns table sound-file)])
@@ -447,7 +448,7 @@
 
 (defn- property-type-tabs []
   (for [property-type (sort (property-types))]
-    {:title (str-capitalize (name property-type))
+    {:title (str/capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
 (defn- tabs-table [label-str]
