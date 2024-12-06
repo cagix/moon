@@ -7,6 +7,7 @@
             [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
+            [forge.app.default-font :refer [default-font]]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.generator :as mg])

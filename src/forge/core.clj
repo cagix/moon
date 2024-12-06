@@ -28,7 +28,6 @@
 (declare
  pretty-pst
  batch
- default-font
  gui-viewport
  gui-viewport-width
  gui-viewport-height
