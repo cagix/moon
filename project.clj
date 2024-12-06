@@ -34,7 +34,6 @@
              ]
   :codox {:source-uri "https://github.com/damn/moon/blob/main/{filepath}#L{line}"
           :metadata {:doc/format :markdown}}
-  :injections [(load "forge/impl")] ; so codox works.
   ; this from engine, what purpose?
   ;:javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
   :global-vars {*warn-on-reflection* true
