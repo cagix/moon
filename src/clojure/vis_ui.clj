@@ -68,7 +68,7 @@
 (defn separator [type]
   (Separator. (case type
                 :default "default"
-                :vertical "vertial")))
+                :vertical "vertical")))
 
 (defn label ^VisLabel [text]
   (VisLabel. ^CharSequence text))
