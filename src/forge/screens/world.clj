@@ -40,6 +40,8 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
+(declare tick-error)
+
 (defn- render-infostr-on-bar [infostr x y h]
   (draw-text {:text infostr
               :x (+ x 75)
@@ -324,6 +326,7 @@
   (change-screen :screens/world)
   (reset-stage (widgets))
   (world-clear)
+  (bind-root tick-error nil)
   (world-init (generate-level world-props)))
 
 ; FIXME config/changeable inside the app (dev-menu ?)

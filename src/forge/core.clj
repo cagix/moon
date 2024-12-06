@@ -49,7 +49,6 @@
            (forge RayCaster)))
 
 (declare
- tick-error
  paused?
  ids->eids
  content-grid
@@ -1347,7 +1346,6 @@
     (bind-root content-grid (content-grid-create {:cell-size 16  ; FIXME global config
                                                   :width  width
                                                   :height height})))
-  (bind-root tick-error nil)
   (bind-root ids->eids {})
   (bind-root elapsed-time 0)
   (bind-root world-delta nil)
