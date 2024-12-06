@@ -1,77 +1,16 @@
 (ns forge.impl
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.math.utils :refer [equal?]]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.pprint :as pprint]
-            [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
             [forge.app.world-viewport :refer [world-unit-scale]]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.generator :as mg])
-  (:import (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.utils.viewport Viewport)
-           (com.badlogic.gdx.math Vector2 Circle Intersector Rectangle)))
-
-(def-impl grid2d                    g2d/create-grid)
-(def-impl g2d-width                 g2d/width)
-(def-impl g2d-height                g2d/height)
-(def-impl g2d-cells                 g2d/cells)
-(def-impl g2d-posis                 g2d/posis)
-(def-impl get-4-neighbour-positions g2d/get-4-neighbour-positions)
-(def-impl mapgrid->vectorgrid       g2d/mapgrid->vectorgrid)
-
-(defn- m-v2
-  (^Vector2 [[x y]] (Vector2. x y))
-  (^Vector2 [x y]   (Vector2. x y)))
-
-(defn- ->p [^Vector2 v]
-  [(.x v) (.y v)])
-
-(defn-impl v-scale [v n]
-  (->p (.scl (m-v2 v) (float n))))
-
-(defn-impl v-normalise [v]
-  (->p (.nor (m-v2 v))))
-
-(defn-impl v-add [v1 v2]
-  (->p (.add (m-v2 v1) (m-v2 v2))))
-
-(defn-impl v-length [v]
-  (.len (m-v2 v)))
-
-(defn-impl v-distance [v1 v2]
-  (.dst (m-v2 v1) (m-v2 v2)))
-
-(defn-impl v-normalised? [v]
-  (equal? 1 (v-length v)))
-
-(defn-impl v-direction [[sx sy] [tx ty]]
-  (v-normalise [(- (float tx) (float sx))
-                (- (float ty) (float sy))]))
-
-(defn-impl v-angle-from-vector [v]
-  (.angleDeg (m-v2 v) (Vector2. 0 1)))
-
-(comment
-
- (pprint
-  (for [v [[0 1]
-           [1 1]
-           [1 0]
-           [1 -1]
-           [0 -1]
-           [-1 -1]
-           [-1 0]
-           [-1 1]]]
-    [v
-     (.angleDeg (m-v2 v) (Vector2. 0 1))
-     (get-angle-from-vector (m-v2 v))]))
-
- )
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.math Circle Intersector Rectangle)))
 
 (defn- m->shape [m]
   (cond

@@ -1,5 +1,6 @@
 (ns forge.mapgen
   (:require [clojure.gdx.tiled :as tiled]
+            [data.grid2d :as g2d]
             [forge.core :refer :all]))
 
 (defn creatures-with-level [creature-properties level]
@@ -30,7 +31,7 @@
   (loop [checkposis (filter (fn [{y 1 :as posi}]
                               (and (even? y)
                                    (= :ground (get grid posi))))
-                            (g2d-posis grid))
+                            (g2d/posis grid))
          result []]
     (if (seq checkposis)
       (let [position (first checkposis)
@@ -111,7 +112,7 @@
   (when (< (srand random) turn-ratio)
     (reset! current-order (create-order random)))
   (take n
-        (get-in-order (get-4-neighbour-positions posi)
+        (get-in-order (g2d/get-4-neighbour-positions posi)
                       @current-order)))
 
 (defn- get-default-adj-num [open-paths random]
@@ -168,7 +169,7 @@
                    ; TODO already called there down ... make mincells check there
                    (if (< cell-cnt min-cells)
                      (generate-caves random min-cells max-cells adjnum-type) ; recur?
-                     (let [[grid convert] (mapgrid->vectorgrid grid #(if (nil? %) :wall :ground))]
+                     (let [[grid convert] (g2d/mapgrid->vectorgrid grid #(if (nil? %) :wall :ground))]
                        {:grid  grid
                         :start (convert start)
                         :end   (convert end)})))]
@@ -196,18 +197,18 @@
             (finished grid (last posi-seq) cell-cnt)))))))
 
 (defn scale-grid [grid [w h]]
-  (grid2d (* (g2d-width grid)  w)
-          (* (g2d-height grid) h)
-          (fn [[x y]]
-            (get grid
-                 [(int (/ x w))
-                  (int (/ y h))]))))
+  (g2d/create-grid (* (g2d/width grid)  w)
+                   (* (g2d/height grid) h)
+                   (fn [[x y]]
+                     (get grid
+                          [(int (/ x w))
+                           (int (/ y h))]))))
 
 (defn scalegrid [grid factor]
-  (grid2d (* (g2d-width grid) factor)
-          (* (g2d-height grid) factor)
-          (fn [posi]
-            (get grid (mapv #(int (/ % factor)) posi)))))
+  (g2d/create-grid (* (g2d/width grid) factor)
+                   (* (g2d/height grid) factor)
+                   (fn [posi]
+                     (get grid (mapv #(int (/ % factor)) posi)))))
 
 (defn- print-cell [celltype]
   (print (if (number? celltype)
@@ -225,13 +226,13 @@
 (defn printgrid ; print-grid in data.grid2d is y-down
   "Prints with y-up coordinates."
   [grid]
-  (doseq [y (range (dec (g2d-height grid)) -1 -1)]
-    (doseq [x (range (g2d-width grid))]
+  (doseq [y (range (dec (g2d/height grid)) -1 -1)]
+    (doseq [x (range (g2d/width grid))]
       (print-cell (grid [x y])))
     (println)))
 
 (let [idxvalues-order [[1 0] [-1 0] [0 1] [0 -1]]]
-  (assert (= (get-4-neighbour-positions [0 0])
+  (assert (= (g2d/get-4-neighbour-positions [0 0])
              idxvalues-order)))
 
 (comment
@@ -250,7 +251,7 @@
 
 (defn transition-idx-value [position position->transition?]
   (->> position
-       get-4-neighbour-positions
+       g2d/get-4-neighbour-positions
        (map-indexed (partial calculate-index-value
                              position->transition?))
        (apply +)))
@@ -259,7 +260,7 @@
 (defn cave-grid [& {:keys [size]}]
   (let [{:keys [start grid]} (generate-caves (java.util.Random.) size size :wide)
         grid (fix-nads grid)]
-    (assert (= #{:wall :ground} (set (g2d-cells grid))))
+    (assert (= #{:wall :ground} (set (g2d/cells grid))))
     {:start start
      :grid grid}))
 
@@ -267,7 +268,7 @@
   (filter (fn [p] (and (= :wall (get grid p))
                        (some #(= :ground (get grid %))
                              (get-8-neighbour-positions p))))
-          (g2d-posis grid)))
+          (g2d/posis grid)))
 
 (defn flood-fill [grid start walk-on-position?]
   (loop [next-positions [start]
@@ -290,10 +291,10 @@
        ;_ (println)
        ;_ (println "WITH START POSITION (0) :\n")
        ;_ (printgrid (assoc grid start 0))
-       ;_ (println "\nwidth:  " (g2d-width  grid)
-       ;           "height: " (g2d-height grid)
+       ;_ (println "\nwidth:  " (g2d/width  grid)
+       ;           "height: " (g2d/height grid)
        ;           "start " start "\n")
-       ;_ (println (g2d-posis grid))
+       ;_ (println (g2d/posis grid))
        _ (println "\n\n")
        filled (flood-fill grid start (fn [p] (= :ground (get grid p))))
        _ (printgrid (reduce #(assoc %1 %2 nil) grid filled))])
@@ -306,14 +307,14 @@
   (let [tiled-map (tiled/empty-tiled-map)
         properties (tiled/m-props tiled-map)]
     (tiled/put-all! properties (tiled/m-props schema-tiled-map))
-    (tiled/put! properties "width"  (g2d-width  grid))
-    (tiled/put! properties "height" (g2d-height grid))
+    (tiled/put! properties "width"  (g2d/width  grid))
+    (tiled/put! properties "height" (g2d/height grid))
     (doseq [layer (tiled/layers schema-tiled-map)
             :let [new-layer (tiled/add-layer! tiled-map
                                               :name (tiled/layer-name layer)
                                               :visible (tiled/visible? layer)
                                               :properties (tiled/m-props layer))]]
-      (doseq [position (g2d-posis grid)
+      (doseq [position (g2d/posis grid)
               :let [local-position (get grid position)]
               :when local-position]
         (when (vector? local-position)
@@ -326,14 +327,14 @@
 (defn wgt-grid->tiled-map [tile-size grid position->tile]
   (let [tiled-map (tiled/empty-tiled-map)
         properties (tiled/m-props tiled-map)]
-    (tiled/put! properties "width"  (g2d-width  grid))
-    (tiled/put! properties "height" (g2d-height grid))
+    (tiled/put! properties "width"  (g2d/width  grid))
+    (tiled/put! properties "height" (g2d/height grid))
     (tiled/put! properties "tilewidth"  tile-size)
     (tiled/put! properties "tileheight" tile-size)
     (let [layer (tiled/add-layer! tiled-map :name "ground" :visible true)
           properties (tiled/m-props layer)]
       (tiled/put! properties "movement-properties" true)
-      (doseq [position (g2d-posis grid)
+      (doseq [position (g2d/posis grid)
               :let [value (get grid position)
                     cell (tiled/cell-at tiled-map layer position)]]
         (tiled/set-tile! layer position (position->tile position))))

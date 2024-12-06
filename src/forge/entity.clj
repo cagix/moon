@@ -1,6 +1,7 @@
 (ns forge.entity
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [button-just-pressed?]]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [visible?
                                                user-object]]
             [forge.app.asset-manager :refer [play-sound]]
@@ -342,10 +343,10 @@
    eid]
   (assert (m/validate speed-schema speed)
           (pr-str speed))
-  (assert (or (zero? (v-length direction))
-              (v-normalised? direction))
+  (assert (or (zero? (v/length direction))
+              (v/normalised? direction))
           (str "cannot understand direction: " (pr-str direction)))
-  (when-not (or (zero? (v-length direction))
+  (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
     (let [movement (assoc movement :delta-time world-delta)
@@ -358,7 +359,7 @@
                :position (:position body)
                :left-bottom (:left-bottom body))
         (when rotate-in-movement-direction?
-          (swap! eid assoc :rotation-angle (v-angle-from-vector direction)))))))
+          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
 
 (defmethods :entity/skills
   (e-create [[k skills] eid]
@@ -728,7 +729,7 @@
     :clickable/player :cursors/bag))
 
 (defn- clickable-entity-interaction [player-entity clicked-eid]
-  (if (< (v-distance (:position player-entity)
+  (if (< (v/distance (:position player-entity)
                      (:position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
     [(clickable->cursor @clicked-eid false) (fn [] (on-clicked clicked-eid))]
@@ -754,7 +755,7 @@
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position
-     :effect/target-direction (v-direction (:position @eid) target-position)}))
+     :effect/target-direction (v/direction (:position @eid) target-position)}))
 
 (defn- interaction-state [eid]
   (let [entity @eid]
@@ -863,10 +864,10 @@
 ; this is okay, you have thrown the item over a hill, thats possible.
 
 (defn- placement-point [player target maxrange]
-  (v-add player
-         (v-scale (v-direction player target)
+  (v/add player
+         (v/scale (v/direction player target)
                   (min maxrange
-                       (v-distance player target)))))
+                       (v/distance player target)))))
 
 (defn- item-place-position [entity]
   (placement-point (:position entity)

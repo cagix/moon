@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.mapgen.generate
   (:require [clojure.gdx.tiled :as tiled]
+            [data.grid2d :as g2d]
             [forge.app.db :as db]
             [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
@@ -24,7 +25,7 @@
   level 0 to max-level, so the player has to decide which areas to do in which order."
   [& {:keys [grid start max-level walk-on]}]
   (let [maxcount (->> grid
-                      g2d-cells
+                      g2d/cells
                       (filter walk-on)
                       count)
         ; -> assume all :ground cells can be reached from start
@@ -33,7 +34,7 @@
         step->level #(int (Math/ceil (/ % level-step)))
         walkable-neighbours (fn [grid position]
                               (filter #(walk-on (get grid %))
-                                      (get-4-neighbour-positions position)))]
+                                      (g2d/get-4-neighbour-positions position)))]
     (loop [next-positions #{start}
            steps          [[0 start]]
            grid           (assoc grid start 0)]
@@ -81,16 +82,16 @@
         ;_ (printgrid grid)
         ;_ (println " - ")
         _ (assert (or
-                   (= #{:wall :ground :transition} (set (g2d-cells grid)))
-                   (= #{:ground :transition} (set (g2d-cells grid))))
-                  (str "(set (g2d-cells grid)): " (set (g2d-cells grid))))
+                   (= #{:wall :ground :transition} (set (g2d/cells grid)))
+                   (= #{:ground :transition} (set (g2d/cells grid))))
+                  (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
         scale modules/scale
         scaled-grid (scale-grid grid scale)
         tiled-map (modules/place (tiled/load-tmx-map modules/file)
                                  scaled-grid
                                  grid
-                                 (filter #(= :ground     (get grid %)) (g2d-posis grid))
-                                 (filter #(= :transition (get grid %)) (g2d-posis grid)))
+                                 (filter #(= :ground     (get grid %)) (g2d/posis grid))
+                                 (filter #(= :transition (get grid %)) (g2d/posis grid)))
         start-position (mapv * start scale)
         can-spawn? #(= "all" (movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
@@ -106,9 +107,9 @@
         ;_ (printgrid area-level-grid)
         _ (assert (or
                    (= (set (concat [max-area-level] (range max-area-level)))
-                      (set (g2d-cells area-level-grid)))
+                      (set (g2d/cells area-level-grid)))
                    (= (set (concat [:wall max-area-level] (range max-area-level)))
-                      (set (g2d-cells area-level-grid)))))
+                      (set (g2d/cells area-level-grid)))))
         scaled-area-level-grid (scale-grid area-level-grid scale)
         get-free-position-in-area-level (fn [area-level]
                                           (rand-nth

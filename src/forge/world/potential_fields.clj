@@ -1,5 +1,6 @@
 (ns forge.world.potential-fields
-  (:require [forge.core :refer :all]))
+  (:require [clojure.gdx.math.vector2 :as v]
+            [forge.core :refer :all]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})
@@ -145,7 +146,7 @@
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes
-    (into {} (for [[x y] (filter v-diagonal-direction? order)]
+    (into {} (for [[x y] (filter v/diagonal-direction? order)]
                [(first (utils-positions #(= % [x y]) order))
                 (vec (utils-positions #(some #{%} [[x 0] [0 y]])
                                      order))]))))
@@ -232,7 +233,7 @@
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
     (cond
      target-entity
-     (v-direction position (:position @target-entity))
+     (v/direction position (:position @target-entity))
 
      (nil? target-cell)
      nil
@@ -241,4 +242,4 @@
      (when-not (and (= target-cell own-cell)
                     (occupied-by-other? @own-cell eid)) ; prevent friction 2 move to center
        (when-not (inside-cell? @eid target-cell)
-         (v-direction position (:middle @target-cell)))))))
+         (v/direction position (:middle @target-cell)))))))

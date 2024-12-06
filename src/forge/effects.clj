@@ -1,5 +1,6 @@
 (ns forge.effects
-  (:require [forge.app.asset-manager :refer [play-sound]]
+  (:require [clojure.gdx.math.vector2 :as v]
+            [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
             [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
@@ -137,7 +138,7 @@
     (send-event target :stun duration)))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
-  (< (- (float (v-distance (:position entity)
+  (< (- (float (v/distance (:position entity)
                            (:position target*)))
         (float (:radius entity))
         (float (:radius target*)))
@@ -145,13 +146,13 @@
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
-  (v-add (:position entity)
-         (v-scale (e-direction entity target*)
+  (v/add (:position entity)
+         (v/scale (e-direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
-  (v-add (start-point entity target*)
-         (v-scale (e-direction entity target*)
+  (v/add (start-point entity target*)
+         (v/scale (e-direction entity target*)
                   maxrange)))
 
 (defmethods :effects/target-entity
@@ -187,8 +188,8 @@
                    [1 1 0 0.5]))))))
 
 (defn- projectile-start-point [entity direction size]
-  (v-add (:position entity)
-         (v-scale direction
+  (v/add (:position entity)
+         (v/scale direction
                   (+ (:radius entity) size 0.1))))
 
 ; TODO for npcs need target -- anyway only with direction
@@ -207,7 +208,7 @@
                                target-p
                                (projectile-size projectile)))
            ; TODO not taking into account body sizes
-           (< (v-distance source-p ; entity/distance function protocol EntityPosition
+           (< (v/distance source-p ; entity/distance function protocol EntityPosition
                           target-p)
               max-range))))
 

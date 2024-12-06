@@ -2,6 +2,7 @@
   (:require [clojure.gdx.graphics :as g :refer [delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [find-actor-with-id
                                                add-actor!
@@ -11,6 +12,7 @@
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
+            [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db :refer [malli-form
@@ -56,22 +58,6 @@
         up? renders the font over y, otherwise under.
         scale will multiply the drawn text size with the scale.
         `[{:keys [font x y text h-align up? scale]}`"}
- grid2d
- g2d-width
- g2d-height
- g2d-cells
- g2d-posis
- get-4-neighbour-positions
- mapgrid->vectorgrid
- v-scale
- v-normalise
- v-add
- v-length
- v-distance
- v-normalised?
- v-direction
- ^{:doc "converts theta of Vector2 to angle from top (top is 0 degree, moving left is 90 degree etc.), counterclockwise"}
- v-angle-from-vector
  overlaps?
  rect-contains?
  val-max-schema
@@ -312,14 +298,6 @@
 (defn effects-render [ctx effects]
   (run! #(render-effect % ctx)
         effects))
-
-(defn v-normal-vectors [[x y]]
-  [[(- (float y))         x]
-   [          y (- (float x))]])
-
-(defn v-diagonal-direction? [[x y]]
-  (and (not (zero? (float x)))
-       (not (zero? (float y)))))
 
 (defn rectangle? [{[x y] :left-bottom :keys [width height]}]
   (and x y width height))
@@ -1018,11 +996,12 @@
       "none"))
 
 (defn- content-grid-create [{:keys [cell-size width height]}]
-  {:grid (grid2d (inc (int (/ width  cell-size))) ; inc because corners
-                 (inc (int (/ height cell-size)))
-                 (fn [idx]
-                   (atom {:idx idx,
-                          :entities #{}})))
+  {:grid (g2d/create-grid
+          (inc (int (/ width  cell-size))) ; inc because corners
+          (inc (int (/ height cell-size)))
+          (fn [idx]
+            (atom {:idx idx,
+                   :entities #{}})))
    :cell-w cell-size
    :cell-h cell-size})
 
@@ -1124,7 +1103,7 @@
     (let [maxsteps 10]
       (reset! current-steps
               (raycaster/ray-maxsteps (get-cell-blocked-boolean-array)
-                                      (v-direction (g/map-coords) start)
+                                      (v/direction (g/map-coords) start)
                                       maxsteps))))
 
 #_(defn draw-test-raycast []
@@ -1155,15 +1134,15 @@
   [[start-x start-y] [target-x target-y] path-w]
   {:pre [(< path-w 0.98)]} ; wieso 0.98??
   (let [path-w (+ path-w 0.02) ;etwas gr�sser damit z.b. projektil nicht an ecken anst�sst
-        v (v-direction [start-x start-y]
+        v (v/direction [start-x start-y]
                        [target-y target-y])
-        [normal1 normal2] (v-normal-vectors v)
-        normal1 (v-scale normal1 (/ path-w 2))
-        normal2 (v-scale normal2 (/ path-w 2))
-        start1  (v-add [start-x  start-y]  normal1)
-        start2  (v-add [start-x  start-y]  normal2)
-        target1 (v-add [target-x target-y] normal1)
-        target2 (v-add [target-x target-y] normal2)]
+        [normal1 normal2] (v/normal-vectors v)
+        normal1 (v/scale normal1 (/ path-w 2))
+        normal2 (v/scale normal2 (/ path-w 2))
+        start1  (v/add [start-x  start-y]  normal1)
+        start2  (v/add [start-x  start-y]  normal2)
+        target1 (v/add [target-x target-y] normal1)
+        target2 (v/add [target-x target-y] normal2)]
     [start1,target1,start2,target2]))
 
 (defn- path-blocked?*
@@ -1179,10 +1158,10 @@
     (aset arr x y (boolean (cell->blocked? cell)))))
 
 (defn- init-raycaster [grid position->blocked?]
-  (let [width  (g2d-width  grid)
-        height (g2d-height grid)
+  (let [width  (g2d/width  grid)
+        height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d-cells grid)]
+    (doseq [cell (g2d/cells grid)]
       (set-arr arr @cell position->blocked?))
     (bind-root ray-caster [arr width height])))
 
@@ -1532,7 +1511,7 @@
                   {:width size
                    :height size
                    :z-order :z-order/flying
-                   :rotation-angle (v-angle-from-vector direction)}
+                   :rotation-angle (v/angle-from-vector direction)}
                   {:entity/movement {:direction direction
                                      :speed speed}
                    :entity/image image
@@ -1568,17 +1547,19 @@
 
 (defn world-init [{:keys [tiled-map start-position]}]
   (bind-root world-tiled-map tiled-map)
-  (bind-root explored-tile-corners (atom (grid2d (tiled/tm-width  tiled-map)
-                                                 (tiled/tm-height tiled-map)
-                                                 (constantly false))))
-  (bind-root world-grid (grid2d (tiled/tm-width tiled-map)
-                                (tiled/tm-height tiled-map)
-                                (fn [position]
-                                  (atom (->cell position
-                                                (case (movement-property tiled-map position)
-                                                  "none" :none
-                                                  "air"  :air
-                                                  "all"  :all))))))
+  (bind-root explored-tile-corners (atom (g2d/create-grid
+                                          (tiled/tm-width  tiled-map)
+                                          (tiled/tm-height tiled-map)
+                                          (constantly false))))
+  (bind-root world-grid (g2d/create-grid
+                         (tiled/tm-width tiled-map)
+                         (tiled/tm-height tiled-map)
+                         (fn [position]
+                           (atom (->cell position
+                                         (case (movement-property tiled-map position)
+                                           "none" :none
+                                           "air"  :air
+                                           "all"  :all))))))
 
   (init-raycaster world-grid blocks-vision?)
   (let [width  (tiled/tm-width  tiled-map)
@@ -1641,7 +1622,7 @@
       (render-entity! system entity))))
 
 (defn e-direction [entity other-entity]
-  (v-direction (:position entity) (:position other-entity)))
+  (v/direction (:position entity) (:position other-entity)))
 
 (defn e-collides? [entity other-entity]
   (overlaps? entity other-entity))

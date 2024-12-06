@@ -2,6 +2,7 @@
   (:require [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
+            [data.grid2d :as g2d]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height
                                             gui-mouse-position]]
@@ -93,7 +94,9 @@
                         :necklace [1 1]
                         :rings    [2 1]}
        (map (fn [[slot [width height]]]
-              [slot (grid2d width height (constantly nil))]))
+              [slot (g2d/create-grid width
+                                     height
+                                     (constantly nil))]))
        (into {})))
 
 (defn- inventory-table []
@@ -114,8 +117,8 @@
       (.add (->cell :inventory.slot/rings :position [0 0]))
       (.add (->cell :inventory.slot/rings :position [1 0]))
       (.add (->cell :inventory.slot/boot)) .row)
-    (doseq [y (range (g2d-height (:inventory.slot/bag empty-inventory)))]
-      (doseq [x (range (g2d-width (:inventory.slot/bag empty-inventory)))]
+    (doseq [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
+      (doseq [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
         (.add table (->cell :inventory.slot/bag :position [x y])))
       (.row table))
     table))
