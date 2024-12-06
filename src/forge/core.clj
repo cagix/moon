@@ -87,11 +87,6 @@
   (run! #(render-effect % ctx)
         effects))
 
-(defrecord Sprite [texture-region
-                   pixel-dimensions
-                   world-unit-dimensions
-                   color]) ; optional
-
 (defsystem component-info)
 (defmethod component-info :default [_])
 

@@ -136,6 +136,11 @@
            :pixel-dimensions pixel-dimensions
            :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
 
+(defrecord Sprite [texture-region
+                   pixel-dimensions
+                   world-unit-dimensions
+                   color]) ; optional
+
 (defn- sprite* [texture-region]
   (-> {:texture-region texture-region}
       (assoc-dimensions 1) ; = scale 1
