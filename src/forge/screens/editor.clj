@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
-            [forge.core :refer :all])
-  (:import (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+            [forge.core :refer :all]
+            [gdx.asset-manager :as asset-manager])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
@@ -145,14 +145,8 @@
 
 (declare columns)
 
-(defn- all-of-class
-  "Returns all asset paths with the specific class."
-  [class]
-  (filter #(= (AssetManager/.getAssetType asset-manager %) class)
-          (AssetManager/.getAssetNames asset-manager)))
-
 (defn- choose-window [table]
-  (let [rows (for [sound-file (all-of-class com.badlogic.gdx.audio.Sound)]
+  (let [rows (for [sound-file (asset-manager/all-of-class asset-manager :sound)]
                [(text-button (str-replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -427,7 +421,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (all-of-class com.badlogic.gdx.graphics.Texture))]
+  (for [file (sort (asset-manager/all-of-class asset-manager :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
