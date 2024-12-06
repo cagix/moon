@@ -6,14 +6,15 @@
   (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.tiled :as tiled]
+            [clojure.vis-ui :as vis]
             [forge.system :refer [defsystem]])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
-           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable Drawable)
+           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
-           (com.kotcrab.vis.ui.widget Tooltip VisTextButton VisCheckBox VisSelectBox VisImage VisImageButton VisTextField VisWindow VisTable VisLabel VisSplitPane VisScrollPane Separator VisTree)
+           (com.kotcrab.vis.ui.widget VisWindow VisTable)
            (forge RayCaster)))
 
 (declare m-schema
@@ -932,7 +933,7 @@
   (add-rows! table rows))
 
 (defn horizontal-separator-cell [colspan]
-  {:actor (Separator. "default")
+  {:actor (vis/separator :default)
    :pad-top 2
    :pad-bottom 2
    :colspan colspan
@@ -940,7 +941,7 @@
    :expand-x? true})
 
 (defn vertical-separator-cell []
-  {:actor (Separator. "vertical")
+  {:actor (vis/separator :vertical)
    :pad-top 2
    :pad-bottom 2
    :fill-y? true
@@ -1008,26 +1009,11 @@
 (defn add-tooltip!
   "tooltip-text is a (fn []) or a string. If it is a function will be-recalculated every show.
   Returns the actor."
-  [^Actor a tooltip-text]
-  (let [text? (string? tooltip-text)
-        label (VisLabel. (if text? tooltip-text ""))
-        tooltip (proxy [Tooltip] []
-                  ; hooking into getWidth because at
-                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
-                  ; when tooltip position gets calculated we setText (which calls pack) before that
-                  ; so that the size is correct for the newly calculated text.
-                  (getWidth []
-                    (let [^Tooltip this this]
-                      (when-not text?
-                        (.setText this (str (tooltip-text))))
-                      (proxy-super getWidth))))]
-    (.setAlignment label Align/center)
-    (.setTarget  tooltip ^Actor a)
-    (.setContent tooltip ^Actor label))
-  a)
+  [actor tooltip-text]
+  (vis/add-tooltip! actor tooltip-text))
 
-(defn remove-tooltip! [^Actor a]
-  (Tooltip/removeTooltip a))
+(defn remove-tooltip! [actor]
+  (vis/remove-tooltip! actor))
 
 (defn button-group [{:keys [max-check-count min-check-count]}]
   (let [bg (ButtonGroup.)]
@@ -1038,7 +1024,7 @@
 (defn check-box
   "on-clicked is a fn of one arg, taking the current isChecked state"
   [text on-clicked checked?]
-  (let [^Button button (VisCheckBox. ^String text)]
+  (let [^Button button (vis/check-box text)]
     (.setChecked button checked?)
     (.addListener button
                   (proxy [ChangeListener] []
@@ -1046,10 +1032,8 @@
                       (on-clicked (.isChecked actor)))))
     button))
 
-(defn select-box [{:keys [items selected]}]
-  (doto (VisSelectBox.)
-    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
-    (.setSelected selected)))
+(defn select-box [{:keys [items selected] :as opts}]
+  (vis/select-box opts))
 
 (defn ui-table ^Table [opts]
   (-> (proxy-ILookup VisTable [])
@@ -1064,24 +1048,20 @@
         window)
       (set-opts opts)))
 
-(defn label ^VisLabel [text]
-  (VisLabel. ^CharSequence text))
+(defn label [text]
+  (vis/label text))
 
-(defn text-field [^String text opts]
-  (-> (VisTextField. text)
+(defn text-field [text opts]
+  (-> (vis/text-field text)
       (set-opts opts)))
 
 (defn ui-stack ^Stack [actors]
   (proxy-ILookup Stack [(into-array Actor actors)]))
 
-(defmulti ^:private ->vis-image type)
-(defmethod ->vis-image Drawable      [^Drawable d      ] (VisImage.  d))
-(defmethod ->vis-image TextureRegion [^TextureRegion tr] (VisImage. tr))
-
 (defn image-widget ; TODO widget also make, for fill parent
   "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
   [object {:keys [scaling align fill-parent?] :as opts}]
-  (-> (let [^Image image (->vis-image object)]
+  (-> (let [^Image image (vis/image object)]
         (when (= :center align)
           (.setAlign image Align/center))
         (when (= :fill scaling)
@@ -1100,7 +1080,7 @@
   (TextureRegionDrawable. texture-region))
 
 (defn scroll-pane [actor]
-  (let [scroll-pane (VisScrollPane. actor)]
+  (let [scroll-pane (vis/scroll-pane actor)]
     (Actor/.setUserObject scroll-pane :scroll-pane)
     (.setFlickScroll scroll-pane false)
     (.setFadeScrollBars scroll-pane false)
@@ -1122,7 +1102,7 @@
   (when (instance? Label actor)
     (when-let [p (.getParent actor)]
       (when-let [p (.getParent p)]
-        (and (instance? VisWindow p)
+        (and (vis/window? p)
              (= (.getTitleLabel ^Window p) actor))))))
 
 (defn find-ancestor-window ^Window [^Actor actor]
@@ -1144,16 +1124,16 @@
         (on-clicked)))))
 
 (defn text-button [text on-clicked]
-  (let [button (VisTextButton. ^String text)]
+  (let [button (vis/text-button text)]
     (.addListener button (change-listener on-clicked))
     button))
 
 (defn image-button
-  (^VisImageButton [image on-clicked]
+  ([image on-clicked]
    (image-button image on-clicked {}))
-  (^VisImageButton [{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
+  ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
    (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)
-         button (VisImageButton. drawable)]
+         button (vis/image-button drawable)]
      (when scale
        (let [[w h] [(.getRegionWidth  texture-region)
                     (.getRegionHeight texture-region)]]
@@ -1185,7 +1165,7 @@
   (.tint ^TextureRegionDrawable drawable color))
 
 (defn ui-tree []
-  (VisTree.))
+  (vis/tree))
 
 (defn t-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
