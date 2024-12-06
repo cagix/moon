@@ -159,7 +159,7 @@
 
 (defn-impl sub-image [image bounds]
   (sprite* world-unit-scale
-           (apply g/texture-region (:texture-region image) bounds)))
+           (apply g/->texture-region (:texture-region image) bounds)))
 
 (defn-impl sprite-sheet [path tilew tileh]
   {:image (->image path)

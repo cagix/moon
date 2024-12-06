@@ -38,6 +38,9 @@
   ([^Texture texture x y w h]
    (TextureRegion. texture (int x) (int y) (int w) (int h))))
 
+(defn ->texture-region [^TextureRegion texture-region x y w h]
+  (TextureRegion. texture-region (int x) (int y) (int w) (int h)))
+
 (defn region-width [texture-region]
   (TextureRegion/.getRegionWidth texture-region))
 
