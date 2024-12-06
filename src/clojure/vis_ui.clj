@@ -73,7 +73,7 @@
 (defn label ^VisLabel [text]
   (VisLabel. ^CharSequence text))
 
-(defn scroll-pane [actor]
+(defn scroll-pane ^VisScrollPane [actor]
   (VisScrollPane. actor))
 
 (defmulti image type)
@@ -84,7 +84,7 @@
 (defmethod image TextureRegion [^TextureRegion tr]
   (VisImage. tr))
 
-(defn image-button [drawable]
+(defn image-button ^VisImageButton [^Drawable drawable]
   (VisImageButton. drawable))
 
 (defn text-button [text]

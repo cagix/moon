@@ -1,5 +1,6 @@
 (ns forge.core
   (:require [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
@@ -1113,7 +1114,7 @@
 
 (declare ^:dynamic *on-clicked-actor*)
 
-(defn change-listener [on-clicked]
+(defn change-listener ^ChangeListener [on-clicked]
   (proxy [ChangeListener] []
     (changed [event actor]
       (binding [*on-clicked-actor* actor]
@@ -1131,9 +1132,11 @@
    (let [drawable (texture-region-drawable texture-region)
          button (vis/image-button drawable)]
      (when scale
-       (let [[w h] [(.getRegionWidth  texture-region)
-                    (.getRegionHeight texture-region)]]
-         (.setMinSize drawable (float (* scale w)) (float (* scale h)))))
+       (let [[w h] [(g/region-width  texture-region)
+                    (g/region-height texture-region)]]
+         (scene2d.utils/set-min-size! drawable
+                                      (* scale w)
+                                      (* scale h))))
      (.addListener button (change-listener on-clicked))
      button)))
 
@@ -2047,7 +2050,7 @@
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
     (.setName actor "action-bar/button-group")
-    (.setUserObject actor (button-group {:max-check-count 1 :min-check-count 0}))
+    (Actor/.setUserObject actor (button-group {:max-check-count 1 :min-check-count 0}))
     actor))
 
 (defn- group->button-group [group]
@@ -2061,7 +2064,7 @@
 (defn actionbar-add-skill [{:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (image-button image (fn []) {:scale 2})]
-    (.setUserObject button id)
+    (Actor/.setUserObject button id)
     (add-tooltip! button #(info-text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (add-actor! horizontal-group button)
     (ButtonGroup/.add button-group button)

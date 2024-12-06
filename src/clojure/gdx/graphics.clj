@@ -29,5 +29,11 @@
 (defn texture-region [^Texture texture x y w h]
   (TextureRegion. texture (int x) (int y) (int w) (int h)))
 
+(defn region-width [texture-region]
+  (TextureRegion/.getRegionWidth texture-region))
+
+(defn region-height [texture-region]
+  (TextureRegion/.getRegionHeight texture-region))
+
 (defn sprite-batch []
   (SpriteBatch.))

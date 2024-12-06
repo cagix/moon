@@ -2,7 +2,8 @@
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable TextureRegionDrawable)))
 
-(defn texture-region-drawable [^TextureRegion texture-region]
+(defn texture-region-drawable ^TextureRegionDrawable
+  [^TextureRegion texture-region]
   (TextureRegionDrawable. texture-region))
 
 (defn tint
