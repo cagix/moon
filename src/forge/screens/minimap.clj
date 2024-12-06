@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [forge.core :refer :all]))
+  (:require [clojure.gdx.graphics.camera :as cam]
+            [forge.core :refer :all]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight
@@ -19,11 +20,11 @@
         top    (apply max-key (fn [[x y]] y) positions-explored)
         right  (apply max-key (fn [[x y]] x) positions-explored)
         bottom (apply min-key (fn [[x y]] y) positions-explored)]
-    (calculate-zoom (world-camera)
-                    :left left
-                    :top top
-                    :right right
-                    :bottom bottom)))
+    (cam/calculate-zoom (world-camera)
+                        :left left
+                        :top top
+                        :right right
+                        :bottom bottom)))
 
 (defn- ->tile-corner-color-setter [explored?]
   (fn tile-corner-color-setter [color x y]
@@ -32,17 +33,17 @@
 (deftype Minimap []
   Screen
   (screen-enter [_]
-    (set-zoom! (world-camera) (minimap-zoom)))
+    (cam/set-zoom! (world-camera) (minimap-zoom)))
 
   (screen-exit [_]
-    (reset-zoom! (world-camera)))
+    (cam/reset-zoom! (world-camera)))
 
   (screen-render [_]
     (draw-tiled-map world-tiled-map
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
      (fn []
-       (draw-filled-circle (cam-position (world-camera)) 0.5 :green)))
+       (draw-filled-circle (cam/position (world-camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
       (change-screen :screens/world)))

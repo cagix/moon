@@ -1,5 +1,6 @@
 (ns forge.controls
-  (:require [forge.core :refer :all]))
+  (:require [clojure.gdx.graphics.camera :as cam]
+            [forge.core :refer :all]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)
@@ -8,7 +9,7 @@
 (def ^:private zoom-speed 0.025)
 
 (defn- inc-zoom [camera by]
-  (set-zoom! camera (max 0.1 (+ (zoom camera) by))))
+  (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
 
 (defn world-camera-zoom []
   (let [camera (world-camera)]

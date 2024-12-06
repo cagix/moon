@@ -1,18 +1,19 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [forge.core :refer :all]
+  (:require [clojure.gdx.graphics.camera :as cam]
+            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules]))
 
 (defn- show-whole-map! [camera tiled-map]
-  (set-position! camera
-                 [(/ (tm-width  tiled-map) 2)
-                  (/ (tm-height tiled-map) 2)])
-  (set-zoom! camera
-             (calculate-zoom camera
-                             :left [0 0]
-                             :top [0 (tm-height tiled-map)]
-                             :right [(tm-width tiled-map) 0]
-                             :bottom [0 0])))
+  (cam/set-position! camera
+                     [(/ (tm-width  tiled-map) 2)
+                      (/ (tm-height tiled-map) 2)])
+  (cam/set-zoom! camera
+                 (cam/calculate-zoom camera
+                                     :left [0 0]
+                                     :top [0 (tm-height tiled-map)]
+                                     :right [(tm-width tiled-map) 0]
+                                     :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
   (-> (current-screen) :sub-screen :current-data))
@@ -60,10 +61,10 @@ direction keys: move")
 ; PLUS symbol shift & = symbol on keyboard not registered
 (defn- camera-controls [camera]
   (let [apply-position (fn [idx f]
-                         (set-position! camera
-                                        (update (cam-position camera)
-                                                idx
-                                                #(f % camera-movement-speed))))]
+                         (cam/set-position! camera
+                                            (update (cam/position camera)
+                                                    idx
+                                                    #(f % camera-movement-speed))))]
     (if (key-pressed? :keys/left)  (apply-position 0 -))
     (if (key-pressed? :keys/right) (apply-position 0 +))
     (if (key-pressed? :keys/up)    (apply-position 1 +))
@@ -75,7 +76,7 @@ direction keys: move")
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (visible-tiles (world-camera))
+        visible-tiles (cam/visible-tiles (world-camera))
         [x y] (mapv int (world-mouse-position))]
     (draw-rectangle x y 1 1 white)
     (when start-position
@@ -122,7 +123,7 @@ direction keys: move")
     (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
   (screen-exit [_]
-    (reset-zoom! (world-camera)))
+    (cam/reset-zoom! (world-camera)))
 
   (screen-render [_]
     (draw-tiled-map (:tiled-map @current-data)

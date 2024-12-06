@@ -1,5 +1,6 @@
 (ns forge.screens.world
-  (:require [forge.core :refer :all]
+  (:require [clojure.gdx.graphics.camera :as cam]
+            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
@@ -117,7 +118,7 @@
 
 (defn- tile-debug []
   (let [cam (world-camera)
-        [left-x right-x bottom-y top-y] (frustum cam)]
+        [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
       (draw-grid (int left-x) (int bottom-y)
@@ -125,7 +126,7 @@
                  (+ 2 (int world-viewport-height))
                  1 1 [1 1 1 0.8]))
 
-    (doseq [[x y] (visible-tiles cam)
+    (doseq [[x y] (cam/visible-tiles cam)
             :let [cell (world-grid [x y])]
             :when cell
             :let [cell* @cell]]
@@ -236,7 +237,7 @@
                     {:label "World"
                      :update-fn #(mapv int (world-mouse-position))}
                     {:label "Zoom"
-                     :update-fn #(zoom (world-camera))
+                     :update-fn #(cam/zoom (world-camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
                      :update-fn frames-per-second
@@ -338,10 +339,10 @@
 
 (defn- render-world []
   ; FIXME position DRY
-  (set-position! (world-camera) (:position @player-eid))
+  (cam/set-position! (world-camera) (:position @player-eid))
   ; FIXME position DRY
   (draw-tiled-map world-tiled-map
-                  (tile-color-setter (cam-position (world-camera))))
+                  (tile-color-setter (cam/position (world-camera))))
   (draw-on-world-view (fn []
                        (debug-render-before-entities)
                        ; FIXME position DRY (from player)
@@ -351,7 +352,7 @@
 (deftype WorldScreen []
   Screen
   (screen-enter [_]
-    (set-zoom! (world-camera) 0.8))
+    (cam/set-zoom! (world-camera) 0.8))
 
   (screen-exit [_]
     (set-cursor :cursors/default))

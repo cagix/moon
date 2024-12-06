@@ -1,11 +1,11 @@
 (ns forge.app.sprite-batch
-  (:require [forge.core :refer [bind-root
+  (:require [clojure.gdx.graphics :as g]
+            [forge.core :refer [bind-root
                                 dispose
-                                batch]])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
+                                batch]]))
 
 (defn create [_]
-  (bind-root batch (SpriteBatch.)))
+  (bind-root batch (g/sprite-batch)))
 
 (defn destroy [_]
   (dispose batch))

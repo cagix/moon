@@ -2,9 +2,8 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.utils ScreenUtils)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+           (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
+           (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn cursor [pixmap hotspot-x hotspot-y]
   (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y))
@@ -18,11 +17,8 @@
   (^Pixmap [width height]
    (Pixmap. (int width) (int height) Pixmap$Format/RGBA8888)))
 
-(defn orthographic-camera []
+(defn orthographic-camera ^OrthographicCamera []
   (OrthographicCamera.))
-
-(defn fit-viewport [width height camera]
-  (FitViewport. width height camera))
 
 (defn clear-screen [color]
   (ScreenUtils/clear color))
@@ -32,3 +28,6 @@
 
 (defn texture-region [^Texture texture x y w h]
   (TextureRegion. texture (int x) (int y) (int w) (int h)))
+
+(defn sprite-batch []
+  (SpriteBatch.))
