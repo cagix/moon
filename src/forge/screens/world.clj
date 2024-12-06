@@ -34,7 +34,8 @@
             [forge.utils :refer [bind-root
                                  ->tile
                                  sort-by-order
-                                 readable-number]]
+                                 readable-number
+                                 dev-mode?]]
             [forge.val-max :as val-max]
             [forge.world :refer [render-z-order
                                  remove-destroyed]]

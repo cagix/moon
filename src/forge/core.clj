@@ -24,6 +24,7 @@
             [forge.app.world-viewport :refer [world-viewport-width
                                               world-viewport-height
                                               world-camera]]
+            [forge.effect :refer [effects-applicable?]]
             [forge.graphics :refer [draw-text
                                     edn->image
                                     ->image]]
@@ -58,34 +59,6 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
-
-(def dev-mode? (= (System/getenv "DEV_MODE") "true"))
-
-(defsystem handle [_ ctx])
-
-(defsystem applicable? [_ ctx])
-
-(defsystem useful?          [_  ctx])
-(defmethod useful? :default [_ _ctx] true)
-
-(defsystem render-effect           [_  ctx])
-(defmethod render-effect :default  [_ _ctx])
-
-(defn effects-applicable? [ctx effects]
-  (seq (filter #(applicable? % ctx) effects)))
-
-(defn effects-useful? [ctx effects]
-  (->> effects
-       (effects-applicable? ctx)
-       (some #(useful? % ctx))))
-
-(defn effects-do! [ctx effects]
-  (run! #(handle % ctx)
-        (effects-applicable? ctx effects)))
-
-(defn effects-render [ctx effects]
-  (run! #(render-effect % ctx)
-        effects))
 
 (defsystem component-info)
 (defmethod component-info :default [_])

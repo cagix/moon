@@ -7,7 +7,8 @@
             [forge.core :refer :all]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
-            [forge.screens.world :refer [start-world]]))
+            [forge.screens.world :refer [start-world]]
+            [forge.utils :refer [dev-mode?]]))
 
 (defn create []
   (stage/create

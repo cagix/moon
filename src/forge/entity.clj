@@ -14,6 +14,10 @@
                                               world-mouse-position]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.effect :refer [effects-applicable?
+                                  effects-useful?
+                                  effects-do!
+                                  effects-render]]
             [forge.graphics :refer [draw-rotated-centered
                                     draw-image
                                     draw-centered
