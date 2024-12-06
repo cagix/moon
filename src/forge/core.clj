@@ -1,7 +1,6 @@
 (ns forge.core
   (:require [clojure.gdx.graphics :as g :refer [delta-time]]
             [clojure.gdx.graphics.camera :as cam]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.math.shapes :as shape]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [user-object]]
@@ -20,7 +19,6 @@
                                          edn->value]]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
-            [forge.app.shape-drawer :as sd]
             [forge.app.world-viewport :refer [world-viewport-width
                                               world-viewport-height
                                               world-camera]]
@@ -36,11 +34,9 @@
                                  safe-get
                                  pretty-pst
                                  tile->middle
-                                 ->tile
-                                 sort-by-order]]
+                                 ->tile]]
             [forge.val-max :as val-max]
             [forge.world :refer [->v
-                                 render-z-order
                                  spawn-creature]]
             [forge.world.content-grid :as content-grid]
             [forge.world.explored-tile-corners]
@@ -59,24 +55,6 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
-
-(defn k->pretty-name [k]
-  (str/capitalize (name k)))
-
-(defsystem e-tick [_ eid])
-(defmethod e-tick :default [_ eid])
-
-(defsystem render-below [_ entity])
-(defmethod render-below :default [_ entity])
-
-(defsystem render-default [_ entity])
-(defmethod render-default :default [_ entity])
-
-(defsystem render-above [_ entity])
-(defmethod render-above :default [_ entity])
-
-(defsystem render-info [_ entity])
-(defmethod render-info :default [_ entity])
 
 (defmacro with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh
@@ -139,24 +117,6 @@
 
 (defn mods-add    [mods other-mods] (merge-with ops-add    mods other-mods))
 (defn mods-remove [mods other-mods] (merge-with ops-remove mods other-mods))
-
-; precaution in case a component gets removed by another component
-; the question is do we still want to update nil components ?
-; should be contains? check ?
-; but then the 'order' is important? in such case dependent components
-; should be moved together?
-(defn- tick-entity [eid]
-  (try
-   (doseq [k (keys @eid)]
-     (try (when-let [v (k @eid)]
-            (e-tick [k v] eid))
-          (catch Throwable t
-            (throw (ex-info "e-tick" {:k k} t)))))
-   (catch Throwable t
-     (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
-
-(defn tick-entities [entities]
-  (run! tick-entity entities))
 
 (defmethod malli-form :s/val-max [_] (m/form val-max/schema))
 
@@ -611,21 +571,6 @@
   (when (bound? #'world-tiled-map)
     (dispose world-tiled-map)))
 
-(def ^:private ^:dbg-flag show-body-bounds false)
-
-(defn- draw-body-rect [entity color]
-  (let [[x y] (:left-bottom entity)]
-    (sd/rectangle x y (:width entity) (:height entity) color)))
-
-(defn- render-entity! [system entity]
-  (try
-   (when show-body-bounds
-     (draw-body-rect entity (if (:collides? entity) color/white :gray)))
-   (run! #(system % entity) entity)
-   (catch Throwable t
-     (draw-body-rect entity :red)
-     (pretty-pst t))))
-
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
 (defn- spawn-enemies [tiled-map]
@@ -678,22 +623,6 @@
            (on-screen? target))
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
-
-(defn render-entities
-  "Draws entities in the correct z-order and in the order of render-systems for each z-order."
-  [entities]
-  (let [player @player-eid]
-    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
-                                              first
-                                              render-z-order)
-            system [render-below
-                    render-default
-                    render-above
-                    render-info]
-            entity entities
-            :when (or (= z-order :z-order/effect)
-                      (line-of-sight? player entity))]
-      (render-entity! system entity))))
 
 (defn e-direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))

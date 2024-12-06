@@ -1,4 +1,4 @@
-{:requires [ forge.effects
+{:requires [forge.effects
             forge.entity
             forge.info
             forge.mapgen.generate

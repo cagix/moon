@@ -9,6 +9,9 @@
                                  readable-number]]
             [forge.world.time :refer [finished-ratio]]))
 
+(defn k->pretty-name [k]
+  (str/capitalize (name k)))
+
 (color/add "PRETTY_NAME" [0.84 0.8 0.52])
 
 (bind-root component/info-color

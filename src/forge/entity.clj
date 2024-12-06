@@ -24,6 +24,11 @@
                                     draw-text
                                     edn->image]]
             [forge.screens.stage :refer [mouse-on-actor?]]
+            [forge.screens.world :refer [e-tick
+                                         render-below
+                                         render-default
+                                         render-above
+                                         render-info]]
             [forge.system :refer [defmethods]]
             [forge.utils :refer [find-first]]
             [forge.ui.inventory :as inventory]
