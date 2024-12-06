@@ -29,7 +29,11 @@
                                                    reset-stage
                                                    mouse-on-actor?]]
             [forge.ui.inventory :as inventory]
-            [forge.utils :refer [bind-root ->tile sort-by-order]]
+            [forge.utils :refer [bind-root
+                                 ->tile
+                                 sort-by-order
+                                 readable-number]]
+            [forge.val-max :as val-max]
             [forge.world :refer [render-z-order
                                  remove-destroyed]]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
@@ -63,7 +67,7 @@
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
                             (draw-image rahmen [x y])
-                            (draw-image (sub-image contentimage [0 0 (* rahmenw (val-max-ratio minmaxval)) rahmenh])
+                            (draw-image (sub-image contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                         [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []

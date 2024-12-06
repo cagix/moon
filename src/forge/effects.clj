@@ -4,6 +4,7 @@
             [forge.app.db :as db]
             [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
+            [forge.rand :refer [rand-int-between]]
             [forge.system :refer [defmethods]]
             [forge.world :refer [spawn-audiovisual
                                  spawn-creature

@@ -85,3 +85,75 @@
 (let [cnt (atom 0)]
   (defn unique-number! []
     (swap! cnt inc)))
+
+(defn index-of [k ^clojure.lang.PersistentVector v]
+  (let [idx (.indexOf v k)]
+    (if (= -1 idx)
+      nil
+      idx)))
+
+(defn find-first
+  "Returns the first item of coll for which (pred item) returns logical true.
+  Consumes sequences up to the first match, will consume the entire sequence
+  and return nil if no match is found."
+  [pred coll]
+  (first (filter pred coll)))
+
+; libgdx fn is available:
+; (MathUtils/isEqual 1 (length v))
+(defn- approx-numbers [a b epsilon]
+  (<=
+    (Math/abs (float (- a b)))
+    epsilon))
+
+(defn- round-n-decimals [^double x n]
+  (let [z (Math/pow 10 n)]
+    (float
+      (/
+        (Math/round (float (* x z)))
+        z))))
+
+(defn readable-number [^double x]
+  {:pre [(number? x)]} ; do not assert (>= x 0) beacuse when using floats x may become -0.000...000something
+  (if (or
+        (> x 5)
+        (approx-numbers x (int x) 0.001)) ; for "2.0" show "2" -> simpler
+    (int x)
+    (round-n-decimals x 2)))
+
+(defn assoc-ks [m ks v]
+  (if (empty? ks)
+    m
+    (apply assoc m (interleave ks (repeat v)))))
+
+(defn truncate [s limit]
+  (if (> (count s) limit)
+    (str (subs s 0 limit) "...")
+    s))
+
+(defn ->edn-str [v]
+  (binding [*print-level* nil]
+    (pr-str v)))
+
+(defn- indexed ; from clojure.contrib.seq-utils (discontinued in 1.3)
+  "Returns a lazy sequence of [index, item] pairs, where items come
+ from 's' and indexes count up from zero.
+
+ (indexed '(a b c d)) => ([0 a] [1 b] [2 c] [3 d])"
+  [s]
+  (map vector (iterate inc 0) s))
+
+(defn utils-positions ; from clojure.contrib.seq-utils (discontinued in 1.3)
+  "Returns a lazy sequence containing the positions at which pred
+	 is true for items in coll."
+  [pred coll]
+  (for [[idx elt] (indexed coll) :when (pred elt)] idx))
+
+(defmacro when-seq [[aseq bind] & body]
+  `(let [~aseq ~bind]
+     (when (seq ~aseq)
+       ~@body)))
+
+(defn dissoc-in [m ks]
+  (assert (> (count ks) 1))
+  (update-in m (drop-last ks) dissoc (last ks)))

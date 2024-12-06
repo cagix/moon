@@ -20,7 +20,9 @@
                                     draw-text]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.system :refer [defmethods]]
+            [forge.utils :refer [find-first]]
             [forge.ui.inventory :as inventory]
+            [forge.val-max :as val-max]
             [forge.world :refer [minimum-body-size
                                  ->v
                                  e-create
@@ -172,7 +174,7 @@
     [v v])
 
   (render-info [_ entity]
-    (let [ratio (val-max-ratio (hitpoints entity))]
+    (let [ratio (val-max/ratio (hitpoints entity))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
         (draw-hpbar entity ratio)))))
 

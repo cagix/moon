@@ -1,7 +1,10 @@
 (ns forge.world.potential-fields
   (:require [clojure.gdx.math.vector2 :as v]
             [forge.core :refer :all]
-            [forge.utils :refer [->tile]]
+            [forge.utils :refer [->tile
+                                 when-seq
+                                 utils-positions
+                                 ]]
             [forge.world.grid :refer [world-grid
                                       cell-blocked?
                                       nearest-entity-distance

@@ -7,27 +7,13 @@
             [forge.app.db :as db]
             [forge.app.world-viewport :refer [world-unit-scale]]
             [forge.core :refer :all]
+            [forge.val-max :as val-max]
             [malli.core :as m]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
-(def-impl val-max-schema
-  (m/schema [:and
-             [:vector {:min 2 :max 2} [:int {:min 0}]]
-             [:fn {:error/fn (fn [{[^int v ^int mx] :value} _]
-                               (when (< mx v)
-                                 (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
-              (fn [[^int a ^int b]] (<= a b))]]))
-
 (defmethod db/malli-form :s/val-max [_]
-  (m/form val-max-schema))
-
-(defn-impl val-max-ratio
-  [[^int v ^int mx]]
-  {:pre [(m/validate val-max-schema [v mx])]}
-  (if (and (zero? v) (zero? mx))
-    0
-    (/ v mx)))
+  (m/form val-max/schema))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
