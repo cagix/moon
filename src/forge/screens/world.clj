@@ -40,7 +40,8 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
-(declare tick-error)
+(declare tick-error
+         paused?)
 
 (defn- render-infostr-on-bar [infostr x y h]
   (draw-text {:text infostr

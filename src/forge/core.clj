@@ -33,7 +33,9 @@
                                  pretty-pst
                                  tile->middle
                                  ->tile]]
+            [forge.world.content-grid :as content-grid]
             [forge.world.explored-tile-corners]
+            [forge.world.entity-ids :as entity-ids]
             [forge.world.grid :as grid :refer [world-grid
                                                blocks-vision?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
@@ -49,9 +51,6 @@
            (forge RayCaster)))
 
 (declare
- paused?
- ids->eids
- content-grid
  ray-caster
  ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
  elapsed-time
@@ -907,41 +906,6 @@
          :world/player-creature
          (:world/player-creature world-props)))
 
-(defn- content-grid-create [{:keys [cell-size width height]}]
-  {:grid (g2d/create-grid
-          (inc (int (/ width  cell-size))) ; inc because corners
-          (inc (int (/ height cell-size)))
-          (fn [idx]
-            (atom {:idx idx,
-                   :entities #{}})))
-   :cell-w cell-size
-   :cell-h cell-size})
-
-(defn- content-grid-update-entity! [{:keys [grid cell-w cell-h]} eid]
-  (let [{::keys [content-cell] :as entity} @eid
-        [x y] (:position entity)
-        new-cell (get grid [(int (/ x cell-w))
-                            (int (/ y cell-h))])]
-    (when-not (= content-cell new-cell)
-      (swap! new-cell update :entities conj eid)
-      (swap! eid assoc ::content-cell new-cell)
-      (when content-cell
-        (swap! content-cell update :entities disj eid)))))
-
-(defn- content-grid-remove-entity! [eid]
-  (-> @eid
-      ::content-cell
-      (swap! update :entities disj eid)))
-
-(defn- content-grid-active-entities [{:keys [grid]} center-entity]
-  (->> (let [idx (-> center-entity
-                     ::content-cell
-                     deref
-                     :idx)]
-         (cons idx (g2d/get-8-neighbour-positions idx)))
-       (keep grid)
-       (mapcat (comp :entities deref))))
-
 ; boolean array used because 10x faster than access to clojure grid data structure
 
 ; this was a serious performance bottleneck -> alength is counting the whole array?
@@ -1129,30 +1093,23 @@
      (pretty-pst t))))
 
 (defn- add-to-world [eid]
-  (let [id (:entity/id @eid)]
-    (assert (number? id))
-    (alter-var-root #'ids->eids assoc id eid))
-  (content-grid-update-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (grid/add-entity eid))
+  (entity-ids/add-entity   eid)
+  (content-grid/add-entity eid)
+  (grid/add-entity         eid))
 
 (defn- remove-from-world [eid]
-  (let [id (:entity/id @eid)]
-    (assert (contains? ids->eids id))
-    (alter-var-root #'ids->eids dissoc id))
-  (content-grid-remove-entity! eid)
-  (grid/remove-entity eid))
+  (entity-ids/remove-entity   eid)
+  (content-grid/remove-entity eid)
+  (grid/remove-entity         eid))
 
 (defn position-changed [eid]
-  (content-grid-update-entity! content-grid eid)
-  (grid/entity-position-changed eid))
-
-(defn all-entities []
-  (vals ids->eids))
+  (content-grid/entity-position-changed eid)
+  (grid/entity-position-changed         eid))
 
 (defn remove-destroyed []
-  (doseq [eid (filter (comp :entity/destroyed? deref) (all-entities))]
+  (doseq [eid (filter (comp :entity/destroyed? deref) (entity-ids/all-entities))]
     (remove-from-world eid)
     (doseq [component @eid]
       (e-destroy component eid))))
@@ -1340,13 +1297,9 @@
   (forge.world.tiled-map/init             tiled-map)
   (forge.world.explored-tile-corners/init tiled-map)
   (forge.world.grid/init                  tiled-map)
+  (forge.world.entity-ids/init            tiled-map)
+  (forge.world.content-grid/init          tiled-map)
   (init-raycaster world-grid blocks-vision?)
-  (let [width  (tiled/tm-width  tiled-map)
-        height (tiled/tm-height tiled-map)]
-    (bind-root content-grid (content-grid-create {:cell-size 16  ; FIXME global config
-                                                  :width  width
-                                                  :height height})))
-  (bind-root ids->eids {})
   (bind-root elapsed-time 0)
   (bind-root world-delta nil)
   (bind-root player-eid (spawn-player start-position))
@@ -1354,7 +1307,7 @@
     (spawn-enemies tiled-map)))
 
 (defn active-entities []
-  (content-grid-active-entities content-grid @player-eid))
+  (content-grid/active-entities @player-eid))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
