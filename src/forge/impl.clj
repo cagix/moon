@@ -3,23 +3,18 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.math.utils :refer [equal?]]
             [clojure.gdx.utils.viewport :as vp]
-            [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
-            [forge.app.default-font :refer [default-font]]
-            [forge.app.shape-drawer :as sd]
-            [forge.app.sprite-batch :refer [batch]]
-            [forge.app.world-viewport :refer [world-unit-scale
-                                              world-viewport]]
+            [forge.app.world-viewport :refer [world-unit-scale]]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.utils Align Scaling)
+           (com.badlogic.gdx.utils Scaling)
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.badlogic.gdx.math Vector2 Circle Intersector Rectangle)))
 
@@ -27,39 +22,9 @@
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
 
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(defn- gdx-align [k]
-  (case k
-    :center Align/center
-    :left   Align/left
-    :right  Align/right))
-
 (defn- gdx-scaling [k]
   (case k
     :fill Scaling/fill))
-
-(defn-impl draw-text
-  [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font default-font)
-        data (.getData font)
-        old-scale (float (.scaleX data))]
-    (.setScale data (* old-scale
-                       (float *unit-scale*)
-                       (float (or scale 1))))
-    (.draw font
-           batch
-           (str text)
-           (float x)
-           (+ (float y) (float (if up? (text-height font text) 0)))
-           (float 0) ; target-width
-           (gdx-align (or h-align :center))
-           false) ; wrap false, no need target-width
-    (.setScale data old-scale)))
 
 (extend-type Actor
   HasVisible
@@ -210,30 +175,6 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(extend-type com.badlogic.gdx.graphics.g2d.Batch
-  Batch
-  (draw-texture-region [this texture-region [x y] [w h] rotation color]
-    (if color (.setColor this color))
-    (.draw this
-           texture-region
-           x
-           y
-           (/ (float w) 2) ; rotation origin
-           (/ (float h) 2)
-           w ; width height
-           h
-           1 ; scaling factor
-           1
-           rotation)
-    (if color (.setColor this color/white)))
-
-  (draw-on-viewport [this viewport draw-fn]
-    (.setColor this color/white) ; fix scene2d.ui.tooltip flickering
-    (.setProjectionMatrix this (.combined (Viewport/.getCamera viewport)))
-    (.begin this)
-    (draw-fn)
-    (.end this)))
-
 (defn-impl ->texture-region
   ([path]
    (TextureRegion. ^Texture (asset-manager path)))
@@ -256,38 +197,3 @@
 (defn-impl ->sprite [{:keys [image tilew tileh]} [x y]]
   (sub-image image
              [(* x tilew) (* y tileh) tilew tileh]))
-
-(defn-impl draw-image [{:keys [texture-region color] :as image} position]
-  (draw-texture-region batch
-                       texture-region
-                       position
-                       (unit-dimensions image *unit-scale*)
-                       0 ; rotation
-                       color))
-
-(defn-impl draw-rotated-centered
-  [{:keys [texture-region color] :as image} rotation [x y]]
-  (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region batch
-                         texture-region
-                         [(- (float x) (/ (float w) 2))
-                          (- (float y) (/ (float h) 2))]
-                         [w h]
-                         rotation
-                         color)))
-
-(defn-impl draw-centered [image position]
-  (draw-rotated-centered image 0 position))
-
-(defn- draw-with [viewport unit-scale draw-fn]
-  (draw-on-viewport batch
-                    viewport
-                    #(sd/with-line-width unit-scale
-                       (fn []
-                         (binding [*unit-scale* unit-scale]
-                           (draw-fn))))))
-
-(defn-impl draw-on-world-view [render-fn]
-  (draw-with world-viewport
-             world-unit-scale
-             render-fn))

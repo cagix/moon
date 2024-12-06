@@ -21,6 +21,7 @@
             [forge.app.world-viewport :refer [world-viewport-width
                                               world-viewport-height
                                               world-camera]]
+            [forge.graphics :refer [draw-text]]
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
             [forge.system :refer [defsystem]]
@@ -35,8 +36,6 @@
            (com.kotcrab.vis.ui.widget VisWindow
                                       VisTable)
            (forge RayCaster)))
-
-(def ^:dynamic *unit-scale* 1)
 
 (declare
  pretty-pst
@@ -58,7 +57,6 @@
         up? renders the font over y, otherwise under.
         scale will multiply the drawn text size with the scale.
         `[{:keys [font x y text h-align up? scale]}`"}
- draw-text
  grid2d
  g2d-width
  g2d-height
@@ -85,15 +83,7 @@
  sub-image
  sprite-sheet
  ->sprite
- draw-image
- draw-rotated-centered
- draw-centered
- draw-on-world-view
  )
-
-(defprotocol Batch
-  (draw-texture-region [_ texture-region [x y] [w h] rotation color])
-  (draw-on-viewport [_ viewport draw-fn]))
 
 (defprotocol HasVisible
   (set-visible [_ bool])

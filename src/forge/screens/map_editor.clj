@@ -17,6 +17,7 @@
                                               world-camera]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.graphics :refer [draw-on-world-view]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
             [forge.mapgen.modules :as modules]))

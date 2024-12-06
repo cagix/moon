@@ -20,6 +20,9 @@
                                               world-viewport-height]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.graphics :refer [draw-on-world-view
+                                    draw-image
+                                    draw-text]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage
