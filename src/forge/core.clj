@@ -3,11 +3,13 @@
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.system :refer [defsystem]]
+            [forge.utils :refer [bind-root]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -124,9 +126,6 @@
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])
   (draw-on-viewport [_ viewport draw-fn]))
 
-(defprotocol Disposable
-  (dispose [_]))
-
 (defprotocol HasVisible
   (set-visible [_ bool])
   (visible? [_]))
@@ -168,9 +167,6 @@
             (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
           m
           (keys m)))
-
-(defmacro bind-root [sym value]
-  `(clojure.lang.Var/.bindRoot (var ~sym) ~value))
 
 (defn index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]

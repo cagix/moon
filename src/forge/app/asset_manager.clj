@@ -3,7 +3,8 @@
             [clojure.gdx.asset-manager :as manager]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.files :as files]
-            [forge.core :refer [bind-root dispose]]))
+            [clojure.gdx.utils.disposable :refer [dispose]]
+            [forge.utils :refer [bind-root]]))
 
 (declare asset-manager)
 

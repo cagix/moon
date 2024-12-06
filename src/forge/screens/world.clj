@@ -1,6 +1,7 @@
 (ns forge.screens.world
   (:require [clojure.gdx.graphics :refer [delta-time frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
+            [forge.utils :refer [bind-root]]
             [clojure.vis-ui :as vis]
             [forge.core :refer :all]
             [forge.controls :as controls]

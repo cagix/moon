@@ -1,12 +1,12 @@
 (ns forge.app.cursors
   (:require [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
-            [forge.core :refer [bind-root
-                                defn-impl
+            [clojure.gdx.utils.disposable :refer [dispose]]
+            [forge.core :refer [defn-impl
                                 safe-get
                                 set-cursor
-                                mapvals
-                                dispose]]))
+                                mapvals]]
+            [forge.utils :refer [bind-root]]))
 
 (defn- gdx-cursor [[file [hotspot-x hotspot-y]]]
   (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))

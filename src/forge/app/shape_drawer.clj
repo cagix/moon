@@ -2,6 +2,8 @@
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.utils.disposable :refer [dispose]]
+            [forge.utils :refer [bind-root]]
             [forge.core :refer :all]))
 
 (declare ^:private pixel-texture

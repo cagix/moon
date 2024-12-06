@@ -1,11 +1,11 @@
 (ns forge.app.world-viewport
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
-            [forge.core :refer [bind-root
-                                world-unit-scale
+            [forge.core :refer [world-unit-scale
                                 world-viewport-width
                                 world-viewport-height
-                                world-viewport]]))
+                                world-viewport]]
+            [forge.utils :refer [bind-root]]))
 
 (defn create [[_ [width height tile-size]]]
   (bind-root world-unit-scale (float (/ tile-size)))

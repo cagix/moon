@@ -1,11 +1,11 @@
 (ns forge.app.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [forge.core :refer [bind-root
-                                schemas
+            [forge.core :refer [schemas
                                 properties-file
                                 validate!
-                                db-properties]]))
+                                db-properties]]
+            [forge.utils :refer [bind-root]]))
 
 (defn create [[_ {:keys [schema properties]}]]
   (bind-root schemas (-> schema io/resource slurp edn/read-string))

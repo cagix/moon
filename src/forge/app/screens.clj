@@ -3,11 +3,10 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.stage :as stage]
+            [clojure.gdx.utils.disposable :refer [dispose]]
             [forge.core :refer [gui-viewport
                                 batch
                                 find-actor-with-id
-                                bind-root
-                                dispose
                                 mapvals
                                 Screen
                                 screens
@@ -16,7 +15,8 @@
                                 screen-render
                                 screen-destroy
                                 current-screen
-                                change-screen]]))
+                                change-screen]]
+            [forge.utils :refer [bind-root]]))
 
 (defrecord StageScreen [stage sub-screen]
   Screen

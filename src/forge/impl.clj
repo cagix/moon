@@ -97,11 +97,6 @@
                 (vector? c) (apply ->color c)
                 :else (throw (ex-info "Cannot understand color" c)))))
 
-(extend-type com.badlogic.gdx.utils.Disposable
-  Disposable
-  (dispose [obj]
-    (.dispose obj)))
-
 (extend-type Actor
   HasVisible
   (set-visible [actor bool]
