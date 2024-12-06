@@ -6,6 +6,8 @@
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
+            [forge.app.gui-viewport :refer [gui-viewport-width
+                                            gui-mouse-position]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]

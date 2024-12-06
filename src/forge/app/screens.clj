@@ -4,8 +4,8 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [forge.core :refer [gui-viewport
-                                batch
+            [forge.app.gui-viewport :refer [gui-viewport]]
+            [forge.core :refer [batch
                                 find-actor-with-id
                                 Screen
                                 screens

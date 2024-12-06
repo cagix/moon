@@ -10,6 +10,9 @@
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db :refer [malli-form
                                          edn->value]]
+            [forge.app.gui-viewport :refer [gui-viewport-width
+                                            gui-viewport-height
+                                            gui-mouse-position]]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root safe-get]]
             [malli.core :as m]
@@ -28,9 +31,6 @@
 (declare
  pretty-pst
  batch
- gui-viewport
- gui-viewport-width
- gui-viewport-height
  world-unit-scale
  world-viewport
  world-viewport-width
@@ -53,9 +53,6 @@
  black
  white
  ->color
- equal?
- clamp
- degree->radians
  ^{:doc "font, h-align, up? and scale are optional.
         h-align one of: :center, :left, :right. Default :center.
         up? renders the font over y, otherwise under.
@@ -97,7 +94,6 @@
  draw-line
  draw-grid
  with-line-width
- gui-mouse-position
  world-mouse-position
  world-camera
  ->texture-region

@@ -3,6 +3,7 @@
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
+            [forge.app.gui-viewport :refer [gui-mouse-position]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.system :refer [defmethods]]

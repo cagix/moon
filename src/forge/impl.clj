@@ -1,7 +1,8 @@
 (ns forge.impl
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.gdx.input :as input]
             [clojure.gdx.interop :refer [static-field]]
+            [clojure.gdx.math.utils :refer [equal?]]
+            [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
@@ -16,7 +17,7 @@
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.utils.viewport Viewport)
-           (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)))
+           (com.badlogic.gdx.math Vector2 Circle Intersector Rectangle)))
 
 (defn-impl pretty-pst [t]
   (binding [*print-level* 3]
@@ -43,15 +44,6 @@
 
 (def-impl black Color/BLACK)
 (def-impl white Color/WHITE)
-
-(defn-impl equal? [a b]
-  (MathUtils/isEqual a b))
-
-(defn-impl clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
-
-(defn-impl degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
@@ -281,28 +273,10 @@
     (draw-fn)
     (.end this)))
 
-; touch coordinates are y-down, while screen coordinates are y-up
-; so the clamping of y is reverse, but as black bars are equal it does not matter
-(defn- unproject-mouse-position
-  "Returns vector of [x y]."
-  [^Viewport viewport]
-  (let [mouse-x (clamp (input/x)
-                       (.getLeftGutterWidth viewport)
-                       (.getRightGutterX viewport))
-        mouse-y (clamp (input/y)
-                       (.getTopGutterHeight viewport)
-                       (.getTopGutterY viewport))
-        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
-    [(.x coords) (.y coords)]))
-
-(defn-impl gui-mouse-position []
-  ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position gui-viewport)))
-
 (defn-impl world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position world-viewport))
+  (vp/unproject-mouse-position world-viewport))
 
 (defn-impl world-camera []
   (Viewport/.getCamera world-viewport))

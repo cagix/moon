@@ -4,6 +4,8 @@
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
             [forge.app.db :as db]
+            [forge.app.gui-viewport :refer [gui-viewport-width
+                                            gui-viewport-height]]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 

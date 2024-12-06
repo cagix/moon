@@ -8,6 +8,7 @@
             [clojure.string :as str]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.db :as db]
+            [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules]))
