@@ -13,7 +13,6 @@
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Scaling)
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.badlogic.gdx.math Vector2 Circle Intersector Rectangle)))
@@ -25,13 +24,6 @@
 (defn- gdx-scaling [k]
   (case k
     :fill Scaling/fill))
-
-(extend-type Actor
-  HasVisible
-  (set-visible [actor bool]
-    (.setVisible actor bool))
-  (visible? [actor]
-    (.isVisible actor)))
 
 (def-impl grid2d                    g2d/create-grid)
 (def-impl g2d-width                 g2d/width)
@@ -143,11 +135,6 @@
   (if (and (zero? v) (zero? mx))
     0
     (/ v mx)))
-
-(defn- unit-dimensions [image unit-scale]
-  (if (= unit-scale 1)
-    (:pixel-dimensions image)
-    (:world-unit-dimensions image)))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))

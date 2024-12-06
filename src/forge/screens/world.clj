@@ -4,6 +4,8 @@
                                           clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
+            [clojure.gdx.scene2d.actor :refer [visible?
+                                               set-visible]]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
             [forge.utils :refer [bind-root]]
             [clojure.vis-ui :as vis]

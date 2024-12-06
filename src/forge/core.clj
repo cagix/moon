@@ -85,10 +85,6 @@
  ->sprite
  )
 
-(defprotocol HasVisible
-  (set-visible [_ bool])
-  (visible? [_]))
-
 (defprotocol GridCell
   (cell-blocked? [cell* z-order])
   (blocks-vision? [cell*])

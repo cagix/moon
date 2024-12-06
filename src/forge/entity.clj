@@ -1,7 +1,8 @@
 (ns forge.entity
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [button-just-pressed?]]
-            [clojure.gdx.scene2d.actor :refer [user-object]]
+            [clojure.gdx.scene2d.actor :refer [visible?
+                                               user-object]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
