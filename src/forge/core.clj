@@ -38,6 +38,8 @@
             [forge.world.entity-ids :as entity-ids]
             [forge.world.grid :as grid]
             [forge.world.raycaster :refer [ray-blocked?]]
+            [forge.world.time :refer [timer
+                                      reset-timer]]
             [forge.world.tiled-map :refer [world-tiled-map]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
@@ -49,11 +51,6 @@
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
 
 (declare
- ray-caster
- ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
- elapsed-time
- ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
- world-delta
  player-eid
  ^{:doc "font, h-align, up? and scale are optional.
         h-align one of: :center, :left, :right. Default :center.
@@ -910,24 +907,6 @@
   (and mouseover-eid
        @mouseover-eid))
 
-(defn timer [duration]
-  {:pre [(>= duration 0)]}
-  {:duration duration
-   :stop-time (+ elapsed-time duration)})
-
-(defn stopped? [{:keys [stop-time]}]
-  (>= elapsed-time stop-time))
-
-(defn reset-timer [{:keys [duration] :as counter}]
-  (assoc counter :stop-time (+ elapsed-time duration)))
-
-(defn finished-ratio [{:keys [duration stop-time] :as counter}]
-  {:post [(<= 0 % 1)]}
-  (if (stopped? counter)
-    0
-    ; min 1 because floating point math inaccuracies
-    (min 1 (/ (- stop-time elapsed-time) duration))))
-
 (defn world-clear [] ; responsibility of screen? we are not creating the tiled-map here ...
   (when (bound? #'world-tiled-map)
     (dispose world-tiled-map)))
@@ -984,9 +963,6 @@
 ; skipping bodies at too fast movement
 ; TODO assert at properties load
 (def minimum-body-size 0.39) ; == spider smallest creature size.
-
-; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
-(def max-delta-time 0.04)
 
 (def ^:private z-orders [:z-order/on-ground
                          :z-order/ground
@@ -1155,8 +1131,7 @@
   (forge.world.entity-ids/init            tiled-map)
   (forge.world.content-grid/init          tiled-map)
   (forge.world.raycaster/init             tiled-map)
-  (bind-root elapsed-time 0)
-  (bind-root world-delta nil)
+  (forge.world.time/init                  tiled-map)
   (bind-root player-eid (spawn-player start-position))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))

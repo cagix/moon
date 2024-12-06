@@ -4,7 +4,8 @@
             [clojure.string :as str]
             [forge.core :refer :all]
             [forge.system :refer [defsystem]]
-            [forge.utils :refer [bind-root]]))
+            [forge.utils :refer [bind-root]]
+            [forge.world.time :refer [finished-ratio]]))
 
 (color/add "PRETTY_NAME" [0.84 0.8 0.52])
 

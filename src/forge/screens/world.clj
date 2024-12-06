@@ -1,6 +1,5 @@
 (ns forge.screens.world
-  (:require [clojure.gdx.graphics :refer [delta-time
-                                          frames-per-second
+  (:require [clojure.gdx.graphics :refer [frames-per-second
                                           clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -37,6 +36,7 @@
                                       point->entities]]
             [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
+            [forge.world.time :refer [elapsed-time]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
@@ -363,9 +363,7 @@
                               (pause-game? (e-state-obj @player-eid))
                               (not (controls/unpaused?)))))
   (when-not paused?
-    (let [delta-ms (min (delta-time) max-delta-time)]
-      (alter-var-root #'elapsed-time + delta-ms)
-      (bind-root world-delta delta-ms) )
+    (forge.world.time/frame-tick)
     (let [entities (active-entities)]
       (update-potential-fields! entities)
       (try (tick-entities entities)

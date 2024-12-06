@@ -28,6 +28,11 @@
                                       rectangle->cells
                                       cells->entities
                                       circle->entities]]
+            [forge.world.time :refer [world-delta
+                                      stopped?
+                                      timer
+                                      max-delta-time
+                                      finished-ratio]]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
             [reduce-fsm :as fsm]))
