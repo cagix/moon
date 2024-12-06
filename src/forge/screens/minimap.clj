@@ -41,7 +41,7 @@
   (exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (render [_]
+  (render* [_]
     (draw-tiled-map world-tiled-map
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
@@ -51,7 +51,7 @@
               (key-just-pressed? :keys/escape))
       (change-screen :screens/world)))
 
-  (screen-destroy [_]))
+  (dispose [_]))
 
 (defn create []
-  {:screen (->Minimap)})
+  (->Minimap))

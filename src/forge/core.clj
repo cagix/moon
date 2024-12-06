@@ -16,8 +16,8 @@
                                          edn->value]]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
-            [forge.app.screens :refer [screen-stage
-                                       add-actor]]
+            [forge.screens.stage :refer [screen-stage
+                                         add-actor]]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root safe-get]]
             [malli.core :as m]

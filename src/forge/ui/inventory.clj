@@ -4,8 +4,8 @@
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height
                                             gui-mouse-position]]
-            [forge.app.screens :refer [screen-stage]]
-            [forge.core :refer :all])
+            [forge.core :refer :all]
+            [forge.screens.stage :refer [screen-stage]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 

@@ -13,10 +13,9 @@
             [forge.app.asset-manager :refer [asset-manager play-sound]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
-            [forge.app.screens :as screens :refer [change-screen
-                                                   screen-stage
-                                                   add-actor]]
-            [forge.core :refer :all])
+            [forge.app.screens :as screens :refer [change-screen]]
+            [forge.core :refer :all]
+            [forge.screens.stage :as stage :refer [screen-stage add-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
@@ -482,13 +481,9 @@
     table))
 
 (defn create []
-  {:actors [(background-image)
-            (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
-            (ui-actor {:act (fn []
-                              (when (key-just-pressed? :shift-left)
-                                (change-screen :screens/main-menu)))})]
-   :screen (reify screens/Screen
-             (enter [_])
-             (exit [_])
-             (render [_])
-             (screen-destroy [_]))})
+  (stage/create
+   {:actors [(background-image)
+             (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
+             (ui-actor {:act (fn []
+                               (when (key-just-pressed? :shift-left)
+                                 (change-screen :screens/main-menu)))})]}))

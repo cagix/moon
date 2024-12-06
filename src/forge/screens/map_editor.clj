@@ -13,6 +13,7 @@
             [forge.app.screens :as screens :refer [change-screen]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.screens.stage :as stage]
             [forge.mapgen.modules :as modules]))
 
 (defn- show-whole-map! [camera tiled-map]
@@ -141,7 +142,7 @@ direction keys: move")
   (exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (render [_]
+  (render* [_]
     (draw-tiled-map (:tiled-map @current-data)
                     (constantly white))
     (draw-on-world-view render-on-map)
@@ -154,12 +155,13 @@ direction keys: move")
     (when (key-just-pressed? :keys/escape)
       (change-screen :screens/main-menu)))
 
-  (screen-destroy [_]
+  (dispose [_]
     (dispose (:tiled-map @current-data))))
 
 (defn create []
-  {:actors [(->generate-map-window world-id)
-            (->info-window)]
-   :screen (->MapEditorScreen (atom {:tiled-map (tiled/load-tmx-map modules/file)
-                                     :show-movement-properties false
-                                     :show-grid-lines false}))})
+  (stage/create
+   {:actors [(->generate-map-window world-id)
+             (->info-window)]
+    :screen (->MapEditorScreen (atom {:tiled-map (tiled/load-tmx-map modules/file)
+                                      :show-movement-properties false
+                                      :show-grid-lines false}))}))

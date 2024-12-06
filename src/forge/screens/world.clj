@@ -9,12 +9,12 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-mouse-position]]
-            [forge.app.screens :as screens :refer [change-screen
-                                                   screen-stage
-                                                   reset-stage
-                                                   mouse-on-actor?]]
+            [forge.app.screens :as screens :refer [change-screen]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.screens.stage :as stage :refer [screen-stage
+                                                   reset-stage
+                                                   mouse-on-actor?]]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -369,7 +369,7 @@
   (exit [_]
     (set-cursor :cursors/default))
 
-  (render [_]
+  (render* [_]
     (render-world)
     (update-world)
     (controls/world-camera-zoom)
@@ -380,8 +380,9 @@
           (controls/minimap?)
           (change-screen :screens/minimap)))
 
-  (screen-destroy [_]
+  (dispose [_]
     (world-clear)))
 
 (defn create []
-  {:screen (->WorldScreen)})
+  (stage/create
+   {:screen (->WorldScreen)}))

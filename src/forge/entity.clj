@@ -5,10 +5,10 @@
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-mouse-position]]
-            [forge.app.screens :refer [change-screen
-                                       mouse-on-actor?]]
+            [forge.app.screens :refer [change-screen]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.system :refer [defmethods]]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]
