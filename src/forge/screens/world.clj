@@ -40,12 +40,12 @@
 (defn- add-upd-label
   ([table text-fn icon]
    (let [icon (image->widget (->image icon) {})
-         label (label "")
+         label (vis/label "")
          sub-table (ui-table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
-   (let [label (label "")]
+   (let [label (vis/label "")]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
      (.expandX (.right (Table/.add table label))))))
 

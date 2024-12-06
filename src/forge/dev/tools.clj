@@ -1,8 +1,8 @@
 (ns forge.dev.tools
-  (:require [clojure.vis-ui :as vis]
+  (:require [clojure.gdx.app :refer [post-runnable]]
+            [clojure.vis-ui :as vis]
             [forge.core :refer :all])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Stage)))
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
 
@@ -58,9 +58,6 @@
  ; => this is basically a test for 'forge.entity.active'
 
  )
-
-(defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app [] ~@exprs))
 
 (defn- learn-skill! [skill-id]
   (post-runnable

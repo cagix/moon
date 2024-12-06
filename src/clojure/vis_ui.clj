@@ -29,7 +29,7 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn tabbed-pane []
+(defn tabbed-pane ^TabbedPane []
   (TabbedPane.))
 
 (defn menu [label]
@@ -41,7 +41,7 @@
 (def menu-bar->table MenuBar/.getTable)
 (def add-menu        MenuBar/.addMenu)
 
-(defn menu-item [text]
+(defn menu-item ^MenuItem [text]
   (MenuItem. text))
 
 (defn configure-tooltips [{:keys [default-appear-delay-time]}]

@@ -462,7 +462,7 @@
     (.row table)
     (.fill (.expand (.add table container)))
     (.row table)
-    (.pad (.left (.add table (label label-str))) (float 10))
+    (.pad (.left (.add table (vis/label label-str))) (float 10))
     (doseq [tab-data (property-type-tabs)]
       (.add tabbed-pane (vis/tab-widget tab-data)))
     table))

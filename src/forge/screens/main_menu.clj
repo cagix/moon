@@ -1,5 +1,6 @@
 (ns forge.screens.main-menu
-  (:require [forge.core :refer :all])
+  (:require [clojure.gdx.app :as app]
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn create []
@@ -17,12 +18,12 @@
                         (when dev-mode?
                           [(text-button "Property editor"
                                         #(change-screen :screens/editor))])
-                        [(text-button "Exit" #(.exit Gdx/app))]]))
+                        [(text-button "Exit" (app/exit))]]))
               :cell-defaults {:pad-bottom 25}
               :fill-parent? true})
             (ui-actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
-                                (.exit Gdx/app)))})]
+                                (app/exit)))})]
    :screen (reify Screen
              (screen-enter [_]
                (set-cursor :cursors/default))
