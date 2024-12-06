@@ -7,6 +7,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
+            [forge.app.db :as db]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules]))
@@ -107,7 +108,7 @@ direction keys: move")
 (def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [properties]
-  (let [{:keys [tiled-map start-position]} (generate-level (build world-id))
+  (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
         atom-data (current-data)]
     (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
@@ -120,8 +121,8 @@ direction keys: move")
 (defn ->generate-map-window [level-id]
   (ui-window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(label (with-out-str (pprint (build level-id))))]
-                     [(text-button "Generate" #(try (generate-screen-ctx (build level-id))
+              :rows [[(label (with-out-str (pprint (db/build level-id))))]
+                     [(text-button "Generate" #(try (generate-screen-ctx (db/build level-id))
                                                     (catch Throwable t
                                                       (error-window! t)
                                                       (println t))))]]

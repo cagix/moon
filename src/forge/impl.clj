@@ -6,9 +6,9 @@
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [asset-manager]]
+            [forge.app.db :as db]
             [forge.core :refer :all]
             [malli.core :as m]
-            [malli.error :as me]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.graphics Color Colors Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
@@ -204,26 +204,6 @@
 (defn-impl rect-contains? [rectangle [x y]]
   (Rectangle/.contains (m->shape rectangle) x y))
 
-#_(defprotocol Schema
-    (s-explain  [_ value])
-    (s-form     [_])
-    (s-validate [_ data]))
-
-(defn- invalid-ex-info [schema value]
-  (ex-info (str (me/humanize (m/explain schema value)))
-           {:value value
-            :schema (m/form schema)}))
-
-(extend-type clojure.lang.APersistentMap
-  Property
-  (validate! [property]
-    (let [schema (-> property
-                     schema-of-property
-                     malli-form
-                     m/schema)]
-      (when-not (m/validate schema property)
-        (throw (invalid-ex-info schema property))))))
-
 (def-impl val-max-schema
   (m/schema [:and
              [:vector {:min 2 :max 2} [:int {:min 0}]]
@@ -232,7 +212,7 @@
                                  (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
               (fn [[^int a ^int b]] (<= a b))]]))
 
-(defmethod malli-form :s/val-max [_]
+(defmethod db/malli-form :s/val-max [_]
   (m/form val-max-schema))
 
 (defn-impl val-max-ratio

@@ -2,6 +2,7 @@
   (:require [clojure.gdx.app :as app]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [forge.app.cursors :refer [set-cursor]]
+            [forge.app.db :as db]
             [forge.core :refer :all]))
 
 (defn create []
@@ -10,7 +11,7 @@
              {:rows
               (remove nil?
                       (concat
-                       (for [world (build-all :properties/worlds)]
+                       (for [world (db/build-all :properties/worlds)]
                          [(text-button (str "Start " (:property/id world))
                                        #(start-world world))])
                        [(when dev-mode?

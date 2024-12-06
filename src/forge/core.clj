@@ -5,10 +5,11 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
+            [forge.app.db :as db :refer [malli-form
+                                         edn->value]]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root safe-get]]
             [malli.core :as m]
@@ -50,9 +51,6 @@
  ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
  world-delta
  player-eid
- schemas
- properties-file
- db-properties
  black
  white
  ->color
@@ -145,23 +143,6 @@
                       or a multiple-cell-size body which touches this cell.")
   (nearest-entity          [cell* faction])
   (nearest-entity-distance [cell* faction]))
-
-(defn recur-sort-map [m]
-  (into (sorted-map)
-        (zipmap (keys m)
-                (map #(if (map? %)
-                        (recur-sort-map %)
-                        %)
-                     (vals m)))))
-
-; reduce-kv?
-(defn apply-kvs
-  "Calls for every key in map (f k v) to calculate new value at k."
-  [m f]
-  (reduce (fn [m k]
-            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
-          m
-          (keys m)))
 
 (defn index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
@@ -583,16 +564,6 @@
 (defn mods-add    [mods other-mods] (merge-with ops-add    mods other-mods))
 (defn mods-remove [mods other-mods] (merge-with ops-remove mods other-mods))
 
-(defn async-pprint-spit! [file data]
-  (.start
-   (Thread.
-    (fn []
-      (binding [*print-level* nil]
-        (->> data
-             pprint
-             with-out-str
-             (spit file)))))))
-
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?
@@ -627,17 +598,6 @@
 
 (defn screen-stage ^Stage []
   (:stage (current-screen)))
-
-(defn schema-of [k]
-  (safe-get schemas k))
-
-(defn schema-type [schema]
-  (if (vector? schema)
-    (schema 0)
-    schema))
-
-(defmulti malli-form schema-type)
-(defmethod malli-form :default [schema] schema)
 
 (defmethod malli-form :s/number  [_] number?)
 (defmethod malli-form :s/nat-int [_] nat-int?)
@@ -677,11 +637,12 @@
     (do
      (assert (keyword? k))
      (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
-     [k schema-props (malli-form (schema-of k))])))
+     [k schema-props (db/malli-form (db/schema-of k))])))
 
 (defn- map-form [ks]
   (apply vector :map {:closed true} (attribute-form ks)))
 
+(println "defmethod malli-form :s/map")
 (defmethod malli-form :s/map [[_ ks]]
   (map-form ks))
 
@@ -690,113 +651,31 @@
 
 (defn- namespaced-ks [ns-name-k]
   (filter #(= (name ns-name-k) (namespace %))
-          (keys schemas)))
+          (keys db/schemas)))
 
 (defmethod malli-form :s/components-ns [[_ ns-name-k]]
   (malli-form [:s/map-optional (namespaced-ks ns-name-k)]))
 
-(defn property-type [{:keys [property/id]}] ; TODO name clashes
-  (keyword "properties" (namespace id)))
-
-(defn property-types []
-  (filter #(= "properties" (namespace %))
-          (keys schemas)))
-
-(defn schema-of-property [property]
-  (schema-of (property-type property)))
-
-(defn get-raw [id]
-  (safe-get db-properties id))
-
-(defn all-raw [type]
-  (->> (vals db-properties)
-       (filter #(= type (property-type %)))))
-
-(defn async-write-to-file! []
-  (->> db-properties
-       vals
-       (sort-by property-type)
-       (map recur-sort-map)
-       doall
-       (async-pprint-spit! properties-file)))
-
-(declare build)
-
-(def ^:private undefined-data-ks (atom #{}))
-
-(comment
- #{:frames
-   :looping?
-   :frame-duration
-   :file
-   :sub-image-bounds})
-
-(defmulti edn->value (fn [schema v]
-                       (when schema  ; undefined-data-ks
-                         (schema-type schema))))
-(defmethod edn->value :default [_schema v] v)
-
 (defmethod edn->value :s/one-to-many [_ property-ids]
-  (set (map build property-ids)))
+  (set (map db/build property-ids)))
 
 (defmethod edn->value :s/one-to-one [_ property-id]
-  (build property-id))
-
-(defn- build* [property]
-  (apply-kvs property
-             (fn [k v]
-               (let [schema (try (schema-of k)
-                                 (catch Throwable _t
-                                   (swap! undefined-data-ks conj k)
-                                   nil))
-                     v (if (map? v)
-                         (build* v)
-                         v)]
-                 (try (edn->value schema v)
-                      (catch Throwable t
-                        (throw (ex-info " " {:k k :v v} t))))))))
-
-(defn build [id]
-  (build* (get-raw id)))
-
-(defn build-all [type]
-  (map build* (all-raw type)))
+  (db/build property-id))
 
 (defn property->image [{:keys [entity/image entity/animation]}]
   (or image
       (first (:frames animation))))
 
-(defprotocol Property
-  (validate! [_]))
-
 (require '[malli.generator :as mg])
 
 (defn k->default-value [k]
-  (let [schema (schema-of k)]
+  (let [schema (db/schema-of k)]
     (cond
-     (#{:s/one-to-one :s/one-to-many} (schema-type schema)) nil
+     (#{:s/one-to-one :s/one-to-many} (db/schema-type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
      :else (mg/generate (malli-form schema) {:size 3}))))
-
-(defn db-update! [{:keys [property/id] :as property}]
-  {:pre [(contains? property :property/id)
-         (contains? db-properties id)]}
-  (validate! property)
-  (alter-var-root #'db-properties assoc id property)
-  (async-write-to-file!))
-
-(defn db-delete! [property-id]
-  {:pre [(contains? db-properties property-id)]}
-  (alter-var-root #'db-properties dissoc property-id)
-  (async-write-to-file!))
-
-(defn db-migrate [property-type update-fn]
-  (doseq [id (map :property/id (all-raw property-type))]
-    (println id)
-    (alter-var-root #'db-properties update id update-fn))
-  (async-write-to-file!))
 
 (defmacro defn-impl [name-sym & fn-body]
   `(bind-root ~name-sym (fn ~name-sym ~@fn-body)))
@@ -1691,7 +1570,7 @@
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
 (defn spawn-creature [{:keys [position creature-id components]}]
-  (let [props (build creature-id)]
+  (let [props (db/build creature-id)]
     (spawn-entity position
                   (->body (:entity/body props))
                   (-> props

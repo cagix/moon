@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.mapgen.generate
   (:require [clojure.gdx.tiled :as tiled]
+            [forge.app.db :as db]
             [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))
@@ -57,7 +58,7 @@
 
 (defn- place-creatures! [spawn-rate tiled-map spawn-positions area-level-grid]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        creature-properties (build-all :properties/creatures)]
+        creature-properties (db/build-all :properties/creatures)]
     (when spawn-creatures?
       (doseq [position spawn-positions
               :let [area-level (get area-level-grid position)]

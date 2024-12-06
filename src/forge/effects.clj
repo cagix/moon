@@ -1,5 +1,6 @@
 (ns forge.effects
   (:require [forge.app.asset-manager :refer [play-sound]]
+            [forge.app.db :as db]
             [forge.core :refer :all]
             [forge.system :refer [defmethods]]))
 
@@ -89,7 +90,7 @@
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (spawn-audiovisual (:position target*)
-                            (build :audiovisuals/damage))
+                            (db/build :audiovisuals/damage))
          (send-event target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))
 
@@ -172,7 +173,7 @@
                              :thick? true})
          (effects-do! ctx entity-effects))
         (spawn-audiovisual (end-point source* target* maxrange)
-                           (build :audiovisuals/hit-ground)))))
+                           (db/build :audiovisuals/hit-ground)))))
 
   (render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (when target

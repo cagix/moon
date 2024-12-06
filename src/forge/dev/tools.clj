@@ -3,6 +3,7 @@
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
+            [forge.app.db :as db]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
@@ -63,11 +64,11 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! player-eid add-skill (build skill-id))))
+   (swap! player-eid add-skill (db/build skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable
-   (spawn-item (:position @player-eid) (build item-id))))
+   (spawn-item (:position @player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
   @(get world-grid (mapv int (world-mouse-position))))

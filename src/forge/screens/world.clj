@@ -5,6 +5,7 @@
             [clojure.vis-ui :as vis]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.cursors :refer [set-cursor]]
+            [forge.app.db :as db]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
@@ -223,7 +224,7 @@
                      {:label "Main-Menu"
                       :on-click (partial change-screen :screens/main-menu)}]}
             {:label "World"
-             :items (for [world (build-all :properties/worlds)]
+             :items (for [world (db/build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
                        :on-click #(start-world world)})}
             {:label "Help"

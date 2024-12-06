@@ -1,8 +1,9 @@
-(ns ^:no-doc forge.dev.migrations)
+(ns ^:no-doc forge.dev.migrations
+  (:require [forge.app.db :as db]))
 
 (comment
 
- (db-migrate :properties/creatures
+ (db/migrate :properties/creatures
              (fn [{:keys [entity/stats] :as creature}]
                (-> creature
                    (dissoc :entity/stats)
