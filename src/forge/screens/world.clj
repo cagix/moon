@@ -14,6 +14,10 @@
                                             gui-mouse-position]]
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.world-viewport :refer [world-mouse-position
+                                              world-camera
+                                              world-viewport-width
+                                              world-viewport-height]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.screen :refer [Screen]]

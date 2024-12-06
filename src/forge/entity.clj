@@ -8,6 +8,8 @@
             [forge.app.gui-viewport :refer [gui-mouse-position]]
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.world-viewport :refer [pixels->world-units
+                                              world-mouse-position]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.screens.stage :refer [mouse-on-actor?]]

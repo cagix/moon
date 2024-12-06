@@ -18,6 +18,9 @@
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.world-viewport :refer [world-viewport-width
+                                              world-viewport-height
+                                              world-camera]]
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
             [forge.system :refer [defsystem]]
@@ -37,10 +40,6 @@
 
 (declare
  pretty-pst
- world-unit-scale
- world-viewport
- world-viewport-width
- world-viewport-height
  world-tiled-map
  explored-tile-corners
  world-grid
@@ -81,8 +80,6 @@
  val-max-schema
  ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
  start-world
- world-mouse-position
- world-camera
  ->texture-region
  ->image
  sub-image
@@ -632,9 +629,6 @@
 
 (defmacro def-impl [name-sym value]
   `(bind-root ~name-sym ~value))
-
-(defn pixels->world-units [pixels]
-  (* (int pixels) world-unit-scale))
 
 (defn edn->image [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds

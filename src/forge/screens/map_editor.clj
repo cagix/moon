@@ -13,6 +13,8 @@
             [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.world-viewport :refer [world-mouse-position
+                                              world-camera]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.screen :refer [Screen]]

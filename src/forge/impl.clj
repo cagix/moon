@@ -11,6 +11,8 @@
             [forge.app.default-font :refer [default-font]]
             [forge.app.shape-drawer :as sd]
             [forge.app.sprite-batch :refer [batch]]
+            [forge.app.world-viewport :refer [world-unit-scale
+                                              world-viewport]]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.generator :as mg])
@@ -231,14 +233,6 @@
     (.begin this)
     (draw-fn)
     (.end this)))
-
-(defn-impl world-mouse-position []
-  ; TODO clamping only works for gui-viewport ? check. comment if true
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-position world-viewport))
-
-(defn-impl world-camera []
-  (Viewport/.getCamera world-viewport))
 
 (defn-impl ->texture-region
   ([path]

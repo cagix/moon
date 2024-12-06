@@ -11,6 +11,8 @@
 (defn update [^Viewport viewport w h & {:keys [center-camera?]}]
   (.update viewport w h (boolean center-camera?)))
 
+(def camera Viewport/.getCamera)
+
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn unproject-mouse-position

@@ -6,6 +6,7 @@
             [forge.screen :refer [Screen]]
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.world-viewport :refer [world-camera]]
             [forge.core :refer :all]))
 
 ; 28.4 viewportwidth

@@ -7,6 +7,7 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
+            [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.core :refer :all]
             [forge.screens.stage :refer [add-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
