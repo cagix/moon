@@ -5,34 +5,23 @@
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.java.io :as io]
             [clojure.lwjgl :as lwjgl]
-            [forge.system :as system :refer [defsystem]]))
-
-(defsystem create)
-(defmethod create :default [_])
-
-(defsystem destroy)
-(defmethod destroy :default [_])
-
-(defsystem render)
-(defmethod render :default [_])
-
-(defsystem resize)
-(defmethod resize :default [_ w h])
+            [forge.app :as app]
+            [forge.system :as system]))
 
 (defn -main []
   (let [{:keys [components] :as config} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require (:requires config))
-    (system/install {:optional [#'create
-                                #'destroy
-                                #'render
-                                #'resize]}
+    (system/install {:optional [#'app/create
+                                #'app/destroy
+                                #'app/render
+                                #'app/resize]}
                     components)
     (awt/set-dock-icon (:dock-icon config))
     (when shared-library-loader/mac?
       (lwjgl/configure-glfw-for-mac))
     (lwjgl3/app (proxy [com.badlogic.gdx.ApplicationAdapter] []
-                  (create  []    (run! create          components))
-                  (dispose []    (run! destroy         components))
-                  (render  []    (run! render          components))
-                  (resize  [w h] (run! #(resize % w h) components)))
+                  (create  []    (run! app/create          components))
+                  (dispose []    (run! app/destroy         components))
+                  (render  []    (run! app/render          components))
+                  (resize  [w h] (run! #(app/resize % w h) components)))
                 (lwjgl3/config (:lwjgl3 config)))))

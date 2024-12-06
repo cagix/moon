@@ -14,6 +14,7 @@
             [forge.app.screens :as screens :refer [change-screen]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
             [forge.mapgen.modules :as modules]))
 
@@ -136,14 +137,14 @@ direction keys: move")
               :pack? true}))
 
 (defrecord MapEditorScreen [current-data]
-  screens/Screen
+  Screen
   (enter [_]
     (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
   (exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (render* [_]
+  (render [_]
     (draw-tiled-map (:tiled-map @current-data)
                     (constantly color/white))
     (draw-on-world-view render-on-map)

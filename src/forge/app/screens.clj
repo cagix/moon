@@ -1,13 +1,6 @@
 (ns forge.app.screens
-  (:require [clojure.gdx.graphics :as g]
-            [clojure.gdx.graphics.color :as color]
+  (:require [forge.screen :as screen]
             [forge.utils :refer [bind-root mapvals]]))
-
-(defprotocol Screen
-  (enter   [_])
-  (exit    [_])
-  (render* [_])
-  (dispose [_]))
 
 (declare ^:private screens
          ^:private current-screen-key)
@@ -20,11 +13,11 @@
   "Calls `exit` on the current-screen and `enter` on the new screen."
   [new-k]
   (when-let [screen (current-screen)]
-    (exit screen))
+    (screen/exit screen))
   (let [screen (new-k screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root current-screen-key new-k)
-    (enter screen)))
+    (screen/enter screen)))
 
 (defn create [[_ {:keys [ks first-k]}]]
   (bind-root screens (mapvals
@@ -35,8 +28,7 @@
   (change-screen first-k))
 
 (defn destroy [_]
-  (run! dispose (vals screens)))
+  (run! screen/dispose (vals screens)))
 
 (defn render [_]
-  (g/clear-screen color/black)
-  (render* (current-screen)))
+  (screen/render (current-screen)))

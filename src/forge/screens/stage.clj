@@ -6,33 +6,34 @@
             [forge.app.gui-viewport :refer [gui-viewport
                                             gui-mouse-position]]
             [forge.app.sprite-batch :refer [batch]]
-            [forge.app.screens :as screens :refer [current-screen]])
+            [forge.app.screens :refer [current-screen]]
+            [forge.screen :as screen])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defrecord StageScreen [stage sub-screen]
-  screens/Screen
+  screen/Screen
   (enter [_]
     (input/set-processor stage)
-    (screens/enter sub-screen))
+    (screen/enter sub-screen))
 
   (exit [_]
     (input/set-processor nil)
-    (screens/exit sub-screen))
+    (screen/exit sub-screen))
 
-  (render* [_]
+  (render [_]
     (stage/act stage)
-    (screens/render* sub-screen)
+    (screen/render sub-screen)
     (stage/draw stage))
 
   (dispose [_]
     (dispose stage)
-    (screens/dispose sub-screen)))
+    (screen/dispose sub-screen)))
 
 (def ^:private empty-screen
-  (reify screens/Screen
+  (reify screen/Screen
     (enter [_])
     (exit [_])
-    (render* [_])
+    (render [_])
     (dispose [_])))
 
 (defn create

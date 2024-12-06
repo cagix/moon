@@ -1,5 +1,7 @@
 (ns forge.screens.world
-  (:require [clojure.gdx.graphics :refer [delta-time frames-per-second]]
+  (:require [clojure.gdx.graphics :refer [delta-time
+                                          frames-per-second
+                                          clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
@@ -10,9 +12,10 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-mouse-position]]
-            [forge.app.screens :as screens :refer [change-screen]]
+            [forge.app.screens :refer [change-screen]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage
                                                    mouse-on-actor?]]
@@ -363,14 +366,15 @@
                        (debug-render-after-entities))))
 
 (deftype WorldScreen []
-  screens/Screen
+  Screen
   (enter [_]
     (cam/set-zoom! (world-camera) 0.8))
 
   (exit [_]
     (set-cursor :cursors/default))
 
-  (render* [_]
+  (render [_]
+    (clear-screen color/black)
     (render-world)
     (update-world)
     (controls/world-camera-zoom)
