@@ -1,12 +1,10 @@
 (ns forge.app.cached-map-renderer
-  (:require [forge.core :refer [bind-root
+  (:require [clojure.gdx.tiled :as tiled]
+            [forge.core :refer [bind-root
                                 defn-impl
                                 world-unit-scale
                                 world-camera
                                 batch
-                                layers
-                                visible?
-                                layer-index
                                 draw-tiled-map]])
   (:import (forge OrthogonalTiledMapRenderer
                   ColorSetter)))
@@ -28,8 +26,8 @@
                                       (color-setter color x y))))
     (.setView map-renderer (world-camera))
     (->> tiled-map
-         layers
-         (filter visible?)
-         (map (partial layer-index tiled-map))
+         tiled/layers
+         (filter tiled/visible?)
+         (map (partial tiled/layer-index tiled-map))
          int-array
          (.render map-renderer))))

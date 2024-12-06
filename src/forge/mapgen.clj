@@ -1,5 +1,6 @@
 (ns forge.mapgen
-  (:require [forge.core :refer :all]))
+  (:require [clojure.gdx.tiled :as tiled]
+            [forge.core :refer :all]))
 
 (defn creatures-with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))
@@ -9,8 +10,8 @@
    (fn [{:keys [property/id] :as prop}]
      (assert id)
      (let [image (property->image prop)
-           tile (static-tiled-map-tile (:texture-region image))]
-       (put! (m-props tile) "id" id)
+           tile (tiled/static-tiled-map-tile (:texture-region image))]
+       (tiled/put! (tiled/m-props tile) "id" id)
        tile))))
 
 (defn- wall-at? [grid posi]
@@ -302,38 +303,38 @@
   "Creates an empty new tiled-map with same layers and properties as schema-tiled-map.
   The size of the map is as of the grid, which contains also the tile information from the schema-tiled-map."
   [schema-tiled-map grid]
-  (let [tiled-map (empty-tiled-map)
-        properties (m-props tiled-map)]
-    (put-all! properties (m-props schema-tiled-map))
-    (put! properties "width"  (g2d-width  grid))
-    (put! properties "height" (g2d-height grid))
-    (doseq [layer (layers schema-tiled-map)
-            :let [new-layer (add-layer! tiled-map
-                                          :name (layer-name layer)
-                                          :visible (visible? layer)
-                                          :properties (m-props layer))]]
+  (let [tiled-map (tiled/empty-tiled-map)
+        properties (tiled/m-props tiled-map)]
+    (tiled/put-all! properties (tiled/m-props schema-tiled-map))
+    (tiled/put! properties "width"  (g2d-width  grid))
+    (tiled/put! properties "height" (g2d-height grid))
+    (doseq [layer (tiled/layers schema-tiled-map)
+            :let [new-layer (tiled/add-layer! tiled-map
+                                              :name (tiled/layer-name layer)
+                                              :visible (tiled/visible? layer)
+                                              :properties (tiled/m-props layer))]]
       (doseq [position (g2d-posis grid)
               :let [local-position (get grid position)]
               :when local-position]
         (when (vector? local-position)
-          (when-let [cell (cell-at schema-tiled-map layer local-position)]
-            (set-tile! new-layer
-                         position
-                         (copy-tile (cell->tile cell)))))))
+          (when-let [cell (tiled/cell-at schema-tiled-map layer local-position)]
+            (tiled/set-tile! new-layer
+                             position
+                             (tiled/copy-tile (tiled/cell->tile cell)))))))
     tiled-map))
 
 (defn wgt-grid->tiled-map [tile-size grid position->tile]
-  (let [tiled-map (empty-tiled-map)
-        properties (m-props tiled-map)]
-    (put! properties "width"  (g2d-width  grid))
-    (put! properties "height" (g2d-height grid))
-    (put! properties "tilewidth"  tile-size)
-    (put! properties "tileheight" tile-size)
-    (let [layer (add-layer! tiled-map :name "ground" :visible true)
-          properties (m-props layer)]
-      (put! properties "movement-properties" true)
+  (let [tiled-map (tiled/empty-tiled-map)
+        properties (tiled/m-props tiled-map)]
+    (tiled/put! properties "width"  (g2d-width  grid))
+    (tiled/put! properties "height" (g2d-height grid))
+    (tiled/put! properties "tilewidth"  tile-size)
+    (tiled/put! properties "tileheight" tile-size)
+    (let [layer (tiled/add-layer! tiled-map :name "ground" :visible true)
+          properties (tiled/m-props layer)]
+      (tiled/put! properties "movement-properties" true)
       (doseq [position (g2d-posis grid)
               :let [value (get grid position)
-                    cell (cell-at tiled-map layer position)]]
-        (set-tile! layer position (position->tile position))))
+                    cell (tiled/cell-at tiled-map layer position)]]
+        (tiled/set-tile! layer position (position->tile position))))
     tiled-map))

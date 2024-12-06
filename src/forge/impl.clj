@@ -13,7 +13,6 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
-           (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.utils.viewport Viewport)
@@ -147,13 +146,6 @@
     (.setVisible actor bool))
   (visible? [actor]
     (.isVisible actor)))
-
-(extend-type TiledMapTileLayer
-  HasVisible
-  (set-visible [layer bool]
-    (.setVisible layer bool))
-  (visible? [layer]
-    (.isVisible layer)))
 
 (defn-impl add-actor [actor]
   (.addActor (screen-stage) actor))
@@ -292,10 +284,6 @@
   (if (and (zero? v) (zero? mx))
     0
     (/ v mx)))
-
-(defn-impl load-tmx-map
-  [file]
-  (.load (TmxMapLoader.) file))
 
 (defn-impl add-color [name-str color]
   (Colors/put name-str (->color color)))

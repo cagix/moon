@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.mapgen.generate
-  (:require [forge.core :refer :all]
+  (:require [clojure.gdx.tiled :as tiled]
+            [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))
 
@@ -55,7 +56,7 @@
 (def ^:private spawn-creatures? true)
 
 (defn- place-creatures! [spawn-rate tiled-map spawn-positions area-level-grid]
-  (let [layer (add-layer! tiled-map :name "creatures" :visible false)
+  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
         creature-properties (build-all :properties/creatures)]
     (when spawn-creatures?
       (doseq [position spawn-positions
@@ -64,7 +65,7 @@
                          (<= (rand) spawn-rate))]
         (let [creatures (creatures-with-level creature-properties area-level)]
           (when (seq creatures)
-            (set-tile! layer position (creature-tile (rand-nth creatures)))))))))
+            (tiled/set-tile! layer position (creature-tile (rand-nth creatures)))))))))
 
 (defn- generate-modules
   "The generated tiled-map needs to be disposed."
@@ -84,7 +85,7 @@
                   (str "(set (g2d-cells grid)): " (set (g2d-cells grid))))
         scale modules/scale
         scaled-grid (scale-grid grid scale)
-        tiled-map (modules/place (load-tmx-map modules/file)
+        tiled-map (modules/place (tiled/load-tmx-map modules/file)
                                  scaled-grid
                                  grid
                                  (filter #(= :ground     (get grid %)) (g2d-posis grid))
@@ -114,7 +115,7 @@
                                             (fn [p]
                                               (and (= area-level (get scaled-area-level-grid p))
                                                    (#{:no-cell :undefined}
-                                                    (property-value tiled-map :creatures p :id))))
+                                                    (tiled/property-value tiled-map :creatures p :id))))
                                             spawn-positions)))]
     (place-creatures! spawn-rate tiled-map spawn-positions scaled-area-level-grid)
     {:tiled-map tiled-map

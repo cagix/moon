@@ -1,5 +1,6 @@
 (ns forge.mapgen.modules
-  (:require [forge.core :refer :all]
+  (:require [clojure.gdx.tiled :as tiled]
+            [forge.core :refer :all]
             [forge.mapgen :refer [grid->tiled-map transition-idx-value]]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
@@ -68,9 +69,9 @@
              unscaled-grid
              unscaled-floor-positions
              unscaled-transition-positions]
-  (let [_ (assert (and (= (tm-width modules-tiled-map)
+  (let [_ (assert (and (= (tiled/tm-width modules-tiled-map)
                           (* number-modules-x (+ width module-offset-tiles)))
-                       (= (tm-height modules-tiled-map)
+                       (= (tiled/tm-height modules-tiled-map)
                           (* number-modules-y (+ height module-offset-tiles)))))
         scaled-grid (reduce (fn [scaled-grid unscaled-position]
                               (place-module scaled-grid unscaled-position :transition? false))

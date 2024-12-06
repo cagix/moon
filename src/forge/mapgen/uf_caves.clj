@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.mapgen.uf-caves
-  (:require [forge.core :refer :all]
+  (:require [clojure.gdx.tiled :as tiled]
+            [forge.core :refer :all]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
 
 (def ^:private scaling 4)
@@ -11,20 +12,20 @@
   (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
 
 (defn- set-creatures-tiles [spawn-rate tiled-map spawn-positions]
-  (let [layer (add-layer! tiled-map :name "creatures" :visible false)
+  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
         creatures (build-all :properties/creatures)
         level (inc (rand-int 6))
         creatures (creatures-with-level creatures level)]
     (doseq [position spawn-positions
             :when (<= (rand) spawn-rate)]
-      (set-tile! layer position (creature-tile (rand-nth creatures))))))
+      (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))
 
 (def ^:private tm-tile
   (memoize
    (fn [texture-region movement]
      {:pre [#{"all" "air" "none"} movement]}
-     (let [tile (static-tiled-map-tile texture-region)]
-       (put! (m-props tile) "movement" movement)
+     (let [tile (tiled/static-tiled-map-tile texture-region)]
+       (tiled/put! (tiled/m-props tile) "movement" movement)
        tile))))
 
 (def ^:private sprite-size 48)
@@ -118,5 +119,5 @@
   (create world))
 
 (defmethod generate-level* :world.generator/tiled-map [world]
-  {:tiled-map (load-tmx-map (:world/tiled-map world))
+  {:tiled-map (tiled/load-tmx-map (:world/tiled-map world))
    :start-position [32 71]})
