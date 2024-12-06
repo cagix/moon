@@ -14,7 +14,8 @@
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
-           (com.kotcrab.vis.ui.widget VisWindow VisTable)
+           (com.kotcrab.vis.ui.widget VisWindow
+                                      VisTable)
            (forge RayCaster)))
 
 (declare m-schema

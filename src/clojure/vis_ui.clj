@@ -7,6 +7,10 @@
            (com.kotcrab.vis.ui VisUI
                                VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip
+                                      Menu
+                                      MenuBar
+                                      MenuItem
+                                      Separator
                                       VisImage
                                       VisTextButton
                                       VisCheckBox
@@ -15,9 +19,30 @@
                                       VisTextField
                                       VisLabel
                                       VisScrollPane
-                                      Separator
                                       VisTree
-                                      VisWindow)))
+                                      VisWindow)
+           (com.kotcrab.vis.ui.widget.tabbedpane Tab
+                                                 TabbedPane)))
+
+(defn tab-widget [{:keys [title content savable? closable-by-user?]}]
+  (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
+    (getTabTitle [] title)
+    (getContentTable [] content)))
+
+(defn tabbed-pane []
+  (TabbedPane.))
+
+(defn menu [label]
+  (Menu. label))
+
+(defn menu-bar []
+  (MenuBar.))
+
+(def menu-bar->table MenuBar/.getTable)
+(def add-menu        MenuBar/.addMenu)
+
+(defn menu-item [text]
+  (MenuItem. text))
 
 (defn configure-tooltips [{:keys [default-appear-delay-time]}]
   ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
@@ -68,13 +93,19 @@
 (defn check-box [text]
   (VisCheckBox. (str text)))
 
+(def checked? VisCheckBox/.isChecked)
+
 (defn text-field [text]
   (VisTextField. (str text)))
+
+(def text-field->text VisTextField/.getText)
 
 (defn select-box [{:keys [items selected]}]
   (doto (VisSelectBox.)
     (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
     (.setSelected selected)))
+
+(def selected VisSelectBox/.getSelected)
 
 (defn add-tooltip!
   "tooltip-text is a (fn []) or a string. If it is a function will be-recalculated every show.

@@ -1,12 +1,12 @@
 (ns forge.screens.world
   (:require [clojure.gdx.graphics.camera :as cam]
+            [clojure.vis-ui :as vis]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)
-           (com.kotcrab.vis.ui.widget Menu MenuItem MenuBar)))
+           (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (draw-text {:text infostr
@@ -34,7 +34,7 @@
                          (render-hpmana-bar x y-mana manacontent (e-mana player-entity) "MP")))})))
 
 (defn- menu-item [text on-clicked]
-  (doto (MenuItem. text)
+  (doto (vis/menu-item text)
     (.addListener (change-listener on-clicked))))
 
 (defn- add-upd-label
@@ -50,7 +50,7 @@
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels [menu-bar update-labels]
-  (let [table (MenuBar/.getTable menu-bar)]
+  (let [table (vis/menu-bar->table menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
       (let [update-fn #(str label ": " (update-fn))]
         (if icon
@@ -58,13 +58,13 @@
           (add-upd-label table update-fn))))))
 
 (defn- add-menu [menu-bar {:keys [label items]}]
-  (let [app-menu (Menu. label)]
+  (let [app-menu (vis/menu label)]
     (doseq [{:keys [label on-click]} items]
       (.addItem app-menu (menu-item label (or on-click (fn [])))))
-    (MenuBar/.addMenu menu-bar app-menu)))
+    (vis/add-menu menu-bar app-menu)))
 
 (defn- create-menu-bar [menus]
-  (let [menu-bar (MenuBar.)]
+  (let [menu-bar (vis/menu-bar)]
     (run! #(add-menu menu-bar %) menus)
     menu-bar))
 
@@ -209,7 +209,7 @@
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
-(defn- dev-menu-bar ^MenuBar []
+(defn- dev-menu-bar []
   (dev-menu*
    {:menus [{:label "Screens"
              :items [{:label "Map-editor"
@@ -244,7 +244,7 @@
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
-  (ui-table {:rows [[{:actor (.getTable (dev-menu-bar))
+  (ui-table {:rows [[{:actor (vis/menu-bar->table (dev-menu-bar))
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]

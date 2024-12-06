@@ -1,11 +1,10 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
+            [clojure.vis-ui :as vis]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)
-           (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
-           (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
+           (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn- map-keys [m-schema]
   (let [[_m _p & ks] m-schema]
@@ -117,28 +116,28 @@
                 (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn/read-string (VisTextField/.getText widget)))
+  (edn/read-string (vis/text-field->text widget)))
 
 (defmethod schema->widget :string [schema v]
   (add-tooltip! (text-field v {})
                 (str schema)))
 
 (defmethod ->value :string [_ widget]
-  (VisTextField/.getText widget))
+  (vis/text-field->text widget))
 
 (defmethod schema->widget :boolean [_ checked?]
   (assert (boolean? checked?))
   (check-box "" (fn [_]) checked?))
 
 (defmethod ->value :boolean [_ widget]
-  (VisCheckBox/.isChecked widget))
+  (vis/checked? widget))
 
 (defmethod schema->widget :enum [schema v]
   (select-box {:items (map ->edn-str (rest schema))
                :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn/read-string (VisSelectBox/.getSelected widget)))
+  (edn/read-string (vis/selected widget)))
 
 (defn- play-button [sound-file]
   (text-button "play!" #(play-sound sound-file)))
@@ -450,18 +449,13 @@
     {:title (str-capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
-(defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
-  (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
-    (getTabTitle [] title)
-    (getContentTable [] content)))
-
 (defn- tabs-table [label-str]
   (let [table (ui-table {:fill-parent? true})
         container (ui-table {})
-        tabbed-pane (TabbedPane.)]
+        tabbed-pane (vis/tabbed-pane)]
     (.addListener tabbed-pane
-                  (proxy [TabbedPaneAdapter] []
-                    (switchedTab [^Tab tab]
+                  (proxy [com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter] []
+                    (switchedTab [^com.kotcrab.vis.ui.widget.tabbedpane.Tab tab]
                       (.clearChildren container)
                       (.fill (.expand (.add container (.getContentTable tab)))))))
     (.fillX (.expandX (.add table (.getTable tabbed-pane))))
@@ -470,7 +464,7 @@
     (.row table)
     (.pad (.left (.add table (label label-str))) (float 10))
     (doseq [tab-data (property-type-tabs)]
-      (.add tabbed-pane (tab-widget tab-data)))
+      (.add tabbed-pane (vis/tab-widget tab-data)))
     table))
 
 (defn create []
