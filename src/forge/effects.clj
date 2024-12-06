@@ -1,5 +1,6 @@
 (ns forge.effects
-  (:require [forge.core :refer :all]
+  (:require [forge.app.asset-manager :refer [play-sound]]
+            [forge.core :refer :all]
             [forge.system :refer [defmethods]]))
 
 (comment

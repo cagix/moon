@@ -5,6 +5,7 @@
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
+            [forge.app.asset-manager :refer [asset-manager]]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.error :as me]

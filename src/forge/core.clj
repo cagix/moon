@@ -1,12 +1,12 @@
 (ns forge.core
-  (:require [clojure.gdx.audio.sound :as sound]
-            [clojure.gdx.graphics :as g :refer [delta-time]]
+  (:require [clojure.gdx.graphics :as g :refer [delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
+            [forge.app.asset-manager :refer [play-sound]]
             [forge.system :refer [defsystem]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
@@ -18,14 +18,6 @@
            (com.kotcrab.vis.ui.widget VisWindow
                                       VisTable)
            (forge RayCaster)))
-
-(declare asset-manager)
-
-(defn play-sound [sound-name]
-  (->> sound-name
-       (format "sounds/%s.wav")
-       asset-manager
-       sound/play))
 
 (def ^:dynamic *unit-scale* 1)
 
