@@ -1,6 +1,12 @@
 (ns forge.world.potential-fields
   (:require [clojure.gdx.math.vector2 :as v]
-            [forge.core :refer :all]))
+            [forge.core :refer :all]
+            [forge.world.grid :refer [world-grid
+                                      cell-blocked?
+                                      nearest-entity-distance
+                                      nearest-entity
+                                      occupied-by-other?
+                                      ]]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})

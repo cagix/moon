@@ -27,8 +27,13 @@
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
             [forge.system :refer [defsystem]]
-            [forge.utils :refer [bind-root safe-get pretty-pst]]
+            [forge.utils :refer [bind-root
+                                 safe-get
+                                 pretty-pst
+                                 tile->middle]]
             [forge.world.explored-tile-corners]
+            [forge.world.grid :refer [world-grid
+                                      blocks-vision?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
@@ -42,7 +47,6 @@
            (forge RayCaster)))
 
 (declare
- world-grid
  tick-error
  paused?
  ids->eids
@@ -68,15 +72,6 @@
  sprite-sheet
  ->sprite
  )
-
-(defprotocol GridCell
-  (cell-blocked? [cell* z-order])
-  (blocks-vision? [cell*])
-  (occupied-by-other? [cell* eid]
-                      "returns true if there is some occupying body with center-tile = this cell
-                      or a multiple-cell-size body which touches this cell.")
-  (nearest-entity          [cell* faction])
-  (nearest-entity-distance [cell* faction]))
 
 (defn index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
@@ -269,9 +264,6 @@
 
 (defn ->tile [position]
   (mapv int position))
-
-(defn tile->middle [position]
-  (mapv (partial + 0.5) position))
 
 (defsystem handle [_ ctx])
 
@@ -964,37 +956,6 @@
          :world/player-creature
          (:world/player-creature world-props)))
 
-; TODO performance bottleneck -> every time getting same layers
-; takes 600 ms to read movement-properties
-; lazy seqs??
-
-(defn- tile-movement-property [tiled-map layer position]
-  (let [value (tiled/property-value tiled-map layer position :movement)]
-    (assert (not= value :undefined)
-            (str "Value for :movement at position "
-                 position  " / mapeditor inverted position: " [(position 0)
-                                                               (- (dec (tiled/tm-height tiled-map))
-                                                                  (position 1))]
-                 " and layer " (tiled/layer-name layer) " is undefined."))
-    (when-not (= :no-cell value)
-      value)))
-
-(defn- movement-property-layers [tiled-map]
-  (filter #(tiled/get-property % :movement-properties)
-          (reverse
-           (tiled/layers tiled-map))))
-
-(defn movement-properties [tiled-map position]
-  (for [layer (movement-property-layers tiled-map)]
-    [(tiled/layer-name layer)
-     (tile-movement-property tiled-map layer position)]))
-
-(defn movement-property [tiled-map position]
-  (or (->> tiled-map
-           movement-property-layers
-           (some #(tile-movement-property tiled-map % position)))
-      "none"))
-
 (defn- content-grid-create [{:keys [cell-size width height]}]
   {:grid (g2d/create-grid
           (inc (int (/ width  cell-size))) ; inc because corners
@@ -1284,44 +1245,6 @@
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! eid)))
 
-(defrecord RCell [position
-                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  GridCell
-  (cell-blocked? [_ z-order]
-    (case movement
-      :none true ; wall
-      :air (case z-order ; water/doodads
-             :z-order/flying false
-             :z-order/ground true)
-      :all false)) ; ground/floor
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied)) ; contains? faster?
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance)))
-
-(defn- ->cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (map->RCell
-   {:position position
-    :middle (tile->middle position)
-    :movement movement
-    :entities #{}
-    :occupied #{}}))
-
 (def ^:private ^:dbg-flag show-body-bounds false)
 
 (defn- draw-body-rect [entity color]
@@ -1548,16 +1471,7 @@
 (defn world-init [{:keys [tiled-map start-position]}]
   (forge.world.tiled-map/init             tiled-map)
   (forge.world.explored-tile-corners/init tiled-map)
-  (bind-root world-grid (g2d/create-grid
-                         (tiled/tm-width tiled-map)
-                         (tiled/tm-height tiled-map)
-                         (fn [position]
-                           (atom (->cell position
-                                         (case (movement-property tiled-map position)
-                                           "none" :none
-                                           "air"  :air
-                                           "all"  :all))))))
-
+  (forge.world.grid/init                  tiled-map)
   (init-raycaster world-grid blocks-vision?)
   (let [width  (tiled/tm-width  tiled-map)
         height (tiled/tm-height tiled-map)]

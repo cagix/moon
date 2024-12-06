@@ -109,7 +109,7 @@
         {:keys [start-position grid]} (scale-grid grid start scaling)
         grid (assoc-transition-cells grid)
         tiled-map (generate-tiled-map grid)
-        can-spawn? #(= "all" (movement-property tiled-map %))
+        can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill grid start-position can-spawn?)]
     (set-creatures-tiles spawn-rate tiled-map spawn-positions)

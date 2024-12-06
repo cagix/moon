@@ -9,7 +9,8 @@
                                             gui-viewport-height]]
             [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.core :refer :all]
-            [forge.screens.stage :refer [add-actor]])
+            [forge.screens.stage :refer [add-actor]]
+            [forge.world.grid :refer [world-grid]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment

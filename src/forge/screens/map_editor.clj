@@ -61,8 +61,8 @@ direction keys: move")
             (let [level (get area-level-grid tile)]
               (when (number? level)
                 (str "Area level:" level))))
-          (str "Movement properties " (movement-property tiled-map tile) "\n"
-               (apply vector (movement-properties tiled-map tile)))]
+          (str "Movement properties " (tiled/movement-property tiled-map tile) "\n"
+               (apply vector (tiled/movement-properties tiled-map tile)))]
          (remove nil?)
          (str/join "\n"))))
 
@@ -103,7 +103,7 @@ direction keys: move")
       (sd/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
-              :let [prop (movement-property tiled-map [x y])]]
+              :let [prop (tiled/movement-property tiled-map [x y])]]
         (sd/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
         (sd/filled-circle [(+ x 0.5) (+ y 0.5)]
                           0.05

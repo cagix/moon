@@ -21,6 +21,10 @@
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.system :refer [defmethods]]
             [forge.ui.inventory :as inventory]
+            [forge.world.grid :refer [world-grid
+                                      cell-blocked?
+                                      nearest-entity
+                                      nearest-entity-distance]]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
             [reduce-fsm :as fsm]))

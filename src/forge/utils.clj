@@ -45,3 +45,6 @@
 (defn pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
+
+(defn tile->middle [position]
+  (mapv (partial + 0.5) position))
