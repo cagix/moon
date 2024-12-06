@@ -10,7 +10,7 @@
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.system :refer [defsystem]]
-            [forge.utils :refer [bind-root]]
+            [forge.utils :refer [bind-root safe-get]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -146,12 +146,6 @@
   (nearest-entity          [cell* faction])
   (nearest-entity-distance [cell* faction]))
 
-(defn safe-get [m k]
-  (let [result (get m k ::not-found)]
-    (if (= result ::not-found)
-      (throw (IllegalArgumentException. (str "Cannot find " (pr-str k))))
-      result)))
-
 (defn recur-sort-map [m]
   (into (sorted-map)
         (zipmap (keys m)
@@ -270,10 +264,6 @@
 (defn dissoc-in [m ks]
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
-
-(defn mapvals [f m]
-  (into {} (for [[k v] m]
-             [k (f v)])))
 
 ;; rename to 'shuffle', rand and rand-int without the 's'-> just use with require :as.
 ;; maybe even remove the when coll pred?

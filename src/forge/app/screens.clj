@@ -7,7 +7,6 @@
             [forge.core :refer [gui-viewport
                                 batch
                                 find-actor-with-id
-                                mapvals
                                 Screen
                                 screens
                                 screen-enter
@@ -16,7 +15,7 @@
                                 screen-destroy
                                 current-screen
                                 change-screen]]
-            [forge.utils :refer [bind-root]]))
+            [forge.utils :refer [bind-root mapvals]]))
 
 (defrecord StageScreen [stage sub-screen]
   Screen
