@@ -47,6 +47,10 @@
     :right  Align/right))
 
 (defn draw-text
+  "font, h-align, up? and scale are optional.
+  h-align one of: :center, :left, :right. Default :center.
+  up? renders the font over y, otherwise under.
+  scale will multiply the drawn text size with the scale."
   [{:keys [font x y text h-align up? scale]}]
   (let [^BitmapFont font (or font default-font)
         data (.getData font)

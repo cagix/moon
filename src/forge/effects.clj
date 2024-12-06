@@ -5,8 +5,14 @@
             [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
             [forge.system :refer [defmethods]]
+            [forge.world :refer [spawn-audiovisual
+                                 spawn-creature
+                                 spawn-line-render
+                                 projectile-size
+                                 spawn-projectile]]
             [forge.world.raycaster :refer [path-blocked?]]
-            [forge.world.time :refer [timer]]))
+            [forge.world.time :refer [timer]]
+            [forge.world.player :refer [player-eid]]))
 
 (comment
 

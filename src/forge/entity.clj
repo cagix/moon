@@ -21,6 +21,14 @@
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.system :refer [defmethods]]
             [forge.ui.inventory :as inventory]
+            [forge.world :refer [minimum-body-size
+                                 ->v
+                                 e-create
+                                 e-destroy
+                                 spawn-audiovisual
+                                 spawn-item
+                                 delayed-alert]
+             :as world]
             [forge.world.grid :refer [world-grid
                                       cell-blocked?
                                       nearest-entity
@@ -33,6 +41,7 @@
                                       timer
                                       max-delta-time
                                       finished-ratio]]
+            [forge.world.player :refer [player-eid]]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
             [reduce-fsm :as fsm]))
@@ -366,7 +375,7 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)
                         (move-body body movement))]
-        (position-changed eid)
+        (world/entity-position-changed eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))

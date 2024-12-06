@@ -7,7 +7,6 @@
             [clojure.gdx.scene2d.actor :refer [visible?
                                                set-visible]]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
-            [forge.utils :refer [bind-root ->tile]]
             [clojure.vis-ui :as vis]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.cursors :refer [set-cursor]]
@@ -30,6 +29,9 @@
                                                    reset-stage
                                                    mouse-on-actor?]]
             [forge.ui.inventory :as inventory]
+            [forge.utils :refer [bind-root ->tile sort-by-order]]
+            [forge.world :refer [render-z-order
+                                 remove-destroyed]]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.grid :refer [world-grid
                                       circle->cells
@@ -37,6 +39,7 @@
             [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
             [forge.world.time :refer [elapsed-time]]
+            [forge.world.player :refer [player-eid]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))

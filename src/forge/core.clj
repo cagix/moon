@@ -32,7 +32,11 @@
                                  safe-get
                                  pretty-pst
                                  tile->middle
-                                 ->tile]]
+                                 ->tile
+                                 sort-by-order]]
+            [forge.world :refer [->v
+                                 render-z-order
+                                 spawn-creature]]
             [forge.world.content-grid :as content-grid]
             [forge.world.explored-tile-corners]
             [forge.world.entity-ids :as entity-ids]
@@ -41,6 +45,7 @@
             [forge.world.time :refer [timer
                                       reset-timer]]
             [forge.world.tiled-map :refer [world-tiled-map]]
+            [forge.world.player :refer [player-eid]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -50,21 +55,13 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
 
-(declare
- player-eid
- ^{:doc "font, h-align, up? and scale are optional.
-        h-align one of: :center, :left, :right. Default :center.
-        up? renders the font over y, otherwise under.
-        scale will multiply the drawn text size with the scale.
-        `[{:keys [font x y text h-align up? scale]}`"}
- val-max-schema
- ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
- start-world
- ->image
- sub-image
- sprite-sheet
- ->sprite
- )
+(declare val-max-schema
+         ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
+         start-world
+         ->image
+         sub-image
+         sprite-sheet
+         ->sprite)
 
 (defn index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
@@ -78,10 +75,6 @@
   and return nil if no match is found."
   [pred coll]
   (first (filter pred coll)))
-
-(defn safe-merge [m1 m2]
-  {:pre [(not-any? #(contains? m1 %) (keys m2))]}
-  (merge m1 m2))
 
 ; libgdx fn is available:
 ; (MathUtils/isEqual 1 (length v))
@@ -104,32 +97,6 @@
         (approx-numbers x (int x) 0.001)) ; for "2.0" show "2" -> simpler
     (int x)
     (round-n-decimals x 2)))
-
-(defn define-order [order-k-vector]
-  (apply hash-map (interleave order-k-vector (range))))
-
-(defn sort-by-order [coll get-item-order-k order]
-  (sort-by #((get-item-order-k %) order) < coll))
-
-#_(defn order-contains? [order k]
-  ((apply hash-set (keys order)) k))
-
-#_(deftest test-order
-  (is
-    (= (define-order [:a :b :c]) {:a 0 :b 1 :c 2}))
-  (is
-    (order-contains? (define-order [:a :b :c]) :a))
-  (is
-    (not
-      (order-contains? (define-order [:a :b :c]) 2)))
-  (is
-    (=
-      (sort-by-order [:c :b :a :b] identity (define-order [:a :b :c]))
-      '(:a :b :b :c)))
-  (is
-    (=
-      (sort-by-order [:b :c :null :null :a] identity (define-order [:c :b :a :null]))
-      '(:c :b :a :null :null))))
 
 (defn assoc-ks [m ks v]
   (if (empty? ks)
@@ -331,15 +298,6 @@
 (defn k->pretty-name [k]
   (str/capitalize (name k)))
 
-(defsystem ->v "Create component value. Default returns v.")
-(defmethod ->v :default [[_ v]] v)
-
-(defsystem e-create [_ eid])
-(defmethod e-create :default [_ eid])
-
-(defsystem e-destroy [_ eid])
-(defmethod e-destroy :default [_ eid])
-
 (defsystem e-tick [_ eid])
 (defmethod e-tick :default [_ eid])
 
@@ -413,16 +371,6 @@
 
 (defsystem draw-gui-view [_])
 (defmethod draw-gui-view :default [_])
-
-(defn create-vs [components]
-  (reduce (fn [m [k v]]
-            (assoc m k (->v [k v])))
-          {}
-          components))
-
-(let [cnt (atom 0)]
-  (defn unique-number! []
-    (swap! cnt inc)))
 
 (defn mods-add    [mods other-mods] (merge-with ops-add    mods other-mods))
 (defn mods-remove [mods other-mods] (merge-with ops-remove mods other-mods))
@@ -926,194 +874,7 @@
      (draw-body-rect entity :red)
      (pretty-pst t))))
 
-(defn- add-to-world [eid]
-  ; https://github.com/damn/core/issues/58
-  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (entity-ids/add-entity   eid)
-  (content-grid/add-entity eid)
-  (grid/add-entity         eid))
-
-(defn- remove-from-world [eid]
-  (entity-ids/remove-entity   eid)
-  (content-grid/remove-entity eid)
-  (grid/remove-entity         eid))
-
-(defn position-changed [eid]
-  (content-grid/entity-position-changed eid)
-  (grid/entity-position-changed         eid))
-
-(defn remove-destroyed []
-  (doseq [eid (filter (comp :entity/destroyed? deref) (entity-ids/all-entities))]
-    (remove-from-world eid)
-    (doseq [component @eid]
-      (e-destroy component eid))))
-
-(defrecord Body [position
-                 left-bottom
-                 width
-                 height
-                 half-width
-                 half-height
-                 radius
-                 collides?
-                 z-order
-                 rotation-angle])
-
-; setting a min-size for colliding bodies so movement can set a max-speed for not
-; skipping bodies at too fast movement
-; TODO assert at properties load
-(def minimum-body-size 0.39) ; == spider smallest creature size.
-
-(def ^:private z-orders [:z-order/on-ground
-                         :z-order/ground
-                         :z-order/flying
-                         :z-order/effect])
-
-(def render-z-order (define-order z-orders))
-
-(defn- create-body [{[x y] :position
-                     :keys [position
-                            width
-                            height
-                            collides?
-                            z-order
-                            rotation-angle]}]
-  (assert position)
-  (assert width)
-  (assert height)
-  (assert (>= width  (if collides? minimum-body-size 0)))
-  (assert (>= height (if collides? minimum-body-size 0)))
-  (assert (or (boolean? collides?) (nil? collides?)))
-  (assert ((set z-orders) z-order))
-  (assert (or (nil? rotation-angle)
-              (<= 0 rotation-angle 360)))
-  (map->Body
-   {:position (mapv float position)
-    :left-bottom [(float (- x (/ width  2)))
-                  (float (- y (/ height 2)))]
-    :width  (float width)
-    :height (float height)
-    :half-width  (float (/ width  2))
-    :half-height (float (/ height 2))
-    :radius (float (max (/ width  2)
-                        (/ height 2)))
-    :collides? collides?
-    :z-order z-order
-    :rotation-angle (or rotation-angle 0)}))
-
-(defn- spawn-entity [position body components]
-  (assert (and (not (contains? components :position))
-               (not (contains? components :entity/id))))
-  (let [eid (atom (-> body
-                      (assoc :position position)
-                      create-body
-                      (safe-merge (-> components
-                                      (assoc :entity/id (unique-number!))
-                                      (create-vs)))))]
-    (add-to-world eid)
-    (doseq [component @eid]
-      (e-create component eid))
-    eid))
-
-(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
-       :private true}
-  effect-body-props
-  {:width 0.5
-   :height 0.5
-   :z-order :z-order/effect})
-
-(defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (play-sound sound)
-  (spawn-entity position
-                effect-body-props
-                {:entity/animation animation
-                 :entity/delete-after-animation-stopped true}))
-
-; # :z-order/flying has no effect for now
-; * entities with :z-order/flying are not flying over water,etc. (movement/air)
-; because using potential-field for z-order/ground
-; -> would have to add one more potential-field for each faction for z-order/flying
-; * they would also (maybe) need a separate occupied-cells if they don't collide with other
-; * they could also go over ground units and not collide with them
-; ( a test showed then flying OVER player entity )
-; -> so no flying units for now
-(defn- ->body [{:keys [body/width body/height #_body/flying?]}]
-  {:width  width
-   :height height
-   :collides? true
-   :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
-
-(defn spawn-creature [{:keys [position creature-id components]}]
-  (let [props (db/build creature-id)]
-    (spawn-entity position
-                  (->body (:entity/body props))
-                  (-> props
-                      (dissoc :entity/body)
-                      (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                      (safe-merge components)))))
-
-(defn spawn-item [position item]
-  (spawn-entity position
-                {:width 0.75
-                 :height 0.75
-                 :z-order :z-order/on-ground}
-                {:entity/image (:entity/image item)
-                 :entity/item item
-                 :entity/clickable {:type :clickable/item
-                                    :text (:property/pretty-name item)}}))
-
-(defn delayed-alert [position faction duration]
-  (spawn-entity position
-                effect-body-props
-                {:entity/alert-friendlies-after-duration
-                 {:counter (timer duration)
-                  :faction faction}}))
-
-(defn spawn-line-render [{:keys [start end duration color thick?]}]
-  (spawn-entity start
-                effect-body-props
-                #:entity {:line-render {:thick? thick? :end end :color color}
-                          :delete-after-duration duration}))
-
-(defn projectile-size [projectile]
-  {:pre [(:entity/image projectile)]}
-  (first (:world-unit-dimensions (:entity/image projectile))))
-
-(defn spawn-projectile [{:keys [position direction faction]}
-                        {:keys [entity/image
-                                projectile/max-range
-                                projectile/speed
-                                entity-effects
-                                projectile/piercing?] :as projectile}]
-  (let [size (projectile-size projectile)]
-    (spawn-entity position
-                  {:width size
-                   :height size
-                   :z-order :z-order/flying
-                   :rotation-angle (v/angle-from-vector direction)}
-                  {:entity/movement {:direction direction
-                                     :speed speed}
-                   :entity/image image
-                   :entity/faction faction
-                   :entity/delete-after-duration (/ max-range speed)
-                   :entity/destroy-audiovisual :audiovisuals/hit-wall
-                   :entity/projectile-collision {:entity-effects entity-effects
-                                                 :piercing? piercing?}})))
-
 (def ^:private ^:dbg-flag spawn-enemies? true)
-
-; player-creature needs mana & inventory
-; till then hardcode :creatures/vampire
-(defn- spawn-player [start-position]
-  (spawn-creature {:position (tile->middle start-position)
-                   :creature-id :creatures/vampire
-                   :components {:entity/fsm {:fsm :fsms/player
-                                             :initial-state :player-idle}
-                                :entity/faction :good
-                                :entity/player? true
-                                :entity/free-skill-points 3
-                                :entity/clickable {:type :clickable/player}
-                                :entity/click-distance-tiles 1.5}}))
 
 (defn- spawn-enemies [tiled-map]
   (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
@@ -1132,7 +893,7 @@
   (forge.world.content-grid/init          tiled-map)
   (forge.world.raycaster/init             tiled-map)
   (forge.world.time/init                  tiled-map)
-  (bind-root player-eid (spawn-player start-position))
+  (forge.world.player/init           start-position)
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 
