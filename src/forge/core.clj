@@ -1162,9 +1162,6 @@
   (when (bound? #'world-tiled-map)
     (dispose world-tiled-map)))
 
-(defn cell [position]
-  (get world-grid position))
-
 (defn rectangle->cells [rectangle]
   (into [] (keep world-grid) (rectangle->tiles rectangle)))
 
