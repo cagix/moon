@@ -1,6 +1,7 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.input :refer [key-just-pressed?]]
+            [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.core :refer :all]))
 
 ; 28.4 viewportwidth

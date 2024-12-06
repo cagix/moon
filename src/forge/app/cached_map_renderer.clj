@@ -1,10 +1,8 @@
 (ns forge.app.cached-map-renderer
   (:require [clojure.gdx.tiled :as tiled]
-            [forge.core :refer [defn-impl
-                                world-unit-scale
+            [forge.core :refer [world-unit-scale
                                 world-camera
-                                batch
-                                draw-tiled-map]]
+                                batch]]
             [forge.utils :refer [bind-root]])
   (:import (forge OrthogonalTiledMapRenderer
                   ColorSetter)))
@@ -19,7 +17,15 @@
                                              (float world-unit-scale)
                                              batch)))))
 
-(defn-impl draw-tiled-map [tiled-map color-setter]
+(defn draw-tiled-map
+  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
+
+  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
+
+  Can be used for lights & shadows.
+
+  Renders only visible layers."
+  [tiled-map color-setter]
   (let [^OrthogonalTiledMapRenderer map-renderer (cached-map-renderer tiled-map)]
     (.setColorSetter map-renderer (reify ColorSetter
                                     (apply [_ color x y]

@@ -6,6 +6,7 @@
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
+            [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules]))

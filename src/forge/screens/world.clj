@@ -3,6 +3,7 @@
             [clojure.gdx.graphics.camera :as cam]
             [forge.utils :refer [bind-root]]
             [clojure.vis-ui :as vis]
+            [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
