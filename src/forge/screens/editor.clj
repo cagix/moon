@@ -2,12 +2,20 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.input :refer [key-just-pressed?]]
+            [clojure.gdx.scene2d.actor :refer [user-object]]
+            [clojure.gdx.scene2d.group :refer [children
+                                               clear-children
+                                               add-actor!
+                                               find-actor]]
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
             [forge.app.asset-manager :refer [asset-manager play-sound]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
+            [forge.app.screens :as screens :refer [change-screen
+                                                   screen-stage
+                                                   add-actor]]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
@@ -479,8 +487,8 @@
             (ui-actor {:act (fn []
                               (when (key-just-pressed? :shift-left)
                                 (change-screen :screens/main-menu)))})]
-   :screen (reify Screen
-             (screen-enter [_])
-             (screen-exit [_])
-             (screen-render [_])
+   :screen (reify screens/Screen
+             (enter [_])
+             (exit [_])
+             (render [_])
              (screen-destroy [_]))})

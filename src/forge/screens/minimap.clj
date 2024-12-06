@@ -2,6 +2,7 @@
   (:require [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
+            [forge.app.screens :as screens :refer [change-screen]]
             [forge.core :refer :all]))
 
 ; 28.4 viewportwidth
@@ -33,14 +34,14 @@
     (if (get explored? [x y]) white black)))
 
 (deftype Minimap []
-  Screen
-  (screen-enter [_]
+  screens/Screen
+  (enter [_]
     (cam/set-zoom! (world-camera) (minimap-zoom)))
 
-  (screen-exit [_]
+  (exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (screen-render [_]
+  (render [_]
     (draw-tiled-map world-tiled-map
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view

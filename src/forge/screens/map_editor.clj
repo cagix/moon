@@ -2,6 +2,7 @@
   (:require [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.input :refer [key-just-pressed?
                                        key-pressed?]]
+            [clojure.gdx.scene2d.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.pprint :refer [pprint]]
@@ -9,6 +10,7 @@
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
+            [forge.app.screens :as screens :refer [change-screen]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.mapgen.modules :as modules]))
@@ -25,7 +27,9 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> (current-screen) :sub-screen :current-data))
+  (-> (screens/current-screen)
+      :sub-screen
+      :current-data))
 
 (def ^:private infotext
   "L: grid lines
@@ -130,14 +134,14 @@ direction keys: move")
               :pack? true}))
 
 (defrecord MapEditorScreen [current-data]
-  Screen
-  (screen-enter [_]
+  screens/Screen
+  (enter [_]
     (show-whole-map! (world-camera) (:tiled-map @current-data)))
 
-  (screen-exit [_]
+  (exit [_]
     (cam/reset-zoom! (world-camera)))
 
-  (screen-render [_]
+  (render [_]
     (draw-tiled-map (:tiled-map @current-data)
                     (constantly white))
     (draw-on-world-view render-on-map)

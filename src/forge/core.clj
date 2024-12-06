@@ -1,6 +1,10 @@
 (ns forge.core
   (:require [clojure.gdx.graphics :as g :refer [delta-time]]
             [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.scene2d.actor :refer [user-object]]
+            [clojure.gdx.scene2d.group :refer [find-actor-with-id
+                                               add-actor!
+                                               find-actor]]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
@@ -11,8 +15,9 @@
             [forge.app.db :as db :refer [malli-form
                                          edn->value]]
             [forge.app.gui-viewport :refer [gui-viewport-width
-                                            gui-viewport-height
-                                            gui-mouse-position]]
+                                            gui-viewport-height]]
+            [forge.app.screens :refer [screen-stage
+                                       add-actor]]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root safe-get]]
             [malli.core :as m]
@@ -34,8 +39,6 @@
  world-viewport
  world-viewport-width
  world-viewport-height
- screens
- current-screen-key
  world-tiled-map
  explored-tile-corners
  world-grid
@@ -58,8 +61,6 @@
         scale will multiply the drawn text size with the scale.
         `[{:keys [font x y text h-align up? scale]}`"}
  draw-text
- add-actor
- reset-stage
  grid2d
  g2d-width
  g2d-height
@@ -106,15 +107,6 @@
  draw-on-world-view
  )
 
-(defprotocol Group
-  (children [_] "Returns an ordered list of child actors in this group.")
-  (clear-children [_] "Removes all actors from this group and unfocuses them.")
-  (add-actor! [_ actor] "Adds an actor as a child of this group, removing it from its previous parent. If the actor is already a child of this group, no changes are made.")
-  (find-actor [_ name]))
-
-(defprotocol HasUserObject
-  (user-object [_]))
-
 (defprotocol Batch
   (draw-texture-region [_ texture-region [x y] [w h] rotation color])
   (draw-on-viewport [_ viewport draw-fn]))
@@ -122,12 +114,6 @@
 (defprotocol HasVisible
   (set-visible [_ bool])
   (visible? [_]))
-
-(defprotocol Screen
-  (screen-enter   [_])
-  (screen-exit    [_])
-  (screen-render  [_])
-  (screen-destroy [_]))
 
 (defprotocol GridCell
   (cell-blocked? [cell* z-order])
@@ -576,23 +562,6 @@
 (defn tick-entities [entities]
   (run! tick-entity entities))
 
-(defn current-screen []
-  (and (bound? #'current-screen-key)
-       (current-screen-key screens)))
-
-(defn change-screen
-  "Calls `exit` on the current-screen and `enter` on the new screen."
-  [new-k]
-  (when-let [screen (current-screen)]
-    (screen-exit screen))
-  (let [screen (new-k screens)]
-    (assert screen (str "Cannot find screen with key: " new-k))
-    (bind-root current-screen-key new-k)
-    (screen-enter screen)))
-
-(defn screen-stage ^Stage []
-  (:stage (current-screen)))
-
 (defmethod malli-form :s/number  [_] number?)
 (defmethod malli-form :s/nat-int [_] nat-int?)
 (defmethod malli-form :s/int     [_] int?)
@@ -677,14 +646,6 @@
 (defmacro def-impl [name-sym value]
   `(bind-root ~name-sym ~value))
 
-(defn find-actor-with-id [group id]
-  (let [actors (children group)
-        ids (keep user-object actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (user-object %)) actors))))
-
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
 
@@ -699,10 +660,6 @@
 
 (defmethod edn->value :s/image [_ edn]
   (edn->image edn))
-
-(defn mouse-on-actor? []
-  (let [[x y] (gui-mouse-position)]
-    (.hit (screen-stage) x y true)))
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))

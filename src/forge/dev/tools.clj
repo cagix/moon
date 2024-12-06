@@ -1,11 +1,13 @@
 (ns forge.dev.tools
   (:require [clojure.gdx.app :refer [post-runnable]]
+            [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
+            [forge.app.screens :refer [add-actor]]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 

@@ -1,8 +1,10 @@
 (ns forge.ui.inventory
-  (:require [clojure.gdx.scene2d.utils :as scene2d.utils]
+  (:require [clojure.gdx.scene2d.actor :refer [user-object]]
+            [clojure.gdx.scene2d.utils :as scene2d.utils]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height
                                             gui-mouse-position]]
+            [forge.app.screens :refer [screen-stage]]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))

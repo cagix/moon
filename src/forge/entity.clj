@@ -1,9 +1,12 @@
 (ns forge.entity
   (:require [clojure.gdx.input :refer [button-just-pressed?]]
+            [clojure.gdx.scene2d.actor :refer [user-object]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-mouse-position]]
+            [forge.app.screens :refer [change-screen
+                                       mouse-on-actor?]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.system :refer [defmethods]]

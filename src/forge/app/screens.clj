@@ -2,34 +2,64 @@
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :as input]
+            [clojure.gdx.scene2d.group :refer [find-actor-with-id]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [forge.app.gui-viewport :refer [gui-viewport]]
+            [forge.app.gui-viewport :refer [gui-viewport
+                                            gui-mouse-position]]
             [forge.app.sprite-batch :refer [batch]]
-            [forge.core :refer [find-actor-with-id
-                                Screen
-                                screens
-                                screen-enter
-                                screen-exit
-                                screen-render
-                                screen-destroy
-                                current-screen
-                                change-screen]]
             [forge.utils :refer [bind-root mapvals]]))
+
+(defprotocol Screen
+  (enter   [_])
+  (exit    [_])
+  (render  [_])
+  (screen-destroy [_]))
+
+(declare ^:private screens
+         ^:private current-screen-key)
+
+(defn current-screen []
+  (and (bound? #'current-screen-key)
+       (current-screen-key screens)))
+
+(defn change-screen
+  "Calls `exit` on the current-screen and `enter` on the new screen."
+  [new-k]
+  (when-let [screen (current-screen)]
+    (exit screen))
+  (let [screen (new-k screens)]
+    (assert screen (str "Cannot find screen with key: " new-k))
+    (bind-root current-screen-key new-k)
+    (enter screen)))
+
+(defn screen-stage ^com.badlogic.gdx.scenes.scene2d.Stage []
+  (:stage (current-screen)))
+
+(defn add-actor [actor]
+  (.addActor (screen-stage) actor))
+
+(defn reset-stage [new-actors]
+  (.clear (screen-stage))
+  (run! add-actor new-actors))
+
+(defn mouse-on-actor? []
+  (let [[x y] (gui-mouse-position)]
+    (.hit (screen-stage) x y true)))
 
 (defrecord StageScreen [stage sub-screen]
   Screen
-  (screen-enter [_]
+  (enter [_]
     (input/set-processor stage)
-    (screen-enter sub-screen))
+    (enter sub-screen))
 
-  (screen-exit [_]
+  (exit [_]
     (input/set-processor nil)
-    (screen-exit sub-screen))
+    (exit sub-screen))
 
-  (screen-render [_]
+  (render [_]
     (stage/act stage)
-    (screen-render sub-screen)
+    (render sub-screen)
     (stage/draw stage))
 
   (screen-destroy [_]
@@ -62,4 +92,4 @@
 
 (defn render [_]
   (g/clear-screen color/black)
-  (screen-render (current-screen)))
+  (render (current-screen)))

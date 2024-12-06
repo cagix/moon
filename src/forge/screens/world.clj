@@ -1,6 +1,7 @@
 (ns forge.screens.world
   (:require [clojure.gdx.graphics :refer [delta-time frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.scene2d.group :refer [add-actor! children]]
             [forge.utils :refer [bind-root]]
             [clojure.vis-ui :as vis]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
@@ -8,6 +9,10 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-mouse-position]]
+            [forge.app.screens :as screens :refer [change-screen
+                                                   screen-stage
+                                                   reset-stage
+                                                   mouse-on-actor?]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]
@@ -357,14 +362,14 @@
                        (debug-render-after-entities))))
 
 (deftype WorldScreen []
-  Screen
-  (screen-enter [_]
+  screens/Screen
+  (enter [_]
     (cam/set-zoom! (world-camera) 0.8))
 
-  (screen-exit [_]
+  (exit [_]
     (set-cursor :cursors/default))
 
-  (screen-render [_]
+  (render [_]
     (render-world)
     (update-world)
     (controls/world-camera-zoom)

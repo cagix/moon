@@ -3,6 +3,7 @@
             [clojure.gdx.input :refer [key-just-pressed?]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
+            [forge.app.screens :as screens :refer [change-screen]]
             [forge.core :refer :all]))
 
 (defn create []
@@ -26,9 +27,9 @@
             (ui-actor {:act (fn []
                               (when (key-just-pressed? :keys/escape)
                                 (app/exit)))})]
-   :screen (reify Screen
-             (screen-enter [_]
+   :screen (reify screens/Screen
+             (enter [_]
                (set-cursor :cursors/default))
-             (screen-exit [_])
-             (screen-render [_])
+             (exit [_])
+             (render [_])
              (screen-destroy [_]))})

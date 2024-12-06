@@ -24,28 +24,6 @@
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
 
-(extend-type Actor
-  HasUserObject
-  (user-object [actor]
-    (.getUserObject actor)))
-
-(extend-type com.badlogic.gdx.scenes.scene2d.Group
-  Group
-  (children [group]
-    (seq (.getChildren group)))
-
-  (clear-children [group]
-    (.clearChildren group))
-
-  (add-actor! [group actor]
-    (.addActor group actor))
-
-  (find-actor [group name]
-    (.findActor group name)))
-
-(def-impl black Color/BLACK)
-(def-impl white Color/WHITE)
-
 (defn- text-height [^BitmapFont font text]
   (-> text
       (str/split #"\n")
@@ -97,13 +75,6 @@
     (.setVisible actor bool))
   (visible? [actor]
     (.isVisible actor)))
-
-(defn-impl add-actor [actor]
-  (.addActor (screen-stage) actor))
-
-(defn-impl reset-stage [new-actors]
-  (.clear (screen-stage))
-  (run! add-actor new-actors))
 
 (def-impl grid2d                    g2d/create-grid)
 (def-impl g2d-width                 g2d/width)
