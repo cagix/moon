@@ -1,66 +1,73 @@
 (ns forge.app.shape-drawer
-  (:require [forge.core :refer :all])
-  (:import (com.badlogic.gdx.graphics Color Texture Pixmap Pixmap$Format)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+  (:require [clojure.gdx.graphics :as g]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.shape-drawer :as sd]
+            [forge.core :refer :all]))
 
 (declare ^:private pixel-texture
-         ^:private ^ShapeDrawer shape-drawer)
+         ^:private sd)
 
 (defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
+  (let [pixmap (doto (g/pixmap 1 1)
+                 (.setColor color/white)
                  (.drawPixel 0 0))
-        texture (Texture. pixmap)]
+        texture (g/texture pixmap)]
     (dispose pixmap)
     texture))
 
 (defn create [_]
   (bind-root pixel-texture (white-pixel-texture))
-  (bind-root shape-drawer (ShapeDrawer. batch
-                                        (TextureRegion. ^Texture pixel-texture 1 0 1 1))))
+  (bind-root sd (sd/create batch (g/texture-region pixel-texture 1 0 1 1))))
 
 (defn destroy [_]
   (dispose pixel-texture))
 
 (defn- sd-color [color]
-  (.setColor shape-drawer (->color color)))
+  (sd/set-color sd (->color color)))
 
-(defn-impl draw-ellipse [[x y] radius-x radius-y color]
+(defn-impl draw-ellipse [position radius-x radius-y color]
   (sd-color color)
-  (.ellipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
+  (sd/ellipse sd position radius-x radius-y))
 
-(defn-impl draw-filled-ellipse [[x y] radius-x radius-y color]
+(defn-impl draw-filled-ellipse [position radius-x radius-y color]
   (sd-color color)
-  (.filledEllipse shape-drawer (float x) (float y) (float radius-x) (float radius-y)))
+  (sd/filled-ellipse sd position radius-x radius-y))
 
-(defn-impl draw-circle [[x y] radius color]
+(defn-impl draw-circle [position radius color]
   (sd-color color)
-  (.circle shape-drawer (float x) (float y) (float radius)))
+  (sd/circle sd position radius))
 
-(defn-impl draw-filled-circle [[x y] radius color]
+(defn-impl draw-filled-circle [position radius color]
   (sd-color color)
-  (.filledCircle shape-drawer (float x) (float y) (float radius)))
+  (sd/filled-circle sd position radius))
 
-(defn-impl draw-arc [[centre-x centre-y] radius start-angle degree color]
+(defn-impl draw-arc [center radius start-angle degree color]
   (sd-color color)
-  (.arc shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
+  (sd/arc sd
+          center
+          radius
+          (degree->radians start-angle)
+          (degree->radians degree)))
 
-(defn-impl draw-sector [[centre-x centre-y] radius start-angle degree color]
+(defn-impl draw-sector [center radius start-angle degree color]
   (sd-color color)
-  (.sector shape-drawer (float centre-x) (float centre-y) (float radius) (degree->radians start-angle) (degree->radians degree)))
+  (sd/sector sd
+             center
+             radius
+             (degree->radians start-angle)
+             (degree->radians degree)))
 
 (defn-impl draw-rectangle [x y w h color]
   (sd-color color)
-  (.rectangle shape-drawer (float x) (float y) (float w) (float h)))
+  (sd/rectangle sd x y w h))
 
 (defn-impl draw-filled-rectangle [x y w h color]
   (sd-color color)
-  (.filledRectangle shape-drawer (float x) (float y) (float w) (float h)))
+  (sd/filled-rectangle sd x y w h))
 
-(defn-impl draw-line [[sx sy] [ex ey] color]
+(defn-impl draw-line [start end color]
   (sd-color color)
-  (.line shape-drawer (float sx) (float sy) (float ex) (float ey)))
+  (sd/line sd start end))
 
 (defn-impl draw-grid [leftx bottomy gridw gridh cellw cellh color]
   (sd-color color)
@@ -76,7 +83,7 @@
       (draw-line [leftx liney] [rightx liney]))))
 
 (defn-impl with-line-width [width draw-fn]
-  (let [old-line-width (.getDefaultLineWidth shape-drawer)]
-    (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
+  (let [old-line-width (sd/default-line-width sd)]
+    (sd/set-default-line-width sd (* width old-line-width))
     (draw-fn)
-    (.setDefaultLineWidth shape-drawer (float old-line-width))))
+    (sd/set-default-line-width sd old-line-width)))
