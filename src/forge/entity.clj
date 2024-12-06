@@ -24,7 +24,10 @@
             [forge.world.grid :refer [world-grid
                                       cell-blocked?
                                       nearest-entity
-                                      nearest-entity-distance]]
+                                      nearest-entity-distance
+                                      rectangle->cells
+                                      cells->entities
+                                      circle->entities]]
             [forge.world.potential-fields :as potential-fields]
             [malli.core :as m]
             [reduce-fsm :as fsm]))

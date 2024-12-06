@@ -4,10 +4,11 @@
                                           clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
+            [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
             [clojure.gdx.scene2d.actor :refer [visible?
                                                set-visible]]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
-            [forge.utils :refer [bind-root]]
+            [forge.utils :refer [bind-root ->tile]]
             [clojure.vis-ui :as vis]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.cursors :refer [set-cursor]]
@@ -31,7 +32,9 @@
                                                    mouse-on-actor?]]
             [forge.ui.inventory :as inventory]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
-            [forge.world.grid :refer [world-grid]]
+            [forge.world.grid :refer [world-grid
+                                      circle->cells
+                                      point->entities]]
             [forge.world.tiled-map :refer [world-tiled-map]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)

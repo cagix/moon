@@ -267,7 +267,7 @@
 (defn adjacent-wall-positions [grid]
   (filter (fn [p] (and (= :wall (get grid p))
                        (some #(= :ground (get grid %))
-                             (get-8-neighbour-positions p))))
+                             (g2d/get-8-neighbour-positions p))))
           (g2d/posis grid)))
 
 (defn flood-fill [grid start walk-on-position?]
@@ -278,7 +278,7 @@
       (recur (filter #(and (get grid %)
                            (walk-on-position? %))
                      (distinct
-                      (mapcat get-8-neighbour-positions
+                      (mapcat g2d/get-8-neighbour-positions
                               next-positions)))
              (concat filled next-positions)
              (assoc-ks grid next-positions nil))

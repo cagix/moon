@@ -48,3 +48,6 @@
 
 (defn tile->middle [position]
   (mapv (partial + 0.5) position))
+
+(defn ->tile [position]
+  (mapv int position))

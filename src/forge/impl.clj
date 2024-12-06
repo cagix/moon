@@ -9,44 +9,7 @@
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.generator :as mg])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.math Circle Intersector Rectangle)))
-
-(defn- m->shape [m]
-  (cond
-   (rectangle? m) (let [{:keys [left-bottom width height]} m
-                        [x y] left-bottom]
-                    (Rectangle. x y width height))
-
-   (circle? m) (let [{:keys [position radius]} m
-                     [x y] position]
-                 (Circle. x y radius))
-
-   :else (throw (Error. (str m)))))
-
-(defmulti ^:private overlaps?* (fn [a b] [(class a) (class b)]))
-
-(defmethod overlaps?* [Circle Circle]
-  [^Circle a ^Circle b]
-  (Intersector/overlaps a b))
-
-(defmethod overlaps?* [Rectangle Rectangle]
-  [^Rectangle a ^Rectangle b]
-  (Intersector/overlaps a b))
-
-(defmethod overlaps?* [Rectangle Circle]
-  [^Rectangle rect ^Circle circle]
-  (Intersector/overlaps circle rect))
-
-(defmethod overlaps?* [Circle Rectangle]
-  [^Circle circle ^Rectangle rect]
-  (Intersector/overlaps circle rect))
-
-(defn-impl overlaps? [a b]
-  (overlaps?* (m->shape a) (m->shape b)))
-
-(defn-impl rect-contains? [rectangle [x y]]
-  (Rectangle/.contains (m->shape rectangle) x y))
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (def-impl val-max-schema
   (m/schema [:and

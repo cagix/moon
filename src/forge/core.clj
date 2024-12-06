@@ -2,6 +2,7 @@
   (:require [clojure.gdx.graphics :as g :refer [delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.math.shapes :as shape]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [find-actor-with-id
@@ -30,10 +31,11 @@
             [forge.utils :refer [bind-root
                                  safe-get
                                  pretty-pst
-                                 tile->middle]]
+                                 tile->middle
+                                 ->tile]]
             [forge.world.explored-tile-corners]
-            [forge.world.grid :refer [world-grid
-                                      blocks-vision?]]
+            [forge.world.grid :as grid :refer [world-grid
+                                               blocks-vision?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
@@ -62,8 +64,6 @@
         up? renders the font over y, otherwise under.
         scale will multiply the drawn text size with the scale.
         `[{:keys [font x y text h-align up? scale]}`"}
- overlaps?
- rect-contains?
  val-max-schema
  ^{:doc "If mx and v is 0, returns 0, otherwise (/ v mx)"} val-max-ratio
  start-world
@@ -262,9 +262,6 @@
 
 (def dev-mode? (= (System/getenv "DEV_MODE") "true"))
 
-(defn ->tile [position]
-  (mapv int position))
-
 (defsystem handle [_ ctx])
 
 (defsystem applicable? [_ ctx])
@@ -290,33 +287,6 @@
 (defn effects-render [ctx effects]
   (run! #(render-effect % ctx)
         effects))
-
-(defn rectangle? [{[x y] :left-bottom :keys [width height]}]
-  (and x y width height))
-
-(defn circle? [{[x y] :position :keys [radius]}]
-  (and x y radius))
-
-(defn circle->outer-rectangle [{[x y] :position :keys [radius] :as circle}]
-  {:pre [(circle? circle)]}
-  (let [radius (float radius)
-        size (* radius 2)]
-    {:left-bottom [(- (float x) radius)
-                   (- (float y) radius)]
-     :width  size
-     :height size}))
-
-(def ^:private offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]])
-
-; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
-(defn get-8-neighbour-positions [position]
-  (mapv #(mapv + position %) offsets))
-
-#_(defn- get-8-neighbour-positions [[x y]]
-  (mapv (fn [tx ty]
-          [tx ty])
-   (range (dec x) (+ x 2))
-   (range (dec y) (+ y 2))))
 
 (defrecord Sprite [texture-region
                    pixel-dimensions
@@ -450,24 +420,6 @@
 
 (defsystem draw-gui-view [_])
 (defmethod draw-gui-view :default [_])
-
-(defn rectangle->tiles
-  [{[x y] :left-bottom :keys [left-bottom width height]}]
-  {:pre [left-bottom width height]}
-  (let [x       (float x)
-        y       (float y)
-        width   (float width)
-        height  (float height)
-        l (int x)
-        b (int y)
-        r (int (+ x width))
-        t (int (+ y height))]
-    (set
-     (if (or (> width 1) (> height 1))
-       (for [x (range l (inc r))
-             y (range b (inc t))]
-         [x y])
-       [[l b] [l t] [r b] [r t]]))))
 
 (defn create-vs [components]
   (reduce (fn [m [k v]]
@@ -987,7 +939,7 @@
                      ::content-cell
                      deref
                      :idx)]
-         (cons idx (get-8-neighbour-positions idx)))
+         (cons idx (g2d/get-8-neighbour-positions idx)))
        (keep grid)
        (mapcat (comp :entities deref))))
 
@@ -1162,86 +1114,6 @@
   (when (bound? #'world-tiled-map)
     (dispose world-tiled-map)))
 
-(defn rectangle->cells [rectangle]
-  (into [] (keep world-grid) (rectangle->tiles rectangle)))
-
-(defn circle->cells [circle]
-  (->> circle
-       circle->outer-rectangle
-       rectangle->cells))
-
-(defn cells->entities [cells]
-  (into #{} (mapcat :entities) cells))
-
-(defn circle->entities [circle]
-  (->> (circle->cells circle)
-       (map deref)
-       cells->entities
-       (filter #(overlaps? circle @%))))
-
-(defn- set-cells! [eid]
-  (let [cells (rectangle->cells @eid)]
-    (assert (not-any? nil? cells))
-    (swap! eid assoc ::touched-cells cells)
-    (doseq [cell cells]
-      (assert (not (get (:entities @cell) eid)))
-      (swap! cell update :entities conj eid))))
-
-(defn- remove-from-cells! [eid]
-  (doseq [cell (::touched-cells @eid)]
-    (assert (get (:entities @cell) eid))
-    (swap! cell update :entities disj eid)))
-
-; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
-; => only now there are no >1 tile entities anyway
-(defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
-  (if (or (> (float width) 1) (> (float height) 1))
-    (rectangle->cells rectangle)
-    [(get world-grid
-          [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-           (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
-
-(defn- set-occupied-cells! [eid]
-  (let [cells (rectangle->occupied-cells @eid)]
-    (doseq [cell cells]
-      (assert (not (get (:occupied @cell) eid)))
-      (swap! cell update :occupied conj eid))
-    (swap! eid assoc ::occupied-cells cells)))
-
-(defn- remove-from-occupied-cells! [eid]
-  (doseq [cell (::occupied-cells @eid)]
-    (assert (get (:occupied @cell) eid))
-    (swap! cell update :occupied disj eid)))
-
-(defn cached-adjacent-cells [cell]
-  (if-let [result (:adjacent-cells @cell)]
-    result
-    (let [result (into [] (keep world-grid) (-> @cell :position get-8-neighbour-positions))]
-      (swap! cell assoc :adjacent-cells result)
-      result)))
-
-(defn point->entities [position]
-  (when-let [cell (get world-grid (->tile position))]
-    (filter #(rect-contains? @% position)
-            (:entities @cell))))
-
-(defn- grid-add-entity [eid]
-  (set-cells! eid)
-  (when (:collides? @eid)
-    (set-occupied-cells! eid)))
-
-(defn- grid-remove-entity [eid]
-  (remove-from-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)))
-
-(defn- grid-entity-position-changed [eid]
-  (remove-from-cells! eid)
-  (set-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)
-    (set-occupied-cells! eid)))
-
 (def ^:private ^:dbg-flag show-body-bounds false)
 
 (defn- draw-body-rect [entity color]
@@ -1264,18 +1136,18 @@
   (content-grid-update-entity! content-grid eid)
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (grid-add-entity eid))
+  (grid/add-entity eid))
 
 (defn- remove-from-world [eid]
   (let [id (:entity/id @eid)]
     (assert (contains? ids->eids id))
     (alter-var-root #'ids->eids dissoc id))
   (content-grid-remove-entity! eid)
-  (grid-remove-entity eid))
+  (grid/remove-entity eid))
 
 (defn position-changed [eid]
   (content-grid-update-entity! content-grid eid)
-  (grid-entity-position-changed eid))
+  (grid/entity-position-changed eid))
 
 (defn all-entities []
   (vals ids->eids))
@@ -1533,7 +1405,7 @@
   (v/direction (:position entity) (:position other-entity)))
 
 (defn e-collides? [entity other-entity]
-  (overlaps? entity other-entity))
+  (shape/overlaps? entity other-entity))
 
 (defn e-tile [entity]
   (->tile (:position entity)))
