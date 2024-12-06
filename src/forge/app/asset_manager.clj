@@ -1,8 +1,8 @@
 (ns forge.app.asset-manager
   (:require [clojure.string :as str]
-            [forge.core :refer [asset-manager bind-root dispose]]
-            [gdx.asset-manager :as manager]
-            [gdx.files :as files]))
+            [clojure.gdx.asset-manager :as manager]
+            [clojure.gdx.files :as files]
+            [forge.core :refer [asset-manager bind-root dispose]]))
 
 (defn create [[_ folder]]
   (bind-root asset-manager (manager/create))

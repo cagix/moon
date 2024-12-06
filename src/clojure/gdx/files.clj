@@ -1,4 +1,4 @@
-(ns gdx.files
+(ns clojure.gdx.files
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.files FileHandle)))
 

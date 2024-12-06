@@ -1,4 +1,4 @@
-(ns gdx.asset-manager
+(ns clojure.gdx.asset-manager
   (:refer-clojure :exclude [load])
   (:import (com.badlogic.gdx.assets AssetManager)))
 

@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.screens.editor
   (:require [clojure.edn :as edn]
-            [forge.core :refer :all]
-            [gdx.asset-manager :as asset-manager])
+            [clojure.gdx.asset-manager :as asset-manager]
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget VisCheckBox VisTextField VisSelectBox)
