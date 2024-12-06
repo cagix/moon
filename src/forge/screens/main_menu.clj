@@ -6,7 +6,8 @@
             [forge.app.screens :refer [change-screen]]
             [forge.core :refer :all]
             [forge.screen :refer [Screen]]
-            [forge.screens.stage :as stage]))
+            [forge.screens.stage :as stage]
+            [forge.screens.world :refer [start-world]]))
 
 (defn create []
   (stage/create

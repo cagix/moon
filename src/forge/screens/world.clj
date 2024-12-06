@@ -252,6 +252,8 @@
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
+(declare start-world)
+
 (defn- dev-menu-bar []
   (dev-menu*
    {:menus [{:label "Screens"
@@ -331,11 +333,17 @@
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
-(defn-impl start-world [world-props]
+; depends on world-widgets & world-init ....
+; so widgets comes from world-props .... as components ...
+; and this all goes to world-init?
+(defn start-world [world-props]
   (change-screen :screens/world)
   (reset-stage (widgets))
   (world-clear)
   (bind-root tick-error nil)
+  ; generate level -> creates actually the tiled-map and
+  ; start-position?
+  ; other stuff just depend on it?!
   (world-init (generate-level world-props)))
 
 ; FIXME config/changeable inside the app (dev-menu ?)

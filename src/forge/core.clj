@@ -57,8 +57,7 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
 
-(declare start-world
-         ->image
+(declare ->image
          sub-image
          sprite-sheet
          ->sprite)
