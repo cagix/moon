@@ -1,5 +1,6 @@
 (ns forge.app.world-viewport
-  (:require [forge.core :refer [bind-root
+  (:require [clojure.gdx.utils.viewport :as vp]
+            [forge.core :refer [bind-root
                                 world-unit-scale
                                 world-viewport-width
                                 world-viewport-height
@@ -18,4 +19,4 @@
                               (.setToOrtho camera y-down? world-width world-height)
                               (FitViewport. world-width world-height camera))))
 (defn resize [_ w h]
-  (.update world-viewport w h true))
+  (vp/update world-viewport w h))

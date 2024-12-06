@@ -1,5 +1,6 @@
 (ns forge.app.gui-viewport
   (:require [clojure.gdx.graphics :as g]
+            [clojure.gdx.utils.viewport :as vp]
             [forge.core :refer [bind-root
                                 gui-viewport-width
                                 gui-viewport-height
@@ -11,4 +12,4 @@
   (bind-root gui-viewport (g/fit-viewport width height (g/orthographic-camera))))
 
 (defn resize [_ w h]
-  (.update gui-viewport w h true))
+  (vp/update gui-viewport w h :center-camera? true))

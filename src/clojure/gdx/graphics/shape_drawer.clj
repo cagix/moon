@@ -1,45 +1,46 @@
 (ns clojure.gdx.graphics.shape-drawer
-  (:import (space.earlygrey.shapedrawer ShapeDrawer)))
+  (:import (com.badlogic.gdx.graphics Color)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
 
-(defn default-line-width [sd]
+(defn default-line-width [^ShapeDrawer sd]
   (.getDefaultLineWidth sd))
 
-(defn set-default-line-width [sd width]
+(defn set-default-line-width [^ShapeDrawer sd width]
   (.setDefaultLineWidth sd (float width)))
 
-(defn set-color [sd color]
+(defn set-color [^ShapeDrawer sd ^Color color]
   (.setColor sd color))
 
-(defn ellipse [sd [x y] radius-x radius-y]
+(defn ellipse [^ShapeDrawer sd [x y] radius-x radius-y]
   (.ellipse sd
             (float x)
             (float y)
             (float radius-x)
             (float radius-y)))
 
-(defn filled-ellipse [sd [x y] radius-x radius-y]
+(defn filled-ellipse [^ShapeDrawer sd [x y] radius-x radius-y]
   (.filledEllipse sd
                   (float x)
                   (float y)
                   (float radius-x)
                   (float radius-y)))
 
-(defn circle [sd [x y] radius]
+(defn circle [^ShapeDrawer sd [x y] radius]
   (.circle sd
            (float x)
            (float y)
            (float radius)))
 
-(defn filled-circle [sd [x y] radius]
+(defn filled-circle [^ShapeDrawer sd [x y] radius]
   (.filledCircle sd
                  (float x)
                  (float y)
                  (float radius)))
 
-(defn arc [sd [center-x center-y] radius start-angle degree]
+(defn arc [^ShapeDrawer sd [center-x center-y] radius start-angle degree]
   (.arc sd
         (float center-x)
         (float center-y)
@@ -47,7 +48,7 @@
         (float start-angle)
         (float degree)))
 
-(defn sector [sd [center-x center-y] radius start-angle radians]
+(defn sector [^ShapeDrawer sd [center-x center-y] radius start-angle radians]
   (.sector sd
            (float center-x)
            (float center-y)
@@ -55,21 +56,21 @@
            (float start-angle)
            (float radians)))
 
-(defn rectangle [sd x y w h]
+(defn rectangle [^ShapeDrawer sd x y w h]
   (.rectangle sd
               (float x)
               (float y)
               (float w)
               (float h)))
 
-(defn filled-rectangle [sd x y w h]
+(defn filled-rectangle [^ShapeDrawer sd x y w h]
   (.filledRectangle sd
                     (float x)
                     (float y)
                     (float w)
                     (float h)))
 
-(defn line [sd [sx sy] [ex ey]]
+(defn line [^ShapeDrawer sd [sx sy] [ex ey]]
   (.line sd
          (float sx)
          (float sy)

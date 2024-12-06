@@ -16,8 +16,8 @@
            (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMapTileLayer)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.utils Align Scaling)
-           (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+           (com.badlogic.gdx.utils.viewport Viewport)
+           (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)))
 
 (def-impl m-schema   m/schema)
 (def-impl m-validate m/validate)
@@ -379,7 +379,7 @@
   (unproject-mouse-position world-viewport))
 
 (defn-impl world-camera []
-  (.getCamera world-viewport))
+  (Viewport/.getCamera world-viewport))
 
 (defn-impl ->texture-region
   ([path]
