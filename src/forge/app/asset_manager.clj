@@ -12,7 +12,7 @@
   (bind-root asset-manager (manager/create))
   (manager/load asset-manager
                 (for [[asset-type exts] [[:sound   #{"wav"}]
-                                         [:texture #{"png" "bmp"}]]
+                                         [:texture #{"png" "bmp"}]] ; <- this is also data !
                       file (map #(str/replace-first % folder "")
                                 (files/recursively-search folder exts))]
                   [file asset-type])))
@@ -22,6 +22,6 @@
 
 (defn play-sound [sound-name]
   (->> sound-name
-       (format "sounds/%s.wav")
+       (format "sounds/%s.wav")  ; <- this is also data ! => might the total conversion even be happening!?
        asset-manager
        sound/play))
