@@ -28,6 +28,8 @@
                                          add-actor]]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root safe-get pretty-pst]]
+            [forge.world.explored-tile-corners]
+            [forge.world.tiled-map :refer [world-tiled-map]]
             [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
@@ -40,8 +42,6 @@
            (forge RayCaster)))
 
 (declare
- world-tiled-map
- explored-tile-corners
  world-grid
  tick-error
  paused?
@@ -1546,11 +1546,8 @@
     (spawn-creature (update props :position tile->middle))))
 
 (defn world-init [{:keys [tiled-map start-position]}]
-  (bind-root world-tiled-map tiled-map)
-  (bind-root explored-tile-corners (atom (g2d/create-grid
-                                          (tiled/tm-width  tiled-map)
-                                          (tiled/tm-height tiled-map)
-                                          (constantly false))))
+  (forge.world.tiled-map/init             tiled-map)
+  (forge.world.explored-tile-corners/init tiled-map)
   (bind-root world-grid (g2d/create-grid
                          (tiled/tm-width tiled-map)
                          (tiled/tm-height tiled-map)

@@ -30,6 +30,8 @@
                                                    reset-stage
                                                    mouse-on-actor?]]
             [forge.ui.inventory :as inventory]
+            [forge.world.explored-tile-corners :refer [explored-tile-corners]]
+            [forge.world.tiled-map :refer [world-tiled-map]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
