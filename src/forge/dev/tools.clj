@@ -1,5 +1,6 @@
 (ns forge.dev.tools
-  (:require [forge.core :refer :all])
+  (:require [clojure.vis-ui :as vis]
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d Stage)))
 
@@ -166,7 +167,7 @@
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}
-  (let [tree (ui-tree)]
+  (let [tree (vis/tree)]
     (add-map-nodes! tree (into (sorted-map) m) 0)
     (add-actor
      (ui-window {:title "Tree View"

@@ -5,13 +5,13 @@
   The 'core' implementation itself?"
   (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
             [clojure.vis-ui :as vis]
             [forge.system :refer [defsystem]])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
-           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener TextureRegionDrawable)
+           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow
@@ -1077,8 +1077,7 @@
   [image opts]
   (image-widget (:texture-region image) opts))
 
-(defn texture-region-drawable [^TextureRegion texture-region]
-  (TextureRegionDrawable. texture-region))
+(def texture-region-drawable scene2d.utils/texture-region-drawable)
 
 (defn scroll-pane [actor]
   (let [scroll-pane (vis/scroll-pane actor)]
@@ -1132,8 +1131,8 @@
 (defn image-button
   ([image on-clicked]
    (image-button image on-clicked {}))
-  ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
-   (let [drawable (TextureRegionDrawable. ^TextureRegion texture-region)
+  ([{:keys [texture-region]} on-clicked {:keys [scale]}]
+   (let [drawable (texture-region-drawable texture-region)
          button (vis/image-button drawable)]
      (when scale
        (let [[w h] [(.getRegionWidth  texture-region)
@@ -1156,17 +1155,6 @@
 
 (defn set-drawable! [^Image image drawable]
   (.setDrawable image drawable))
-
-(defn set-min-size! [^TextureRegionDrawable drawable size]
-  (.setMinSize drawable (float size) (float size)))
-
-(defn tinted-drawable
-  "Creates a new drawable that renders the same as this drawable tinted the specified color."
-  [drawable color]
-  (.tint ^TextureRegionDrawable drawable color))
-
-(defn ui-tree []
-  (vis/tree))
 
 (defn t-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))

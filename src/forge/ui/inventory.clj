@@ -1,5 +1,6 @@
 (ns forge.ui.inventory
-  (:require [forge.core :refer :all])
+  (:require [clojure.gdx.scene2d.utils :as scene2d.utils]
+            [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
@@ -57,8 +58,8 @@
   (let [drawable (-> (slot->sprite slot)
                      :texture-region
                      texture-region-drawable)]
-    (set-min-size! drawable cell-size)
-    (tinted-drawable drawable (->color 1 1 1 0.4))))
+    (scene2d.utils/set-min-size! drawable cell-size)
+    (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
@@ -132,7 +133,7 @@
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
-    (set-min-size! drawable cell-size)
+    (scene2d.utils/set-min-size! drawable cell-size)
     (set-drawable! image-widget drawable)
     (add-tooltip! cell-widget #(info-text item))))
 
