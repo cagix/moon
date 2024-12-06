@@ -18,7 +18,9 @@
                        (concat
                         (for [world (db/build-all :properties/worlds)]
                           [(text-button (str "Start " (:property/id world))
-                                        #(start-world world))])
+                                        #(do
+                                          (change-screen :screens/world)
+                                          (start-world world)))])
                         [(when dev-mode?
                            [(text-button "Map editor"
                                          #(change-screen :screens/map-editor))])

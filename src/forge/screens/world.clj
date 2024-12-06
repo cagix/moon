@@ -337,7 +337,6 @@
 ; so widgets comes from world-props .... as components ...
 ; and this all goes to world-init?
 (defn start-world [world-props]
-  (change-screen :screens/world)
   (reset-stage (widgets))
   (world-clear)
   (bind-root tick-error nil)
