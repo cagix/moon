@@ -1,5 +1,8 @@
 (ns forge.app.screens
-  (:require [forge.core :refer [gui-viewport
+  (:require [clojure.gdx.graphics :as g]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.scene2d.stage :as stage]
+            [forge.core :refer [gui-viewport
                                 batch
                                 find-actor-with-id
                                 bind-root
@@ -12,26 +15,22 @@
                                 screen-render
                                 screen-destroy
                                 current-screen
-                                change-screen]])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d Stage)
-           (com.badlogic.gdx.utils ScreenUtils)))
+                                change-screen]]))
 
-(defrecord StageScreen [^Stage stage sub-screen]
+(defrecord StageScreen [stage sub-screen]
   Screen
   (screen-enter [_]
-    (.setInputProcessor Gdx/input stage)
+    (input/set-processor stage)
     (screen-enter sub-screen))
 
   (screen-exit [_]
-    (.setInputProcessor Gdx/input nil)
+    (input/set-processor nil)
     (screen-exit sub-screen))
 
   (screen-render [_]
-    (.act stage)
+    (stage/act stage)
     (screen-render sub-screen)
-    (.draw stage))
+    (stage/draw stage))
 
   (screen-destroy [_]
     (dispose stage)
@@ -40,12 +39,12 @@
 (defn- stage-screen
   "Actors or screen can be nil."
   [{:keys [actors screen]}]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [gui-viewport batch]
+  (let [stage (proxy [com.badlogic.gdx.scenes.scene2d.Stage clojure.lang.ILookup] [gui-viewport batch]
                 (valAt
                   ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
+                   (find-actor-with-id (stage/root this) id))
                   ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
+                   (or (find-actor-with-id (stage/root this) id)
                        not-found))))]
     (run! #(.addActor stage %) actors)
     (->StageScreen stage screen)))
@@ -62,5 +61,5 @@
   (run! screen-destroy (vals screens)))
 
 (defn render [_]
-  (ScreenUtils/clear Color/BLACK)
+  (g/clear-screen color/black)
   (screen-render (current-screen)))

@@ -2,8 +2,11 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.files FileHandle)))
 
+(defn internal ^FileHandle [path]
+  (.internal Gdx/files path))
+
 (defn recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+  (loop [[^FileHandle file & remaining] (.list (internal folder))
          result []]
     (cond (nil? file)
           result

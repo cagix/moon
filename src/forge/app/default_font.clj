@@ -1,33 +1,11 @@
 (ns forge.app.default-font
+  (:require [clojure.gdx.graphics.g2d.freetype :as freetype])
   (:require [forge.core :refer [bind-root
                                 dispose
-                                default-font]])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)))
-
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- truetype-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (dispose generator)
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
+                                default-font]]))
 
 (defn create [[_ font]]
-  (bind-root default-font (truetype-font font)))
+  (bind-root default-font (freetype/generate-font font)))
 
 (defn destroy [_]
   (dispose default-font))

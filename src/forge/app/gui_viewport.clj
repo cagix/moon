@@ -1,15 +1,14 @@
 (ns forge.app.gui-viewport
-  (:require [forge.core :refer [bind-root
+  (:require [clojure.gdx.graphics :as g]
+            [forge.core :refer [bind-root
                                 gui-viewport-width
                                 gui-viewport-height
-                                gui-viewport]])
-  (:import (com.badlogic.gdx.graphics OrthographicCamera)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+                                gui-viewport]]))
 
 (defn create [[_ [width height]]]
   (bind-root gui-viewport-width  width)
   (bind-root gui-viewport-height height)
-  (bind-root gui-viewport (FitViewport. width height (OrthographicCamera.))))
+  (bind-root gui-viewport (g/fit-viewport width height (g/orthographic-camera))))
 
 (defn resize [_ w h]
   (.update gui-viewport w h true))
