@@ -30,7 +30,6 @@
 
 (declare
  pretty-pst
- batch
  world-unit-scale
  world-viewport
  world-viewport-width

@@ -1,8 +1,8 @@
 (ns forge.app.cached-map-renderer
   (:require [clojure.gdx.tiled :as tiled]
+            [forge.app.sprite-batch :refer [batch]]
             [forge.core :refer [world-unit-scale
-                                world-camera
-                                batch]]
+                                world-camera]]
             [forge.utils :refer [bind-root]])
   (:import (forge OrthogonalTiledMapRenderer
                   ColorSetter)))

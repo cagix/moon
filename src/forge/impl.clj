@@ -9,6 +9,7 @@
             [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
             [forge.app.default-font :refer [default-font]]
+            [forge.app.sprite-batch :refer [batch]]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.generator :as mg])
