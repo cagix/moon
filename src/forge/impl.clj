@@ -2,16 +2,13 @@
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.gdx.input :as input]
             [clojure.gdx.interop :refer [static-field]]
-            [clojure.math :as math]
-            [clojure.set :as set]
             [clojure.string :as str]
             [clojure.pprint :as pprint]
             [data.grid2d :as g2d]
             [forge.core :refer :all]
             [malli.core :as m]
             [malli.error :as me]
-            [malli.generator :as mg]
-            [reduce-fsm :as fsm])
+            [malli.generator :as mg])
   (:import (com.badlogic.gdx.graphics Color Colors Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor)
@@ -19,18 +16,9 @@
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.badlogic.gdx.math MathUtils Vector2 Circle Intersector Rectangle)))
 
-(def-impl m-schema   m/schema)
-(def-impl m-validate m/validate)
-
-(def-impl fsm-event fsm/fsm-event)
-
 (defn-impl pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
-
-(def-impl signum            math/signum)
-(def-impl set-difference    set/difference)
-(def-impl pprint            pprint/pprint)
 
 (extend-type Actor
   HasUserObject

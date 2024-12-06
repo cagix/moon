@@ -1,5 +1,6 @@
 (ns forge.info
-  (:require [clojure.string :as str]
+  (:require [clojure.math :as math]
+            [clojure.string :as str]
             [forge.core :refer :all]
             [forge.system :refer [defsystem]]))
 
@@ -96,7 +97,7 @@
   (str "Mana: " (e-mana *info-text-entity*)))
 
 (defn- +? [n]
-  (case (signum n)
+  (case (math/signum n)
     0.0 ""
     1.0 "+"
     -1.0 ""))

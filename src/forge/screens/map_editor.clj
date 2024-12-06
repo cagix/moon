@@ -3,6 +3,7 @@
             [clojure.gdx.input :refer [key-just-pressed?
                                        key-pressed?]]
             [clojure.gdx.tiled :as tiled]
+            [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [forge.core :refer :all]
             [forge.controls :as controls]

@@ -5,8 +5,11 @@
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
+            [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
-            [forge.system :refer [defsystem]])
+            [forge.system :refer [defsystem]]
+            [malli.core :as m]
+            [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
@@ -15,11 +18,6 @@
            (com.kotcrab.vis.ui.widget VisWindow
                                       VisTable)
            (forge RayCaster)))
-
-(declare m-schema
-         m-validate)
-
-(declare fsm-event)
 
 (declare asset-manager)
 
@@ -33,10 +31,6 @@
 
 (declare
  pretty-pst
- signum
- set-difference
- pprint
- ^{:doc "Supports clojure.lang.ILookup (get), passing an asset-name string and returns the asset."}
  batch
  default-font
  gui-viewport
@@ -1908,7 +1902,7 @@
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)
-          new-fsm (fsm-event fsm event)
+          new-fsm (fsm/fsm-event fsm event)
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (e-state-obj @eid)
@@ -1949,15 +1943,15 @@
   (mapv #(-> % int (max 0)) val-max))
 
 (defn- apply-max-modifier [val-max entity modifier-k]
-  {:pre  [(m-validate val-max-schema val-max)]
-   :post [(m-validate val-max-schema val-max)]}
+  {:pre  [(m/validate val-max-schema val-max)]
+   :post [(m/validate val-max-schema val-max)]}
   (let [val-max (update val-max 1 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn- apply-min-modifier [val-max entity modifier-k]
-  {:pre  [(m-validate val-max-schema val-max)]
-   :post [(m-validate val-max-schema val-max)]}
+  {:pre  [(m/validate val-max-schema val-max)]
+   :post [(m/validate val-max-schema val-max)]}
   (let [val-max (update val-max 0 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))

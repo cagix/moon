@@ -1,6 +1,7 @@
 (ns forge.dev.tools
   (:require [clojure.gdx.app :refer [post-runnable]]
             [clojure.string :as str]
+            [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
             [forge.core :refer :all])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))

@@ -5,6 +5,7 @@
             [forge.system :refer [defmethods]]
             [forge.ui.inventory :as inventory]
             [forge.world.potential-fields :as potential-fields]
+            [malli.core :as m]
             [reduce-fsm :as fsm]))
 
 (comment
@@ -317,12 +318,12 @@
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
 (def ^:private max-speed (/ minimum-body-size max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
 
-(def speed-schema (m-schema [:and number? [:>= 0] [:<= max-speed]]))
+(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (defmethod e-tick :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
    eid]
-  (assert (m-validate speed-schema speed)
+  (assert (m/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v-length direction))
               (v-normalised? direction))

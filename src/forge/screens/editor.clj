@@ -2,6 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.input :refer [key-just-pressed?]]
+            [clojure.set :as set]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
             [forge.core :refer :all])
@@ -39,7 +40,7 @@
  )
 
 (defn- optional-keys-left [m-schema m]
-  (seq (set-difference (optional-keyset m-schema)
+  (seq (set/difference (optional-keyset m-schema)
                        (set (keys m)))))
 
 (defn- widget-type [schema _]
