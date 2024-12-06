@@ -35,20 +35,6 @@
            {:value value
             :schema (m/form m-schema)}))
 
-#_(let [property {:entity/animation
-                {:frame-duration 0.1,
-                 :frames
-                 ({:file "images/oryx_16bit_scifi_FX_lg_trans.png",
-                   :sub-image-bounds [64 64 32 32]}
-                  {:file "images/oryx_16bit_scifi_FX_lg_trans.png",
-                   :sub-image-bounds [96 64 32 32]}),
-                 :looping? false},
-                :property/id :audiovisuals/convert,
-                :tx/sound "bfxr_burrow"}]
-  (malli-form (schema-of-property property))
-  ; :s/map was undefined
-  )
-
 (defn- property->m-schema [property]
   (try (-> property
            schema-of-property
@@ -148,4 +134,3 @@
     (println id)
     (alter-var-root #'db-data update id update-fn))
   (async-write-to-file!))
-
