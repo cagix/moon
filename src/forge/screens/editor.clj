@@ -14,6 +14,7 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]
+            [forge.component :refer [info-text]]
             [forge.core :refer :all]
             [forge.screens.stage :as stage :refer [screen-stage add-actor]]
             [forge.utils :refer [->edn-str

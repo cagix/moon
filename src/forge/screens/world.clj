@@ -19,6 +19,7 @@
                                               world-camera
                                               world-viewport-width
                                               world-viewport-height]]
+            [forge.component :refer [info-text]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.graphics :refer [draw-on-world-view

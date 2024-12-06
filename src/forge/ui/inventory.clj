@@ -7,6 +7,7 @@
                                             gui-viewport-height
                                             gui-mouse-position]]
             [forge.app.shape-drawer :as sd]
+            [forge.component :refer [info-text]]
             [forge.core :refer :all]
             [forge.graphics :refer [->sprite
                                     sprite-sheet]]
