@@ -35,6 +35,7 @@
             [forge.world.grid :refer [world-grid
                                       circle->cells
                                       point->entities]]
+            [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)

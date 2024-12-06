@@ -4,7 +4,8 @@
             [forge.app.db :as db]
             [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
-            [forge.system :refer [defmethods]]))
+            [forge.system :refer [defmethods]]
+            [forge.world.raycaster :refer [path-blocked?]]))
 
 (comment
 
