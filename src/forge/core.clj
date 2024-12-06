@@ -1,8 +1,4 @@
 (ns forge.core
-  "Language, has no dependencies. Dependencies are injected.
-  Symbolic computations.
-  Dependencies on symbols only.
-  The 'core' implementation itself?"
   (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
