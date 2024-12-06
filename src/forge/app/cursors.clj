@@ -2,9 +2,7 @@
   (:require [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [forge.core :refer [defn-impl
-                                safe-get
-                                set-cursor
+            [forge.core :refer [safe-get
                                 mapvals]]
             [forge.utils :refer [bind-root]]))
 
@@ -22,5 +20,5 @@
 (defn destroy [_]
   (run! dispose (vals cursors)))
 
-(defn-impl set-cursor [cursor-key]
+(defn set-cursor [cursor-key]
   (g/set-cursor (safe-get cursors cursor-key)))

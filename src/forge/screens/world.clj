@@ -4,6 +4,7 @@
             [forge.utils :refer [bind-root]]
             [clojure.vis-ui :as vis]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
+            [forge.app.cursors :refer [set-cursor]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.ui.inventory :as inventory]

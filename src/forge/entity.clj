@@ -1,6 +1,7 @@
 (ns forge.entity
   (:require [clojure.gdx.input :refer [button-just-pressed?]]
             [forge.app.asset-manager :refer [play-sound]]
+            [forge.app.cursors :refer [set-cursor]]
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.system :refer [defmethods]]

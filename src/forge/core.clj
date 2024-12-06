@@ -8,6 +8,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
             [forge.app.asset-manager :refer [play-sound]]
+            [forge.app.cursors :refer [set-cursor]]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root]]
             [malli.core :as m]
@@ -839,8 +840,6 @@
 (defn mouse-on-actor? []
   (let [[x y] (gui-mouse-position)]
     (.hit (screen-stage) x y true)))
-
-(defn set-cursor [cursor-key])
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))

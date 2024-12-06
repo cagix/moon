@@ -1,6 +1,7 @@
 (ns forge.screens.main-menu
   (:require [clojure.gdx.app :as app]
             [clojure.gdx.input :refer [key-just-pressed?]]
+            [forge.app.cursors :refer [set-cursor]]
             [forge.core :refer :all]))
 
 (defn create []
