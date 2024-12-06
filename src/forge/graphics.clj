@@ -1,7 +1,9 @@
 (ns forge.graphics
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics :as g]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
+            [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.sprite-batch :refer [batch]]
             [forge.app.default-font :refer [default-font]]
             [forge.app.shape-drawer :refer [with-line-width]]
@@ -112,3 +114,53 @@
   (draw-with world-viewport
              world-unit-scale
              render-fn))
+
+(defn- scale-dimensions [dimensions scale]
+  (mapv (comp float (partial * scale)) dimensions))
+
+(defn- texture-dimensions [texture-region]
+  [(g/region-width  texture-region)
+   (g/region-height texture-region)])
+
+(defn- assoc-dimensions
+  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+  [{:keys [texture-region] :as image} scale]
+  {:pre [(or (number? scale)
+             (and (vector? scale)
+                  (number? (scale 0))
+                  (number? (scale 1))))]}
+  (let [pixel-dimensions (if (number? scale)
+                           (scale-dimensions (texture-dimensions texture-region) scale)
+                           scale)]
+    (assoc image
+           :pixel-dimensions pixel-dimensions
+           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
+
+(defn- sprite* [texture-region]
+  (-> {:texture-region texture-region}
+      (assoc-dimensions 1) ; = scale 1
+      map->Sprite))
+
+(defn ->image [path]
+  (sprite* (g/texture-region (asset-manager path))))
+
+(defn sub-image [image bounds]
+  (sprite* (apply g/->texture-region (:texture-region image) bounds)))
+
+(defn sprite-sheet [path tilew tileh]
+  {:image (->image path)
+   :tilew tilew
+   :tileh tileh})
+
+(defn ->sprite [{:keys [image tilew tileh]} [x y]]
+  (sub-image image
+             [(* x tilew) (* y tileh) tilew tileh]))
+
+(defn edn->image [{:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (->sprite (sprite-sheet file tilew tileh)
+                [(int (/ sprite-x tilew))
+                 (int (/ sprite-y tileh))]))
+    (->image file)))

@@ -24,7 +24,9 @@
             [forge.app.world-viewport :refer [world-viewport-width
                                               world-viewport-height
                                               world-camera]]
-            [forge.graphics :refer [draw-text]]
+            [forge.graphics :refer [draw-text
+                                    edn->image
+                                    ->image]]
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
             [forge.system :refer [defsystem]]
@@ -56,11 +58,6 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
-
-(declare ->image
-         sub-image
-         sprite-sheet
-         ->sprite)
 
 (def dev-mode? (= (System/getenv "DEV_MODE") "true"))
 
@@ -235,6 +232,8 @@
 (defn tick-entities [entities]
   (run! tick-entity entities))
 
+(defmethod malli-form :s/val-max [_] (m/form val-max/schema))
+
 (defmethod malli-form :s/number  [_] number?)
 (defmethod malli-form :s/nat-int [_] nat-int?)
 (defmethod malli-form :s/int     [_] int?)
@@ -312,21 +311,6 @@
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
      :else (mg/generate (malli-form schema) {:size 3}))))
-
-(defmacro defn-impl [name-sym & fn-body]
-  `(bind-root ~name-sym (fn ~name-sym ~@fn-body)))
-
-(defmacro def-impl [name-sym value]
-  `(bind-root ~name-sym ~value))
-
-(defn edn->image [{:keys [file sub-image-bounds]}]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (->sprite (sprite-sheet file tilew tileh)
-                [(int (/ sprite-x tilew))
-                 (int (/ sprite-y tileh))]))
-    (->image file)))
 
 (defmethod edn->value :s/image [_ edn]
   (edn->image edn))

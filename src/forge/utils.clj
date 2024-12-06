@@ -5,6 +5,12 @@
 (defmacro bind-root [sym value]
   `(clojure.lang.Var/.bindRoot (var ~sym) ~value))
 
+#_(defmacro defn-impl [name-sym & fn-body]
+    `(bind-root ~name-sym (fn ~name-sym ~@fn-body)))
+
+#_(defmacro def-impl [name-sym value]
+    `(bind-root ~name-sym ~value))
+
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
     (if (= result ::not-found)
@@ -59,22 +65,22 @@
   (sort-by #((get-item-order-k %) order) < coll))
 
 #_(defn order-contains? [order k]
-  ((apply hash-set (keys order)) k))
+    ((apply hash-set (keys order)) k))
 
 #_(deftest test-order
-  (is
-    (= (define-order [:a :b :c]) {:a 0 :b 1 :c 2}))
-  (is
-    (order-contains? (define-order [:a :b :c]) :a))
-  (is
-    (not
+    (is
+     (= (define-order [:a :b :c]) {:a 0 :b 1 :c 2}))
+    (is
+     (order-contains? (define-order [:a :b :c]) :a))
+    (is
+     (not
       (order-contains? (define-order [:a :b :c]) 2)))
-  (is
-    (=
+    (is
+     (=
       (sort-by-order [:c :b :a :b] identity (define-order [:a :b :c]))
       '(:a :b :b :c)))
-  (is
-    (=
+    (is
+     (=
       (sort-by-order [:b :c :null :null :a] identity (define-order [:c :b :a :null]))
       '(:c :b :a :null :null))))
 
@@ -103,21 +109,21 @@
 ; (MathUtils/isEqual 1 (length v))
 (defn- approx-numbers [a b epsilon]
   (<=
-    (Math/abs (float (- a b)))
-    epsilon))
+   (Math/abs (float (- a b)))
+   epsilon))
 
 (defn- round-n-decimals [^double x n]
   (let [z (Math/pow 10 n)]
     (float
-      (/
-        (Math/round (float (* x z)))
-        z))))
+     (/
+      (Math/round (float (* x z)))
+      z))))
 
 (defn readable-number [^double x]
   {:pre [(number? x)]} ; do not assert (>= x 0) beacuse when using floats x may become -0.000...000something
   (if (or
-        (> x 5)
-        (approx-numbers x (int x) 0.001)) ; for "2.0" show "2" -> simpler
+       (> x 5)
+       (approx-numbers x (int x) 0.001)) ; for "2.0" show "2" -> simpler
     (int x)
     (round-n-decimals x 2)))
 
@@ -137,15 +143,15 @@
 
 (defn- indexed ; from clojure.contrib.seq-utils (discontinued in 1.3)
   "Returns a lazy sequence of [index, item] pairs, where items come
- from 's' and indexes count up from zero.
+  from 's' and indexes count up from zero.
 
- (indexed '(a b c d)) => ([0 a] [1 b] [2 c] [3 d])"
+  (indexed '(a b c d)) => ([0 a] [1 b] [2 c] [3 d])"
   [s]
   (map vector (iterate inc 0) s))
 
 (defn utils-positions ; from clojure.contrib.seq-utils (discontinued in 1.3)
   "Returns a lazy sequence containing the positions at which pred
-	 is true for items in coll."
+  is true for items in coll."
   [pred coll]
   (for [[idx elt] (indexed coll) :when (pred elt)] idx))
 

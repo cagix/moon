@@ -8,6 +8,8 @@
                                             gui-mouse-position]]
             [forge.app.shape-drawer :as sd]
             [forge.core :refer :all]
+            [forge.graphics :refer [->sprite
+                                    sprite-sheet]]
             [forge.screens.stage :refer [screen-stage]]
             [forge.world.player :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)

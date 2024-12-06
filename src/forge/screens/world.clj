@@ -23,7 +23,9 @@
             [forge.controls :as controls]
             [forge.graphics :refer [draw-on-world-view
                                     draw-image
-                                    draw-text]]
+                                    draw-text
+                                    sub-image
+                                    ->image]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage
@@ -337,6 +339,7 @@
 ; so widgets comes from world-props .... as components ...
 ; and this all goes to world-init?
 (defn start-world [world-props]
+  ; TODO assert is :screens/world
   (reset-stage (widgets))
   (world-clear)
   (bind-root tick-error nil)

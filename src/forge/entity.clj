@@ -17,7 +17,8 @@
             [forge.graphics :refer [draw-rotated-centered
                                     draw-image
                                     draw-centered
-                                    draw-text]]
+                                    draw-text
+                                    edn->image]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.system :refer [defmethods]]
             [forge.utils :refer [find-first]]
