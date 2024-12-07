@@ -13,8 +13,7 @@
             [forge.app.shape-drawer :as sd]
             [forge.app.vis-ui :refer [window-title-bar?
                                       button?]]
-            [forge.app.world-viewport :refer [pixels->world-units
-                                              world-mouse-position]]
+            [forge.app.world-viewport :refer [pixels->world-units world-mouse-position]]
             [forge.controls :as controls]
             [forge.effect :refer [effects-applicable?
                                   effects-useful?
@@ -233,19 +232,6 @@
   ; TODO draw opacity as of counter ratio?
   (render-above [_ entity]
     (sd/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
-
-(defmethods :entity/string-effect
-  (e-tick [[k {:keys [counter]}] eid]
-    (when (stopped? counter)
-      (swap! eid dissoc k)))
-
-  (render-above [[_ {:keys [text]}] entity]
-    (let [[x y] (:position entity)]
-      (draw-text {:text text
-                  :x x
-                  :y (+ y (:half-height entity) (pixels->world-units 5))
-                  :scale 2
-                  :up? true}))))
 
 (defmethod e-destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
   (spawn-audiovisual (:position @eid)
