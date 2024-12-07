@@ -1,6 +1,6 @@
 (ns forge.entity.fsm
-  (:require [forge.app.cursors :refer [set-cursor]]
-            [forge.system :refer [defsystem]]
+  (:require [clojure.utils :refer [defsystem]]
+            [forge.app.cursors :refer [set-cursor]]
             [forge.world :refer [->v]]
             [reduce-fsm :as fsm]))
 

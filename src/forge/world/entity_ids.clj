@@ -1,5 +1,5 @@
 (ns forge.world.entity-ids
-  (:require [forge.utils :refer [bind-root]]))
+  (:require [clojure.utils :refer [bind-root]]))
 
 (declare entity-ids)
 

@@ -1,5 +1,5 @@
 (ns forge.world.player
-  (:require [forge.utils :refer [bind-root]]))
+  (:require [clojure.utils :refer [bind-root]]))
 
 (declare player-eid)
 

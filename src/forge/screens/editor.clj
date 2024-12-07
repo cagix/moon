@@ -11,6 +11,10 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
+            [clojure.utils :refer [->edn-str
+                                   truncate
+                                   find-first
+                                   index-of]]
             [forge.app.asset-manager :refer [asset-manager play-sound]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
@@ -34,10 +38,6 @@
             [forge.screens.stage :as stage :refer [screen-stage add-actor]]
             [forge.ui :refer [background-image
                               error-window!]]
-            [forge.utils :refer [->edn-str
-                                 truncate
-                                 find-first
-                                 index-of]]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))

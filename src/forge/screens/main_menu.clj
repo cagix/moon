@@ -1,17 +1,15 @@
 (ns forge.screens.main-menu
   (:require [clojure.gdx.app :as app]
             [clojure.gdx.input :refer [key-just-pressed?]]
+            [clojure.utils :refer [dev-mode?]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
             [forge.app.screens :refer [change-screen]]
-            [forge.app.vis-ui :refer [ui-actor
-                                      text-button]
-             :as ui]
+            [forge.app.vis-ui :refer [ui-actor text-button] :as ui]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
             [forge.screens.world :refer [start-world]]
-            [forge.ui :refer [background-image]]
-            [forge.utils :refer [dev-mode?]]))
+            [forge.ui :refer [background-image]]))
 
 (defn create []
   (stage/create

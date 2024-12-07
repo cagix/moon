@@ -1,11 +1,11 @@
 (ns forge.mapgen
   (:require [clojure.gdx.tiled :as tiled]
+            [clojure.utils :refer [assoc-ks]]
             [data.grid2d :as g2d]
             [forge.property :as property]
             [forge.rand :refer [sshuffle
                                 srand
-                                srand-int]]
-            [forge.utils :refer [assoc-ks]]))
+                                srand-int]]))
 
 (defn creatures-with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

@@ -1,6 +1,6 @@
 (ns forge.app.screens
-  (:require [forge.screen :as screen]
-            [forge.utils :refer [bind-root mapvals]]))
+  (:require [clojure.utils :refer [bind-root mapvals]]
+            [forge.screen :as screen]))
 
 (declare ^:private screens
          ^:private current-screen-key)

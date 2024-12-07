@@ -9,6 +9,14 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.vis-ui :as vis]
+            [clojure.utils :refer [bind-root
+                                   ->tile
+                                   tile->middle
+                                   sort-by-order
+                                   readable-number
+                                   dev-mode?
+                                   pretty-pst
+                                   defsystem]]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
@@ -37,18 +45,10 @@
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage]]
-            [forge.system :refer [defsystem]]
             [forge.ui :refer [error-window!]]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.utils :refer [bind-root
-                                 ->tile
-                                 tile->middle
-                                 sort-by-order
-                                 readable-number
-                                 dev-mode?
-                                 pretty-pst]]
             [forge.val-max :as val-max]
             [forge.world :refer [render-z-order
                                  remove-destroyed

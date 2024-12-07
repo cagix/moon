@@ -2,6 +2,7 @@
   (:require [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
+            [clojure.utils :refer [defsystem]]
             [data.grid2d :as g2d]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height
@@ -21,7 +22,6 @@
             [forge.graphics :refer [->sprite
                                     sprite-sheet]]
             [forge.screens.stage :refer [screen-stage]]
-            [forge.system :refer [defsystem]]
             [forge.world.player :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))

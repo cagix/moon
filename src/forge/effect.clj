@@ -1,5 +1,5 @@
 (ns forge.effect
-  (:require [forge.system :refer [defsystem]]))
+  (:require [clojure.utils :refer [defsystem]]))
 
 (defsystem handle [_ ctx])
 

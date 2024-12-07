@@ -4,8 +4,8 @@
                                              rect-contains?
                                              overlaps?]]
             [clojure.gdx.tiled :as tiled]
-            [data.grid2d :as g2d]
-            [forge.utils :refer [bind-root tile->middle ->tile]]))
+            [clojure.utils :refer [bind-root tile->middle ->tile]]
+            [data.grid2d :as g2d]))
 
 (defprotocol Cell
   (cell-blocked? [cell* z-order])

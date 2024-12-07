@@ -1,6 +1,6 @@
 (ns forge.ops
   (:refer-clojure :exclude [remove apply])
-  (:require [forge.system :refer [defsystem defmethods]]))
+  (:require [clojure.utils :refer [defsystem defmethods]]))
 
 (defsystem op-apply [_ base-value])
 

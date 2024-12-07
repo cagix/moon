@@ -1,15 +1,12 @@
 (ns forge.world
   (:require [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
+            [clojure.utils :refer [define-order safe-merge unique-number! defsystem]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
             [forge.app.world-viewport :refer [world-viewport-width
                                               world-viewport-height
                                               world-camera]]
-            [forge.system :refer [defsystem]]
-            [forge.utils :refer [define-order
-                                 safe-merge
-                                 unique-number!]]
             [forge.world.content-grid :as content-grid]
             [forge.world.entity-ids :as entity-ids]
             [forge.world.grid :as grid]

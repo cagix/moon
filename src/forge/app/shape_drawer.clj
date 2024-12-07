@@ -4,8 +4,8 @@
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.math.utils :refer [degree->radians]]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [forge.app.sprite-batch :refer [batch]]
-            [forge.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root]]
+            [forge.app.sprite-batch :refer [batch]]))
 
 (declare ^:private pixel-texture
          ^:private sd)

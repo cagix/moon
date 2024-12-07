@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.ui.skill-window
-  (:require [forge.system :refer [defsystem]]))
+  (:require [clojure.utils :refer [defsystem]]))
 
 (defsystem clicked-skillmenu-skill [_ skill])
 (defmethod clicked-skillmenu-skill :default [_ skill])

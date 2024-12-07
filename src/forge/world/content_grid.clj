@@ -1,7 +1,7 @@
 (ns forge.world.content-grid
   (:require [clojure.gdx.tiled :as tiled]
-            [data.grid2d :as g2d]
-            [forge.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root]]
+            [data.grid2d :as g2d]))
 
 (defn- create-grid [{:keys [cell-size width height]}]
   {:grid (g2d/create-grid

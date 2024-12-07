@@ -1,5 +1,6 @@
 (ns forge.effects
   (:require [clojure.gdx.math.vector2 :as v]
+            [clojure.utils :refer [defmethods]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
             [forge.app.shape-drawer :as sd]
@@ -17,7 +18,6 @@
             [forge.entity.string-effect :as string-effect]
             [forge.modifiers :refer [hitpoints damage-mods]]
             [forge.rand :refer [rand-int-between]]
-            [forge.system :refer [defmethods]]
             [forge.world :refer [spawn-audiovisual
                                  spawn-creature
                                  spawn-line-render

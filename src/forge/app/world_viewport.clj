@@ -1,7 +1,7 @@
 (ns forge.app.world-viewport
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
-            [forge.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root]]))
 
 (declare world-unit-scale
          world-viewport-width

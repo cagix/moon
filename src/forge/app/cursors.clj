@@ -2,7 +2,7 @@
   (:require [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [forge.utils :refer [bind-root safe-get mapvals]]))
+            [clojure.utils :refer [bind-root safe-get mapvals]]))
 
 (defn- gdx-cursor [[file [hotspot-x hotspot-y]]]
   (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))

@@ -1,7 +1,7 @@
 (ns forge.world.explored-tile-corners
   (:require [clojure.gdx.tiled :as tiled]
-            [data.grid2d :as g2d]
-            [forge.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root]]
+            [data.grid2d :as g2d]))
 
 (declare explored-tile-corners)
 

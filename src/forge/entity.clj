@@ -2,9 +2,8 @@
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.gdx.scene2d.actor :refer [visible?
-                                               user-object]
-             :as actor]
+            [clojure.gdx.scene2d.actor :refer [visible? user-object] :as actor]
+            [clojure.utils :refer [find-first defmethods]]
             [forge.animation :as animation]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
@@ -50,14 +49,12 @@
                                          draw-gui-view
                                          pause-game?
                                          manual-tick]]
-            [forge.system :refer [defmethods]]
             [forge.ui :refer [show-modal]]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory :refer [clicked-inventory-cell
                                                       valid-slot?]]
             [forge.ui.skill-window :refer [clicked-skillmenu-skill]]
             [forge.ui.player-message :as player-message]
-            [forge.utils :refer [find-first]]
             [forge.val-max :as val-max]
             [forge.world :refer [minimum-body-size
                                  ->v

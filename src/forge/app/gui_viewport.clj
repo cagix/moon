@@ -1,7 +1,7 @@
 (ns forge.app.gui-viewport
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
-            [forge.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root]]))
 
 (declare gui-viewport
          gui-viewport-width

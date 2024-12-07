@@ -1,7 +1,7 @@
 (ns forge.world.raycaster
   (:require [clojure.gdx.math.vector2 :as v]
+            [clojure.utils :refer [bind-root]]
             [data.grid2d :as g2d]
-            [forge.utils :refer [bind-root]]
             [forge.world.grid :as grid :refer [world-grid
                                                blocks-vision?]])
   (:import (forge RayCaster)))

@@ -1,5 +1,5 @@
 (ns forge.world.tiled-map
-  (:require [forge.utils :refer [bind-root]]))
+  (:require [clojure.utils :refer [bind-root]]))
 
 (declare world-tiled-map)
 

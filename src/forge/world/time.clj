@@ -1,6 +1,6 @@
 (ns forge.world.time
   (:require [clojure.gdx.graphics :as g]
-            [forge.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root]]))
 
 (declare ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time)

@@ -1,7 +1,7 @@
 (ns forge.app.sprite-batch
   (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [forge.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root]]))
 
 (declare batch)
 

@@ -1,11 +1,10 @@
 (ns forge.world.mouseover-entity
-  (:require [forge.app.world-viewport :refer [world-mouse-position]]
+  (:require [clojure.utils :refer [bind-root sort-by-order]]
+            [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.screens.stage :refer [mouse-on-actor?]]
-            [forge.world :refer [render-z-order
-                                 line-of-sight?]]
+            [forge.world :refer [render-z-order line-of-sight?]]
             [forge.world.grid :refer [point->entities]]
-            [forge.world.player :refer [player-eid]]
-            [forge.utils :refer [bind-root sort-by-order]]))
+            [forge.world.player :refer [player-eid]]))
 
 (def mouseover-eid nil)
 

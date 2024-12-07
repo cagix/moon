@@ -41,8 +41,8 @@
                 ;*assert* false
                 ;*print-level* 3
                 }
-  :profiles {:uberjar {:aot [forge.lifecycle]}}
-  #_:main #_forge.lifecycle)
+  :profiles {:uberjar {:aot [forge.app]}}
+  #_:main #_forge.app)
 
 ; * Notes
 
