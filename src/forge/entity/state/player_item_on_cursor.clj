@@ -1,5 +1,6 @@
 (ns forge.entity.state.player-item-on-cursor
-  (:require [clojure.gdx.math.vector2 :as v]
+  (:require [clojure.gdx.input :refer [button-just-pressed?]]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [defmethods]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.gui-viewport :refer [gui-mouse-position]]
@@ -7,10 +8,10 @@
             [forge.entity :refer [->v render-below]]
             [forge.entity.fsm :refer [e-state-k send-event]]
             [forge.entity.inventory :refer [set-item remove-item stackable? stack-item]]
-            [forge.entity.state :refer [enter exit cursor draw-gui-view pause-game? manual-tick]]
+            [forge.entity.state :refer [enter exit cursor draw-gui-view pause-game? manual-tick clicked-inventory-cell]]
             [forge.graphics :refer [draw-centered]]
             [forge.screens.stage :refer [mouse-on-actor?]]
-            [forge.ui.inventory :refer [clicked-inventory-cell valid-slot?]]
+            [forge.ui.inventory :refer [valid-slot?]]
             [forge.world :refer [spawn-item]]))
 
 (defn- clicked-cell [eid cell]

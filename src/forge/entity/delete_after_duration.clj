@@ -1,7 +1,7 @@
 (ns forge.entity.delete-after-duration
   (:require [clojure.utils :refer [defmethods]]
             [forge.entity :refer [->v tick]]
-            [forge.world.time :refer [stopped?]]))
+            [forge.world.time :refer [timer stopped?]]))
 
 (defmethods :entity/delete-after-duration
   (->v [[_ duration]]

@@ -425,7 +425,7 @@
      (try (when-let [v (k @eid)]
             (component/tick [k v] eid))
           (catch Throwable t
-            (throw (ex-info "e-tick" {:k k} t)))))
+            (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
 

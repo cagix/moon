@@ -12,7 +12,7 @@
                                   effects-applicable?
                                   effects-do!]]
             [forge.entity.body :refer [e-direction]]
-            [forge.entity.faction :refer [e-enemy]]
+            [forge.entity.faction :as faction]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.hp :refer [hitpoints]]
             [forge.entity.modifiers :as mods]
@@ -74,7 +74,7 @@
   (applicable? [_ {:keys [effect/source effect/target]}]
     (and target
          (= (:entity/faction @target)
-            (e-enemy @source))))
+            (faction/enemy @source))))
 
   (handle [_ {:keys [effect/source effect/target]}]
     (swap! target assoc :entity/faction (:entity/faction @source))))

@@ -1,6 +1,25 @@
 (ns forge.entity.state.player-idle
-  (:require [clojure.utils :refer [defmethods]])
-  )
+  (:require [clojure.gdx.input :refer [button-just-pressed?]]
+            [clojure.gdx.math.vector2 :as v]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.utils :refer [defmethods]]
+            [forge.app.asset-manager :refer [play-sound]]
+            [forge.app.cursors :refer [set-cursor]]
+            [forge.app.vis-ui :refer [window-title-bar? button?]]
+            [forge.app.world-viewport :refer [world-mouse-position]]
+            [forge.controls :as controls]
+            [forge.entity :refer [->v]]
+            [forge.entity.fsm :refer [send-event]]
+            [forge.entity.inventory :refer [can-pickup-item? pickup-item remove-item]]
+            [forge.entity.skills :refer [has-skill? add-skill]]
+            [forge.entity.state :refer [clicked-skillmenu-skill clicked-inventory-cell manual-tick pause-game?]]
+            [forge.screens.stage :refer [mouse-on-actor?]]
+            [forge.skill :as skill]
+            [forge.ui.action-bar :as action-bar]
+            [forge.ui.inventory :as inventory]
+            [forge.ui.player-message :as player-message]
+            [forge.world.mouseover-entity :refer [mouseover-eid]]
+            [forge.world.player :refer [player-eid]]))
 
 (defn- denied [text]
   (play-sound "bfxr_denied")
@@ -13,7 +32,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (visible? (inventory/window))
+     (actor/visible? (inventory/window))
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
@@ -51,7 +70,7 @@
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
        (get-in (:entity/inventory @player-eid)
-               (user-object (.getParent actor)))))
+               (actor/user-object (.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
   (let [actor (mouse-on-actor?)]
@@ -82,7 +101,7 @@
      (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
-             state (skill-usable-state entity skill effect-ctx)]
+             state (skill/usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight

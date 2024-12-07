@@ -2,7 +2,7 @@
   (:require [clojure.utils :refer [defmethods]]
             [forge.app.shape-drawer :as sd]
             [forge.entity :refer [tick render-above]]
-            [forge.entity.modifieres :as mods]
+            [forge.entity.modifiers :as mods]
             [forge.world.time :refer [stopped?]]))
 
 (defmethods :entity/temp-modifier

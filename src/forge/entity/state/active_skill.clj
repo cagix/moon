@@ -3,11 +3,12 @@
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.shape-drawer :as sd]
             [forge.effect :refer [effects-applicable? effects-do! effects-render]]
-            [forge.entity :refer [->v render-info]]
+            [forge.entity :refer [->v tick render-info]]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.mana :refer [pay-mana-cost]]
             [forge.entity.stat :as stat]
             [forge.entity.state :refer [cursor pause-game? enter]]
+            [forge.graphics :refer [draw-image]]
             [forge.world :refer [line-of-sight?]]
             [forge.world.time :refer [stopped? timer finished-ratio]]))
 
@@ -65,7 +66,7 @@
                (not (zero? (:skill/cost skill))))
       (swap! eid pay-mana-cost (:skill/cost skill))))
 
-  (e-tick [[_ {:keys [skill effect-ctx counter]}] eid]
+  (tick [[_ {:keys [skill effect-ctx counter]}] eid]
     (cond
      (not (effects-applicable? (check-update-ctx effect-ctx)
                                (:skill/effects skill)))

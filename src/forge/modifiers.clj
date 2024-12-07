@@ -6,14 +6,14 @@
 (defn- ->pos-int [val-max]
   (mapv #(-> % int (max 0)) val-max))
 
-(defn- apply-max-modifier [val-max entity modifier-k]
+(defn apply-max-modifier [val-max entity modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
   (let [val-max (update val-max 1 mods/->value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
-(defn- apply-min-modifier [val-max entity modifier-k]
+(defn apply-min-modifier [val-max entity modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
   (let [val-max (update val-max 0 mods/->value entity modifier-k)

@@ -1,8 +1,8 @@
 (ns forge.entity.string-effect
   (:require [clojure.utils :refer [defmethods]]
             [forge.app.world-viewport :refer [pixels->world-units]]
+            [forge.entity :refer [tick render-above]]
             [forge.graphics :refer [draw-text]]
-            [forge.screens.world :refer [e-tick render-above]]
             [forge.world.time :refer [timer reset-timer stopped?]]))
 
 (defn add [entity text]
@@ -16,7 +16,7 @@
             :counter (timer 0.4)})))
 
 (defmethods :entity/string-effect
-  (e-tick [[k {:keys [counter]}] eid]
+  (tick [[k {:keys [counter]}] eid]
     (when (stopped? counter)
       (swap! eid dissoc k)))
 

@@ -1,6 +1,6 @@
 (ns forge.entity.projectile-collision
-  (:require [clojure.utils :refer [defmethods]]
-            [forge.effects :refer [effects-do!]]
+  (:require [clojure.utils :refer [defmethods find-first]]
+            [forge.effect :refer [effects-do!]]
             [forge.entity :refer [->v tick]]
             [forge.entity.body :refer [e-collides?]]
             [forge.world.grid :refer [rectangle->cells
@@ -8,7 +8,7 @@
                                       cell-blocked?]]))
 
 (defmethods :entity/projectile-collision
-  (v [[_ v]]
+  (->v [[_ v]]
     (assoc v :already-hit-bodies #{}))
 
   (tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]

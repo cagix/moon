@@ -3,7 +3,7 @@
             [forge.entity :refer [tick]]
             [forge.entity.fsm :refer [send-event]]
             [forge.world.grid :refer [circle->entities]]
-            [forge.world.time :refer [stopped]]))
+            [forge.world.time :refer [stopped?]]))
 
 (def ^:private shout-radius 4)
 

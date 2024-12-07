@@ -2,7 +2,7 @@
   (:require [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [->tile when-seq utils-positions]]
             [forge.entity.body :refer [e-tile]]
-            [forge.entity.faction :refer [e-enemy]]
+            [forge.entity.faction :as faction]
             [forge.world.grid :refer [world-grid
                                       cell-blocked?
                                       nearest-entity-distance
@@ -200,7 +200,7 @@
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [eid own-cell]
-  (let [faction (e-enemy @eid)
+  (let [faction (faction/enemy @eid)
         distance-to    #(nearest-entity-distance @% faction)
         nearest-entity #(nearest-entity          @% faction)
         own-dist (distance-to own-cell)

@@ -1,8 +1,10 @@
 (ns forge.entity.state.player-moving
   (:require [clojure.utils :refer [defmethods]]
             [forge.app.shape-drawer :as sd]
+            [forge.controls :as controls]
             [forge.entity :refer [->v tick]]
             [forge.entity.fsm :refer [send-event]]
+            [forge.entity.stat :as stat]
             [forge.entity.state :refer [enter exit cursor pause-game?]]
             [forge.world.time :refer [timer stopped?]]))
 

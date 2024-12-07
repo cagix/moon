@@ -4,6 +4,7 @@
             [forge.entity.body :refer [e-collides?]]
             [forge.world :as world]
             [forge.world.grid :refer [rectangle->cells cell-blocked? cells->entities]]
+            [forge.world.time :as time]
             [malli.core :as m]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
@@ -44,7 +45,8 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ minimum-body-size max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+(def ^:private max-speed (/ world/minimum-body-size
+                            time/max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
 
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
@@ -59,7 +61,7 @@
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time world-delta)
+    (let [movement (assoc movement :delta-time time/world-delta)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)

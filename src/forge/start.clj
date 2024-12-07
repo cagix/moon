@@ -1,4 +1,4 @@
-(ns forge.app
+(ns forge.start
   (:require [clojure.awt :as awt]
             [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
@@ -12,10 +12,10 @@
   (let [{:keys [components] :as config} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require (:requires config))
     (install "forge"
-             {:optional [#'create
-                         #'destroy
-                         #'render
-                         #'resize]}
+             {:optional [#'component/create
+                         #'component/destroy
+                         #'component/render
+                         #'component/resize]}
              components)
     (awt/set-dock-icon (:dock-icon config))
     (when shared-library-loader/mac?
