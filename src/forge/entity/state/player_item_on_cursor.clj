@@ -1,0 +1,115 @@
+(ns forge.entity.state.player-item-on-cursor
+  (:require [clojure.gdx.math.vector2 :as v]
+            [clojure.utils :refer [defmethods]]
+            [forge.app.asset-manager :refer [play-sound]]
+            [forge.app.gui-viewport :refer [gui-mouse-position]]
+            [forge.app.world-viewport :refer [world-mouse-position]]
+            [forge.entity :refer [->v render-below]]
+            [forge.entity.fsm :refer [e-state-k send-event]]
+            [forge.entity.inventory :refer [set-item remove-item stackable? stack-item]]
+            [forge.entity.state :refer [enter exit cursor draw-gui-view pause-game? manual-tick]]
+            [forge.graphics :refer [draw-centered]]
+            [forge.screens.stage :refer [mouse-on-actor?]]
+            [forge.ui.inventory :refer [clicked-inventory-cell valid-slot?]]
+            [forge.world :refer [spawn-item]]))
+
+(defn- clicked-cell [eid cell]
+  (let [entity @eid
+        inventory (:entity/inventory entity)
+        item-in-cell (get-in inventory cell)
+        item-on-cursor (:entity/item-on-cursor entity)]
+    (cond
+     ; PUT ITEM IN EMPTY CELL
+     (and (not item-in-cell)
+          (valid-slot? cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (set-item eid cell item-on-cursor)
+      (send-event eid :dropped-item))
+
+     ; STACK ITEMS
+     (and item-in-cell
+          (stackable? item-in-cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (stack-item eid cell item-on-cursor)
+      (send-event eid :dropped-item))
+
+     ; SWAP ITEMS
+     (and item-in-cell
+          (valid-slot? cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+      ; TODO? coud handle pickup-item from item-on-cursor state also
+      (swap! eid dissoc :entity/item-on-cursor)
+      (remove-item eid cell)
+      (set-item eid cell item-on-cursor)
+      (send-event eid :dropped-item)
+      (send-event eid :pickup-item item-in-cell)))))
+
+; It is possible to put items out of sight, losing them.
+; Because line of sight checks center of entity only, not corners
+; this is okay, you have thrown the item over a hill, thats possible.
+
+(defn- placement-point [player target maxrange]
+  (v/add player
+         (v/scale (v/direction player target)
+                  (min maxrange
+                       (v/distance player target)))))
+
+(defn- item-place-position [entity]
+  (placement-point (:position entity)
+                   (world-mouse-position)
+                   ; so you cannot put it out of your own reach
+                   (- (:entity/click-distance-tiles entity) 0.1)))
+
+(defn- world-item? []
+  (not (mouse-on-actor?)))
+
+(defmethods :player-item-on-cursor
+  (->v [[_ eid item]]
+    {:eid eid
+     :item item})
+
+  (pause-game? [_]
+    true)
+
+  (manual-tick [[_ {:keys [eid]}]]
+    (when (and (button-just-pressed? :left)
+               (world-item?))
+      (send-event eid :drop-item)))
+
+  (clicked-inventory-cell [[_ {:keys [eid]}] cell]
+    (clicked-cell eid cell))
+
+  (cursor [_]
+    :cursors/hand-grab)
+
+  (enter [[_ {:keys [eid item]}]]
+    (swap! eid assoc :entity/item-on-cursor item))
+
+  (exit [[_ {:keys [eid]}]]
+    ; at clicked-cell when we put it into a inventory-cell
+    ; we do not want to drop it on the ground too additonally,
+    ; so we dissoc it there manually. Otherwise it creates another item
+    ; on the ground
+    (let [entity @eid]
+      (when (:entity/item-on-cursor entity)
+        (play-sound "bfxr_itemputground")
+        (swap! eid dissoc :entity/item-on-cursor)
+        (spawn-item (item-place-position entity) (:entity/item-on-cursor entity)))))
+
+  (draw-gui-view [[_ {:keys [eid]}]]
+    (let [entity @eid]
+      (when (and (= :player-item-on-cursor (e-state-k entity))
+                 (not (world-item?)))
+        (draw-centered (:entity/image (:entity/item-on-cursor entity))
+                       (gui-mouse-position)))))
+
+  (render-below [[_ {:keys [item]}] entity]
+    (when (world-item?)
+      (draw-centered (:entity/image item)
+                     (item-place-position entity)))))

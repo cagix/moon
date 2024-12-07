@@ -1,8 +1,5 @@
 (ns ^:no-doc forge.ui.skill-window
-  (:require [clojure.utils :refer [defsystem]]))
-
-(defsystem clicked-skillmenu-skill [_ skill])
-(defmethod clicked-skillmenu-skill :default [_ skill])
+  (:require [forge.entity.state :refer [clicked-skillmenu-skill]]))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))

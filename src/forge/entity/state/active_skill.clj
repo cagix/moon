@@ -1,0 +1,85 @@
+(ns forge.entity.state.active-skill
+  (:require [clojure.utils :refer [defmethods]]
+            [forge.app.asset-manager :refer [play-sound]]
+            [forge.app.shape-drawer :as sd]
+            [forge.effect :refer [effects-applicable? effects-do! effects-render]]
+            [forge.entity :refer [->v render-info]]
+            [forge.entity.fsm :refer [send-event]]
+            [forge.entity.mana :refer [pay-mana-cost]]
+            [forge.entity.stat :as stat]
+            [forge.entity.state :refer [cursor pause-game? enter]]
+            [forge.world :refer [line-of-sight?]]
+            [forge.world.time :refer [stopped? timer finished-ratio]]))
+
+(defn- apply-action-speed-modifier [entity skill action-time]
+  (/ action-time
+     (or (stat/->value entity (:skill/action-time-modifier-key skill))
+         1)))
+
+; this is not necessary if effect does not need target, but so far not other solution came up.
+(defn- check-update-ctx
+  "Call this on effect-context if the time of using the context is not the time when context was built."
+  [{:keys [effect/source effect/target] :as ctx}]
+  (if (and target
+           (not (:entity/destroyed? @target))
+           (line-of-sight? @source @target))
+    ctx
+    (dissoc ctx :effect/target)))
+
+(defn- draw-skill-image [image entity [x y] action-counter-ratio]
+  (let [[width height] (:world-unit-dimensions image)
+        _ (assert (= width height))
+        radius (/ (float width) 2)
+        y (+ (float y) (float (:half-height entity)) (float 0.15))
+        center [x (+ y radius)]]
+    (sd/filled-circle center radius [1 1 1 0.125])
+    (sd/sector center radius
+               90 ; start-angle
+               (* (float action-counter-ratio) 360) ; degree
+               [1 1 1 0.5])
+    (draw-image image [(- (float x) radius) y])))
+
+(defmethods :active-skill
+  (->v [[_ eid [skill effect-ctx]]]
+    {:eid eid
+     :skill skill
+     :effect-ctx effect-ctx
+     :counter (->> skill
+                   :skill/action-time
+                   (apply-action-speed-modifier @eid skill)
+                   timer)})
+
+  (cursor [_]
+    :cursors/sandclock)
+
+  (pause-game? [_]
+    false)
+
+  (enter [[_ {:keys [eid skill]}]]
+    (play-sound (:skill/start-action-sound skill))
+    (when (:skill/cooldown skill)
+      (swap! eid assoc-in
+             [:entity/skills (:property/id skill) :skill/cooling-down?]
+             (timer (:skill/cooldown skill))))
+    (when (and (:skill/cost skill)
+               (not (zero? (:skill/cost skill))))
+      (swap! eid pay-mana-cost (:skill/cost skill))))
+
+  (e-tick [[_ {:keys [skill effect-ctx counter]}] eid]
+    (cond
+     (not (effects-applicable? (check-update-ctx effect-ctx)
+                               (:skill/effects skill)))
+     (do
+      (send-event eid :action-done)
+      ; TODO some sound ?
+      )
+
+     (stopped? counter)
+     (do
+      (effects-do! effect-ctx (:skill/effects skill))
+      (send-event eid :action-done))))
+
+  (render-info [[_ {:keys [skill effect-ctx counter]}] entity]
+    (let [{:keys [entity/image skill/effects]} skill]
+      (draw-skill-image image entity (:position entity) (finished-ratio counter))
+      (effects-render (check-update-ctx effect-ctx) effects))))

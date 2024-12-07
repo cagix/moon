@@ -1,6 +1,34 @@
+#_(comment
+   (def ^:private entity
+     {:optional [#'->v
+                 #'e-create
+                 #'e-destroy
+                 #'e-tick
+                 #'render-below
+                 #'render-default
+                 #'render-above
+                 #'render-info]})
+
+   (def ^:private entity-state
+     (merge-with concat
+                 entity
+                 {:optional [#'state-enter
+                             #'state-exit
+                             #'state-cursor
+                             #'pause-game?
+                             #'manual-tick
+                             #'clicked-inventory-cell
+                             #'clicked-skillmenu-skill
+                             #'draw-gui-view]}))
+   )
+
 {:requires [forge.schemas
             forge.effects
             forge.entity
+
+            forge.entity.state.player-item-on-cursor
+            forge.entity.state.stunned
+
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves]

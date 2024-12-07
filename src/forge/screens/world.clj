@@ -15,8 +15,7 @@
                                    sort-by-order
                                    readable-number
                                    dev-mode?
-                                   pretty-pst
-                                   defsystem]]
+                                   pretty-pst]]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
@@ -34,9 +33,11 @@
                                               world-viewport-height]]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
+            [forge.entity :as component]
             [forge.entity.hp :refer [hitpoints]]
             [forge.entity.fsm :refer [e-state-obj]]
             [forge.entity.mana :refer [e-mana]]
+            [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]
             [forge.graphics :refer [draw-on-world-view
                                     draw-image
                                     draw-text
@@ -325,9 +326,6 @@
 ; FIXME camera/viewport used @ line of sight & raycaster explored tiles
 ; fixed player viewing range use & for opponents too
 
-(defsystem draw-gui-view [_])
-(defmethod draw-gui-view :default [_])
-
 (defn- widgets []
   [(if dev-mode?
      (dev-menu)
@@ -416,9 +414,6 @@
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
-(defsystem e-tick [_ eid])
-(defmethod e-tick :default [_ eid])
-
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?
@@ -428,7 +423,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (e-tick [k v] eid))
+            (component/tick [k v] eid))
           (catch Throwable t
             (throw (ex-info "e-tick" {:k k} t)))))
    (catch Throwable t
@@ -436,12 +431,6 @@
 
 (defn- tick-entities [entities]
   (run! tick-entity entities))
-
-(defsystem manual-tick)
-(defmethod manual-tick :default [_])
-
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
 
 (defn- update-world []
   (manual-tick (e-state-obj @player-eid))
@@ -475,18 +464,6 @@
      (draw-body-rect entity :red)
      (pretty-pst t))))
 
-(defsystem render-below [_ entity])
-(defmethod render-below :default [_ entity])
-
-(defsystem render-default [_ entity])
-(defmethod render-default :default [_ entity])
-
-(defsystem render-above [_ entity])
-(defmethod render-above :default [_ entity])
-
-(defsystem render-info [_ entity])
-(defmethod render-info :default [_ entity])
-
 (defn- render-entities
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."
   [entities]
@@ -494,10 +471,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [render-below
-                    render-default
-                    render-above
-                    render-info]
+            system [component/render-below
+                    component/render-default
+                    component/render-above
+                    component/render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? player entity))]

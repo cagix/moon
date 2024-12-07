@@ -1,5 +1,8 @@
 (ns forge.entity.skills
-  (:require [forge.ui.action-bar :as action-bar]))
+  (:require [clojure.utils :refer [defmethods]]
+            [forge.entity :refer [create tick]]
+            [forge.ui.action-bar :as action-bar]
+            [forge.world.time :refer [stopped?]]))
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
@@ -15,3 +18,15 @@
   (when (:entity/player? entity)
     (action-bar/remove-skill skill))
   (update entity :entity/skills dissoc id))
+
+(defmethods :entity/skills
+  (create [[k skills] eid]
+    (swap! eid assoc k nil)
+    (doseq [skill skills]
+      (swap! eid add-skill skill)))
+
+  (tick [[k skills] eid]
+    (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
+            :when (and cooling-down?
+                       (stopped? cooling-down?))]
+      (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false))))

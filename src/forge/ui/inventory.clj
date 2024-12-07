@@ -2,7 +2,6 @@
   (:require [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
-            [clojure.utils :refer [defsystem]]
             [data.grid2d :as g2d]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height
@@ -17,8 +16,8 @@
                                       remove-tooltip!]
              :as ui]
             [forge.component :refer [info-text]]
-            [forge.entity.fsm :refer [e-state-k
-                                      e-state-obj]]
+            [forge.entity.fsm :refer [e-state-k e-state-obj]]
+            [forge.entity.state :refer [clicked-inventory-cell]]
             [forge.graphics :refer [->sprite
                                     sprite-sheet]]
             [forge.screens.stage :refer [screen-stage]]
@@ -86,9 +85,6 @@
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
-
-(defsystem clicked-inventory-cell [_ cell])
-(defmethod clicked-inventory-cell :default [_ cell])
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]

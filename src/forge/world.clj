@@ -1,12 +1,13 @@
 (ns forge.world
   (:require [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [define-order safe-merge unique-number! defsystem]]
+            [clojure.utils :refer [define-order safe-merge unique-number!]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
             [forge.app.world-viewport :refer [world-viewport-width
                                               world-viewport-height
                                               world-camera]]
+            [forge.entity :as component]
             [forge.world.content-grid :as content-grid]
             [forge.world.entity-ids :as entity-ids]
             [forge.world.grid :as grid]
@@ -83,15 +84,9 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
-(defsystem ->v "Create component value. Default returns v.")
-(defmethod ->v :default [[_ v]] v)
-
-(defsystem e-create [_ eid])
-(defmethod e-create :default [_ eid])
-
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
-            (assoc m k (->v [k v])))
+            (assoc m k (component/->v [k v])))
           {}
           components))
 
@@ -106,7 +101,7 @@
                                       (create-vs)))))]
     (add-entity eid)
     (doseq [component @eid]
-      (e-create component eid))
+      (component/create component eid))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
@@ -194,15 +189,12 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(defsystem e-destroy [_ eid])
-(defmethod e-destroy :default [_ eid])
-
 (defn remove-destroyed []
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (entity-ids/all-entities))]
     (remove-entity eid)
     (doseq [component @eid]
-      (e-destroy component eid))))
+      (component/destroy component eid))))
 
 (defn active-entities []
   (content-grid/active-entities @player-eid))

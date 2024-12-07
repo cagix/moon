@@ -3,10 +3,9 @@
             [clojure.utils :refer [defmethods]]
             [forge.app.shape-drawer :as sd]
             [forge.app.world-viewport :refer [pixels->world-units]]
+            [forge.entity :refer [->v render-info]]
             [forge.modifiers :refer [apply-max-modifier]]
-            [forge.screens.world :refer [render-info]]
-            [forge.val-max :as val-max]
-            [forge.world :refer [->v]]))
+            [forge.val-max :as val-max]))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]

@@ -198,7 +198,7 @@
                        (component-k->namespace prefix k)
                        k)))
 
-(defmacro defsystem
+(defmacro defsystem ; do not need params ! can re-use create/destroy of entity and pass eid there ...
   {:arglists '([name docstring? params?])}
   [name-sym & args]
   (let [docstring (if (string? (first args))
