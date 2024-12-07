@@ -31,9 +31,9 @@
     (awt/set-dock-icon (:dock-icon config))
     (when shared-library-loader/mac?
       (lwjgl/configure-glfw-for-mac))
-    (lwjgl3/app (proxy [com.badlogic.gdx.ApplicationAdapter] []
-                  (create  []    (run! create          components))
-                  (dispose []    (run! destroy         components))
-                  (render  []    (run! render          components))
-                  (resize  [w h] (run! #(resize % w h) components)))
+    (lwjgl3/app (reify lwjgl3/Listener
+                  (create  [_]     (run! create          components))
+                  (dispose [_]     (run! destroy         components))
+                  (render  [_]     (run! render          components))
+                  (resize  [_ w h] (run! #(resize % w h) components)))
                 (lwjgl3/config (:lwjgl3 config)))))
