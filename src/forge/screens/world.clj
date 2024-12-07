@@ -51,7 +51,9 @@
             [forge.val-max :as val-max]
             [forge.world :refer [render-z-order
                                  remove-destroyed
-                                 spawn-creature]]
+                                 spawn-creature
+                                 active-entities
+                                 line-of-sight?]]
             [forge.world.content-grid]
             [forge.world.entity-ids]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
@@ -365,6 +367,19 @@
                                 :entity/faction :evil}})]
     (spawn-creature (update props :position tile->middle))))
 
+; player-creature needs mana & inventory
+; till then hardcode :creatures/vampire
+(defn- player-entity-props [start-position]
+  {:position (tile->middle start-position)
+   :creature-id :creatures/vampire
+   :components {:entity/fsm {:fsm :fsms/player
+                             :initial-state :player-idle}
+                :entity/faction :good
+                :entity/player? true
+                :entity/free-skill-points 3
+                :entity/clickable {:type :clickable/player}
+                :entity/click-distance-tiles 1.5}})
+
 (defn- world-init [{:keys [tiled-map start-position]}]
   (forge.world.tiled-map/init             tiled-map)
   (forge.world.explored-tile-corners/init tiled-map)
@@ -373,7 +388,9 @@
   (forge.world.content-grid/init          tiled-map)
   (forge.world.raycaster/init             tiled-map)
   (forge.world.time/init                  tiled-map)
-  (forge.world.player/init           start-position)
+  (forge.world.player/init
+   (spawn-creature
+    (player-entity-props start-position)))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 

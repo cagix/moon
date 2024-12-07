@@ -1,8 +1,8 @@
 (ns forge.world.mouseover-entity
   (:require [forge.app.world-viewport :refer [world-mouse-position]]
-            [forge.core :refer [line-of-sight?]]
             [forge.screens.stage :refer [mouse-on-actor?]]
-            [forge.world :refer [render-z-order]]
+            [forge.world :refer [render-z-order
+                                 line-of-sight?]]
             [forge.world.grid :refer [point->entities]]
             [forge.world.player :refer [player-eid]]
             [forge.utils :refer [bind-root sort-by-order]]))

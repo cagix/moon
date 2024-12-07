@@ -4,6 +4,7 @@
             [clojure.string :as str]
             [forge.component :as component :refer [*info-text-entity*]]
             [forge.core :refer :all]
+            [forge.entity.stat :as stat]
             [forge.system :refer [defsystem]]
             [forge.ops :refer [op-order]]
             [forge.utils :refer [bind-root
@@ -169,7 +170,7 @@
     (str "Cost: " v " Mana")))
 
 (defmethod component/info ::stat [[k _]]
-  (str (k->pretty-name k) ": " (e-stat *info-text-entity* k)))
+  (str (k->pretty-name k) ": " (stat/->value *info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)

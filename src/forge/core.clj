@@ -1,12 +1,8 @@
 (ns forge.core
   (:require [clojure.gdx.graphics :as g :refer [delta-time]]
-            [clojure.gdx.graphics.camera :as cam]
-            [clojure.gdx.math.shapes :as shape]
-            [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [add-actor!
                                                find-actor]]
-            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.string :as str]
             [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [play-sound]]
@@ -15,84 +11,15 @@
                                       text-button
                                       add-tooltip!]
              :as ui]
-            [forge.app.world-viewport :refer [world-viewport-width
-                                              world-viewport-height
-                                              world-camera]]
             [forge.component :refer [info-text]]
             [forge.effect :refer [effects-applicable?]]
-            [forge.ops :as ops]
+            [forge.entity.modifiers :as mods]
             [forge.screens.stage :refer [screen-stage]]
-            [forge.utils :refer [safe-get
-                                 ->tile]]
             [forge.val-max :as val-max]
-            [forge.world.content-grid :as content-grid]
-            [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.time :refer [timer reset-timer]]
-            [forge.world.player :refer [player-eid]]
             [malli.core :as m])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
-
-(defn active-entities []
-  (content-grid/active-entities @player-eid))
-
-; does not take into account zoom - but zoom is only for debug ???
-; vision range?
-(defn- on-screen? [entity]
-  (let [[x y] (:position entity)
-        x (float x)
-        y (float y)
-        [cx cy] (cam/position (world-camera))
-        px (float cx)
-        py (float cy)
-        xdist (Math/abs (- x px))
-        ydist (Math/abs (- y py))]
-    (and
-     (<= xdist (inc (/ (float world-viewport-width)  2)))
-     (<= ydist (inc (/ (float world-viewport-height) 2))))))
-
-; TODO at wrong point , this affects targeting logic of npcs
-; move the debug flag to either render or mouseover or lets see
-(def ^:private ^:dbg-flag los-checks? true)
-
-; does not take into account size of entity ...
-; => assert bodies <1 width then
-(defn line-of-sight? [source target]
-  (and (or (not (:entity/player? source))
-           (on-screen? target))
-       (not (and los-checks?
-                 (ray-blocked? (:position source) (:position target))))))
-
-(defn e-direction [entity other-entity]
-  (v/direction (:position entity) (:position other-entity)))
-
-(defn e-collides? [entity other-entity]
-  (shape/overlaps? entity other-entity))
-
-(defn e-tile [entity]
-  (->tile (:position entity)))
-
-(defn e-enemy [{:keys [entity/faction]}]
-  (case faction
-    :evil :good
-    :good :evil))
-
-(defn mods-add    [mods other-mods] (merge-with ops/add    mods other-mods))
-(defn mods-remove [mods other-mods] (merge-with ops/remove mods other-mods))
-
-(defn add-mods    [entity mods] (update entity :entity/modifiers mods-add    mods))
-(defn remove-mods [entity mods] (update entity :entity/modifiers mods-remove mods))
-
-(defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
-  {:pre [(= "modifier" (namespace modifier-k))]}
-  (ops/apply (modifier-k modifiers)
-             base-value))
-
-(defn e-stat [entity k]
-  (when-let [base-value (k entity)]
-    (mod-value base-value
-               entity
-               (keyword "modifier" (name k)))))
 
 (defn- ->pos-int [val-max]
   (mapv #(-> % int (max 0)) val-max))
@@ -100,14 +27,14 @@
 (defn- apply-max-modifier [val-max entity modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 1 mod-value entity modifier-k)
+  (let [val-max (update val-max 1 mods/->value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn- apply-min-modifier [val-max entity modifier-k]
   {:pre  [(m/validate val-max/schema val-max)]
    :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 0 mod-value entity modifier-k)
+  (let [val-max (update val-max 0 mods/->value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
 

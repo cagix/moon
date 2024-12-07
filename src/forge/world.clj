@@ -1,7 +1,11 @@
 (ns forge.world
-  (:require [clojure.gdx.math.vector2 :as v]
+  (:require [clojure.gdx.graphics.camera :as cam]
+            [clojure.gdx.math.vector2 :as v]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
+            [forge.app.world-viewport :refer [world-viewport-width
+                                              world-viewport-height
+                                              world-camera]]
             [forge.system :refer [defsystem]]
             [forge.utils :refer [define-order
                                  safe-merge
@@ -9,7 +13,9 @@
             [forge.world.content-grid :as content-grid]
             [forge.world.entity-ids :as entity-ids]
             [forge.world.grid :as grid]
-            [forge.world.time :refer [timer]]))
+            [forge.world.raycaster :refer [ray-blocked?]]
+            [forge.world.time :refer [timer]]
+            [forge.world.player :refer [player-eid]]))
 
 (defn- add-entity [eid]
   ; https://github.com/damn/core/issues/58
@@ -200,3 +206,33 @@
     (remove-entity eid)
     (doseq [component @eid]
       (e-destroy component eid))))
+
+(defn active-entities []
+  (content-grid/active-entities @player-eid))
+
+; does not take into account zoom - but zoom is only for debug ???
+; vision range?
+(defn- on-screen? [entity]
+  (let [[x y] (:position entity)
+        x (float x)
+        y (float y)
+        [cx cy] (cam/position (world-camera))
+        px (float cx)
+        py (float cy)
+        xdist (Math/abs (- x px))
+        ydist (Math/abs (- y py))]
+    (and
+     (<= xdist (inc (/ (float world-viewport-width)  2)))
+     (<= ydist (inc (/ (float world-viewport-height) 2))))))
+
+; TODO at wrong point , this affects targeting logic of npcs
+; move the debug flag to either render or mouseover or lets see
+(def ^:private ^:dbg-flag los-checks? true)
+
+; does not take into account size of entity ...
+; => assert bodies <1 width then
+(defn line-of-sight? [source target]
+  (and (or (not (:entity/player? source))
+           (on-screen? target))
+       (not (and los-checks?
+                 (ray-blocked? (:position source) (:position target))))))

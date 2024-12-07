@@ -22,11 +22,17 @@
                                   effects-useful?
                                   effects-do!
                                   effects-render]]
+            [forge.entity.body :refer [e-collides?
+                                       e-tile
+                                       e-direction]]
+            [forge.entity.faction :refer [e-enemy]]
             [forge.entity.fsm :refer [e-state-k
                                       send-event
                                       state-enter
                                       state-exit
                                       state-cursor]]
+            [forge.entity.modifiers :as mods]
+            [forge.entity.stat :as stat]
             [forge.graphics :refer [draw-rotated-centered
                                     draw-image
                                     draw-centered
@@ -55,7 +61,8 @@
                                  e-destroy
                                  spawn-audiovisual
                                  spawn-item
-                                 delayed-alert]
+                                 delayed-alert
+                                 line-of-sight?]
              :as world]
             [forge.world.grid :refer [world-grid
                                       cell-blocked?
@@ -112,7 +119,7 @@
       (inventory/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
-      (swap! eid add-mods (:entity/modifiers item)))))
+      (swap! eid mods/add (:entity/modifiers item)))))
 
 (defn remove-item [eid cell]
   (let [entity @eid
@@ -122,7 +129,7 @@
       (inventory/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
-      (swap! eid remove-mods (:entity/modifiers item)))))
+      (swap! eid mods/remove (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]
@@ -220,7 +227,7 @@
   (e-tick [[k {:keys [modifiers counter]}] eid]
     (when (stopped? counter)
       (swap! eid dissoc k)
-      (swap! eid remove-mods modifiers)))
+      (swap! eid mods/remove modifiers)))
 
   ; TODO draw opacity as of counter ratio?
   (render-above [_ entity]
@@ -547,11 +554,11 @@
   (->v [[_ eid movement-vector]]
     {:eid eid
      :movement-vector movement-vector
-     :counter (timer (* (e-stat @eid :entity/reaction-time) 0.016))})
+     :counter (timer (* (stat/->value @eid :entity/reaction-time) 0.016))})
 
   (state-enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (or (e-stat @eid :entity/movement-speed) 0)}))
+                                       :speed (or (stat/->value @eid :entity/movement-speed) 0)}))
 
   (state-exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
@@ -572,7 +579,7 @@
     (let [entity @eid
           cell (get world-grid (e-tile entity))] ; pattern!
       (when-let [distance (nearest-entity-distance @cell (e-enemy entity))]
-        (when (<= distance (e-stat entity :entity/aggro-range))
+        (when (<= distance (stat/->value entity :entity/aggro-range))
           (send-event eid :alert)))))
 
   (render-above [_ entity]
@@ -627,7 +634,7 @@
 
   (state-enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (e-stat @eid :entity/movement-speed)}))
+                                       :speed (stat/->value @eid :entity/movement-speed)}))
 
   (state-exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
@@ -635,12 +642,12 @@
   (e-tick [[_ {:keys [movement-vector]}] eid]
     (if-let [movement-vector (controls/movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
-                                         :speed (e-stat @eid :entity/movement-speed)})
+                                         :speed (stat/->value @eid :entity/movement-speed)})
       (send-event eid :no-movement-input))))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (e-stat entity (:skill/action-time-modifier-key skill))
+     (or (stat/->value entity (:skill/action-time-modifier-key skill))
          1)))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.

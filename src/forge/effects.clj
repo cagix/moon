@@ -10,14 +10,20 @@
                                   render-effect
                                   effects-applicable?
                                   effects-do!]]
+            [forge.entity.body :refer [e-direction]]
+            [forge.entity.faction :refer [e-enemy]]
             [forge.entity.fsm :refer [send-event]]
+            [forge.entity.modifiers :as mods]
+            [forge.entity.stat :as stat]
             [forge.rand :refer [rand-int-between]]
             [forge.system :refer [defmethods]]
             [forge.world :refer [spawn-audiovisual
                                  spawn-creature
                                  spawn-line-render
                                  projectile-size
-                                 spawn-projectile]]
+                                 spawn-projectile
+                                 active-entities
+                                 line-of-sight?]]
             [forge.world.raycaster :refer [path-blocked?]]
             [forge.world.time :refer [timer]]
             [forge.world.player :refer [player-eid]]))
@@ -72,8 +78,8 @@
     (swap! target assoc :entity/faction (:entity/faction @source))))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (e-stat target* :entity/armor-save) 0)
-          (or (e-stat source* :entity/armor-pierce) 0))
+  (max (- (or (stat/->value target* :entity/armor-save) 0)
+          (or (stat/->value source* :entity/armor-pierce) 0))
        0))
 
 (comment
@@ -121,7 +127,7 @@
     (send-event target :kill)))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (e-stat entity :entity/strength) 0)]
+  (let [strength (or (stat/->value entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defmethods :effects.target/melee-damage
@@ -143,7 +149,7 @@
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                    :counter (timer duration)})
-        (swap! target add-mods modifiers)))))
+        (swap! target mods/add modifiers)))))
 
 (defmethods :effects.target/stun
   (applicable? [_ {:keys [effect/target]}]
