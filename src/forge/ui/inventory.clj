@@ -9,6 +9,8 @@
             [forge.app.shape-drawer :as sd]
             [forge.component :refer [info-text]]
             [forge.core :refer :all]
+            [forge.entity.fsm :refer [e-state-k
+                                      e-state-obj]]
             [forge.graphics :refer [->sprite
                                     sprite-sheet]]
             [forge.screens.stage :refer [screen-stage]]

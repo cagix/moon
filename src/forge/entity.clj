@@ -18,6 +18,11 @@
                                   effects-useful?
                                   effects-do!
                                   effects-render]]
+            [forge.entity.fsm :refer [e-state-k
+                                      send-event
+                                      state-enter
+                                      state-exit
+                                      state-cursor]]
             [forge.graphics :refer [draw-rotated-centered
                                     draw-image
                                     draw-centered

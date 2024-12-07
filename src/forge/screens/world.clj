@@ -22,6 +22,7 @@
             [forge.component :refer [info-text]]
             [forge.core :refer :all]
             [forge.controls :as controls]
+            [forge.entity.fsm :refer [e-state-obj]]
             [forge.graphics :refer [draw-on-world-view
                                     draw-image
                                     draw-text

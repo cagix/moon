@@ -10,6 +10,7 @@
                                   render-effect
                                   effects-applicable?
                                   effects-do!]]
+            [forge.entity.fsm :refer [send-event]]
             [forge.rand :refer [rand-int-between]]
             [forge.system :refer [defmethods]]
             [forge.world :refer [spawn-audiovisual
