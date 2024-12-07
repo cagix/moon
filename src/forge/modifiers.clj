@@ -20,22 +20,6 @@
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
 
-(defn hitpoints
-  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-hp is capped by max-hp."
-  [entity]
-  (-> entity
-      :entity/hp
-      (apply-max-modifier entity :modifier/hp-max)))
-
-(defn e-mana
-  "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-mana is capped by max-mana."
-  [entity]
-  (-> entity
-      :entity/mana
-      (apply-max-modifier entity :modifier/mana-max)))
-
 (defn damage-mods
   ([source damage]
    (update damage

@@ -14,10 +14,11 @@
             [forge.entity.body :refer [e-direction]]
             [forge.entity.faction :refer [e-enemy]]
             [forge.entity.fsm :refer [send-event]]
+            [forge.entity.hp :refer [hitpoints]]
             [forge.entity.modifiers :as mods]
             [forge.entity.stat :as stat]
             [forge.entity.string-effect :as string-effect]
-            [forge.modifiers :refer [hitpoints damage-mods]]
+            [forge.modifiers :refer [damage-mods]]
             [forge.world :refer [spawn-audiovisual
                                  spawn-creature
                                  spawn-line-render

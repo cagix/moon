@@ -34,14 +34,15 @@
                                               world-viewport-height]]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
+            [forge.entity.hp :refer [hitpoints]]
             [forge.entity.fsm :refer [e-state-obj]]
+            [forge.entity.mana :refer [e-mana]]
             [forge.graphics :refer [draw-on-world-view
                                     draw-image
                                     draw-text
                                     sub-image
                                     ->image]]
             [forge.level :refer [generate-level]]
-            [forge.modifiers :refer [hitpoints e-mana]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage]]

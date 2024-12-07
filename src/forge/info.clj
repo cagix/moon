@@ -4,8 +4,10 @@
             [clojure.string :as str]
             [clojure.utils :refer [bind-root readable-number defsystem]]
             [forge.component :as component :refer [*info-text-entity*]]
+            [forge.entity.hp :refer [hitpoints]]
+            [forge.entity.mana :refer [e-mana]]
             [forge.entity.stat :as stat]
-            [forge.modifiers :refer [damage-mods hitpoints e-mana]]
+            [forge.modifiers :refer [damage-mods]]
             [forge.ops :refer [op-order]]
             [forge.world.time :refer [finished-ratio]]))
 

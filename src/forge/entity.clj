@@ -1,6 +1,5 @@
 (ns forge.entity
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :refer [button-just-pressed?]]
+  (:require [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [visible? user-object] :as actor]
             [clojure.utils :refer [find-first defmethods]]
@@ -30,6 +29,7 @@
                                       state-enter
                                       state-exit
                                       state-cursor]]
+            [forge.entity.mana :refer [mana-value pay-mana-cost]]
             [forge.entity.modifiers :as mods]
             [forge.entity.stat :as stat]
             [forge.entity.string-effect :as string-effect]
@@ -40,7 +40,6 @@
                                     draw-centered
                                     draw-text
                                     edn->image]]
-            [forge.modifiers :refer [hitpoints e-mana]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.screens.world :refer [e-tick
                                          render-below
@@ -55,7 +54,6 @@
             [forge.ui.inventory :as inventory :refer [clicked-inventory-cell valid-slot?]]
             [forge.ui.skill-window :refer [clicked-skillmenu-skill]]
             [forge.ui.player-message :as player-message]
-            [forge.val-max :as val-max]
             [forge.world :refer [minimum-body-size
                                  ->v
                                  e-create
@@ -106,49 +104,6 @@
                            #'clicked-skillmenu-skill
                            #'draw-gui-view]}))
  )
-
-
-(def ^:private hpbar-colors
-  {:green     [0 0.8 0]
-   :darkgreen [0 0.5 0]
-   :yellow    [0.5 0.5 0]
-   :red       [0.5 0 0]})
-
-(defn- hpbar-color [ratio]
-  (let [ratio (float ratio)
-        color (cond
-               (> ratio 0.75) :green
-               (> ratio 0.5)  :darkgreen
-               (> ratio 0.25) :yellow
-               :else          :red)]
-    (color hpbar-colors)))
-
-(def ^:private borders-px 1)
-
-(defn- draw-hpbar [{:keys [position width half-width half-height]}
-                   ratio]
-  (let [[x y] position]
-    (let [x (- x half-width)
-          y (+ y half-height)
-          height (pixels->world-units 5)
-          border (pixels->world-units borders-px)]
-      (sd/filled-rectangle x y width height color/black)
-      (sd/filled-rectangle (+ x border)
-                           (+ y border)
-                           (- (* width ratio) (* 2 border))
-                           (- height (* 2 border))
-                           (hpbar-color ratio)))))
-
-(defmethods :entity/hp
-  (->v [[_ v]]
-    [v v])
-
-  (render-info [_ entity]
-    (let [ratio (val-max/ratio (hitpoints entity))]
-      (when (or (< ratio 1) (:entity/mouseover? entity))
-        (draw-hpbar entity ratio)))))
-
-(defmethod ->v :entity/mana [[_ v]] [v v])
 
 (defmethods :entity/temp-modifier
   (e-tick [[k {:keys [modifiers counter]}] eid]
@@ -436,11 +391,6 @@
    (npc-choose-skill effect-ctx @eid))
  )
 
-(defn- mana-value [entity]
-  (if (:entity/mana entity)
-    ((e-mana entity) 0)
-    0))
-
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (mana-value entity))))
 
@@ -606,11 +556,6 @@
                (* (float action-counter-ratio) 360) ; degree
                [1 1 1 0.5])
     (draw-image image [(- (float x) radius) y])))
-
-(defn- pay-mana-cost [entity cost]
-  (let [mana-val ((e-mana entity) 0)]
-    (assert (<= cost mana-val))
-    (assoc-in entity [:entity/mana 0] (- mana-val cost))))
 
 (defmethods :active-skill
   (->v [[_ eid [skill effect-ctx]]]
