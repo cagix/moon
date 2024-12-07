@@ -14,8 +14,6 @@
             [clojure.vis-ui :as vis]
             [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [play-sound]]
-            [forge.app.db :as db :refer [malli-form
-                                         edn->value]]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
             [forge.app.world-viewport :refer [world-viewport-width
@@ -24,7 +22,6 @@
             [forge.component :refer [info-text]]
             [forge.effect :refer [effects-applicable?]]
             [forge.graphics :refer [draw-text
-                                    edn->image
                                     ->image]]
             [forge.ops :as ops]
             [forge.screens.stage :refer [screen-stage
@@ -54,6 +51,10 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
 
+(defn property->image [{:keys [entity/image entity/animation]}]
+  (or image
+      (first (:frames animation))))
+
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
@@ -68,89 +69,6 @@
 
 (defsystem draw-gui-view [_])
 (defmethod draw-gui-view :default [_])
-
-(defmethod malli-form :s/val-max [_] (m/form val-max/schema))
-
-(defmethod malli-form :s/number  [_] number?)
-(defmethod malli-form :s/nat-int [_] nat-int?)
-(defmethod malli-form :s/int     [_] int?)
-(defmethod malli-form :s/pos     [_] pos?)
-(defmethod malli-form :s/pos-int [_] pos-int?)
-
-(defmethod malli-form :s/sound [_] :string)
-
-(defmethod malli-form :s/image [_]
-  [:map {:closed true}
-   [:file :string]
-   [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
-
-(defmethod malli-form :s/animation [_]
-  [:map {:closed true}
-   [:frames :some] ; FIXME actually images
-   [:frame-duration pos?]
-   [:looping? :boolean]])
-
-(defn- type->id-namespace [property-type]
-  (keyword (name property-type)))
-
-(defmethod malli-form :s/one-to-one [[_ property-type]]
-  [:qualified-keyword {:namespace (type->id-namespace property-type)}])
-
-(defmethod malli-form :s/one-to-many [[_ property-type]]
-  [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
-
-(defn- attribute-form
-  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
-  [ks]
-  (for [k ks
-        :let [k? (keyword? k)
-              schema-props (if k? nil (k 1))
-              k (if k? k (k 0))]]
-    (do
-     (assert (keyword? k))
-     (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
-     [k schema-props (db/malli-form (db/schema-of k))])))
-
-(defn- map-form [ks]
-  (apply vector :map {:closed true} (attribute-form ks)))
-
-(println "defmethod malli-form :s/map")
-(defmethod malli-form :s/map [[_ ks]]
-  (map-form ks))
-
-(defmethod malli-form :s/map-optional [[_ ks]]
-  (map-form (map (fn [k] [k {:optional true}]) ks)))
-
-(defn- namespaced-ks [ns-name-k]
-  (filter #(= (name ns-name-k) (namespace %))
-          (keys db/schemas)))
-
-(defmethod malli-form :s/components-ns [[_ ns-name-k]]
-  (malli-form [:s/map-optional (namespaced-ks ns-name-k)]))
-
-(defmethod edn->value :s/one-to-many [_ property-ids]
-  (set (map db/build property-ids)))
-
-(defmethod edn->value :s/one-to-one [_ property-id]
-  (db/build property-id))
-
-(defn property->image [{:keys [entity/image entity/animation]}]
-  (or image
-      (first (:frames animation))))
-
-(require '[malli.generator :as mg])
-
-(defn k->default-value [k]
-  (let [schema (db/schema-of k)]
-    (cond
-     (#{:s/one-to-one :s/one-to-many} (db/schema-type schema)) nil
-
-     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
-
-     :else (mg/generate (malli-form schema) {:size 3}))))
-
-(defmethod edn->value :s/image [_ edn]
-  (edn->image edn))
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))

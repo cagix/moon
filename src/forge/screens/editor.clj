@@ -20,7 +20,8 @@
             [forge.utils :refer [->edn-str
                                  truncate
                                  find-first
-                                 index-of]])
+                                 index-of]]
+            [malli.generator :as mg])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
@@ -362,6 +363,15 @@
 
 (defn- horiz-sep []
   [(horizontal-separator-cell component-row-cols)])
+
+(defn- k->default-value [k]
+  (let [schema (db/schema-of k)]
+    (cond
+     (#{:s/one-to-one :s/one-to-many} (db/schema-type schema)) nil
+
+     ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
+
+     :else (mg/generate (db/malli-form schema) {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui-window {:title "Choose"
