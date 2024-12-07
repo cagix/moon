@@ -7,7 +7,6 @@
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
             [forge.app.world-viewport :refer [world-camera]]
-            [forge.core :refer :all]
             [forge.graphics :refer [draw-on-world-view]]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.tiled-map :refer [world-tiled-map]]))

@@ -30,7 +30,6 @@
                                       add-tooltip!]
              :as ui]
             [forge.component :refer [info-text]]
-            [forge.core :refer :all]
             [forge.property :as property]
             [forge.screens.stage :as stage :refer [screen-stage add-actor]]
             [forge.ui :refer [background-image

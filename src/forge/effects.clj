@@ -3,7 +3,6 @@
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
             [forge.app.shape-drawer :as sd]
-            [forge.core :refer :all]
             [forge.effect :refer [handle
                                   applicable?
                                   useful?
@@ -15,6 +14,8 @@
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.modifiers :as mods]
             [forge.entity.stat :as stat]
+            [forge.entity.string-effect :as string-effect]
+            [forge.modifiers :refer [hitpoints damage-mods]]
             [forge.rand :refer [rand-int-between]]
             [forge.system :refer [defmethods]]
             [forge.world :refer [spawn-audiovisual
@@ -106,7 +107,7 @@
        nil
 
        (armor-saves? source* target*)
-       (swap! target add-text-effect "[WHITE]ARMOR")
+       (swap! target string-effect/add "[WHITE]ARMOR")
 
        :else
        (let [min-max (:damage/min-max (damage-mods source* target* damage))
@@ -116,7 +117,7 @@
          (spawn-audiovisual (:position target*)
                             (db/build :audiovisuals/damage))
          (send-event target (if (zero? new-hp-val) :kill :alert))
-         (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))
+         (swap! target string-effect/add (str "[RED]" dmg-amount "[]")))))))
 
 (defmethods :effects.target/kill
   (applicable? [_ {:keys [effect/target]}]

@@ -3,8 +3,7 @@
             [clojure.gdx.input :refer [key-just-pressed?
                                        key-pressed?]]
             [clojure.gdx.math.vector2 :as v]
-            [forge.app.world-viewport :refer [world-camera]]
-            [forge.core :refer :all]))
+            [forge.app.world-viewport :refer [world-camera]]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

@@ -1,7 +1,6 @@
 (ns forge.mapgen
   (:require [clojure.gdx.tiled :as tiled]
             [data.grid2d :as g2d]
-            [forge.core :refer :all]
             [forge.property :as property]
             [forge.rand :refer [sshuffle
                                 srand

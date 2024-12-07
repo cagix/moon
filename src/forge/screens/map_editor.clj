@@ -18,7 +18,6 @@
              :as ui]
             [forge.app.world-viewport :refer [world-mouse-position
                                               world-camera]]
-            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.graphics :refer [draw-on-world-view]]
             [forge.level :refer [generate-level]]

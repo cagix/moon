@@ -25,7 +25,6 @@
                                               world-viewport-width
                                               world-viewport-height]]
             [forge.component :refer [info-text]]
-            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.entity.fsm :refer [e-state-obj]]
             [forge.graphics :refer [draw-on-world-view
@@ -34,11 +33,13 @@
                                     sub-image
                                     ->image]]
             [forge.level :refer [generate-level]]
+            [forge.modifiers :refer [hitpoints e-mana]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage]]
             [forge.system :refer [defsystem]]
             [forge.ui :refer [error-window!]]
+            [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
             [forge.utils :refer [bind-root
@@ -330,7 +331,7 @@
   [(if dev-mode?
      (dev-menu)
      (ui-actor {}))
-   (ui/table {:rows [[{:actor (actionbar-create)
+   (ui/table {:rows [[{:actor (action-bar/create)
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table

@@ -11,7 +11,7 @@
                                       scroll-pane]
              :as ui]
             [forge.app.world-viewport :refer [world-mouse-position]]
-            [forge.core :refer :all]
+            [forge.entity.skills :refer [add-skill]]
             [forge.screens.stage :refer [add-actor]]
             [forge.world :refer [spawn-creature
                                  spawn-item]]
@@ -22,7 +22,7 @@
 
 (comment
 
- (print-vimrc-names-forge-core-publics "vimrc")
+ (print-vimrc-names-forge-core-publics 'forge.core "vimrc")
 
  (print-app-values-tree "app-values-tree.clj")
 
@@ -231,8 +231,8 @@
           (for [[ns-name vars] (ns-value-vars #{"forge"})]
             [ns-name (map #(:name (meta %)) vars)])))))
 
-(defn print-vimrc-names-forge-core-publics [file]
-  (->> (find-ns 'forge.core)
+(defn print-vimrc-names-forge-core-publics [ns-sym file]
+  (->> (find-ns ns-sym)
        ns-publics
        (remove (fn [[k v]]
                  (or (:macro (meta v))

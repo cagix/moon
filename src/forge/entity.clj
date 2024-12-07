@@ -16,7 +16,6 @@
                                       button?]]
             [forge.app.world-viewport :refer [pixels->world-units
                                               world-mouse-position]]
-            [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.effect :refer [effects-applicable?
                                   effects-useful?
@@ -33,11 +32,15 @@
                                       state-cursor]]
             [forge.entity.modifiers :as mods]
             [forge.entity.stat :as stat]
+            [forge.entity.string-effect :as string-effect]
+            [forge.entity.skills :refer [has-skill?
+                                         add-skill]]
             [forge.graphics :refer [draw-rotated-centered
                                     draw-image
                                     draw-centered
                                     draw-text
                                     edn->image]]
+            [forge.modifiers :refer [hitpoints e-mana]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.screens.world :refer [e-tick
                                          render-below
@@ -49,6 +52,7 @@
                                          manual-tick]]
             [forge.system :refer [defmethods]]
             [forge.ui :refer [show-modal]]
+            [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory :refer [clicked-inventory-cell
                                                       valid-slot?]]
             [forge.ui.skill-window :refer [clicked-skillmenu-skill]]
@@ -527,6 +531,31 @@
    (npc-choose-skill effect-ctx @eid))
  )
 
+(defn- mana-value [entity]
+  (if (:entity/mana entity)
+    ((e-mana entity) 0)
+    0))
+
+(defn- not-enough-mana? [entity {:keys [skill/cost]}]
+  (and cost (> cost (mana-value entity))))
+
+(defn- skill-usable-state
+  [entity
+   {:keys [skill/cooling-down? skill/effects] :as skill}
+   effect-ctx]
+  (cond
+   cooling-down?
+   :cooldown
+
+   (not-enough-mana? entity skill)
+   :not-enough-mana
+
+   (not (effects-applicable? effect-ctx effects))
+   :invalid-params
+
+   :else
+   :usable))
+
 (defn- npc-choose-skill [entity ctx]
   (->> entity
        :entity/skills
@@ -573,7 +602,7 @@
 
   (state-exit [[_ {:keys [eid]}]]
     (delayed-alert (:position @eid) (:entity/faction @eid) 0.2)
-    (swap! eid add-text-effect "[WHITE]!"))
+    (swap! eid string-effect/add "[WHITE]!"))
 
   (e-tick [_ eid]
     (let [entity @eid
@@ -672,6 +701,11 @@
                (* (float action-counter-ratio) 360) ; degree
                [1 1 1 0.5])
     (draw-image image [(- (float x) radius) y])))
+
+(defn- pay-mana-cost [entity cost]
+  (let [mana-val ((e-mana entity) 0)]
+    (assert (<= cost mana-val))
+    (assoc-in entity [:entity/mana 0] (- mana-val cost))))
 
 (defmethods :active-skill
   (->v [[_ eid [skill effect-ctx]]]
@@ -795,7 +829,7 @@
      (clickable-entity-interaction entity mouseover-eid)
 
      :else
-     (if-let [skill-id (actionbar-selected-skill)]
+     (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill-usable-state entity skill effect-ctx)]

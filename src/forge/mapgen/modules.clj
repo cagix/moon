@@ -1,6 +1,5 @@
 (ns forge.mapgen.modules
   (:require [clojure.gdx.tiled :as tiled]
-            [forge.core :refer :all]
             [forge.mapgen :refer [grid->tiled-map transition-idx-value]]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...

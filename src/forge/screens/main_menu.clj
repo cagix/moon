@@ -7,7 +7,6 @@
             [forge.app.vis-ui :refer [ui-actor
                                       text-button]
              :as ui]
-            [forge.core :refer :all]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
             [forge.screens.world :refer [start-world]]

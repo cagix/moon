@@ -17,9 +17,6 @@
 
 (disable-reload!) ; keep same connection/nrepl-server up throughout refreshs
 
-(require 'forge.core)
-(disable-reload! (find-ns 'forge.core))
-
 (declare ^:no-doc app-ns-sym)
 
 (defn- eval-require-call-main! []

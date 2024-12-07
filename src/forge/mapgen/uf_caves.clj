@@ -4,7 +4,6 @@
             [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
-            [forge.core :refer :all]
             [forge.level :refer [generate-level*]]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [forge.rand :refer [get-rand-weighted-item]]))

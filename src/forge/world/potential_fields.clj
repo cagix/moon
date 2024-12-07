@@ -1,6 +1,5 @@
 (ns forge.world.potential-fields
   (:require [clojure.gdx.math.vector2 :as v]
-            [forge.core :refer :all]
             [forge.entity.body :refer [e-tile]]
             [forge.entity.faction :refer [e-enemy]]
             [forge.utils :refer [->tile

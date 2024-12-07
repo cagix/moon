@@ -1,6 +1,6 @@
 (ns forge.damage-test
   (:require [clojure.test :refer :all]
-            [forge.core :refer [damage-mods]]))
+            [forge.modifiers :refer [damage-mods]]))
 
 (deftest modify-source-damage
   (is (= (damage-mods {:entity/modifiers {:modifier/damage-deal-min {:op/inc 1

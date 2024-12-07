@@ -3,12 +3,11 @@
             [clojure.math :as math]
             [clojure.string :as str]
             [forge.component :as component :refer [*info-text-entity*]]
-            [forge.core :refer :all]
             [forge.entity.stat :as stat]
+            [forge.modifiers :refer [damage-mods hitpoints e-mana]]
             [forge.system :refer [defsystem]]
             [forge.ops :refer [op-order]]
-            [forge.utils :refer [bind-root
-                                 readable-number]]
+            [forge.utils :refer [bind-root readable-number]]
             [forge.world.time :refer [finished-ratio]]))
 
 (defn k->pretty-name [k]
