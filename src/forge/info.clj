@@ -5,6 +5,7 @@
             [forge.component :as component :refer [*info-text-entity*]]
             [forge.core :refer :all]
             [forge.system :refer [defsystem]]
+            [forge.ops :refer [op-order]]
             [forge.utils :refer [bind-root
                                  readable-number]]
             [forge.world.time :refer [finished-ratio]]))

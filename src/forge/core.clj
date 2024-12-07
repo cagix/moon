@@ -27,6 +27,7 @@
             [forge.graphics :refer [draw-text
                                     edn->image
                                     ->image]]
+            [forge.ops :as ops]
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
             [forge.system :refer [defsystem]]
@@ -56,41 +57,6 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
 
-(defmacro with-err-str
-  "Evaluates exprs in a context in which *err* is bound to a fresh
-  StringWriter.  Returns the string created by any nested printing
-  calls."
-  [& body]
-  `(let [s# (new java.io.StringWriter)]
-     (binding [*err* s#]
-       ~@body
-       (str s#))))
-
-(defn ops-add    [ops other-ops] (merge-with + ops other-ops))
-(defn ops-remove [ops other-ops] (merge-with - ops other-ops))
-
-(defsystem op-apply [_ base-value])
-
-(defmethod op-apply :op/inc [[_ value] base-value]
-  (+ base-value value))
-
-(defmethod op-apply :op/mult [[_ value] base-value]
-  (* base-value (inc (/ value 100))))
-
-(defsystem op-order)
-
-(defmethod op-order :op/inc [_]
-  0)
-
-(defmethod op-order :op/mult [_]
-  1)
-
-(defn ops-apply [ops value]
-  (reduce (fn [value op]
-            (op-apply op value))
-          value
-          (sort-by op-order ops)))
-
 (defsystem state-enter)
 (defmethod state-enter :default [_])
 
@@ -114,9 +80,6 @@
 
 (defsystem draw-gui-view [_])
 (defmethod draw-gui-view :default [_])
-
-(defn mods-add    [mods other-mods] (merge-with ops-add    mods other-mods))
-(defn mods-remove [mods other-mods] (merge-with ops-remove mods other-mods))
 
 (defmethod malli-form :s/val-max [_] (m/form val-max/schema))
 
@@ -503,6 +466,16 @@
                                  (* gui-viewport-height (/ 3 4))]
                :pack? true})))
 
+(defmacro with-err-str
+  "Evaluates exprs in a context in which *err* is bound to a fresh
+  StringWriter.  Returns the string created by any nested printing
+  calls."
+  [& body]
+  `(let [s# (new java.io.StringWriter)]
+     (binding [*err* s#]
+       ~@body
+       (str s#))))
+
 (defn error-window! [throwable]
   (pretty-pst throwable)
   (add-actor
@@ -671,12 +644,15 @@
   ([eid event params]
    (send-event! eid event params)))
 
+(defn mods-add    [mods other-mods] (merge-with ops/add    mods other-mods))
+(defn mods-remove [mods other-mods] (merge-with ops/remove mods other-mods))
+
 (defn add-mods    [entity mods] (update entity :entity/modifiers mods-add    mods))
 (defn remove-mods [entity mods] (update entity :entity/modifiers mods-remove mods))
 
 (defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
-  (ops-apply (modifier-k modifiers)
+  (ops/apply (modifier-k modifiers)
              base-value))
 
 (defn e-stat [entity k]
