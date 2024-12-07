@@ -6,17 +6,13 @@
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [add-actor!
                                                find-actor]]
-            [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.string :as str]
             [data.grid2d :as g2d]
             [forge.app.asset-manager :refer [play-sound]]
-            [forge.app.gui-viewport :refer [gui-viewport-width
-                                            gui-viewport-height]]
             [forge.app.vis-ui :refer [ui-actor
                                       image-button
                                       text-button
-                                      image->widget
                                       add-tooltip!]
              :as ui]
             [forge.app.world-viewport :refer [world-viewport-width
@@ -24,156 +20,18 @@
                                               world-camera]]
             [forge.component :refer [info-text]]
             [forge.effect :refer [effects-applicable?]]
-            [forge.graphics :refer [draw-text
-                                    ->image]]
             [forge.ops :as ops]
-            [forge.screens.stage :refer [screen-stage
-                                         add-actor]]
-            [forge.utils :refer [bind-root
-                                 safe-get
-                                 pretty-pst
-                                 tile->middle
+            [forge.screens.stage :refer [screen-stage]]
+            [forge.utils :refer [safe-get
                                  ->tile]]
             [forge.val-max :as val-max]
-            [forge.world :refer [spawn-creature]]
             [forge.world.content-grid :as content-grid]
-            [forge.world.explored-tile-corners]
-            [forge.world.entity-ids :as entity-ids]
-            [forge.world.grid :as grid]
             [forge.world.raycaster :refer [ray-blocked?]]
-            [forge.world.time :refer [timer
-                                      reset-timer]]
-            [forge.world.tiled-map :refer [world-tiled-map]]
+            [forge.world.time :refer [timer reset-timer]]
             [forge.world.player :refer [player-eid]]
             [malli.core :as m])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
-
-(defn background-image []
-  (image->widget (->image "images/moon_background.png")
-                 {:fill-parent? true
-                  :scaling :fill
-                  :align :center}))
-
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (::modal (screen-stage))))
-  (add-actor
-   (ui/window {:title title
-               :rows [[(ui/label text)]
-                      [(text-button button-text
-                                    (fn []
-                                      (Actor/.remove (::modal (screen-stage)))
-                                      (on-click)))]]
-               :id ::modal
-               :modal? true
-               :center-position [(/ gui-viewport-width 2)
-                                 (* gui-viewport-height (/ 3 4))]
-               :pack? true})))
-
-(defmacro with-err-str
-  "Evaluates exprs in a context in which *err* is bound to a fresh
-  StringWriter.  Returns the string created by any nested printing
-  calls."
-  [& body]
-  `(let [s# (new java.io.StringWriter)]
-     (binding [*err* s#]
-       ~@body
-       (str s#))))
-
-(defn error-window! [throwable]
-  (pretty-pst throwable)
-  (add-actor
-   (ui/window {:title "Error"
-               :rows [[(ui/label (binding [*print-level* 3]
-                                   (with-err-str
-                                     (clojure.repl/pst throwable))))]]
-               :modal? true
-               :close-button? true
-               :close-on-escape? true
-               :center? true
-               :pack? true})))
-
-(def ^:private player-message-duration-seconds 1.5)
-
-(def ^:private message-to-player nil)
-
-(defn- draw-player-message []
-  (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ gui-viewport-width 2)
-                :y (+ (/ gui-viewport-height 2) 200)
-                :text message
-                :scale 2.5
-                :up? true})))
-
-(defn- check-remove-message []
-  (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (delta-time))
-    (when (>= counter player-message-duration-seconds)
-      (bind-root message-to-player nil))))
-
-(defn player-message-actor []
-  (ui-actor {:draw draw-player-message
-             :act check-remove-message}))
-
-(defn player-message-show [message]
-  (bind-root message-to-player {:message message :counter 0}))
-
-(defn cells-and-items [inventory slot]
-  (for [[position item] (slot inventory)]
-    [[slot position] item]))
-
-(defn valid-slot? [[slot _] item]
-  (or (= :inventory.slot/bag slot)
-      (= (:item/slot item) slot)))
-
-(defn stackable? [item-a item-b]
-  (and (:count item-a)
-       (:count item-b) ; this is not required but can be asserted, all of one name should have count if others have count
-       (= (:property/id item-a) (:property/id item-b))))
-
-(defmulti generate-level* (fn [world] (:world/generator world)))
-
-(defn generate-level [world-props]
-  (assoc (generate-level* world-props)
-         :world/player-creature
-         (:world/player-creature world-props)))
-
-(def mouseover-eid nil)
-
-(defn mouseover-entity []
-  (and mouseover-eid
-       @mouseover-eid))
-
-(defn world-clear [] ; responsibility of screen? we are not creating the tiled-map here ...
-  (when (bound? #'world-tiled-map)
-    (dispose world-tiled-map)))
-
-(def ^:private ^:dbg-flag spawn-enemies? true)
-
-(defn- spawn-enemies [tiled-map]
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                  {:position position
-                   :creature-id (keyword creature-id)
-                   :components {:entity/fsm {:fsm :fsms/npc
-                                             :initial-state :npc-sleeping}
-                                :entity/faction :evil}})]
-    (spawn-creature (update props :position tile->middle))))
-
-(defn world-init [{:keys [tiled-map start-position]}]
-  (forge.world.tiled-map/init             tiled-map)
-  (forge.world.explored-tile-corners/init tiled-map)
-  (forge.world.grid/init                  tiled-map)
-  (forge.world.entity-ids/init            tiled-map)
-  (forge.world.content-grid/init          tiled-map)
-  (forge.world.raycaster/init             tiled-map)
-  (forge.world.time/init                  tiled-map)
-  (forge.world.player/init           start-position)
-  (when spawn-enemies?
-    (spawn-enemies tiled-map)))
 
 (defn active-entities []
   (content-grid/active-entities @player-eid))

@@ -21,9 +21,11 @@
             [forge.core :refer :all]
             [forge.controls :as controls]
             [forge.graphics :refer [draw-on-world-view]]
+            [forge.level :refer [generate-level]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
-            [forge.mapgen.modules :as modules]))
+            [forge.mapgen.modules :as modules]
+            [forge.ui :refer [error-window!]]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera

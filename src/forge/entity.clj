@@ -42,9 +42,12 @@
                                          pause-game?
                                          manual-tick]]
             [forge.system :refer [defmethods]]
-            [forge.utils :refer [find-first]]
-            [forge.ui.inventory :as inventory :refer [clicked-inventory-cell]]
+            [forge.ui :refer [show-modal]]
+            [forge.ui.inventory :as inventory :refer [clicked-inventory-cell
+                                                      valid-slot?]]
             [forge.ui.skill-window :refer [clicked-skillmenu-skill]]
+            [forge.ui.player-message :as player-message]
+            [forge.utils :refer [find-first]]
             [forge.val-max :as val-max]
             [forge.world :refer [minimum-body-size
                                  ->v
@@ -61,6 +64,7 @@
                                       rectangle->cells
                                       cells->entities
                                       circle->entities]]
+            [forge.world.mouseover-entity :refer [mouseover-eid]]
             [forge.world.time :refer [world-delta
                                       stopped?
                                       timer
@@ -132,6 +136,11 @@
        (set-item! eid cell (update item :count dec)))
       (remove-item! eid cell))))
 
+(defn- stackable? [item-a item-b]
+  (and (:count item-a)
+       (:count item-b) ; this is not required but can be asserted, all of one name should have count if others have count
+       (= (:property/id item-a) (:property/id item-b))))
+
 ; TODO no items which stack are available
 (defn stack-item [eid cell item]
   (let [cell-item (get-in (:entity/inventory @eid) cell)]
@@ -140,6 +149,10 @@
     ; first remove and then place, just update directly  item ...
     (concat (remove-item eid cell)
             (set-item eid cell (update cell-item :count + (:count item))))))
+
+(defn- cells-and-items [inventory slot]
+  (for [[position item] (slot inventory)]
+    [[slot position] item]))
 
 (defn- free-cell [inventory slot item]
   (find-first (fn [[_cell cell-item]]
@@ -700,7 +713,7 @@
 
 (defn- denied [text]
   (play-sound "bfxr_denied")
-  (player-message-show text))
+  (player-message/show text))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -724,7 +737,7 @@
      :else
      (do
       (play-sound "bfxr_denied")
-      (player-message-show "Your Inventory is full")))))
+      (player-message/show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
   (actor/toggle-visible! (inventory/window)))

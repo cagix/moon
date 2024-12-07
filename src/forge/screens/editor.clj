@@ -33,6 +33,8 @@
             [forge.core :refer :all]
             [forge.property :as property]
             [forge.screens.stage :as stage :refer [screen-stage add-actor]]
+            [forge.ui :refer [background-image
+                              error-window!]]
             [forge.utils :refer [->edn-str
                                  truncate
                                  find-first

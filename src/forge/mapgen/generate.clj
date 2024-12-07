@@ -3,6 +3,7 @@
             [data.grid2d :as g2d]
             [forge.app.db :as db]
             [forge.core :refer :all]
+            [forge.level :refer [generate-level*]]
             [forge.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))
 

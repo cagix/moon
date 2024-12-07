@@ -6,6 +6,8 @@
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
             [clojure.gdx.scene2d.actor :refer [visible?  set-visible] :as actor]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
+            [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.vis-ui :as vis]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.cursors :refer [set-cursor]]
@@ -31,25 +33,31 @@
                                     draw-text
                                     sub-image
                                     ->image]]
+            [forge.level :refer [generate-level]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
-                                                   reset-stage
-                                                   mouse-on-actor?]]
+                                                   reset-stage]]
             [forge.system :refer [defsystem]]
+            [forge.ui :refer [error-window!]]
             [forge.ui.inventory :as inventory]
+            [forge.ui.player-message :as player-message]
             [forge.utils :refer [bind-root
                                  ->tile
+                                 tile->middle
                                  sort-by-order
                                  readable-number
                                  dev-mode?
                                  pretty-pst]]
             [forge.val-max :as val-max]
             [forge.world :refer [render-z-order
-                                 remove-destroyed]]
+                                 remove-destroyed
+                                 spawn-creature]]
+            [forge.world.content-grid]
+            [forge.world.entity-ids]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.grid :refer [world-grid
-                                      circle->cells
-                                      point->entities]]
+                                      circle->cells]]
+            [forge.world.mouseover-entity :refer [mouseover-entity]]
             [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
             [forge.world.time :refer [elapsed-time]]
@@ -331,7 +339,7 @@
               :actors [(entity-info-window)
                        (inventory/create)]})
    (ui-actor {:draw #(draw-gui-view (e-state-obj @player-eid))})
-   (player-message-actor)])
+   (player-message/actor)])
 
 (defn- windows []
   (:windows (screen-stage)))
@@ -345,6 +353,33 @@
   (let [windows (children (windows))]
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
+
+(def ^:private ^:dbg-flag spawn-enemies? true)
+
+(defn- spawn-enemies [tiled-map]
+  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                  {:position position
+                   :creature-id (keyword creature-id)
+                   :components {:entity/fsm {:fsm :fsms/npc
+                                             :initial-state :npc-sleeping}
+                                :entity/faction :evil}})]
+    (spawn-creature (update props :position tile->middle))))
+
+(defn- world-init [{:keys [tiled-map start-position]}]
+  (forge.world.tiled-map/init             tiled-map)
+  (forge.world.explored-tile-corners/init tiled-map)
+  (forge.world.grid/init                  tiled-map)
+  (forge.world.entity-ids/init            tiled-map)
+  (forge.world.content-grid/init          tiled-map)
+  (forge.world.raycaster/init             tiled-map)
+  (forge.world.time/init                  tiled-map)
+  (forge.world.player/init           start-position)
+  (when spawn-enemies?
+    (spawn-enemies tiled-map)))
+
+(defn- world-clear [] ; responsibility of screen? we are not creating the tiled-map here ...
+  (when (bound? #'world-tiled-map)
+    (dispose world-tiled-map)))
 
 ; depends on world-widgets & world-init ....
 ; so widgets comes from world-props .... as components ...
@@ -361,27 +396,6 @@
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
-
-(defn- calculate-eid []
-  (let [player @player-eid
-        hits (remove #(= (:z-order @%) :z-order/effect)
-                     (point->entities
-                      (world-mouse-position)))]
-    (->> render-z-order
-         (sort-by-order hits #(:z-order @%))
-         reverse
-         (filter #(line-of-sight? player @%))
-         first)))
-
-(defn- update-mouseover-entity []
-  (let [new-eid (if (mouse-on-actor?)
-                  nil
-                  (calculate-eid))]
-    (when mouseover-eid
-      (swap! mouseover-eid dissoc :entity/mouseover?))
-    (when new-eid
-      (swap! new-eid assoc :entity/mouseover? true))
-    (bind-root mouseover-eid new-eid)))
 
 (defsystem e-tick [_ eid])
 (defmethod e-tick :default [_ eid])
@@ -412,7 +426,7 @@
 
 (defn- update-world []
   (manual-tick (e-state-obj @player-eid))
-  (update-mouseover-entity) ; this do always so can get debug info even when game not running
+  (forge.world.mouseover-entity/frame-tick) ; this do always so can get debug info even when game not running
   (bind-root paused? (or tick-error
                          (and pausing?
                               (pause-game? (e-state-obj @player-eid))

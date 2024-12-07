@@ -35,6 +35,10 @@
 (def ^:private droppable-color    [0   0.6 0 0.8])
 (def ^:private not-allowed-color  [0.6 0   0 0.8])
 
+(defn valid-slot? [[slot _] item]
+  (or (= :inventory.slot/bag slot)
+      (= (:item/slot item) slot)))
+
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
   (sd/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?

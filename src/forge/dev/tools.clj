@@ -16,6 +16,7 @@
             [forge.world :refer [spawn-creature
                                  spawn-item]]
             [forge.world.grid :refer [world-grid]]
+            [forge.world.mouseover-entity :refer [mouseover-entity]]
             [forge.world.player :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
