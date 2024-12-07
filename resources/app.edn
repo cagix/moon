@@ -1,8 +1,28 @@
 {:requires [forge.schemas
             forge.effects
-            forge.entity
 
+            forge.entity.alert-friendlies-after-duration
+            forge.entity.animation
+            forge.entity.clickable
+            forge.entity.delete-after-animation-stopped?
+            forge.entity.delete-after-duration
+            forge.entity.destroy-audiovisual
+            forge.entity.image
+            forge.entity.line-render
+            forge.entity.mouseover?
+            forge.entity.movement
+            forge.entity.projectile-collision
+            forge.entity.temp-modifier
+
+            forge.entity.state.active-skill
+            forge.entity.state.npc-dead
+            forge.entity.state.npc-idle
+            forge.entity.state.npc-moving
+            forge.entity.state.npc-sleeping
+            forge.entity.state.player-dead
+            forge.entity.state.player-idle
             forge.entity.state.player-item-on-cursor
+            forge.entity.state.player-moving
             forge.entity.state.stunned
 
             forge.info
