@@ -1,12 +1,20 @@
 (ns forge.ui.inventory
   (:require [clojure.gdx.graphics.color :refer [->color]]
-            [clojure.gdx.scene2d.actor :refer [user-object]]
+            [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height
                                             gui-mouse-position]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.vis-ui :refer [set-drawable!
+                                      ui-widget
+                                      texture-region-drawable
+                                      image-widget
+                                      ui-stack
+                                      add-tooltip!
+                                      remove-tooltip!]
+             :as ui]
             [forge.component :refer [info-text]]
             [forge.core :refer :all]
             [forge.entity.fsm :refer [e-state-k
@@ -46,7 +54,7 @@
      (draw-cell-rect @player-eid
                      (.getX this)
                      (.getY this)
-                     (actor-hit this (gui-mouse-position))
+                     (actor/hit this (gui-mouse-position))
                      (user-object (.getParent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -110,7 +118,7 @@
        (into {})))
 
 (defn- inventory-table []
-  (let [table (ui-table {:id ::table})]
+  (let [table (ui/table {:id ::table})]
     (.clear table) ; no need as we create new table ... TODO
     (doto table .add .add
       (.add (->cell :inventory.slot/helm))
@@ -134,7 +142,7 @@
     table))
 
 (defn create []
-  (ui-window {:title "Inventory"
+  (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true

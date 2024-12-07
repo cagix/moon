@@ -7,7 +7,7 @@
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))
 #_(defn ->skill-window []
-    (ui-window {:title "Skills"
+    (ui/window {:title "Skills"
                 :id :skill-window
                 :visible? false
                 :cell-defaults {:pad 10}

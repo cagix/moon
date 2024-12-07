@@ -4,6 +4,9 @@
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
             [forge.app.screens :refer [change-screen]]
+            [forge.app.vis-ui :refer [ui-actor
+                                      text-button]
+             :as ui]
             [forge.core :refer :all]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
@@ -13,7 +16,7 @@
 (defn create []
   (stage/create
    {:actors [(background-image)
-             (ui-table
+             (ui/table
               {:rows
                (remove nil?
                        (concat

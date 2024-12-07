@@ -3,7 +3,8 @@
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [visible?
-                                               user-object]]
+                                               user-object]
+             :as actor]
             [forge.animation :as animation]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
@@ -11,6 +12,8 @@
             [forge.app.gui-viewport :refer [gui-mouse-position]]
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.vis-ui :refer [window-title-bar?
+                                      button?]]
             [forge.app.world-viewport :refer [pixels->world-units
                                               world-mouse-position]]
             [forge.core :refer :all]
@@ -724,7 +727,7 @@
       (player-message-show "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (toggle-visible! (inventory/window)))
+  (actor/toggle-visible! (inventory/window)))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))

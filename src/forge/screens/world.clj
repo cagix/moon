@@ -4,8 +4,7 @@
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
-            [clojure.gdx.scene2d.actor :refer [visible?
-                                               set-visible]]
+            [clojure.gdx.scene2d.actor :refer [visible?  set-visible] :as actor]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
             [clojure.vis-ui :as vis]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
@@ -15,6 +14,10 @@
                                             gui-mouse-position]]
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.vis-ui :refer [ui-actor
+                                      change-listener
+                                      image->widget]
+             :as ui]
             [forge.app.world-viewport :refer [world-mouse-position
                                               world-camera
                                               world-viewport-width
@@ -91,7 +94,7 @@
   ([table text-fn icon]
    (let [icon (image->widget (->image icon) {})
          label (vis/label "")
-         sub-table (ui-table {:rows [[icon label]]})]
+         sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
@@ -129,8 +132,8 @@
                                 :active-skill])
 
 (defn- entity-info-window []
-  (let [label (label "")
-        window (ui-window {:title "Info"
+  (let [label (ui/label "")
+        window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
                            :position [gui-viewport-width 0]
@@ -296,11 +299,11 @@
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
-  (ui-table {:rows [[{:actor (vis/menu-bar->table (dev-menu-bar))
+  (ui/table {:rows [[{:actor (vis/menu-bar->table (dev-menu-bar))
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]
-                    [{:actor (doto (label "")
+                    [{:actor (doto (ui/label "")
                                (.setTouchable Touchable/disabled))
                       :expand? true
                       :fill-x? true
@@ -317,14 +320,14 @@
   [(if dev-mode?
      (dev-menu)
      (ui-actor {}))
-   (ui-table {:rows [[{:actor (actionbar-create)
+   (ui/table {:rows [[{:actor (actionbar-create)
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table
               :cell-defaults {:pad 2}
               :fill-parent? true})
    (hp-mana-bar)
-   (ui-group {:id :windows
+   (ui/group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
    (ui-actor {:draw #(draw-gui-view (e-state-obj @player-eid))})
@@ -336,7 +339,7 @@
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]
           :when (controls/toggle-visible? window-id)]
-    (toggle-visible! (get (windows) window-id))))
+    (actor/toggle-visible! (get (windows) window-id))))
 
 (defn- close-all-windows []
   (let [windows (children (windows))]

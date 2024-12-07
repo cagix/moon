@@ -13,6 +13,9 @@
             [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
+            [forge.app.vis-ui :refer [ui-actor
+                                      text-button]
+             :as ui]
             [forge.app.world-viewport :refer [world-mouse-position
                                               world-camera]]
             [forge.core :refer :all]
@@ -67,8 +70,8 @@ direction keys: move")
          (str/join "\n"))))
 
 (defn- ->info-window []
-  (let [label (label "")
-        window (ui-window {:title "Info" :rows [[label]]})]
+  (let [label (ui/label "")
+        window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos))
                                          (.pack window))}))
@@ -131,9 +134,9 @@ direction keys: move")
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
-  (ui-window {:title "Properties"
+  (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(label (with-out-str (pprint (db/build level-id))))]
+              :rows [[(ui/label (with-out-str (pprint (db/build level-id))))]
                      [(text-button "Generate" #(try (generate-screen-ctx (db/build level-id))
                                                     (catch Throwable t
                                                       (error-window! t)

@@ -7,6 +7,9 @@
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-viewport-height]]
+            [forge.app.vis-ui :refer [t-node
+                                      scroll-pane]
+             :as ui]
             [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.core :refer :all]
             [forge.screens.stage :refer [add-actor]]
@@ -110,7 +113,7 @@
 
 (defn- add-elements! [node elements]
   (doseq [element elements]
-    (.add node (t-node (label (str (->v-str element)))))))
+    (.add node (t-node (ui/label (str (->v-str element)))))))
 
 #_(let [ns-sym (first (first (into {} (ns-value-vars))))]
   ;(map ->v-str vars)
@@ -152,19 +155,19 @@
     (doseq [[k v] (into (sorted-map) m)]
       ;(println "add-map-nodes! k " k)
       (try
-       (let [node (t-node (label (labelstr k v)))]
+       (let [node (t-node (ui/label (labelstr k v)))]
          (.add parent-node node) ; no t-node-add!: tree cannot be casted to tree-node ... , Tree itself different .add
          #_(when (instance? clojure.lang.Atom v) ; StackOverFLow
            (add-nodes node level @v))
          (add-nodes node level v))
        (catch Throwable t
          (throw (ex-info "" {:k k :v v} t))
-         #_(.add parent-node (t-node (label (str "[RED] "k " - " t))))
+         #_(.add parent-node (t-node (ui/label (str "[RED] "k " - " t))))
 
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [table (ui-table {:rows rows
+  (let [table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
         scroll-pane (scroll-pane table)]
@@ -179,7 +182,7 @@
   (let [tree (vis/tree)]
     (add-map-nodes! tree (into (sorted-map) m) 0)
     (add-actor
-     (ui-window {:title "Tree View"
+     (ui/window {:title "Tree View"
                  :close-button? true
                  :close-on-escape? true
                  :center? true
