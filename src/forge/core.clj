@@ -51,10 +51,6 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
 
-(defn property->image [{:keys [entity/image entity/animation]}]
-  (or image
-      (first (:frames animation))))
-
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 

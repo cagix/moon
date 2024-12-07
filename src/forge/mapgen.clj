@@ -2,6 +2,7 @@
   (:require [clojure.gdx.tiled :as tiled]
             [data.grid2d :as g2d]
             [forge.core :refer :all]
+            [forge.property :as property]
             [forge.rand :refer [sshuffle
                                 srand
                                 srand-int]]
@@ -14,7 +15,7 @@
   (memoize
    (fn [{:keys [property/id] :as prop}]
      (assert id)
-     (let [image (property->image prop)
+     (let [image (property/image prop)
            tile (tiled/static-tiled-map-tile (:texture-region image))]
        (tiled/put! (tiled/m-props tile) "id" id)
        tile))))

@@ -16,6 +16,7 @@
             [forge.app.screens :as screens :refer [change-screen]]
             [forge.component :refer [info-text]]
             [forge.core :refer :all]
+            [forge.property :as property]
             [forge.screens.stage :as stage :refer [screen-stage add-actor]]
             [forge.utils :refer [->edn-str
                                  truncate
@@ -189,7 +190,7 @@
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
-        button (if-let [image (property->image props)]
+        button (if-let [image (property/image props)]
                  (image-button image on-clicked {:scale scale})
                  (text-button (name id) on-clicked))
         top-widget (label (or (and extra-info-text (extra-info-text props)) ""))
@@ -257,7 +258,7 @@
                         (add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/build property-id)
-              image-widget (image->widget (property->image property)
+              image-widget (image->widget (property/image property)
                                           {:id property-id})]
           (add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
@@ -296,7 +297,8 @@
                           (add-actor window)))))]
       [(when property-id
          (let [property (db/build property-id)
-               image-widget (image->widget (property->image property) {:id property-id})]
+               image-widget (image->widget (property/image property)
+                                           {:id property-id})]
            (add-tooltip! image-widget #(info-text property))
            image-widget))]
       [(when property-id
