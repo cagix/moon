@@ -1,5 +1,18 @@
 {:requires [forge.schemas
-            forge.effects
+
+            forge.effects.projectile
+            forge.effects.spawn
+            forge.effects.target-all
+            forge.effects.target-entity
+
+            forge.effects.target.audiovisual
+            forge.effects.target.convert
+            forge.effects.target.damage
+            forge.effects.target.hp
+            forge.effects.target.kill
+            forge.effects.target.melee-damage
+            forge.effects.target.spiderweb
+            forge.effects.target.stun
 
             forge.entity.alert-friendlies-after-duration
             forge.entity.animation

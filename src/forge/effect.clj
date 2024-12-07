@@ -11,6 +11,15 @@
 (defsystem render-effect           [_  ctx])
 (defmethod render-effect :default  [_ _ctx])
 
+(comment
+
+ (def ^:private effect
+   {:required [#'applicable?
+               #'handle]
+    :optional [#'useful?
+               #'render-effect]}))
+
+
 (defn effects-applicable? [ctx effects]
   (seq (filter #(applicable? % ctx) effects)))
 
