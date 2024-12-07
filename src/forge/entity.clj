@@ -34,10 +34,14 @@
                                          render-below
                                          render-default
                                          render-above
-                                         render-info]]
+                                         render-info
+                                         draw-gui-view
+                                         pause-game?
+                                         manual-tick]]
             [forge.system :refer [defmethods]]
             [forge.utils :refer [find-first]]
-            [forge.ui.inventory :as inventory]
+            [forge.ui.inventory :as inventory :refer [clicked-inventory-cell]]
+            [forge.ui.skill-window :refer [clicked-skillmenu-skill]]
             [forge.val-max :as val-max]
             [forge.world :refer [minimum-body-size
                                  ->v

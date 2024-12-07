@@ -1,5 +1,8 @@
 (ns ^:no-doc forge.ui.skill-window
-  (:require [forge.core :refer :all]))
+  (:require [forge.system :refer [defsystem]]))
+
+(defsystem clicked-skillmenu-skill [_ skill])
+(defmethod clicked-skillmenu-skill :default [_ skill])
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))
@@ -17,7 +20,7 @@
                                                         (:entity/image (db/build id)) ; TODO here anyway taken
                                                         ; => should probably build this window @ game start
                                                         (fn []
-                                                          (state/clicked-skillmenu-skill (e-state-obj @player-eid) (db/build id))))]]
+                                                          (clicked-skillmenu-skill (e-state-obj @player-eid) (db/build id))))]]
                          (do
                           (add-tooltip! button #(info/->text (db/build id))) ; TODO no player modifiers applied (see actionbar)
                           button))]

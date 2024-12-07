@@ -310,6 +310,9 @@
 ; FIXME camera/viewport used @ line of sight & raycaster explored tiles
 ; fixed player viewing range use & for opponents too
 
+(defsystem draw-gui-view [_])
+(defmethod draw-gui-view :default [_])
+
 (defn- widgets []
   [(if dev-mode?
      (dev-menu)
@@ -397,6 +400,12 @@
 
 (defn- tick-entities [entities]
   (run! tick-entity entities))
+
+(defsystem manual-tick)
+(defmethod manual-tick :default [_])
+
+(defsystem pause-game?)
+(defmethod pause-game? :default [_])
 
 (defn- update-world []
   (manual-tick (e-state-obj @player-eid))

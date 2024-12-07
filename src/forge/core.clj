@@ -26,7 +26,6 @@
             [forge.ops :as ops]
             [forge.screens.stage :refer [screen-stage
                                          add-actor]]
-            [forge.system :refer [defsystem]]
             [forge.utils :refer [bind-root
                                  safe-get
                                  pretty-pst
@@ -50,21 +49,6 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
-
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
-
-(defsystem manual-tick)
-(defmethod manual-tick :default [_])
-
-(defsystem clicked-inventory-cell [_ cell])
-(defmethod clicked-inventory-cell :default [_ cell])
-
-(defsystem clicked-skillmenu-skill [_ skill])
-(defmethod clicked-skillmenu-skill :default [_ skill])
-
-(defsystem draw-gui-view [_])
-(defmethod draw-gui-view :default [_])
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))

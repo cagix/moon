@@ -14,6 +14,7 @@
             [forge.graphics :refer [->sprite
                                     sprite-sheet]]
             [forge.screens.stage :refer [screen-stage]]
+            [forge.system :refer [defsystem]]
             [forge.world.player :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
@@ -74,6 +75,9 @@
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
+
+(defsystem clicked-inventory-cell [_ cell])
+(defmethod clicked-inventory-cell :default [_ cell])
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
