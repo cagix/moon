@@ -182,7 +182,7 @@
     (when method-var
       (assert (keyword? k))
       (assert (var? method-var) (pr-str method-var))
-      (alter-meta! method-var update :doc str "installed as defmethod for key " k)
+      (alter-meta! method-var assoc :no-doc true)
       (let [system @system-var]
         (when (k (methods system))
           (println "WARNING: Overwriting method" (:name (meta method-var)) "on" k))
@@ -191,7 +191,10 @@
 (defn install-component [component-systems ns-sym k]
   (require ns-sym)
   (add-methods (:required component-systems) ns-sym k)
-  (add-methods (:optional component-systems) ns-sym k :optional? true))
+  (add-methods (:optional component-systems) ns-sym k :optional? true)
+  (let [ns (find-ns ns-sym)]
+    (when (empty? (remove #(:no-doc (meta %)) (vals (ns-publics ns))))
+      (alter-meta! ns assoc :no-doc true))))
 
 (defn install [prefix systems components]
   (doseq [[k v] components]
