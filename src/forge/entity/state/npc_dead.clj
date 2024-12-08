@@ -1,11 +1,7 @@
-(ns forge.entity.state.npc-dead
-  (:require [clojure.utils :refer [defmethods]]
-            [forge.entity :refer [->v]]
-            [forge.entity.state :refer [enter]]))
+(ns forge.entity.state.npc-dead)
 
-(defmethods :npc-dead
-  (->v  [[_ eid]]
-    {:eid eid})
+(defn ->v [[_ eid]]
+  {:eid eid})
 
-  (enter [[_ {:keys [eid]}]]
-    (swap! eid assoc :entity/destroyed? true)))
+(defn enter [[_ {:keys [eid]}]]
+  (swap! eid assoc :entity/destroyed? true))

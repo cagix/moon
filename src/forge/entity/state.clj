@@ -24,15 +24,3 @@
 
 (defsystem clicked-skillmenu-skill [_ skill])
 (defmethod clicked-skillmenu-skill :default [_ skill])
-
-#_(def ^:private entity-state
-    (merge-with concat
-                entity
-                {:optional [#'state-enter
-                            #'state-exit
-                            #'state-cursor
-                            #'pause-game?
-                            #'manual-tick
-                            #'clicked-inventory-cell
-                            #'clicked-skillmenu-skill
-                            #'draw-gui-view]}))

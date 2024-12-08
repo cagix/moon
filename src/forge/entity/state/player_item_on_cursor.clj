@@ -1,14 +1,11 @@
 (ns forge.entity.state.player-item-on-cursor
   (:require [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [defmethods]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.gui-viewport :refer [gui-mouse-position]]
             [forge.app.world-viewport :refer [world-mouse-position]]
-            [forge.entity :refer [->v render-below]]
             [forge.entity.fsm :refer [e-state-k send-event]]
             [forge.entity.inventory :refer [set-item remove-item stackable? stack-item]]
-            [forge.entity.state :refer [enter exit cursor draw-gui-view pause-game? manual-tick clicked-inventory-cell]]
             [forge.graphics :refer [draw-centered]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.ui.inventory :refer [valid-slot?]]
@@ -70,47 +67,46 @@
 (defn- world-item? []
   (not (mouse-on-actor?)))
 
-(defmethods :player-item-on-cursor
-  (->v [[_ eid item]]
-    {:eid eid
-     :item item})
+(defn ->v [[_ eid item]]
+  {:eid eid
+   :item item})
 
-  (pause-game? [_]
-    true)
+(defn pause-game? [_]
+  true)
 
-  (manual-tick [[_ {:keys [eid]}]]
-    (when (and (button-just-pressed? :left)
-               (world-item?))
-      (send-event eid :drop-item)))
+(defn manual-tick [[_ {:keys [eid]}]]
+  (when (and (button-just-pressed? :left)
+             (world-item?))
+    (send-event eid :drop-item)))
 
-  (clicked-inventory-cell [[_ {:keys [eid]}] cell]
-    (clicked-cell eid cell))
+(defn clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  (clicked-cell eid cell))
 
-  (cursor [_]
-    :cursors/hand-grab)
+(defn cursor [_]
+  :cursors/hand-grab)
 
-  (enter [[_ {:keys [eid item]}]]
-    (swap! eid assoc :entity/item-on-cursor item))
+(defn enter [[_ {:keys [eid item]}]]
+  (swap! eid assoc :entity/item-on-cursor item))
 
-  (exit [[_ {:keys [eid]}]]
-    ; at clicked-cell when we put it into a inventory-cell
-    ; we do not want to drop it on the ground too additonally,
-    ; so we dissoc it there manually. Otherwise it creates another item
-    ; on the ground
-    (let [entity @eid]
-      (when (:entity/item-on-cursor entity)
-        (play-sound "bfxr_itemputground")
-        (swap! eid dissoc :entity/item-on-cursor)
-        (spawn-item (item-place-position entity) (:entity/item-on-cursor entity)))))
+(defn exit [[_ {:keys [eid]}]]
+  ; at clicked-cell when we put it into a inventory-cell
+  ; we do not want to drop it on the ground too additonally,
+  ; so we dissoc it there manually. Otherwise it creates another item
+  ; on the ground
+  (let [entity @eid]
+    (when (:entity/item-on-cursor entity)
+      (play-sound "bfxr_itemputground")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (spawn-item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
-  (draw-gui-view [[_ {:keys [eid]}]]
-    (let [entity @eid]
-      (when (and (= :player-item-on-cursor (e-state-k entity))
-                 (not (world-item?)))
-        (draw-centered (:entity/image (:entity/item-on-cursor entity))
-                       (gui-mouse-position)))))
+(defn draw-gui-view [[_ {:keys [eid]}]]
+  (let [entity @eid]
+    (when (and (= :player-item-on-cursor (e-state-k entity))
+               (not (world-item?)))
+      (draw-centered (:entity/image (:entity/item-on-cursor entity))
+                     (gui-mouse-position)))))
 
-  (render-below [[_ {:keys [item]}] entity]
-    (when (world-item?)
-      (draw-centered (:entity/image item)
-                     (item-place-position entity)))))
+(defn render-below [[_ {:keys [item]}] entity]
+  (when (world-item?)
+    (draw-centered (:entity/image item)
+                   (item-place-position entity))))

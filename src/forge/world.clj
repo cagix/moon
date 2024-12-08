@@ -98,7 +98,7 @@
                       create-body
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
-                                      (create-vs)))))]
+                                      create-vs))))]
     (add-entity eid)
     (doseq [component @eid]
       (component/create component eid))
@@ -116,7 +116,7 @@
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation
-                 :entity/delete-after-animation-stopped true}))
+                 :entity/delete-after-animation-stopped? true}))
 
 ; # :z-order/flying has no effect for now
 ; * entities with :z-order/flying are not flying over water,etc. (movement/air)

@@ -1,9 +1,7 @@
 (ns forge.entity.hp
   (:require [clojure.gdx.graphics.color :as color]
-            [clojure.utils :refer [defmethods]]
             [forge.app.shape-drawer :as sd]
             [forge.app.world-viewport :refer [pixels->world-units]]
-            [forge.entity :refer [->v render-info]]
             [forge.modifiers :refer [apply-max-modifier]]
             [forge.val-max :as val-max]))
 
@@ -47,11 +45,10 @@
       :entity/hp
       (apply-max-modifier entity :modifier/hp-max)))
 
-(defmethods :entity/hp
-  (->v [[_ v]]
-    [v v])
+(defn ->v [[_ v]]
+  [v v])
 
-  (render-info [_ entity]
-    (let [ratio (val-max/ratio (hitpoints entity))]
-      (when (or (< ratio 1) (:entity/mouseover? entity))
-        (draw-hpbar entity ratio)))))
+(defn render-info [_ entity]
+  (let [ratio (val-max/ratio (hitpoints entity))]
+    (when (or (< ratio 1) (:entity/mouseover? entity))
+      (draw-hpbar entity ratio))))

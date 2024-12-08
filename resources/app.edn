@@ -1,4 +1,70 @@
-{:requires [forge.schemas
+; BUG e.g. stuff is not deleted after death ..
+
+
+; OK here is the bug ....
+; should have made me know
+; => entity schema !
+; => prevent that 'class' of bugs ...
+
+; * can't get mouseover id
+; * delete-after-animation-stopped? is installed (keys (methods forge.entity/tick))
+
+; type the question mark was missing ...
+
+
+
+
+; TESTS!
+; like a tool with a list which starts a world for tests to do certain things .... ?
+; like gdx test runner ?
+; shows of effects on custom built maps !?
+
+
+; for app ... only install those I use ?!
+; install also schemas / entity-state/widgets/fsms?!
+{:install {:app [:app/db
+                 :app/asset-manager
+                 :app/sprite-batch
+                 :app/shape-drawer
+                 :app/default-font
+                 :app/cached-map-renderer
+                 :app/cursors
+                 :app/vis-ui
+                 :app/gui-viewport
+                 :app/world-viewport
+                 :app/screens]
+           :entity [:entity/alert-friendlies-after-duration
+                    :entity/animation
+                    :entity/clickable
+                    :entity/delete-after-animation-stopped?
+                    :entity/delete-after-duration
+                    :entity/destroy-audiovisual
+                    :entity/fsm
+                    :entity/hp
+                    :entity/image
+                    :entity/inventory
+                    :entity/line-render
+                    :entity/mana
+                    :entity/mouseover?
+                    :entity/movement
+                    :entity/string-effect
+                    :entity/skills
+                    :entity/projectile-collision
+                    :entity/temp-modifier]
+           :effect [:effects/projectile
+                    :effects/spawn
+                    :effects/target-all
+                    :effects/target-entity
+
+                    :effects.target/audiovisual
+                    :effects.target/convert
+                    :effects.target/damage
+                    ;:effects.target/hp
+                    :effects.target/kill
+                    :effects.target/melee-damage
+                    :effects.target/spiderweb
+                    :effects.target/stun]}
+ :requires [forge.schemas
 
             ; Install this shit now !!
             ; Also for screens/schemas/mapgen ?
@@ -70,32 +136,7 @@
             ; => where are the problems easier to see (spiderweb hardcoded stuff etc. ,
             ; potential field follow & work ...)
 
-            forge.effects.projectile
-            forge.effects.spawn
-            forge.effects.target-all
-            forge.effects.target-entity
 
-            forge.effects.target.audiovisual
-            forge.effects.target.convert
-            forge.effects.target.damage
-            forge.effects.target.hp
-            forge.effects.target.kill
-            forge.effects.target.melee-damage
-            forge.effects.target.spiderweb
-            forge.effects.target.stun
-
-            forge.entity.alert-friendlies-after-duration
-            forge.entity.animation
-            forge.entity.clickable
-            forge.entity.delete-after-animation-stopped?
-            forge.entity.delete-after-duration
-            forge.entity.destroy-audiovisual
-            forge.entity.image
-            forge.entity.line-render
-            forge.entity.mouseover?
-            forge.entity.movement
-            forge.entity.projectile-collision
-            forge.entity.temp-modifier
 
             forge.entity.state.active-skill
             forge.entity.state.npc-dead
@@ -107,6 +148,9 @@
             forge.entity.state.player-item-on-cursor
             forge.entity.state.player-moving
             forge.entity.state.stunned
+
+            ; how 2 install ?
+            ; => pass the required/optional map over here fully ns qualified ...
 
             forge.info
             forge.mapgen.generate

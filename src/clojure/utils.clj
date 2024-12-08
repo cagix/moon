@@ -182,12 +182,13 @@
     (when method-var
       (assert (keyword? k))
       (assert (var? method-var) (pr-str method-var))
+      (alter-meta! method-var update :doc str "installed as defmethod for key " k)
       (let [system @system-var]
         (when (k (methods system))
           (println "WARNING: Overwriting method" (:name (meta method-var)) "on" k))
         (clojure.lang.MultiFn/.addMethod system k method-var)))))
 
-(defn- install-component [component-systems ns-sym k]
+(defn install-component [component-systems ns-sym k]
   (require ns-sym)
   (add-methods (:required component-systems) ns-sym k)
   (add-methods (:optional component-systems) ns-sym k :optional? true))

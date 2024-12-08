@@ -1,9 +1,7 @@
 (ns forge.entity.clickable
-  (:require [forge.entity :refer [render-default]]
-            [forge.graphics :refer [draw-text]]))
+  (:require [forge.graphics :refer [draw-text]]))
 
-(defmethod render-default :entity/clickable
-  [[_ {:keys [text]}]
+(defn render-default [[_ {:keys [text]}]
    {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]

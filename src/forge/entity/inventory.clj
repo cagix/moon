@@ -1,6 +1,5 @@
 (ns forge.entity.inventory
   (:require [clojure.utils :refer [find-first]]
-            [forge.entity :refer [create]]
             [forge.entity.modifiers :as mods]
             [forge.ui.inventory :as inventory :refer [valid-slot?]]))
 
@@ -78,7 +77,7 @@
       (stack-item eid cell item)
       (set-item   eid cell item))))
 
-(defmethod create :entity/inventory [[k items] eid]
+(defn create [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
     (pickup-item eid item)))

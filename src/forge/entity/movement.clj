@@ -1,6 +1,5 @@
 (ns forge.entity.movement
   (:require [clojure.gdx.math.vector2 :as v]
-            [forge.entity :refer [tick]]
             [forge.entity.body :refer [e-collides?]]
             [forge.world :as world]
             [forge.world.grid :refer [rectangle->cells cell-blocked? cells->entities]]
@@ -50,7 +49,7 @@
 
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
-(defmethod tick :entity/movement
+(defn tick
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
    eid]
   (assert (m/validate speed-schema speed)

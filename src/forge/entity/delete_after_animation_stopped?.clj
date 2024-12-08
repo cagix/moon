@@ -1,12 +1,9 @@
 (ns forge.entity.delete-after-animation-stopped?
-  (:require [clojure.utils :refer [defmethods]]
-            [forge.animation :as animation]
-            [forge.entity :refer [create tick]]))
+  (:require [forge.animation :as animation]))
 
-(defmethods :entity/delete-after-animation-stopped
-  (create  [_ eid]
-    (-> @eid :entity/animation :looping? not assert))
+(defn create [_ eid]
+  (-> @eid :entity/animation :looping? not assert))
 
-  (tick [_ eid]
-    (when (animation/stopped? (:entity/animation @eid))
-      (swap! eid assoc :entity/destroyed? true))))
+(defn tick [_ eid]
+  (when (animation/stopped? (:entity/animation @eid))
+    (swap! eid assoc :entity/destroyed? true)))

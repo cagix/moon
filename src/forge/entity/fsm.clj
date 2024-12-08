@@ -1,6 +1,6 @@
 (ns forge.entity.fsm
   (:require [forge.app.cursors :refer [set-cursor]]
-            [forge.entity :refer [->v create]]
+            [forge.entity :refer [->v]]
             [forge.entity.state :as state]
             [reduce-fsm :as fsm]))
 
@@ -92,7 +92,7 @@
 (defn- ->init-fsm [fsm initial-state]
   (assoc (fsm initial-state nil) :state initial-state))
 
-(defmethod create :entity/fsm [[k {:keys [fsm initial-state]}] eid]
+(defn create [[k {:keys [fsm initial-state]}] eid]
   (swap! eid assoc
          k (->init-fsm (case fsm
                          :fsms/player player-fsm

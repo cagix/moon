@@ -1,9 +1,7 @@
 (ns forge.entity.line-render
-  (:require [forge.app.shape-drawer :as sd]
-            [forge.entity :refer [render-default]]))
+  (:require [forge.app.shape-drawer :as sd]))
 
-(defmethod render-default :entity/line-render
-  [[_ {:keys [thick? end color]}] entity]
+(defn render-default [[_ {:keys [thick? end color]}] entity]
   (let [position (:position entity)]
     (if thick?
       (sd/with-line-width 4

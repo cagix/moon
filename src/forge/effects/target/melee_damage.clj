@@ -1,15 +1,18 @@
 (ns forge.effects.target.melee-damage
-  (:require [clojure.utils :refer [defmethods]]
-            [forge.effect :refer [applicable? handle]]
+  (:require [forge.effect :as effect]
             [forge.entity.stat :as stat]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (stat/->value entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
-(defmethods :effects.target/melee-damage
-  (applicable? [_ {:keys [effect/source] :as ctx}]
-    (applicable? [:effects.target/damage (entity->melee-damage @source)] ctx))
+(defn- damage-effect [entity]
+  [:effects.target/damage (entity->melee-damage entity)])
 
-  (handle [_ {:keys [effect/source] :as ctx}]
-    (handle [:effects.target/damage (entity->melee-damage @source)] ctx)))
+(defn applicable? [_ {:keys [effect/source] :as ctx}]
+  (effect/applicable? (damage-effect @source)
+                      ctx))
+
+(defn handle [_ {:keys [effect/source] :as ctx}]
+  (effect/handle (damage-effect @source)
+                 ctx))

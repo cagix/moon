@@ -1,11 +1,8 @@
 (ns forge.effects.target-entity
   (:require [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [defmethods]]
             [forge.app.db :as db]
             [forge.app.shape-drawer :as sd]
-            [forge.effect :refer [applicable? handle useful? render-effect
-                                  effects-applicable?
-                                  effects-do!]]
+            [forge.effect :refer [effects-applicable? effects-do!]]
             [forge.entity.body :refer [e-direction]]
             [forge.world :refer [spawn-line-render spawn-audiovisual]]))
 
@@ -27,34 +24,33 @@
          (v/scale (e-direction entity target*)
                   maxrange)))
 
-(defmethods :effects/target-entity
-  (applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
-    (and target
-         (effects-applicable? ctx entity-effects)))
+(defn applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
+  (and target
+       (effects-applicable? ctx entity-effects)))
 
-  (useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
-    (in-range? @source @target maxrange))
+(defn useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (in-range? @source @target maxrange))
 
-  (handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx}]
+(defn handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx}]
+  (let [source* @source
+        target* @target]
+    (if (in-range? source* target* maxrange)
+      (do
+       (spawn-line-render {:start (start-point source* target*)
+                           :end (:position target*)
+                           :duration 0.05
+                           :color [1 0 0 0.75]
+                           :thick? true})
+       (effects-do! ctx entity-effects))
+      (spawn-audiovisual (end-point source* target* maxrange)
+                         (db/build :audiovisuals/hit-ground)))))
+
+(defn render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (when target
     (let [source* @source
           target* @target]
-      (if (in-range? source* target* maxrange)
-        (do
-         (spawn-line-render {:start (start-point source* target*)
-                             :end (:position target*)
-                             :duration 0.05
-                             :color [1 0 0 0.75]
-                             :thick? true})
-         (effects-do! ctx entity-effects))
-        (spawn-audiovisual (end-point source* target* maxrange)
-                           (db/build :audiovisuals/hit-ground)))))
-
-  (render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
-    (when target
-      (let [source* @source
-            target* @target]
-        (sd/line (start-point source* target*)
-                 (end-point source* target* maxrange)
-                 (if (in-range? source* target* maxrange)
-                   [1 0 0 0.5]
-                   [1 1 0 0.5]))))))
+      (sd/line (start-point source* target*)
+               (end-point source* target* maxrange)
+               (if (in-range? source* target* maxrange)
+                 [1 0 0 0.5]
+                 [1 1 0 0.5])))))

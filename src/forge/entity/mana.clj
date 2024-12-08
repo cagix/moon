@@ -1,8 +1,7 @@
 (ns forge.entity.mana
-  (:require [forge.entity :refer [->v]]
-            [forge.modifiers :refer [apply-max-modifier]]))
+  (:require [forge.modifiers :refer [apply-max-modifier]]))
 
-(defmethod ->v :entity/mana [[_ v]]
+(defn ->v [[_ v]]
   [v v])
 
 (defn e-mana

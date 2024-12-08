@@ -1,7 +1,5 @@
 (ns forge.entity.state.npc-idle
-  (:require [clojure.utils :refer [defmethods]]
-            [forge.effect :refer [effects-useful?]]
-            [forge.entity :refer [->v tick]]
+  (:require [forge.effect :refer [effects-useful?]]
             [forge.entity.body :refer [e-tile e-direction]]
             [forge.entity.faction :as faction]
             [forge.entity.fsm :refer [send-event]]
@@ -41,12 +39,11 @@
                      (effects-useful? ctx (:skill/effects %))))
        first))
 
-(defmethods :npc-idle
-  (->v [[_ eid]]
-    {:eid eid})
+(defn ->v [[_ eid]]
+  {:eid eid})
 
-  (tick [_ eid]
-    (let [effect-ctx (npc-effect-ctx eid)]
-      (if-let [skill (npc-choose-skill @eid effect-ctx)]
-        (send-event eid :start-action [skill effect-ctx])
-        (send-event eid :movement-direction (or (potential-fields/find-direction eid) [0 0]))))))
+(defn tick [_ eid]
+  (let [effect-ctx (npc-effect-ctx eid)]
+    (if-let [skill (npc-choose-skill @eid effect-ctx)]
+      (send-event eid :start-action [skill effect-ctx])
+      (send-event eid :movement-direction (or (potential-fields/find-direction eid) [0 0])))))

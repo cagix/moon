@@ -2,17 +2,14 @@
   (:require [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :as actor]
-            [clojure.utils :refer [defmethods]]
             [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.vis-ui :refer [window-title-bar? button?]]
             [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.controls :as controls]
-            [forge.entity :refer [->v]]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.inventory :refer [can-pickup-item? pickup-item remove-item]]
             [forge.entity.skills :refer [has-skill? add-skill]]
-            [forge.entity.state :refer [clicked-skillmenu-skill clicked-inventory-cell manual-tick pause-game?]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.skill :as skill]
             [forge.ui.action-bar :as action-bar]
@@ -123,32 +120,31 @@
        [:cursors/no-skill-selected
         (fn [] (denied "No selected skill"))]))))
 
-(defmethods :player-idle
-  (->v [[_ eid]]
-    {:eid eid})
+(defn ->v [[_ eid]]
+  {:eid eid})
 
-  (pause-game? [_]
-    true)
+(defn pause-game? [_]
+  true)
 
-  (manual-tick [[_ {:keys [eid]}]]
-    (if-let [movement-vector (controls/movement-vector)]
-      (send-event eid :movement-input movement-vector)
-      (let [[cursor on-click] (interaction-state eid)]
-        (set-cursor cursor)
-        (when (button-just-pressed? :left)
-          (on-click)))))
+(defn manual-tick [[_ {:keys [eid]}]]
+  (if-let [movement-vector (controls/movement-vector)]
+    (send-event eid :movement-input movement-vector)
+    (let [[cursor on-click] (interaction-state eid)]
+      (set-cursor cursor)
+      (when (button-just-pressed? :left)
+        (on-click)))))
 
-  (clicked-inventory-cell [[_ {:keys [eid]}] cell]
-    ; TODO no else case
-    (when-let [item (get-in (:entity/inventory @eid) cell)]
-      (play-sound "bfxr_takeit")
-      (send-event eid :pickup-item item)
-      (remove-item eid cell)))
+(defn clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  ; TODO no else case
+  (when-let [item (get-in (:entity/inventory @eid) cell)]
+    (play-sound "bfxr_takeit")
+    (send-event eid :pickup-item item)
+    (remove-item eid cell)))
 
-  (clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
-    (let [free-skill-points (:entity/free-skill-points @eid)]
-      ; TODO no else case, no visible free-skill-points
-      (when (and (pos? free-skill-points)
-                 (not (has-skill? @eid skill)))
-        (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-        (swap! eid add-skill skill)))))
+(defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
+  (let [free-skill-points (:entity/free-skill-points @eid)]
+    ; TODO no else case, no visible free-skill-points
+    (when (and (pos? free-skill-points)
+               (not (has-skill? @eid skill)))
+      (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
+      (swap! eid add-skill skill))))

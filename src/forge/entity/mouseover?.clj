@@ -1,6 +1,5 @@
 (ns forge.entity.mouseover?
   (:require [forge.app.shape-drawer :as sd]
-            [forge.entity :refer [render-below]]
             [forge.entity.faction :as faction]
             [forge.world.player :refer [player-eid]]))
 
@@ -9,7 +8,7 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defmethod render-below :entity/mouseover? [_ {:keys [entity/faction] :as entity}]
+(defn render-below [_ {:keys [entity/faction] :as entity}]
   (let [player @player-eid]
     (sd/with-line-width 3
       #(sd/ellipse (:position entity)

@@ -25,13 +25,3 @@
 
 (defsystem render-info [_ entity])
 (defmethod render-info :default [_ entity])
-
-#_(def ^:private entity
-    {:optional [#'->v
-                #'create
-                #'destroy
-                #'tick
-                #'render-below
-                #'render-default
-                #'render-above
-                #'render-info]})
