@@ -176,7 +176,7 @@
 
 (defn- add-methods [system-vars ns-sym k & {:keys [optional?]}]
   (doseq [system-var system-vars
-          :let [method-var (ns-resolve ns-sym (:name (meta system-var)))]]
+          :let [method-var (resolve (symbol (str ns-sym "/" (:name (meta system-var)))))]]
     (assert (or optional? method-var)
             (str "Cannot find required `" (:name (meta system-var)) "` function in " ns-sym))
     (when method-var
