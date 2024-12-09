@@ -2,8 +2,7 @@
   (:require [anvil.effect :as effect]
             [anvil.entity :as entity :refer [send-event]]
             [anvil.world :as world :refer [nearest-entity line-of-sight?]]
-            [forge.skill :as skill]
-            [forge.world.potential-fields :as potential-fields]))
+            [forge.skill :as skill]))
 
 (defn- nearest-enemy [entity]
   (nearest-entity @(get world/grid (entity/tile entity))
@@ -43,4 +42,4 @@
   (let [effect-ctx (npc-effect-ctx eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
       (send-event eid :start-action [skill effect-ctx])
-      (send-event eid :movement-direction (or (potential-fields/find-direction eid) [0 0])))))
+      (send-event eid :movement-direction (or (world/find-direction eid) [0 0])))))
