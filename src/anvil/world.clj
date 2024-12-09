@@ -28,6 +28,7 @@
 (def max-delta-time 0.04)
 
 (declare tiled-map
+         explored-tile-corners
          player-eid
          entity-ids)
 

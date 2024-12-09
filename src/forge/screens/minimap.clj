@@ -2,11 +2,10 @@
   (:require [anvil.app :refer [change-screen]]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
             [anvil.screen :refer [Screen]]
-            [anvil.world :as world]
+            [anvil.world :as world :refer [explored-tile-corners]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :refer [key-just-pressed?]]
-            [forge.world.explored-tile-corners :refer [explored-tile-corners]]))
+            [clojure.gdx.input :refer [key-just-pressed?]]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight

@@ -9,7 +9,7 @@
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
-            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid]]
+            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners]]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -26,6 +26,7 @@
                                    readable-number
                                    dev-mode?
                                    pretty-pst]]
+            [data.grid2d :as grid2d]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]
@@ -43,7 +44,6 @@
                                  active-entities
                                  line-of-sight?]]
             [forge.world.content-grid]
-            [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.grid :refer [world-grid
                                       circle->cells]]
             [forge.world.mouseover-entity :refer [mouseover-entity]]
@@ -367,7 +367,10 @@
 
 (defn- world-init [{:keys [tiled-map start-position]}]
   (bind-root world/tiled-map tiled-map)
-  (forge.world.explored-tile-corners/init tiled-map)
+  (bind-root explored-tile-corners (atom (g2d/create-grid
+                                          (tiled/tm-width  tiled-map)
+                                          (tiled/tm-height tiled-map)
+                                          (constantly false))))
   (forge.world.grid/init                  tiled-map)
   (bind-root world/entity-ids {})
   (forge.world.content-grid/init          tiled-map)
