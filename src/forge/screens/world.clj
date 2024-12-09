@@ -4,7 +4,7 @@
             [anvil.graphics :refer [set-cursor world-camera]]
             [anvil.screen :refer [Screen]]
             [anvil.stage :as stage]
-            [clojure.gdx.graphics :refer [clear-screen delta-time]]
+            [clojure.gdx.graphics :refer [clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
@@ -12,7 +12,6 @@
             [clojure.utils :refer [bind-root ->tile sort-by-order]]
             [forge.world.create :refer [start-world dispose-world]]
             [forge.world.render :refer [render-world]]
-            [forge.world.potential-fields :refer [update-potential-fields!]]
             [forge.world.update :refer [update-world]]))
 
 (defn- windows []
