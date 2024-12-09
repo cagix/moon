@@ -9,7 +9,9 @@
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
-            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid]]
+            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid
+                                           active-entities]]
+            [anvil.world.content-grid :as content-grid]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -26,7 +28,7 @@
                                    readable-number
                                    dev-mode?
                                    pretty-pst]]
-            [data.grid2d :as grid2d]
+            [data.grid2d :as g2d]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]
@@ -42,9 +44,7 @@
             [forge.world :refer [render-z-order
                                  remove-destroyed
                                  spawn-creature
-                                 active-entities
                                  line-of-sight?]]
-            [forge.world.content-grid]
             [forge.world.grid :refer [world-grid
                                       circle->cells
                                       point->entities]]
@@ -374,8 +374,11 @@
                                           (constantly false))))
   (forge.world.grid/init                  tiled-map)
   (bind-root world/entity-ids {})
-  (forge.world.content-grid/init          tiled-map)
-  (forge.world.raycaster/init             tiled-map)
+  (bind-root world/content-grid
+             (content-grid/create {:cell-size 16  ; FIXME global config
+                                   :width  (tiled/tm-width  tiled-map)
+                                   :height (tiled/tm-height tiled-map)}))
+  (forge.world.raycaster/init tiled-map)
   (time-init)
   (bind-root world/player-eid
    (spawn-creature

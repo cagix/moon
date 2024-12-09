@@ -3,12 +3,12 @@
             [anvil.db :as db]
             [anvil.entity]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
-            [anvil.world :refer [timer player-eid all-entities]]
+            [anvil.world :refer [entity-ids timer player-eid all-entities content-grid]]
+            [anvil.world.content-grid :as content-grid]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
             [forge.entity :as component]
-            [forge.world.content-grid :as content-grid]
             [forge.world.grid :as grid]
             [forge.world.raycaster :refer [ray-blocked?]]))
 
@@ -25,7 +25,7 @@
 (defn- add-entity [eid]
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (content-grid/add-entity eid)
+  (content-grid/add-entity content-grid eid)
   (entity-ids-add-entity   eid)
   (grid/add-entity         eid))
 
@@ -35,7 +35,7 @@
   (grid/remove-entity         eid))
 
 (defn entity-position-changed [eid]
-  (content-grid/entity-position-changed eid)
+  (content-grid/entity-position-changed content-grid eid)
   (grid/entity-position-changed         eid))
 
 (defrecord Body [position
@@ -202,9 +202,6 @@
     (remove-entity eid)
     (doseq [component @eid]
       (component/destroy component eid))))
-
-(defn active-entities []
-  (content-grid/active-entities @player-eid))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?

@@ -1,4 +1,5 @@
-(ns anvil.world)
+(ns anvil.world
+  (:require [anvil.world.content-grid :as content-grid]))
 
 (declare ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time)
@@ -40,3 +41,9 @@
 (defn mouseover-entity []
   (and mouseover-eid
        @mouseover-eid))
+
+(declare content-grid)
+
+(defn active-entities []
+  (content-grid/active-entities content-grid
+                                @player-eid))
