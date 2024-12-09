@@ -35,7 +35,6 @@
                                    find-first
                                    index-of]]
             [forge.malli :as malli]
-            [forge.screens.stage :as stage-screen]
             [forge.ui :refer [background-image
                               error-window!]]
             [malli.generator :as mg])
@@ -480,7 +479,7 @@
     table))
 
 (defn create []
-  (stage-screen/create
+  (stage/create
    {:actors [(background-image)
              (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
              (ui-actor {:act (fn []

@@ -30,7 +30,6 @@
             [clojure.utils :refer [bind-root ->tile tile->middle sort-by-order readable-number dev-mode? pretty-pst]]
             [data.grid2d :as g2d]
             [forge.controls :as controls]
-            [forge.screens.stage :as stage-screen]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
@@ -590,5 +589,5 @@
     (world-clear)))
 
 (defn create []
-  (stage-screen/create
+  (stage/create
    {:screen (->WorldScreen)}))

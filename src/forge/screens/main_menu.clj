@@ -3,15 +3,15 @@
             [anvil.db :as db]
             [anvil.graphics :refer [set-cursor]]
             [anvil.screen :refer [Screen]]
+            [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.utils :refer [dev-mode?]]
-            [forge.screens.stage :as stage-screen]
             [forge.screens.world :refer [start-world]]
             [forge.ui :refer [background-image]]))
 
 (defn create []
-  (stage-screen/create
+  (stage/create
    {:actors [(background-image)
              (ui/table
               {:rows

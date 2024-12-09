@@ -4,6 +4,7 @@
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
             [anvil.screen :refer [Screen]]
+            [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
@@ -14,7 +15,6 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [forge.controls :as controls]
-            [forge.screens.stage :as stage-screen]
             [forge.mapgen.modules :as modules]
             [forge.ui :refer [error-window!]]))
 
@@ -161,7 +161,7 @@ direction keys: move")
     (dispose (:tiled-map @current-data))))
 
 (defn create []
-  (stage-screen/create
+  (stage/create
    {:actors [(->generate-map-window world-id)
              (->info-window)]
     :screen (->MapEditorScreen (atom {:tiled-map (tiled/load-tmx-map modules/file)
