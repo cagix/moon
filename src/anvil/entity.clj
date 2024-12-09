@@ -7,7 +7,7 @@
             [anvil.grid :as grid]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.time :refer [timer]]
-            [clojure.component :as component :refer [defsystem]]
+            [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]))
@@ -189,6 +189,9 @@
           {}
           components))
 
+(defsystem create)
+(defmethod create :default [_ eid])
+
 (defn- spawn-entity [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
@@ -200,7 +203,7 @@
                                       create-vs))))]
     (add-entity eid)
     (doseq [component @eid]
-      (component/create component eid))
+      (create component eid))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."

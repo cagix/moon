@@ -30,7 +30,7 @@
 
 (def entity
   {:optional [#'entity/->v
-              #'component/create
+              #'entity/create
               #'component/destroy
               #'component/tick
               #'component/render-below
