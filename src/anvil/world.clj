@@ -1,5 +1,6 @@
 (ns anvil.world
   (:require [anvil.world.content-grid :as content-grid]
+            [anvil.world.raycaster :as raycaster]
             [clojure.gdx.math.shapes :refer [rectangle->tiles
                                              circle->outer-rectangle
                                              rect-contains?
@@ -103,3 +104,13 @@
   (when-let [cell (get grid (mapv int position))]
     (filter #(rect-contains? @% position)
             (:entities @cell))))
+
+(declare raycaster)
+
+(defn ray-blocked? [start target]
+  (raycaster/blocked? raycaster start target))
+
+(defn path-blocked?
+  "path-w in tiles. casts two rays."
+  [start target path-w]
+  (raycaster/path-blocked? raycaster start target path-w))

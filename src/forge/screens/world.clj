@@ -10,7 +10,7 @@
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
             [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid
-                                           active-entities circle->cells point->entities]]
+                                           active-entities circle->cells point->entities ray-blocked?]]
             [anvil.world.content-grid :as content-grid]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
@@ -45,7 +45,7 @@
                                  remove-destroyed
                                  spawn-creature
                                  line-of-sight?]]
-            [forge.world.raycaster :refer [ray-blocked?]]
+            [forge.world.raycaster]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))

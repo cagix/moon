@@ -3,14 +3,13 @@
             [anvil.db :as db]
             [anvil.entity]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
-            [anvil.world :refer [entity-ids timer player-eid all-entities content-grid]]
+            [anvil.world :refer [entity-ids timer player-eid all-entities content-grid ray-blocked?]]
             [anvil.world.content-grid :as content-grid]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
             [forge.entity :as component]
-            [forge.world.grid :as grid]
-            [forge.world.raycaster :refer [ray-blocked?]]))
+            [forge.world.grid :as grid]))
 
 (defn- entity-ids-add-entity [eid]
   (let [id (:entity/id @eid)]
