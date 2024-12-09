@@ -1,5 +1,5 @@
 (ns forge.effects.target.stun
-  (:require [forge.entity.fsm :refer [send-event]]))
+  (:require [anvil.entity :refer [send-event]]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target

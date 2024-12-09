@@ -1,6 +1,7 @@
 (ns forge.screens.world
   (:require [anvil.app :refer [change-screen]]
             [anvil.db :as db]
+            [anvil.entity :as entity]
             [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
                                           sub-image ->image draw-tiled-map gui-viewport-width
                                           gui-mouse-position world-mouse-position world-camera
@@ -27,7 +28,6 @@
             [forge.controls :as controls]
             [forge.entity :as component]
             [forge.entity.hp :refer [hitpoints]]
-            [forge.entity.fsm :refer [e-state-obj]]
             [forge.entity.mana :refer [e-mana]]
             [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]
             [forge.level :refer [generate-level]]
@@ -326,7 +326,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(draw-gui-view (e-state-obj @player-eid))})
+   (ui-actor {:draw #(draw-gui-view (entity/state-obj @player-eid))})
    (player-message/actor)])
 
 (defn- windows []
@@ -419,11 +419,11 @@
   (run! tick-entity entities))
 
 (defn- update-world []
-  (manual-tick (e-state-obj @player-eid))
+  (manual-tick (entity/state-obj @player-eid))
   (forge.world.mouseover-entity/frame-tick) ; this do always so can get debug info even when game not running
   (bind-root paused? (or tick-error
                          (and pausing?
-                              (pause-game? (e-state-obj @player-eid))
+                              (pause-game? (entity/state-obj @player-eid))
                               (not (controls/unpaused?)))))
   (when-not paused?
     (forge.world.time/frame-tick)

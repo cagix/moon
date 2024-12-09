@@ -1,9 +1,9 @@
 (ns forge.entity.state.player-item-on-cursor
   (:require [anvil.audio :refer [play-sound]]
+            [anvil.entity :as entity :refer [send-event]]
             [anvil.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
-            [forge.entity.fsm :refer [e-state-k send-event]]
             [forge.entity.inventory :refer [set-item remove-item stackable? stack-item]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.ui.inventory :refer [valid-slot?]]
@@ -99,7 +99,7 @@
 
 (defn draw-gui-view [[_ {:keys [eid]}]]
   (let [entity @eid]
-    (when (and (= :player-item-on-cursor (e-state-k entity))
+    (when (and (= :player-item-on-cursor (entity/state-k entity))
                (not (world-item?)))
       (draw-centered (:entity/image (:entity/item-on-cursor entity))
                      (gui-mouse-position)))))

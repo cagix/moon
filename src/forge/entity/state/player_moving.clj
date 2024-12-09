@@ -1,6 +1,6 @@
 (ns forge.entity.state.player-moving
-  (:require [forge.controls :as controls]
-            [forge.entity.fsm :refer [send-event]]
+  (:require [anvil.entity :refer [send-event]]
+            [forge.controls :as controls]
             [forge.entity.stat :as stat]
             [forge.world.time :refer [timer stopped?]]))
 

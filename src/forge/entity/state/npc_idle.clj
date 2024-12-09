@@ -1,7 +1,6 @@
 (ns forge.entity.state.npc-idle
-  (:require [anvil.entity :as entity]
+  (:require [anvil.entity :as entity :refer [send-event]]
             [forge.effect :refer [effects-useful?]]
-            [forge.entity.fsm :refer [send-event]]
             [forge.skill :as skill]
             [forge.world :refer [line-of-sight?]]
             [forge.world.grid :refer [nearest-entity world-grid]]

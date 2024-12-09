@@ -1,8 +1,8 @@
 (ns forge.entity.state.active-skill
   (:require [anvil.audio :refer [play-sound]]
+            [anvil.entity :refer [send-event]]
             [anvil.graphics :as g :refer [draw-image]]
             [forge.effect :refer [effects-applicable? effects-do! effects-render]]
-            [forge.entity.fsm :refer [send-event]]
             [forge.entity.mana :refer [pay-mana-cost]]
             [forge.entity.stat :as stat]
             [forge.world :refer [line-of-sight?]]

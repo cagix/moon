@@ -1,6 +1,6 @@
 (ns forge.entity.state.stunned
-  (:require [anvil.graphics :as g]
-            [forge.entity.fsm :refer [send-event]]
+  (:require [anvil.entity :refer [send-event]]
+            [anvil.graphics :as g]
             [forge.world.time :refer [timer stopped?]]))
 
 (defn ->v [[_ eid duration]]

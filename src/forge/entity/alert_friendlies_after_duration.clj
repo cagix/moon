@@ -1,5 +1,5 @@
 (ns forge.entity.alert-friendlies-after-duration
-  (:require [forge.entity.fsm :refer [send-event]]
+  (:require [anvil.entity :refer [send-event]]
             [forge.world.grid :refer [circle->entities]]
             [forge.world.time :refer [stopped?]]))
 

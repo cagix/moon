@@ -1,7 +1,6 @@
 (ns forge.entity.state.npc-sleeping
   (:require [anvil.graphics :refer [draw-text]]
-            [anvil.entity :as entity]
-            [forge.entity.fsm :refer [send-event]]
+            [anvil.entity :as entity :refer [send-event]]
             [forge.entity.stat :as stat]
             [forge.entity.string-effect :as string-effect]
             [forge.world :refer [delayed-alert]]

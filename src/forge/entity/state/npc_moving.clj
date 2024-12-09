@@ -1,5 +1,5 @@
 (ns forge.entity.state.npc-moving
-  (:require [forge.entity.fsm :refer [send-event]]
+  (:require [anvil.entity :refer [send-event]]
             [forge.entity.stat :as stat]
             [forge.world.time :refer [timer stopped?]]))
 

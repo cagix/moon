@@ -1,5 +1,6 @@
 (ns forge.ui.inventory
-  (:require [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
+  (:require [anvil.entity :as entity]
+            [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
             [anvil.ui :refer [set-drawable!
                               ui-widget
                               texture-region-drawable
@@ -13,7 +14,6 @@
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
             [forge.component :refer [info-text]]
-            [forge.entity.fsm :refer [e-state-k e-state-obj]]
             [forge.entity.state :refer [clicked-inventory-cell]]
             [forge.screens.stage :refer [screen-stage]]
             [forge.world.player :refer [player-eid]])
@@ -35,7 +35,7 @@
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
   (g/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
-             (= :player-item-on-cursor (e-state-k player-entity)))
+             (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
@@ -90,7 +90,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (clicked-inventory-cell (e-state-obj @player-eid) cell))))
+                            (clicked-inventory-cell (entity/state-obj @player-eid) cell))))
     stack))
 
 (def empty-inventory
