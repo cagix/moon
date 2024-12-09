@@ -1,137 +1,25 @@
 (ns forge.screens.world
-  (:require [anvil.action-bar :as action-bar]
-            [anvil.app :refer [change-screen]]
-            [anvil.component :refer [info-text]]
+  (:require [anvil.app :refer [change-screen]]
             [anvil.controls :as controls]
-            [anvil.db :as db]
-            [anvil.entity :as entity]
             [anvil.fsm :as fsm]
-            [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
-                                          sub-image ->image draw-tiled-map gui-viewport-width
-                                          gui-mouse-position world-mouse-position world-camera
+            [anvil.graphics :as g :refer [set-cursor draw-on-world-view
+                                          draw-tiled-map
+                                          world-mouse-position world-camera
                                           world-viewport-width world-viewport-height]]
-            [anvil.inventory :as inventory]
-            [anvil.level :refer [generate-level]]
             [anvil.screen :refer [Screen]]
             [anvil.stage :as stage]
             [anvil.system :as system]
-            [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
-            [anvil.val-max :as val-max]
-            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid
-                                           active-entities circle->cells point->entities ray-blocked? line-of-sight? render-z-order spawn-creature]]
-            [anvil.world.content-grid :as content-grid]
-            [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
+            [anvil.world :as world :refer [player-eid explored-tile-corners mouseover-entity mouseover-eid active-entities circle->cells point->entities ray-blocked? line-of-sight? render-z-order]]
+            [clojure.gdx.graphics :refer [clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
-            [clojure.gdx.math.vector2 :as v]
-            [clojure.gdx.scene2d.actor :refer [visible?  set-visible] :as actor]
-            [clojure.gdx.scene2d.group :refer [add-actor! children]]
-            [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.utils.disposable :refer [dispose]]
-            [clojure.vis-ui :as vis]
-            [clojure.utils :refer [bind-root ->tile tile->middle sort-by-order readable-number dev-mode? pretty-pst]]
-            [data.grid2d :as g2d]
-            [forge.ui.player-message :as player-message]
-            [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)))
-
-(declare tick-error
-         paused?)
-
-(defn- render-infostr-on-bar [infostr x y h]
-  (draw-text {:text infostr
-              :x (+ x 75)
-              :y (+ y 2)
-              :up? true}))
-
-(defn- hp-mana-bar []
-  (let [rahmen      (->image "images/rahmen.png")
-        hpcontent   (->image "images/hp.png")
-        manacontent (->image "images/mana.png")
-        x (/ gui-viewport-width 2)
-        [rahmenw rahmenh] (:pixel-dimensions rahmen)
-        y-mana 80 ; action-bar-icon-size
-        y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [x y contentimage minmaxval name]
-                            (draw-image rahmen [x y])
-                            (draw-image (sub-image contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
-                                        [x y])
-                            (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn []
-                       (let [player-entity @player-eid
-                             x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (entity/mana player-entity) "MP")))})))
-
-(defn- menu-item [text on-clicked]
-  (doto (vis/menu-item text)
-    (.addListener (change-listener on-clicked))))
-
-(defn- add-upd-label
-  ([table text-fn icon]
-   (let [icon (image->widget (->image icon) {})
-         label (vis/label "")
-         sub-table (ui/table {:rows [[icon label]]})]
-     (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
-     (.expandX (.right (Table/.add table sub-table)))))
-  ([table text-fn]
-   (let [label (vis/label "")]
-     (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
-     (.expandX (.right (Table/.add table label))))))
-
-(defn- add-update-labels [menu-bar update-labels]
-  (let [table (vis/menu-bar->table menu-bar)]
-    (doseq [{:keys [label update-fn icon]} update-labels]
-      (let [update-fn #(str label ": " (update-fn))]
-        (if icon
-          (add-upd-label table update-fn icon)
-          (add-upd-label table update-fn))))))
-
-(defn- add-menu [menu-bar {:keys [label items]}]
-  (let [app-menu (vis/menu label)]
-    (doseq [{:keys [label on-click]} items]
-      (.addItem app-menu (menu-item label (or on-click (fn [])))))
-    (vis/add-menu menu-bar app-menu)))
-
-(defn- create-menu-bar [menus]
-  (let [menu-bar (vis/menu-bar)]
-    (run! #(add-menu menu-bar %) menus)
-    menu-bar))
-
-(defn- dev-menu* [{:keys [menus update-labels]}]
-  (let [menu-bar (create-menu-bar menus)]
-    (add-update-labels menu-bar update-labels)
-    menu-bar))
-
-(def ^:private disallowed-keys [:entity/skills
-                                #_:entity/fsm
-                                :entity/faction
-                                :active-skill])
-
-(defn- entity-info-window []
-  (let [label (ui/label "")
-        window (ui/window {:title "Info"
-                           :id :entity-info-window
-                           :visible? false
-                           :position [gui-viewport-width 0]
-                           :rows [[{:actor label :expand? true}]]})]
-    ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
-    ; => fix size somehow.
-    (add-actor! window (ui-actor {:act (fn update-label-text []
-                                         ; items then have 2x pretty-name
-                                         #_(.setText (.getTitleLabel window)
-                                                     (if-let [entity (mouseover-entity)]
-                                                       (info-text [:property/pretty-name (:property/pretty-name entity)])
-                                                       "Entity Info"))
-                                         (.setText label
-                                                   (str (when-let [entity (mouseover-entity)]
-                                                          (info-text
-                                                           ; don't use select-keys as it loses Entity record type
-                                                           (apply dissoc entity disallowed-keys)))))
-                                         (.pack window))}))
-    window))
+            [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
+            [clojure.gdx.scene2d.group :refer [children]]
+            [clojure.utils :refer [bind-root ->tile sort-by-order pretty-pst]]
+            [forge.world :refer [start-world dispose-world]]
+            [forge.world.potential-fields :refer [update-potential-fields!
+                                                  factions-iterations]]))
 
 (defn- geom-test []
   (let [position (world-mouse-position)
@@ -236,79 +124,6 @@
 (defn tile-color-setter [light-position]
   (tile-color-setter* (atom {}) light-position))
 
-;"Mouseover-Actor: "
-#_(when-let [actor (stage/mouse-on-actor?)]
-    (str "TRUE - name:" (.getName actor)
-         "id: " (user-object actor)))
-
-(declare start-world)
-
-(defn- dev-menu-bar []
-  (dev-menu*
-   {:menus [{:label "Screens"
-             :items [{:label "Map-editor"
-                      :on-click (partial change-screen :screens/map-editor)}
-                     {:label "Editor"
-                      :on-click (partial change-screen :screens/editor)}
-                     {:label "Main-Menu"
-                      :on-click (partial change-screen :screens/main-menu)}]}
-            {:label "World"
-             :items (for [world (db/build-all :properties/worlds)]
-                      {:label (str "Start " (:property/id world))
-                       :on-click #(start-world world)})}
-            {:label "Help"
-             :items [{:label controls/help-text}]}]
-    :update-labels [{:label "Mouseover-entity id"
-                     :update-fn #(when-let [entity (mouseover-entity)] (:entity/id entity))
-                     :icon "images/mouseover.png"}
-                    {:label "elapsed-time"
-                     :update-fn #(str (readable-number elapsed-time) " seconds")
-                     :icon "images/clock.png"}
-                    {:label "paused?"
-                     :update-fn (fn [] paused?)}
-                    {:label "GUI"
-                     :update-fn gui-mouse-position}
-                    {:label "World"
-                     :update-fn #(mapv int (world-mouse-position))}
-                    {:label "Zoom"
-                     :update-fn #(cam/zoom (world-camera))
-                     :icon "images/zoom.png"}
-                    {:label "FPS"
-                     :update-fn frames-per-second
-                     :icon "images/fps.png"}]}))
-
-(defn- dev-menu []
-  (ui/table {:rows [[{:actor (vis/menu-bar->table (dev-menu-bar))
-                      :expand-x? true
-                      :fill-x? true
-                      :colspan 1}]
-                    [{:actor (doto (ui/label "")
-                               (.setTouchable Touchable/disabled))
-                      :expand? true
-                      :fill-x? true
-                      :fill-y? true}]]
-             :fill-parent? true}))
-
-; FIXME camera/viewport used @ line of sight & raycaster explored tiles
-; fixed player viewing range use & for opponents too
-
-(defn- widgets []
-  [(if dev-mode?
-     (dev-menu)
-     (ui-actor {}))
-   (ui/table {:rows [[{:actor (action-bar/create)
-                       :expand? true
-                       :bottom? true}]]
-              :id :action-bar-table
-              :cell-defaults {:pad 2}
-              :fill-parent? true})
-   (hp-mana-bar)
-   (ui/group {:id :windows
-              :actors [(entity-info-window)
-                       (inventory/create)]})
-   (ui-actor {:draw #(system/draw-gui-view (fsm/state-obj @player-eid))})
-   (player-message/actor)])
-
 (defn- windows []
   (:windows (stage/get)))
 
@@ -321,135 +136,6 @@
   (let [windows (children (windows))]
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
-
-(def ^:private ^:dbg-flag spawn-enemies? true)
-
-(defn- spawn-enemies [tiled-map]
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
-                  {:position position
-                   :creature-id (keyword creature-id)
-                   :components {:entity/fsm {:fsm :fsms/npc
-                                             :initial-state :npc-sleeping}
-                                :entity/faction :evil}})]
-    (spawn-creature (update props :position tile->middle))))
-
-; player-creature needs mana & inventory
-; till then hardcode :creatures/vampire
-(defn- player-entity-props [start-position]
-  {:position (tile->middle start-position)
-   :creature-id :creatures/vampire
-   :components {:entity/fsm {:fsm :fsms/player
-                             :initial-state :player-idle}
-                :entity/faction :good
-                :entity/player? true
-                :entity/free-skill-points 3
-                :entity/clickable {:type :clickable/player}
-                :entity/click-distance-tiles 1.5}})
-
-(defn- time-init []
-  (bind-root elapsed-time 0)
-  (bind-root world-delta nil))
-
-(defn- set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn- init-raycaster* [grid position->blocked?]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
-      (set-arr arr @cell position->blocked?))
-    (bind-root world/raycaster [arr width height])))
-
-(defn init-raycaster [tiled-map]
-  (init-raycaster world/grid world/blocks-vision?))
-
-(defrecord RCell [position
-                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  world/Cell
-  (cell-blocked? [_ z-order]
-    (case movement
-      :none true ; wall
-      :air (case z-order ; water/doodads
-             :z-order/flying false
-             :z-order/ground true)
-      :all false)) ; ground/floor
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied)) ; contains? faster?
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance)))
-
-(defn- ->cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (map->RCell
-   {:position position
-    :middle (tile->middle position)
-    :movement movement
-    :entities #{}
-    :occupied #{}}))
-
-(defn- init-world-grid [tiled-map]
-  (bind-root world/grid (g2d/create-grid
-                         (tiled/tm-width tiled-map)
-                         (tiled/tm-height tiled-map)
-                         (fn [position]
-                           (atom (->cell position
-                                         (case (tiled/movement-property tiled-map position)
-                                           "none" :none
-                                           "air"  :air
-                                           "all"  :all)))))))
-
-(defn- world-init [{:keys [tiled-map start-position]}]
-  (bind-root world/tiled-map tiled-map)
-  (bind-root explored-tile-corners (atom (g2d/create-grid
-                                          (tiled/tm-width  tiled-map)
-                                          (tiled/tm-height tiled-map)
-                                          (constantly false))))
-  (init-world-grid tiled-map)
-  (bind-root world/entity-ids {})
-  (bind-root world/content-grid
-             (content-grid/create {:cell-size 16  ; FIXME global config
-                                   :width  (tiled/tm-width  tiled-map)
-                                   :height (tiled/tm-height tiled-map)}))
-  (init-raycaster tiled-map)
-  (time-init)
-  (bind-root world/player-eid
-   (spawn-creature
-    (player-entity-props start-position)))
-  (when spawn-enemies?
-    (spawn-enemies tiled-map)))
-
-(defn- world-clear [] ; responsibility of screen? we are not creating the tiled-map here ...
-  (when (bound? #'world/tiled-map)
-    (dispose world/tiled-map)))
-
-; depends on world-widgets & world-init ....
-; so widgets comes from world-props .... as components ...
-; and this all goes to world-init?
-(defn start-world [world-props]
-  ; TODO assert is :screens/world
-  (stage/reset (widgets))
-  (world-clear)
-  (bind-root tick-error nil)
-  ; generate level -> creates actually the tiled-map and
-  ; start-position?
-  ; other stuff just depend on it?!
-  (world-init (generate-level world-props)))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
@@ -473,9 +159,9 @@
   (run! tick-entity entities))
 
 (defn- time-update []
-  (let [delta-ms (min (delta-time) max-delta-time)]
-    (alter-var-root #'elapsed-time + delta-ms)
-    (bind-root world-delta delta-ms)))
+  (let [delta-ms (min (delta-time) world/max-delta-time)]
+    (alter-var-root #'world/elapsed-time + delta-ms)
+    (bind-root world/world-delta delta-ms)))
 
 (defn- calculate-eid []
   (let [player @player-eid
@@ -508,18 +194,18 @@
 (defn- update-world []
   (system/manual-tick (fsm/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
-  (bind-root paused? (or tick-error
-                         (and pausing?
-                              (system/pause-game? (fsm/state-obj @player-eid))
-                              (not (controls/unpaused?)))))
-  (when-not paused?
+  (bind-root world/paused? (or world/tick-error
+                               (and pausing?
+                                    (system/pause-game? (fsm/state-obj @player-eid))
+                                    (not (controls/unpaused?)))))
+  (when-not world/paused?
     (time-update)
     (let [entities (active-entities)]
       (update-potential-fields! entities)
       (try (tick-entities entities)
            (catch Throwable t
              (stage/error-window! t)
-             (bind-root tick-error t)))))
+             (bind-root world/tick-error t)))))
   (remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.
 
 (def ^:private ^:dbg-flag show-body-bounds false)
@@ -586,7 +272,7 @@
           (change-screen :screens/minimap)))
 
   (dispose [_]
-    (world-clear)))
+    (dispose-world)))
 
 (defn create []
   (stage/create

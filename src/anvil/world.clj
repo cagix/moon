@@ -487,3 +487,6 @@
                     (occupied-by-other? @own-cell eid)) ; prevent friction 2 move to center
        (when-not (inside-cell? @eid target-cell)
          (v/direction position (:middle @target-cell)))))))
+
+(declare tick-error
+         paused?)
