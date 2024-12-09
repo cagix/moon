@@ -1,6 +1,7 @@
 (ns anvil.world
   (:require [anvil.app :refer [play-sound]]
             [anvil.db :as db]
+            [anvil.faction :as faction]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
             [anvil.system :as system]
             [anvil.world.content-grid :as content-grid]
@@ -433,7 +434,7 @@
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [eid own-cell]
-  (let [faction (entity/enemy @eid)
+  (let [faction (faction/enemy @eid)
         distance-to    #(nearest-entity-distance @% faction)
         nearest-entity #(nearest-entity          @% faction)
         own-dist (distance-to own-cell)

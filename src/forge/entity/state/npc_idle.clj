@@ -1,12 +1,13 @@
 (ns forge.entity.state.npc-idle
   (:require [anvil.effect :as effect]
             [anvil.entity :as entity :refer [send-event]]
+            [anvil.faction :as faction]
             [anvil.world :as world :refer [nearest-entity line-of-sight?]]
             [forge.skill :as skill]))
 
 (defn- nearest-enemy [entity]
   (nearest-entity @(get world/grid (entity/tile entity))
-                  (entity/enemy entity)))
+                  (faction/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
   (let [entity @eid
