@@ -6,7 +6,8 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [draw-image]]
             [anvil.stat :as stat]
-            [anvil.time :refer [stopped? timer finished-ratio]]))
+            [anvil.time :refer [stopped? timer finished-ratio]]
+            [clojure.component :refer [defsystem]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
@@ -63,8 +64,8 @@
 
 (defn tick [[_ {:keys [skill effect-ctx counter]}] eid]
   (cond
-   (not (effect/applicable? (check-update-ctx effect-ctx)
-                            (:skill/effects skill)))
+   (not (effect/some-applicable? (check-update-ctx effect-ctx)
+                                 (:skill/effects skill)))
    (do
     (fsm/event eid :action-done)
     ; TODO some sound ?
@@ -72,10 +73,16 @@
 
    (stopped? counter)
    (do
-    (effect/do! effect-ctx (:skill/effects skill))
+    (effect/do-all! effect-ctx (:skill/effects skill))
     (fsm/event eid :action-done))))
+
+(defsystem render)
+(defmethod render :default [_ _ctx])
+
+(defn- render-effects [ctx effects]
+  (run! #(render % ctx) effects))
 
 (defn render-info [[_ {:keys [skill effect-ctx counter]}] entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effect/render (check-update-ctx effect-ctx) effects)))
+    (render-effects (check-update-ctx effect-ctx) effects)))

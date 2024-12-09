@@ -1,6 +1,9 @@
 (ns forge.install
   (:require [anvil.app :as app]
+            [anvil.effect :as effect]
             [anvil.entity :as entity]
+            [forge.entity.state.active-skill :as active-skill]
+            [forge.entity.state.npc-idle :as npc-idle]
             [anvil.screen :as screen]
             [clojure.component :as component]
             [clojure.utils :refer [install install-component]]
@@ -11,10 +14,10 @@
             [forge.world.update :as world.update]))
 
 (install "forge"
-         {:required [#'component/applicable?
-                     #'component/handle]
-          :optional [#'component/useful?
-                     #'component/render-effect]}
+         {:required [#'effect/applicable?
+                     #'effect/handle]
+          :optional [#'npc-idle/useful?
+                     #'active-skill/render]}
          (map vector [:effects/projectile
                       :effects/spawn
                       :effects/target-all

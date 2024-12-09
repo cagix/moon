@@ -14,7 +14,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effect/applicable? effect-ctx effects))
+   (not (effect/some-applicable? effect-ctx effects))
    :invalid-params
 
    :else

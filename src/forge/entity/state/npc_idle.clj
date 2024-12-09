@@ -6,7 +6,8 @@
             [anvil.faction :as faction]
             [anvil.grid :as grid]
             [anvil.skill :as skill]
-            [anvil.potential-field :as potential-field]))
+            [anvil.potential-field :as potential-field]
+            [clojure.component :refer [defsystem]]))
 
 (defn- nearest-enemy [entity]
   (grid/nearest-entity @(grid/get (body/tile entity))
@@ -29,6 +30,14 @@
    (npc-choose-skill effect-ctx @eid))
  )
 
+(defsystem useful?)
+(defmethod useful? :default [_ _ctx] true)
+
+(defn- some-useful-and-applicable? [ctx effects]
+  (->> effects
+       (effect/filter-applicable? ctx)
+       (some #(useful? % ctx))))
+
 (defn- npc-choose-skill [entity ctx]
   (->> entity
        :entity/skills
@@ -36,7 +45,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect/useful? ctx (:skill/effects %))))
+                     (some-useful-and-applicable? ctx (:skill/effects %))))
        first))
 
 (defn ->v [[_ eid]]

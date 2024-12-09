@@ -46,10 +46,10 @@
       ; at sub-effects
       ; and no more safe - merge
       ; find a way to pass ctx / effect-ctx separate ?
-      (effect/do! {:effect/source source :effect/target target}
-                  entity-effects))))
+      (effect/do-all! {:effect/source source :effect/target target}
+                      entity-effects))))
 
-(defn render-effect [_ {:keys [effect/source]}]
+(defn render [_ {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target* (map deref (creatures-in-los-of-player))]
       (g/line (:position source*) #_(start-point source* target*)

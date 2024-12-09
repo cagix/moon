@@ -13,21 +13,8 @@
        ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
        dispatch)))
 
-(defsystem ->v)
-(defmethod ->v :default [[_ v]]
-  v)
-
-(defsystem create)
-(defmethod create :default [_ eid])
-
-(defsystem destroy)
-(defmethod destroy :default [_ eid])
-
 (defsystem dispose)
 (defmethod dispose :default [_])
-
-(defsystem tick)
-(defmethod tick :default [_ eid])
 
 (defsystem render-below)
 (defmethod render-below :default [_ entity])
@@ -50,12 +37,6 @@
 (defsystem cursor)
 (defmethod cursor :default [_])
 
-(defsystem manual-tick)
-(defmethod manual-tick :default [_])
-
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
-
 (defsystem draw-gui-view)
 (defmethod draw-gui-view :default [_])
 
@@ -64,16 +45,6 @@
 
 (defsystem clicked-skillmenu-skill)
 (defmethod clicked-skillmenu-skill :default [_ skill])
-
-(defsystem handle)
-
-(defsystem applicable?)
-
-(defsystem useful?)
-(defmethod useful? :default [_ _ctx] true)
-
-(defsystem render-effect)
-(defmethod render-effect :default  [_ _ctx])
 
 (defsystem render)
 (defmethod render :default [_])

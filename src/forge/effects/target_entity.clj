@@ -26,7 +26,7 @@
 
 (defn applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
   (and target
-       (effect/applicable? ctx entity-effects)))
+       (seq (effect/filter-applicable? ctx entity-effects))))
 
 (defn useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
   (in-range? @source @target maxrange))
@@ -41,11 +41,11 @@
                             :duration 0.05
                             :color [1 0 0 0.75]
                             :thick? true})
-       (effect/do! ctx entity-effects))
+       (effect/do-all! ctx entity-effects))
       (entity/audiovisual (end-point source* target* maxrange)
                           (db/build :audiovisuals/hit-ground)))))
 
-(defn render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+(defn render [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
   (when target
     (let [source* @source
           target* @target]
