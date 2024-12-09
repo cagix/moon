@@ -34,3 +34,9 @@
 
 (defn all-entities []
   (vals entity-ids))
+
+(def mouseover-eid nil)
+
+(defn mouseover-entity []
+  (and mouseover-eid
+       @mouseover-eid))

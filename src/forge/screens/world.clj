@@ -9,7 +9,7 @@
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
-            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners]]
+            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid]]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -33,7 +33,8 @@
             [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]
             [forge.level :refer [generate-level]]
             [forge.screens.stage :as stage :refer [screen-stage
-                                                   reset-stage]]
+                                                   reset-stage
+                                                   mouse-on-actor?]]
             [forge.ui :refer [error-window!]]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
@@ -45,8 +46,8 @@
                                  line-of-sight?]]
             [forge.world.content-grid]
             [forge.world.grid :refer [world-grid
-                                      circle->cells]]
-            [forge.world.mouseover-entity :refer [mouseover-entity]]
+                                      circle->cells
+                                      point->entities]]
             [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -425,9 +426,30 @@
     (alter-var-root #'elapsed-time + delta-ms)
     (bind-root world-delta delta-ms)))
 
+(defn- calculate-eid []
+  (let [player @player-eid
+        hits (remove #(= (:z-order @%) :z-order/effect)
+                     (point->entities
+                      (world-mouse-position)))]
+    (->> render-z-order
+         (sort-by-order hits #(:z-order @%))
+         reverse
+         (filter #(line-of-sight? player @%))
+         first)))
+
+(defn- update-mouseover-entity []
+  (let [new-eid (if (mouse-on-actor?)
+                  nil
+                  (calculate-eid))]
+    (when mouseover-eid
+      (swap! mouseover-eid dissoc :entity/mouseover?))
+    (when new-eid
+      (swap! new-eid assoc :entity/mouseover? true))
+    (bind-root mouseover-eid new-eid)))
+
 (defn- update-world []
   (manual-tick (entity/state-obj @player-eid))
-  (forge.world.mouseover-entity/frame-tick) ; this do always so can get debug info even when game not running
+  (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root paused? (or tick-error
                          (and pausing?
                               (pause-game? (entity/state-obj @player-eid))

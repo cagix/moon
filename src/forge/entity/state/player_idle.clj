@@ -3,7 +3,7 @@
             [anvil.entity :refer [send-event]]
             [anvil.graphics :refer [set-cursor world-mouse-position]]
             [anvil.ui :refer [window-title-bar? button?]]
-            [anvil.world :refer [player-eid]]
+            [anvil.world :refer [player-eid mouseover-eid]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :as actor]
@@ -14,8 +14,7 @@
             [forge.skill :as skill]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
-            [forge.ui.player-message :as player-message]
-            [forge.world.mouseover-entity :refer [mouseover-eid]]))
+            [forge.ui.player-message :as player-message]))
 
 (defn- denied [text]
   (play-sound "bfxr_denied")

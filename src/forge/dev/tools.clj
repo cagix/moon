@@ -3,7 +3,7 @@
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
-            [anvil.world :refer [player-eid]]
+            [anvil.world :refer [player-eid mouseover-entity]]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -11,8 +11,7 @@
             [forge.entity.skills :refer [add-skill]]
             [forge.screens.stage :refer [add-actor]]
             [forge.world :refer [spawn-creature spawn-item]]
-            [forge.world.grid :refer [world-grid]]
-            [forge.world.mouseover-entity :refer [mouseover-entity]])
+            [forge.world.grid :refer [world-grid]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
