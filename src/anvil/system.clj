@@ -5,25 +5,25 @@
 (defmethod ->v :default [[_ v]]
   v)
 
-(defsystem create [_ eid])
+(defsystem create)
 (defmethod create :default [_ eid])
 
-(defsystem destroy [_ eid])
+(defsystem destroy)
 (defmethod destroy :default [_ eid])
 
-(defsystem tick [_ eid])
+(defsystem tick)
 (defmethod tick :default [_ eid])
 
-(defsystem render-below [_ entity])
+(defsystem render-below)
 (defmethod render-below :default [_ entity])
 
-(defsystem render-default [_ entity])
+(defsystem render-default)
 (defmethod render-default :default [_ entity])
 
-(defsystem render-above [_ entity])
+(defsystem render-above)
 (defmethod render-above :default [_ entity])
 
-(defsystem render-info [_ entity])
+(defsystem render-info)
 (defmethod render-info :default [_ entity])
 
 (defsystem enter)
@@ -44,18 +44,18 @@
 (defsystem draw-gui-view [_])
 (defmethod draw-gui-view :default [_])
 
-(defsystem clicked-inventory-cell [_ cell])
+(defsystem clicked-inventory-cell)
 (defmethod clicked-inventory-cell :default [_ cell])
 
-(defsystem clicked-skillmenu-skill [_ skill])
+(defsystem clicked-skillmenu-skill)
 (defmethod clicked-skillmenu-skill :default [_ skill])
 
-(defsystem handle [_ ctx])
+(defsystem handle)
 
-(defsystem applicable? [_ ctx])
+(defsystem applicable?)
 
-(defsystem useful? [_  ctx])
+(defsystem useful?)
 (defmethod useful? :default [_ _ctx] true)
 
-(defsystem render-effect [_  ctx])
+(defsystem render-effect)
 (defmethod render-effect :default  [_ _ctx])

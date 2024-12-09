@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [remove apply])
   (:require [clojure.utils :refer [defsystem defmethods]]))
 
-(defsystem op-apply [_ base-value])
+(defsystem op-apply)
 
 (defsystem op-order)
 
