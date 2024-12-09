@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.screens.editor
   (:require [anvil.app :as app :refer [change-screen play-sound]]
-            [anvil.component :refer [info-text]]
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-height]]
+            [anvil.info :as info]
             [anvil.property :as property]
             [anvil.stage :as stage]
             [anvil.ui :refer [horizontal-separator-cell
@@ -174,7 +174,7 @@
                  (text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui-stack [button top-widget])]
-    (add-tooltip! button #(info-text props))
+    (add-tooltip! button #(info/text props))
     (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
 
@@ -239,7 +239,7 @@
         (let [property (db/build property-id)
               image-widget (image->widget (property/image property)
                                           {:id property-id})]
-          (add-tooltip! image-widget #(info-text property))))
+          (add-tooltip! image-widget #(info/text property))))
       (for [id property-ids]
         (text-button "-" #(redo-rows (disj property-ids id))))])))
 
@@ -278,7 +278,7 @@
          (let [property (db/build property-id)
                image-widget (image->widget (property/image property)
                                            {:id property-id})]
-           (add-tooltip! image-widget #(info-text property))
+           (add-tooltip! image-widget #(info/text property))
            image-widget))]
       [(when property-id
          (text-button "-" #(redo-rows nil)))]])))

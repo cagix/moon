@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.ui.skill-window
-  (:require [anvil.system :as system]))
+  (:require [clojure.component :as component]))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))
@@ -17,8 +17,9 @@
                                                         (:entity/image (db/build id)) ; TODO here anyway taken
                                                         ; => should probably build this window @ game start
                                                         (fn []
-                                                          (system/clicked-skillmenu-skill (fsm/state-obj @player-eid)
-                                                                                          (db/build id))))]]
+                                                          (component/clicked-skillmenu-skill
+                                                           (fsm/state-obj @player-eid)
+                                                           (db/build id))))]]
                          (do
                           (add-tooltip! button #(info/->text (db/build id))) ; TODO no player modifiers applied (see actionbar)
                           button))]

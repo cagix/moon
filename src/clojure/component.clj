@@ -1,4 +1,4 @@
-(ns anvil.system
+(ns clojure.component
   (:refer-clojure :exclude [apply]))
 
 (defn dispatch [[k] & args]

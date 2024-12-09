@@ -1,9 +1,9 @@
 (ns forge.world.render
   (:require [anvil.graphics :as g]
-            [anvil.system :as system]
             [anvil.world :as world :refer [line-of-sight?
                                            explored-tile-corners
                                            ray-blocked?]]
+            [clojure.component :as component]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
@@ -135,10 +135,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               world/render-z-order)
-            system [system/render-below
-                    system/render-default
-                    system/render-above
-                    system/render-info]
+            system [component/render-below
+                    component/render-default
+                    component/render-above
+                    component/render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? player entity))]

@@ -1,17 +1,17 @@
 (ns forge.install
-  (:require [clojure.utils :refer [install install-component]]
-            [anvil.system :as system]
+  (:require [clojure.component :as component]
+            [clojure.utils :refer [install install-component]]
 
             forge.schemas
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves))
 
-(def screen {:optional [#'system/actors
-                        #'system/enter
-                        #'system/exit
-                        #'system/render
-                        #'system/dispose] })
+(def screen {:optional [#'component/actors
+                        #'component/enter
+                        #'component/exit
+                        #'component/render
+                        #'component/dispose] })
 
 (install "forge"
          screen
@@ -23,10 +23,10 @@
                       :screens/world]))
 
 (install "forge"
-         {:optional [#'system/create
-                     #'system/dispose
-                     #'system/render
-                     #'system/resize]}
+         {:optional [#'component/create
+                     #'component/dispose
+                     #'component/render
+                     #'component/resize]}
          (map vector [:app/db
                       :app/asset-manager
                       :app/sprite-batch
@@ -40,10 +40,10 @@
                       :app/screens]))
 
 (install "forge"
-         {:required [#'system/applicable?
-                     #'system/handle]
-          :optional [#'system/useful?
-                     #'system/render-effect]}
+         {:required [#'component/applicable?
+                     #'component/handle]
+          :optional [#'component/useful?
+                     #'component/render-effect]}
          (map vector [:effects/projectile
                       :effects/spawn
                       :effects/target-all
@@ -59,14 +59,14 @@
                       :effects.target/stun]))
 
 (def entity
-  {:optional [#'system/->v
-              #'system/create
-              #'system/destroy
-              #'system/tick
-              #'system/render-below
-              #'system/render-default
-              #'system/render-above
-              #'system/render-info]})
+  {:optional [#'component/->v
+              #'component/create
+              #'component/destroy
+              #'component/tick
+              #'component/render-below
+              #'component/render-default
+              #'component/render-above
+              #'component/render-info]})
 
 (install "forge"
          entity
@@ -92,14 +92,14 @@
 (def entity-state
   (merge-with concat
               entity
-              {:optional [#'system/enter
-                          #'system/exit
-                          #'system/cursor
-                          #'system/pause-game?
-                          #'system/manual-tick
-                          #'system/clicked-inventory-cell
-                          #'system/clicked-skillmenu-skill
-                          #'system/draw-gui-view]}))
+              {:optional [#'component/enter
+                          #'component/exit
+                          #'component/cursor
+                          #'component/pause-game?
+                          #'component/manual-tick
+                          #'component/clicked-inventory-cell
+                          #'component/clicked-skillmenu-skill
+                          #'component/draw-gui-view]}))
 
 (doseq [[ns-sym k] '[[forge.entity.state.active-skill :active-skill]
                      [forge.entity.state.npc-dead :npc-dead]

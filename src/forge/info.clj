@@ -1,11 +1,11 @@
 (ns forge.info
-  (:require [anvil.component :as component :refer [*info-text-entity*]]
-            [anvil.damage :as damage]
+  (:require [anvil.damage :as damage]
             [anvil.hitpoints :as hp]
+            [anvil.info :as info :refer [*info-text-entity*]]
             [anvil.mana :as mana]
             [anvil.stat :as stat]
-            [anvil.system :as system]
             [anvil.world :refer [finished-ratio]]
+            [clojure.component :as component]
             [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str]
@@ -16,7 +16,7 @@
 
 (color/add "PRETTY_NAME" [0.84 0.8 0.52])
 
-(bind-root component/info-color
+(bind-root info/k->colors
            {:property/pretty-name "PRETTY_NAME"
             :entity/modifiers "CYAN"
             :maxrange "LIGHT_GRAY"
@@ -32,7 +32,7 @@
             :entity/species "LIGHT_GRAY"
             :entity/temp-modifier "LIGHT_GRAY"})
 
-(bind-root component/info-text-k-order
+(bind-root info/k-order
            [:property/pretty-name
             :skill/action-time-modifier-key
             :skill/action-time
@@ -53,13 +53,13 @@
             :maxrange
             :entity-effects])
 
-(defmethod system/info :effects.target/convert [_]
+(defmethod component/info :effects.target/convert [_]
   "Converts target to your side.")
 
 (defn- damage-info [{[min max] :damage/min-max}]
   (str min "-" max " damage"))
 
-(defmethod system/info :effects.target/damage [[_ damage]]
+(defmethod component/info :effects.target/damage [[_ damage]]
   (damage-info damage)
   #_(if source
       (let [modified (damage/->value @source damage)]
@@ -69,41 +69,41 @@
       (damage-info damage)) ; property menu no source,modifiers
   )
 
-(defmethod system/info :effects.target/kill [_]
+(defmethod component/info :effects.target/kill [_]
   "Kills target")
 
 ; FIXME no source
-(defmethod system/info :effects.target/melee-damage [_]
+(defmethod component/info :effects.target/melee-damage [_]
   (str "Damage based on entity strength."
        #_(when source
            (str "\n" (damage-info (entity->melee-damage @source))))))
 ; => to entity move
 
-(defmethod system/info :effects.target/spiderweb [_]
+(defmethod component/info :effects.target/spiderweb [_]
   "Spiderweb slows 50% for 5 seconds."
   ; modifiers same like item/modifiers has info-text
   ; counter ?
   )
 
-(defmethod system/info :effects.target/stun [duration]
+(defmethod component/info :effects.target/stun [duration]
   (str "Stuns for " (readable-number duration) " seconds"))
 
-(defmethod system/info :effects/target-all [_]
+(defmethod component/info :effects/target-all [_]
   "All visible targets")
 
-(defmethod system/info :entity/delete-after-duration [counter]
+(defmethod component/info :entity/delete-after-duration [counter]
   (str "Remaining: " (readable-number (finished-ratio counter)) "/1"))
 
-(defmethod system/info :entity/faction [faction]
+(defmethod component/info :entity/faction [faction]
   (str "Faction: " (name faction)))
 
-(defmethod system/info :entity/fsm [[_ fsm]]
+(defmethod component/info :entity/fsm [[_ fsm]]
   (str "State: " (name (:state fsm))))
 
-(defmethod system/info :entity/hp [_]
+(defmethod component/info :entity/hp [_]
   (str "Hitpoints: " (hp/->value *info-text-entity*)))
 
-(defmethod system/info :entity/mana [_]
+(defmethod component/info :entity/mana [_]
   (str "Mana: " (mana/->value *info-text-entity*)))
 
 (defn- +? [n]
@@ -112,10 +112,10 @@
     1.0 "+"
     -1.0 ""))
 
-(defmethod system/value-text :op/inc [[_ value]]
+(defmethod component/value-text :op/inc [[_ value]]
   (str value))
 
-(defmethod system/value-text :op/mult [[_ value]]
+(defmethod component/value-text :op/mult [[_ value]]
   (str value "%"))
 
 (defn- ops-info [ops k]
@@ -123,51 +123,51 @@
             (keep
              (fn [{v 1 :as op}]
                (when-not (zero? v)
-                 (str (+? v) (system/value-text op) " " (k->pretty-name k))))
-             (sort-by system/order ops))))
+                 (str (+? v) (component/value-text op) " " (k->pretty-name k))))
+             (sort-by component/order ops))))
 
-(defmethod system/info :entity/modifiers [[_ mods]]
+(defmethod component/info :entity/modifiers [[_ mods]]
   (when (seq mods)
     (str/join "\n" (keep (fn [[k ops]]
                            (ops-info ops k)) mods))))
 
-#_(defmethod system/info [skills]
+#_(defmethod component/info [skills]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))
 
-(defmethod system/info :entity/species [[_ species]]
+(defmethod component/info :entity/species [[_ species]]
   (str "Creature - " (str/capitalize (name species))))
 
-(defmethod system/info :entity/temp-modifier [[_ {:keys [counter]}]]
+(defmethod component/info :entity/temp-modifier [[_ {:keys [counter]}]]
   (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))
 
-(defmethod system/info :property/pretty-name [[_ v]] v)
-(defmethod system/info :maxrange             [[_ v]] v)
+(defmethod component/info :property/pretty-name [[_ v]] v)
+(defmethod component/info :maxrange             [[_ v]] v)
 
-(defmethod system/info :creature/level [[_ v]]
+(defmethod component/info :creature/level [[_ v]]
   (str "Level: " v))
 
-(defmethod system/info :projectile/piercing? [_] ; TODO also when false ?!
+(defmethod component/info :projectile/piercing? [_] ; TODO also when false ?!
   "Piercing")
 
-(defmethod system/info :skill/action-time-modifier-key [[_ v]]
+(defmethod component/info :skill/action-time-modifier-key [[_ v]]
   (case v
     :entity/cast-speed "Spell"
     :entity/attack-speed "Attack"))
 
-(defmethod system/info :skill/action-time [[_ v]]
+(defmethod component/info :skill/action-time [[_ v]]
   (str "Action-Time: " (readable-number v) " seconds"))
 
-(defmethod system/info :skill/cooldown [[_ v]]
+(defmethod component/info :skill/cooldown [[_ v]]
   (when-not (zero? v)
     (str "Cooldown: " (readable-number v) " seconds")))
 
-(defmethod system/info :skill/cost [[_ v]]
+(defmethod component/info :skill/cost [[_ v]]
   (when-not (zero? v)
     (str "Cost: " v " Mana")))
 
-(defmethod system/info ::stat [[k _]]
+(defmethod component/info ::stat [[k _]]
   (str (k->pretty-name k) ": " (stat/->value *info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)

@@ -1,6 +1,6 @@
 (ns anvil.skills
   (:refer-clojure :exclude [contains? remove])
-  (:require [anvil.component :refer [info-text]]
+  (:require [anvil.info :as info]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor image-button add-tooltip!] :as ui]
             [clojure.gdx.scene2d.actor :refer [user-object]]
@@ -27,7 +27,7 @@
   (let [{:keys [horizontal-group button-group]} (get-action-bar)
         button (image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
-    (add-tooltip! button #(info-text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (add-actor! horizontal-group button)
     (ButtonGroup/.add button-group button)
     nil))

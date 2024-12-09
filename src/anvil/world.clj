@@ -5,7 +5,7 @@
             [anvil.faction :as faction]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
             [anvil.raycaster :as raycaster]
-            [anvil.system :as system]
+            [clojure.component :as component]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.shapes :refer [rectangle->tiles
                                              circle->outer-rectangle
@@ -282,7 +282,7 @@
 
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
-            (assoc m k (system/->v [k v])))
+            (assoc m k (component/->v [k v])))
           {}
           components))
 
@@ -297,7 +297,7 @@
                                       create-vs))))]
     (add-entity eid)
     (doseq [component @eid]
-      (system/create component eid))
+      (component/create component eid))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."

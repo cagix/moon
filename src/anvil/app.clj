@@ -1,6 +1,6 @@
 (ns anvil.app
-  (:require [anvil.system :as system]
-            [clojure.awt :as awt]
+  (:require [clojure.awt :as awt]
+            [clojure.component :as component]
             [clojure.gdx.app :as app]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
@@ -13,10 +13,10 @@
   (when shared-library-loader/mac?
     (lwjgl/configure-glfw-for-mac))
   (lwjgl3/app (reify lwjgl3/Listener
-                (create  [_]     (run! system/create          components))
-                (dispose [_]     (run! system/dispose         components))
-                (render  [_]     (run! system/render          components))
-                (resize  [_ w h] (run! #(system/resize % w h) components)))
+                (create  [_]     (run! component/create          components))
+                (dispose [_]     (run! component/dispose         components))
+                (render  [_]     (run! component/render          components))
+                (resize  [_ w h] (run! #(component/resize % w h) components)))
               (lwjgl3/config (:lwjgl3 config))))
 
 (def exit app/exit)
@@ -35,11 +35,11 @@
   "Calls `exit` on the current-screen and `enter` on the new screen."
   [new-k]
   (when-let [screen (current-screen)]
-    (system/exit screen))
+    (component/exit screen))
   (let [screen (new-k screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root current-screen-key new-k)
-    (system/enter screen)))
+    (component/enter screen)))
 
 (declare assets)
 

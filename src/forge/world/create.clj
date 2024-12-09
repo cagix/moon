@@ -1,21 +1,21 @@
 (ns forge.world.create
   (:require [anvil.app :as app]
-            [anvil.component :refer [info-text]]
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
             [anvil.hitpoints :as hp]
+            [anvil.info :as info]
             [anvil.inventory :as inventory]
             [anvil.level :refer [generate-level]]
             [anvil.mana :as mana]
             [anvil.skills :as skills]
             [anvil.stage :as stage]
-            [anvil.system :as system]
             [anvil.ui :refer [ui-actor] :as ui]
             [anvil.val-max :as val-max]
             [anvil.world :as world :refer [mouseover-entity]]
+            [clojure.component :as component]
             [clojure.gdx.graphics :refer [frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
@@ -112,11 +112,11 @@
                                          ; items then have 2x pretty-name
                                          #_(.setText (.getTitleLabel window)
                                                      (if-let [entity (mouseover-entity)]
-                                                       (info-text [:property/pretty-name (:property/pretty-name entity)])
+                                                       (info/text [:property/pretty-name (:property/pretty-name entity)])
                                                        "Entity Info"))
                                          (.setText label
                                                    (str (when-let [entity (mouseover-entity)]
-                                                          (info-text
+                                                          (info/text
                                                            ; don't use select-keys as it loses Entity record type
                                                            (apply dissoc entity disallowed-keys)))))
                                          (.pack window))}))
@@ -190,7 +190,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(system/draw-gui-view (fsm/state-obj @world/player-eid))})
+   (ui-actor {:draw #(component/draw-gui-view (fsm/state-obj @world/player-eid))})
    (player-message/actor)])
 
 (defn dispose-world []

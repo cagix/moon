@@ -3,8 +3,8 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.stage :as stage]
-            [anvil.system :as system]
             [anvil.world :as world :refer [player-eid explored-tile-corners mouseover-entity mouseover-eid active-entities circle->cells point->entities line-of-sight? render-z-order]]
+            [clojure.component :as component]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.utils :refer [bind-root sort-by-order]]
             [forge.world.potential-fields :refer [update-potential-fields!]]))
@@ -21,7 +21,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (system/tick [k v] eid))
+            (component/tick [k v] eid))
           (catch Throwable t
             (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t
@@ -61,14 +61,14 @@
                       (world/all-entities))]
     (world/remove-entity eid)
     (doseq [component @eid]
-      (system/destroy component eid))))
+      (component/destroy component eid))))
 
 (defn update-world []
-  (system/manual-tick (fsm/state-obj @player-eid))
+  (component/manual-tick (fsm/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root world/paused? (or world/tick-error
                                (and pausing?
-                                    (system/pause-game? (fsm/state-obj @player-eid))
+                                    (component/pause-game? (fsm/state-obj @player-eid))
                                     (not (controls/unpaused?)))))
   (when-not world/paused?
     (time-update)

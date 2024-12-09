@@ -1,6 +1,6 @@
 (ns forge.effects.target.melee-damage
   (:require [anvil.stat :as stat]
-            [anvil.system :as system]))
+            [clojure.component :as component]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (stat/->value entity :entity/strength) 0)]
@@ -10,9 +10,9 @@
   [:effects.target/damage (entity->melee-damage entity)])
 
 (defn applicable? [_ {:keys [effect/source] :as ctx}]
-  (system/applicable? (damage-effect @source)
-                      ctx))
+  (component/applicable? (damage-effect @source)
+                         ctx))
 
 (defn handle [_ {:keys [effect/source] :as ctx}]
-  (system/handle (damage-effect @source)
-                 ctx))
+  (component/handle (damage-effect @source)
+                    ctx))

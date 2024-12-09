@@ -1,22 +1,22 @@
 (ns forge.screens.stage
-  (:require [anvil.system :as system]
+  (:require [clojure.component :as component]
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]))
 
 (defn enter [[_ {:keys [stage sub-screen]}]]
   (input/set-processor stage)
-  (system/enter sub-screen))
+  (component/enter sub-screen))
 
 (defn exit [[_ {:keys [stage sub-screen]}]]
   (input/set-processor nil)
-  (system/exit sub-screen))
+  (component/exit sub-screen))
 
 (defn render [[_ {:keys [stage sub-screen]}]]
   (stage/act stage)
-  (system/render sub-screen)
+  (component/render sub-screen)
   (stage/draw stage))
 
 (defn dispose [[_ {:keys [stage sub-screen]}]]
   (disposable/dispose stage)
-  (system/dispose sub-screen))
+  (component/dispose sub-screen))

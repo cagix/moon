@@ -1,10 +1,9 @@
 (ns anvil.inventory
-  (:require [anvil.component :refer [info-text]]
-            [anvil.fsm :as fsm]
+  (:require [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
+            [anvil.info :as info]
             [anvil.modifiers :as mods]
             [anvil.stage :as stage]
-            [anvil.system :as system]
             [anvil.ui :refer [set-drawable!
                               ui-widget
                               texture-region-drawable
@@ -14,6 +13,7 @@
                               remove-tooltip!]
              :as ui]
             [anvil.world :refer [player-eid]]
+            [clojure.component :as component]
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
@@ -92,7 +92,9 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (system/clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
+                            (component/clicked-inventory-cell
+                             (fsm/state-obj @player-eid)
+                             cell))))
     stack))
 
 (def empty-inventory
@@ -159,7 +161,7 @@
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (scene2d.utils/set-min-size! drawable cell-size)
     (set-drawable! image-widget drawable)
-    (add-tooltip! cell-widget #(info-text item))))
+    (add-tooltip! cell-widget #(info/text item))))
 
 (defn- remove-item-from-widget [cell]
   (let [cell-widget (cell-widget cell)

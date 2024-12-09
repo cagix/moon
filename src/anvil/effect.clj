@@ -1,18 +1,18 @@
 (ns anvil.effect
-  (:require [anvil.system :as system]))
+  (:require [clojure.component :as component]))
 
 (defn applicable? [ctx effects]
-  (seq (filter #(system/applicable? % ctx) effects)))
+  (seq (filter #(component/applicable? % ctx) effects)))
 
 (defn useful? [ctx effects]
   (->> effects
        (applicable? ctx)
-       (some #(system/useful? % ctx))))
+       (some #(component/useful? % ctx))))
 
 (defn do! [ctx effects]
-  (run! #(system/handle % ctx)
+  (run! #(component/handle % ctx)
         (applicable? ctx effects)))
 
 (defn render [ctx effects]
-  (run! #(system/render-effect % ctx)
+  (run! #(component/render-effect % ctx)
         effects))

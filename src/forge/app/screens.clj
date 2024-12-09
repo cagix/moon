@@ -1,7 +1,7 @@
 (ns forge.app.screens
   (:require [anvil.app :as app]
             [anvil.graphics :as g]
-            [anvil.system :as system]
+            [clojure.component :as component]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.utils :refer [bind-root]]))
 
@@ -11,12 +11,12 @@
                    (for [k screens]
                      [k [:screens/stage {:stage (stage/create g/gui-viewport
                                                               g/batch
-                                                              (system/actors [k]))
+                                                              (component/actors [k]))
                                          :sub-screen [k]}]])))
   (app/change-screen first-k))
 
 (defn dispose [_]
-  (run! system/dispose (vals app/screens)))
+  (run! component/dispose (vals app/screens)))
 
 (defn render [_]
-  (system/render (app/current-screen)))
+  (component/render (app/current-screen)))
