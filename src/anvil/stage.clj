@@ -3,11 +3,13 @@
   (:require [anvil.app :as app]
             [anvil.graphics :as g]
             [anvil.screen :as screen]
+            [anvil.ui :as ui]
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.group :refer [find-actor-with-id]]
             [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.utils.disposable :refer [dispose]])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
+            [clojure.gdx.utils.disposable :refer [dispose]]
+            [clojure.utils :refer [pretty-pst with-err-str]])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)))
 
 (defn get []
   (:stage (app/current-screen)))
@@ -61,3 +63,37 @@
                        not-found))))]
     (run! #(.addActor stage %) actors)
     (->StageScreen stage (or screen empty-screen))))
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn show-modal [{:keys [title text button-text on-click]}]
+  (assert (not (::modal (get))))
+  (add-actor
+   (ui/window {:title title
+               :rows [[(ui/label text)]
+                      [(ui/text-button button-text
+                                       (fn []
+                                         (Actor/.remove (::modal (get)))
+                                         (on-click)))]]
+               :id ::modal
+               :modal? true
+               :center-position [(/ g/gui-viewport-width 2)
+                                 (* g/gui-viewport-height (/ 3 4))]
+               :pack? true})))
+
+
+
+(defn error-window! [throwable]
+  (pretty-pst throwable)
+  (add-actor
+   (ui/window {:title "Error"
+               :rows [[(ui/label (binding [*print-level* 3]
+                                   (with-err-str
+                                     (clojure.repl/pst throwable))))]]
+               :modal? true
+               :close-button? true
+               :close-on-escape? true
+               :center? true
+               :pack? true})))

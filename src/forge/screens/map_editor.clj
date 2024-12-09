@@ -15,8 +15,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [forge.controls :as controls]
-            [forge.mapgen.modules :as modules]
-            [forge.ui :refer [error-window!]]))
+            [forge.mapgen.modules :as modules]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
@@ -132,7 +131,7 @@ direction keys: move")
               :rows [[(ui/label (with-out-str (pprint (db/build level-id))))]
                      [(text-button "Generate" #(try (generate-screen-ctx (db/build level-id))
                                                     (catch Throwable t
-                                                      (error-window! t)
+                                                      (stage/error-window! t)
                                                       (println t))))]]
               :pack? true}))
 

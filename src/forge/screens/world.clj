@@ -10,7 +10,6 @@
             [anvil.level :refer [generate-level]]
             [anvil.screen :refer [Screen]]
             [anvil.stage :as stage]
-            [forge.ui :refer [error-window!]]
             [anvil.system :as system]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
@@ -518,7 +517,7 @@
       (update-potential-fields! entities)
       (try (tick-entities entities)
            (catch Throwable t
-             (error-window! t)
+             (stage/error-window! t)
              (bind-root tick-error t)))))
   (remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.
 

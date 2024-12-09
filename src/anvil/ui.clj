@@ -1,5 +1,6 @@
 (ns anvil.ui
-  (:require [clojure.gdx.graphics :as g]
+  (:require [anvil.graphics :as g]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :refer [find-actor-with-id
                                                add-actor!]]
@@ -227,3 +228,9 @@
 
 (defn t-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
+
+(defn background-image []
+  (ui/image->widget (g/->image "images/moon_background.png")
+                    {:fill-parent? true
+                     :scaling :fill
+                     :align :center}))

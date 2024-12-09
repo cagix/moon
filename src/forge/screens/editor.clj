@@ -35,8 +35,6 @@
                                    find-first
                                    index-of]]
             [forge.malli :as malli]
-            [forge.ui :refer [background-image
-                              error-window!]]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
@@ -78,7 +76,7 @@
   #(try (f)
         (Actor/.remove window)
         (catch Throwable t
-          (error-window! t))))
+          (stage/error-window! t))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -480,7 +478,7 @@
 
 (defn create []
   (stage/create
-   {:actors [(background-image)
+   {:actors [(ui/background-image)
              (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
              (ui-actor {:act (fn []
                                (when (key-just-pressed? :shift-left)

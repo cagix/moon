@@ -7,12 +7,11 @@
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.utils :refer [dev-mode?]]
-            [forge.screens.world :refer [start-world]]
-            [forge.ui :refer [background-image]]))
+            [forge.screens.world :refer [start-world]]))
 
 (defn create []
   (stage/create
-   {:actors [(background-image)
+   {:actors [(ui/background-image)
              (ui/table
               {:rows
                (remove nil?

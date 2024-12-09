@@ -1,6 +1,6 @@
 (ns forge.entity.state.player-dead
   (:require [anvil.app :refer [change-screen play-sound]]
-            [forge.ui :refer [show-modal]]))
+            [anvil.stage :refer [show-modal]]))
 
 (defn cursor [_]
   :cursors/black-x)
