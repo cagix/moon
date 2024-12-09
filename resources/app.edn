@@ -3,8 +3,8 @@
           :fps 60
           :width 1440
           :height 900}
- :components [[:app/db {:schema "schema.edn" :properties "properties.edn"}]
-              [:app/asset-manager "resources/"]
+ :components [[:anvil.app/assets "resources/"]
+              [:app/db {:schema "schema.edn" :properties "properties.edn"}]
               [:app/sprite-batch]
               [:app/shape-drawer]
               [:app/default-font {:file "fonts/exocet/films.EXL_____.ttf"

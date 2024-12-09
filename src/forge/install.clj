@@ -17,7 +17,6 @@
 (install "forge"
          app
          (map vector [:app/db
-                      :app/asset-manager
                       :app/sprite-batch
                       :app/shape-drawer
                       :app/default-font

@@ -1,11 +1,12 @@
 (ns anvil.app
-  (:require [clojure.awt :as awt]
+  (:require [anvil.assets :as assets]
+            [clojure.awt :as awt]
             [clojure.component :refer [defsystem] :as component]
             [clojure.gdx.app :as app]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl :as lwjgl]
-            [clojure.utils :refer [bind-root]]))
+            [clojure.utils :refer [bind-root defmethods]]))
 
 (defsystem create)
 
@@ -17,6 +18,10 @@
 
 (defsystem resize)
 (defmethod resize :default [_ w h])
+
+(defmethods ::assets
+  (create [[_ folder]] (assets/create folder))
+  (dispose [_]         (assets/dispose)))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)
