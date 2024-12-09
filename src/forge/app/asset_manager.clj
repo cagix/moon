@@ -1,8 +1,8 @@
 (ns forge.app.asset-manager
   (:require [anvil.app :as app]
+            [anvil.files :as files]
             [clojure.string :as str]
             [clojure.gdx.asset-manager :as manager]
-            [clojure.gdx.files :as files]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.utils :refer [bind-root]]))
 
