@@ -1,6 +1,9 @@
 (ns forge.info
   (:require [anvil.component :as component :refer [*info-text-entity*]]
-            [anvil.entity :as entity :refer [hitpoints damage-mods stat-value]]
+            [anvil.damage :as damage]
+            [anvil.hitpoints :as hp]
+            [anvil.mana :as mana]
+            [anvil.stat :as stat]
             [anvil.system :as system]
             [anvil.world :refer [finished-ratio]]
             [clojure.gdx.graphics.color :as color]
@@ -59,7 +62,7 @@
 (defmethod system/info :effects.target/damage [[_ damage]]
   (damage-info damage)
   #_(if source
-      (let [modified (damage-mods @source damage)]
+      (let [modified (damage/->value @source damage)]
         (if (= damage modified)
           (damage-info damage)
           (str (damage-info damage) "\nModified: " (damage/info modified))))
@@ -98,10 +101,10 @@
   (str "State: " (name (:state fsm))))
 
 (defmethod system/info :entity/hp [_]
-  (str "Hitpoints: " (hitpoints *info-text-entity*)))
+  (str "Hitpoints: " (hp/->value *info-text-entity*)))
 
 (defmethod system/info :entity/mana [_]
-  (str "Mana: " (entity/mana *info-text-entity*)))
+  (str "Mana: " (mana/->value *info-text-entity*)))
 
 (defn- +? [n]
   (case (math/signum n)
@@ -165,7 +168,7 @@
     (str "Cost: " v " Mana")))
 
 (defmethod system/info ::stat [[k _]]
-  (str (k->pretty-name k) ": " (stat-value *info-text-entity* k)))
+  (str (k->pretty-name k) ": " (stat/->value *info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)

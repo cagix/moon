@@ -1,13 +1,16 @@
 (ns forge.effects.target.damage
-  (:require [anvil.db :as db]
-            [anvil.entity :as entity :refer [hitpoints damage-mods stat-value]]
+  (:require [anvil.damage :as damage]
+            [anvil.db :as db]
             [anvil.fsm :as fsm]
+            [anvil.hitpoints :as hp]
+            [anvil.stat :as stat]
+            [anvil.string-effect :as string-effect]
             [anvil.world :refer [spawn-audiovisual]]
             [clojure.rand :refer [rand-int-between]]))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (stat-value target* :entity/armor-save) 0)
-          (or (stat-value source* :entity/armor-pierce) 0))
+  (max (- (or (stat/->value target* :entity/armor-save) 0)
+          (or (stat/->value source* :entity/armor-pierce) 0))
        0))
 
 (comment
@@ -27,20 +30,20 @@
 (defn handle [[_ damage] {:keys [effect/source effect/target]}]
   (let [source* @source
         target* @target
-        hp (hitpoints target*)]
+        hp (hp/->value target*)]
     (cond
      (zero? (hp 0))
      nil
 
      (armor-saves? source* target*)
-     (swap! target entity/add-string-effect "[WHITE]ARMOR")
+     (swap! target string-effect/add "[WHITE]ARMOR")
 
      :else
-     (let [min-max (:damage/min-max (damage-mods source* target* damage))
+     (let [min-max (:damage/min-max (damage/->value source* target* damage))
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
        (spawn-audiovisual (:position target*)
                           (db/build :audiovisuals/damage))
        (fsm/event target (if (zero? new-hp-val) :kill :alert))
-       (swap! target entity/add-string-effect (str "[RED]" dmg-amount "[]"))))))
+       (swap! target string-effect/add (str "[RED]" dmg-amount "[]"))))))

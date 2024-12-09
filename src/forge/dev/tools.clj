@@ -1,8 +1,8 @@
 (ns forge.dev.tools
   (:require [anvil.app :refer [post-runnable]]
             [anvil.db :as db]
-            [anvil.entity :as entity]
             [anvil.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
+            [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
             [anvil.world :refer [player-eid mouseover-entity spawn-creature spawn-item] :as world]
@@ -69,7 +69,7 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! player-eid entity/add-skill (db/build skill-id))))
+   (swap! player-eid skills/add (db/build skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable

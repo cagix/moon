@@ -1,9 +1,9 @@
 (ns forge.entity.state.npc-idle
   (:require [anvil.body :as body]
             [anvil.effect :as effect]
-            [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.faction :as faction]
+            [anvil.skill :as skill]
             [anvil.world :as world :refer [nearest-entity line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
@@ -33,7 +33,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
+       (filter #(and (= :usable (skill/usable-state entity % ctx))
                      (effect/useful? ctx (:skill/effects %))))
        first))
 

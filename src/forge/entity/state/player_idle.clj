@@ -2,11 +2,12 @@
   (:require [anvil.action-bar :as action-bar]
             [anvil.app :refer [play-sound]]
             [anvil.controls :as controls]
-            [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [set-cursor world-mouse-position]]
             [anvil.inventory :as inventory]
+            [anvil.skills :as skills]
             [anvil.stage :as stage :refer [mouse-on-actor?]]
+            [anvil.skill :as skill]
             [anvil.ui :refer [window-title-bar? button?]]
             [anvil.world :refer [player-eid mouseover-eid]]
             [clojure.gdx.input :refer [button-just-pressed?]]
@@ -30,11 +31,11 @@
       (swap! eid assoc :entity/destroyed? true)
       (fsm/event player-eid :pickup-item item))
 
-     (entity/can-pickup-item? @player-eid item)
+     (inventory/can-pickup-item? @player-eid item)
      (do
       (play-sound "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/pickup-item player-eid item))
+      (inventory/pickup-item player-eid item))
 
      :else
      (do
@@ -93,7 +94,7 @@
      (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
-             state (entity/skill-usable-state entity skill effect-ctx)]
+             state (skill/usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
@@ -134,12 +135,12 @@
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play-sound "bfxr_takeit")
     (fsm/event eid :pickup-item item)
-    (entity/remove-item eid cell)))
+    (inventory/remove-item eid cell)))
 
 (defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
-               (not (entity/has-skill? @eid skill)))
+               (not (skills/contains? @eid skill)))
       (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-      (swap! eid entity/add-skill skill))))
+      (swap! eid skills/add skill))))

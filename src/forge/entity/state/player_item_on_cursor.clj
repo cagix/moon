@@ -1,9 +1,8 @@
 (ns forge.entity.state.player-item-on-cursor
   (:require [anvil.app :refer [play-sound]]
-            [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
-            [anvil.inventory :refer [valid-slot?]]
+            [anvil.inventory :as inventory]
             [anvil.stage :refer [mouse-on-actor?]]
             [anvil.world :refer [spawn-item]]
             [clojure.gdx.input :refer [button-just-pressed?]]
@@ -17,32 +16,32 @@
     (cond
      ; PUT ITEM IN EMPTY CELL
      (and (not item-in-cell)
-          (valid-slot? cell item-on-cursor))
+          (inventory/valid-slot? cell item-on-cursor))
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/set-item eid cell item-on-cursor)
+      (inventory/set-item eid cell item-on-cursor)
       (fsm/event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
-          (entity/stackable? item-in-cell item-on-cursor))
+          (inventory/stackable? item-in-cell item-on-cursor))
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/stack-item eid cell item-on-cursor)
+      (inventory/stack-item eid cell item-on-cursor)
       (fsm/event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
-          (valid-slot? cell item-on-cursor))
+          (inventory/valid-slot? cell item-on-cursor))
      (do
       (play-sound "bfxr_itemput")
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/remove-item eid cell)
-      (entity/set-item eid cell item-on-cursor)
+      (inventory/remove-item eid cell)
+      (inventory/set-item eid cell item-on-cursor)
       (fsm/event eid :dropped-item)
       (fsm/event eid :pickup-item item-in-cell)))))
 

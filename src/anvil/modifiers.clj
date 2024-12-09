@@ -31,4 +31,3 @@
   (let [val-max (update val-max 0 ->value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
-

@@ -1,6 +1,6 @@
 (ns forge.entity.hp
-  (:require [anvil.entity :as entity]
-            [anvil.graphics :as g]
+  (:require [anvil.graphics :as g]
+            [anvil.hitpoints :as hp]
             [anvil.val-max :as val-max]
             [clojure.gdx.graphics.color :as color]))
 
@@ -41,6 +41,6 @@
   [v v])
 
 (defn render-info [_ entity]
-  (let [ratio (val-max/ratio (entity/hitpoints entity))]
+  (let [ratio (val-max/ratio (hp/->value entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))

@@ -5,11 +5,12 @@
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
+            [anvil.hitpoints :as hp]
             [anvil.inventory :as inventory]
             [anvil.level :refer [generate-level]]
+            [anvil.mana :as mana]
             [anvil.stage :as stage]
             [anvil.system :as system]
             [anvil.ui :refer [ui-actor] :as ui]
@@ -50,8 +51,8 @@
     (ui-actor {:draw (fn []
                        (let [player-entity @world/player-eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (entity/mana player-entity) "MP")))})))
+                         (render-hpmana-bar x y-hp   hpcontent   (hp/->value   player-entity) "HP")
+                         (render-hpmana-bar x y-mana manacontent (mana/->value player-entity) "MP")))})))
 
 (defn- menu-item [text on-clicked]
   (doto (vis/menu-item text)

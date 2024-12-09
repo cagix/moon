@@ -1,14 +1,15 @@
 (ns forge.entity.state.active-skill
   (:require [anvil.app :refer [play-sound]]
             [anvil.effect :as effect]
-            [anvil.entity :refer [stat-value pay-mana-cost]]
+            [anvil.mana :as mana]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [draw-image]]
+            [anvil.stat :as stat]
             [anvil.world :refer [stopped? timer finished-ratio line-of-sight?]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (stat-value entity (:skill/action-time-modifier-key skill))
+     (or (stat/->value entity (:skill/action-time-modifier-key skill))
          1)))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
@@ -57,7 +58,7 @@
            (timer (:skill/cooldown skill))))
   (when (and (:skill/cost skill)
              (not (zero? (:skill/cost skill))))
-    (swap! eid pay-mana-cost (:skill/cost skill))))
+    (swap! eid mana/pay-cost (:skill/cost skill))))
 
 (defn tick [[_ {:keys [skill effect-ctx counter]}] eid]
   (cond

@@ -1,9 +1,9 @@
 (ns forge.effects.target.melee-damage
-  (:require [anvil.entity :refer [stat-value]]
+  (:require [anvil.stat :as stat]
             [anvil.system :as system]))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (stat-value entity :entity/strength) 0)]
+  (let [strength (or (stat/->value entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defn- damage-effect [entity]

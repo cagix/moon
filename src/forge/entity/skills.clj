@@ -1,11 +1,11 @@
 (ns forge.entity.skills
-  (:require [anvil.entity :as entity]
+  (:require [anvil.skills :as skills]
             [anvil.world :refer [stopped?]]))
 
 (defn create [[k skills] eid]
   (swap! eid assoc k nil)
   (doseq [skill skills]
-    (swap! eid entity/add-skill skill)))
+    (swap! eid skills/add skill)))
 
 (defn tick [[k skills] eid]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
