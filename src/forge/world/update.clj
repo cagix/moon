@@ -1,12 +1,13 @@
 (ns forge.world.update
   (:require [anvil.controls :as controls]
             [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order]]
+            [anvil.error :as error]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.grid :as grid]
             [anvil.stage :as stage]
             [anvil.time :as time]
-            [anvil.world :as world :refer [explored-tile-corners]]
+            [anvil.level :as level :refer [explored-tile-corners]]
             [clojure.component :as component]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.utils :refer [bind-root sort-by-order]]
@@ -69,7 +70,7 @@
 (defn update-world []
   (component/manual-tick (fsm/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
-  (bind-root time/paused? (or world/tick-error
+  (bind-root time/paused? (or error/throwable
                               (and pausing?
                                    (component/pause-game? (fsm/state-obj @player-eid))
                                    (not (controls/unpaused?)))))
@@ -80,5 +81,5 @@
       (try (tick-entities entities)
            (catch Throwable t
              (stage/error-window! t)
-             (bind-root world/tick-error t)))))
+             (bind-root error/throwable t)))))
   (remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.

@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [anvil.app :refer [change-screen]]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
-            [anvil.world :as world :refer [explored-tile-corners]]
+            [anvil.level :as level :refer [explored-tile-corners]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]))
@@ -41,7 +41,7 @@
   (cam/reset-zoom! (world-camera)))
 
 (defn render [_]
-  (draw-tiled-map world/tiled-map
+  (draw-tiled-map level/tiled-map
                   (->tile-corner-color-setter @explored-tile-corners))
   (draw-on-world-view
    (fn []

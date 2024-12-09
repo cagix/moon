@@ -6,3 +6,6 @@
   (assoc (generate-level* world-props)
          :world/player-creature
          (:world/player-creature world-props)))
+
+(declare tiled-map
+         explored-tile-corners)

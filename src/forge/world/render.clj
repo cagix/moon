@@ -2,7 +2,8 @@
   (:require [anvil.entity :as entity :refer [line-of-sight?]]
             [anvil.graphics :as g]
             [anvil.grid :as grid]
-            [anvil.world :as world :refer [explored-tile-corners ray-blocked?]]
+            [anvil.raycaster :refer [ray-blocked?]]
+            [anvil.level :as level :refer [explored-tile-corners]]
             [clojure.component :as component]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -149,7 +150,7 @@
   (cam/set-position! (g/world-camera)
                      (:position @entity/player-eid))
   ; FIXME position DRY
-  (g/draw-tiled-map world/tiled-map
+  (g/draw-tiled-map level/tiled-map
                     (tile-color-setter (cam/position (g/world-camera))))
   (g/draw-on-world-view (fn []
                           (debug-render-before-entities)

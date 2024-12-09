@@ -4,20 +4,21 @@
             [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.entity :as entity :refer [mouseover-entity]]
+            [anvil.error :as error]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
             [anvil.grid :as grid]
             [anvil.hitpoints :as hp]
             [anvil.info :as info]
             [anvil.inventory :as inventory]
-            [anvil.level :refer [generate-level]]
+            [anvil.level :as level :refer [generate-level]]
             [anvil.mana :as mana]
+            [anvil.raycaster :as raycaster]
             [anvil.skills :as skills]
             [anvil.stage :as stage]
             [anvil.time :as time]
             [anvil.ui :refer [ui-actor] :as ui]
             [anvil.val-max :as val-max]
-            [anvil.world :as world]
             [clojure.component :as component]
             [clojure.gdx.graphics :refer [frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
@@ -197,8 +198,8 @@
    (player-message/actor)])
 
 (defn dispose-world []
-  (when (bound? #'world/tiled-map)
-    (dispose world/tiled-map)))
+  (when (bound? #'level/tiled-map)
+    (dispose level/tiled-map)))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
@@ -238,7 +239,7 @@
         arr (make-array Boolean/TYPE width height)]
     (doseq [cell (g2d/cells grid)]
       (set-arr arr @cell position->blocked?))
-    (bind-root world/raycaster [arr width height])))
+    (bind-root raycaster/raycaster [arr width height])))
 
 (defn init-raycaster [tiled-map]
   (init-raycaster* grid/grid grid/blocks-vision?))
@@ -293,8 +294,8 @@
                                           "all"  :all)))))))
 
 (defn- world-init [{:keys [tiled-map start-position]}]
-  (bind-root world/tiled-map tiled-map)
-  (bind-root world/explored-tile-corners (atom (g2d/create-grid
+  (bind-root level/tiled-map tiled-map)
+  (bind-root level/explored-tile-corners (atom (g2d/create-grid
                                                 (tiled/tm-width  tiled-map)
                                                 (tiled/tm-height tiled-map)
                                                 (constantly false))))
@@ -307,8 +308,8 @@
   (init-raycaster tiled-map)
   (time-init)
   (bind-root entity/player-eid
-   (entity/creature
-    (player-entity-props start-position)))
+             (entity/creature
+              (player-entity-props start-position)))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 
@@ -316,7 +317,7 @@
   ; TODO assert is :screens/world
   (stage/reset (widgets))
   (dispose-world)
-  (bind-root world/tick-error nil)
+  (bind-root error/throwable nil)
   ; generate level -> creates actually the tiled-map and
   ; start-position?
   ; other stuff just depend on it?!
