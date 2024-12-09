@@ -1,5 +1,5 @@
 (ns forge.app.asset-manager
-  (:require [anvil.assets :as assets]
+  (:require [anvil.app :as app]
             [clojure.string :as str]
             [clojure.gdx.asset-manager :as manager]
             [clojure.gdx.files :as files]
@@ -7,8 +7,8 @@
             [clojure.utils :refer [bind-root]]))
 
 (defn create [[_ folder]]
-  (bind-root assets/manager (manager/create))
-  (manager/load assets/manager
+  (bind-root app/assets (manager/create))
+  (manager/load app/assets
                 (for [[asset-type exts] [[:sound   #{"wav"}]
                                          [:texture #{"png" "bmp"}]] ; <- this is also data !
                       file (map #(str/replace-first % folder "")
@@ -16,4 +16,4 @@
                   [file asset-type])))
 
 (defn destroy [_]
-  (dispose assets/manager))
+  (dispose app/assets))

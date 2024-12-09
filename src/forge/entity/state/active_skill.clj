@@ -1,5 +1,5 @@
 (ns forge.entity.state.active-skill
-  (:require [anvil.audio :refer [play-sound]]
+  (:require [anvil.app :refer [play-sound]]
             [anvil.entity :refer [stat-value send-event pay-mana-cost]]
             [anvil.graphics :as g :refer [draw-image]]
             [anvil.world :refer [stopped? timer finished-ratio]]

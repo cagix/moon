@@ -1,5 +1,5 @@
 (ns forge.entity.state.player-idle
-  (:require [anvil.audio :refer [play-sound]]
+  (:require [anvil.app :refer [play-sound]]
             [anvil.entity :refer [send-event]]
             [anvil.graphics :refer [set-cursor world-mouse-position]]
             [anvil.ui :refer [window-title-bar? button?]]

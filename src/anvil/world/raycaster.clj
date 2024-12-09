@@ -122,5 +122,5 @@
   [raycaster start target path-w]
   (let [[start1,target1,start2,target2] (create-double-ray-endpositions start target path-w)]
     (or
-     (rc-blocked? raycaster start1 target1)
-     (rc-blocked? raycaster start2 target2))))
+     (blocked? raycaster start1 target1)
+     (blocked? raycaster start2 target2))))

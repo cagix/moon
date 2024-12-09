@@ -1,5 +1,5 @@
 (ns forge.effects.spawn
-  (:require [anvil.audio :refer [play-sound]]
+  (:require [anvil.app :refer [play-sound]]
             [forge.world :refer [spawn-creature]]))
 
 ; "https://github.com/damn/core/issues/29"

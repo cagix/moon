@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.mapgen.uf-caves
-  (:require [anvil.assets :as assets]
+  (:require [anvil.app :as app]
             [anvil.db :as db]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.tiled :as tiled]
@@ -36,7 +36,7 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (g/texture-region (assets/manager "maps/uf_terrain.png")
+  (tm-tile (g/texture-region (app/assets "maps/uf_terrain.png")
                              (* sprite-x sprite-size)
                              (* sprite-y sprite-size)
                              sprite-size
