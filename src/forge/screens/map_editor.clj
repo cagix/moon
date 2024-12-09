@@ -5,7 +5,6 @@
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
-            [anvil.screen :refer [Screen]]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.graphics.camera :as cam]
@@ -29,16 +28,16 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> (app/current-screen)
+  (-> ((app/current-screen) 1)
       :sub-screen
       :current-data))
 
 (def ^:private infotext
   "L: grid lines
-M: movement properties
-zoom: minus,equals
-ESCAPE: leave
-direction keys: move")
+  M: movement properties
+  zoom: minus,equals
+  ESCAPE: leave
+  direction keys: move")
 
 (defn- map-infos ^String []
   (let [tile (mapv int (world-mouse-position))
@@ -135,34 +134,34 @@ direction keys: move")
                                                       (println t))))]]
               :pack? true}))
 
-(defrecord MapEditorScreen [current-data]
-  Screen
-  (enter [_]
-    (show-whole-map! (world-camera) (:tiled-map @current-data)))
+(defn enter [_]
+  #_(show-whole-map! (world-camera) (:tiled-map @current-data)))
 
-  (exit [_]
-    (cam/reset-zoom! (world-camera)))
+(defn exit [_]
+  #_(cam/reset-zoom! (world-camera)))
 
-  (render [_]
-    (draw-tiled-map (:tiled-map @current-data)
+(defn render [_]
+  #_(draw-tiled-map (:tiled-map @current-data)
                     (constantly color/white))
-    (draw-on-world-view render-on-map)
-    (if (key-just-pressed? :keys/l)
+  #_(draw-on-world-view render-on-map)
+  #_(if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
-    (if (key-just-pressed? :keys/m)
+  #_(if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
-    (controls/world-camera-zoom)
-    (camera-controls (world-camera))
-    (when (key-just-pressed? :keys/escape)
+  #_(controls/world-camera-zoom)
+  #_(camera-controls (world-camera))
+  #_(when (key-just-pressed? :keys/escape)
       (change-screen :screens/main-menu)))
 
-  (dispose [_]
-    (dispose (:tiled-map @current-data))))
+(defn dispose [_]
+  #_(dispose (:tiled-map @current-data)))
 
-(defn create []
-  (stage/create
-   {:actors [(->generate-map-window world-id)
-             (->info-window)]
-    :screen (->MapEditorScreen (atom {:tiled-map (tiled/load-tmx-map modules/file)
-                                      :show-movement-properties false
-                                      :show-grid-lines false}))}))
+(comment
+ (atom {:tiled-map (tiled/load-tmx-map modules/file)
+        :show-movement-properties false
+        :show-grid-lines false})
+ )
+
+(defn actors [_]
+  [(->generate-map-window world-id)
+   (->info-window)])

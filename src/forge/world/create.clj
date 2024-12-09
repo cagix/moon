@@ -122,7 +122,7 @@
     window))
 
 
-(declare start-world)
+(declare create-world)
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (stage/mouse-on-actor?)]
@@ -141,7 +141,7 @@
             {:label "World"
              :items (for [world (db/build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
-                       :on-click #(start-world world)})}
+                       :on-click #(create-world world)})}
             {:label "Help"
              :items [{:label controls/help-text}]}]
     :update-labels [{:label "Mouseover-entity id"

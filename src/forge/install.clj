@@ -7,6 +7,21 @@
             forge.mapgen.generate
             forge.mapgen.uf-caves))
 
+(def screen {:optional [#'system/actors
+                        #'system/enter
+                        #'system/exit
+                        #'system/render
+                        #'system/dispose] })
+
+(install "forge"
+         screen
+         (map vector [:screens/stage
+                      :screens/editor
+                      :screens/main-menu
+                      :screens/map-editor
+                      :screens/minimap
+                      :screens/world]))
+
 (install "forge"
          {:optional [#'system/create
                      #'system/destroy

@@ -28,9 +28,9 @@
               [:app/vis-ui :skin-scale/x1]
               [:app/gui-viewport   [1440 900]]
               [:app/world-viewport [1440 900 48]]
-              [:app/screens {:ks {:screens/main-menu  forge.screens.main-menu
-                                  :screens/map-editor forge.screens.map-editor
-                                  :screens/editor     forge.screens.editor
-                                  :screens/minimap    forge.screens.minimap
-                                  :screens/world      forge.screens.world}
+              [:app/screens {:screens [:screens/main-menu
+                                       :screens/map-editor
+                                       :screens/editor
+                                       :screens/minimap
+                                       :screens/world]
                              :first-k :screens/main-menu}]]}

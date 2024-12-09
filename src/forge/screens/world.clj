@@ -2,7 +2,6 @@
   (:require [anvil.app :refer [change-screen]]
             [anvil.controls :as controls]
             [anvil.graphics :refer [set-cursor world-camera]]
-            [anvil.screen :refer [Screen]]
             [anvil.stage :as stage]
             [clojure.gdx.graphics :refer [clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
@@ -10,7 +9,7 @@
             [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.utils :refer [bind-root ->tile sort-by-order]]
-            [forge.world.create :refer [start-world dispose-world]]
+            [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]]))
 
@@ -27,29 +26,23 @@
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
-(deftype WorldScreen []
-  Screen
-  (enter [_]
-    (cam/set-zoom! (world-camera) 0.8))
+(defn enter [_]
+  (cam/set-zoom! (world-camera) 0.8))
 
-  (exit [_]
-    (set-cursor :cursors/default))
+(defn exit [_]
+  (set-cursor :cursors/default))
 
-  (render [_]
-    (clear-screen color/black)
-    (render-world)
-    (update-world)
-    (controls/world-camera-zoom)
-    (check-window-hotkeys)
-    (cond (controls/close-windows?)
-          (close-all-windows)
+(defn render [_]
+  (clear-screen color/black)
+  (render-world)
+  (update-world)
+  (controls/world-camera-zoom)
+  (check-window-hotkeys)
+  (cond (controls/close-windows?)
+        (close-all-windows)
 
-          (controls/minimap?)
-          (change-screen :screens/minimap)))
+        (controls/minimap?)
+        (change-screen :screens/minimap)))
 
-  (dispose [_]
-    (dispose-world)))
-
-(defn create []
-  (stage/create
-   {:screen (->WorldScreen)}))
+(defn dispose [_]
+  (dispose-world))

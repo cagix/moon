@@ -21,6 +21,9 @@
 (defsystem destroy)
 (defmethod destroy :default [_ eid])
 
+(defsystem dispose)
+(defmethod dispose :default [_])
+
 (defsystem tick)
 (defmethod tick :default [_ eid])
 
@@ -82,3 +85,6 @@
 (defsystem apply)
 (defsystem order)
 (defsystem value-text)
+
+(defsystem actors)
+(defmethod actors :default [_])

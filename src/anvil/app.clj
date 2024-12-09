@@ -1,6 +1,5 @@
 (ns anvil.app
-  (:require [anvil.screen :as screen]
-            [anvil.system :as system]
+  (:require [anvil.system :as system]
             [clojure.awt :as awt]
             [clojure.gdx.app :as app]
             [clojure.gdx.audio.sound :as sound]
@@ -36,11 +35,11 @@
   "Calls `exit` on the current-screen and `enter` on the new screen."
   [new-k]
   (when-let [screen (current-screen)]
-    (screen/exit screen))
+    (system/exit screen))
   (let [screen (new-k screens)]
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root current-screen-key new-k)
-    (screen/enter screen)))
+    (system/enter screen)))
 
 (declare assets)
 

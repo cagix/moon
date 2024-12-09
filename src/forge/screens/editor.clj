@@ -476,10 +476,9 @@
       (.add tabbed-pane (vis/tab-widget tab-data)))
     table))
 
-(defn create []
-  (stage/create
-   {:actors [(ui/background-image)
-             (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
-             (ui-actor {:act (fn []
-                               (when (key-just-pressed? :shift-left)
-                                 (change-screen :screens/main-menu)))})]}))
+(defn actors [_]
+  [(ui/background-image)
+   (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
+   (ui-actor {:act (fn []
+                     (when (key-just-pressed? :shift-left)
+                       (change-screen :screens/main-menu)))})])

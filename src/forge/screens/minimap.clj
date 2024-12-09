@@ -1,7 +1,6 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [anvil.app :refer [change-screen]]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
-            [anvil.screen :refer [Screen]]
             [anvil.world :as world :refer [explored-tile-corners]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
@@ -35,25 +34,18 @@
   (fn tile-corner-color-setter [color x y]
     (if (get explored? [x y]) color/white color/black)))
 
-(deftype Minimap []
-  Screen
-  (enter [_]
-    (cam/set-zoom! (world-camera) (minimap-zoom)))
+(defn enter [_]
+  (cam/set-zoom! (world-camera) (minimap-zoom)))
 
-  (exit [_]
-    (cam/reset-zoom! (world-camera)))
+(defn exit [_]
+  (cam/reset-zoom! (world-camera)))
 
-  (render [_]
-    (draw-tiled-map world/tiled-map
-                    (->tile-corner-color-setter @explored-tile-corners))
-    (draw-on-world-view
-     (fn []
-       (g/filled-circle (cam/position (world-camera)) 0.5 :green)))
-    (when (or (key-just-pressed? :keys/tab)
-              (key-just-pressed? :keys/escape))
-      (change-screen :screens/world)))
-
-  (dispose [_]))
-
-(defn create []
-  (->Minimap))
+(defn render [_]
+  (draw-tiled-map world/tiled-map
+                  (->tile-corner-color-setter @explored-tile-corners))
+  (draw-on-world-view
+   (fn []
+     (g/filled-circle (cam/position (world-camera)) 0.5 :green)))
+  (when (or (key-just-pressed? :keys/tab)
+            (key-just-pressed? :keys/escape))
+    (change-screen :screens/world)))
