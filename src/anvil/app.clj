@@ -6,6 +6,8 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl :as lwjgl]
@@ -35,12 +37,26 @@
   (dispose [_]
     (disposable/dispose asset-manager)))
 
-(defmethods ::batch
+(defmethods ::sprite-batch
   (create [_]
     (def batch (g/sprite-batch)))
 
   (dispose [_]
     (disposable/dispose batch)))
+
+(let [pixel-texture (atom nil)]
+  (defmethods ::shape-drawer
+    (create [_]
+      (reset! pixel-texture (let [pixmap (doto (g/pixmap 1 1)
+                                           (.setColor color/white)
+                                           (.drawPixel 0 0))
+                                  texture (g/texture pixmap)]
+                              (disposable/dispose pixmap)
+                              texture))
+      (def sd (sd/create batch (g/texture-region @pixel-texture 1 0 1 1))))
+
+    (dispose [_]
+      (disposable/dispose @pixel-texture))))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)

@@ -4,9 +4,9 @@
           :width 1440
           :height 900}
  :components [[:anvil.app/asset-manager "resources/"]
-              [:anvil.app/batch]
+              [:anvil.app/sprite-batch]
+              [:anvil.app/shape-drawer]
               [:app/db {:schema "schema.edn" :properties "properties.edn"}]
-              [:app/shape-drawer]
               [:app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
                                   :size 16
                                   :quality-scaling 2}]

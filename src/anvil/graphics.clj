@@ -1,5 +1,5 @@
 (ns anvil.graphics
-  (:require [anvil.app :as app]
+  (:require [anvil.app :as app :refer [sd]]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
@@ -12,7 +12,6 @@
 
 (declare cursors
          default-font
-         sd
          gui-viewport
          gui-viewport-width
          gui-viewport-height
