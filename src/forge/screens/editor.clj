@@ -459,7 +459,7 @@
     {:title (str/capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
-(defn- tabs-table [label-str]
+(defn tabs-table [label-str]
   (let [table (ui/table {:fill-parent? true})
         container (ui/table {})
         tabbed-pane (vis/tabbed-pane)]
@@ -476,10 +476,3 @@
     (doseq [tab-data (property-type-tabs)]
       (.add tabbed-pane (vis/tab-widget tab-data)))
     table))
-
-(defn actors [_]
-  [(ui/background-image)
-   (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
-   (ui-actor {:act (fn []
-                     (when (key-just-pressed? :shift-left)
-                       (screen/change :screens/main-menu)))})])
