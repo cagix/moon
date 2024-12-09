@@ -17,7 +17,6 @@
 (install "forge"
          app
          (map vector [:app/db
-                      :app/default-font
                       :app/cached-map-renderer
                       :app/cursors
                       :app/vis-ui

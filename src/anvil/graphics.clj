@@ -11,7 +11,6 @@
            (com.badlogic.gdx.utils Align)))
 
 (declare cursors
-         default-font
          gui-viewport
          gui-viewport-width
          gui-viewport-height
@@ -131,7 +130,7 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font default-font)
+  (let [^BitmapFont font (or font app/default-font)
         data (.getData font)
         old-scale (float (.scaleX data))]
     (.setScale data (* old-scale

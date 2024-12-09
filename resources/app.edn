@@ -6,10 +6,10 @@
  :components [[:anvil.app/asset-manager "resources/"]
               [:anvil.app/sprite-batch]
               [:anvil.app/shape-drawer]
+              [:anvil.app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                                        :size 16
+                                        :quality-scaling 2}]
               [:app/db {:schema "schema.edn" :properties "properties.edn"}]
-              [:app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                  :size 16
-                                  :quality-scaling 2}]
               [:app/cursors {:cursors/bag                   ["bag001"       [0   0]]
                              :cursors/black-x               ["black_x"      [0   0]]
                              :cursors/default               ["default"      [0   0]]

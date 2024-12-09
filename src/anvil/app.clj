@@ -7,6 +7,7 @@
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
@@ -57,6 +58,13 @@
 
     (dispose [_]
       (disposable/dispose @pixel-texture))))
+
+(defmethods ::default-font
+  (create [[_ font]]
+    (def default-font (freetype/generate-font font)))
+
+  (dispose [_]
+    (disposable/dispose default-font)))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)
