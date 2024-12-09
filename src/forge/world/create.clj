@@ -20,14 +20,13 @@
             [anvil.time :as time]
             [anvil.ui :refer [ui-actor] :as ui]
             [anvil.val-max :as val-max]
-            [clojure.component :as component]
+            [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [clojure.utils :refer [dev-mode? tile->middle bind-root
-                                   readable-number]]
+            [clojure.utils :refer [dev-mode? tile->middle bind-root readable-number]]
             [clojure.vis-ui :as vis]
             [data.grid2d :as g2d]
             [forge.ui.player-message :as player-message])
@@ -181,6 +180,9 @@
                       :fill-y? true}]]
              :fill-parent? true}))
 
+(defsystem draw-gui-view)
+(defmethod draw-gui-view :default [_])
+
 (defn- widgets []
   [(if dev-mode?
      (dev-menu)
@@ -195,7 +197,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(component/draw-gui-view (fsm/state-obj @entity/player-eid))})
+   (ui-actor {:draw #(draw-gui-view (fsm/state-obj @entity/player-eid))})
    (player-message/actor)])
 
 (defn dispose-world []

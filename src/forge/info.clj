@@ -4,6 +4,7 @@
             [anvil.info :as info :refer [*info-text-entity*]]
             [anvil.mana :as mana]
             [anvil.stat :as stat]
+            [anvil.op :as op]
             [anvil.time :refer [finished-ratio]]
             [clojure.component :as component]
             [clojure.gdx.graphics.color :as color]
@@ -112,10 +113,10 @@
     1.0 "+"
     -1.0 ""))
 
-(defmethod component/value-text :op/inc [[_ value]]
+(defmethod op/value-text :op/inc [[_ value]]
   (str value))
 
-(defmethod component/value-text :op/mult [[_ value]]
+(defmethod op/value-text :op/mult [[_ value]]
   (str value "%"))
 
 (defn- ops-info [ops k]
@@ -123,8 +124,8 @@
             (keep
              (fn [{v 1 :as op}]
                (when-not (zero? v)
-                 (str (+? v) (component/value-text op) " " (k->pretty-name k))))
-             (sort-by component/order ops))))
+                 (str (+? v) (op/value-text op) " " (k->pretty-name k))))
+             (sort-by op/order ops))))
 
 (defmethod info/segment :entity/modifiers [[_ mods]]
   (when (seq mods)

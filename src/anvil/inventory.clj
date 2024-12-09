@@ -14,7 +14,7 @@
                               add-tooltip!
                               remove-tooltip!]
              :as ui]
-            [clojure.component :as component]
+            [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
@@ -84,6 +84,9 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
 
+(defsystem clicked-inventory-cell)
+(defmethod clicked-inventory-cell :default [_ cell])
+
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background slot) {:id :image})
@@ -93,9 +96,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (component/clicked-inventory-cell
-                             (fsm/state-obj @player-eid)
-                             cell))))
+                            (clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
     stack))
 
 (def empty-inventory

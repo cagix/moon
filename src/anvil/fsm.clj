@@ -1,7 +1,7 @@
 (ns anvil.fsm
   (:require [anvil.entity :as entity]
             [anvil.graphics :as g]
-            [clojure.component :as component]
+            [clojure.component :refer [defsystem]]
             [reduce-fsm :as fsm]))
 
 (defn state-k [entity]
@@ -10,6 +10,15 @@
 (defn state-obj [entity]
   (let [k (state-k entity)]
     [k (k entity)]))
+
+(defsystem enter)
+(defmethod enter :default [_])
+
+(defsystem exit)
+(defmethod exit :default [_])
+
+(defsystem cursor)
+(defmethod cursor :default [_])
 
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
@@ -22,14 +31,14 @@
                                                        [new-state-k eid params]
                                                        [new-state-k eid]))]]
           (when (:entity/player? @eid)
-            (when-let [cursor-k (component/cursor new-state-obj)]
+            (when-let [cursor-k (cursor new-state-obj)]
               (g/set-cursor cursor-k)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (component/exit old-state-obj)
-          (component/enter new-state-obj))))))
+          (exit old-state-obj)
+          (enter new-state-obj))))))
 
 (defn event
   ([eid event]

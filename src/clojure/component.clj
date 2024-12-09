@@ -1,5 +1,4 @@
-(ns clojure.component
-  (:refer-clojure :exclude [apply]))
+(ns clojure.component)
 
 (defn dispatch [[k] & args]
   k)
@@ -12,28 +11,3 @@
     `(defmulti ~name-sym
        ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
        dispatch)))
-
-(defsystem enter)
-(defmethod enter :default [_])
-
-(defsystem exit)
-(defmethod exit :default [_])
-
-(defsystem cursor)
-(defmethod cursor :default [_])
-
-(defsystem draw-gui-view)
-(defmethod draw-gui-view :default [_])
-
-(defsystem clicked-inventory-cell)
-(defmethod clicked-inventory-cell :default [_ cell])
-
-(defsystem clicked-skillmenu-skill)
-(defmethod clicked-skillmenu-skill :default [_ skill])
-
-(defsystem render)
-(defmethod render :default [_])
-
-(defsystem apply)
-(defsystem order)
-(defsystem value-text)

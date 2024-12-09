@@ -4,14 +4,17 @@
             [anvil.entity :as entity]
             [forge.entity.state.active-skill :as active-skill]
             [forge.entity.state.npc-idle :as npc-idle]
+            [anvil.fsm :as fsm]
+            [anvil.inventory :as inventory]
             [forge.world.render :as render]
             [anvil.screen :as screen]
-            [clojure.component :as component]
             [clojure.utils :refer [install install-component]]
             forge.schemas
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves
+            [forge.ui.skill-window :refer [clicked-skillmenu-skill]]
+            [forge.world.create :refer [draw-gui-view]]
             [forge.world.update :as world.update]))
 
 (install "forge"
@@ -67,14 +70,14 @@
 (def entity-state
   (merge-with concat
               entity
-              {:optional [#'component/enter
-                          #'component/exit
-                          #'component/cursor
+              {:optional [#'fsm/enter
+                          #'fsm/exit
+                          #'fsm/cursor
                           #'world.update/pause-game?
                           #'world.update/manual-tick
-                          #'component/clicked-inventory-cell
-                          #'component/clicked-skillmenu-skill
-                          #'component/draw-gui-view]}))
+                          #'inventory/clicked-inventory-cell
+                          #'clicked-skillmenu-skill
+                          #'draw-gui-view]}))
 
 (doseq [[ns-sym k] '[[forge.entity.state.active-skill :active-skill]
                      [forge.entity.state.npc-dead :npc-dead]
