@@ -2,7 +2,6 @@
   (:require [clojure.awt :as awt]
             [clojure.component :refer [defsystem] :as component]
             [clojure.gdx.app :as app]
-            [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl :as lwjgl]
@@ -51,11 +50,3 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (bind-root current-screen-key new-k)
     (component/enter screen)))
-
-(declare assets)
-
-(defn play-sound [sound-name]
-  (->> sound-name
-       (format "sounds/%s.wav")
-       assets
-       sound/play))

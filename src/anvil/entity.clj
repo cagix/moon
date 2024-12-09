@@ -1,5 +1,5 @@
 (ns anvil.entity
-  (:require [anvil.app :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.db :as db]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]

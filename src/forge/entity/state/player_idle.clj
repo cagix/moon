@@ -1,5 +1,5 @@
 (ns forge.entity.state.player-idle
-  (:require [anvil.app :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
             [anvil.controls :as controls]
             [anvil.entity :refer [player-eid mouseover-eid]]
             [anvil.fsm :as fsm]

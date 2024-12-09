@@ -1,5 +1,5 @@
 (ns forge.entity.state.player-item-on-cursor
-  (:require [anvil.app :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
             [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]

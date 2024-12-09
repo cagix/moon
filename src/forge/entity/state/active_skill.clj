@@ -1,5 +1,5 @@
 (ns forge.entity.state.active-skill
-  (:require [anvil.app :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
             [anvil.effect :as effect]
             [anvil.entity :refer [line-of-sight?]]
             [anvil.mana :as mana]

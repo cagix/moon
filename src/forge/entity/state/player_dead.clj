@@ -1,5 +1,6 @@
 (ns forge.entity.state.player-dead
-  (:require [anvil.app :refer [change-screen play-sound]]
+  (:require [anvil.app :refer [change-screen]]
+            [anvil.audio :refer [play-sound]]
             [anvil.stage :refer [show-modal]]))
 
 (defn cursor [_]

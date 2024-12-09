@@ -1,5 +1,5 @@
 (ns forge.effects.projectile
-  (:require [anvil.app :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
             [anvil.entity :as entity :refer [projectile-size]]
             [anvil.raycaster :refer [path-blocked?]]
             [clojure.gdx.math.vector2 :as v]))

@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.mapgen.uf-caves
-  (:require [anvil.app :as app]
+  (:require [anvil.assets :as assets]
             [anvil.db :as db]
             [anvil.level :refer [generate-level*]]
             [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
@@ -36,7 +36,7 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (g/texture-region (app/assets "maps/uf_terrain.png")
+  (tm-tile (g/texture-region (assets/manager "maps/uf_terrain.png")
                              (* sprite-x sprite-size)
                              (* sprite-y sprite-size)
                              sprite-size
