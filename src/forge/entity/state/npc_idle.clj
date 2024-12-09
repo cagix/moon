@@ -1,9 +1,8 @@
 (ns forge.entity.state.npc-idle
   (:require [anvil.effect :refer [effects-useful?]]
             [anvil.entity :as entity :refer [send-event]]
-            [anvil.world :as world :refer [nearest-entity]]
+            [anvil.world :as world :refer [nearest-entity line-of-sight?]]
             [forge.skill :as skill]
-            [forge.world :refer [line-of-sight?]]
             [forge.world.potential-fields :as potential-fields]))
 
 (defn- nearest-enemy [entity]

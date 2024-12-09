@@ -3,8 +3,7 @@
             [anvil.effect :refer [effects-applicable? effects-do! effects-render]]
             [anvil.entity :refer [stat-value send-event pay-mana-cost]]
             [anvil.graphics :as g :refer [draw-image]]
-            [anvil.world :refer [stopped? timer finished-ratio]]
-            [forge.world :refer [line-of-sight?]]))
+            [anvil.world :refer [stopped? timer finished-ratio line-of-sight?]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
