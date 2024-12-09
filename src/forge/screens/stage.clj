@@ -1,8 +1,8 @@
 (ns forge.screens.stage
-  (:require [anvil.disposable :as disposable]
-            [anvil.system :as system]
+  (:require [anvil.system :as system]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scene2d.stage :as stage]))
+            [clojure.gdx.scene2d.stage :as stage]
+            [clojure.gdx.utils.disposable :as disposable]))
 
 (defn enter [[_ {:keys [stage sub-screen]}]]
   (input/set-processor stage)

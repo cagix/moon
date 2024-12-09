@@ -5,7 +5,6 @@
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.disposable :refer [dispose]]
             [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
@@ -20,6 +19,7 @@
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.utils :refer [dev-mode? tile->middle bind-root
                                    readable-number]]
             [clojure.vis-ui :as vis]

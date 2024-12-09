@@ -19,6 +19,10 @@
     (.load manager ^String file (class-k->class asset-type)))
   (.finishLoading manager))
 
+(defn load-all [assets]
+  (doto (create)
+    (load assets)))
+
 (defn all-of-class
   "Returns all asset paths with the specific asset-type."
   [^AssetManager manager asset-type]

@@ -1,10 +1,11 @@
 (ns forge.app.default-font
-  (:require [anvil.disposable :as disposable]
-            [anvil.graphics :as g]
+  (:require [anvil.graphics :as g]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.utils :refer [bind-root]]))
 
 (defn create [[_ font]]
-  (bind-root g/default-font (g/truetype-font font)))
+  (bind-root g/default-font (freetype/generate-font font)))
 
 (defn dispose [_]
   (disposable/dispose g/default-font))

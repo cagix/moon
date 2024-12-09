@@ -2,7 +2,6 @@
   (:require [anvil.app :as app :refer [change-screen]]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.disposable :as disposable]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
@@ -13,6 +12,7 @@
             [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]))
 

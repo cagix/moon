@@ -1,9 +1,9 @@
 (ns forge.app.shape-drawer
-  (:require [anvil.disposable :as disposable]
-            [anvil.graphics :refer [batch sd]]
+  (:require [anvil.graphics :refer [batch sd]]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.utils :refer [bind-root]]))
 
 (declare ^:private pixel-texture)

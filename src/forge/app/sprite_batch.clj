@@ -1,7 +1,7 @@
 (ns forge.app.sprite-batch
-  (:require [anvil.disposable :as disposable]
-            [anvil.graphics :refer [batch]]
+  (:require [anvil.graphics :refer [batch]]
             [clojure.gdx.graphics :as g]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.utils :refer [bind-root]]))
 
 (defn create [_]
