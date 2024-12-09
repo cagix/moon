@@ -17,7 +17,7 @@
             [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.utils :refer [bind-root ->tile sort-by-order pretty-pst]]
-            [forge.world :refer [start-world dispose-world]]
+            [forge.world.create :refer [start-world dispose-world]]
             [forge.world.potential-fields :refer [update-potential-fields!
                                                   factions-iterations]]))
 

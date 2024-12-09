@@ -7,7 +7,7 @@
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.utils :refer [dev-mode?]]
-            [forge.world :refer [start-world]]))
+            [forge.world.create :refer [create-world]]))
 
 (defn create []
   (stage/create

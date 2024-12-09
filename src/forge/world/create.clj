@@ -1,4 +1,4 @@
-(ns forge.world
+(ns forge.world.create
   (:require [anvil.action-bar :as action-bar]
             [anvil.app :as app]
             [anvil.component :refer [info-text]]
@@ -308,7 +308,7 @@
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 
-(defn start-world [world-props]
+(defn create-world [world-props]
   ; TODO assert is :screens/world
   (stage/reset (widgets))
   (dispose-world)
