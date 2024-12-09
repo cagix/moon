@@ -1,5 +1,5 @@
 (ns forge.skill
-  (:require [anvil.effect :refer [effects-applicable?]]
+  (:require [anvil.effect :as effect]
             [anvil.entity :as entity]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
@@ -14,7 +14,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effects-applicable? effect-ctx effects))
+   (not (effect/applicable? effect-ctx effects))
    :invalid-params
 
    :else

@@ -1,5 +1,5 @@
 (ns forge.effects.target-all
-  (:require [anvil.effect :refer [effects-do!]]
+  (:require [anvil.effect :as effect]
             [anvil.graphics :as g]
             [anvil.world :refer [player-eid active-entities line-of-sight? spawn-line-render]]))
 
@@ -46,8 +46,8 @@
       ; at sub-effects
       ; and no more safe - merge
       ; find a way to pass ctx / effect-ctx separate ?
-      (effects-do! {:effect/source source :effect/target target}
-                   entity-effects))))
+      (effect/do! {:effect/source source :effect/target target}
+                  entity-effects))))
 
 (defn render-effect [_ {:keys [effect/source]}]
   (let [source* @source]

@@ -1,6 +1,6 @@
 (ns forge.entity.state.active-skill
   (:require [anvil.app :refer [play-sound]]
-            [anvil.effect :refer [effects-applicable? effects-do! effects-render]]
+            [anvil.effect :as effect]
             [anvil.entity :refer [stat-value send-event pay-mana-cost]]
             [anvil.graphics :as g :refer [draw-image]]
             [anvil.world :refer [stopped? timer finished-ratio line-of-sight?]]))
@@ -60,8 +60,8 @@
 
 (defn tick [[_ {:keys [skill effect-ctx counter]}] eid]
   (cond
-   (not (effects-applicable? (check-update-ctx effect-ctx)
-                             (:skill/effects skill)))
+   (not (effect/applicable? (check-update-ctx effect-ctx)
+                            (:skill/effects skill)))
    (do
     (send-event eid :action-done)
     ; TODO some sound ?
@@ -69,10 +69,10 @@
 
    (stopped? counter)
    (do
-    (effects-do! effect-ctx (:skill/effects skill))
+    (effect/do! effect-ctx (:skill/effects skill))
     (send-event eid :action-done))))
 
 (defn render-info [[_ {:keys [skill effect-ctx counter]}] entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image entity (:position entity) (finished-ratio counter))
-    (effects-render (check-update-ctx effect-ctx) effects)))
+    (effect/render (check-update-ctx effect-ctx) effects)))

@@ -1,6 +1,6 @@
 (ns forge.effects.target-entity
   (:require [anvil.db :as db]
-            [anvil.effect :refer [effects-applicable? effects-do!]]
+            [anvil.effect :as effect]
             [anvil.entity :as entity]
             [anvil.graphics :as g]
             [anvil.world :refer [spawn-line-render spawn-audiovisual]]
@@ -26,7 +26,7 @@
 
 (defn applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
   (and target
-       (effects-applicable? ctx entity-effects)))
+       (effect/applicable? ctx entity-effects)))
 
 (defn useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
   (in-range? @source @target maxrange))
@@ -41,7 +41,7 @@
                            :duration 0.05
                            :color [1 0 0 0.75]
                            :thick? true})
-       (effects-do! ctx entity-effects))
+       (effect/do! ctx entity-effects))
       (spawn-audiovisual (end-point source* target* maxrange)
                          (db/build :audiovisuals/hit-ground)))))
 

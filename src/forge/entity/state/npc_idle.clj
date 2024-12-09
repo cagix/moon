@@ -1,5 +1,5 @@
 (ns forge.entity.state.npc-idle
-  (:require [anvil.effect :refer [effects-useful?]]
+  (:require [anvil.effect :as effect]
             [anvil.entity :as entity :refer [send-event]]
             [anvil.world :as world :refer [nearest-entity line-of-sight?]]
             [forge.skill :as skill]
@@ -33,7 +33,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effects-useful? ctx (:skill/effects %))))
+                     (effect/useful? ctx (:skill/effects %))))
        first))
 
 (defn ->v [[_ eid]]

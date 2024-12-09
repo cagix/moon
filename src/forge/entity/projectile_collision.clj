@@ -1,5 +1,5 @@
 (ns forge.entity.projectile-collision
-  (:require [anvil.effect :refer [effects-do!]]
+  (:require [anvil.effect :as effect]
             [anvil.entity :as entity]
             [anvil.world :refer [cell-blocked? rectangle->cells cells->entities]]
             [clojure.utils :refer [find-first]]))
@@ -27,6 +27,6 @@
     (when hit-entity
       (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
-      (effects-do! {:effect/source eid
-                    :effect/target hit-entity}
-                   entity-effects))))
+      (effect/do! {:effect/source eid
+                   :effect/target hit-entity}
+                  entity-effects))))

@@ -1,18 +1,18 @@
 (ns anvil.effect
   (:require [anvil.system :as system]))
 
-(defn effects-applicable? [ctx effects]
+(defn applicable? [ctx effects]
   (seq (filter #(system/applicable? % ctx) effects)))
 
-(defn effects-useful? [ctx effects] ; actually called @ npc idle ... maybe move there ?!
+(defn useful? [ctx effects]
   (->> effects
-       (effects-applicable? ctx)
+       (applicable? ctx)
        (some #(system/useful? % ctx))))
 
-(defn effects-do! [ctx effects]
+(defn do! [ctx effects]
   (run! #(system/handle % ctx)
-        (effects-applicable? ctx effects)))
+        (applicable? ctx effects)))
 
-(defn effects-render [ctx effects]
+(defn render [ctx effects]
   (run! #(system/render-effect % ctx)
         effects))
