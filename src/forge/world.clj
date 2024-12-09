@@ -3,26 +3,35 @@
             [anvil.db :as db]
             [anvil.entity]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
-            [anvil.world :refer [timer player-eid]]
+            [anvil.world :refer [timer player-eid all-entities]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
             [forge.entity :as component]
             [forge.world.content-grid :as content-grid]
-            [forge.world.entity-ids :as entity-ids]
             [forge.world.grid :as grid]
             [forge.world.raycaster :refer [ray-blocked?]]))
+
+(defn entity-ids-add-entity [eid]
+  (let [id (:entity/id @eid)]
+    (assert (number? id))
+    (alter-var-root #'entity-ids assoc id eid)))
+
+(defn entity-ids-remove-entity [eid]
+  (let [id (:entity/id @eid)]
+    (assert (contains? entity-ids id))
+    (alter-var-root #'entity-ids dissoc id)))
 
 (defn- add-entity [eid]
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (content-grid/add-entity eid)
-  (entity-ids/add-entity   eid)
+  (entity-ids-add-entity   eid)
   (grid/add-entity         eid))
 
 (defn- remove-entity [eid]
   (content-grid/remove-entity eid)
-  (entity-ids/remove-entity   eid)
+  (entity-ids-remove-entity   eid)
   (grid/remove-entity         eid))
 
 (defn entity-position-changed [eid]
@@ -189,7 +198,7 @@
 
 (defn remove-destroyed []
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (entity-ids/all-entities))]
+                      (all-entities))]
     (remove-entity eid)
     (doseq [component @eid]
       (component/destroy component eid))))

@@ -43,7 +43,6 @@
                                  active-entities
                                  line-of-sight?]]
             [forge.world.content-grid]
-            [forge.world.entity-ids]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.grid :refer [world-grid
                                       circle->cells]]
@@ -370,7 +369,7 @@
   (bind-root world/tiled-map tiled-map)
   (forge.world.explored-tile-corners/init tiled-map)
   (forge.world.grid/init                  tiled-map)
-  (forge.world.entity-ids/init            tiled-map)
+  (bind-root world/entity-ids {})
   (forge.world.content-grid/init          tiled-map)
   (forge.world.raycaster/init             tiled-map)
   (time-init)

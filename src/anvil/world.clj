@@ -28,4 +28,8 @@
 (def max-delta-time 0.04)
 
 (declare tiled-map
-         player-eid)
+         player-eid
+         entity-ids)
+
+(defn all-entities []
+  (vals entity-ids))
