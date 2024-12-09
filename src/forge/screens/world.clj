@@ -10,7 +10,7 @@
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
             [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid
-                                           active-entities]]
+                                           active-entities circle->cells point->entities]]
             [anvil.world.content-grid :as content-grid]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
@@ -45,9 +45,6 @@
                                  remove-destroyed
                                  spawn-creature
                                  line-of-sight?]]
-            [forge.world.grid :refer [world-grid
-                                      circle->cells
-                                      point->entities]]
             [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -175,7 +172,7 @@
               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
-            :let [cell (world-grid [x y])]
+            :let [cell (world/grid [x y])]
             :when cell
             :let [cell* @cell]]
 
@@ -197,7 +194,7 @@
 (defn- highlight-mouseover-tile []
   (when highlight-blocked-cell?
     (let [[x y] (->tile (world-mouse-position))
-          cell (get world-grid [x y])]
+          cell (get world/grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (g/rectangle x y 1 1
                       (case (:movement @cell)
@@ -372,7 +369,7 @@
                                           (tiled/tm-width  tiled-map)
                                           (tiled/tm-height tiled-map)
                                           (constantly false))))
-  (forge.world.grid/init                  tiled-map)
+  (forge.world.grid/init tiled-map)
   (bind-root world/entity-ids {})
   (bind-root world/content-grid
              (content-grid/create {:cell-size 16  ; FIXME global config

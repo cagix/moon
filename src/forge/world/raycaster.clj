@@ -1,9 +1,8 @@
 (ns forge.world.raycaster
-  (:require [clojure.gdx.math.vector2 :as v]
+  (:require [anvil.world :as world :refer [blocks-vision?]]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [bind-root]]
-            [data.grid2d :as g2d]
-            [forge.world.grid :as grid :refer [world-grid
-                                               blocks-vision?]])
+            [data.grid2d :as g2d])
   (:import (forge RayCaster)))
 
 ; boolean array used because 10x faster than access to clojure grid data structure
@@ -144,7 +143,7 @@
     (bind-root ray-caster [arr width height])))
 
 (defn init [tiled-map]
-  (init-raycaster world-grid blocks-vision?))
+  (init-raycaster world/grid blocks-vision?))
 
 (defn ray-blocked? [start target]
   (rc-blocked? ray-caster start target))

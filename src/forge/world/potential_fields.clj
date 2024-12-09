@@ -1,15 +1,15 @@
 (ns forge.world.potential-fields
   (:require [anvil.entity :as entity]
+            [anvil.world :refer [cell-blocked?
+                                 occupied-by-other?
+                                 nearest-entity
+                                 nearest-entity-distance
+                                 rectangle->cells
+                                 cached-adjacent-cells
+                                 get-8-neighbour-positions]
+             :as world]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [->tile when-seq utils-positions]]
-            [forge.world.grid :refer [world-grid
-                                      cell-blocked?
-                                      nearest-entity-distance
-                                      nearest-entity
-                                      occupied-by-other?
-                                      rectangle->cells
-                                      cached-adjacent-cells
-                                      get-8-neighbour-positions]]))
+            [clojure.utils :refer [->tile when-seq utils-positions]]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})
@@ -116,7 +116,7 @@
   "returns the marked-cells"
   [faction tiles->entities max-iterations]
   (let [entity-cell-seq (for [[tile eid] tiles->entities] ; FIXME lazy seq
-                          [eid (get world-grid tile)])
+                          [eid (get world/grid tile)])
         marked (map second entity-cell-seq)]
     (doseq [[eid cell] entity-cell-seq]
       (add-field-data! cell faction 0 eid))
@@ -238,7 +238,7 @@
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
 (defn find-direction [eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
-        own-cell (get world-grid (->tile position))
+        own-cell (get world/grid (->tile position))
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
     (cond
      target-entity

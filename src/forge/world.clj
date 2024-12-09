@@ -12,12 +12,12 @@
             [forge.world.grid :as grid]
             [forge.world.raycaster :refer [ray-blocked?]]))
 
-(defn entity-ids-add-entity [eid]
+(defn- entity-ids-add-entity [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (alter-var-root #'entity-ids assoc id eid)))
 
-(defn entity-ids-remove-entity [eid]
+(defn- entity-ids-remove-entity [eid]
   (let [id (:entity/id @eid)]
     (assert (contains? entity-ids id))
     (alter-var-root #'entity-ids dissoc id)))
