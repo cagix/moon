@@ -8,13 +8,16 @@
             [anvil.stage :as stage]
             [anvil.time :as time]
             [anvil.level :as level :refer [explored-tile-corners]]
-            [clojure.component :as component]
+            [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.utils :refer [bind-root sort-by-order]]
             [forge.world.potential-fields :refer [update-potential-fields!]]))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
+
+(defsystem tick)
+(defmethod tick :default [_ eid])
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
@@ -25,7 +28,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (component/tick [k v] eid))
+            (tick [k v] eid))
           (catch Throwable t
             (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t
@@ -60,19 +63,28 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (bind-root mouseover-eid new-eid)))
 
+(defsystem destroy)
+(defmethod destroy :default [_ eid])
+
 (defn- remove-destroyed-entities []
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (entity/all-entities))]
     (entity/remove-entity eid)
     (doseq [component @eid]
-      (component/destroy component eid))))
+      (destroy component eid))))
+
+(defsystem manual-tick)
+(defmethod manual-tick :default [_])
+
+(defsystem pause-game?)
+(defmethod pause-game? :default [_])
 
 (defn update-world []
-  (component/manual-tick (fsm/state-obj @player-eid))
+  (manual-tick (fsm/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root time/paused? (or error/throwable
                               (and pausing?
-                                   (component/pause-game? (fsm/state-obj @player-eid))
+                                   (pause-game? (fsm/state-obj @player-eid))
                                    (not (controls/unpaused?)))))
   (when-not time/paused?
     (time-update)

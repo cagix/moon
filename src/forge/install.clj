@@ -7,7 +7,8 @@
             forge.schemas
             forge.info
             forge.mapgen.generate
-            forge.mapgen.uf-caves))
+            forge.mapgen.uf-caves
+            [forge.world.update :as world.update]))
 
 (install "forge"
          {:required [#'component/applicable?
@@ -31,8 +32,8 @@
 (def entity
   {:optional [#'entity/->v
               #'entity/create
-              #'component/destroy
-              #'component/tick
+              #'world.update/destroy
+              #'world.update/tick
               #'component/render-below
               #'component/render-default
               #'component/render-above
@@ -65,8 +66,8 @@
               {:optional [#'component/enter
                           #'component/exit
                           #'component/cursor
-                          #'component/pause-game?
-                          #'component/manual-tick
+                          #'world.update/pause-game?
+                          #'world.update/manual-tick
                           #'component/clicked-inventory-cell
                           #'component/clicked-skillmenu-skill
                           #'component/draw-gui-view]}))
