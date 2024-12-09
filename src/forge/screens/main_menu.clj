@@ -1,8 +1,8 @@
 (ns forge.screens.main-menu
   (:require [anvil.app :as app]
+            [anvil.graphics :refer [set-cursor]]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.utils :refer [dev-mode?]]
-            [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
             [forge.app.screens :refer [change-screen]]
             [forge.app.vis-ui :refer [ui-actor text-button] :as ui]

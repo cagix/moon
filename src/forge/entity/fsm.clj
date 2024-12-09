@@ -1,5 +1,5 @@
 (ns forge.entity.fsm
-  (:require [forge.app.cursors :refer [set-cursor]]
+  (:require [anvil.graphics :refer [set-cursor]]
             [forge.entity :refer [->v]]
             [forge.entity.state :as state]
             [reduce-fsm :as fsm]))

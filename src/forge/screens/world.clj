@@ -1,5 +1,6 @@
 (ns forge.screens.world
-  (:require [clojure.gdx.graphics :refer [frames-per-second
+  (:require [anvil.graphics :refer [set-cursor]]
+            [clojure.gdx.graphics :refer [frames-per-second
                                           clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -17,7 +18,6 @@
                                    dev-mode?
                                    pretty-pst]]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
-            [forge.app.cursors :refer [set-cursor]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-mouse-position]]
