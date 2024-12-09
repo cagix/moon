@@ -1,17 +1,17 @@
 (ns forge.ui.inventory
   (:require [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
+            [anvil.ui :refer [set-drawable!
+                              ui-widget
+                              texture-region-drawable
+                              image-widget
+                              ui-stack
+                              add-tooltip!
+                              remove-tooltip!]
+             :as ui]
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
-            [forge.app.vis-ui :refer [set-drawable!
-                                      ui-widget
-                                      texture-region-drawable
-                                      image-widget
-                                      ui-stack
-                                      add-tooltip!
-                                      remove-tooltip!]
-             :as ui]
             [forge.component :refer [info-text]]
             [forge.entity.fsm :refer [e-state-k e-state-obj]]
             [forge.entity.state :refer [clicked-inventory-cell]]

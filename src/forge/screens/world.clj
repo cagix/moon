@@ -5,6 +5,7 @@
                                           gui-mouse-position world-mouse-position world-camera
                                           world-viewport-width world-viewport-height]]
             [anvil.screen :refer [Screen]]
+            [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -22,7 +23,6 @@
                                    dev-mode?
                                    pretty-pst]]
             [forge.app.db :as db]
-            [forge.app.vis-ui :refer [ui-actor change-listener image->widget] :as ui]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]

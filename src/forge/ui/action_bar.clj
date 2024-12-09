@@ -1,8 +1,8 @@
 (ns forge.ui.action-bar
-  (:require [clojure.gdx.scene2d.actor :refer [user-object]]
+  (:require [anvil.ui :refer [ui-actor image-button add-tooltip!] :as ui]
+            [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [add-actor!
                                                find-actor]]
-            [forge.app.vis-ui :refer [ui-actor image-button add-tooltip!] :as ui]
             [forge.component :refer [info-text]]
             [forge.screens.stage :refer [screen-stage]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
