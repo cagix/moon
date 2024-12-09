@@ -1,4 +1,4 @@
-(ns forge.mapgen
+(ns anvil.mapgen
   (:require [anvil.property :as property]
             [clojure.gdx.tiled :as tiled]
             [clojure.rand :refer [sshuffle srand srand-int]]

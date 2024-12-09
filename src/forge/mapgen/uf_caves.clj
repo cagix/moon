@@ -2,11 +2,11 @@
   (:require [anvil.app :as app]
             [anvil.db :as db]
             [anvil.level :refer [generate-level*]]
+            [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.tiled :as tiled]
             [clojure.rand :refer [get-rand-weighted-item]]
-            [data.grid2d :as g2d]
-            [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
+            [data.grid2d :as g2d]))
 
 (def ^:private scaling 4)
 
