@@ -1,5 +1,5 @@
 (ns forge.entity.movement
-  (:require [anvil.entity :as entity]
+  (:require [anvil.body :as body]
             [anvil.world :refer [max-delta-time world-delta cell-blocked?
                                  rectangle->cells cells->entities] :as world]
             [clojure.gdx.math.vector2 :as v]
@@ -23,7 +23,7 @@
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
                                  (:collides? other-entity)
-                                 (entity/collides? other-entity body)))))))))
+                                 (body/collides? other-entity body)))))))))
 
 (defn- try-move [body movement]
   (let [new-body (move-body body movement)]

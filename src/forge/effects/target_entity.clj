@@ -1,7 +1,7 @@
 (ns forge.effects.target-entity
-  (:require [anvil.db :as db]
+  (:require [anvil.body :as body]
+            [anvil.db :as db]
             [anvil.effect :as effect]
-            [anvil.entity :as entity]
             [anvil.graphics :as g]
             [anvil.world :refer [spawn-line-render spawn-audiovisual]]
             [clojure.gdx.math.vector2 :as v]))
@@ -16,12 +16,12 @@
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
   (v/add (:position entity)
-         (v/scale (entity/direction entity target*)
+         (v/scale (body/direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
   (v/add (start-point entity target*)
-         (v/scale (entity/direction entity target*)
+         (v/scale (body/direction entity target*)
                   maxrange)))
 
 (defn applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]

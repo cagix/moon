@@ -2,63 +2,22 @@
   (:require [anvil.action-bar :as action-bar]
             [anvil.effect :as effect]
             [anvil.inventory :as inventory :refer [valid-slot?]]
-            [anvil.ops :as ops]
-            [anvil.val-max :as val-max]
-            [clojure.gdx.math.shapes :as shape]
-            [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [->tile find-first]]
-            [malli.core :as m]
-            [anvil.world :refer [timer reset-timer]]))
-
-(defn direction [entity other-entity]
-  (v/direction (:position entity) (:position other-entity)))
-
-(defn collides? [entity other-entity]
-  (shape/overlaps? entity other-entity))
-
-(defn tile [entity]
-  (->tile (:position entity)))
-
-(defn- mods-add    [mods other-mods] (merge-with ops/add    mods other-mods))
-(defn- mods-remove [mods other-mods] (merge-with ops/remove mods other-mods))
-
-(defn mod-add    [entity mods] (update entity :entity/modifiers mods-add    mods))
-(defn mod-remove [entity mods] (update entity :entity/modifiers mods-remove mods))
-
-(defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
-  {:pre [(= "modifier" (namespace modifier-k))]}
-  (ops/apply (modifier-k modifiers)
-             base-value))
-
-(defn- ->pos-int [val-max]
-  (mapv #(-> % int (max 0)) val-max))
-
-(defn apply-max-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 1 mod-value entity modifier-k)
-        [v mx] (->pos-int val-max)]
-    [(min v mx) mx]))
-
-(defn apply-min-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
-  (let [val-max (update val-max 0 mod-value entity modifier-k)
-        [v mx] (->pos-int val-max)]
-    [v (max v mx)]))
+            [anvil.world :refer [timer reset-timer]]
+            [anvil.modifiers :as mods]
+            [clojure.utils :refer [find-first]]))
 
 (defn damage-mods
   ([source damage]
    (update damage
            :damage/min-max
            #(-> %
-                (apply-min-modifier source :modifier/damage-deal-min)
-                (apply-max-modifier source :modifier/damage-deal-max))))
+                (mods/apply-min-modifier source :modifier/damage-deal-min)
+                (mods/apply-max-modifier source :modifier/damage-deal-max))))
 
   ([source target damage]
    (update (damage-mods source damage)
            :damage/min-max
-           apply-max-modifier
+           mods/apply-max-modifier
            target
            :modifier/damage-receive-max)))
 
@@ -68,7 +27,7 @@
   [entity]
   (-> entity
       :entity/hp
-      (apply-max-modifier entity :modifier/hp-max)))
+      (mods/apply-max-modifier entity :modifier/hp-max)))
 
 (defn mana
   "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
@@ -76,7 +35,7 @@
   [entity]
   (-> entity
       :entity/mana
-      (apply-max-modifier entity :modifier/mana-max)))
+      (mods/apply-max-modifier entity :modifier/mana-max)))
 
 (defn mana-value [entity]
   (if (:entity/mana entity)
@@ -90,9 +49,9 @@
 
 (defn stat-value [entity k]
   (when-let [base-value (k entity)]
-    (mod-value base-value
-               entity
-               (keyword "modifier" (name k)))))
+    (mods/->value base-value
+                  entity
+                  (keyword "modifier" (name k)))))
 
 (defn add-string-effect [entity text]
   (assoc entity
@@ -131,7 +90,7 @@
       (inventory/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
-      (swap! eid mod-add (:entity/modifiers item)))))
+      (swap! eid mods/add (:entity/modifiers item)))))
 
 (defn remove-item [eid cell]
   (let [entity @eid
@@ -141,7 +100,7 @@
       (inventory/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
-      (swap! eid mod-remove (:entity/modifiers item)))))
+      (swap! eid mods/remove (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]

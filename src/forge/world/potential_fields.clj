@@ -1,5 +1,5 @@
 (ns forge.world.potential-fields
-  (:require [anvil.entity :as entity]
+  (:require [anvil.body :as body]
             [anvil.world :as world]))
 
 ; FIXME config !
@@ -47,7 +47,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(entity/tile @%) entities)
+            (zipmap (map #(body/tile @%) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -121,7 +121,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(entity/tile @%) entities)
+    (zipmap (map #(body/tile @%) entities)
             entities)))
 
 (defn- update-faction-potential-field [faction entities max-iterations]

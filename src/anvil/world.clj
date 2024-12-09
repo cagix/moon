@@ -12,7 +12,7 @@
                                              rect-contains?
                                              overlaps?]]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [define-order safe-merge unique-number! ->tile when-seq utils-positions]]))
+            [clojure.utils :refer [define-order safe-merge unique-number! when-seq utils-positions]]))
 
 (declare ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time)
@@ -473,7 +473,7 @@
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
 (defn find-direction [eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
-        own-cell (get grid (->tile position))
+        own-cell (get grid (mapv int position))
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
     (cond
      target-entity

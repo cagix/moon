@@ -8,7 +8,7 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
             [clojure.gdx.scene2d.group :refer [children]]
-            [clojure.utils :refer [bind-root ->tile sort-by-order]]
+            [clojure.utils :refer [bind-root sort-by-order]]
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]]))

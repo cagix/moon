@@ -3,7 +3,7 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
             [anvil.stage :as stage]
-            [anvil.system :refer [clicked-inventory-cell]]
+            [anvil.system :as system]
             [anvil.ui :refer [set-drawable!
                               ui-widget
                               texture-region-drawable
@@ -90,7 +90,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
+                            (system/clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
     stack))
 
 (def empty-inventory

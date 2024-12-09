@@ -1,12 +1,13 @@
 (ns forge.entity.state.npc-idle
-  (:require [anvil.effect :as effect]
+  (:require [anvil.body :as body]
+            [anvil.effect :as effect]
             [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.faction :as faction]
             [anvil.world :as world :refer [nearest-entity line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
-  (nearest-entity @(get world/grid (entity/tile entity))
+  (nearest-entity @(get world/grid (body/tile entity))
                   (faction/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
@@ -18,7 +19,7 @@
     {:effect/source eid
      :effect/target target
      :effect/target-direction (when target
-                                (entity/direction entity @target))}))
+                                (body/direction entity @target))}))
 
 (comment
  (let [eid (ids->eids 76)

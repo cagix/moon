@@ -50,9 +50,6 @@
 (defn tile->middle [position]
   (mapv (partial + 0.5) position))
 
-(defn ->tile [position]
-  (mapv int position))
-
 (defn define-order [order-k-vector]
   (apply hash-map (interleave order-k-vector (range))))
 
