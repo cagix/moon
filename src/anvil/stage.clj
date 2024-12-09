@@ -35,8 +35,8 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ g/gui-viewport-width 2)
-                                 (* g/gui-viewport-height (/ 3 4))]
+               :center-position [(/ app/gui-viewport-width 2)
+                                 (* app/gui-viewport-height (/ 3 4))]
                :pack? true})))
 
 

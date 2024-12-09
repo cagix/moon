@@ -23,11 +23,11 @@
                                    :cursors/skill-not-usable      ["x007"         [0   0]]
                                    :cursors/use-skill             ["pointer004"   [0   0]]
                                    :cursors/walking               ["walking"      [16 16]]}]
+              [:anvil.app/gui-viewport   [1440 900]]
+              [:anvil.app/world-viewport [1440 900 48]]
+              [:anvil.app/cached-map-renderer]
               [:app/db {:schema "schema.edn" :properties "properties.edn"}]
-              [:app/cached-map-renderer]
               [:app/vis-ui :skin-scale/x1]
-              [:app/gui-viewport   [1440 900]]
-              [:app/world-viewport [1440 900 48]]
               [:app/screens {:screens [:screens/main-menu
                                        :screens/map-editor
                                        :screens/editor

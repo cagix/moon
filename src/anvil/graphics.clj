@@ -4,19 +4,13 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.math.utils :refer [degree->radians]]
+            [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.utils Align)))
-
-(declare gui-viewport
-         gui-viewport-width
-         gui-viewport-height
-         world-unit-scale
-         world-viewport-width
-         world-viewport-height
-         world-viewport)
+           (com.badlogic.gdx.utils Align)
+           (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn- sd-color [color]
   (sd/set-color sd (color/->color color)))
@@ -186,8 +180,8 @@
                            (draw-fn))))))
 
 (defn draw-on-world-view [render-fn]
-  (draw-with world-viewport
-             world-unit-scale
+  (draw-with app/world-viewport
+             app/world-unit-scale
              render-fn))
 
 (defn- scale-dimensions [dimensions scale]
@@ -209,7 +203,7 @@
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
+           :world-unit-dimensions (scale-dimensions pixel-dimensions app/world-unit-scale))))
 
 (defrecord Sprite [texture-region
                    pixel-dimensions
@@ -247,23 +241,30 @@
 
 (defn gui-mouse-position []
   ; TODO mapv int needed?
-  (mapv int (vp/unproject-mouse-position gui-viewport)))
+  (mapv int (vp/unproject-mouse-position app/gui-viewport)))
 
 (defn pixels->world-units [pixels]
-  (* (int pixels) world-unit-scale))
+  (* (int pixels) app/world-unit-scale))
 
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-position world-viewport))
+  (vp/unproject-mouse-position app/world-viewport))
 
 (defn world-camera []
-  (vp/camera world-viewport))
+  (vp/camera app/world-viewport))
 
-(defprotocol TiledMapRenderer
-  (draw-tiled-map* [_ tiled-map color-setter camera]))
-
-(declare cached-map-renderer)
+(defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
+  (.setColorSetter this (reify ColorSetter
+                          (apply [_ color x y]
+                            (color-setter color x y))))
+  (.setView this camera)
+  (->> tiled-map
+       tiled/layers
+       (filter tiled/visible?)
+       (map (partial tiled/layer-index tiled-map))
+       int-array
+       (.render this)))
 
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
@@ -274,7 +275,7 @@
 
   Renders only visible layers."
   [tiled-map color-setter]
-  (draw-tiled-map* (cached-map-renderer tiled-map)
+  (draw-tiled-map* (app/cached-map-renderer tiled-map)
                    tiled-map
                    color-setter
                    (world-camera)))

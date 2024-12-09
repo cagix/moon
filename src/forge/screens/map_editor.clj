@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [anvil.app :as app :refer [change-screen]]
+  (:require [anvil.app :as app :refer [change-screen gui-viewport-height]]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
+            [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
             [anvil.stage :as stage]

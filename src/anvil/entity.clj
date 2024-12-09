@@ -1,8 +1,9 @@
 (ns anvil.entity
-  (:require [anvil.audio :refer [play-sound]]
+  (:require [anvil.app :refer [world-viewport-width world-viewport-height]]
+            [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.db :as db]
-            [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
+            [anvil.graphics :refer [world-camera]]
             [anvil.grid :as grid]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.time :refer [timer]]

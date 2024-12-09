@@ -1,8 +1,7 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [anvil.app :as app :refer [change-screen]]
+  (:require [anvil.app :as app :refer [change-screen gui-viewport-height]]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
-            [anvil.graphics :refer [gui-viewport-height]]
             [anvil.info :as info]
             [anvil.property :as property]
             [anvil.stage :as stage]

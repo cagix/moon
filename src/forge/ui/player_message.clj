@@ -1,5 +1,6 @@
 (ns forge.ui.player-message
-  (:require [anvil.graphics :refer [draw-text gui-viewport-width gui-viewport-height]]
+  (:require [anvil.app :refer [gui-viewport-width gui-viewport-height]]
+            [anvil.graphics :refer [draw-text]]
             [anvil.stage :refer [message-to-player player-message-duration-seconds]]
             [anvil.ui :refer [ui-actor]]
             [clojure.gdx.graphics :refer [delta-time]]

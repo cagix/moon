@@ -11,9 +11,11 @@
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
+            [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
             [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.utils :refer [bind-root defmethods]]))
+            [clojure.utils :refer [bind-root defmethods mapvals]])
+  (:import (forge OrthogonalTiledMapRenderer)))
 
 (defsystem create)
 
@@ -77,6 +79,37 @@
 
   (dispose [_]
     (run! disposable/dispose (vals cursors))))
+
+(defmethods ::gui-viewport
+  (create [[_ [width height]]]
+    (def gui-viewport-width  width)
+    (def gui-viewport-height height)
+    (def gui-viewport (fit-viewport width height (g/orthographic-camera))))
+
+  (resize [_ w h]
+    (vp/update gui-viewport w h :center-camera? true)))
+
+(defmethods ::world-viewport
+  (create [[_ [width height tile-size]]]
+    (def world-unit-scale (float (/ tile-size)))
+    (def world-viewport-width  width)
+    (def world-viewport-height height)
+    (def world-viewport (let [world-width  (* width  world-unit-scale)
+                              world-height (* height world-unit-scale)
+                              camera (g/orthographic-camera)
+                              y-down? false]
+                          (.setToOrtho camera y-down? world-width world-height)
+                          (fit-viewport world-width world-height camera))))
+  (resize [_ w h]
+    (vp/update world-viewport w h)))
+
+(defmethods ::cached-map-renderer
+  (create [_]
+    (def cached-map-renderer
+      (memoize (fn [tiled-map]
+                 (OrthogonalTiledMapRenderer. tiled-map
+                                              (float world-unit-scale)
+                                              batch))))))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)

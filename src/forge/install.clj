@@ -17,10 +17,7 @@
 (install "forge"
          app
          (map vector [:app/db
-                      :app/cached-map-renderer
                       :app/vis-ui
-                      :app/gui-viewport
-                      :app/world-viewport
                       :app/screens]))
 
 (def screen {:optional [#'component/actors

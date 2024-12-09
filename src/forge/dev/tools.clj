@@ -1,8 +1,8 @@
 (ns forge.dev.tools
-  (:require [anvil.app :refer [post-runnable]]
+  (:require [anvil.app :refer [post-runnable gui-viewport-width gui-viewport-height]]
             [anvil.db :as db]
             [anvil.entity :as entity :refer [player-eid mouseover-entity]]
-            [anvil.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
+            [anvil.graphics :refer [world-mouse-position]]
             [anvil.grid :as grid]
             [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]

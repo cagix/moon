@@ -9,7 +9,7 @@
   (bind-root app/screens
              (into {}
                    (for [k screens]
-                     [k [:screens/stage {:stage (stage/create g/gui-viewport
+                     [k [:screens/stage {:stage (stage/create app/gui-viewport
                                                               app/batch
                                                               (component/actors [k]))
                                          :sub-screen [k]}]])))

@@ -1,7 +1,8 @@
 (ns anvil.inventory
-  (:require [anvil.entity :refer [player-eid]]
+  (:require [anvil.app :refer [gui-viewport-width gui-viewport-height]]
+            [anvil.entity :refer [player-eid]]
             [anvil.fsm :as fsm]
-            [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
+            [anvil.graphics :as g :refer [->sprite sprite-sheet gui-mouse-position]]
             [anvil.info :as info]
             [anvil.modifiers :as mods]
             [anvil.stage :as stage]

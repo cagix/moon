@@ -1,5 +1,6 @@
 (ns forge.world.render
-  (:require [anvil.entity :as entity :refer [line-of-sight?]]
+  (:require [anvil.app :refer [world-viewport-width world-viewport-height]]
+            [anvil.entity :as entity :refer [line-of-sight?]]
             [anvil.graphics :as g]
             [anvil.grid :as grid]
             [anvil.raycaster :refer [ray-blocked?]]
@@ -32,8 +33,8 @@
 
     (when tile-grid?
       (g/grid (int left-x) (int bottom-y)
-              (inc (int g/world-viewport-width))
-              (+ 2 (int g/world-viewport-height))
+              (inc (int world-viewport-width))
+              (+ 2 (int world-viewport-height))
               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)

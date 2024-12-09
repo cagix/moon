@@ -43,7 +43,7 @@
   (let [rahmen      (g/->image "images/rahmen.png")
         hpcontent   (g/->image "images/hp.png")
         manacontent (g/->image "images/mana.png")
-        x (/ g/gui-viewport-width 2)
+        x (/ app/gui-viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
@@ -108,7 +108,7 @@
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [g/gui-viewport-width 0]
+                           :position [app/gui-viewport-width 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
