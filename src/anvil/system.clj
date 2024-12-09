@@ -1,5 +1,15 @@
 (ns anvil.system
-  (:require [clojure.utils :refer [defsystem]]))
+  (:refer-clojure :exclude [apply]))
+
+(defmacro defsystem
+  {:arglists '([name docstring?])}
+  [name-sym & args]
+  (let [docstring (if (string? (first args))
+                    (first args))]
+    `(defmulti ~name-sym
+       ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
+       (fn [[k#] & _args#]
+         k#))))
 
 (defsystem ->v)
 (defmethod ->v :default [[_ v]]
@@ -41,7 +51,7 @@
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
-(defsystem draw-gui-view [_])
+(defsystem draw-gui-view)
 (defmethod draw-gui-view :default [_])
 
 (defsystem clicked-inventory-cell)
@@ -59,3 +69,16 @@
 
 (defsystem render-effect)
 (defmethod render-effect :default  [_ _ctx])
+
+(defsystem render)
+(defmethod render :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ w h])
+
+(defsystem info)
+(defmethod info :default [_])
+
+(defsystem apply)
+(defsystem order)
+(defsystem value-text)

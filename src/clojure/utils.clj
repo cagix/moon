@@ -202,16 +202,6 @@
                        (component-k->namespace prefix k)
                        k)))
 
-(defmacro defsystem
-  {:arglists '([name docstring?])}
-  [name-sym & args]
-  (let [docstring (if (string? (first args))
-                    (first args))]
-    `(defmulti ~name-sym
-       ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
-       (fn [[k#] & _args#]
-         k#))))
-
 (def overwrite-warnings? false)
 
 (defmacro defmethods [k & sys-impls]

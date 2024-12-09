@@ -1,9 +1,7 @@
 (ns anvil.component
-  (:require [clojure.string :as str]
-            [clojure.utils :refer [defsystem index-of]]))
-
-(defsystem info)
-(defmethod info :default [_])
+  (:require [anvil.system :as system]
+            [clojure.string :as str]
+            [clojure.utils :refer [index-of]]))
 
 (declare info-color
          info-text-k-order)
@@ -33,7 +31,7 @@
        sort-k-order
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k (info component)))
+                           (apply-color k (system/info component)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create

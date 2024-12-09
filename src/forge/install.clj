@@ -1,6 +1,5 @@
 (ns forge.install
   (:require [clojure.utils :refer [install install-component]]
-            [anvil.app :as app]
             [anvil.system :as system]
 
             forge.schemas
@@ -9,10 +8,10 @@
             forge.mapgen.uf-caves))
 
 (install "forge"
-         {:optional [#'app/create
-                     #'app/destroy
-                     #'app/render
-                     #'app/resize]}
+         {:optional [#'system/create
+                     #'system/destroy
+                     #'system/render
+                     #'system/resize]}
          (map vector [:app/db
                       :app/asset-manager
                       :app/sprite-batch
