@@ -1,5 +1,6 @@
 (ns forge.entity.state.npc-moving
-  (:require [anvil.entity :refer [send-event stat-value]]
+  (:require [anvil.entity :refer [stat-value]]
+            [anvil.fsm :as fsm]
             [anvil.world :refer [timer stopped?]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
@@ -20,4 +21,4 @@
 
 (defn tick [[_ {:keys [counter]}] eid]
   (when (stopped? counter)
-    (send-event eid :timer-finished)))
+    (fsm/event eid :timer-finished)))

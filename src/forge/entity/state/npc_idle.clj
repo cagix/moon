@@ -1,9 +1,9 @@
 (ns forge.entity.state.npc-idle
   (:require [anvil.effect :as effect]
-            [anvil.entity :as entity :refer [send-event]]
+            [anvil.entity :as entity]
+            [anvil.fsm :as fsm]
             [anvil.faction :as faction]
-            [anvil.world :as world :refer [nearest-entity line-of-sight?]]
-            [forge.skill :as skill]))
+            [anvil.world :as world :refer [nearest-entity line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
   (nearest-entity @(get world/grid (entity/tile entity))
@@ -32,7 +32,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (skill/usable-state entity % ctx))
+       (filter #(and (= :usable (entity/skill-usable-state entity % ctx))
                      (effect/useful? ctx (:skill/effects %))))
        first))
 
@@ -42,5 +42,5 @@
 (defn tick [_ eid]
   (let [effect-ctx (npc-effect-ctx eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
-      (send-event eid :start-action [skill effect-ctx])
-      (send-event eid :movement-direction (or (world/find-direction eid) [0 0])))))
+      (fsm/event eid :start-action [skill effect-ctx])
+      (fsm/event eid :movement-direction (or (world/find-direction eid) [0 0])))))

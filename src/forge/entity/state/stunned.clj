@@ -1,5 +1,5 @@
 (ns forge.entity.state.stunned
-  (:require [anvil.entity :refer [send-event]]
+  (:require [anvil.fsm :as fsm]
             [anvil.graphics :as g]
             [anvil.world :refer [timer stopped?]]))
 
@@ -15,7 +15,7 @@
 
 (defn tick [[_ {:keys [counter]}] eid]
   (when (stopped? counter)
-    (send-event eid :effect-wears-off)))
+    (fsm/event eid :effect-wears-off)))
 
 (defn render-below [_ entity]
   (g/circle (:position entity) 0.5 [1 1 1 0.6]))

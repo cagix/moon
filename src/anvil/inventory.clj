@@ -1,6 +1,6 @@
 (ns anvil.inventory
   (:require [anvil.component :refer [info-text]]
-            [anvil.entity :as entity]
+            [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
             [anvil.stage :as stage]
             [anvil.system :refer [clicked-inventory-cell]]
@@ -35,7 +35,7 @@
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
   (g/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
-             (= :player-item-on-cursor (entity/state-k player-entity)))
+             (= :player-item-on-cursor (fsm/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
@@ -90,7 +90,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (clicked-inventory-cell (entity/state-obj @player-eid) cell))))
+                            (clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
     stack))
 
 (def empty-inventory

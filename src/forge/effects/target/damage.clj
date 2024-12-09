@@ -1,6 +1,7 @@
 (ns forge.effects.target.damage
   (:require [anvil.db :as db]
-            [anvil.entity :as entity :refer [send-event hitpoints damage-mods stat-value]]
+            [anvil.entity :as entity :refer [hitpoints damage-mods stat-value]]
+            [anvil.fsm :as fsm]
             [anvil.world :refer [spawn-audiovisual]]
             [clojure.rand :refer [rand-int-between]]))
 
@@ -41,5 +42,5 @@
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
        (spawn-audiovisual (:position target*)
                           (db/build :audiovisuals/damage))
-       (send-event target (if (zero? new-hp-val) :kill :alert))
+       (fsm/event target (if (zero? new-hp-val) :kill :alert))
        (swap! target entity/add-string-effect (str "[RED]" dmg-amount "[]"))))))

@@ -5,6 +5,7 @@
             [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.entity :as entity]
+            [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
                                           sub-image ->image draw-tiled-map gui-viewport-width
                                           gui-mouse-position world-mouse-position world-camera
@@ -305,7 +306,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(system/draw-gui-view (entity/state-obj @player-eid))})
+   (ui-actor {:draw #(system/draw-gui-view (fsm/state-obj @player-eid))})
    (player-message/actor)])
 
 (defn- windows []
@@ -505,11 +506,11 @@
       (system/destroy component eid))))
 
 (defn- update-world []
-  (system/manual-tick (entity/state-obj @player-eid))
+  (system/manual-tick (fsm/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root paused? (or tick-error
                          (and pausing?
-                              (system/pause-game? (entity/state-obj @player-eid))
+                              (system/pause-game? (fsm/state-obj @player-eid))
                               (not (controls/unpaused?)))))
   (when-not paused?
     (time-update)

@@ -2,7 +2,8 @@
   (:require [anvil.action-bar :as action-bar]
             [anvil.app :refer [play-sound]]
             [anvil.controls :as controls]
-            [anvil.entity :refer [send-event]]
+            [anvil.entity :as entity]
+            [anvil.fsm :as fsm]
             [anvil.graphics :refer [set-cursor world-mouse-position]]
             [anvil.inventory :as inventory]
             [anvil.stage :as stage :refer [mouse-on-actor?]]
@@ -10,10 +11,7 @@
             [anvil.world :refer [player-eid mouseover-eid]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.gdx.scene2d.actor :as actor]
-            [forge.entity.inventory :refer [can-pickup-item? pickup-item remove-item]]
-            [forge.entity.skills :refer [has-skill? add-skill]]
-            [forge.skill :as skill]))
+            [clojure.gdx.scene2d.actor :as actor]))
 
 (defn- denied [text]
   (play-sound "bfxr_denied")
@@ -30,13 +28,13 @@
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (send-event player-eid :pickup-item item))
+      (fsm/event player-eid :pickup-item item))
 
-     (can-pickup-item? @player-eid item)
+     (entity/can-pickup-item? @player-eid item)
      (do
       (play-sound "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (pickup-item player-eid item))
+      (entity/pickup-item player-eid item))
 
      :else
      (do
@@ -95,14 +93,14 @@
      (if-let [skill-id (action-bar/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
-             state (skill/usable-state entity skill effect-ctx)]
+             state (entity/skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
             ; different color ?
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
-             (fn [] (send-event eid :start-action [skill effect-ctx]))])
+             (fn [] (fsm/event eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -125,7 +123,7 @@
 
 (defn manual-tick [[_ {:keys [eid]}]]
   (if-let [movement-vector (controls/movement-vector)]
-    (send-event eid :movement-input movement-vector)
+    (fsm/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
       (set-cursor cursor)
       (when (button-just-pressed? :left)
@@ -135,13 +133,13 @@
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play-sound "bfxr_takeit")
-    (send-event eid :pickup-item item)
-    (remove-item eid cell)))
+    (fsm/event eid :pickup-item item)
+    (entity/remove-item eid cell)))
 
 (defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
-               (not (has-skill? @eid skill)))
+               (not (entity/has-skill? @eid skill)))
       (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-      (swap! eid add-skill skill))))
+      (swap! eid entity/add-skill skill))))

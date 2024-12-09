@@ -1,13 +1,13 @@
 (ns forge.entity.state.player-item-on-cursor
   (:require [anvil.app :refer [play-sound]]
-            [anvil.entity :as entity :refer [send-event]]
+            [anvil.entity :as entity]
+            [anvil.fsm :as fsm]
             [anvil.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
             [anvil.inventory :refer [valid-slot?]]
             [anvil.stage :refer [mouse-on-actor?]]
             [anvil.world :refer [spawn-item]]
             [clojure.gdx.input :refer [button-just-pressed?]]
-            [clojure.gdx.math.vector2 :as v]
-            [forge.entity.inventory :refer [set-item remove-item stackable? stack-item]]))
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -21,17 +21,17 @@
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (set-item eid cell item-on-cursor)
-      (send-event eid :dropped-item))
+      (entity/set-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
-          (stackable? item-in-cell item-on-cursor))
+          (entity/stackable? item-in-cell item-on-cursor))
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (stack-item eid cell item-on-cursor)
-      (send-event eid :dropped-item))
+      (entity/stack-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -41,10 +41,10 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (remove-item eid cell)
-      (set-item eid cell item-on-cursor)
-      (send-event eid :dropped-item)
-      (send-event eid :pickup-item item-in-cell)))))
+      (entity/remove-item eid cell)
+      (entity/set-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item)
+      (fsm/event eid :pickup-item item-in-cell)))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -75,7 +75,7 @@
 (defn manual-tick [[_ {:keys [eid]}]]
   (when (and (button-just-pressed? :left)
              (world-item?))
-    (send-event eid :drop-item)))
+    (fsm/event eid :drop-item)))
 
 (defn clicked-inventory-cell [[_ {:keys [eid]}] cell]
   (clicked-cell eid cell))
@@ -99,7 +99,7 @@
 
 (defn draw-gui-view [[_ {:keys [eid]}]]
   (let [entity @eid]
-    (when (and (= :player-item-on-cursor (entity/state-k entity))
+    (when (and (= :player-item-on-cursor (fsm/state-k entity))
                (not (world-item?)))
       (draw-centered (:entity/image (:entity/item-on-cursor entity))
                      (gui-mouse-position)))))

@@ -17,7 +17,7 @@
                                                         (:entity/image (db/build id)) ; TODO here anyway taken
                                                         ; => should probably build this window @ game start
                                                         (fn []
-                                                          (clicked-skillmenu-skill (e-state-obj @player-eid) (db/build id))))]]
+                                                          (clicked-skillmenu-skill (fsm/state-obj @player-eid) (db/build id))))]]
                          (do
                           (add-tooltip! button #(info/->text (db/build id))) ; TODO no player modifiers applied (see actionbar)
                           button))]

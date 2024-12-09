@@ -1,6 +1,7 @@
 (ns forge.entity.state.player-moving
   (:require [anvil.controls :as controls]
-            [anvil.entity :refer [send-event stat-value]]
+            [anvil.entity :refer [stat-value]]
+            [anvil.fsm :as fsm]
             [anvil.world :refer [timer stopped?]]))
 
 (defn ->v [[_ eid movement-vector]]
@@ -24,4 +25,4 @@
   (if-let [movement-vector (controls/movement-vector)]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (stat-value @eid :entity/movement-speed)})
-    (send-event eid :no-movement-input)))
+    (fsm/event eid :no-movement-input)))

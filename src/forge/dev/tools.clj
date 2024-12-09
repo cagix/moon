@@ -1,6 +1,7 @@
 (ns forge.dev.tools
   (:require [anvil.app :refer [post-runnable]]
             [anvil.db :as db]
+            [anvil.entity :as entity]
             [anvil.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
@@ -8,8 +9,7 @@
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [clojure.vis-ui :as vis]
-            [forge.entity.skills :refer [add-skill]])
+            [clojure.vis-ui :as vis])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
@@ -69,7 +69,7 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! player-eid add-skill (db/build skill-id))))
+   (swap! player-eid entity/add-skill (db/build skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable

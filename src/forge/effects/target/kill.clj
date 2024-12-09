@@ -1,9 +1,9 @@
 (ns forge.effects.target.kill
-  (:require [anvil.entity :refer [send-event]]))
+  (:require [anvil.fsm :as fsm]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target
        (:entity/fsm @target)))
 
 (defn handle [_ {:keys [effect/target]}]
-  (send-event target :kill))
+  (fsm/event target :kill))

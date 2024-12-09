@@ -1,5 +1,5 @@
 (ns forge.entity.alert-friendlies-after-duration
-  (:require [anvil.entity :refer [send-event]]
+  (:require [anvil.fsm :as fsm]
             [anvil.world :refer [stopped? circle->entities]]))
 
 (def ^:private shout-radius 4)
@@ -14,4 +14,4 @@
   (when (stopped? counter)
     (swap! eid assoc :entity/destroyed? true)
     (doseq [friendly-eid (friendlies-in-radius (:position @eid) faction)]
-      (send-event friendly-eid :alert))))
+      (fsm/event friendly-eid :alert))))
