@@ -2,11 +2,11 @@
   (:require [anvil.app :refer [play-sound]]
             [anvil.entity :as entity :refer [send-event]]
             [anvil.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
+            [anvil.stage :refer [mouse-on-actor?]]
             [anvil.world :refer [spawn-item]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [forge.entity.inventory :refer [set-item remove-item stackable? stack-item]]
-            [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.ui.inventory :refer [valid-slot?]]))
 
 (defn- clicked-cell [eid cell]

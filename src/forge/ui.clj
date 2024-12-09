@@ -1,8 +1,8 @@
 (ns forge.ui
   (:require [anvil.graphics :as g]
+            [anvil.stage :as stage]
             [anvil.ui :as ui]
-            [clojure.utils :refer [pretty-pst with-err-str]]
-            [forge.screens.stage :refer [screen-stage add-actor]])
+            [clojure.utils :refer [pretty-pst with-err-str]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn background-image []
@@ -16,13 +16,13 @@
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (::modal (screen-stage))))
-  (add-actor
+  (assert (not (::modal (stage/get))))
+  (stage/add-actor
    (ui/window {:title title
                :rows [[(ui/label text)]
                       [(ui/text-button button-text
                                        (fn []
-                                         (Actor/.remove (::modal (screen-stage)))
+                                         (Actor/.remove (::modal (stage/get)))
                                          (on-click)))]]
                :id ::modal
                :modal? true
@@ -34,7 +34,7 @@
 
 (defn error-window! [throwable]
   (pretty-pst throwable)
-  (add-actor
+  (stage/add-actor
    (ui/window {:title "Error"
                :rows [[(ui/label (binding [*print-level* 3]
                                    (with-err-str

@@ -1,6 +1,5 @@
 (ns forge.screens.stage
-  (:require [anvil.app :refer [current-screen]]
-            [anvil.graphics :refer [batch gui-viewport gui-mouse-position]]
+  (:require [anvil.graphics :refer [batch gui-viewport]]
             [anvil.screen :as screen]
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.group :refer [find-actor-with-id]]
@@ -46,17 +45,3 @@
                        not-found))))]
     (run! #(.addActor stage %) actors)
     (->StageScreen stage (or screen empty-screen))))
-
-(defn screen-stage ^Stage []
-  (:stage (current-screen)))
-
-(defn add-actor [actor]
-  (.addActor (screen-stage) actor))
-
-(defn reset-stage [new-actors]
-  (.clear (screen-stage))
-  (run! add-actor new-actors))
-
-(defn mouse-on-actor? []
-  (let [[x y] (gui-mouse-position)]
-    (.hit (screen-stage) x y true)))

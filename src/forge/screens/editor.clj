@@ -4,6 +4,7 @@
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-height]]
             [anvil.property :as property]
+            [anvil.stage :as stage]
             [anvil.ui :refer [horizontal-separator-cell
                               vertical-separator-cell
                               ui-actor
@@ -34,7 +35,7 @@
                                    find-first
                                    index-of]]
             [forge.malli :as malli]
-            [forge.screens.stage :as stage :refer [screen-stage add-actor]]
+            [forge.screens.stage :as stage-screen]
             [forge.ui :refer [background-image
                               error-window!]]
             [malli.generator :as mg])
@@ -156,7 +157,7 @@
                                (let [[k _] (user-object table)]
                                  (Actor/.setUserObject table [k sound-file]))))
                 (play-button sound-file)])]
-    (add-actor (scrollable-choose-window rows))))
+    (stage/add-actor (scrollable-choose-window rows))))
 
 (defn- columns [table sound-file]
   [(text-button (name sound-file) #(choose-window table))
@@ -236,7 +237,7 @@
                                             (redo-rows (conj property-ids id)))]
                         (.add window (overview-table property-type clicked-id-fn))
                         (.pack window)
-                        (add-actor window))))]
+                        (stage/add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/build property-id)
               image-widget (image->widget (property/image property)
@@ -275,7 +276,7 @@
                                               (redo-rows id))]
                           (.add window (overview-table property-type clicked-id-fn))
                           (.pack window)
-                          (add-actor window)))))]
+                          (stage/add-actor window)))))]
       [(when property-id
          (let [property (db/build property-id)
                image-widget (image->widget (property/image property)
@@ -296,7 +297,7 @@
        first))
 
 (defn- get-editor-window []
-  (:property-editor-window (screen-stage)))
+  (:property-editor-window (stage/get)))
 
 (defn- window->property-value []
  (let [window (get-editor-window)
@@ -308,7 +309,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (Actor/.remove (get-editor-window))
-    (add-actor (editor-window prop-value))))
+    (stage/add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (db/schema-of k) v)]
@@ -378,7 +379,7 @@
                                                      map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
-    (add-actor window)))
+    (stage/add-actor window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -440,7 +441,7 @@
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
-                  #(stage/add! (scrollable-choose-window (texture-rows)))
+                  #(add-actor (scrollable-choose-window (texture-rows)))
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
@@ -453,7 +454,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (add-actor (editor-window (db/get-raw id))))
+  (stage/add-actor (editor-window (db/get-raw id))))
 
 (defn- property-type-tabs []
   (for [property-type (sort (db/property-types))]
@@ -479,7 +480,7 @@
     table))
 
 (defn create []
-  (stage/create
+  (stage-screen/create
    {:actors [(background-image)
              (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
              (ui-actor {:act (fn []

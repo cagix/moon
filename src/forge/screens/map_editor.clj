@@ -14,7 +14,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [forge.controls :as controls]
-            [forge.screens.stage :as stage]
+            [forge.screens.stage :as stage-screen]
             [forge.mapgen.modules :as modules]
             [forge.ui :refer [error-window!]]))
 
@@ -161,7 +161,7 @@ direction keys: move")
     (dispose (:tiled-map @current-data))))
 
 (defn create []
-  (stage/create
+  (stage-screen/create
    {:actors [(->generate-map-window world-id)
              (->info-window)]
     :screen (->MapEditorScreen (atom {:tiled-map (tiled/load-tmx-map modules/file)

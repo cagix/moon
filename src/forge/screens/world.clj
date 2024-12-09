@@ -9,6 +9,8 @@
                                           world-viewport-width world-viewport-height]]
             [anvil.level :refer [generate-level]]
             [anvil.screen :refer [Screen]]
+            [anvil.stage :as stage]
+            [forge.ui :refer [error-window!]]
             [anvil.system :as system]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
@@ -25,10 +27,10 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.vis-ui :as vis]
-            [clojure.utils :refer [bind-root ->tile tile->middle sort-by-order readable-number dev-mode?  pretty-pst]]
+            [clojure.utils :refer [bind-root ->tile tile->middle sort-by-order readable-number dev-mode? pretty-pst]]
             [data.grid2d :as g2d]
             [forge.controls :as controls]
-            [forge.screens.stage :as stage :refer [screen-stage reset-stage mouse-on-actor?]] [forge.ui :refer [error-window!]]
+            [forge.screens.stage :as stage-screen]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
@@ -236,7 +238,7 @@
   (tile-color-setter* (atom {}) light-position))
 
 ;"Mouseover-Actor: "
-#_(when-let [actor (mouse-on-actor?)]
+#_(when-let [actor (stage/mouse-on-actor?)]
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
@@ -309,7 +311,7 @@
    (player-message/actor)])
 
 (defn- windows []
-  (:windows (screen-stage)))
+  (:windows (stage/get)))
 
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window :entity-info-window]
@@ -442,7 +444,7 @@
 ; and this all goes to world-init?
 (defn start-world [world-props]
   ; TODO assert is :screens/world
-  (reset-stage (widgets))
+  (stage/reset (widgets))
   (world-clear)
   (bind-root tick-error nil)
   ; generate level -> creates actually the tiled-map and
@@ -488,7 +490,7 @@
          first)))
 
 (defn- update-mouseover-entity []
-  (let [new-eid (if (mouse-on-actor?)
+  (let [new-eid (if (stage/mouse-on-actor?)
                   nil
                   (calculate-eid))]
     (when mouseover-eid
@@ -588,5 +590,5 @@
     (world-clear)))
 
 (defn create []
-  (stage/create
+  (stage-screen/create
    {:screen (->WorldScreen)}))

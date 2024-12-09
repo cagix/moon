@@ -2,14 +2,14 @@
   (:require [anvil.app :refer [post-runnable]]
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
+            [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
             [anvil.world :refer [player-eid mouseover-entity spawn-creature spawn-item] :as world]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
-            [forge.entity.skills :refer [add-skill]]
-            [forge.screens.stage :refer [add-actor]])
+            [forge.entity.skills :refer [add-skill]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment

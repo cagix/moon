@@ -1,9 +1,9 @@
 (ns forge.ui.action-bar
   (:require [anvil.component :refer [info-text]]
+            [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor image-button add-tooltip!] :as ui]
             [clojure.gdx.scene2d.actor :refer [user-object]]
-            [clojure.gdx.scene2d.group :refer [add-actor! find-actor]]
-            [forge.screens.stage :refer [screen-stage]])
+            [clojure.gdx.scene2d.group :refer [add-actor! find-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
@@ -18,7 +18,7 @@
   (user-object (find-actor group "action-bar/button-group")))
 
 (defn- get-action-bar []
-  (let [group (::action-bar (:action-bar-table (screen-stage)))]
+  (let [group (::action-bar (:action-bar-table (stage/get)))]
     {:horizontal-group group
      :button-group (group->button-group group)}))
 

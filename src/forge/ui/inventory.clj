@@ -2,6 +2,7 @@
   (:require [anvil.component :refer [info-text]]
             [anvil.entity :as entity]
             [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
+            [anvil.stage :as stage]
             [anvil.system :refer [clicked-inventory-cell]]
             [anvil.ui :refer [set-drawable!
                               ui-widget
@@ -15,8 +16,7 @@
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
-            [data.grid2d :as g2d]
-            [forge.screens.stage :refer [screen-stage]])
+            [data.grid2d :as g2d])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
@@ -146,7 +146,7 @@
                        :pad 4}]]}))
 
 (defn window []
-  (get (:windows (screen-stage)) :inventory-window))
+  (get (:windows (stage/get)) :inventory-window))
 
 (defn- cell-widget [cell]
   (get (::table (window)) cell))

@@ -6,12 +6,12 @@
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.utils :refer [dev-mode?]]
-            [forge.screens.stage :as stage]
+            [forge.screens.stage :as stage-screen]
             [forge.screens.world :refer [start-world]]
             [forge.ui :refer [background-image]]))
 
 (defn create []
-  (stage/create
+  (stage-screen/create
    {:actors [(background-image)
              (ui/table
               {:rows
