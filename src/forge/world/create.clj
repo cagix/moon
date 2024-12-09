@@ -1,6 +1,5 @@
 (ns forge.world.create
-  (:require [anvil.action-bar :as action-bar]
-            [anvil.app :as app]
+  (:require [anvil.app :as app]
             [anvil.component :refer [info-text]]
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
@@ -11,6 +10,7 @@
             [anvil.inventory :as inventory]
             [anvil.level :refer [generate-level]]
             [anvil.mana :as mana]
+            [anvil.skills :as skills]
             [anvil.stage :as stage]
             [anvil.system :as system]
             [anvil.ui :refer [ui-actor] :as ui]
@@ -180,7 +180,7 @@
   [(if dev-mode?
      (dev-menu)
      (ui-actor {}))
-   (ui/table {:rows [[{:actor (action-bar/create)
+   (ui/table {:rows [[{:actor (skills/action-bar)
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table

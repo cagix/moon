@@ -1,6 +1,5 @@
 (ns forge.entity.state.player-idle
-  (:require [anvil.action-bar :as action-bar]
-            [anvil.app :refer [play-sound]]
+  (:require [anvil.app :refer [play-sound]]
             [anvil.controls :as controls]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [set-cursor world-mouse-position]]
@@ -91,7 +90,7 @@
      (clickable-entity-interaction entity mouseover-eid)
 
      :else
-     (if-let [skill-id (action-bar/selected-skill)]
+     (if-let [skill-id (skills/selected)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]
