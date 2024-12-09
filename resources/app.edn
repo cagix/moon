@@ -3,7 +3,7 @@
           :fps 60
           :width 1440
           :height 900}
- :components [[:anvil.app/assets "resources/"]
+ :components [[:anvil.app/asset-manager "resources/"]
               [:app/db {:schema "schema.edn" :properties "properties.edn"}]
               [:app/sprite-batch]
               [:app/shape-drawer]

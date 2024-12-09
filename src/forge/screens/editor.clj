@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [anvil.app :refer [change-screen]]
-            [anvil.assets :as assets]
+  (:require [anvil.app :as app :refer [change-screen]]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-height]]
@@ -146,7 +145,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (asset-manager/all-of-class assets/manager :sound)]
+  (let [rows (for [sound-file (asset-manager/all-of-class app/asset-manager :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -431,7 +430,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (asset-manager/all-of-class assets/manager :texture))]
+  (for [file (sort (asset-manager/all-of-class app/asset-manager :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 

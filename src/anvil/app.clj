@@ -1,11 +1,14 @@
 (ns anvil.app
-  (:require [anvil.assets :as assets]
-            [clojure.awt :as awt]
+  (:require [clojure.awt :as awt]
             [clojure.component :refer [defsystem] :as component]
             [clojure.gdx.app :as app]
+            [clojure.gdx.asset-manager :as manager]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.files :as files]
+            [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl :as lwjgl]
+            [clojure.string :as str]
             [clojure.utils :refer [bind-root defmethods]]))
 
 (defsystem create)
@@ -19,9 +22,17 @@
 (defsystem resize)
 (defmethod resize :default [_ w h])
 
-(defmethods ::assets
-  (create [[_ folder]] (assets/create folder))
-  (dispose [_]         (assets/dispose)))
+(defmethods ::asset-manager
+  (create [[_ folder]]
+    (def asset-manager (manager/load-all
+                        (for [[asset-type exts] [[:sound   #{"wav"}]
+                                                 [:texture #{"png" "bmp"}]]
+                              file (map #(str/replace-first % folder "")
+                                        (files/recursively-search folder exts))]
+                          [file asset-type]))))
+
+  (dispose [_]
+    (disposable/dispose asset-manager)))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)
