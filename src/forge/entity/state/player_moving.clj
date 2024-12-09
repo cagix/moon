@@ -1,6 +1,5 @@
 (ns forge.entity.state.player-moving
-  (:require [forge.app.shape-drawer :as sd]
-            [forge.controls :as controls]
+  (:require [forge.controls :as controls]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.stat :as stat]
             [forge.world.time :refer [timer stopped?]]))

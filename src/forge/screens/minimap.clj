@@ -1,11 +1,10 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [anvil.graphics :refer [draw-on-world-view draw-tiled-map]]
+  (:require [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [forge.screen :refer [Screen]]
             [forge.app.screens :refer [change-screen]]
-            [forge.app.shape-drawer :as sd]
             [forge.app.world-viewport :refer [world-camera]]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.tiled-map :refer [world-tiled-map]]))
@@ -51,7 +50,7 @@
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
      (fn []
-       (sd/filled-circle (cam/position (world-camera)) 0.5 :green)))
+       (g/filled-circle (cam/position (world-camera)) 0.5 :green)))
     (when (or (key-just-pressed? :keys/tab)
               (key-just-pressed? :keys/escape))
       (change-screen :screens/world)))

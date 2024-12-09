@@ -1,5 +1,5 @@
 (ns forge.entity.mouseover?
-  (:require [forge.app.shape-drawer :as sd]
+  (:require [anvil.graphics :as g]
             [forge.entity.faction :as faction]
             [forge.world.player :refer [player-eid]]))
 
@@ -10,13 +10,13 @@
 
 (defn render-below [_ {:keys [entity/faction] :as entity}]
   (let [player @player-eid]
-    (sd/with-line-width 3
-      #(sd/ellipse (:position entity)
-                   (:half-width entity)
-                   (:half-height entity)
-                   (cond (= faction (faction/enemy player))
-                         enemy-color
-                         (= faction (:entity/faction player))
-                         friendly-color
-                         :else
-                         neutral-color)))))
+    (g/with-line-width 3
+      #(g/ellipse (:position entity)
+                  (:half-width entity)
+                  (:half-height entity)
+                  (cond (= faction (faction/enemy player))
+                        enemy-color
+                        (= faction (:entity/faction player))
+                        friendly-color
+                        :else
+                        neutral-color)))))

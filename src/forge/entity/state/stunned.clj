@@ -1,5 +1,5 @@
 (ns forge.entity.state.stunned
-  (:require [forge.app.shape-drawer :as sd]
+  (:require [anvil.graphics :as g]
             [forge.entity.fsm :refer [send-event]]
             [forge.world.time :refer [timer stopped?]]))
 
@@ -18,4 +18,4 @@
     (send-event eid :effect-wears-off)))
 
 (defn render-below [_ entity]
-  (sd/circle (:position entity) 0.5 [1 1 1 0.6]))
+  (g/circle (:position entity) 0.5 [1 1 1 0.6]))

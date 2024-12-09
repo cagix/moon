@@ -1,7 +1,6 @@
 (ns forge.entity.state.active-skill
   (:require [anvil.audio :refer [play-sound]]
-            [anvil.graphics :refer [draw-image]]
-            [forge.app.shape-drawer :as sd]
+            [anvil.graphics :as g :refer [draw-image]]
             [forge.effect :refer [effects-applicable? effects-do! effects-render]]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.mana :refer [pay-mana-cost]]
@@ -30,11 +29,11 @@
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (sd/filled-circle center radius [1 1 1 0.125])
-    (sd/sector center radius
-               90 ; start-angle
-               (* (float action-counter-ratio) 360) ; degree
-               [1 1 1 0.5])
+    (g/filled-circle center radius [1 1 1 0.125])
+    (g/sector center radius
+              90 ; start-angle
+              (* (float action-counter-ratio) 360) ; degree
+              [1 1 1 0.5])
     (draw-image image [(- (float x) radius) y])))
 
 (defn ->v [[_ eid [skill effect-ctx]]]

@@ -1,9 +1,7 @@
 (ns forge.effects.target-all
-  (:require [forge.app.shape-drawer :as sd]
+  (:require [anvil.graphics :as g]
             [forge.effect :refer [effects-do!]]
-            [forge.world :refer [active-entities
-                                 line-of-sight?
-                                 spawn-line-render]]
+            [forge.world :refer [active-entities line-of-sight?  spawn-line-render]]
             [forge.world.player :refer [player-eid]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
@@ -55,6 +53,6 @@
 (defn render-effect [_ {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target* (map deref (creatures-in-los-of-player))]
-      (sd/line (:position source*) #_(start-point source* target*)
-               (:position target*)
-               [1 0 0 0.5]))))
+      (g/line (:position source*) #_(start-point source* target*)
+              (:position target*)
+              [1 0 0 0.5]))))

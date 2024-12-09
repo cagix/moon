@@ -1,5 +1,5 @@
 (ns forge.entity.temp-modifier
-  (:require [forge.app.shape-drawer :as sd]
+  (:require [anvil.graphics :as g]
             [forge.entity.modifiers :as mods]
             [forge.world.time :refer [stopped?]]))
 
@@ -10,4 +10,4 @@
 
 ; TODO draw opacity as of counter ratio?
 (defn render-above [_ entity]
-  (sd/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
+  (g/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))

@@ -1,10 +1,9 @@
 (ns forge.ui.inventory
-  (:require [anvil.graphics :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
+  (:require [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
-            [forge.app.shape-drawer :as sd]
             [forge.app.vis-ui :refer [set-drawable!
                                       ui-widget
                                       texture-region-drawable
@@ -34,14 +33,14 @@
       (= (:item/slot item) slot)))
 
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
-  (sd/rectangle x y cell-size cell-size :gray)
+  (g/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (e-state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (sd/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (g/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??

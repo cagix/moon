@@ -1,6 +1,6 @@
 (ns forge.entity.hp
-  (:require [clojure.gdx.graphics.color :as color]
-            [forge.app.shape-drawer :as sd]
+  (:require [anvil.graphics :as g]
+            [clojure.gdx.graphics.color :as color]
             [forge.app.world-viewport :refer [pixels->world-units]]
             [forge.modifiers :refer [apply-max-modifier]]
             [forge.val-max :as val-max]))
@@ -29,14 +29,14 @@
           y (+ y half-height)
           height (pixels->world-units 5)
           border (pixels->world-units borders-px)]
-      (sd/filled-rectangle x y width height color/black)
-      (sd/filled-rectangle (+ x border)
-                           (+ y border)
-                           (- (* width ratio)
-                              (* 2 border))
-                           (- height
-                              (* 2 border))
-                           (hpbar-color ratio)))))
+      (g/filled-rectangle x y width height color/black)
+      (g/filled-rectangle (+ x border)
+                          (+ y border)
+                          (- (* width ratio)
+                             (* 2 border))
+                          (- height
+                             (* 2 border))
+                          (hpbar-color ratio)))))
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
   Current-hp is capped by max-hp."

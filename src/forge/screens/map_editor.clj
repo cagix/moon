@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [anvil.graphics :refer [draw-on-world-view draw-tiled-map gui-viewport-height]]
+  (:require [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
@@ -10,7 +10,6 @@
             [clojure.string :as str]
             [forge.app.db :as db]
             [forge.app.screens :as screens :refer [change-screen]]
-            [forge.app.shape-drawer :as sd]
             [forge.app.vis-ui :refer [ui-actor text-button] :as ui]
             [forge.app.world-viewport :refer [world-mouse-position world-camera]]
             [forge.controls :as controls]
@@ -96,24 +95,24 @@ direction keys: move")
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world-camera))
         [x y] (mapv int (world-mouse-position))]
-    (sd/rectangle x y 1 1 color/white)
+    (g/rectangle x y 1 1 color/white)
     (when start-position
-      (sd/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (g/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (sd/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
-        (sd/filled-circle [(+ x 0.5) (+ y 0.5)]
-                          0.05
-                          (case prop
-                            "all"   :green
-                            "air"   :orange
-                            "none"  :red))))
+        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
+        (g/filled-circle [(+ x 0.5) (+ y 0.5)]
+                         0.05
+                         (case prop
+                           "all"   :green
+                           "air"   :orange
+                           "none"  :red))))
     (when show-grid-lines
-      (sd/grid 0
-               0
-               (tiled/tm-width  tiled-map)
-               (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
+      (g/grid 0
+              0
+              (tiled/tm-width  tiled-map)
+              (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 

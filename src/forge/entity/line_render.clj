@@ -1,9 +1,9 @@
 (ns forge.entity.line-render
-  (:require [forge.app.shape-drawer :as sd]))
+  (:require [anvil.graphics :as g]))
 
 (defn render-default [[_ {:keys [thick? end color]}] entity]
   (let [position (:position entity)]
     (if thick?
-      (sd/with-line-width 4
-        #(sd/line position end color))
-      (sd/line position end color))))
+      (g/with-line-width 4
+        #(g/line position end color))
+      (g/line position end color))))

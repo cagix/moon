@@ -1,7 +1,7 @@
 (ns forge.effects.target-entity
-  (:require [clojure.gdx.math.vector2 :as v]
+  (:require [anvil.graphics :as g]
+            [clojure.gdx.math.vector2 :as v]
             [forge.app.db :as db]
-            [forge.app.shape-drawer :as sd]
             [forge.effect :refer [effects-applicable? effects-do!]]
             [forge.entity.body :refer [e-direction]]
             [forge.world :refer [spawn-line-render spawn-audiovisual]]))
@@ -49,8 +49,8 @@
   (when target
     (let [source* @source
           target* @target]
-      (sd/line (start-point source* target*)
-               (end-point source* target* maxrange)
-               (if (in-range? source* target* maxrange)
-                 [1 0 0 0.5]
-                 [1 1 0 0.5])))))
+      (g/line (start-point source* target*)
+              (end-point source* target* maxrange)
+              (if (in-range? source* target* maxrange)
+                [1 0 0 0.5]
+                [1 1 0 0.5])))))

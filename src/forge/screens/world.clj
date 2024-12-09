@@ -1,5 +1,5 @@
 (ns forge.screens.world
-  (:require [anvil.graphics :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image draw-tiled-map gui-viewport-width gui-mouse-position]]
+  (:require [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image draw-tiled-map gui-viewport-width gui-mouse-position]]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -18,7 +18,6 @@
                                    pretty-pst]]
             [forge.app.db :as db]
             [forge.app.screens :refer [change-screen]]
-            [forge.app.shape-drawer :as sd]
             [forge.app.vis-ui :refer [ui-actor
                                       change-listener
                                       image->widget]
@@ -162,11 +161,11 @@
   (let [position (world-mouse-position)
         radius 0.8
         circle {:position position :radius radius}]
-    (sd/circle position radius [1 0 0 0.5])
+    (g/circle position radius [1 0 0 0.5])
     (doseq [[x y] (map #(:position @%) (circle->cells circle))]
-      (sd/rectangle x y 1 1 [1 0 0 0.5]))
+      (g/rectangle x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
-      (sd/rectangle x y width height [0 0 1 1]))))
+      (g/rectangle x y width height [0 0 1 1]))))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)
@@ -178,10 +177,10 @@
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
-      (sd/grid (int left-x) (int bottom-y)
-               (inc (int world-viewport-width))
-               (+ 2 (int world-viewport-height))
-               1 1 [1 1 1 0.8]))
+      (g/grid (int left-x) (int bottom-y)
+              (inc (int world-viewport-width))
+              (+ 2 (int world-viewport-height))
+              1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
             :let [cell (world-grid [x y])]
@@ -189,17 +188,17 @@
             :let [cell* @cell]]
 
       (when (and cell-entities? (seq (:entities cell*)))
-        (sd/filled-rectangle x y 1 1 [1 0 0 0.6]))
+        (g/filled-rectangle x y 1 1 [1 0 0 0.6]))
 
       (when (and cell-occupied? (seq (:occupied cell*)))
-        (sd/filled-rectangle x y 1 1 [0 0 1 0.6]))
+        (g/filled-rectangle x y 1 1 [0 0 1 0.6]))
 
       (when potential-field-colors?
         (let [faction :good
               {:keys [distance]} (faction cell*)]
           (when distance
             (let [ratio (/ distance (factions-iterations faction))]
-              (sd/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
+              (g/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
@@ -208,7 +207,7 @@
     (let [[x y] (->tile (world-mouse-position))
           cell (get world-grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
-        (sd/rectangle x y 1 1
+        (g/rectangle x y 1 1
                       (case (:movement @cell)
                         :air  [1 1 0 0.5]
                         :none [1 0 0 0.5]))))))
@@ -444,7 +443,7 @@
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (sd/rectangle x y (:width entity) (:height entity) color)))
+    (g/rectangle x y (:width entity) (:height entity) color)))
 
 (defn- render-entity! [system entity]
   (try

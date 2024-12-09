@@ -1,14 +1,12 @@
 (ns forge.app.shape-drawer
-  (:require [anvil.graphics :refer [batch]]
+  (:require [anvil.graphics :refer [batch sd]]
             [clojure.gdx.graphics :as g]
-            [clojure.gdx.graphics.color :as color :refer [->color]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.math.utils :refer [degree->radians]]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.utils :refer [bind-root]]))
 
-(declare ^:private pixel-texture
-         ^:private sd)
+(declare ^:private pixel-texture)
 
 (defn- white-pixel-texture []
   (let [pixmap (doto (g/pixmap 1 1)
@@ -24,69 +22,3 @@
 
 (defn destroy [_]
   (dispose pixel-texture))
-
-(defn- sd-color [color]
-  (sd/set-color sd (->color color)))
-
-(defn ellipse [position radius-x radius-y color]
-  (sd-color color)
-  (sd/ellipse sd position radius-x radius-y))
-
-(defn filled-ellipse [position radius-x radius-y color]
-  (sd-color color)
-  (sd/filled-ellipse sd position radius-x radius-y))
-
-(defn circle [position radius color]
-  (sd-color color)
-  (sd/circle sd position radius))
-
-(defn filled-circle [position radius color]
-  (sd-color color)
-  (sd/filled-circle sd position radius))
-
-(defn arc [center radius start-angle degree color]
-  (sd-color color)
-  (sd/arc sd
-          center
-          radius
-          (degree->radians start-angle)
-          (degree->radians degree)))
-
-(defn sector [center radius start-angle degree color]
-  (sd-color color)
-  (sd/sector sd
-             center
-             radius
-             (degree->radians start-angle)
-             (degree->radians degree)))
-
-(defn rectangle [x y w h color]
-  (sd-color color)
-  (sd/rectangle sd x y w h))
-
-(defn filled-rectangle [x y w h color]
-  (sd-color color)
-  (sd/filled-rectangle sd x y w h))
-
-(defn line [start end color]
-  (sd-color color)
-  (sd/line sd start end))
-
-(defn grid [leftx bottomy gridw gridh cellw cellh color]
-  (sd-color color)
-  (let [w (* (float gridw) (float cellw))
-        h (* (float gridh) (float cellh))
-        topy (+ (float bottomy) (float h))
-        rightx (+ (float leftx) (float w))]
-    (doseq [idx (range (inc (float gridw)))
-            :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-      (line [linex topy] [linex bottomy]))
-    (doseq [idx (range (inc (float gridh)))
-            :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-      (line [leftx liney] [rightx liney]))))
-
-(defn with-line-width [width draw-fn]
-  (let [old-line-width (sd/default-line-width sd)]
-    (sd/set-default-line-width sd (* width old-line-width))
-    (draw-fn)
-    (sd/set-default-line-width sd old-line-width)))
