@@ -1,5 +1,6 @@
 (ns forge.app.cached-map-renderer
-  (:require [anvil.graphics :as g]
+  (:require [anvil.app :as app]
+            [anvil.graphics :as g]
             [clojure.gdx.tiled :as tiled]
             [clojure.utils :refer [bind-root]])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
@@ -9,7 +10,7 @@
              (memoize (fn [tiled-map]
                         (OrthogonalTiledMapRenderer. tiled-map
                                                      (float g/world-unit-scale)
-                                                     g/batch)))))
+                                                     app/batch)))))
 
 (extend-type OrthogonalTiledMapRenderer
   g/TiledMapRenderer

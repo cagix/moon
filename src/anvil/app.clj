@@ -5,6 +5,7 @@
             [clojure.gdx.asset-manager :as manager]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.files :as files]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl :as lwjgl]
@@ -33,6 +34,13 @@
 
   (dispose [_]
     (disposable/dispose asset-manager)))
+
+(defmethods ::batch
+  (create [_]
+    (def batch (g/sprite-batch)))
+
+  (dispose [_]
+    (disposable/dispose batch)))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)

@@ -1,5 +1,6 @@
 (ns forge.app.shape-drawer
-  (:require [anvil.graphics :refer [batch sd]]
+  (:require [anvil.app :refer [batch]]
+            [anvil.graphics :refer [sd]]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]

@@ -12,7 +12,6 @@
 
 (declare cursors
          default-font
-         batch
          sd
          gui-viewport
          gui-viewport-width
@@ -140,7 +139,7 @@
                        (float *unit-scale*)
                        (float (or scale 1))))
     (.draw font
-           batch
+           app/batch
            (str text)
            (float x)
            (+ (float y)
@@ -160,7 +159,7 @@
 
 (defn draw-image
   [{:keys [texture-region color] :as image} position]
-  (draw-texture-region batch
+  (draw-texture-region app/batch
                        texture-region
                        position
                        (unit-dimensions image *unit-scale*)
@@ -170,7 +169,7 @@
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region batch
+    (draw-texture-region app/batch
                          texture-region
                          [(- (float x) (/ (float w) 2))
                           (- (float y) (/ (float h) 2))]
@@ -182,7 +181,7 @@
   (draw-rotated-centered image 0 position))
 
 (defn- draw-with [viewport unit-scale draw-fn]
-  (draw-on-viewport batch
+  (draw-on-viewport app/batch
                     viewport
                     #(with-line-width unit-scale
                        (fn []

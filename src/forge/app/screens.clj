@@ -10,7 +10,7 @@
              (into {}
                    (for [k screens]
                      [k [:screens/stage {:stage (stage/create g/gui-viewport
-                                                              g/batch
+                                                              app/batch
                                                               (component/actors [k]))
                                          :sub-screen [k]}]])))
   (app/change-screen first-k))
