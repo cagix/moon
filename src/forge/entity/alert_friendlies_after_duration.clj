@@ -1,14 +1,14 @@
 (ns forge.entity.alert-friendlies-after-duration
   (:require [anvil.fsm :as fsm]
-            [anvil.time :refer [stopped?]]
-            [anvil.world :refer [circle->entities]]))
+            [anvil.grid :as grid]
+            [anvil.time :refer [stopped?]]))
 
 (def ^:private shout-radius 4)
 
 (defn- friendlies-in-radius [position faction]
   (->> {:position position
         :radius shout-radius}
-       circle->entities
+       grid/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
 (defn tick [[_ {:keys [counter faction]}] eid]

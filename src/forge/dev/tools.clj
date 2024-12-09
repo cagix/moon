@@ -2,10 +2,11 @@
   (:require [anvil.app :refer [post-runnable]]
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
+            [anvil.grid :as grid]
             [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
-            [anvil.world :refer [player-eid mouseover-entity spawn-creature spawn-item] :as world]
+            [anvil.world :refer [player-eid mouseover-entity spawn-creature spawn-item]]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -76,7 +77,7 @@
    (spawn-item (:position @player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
-  @(get world/grid (mapv int (world-mouse-position))))
+  @(grid/get (mapv int (world-mouse-position))))
 
 (defn- class->label-str [class]
   (case class

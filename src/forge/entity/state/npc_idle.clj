@@ -3,13 +3,14 @@
             [anvil.effect :as effect]
             [anvil.fsm :as fsm]
             [anvil.faction :as faction]
+            [anvil.grid :as grid]
             [anvil.skill :as skill]
             [anvil.potential-field :as potential-field]
-            [anvil.world :as world :refer [nearest-entity line-of-sight?]]))
+            [anvil.world :refer [line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
-  (nearest-entity @(get world/grid (body/tile entity))
-                  (faction/enemy entity)))
+  (grid/nearest-entity @(grid/get (body/tile entity))
+                       (faction/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
   (let [entity @eid

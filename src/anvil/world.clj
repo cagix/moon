@@ -3,14 +3,11 @@
             [anvil.content-grid :as content-grid]
             [anvil.db :as db]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
+            [anvil.grid :as grid]
             [anvil.time :refer [timer]]
             [anvil.raycaster :as raycaster]
             [clojure.component :as component]
             [clojure.gdx.graphics.camera :as cam]
-            [clojure.gdx.math.shapes :refer [rectangle->tiles
-                                             circle->outer-rectangle
-                                             rect-contains?
-                                             overlaps?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]))
 
@@ -31,60 +28,7 @@
 (declare content-grid)
 
 (defn active-entities []
-  (content-grid/active-entities content-grid
-                                @player-eid))
-
-(defprotocol Cell
-  (cell-blocked? [cell* z-order])
-  (blocks-vision? [cell*])
-  (occupied-by-other? [cell* eid]
-                      "returns true if there is some occupying body with center-tile = this cell
-                      or a multiple-cell-size body which touches this cell.")
-  (nearest-entity          [cell* faction])
-  (nearest-entity-distance [cell* faction]))
-
-(declare grid)
-
-(defn rectangle->cells [rectangle]
-  (into [] (keep grid) (rectangle->tiles rectangle)))
-
-(defn circle->cells [circle]
-  (->> circle
-       circle->outer-rectangle
-       rectangle->cells))
-
-(defn cells->entities [cells]
-  (into #{} (mapcat :entities) cells))
-
-(defn circle->entities [circle]
-  (->> (circle->cells circle)
-       (map deref)
-       cells->entities
-       (filter #(overlaps? circle @%))))
-
-(def ^:private offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]])
-
-; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
-(defn get-8-neighbour-positions [position]
-  (mapv #(mapv + position %) offsets))
-
-#_(defn- get-8-neighbour-positions [[x y]]
-    (mapv (fn [tx ty]
-            [tx ty])
-          (range (dec x) (+ x 2))
-          (range (dec y) (+ y 2))))
-
-(defn cached-adjacent-cells [cell]
-  (if-let [result (:adjacent-cells @cell)]
-    result
-    (let [result (into [] (keep grid) (-> @cell :position get-8-neighbour-positions))]
-      (swap! cell assoc :adjacent-cells result)
-      result)))
-
-(defn point->entities [position]
-  (when-let [cell (get grid (mapv int position))]
-    (filter #(rect-contains? @% position)
-            (:entities @cell))))
+  (content-grid/active-entities content-grid @player-eid))
 
 (declare raycaster)
 
@@ -124,7 +68,7 @@
                  (ray-blocked? (:position source) (:position target))))))
 
 (defn- set-cells! [eid]
-  (let [cells (rectangle->cells @eid)]
+  (let [cells (grid/rectangle->cells @eid)]
     (assert (not-any? nil? cells))
     (swap! eid assoc ::touched-cells cells)
     (doseq [cell cells]
@@ -140,10 +84,9 @@
 ; => only now there are no >1 tile entities anyway
 (defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
   (if (or (> (float width) 1) (> (float height) 1))
-    (rectangle->cells rectangle)
-    [(get grid
-          [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-           (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
+    (grid/rectangle->cells rectangle)
+    [(grid/get [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
+                (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
 
 (defn- set-occupied-cells! [eid]
   (let [cells (rectangle->occupied-cells @eid)]

@@ -1,7 +1,7 @@
 (ns forge.entity.projectile-collision
   (:require [anvil.body :as body]
             [anvil.effect :as effect]
-            [anvil.world :refer [cell-blocked? rectangle->cells cells->entities]]
+            [anvil.grid :as grid]
             [clojure.utils :refer [find-first]]))
 
 (defn ->v [[_ v]]
@@ -13,15 +13,15 @@
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (rectangle->cells entity)) ; just use cached-touched -cells
+        cells* (map deref (grid/rectangle->cells entity)) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
                                      (:collides? @%)
                                      (body/collides? entity @%))
-                               (cells->entities cells*))
+                               (grid/cells->entities cells*))
         destroy? (or (and hit-entity (not piercing?))
-                     (some #(cell-blocked? % (:z-order entity)) cells*))]
+                     (some #(grid/cell-blocked? % (:z-order entity)) cells*))]
     (when destroy?
       (swap! eid assoc :entity/destroyed? true))
     (when hit-entity

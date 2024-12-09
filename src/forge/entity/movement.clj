@@ -1,7 +1,8 @@
 (ns forge.entity.movement
   (:require [anvil.body :as body]
             [anvil.time :as time]
-            [anvil.world :refer [cell-blocked?  rectangle->cells cells->entities] :as world]
+            [anvil.grid :as grid]
+            [anvil.world :as world]
             [clojure.gdx.math.vector2 :as v]
             [malli.core :as m]))
 
@@ -15,10 +16,10 @@
 
 (defn- valid-position? [{:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
-  (let [cells* (into [] (map deref) (rectangle->cells body))]
-    (and (not-any? #(cell-blocked? % z-order) cells*)
+  (let [cells* (into [] (map deref) (grid/rectangle->cells body))]
+    (and (not-any? #(grid/cell-blocked? % z-order) cells*)
          (->> cells*
-              cells->entities
+              grid/cells->entities
               (not-any? (fn [other-entity]
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)

@@ -5,6 +5,7 @@
             [anvil.db :as db]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
+            [anvil.grid :as grid]
             [anvil.hitpoints :as hp]
             [anvil.info :as info]
             [anvil.inventory :as inventory]
@@ -239,7 +240,7 @@
     (bind-root world/raycaster [arr width height])))
 
 (defn init-raycaster [tiled-map]
-  (init-raycaster* world/grid world/blocks-vision?))
+  (init-raycaster* grid/grid grid/blocks-vision?))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -249,7 +250,7 @@
                   occupied
                   good
                   evil]
-  world/Cell
+  grid/Cell
   (cell-blocked? [_ z-order]
     (case movement
       :none true ; wall
@@ -280,15 +281,15 @@
     :occupied #{}}))
 
 (defn- init-world-grid [tiled-map]
-  (bind-root world/grid (g2d/create-grid
-                         (tiled/tm-width tiled-map)
-                         (tiled/tm-height tiled-map)
-                         (fn [position]
-                           (atom (->cell position
-                                         (case (tiled/movement-property tiled-map position)
-                                           "none" :none
-                                           "air"  :air
-                                           "all"  :all)))))))
+  (bind-root grid/grid (g2d/create-grid
+                        (tiled/tm-width tiled-map)
+                        (tiled/tm-height tiled-map)
+                        (fn [position]
+                          (atom (->cell position
+                                        (case (tiled/movement-property tiled-map position)
+                                          "none" :none
+                                          "air"  :air
+                                          "all"  :all)))))))
 
 (defn- world-init [{:keys [tiled-map start-position]}]
   (bind-root world/tiled-map tiled-map)

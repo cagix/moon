@@ -1,7 +1,7 @@
 (ns forge.world.potential-fields
   (:require [anvil.body :as body]
-            [anvil.potential-field :refer [pf-cell-blocked?]]
-            [anvil.world :as world]))
+            [anvil.grid :as grid]
+            [anvil.potential-field :refer [pf-cell-blocked?]]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})
@@ -83,12 +83,12 @@
 ; (or teleported?)
 (defn- step [faction last-marked-cells]
   (let [marked-cells (transient [])
-        distance       #(world/nearest-entity-distance % faction)
-        nearest-entity #(world/nearest-entity          % faction)
+        distance       #(grid/nearest-entity-distance % faction)
+        nearest-entity #(grid/nearest-entity          % faction)
         marked? faction]
     ; sorting important because of diagonal-cell values, flow from lower dist first for correct distance
     (doseq [cell (sort-by #(distance @%) last-marked-cells)
-            adjacent-cell (world/cached-adjacent-cells cell)
+            adjacent-cell (grid/cached-adjacent-cells cell)
             :let [cell* @cell
                   adjacent-cell* @adjacent-cell]
             :when (not (or (pf-cell-blocked? adjacent-cell*)
@@ -105,7 +105,7 @@
   "returns the marked-cells"
   [faction tiles->entities max-iterations]
   (let [entity-cell-seq (for [[tile eid] tiles->entities] ; FIXME lazy seq
-                          [eid (get world/grid tile)])
+                          [eid (grid/get tile)])
         marked (map second entity-cell-seq)]
     (doseq [[eid cell] entity-cell-seq]
       (add-field-data! cell faction 0 eid))

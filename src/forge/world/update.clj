@@ -2,9 +2,10 @@
   (:require [anvil.controls :as controls]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
+            [anvil.grid :as grid]
             [anvil.stage :as stage]
             [anvil.time :as time]
-            [anvil.world :as world :refer [player-eid explored-tile-corners mouseover-entity mouseover-eid active-entities circle->cells point->entities line-of-sight? render-z-order]]
+            [anvil.world :as world :refer [player-eid explored-tile-corners mouseover-entity mouseover-eid active-entities line-of-sight? render-z-order]]
             [clojure.component :as component]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.utils :refer [bind-root sort-by-order]]
@@ -39,7 +40,7 @@
 (defn- calculate-eid []
   (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
-                     (point->entities
+                     (grid/point->entities
                       (world-mouse-position)))]
     (->> render-z-order
          (sort-by-order hits #(:z-order @%))

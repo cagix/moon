@@ -3,9 +3,10 @@
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [draw-text]]
+            [anvil.grid :as grid]
             [anvil.stat :as stat]
             [anvil.string-effect :as string-effect]
-            [anvil.world :as world :refer [nearest-entity-distance delayed-alert]]))
+            [anvil.world :refer [delayed-alert]]))
 
 (defn ->v [[_ eid]]
   {:eid eid})
@@ -18,8 +19,8 @@
 
 (defn tick [_ eid]
   (let [entity @eid
-        cell (get world/grid (body/tile entity))] ; pattern!
-    (when-let [distance (nearest-entity-distance @cell (faction/enemy entity))]
+        cell (grid/get (body/tile entity))] ; pattern!
+    (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
       (when (<= distance (stat/->value entity :entity/aggro-range))
         (fsm/event eid :alert)))))
 

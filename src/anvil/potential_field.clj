@@ -1,13 +1,13 @@
 (ns anvil.potential-field
   (:require [anvil.faction :as faction]
-            [anvil.world :refer [get-8-neighbour-positions
-                                 cell-blocked?
-                                 occupied-by-other?
-                                 grid
-                                 rectangle->cells
-                                 nearest-entity
-                                 nearest-entity-distance
-                                 cached-adjacent-cells]]
+            [anvil.grid :refer [get-8-neighbour-positions
+                                cell-blocked?
+                                occupied-by-other?
+                                grid
+                                rectangle->cells
+                                nearest-entity
+                                nearest-entity-distance
+                                cached-adjacent-cells]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [when-seq utils-positions]]))
 
