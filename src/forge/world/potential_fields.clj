@@ -1,5 +1,6 @@
 (ns forge.world.potential-fields
   (:require [anvil.body :as body]
+            [anvil.potential-field :refer [pf-cell-blocked?]]
             [anvil.world :as world]))
 
 ; FIXME config !
@@ -90,7 +91,7 @@
             adjacent-cell (world/cached-adjacent-cells cell)
             :let [cell* @cell
                   adjacent-cell* @adjacent-cell]
-            :when (not (or (world/pf-cell-blocked? adjacent-cell*)
+            :when (not (or (pf-cell-blocked? adjacent-cell*)
                            (marked? adjacent-cell*)))
             :let [distance-value (+ (float (distance cell*))
                                     (float (if (diagonal-cells? cell* adjacent-cell*)

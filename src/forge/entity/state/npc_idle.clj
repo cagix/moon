@@ -4,6 +4,7 @@
             [anvil.fsm :as fsm]
             [anvil.faction :as faction]
             [anvil.skill :as skill]
+            [anvil.potential-field :as potential-field]
             [anvil.world :as world :refer [nearest-entity line-of-sight?]]))
 
 (defn- nearest-enemy [entity]
@@ -44,4 +45,4 @@
   (let [effect-ctx (npc-effect-ctx eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
       (fsm/event eid :start-action [skill effect-ctx])
-      (fsm/event eid :movement-direction (or (world/find-direction eid) [0 0])))))
+      (fsm/event eid :movement-direction (or (potential-field/find-direction eid) [0 0])))))
