@@ -1,6 +1,6 @@
 (ns forge.entity.movement
-  (:require [clojure.gdx.math.vector2 :as v]
-            [forge.entity.body :refer [e-collides?]]
+  (:require [anvil.entity :as entity]
+            [clojure.gdx.math.vector2 :as v]
             [forge.world :as world]
             [forge.world.grid :refer [rectangle->cells cell-blocked? cells->entities]]
             [forge.world.time :as time]
@@ -24,7 +24,7 @@
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
                                  (:collides? other-entity)
-                                 (e-collides? other-entity body)))))))))
+                                 (entity/collides? other-entity body)))))))))
 
 (defn- try-move [body movement]
   (let [new-body (move-body body movement)]

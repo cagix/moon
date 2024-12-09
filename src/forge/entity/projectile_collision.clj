@@ -1,7 +1,7 @@
 (ns forge.entity.projectile-collision
-  (:require [clojure.utils :refer [find-first]]
+  (:require [anvil.entity :as entity]
+            [clojure.utils :refer [find-first]]
             [forge.effect :refer [effects-do!]]
-            [forge.entity.body :refer [e-collides?]]
             [forge.world.grid :refer [rectangle->cells
                                       cells->entities
                                       cell-blocked?]]))
@@ -20,7 +20,7 @@
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
                                      (:collides? @%)
-                                     (e-collides? entity @%))
+                                     (entity/collides? entity @%))
                                (cells->entities cells*))
         destroy? (or (and hit-entity (not piercing?))
                      (some #(cell-blocked? % (:z-order entity)) cells*))]

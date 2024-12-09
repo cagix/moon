@@ -1,6 +1,6 @@
 (ns forge.entity.state.npc-idle
-  (:require [forge.effect :refer [effects-useful?]]
-            [forge.entity.body :refer [e-tile e-direction]]
+  (:require [anvil.entity :as entity]
+            [forge.effect :refer [effects-useful?]]
             [forge.entity.faction :as faction]
             [forge.entity.fsm :refer [send-event]]
             [forge.skill :as skill]
@@ -9,7 +9,7 @@
             [forge.world.potential-fields :as potential-fields]))
 
 (defn- nearest-enemy [entity]
-  (nearest-entity @(get world-grid (e-tile entity))
+  (nearest-entity @(get world-grid (entity/tile entity))
                   (faction/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
@@ -21,7 +21,7 @@
     {:effect/source eid
      :effect/target target
      :effect/target-direction (when target
-                                (e-direction entity @target))}))
+                                (entity/direction entity @target))}))
 
 (comment
  (let [eid (ids->eids 76)

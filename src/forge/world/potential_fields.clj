@@ -1,7 +1,7 @@
 (ns forge.world.potential-fields
-  (:require [clojure.gdx.math.vector2 :as v]
+  (:require [anvil.entity :as entity]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [->tile when-seq utils-positions]]
-            [forge.entity.body :refer [e-tile]]
             [forge.entity.faction :as faction]
             [forge.world.grid :refer [world-grid
                                       cell-blocked?
@@ -60,7 +60,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(e-tile @%) entities)
+            (zipmap (map #(entity/tile @%) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -134,7 +134,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(e-tile @%) entities)
+    (zipmap (map #(entity/tile @%) entities)
             entities)))
 
 (defn- update-faction-potential-field [faction entities max-iterations]

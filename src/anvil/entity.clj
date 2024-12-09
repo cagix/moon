@@ -1,13 +1,13 @@
-(ns forge.entity.body
+(ns anvil.entity
   (:require [clojure.gdx.math.shapes :as shape]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [->tile]]))
 
-(defn e-direction [entity other-entity]
+(defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
 
-(defn e-collides? [entity other-entity]
+(defn collides? [entity other-entity]
   (shape/overlaps? entity other-entity))
 
-(defn e-tile [entity]
+(defn tile [entity]
   (->tile (:position entity)))
