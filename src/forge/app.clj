@@ -10,6 +10,7 @@
             [clojure.java.io :as io]
             [clojure.utils :refer [defmethods dev-mode?]]
             [forge.screens.editor :as editor]
+            [forge.screens.minimap :as minimap]
             [forge.world.create :refer [create-world]]))
 
 (defmethods :screens/main-menu
@@ -48,7 +49,10 @@
                        (when (key-just-pressed? :shift-left)
                          (screen/change :screens/main-menu)))})]))
 
-(defmethods :screens/minimap)
+(defmethods :screens/minimap
+  (screen/enter  [_] (minimap/enter))
+  (screen/exit   [_] (minimap/exit))
+  (screen/render [_] (minimap/render)))
 
 (defn -main []
   (-> "app.edn"

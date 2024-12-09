@@ -34,13 +34,13 @@
   (fn tile-corner-color-setter [color x y]
     (if (get explored? [x y]) color/white color/black)))
 
-(defn enter [_]
+(defn enter []
   (cam/set-zoom! (world-camera) (minimap-zoom)))
 
-(defn exit [_]
+(defn exit []
   (cam/reset-zoom! (world-camera)))
 
-(defn render [_]
+(defn render []
   (draw-tiled-map level/tiled-map
                   (->tile-corner-color-setter @explored-tile-corners))
   (draw-on-world-view
