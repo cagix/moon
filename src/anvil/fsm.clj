@@ -1,5 +1,6 @@
 (ns anvil.fsm
-  (:require [anvil.graphics :as g]
+  (:require [anvil.entity :as entity]
+            [anvil.graphics :as g]
             [clojure.component :as component]
             [reduce-fsm :as fsm]))
 
@@ -17,9 +18,9 @@
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (component/->v (if params
-                                                          [new-state-k eid params]
-                                                          [new-state-k eid]))]]
+              new-state-obj [new-state-k (entity/->v (if params
+                                                       [new-state-k eid params]
+                                                       [new-state-k eid]))]]
           (when (:entity/player? @eid)
             (when-let [cursor-k (component/cursor new-state-obj)]
               (g/set-cursor cursor-k)))

@@ -1,5 +1,5 @@
 (ns forge.entity.fsm
-  (:require [clojure.component :as component]
+  (:require [anvil.entity :as entity]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -63,4 +63,4 @@
                          :fsms/player player-fsm
                          :fsms/npc npc-fsm)
                        initial-state)
-         initial-state (component/->v [initial-state eid])))
+         initial-state (entity/->v [initial-state eid])))

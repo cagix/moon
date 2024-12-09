@@ -1,5 +1,6 @@
 (ns forge.install
   (:require [anvil.app :as app]
+            [anvil.entity :as entity]
             [anvil.screen :as screen]
             [clojure.component :as component]
             [clojure.utils :refer [install install-component]]
@@ -28,7 +29,7 @@
                       :effects.target/stun]))
 
 (def entity
-  {:optional [#'component/->v
+  {:optional [#'entity/->v
               #'component/create
               #'component/destroy
               #'component/tick

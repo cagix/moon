@@ -7,7 +7,7 @@
             [anvil.grid :as grid]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.time :refer [timer]]
-            [clojure.component :as component]
+            [clojure.component :as component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]))
@@ -179,9 +179,13 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
+(defsystem ->v)
+(defmethod ->v :default [[_ v]]
+  v)
+
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
-            (assoc m k (component/->v [k v])))
+            (assoc m k (->v [k v])))
           {}
           components))
 
