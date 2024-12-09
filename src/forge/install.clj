@@ -3,22 +3,10 @@
             [anvil.screen :as screen]
             [clojure.component :as component]
             [clojure.utils :refer [install install-component]]
-
             forge.schemas
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves))
-
-(def screen {:optional [#'app/actors
-                        #'screen/enter
-                        #'screen/exit
-                        #'screen/dispose
-                        #'screen/render]})
-
-(install "forge"
-         screen
-         (map vector [:screens/map-editor
-                      :screens/world]))
 
 (install "forge"
          {:required [#'component/applicable?

@@ -1,17 +1,24 @@
 (ns forge.app
   (:require [anvil.app :as app]
+            [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.graphics :refer [set-cursor]]
+            [anvil.graphics :refer [set-cursor world-camera]]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.edn :as edn]
+            [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.input :refer [key-just-pressed?]]
+            [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
+            [clojure.gdx.scene2d.group :refer [children]]
             [clojure.java.io :as io]
             [clojure.utils :refer [defmethods dev-mode?]]
             [forge.screens.editor :as editor]
             [forge.screens.minimap :as minimap]
-            [forge.world.create :refer [create-world]]))
+            [forge.world.create :refer [create-world]]
+            [forge.world.create :refer [dispose-world]]
+            [forge.world.render :refer [render-world]]
+            [forge.world.update :refer [update-world]]))
 
 (defmethods :screens/main-menu
   (app/actors [_]
@@ -53,6 +60,40 @@
   (screen/enter  [_] (minimap/enter))
   (screen/exit   [_] (minimap/exit))
   (screen/render [_] (minimap/render)))
+
+(defn- windows []
+  (:windows (stage/get)))
+
+(defn- check-window-hotkeys []
+  (doseq [window-id [:inventory-window :entity-info-window]
+          :when (controls/toggle-visible? window-id)]
+    (actor/toggle-visible! (get (windows) window-id))))
+
+(defn- close-all-windows []
+  (let [windows (children (windows))]
+    (when (some visible? windows)
+      (run! #(set-visible % false) windows))))
+
+(defmethods :screens/world
+  (screen/enter [_]
+    (cam/set-zoom! (world-camera) 0.8))
+
+  (screen/exit [_]
+    (set-cursor :cursors/default))
+
+  (screen/render [_]
+    (render-world)
+    (update-world)
+    (controls/world-camera-zoom)
+    (check-window-hotkeys)
+    (cond (controls/close-windows?)
+          (close-all-windows)
+
+          (controls/minimap?)
+          (screen/change :screens/minimap)))
+
+  (screen/dispose [_]
+    (dispose-world)))
 
 (defn -main []
   (-> "app.edn"

@@ -173,6 +173,7 @@
     (screen/dispose-all))
 
   (render [_]
+    (g/clear-screen color/black)
     (screen/render-current)))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
