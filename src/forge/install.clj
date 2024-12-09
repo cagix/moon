@@ -19,11 +19,11 @@
          app
          (map vector [:app/db]))
 
-(def screen {:optional [#'screen/actors
-                        #'screen/enter
+(def screen {:optional [#'screen/enter
                         #'screen/exit
-                        #'screen/render
-                        #'screen/dispose]})
+                        #'screen/actors
+                        #'screen/dispose
+                        #'screen/render]})
 
 (install "forge"
          screen
