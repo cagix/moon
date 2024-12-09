@@ -1,6 +1,7 @@
 (ns forge.install
   (:require [clojure.utils :refer [install install-component]]
             [anvil.app :as app]
+            [anvil.entity]
             [forge.effect :as effect]
             [forge.entity :as entity]
             [forge.entity.state :as state]
@@ -47,7 +48,7 @@
                       :effects.target/stun]))
 
 (def entity
-  {:optional [#'entity/->v
+  {:optional [#'anvil.entity/->v
               #'entity/create
               #'entity/destroy
               #'entity/tick
@@ -80,9 +81,9 @@
 (def entity-state
   (merge-with concat
               entity
-              {:optional [#'state/enter
-                          #'state/exit
-                          #'state/cursor
+              {:optional [#'anvil.entity/enter
+                          #'anvil.entity/exit
+                          #'anvil.entity/cursor
                           #'state/pause-game?
                           #'state/manual-tick
                           #'state/clicked-inventory-cell

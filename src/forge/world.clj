@@ -1,6 +1,7 @@
 (ns forge.world
   (:require [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
+            [anvil.entity]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
@@ -84,7 +85,7 @@
 
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
-            (assoc m k (component/->v [k v])))
+            (assoc m k (anvil.entity/->v [k v])))
           {}
           components))
 

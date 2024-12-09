@@ -1,10 +1,6 @@
 (ns forge.entity
   (:require [clojure.utils :refer [defsystem]]))
 
-(defsystem ->v)
-(defmethod ->v :default [[_ v]]
-  v)
-
 (defsystem create [_ eid])
 (defmethod create :default [_ eid])
 

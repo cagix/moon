@@ -1,15 +1,6 @@
 (ns forge.entity.state
   (:require [clojure.utils :refer [defsystem]]))
 
-(defsystem enter)
-(defmethod enter :default [_])
-
-(defsystem exit)
-(defmethod exit :default [_])
-
-(defsystem cursor)
-(defmethod cursor :default [_])
-
 (defsystem manual-tick)
 (defmethod manual-tick :default [_])
 

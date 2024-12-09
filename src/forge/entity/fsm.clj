@@ -1,6 +1,5 @@
 (ns forge.entity.fsm
-  (:require [forge.entity :refer [->v]]
-            [forge.entity.state :as state]
+  (:require [anvil.entity :refer [->v]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
