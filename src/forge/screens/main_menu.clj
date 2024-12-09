@@ -20,7 +20,7 @@
                           [(text-button (str "Start " (:property/id world))
                                         #(do
                                           (app/change-screen :screens/world)
-                                          (start-world world)))])
+                                          (create-world world)))])
                         [(when dev-mode?
                            [(text-button "Map editor"
                                          #(app/change-screen :screens/map-editor))])
