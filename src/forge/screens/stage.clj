@@ -1,11 +1,10 @@
 (ns forge.screens.stage
-  (:require [clojure.gdx.input :as input]
+  (:require [anvil.graphics :refer [batch]]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.group :refer [find-actor-with-id]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [forge.app.gui-viewport :refer [gui-viewport
-                                            gui-mouse-position]]
-            [forge.app.sprite-batch :refer [batch]]
+            [forge.app.gui-viewport :refer [gui-viewport gui-mouse-position]]
             [forge.app.screens :refer [current-screen]]
             [forge.screen :as screen])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))

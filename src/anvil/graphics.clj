@@ -5,7 +5,6 @@
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get]]
-            [forge.app.sprite-batch :refer [batch]]
             [forge.app.default-font :refer [default-font]]
             [forge.app.shape-drawer :refer [with-line-width]]
             [forge.app.world-viewport :refer [world-unit-scale
@@ -13,7 +12,8 @@
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)))
 
-(declare cursors)
+(declare cursors
+         batch)
 
 (defn set-cursor [cursor-key]
   (g/set-cursor (safe-get cursors cursor-key)))

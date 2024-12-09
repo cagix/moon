@@ -1,11 +1,11 @@
 (ns forge.app.shape-drawer
-  (:require [clojure.gdx.graphics :as g]
+  (:require [anvil.graphics :refer [batch]]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.math.utils :refer [degree->radians]]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [clojure.utils :refer [bind-root]]
-            [forge.app.sprite-batch :refer [batch]]))
+            [clojure.utils :refer [bind-root]]))
 
 (declare ^:private pixel-texture
          ^:private sd)

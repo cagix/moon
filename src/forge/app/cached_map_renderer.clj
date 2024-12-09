@@ -1,7 +1,7 @@
 (ns forge.app.cached-map-renderer
-  (:require [clojure.gdx.tiled :as tiled]
+  (:require [anvil.graphics :refer [batch]]
+            [clojure.gdx.tiled :as tiled]
             [clojure.utils :refer [bind-root]]
-            [forge.app.sprite-batch :refer [batch]]
             [forge.app.world-viewport :refer [world-unit-scale
                                               world-camera]])
   (:import (forge OrthogonalTiledMapRenderer
