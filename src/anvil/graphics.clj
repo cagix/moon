@@ -1,7 +1,10 @@
 (ns anvil.graphics
   (:require [anvil.app :as app]
+            [anvil.disposable :refer [dispose]]
+            [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.math.utils :refer [degree->radians]]
             [clojure.gdx.tiled :as tiled]
@@ -11,6 +14,8 @@
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
+
+(def truetype-font freetype/generate-font)
 
 (declare cursors
          default-font
@@ -90,6 +95,12 @@
     (sd/set-default-line-width sd (* width old-line-width))
     (draw-fn)
     (sd/set-default-line-width sd old-line-width)))
+
+(defn cursor [[file [hotspot-x hotspot-y]]]
+  (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))
+        cursor (g/cursor pixmap hotspot-x hotspot-y)]
+    (dispose pixmap)
+    cursor))
 
 (defn set-cursor [cursor-key]
   (g/set-cursor (safe-get cursors cursor-key)))

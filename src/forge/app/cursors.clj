@@ -1,17 +1,10 @@
 (ns forge.app.cursors
   (:require [anvil.disposable :as disposable]
-            [anvil.graphics :refer [cursors]]
-            [clojure.gdx.files :as files]
-            [clojure.gdx.graphics :as g]
+            [anvil.graphics :as g]
             [clojure.utils :refer [bind-root mapvals]]))
 
 (defn create [[_ data]]
-  (bind-root cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))
-                                      cursor (g/cursor pixmap hotspot-x hotspot-y)]
-                                  (disposable/dispose pixmap)
-                                  cursor))
-                              data)))
+  (bind-root g/cursors (mapvals g/cursor data)))
 
 (defn dispose [_]
-  (run! disposable/dispose (vals cursors)))
+  (run! disposable/dispose (vals g/cursors)))
