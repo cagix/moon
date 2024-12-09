@@ -1,5 +1,5 @@
 (ns forge.effects.target.audiovisual
-  (:require [anvil.world :refer [spawn-audiovisual]]))
+  (:require [anvil.entity :as entity]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   target)
@@ -8,4 +8,4 @@
   false)
 
 (defn handle [[_ audiovisual] {:keys [effect/target]}]
-  (spawn-audiovisual (:position @target) audiovisual))
+  (entity/audiovisual (:position @target) audiovisual))

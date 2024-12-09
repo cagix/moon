@@ -1,9 +1,8 @@
 (ns forge.world.render
-  (:require [anvil.graphics :as g]
+  (:require [anvil.entity :as entity :refer [line-of-sight?]]
+            [anvil.graphics :as g]
             [anvil.grid :as grid]
-            [anvil.world :as world :refer [line-of-sight?
-                                           explored-tile-corners
-                                           ray-blocked?]]
+            [anvil.world :as world :refer [explored-tile-corners ray-blocked?]]
             [clojure.component :as component]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -132,10 +131,10 @@
 (defn- render-entities
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."
   [entities]
-  (let [player @world/player-eid]
+  (let [player @entity/player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
-                                              world/render-z-order)
+                                              entity/render-z-order)
             system [component/render-below
                     component/render-default
                     component/render-above
@@ -148,12 +147,12 @@
 (defn render-world []
   ; FIXME position DRY
   (cam/set-position! (g/world-camera)
-                     (:position @world/player-eid))
+                     (:position @entity/player-eid))
   ; FIXME position DRY
   (g/draw-tiled-map world/tiled-map
                     (tile-color-setter (cam/position (g/world-camera))))
   (g/draw-on-world-view (fn []
                           (debug-render-before-entities)
                           ; FIXME position DRY (from player)
-                          (render-entities (map deref (world/active-entities)))
+                          (render-entities (map deref (entity/active-entities)))
                           (debug-render-after-entities))))

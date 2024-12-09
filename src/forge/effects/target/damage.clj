@@ -1,11 +1,11 @@
 (ns forge.effects.target.damage
   (:require [anvil.damage :as damage]
             [anvil.db :as db]
+            [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.hitpoints :as hp]
             [anvil.stat :as stat]
             [anvil.string-effect :as string-effect]
-            [anvil.world :refer [spawn-audiovisual]]
             [clojure.rand :refer [rand-int-between]]))
 
 (defn- effective-armor-save [source* target*]
@@ -43,7 +43,7 @@
            dmg-amount (rand-int-between min-max)
            new-hp-val (max (- (hp 0) dmg-amount) 0)]
        (swap! target assoc-in [:entity/hp 0] new-hp-val)
-       (spawn-audiovisual (:position target*)
-                          (db/build :audiovisuals/damage))
+       (entity/audiovisual (:position target*)
+                           (db/build :audiovisuals/damage))
        (fsm/event target (if (zero? new-hp-val) :kill :alert))
        (swap! target string-effect/add (str "[RED]" dmg-amount "[]"))))))

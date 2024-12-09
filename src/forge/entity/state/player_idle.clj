@@ -1,6 +1,7 @@
 (ns forge.entity.state.player-idle
   (:require [anvil.app :refer [play-sound]]
             [anvil.controls :as controls]
+            [anvil.entity :refer [player-eid mouseover-eid]]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [set-cursor world-mouse-position]]
             [anvil.inventory :as inventory]
@@ -8,7 +9,6 @@
             [anvil.stage :as stage :refer [mouse-on-actor?]]
             [anvil.skill :as skill]
             [anvil.ui :refer [window-title-bar? button?]]
-            [anvil.world :refer [player-eid mouseover-eid]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :as actor]))

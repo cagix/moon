@@ -1,6 +1,7 @@
 (ns forge.effects.projectile
   (:require [anvil.app :refer [play-sound]]
-            [anvil.world :refer [path-blocked? projectile-size spawn-projectile]]
+            [anvil.entity :as entity :refer [projectile-size]]
+            [anvil.world :refer [path-blocked? ]]
             [clojure.gdx.math.vector2 :as v]))
 
 (defn- projectile-start-point [entity direction size]
@@ -29,12 +30,12 @@
 
 (defn handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
   (play-sound "bfxr_waypointunlock")
-  (spawn-projectile {:position (projectile-start-point @source
-                                                       target-direction
-                                                       (projectile-size projectile))
-                     :direction target-direction
-                     :faction (:entity/faction @source)}
-                    projectile))
+  (entity/projectile {:position (projectile-start-point @source
+                                                        target-direction
+                                                        (projectile-size projectile))
+                      :direction target-direction
+                      :faction (:entity/faction @source)}
+                     projectile))
 
 (comment
  ; mass shooting

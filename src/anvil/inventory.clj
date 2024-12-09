@@ -1,5 +1,6 @@
 (ns anvil.inventory
-  (:require [anvil.fsm :as fsm]
+  (:require [anvil.entity :refer [player-eid]]
+            [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
             [anvil.info :as info]
             [anvil.modifiers :as mods]
@@ -12,7 +13,6 @@
                               add-tooltip!
                               remove-tooltip!]
              :as ui]
-            [anvil.world :refer [player-eid]]
             [clojure.component :as component]
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]

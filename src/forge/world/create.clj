@@ -3,6 +3,7 @@
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
             [anvil.db :as db]
+            [anvil.entity :as entity :refer [mouseover-entity]]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
             [anvil.grid :as grid]
@@ -16,7 +17,7 @@
             [anvil.time :as time]
             [anvil.ui :refer [ui-actor] :as ui]
             [anvil.val-max :as val-max]
-            [anvil.world :as world :refer [mouseover-entity]]
+            [anvil.world :as world]
             [clojure.component :as component]
             [clojure.gdx.graphics :refer [frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
@@ -51,7 +52,7 @@
                                           [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
-                       (let [player-entity @world/player-eid
+                       (let [player-entity @entity/player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (hp/->value   player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (mana/->value player-entity) "MP")))})))
@@ -192,7 +193,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(component/draw-gui-view (fsm/state-obj @world/player-eid))})
+   (ui-actor {:draw #(component/draw-gui-view (fsm/state-obj @entity/player-eid))})
    (player-message/actor)])
 
 (defn dispose-world []
@@ -208,7 +209,7 @@
                    :components {:entity/fsm {:fsm :fsms/npc
                                              :initial-state :npc-sleeping}
                                 :entity/faction :evil}})]
-    (world/spawn-creature (update props :position tile->middle))))
+    (entity/creature (update props :position tile->middle))))
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
@@ -298,15 +299,15 @@
                                                 (tiled/tm-height tiled-map)
                                                 (constantly false))))
   (init-world-grid tiled-map)
-  (bind-root world/entity-ids {})
-  (bind-root world/content-grid
+  (bind-root entity/ids {})
+  (bind-root entity/content-grid
              (content-grid/create {:cell-size 16  ; FIXME global config
                                    :width  (tiled/tm-width  tiled-map)
                                    :height (tiled/tm-height tiled-map)}))
   (init-raycaster tiled-map)
   (time-init)
-  (bind-root world/player-eid
-   (world/spawn-creature
+  (bind-root entity/player-eid
+   (entity/creature
     (player-entity-props start-position)))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))

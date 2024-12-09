@@ -1,7 +1,7 @@
 (ns forge.effects.target-all
   (:require [anvil.effect :as effect]
-            [anvil.graphics :as g]
-            [anvil.world :refer [player-eid active-entities line-of-sight? spawn-line-render]]))
+            [anvil.entity :as entity :refer [player-eid active-entities line-of-sight?]]
+            [anvil.graphics :as g]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
 ; same code as in render entities on world view screens/world
@@ -35,11 +35,11 @@
 (defn handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
   (let [source* @source]
     (doseq [target (creatures-in-los-of-player)]
-      (spawn-line-render {:start (:position source*) #_(start-point source* target*)
-                          :end (:position @target)
-                          :duration 0.05
-                          :color [1 0 0 0.75]
-                          :thick? true})
+      (entity/line-render {:start (:position source*) #_(start-point source* target*)
+                           :end (:position @target)
+                           :duration 0.05
+                           :color [1 0 0 0.75]
+                           :thick? true})
       ; some sound .... or repeat smae sound???
       ; skill do sound  / skill start sound >?
       ; problem : nested tx/effect , we are still having direction/target-position

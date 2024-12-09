@@ -1,12 +1,12 @@
 (ns forge.dev.tools
   (:require [anvil.app :refer [post-runnable]]
             [anvil.db :as db]
+            [anvil.entity :as entity :refer [player-eid mouseover-entity]]
             [anvil.graphics :refer [gui-viewport-width gui-viewport-height world-mouse-position]]
             [anvil.grid :as grid]
             [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
-            [anvil.world :refer [player-eid mouseover-entity spawn-creature spawn-item]]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -49,11 +49,11 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable
-  (spawn-creature {:position [35 73]
-                   :creature-id :creatures/dragon-red
-                   :components {:entity/fsm {:fsm :fsms/npc
-                                             :initial-state :npc-sleeping}
-                                :entity/faction :evil}}))
+  (entity/creature {:position [35 73]
+                    :creature-id :creatures/dragon-red
+                    :components {:entity/fsm {:fsm :fsms/npc
+                                              :initial-state :npc-sleeping}
+                                 :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
@@ -74,7 +74,7 @@
 
 (defn- create-item! [item-id]
   (post-runnable
-   (spawn-item (:position @player-eid) (db/build item-id))))
+   (entity/item (:position @player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
   @(grid/get (mapv int (world-mouse-position))))

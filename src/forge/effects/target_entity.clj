@@ -2,8 +2,8 @@
   (:require [anvil.body :as body]
             [anvil.db :as db]
             [anvil.effect :as effect]
+            [anvil.entity :as entity]
             [anvil.graphics :as g]
-            [anvil.world :refer [spawn-line-render spawn-audiovisual]]
             [clojure.gdx.math.vector2 :as v]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
@@ -36,14 +36,14 @@
         target* @target]
     (if (in-range? source* target* maxrange)
       (do
-       (spawn-line-render {:start (start-point source* target*)
-                           :end (:position target*)
-                           :duration 0.05
-                           :color [1 0 0 0.75]
-                           :thick? true})
+       (entity/line-render {:start (start-point source* target*)
+                            :end (:position target*)
+                            :duration 0.05
+                            :color [1 0 0 0.75]
+                            :thick? true})
        (effect/do! ctx entity-effects))
-      (spawn-audiovisual (end-point source* target* maxrange)
-                         (db/build :audiovisuals/hit-ground)))))
+      (entity/audiovisual (end-point source* target* maxrange)
+                          (db/build :audiovisuals/hit-ground)))))
 
 (defn render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
   (when target

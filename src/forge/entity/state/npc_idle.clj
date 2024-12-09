@@ -1,12 +1,12 @@
 (ns forge.entity.state.npc-idle
   (:require [anvil.body :as body]
             [anvil.effect :as effect]
+            [anvil.entity :refer [line-of-sight?]]
             [anvil.fsm :as fsm]
             [anvil.faction :as faction]
             [anvil.grid :as grid]
             [anvil.skill :as skill]
-            [anvil.potential-field :as potential-field]
-            [anvil.world :refer [line-of-sight?]]))
+            [anvil.potential-field :as potential-field]))
 
 (defn- nearest-enemy [entity]
   (grid/nearest-entity @(grid/get (body/tile entity))

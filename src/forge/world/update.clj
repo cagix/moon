@@ -1,11 +1,12 @@
 (ns forge.world.update
   (:require [anvil.controls :as controls]
+            [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order]]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.grid :as grid]
             [anvil.stage :as stage]
             [anvil.time :as time]
-            [anvil.world :as world :refer [player-eid explored-tile-corners mouseover-entity mouseover-eid active-entities line-of-sight? render-z-order]]
+            [anvil.world :as world :refer [explored-tile-corners]]
             [clojure.component :as component]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.utils :refer [bind-root sort-by-order]]
@@ -60,8 +61,8 @@
 
 (defn- remove-destroyed-entities []
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (world/all-entities))]
-    (world/remove-entity eid)
+                      (entity/all-entities))]
+    (entity/remove-entity eid)
     (doseq [component @eid]
       (component/destroy component eid))))
 
@@ -74,7 +75,7 @@
                                    (not (controls/unpaused?)))))
   (when-not time/paused?
     (time-update)
-    (let [entities (active-entities)]
+    (let [entities (entity/active-entities)]
       (update-potential-fields! entities)
       (try (tick-entities entities)
            (catch Throwable t

@@ -1,7 +1,7 @@
 (ns forge.entity.mouseover?
-  (:require [anvil.faction :as faction]
-            [anvil.graphics :as g]
-            [anvil.world :refer [player-eid]]))
+  (:require [anvil.entity :refer [player-eid]]
+            [anvil.faction :as faction]
+            [anvil.graphics :as g]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])

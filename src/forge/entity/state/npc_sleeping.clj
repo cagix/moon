@@ -1,12 +1,12 @@
 (ns forge.entity.state.npc-sleeping
   (:require [anvil.body :as body]
+            [anvil.entity :refer [delayed-alert]]
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [draw-text]]
             [anvil.grid :as grid]
             [anvil.stat :as stat]
-            [anvil.string-effect :as string-effect]
-            [anvil.world :refer [delayed-alert]]))
+            [anvil.string-effect :as string-effect]))
 
 (defn ->v [[_ eid]]
   {:eid eid})

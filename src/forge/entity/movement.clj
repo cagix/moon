@@ -1,8 +1,8 @@
 (ns forge.entity.movement
   (:require [anvil.body :as body]
+            [anvil.entity :as entity]
             [anvil.time :as time]
             [anvil.grid :as grid]
-            [anvil.world :as world]
             [clojure.gdx.math.vector2 :as v]
             [malli.core :as m]))
 
@@ -44,7 +44,7 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ world/minimum-body-size
+(def ^:private max-speed (/ entity/minimum-body-size
                             time/max-delta)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
 
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
@@ -65,7 +65,7 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)
                         (move-body body movement))]
-        (world/entity-position-changed eid)
+        (entity/position-changed eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))

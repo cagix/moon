@@ -1,10 +1,10 @@
 (ns forge.entity.state.player-item-on-cursor
   (:require [anvil.app :refer [play-sound]]
+            [anvil.entity :as entity]
             [anvil.fsm :as fsm]
             [anvil.graphics :refer [draw-centered gui-mouse-position world-mouse-position]]
             [anvil.inventory :as inventory]
             [anvil.stage :refer [mouse-on-actor?]]
-            [anvil.world :refer [spawn-item]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]))
 
@@ -94,7 +94,7 @@
     (when (:entity/item-on-cursor entity)
       (play-sound "bfxr_itemputground")
       (swap! eid dissoc :entity/item-on-cursor)
-      (spawn-item (item-place-position entity) (:entity/item-on-cursor entity)))))
+      (entity/item (item-place-position entity) (:entity/item-on-cursor entity)))))
 
 (defn draw-gui-view [[_ {:keys [eid]}]]
   (let [entity @eid]
