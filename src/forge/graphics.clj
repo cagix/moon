@@ -1,9 +1,9 @@
 (ns forge.graphics
-  (:require [clojure.gdx.graphics :as g]
+  (:require [anvil.assets :as assets]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
-            [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.sprite-batch :refer [batch]]
             [forge.app.default-font :refer [default-font]]
             [forge.app.shape-drawer :refer [with-line-width]]
@@ -147,7 +147,7 @@
       map->Sprite))
 
 (defn ->image [path]
-  (sprite* (g/texture-region (asset-manager path))))
+  (sprite* (g/texture-region (assets/manager path))))
 
 (defn sub-image [image bounds]
   (sprite* (apply g/->texture-region (:texture-region image) bounds)))

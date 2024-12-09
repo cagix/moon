@@ -1,7 +1,7 @@
 (ns forge.entity.state.player-item-on-cursor
-  (:require [clojure.gdx.input :refer [button-just-pressed?]]
+  (:require [anvil.audio :refer [play-sound]]
+            [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
-            [forge.app.asset-manager :refer [play-sound]]
             [forge.app.gui-viewport :refer [gui-mouse-position]]
             [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.entity.fsm :refer [e-state-k send-event]]

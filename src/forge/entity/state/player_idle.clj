@@ -1,8 +1,8 @@
 (ns forge.entity.state.player-idle
-  (:require [clojure.gdx.input :refer [button-just-pressed?]]
+  (:require [anvil.audio :refer [play-sound]]
+            [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :as actor]
-            [forge.app.asset-manager :refer [play-sound]]
             [forge.app.cursors :refer [set-cursor]]
             [forge.app.vis-ui :refer [window-title-bar? button?]]
             [forge.app.world-viewport :refer [world-mouse-position]]

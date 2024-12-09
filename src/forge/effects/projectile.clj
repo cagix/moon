@@ -1,6 +1,6 @@
 (ns forge.effects.projectile
-  (:require [clojure.gdx.math.vector2 :as v]
-            [forge.app.asset-manager :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
+            [clojure.gdx.math.vector2 :as v]
             [forge.world :refer [projectile-size spawn-projectile]]
             [forge.world.raycaster :refer [path-blocked?]]))
 

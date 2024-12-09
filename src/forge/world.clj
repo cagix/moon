@@ -1,8 +1,8 @@
 (ns forge.world
-  (:require [clojure.gdx.graphics.camera :as cam]
+  (:require [anvil.audio :refer [play-sound]]
+            [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
-            [forge.app.asset-manager :refer [play-sound]]
             [forge.app.db :as db]
             [forge.app.world-viewport :refer [world-viewport-width
                                               world-viewport-height

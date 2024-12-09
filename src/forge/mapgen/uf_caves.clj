@@ -1,9 +1,9 @@
 (ns ^:no-doc forge.mapgen.uf-caves
-  (:require [clojure.gdx.graphics :as g]
+  (:require [anvil.assets :as assets]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.tiled :as tiled]
             [clojure.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
-            [forge.app.asset-manager :refer [asset-manager]]
             [forge.app.db :as db]
             [forge.level :refer [generate-level*]]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
@@ -36,7 +36,7 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (g/texture-region (asset-manager "maps/uf_terrain.png")
+  (tm-tile (g/texture-region (assets/manager "maps/uf_terrain.png")
                              (* sprite-x sprite-size)
                              (* sprite-y sprite-size)
                              sprite-size

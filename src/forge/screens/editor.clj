@@ -1,5 +1,7 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [clojure.edn :as edn]
+  (:require [anvil.assets :as assets]
+            [anvil.audio :refer [play-sound]]
+            [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.gdx.scene2d.actor :refer [user-object]]
@@ -14,7 +16,6 @@
                                    truncate
                                    find-first
                                    index-of]]
-            [forge.app.asset-manager :refer [asset-manager play-sound]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]
@@ -147,7 +148,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (asset-manager/all-of-class asset-manager :sound)]
+  (let [rows (for [sound-file (asset-manager/all-of-class assets/manager :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -432,7 +433,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (asset-manager/all-of-class asset-manager :texture))]
+  (for [file (sort (asset-manager/all-of-class assets/manager :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
