@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.dev.migrations
-  (:require [forge.app.db :as db]))
+  (:require [anvil.db :as db]))
 
 (comment
 

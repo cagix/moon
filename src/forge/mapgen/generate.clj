@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.mapgen.generate
-  (:require [clojure.gdx.tiled :as tiled]
+  (:require [anvil.db :as db]
+            [clojure.gdx.tiled :as tiled]
             [data.grid2d :as g2d]
-            [forge.app.db :as db]
             [forge.level :refer [generate-level*]]
             [forge.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [forge.mapgen.modules :as modules]))

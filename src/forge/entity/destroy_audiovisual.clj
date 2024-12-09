@@ -1,5 +1,5 @@
 (ns forge.entity.destroy-audiovisual
-  (:require [forge.app.db :as db]
+  (:require [anvil.db :as db]
             [forge.world :refer [spawn-audiovisual]]))
 
 (defn destroy [[_ audiovisuals-id] eid]

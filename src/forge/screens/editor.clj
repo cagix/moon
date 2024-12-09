@@ -2,6 +2,7 @@
   (:require [anvil.app :refer [change-screen]]
             [anvil.assets :as assets]
             [anvil.audio :refer [play-sound]]
+            [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-height]]
             [anvil.ui :refer [horizontal-separator-cell
                               vertical-separator-cell
@@ -32,7 +33,6 @@
                                    truncate
                                    find-first
                                    index-of]]
-            [forge.app.db :as db]
             [forge.component :refer [info-text]]
             [forge.malli :as malli]
             [forge.property :as property]

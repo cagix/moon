@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [anvil.app :as app :refer [change-screen]]
+            [anvil.db :as db]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor text-button] :as ui]
@@ -11,7 +12,6 @@
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [forge.app.db :as db]
             [forge.controls :as controls]
             [forge.level :refer [generate-level]]
             [forge.screens.stage :as stage]

@@ -1,10 +1,10 @@
 (ns forge.world
   (:require [anvil.audio :refer [play-sound]]
+            [anvil.db :as db]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
-            [forge.app.db :as db]
             [forge.entity :as component]
             [forge.world.content-grid :as content-grid]
             [forge.world.entity-ids :as entity-ids]

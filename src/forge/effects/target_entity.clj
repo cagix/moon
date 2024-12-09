@@ -1,7 +1,7 @@
 (ns forge.effects.target-entity
-  (:require [anvil.graphics :as g]
+  (:require [anvil.db :as db]
+            [anvil.graphics :as g]
             [clojure.gdx.math.vector2 :as v]
-            [forge.app.db :as db]
             [forge.effect :refer [effects-applicable? effects-do!]]
             [forge.entity.body :refer [e-direction]]
             [forge.world :refer [spawn-line-render spawn-audiovisual]]))

@@ -1,5 +1,6 @@
 (ns forge.screens.world
   (:require [anvil.app :refer [change-screen]]
+            [anvil.db :as db]
             [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
                                           sub-image ->image draw-tiled-map gui-viewport-width
                                           gui-mouse-position world-mouse-position world-camera
@@ -22,7 +23,6 @@
                                    readable-number
                                    dev-mode?
                                    pretty-pst]]
-            [forge.app.db :as db]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]

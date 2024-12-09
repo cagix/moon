@@ -1,6 +1,6 @@
 (ns forge.effects.target.damage
-  (:require [clojure.rand :refer [rand-int-between]]
-            [forge.app.db :as db]
+  (:require [anvil.db :as db]
+            [clojure.rand :refer [rand-int-between]]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.hp :refer [hitpoints]]
             [forge.entity.stat :as stat]

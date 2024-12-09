@@ -1,10 +1,10 @@
 (ns ^:no-doc forge.mapgen.uf-caves
   (:require [anvil.assets :as assets]
+            [anvil.db :as db]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.tiled :as tiled]
             [clojure.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
-            [forge.app.db :as db]
             [forge.level :refer [generate-level*]]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
 

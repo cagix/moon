@@ -1,11 +1,11 @@
 (ns forge.screens.main-menu
   (:require [anvil.app :as app]
+            [anvil.db :as db]
             [anvil.graphics :refer [set-cursor]]
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.utils :refer [dev-mode?]]
-            [forge.app.db :as db]
             [forge.screens.stage :as stage]
             [forge.screens.world :refer [start-world]]
             [forge.ui :refer [background-image]]))
