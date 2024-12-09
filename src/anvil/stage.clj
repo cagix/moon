@@ -8,7 +8,7 @@
             [clojure.gdx.scene2d.group :refer [find-actor-with-id]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [clojure.utils :refer [pretty-pst with-err-str]])
+            [clojure.utils :refer [pretty-pst with-err-str bind-root]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)))
 
 (defn get []
@@ -97,3 +97,10 @@
                :close-on-escape? true
                :center? true
                :pack? true})))
+
+(def ^:private player-message-duration-seconds 1.5)
+
+(def ^:private message-to-player nil)
+
+(defn show-player-msg [message]
+  (bind-root message-to-player {:message message :counter 0}))

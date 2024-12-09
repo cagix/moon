@@ -1,4 +1,4 @@
-(ns forge.ui.inventory
+(ns anvil.inventory
   (:require [anvil.component :refer [info-text]]
             [anvil.entity :as entity]
             [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]

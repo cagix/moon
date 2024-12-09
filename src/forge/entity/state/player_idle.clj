@@ -1,24 +1,23 @@
 (ns forge.entity.state.player-idle
-  (:require [anvil.app :refer [play-sound]]
+  (:require [anvil.action-bar :as action-bar]
+            [anvil.app :refer [play-sound]]
+            [anvil.controls :as controls]
             [anvil.entity :refer [send-event]]
             [anvil.graphics :refer [set-cursor world-mouse-position]]
-            [anvil.stage :refer [mouse-on-actor?]]
+            [anvil.inventory :as inventory]
+            [anvil.stage :as stage :refer [mouse-on-actor?]]
             [anvil.ui :refer [window-title-bar? button?]]
             [anvil.world :refer [player-eid mouseover-eid]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :as actor]
-            [forge.controls :as controls]
             [forge.entity.inventory :refer [can-pickup-item? pickup-item remove-item]]
             [forge.entity.skills :refer [has-skill? add-skill]]
-            [forge.skill :as skill]
-            [forge.ui.action-bar :as action-bar]
-            [forge.ui.inventory :as inventory]
-            [forge.ui.player-message :as player-message]))
+            [forge.skill :as skill]))
 
 (defn- denied [text]
   (play-sound "bfxr_denied")
-  (player-message/show text))
+  (stage/show-player-msg text))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -42,7 +41,7 @@
      :else
      (do
       (play-sound "bfxr_denied")
-      (player-message/show "Your Inventory is full")))))
+      (stage/show-player-msg "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
   (actor/toggle-visible! (inventory/window)))

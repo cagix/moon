@@ -1,12 +1,8 @@
 (ns forge.ui.player-message
   (:require [anvil.graphics :refer [draw-text gui-viewport-width gui-viewport-height]]
             [anvil.ui :refer [ui-actor]]
-            [clojure.gdx.graphics :refer [delta-time]]
-            [clojure.utils :refer [bind-root]]))
+            [clojure.gdx.graphics :refer [delta-time]]))
 
-(def ^:private player-message-duration-seconds 1.5)
-
-(def ^:private message-to-player nil)
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
@@ -25,6 +21,3 @@
 (defn actor []
   (ui-actor {:draw draw-player-message
              :act check-remove-message}))
-
-(defn show [message]
-  (bind-root message-to-player {:message message :counter 0}))

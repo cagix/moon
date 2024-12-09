@@ -1,7 +1,7 @@
 (ns forge.entity.state.player-moving
-  (:require [anvil.entity :refer [send-event stat-value]]
-            [anvil.world :refer [timer stopped?]]
-            [forge.controls :as controls]))
+  (:require [anvil.controls :as controls]
+            [anvil.entity :refer [send-event stat-value]]
+            [anvil.world :refer [timer stopped?]]))
 
 (defn ->v [[_ eid movement-vector]]
   {:eid eid

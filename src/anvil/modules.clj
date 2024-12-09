@@ -1,4 +1,4 @@
-(ns forge.mapgen.modules
+(ns anvil.modules
   (:require [anvil.mapgen :refer [grid->tiled-map transition-idx-value]]
             [clojure.gdx.tiled :as tiled]))
 

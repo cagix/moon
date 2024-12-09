@@ -1,7 +1,7 @@
 (ns forge.entity.inventory
   (:require [anvil.entity :as entity]
-            [clojure.utils :refer [find-first]]
-            [forge.ui.inventory :as inventory :refer [valid-slot?]]))
+            [anvil.inventory :as inventory :refer [valid-slot?]]
+            [clojure.utils :refer [find-first]]))
 
 (defn- applies-modifiers? [[slot _]]
   (not= :inventory.slot/bag slot))

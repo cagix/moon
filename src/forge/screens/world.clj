@@ -1,12 +1,15 @@
 (ns forge.screens.world
-  (:require [anvil.app :refer [change-screen]]
+  (:require [anvil.action-bar :as action-bar]
+            [anvil.app :refer [change-screen]]
             [anvil.component :refer [info-text]]
+            [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
                                           sub-image ->image draw-tiled-map gui-viewport-width
                                           gui-mouse-position world-mouse-position world-camera
                                           world-viewport-width world-viewport-height]]
+            [anvil.inventory :as inventory]
             [anvil.level :refer [generate-level]]
             [anvil.screen :refer [Screen]]
             [anvil.stage :as stage]
@@ -28,9 +31,6 @@
             [clojure.vis-ui :as vis]
             [clojure.utils :refer [bind-root ->tile tile->middle sort-by-order readable-number dev-mode? pretty-pst]]
             [data.grid2d :as g2d]
-            [forge.controls :as controls]
-            [forge.ui.action-bar :as action-bar]
-            [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)

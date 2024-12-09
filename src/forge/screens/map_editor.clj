@@ -1,8 +1,10 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [anvil.app :as app :refer [change-screen]]
+            [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
+            [anvil.modules :as modules]
             [anvil.screen :refer [Screen]]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
@@ -13,9 +15,7 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.pprint :refer [pprint]]
-            [clojure.string :as str]
-            [forge.controls :as controls]
-            [forge.mapgen.modules :as modules]))
+            [clojure.string :as str]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
