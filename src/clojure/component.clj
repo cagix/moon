@@ -13,21 +13,6 @@
        ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
        dispatch)))
 
-(defsystem dispose)
-(defmethod dispose :default [_])
-
-(defsystem render-below)
-(defmethod render-below :default [_ entity])
-
-(defsystem render-default)
-(defmethod render-default :default [_ entity])
-
-(defsystem render-above)
-(defmethod render-above :default [_ entity])
-
-(defsystem render-info)
-(defmethod render-info :default [_ entity])
-
 (defsystem enter)
 (defmethod enter :default [_])
 
@@ -48,9 +33,6 @@
 
 (defsystem render)
 (defmethod render :default [_])
-
-(defsystem info)
-(defmethod info :default [_])
 
 (defsystem apply)
 (defsystem order)

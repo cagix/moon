@@ -4,6 +4,7 @@
             [anvil.entity :as entity]
             [forge.entity.state.active-skill :as active-skill]
             [forge.entity.state.npc-idle :as npc-idle]
+            [forge.world.render :as render]
             [anvil.screen :as screen]
             [clojure.component :as component]
             [clojure.utils :refer [install install-component]]
@@ -37,10 +38,10 @@
               #'entity/create
               #'world.update/destroy
               #'world.update/tick
-              #'component/render-below
-              #'component/render-default
-              #'component/render-above
-              #'component/render-info]})
+              #'render/render-below
+              #'render/render-default
+              #'render/render-above
+              #'render/render-info]})
 
 (install "forge"
          entity

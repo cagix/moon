@@ -5,7 +5,7 @@
             [anvil.grid :as grid]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.level :as level :refer [explored-tile-corners]]
-            [clojure.component :as component]
+            [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
@@ -130,6 +130,18 @@
      (draw-body-rect entity :red)
      (pretty-pst t))))
 
+(defsystem render-below)
+(defmethod render-below :default [_ entity])
+
+(defsystem render-default)
+(defmethod render-default :default [_ entity])
+
+(defsystem render-above)
+(defmethod render-above :default [_ entity])
+
+(defsystem render-info)
+(defmethod render-info :default [_ entity])
+
 (defn- render-entities
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."
   [entities]
@@ -137,10 +149,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               entity/render-z-order)
-            system [component/render-below
-                    component/render-default
-                    component/render-above
-                    component/render-info]
+            system [render-below
+                    render-default
+                    render-above
+                    render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? player entity))]

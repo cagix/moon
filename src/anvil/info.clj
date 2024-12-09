@@ -1,5 +1,5 @@
 (ns anvil.info
-  (:require [clojure.component :as component]
+  (:require [clojure.component :refer [defsystem]]
             [clojure.string :as str]
             [clojure.utils :refer [index-of]]))
 
@@ -26,12 +26,15 @@
 
 (declare ^:dynamic *info-text-entity*)
 
+(defsystem segment)
+(defmethod segment :default [_])
+
 (defn text [components]
   (->> components
        sort-k-order
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k (component/info component)))
+                           (apply-color k (segment component)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create
