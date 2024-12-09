@@ -1,7 +1,6 @@
 (ns forge.screens.world
-  (:require [anvil.graphics :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image draw-tiled-map]]
-            [clojure.gdx.graphics :refer [frames-per-second
-                                          clear-screen]]
+  (:require [anvil.graphics :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image draw-tiled-map gui-viewport-width gui-mouse-position]]
+            [clojure.gdx.graphics :refer [frames-per-second clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
@@ -18,8 +17,6 @@
                                    dev-mode?
                                    pretty-pst]]
             [forge.app.db :as db]
-            [forge.app.gui-viewport :refer [gui-viewport-width
-                                            gui-mouse-position]]
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
             [forge.app.vis-ui :refer [ui-actor

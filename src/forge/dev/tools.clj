@@ -1,20 +1,16 @@
 (ns forge.dev.tools
   (:require [anvil.app :refer [post-runnable]]
+            [anvil.graphics :refer [gui-viewport-width gui-viewport-height]]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis]
             [forge.app.db :as db]
-            [forge.app.gui-viewport :refer [gui-viewport-width
-                                            gui-viewport-height]]
-            [forge.app.vis-ui :refer [t-node
-                                      scroll-pane]
-             :as ui]
+            [forge.app.vis-ui :refer [t-node scroll-pane] :as ui]
             [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.entity.skills :refer [add-skill]]
             [forge.screens.stage :refer [add-actor]]
-            [forge.world :refer [spawn-creature
-                                 spawn-item]]
+            [forge.world :refer [spawn-creature spawn-item]]
             [forge.world.grid :refer [world-grid]]
             [forge.world.mouseover-entity :refer [mouseover-entity]]
             [forge.world.player :refer [player-eid]])

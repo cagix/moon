@@ -1,8 +1,7 @@
 (ns forge.ui.player-message
-  (:require [anvil.graphics :refer [draw-text]]
+  (:require [anvil.graphics :refer [draw-text gui-viewport-width gui-viewport-height]]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.utils :refer [bind-root]]
-            [forge.app.gui-viewport :refer [gui-viewport-width gui-viewport-height]]
             [forge.app.vis-ui :refer [ui-actor]]))
 
 (def ^:private player-message-duration-seconds 1.5)

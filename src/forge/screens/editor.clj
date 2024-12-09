@@ -1,6 +1,7 @@
 (ns ^:no-doc forge.screens.editor
   (:require [anvil.assets :as assets]
             [anvil.audio :refer [play-sound]]
+            [anvil.graphics :refer [gui-viewport-height]]
             [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.input :refer [key-just-pressed?]]
@@ -17,7 +18,6 @@
                                    find-first
                                    index-of]]
             [forge.app.db :as db]
-            [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]
             [forge.app.vis-ui :refer [horizontal-separator-cell
                                       vertical-separator-cell

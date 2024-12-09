@@ -1,12 +1,9 @@
 (ns forge.ui.inventory
-  (:require [anvil.graphics :refer [->sprite sprite-sheet]]
+  (:require [anvil.graphics :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
-            [forge.app.gui-viewport :refer [gui-viewport-width
-                                            gui-viewport-height
-                                            gui-mouse-position]]
             [forge.app.shape-drawer :as sd]
             [forge.app.vis-ui :refer [set-drawable!
                                       ui-widget

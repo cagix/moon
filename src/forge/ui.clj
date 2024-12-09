@@ -1,7 +1,6 @@
 (ns forge.ui
   (:require [anvil.graphics :as g]
             [clojure.utils :refer [pretty-pst with-err-str]]
-            [forge.app.gui-viewport :refer [gui-viewport-width gui-viewport-height]]
             [forge.app.vis-ui :as ui]
             [forge.screens.stage :refer [screen-stage add-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -27,8 +26,8 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ gui-viewport-width 2)
-                                 (* gui-viewport-height (/ 3 4))]
+               :center-position [(/ g/gui-viewport-width 2)
+                                 (* g/gui-viewport-height (/ 3 4))]
                :pack? true})))
 
 

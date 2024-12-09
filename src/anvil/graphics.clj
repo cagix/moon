@@ -6,18 +6,18 @@
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get]]
-            [forge.app.default-font :refer [default-font]]
             [forge.app.shape-drawer :refer [with-line-width]]
-            [forge.app.world-viewport :refer [world-unit-scale
-                                              world-viewport
-                                              world-camera]])
+            [forge.app.world-viewport :refer [world-unit-scale world-viewport world-camera]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (declare cursors
+         default-font
          batch
-
+         gui-viewport
+         gui-viewport-width
+         gui-viewport-height
          cached-map-renderer)
 
 (defn set-cursor [cursor-key]
@@ -201,3 +201,7 @@
          (map (partial tiled/layer-index tiled-map))
          int-array
          (.render map-renderer))))
+
+(defn gui-mouse-position []
+  ; TODO mapv int needed?
+  (mapv int (vp/unproject-mouse-position gui-viewport)))

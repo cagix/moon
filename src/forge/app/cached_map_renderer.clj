@@ -11,5 +11,3 @@
                 (OrthogonalTiledMapRenderer. tiled-map
                                              (float world-unit-scale)
                                              batch)))))
-
-
