@@ -2,18 +2,23 @@
   (:require [anvil.assets :as assets]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get]]
             [forge.app.default-font :refer [default-font]]
             [forge.app.shape-drawer :refer [with-line-width]]
             [forge.app.world-viewport :refer [world-unit-scale
-                                              world-viewport]])
+                                              world-viewport
+                                              world-camera]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.utils Align)))
+           (com.badlogic.gdx.utils Align)
+           (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (declare cursors
-         batch)
+         batch
+
+         cached-map-renderer)
 
 (defn set-cursor [cursor-key]
   (g/set-cursor (safe-get cursors cursor-key)))
@@ -175,3 +180,24 @@
                 [(int (/ sprite-x tilew))
                  (int (/ sprite-y tileh))]))
     (->image file)))
+
+(defn draw-tiled-map
+  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
+
+  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
+
+  Can be used for lights & shadows.
+
+  Renders only visible layers."
+  [tiled-map color-setter]
+  (let [^OrthogonalTiledMapRenderer map-renderer (cached-map-renderer tiled-map)]
+    (.setColorSetter map-renderer (reify ColorSetter
+                                    (apply [_ color x y]
+                                      (color-setter color x y))))
+    (.setView map-renderer (world-camera))
+    (->> tiled-map
+         tiled/layers
+         (filter tiled/visible?)
+         (map (partial tiled/layer-index tiled-map))
+         int-array
+         (.render map-renderer))))

@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [anvil.graphics :refer [draw-on-world-view]]
+  (:require [anvil.graphics :refer [draw-on-world-view draw-tiled-map]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
@@ -8,7 +8,6 @@
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]

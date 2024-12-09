@@ -1,5 +1,5 @@
 (ns forge.screens.world
-  (:require [anvil.graphics :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image]]
+  (:require [anvil.graphics :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image draw-tiled-map]]
             [clojure.gdx.graphics :refer [frames-per-second
                                           clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
@@ -17,7 +17,6 @@
                                    readable-number
                                    dev-mode?
                                    pretty-pst]]
-            [forge.app.cached-map-renderer :refer [draw-tiled-map]]
             [forge.app.db :as db]
             [forge.app.gui-viewport :refer [gui-viewport-width
                                             gui-mouse-position]]
