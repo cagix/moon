@@ -1,6 +1,17 @@
 (ns anvil.system
-  (:refer-clojure :exclude [apply])
-  (:require [clojure.utils :refer [defsystem]]))
+  (:refer-clojure :exclude [apply]))
+
+(defn dispatch [[k] & args]
+  k)
+
+(defmacro defsystem
+  {:arglists '([name docstring?])}
+  [name-sym & args]
+  (let [docstring (if (string? (first args))
+                    (first args))]
+    `(defmulti ~name-sym
+       ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
+       dispatch)))
 
 (defsystem ->v)
 (defmethod ->v :default [[_ v]]
@@ -66,6 +77,9 @@
 
 (defsystem render)
 (defmethod render :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ w h])
 
 (defsystem info)
 (defmethod info :default [_])

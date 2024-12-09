@@ -1,5 +1,6 @@
 (ns anvil.graphics
   (:require [anvil.app :as app]
+            [anvil.tiled-map-renderer :as tiled-map-renderer]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
@@ -265,9 +266,6 @@
 (defn world-camera []
   (vp/camera world-viewport))
 
-(defprotocol TiledMapRenderer
-  (draw-tiled-map* [_ tiled-map color-setter camera]))
-
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
 
@@ -277,7 +275,7 @@
 
   Renders only visible layers."
   [tiled-map color-setter]
-  (draw-tiled-map* (cached-map-renderer tiled-map)
-                   tiled-map
-                   color-setter
-                   (world-camera)))
+  (tiled-map-renderer/render (cached-map-renderer tiled-map)
+                             tiled-map
+                             color-setter
+                             (world-camera)))
