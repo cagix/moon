@@ -1,7 +1,6 @@
 (ns forge.entity.state.npc-sleeping
   (:require [anvil.graphics :refer [draw-text]]
             [anvil.entity :as entity :refer [send-event stat-value]]
-            [forge.entity.string-effect :as string-effect]
             [forge.world :refer [delayed-alert]]
             [forge.world.grid :refer [world-grid nearest-entity-distance]]))
 
@@ -12,7 +11,7 @@
   (delayed-alert (:position       @eid)
                  (:entity/faction @eid)
                  0.2)
-  (swap! eid string-effect/add "[WHITE]!"))
+  (swap! eid entity/add-string-effect "[WHITE]!"))
 
 (defn tick [_ eid]
   (let [entity @eid

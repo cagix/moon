@@ -6,7 +6,8 @@
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [->tile defsystem]]
             [reduce-fsm :as fsm]
-            [malli.core :as m]))
+            [malli.core :as m]
+            [anvil.world :refer [timer reset-timer]]))
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
@@ -142,3 +143,13 @@
     (mod-value base-value
                entity
                (keyword "modifier" (name k)))))
+
+(defn add-string-effect [entity text]
+  (assoc entity
+         :entity/string-effect
+         (if-let [string-effect (:entity/string-effect entity)]
+           (-> string-effect
+               (update :text str "\n" text)
+               (update :counter reset-timer))
+           {:text text
+            :counter (timer 0.4)})))

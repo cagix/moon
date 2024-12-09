@@ -1,16 +1,6 @@
 (ns forge.entity.string-effect
   (:require [anvil.graphics :as g]
-            [anvil.world :refer [timer reset-timer stopped?]]))
-
-(defn add [entity text]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (:entity/string-effect entity)]
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter reset-timer))
-           {:text text
-            :counter (timer 0.4)})))
+            [anvil.world :refer [stopped?]]))
 
 (defn tick [[k {:keys [counter]}] eid]
   (when (stopped? counter)
