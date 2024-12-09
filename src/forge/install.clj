@@ -1,8 +1,8 @@
 (ns forge.install
   (:require [clojure.utils :refer [install install-component]]
             [anvil.app :as app]
+            [anvil.effect :as effect]
             [anvil.entity]
-            [forge.effect :as effect]
             [forge.entity :as entity]
             [forge.entity.state :as state]
 

@@ -1,9 +1,9 @@
 (ns forge.effects.target-entity
   (:require [anvil.db :as db]
+            [anvil.effect :refer [effects-applicable? effects-do!]]
             [anvil.entity :as entity]
             [anvil.graphics :as g]
             [clojure.gdx.math.vector2 :as v]
-            [forge.effect :refer [effects-applicable? effects-do!]]
             [forge.world :refer [spawn-line-render spawn-audiovisual]]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?

@@ -1,6 +1,6 @@
 (ns forge.skill
-  (:require [anvil.entity :as entity]
-            [forge.effect :refer [effects-applicable?]]))
+  (:require [anvil.effect :refer [effects-applicable?]]
+            [anvil.entity :as entity]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-value entity))))

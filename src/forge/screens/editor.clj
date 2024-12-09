@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.editor
   (:require [anvil.app :as app :refer [change-screen play-sound]]
+            [anvil.component :refer [info-text]]
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-height]]
             [anvil.ui :refer [horizontal-separator-cell
@@ -31,7 +32,6 @@
                                    truncate
                                    find-first
                                    index-of]]
-            [forge.component :refer [info-text]]
             [forge.malli :as malli]
             [forge.property :as property]
             [forge.screens.stage :as stage :refer [screen-stage add-actor]]

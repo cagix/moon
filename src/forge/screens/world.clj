@@ -1,5 +1,6 @@
 (ns forge.screens.world
   (:require [anvil.app :refer [change-screen]]
+            [anvil.component :refer [info-text]]
             [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
@@ -29,7 +30,6 @@
                                    dev-mode?
                                    pretty-pst]]
             [data.grid2d :as g2d]
-            [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]
             [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]

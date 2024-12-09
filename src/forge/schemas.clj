@@ -1,8 +1,8 @@
 (ns forge.schemas
-  (:require [anvil.db :as db :refer [malli-form edn->value]]
+  (:require [anvil.animation :as animation]
+            [anvil.db :as db :refer [malli-form edn->value]]
             [anvil.graphics :refer [edn->image]]
             [anvil.val-max :as val-max]
-            [forge.animation :as animation]
             [malli.core :as m]))
 
 (defmethod malli-form :s/val-max [_] (m/form val-max/schema))

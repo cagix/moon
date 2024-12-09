@@ -1,12 +1,12 @@
 (ns forge.info
-  (:require [anvil.entity :as entity :refer [hitpoints damage-mods stat-value]]
+  (:require [anvil.component :as component :refer [*info-text-entity*]]
+            [anvil.entity :as entity :refer [hitpoints damage-mods stat-value]]
             [anvil.ops :refer [op-order]]
             [anvil.world :refer [finished-ratio]]
             [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.utils :refer [bind-root readable-number defsystem]]
-            [forge.component :as component :refer [*info-text-entity*]]))
+            [clojure.utils :refer [bind-root readable-number defsystem]]))
 
 (defn k->pretty-name [k]
   (str/capitalize (name k)))

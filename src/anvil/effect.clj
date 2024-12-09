@@ -1,4 +1,4 @@
-(ns forge.effect
+(ns anvil.effect
   (:require [clojure.utils :refer [defsystem]]))
 
 (defsystem handle [_ ctx])

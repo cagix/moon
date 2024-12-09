@@ -1,5 +1,6 @@
 (ns forge.ui.inventory
-  (:require [anvil.entity :as entity]
+  (:require [anvil.component :refer [info-text]]
+            [anvil.entity :as entity]
             [anvil.graphics :as g :refer [->sprite sprite-sheet gui-viewport-width gui-viewport-height gui-mouse-position]]
             [anvil.ui :refer [set-drawable!
                               ui-widget
@@ -14,7 +15,6 @@
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
-            [forge.component :refer [info-text]]
             [forge.entity.state :refer [clicked-inventory-cell]]
             [forge.screens.stage :refer [screen-stage]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)

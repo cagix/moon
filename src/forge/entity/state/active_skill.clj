@@ -1,9 +1,9 @@
 (ns forge.entity.state.active-skill
   (:require [anvil.app :refer [play-sound]]
+            [anvil.effect :refer [effects-applicable? effects-do! effects-render]]
             [anvil.entity :refer [stat-value send-event pay-mana-cost]]
             [anvil.graphics :as g :refer [draw-image]]
             [anvil.world :refer [stopped? timer finished-ratio]]
-            [forge.effect :refer [effects-applicable? effects-do! effects-render]]
             [forge.world :refer [line-of-sight?]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]

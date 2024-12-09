@@ -1,7 +1,7 @@
 (ns forge.effects.target-all
-  (:require [anvil.graphics :as g]
+  (:require [anvil.effect :refer [effects-do!]]
+            [anvil.graphics :as g]
             [anvil.world :refer [player-eid active-entities]]
-            [forge.effect :refer [effects-do!]]
             [forge.world :refer [line-of-sight? spawn-line-render]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check

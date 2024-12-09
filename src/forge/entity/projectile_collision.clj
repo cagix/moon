@@ -1,8 +1,8 @@
 (ns forge.entity.projectile-collision
-  (:require [anvil.entity :as entity]
+  (:require [anvil.effect :refer [effects-do!]]
+            [anvil.entity :as entity]
             [anvil.world :refer [cell-blocked? rectangle->cells cells->entities]]
-            [clojure.utils :refer [find-first]]
-            [forge.effect :refer [effects-do!]]))
+            [clojure.utils :refer [find-first]]))
 
 (defn ->v [[_ v]]
   (assoc v :already-hit-bodies #{}))
