@@ -1,5 +1,5 @@
 (ns forge.screens.world
-  (:require [anvil.graphics :refer [set-cursor]]
+  (:require [anvil.graphics :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image]]
             [clojure.gdx.graphics :refer [frames-per-second
                                           clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
@@ -38,11 +38,6 @@
             [forge.entity.fsm :refer [e-state-obj]]
             [forge.entity.mana :refer [e-mana]]
             [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]
-            [forge.graphics :refer [draw-on-world-view
-                                    draw-image
-                                    draw-text
-                                    sub-image
-                                    ->image]]
             [forge.level :refer [generate-level]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage

@@ -1,5 +1,5 @@
 (ns forge.entity.clickable
-  (:require [forge.graphics :refer [draw-text]]))
+  (:require [anvil.graphics :refer [draw-text]]))
 
 (defn render-default [[_ {:keys [text]}]
    {:keys [entity/mouseover?] :as entity}]

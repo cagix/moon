@@ -1,6 +1,6 @@
 (ns forge.entity.string-effect
-  (:require [forge.app.world-viewport :refer [pixels->world-units]]
-            [forge.graphics :refer [draw-text]]
+  (:require [anvil.graphics :refer [draw-text]]
+            [forge.app.world-viewport :refer [pixels->world-units]]
             [forge.world.time :refer [timer reset-timer stopped?]]))
 
 (defn add [entity text]

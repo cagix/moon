@@ -1,5 +1,6 @@
 (ns forge.ui.inventory
-  (:require [clojure.gdx.graphics.color :refer [->color]]
+  (:require [anvil.graphics :refer [->sprite sprite-sheet]]
+            [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
@@ -18,8 +19,6 @@
             [forge.component :refer [info-text]]
             [forge.entity.fsm :refer [e-state-k e-state-obj]]
             [forge.entity.state :refer [clicked-inventory-cell]]
-            [forge.graphics :refer [->sprite
-                                    sprite-sheet]]
             [forge.screens.stage :refer [screen-stage]]
             [forge.world.player :refer [player-eid]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)

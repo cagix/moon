@@ -1,10 +1,10 @@
 (ns forge.entity.state.npc-sleeping
-  (:require [forge.entity.body :refer [e-tile]]
+  (:require [anvil.graphics :refer [draw-text]]
+            [forge.entity.body :refer [e-tile]]
             [forge.entity.faction :as faction]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.stat :as stat]
             [forge.entity.string-effect :as string-effect]
-            [forge.graphics :refer [draw-text]]
             [forge.world :refer [delayed-alert]]
             [forge.world.grid :refer [world-grid nearest-entity-distance]]))
 

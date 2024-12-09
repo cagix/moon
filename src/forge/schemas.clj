@@ -1,8 +1,7 @@
 (ns forge.schemas
-  (:require [forge.animation :as animation]
-            [forge.app.db :as db :refer [malli-form
-                                         edn->value]]
-            [forge.graphics :refer [edn->image]]
+  (:require [anvil.graphics :refer [edn->image]]
+            [forge.animation :as animation]
+            [forge.app.db :as db :refer [malli-form edn->value]]
             [forge.val-max :as val-max]
             [malli.core :as m]))
 

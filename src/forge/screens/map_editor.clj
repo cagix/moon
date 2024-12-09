@@ -1,8 +1,8 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [clojure.gdx.graphics.camera :as cam]
+  (:require [anvil.graphics :refer [draw-on-world-view]]
+            [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :refer [key-just-pressed?
-                                       key-pressed?]]
+            [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
@@ -13,13 +13,9 @@
             [forge.app.gui-viewport :refer [gui-viewport-height]]
             [forge.app.screens :as screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
-            [forge.app.vis-ui :refer [ui-actor
-                                      text-button]
-             :as ui]
-            [forge.app.world-viewport :refer [world-mouse-position
-                                              world-camera]]
+            [forge.app.vis-ui :refer [ui-actor text-button] :as ui]
+            [forge.app.world-viewport :refer [world-mouse-position world-camera]]
             [forge.controls :as controls]
-            [forge.graphics :refer [draw-on-world-view]]
             [forge.level :refer [generate-level]]
             [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]

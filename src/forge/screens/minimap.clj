@@ -1,5 +1,6 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [clojure.gdx.graphics.camera :as cam]
+  (:require [anvil.graphics :refer [draw-on-world-view]]
+            [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [forge.app.cached-map-renderer :refer [draw-tiled-map]]
@@ -7,7 +8,6 @@
             [forge.app.screens :refer [change-screen]]
             [forge.app.shape-drawer :as sd]
             [forge.app.world-viewport :refer [world-camera]]
-            [forge.graphics :refer [draw-on-world-view]]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.tiled-map :refer [world-tiled-map]]))
 

@@ -1,8 +1,8 @@
 (ns forge.ui
-  (:require [clojure.utils :refer [pretty-pst with-err-str]]
+  (:require [anvil.graphics :as g]
+            [clojure.utils :refer [pretty-pst with-err-str]]
             [forge.app.gui-viewport :refer [gui-viewport-width gui-viewport-height]]
             [forge.app.vis-ui :as ui]
-            [forge.graphics :as g]
             [forge.screens.stage :refer [screen-stage add-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
