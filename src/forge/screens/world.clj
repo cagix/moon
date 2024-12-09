@@ -7,6 +7,7 @@
                                           sub-image ->image draw-tiled-map gui-viewport-width
                                           gui-mouse-position world-mouse-position world-camera
                                           world-viewport-width world-viewport-height]]
+            [anvil.level :refer [generate-level]]
             [anvil.screen :refer [Screen]]
             [anvil.system :as system]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
@@ -32,7 +33,6 @@
                                    pretty-pst]]
             [data.grid2d :as g2d]
             [forge.controls :as controls]
-            [forge.level :refer [generate-level]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage
                                                    mouse-on-actor?]]

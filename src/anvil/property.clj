@@ -1,4 +1,4 @@
-(ns forge.property)
+(ns anvil.property)
 
 (defn image [{:keys [entity/image entity/animation]}]
   (or image

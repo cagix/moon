@@ -1,11 +1,11 @@
 (ns ^:no-doc forge.mapgen.uf-caves
   (:require [anvil.app :as app]
             [anvil.db :as db]
+            [anvil.level :refer [generate-level*]]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.tiled :as tiled]
             [clojure.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
-            [forge.level :refer [generate-level*]]
             [forge.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]))
 
 (def ^:private scaling 4)

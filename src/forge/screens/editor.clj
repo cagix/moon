@@ -3,6 +3,7 @@
             [anvil.component :refer [info-text]]
             [anvil.db :as db]
             [anvil.graphics :refer [gui-viewport-height]]
+            [anvil.property :as property]
             [anvil.ui :refer [horizontal-separator-cell
                               vertical-separator-cell
                               ui-actor
@@ -33,7 +34,6 @@
                                    find-first
                                    index-of]]
             [forge.malli :as malli]
-            [forge.property :as property]
             [forge.screens.stage :as stage :refer [screen-stage add-actor]]
             [forge.ui :refer [background-image
                               error-window!]]

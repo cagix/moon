@@ -1,4 +1,4 @@
-(ns forge.level)
+(ns anvil.level)
 
 (defmulti generate-level* (fn [world] (:world/generator world)))
 

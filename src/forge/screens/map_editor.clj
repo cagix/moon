@@ -2,6 +2,7 @@
   (:require [anvil.app :as app :refer [change-screen]]
             [anvil.db :as db]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
+            [anvil.level :refer [generate-level]]
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.graphics.camera :as cam]
@@ -13,7 +14,6 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [forge.controls :as controls]
-            [forge.level :refer [generate-level]]
             [forge.screens.stage :as stage]
             [forge.mapgen.modules :as modules]
             [forge.ui :refer [error-window!]]))
