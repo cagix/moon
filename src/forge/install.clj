@@ -1,5 +1,6 @@
 (ns forge.install
   (:require [clojure.utils :refer [install install-component]]
+            [anvil.app :as app]
             [anvil.system :as system]
 
             forge.schemas
@@ -8,10 +9,10 @@
             forge.mapgen.uf-caves))
 
 (def screen {:optional [#'system/actors
-                        #'system/enter
-                        #'system/exit
+                        #'app/enter
+                        #'app/exit
                         #'system/render
-                        #'system/dispose] })
+                        #'system/dispose]})
 
 (install "forge"
          screen
@@ -23,10 +24,10 @@
                       :screens/world]))
 
 (install "forge"
-         {:optional [#'system/create
-                     #'system/dispose
-                     #'system/render
-                     #'system/resize]}
+         {:optional [#'app/create
+                     #'app/dispose
+                     #'app/render
+                     #'app/resize]}
          (map vector [:app/db
                       :app/asset-manager
                       :app/sprite-batch
