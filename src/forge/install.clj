@@ -17,8 +17,7 @@
 
 (install "forge"
          screen
-         (map vector [:screens/stage
-                      :screens/editor
+         (map vector [:screens/editor
                       :screens/main-menu
                       :screens/map-editor
                       :screens/minimap

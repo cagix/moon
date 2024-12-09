@@ -11,6 +11,7 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
@@ -139,6 +140,24 @@
 
 (defsystem actors)
 (defmethod actors :default [_])
+
+(defmethods :screens/stage
+  (screen/enter [[_ {:keys [stage sub-screen]}]]
+    (input/set-processor stage)
+    (screen/enter sub-screen))
+
+  (screen/exit [[_ {:keys [stage sub-screen]}]]
+    (input/set-processor nil)
+    (screen/exit sub-screen))
+
+  (screen/render [[_ {:keys [stage sub-screen]}]]
+    (stage/act stage)
+    (screen/render sub-screen)
+    (stage/draw stage))
+
+  (screen/dispose [[_ {:keys [stage sub-screen]}]]
+    (disposable/dispose stage)
+    (screen/dispose sub-screen)))
 
 (defmethods :screens
   (create [[_ {:keys [screens first-k]}]]
