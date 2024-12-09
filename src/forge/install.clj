@@ -1,5 +1,6 @@
 (ns forge.install
   (:require [anvil.app :as app]
+            [anvil.screen :as screen]
             [clojure.component :as component]
             [clojure.utils :refer [install install-component]]
 
@@ -16,15 +17,13 @@
 
 (install "forge"
          app
-         (map vector [:app/db
-                      :app/vis-ui
-                      :app/screens]))
+         (map vector [:app/db]))
 
-(def screen {:optional [#'component/actors
-                        #'component/enter
-                        #'component/exit
-                        #'component/render
-                        #'component/dispose] })
+(def screen {:optional [#'screen/actors
+                        #'screen/enter
+                        #'screen/exit
+                        #'screen/render
+                        #'screen/dispose]})
 
 (install "forge"
          screen

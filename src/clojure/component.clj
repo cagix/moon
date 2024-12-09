@@ -84,6 +84,3 @@
 (defsystem apply)
 (defsystem order)
 (defsystem value-text)
-
-(defsystem actors)
-(defmethod actors :default [_])

@@ -2,12 +2,13 @@
   (:refer-clojure :exclude [get])
   (:require [anvil.app :as app]
             [anvil.graphics :as g]
+            [anvil.screen :as screen]
             [anvil.ui :as ui]
             [clojure.utils :refer [pretty-pst with-err-str bind-root]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn get []
-  (:stage ((app/current-screen) 1)))
+  (:stage ((screen/current) 1)))
 
 (defn add-actor [actor]
   (.addActor (get) actor))

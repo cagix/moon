@@ -1,7 +1,7 @@
 (ns forge.screens.world
-  (:require [anvil.app :refer [change-screen]]
-            [anvil.controls :as controls]
+  (:require [anvil.controls :as controls]
             [anvil.graphics :refer [set-cursor world-camera]]
+            [anvil.screen :as screen]
             [anvil.stage :as stage]
             [clojure.gdx.graphics :refer [clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
@@ -42,7 +42,7 @@
         (close-all-windows)
 
         (controls/minimap?)
-        (change-screen :screens/minimap)))
+        (screen/change :screens/minimap)))
 
 (defn dispose [_]
   (dispose-world))

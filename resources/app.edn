@@ -27,10 +27,10 @@
               [:anvil.app/world-viewport [1440 900 48]]
               [:anvil.app/cached-map-renderer]
               [:app/db {:schema "schema.edn" :properties "properties.edn"}]
-              [:app/vis-ui :skin-scale/x1]
-              [:app/screens {:screens [:screens/main-menu
-                                       :screens/map-editor
-                                       :screens/editor
-                                       :screens/minimap
-                                       :screens/world]
-                             :first-k :screens/main-menu}]]}
+              [:anvil.app/vis-ui :skin-scale/x1]
+              [:anvil.app/screens {:screens [:screens/main-menu
+                                             :screens/map-editor
+                                             :screens/editor
+                                             :screens/minimap
+                                             :screens/world]
+                                   :first-k :screens/main-menu}]]}

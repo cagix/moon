@@ -1,10 +1,11 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [anvil.app :as app :refer [change-screen gui-viewport-height]]
+  (:require [anvil.app :as app :refer [gui-viewport-height]]
             [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
+            [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.graphics.camera :as cam]
@@ -28,7 +29,7 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> ((app/current-screen) 1)
+  (-> ((screen/current) 1)
       :sub-screen
       :current-data))
 
@@ -151,7 +152,7 @@
   #_(controls/world-camera-zoom)
   #_(camera-controls (world-camera))
   #_(when (key-just-pressed? :keys/escape)
-      (change-screen :screens/main-menu)))
+      (screen/change :screens/main-menu)))
 
 (defn dispose [_]
   #_(dispose (:tiled-map @current-data)))

@@ -1,7 +1,7 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [anvil.app :refer [change-screen]]
-            [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
+  (:require [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
             [anvil.level :as level :refer [explored-tile-corners]]
+            [anvil.screen :as screen]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]))
@@ -48,4 +48,4 @@
      (g/filled-circle (cam/position (world-camera)) 0.5 :green)))
   (when (or (key-just-pressed? :keys/tab)
             (key-just-pressed? :keys/escape))
-    (change-screen :screens/world)))
+    (screen/change :screens/world)))

@@ -1,9 +1,10 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [anvil.app :as app :refer [change-screen gui-viewport-height]]
+  (:require [anvil.app :as app :refer [gui-viewport-height]]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.info :as info]
             [anvil.property :as property]
+            [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.ui :refer [horizontal-separator-cell
                               vertical-separator-cell
@@ -481,4 +482,4 @@
    (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
    (ui-actor {:act (fn []
                      (when (key-just-pressed? :shift-left)
-                       (change-screen :screens/main-menu)))})])
+                       (screen/change :screens/main-menu)))})])

@@ -1,5 +1,6 @@
 (ns anvil.app
-  (:require [clojure.awt :as awt]
+  (:require [anvil.screen :as screen]
+            [clojure.awt :as awt]
             [clojure.component :refer [defsystem] :as component]
             [clojure.gdx.app :as app]
             [clojure.gdx.asset-manager :as manager]
@@ -9,12 +10,14 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.utils.disposable :as disposable]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
             [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.utils :refer [bind-root defmethods mapvals]])
+            [clojure.utils :refer [bind-root defmethods mapvals]]
+            [clojure.vis-ui :as vis])
   (:import (forge OrthogonalTiledMapRenderer)))
 
 (defsystem create)
@@ -111,6 +114,41 @@
                                               (float world-unit-scale)
                                               batch))))))
 
+(defmethods ::vis-ui
+  (create [[_ skin-scale]]
+    ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
+    ; => actually there is a deeper issue at play
+    ; we need to dispose ALL resources which were loaded already ...
+    (when (vis/loaded?)
+      (vis/dispose))
+    (vis/load skin-scale)
+    (-> (vis/skin)
+        (.getFont "default-font")
+        .getData
+        .markupEnabled
+        (set! true))
+    (vis/configure-tooltips {:default-appear-delay-time 0}))
+
+  (dispose [_]
+    (vis/dispose)))
+
+(defmethods ::screens
+  (create [[_ {:keys [screens first-k]}]]
+    (bind-root screen/screens
+               (into {}
+                     (for [k screens]
+                       [k [:screens/stage {:stage (stage/create gui-viewport
+                                                                batch
+                                                                (screen/actors [k]))
+                                           :sub-screen [k]}]])))
+    (screen/change first-k))
+
+  (dispose [_]
+    (run! screen/dispose (vals screen/screens)))
+
+  (render [_]
+    (screen/render (screen/current))))
+
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)
   (when shared-library-loader/mac?
@@ -126,20 +164,3 @@
 
 (defmacro post-runnable [& exprs]
   `(app/post-runnable (fn [] ~@exprs)))
-
-(declare screens
-         current-screen-key)
-
-(defn current-screen []
-  (and (bound? #'current-screen-key)
-       (current-screen-key screens)))
-
-(defn change-screen
-  "Calls `exit` on the current-screen and `enter` on the new screen."
-  [new-k]
-  (when-let [screen (current-screen)]
-    (component/exit screen))
-  (let [screen (new-k screens)]
-    (assert screen (str "Cannot find screen with key: " new-k))
-    (bind-root current-screen-key new-k)
-    (component/enter screen)))

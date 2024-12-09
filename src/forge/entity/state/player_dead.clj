@@ -1,6 +1,6 @@
 (ns forge.entity.state.player-dead
-  (:require [anvil.app :refer [change-screen]]
-            [anvil.audio :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
+            [anvil.screen :as screen]
             [anvil.stage :refer [show-modal]]))
 
 (defn cursor [_]
@@ -14,4 +14,4 @@
   (show-modal {:title "YOU DIED"
                :text "\nGood luck next time"
                :button-text ":("
-               :on-click #(change-screen :screens/main-menu)}))
+               :on-click #(screen/change :screens/main-menu)}))
