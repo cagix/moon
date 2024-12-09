@@ -41,9 +41,7 @@
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.world :refer [render-z-order
-                                 remove-destroyed
-                                 spawn-creature]]
+            [forge.world :refer [render-z-order spawn-creature]]
             [forge.world.raycaster]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -446,6 +444,13 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (bind-root mouseover-eid new-eid)))
 
+(defn- remove-destroyed-entities []
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (all-entities))]
+    (remove-entity eid)
+    (doseq [component @eid]
+      (component/destroy component eid))))
+
 (defn- update-world []
   (manual-tick (entity/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
@@ -461,7 +466,7 @@
            (catch Throwable t
              (error-window! t)
              (bind-root tick-error t)))))
-  (remove-destroyed)) ; do not pause this as for example pickup item, should be destroyed.
+  (remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
