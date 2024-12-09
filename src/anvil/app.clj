@@ -1,5 +1,6 @@
 (ns anvil.app
   (:require [clojure.awt :as awt]
+            [clojure.gdx.app :as app]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl :as lwjgl]
@@ -27,3 +28,8 @@
                 (render  [_]     (run! render          components))
                 (resize  [_ w h] (run! #(resize % w h) components)))
               (lwjgl3/config (:lwjgl3 config))))
+
+(def exit app/exit)
+
+(defmacro post-runnable [& exprs]
+  `(app/post-runnable (fn [] ~@exprs)))

@@ -1,5 +1,5 @@
 (ns forge.dev.tools
-  (:require [clojure.gdx.app :refer [post-runnable]]
+  (:require [anvil.app :refer [post-runnable]]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]

@@ -1,5 +1,5 @@
 (ns forge.screens.main-menu
-  (:require [clojure.gdx.app :as app]
+  (:require [anvil.app :as app]
             [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.utils :refer [dev-mode?]]
             [forge.app.cursors :refer [set-cursor]]
