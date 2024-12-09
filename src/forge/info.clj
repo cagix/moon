@@ -1,10 +1,10 @@
 (ns forge.info
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [anvil.entity :refer [hitpoints]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [bind-root readable-number defsystem]]
             [forge.component :as component :refer [*info-text-entity*]]
-            [forge.entity.hp :refer [hitpoints]]
             [forge.entity.mana :refer [e-mana]]
             [forge.entity.stat :as stat]
             [forge.modifiers :refer [damage-mods]]

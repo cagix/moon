@@ -3,7 +3,8 @@
             [clojure.gdx.math.shapes :as shape]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [->tile defsystem]]
-            [reduce-fsm :as fsm]))
+            [reduce-fsm :as fsm]
+            [forge.modifiers :refer [apply-max-modifier]]))
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
@@ -64,3 +65,11 @@
    (send-event! eid event nil))
   ([eid event params]
    (send-event! eid event params)))
+
+(defn hitpoints
+  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
+  Current-hp is capped by max-hp."
+  [entity]
+  (-> entity
+      :entity/hp
+      (apply-max-modifier entity :modifier/hp-max)))

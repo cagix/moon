@@ -1,7 +1,7 @@
 (ns forge.entity.hp
-  (:require [anvil.graphics :as g]
+  (:require [anvil.entity :as entity]
+            [anvil.graphics :as g]
             [clojure.gdx.graphics.color :as color]
-            [forge.modifiers :refer [apply-max-modifier]]
             [forge.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -36,18 +36,11 @@
                           (- height
                              (* 2 border))
                           (hpbar-color ratio)))))
-(defn hitpoints
-  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-hp is capped by max-hp."
-  [entity]
-  (-> entity
-      :entity/hp
-      (apply-max-modifier entity :modifier/hp-max)))
 
 (defn ->v [[_ v]]
   [v v])
 
 (defn render-info [_ entity]
-  (let [ratio (val-max/ratio (hitpoints entity))]
+  (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))

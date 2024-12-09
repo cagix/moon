@@ -1,8 +1,7 @@
 (ns forge.effects.target.damage
   (:require [anvil.db :as db]
-            [anvil.entity :refer [send-event]]
+            [anvil.entity :refer [send-event hitpoints]]
             [clojure.rand :refer [rand-int-between]]
-            [forge.entity.hp :refer [hitpoints]]
             [forge.entity.stat :as stat]
             [forge.entity.string-effect :as string-effect]
             [forge.modifiers :refer [damage-mods]]

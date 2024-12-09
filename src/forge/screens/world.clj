@@ -27,7 +27,6 @@
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]
-            [forge.entity.hp :refer [hitpoints]]
             [forge.entity.mana :refer [e-mana]]
             [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]
             [forge.level :refer [generate-level]]
@@ -82,7 +81,7 @@
     (ui-actor {:draw (fn []
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (hitpoints   player-entity) "HP")
+                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (e-mana player-entity) "MP")))})))
 
 (defn- menu-item [text on-clicked]
