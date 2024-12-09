@@ -1,8 +1,4 @@
-{:requires [forge.schemas
-            forge.info
-            forge.mapgen.generate
-            forge.mapgen.uf-caves]
- :dock-icon "moon.png"
+{:dock-icon "moon.png"
  :lwjgl3 {:title "Forge"
           :fps 60
           :width 1440

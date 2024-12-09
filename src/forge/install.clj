@@ -1,15 +1,20 @@
 (ns forge.install
   (:require [clojure.utils :refer [install install-component]]
-            [forge.app :as component]
+            [anvil.app :as app]
             [forge.effect :as effect]
             [forge.entity :as entity]
-            [forge.entity.state :as state]))
+            [forge.entity.state :as state]
+
+            forge.schemas
+            forge.info
+            forge.mapgen.generate
+            forge.mapgen.uf-caves))
 
 (install "forge"
-         {:optional [#'component/create
-                     #'component/destroy
-                     #'component/render
-                     #'component/resize]}
+         {:optional [#'app/create
+                     #'app/destroy
+                     #'app/render
+                     #'app/resize]}
          (map vector [:app/db
                       :app/asset-manager
                       :app/sprite-batch
