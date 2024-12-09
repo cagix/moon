@@ -1,8 +1,8 @@
 (ns forge.entity.stat
-  (:require [forge.entity.modifiers :as mods]))
+  (:require [anvil.entity :as entity]))
 
 (defn ->value [entity k]
   (when-let [base-value (k entity)]
-    (mods/->value base-value
-                  entity
-                  (keyword "modifier" (name k)))))
+    (entity/mod-value base-value
+                      entity
+                      (keyword "modifier" (name k)))))

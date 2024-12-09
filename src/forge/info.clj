@@ -1,5 +1,6 @@
 (ns forge.info
-  (:require [anvil.entity :refer [hitpoints]]
+  (:require [anvil.entity :refer [hitpoints damage-mods]]
+            [anvil.ops :refer [op-order]]
             [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str]
@@ -7,8 +8,6 @@
             [forge.component :as component :refer [*info-text-entity*]]
             [forge.entity.mana :refer [e-mana]]
             [forge.entity.stat :as stat]
-            [forge.modifiers :refer [damage-mods]]
-            [forge.ops :refer [op-order]]
             [forge.world.time :refer [finished-ratio]]))
 
 (defn k->pretty-name [k]

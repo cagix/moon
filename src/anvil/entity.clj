@@ -1,10 +1,12 @@
 (ns anvil.entity
   (:require [anvil.graphics :refer [set-cursor]]
+            [anvil.ops :as ops]
+            [anvil.val-max :as val-max]
             [clojure.gdx.math.shapes :as shape]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [->tile defsystem]]
             [reduce-fsm :as fsm]
-            [forge.modifiers :refer [apply-max-modifier]]))
+            [malli.core :as m]))
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
@@ -65,6 +67,49 @@
    (send-event! eid event nil))
   ([eid event params]
    (send-event! eid event params)))
+
+(defn- mods-add    [mods other-mods] (merge-with ops/add    mods other-mods))
+(defn- mods-remove [mods other-mods] (merge-with ops/remove mods other-mods))
+
+(defn mod-add    [entity mods] (update entity :entity/modifiers mods-add    mods))
+(defn mod-remove [entity mods] (update entity :entity/modifiers mods-remove mods))
+
+(defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
+  {:pre [(= "modifier" (namespace modifier-k))]}
+  (ops/apply (modifier-k modifiers)
+             base-value))
+
+(defn- ->pos-int [val-max]
+  (mapv #(-> % int (max 0)) val-max))
+
+(defn apply-max-modifier [val-max entity modifier-k]
+  {:pre  [(m/validate val-max/schema val-max)]
+   :post [(m/validate val-max/schema val-max)]}
+  (let [val-max (update val-max 1 mod-value entity modifier-k)
+        [v mx] (->pos-int val-max)]
+    [(min v mx) mx]))
+
+(defn apply-min-modifier [val-max entity modifier-k]
+  {:pre  [(m/validate val-max/schema val-max)]
+   :post [(m/validate val-max/schema val-max)]}
+  (let [val-max (update val-max 0 mod-value entity modifier-k)
+        [v mx] (->pos-int val-max)]
+    [v (max v mx)]))
+
+(defn damage-mods
+  ([source damage]
+   (update damage
+           :damage/min-max
+           #(-> %
+                (apply-min-modifier source :modifier/damage-deal-min)
+                (apply-max-modifier source :modifier/damage-deal-max))))
+
+  ([source target damage]
+   (update (damage-mods source damage)
+           :damage/min-max
+           apply-max-modifier
+           target
+           :modifier/damage-receive-max)))
 
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

@@ -1,10 +1,9 @@
 (ns forge.effects.target.damage
   (:require [anvil.db :as db]
-            [anvil.entity :refer [send-event hitpoints]]
+            [anvil.entity :refer [send-event hitpoints damage-mods]]
             [clojure.rand :refer [rand-int-between]]
             [forge.entity.stat :as stat]
             [forge.entity.string-effect :as string-effect]
-            [forge.modifiers :refer [damage-mods]]
             [forge.world :refer [spawn-audiovisual]]))
 
 (defn- effective-armor-save [source* target*]

@@ -1,5 +1,5 @@
 (ns forge.entity.mana
-  (:require [forge.modifiers :refer [apply-max-modifier]]))
+  (:require [anvil.entity :refer [apply-max-modifier]]))
 
 (defn ->v [[_ v]]
   [v v])

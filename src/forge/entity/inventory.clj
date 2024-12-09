@@ -1,6 +1,6 @@
 (ns forge.entity.inventory
-  (:require [clojure.utils :refer [find-first]]
-            [forge.entity.modifiers :as mods]
+  (:require [anvil.entity :as entity]
+            [clojure.utils :refer [find-first]]
             [forge.ui.inventory :as inventory :refer [valid-slot?]]))
 
 (defn- applies-modifiers? [[slot _]]
@@ -15,7 +15,7 @@
       (inventory/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
-      (swap! eid mods/add (:entity/modifiers item)))))
+      (swap! eid entity/mod-add (:entity/modifiers item)))))
 
 (defn remove-item [eid cell]
   (let [entity @eid
@@ -25,7 +25,7 @@
       (inventory/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
-      (swap! eid mods/remove (:entity/modifiers item)))))
+      (swap! eid entity/mod-remove (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn remove-one-item [eid cell]

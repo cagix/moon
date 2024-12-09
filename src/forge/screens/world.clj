@@ -8,6 +8,7 @@
                                           world-viewport-width world-viewport-height]]
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
+            [anvil.val-max :as val-max]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -36,7 +37,6 @@
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.val-max :as val-max]
             [forge.world :refer [render-z-order
                                  remove-destroyed
                                  spawn-creature

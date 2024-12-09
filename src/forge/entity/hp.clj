@@ -1,8 +1,8 @@
 (ns forge.entity.hp
   (:require [anvil.entity :as entity]
             [anvil.graphics :as g]
-            [clojure.gdx.graphics.color :as color]
-            [forge.val-max :as val-max]))
+            [anvil.val-max :as val-max]
+            [clojure.gdx.graphics.color :as color]))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
