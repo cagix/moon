@@ -1,6 +1,5 @@
 (ns forge.entity.string-effect
-  (:require [anvil.graphics :refer [draw-text]]
-            [forge.app.world-viewport :refer [pixels->world-units]]
+  (:require [anvil.graphics :as g]
             [forge.world.time :refer [timer reset-timer stopped?]]))
 
 (defn add [entity text]
@@ -19,10 +18,10 @@
 
 (defn render-above [[_ {:keys [text]}] entity]
   (let [[x y] (:position entity)]
-    (draw-text {:text text
-                :x x
-                :y (+ y
-                      (:half-height entity)
-                      (pixels->world-units 5))
-                :scale 2
-                :up? true})))
+    (g/draw-text {:text text
+                  :x x
+                  :y (+ y
+                        (:half-height entity)
+                        (g/pixels->world-units 5))
+                  :scale 2
+                  :up? true})))

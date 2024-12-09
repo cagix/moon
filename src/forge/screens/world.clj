@@ -1,5 +1,8 @@
 (ns forge.screens.world
-  (:require [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text sub-image ->image draw-tiled-map gui-viewport-width gui-mouse-position]]
+  (:require [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
+                                          sub-image ->image draw-tiled-map gui-viewport-width
+                                          gui-mouse-position world-mouse-position world-camera
+                                          world-viewport-width world-viewport-height]]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -22,10 +25,6 @@
                                       change-listener
                                       image->widget]
              :as ui]
-            [forge.app.world-viewport :refer [world-mouse-position
-                                              world-camera
-                                              world-viewport-width
-                                              world-viewport-height]]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]

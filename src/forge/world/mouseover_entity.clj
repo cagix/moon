@@ -1,6 +1,6 @@
 (ns forge.world.mouseover-entity
-  (:require [clojure.utils :refer [bind-root sort-by-order]]
-            [forge.app.world-viewport :refer [world-mouse-position]]
+  (:require [anvil.graphics :refer [world-mouse-position]]
+            [clojure.utils :refer [bind-root sort-by-order]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.world :refer [render-z-order line-of-sight?]]
             [forge.world.grid :refer [point->entities]]

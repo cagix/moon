@@ -1,9 +1,9 @@
 (ns forge.controls
-  (:require [clojure.gdx.graphics.camera :as cam]
+  (:require [anvil.graphics :refer [world-camera]]
+            [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.input :refer [key-just-pressed?
                                        key-pressed?]]
-            [clojure.gdx.math.vector2 :as v]
-            [forge.app.world-viewport :refer [world-camera]]))
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

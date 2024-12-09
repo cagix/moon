@@ -7,8 +7,7 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
-            [clojure.utils :refer [safe-get]]
-            [forge.app.world-viewport :refer [world-unit-scale world-viewport world-camera]])
+            [clojure.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
@@ -20,6 +19,10 @@
          gui-viewport
          gui-viewport-width
          gui-viewport-height
+         world-unit-scale
+         world-viewport-width
+         world-viewport-height
+         world-viewport
          cached-map-renderer)
 
 (defn- sd-color [color]
@@ -249,6 +252,21 @@
                  (int (/ sprite-y tileh))]))
     (->image file)))
 
+(defn gui-mouse-position []
+  ; TODO mapv int needed?
+  (mapv int (vp/unproject-mouse-position gui-viewport)))
+
+(defn pixels->world-units [pixels]
+  (* (int pixels) world-unit-scale))
+
+(defn world-mouse-position []
+  ; TODO clamping only works for gui-viewport ? check. comment if true
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (vp/unproject-mouse-position world-viewport))
+
+(defn world-camera []
+  (vp/camera world-viewport))
+
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
 
@@ -269,7 +287,3 @@
          (map (partial tiled/layer-index tiled-map))
          int-array
          (.render map-renderer))))
-
-(defn gui-mouse-position []
-  ; TODO mapv int needed?
-  (mapv int (vp/unproject-mouse-position gui-viewport)))

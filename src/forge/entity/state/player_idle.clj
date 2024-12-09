@@ -1,11 +1,10 @@
 (ns forge.entity.state.player-idle
   (:require [anvil.audio :refer [play-sound]]
-            [anvil.graphics :refer [set-cursor]]
+            [anvil.graphics :refer [set-cursor world-mouse-position]]
             [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :as actor]
             [forge.app.vis-ui :refer [window-title-bar? button?]]
-            [forge.app.world-viewport :refer [world-mouse-position]]
             [forge.controls :as controls]
             [forge.entity.fsm :refer [send-event]]
             [forge.entity.inventory :refer [can-pickup-item? pickup-item remove-item]]

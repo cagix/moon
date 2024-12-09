@@ -1,12 +1,11 @@
 (ns forge.app.world-viewport
-  (:require [clojure.gdx.graphics :as g]
+  (:require [anvil.graphics :refer [world-unit-scale
+                                    world-viewport-width
+                                    world-viewport-height
+                                    world-viewport]]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
             [clojure.utils :refer [bind-root]]))
-
-(declare world-unit-scale
-         world-viewport-width
-         world-viewport-height
-         world-viewport)
 
 (defn create [[_ [width height tile-size]]]
   (bind-root world-unit-scale (float (/ tile-size)))
@@ -20,14 +19,3 @@
                               (fit-viewport world-width world-height camera))))
 (defn resize [_ w h]
   (vp/update world-viewport w h))
-
-(defn pixels->world-units [pixels]
-  (* (int pixels) world-unit-scale))
-
-(defn world-mouse-position []
-  ; TODO clamping only works for gui-viewport ? check. comment if true
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-position world-viewport))
-
-(defn world-camera []
-  (vp/camera world-viewport))

@@ -1,7 +1,6 @@
 (ns forge.entity.hp
   (:require [anvil.graphics :as g]
             [clojure.gdx.graphics.color :as color]
-            [forge.app.world-viewport :refer [pixels->world-units]]
             [forge.modifiers :refer [apply-max-modifier]]
             [forge.val-max :as val-max]))
 
@@ -27,8 +26,8 @@
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (pixels->world-units 5)
-          border (pixels->world-units borders-px)]
+          height (g/pixels->world-units 5)
+          border (g/pixels->world-units borders-px)]
       (g/filled-rectangle x y width height color/black)
       (g/filled-rectangle (+ x border)
                           (+ y border)
