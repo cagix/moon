@@ -2,7 +2,7 @@
   (:require [anvil.graphics :refer [draw-text]]))
 
 (defn render-default [[_ {:keys [text]}]
-   {:keys [entity/mouseover?] :as entity}]
+                      {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
       (draw-text {:text text

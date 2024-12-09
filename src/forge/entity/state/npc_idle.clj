@@ -1,7 +1,6 @@
 (ns forge.entity.state.npc-idle
   (:require [anvil.entity :as entity]
             [forge.effect :refer [effects-useful?]]
-            [forge.entity.faction :as faction]
             [forge.entity.fsm :refer [send-event]]
             [forge.skill :as skill]
             [forge.world :refer [line-of-sight?]]
@@ -10,7 +9,7 @@
 
 (defn- nearest-enemy [entity]
   (nearest-entity @(get world-grid (entity/tile entity))
-                  (faction/enemy entity)))
+                  (entity/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
   (let [entity @eid

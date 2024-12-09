@@ -1,6 +1,6 @@
 (ns forge.entity.mouseover?
-  (:require [anvil.graphics :as g]
-            [forge.entity.faction :as faction]
+  (:require [anvil.entity :as entity]
+            [anvil.graphics :as g]
             [forge.world.player :refer [player-eid]]))
 
 (def ^:private outline-alpha 0.4)
@@ -14,7 +14,7 @@
       #(g/ellipse (:position entity)
                   (:half-width entity)
                   (:half-height entity)
-                  (cond (= faction (faction/enemy player))
+                  (cond (= faction (entity/enemy player))
                         enemy-color
                         (= faction (:entity/faction player))
                         friendly-color
