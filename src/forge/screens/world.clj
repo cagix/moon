@@ -9,7 +9,7 @@
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
-            [anvil.world :refer [elapsed-time world-delta max-delta-time]]
+            [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid]]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -49,8 +49,6 @@
                                       circle->cells]]
             [forge.world.mouseover-entity :refer [mouseover-entity]]
             [forge.world.raycaster :refer [ray-blocked?]]
-            [forge.world.tiled-map :refer [world-tiled-map]]
-            [forge.world.player :refer [player-eid]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
@@ -369,22 +367,22 @@
   (bind-root world-delta nil))
 
 (defn- world-init [{:keys [tiled-map start-position]}]
-  (forge.world.tiled-map/init             tiled-map)
+  (bind-root world/tiled-map tiled-map)
   (forge.world.explored-tile-corners/init tiled-map)
   (forge.world.grid/init                  tiled-map)
   (forge.world.entity-ids/init            tiled-map)
   (forge.world.content-grid/init          tiled-map)
   (forge.world.raycaster/init             tiled-map)
   (time-init)
-  (forge.world.player/init
+  (bind-root world/player-eid
    (spawn-creature
     (player-entity-props start-position)))
   (when spawn-enemies?
     (spawn-enemies tiled-map)))
 
 (defn- world-clear [] ; responsibility of screen? we are not creating the tiled-map here ...
-  (when (bound? #'world-tiled-map)
-    (dispose world-tiled-map)))
+  (when (bound? #'world/tiled-map)
+    (dispose world/tiled-map)))
 
 ; depends on world-widgets & world-init ....
 ; so widgets comes from world-props .... as components ...
@@ -477,7 +475,7 @@
   ; FIXME position DRY
   (cam/set-position! (world-camera) (:position @player-eid))
   ; FIXME position DRY
-  (draw-tiled-map world-tiled-map
+  (draw-tiled-map world/tiled-map
                   (tile-color-setter (cam/position (world-camera))))
   (draw-on-world-view (fn []
                        (debug-render-before-entities)

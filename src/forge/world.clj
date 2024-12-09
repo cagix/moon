@@ -3,7 +3,7 @@
             [anvil.db :as db]
             [anvil.entity]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
-            [anvil.world :refer [timer]]
+            [anvil.world :refer [timer player-eid]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
@@ -11,8 +11,7 @@
             [forge.world.content-grid :as content-grid]
             [forge.world.entity-ids :as entity-ids]
             [forge.world.grid :as grid]
-            [forge.world.raycaster :refer [ray-blocked?]]
-            [forge.world.player :refer [player-eid]]))
+            [forge.world.raycaster :refer [ray-blocked?]]))
 
 (defn- add-entity [eid]
   ; https://github.com/damn/core/issues/58

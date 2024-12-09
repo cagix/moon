@@ -2,11 +2,11 @@
   (:require [anvil.app :refer [change-screen]]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
             [anvil.screen :refer [Screen]]
+            [anvil.world :as world]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]
-            [forge.world.explored-tile-corners :refer [explored-tile-corners]]
-            [forge.world.tiled-map :refer [world-tiled-map]]))
+            [forge.world.explored-tile-corners :refer [explored-tile-corners]]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight
@@ -45,7 +45,7 @@
     (cam/reset-zoom! (world-camera)))
 
   (render [_]
-    (draw-tiled-map world-tiled-map
+    (draw-tiled-map world/tiled-map
                     (->tile-corner-color-setter @explored-tile-corners))
     (draw-on-world-view
      (fn []

@@ -1,8 +1,8 @@
 (ns forge.effects.target-all
   (:require [anvil.graphics :as g]
+            [anvil.world :refer [player-eid]]
             [forge.effect :refer [effects-do!]]
-            [forge.world :refer [active-entities line-of-sight?  spawn-line-render]]
-            [forge.world.player :refer [player-eid]]))
+            [forge.world :refer [active-entities line-of-sight?  spawn-line-render]]))
 
 ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
 ; same code as in render entities on world view screens/world

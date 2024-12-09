@@ -1,10 +1,10 @@
 (ns forge.world.mouseover-entity
   (:require [anvil.graphics :refer [world-mouse-position]]
+            [anvil.world :refer [player-eid]]
             [clojure.utils :refer [bind-root sort-by-order]]
             [forge.screens.stage :refer [mouse-on-actor?]]
             [forge.world :refer [render-z-order line-of-sight?]]
-            [forge.world.grid :refer [point->entities]]
-            [forge.world.player :refer [player-eid]]))
+            [forge.world.grid :refer [point->entities]]))
 
 (def mouseover-eid nil)
 

@@ -9,14 +9,14 @@
                               add-tooltip!
                               remove-tooltip!]
              :as ui]
+            [anvil.world :refer [player-eid]]
             [clojure.gdx.graphics.color :refer [->color]]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
             [data.grid2d :as g2d]
             [forge.component :refer [info-text]]
             [forge.entity.state :refer [clicked-inventory-cell]]
-            [forge.screens.stage :refer [screen-stage]]
-            [forge.world.player :refer [player-eid]])
+            [forge.screens.stage :refer [screen-stage]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
