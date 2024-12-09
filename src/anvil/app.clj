@@ -14,7 +14,7 @@
     (lwjgl/configure-glfw-for-mac))
   (lwjgl3/app (reify lwjgl3/Listener
                 (create  [_]     (run! system/create          components))
-                (dispose [_]     (run! system/destroy         components))
+                (dispose [_]     (run! system/dispose         components))
                 (render  [_]     (run! system/render          components))
                 (resize  [_ w h] (run! #(system/resize % w h) components)))
               (lwjgl3/config (:lwjgl3 config))))

@@ -15,5 +15,5 @@
       (set! true))
   (vis/configure-tooltips {:default-appear-delay-time 0}))
 
-(defn destroy [_]
+(defn dispose [_]
   (vis/dispose))

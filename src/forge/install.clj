@@ -24,7 +24,7 @@
 
 (install "forge"
          {:optional [#'system/create
-                     #'system/destroy
+                     #'system/dispose
                      #'system/render
                      #'system/resize]}
          (map vector [:app/db

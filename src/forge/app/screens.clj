@@ -15,7 +15,7 @@
                                          :sub-screen [k]}]])))
   (app/change-screen first-k))
 
-(defn destroy [_]
+(defn dispose [_]
   (run! system/dispose (vals app/screens)))
 
 (defn render [_]

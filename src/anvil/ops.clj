@@ -1,5 +1,5 @@
 (ns anvil.ops
-  (:refer-clojure :exclude [remove])
+  (:refer-clojure :exclude [apply remove])
   (:require [anvil.system :as system]
             [clojure.utils :refer [defmethods]]))
 

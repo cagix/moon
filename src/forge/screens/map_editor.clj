@@ -2,6 +2,7 @@
   (:require [anvil.app :as app :refer [change-screen]]
             [anvil.controls :as controls]
             [anvil.db :as db]
+            [anvil.disposable :as disposable]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
@@ -12,7 +13,6 @@
             [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]))
 
@@ -116,7 +116,7 @@
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
         atom-data (current-data)]
-    (dispose (:tiled-map @atom-data))
+    (disposable/dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
