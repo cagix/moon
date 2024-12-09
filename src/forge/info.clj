@@ -4,7 +4,7 @@
             [anvil.info :as info :refer [*info-text-entity*]]
             [anvil.mana :as mana]
             [anvil.stat :as stat]
-            [anvil.world :refer [finished-ratio]]
+            [anvil.time :refer [finished-ratio]]
             [clojure.component :as component]
             [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]

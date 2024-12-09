@@ -1,7 +1,7 @@
 (ns forge.entity.state.stunned
   (:require [anvil.fsm :as fsm]
             [anvil.graphics :as g]
-            [anvil.world :refer [timer stopped?]]))
+            [anvil.time :refer [timer stopped?]]))
 
 (defn ->v [[_ eid duration]]
   {:eid eid

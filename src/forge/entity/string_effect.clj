@@ -1,6 +1,6 @@
 (ns forge.entity.string-effect
   (:require [anvil.graphics :as g]
-            [anvil.world :refer [stopped?]]))
+            [anvil.time :refer [stopped?]]))
 
 (defn tick [[k {:keys [counter]}] eid]
   (when (stopped? counter)

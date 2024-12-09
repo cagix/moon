@@ -1,6 +1,7 @@
 (ns forge.entity.alert-friendlies-after-duration
   (:require [anvil.fsm :as fsm]
-            [anvil.world :refer [stopped? circle->entities]]))
+            [anvil.time :refer [stopped?]]
+            [anvil.world :refer [circle->entities]]))
 
 (def ^:private shout-radius 4)
 

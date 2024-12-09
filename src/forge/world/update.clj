@@ -3,6 +3,7 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.stage :as stage]
+            [anvil.time :as time]
             [anvil.world :as world :refer [player-eid explored-tile-corners mouseover-entity mouseover-eid active-entities circle->cells point->entities line-of-sight? render-z-order]]
             [clojure.component :as component]
             [clojure.gdx.graphics :refer [delta-time]]
@@ -31,9 +32,9 @@
   (run! tick-entity entities))
 
 (defn- time-update []
-  (let [delta-ms (min (delta-time) world/max-delta-time)]
-    (alter-var-root #'world/elapsed-time + delta-ms)
-    (bind-root world/world-delta delta-ms)))
+  (let [delta-ms (min (delta-time) time/max-delta)]
+    (alter-var-root #'time/elapsed + delta-ms)
+    (bind-root time/delta delta-ms)))
 
 (defn- calculate-eid []
   (let [player @player-eid
@@ -66,11 +67,11 @@
 (defn update-world []
   (component/manual-tick (fsm/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
-  (bind-root world/paused? (or world/tick-error
-                               (and pausing?
-                                    (component/pause-game? (fsm/state-obj @player-eid))
-                                    (not (controls/unpaused?)))))
-  (when-not world/paused?
+  (bind-root time/paused? (or world/tick-error
+                              (and pausing?
+                                   (component/pause-game? (fsm/state-obj @player-eid))
+                                   (not (controls/unpaused?)))))
+  (when-not time/paused?
     (time-update)
     (let [entities (active-entities)]
       (update-potential-fields! entities)

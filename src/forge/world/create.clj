@@ -12,6 +12,7 @@
             [anvil.mana :as mana]
             [anvil.skills :as skills]
             [anvil.stage :as stage]
+            [anvil.time :as time]
             [anvil.ui :refer [ui-actor] :as ui]
             [anvil.val-max :as val-max]
             [anvil.world :as world :refer [mouseover-entity]]
@@ -149,10 +150,10 @@
                      :update-fn #(when-let [entity (mouseover-entity)] (:entity/id entity))
                      :icon "images/mouseover.png"}
                     {:label "elapsed-time"
-                     :update-fn #(str (readable-number world/elapsed-time) " seconds")
+                     :update-fn #(str (readable-number time/elapsed) " seconds")
                      :icon "images/clock.png"}
                     {:label "paused?"
-                     :update-fn (fn [] world/paused?)}
+                     :update-fn (fn [] time/paused?)}
                     {:label "GUI"
                      :update-fn g/gui-mouse-position}
                     {:label "World"
@@ -222,8 +223,8 @@
                 :entity/click-distance-tiles 1.5}})
 
 (defn- time-init []
-  (bind-root world/elapsed-time 0)
-  (bind-root world/world-delta nil))
+  (bind-root time/elapsed 0)
+  (bind-root time/delta nil))
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]

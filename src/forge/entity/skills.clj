@@ -1,6 +1,6 @@
 (ns forge.entity.skills
   (:require [anvil.skills :as skills]
-            [anvil.world :refer [stopped?]]))
+            [anvil.time :refer [stopped?]]))
 
 (defn create [[k skills] eid]
   (swap! eid assoc k nil)

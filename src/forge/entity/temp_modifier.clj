@@ -1,7 +1,7 @@
 (ns forge.entity.temp-modifier
   (:require [anvil.modifiers :as mods]
             [anvil.graphics :as g]
-            [anvil.world :refer [stopped?]]))
+            [anvil.time :refer [stopped?]]))
 
 (defn tick [[k {:keys [modifiers counter]}] eid]
   (when (stopped? counter)

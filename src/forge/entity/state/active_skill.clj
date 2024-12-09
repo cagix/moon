@@ -5,7 +5,8 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [draw-image]]
             [anvil.stat :as stat]
-            [anvil.world :refer [stopped? timer finished-ratio line-of-sight?]]))
+            [anvil.time :refer [stopped? timer finished-ratio]]
+            [anvil.world :refer [line-of-sight?]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
