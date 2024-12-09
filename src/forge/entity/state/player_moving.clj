@@ -1,7 +1,6 @@
 (ns forge.entity.state.player-moving
-  (:require [anvil.entity :refer [send-event]]
+  (:require [anvil.entity :refer [send-event stat-value]]
             [forge.controls :as controls]
-            [forge.entity.stat :as stat]
             [forge.world.time :refer [timer stopped?]]))
 
 (defn ->v [[_ eid movement-vector]]
@@ -16,7 +15,7 @@
 
 (defn enter [[_ {:keys [eid movement-vector]}]]
   (swap! eid assoc :entity/movement {:direction movement-vector
-                                     :speed (stat/->value @eid :entity/movement-speed)}))
+                                     :speed (stat-value @eid :entity/movement-speed)}))
 
 (defn exit [[_ {:keys [eid]}]]
   (swap! eid dissoc :entity/movement))
@@ -24,5 +23,5 @@
 (defn tick [[_ {:keys [movement-vector]}] eid]
   (if-let [movement-vector (controls/movement-vector)]
     (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (stat/->value @eid :entity/movement-speed)})
+                                       :speed (stat-value @eid :entity/movement-speed)})
     (send-event eid :no-movement-input)))

@@ -1,7 +1,6 @@
 (ns forge.entity.state.npc-sleeping
   (:require [anvil.graphics :refer [draw-text]]
-            [anvil.entity :as entity :refer [send-event]]
-            [forge.entity.stat :as stat]
+            [anvil.entity :as entity :refer [send-event stat-value]]
             [forge.entity.string-effect :as string-effect]
             [forge.world :refer [delayed-alert]]
             [forge.world.grid :refer [world-grid nearest-entity-distance]]))
@@ -19,7 +18,7 @@
   (let [entity @eid
         cell (get world-grid (entity/tile entity))] ; pattern!
     (when-let [distance (nearest-entity-distance @cell (entity/enemy entity))]
-      (when (<= distance (stat/->value entity :entity/aggro-range))
+      (when (<= distance (stat-value entity :entity/aggro-range))
         (send-event eid :alert)))))
 
 (defn render-above [_ entity]

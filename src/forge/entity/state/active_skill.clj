@@ -1,16 +1,14 @@
 (ns forge.entity.state.active-skill
   (:require [anvil.audio :refer [play-sound]]
-            [anvil.entity :refer [send-event]]
+            [anvil.entity :refer [stat-value send-event pay-mana-cost]]
             [anvil.graphics :as g :refer [draw-image]]
             [forge.effect :refer [effects-applicable? effects-do! effects-render]]
-            [forge.entity.mana :refer [pay-mana-cost]]
-            [forge.entity.stat :as stat]
             [forge.world :refer [line-of-sight?]]
             [forge.world.time :refer [stopped? timer finished-ratio]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (stat/->value entity (:skill/action-time-modifier-key skill))
+     (or (stat-value entity (:skill/action-time-modifier-key skill))
          1)))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.

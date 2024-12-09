@@ -1,13 +1,11 @@
 (ns forge.info
-  (:require [anvil.entity :refer [hitpoints damage-mods]]
+  (:require [anvil.entity :as entity :refer [hitpoints damage-mods stat-value]]
             [anvil.ops :refer [op-order]]
             [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [bind-root readable-number defsystem]]
             [forge.component :as component :refer [*info-text-entity*]]
-            [forge.entity.mana :refer [e-mana]]
-            [forge.entity.stat :as stat]
             [forge.world.time :refer [finished-ratio]]))
 
 (defn k->pretty-name [k]
@@ -103,7 +101,7 @@
   (str "Hitpoints: " (hitpoints *info-text-entity*)))
 
 (defmethod component/info :entity/mana [_]
-  (str "Mana: " (e-mana *info-text-entity*)))
+  (str "Mana: " (entity/mana *info-text-entity*)))
 
 (defn- +? [n]
   (case (math/signum n)
@@ -169,7 +167,7 @@
     (str "Cost: " v " Mana")))
 
 (defmethod component/info ::stat [[k _]]
-  (str (k->pretty-name k) ": " (stat/->value *info-text-entity* k)))
+  (str (k->pretty-name k) ": " (stat-value *info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)

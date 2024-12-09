@@ -118,3 +118,27 @@
   (-> entity
       :entity/hp
       (apply-max-modifier entity :modifier/hp-max)))
+
+(defn mana
+  "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
+  Current-mana is capped by max-mana."
+  [entity]
+  (-> entity
+      :entity/mana
+      (apply-max-modifier entity :modifier/mana-max)))
+
+(defn mana-value [entity]
+  (if (:entity/mana entity)
+    ((mana entity) 0)
+    0))
+
+(defn pay-mana-cost [entity cost]
+  (let [mana-val ((mana entity) 0)]
+    (assert (<= cost mana-val))
+    (assoc-in entity [:entity/mana 0] (- mana-val cost))))
+
+(defn stat-value [entity k]
+  (when-let [base-value (k entity)]
+    (mod-value base-value
+               entity
+               (keyword "modifier" (name k)))))
