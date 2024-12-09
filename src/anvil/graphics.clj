@@ -1,19 +1,18 @@
 (ns anvil.graphics
   (:require [anvil.app :as app]
             [anvil.disposable :refer [dispose]]
+            [anvil.tiled-map-renderer :as tiled-map-renderer]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.math.utils :refer [degree->radians]]
-            [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.utils Align)
-           (forge OrthogonalTiledMapRenderer ColorSetter)))
+           (com.badlogic.gdx.utils Align)))
 
 (def truetype-font freetype/generate-font)
 
@@ -287,14 +286,7 @@
 
   Renders only visible layers."
   [tiled-map color-setter]
-  (let [^OrthogonalTiledMapRenderer map-renderer (cached-map-renderer tiled-map)]
-    (.setColorSetter map-renderer (reify ColorSetter
-                                    (apply [_ color x y]
-                                      (color-setter color x y))))
-    (.setView map-renderer (world-camera))
-    (->> tiled-map
-         tiled/layers
-         (filter tiled/visible?)
-         (map (partial tiled/layer-index tiled-map))
-         int-array
-         (.render map-renderer))))
+  (tiled-map-renderer/render (cached-map-renderer tiled-map)
+                             tiled-map
+                             color-setter
+                             (world-camera)))

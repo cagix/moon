@@ -1,12 +1,10 @@
 (ns forge.app.cached-map-renderer
-  (:require [anvil.graphics :refer [batch cached-map-renderer world-unit-scale]]
-            [clojure.utils :refer [bind-root]])
-  (:import (forge OrthogonalTiledMapRenderer)))
+  (:require [anvil.graphics :as g]
+            [anvil.tiled-map-renderer :as tiled-map-renderer]
+            [clojure.utils :refer [bind-root]]))
 
 (defn create [_]
-  (bind-root cached-map-renderer
-             (memoize
-              (fn [tiled-map]
-                (OrthogonalTiledMapRenderer. tiled-map
-                                             (float world-unit-scale)
-                                             batch)))))
+  (bind-root g/cached-map-renderer (memoize (fn [tiled-map]
+                                              (tiled-map-renderer/create tiled-map
+                                                                         g/world-unit-scale
+                                                                         g/batch)))))
