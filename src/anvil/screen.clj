@@ -1,14 +1,6 @@
 (ns anvil.screen
-  (:require [clojure.component :refer [defsystem]]))
-
-(defsystem actors)
-(defmethod actors :default [_])
-
-(defsystem dispose)
-(defmethod dispose :default [_])
-
-(defsystem render)
-(defmethod render :default [_])
+  (:require [clojure.component :refer [defsystem]]
+            [clojure.gdx.scene2d.stage :as stage]))
 
 (defsystem enter)
 (defmethod enter :default [_])
@@ -32,3 +24,28 @@
     (assert screen (str "Cannot find screen with key: " new-k))
     (def current-k new-k)
     (enter screen)))
+
+(defsystem actors)
+(defmethod actors :default [_])
+
+(defn setup [gui-viewport batch {:keys [screens first-k]}]
+  (def screens
+    (into {}
+          (for [k screens]
+            [k [:screens/stage {:stage (stage/create gui-viewport
+                                                     batch
+                                                     (actors [k]))
+                                :sub-screen [k]}]])))
+  (change first-k))
+
+(defsystem dispose)
+(defmethod dispose :default [_])
+
+(defn dispose-all []
+  (run! dispose (vals screens)))
+
+(defsystem render)
+(defmethod render :default [_])
+
+(defn render-current []
+  (render (current)))

@@ -133,21 +133,14 @@
     (vis/dispose)))
 
 (defmethods ::screens
-  (create [[_ {:keys [screens first-k]}]]
-    (bind-root screen/screens
-               (into {}
-                     (for [k screens]
-                       [k [:screens/stage {:stage (stage/create gui-viewport
-                                                                batch
-                                                                (screen/actors [k]))
-                                           :sub-screen [k]}]])))
-    (screen/change first-k))
+  (create [[_ screens]]
+    (screen/setup gui-viewport batch screens))
 
   (dispose [_]
-    (run! screen/dispose (vals screen/screens)))
+    (screen/dispose-all))
 
   (render [_]
-    (screen/render (screen/current))))
+    (screen/render-current)))
 
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)
