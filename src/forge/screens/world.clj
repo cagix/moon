@@ -19,29 +19,19 @@
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.scene2d.actor :refer [visible?  set-visible] :as actor]
             [clojure.gdx.scene2d.group :refer [add-actor! children]]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.vis-ui :as vis]
-            [clojure.utils :refer [bind-root
-                                   ->tile
-                                   tile->middle
-                                   sort-by-order
-                                   readable-number
-                                   dev-mode?
-                                   pretty-pst]]
+            [clojure.utils :refer [bind-root ->tile tile->middle sort-by-order readable-number dev-mode?  pretty-pst]]
             [data.grid2d :as g2d]
             [forge.controls :as controls]
-            [forge.screens.stage :as stage :refer [screen-stage
-                                                   reset-stage
-                                                   mouse-on-actor?]]
-            [forge.ui :refer [error-window!]]
+            [forge.screens.stage :as stage :refer [screen-stage reset-stage mouse-on-actor?]] [forge.ui :refer [error-window!]]
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.world.grid]
-            [forge.world.raycaster]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
@@ -359,19 +349,83 @@
   (bind-root elapsed-time 0)
   (bind-root world-delta nil))
 
+(defn- set-arr [arr cell cell->blocked?]
+  (let [[x y] (:position cell)]
+    (aset arr x y (boolean (cell->blocked? cell)))))
+
+(defn- init-raycaster* [grid position->blocked?]
+  (let [width  (g2d/width  grid)
+        height (g2d/height grid)
+        arr (make-array Boolean/TYPE width height)]
+    (doseq [cell (g2d/cells grid)]
+      (set-arr arr @cell position->blocked?))
+    (bind-root world/raycaster [arr width height])))
+
+(defn init-raycaster [tiled-map]
+  (init-raycaster world/grid world/blocks-vision?))
+
+(defrecord RCell [position
+                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
+                  adjacent-cells
+                  movement
+                  entities
+                  occupied
+                  good
+                  evil]
+  world/Cell
+  (cell-blocked? [_ z-order]
+    (case movement
+      :none true ; wall
+      :air (case z-order ; water/doodads
+             :z-order/flying false
+             :z-order/ground true)
+      :all false)) ; ground/floor
+
+  (blocks-vision? [_]
+    (= movement :none))
+
+  (occupied-by-other? [_ eid]
+    (some #(not= % eid) occupied)) ; contains? faster?
+
+  (nearest-entity [this faction]
+    (-> this faction :eid))
+
+  (nearest-entity-distance [this faction]
+    (-> this faction :distance)))
+
+(defn- ->cell [position movement]
+  {:pre [(#{:none :air :all} movement)]}
+  (map->RCell
+   {:position position
+    :middle (tile->middle position)
+    :movement movement
+    :entities #{}
+    :occupied #{}}))
+
+(defn- init-world-grid [tiled-map]
+  (bind-root world/grid (g2d/create-grid
+                         (tiled/tm-width tiled-map)
+                         (tiled/tm-height tiled-map)
+                         (fn [position]
+                           (atom (->cell position
+                                         (case (tiled/movement-property tiled-map position)
+                                           "none" :none
+                                           "air"  :air
+                                           "all"  :all)))))))
+
 (defn- world-init [{:keys [tiled-map start-position]}]
   (bind-root world/tiled-map tiled-map)
   (bind-root explored-tile-corners (atom (g2d/create-grid
                                           (tiled/tm-width  tiled-map)
                                           (tiled/tm-height tiled-map)
                                           (constantly false))))
-  (forge.world.grid/init tiled-map)
+  (init-world-grid tiled-map)
   (bind-root world/entity-ids {})
   (bind-root world/content-grid
              (content-grid/create {:cell-size 16  ; FIXME global config
                                    :width  (tiled/tm-width  tiled-map)
                                    :height (tiled/tm-height tiled-map)}))
-  (forge.world.raycaster/init tiled-map)
+  (init-raycaster tiled-map)
   (time-init)
   (bind-root world/player-eid
    (spawn-creature
