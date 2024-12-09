@@ -1,8 +1,7 @@
 (ns anvil.db
-  (:require [clojure.utils :refer [safe-get
-                                   recur-sort-map
-                                   apply-kvs
-                                   async-pprint-spit!]]
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit!]]
             [malli.core :as m]
             [malli.error :as me]))
 
@@ -122,3 +121,12 @@
     (println id)
     (alter-var-root #'db-data update id update-fn))
   (async-write-to-file!))
+
+(defn setup [{:keys [schema properties]}]
+  (def schemas (-> schema io/resource slurp edn/read-string))
+  (def properties-file (io/resource properties))
+  (let [properties (-> properties-file slurp edn/read-string)]
+    (assert (or (empty? properties)
+                (apply distinct? (map :property/id properties))))
+    (run! validate! properties)
+    (def db-data (zipmap (map :property/id properties) properties))))

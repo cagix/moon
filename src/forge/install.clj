@@ -9,16 +9,6 @@
             forge.mapgen.generate
             forge.mapgen.uf-caves))
 
-(def app
-  {:optional [#'app/create
-              #'app/dispose
-              #'app/render
-              #'app/resize]})
-
-(install "forge"
-         app
-         (map vector [:app/db]))
-
 (def screen {:optional [#'app/actors
                         #'screen/enter
                         #'screen/exit

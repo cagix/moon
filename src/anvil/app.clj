@@ -1,5 +1,6 @@
 (ns anvil.app
-  (:require [anvil.screen :as screen]
+  (:require [anvil.db :as db]
+            [anvil.screen :as screen]
             [clojure.awt :as awt]
             [clojure.component :refer [defsystem] :as component]
             [clojure.gdx.app :as app]
@@ -16,7 +17,7 @@
             [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
             [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.utils :refer [bind-root defmethods mapvals]]
+            [clojure.utils :refer [defmethods mapvals]]
             [clojure.vis-ui :as vis])
   (:import (forge OrthogonalTiledMapRenderer)))
 
@@ -31,7 +32,11 @@
 (defsystem resize)
 (defmethod resize :default [_ w h])
 
-(defmethods ::asset-manager
+(defmethods :db
+  (create [[_ config]]
+    (db/setup config)))
+
+(defmethods :asset-manager
   (create [[_ folder]]
     (def asset-manager (manager/load-all
                         (for [[asset-type exts] [[:sound   #{"wav"}]
@@ -43,7 +48,7 @@
   (dispose [_]
     (disposable/dispose asset-manager)))
 
-(defmethods ::sprite-batch
+(defmethods :sprite-batch
   (create [_]
     (def batch (g/sprite-batch)))
 
@@ -51,7 +56,7 @@
     (disposable/dispose batch)))
 
 (let [pixel-texture (atom nil)]
-  (defmethods ::shape-drawer
+  (defmethods :shape-drawer
     (create [_]
       (reset! pixel-texture (let [pixmap (doto (g/pixmap 1 1)
                                            (.setColor color/white)
@@ -64,14 +69,14 @@
     (dispose [_]
       (disposable/dispose @pixel-texture))))
 
-(defmethods ::default-font
+(defmethods :default-font
   (create [[_ font]]
     (def default-font (freetype/generate-font font)))
 
   (dispose [_]
     (disposable/dispose default-font)))
 
-(defmethods ::cursors
+(defmethods :cursors
   (create [[_ data]]
     (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                             (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))
@@ -83,7 +88,7 @@
   (dispose [_]
     (run! disposable/dispose (vals cursors))))
 
-(defmethods ::gui-viewport
+(defmethods :gui-viewport
   (create [[_ [width height]]]
     (def gui-viewport-width  width)
     (def gui-viewport-height height)
@@ -92,7 +97,7 @@
   (resize [_ w h]
     (vp/update gui-viewport w h :center-camera? true)))
 
-(defmethods ::world-viewport
+(defmethods :world-viewport
   (create [[_ [width height tile-size]]]
     (def world-unit-scale (float (/ tile-size)))
     (def world-viewport-width  width)
@@ -106,7 +111,7 @@
   (resize [_ w h]
     (vp/update world-viewport w h)))
 
-(defmethods ::cached-map-renderer
+(defmethods :cached-map-renderer
   (create [_]
     (def cached-map-renderer
       (memoize (fn [tiled-map]
@@ -114,7 +119,7 @@
                                               (float world-unit-scale)
                                               batch))))))
 
-(defmethods ::vis-ui
+(defmethods :vis-ui
   (create [[_ skin-scale]]
     ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
     ; => actually there is a deeper issue at play
@@ -135,7 +140,7 @@
 (defsystem actors)
 (defmethod actors :default [_])
 
-(defmethods ::screens
+(defmethods :screens
   (create [[_ {:keys [screens first-k]}]]
     (screen/setup (into {}
                         (for [k screens]

@@ -3,13 +3,14 @@
           :fps 60
           :width 1440
           :height 900}
- :components [[:anvil.app/asset-manager "resources/"]
-              [:anvil.app/sprite-batch]
-              [:anvil.app/shape-drawer]
-              [:anvil.app/default-font {:file "fonts/exocet/films.EXL_____.ttf"
+ :components [[:db {:schema "schema.edn" :properties "properties.edn"}]
+              [:asset-manager "resources/"]
+              [:sprite-batch]
+              [:shape-drawer]
+              [:default-font {:file "fonts/exocet/films.EXL_____.ttf"
                                         :size 16
                                         :quality-scaling 2}]
-              [:anvil.app/cursors {:cursors/bag                   ["bag001"       [0   0]]
+              [:cursors {:cursors/bag                   ["bag001"       [0   0]]
                                    :cursors/black-x               ["black_x"      [0   0]]
                                    :cursors/default               ["default"      [0   0]]
                                    :cursors/denied                ["denied"       [16 16]]
@@ -23,14 +24,13 @@
                                    :cursors/skill-not-usable      ["x007"         [0   0]]
                                    :cursors/use-skill             ["pointer004"   [0   0]]
                                    :cursors/walking               ["walking"      [16 16]]}]
-              [:anvil.app/gui-viewport   [1440 900]]
-              [:anvil.app/world-viewport [1440 900 48]]
-              [:anvil.app/cached-map-renderer]
-              [:app/db {:schema "schema.edn" :properties "properties.edn"}]
-              [:anvil.app/vis-ui :skin-scale/x1]
-              [:anvil.app/screens {:screens [:screens/main-menu
-                                             :screens/map-editor
-                                             :screens/editor
-                                             :screens/minimap
-                                             :screens/world]
-                                   :first-k :screens/main-menu}]]}
+              [:gui-viewport   [1440 900]]
+              [:world-viewport [1440 900 48]]
+              [:cached-map-renderer]
+              [:vis-ui :skin-scale/x1]
+              [:screens {:screens [:screens/main-menu
+                                   :screens/map-editor
+                                   :screens/editor
+                                   :screens/minimap
+                                   :screens/world]
+                         :first-k :screens/main-menu}]]}
