@@ -1,5 +1,7 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
+  (:require [anvil.app :as app :refer [change-screen]]
+            [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map gui-viewport-height world-mouse-position world-camera]]
+            [anvil.screen :refer [Screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
@@ -9,11 +11,9 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [forge.app.db :as db]
-            [forge.app.screens :as screens :refer [change-screen]]
             [forge.app.vis-ui :refer [ui-actor text-button] :as ui]
             [forge.controls :as controls]
             [forge.level :refer [generate-level]]
-            [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage]
             [forge.mapgen.modules :as modules]
             [forge.ui :refer [error-window!]]))
@@ -30,7 +30,7 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> (screens/current-screen)
+  (-> (app/current-screen)
       :sub-screen
       :current-data))
 

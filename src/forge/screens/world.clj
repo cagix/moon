@@ -1,8 +1,10 @@
 (ns forge.screens.world
-  (:require [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
+  (:require [anvil.app :refer [change-screen]]
+            [anvil.graphics :as g :refer [set-cursor draw-on-world-view draw-image draw-text
                                           sub-image ->image draw-tiled-map gui-viewport-width
                                           gui-mouse-position world-mouse-position world-camera
                                           world-viewport-width world-viewport-height]]
+            [anvil.screen :refer [Screen]]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -20,11 +22,7 @@
                                    dev-mode?
                                    pretty-pst]]
             [forge.app.db :as db]
-            [forge.app.screens :refer [change-screen]]
-            [forge.app.vis-ui :refer [ui-actor
-                                      change-listener
-                                      image->widget]
-             :as ui]
+            [forge.app.vis-ui :refer [ui-actor change-listener image->widget] :as ui]
             [forge.component :refer [info-text]]
             [forge.controls :as controls]
             [forge.entity :as component]
@@ -33,7 +31,6 @@
             [forge.entity.mana :refer [e-mana]]
             [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]
             [forge.level :refer [generate-level]]
-            [forge.screen :refer [Screen]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage]]
             [forge.ui :refer [error-window!]]

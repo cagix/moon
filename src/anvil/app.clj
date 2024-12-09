@@ -1,10 +1,11 @@
 (ns anvil.app
-  (:require [clojure.awt :as awt]
+  (:require [anvil.screen :as screen]
+            [clojure.awt :as awt]
             [clojure.gdx.app :as app]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.lwjgl :as lwjgl]
-            [clojure.utils :refer [defsystem]]))
+            [clojure.utils :refer [defsystem bind-root]]))
 
 (defsystem create)
 (defmethod create :default [_])
@@ -33,3 +34,20 @@
 
 (defmacro post-runnable [& exprs]
   `(app/post-runnable (fn [] ~@exprs)))
+
+(declare screens
+         current-screen-key)
+
+(defn current-screen []
+  (and (bound? #'current-screen-key)
+       (current-screen-key screens)))
+
+(defn change-screen
+  "Calls `exit` on the current-screen and `enter` on the new screen."
+  [new-k]
+  (when-let [screen (current-screen)]
+    (screen/exit screen))
+  (let [screen (new-k screens)]
+    (assert screen (str "Cannot find screen with key: " new-k))
+    (bind-root current-screen-key new-k)
+    (screen/enter screen)))

@@ -1,10 +1,10 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
+  (:require [anvil.app :refer [change-screen]]
+            [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
+            [anvil.screen :refer [Screen]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]
-            [forge.screen :refer [Screen]]
-            [forge.app.screens :refer [change-screen]]
             [forge.world.explored-tile-corners :refer [explored-tile-corners]]
             [forge.world.tiled-map :refer [world-tiled-map]]))
 
