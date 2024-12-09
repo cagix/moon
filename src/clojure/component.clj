@@ -78,9 +78,6 @@
 (defsystem render)
 (defmethod render :default [_])
 
-(defsystem resize)
-(defmethod resize :default [_ w h])
-
 (defsystem info)
 (defmethod info :default [_])
 

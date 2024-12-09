@@ -1,6 +1,6 @@
 (ns anvil.app
   (:require [clojure.awt :as awt]
-            [clojure.component :as component]
+            [clojure.component :refer [defsystem] :as component]
             [clojure.gdx.app :as app]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
@@ -8,16 +8,27 @@
             [clojure.lwjgl :as lwjgl]
             [clojure.utils :refer [bind-root]]))
 
-(defn start [{:keys [components] :as config}]
-  (awt/set-dock-icon (:dock-icon config))
+(defsystem create)
+
+(defsystem dispose)
+(defmethod dispose :default [_])
+
+(defsystem render)
+(defmethod render :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ w h])
+
+(defn start [{:keys [dock-icon components lwjgl3]}]
+  (awt/set-dock-icon dock-icon)
   (when shared-library-loader/mac?
     (lwjgl/configure-glfw-for-mac))
   (lwjgl3/app (reify lwjgl3/Listener
-                (create  [_]     (run! component/create          components))
-                (dispose [_]     (run! component/dispose         components))
-                (render  [_]     (run! component/render          components))
-                (resize  [_ w h] (run! #(component/resize % w h) components)))
-              (lwjgl3/config (:lwjgl3 config))))
+                (create  [_]     (run! create          components))
+                (dispose [_]     (run! dispose         components))
+                (render  [_]     (run! render          components))
+                (resize  [_ w h] (run! #(resize % w h) components)))
+              (lwjgl3/config lwjgl3)))
 
 (def exit app/exit)
 

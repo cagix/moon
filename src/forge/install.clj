@@ -1,11 +1,32 @@
 (ns forge.install
-  (:require [clojure.component :as component]
+  (:require [anvil.app :as app]
+            [clojure.component :as component]
             [clojure.utils :refer [install install-component]]
 
             forge.schemas
             forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves))
+
+(def app
+  {:optional [#'app/create
+              #'app/dispose
+              #'app/render
+              #'app/resize]})
+
+(install "forge"
+         app
+         (map vector [:app/db
+                      :app/asset-manager
+                      :app/sprite-batch
+                      :app/shape-drawer
+                      :app/default-font
+                      :app/cached-map-renderer
+                      :app/cursors
+                      :app/vis-ui
+                      :app/gui-viewport
+                      :app/world-viewport
+                      :app/screens]))
 
 (def screen {:optional [#'component/actors
                         #'component/enter
@@ -21,23 +42,6 @@
                       :screens/map-editor
                       :screens/minimap
                       :screens/world]))
-
-(install "forge"
-         {:optional [#'component/create
-                     #'component/dispose
-                     #'component/render
-                     #'component/resize]}
-         (map vector [:app/db
-                      :app/asset-manager
-                      :app/sprite-batch
-                      :app/shape-drawer
-                      :app/default-font
-                      :app/cached-map-renderer
-                      :app/cursors
-                      :app/vis-ui
-                      :app/gui-viewport
-                      :app/world-viewport
-                      :app/screens]))
 
 (install "forge"
          {:required [#'component/applicable?
