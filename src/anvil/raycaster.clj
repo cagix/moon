@@ -1,4 +1,4 @@
-(ns anvil.world.raycaster
+(ns anvil.raycaster
   (:require [clojure.gdx.math.vector2 :as v])
   (:import (forge RayCaster)))
 

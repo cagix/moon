@@ -1,11 +1,11 @@
 (ns anvil.world
   (:require [anvil.app :refer [play-sound]]
+            [anvil.content-grid :as content-grid]
             [anvil.db :as db]
             [anvil.faction :as faction]
             [anvil.graphics :refer [world-viewport-width world-viewport-height world-camera]]
+            [anvil.raycaster :as raycaster]
             [anvil.system :as system]
-            [anvil.world.content-grid :as content-grid]
-            [anvil.world.raycaster :as raycaster]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.shapes :refer [rectangle->tiles
                                              circle->outer-rectangle
