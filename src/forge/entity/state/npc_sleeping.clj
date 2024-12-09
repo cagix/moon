@@ -1,8 +1,7 @@
 (ns forge.entity.state.npc-sleeping
   (:require [anvil.graphics :refer [draw-text]]
             [anvil.entity :as entity :refer [send-event stat-value]]
-            [anvil.world :as world :refer [nearest-entity-distance]]
-            [forge.world :refer [delayed-alert]]))
+            [anvil.world :as world :refer [nearest-entity-distance delayed-alert]]))
 
 (defn ->v [[_ eid]]
   {:eid eid})

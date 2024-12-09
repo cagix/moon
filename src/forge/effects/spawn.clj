@@ -1,6 +1,6 @@
 (ns forge.effects.spawn
   (:require [anvil.app :refer [play-sound]]
-            [forge.world :refer [spawn-creature]]))
+            [anvil.world :refer [spawn-creature]]))
 
 ; "https://github.com/damn/core/issues/29"
 (defn applicable? [_ {:keys [effect/source effect/target-position]}]

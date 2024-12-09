@@ -1,8 +1,7 @@
 (ns forge.effects.projectile
   (:require [anvil.app :refer [play-sound]]
-            [anvil.world :refer [path-blocked?]]
-            [clojure.gdx.math.vector2 :as v]
-            [forge.world :refer [projectile-size spawn-projectile]]))
+            [anvil.world :refer [path-blocked? projectile-size spawn-projectile]]
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)

@@ -3,8 +3,8 @@
             [anvil.effect :refer [effects-applicable? effects-do!]]
             [anvil.entity :as entity]
             [anvil.graphics :as g]
-            [clojure.gdx.math.vector2 :as v]
-            [forge.world :refer [spawn-line-render spawn-audiovisual]]))
+            [anvil.world :refer [spawn-line-render spawn-audiovisual]]
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)

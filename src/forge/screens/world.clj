@@ -12,7 +12,7 @@
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
             [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid
-                                           active-entities circle->cells point->entities ray-blocked? line-of-sight?]]
+                                           active-entities circle->cells point->entities ray-blocked? line-of-sight? render-z-order spawn-creature]]
             [anvil.world.content-grid :as content-grid]
             [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
@@ -40,7 +40,7 @@
             [forge.ui.action-bar :as action-bar]
             [forge.ui.inventory :as inventory]
             [forge.ui.player-message :as player-message]
-            [forge.world :refer [render-z-order spawn-creature]]
+            [forge.world.grid]
             [forge.world.raycaster]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -446,7 +446,7 @@
 (defn- remove-destroyed-entities []
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (world/all-entities))]
-    (forge.world/remove-entity eid)
+    (world/remove-entity eid)
     (doseq [component @eid]
       (system/destroy component eid))))
 

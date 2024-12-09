@@ -1,5 +1,5 @@
 (ns forge.effects.target.audiovisual
-  (:require [forge.world :refer [spawn-audiovisual]]))
+  (:require [anvil.world :refer [spawn-audiovisual]]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   target)
