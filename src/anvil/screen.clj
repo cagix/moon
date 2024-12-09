@@ -1,6 +1,5 @@
 (ns anvil.screen
-  (:require [clojure.component :refer [defsystem]]
-            [clojure.gdx.scene2d.stage :as stage]))
+  (:require [clojure.component :refer [defsystem]]))
 
 (defsystem enter)
 (defmethod enter :default [_])
@@ -25,17 +24,8 @@
     (def current-k new-k)
     (enter screen)))
 
-(defsystem actors)
-(defmethod actors :default [_])
-
-(defn setup [gui-viewport batch {:keys [screens first-k]}]
-  (def screens
-    (into {}
-          (for [k screens]
-            [k [:screens/stage {:stage (stage/create gui-viewport
-                                                     batch
-                                                     (actors [k]))
-                                :sub-screen [k]}]])))
+(defn setup [screens first-k]
+  (def screens screens)
   (change first-k))
 
 (defsystem dispose)

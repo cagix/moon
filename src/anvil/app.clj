@@ -132,9 +132,18 @@
   (dispose [_]
     (vis/dispose)))
 
+(defsystem actors)
+(defmethod actors :default [_])
+
 (defmethods ::screens
-  (create [[_ screens]]
-    (screen/setup gui-viewport batch screens))
+  (create [[_ {:keys [screens first-k]}]]
+    (screen/setup (into {}
+                        (for [k screens]
+                          [k [:screens/stage {:stage (stage/create gui-viewport
+                                                                   batch
+                                                                   (actors [k]))
+                                              :sub-screen [k]}]]))
+                  first-k))
 
   (dispose [_]
     (screen/dispose-all))

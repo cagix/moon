@@ -19,9 +19,9 @@
          app
          (map vector [:app/db]))
 
-(def screen {:optional [#'screen/enter
+(def screen {:optional [#'app/actors
+                        #'screen/enter
                         #'screen/exit
-                        #'screen/actors
                         #'screen/dispose
                         #'screen/render]})
 
