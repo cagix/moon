@@ -98,9 +98,9 @@
                :center? true
                :pack? true})))
 
-(def ^:private player-message-duration-seconds 1.5)
+(def player-message-duration-seconds 1.5)
 
-(def ^:private message-to-player nil)
+(def message-to-player nil)
 
 (defn show-player-msg [message]
   (bind-root message-to-player {:message message :counter 0}))

@@ -1,4 +1,4 @@
-(ns forge.ui.action-bar
+(ns anvil.action-bar
   (:require [anvil.component :refer [info-text]]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor image-button add-tooltip!] :as ui]
