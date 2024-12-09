@@ -66,6 +66,18 @@
   (dispose [_]
     (disposable/dispose default-font)))
 
+(defmethods ::cursors
+  (create [[_ data]]
+    (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                            (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))
+                                  cursor (g/cursor pixmap hotspot-x hotspot-y)]
+                              (disposable/dispose pixmap)
+                              cursor))
+                          data)))
+
+  (dispose [_]
+    (run! disposable/dispose (vals cursors))))
+
 (defn start [{:keys [dock-icon components lwjgl3]}]
   (awt/set-dock-icon dock-icon)
   (when shared-library-loader/mac?

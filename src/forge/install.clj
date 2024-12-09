@@ -18,7 +18,6 @@
          app
          (map vector [:app/db
                       :app/cached-map-renderer
-                      :app/cursors
                       :app/vis-ui
                       :app/gui-viewport
                       :app/world-viewport

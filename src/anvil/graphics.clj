@@ -10,8 +10,7 @@
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)))
 
-(declare cursors
-         gui-viewport
+(declare gui-viewport
          gui-viewport-width
          gui-viewport-height
          world-unit-scale
@@ -86,7 +85,7 @@
     (sd/set-default-line-width sd old-line-width)))
 
 (defn set-cursor [cursor-key]
-  (g/set-cursor (safe-get cursors cursor-key)))
+  (g/set-cursor (safe-get app/cursors cursor-key)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
