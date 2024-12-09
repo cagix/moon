@@ -8,6 +8,7 @@
                                           gui-mouse-position world-mouse-position world-camera
                                           world-viewport-width world-viewport-height]]
             [anvil.screen :refer [Screen]]
+            [anvil.system :as system]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
             [anvil.world :as world :refer [elapsed-time world-delta max-delta-time player-eid explored-tile-corners mouseover-entity mouseover-eid
@@ -31,8 +32,6 @@
                                    pretty-pst]]
             [data.grid2d :as g2d]
             [forge.controls :as controls]
-            [forge.entity :as component]
-            [forge.entity.state :refer [manual-tick pause-game? draw-gui-view]]
             [forge.level :refer [generate-level]]
             [forge.screens.stage :as stage :refer [screen-stage
                                                    reset-stage
@@ -316,7 +315,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (inventory/create)]})
-   (ui-actor {:draw #(draw-gui-view (entity/state-obj @player-eid))})
+   (ui-actor {:draw #(system/draw-gui-view (entity/state-obj @player-eid))})
    (player-message/actor)])
 
 (defn- windows []
@@ -409,7 +408,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (component/tick [k v] eid))
+            (system/tick [k v] eid))
           (catch Throwable t
             (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t
@@ -446,17 +445,17 @@
 
 (defn- remove-destroyed-entities []
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (all-entities))]
-    (remove-entity eid)
+                      (world/all-entities))]
+    (forge.world/remove-entity eid)
     (doseq [component @eid]
-      (component/destroy component eid))))
+      (system/destroy component eid))))
 
 (defn- update-world []
-  (manual-tick (entity/state-obj @player-eid))
+  (system/manual-tick (entity/state-obj @player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root paused? (or tick-error
                          (and pausing?
-                              (pause-game? (entity/state-obj @player-eid))
+                              (system/pause-game? (entity/state-obj @player-eid))
                               (not (controls/unpaused?)))))
   (when-not paused?
     (time-update)
@@ -490,10 +489,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [component/render-below
-                    component/render-default
-                    component/render-above
-                    component/render-info]
+            system [system/render-below
+                    system/render-default
+                    system/render-above
+                    system/render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? player entity))]

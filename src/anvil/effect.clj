@@ -1,28 +1,18 @@
 (ns anvil.effect
-  (:require [clojure.utils :refer [defsystem]]))
-
-(defsystem handle [_ ctx])
-
-(defsystem applicable? [_ ctx])
-
-(defsystem useful?          [_  ctx])
-(defmethod useful? :default [_ _ctx] true)
-
-(defsystem render-effect           [_  ctx])
-(defmethod render-effect :default  [_ _ctx])
+  (:require [anvil.system :as system]))
 
 (defn effects-applicable? [ctx effects]
-  (seq (filter #(applicable? % ctx) effects)))
+  (seq (filter #(system/applicable? % ctx) effects)))
 
 (defn effects-useful? [ctx effects] ; actually called @ npc idle ... maybe move there ?!
   (->> effects
        (effects-applicable? ctx)
-       (some #(useful? % ctx))))
+       (some #(system/useful? % ctx))))
 
 (defn effects-do! [ctx effects]
-  (run! #(handle % ctx)
+  (run! #(system/handle % ctx)
         (effects-applicable? ctx effects)))
 
 (defn effects-render [ctx effects]
-  (run! #(render-effect % ctx)
+  (run! #(system/render-effect % ctx)
         effects))

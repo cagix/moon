@@ -1,12 +1,11 @@
 (ns forge.world
   (:require [anvil.app :refer [play-sound]]
             [anvil.db :as db]
-            [anvil.entity]
-            [anvil.world :refer [entity-ids timer player-eid all-entities content-grid ray-blocked?]]
+            [anvil.system :as system]
+            [anvil.world :refer [entity-ids timer player-eid content-grid ray-blocked?]]
             [anvil.world.content-grid :as content-grid]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
-            [forge.entity :as component]
             [forge.world.grid :as grid]))
 
 (defn- entity-ids-add-entity [eid]
@@ -26,7 +25,7 @@
   (entity-ids-add-entity   eid)
   (grid/add-entity         eid))
 
-(defn- remove-entity [eid]
+(defn remove-entity [eid]
   (content-grid/remove-entity eid)
   (entity-ids-remove-entity   eid)
   (grid/remove-entity         eid))
@@ -90,7 +89,7 @@
 
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
-            (assoc m k (anvil.entity/->v [k v])))
+            (assoc m k (system/->v [k v])))
           {}
           components))
 
@@ -105,7 +104,7 @@
                                       create-vs))))]
     (add-entity eid)
     (doseq [component @eid]
-      (component/create component eid))
+      (system/create component eid))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
@@ -192,10 +191,3 @@
                    :entity/destroy-audiovisual :audiovisuals/hit-wall
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
-
-(defn remove-destroyed []
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (all-entities))]
-    (remove-entity eid)
-    (doseq [component @eid]
-      (component/destroy component eid))))

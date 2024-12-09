@@ -1,10 +1,7 @@
 (ns forge.install
   (:require [clojure.utils :refer [install install-component]]
             [anvil.app :as app]
-            [anvil.effect :as effect]
-            [anvil.entity]
-            [forge.entity :as entity]
-            [forge.entity.state :as state]
+            [anvil.system :as system]
 
             forge.schemas
             forge.info
@@ -29,10 +26,10 @@
                       :app/screens]))
 
 (install "forge"
-         {:required [#'effect/applicable?
-                     #'effect/handle]
-          :optional [#'effect/useful?
-                     #'effect/render-effect]}
+         {:required [#'system/applicable?
+                     #'system/handle]
+          :optional [#'system/useful?
+                     #'system/render-effect]}
          (map vector [:effects/projectile
                       :effects/spawn
                       :effects/target-all
@@ -48,14 +45,14 @@
                       :effects.target/stun]))
 
 (def entity
-  {:optional [#'anvil.entity/->v
-              #'entity/create
-              #'entity/destroy
-              #'entity/tick
-              #'entity/render-below
-              #'entity/render-default
-              #'entity/render-above
-              #'entity/render-info]})
+  {:optional [#'system/->v
+              #'system/create
+              #'system/destroy
+              #'system/tick
+              #'system/render-below
+              #'system/render-default
+              #'system/render-above
+              #'system/render-info]})
 
 (install "forge"
          entity
@@ -81,14 +78,14 @@
 (def entity-state
   (merge-with concat
               entity
-              {:optional [#'anvil.entity/enter
-                          #'anvil.entity/exit
-                          #'anvil.entity/cursor
-                          #'state/pause-game?
-                          #'state/manual-tick
-                          #'state/clicked-inventory-cell
-                          #'state/clicked-skillmenu-skill
-                          #'state/draw-gui-view]}))
+              {:optional [#'system/enter
+                          #'system/exit
+                          #'system/cursor
+                          #'system/pause-game?
+                          #'system/manual-tick
+                          #'system/clicked-inventory-cell
+                          #'system/clicked-skillmenu-skill
+                          #'system/draw-gui-view]}))
 
 (doseq [[ns-sym k] '[[forge.entity.state.active-skill :active-skill]
                      [forge.entity.state.npc-dead :npc-dead]

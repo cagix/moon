@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.ui.skill-window
-  (:require [forge.entity.state :refer [clicked-skillmenu-skill]]))
+  (:require [anvil.system :refer [clicked-skillmenu-skill]]))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))

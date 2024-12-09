@@ -1,6 +1,5 @@
 (ns forge.entity.modifiers-test
   (:require [clojure.test :refer :all]
-            [forge.entity :as entity]
             #_[forge.entity.modifiers :as mods]))
 
 #_(deftest add-mods

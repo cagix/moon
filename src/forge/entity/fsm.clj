@@ -1,5 +1,5 @@
 (ns forge.entity.fsm
-  (:require [anvil.entity :refer [->v]]
+  (:require [anvil.system :as system]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -63,4 +63,4 @@
                          :fsms/player player-fsm
                          :fsms/npc npc-fsm)
                        initial-state)
-         initial-state (->v [initial-state eid])))
+         initial-state (system/->v [initial-state eid])))
