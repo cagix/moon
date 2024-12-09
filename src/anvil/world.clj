@@ -1,6 +1,4 @@
-(ns forge.world.time
-  (:require [clojure.gdx.graphics :as g]
-            [clojure.utils :refer [bind-root]]))
+(ns anvil.world)
 
 (declare ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time)
@@ -26,14 +24,5 @@
 (declare ^{:doc "The game logic update delta-time. Different then forge.graphics/delta-time because it is bounded by a maximum value for entity movement speed."}
          world-delta)
 
-(defn init [_]
-  (bind-root elapsed-time 0)
-  (bind-root world-delta nil))
-
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
-
-(defn frame-tick []
-  (let [delta-ms (min (g/delta-time) max-delta-time)]
-    (alter-var-root #'elapsed-time + delta-ms)
-    (bind-root world-delta delta-ms)))

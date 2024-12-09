@@ -1,5 +1,5 @@
 (ns forge.entity.delete-after-duration
-  (:require [forge.world.time :refer [timer stopped?]]))
+  (:require [anvil.world :refer [timer stopped?]]))
 
 (defn ->v [[_ duration]]
   (timer duration))

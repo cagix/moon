@@ -2,9 +2,9 @@
   (:require [anvil.audio :refer [play-sound]]
             [anvil.entity :refer [stat-value send-event pay-mana-cost]]
             [anvil.graphics :as g :refer [draw-image]]
+            [anvil.world :refer [stopped? timer finished-ratio]]
             [forge.effect :refer [effects-applicable? effects-do! effects-render]]
-            [forge.world :refer [line-of-sight?]]
-            [forge.world.time :refer [stopped? timer finished-ratio]]))
+            [forge.world :refer [line-of-sight?]]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time

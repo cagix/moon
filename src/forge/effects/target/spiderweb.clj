@@ -1,6 +1,6 @@
 (ns forge.effects.target.spiderweb
   (:require [anvil.entity :as entity]
-            [forge.world.time :refer [timer]]))
+            [anvil.world :refer [timer]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]

@@ -1,6 +1,6 @@
 (ns forge.entity.string-effect
   (:require [anvil.graphics :as g]
-            [forge.world.time :refer [timer reset-timer stopped?]]))
+            [anvil.world :refer [timer reset-timer stopped?]]))
 
 (defn add [entity text]
   (assoc entity

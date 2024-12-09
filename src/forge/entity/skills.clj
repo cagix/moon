@@ -1,6 +1,6 @@
 (ns forge.entity.skills
-  (:require [forge.ui.action-bar :as action-bar]
-            [forge.world.time :refer [stopped?]]))
+  (:require [anvil.world :refer [stopped?]]
+            [forge.ui.action-bar :as action-bar]))
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))

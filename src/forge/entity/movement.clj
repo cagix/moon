@@ -1,9 +1,9 @@
 (ns forge.entity.movement
   (:require [anvil.entity :as entity]
+            [anvil.world :as time]
             [clojure.gdx.math.vector2 :as v]
             [forge.world :as world]
             [forge.world.grid :refer [rectangle->cells cell-blocked? cells->entities]]
-            [forge.world.time :as time]
             [malli.core :as m]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]

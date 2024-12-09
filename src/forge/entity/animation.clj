@@ -1,6 +1,6 @@
 (ns forge.entity.animation
-  (:require [forge.animation :as animation]
-            [forge.world.time :refer [world-delta]]))
+  (:require [anvil.world :refer [world-delta]]
+            [forge.animation :as animation]))
 
 (defn- assoc-image-current-frame [entity animation]
   (assoc entity :entity/image (animation/current-frame animation)))

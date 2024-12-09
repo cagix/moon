@@ -9,7 +9,8 @@
             [anvil.screen :refer [Screen]]
             [anvil.ui :refer [ui-actor change-listener image->widget] :as ui]
             [anvil.val-max :as val-max]
-            [clojure.gdx.graphics :refer [frames-per-second clear-screen]]
+            [anvil.world :refer [elapsed-time world-delta max-delta-time]]
+            [clojure.gdx.graphics :refer [frames-per-second clear-screen delta-time]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
@@ -49,7 +50,6 @@
             [forge.world.mouseover-entity :refer [mouseover-entity]]
             [forge.world.raycaster :refer [ray-blocked?]]
             [forge.world.tiled-map :refer [world-tiled-map]]
-            [forge.world.time :refer [elapsed-time]]
             [forge.world.player :refer [player-eid]]
             [forge.world.potential-fields :refer [update-potential-fields! factions-iterations]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -364,6 +364,10 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
+(defn- time-init []
+  (bind-root elapsed-time 0)
+  (bind-root world-delta nil))
+
 (defn- world-init [{:keys [tiled-map start-position]}]
   (forge.world.tiled-map/init             tiled-map)
   (forge.world.explored-tile-corners/init tiled-map)
@@ -371,7 +375,7 @@
   (forge.world.entity-ids/init            tiled-map)
   (forge.world.content-grid/init          tiled-map)
   (forge.world.raycaster/init             tiled-map)
-  (forge.world.time/init                  tiled-map)
+  (time-init)
   (forge.world.player/init
    (spawn-creature
     (player-entity-props start-position)))
@@ -416,6 +420,11 @@
 (defn- tick-entities [entities]
   (run! tick-entity entities))
 
+(defn- time-update []
+  (let [delta-ms (min (delta-time) max-delta-time)]
+    (alter-var-root #'elapsed-time + delta-ms)
+    (bind-root world-delta delta-ms)))
+
 (defn- update-world []
   (manual-tick (entity/state-obj @player-eid))
   (forge.world.mouseover-entity/frame-tick) ; this do always so can get debug info even when game not running
@@ -424,7 +433,7 @@
                               (pause-game? (entity/state-obj @player-eid))
                               (not (controls/unpaused?)))))
   (when-not paused?
-    (forge.world.time/frame-tick)
+    (time-update)
     (let [entities (active-entities)]
       (update-potential-fields! entities)
       (try (tick-entities entities)

@@ -1,6 +1,6 @@
 (ns forge.entity.state.npc-moving
   (:require [anvil.entity :refer [send-event stat-value]]
-            [forge.world.time :refer [timer stopped?]]))
+            [anvil.world :refer [timer stopped?]]))
 
 ; npc moving is basically a performance optimization so npcs do not have to check
 ; usable skills every frame
