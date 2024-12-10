@@ -1,5 +1,5 @@
 (ns anvil.graphics
-  (:require [anvil.app :as app :refer [sd]]
+  (:require [anvil.app :as app]
             [anvil.assets :as assets]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
@@ -12,6 +12,11 @@
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
+
+(declare batch
+         sd
+         default-font
+         cursors)
 
 (defn- sd-color [color]
   (sd/set-color sd (color/->color color)))
@@ -80,7 +85,7 @@
     (sd/set-default-line-width sd old-line-width)))
 
 (defn set-cursor [cursor-key]
-  (g/set-cursor (safe-get app/cursors cursor-key)))
+  (g/set-cursor (safe-get cursors cursor-key)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -124,14 +129,14 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font app/default-font)
+  (let [^BitmapFont font (or font default-font)
         data (.getData font)
         old-scale (float (.scaleX data))]
     (.setScale data (* old-scale
                        (float *unit-scale*)
                        (float (or scale 1))))
     (.draw font
-           app/batch
+           batch
            (str text)
            (float x)
            (+ (float y)
@@ -151,7 +156,7 @@
 
 (defn draw-image
   [{:keys [texture-region color] :as image} position]
-  (draw-texture-region app/batch
+  (draw-texture-region batch
                        texture-region
                        position
                        (unit-dimensions image *unit-scale*)
@@ -161,7 +166,7 @@
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region app/batch
+    (draw-texture-region batch
                          texture-region
                          [(- (float x) (/ (float w) 2))
                           (- (float y) (/ (float h) 2))]
@@ -173,7 +178,7 @@
   (draw-rotated-centered image 0 position))
 
 (defn- draw-with [viewport unit-scale draw-fn]
-  (draw-on-viewport app/batch
+  (draw-on-viewport batch
                     viewport
                     #(with-line-width unit-scale
                        (fn []

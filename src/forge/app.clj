@@ -3,7 +3,7 @@
             [anvil.assets :as assets]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.graphics :refer [set-cursor world-camera]]
+            [anvil.graphics :as graphics :refer [set-cursor world-camera]]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
@@ -116,10 +116,10 @@
 
 (defmethods :sprite-batch
   (setup [_]
-    (bind-root app/batch (g/sprite-batch)))
+    (bind-root graphics/batch (g/sprite-batch)))
 
   (cleanup [_]
-    (dispose app/batch)))
+    (dispose graphics/batch)))
 
 (let [pixel-texture (atom nil)]
   (defmethods :shape-drawer
@@ -130,21 +130,21 @@
                                   texture (g/texture pixmap)]
                               (dispose pixmap)
                               texture))
-      (bind-root app/sd (sd/create app/batch (g/texture-region @pixel-texture 1 0 1 1))))
+      (bind-root graphics/sd (sd/create graphics/batch (g/texture-region @pixel-texture 1 0 1 1))))
 
     (cleanup [_]
       (dispose @pixel-texture))))
 
 (defmethods :default-font
   (setup [[_ font]]
-    (bind-root app/default-font (freetype/generate-font font)))
+    (bind-root graphics/default-font (freetype/generate-font font)))
 
   (cleanup [_]
-    (dispose app/default-font)))
+    (dispose graphics/default-font)))
 
 (defmethods :cursors
   (setup [[_ data]]
-    (bind-root app/cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+    (bind-root graphics/cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                                       (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))
                                             cursor (g/cursor pixmap hotspot-x hotspot-y)]
                                         (dispose pixmap)
@@ -152,7 +152,7 @@
                                     data)))
 
   (cleanup [_]
-    (run! dispose (vals app/cursors))))
+    (run! dispose (vals graphics/cursors))))
 
 (defmethods :gui-viewport
   (setup [[_ [width height]]]
@@ -183,7 +183,7 @@
       (memoize (fn [tiled-map]
                  (OrthogonalTiledMapRenderer. tiled-map
                                               (float app/world-unit-scale)
-                                              app/batch))))))
+                                              graphics/batch))))))
 
 (defmethods :vis-ui
   (setup [[_ skin-scale]]
@@ -229,7 +229,7 @@
     (screen/setup (into {}
                         (for [k screens]
                           [k [:screens/stage {:stage (scene2d.stage/create app/gui-viewport
-                                                                           app/batch
+                                                                           graphics/batch
                                                                            (actors [k]))
                                               :sub-screen [k]}]]))
                   first-k))

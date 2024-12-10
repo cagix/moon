@@ -6,11 +6,7 @@
 (defmacro post-runnable [& exprs]
   `(app/post-runnable (fn [] ~@exprs)))
 
-(declare batch
-         sd
-         default-font
-         cursors
-         gui-viewport-width
+(declare gui-viewport-width
          gui-viewport-height
          gui-viewport
          world-unit-scale

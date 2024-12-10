@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.level.uf-caves
-  (:require [anvil.app :as app]
-            [anvil.assets :as assets]
+  (:require [anvil.assets :as assets]
             [anvil.db :as db]
             [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx.graphics :as g]
