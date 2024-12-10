@@ -13,14 +13,6 @@
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Separator VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
 
-(declare viewport-width
-         viewport-height
-         viewport)
-
-(defn mouse-position []
-  ; TODO mapv int needed?
-  (mapv int (g/unproject-mouse-position viewport)))
-
 (defn horizontal-separator-cell [colspan]
   {:actor (Separator. "default")
    :pad-top 2

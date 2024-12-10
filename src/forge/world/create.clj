@@ -91,7 +91,7 @@
   (let [rahmen      (sprite/create "images/rahmen.png")
         hpcontent   (sprite/create "images/hp.png")
         manacontent (sprite/create "images/mana.png")
-        x (/ ui/viewport-width 2)
+        x (/ g/viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
@@ -156,7 +156,7 @@
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [ui/viewport-width 0]
+                           :position [g/viewport-width 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
@@ -206,7 +206,7 @@
                     {:label "paused?"
                      :update-fn (fn [] time/paused?)}
                     {:label "GUI"
-                     :update-fn ui/mouse-position}
+                     :update-fn g/mouse-position}
                     {:label "World"
                      :update-fn #(mapv int (world/mouse-position))}
                     {:label "Zoom"
@@ -255,7 +255,7 @@
      (draw-cell-rect @player-eid
                      (.getX this)
                      (.getY this)
-                     (actor/hit this (ui/mouse-position))
+                     (actor/hit this (g/mouse-position))
                      (user-object (.getParent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -340,8 +340,8 @@
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [ui/viewport-width
-                         ui/viewport-height]
+              :position [g/viewport-width
+                         g/viewport-height]
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
@@ -403,7 +403,7 @@
 (defmethod draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (not (world-item?))
     (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                     (ui/mouse-position))))
+                     (g/mouse-position))))
 
 (defn- widgets []
   [(if dev-mode?

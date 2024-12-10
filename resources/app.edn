@@ -18,9 +18,9 @@
                       :cursors/sandclock             ["sandclock"    [16 16]]
                       :cursors/skill-not-usable      ["x007"         [0   0]]
                       :cursors/use-skill             ["pointer004"   [0   0]]
-                      :cursors/walking               ["walking"      [16 16]]}}
- :ui-viewport {:width 1440
-               :height 900}
+                      :cursors/walking               ["walking"      [16 16]]}
+            :viewport {:width 1440
+                       :height 900}}
  :world-viewport {:tile-size 48
                   :width 1440
                   :height 900}

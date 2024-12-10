@@ -43,7 +43,7 @@
     (screen/dispose sub-screen)))
 
 (defn screen [sub-screen]
-  [::screen {:stage (stage* ui/viewport g/batch (actors sub-screen))
+  [::screen {:stage (stage* g/viewport g/batch (actors sub-screen))
              :sub-screen sub-screen}])
 
 (defn get []
@@ -69,7 +69,7 @@
   (run! add-actor new-actors))
 
 (defn mouse-on-actor? []
-  (let [[x y] (ui/mouse-position)]
+  (let [[x y] (g/mouse-position)]
     (.hit (get) x y true)))
 
 ; no window movable type cursor appears here like in player idle
@@ -87,8 +87,8 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ ui/viewport-width 2)
-                                 (* ui/viewport-height (/ 3 4))]
+               :center-position [(/ g/viewport-width 2)
+                                 (* g/viewport-height (/ 3 4))]
                :pack? true})))
 
 

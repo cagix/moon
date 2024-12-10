@@ -1,14 +1,14 @@
 (ns forge.ui.player-message
   (:require [anvil.graphics :as g :refer [draw-text]]
             [anvil.stage :refer [message-to-player player-message-duration-seconds]]
-            [anvil.ui :as ui :refer [ui-actor]]
+            [anvil.ui :refer [ui-actor]]
             [anvil.utils :refer [bind-root]]))
 
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ ui/viewport-width 2)
-                :y (+ (/ ui/viewport-height 2) 200)
+    (draw-text {:x (/ g/viewport-width 2)
+                :y (+ (/ g/viewport-height 2) 200)
                 :text message
                 :scale 2.5
                 :up? true})))

@@ -1,6 +1,7 @@
 (ns forge.dev.tools
   (:require [anvil.db :as db]
             [anvil.entity :as entity :refer [player-eid mouseover-entity]]
+            [anvil.graphics :as g]
             [anvil.grid :as grid]
             [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]
@@ -168,10 +169,10 @@
                          :pack? true})
         scroll-pane (scroll-pane table)]
     {:actor scroll-pane
-     :width (/ ui/viewport-width 2)
+     :width (/ g/viewport-width 2)
      :height
-     (- ui/viewport-height 50)
-     #_(min (- ui/viewport-height 50) (height table))}))
+     (- g/viewport-height 50)
+     #_(min (- g/viewport-height 50) (height table))}))
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}

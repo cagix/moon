@@ -48,7 +48,6 @@
                      dock-icon
                      asset-folder
                      graphics
-                     ui-viewport
                      world-viewport
                      ui-skin-scale
                      title
@@ -67,10 +66,7 @@
                           (assets/search-and-load asset-folder
                                                   [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                                                    [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])
-                          (g/setup graphics)
-                          (bind-root ui/viewport-width  (:width  ui-viewport))
-                          (bind-root ui/viewport-height (:height ui-viewport))
-                          (bind-root ui/viewport (FitViewport. width height (OrthographicCamera.)))
+                          (g/create graphics)
                           (bind-root world/unit-scale (float (/ (:tile-size world-viewport))))
                           (bind-root world/viewport-width  width)
                           (bind-root world/viewport-height height)
@@ -102,7 +98,7 @@
                           (ScreenUtils/clear g/black)
                           (screen/render-current))
                         (resize [w h]
-                          (Viewport/.update ui/viewport w h true)
+                          (g/resize w h)
                           (Viewport/.update world/viewport w h false)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle title)

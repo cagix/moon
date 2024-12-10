@@ -2,6 +2,7 @@
   (:require [anvil.assets :as assets]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
+            [anvil.graphics :as g]
             [anvil.info :as info]
             [anvil.input :refer [key-just-pressed?]]
             [anvil.property :as property]
@@ -60,7 +61,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- ui/viewport-height 50)
+     :height (min (- g/viewport-height 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]

@@ -2,12 +2,12 @@
   (:require [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format)
+           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
-           (com.badlogic.gdx.utils.viewport Viewport)
+           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- ttf-params [size quality-scaling]
@@ -65,7 +65,7 @@
   [(.getRegionWidth  texture-region)
    (.getRegionHeight texture-region)])
 
-(defn setup [{:keys [default-font cursors]}]
+(defn create [{:keys [default-font cursors viewport]}]
   (def batch (SpriteBatch.))
   (def sd-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                  (.setColor white)
@@ -80,13 +80,21 @@
                                 cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                             (dispose pixmap)
                             cursor))
-                        cursors)))
+                        cursors))
+  (def viewport-width  (:width  viewport))
+  (def viewport-height (:height viewport))
+  (def viewport (FitViewport. viewport-width
+                              viewport-height
+                              (OrthographicCamera.))))
 
 (defn cleanup []
   (dispose batch)
   (dispose sd-texture)
   (dispose default-font)
   (run! dispose (vals cursors)))
+
+(defn resize [w h]
+  (Viewport/.update viewport w h true))
 
 (defn- sd-color [color]
   (.setColor sd (->color color)))
@@ -296,3 +304,7 @@
                        (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]
     [(.x coords) (.y coords)]))
+
+(defn mouse-position []
+  ; TODO mapv int needed?
+  (mapv int (unproject-mouse-position viewport)))
