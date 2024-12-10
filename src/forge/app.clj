@@ -19,7 +19,6 @@
             [anvil.graphics.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
             [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode? mapvals]]
-            [clojure.vis-ui :as vis]
             [forge.screens.editor :as editor]
             [forge.screens.minimap :as minimap]
             [forge.world.create :refer [create-world]]
@@ -190,18 +189,18 @@
     ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
     ; => actually there is a deeper issue at play
     ; we need to dispose ALL resources which were loaded already ...
-    (when (vis/loaded?)
-      (vis/dispose))
-    (vis/load skin-scale)
-    (-> (vis/skin)
+    (when (ui/loaded?)
+      (ui/dispose))
+    (ui/load skin-scale)
+    (-> (ui/skin)
         (.getFont "default-font")
         .getData
         .markupEnabled
         (set! true))
-    (vis/configure-tooltips {:default-appear-delay-time 0}))
+    (ui/configure-tooltips {:default-appear-delay-time 0}))
 
   (cleanup [_]
-    (vis/dispose)))
+    (ui/dispose)))
 
 (defmethods :screens
   (setup [[_ {:keys [screens first-k]}]]

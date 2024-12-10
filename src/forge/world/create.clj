@@ -39,7 +39,6 @@
             [anvil.ui.utils :as scene2d.utils]
             [anvil.tiled :as tiled]
             [anvil.utils :refer [dev-mode? tile->middle bind-root readable-number]]
-            [clojure.vis-ui :as vis]
             [data.grid2d :as g2d]
             [forge.ui.player-message :as player-message])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
@@ -109,23 +108,23 @@
                          (render-hpmana-bar x y-mana manacontent (mana/->value player-entity) "MP")))})))
 
 (defn- menu-item [text on-clicked]
-  (doto (vis/menu-item text)
+  (doto (ui/menu-item text)
     (.addListener (ui/change-listener on-clicked))))
 
 (defn- add-upd-label
   ([table text-fn icon]
    (let [icon (ui/image->widget (sprite/create icon) {})
-         label (vis/label "")
+         label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
-   (let [label (vis/label "")]
+   (let [label (ui/label "")]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels [menu-bar update-labels]
-  (let [table (vis/menu-bar->table menu-bar)]
+  (let [table (ui/menu-bar->table menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
       (let [update-fn #(str label ": " (update-fn))]
         (if icon
@@ -133,13 +132,13 @@
           (add-upd-label table update-fn))))))
 
 (defn- add-menu [menu-bar {:keys [label items]}]
-  (let [app-menu (vis/menu label)]
+  (let [app-menu (ui/menu label)]
     (doseq [{:keys [label on-click]} items]
       (.addItem app-menu (menu-item label (or on-click (fn [])))))
-    (vis/add-menu menu-bar app-menu)))
+    (ui/add-menu menu-bar app-menu)))
 
 (defn- create-menu-bar [menus]
-  (let [menu-bar (vis/menu-bar)]
+  (let [menu-bar (ui/menu-bar)]
     (run! #(add-menu menu-bar %) menus)
     menu-bar))
 
@@ -219,7 +218,7 @@
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
-  (ui/table {:rows [[{:actor (vis/menu-bar->table (dev-menu-bar))
+  (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu-bar))
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]

@@ -8,8 +8,7 @@
             [anvil.world :as world]
             [anvil.ui.group :refer [children]]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
-            [clojure.vis-ui :as vis])
+            [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d Stage)))
 
@@ -176,7 +175,7 @@
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}
-  (let [tree (vis/tree)]
+  (let [tree (ui/tree)]
     (add-map-nodes! tree (into (sorted-map) m) 0)
     (add-actor
      (ui/window {:title "Tree View"

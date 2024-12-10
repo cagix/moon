@@ -29,7 +29,6 @@
                                                find-actor]]
             [anvil.ui.table :refer [add-rows!]]
             [clojure.string :as str]
-            [clojure.vis-ui :as vis]
             [anvil.utils :refer [->edn-str
                                    truncate
                                    find-first
@@ -37,7 +36,8 @@
             [forge.malli :as malli]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)))
+           (com.badlogic.gdx.scenes.scene2d.ui Table)
+           (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- widget-type [schema _]
   (let [stype (db/schema-type schema)]
@@ -115,28 +115,28 @@
                 (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn/read-string (vis/text-field->text widget)))
+  (edn/read-string (ui/text-field->text widget)))
 
 (defmethod schema->widget :string [schema v]
   (add-tooltip! (text-field v {})
                 (str schema)))
 
 (defmethod ->value :string [_ widget]
-  (vis/text-field->text widget))
+  (ui/text-field->text widget))
 
 (defmethod schema->widget :boolean [_ checked?]
   (assert (boolean? checked?))
   (ui/check-box "" (fn [_]) checked?))
 
 (defmethod ->value :boolean [_ widget]
-  (vis/checked? widget))
+  (ui/checked? widget))
 
 (defmethod schema->widget :enum [schema v]
   (ui/select-box {:items (map ->edn-str (rest schema))
                   :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn/read-string (vis/selected widget)))
+  (edn/read-string (ui/selected widget)))
 
 (defn- play-button [sound-file]
   (text-button "play!" #(play-sound sound-file)))
@@ -464,10 +464,15 @@
     {:title (str/capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
+(defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
+  (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
+    (getTabTitle [] title)
+    (getContentTable [] content)))
+
 (defn tabs-table [label-str]
   (let [table (ui/table {:fill-parent? true})
         container (ui/table {})
-        tabbed-pane (vis/tabbed-pane)]
+        tabbed-pane (TabbedPane.)]
     (.addListener tabbed-pane
                   (proxy [com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter] []
                     (switchedTab [^com.kotcrab.vis.ui.widget.tabbedpane.Tab tab]
@@ -477,7 +482,7 @@
     (.row table)
     (.fill (.expand (.add table container)))
     (.row table)
-    (.pad (.left (.add table (vis/label label-str))) (float 10))
+    (.pad (.left (.add table (ui/label label-str))) (float 10))
     (doseq [tab-data (property-type-tabs)]
-      (.add tabbed-pane (vis/tab-widget tab-data)))
+      (.add tabbed-pane (tab-widget tab-data)))
     table))

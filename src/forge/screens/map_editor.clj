@@ -153,7 +153,7 @@
   #_(when (key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))
 
-(defn dispose [_]
+#_(defn dispose [_]
   #_(dispose (:tiled-map @current-data)))
 
 (comment

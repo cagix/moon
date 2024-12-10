@@ -1,16 +1,18 @@
 (ns anvil.ui
+  (:refer-clojure :exclude [load])
   (:require [anvil.graphics :as g]
             [anvil.ui.actor :as actor]
             [anvil.ui.group :refer [find-actor-with-id add-actor!]]
             [anvil.ui.table :as table]
             [anvil.ui.utils :as scene2d.utils]
-            [anvil.graphics.viewport :as vp]
-            [clojure.vis-ui :as vis])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Group)
+            [anvil.graphics.viewport :as vp])
+  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
-           (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
+           (com.badlogic.gdx.scenes.scene2d.utils Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
-           (com.kotcrab.vis.ui.widget VisWindow VisTable)))
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+           (com.kotcrab.vis.ui.widget Separator VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
 
 (declare viewport-width
          viewport-height
@@ -21,7 +23,7 @@
   (mapv int (vp/unproject-mouse-position viewport)))
 
 (defn horizontal-separator-cell [colspan]
-  {:actor (vis/separator :default)
+  {:actor (Separator. "default")
    :pad-top 2
    :pad-bottom 2
    :colspan colspan
@@ -29,7 +31,7 @@
    :expand-x? true})
 
 (defn vertical-separator-cell []
-  {:actor (vis/separator :vertical)
+  {:actor (Separator. "vertical")
    :pad-top 2
    :pad-bottom 2
    :fill-y? true
@@ -85,11 +87,26 @@
 (defn add-tooltip!
   "tooltip-text is a (fn []) or a string. If it is a function will be-recalculated every show.
   Returns the actor."
-  [actor tooltip-text]
-  (vis/add-tooltip! actor tooltip-text))
+  [^Actor actor tooltip-text]
+  (let [text? (string? tooltip-text)
+        label (VisLabel. (if text? tooltip-text ""))
+        tooltip (proxy [Tooltip] []
+                  ; hooking into getWidth because at
+                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                  ; when tooltip position gets calculated we setText (which calls pack) before that
+                  ; so that the size is correct for the newly calculated text.
+                  (getWidth []
+                    (let [^Tooltip this this]
+                      (when-not text?
+                        (.setText this (str (tooltip-text))))
+                      (proxy-super getWidth))))]
+    (.setAlignment label Align/center)
+    (.setTarget  tooltip actor)
+    (.setContent tooltip label))
+  actor)
 
-(defn remove-tooltip! [actor]
-  (vis/remove-tooltip! actor))
+(defn remove-tooltip! [^Actor actor]
+  (Tooltip/removeTooltip actor))
 
 (defn button-group [{:keys [max-check-count min-check-count]}]
   (let [bg (ButtonGroup.)]
@@ -100,7 +117,7 @@
 (defn check-box
   "on-clicked is a fn of one arg, taking the current isChecked state"
   [text on-clicked checked?]
-  (let [^Button button (vis/check-box text)]
+  (let [^Button button (VisCheckBox. (str text))]
     (.setChecked button checked?)
     (.addListener button
                   (proxy [ChangeListener] []
@@ -108,8 +125,14 @@
                       (on-clicked (.isChecked actor)))))
     button))
 
-(defn select-box [{:keys [items selected] :as opts}]
-  (vis/select-box opts))
+(def checked? VisCheckBox/.isChecked)
+
+(defn select-box [{:keys [items selected]}]
+  (doto (VisSelectBox.)
+    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
+    (.setSelected selected)))
+
+(def selected VisSelectBox/.getSelected)
 
 (defn table ^Table [opts]
   (-> (proxy-ILookup VisTable [])
@@ -124,20 +147,30 @@
         window)
       (set-opts opts)))
 
-(defn label [text]
-  (vis/label text))
+(defn label ^VisLabel [text]
+  (VisLabel. ^CharSequence text))
 
 (defn text-field [text opts]
-  (-> (vis/text-field text)
+  (-> (VisTextField. (str text))
       (set-opts opts)))
+
+(def text-field->text VisTextField/.getText)
 
 (defn ui-stack ^Stack [actors]
   (proxy-ILookup Stack [(into-array Actor actors)]))
 
+(defmulti ^:private image* type)
+
+(defmethod image* Drawable [^Drawable drawable]
+  (VisImage. drawable))
+
+(defmethod image* TextureRegion [^TextureRegion tr]
+  (VisImage. tr))
+
 (defn image-widget ; TODO widget also make, for fill parent
   "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
   [object {:keys [scaling align fill-parent?] :as opts}]
-  (-> (let [^Image image (vis/image object)]
+  (-> (let [^Image image (image* object)]
         (when (= :center align)
           (.setAlign image Align/center))
         (when (= :fill scaling)
@@ -155,7 +188,7 @@
 (def texture-region-drawable scene2d.utils/texture-region-drawable)
 
 (defn scroll-pane [actor]
-  (let [scroll-pane (vis/scroll-pane actor)]
+  (let [scroll-pane (VisScrollPane. actor)]
     (Actor/.setUserObject scroll-pane :scroll-pane)
     (.setFlickScroll scroll-pane false)
     (.setFadeScrollBars scroll-pane false)
@@ -177,7 +210,7 @@
   (when (instance? Label actor)
     (when-let [p (.getParent actor)]
       (when-let [p (.getParent p)]
-        (and (vis/window? p)
+        (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
 
 (defn find-ancestor-window ^Window [^Actor actor]
@@ -199,7 +232,7 @@
         (on-clicked)))))
 
 (defn text-button [text on-clicked]
-  (let [button (vis/text-button text)]
+  (let [button (VisTextButton. (str text))]
     (.addListener button (change-listener on-clicked))
     button))
 
@@ -208,7 +241,7 @@
    (image-button image on-clicked {}))
   ([{:keys [texture-region]} on-clicked {:keys [scale]}]
    (let [drawable (texture-region-drawable texture-region)
-         button (vis/image-button drawable)]
+         button (VisImageButton. drawable)]
      (when scale
        (let [[w h] (g/texture-dimensions texture-region)]
          (scene2d.utils/set-min-size! drawable (* scale w) (* scale h))))
@@ -232,3 +265,36 @@
 
 (defn t-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
+
+(defn menu [label]
+  (Menu. label))
+
+(defn menu-bar []
+  (MenuBar.))
+
+(def menu-bar->table MenuBar/.getTable)
+(def add-menu        MenuBar/.addMenu)
+
+(defn menu-item ^MenuItem [text]
+  (MenuItem. text))
+
+(defn configure-tooltips [{:keys [default-appear-delay-time]}]
+  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+  ;Controls whether to fade out tooltip when mouse was moved. (default false)
+  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float default-appear-delay-time)))
+
+(defn loaded? [] (VisUI/isLoaded))
+(defn dispose [] (VisUI/dispose))
+(defn skin    [] (VisUI/getSkin))
+
+(defn load [skin-scale]
+  (VisUI/load (case skin-scale
+                :skin-scale/x1 VisUI$SkinScale/X1
+                :skin-scale/x2 VisUI$SkinScale/X2)))
+
+(defn window? [actor]
+  (instance? VisWindow actor))
+
+(defn tree []
+  (VisTree.))
