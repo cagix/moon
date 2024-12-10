@@ -8,12 +8,10 @@
             [anvil.sprite :as sprite]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [anvil.world :as world]
-            [clojure.awt :as awt]
             [clojure.component :refer [defsystem]]
             [clojure.edn :as edn]
             [clojure.gdx.app :as app]
             [clojure.gdx.asset-manager :as manager]
-            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as cam]
@@ -25,10 +23,8 @@
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.gdx.scene2d.stage :as scene2d.stage]
             [clojure.gdx.utils.disposable :refer [dispose]]
-            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
             [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
-            [clojure.lwjgl :as lwjgl]
             [clojure.string :as str]
             [clojure.utils :refer [bind-root defmethods dev-mode? mapvals]]
             [clojure.vis-ui :as vis]
@@ -38,7 +34,12 @@
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]])
-  (:import (forge OrthogonalTiledMapRenderer)))
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration)
+           (forge OrthogonalTiledMapRenderer)))
 
 (defsystem setup)
 
@@ -51,16 +52,22 @@
 (defsystem resize)
 (defmethod resize :default [_ w h])
 
-(defn start [{:keys [dock-icon lwjgl3 app]}]
-  (awt/set-dock-icon dock-icon)
-  (when shared-library-loader/mac?
-    (lwjgl/configure-glfw-for-mac))
-  (lwjgl3/app (reify lwjgl3/Listener
-                (create  [_]     (run! setup           app))
-                (dispose [_]     (run! cleanup         app))
-                (render  [_]     (run! render          app))
-                (resize  [_ w h] (run! #(resize % w h) app)))
-              (lwjgl3/config lwjgl3)))
+(defn start [{:keys [dock-icon title fps width height lifecycle]}]
+  (.setIconImage (Taskbar/getTaskbar)
+                 (.getImage (Toolkit/getDefaultToolkit)
+                            (io/resource dock-icon)))
+  (when SharedLibraryLoader/isMac
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+    (.set Configuration/GLFW_CHECK_THREAD0 false))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create  []   (run! setup            lifecycle))
+                        (dispose []   (run! cleanup          lifecycle))
+                        (render  []   (run! render           lifecycle))
+                        (resize  [w h] (run! #(resize % w h) lifecycle)))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle title)
+                        (.setForegroundFPS fps)
+                        (.setWindowedMode width height))))
 
 (defn -main []
   (-> "app.edn"
