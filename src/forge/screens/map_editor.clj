@@ -12,7 +12,6 @@
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [anvil.utils :refer [dispose]]
             [anvil.world :as world]
-            [clojure.gdx :as gdx]
             [anvil.ui.group :refer [add-actor!]]
             [anvil.tiled :as tiled]
             [clojure.pprint :refer [pprint]]

@@ -27,7 +27,6 @@
             [anvil.ui :refer [window-title-bar? button?]]
             [anvil.world :as world]
             [anvil.utils :refer [defsystem]]
-            [clojure.gdx :as gdx]
             [anvil.ui.actor :as actor]
             [anvil.utils :refer [bind-root sort-by-order find-first]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
@@ -395,7 +394,7 @@
   (run! tick-entity entities))
 
 (defn- time-update []
-  (let [delta-ms (min (gdx/delta-time) time/max-delta)]
+  (let [delta-ms (min (g/delta-time) time/max-delta)]
     (alter-var-root #'time/elapsed + delta-ms)
     (bind-root time/delta delta-ms)))
 

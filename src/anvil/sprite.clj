@@ -1,14 +1,10 @@
 (ns anvil.sprite
   (:require [anvil.assets :as assets]
-            [anvil.world :as world]
-            [clojure.gdx :as gdx]))
+            [anvil.graphics :as g]
+            [anvil.world :as world]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
-
-(defn- texture-dimensions [texture-region]
-  [(gdx/region-width  texture-region)
-   (gdx/region-height texture-region)])
 
 (defn- assoc-dimensions
   "scale can be a number for multiplying the texture-region-dimensions or [w h]."
@@ -18,7 +14,7 @@
                   (number? (scale 0))
                   (number? (scale 1))))]}
   (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions (texture-dimensions texture-region) scale)
+                           (scale-dimensions (g/texture-dimensions texture-region) scale)
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
@@ -35,10 +31,10 @@
       map->Sprite))
 
 (defn create [path]
-  (create* (gdx/texture-region (assets/manager path))))
+  (create* (g/texture-region (assets/manager path))))
 
 (defn sub [image bounds]
-  (create* (apply gdx/->texture-region (:texture-region image) bounds)))
+  (create* (apply g/->texture-region (:texture-region image) bounds)))
 
 (defn sheet [path tilew tileh]
   {:image (create path)

@@ -1,8 +1,7 @@
 (ns forge.ui.player-message
-  (:require [anvil.graphics :refer [draw-text]]
+  (:require [anvil.graphics :as g :refer [draw-text]]
             [anvil.stage :refer [message-to-player player-message-duration-seconds]]
             [anvil.ui :as ui :refer [ui-actor]]
-            [clojure.gdx :as gdx]
             [anvil.utils :refer [bind-root]]))
 
 
@@ -16,7 +15,7 @@
 
 (defn- check-remove-message []
   (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (gdx/delta-time))
+    (alter-var-root #'message-to-player update :counter + (g/delta-time))
     (when (>= counter player-message-duration-seconds)
       (bind-root message-to-player nil))))
 

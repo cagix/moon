@@ -5,8 +5,7 @@
             [anvil.input :refer [key-just-pressed?]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.screen :as screen]
-            [anvil.world :as world]
-            [clojure.gdx :as gdx]))
+            [anvil.world :as world]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight

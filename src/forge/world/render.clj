@@ -16,7 +16,6 @@
             [anvil.val-max :as val-max]
             [anvil.world :as world]
             [anvil.utils :refer [defsystem]]
-            [clojure.gdx :as gdx]
             [anvil.utils :refer [sort-by-order pretty-pst]]
             [forge.world.potential-fields :refer [factions-iterations]]))
 

@@ -14,7 +14,6 @@
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [anvil.world :as world]
             [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children find-actor-with-id]]
             [anvil.graphics.viewport :as vp :refer [fit-viewport]]
@@ -29,9 +28,13 @@
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.scenes.scene2d Stage)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
            (forge OrthogonalTiledMapRenderer)))
@@ -117,21 +120,53 @@
   (setup [[_ config]]
     (db/setup config)))
 
+(defn- asset-manager* ^AssetManager []
+  (proxy [AssetManager clojure.lang.IFn] []
+    (invoke [^String path]
+      (if (AssetManager/.contains this path)
+        (AssetManager/.get this path)
+        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
+
+(defn- load-assets [^AssetManager manager assets]
+  (doseq [[file class] assets]
+    (.load manager ^String file class))
+  (.finishLoading manager))
+
+(defn- asset-manager [assets]
+  (doto (asset-manager*)
+    (load-assets assets)))
+
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (.list (.internal Gdx/files folder))
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
 (defmethods :asset-manager
   (setup [[_ folder]]
-    (bind-root assets/manager (gdx/asset-manager
-                               (for [[asset-type exts] [[:sound   #{"wav"}]
-                                                        [:texture #{"png" "bmp"}]]
+    (bind-root assets/manager (asset-manager
+                               (for [[asset-type exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                                                        [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
                                      file (map #(str/replace-first % folder "")
-                                               (gdx/recursively-search folder exts))]
-                                 [file asset-type]))))
+                                               (recursively-search folder exts))]
+                                 [file asset-type])))
+    (println "Loaded assets: " assets/manager))
 
   (cleanup [_]
     (dispose assets/manager)))
 
 (defmethods :sprite-batch
   (setup [_]
-    (bind-root g/batch (gdx/sprite-batch)))
+    (bind-root g/batch (SpriteBatch.)))
 
   (cleanup [_]
     (dispose g/batch)))
@@ -139,13 +174,13 @@
 (let [pixel-texture (atom nil)]
   (defmethods :shape-drawer
     (setup [_]
-      (reset! pixel-texture (let [pixmap (doto (gdx/pixmap 1 1)
+      (reset! pixel-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                            (.setColor color/white)
                                            (.drawPixel 0 0))
-                                  texture (gdx/texture pixmap)]
+                                  texture (Texture. pixmap)]
                               (dispose pixmap)
                               texture))
-      (bind-root g/sd (sd/create g/batch (gdx/texture-region @pixel-texture 1 0 1 1))))
+      (bind-root g/sd (sd/create g/batch (g/texture-region @pixel-texture 1 0 1 1))))
 
     (cleanup [_]
       (dispose @pixel-texture))))
@@ -160,8 +195,8 @@
 (defmethods :cursors
   (setup [[_ data]]
     (bind-root g/cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (gdx/pixmap (gdx/internal (str "cursors/" file ".png")))
-                                          cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
+                                    (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                          cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                                       (dispose pixmap)
                                       cursor))
                                   data)))
@@ -173,7 +208,7 @@
   (setup [[_ [width height]]]
     (bind-root ui/viewport-width  width)
     (bind-root ui/viewport-height height)
-    (bind-root ui/viewport (fit-viewport width height (gdx/orthographic-camera))))
+    (bind-root ui/viewport (fit-viewport width height (OrthographicCamera.))))
 
   (resize [_ w h]
     (vp/update ui/viewport w h :center-camera? true)))
@@ -185,7 +220,7 @@
     (bind-root world/viewport-height height)
     (bind-root world/viewport (let [world-width  (* width  world/unit-scale)
                                     world-height (* height world/unit-scale)
-                                    camera (gdx/orthographic-camera)
+                                    camera (OrthographicCamera.)
                                     y-down? false]
                                 (.setToOrtho camera y-down? world-width world-height)
                                 (fit-viewport world-width world-height camera))))
@@ -241,6 +276,7 @@
 
 (defmethods :screens
   (setup [[_ {:keys [screens first-k]}]]
+    (println "Setting up screens")
     (screen/setup (into {}
                         (for [k screens]
                           [k [:screens/stage {:stage (stage ui/viewport g/batch (actors [k]))
@@ -251,7 +287,7 @@
     (screen/dispose-all))
 
   (render [_]
-    (gdx/clear-screen color/black)
+    (ScreenUtils/clear color/black)
     (screen/render-current)))
 
 (defn- background-image []

@@ -22,7 +22,6 @@
                               add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [anvil.ui.actor :refer [user-object]]
             [anvil.ui.group :refer [children
                                                clear-children
@@ -144,8 +143,14 @@
 
 (declare columns)
 
+(defn- all-of-class
+  "Returns all asset paths with the specific asset-type."
+  [^com.badlogic.gdx.assets.AssetManager manager class]
+  (filter #(= (.getAssetType manager %) class)
+          (.getAssetNames manager)))
+
 (defn- choose-window [table]
-  (let [rows (for [sound-file (gdx/all-of-class assets/manager :sound)]
+  (let [rows (for [sound-file (all-of-class assets/manager com.badlogic.gdx.audio.Sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -430,7 +435,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (gdx/all-of-class assets/manager :texture))]
+  (for [file (sort (all-of-class assets/manager com.badlogic.gdx.graphics.Texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 

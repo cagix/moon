@@ -1,5 +1,5 @@
 (ns anvil.ui
-  (:require [clojure.gdx :as gdx]
+  (:require [anvil.graphics :as g]
             [anvil.ui.actor :as actor]
             [anvil.ui.group :refer [find-actor-with-id add-actor!]]
             [anvil.ui.table :as table]
@@ -210,11 +210,8 @@
    (let [drawable (texture-region-drawable texture-region)
          button (vis/image-button drawable)]
      (when scale
-       (let [[w h] [(gdx/region-width  texture-region)
-                    (gdx/region-height texture-region)]]
-         (scene2d.utils/set-min-size! drawable
-                                      (* scale w)
-                                      (* scale h))))
+       (let [[w h] (g/texture-dimensions texture-region)]
+         (scene2d.utils/set-min-size! drawable (* scale w) (* scale h))))
      (.addListener button (change-listener on-clicked))
      button)))
 

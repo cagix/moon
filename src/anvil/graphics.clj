@@ -1,12 +1,32 @@
 (ns anvil.graphics
   (:require [anvil.graphics.color :as color :refer [->color]]
             [anvil.graphics.shape-drawer :as sd]
-            [clojure.gdx :as gdx]
             [anvil.graphics.viewport :as vp]
             [clojure.string :as str]
             [anvil.utils :refer [safe-get degree->radians]])
-  (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
            (com.badlogic.gdx.utils Align)))
+
+(defn frames-per-second []
+  (.getFramesPerSecond Gdx/graphics))
+
+(defn delta-time []
+  (.getDeltaTime Gdx/graphics))
+
+(defn ->texture-region [^TextureRegion texture-region x y w h]
+  (TextureRegion. texture-region (int x) (int y) (int w) (int h)))
+
+(defn texture-region
+  ([^Texture texture]
+   (TextureRegion. texture))
+  ([^Texture texture x y w h]
+   (TextureRegion. texture (int x) (int y) (int w) (int h))))
+
+(defn texture-dimensions [^TextureRegion texture-region]
+  [(.getRegionWidth  texture-region)
+   (.getRegionHeight texture-region)])
 
 (declare batch
          sd
@@ -80,7 +100,7 @@
     (sd/set-default-line-width sd old-line-width)))
 
 (defn set-cursor [cursor-key]
-  (gdx/set-cursor (safe-get cursors cursor-key)))
+  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))

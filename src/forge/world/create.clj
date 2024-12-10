@@ -34,7 +34,6 @@
             [anvil.val-max :as val-max]
             [anvil.world :as world]
             [anvil.utils :refer [dispose defsystem]]
-            [clojure.gdx :as gdx]
             [anvil.ui.actor :refer [user-object] :as actor]
             [anvil.ui.group :refer [add-actor! find-actor]]
             [anvil.ui.utils :as scene2d.utils]
@@ -216,7 +215,7 @@
                      :update-fn #(cam/zoom (world/camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn gdx/frames-per-second
+                     :update-fn g/frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
