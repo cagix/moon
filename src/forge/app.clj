@@ -8,19 +8,18 @@
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.sprite :as sprite]
-            [anvil.ui :refer [ui-actor text-button] :as ui]
+            [anvil.ui :refer [ui-actor] :as ui]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children]]
-            [anvil.utils :refer [dev-mode?]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [forge.main-menu :as main-menu]
             [forge.screens.editor :as editor]
             [forge.screens.minimap :as minimap]
-            [forge.world.create :refer [create-world]]
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (java.awt Taskbar Toolkit)
@@ -31,39 +30,6 @@
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))
-
-(deftype MainMenuScreen []
-  screen/Screen
-  (enter [_]
-    (g/set-cursor :cursors/default))
-  (exit [_])
-  (dispose [_])
-  (render [_]))
-
-(defn main-menu-screen []
-  (stage/screen :sub-screen (->MainMenuScreen)
-                :actors [(background-image)
-                         (ui/table
-                          {:rows
-                           (remove nil?
-                                   (concat
-                                    (for [world (db/build-all :properties/worlds)]
-                                      [(text-button (str "Start " (:property/id world))
-                                                    #(do
-                                                      (screen/change :screens/world)
-                                                      (create-world world)))])
-                                    [(when dev-mode?
-                                       [(text-button "Map editor"
-                                                     #(screen/change :screens/map-editor))])
-                                     (when dev-mode?
-                                       [(text-button "Property editor"
-                                                     #(screen/change :screens/editor))])
-                                     [(text-button "Exit" #(.exit Gdx/app))]]))
-                           :cell-defaults {:pad-bottom 25}
-                           :fill-parent? true})
-                         (ui-actor {:act (fn []
-                                           (when (key-just-pressed? :keys/escape)
-                                             (.exit Gdx/app)))})]))
 
 (defn editor-screen []
   (stage/screen :actors [(background-image)
@@ -134,7 +100,7 @@
                           (assets/setup asset-folder)
                           (g/setup graphics)
                           (ui/setup ui-skin-scale)
-                          (screen/setup {:screens/main-menu (main-menu-screen)
+                          (screen/setup {:screens/main-menu (main-menu/create background-image)
                                          ;:screens/map-editor
                                          :screens/editor (editor-screen)
                                          :screens/minimap (minimap-screen)

@@ -32,7 +32,7 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
-(defn dispose []
+(defn cleanup []
   (VisUI/dispose))
 
 (defn horizontal-separator-cell [colspan]
