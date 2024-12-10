@@ -10,11 +10,11 @@
             [anvil.sprite :as sprite]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [anvil.world :as world]
-            [clojure.edn :as edn]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children]]
-            [clojure.java.io :as io]
             [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode?]]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [forge.screens.editor :as editor]
             [forge.screens.minimap :as minimap]
             [forge.world.create :refer [create-world]]
@@ -64,37 +64,6 @@
       slurp
       edn/read-string
       start))
-
-#_(def effect {:required [#'effect/applicable?
-                          #'effect/handle]
-               :optional [#'world.update/useful?
-                          #'active-skill/render]})
-
-#_(def entity
-    {:optional [#'entity/->v
-                #'entity/create
-                #'world.update/destroy
-                #'world.update/tick
-                #'render/render-below
-                #'render/render-default
-                #'render/render-above
-                #'render/render-info]})
-
-#_(def entity-state
-  (merge-with concat
-              entity
-              {:optional [#'fsm/enter
-                          #'fsm/exit
-                          #'fsm/cursor
-                          #'world.update/pause-game?
-                          #'world.update/manual-tick
-                          #'forge.world.create/clicked-inventory-cell
-                          #'clicked-skillmenu-skill
-                          #'draw-gui-view]}))
-
-; npc moving is basically a performance optimization so npcs do not have to check
-; usable skills every frame
-; also prevents fast twitching around changing directions every frame
 
 (defmethods :db
   (setup [[_ config]]

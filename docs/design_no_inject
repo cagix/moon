@@ -1,0 +1,23 @@
+
+#_(ns clojure.core)
+
+; wait -
+; then cannot create documentation
+; with codox
+; if I use clojure.core ?
+; would have to do it manually
+; or subtract
+; just refer all is fine ...
+
+(defn bind-root [avar value]
+  (clojure.lang.Var/.bindRoot avar value))
+
+(defprotocol Disposable
+  (dispose [_]))
+
+(declare asset-manager)
+
+
+=> no more dependencies & cool
+=> codox I can fix somehow or do myself
+=> ? but on the other hand do I need everything everywhere???

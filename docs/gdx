@@ -1,0 +1,27 @@
+Pixmap
+ApplicationAdapter
+com.badlogic.gdx.audio.Sound/Texture can pass :keyword to forge.asset.manager
+
+com.badlogic.gdx.audio Sound
+
+forge.graphics.camera
+com.badlogic.gdx.graphics Colors
+
+TextureRegion
+
+forge.graphics.shape-drawer
+
+forge.graphics.text
+
+forge.graphics.texture
+
+forge.graphics.viewport
+
+forge.graphics
+
+forge.math.vector
+
+forge.stage
+forge.tiled
+
+forge.tiled

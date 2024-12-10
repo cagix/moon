@@ -1,0 +1,19 @@
+* should be in its minimal context to understand it.
+* the context is given by the namespace
+* similar 'context' == similar namespaces
+
+namespaces are not only containers for names but also define a context
+
+=> what is our context?
+
+e.g. imported 'AssetManager'
+or 'imported 'ShapeDrawer'
+=> then should contain only that.
+
+=> should not be together/have tuff like other stuff
+=> really minimal stuffs
+
+e.g. malli context / schema forms ...
+=> all together in 'malli' ?
+
+new way to organize code ...

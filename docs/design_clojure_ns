@@ -1,0 +1,7 @@
+
+
+; there is a mismatch with clojure/java-interop
+; see asset-manager .get / ilookup or the 'set! of lwjgl3-config' (better as map-args)
+; so the first layer 'called clojure.foo' is just an idiomatic API
+; we could just do interop but because some of these cases are more smooth with an API
+; we have to wrap the whole thing for consistency purposes

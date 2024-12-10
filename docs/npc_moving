@@ -1,0 +1,4 @@
+
+; npc moving is basically a performance optimization so npcs do not have to check
+; usable skills every frame
+; also prevents fast twitching around changing directions every frame

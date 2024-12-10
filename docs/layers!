@@ -1,0 +1,8 @@
+*** first start-app ... app/ components => ground/root/gdx....
+*** => then next layer (screens/entitiy/? => use app layer ?
+and last layer is 'effects' => can have an ENTITY/APP API? or effects API ?
+
+everything get an API!? idk
+
+but for sure my app specific code doesnt need to know about gdx?
+although I am checking gdx stuff ... clojure.gdx is already a layer over gdx?

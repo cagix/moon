@@ -1,0 +1,11 @@
+# forge
+1. level just app state
+assets
+input
+graphics
+db
+etc.
+
+world/ all world stuff, time,etc.
+
+move things where they're used
