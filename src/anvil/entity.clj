@@ -3,6 +3,7 @@
             [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.db :as db]
+            [anvil.graphics.camera :as cam]
             [anvil.grid :as grid]
             [anvil.inventory :as inventory]
             [anvil.raycaster :refer [ray-blocked?]]
@@ -11,7 +12,6 @@
             [anvil.time :refer [timer]]
             [anvil.world :as world]
             [clojure.component :refer [defsystem]]
-            [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
             [reduce-fsm :as fsm]))

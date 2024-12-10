@@ -1,5 +1,5 @@
 (ns anvil.controls
-  (:require [clojure.gdx.graphics.camera :as cam]
+  (:require [anvil.graphics.camera :as cam]
             [clojure.gdx.input :refer [key-just-pressed? key-pressed?]]
             [clojure.gdx.math.vector2 :as v]))
 
