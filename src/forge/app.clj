@@ -12,7 +12,7 @@
             [anvil.world :as world]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children]]
-            [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode?]]
+            [anvil.utils :refer [dispose bind-root defmethods dev-mode?]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [forge.screens.editor :as editor]
@@ -30,18 +30,32 @@
            (org.lwjgl.system Configuration)
            (forge OrthogonalTiledMapRenderer)))
 
-(defsystem setup)
+(defn setup-ui [skin-scale]
+  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
+  ; => actually there is a deeper issue at play
+  ; we need to dispose ALL resources which were loaded already ...
+  (when (ui/loaded?)
+    (ui/dispose))
+  (ui/load skin-scale)
+  (-> (ui/skin)
+      (.getFont "default-font")
+      .getData
+      .markupEnabled
+      (set! true))
+  (ui/configure-tooltips {:default-appear-delay-time 0}))
 
-(defsystem cleanup)
-(defmethod cleanup :default [_])
-
-(defsystem render)
-(defmethod render :default [_])
-
-(defsystem resize)
-(defmethod resize :default [_ w h])
-
-(defn start [{:keys [dock-icon title fps width height lifecycle]}]
+(defn start [{:keys [db
+                     dock-icon
+                     asset-folder
+                     graphics
+                     ui-viewport
+                     world-viewport
+                     ui-skin-scale
+                     title
+                     fps
+                     width
+                     height]}]
+  (db/setup db)
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
                             (io/resource dock-icon)))
@@ -49,10 +63,47 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create  []   (run! setup            lifecycle))
-                        (dispose []   (run! cleanup          lifecycle))
-                        (render  []   (run! render           lifecycle))
-                        (resize  [w h] (run! #(resize % w h) lifecycle)))
+                        (create  []
+                          (assets/search-and-load asset-folder
+                                                  [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                                                   [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])
+                          (g/setup graphics)
+                          (bind-root ui/viewport-width  (:width  ui-viewport))
+                          (bind-root ui/viewport-height (:height ui-viewport))
+                          (bind-root ui/viewport (FitViewport. width height (OrthographicCamera.)))
+                          (bind-root world/unit-scale (float (/ (:tile-size world-viewport))))
+                          (bind-root world/viewport-width  width)
+                          (bind-root world/viewport-height height)
+                          (bind-root world/viewport (let [world-width  (* (:width world-viewport)  world/unit-scale)
+                                                          world-height (* (:height world-viewport) world/unit-scale)
+                                                          camera (OrthographicCamera.)
+                                                          y-down? false]
+                                                      (.setToOrtho camera y-down? world-width world-height)
+                                                      (FitViewport. world-width world-height camera)))
+                          (bind-root world/tiled-map-renderer
+                                     (memoize (fn [tiled-map]
+                                                (OrthogonalTiledMapRenderer. tiled-map
+                                                                             (float world/unit-scale)
+                                                                             g/batch))))
+                          (setup-ui ui-skin-scale)
+                          (screen/setup (into {} (for [k [:screens/main-menu
+                                                          :screens/map-editor
+                                                          :screens/editor
+                                                          :screens/minimap
+                                                          :screens/world]]
+                                                   [k (stage/screen [k])]))
+                                        :screens/main-menu))
+                        (dispose []
+                          (assets/cleanup)
+                          (g/cleanup)
+                          (ui/dispose)
+                          (screen/dispose-all))
+                        (render []
+                          (ScreenUtils/clear g/black)
+                          (screen/render-current))
+                        (resize [w h]
+                          (Viewport/.update ui/viewport w h true)
+                          (Viewport/.update world/viewport w h false)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle title)
                         (.setForegroundFPS fps)
@@ -64,88 +115,6 @@
       slurp
       edn/read-string
       start))
-
-(defmethods :db
-  (setup [[_ config]]
-    (db/setup config)))
-
-(defmethods :asset-manager
-  (setup [[_ folder]]
-    (assets/search-and-load folder
-                            [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                             [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]))
-
-  (cleanup [_]
-    (assets/cleanup)))
-
-(defmethods :graphics
-  (setup [[_ config]]
-    (g/setup config))
-
-  (cleanup [_]
-    (g/cleanup)))
-
-(defmethods :ui-viewport
-  (setup [[_ [width height]]]
-    (bind-root ui/viewport-width  width)
-    (bind-root ui/viewport-height height)
-    (bind-root ui/viewport (FitViewport. width height (OrthographicCamera.))))
-
-  (resize [_ w h]
-    (Viewport/.update ui/viewport w h true)))
-
-(defmethods :world-viewport
-  (setup [[_ [width height tile-size]]]
-    (bind-root world/unit-scale (float (/ tile-size)))
-    (bind-root world/viewport-width  width)
-    (bind-root world/viewport-height height)
-    (bind-root world/viewport (let [world-width  (* width  world/unit-scale)
-                                    world-height (* height world/unit-scale)
-                                    camera (OrthographicCamera.)
-                                    y-down? false]
-                                (.setToOrtho camera y-down? world-width world-height)
-                                (FitViewport. world-width world-height camera))))
-  (resize [_ w h]
-    (Viewport/.update world/viewport w h false)))
-
-(defmethods :cached-map-renderer
-  (setup [_]
-    (bind-root world/tiled-map-renderer
-               (memoize (fn [tiled-map]
-                          (OrthogonalTiledMapRenderer. tiled-map
-                                                       (float world/unit-scale)
-                                                       g/batch))))))
-
-(defmethods :vis-ui
-  (setup [[_ skin-scale]]
-    ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
-    ; => actually there is a deeper issue at play
-    ; we need to dispose ALL resources which were loaded already ...
-    (when (ui/loaded?)
-      (ui/dispose))
-    (ui/load skin-scale)
-    (-> (ui/skin)
-        (.getFont "default-font")
-        .getData
-        .markupEnabled
-        (set! true))
-    (ui/configure-tooltips {:default-appear-delay-time 0}))
-
-  (cleanup [_]
-    (ui/dispose)))
-
-(defmethods :screens
-  (setup [[_ {:keys [screens first-k]}]]
-    (screen/setup (into {} (for [k screens]
-                             [k (stage/screen [k])]))
-                  first-k))
-
-  (cleanup [_]
-    (screen/dispose-all))
-
-  (render [_]
-    (ScreenUtils/clear g/black)
-    (screen/render-current)))
 
 (defn- background-image []
   (ui/image->widget (sprite/create "images/moon_background.png")

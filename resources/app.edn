@@ -1,34 +1,31 @@
-{:dock-icon "moon.png"
+{:db {:schema "schema.edn"
+      :properties "properties.edn"}
+ :dock-icon "moon.png"
+ :asset-folder "resources/"
+ :graphics {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                           :size 16
+                           :quality-scaling 2}
+            :cursors {:cursors/bag                   ["bag001"       [0   0]]
+                      :cursors/black-x               ["black_x"      [0   0]]
+                      :cursors/default               ["default"      [0   0]]
+                      :cursors/denied                ["denied"       [16 16]]
+                      :cursors/hand-before-grab      ["hand004"      [4  16]]
+                      :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                      :cursors/hand-grab             ["hand003"      [4  16]]
+                      :cursors/move-window           ["move002"      [16 16]]
+                      :cursors/no-skill-selected     ["denied003"    [0   0]]
+                      :cursors/over-button           ["hand002"      [0   0]]
+                      :cursors/sandclock             ["sandclock"    [16 16]]
+                      :cursors/skill-not-usable      ["x007"         [0   0]]
+                      :cursors/use-skill             ["pointer004"   [0   0]]
+                      :cursors/walking               ["walking"      [16 16]]}}
+ :ui-viewport {:width 1440
+               :height 900}
+ :world-viewport {:tile-size 48
+                  :width 1440
+                  :height 900}
+ :ui-skin-scale :skin-scale/x1
  :title "Forge"
  :fps 60
  :width 1440
- :height 900
- :lifecycle [[:db {:schema "schema.edn" :properties "properties.edn"}]
-             [:asset-manager "resources/"]
-             [:graphics {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                        :size 16
-                                        :quality-scaling 2}
-                         :cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                   :cursors/black-x               ["black_x"      [0   0]]
-                                   :cursors/default               ["default"      [0   0]]
-                                   :cursors/denied                ["denied"       [16 16]]
-                                   :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                   :cursors/hand-grab             ["hand003"      [4  16]]
-                                   :cursors/move-window           ["move002"      [16 16]]
-                                   :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                   :cursors/over-button           ["hand002"      [0   0]]
-                                   :cursors/sandclock             ["sandclock"    [16 16]]
-                                   :cursors/skill-not-usable      ["x007"         [0   0]]
-                                   :cursors/use-skill             ["pointer004"   [0   0]]
-                                   :cursors/walking               ["walking"      [16 16]]}}]
-             [:ui-viewport   [1440 900]]
-             [:world-viewport [1440 900 48]]
-             [:cached-map-renderer]
-             [:vis-ui :skin-scale/x1]
-             [:screens {:screens [:screens/main-menu
-                                  :screens/map-editor
-                                  :screens/editor
-                                  :screens/minimap
-                                  :screens/world]
-                        :first-k :screens/main-menu}]]}
+ :height 900}
