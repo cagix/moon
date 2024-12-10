@@ -253,6 +253,10 @@
   {:eid eid
    :counter (timer duration)})
 
+(defmethod ->v :player-moving [[_ eid movement-vector]]
+  {:eid eid
+   :movement-vector movement-vector})
+
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
             (assoc m k (->v [k v])))

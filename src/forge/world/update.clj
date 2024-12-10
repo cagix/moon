@@ -10,6 +10,7 @@
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.grid :as grid]
             [anvil.modifiers :as mods]
+            [anvil.stat :as stat]
             [anvil.stage :as stage]
             [anvil.time :as time :refer [stopped?]]
             [anvil.level :as level :refer [explored-tile-corners]]
@@ -163,6 +164,12 @@
   (when (stopped? counter)
     (fsm/event eid :effect-wears-off)))
 
+(defmethod tick :player-moving [[_ {:keys [movement-vector]}] eid]
+  (if-let [movement-vector (controls/movement-vector)]
+    (swap! eid assoc :entity/movement {:direction movement-vector
+                                       :speed (stat/->value @eid :entity/movement-speed)})
+    (fsm/event eid :no-movement-input)))
+
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?
@@ -227,7 +234,8 @@
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
-(defmethod pause-game? :stunned [_] false)
+(defmethod pause-game? :stunned       [_] false)
+(defmethod pause-game? :player-moving [_] false)
 
 (defn update-world []
   (manual-tick (fsm/state-obj @player-eid))

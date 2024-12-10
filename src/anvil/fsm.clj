@@ -1,6 +1,7 @@
 (ns anvil.fsm
   (:require [anvil.entity :as entity]
             [anvil.graphics :as g]
+            [anvil.stat :as stat]
             [clojure.component :refer [defsystem]]
             [reduce-fsm :as fsm]))
 
@@ -17,11 +18,19 @@
 (defsystem exit)
 (defmethod exit :default [_])
 
+(defmethods :player-moving
+  (enter [[_ {:keys [eid movement-vector]}]]
+    (swap! eid assoc :entity/movement {:direction movement-vector
+                                       :speed (stat/->value @eid :entity/movement-speed)}))
+
+  (exit [[_ {:keys [eid]}]]
+    (swap! eid dissoc :entity/movement)))
+
 (defsystem cursor)
 (defmethod cursor :default [_])
 
-(defmethod cursor :stunned [_]
-  :cursors/denied)
+(defmethod cursor :stunned       [_] :cursors/denied)
+(defmethod cursor :player-moving [_] :cursors/walking)
 
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
