@@ -1,37 +1,11 @@
 (ns clojure.gdx
-  (:require [anvil.utils :refer [gdx-static-field]]
-            [clojure.string :as str])
+  (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Colors Texture Pixmap Pixmap$Format OrthographicCamera)
+           (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils Disposable ScreenUtils)))
-
-(def dispose Disposable/.dispose)
-
-(def ^Color black Color/BLACK)
-(def ^Color white Color/WHITE)
-
-(defn ->color
-  ([r g b]
-   (->color r g b 1))
-  ([r g b a]
-   (Color. (float r) (float g) (float b) (float a)))
-  (^Color [c]
-          (cond (= Color (class c)) c
-                (keyword? c) (gdx-static-field "graphics.Color" c)
-                (vector? c) (apply ->color c)
-                :else (throw (ex-info "Cannot understand color" c)))))
-
-(defn add-color [name-str color]
-  (Colors/put name-str (->color color)))
-
-(defn exit []
-  (.exit Gdx/app))
-
-(defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+           (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn- asset-manager* ^AssetManager []
   (proxy [AssetManager clojure.lang.IFn] []
@@ -50,7 +24,7 @@
     (.load manager ^String file (class-k->class asset-type)))
   (.finishLoading manager))
 
-(defn asset-manager [assets]
+(defn- asset-manager [assets]
   (doto (asset-manager*)
     (load-assets assets)))
 

@@ -6,12 +6,12 @@
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
             [anvil.world :as world]
-            [clojure.gdx :refer [post-runnable]]
             [anvil.ui.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
 
@@ -67,6 +67,9 @@
  ; => this is basically a test for 'forge.entity.active'
 
  )
+
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (defn- learn-skill! [skill-id]
   (post-runnable

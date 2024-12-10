@@ -1,6 +1,7 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
+            [anvil.graphics.color :as color]
             [anvil.input :refer [key-just-pressed?]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.screen :as screen]
@@ -33,7 +34,7 @@
 
 (defn- ->tile-corner-color-setter [explored?]
   (fn tile-corner-color-setter [color x y]
-    (if (get explored? [x y]) gdx/white gdx/black)))
+    (if (get explored? [x y]) color/white color/black)))
 
 (defn enter []
   (cam/set-zoom! (world/camera) (minimap-zoom)))

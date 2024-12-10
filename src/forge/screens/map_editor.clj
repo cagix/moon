@@ -3,12 +3,14 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
+            [anvil.graphics.color :as color]
             [anvil.input :refer [key-just-pressed? key-pressed?]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
+            [anvil.utils :refer [dispose]]
             [anvil.world :as world]
             [clojure.gdx :as gdx]
             [anvil.ui.group :refer [add-actor!]]
@@ -91,13 +93,13 @@
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world/camera))
         [x y] (mapv int (world/mouse-position))]
-    (g/rectangle x y 1 1 gdx/white)
+    (g/rectangle x y 1 1 color/white)
     (when start-position
       (g/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 gdx/black)
+        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
         (g/filled-circle [(+ x 0.5) (+ y 0.5)]
                          0.05
                          (case prop
@@ -115,7 +117,7 @@
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
         atom-data (current-data)]
-    (gdx/dispose (:tiled-map @atom-data))
+    (dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
@@ -141,7 +143,7 @@
 
 (defn render [_]
   #_(world/draw-tiled-map (:tiled-map @current-data)
-                          (constantly gdx/white))
+                          (constantly color/white))
   #_(world/draw-on-view render-on-map)
   #_(if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))

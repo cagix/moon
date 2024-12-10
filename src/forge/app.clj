@@ -4,6 +4,7 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
+            [anvil.graphics.color :as color]
             [anvil.graphics.freetype :as freetype]
             [anvil.graphics.shape-drawer :as sd]
             [anvil.input :refer [key-just-pressed?]]
@@ -19,7 +20,7 @@
             [anvil.graphics.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [anvil.utils :refer [bind-root defsystem defmethods dev-mode? mapvals]]
+            [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode? mapvals]]
             [clojure.vis-ui :as vis]
             [forge.screens.editor :as editor]
             [forge.screens.minimap :as minimap]
@@ -126,47 +127,47 @@
                                  [file asset-type]))))
 
   (cleanup [_]
-    (gdx/dispose assets/manager)))
+    (dispose assets/manager)))
 
 (defmethods :sprite-batch
   (setup [_]
     (bind-root g/batch (gdx/sprite-batch)))
 
   (cleanup [_]
-    (gdx/dispose g/batch)))
+    (dispose g/batch)))
 
 (let [pixel-texture (atom nil)]
   (defmethods :shape-drawer
     (setup [_]
       (reset! pixel-texture (let [pixmap (doto (gdx/pixmap 1 1)
-                                           (.setColor gdx/white)
+                                           (.setColor color/white)
                                            (.drawPixel 0 0))
                                   texture (gdx/texture pixmap)]
-                              (gdx/dispose pixmap)
+                              (dispose pixmap)
                               texture))
       (bind-root g/sd (sd/create g/batch (gdx/texture-region @pixel-texture 1 0 1 1))))
 
     (cleanup [_]
-      (gdx/dispose @pixel-texture))))
+      (dispose @pixel-texture))))
 
 (defmethods :default-font
   (setup [[_ font]]
     (bind-root g/default-font (freetype/generate-font font)))
 
   (cleanup [_]
-    (gdx/dispose g/default-font)))
+    (dispose g/default-font)))
 
 (defmethods :cursors
   (setup [[_ data]]
     (bind-root g/cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                                     (let [pixmap (gdx/pixmap (gdx/internal (str "cursors/" file ".png")))
                                           cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
-                                      (gdx/dispose pixmap)
+                                      (dispose pixmap)
                                       cursor))
                                   data)))
 
   (cleanup [_]
-    (run! gdx/dispose (vals g/cursors))))
+    (run! dispose (vals g/cursors))))
 
 (defmethods :gui-viewport
   (setup [[_ [width height]]]
@@ -235,7 +236,7 @@
     (.draw stage))
 
   (screen/dispose [[_ {:keys [stage sub-screen]}]]
-    (.dispose stage)
+    (dispose stage)
     (screen/dispose sub-screen)))
 
 (defmethods :screens
@@ -250,7 +251,7 @@
     (screen/dispose-all))
 
   (render [_]
-    (gdx/clear-screen gdx/black)
+    (gdx/clear-screen color/black)
     (screen/render-current)))
 
 (defn- background-image []
@@ -277,12 +278,12 @@
                  (when dev-mode?
                    [(text-button "Property editor"
                                  #(screen/change :screens/editor))])
-                 [(text-button "Exit" gdx/exit)]]))
+                 [(text-button "Exit" #(.exit Gdx/app))]]))
        :cell-defaults {:pad-bottom 25}
        :fill-parent? true})
      (ui-actor {:act (fn []
                        (when (key-just-pressed? :keys/escape)
-                         (gdx/exit)))})])
+                         (.exit Gdx/app)))})])
 
   (screen/enter [_]
     (g/set-cursor :cursors/default)))

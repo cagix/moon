@@ -2,7 +2,10 @@
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str])
-  (:import (com.badlogic.gdx.math MathUtils)))
+  (:import (com.badlogic.gdx.math MathUtils)
+           (com.badlogic.gdx.utils Disposable)))
+
+(def dispose Disposable/.dispose)
 
 (defn gdx-static-field [klass-str k]
   (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))

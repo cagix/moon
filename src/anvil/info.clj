@@ -1,5 +1,6 @@
 (ns anvil.info
   (:require [anvil.damage :as damage]
+            [anvil.graphics.color :as color]
             [anvil.hitpoints :as hp]
             [anvil.mana :as mana]
             [anvil.stat :as stat]
@@ -10,7 +11,7 @@
             [clojure.string :as str]
             [anvil.utils :refer [defsystem index-of readable-number]]))
 
-(gdx/add-color "PRETTY_NAME" [0.84 0.8 0.52])
+(color/add "PRETTY_NAME" [0.84 0.8 0.52])
 
 (def k->colors {:property/pretty-name "PRETTY_NAME"
                 :entity/modifiers "CYAN"

@@ -1,5 +1,6 @@
 (ns anvil.graphics
-  (:require [anvil.graphics.shape-drawer :as sd]
+  (:require [anvil.graphics.color :as color :refer [->color]]
+            [anvil.graphics.shape-drawer :as sd]
             [clojure.gdx :as gdx]
             [anvil.graphics.viewport :as vp]
             [clojure.string :as str]
@@ -13,7 +14,7 @@
          cursors)
 
 (defn- sd-color [color]
-  (sd/set-color sd (gdx/->color color)))
+  (sd/set-color sd (->color color)))
 
 (defn ellipse [position radius-x radius-y color]
   (sd-color color)
@@ -94,7 +95,7 @@
          1 ; scaling factor
          1
          rotation)
-  (if color (.setColor batch gdx/white)))
+  (if color (.setColor batch color/white)))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -165,7 +166,7 @@
   (draw-rotated-centered image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (.setColor batch gdx/white) ; fix scene2d.ui.tooltip flickering
+  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (.combined (vp/camera viewport)))
   (.begin batch)
   (draw-fn)

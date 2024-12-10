@@ -8,6 +8,7 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
+            [anvil.graphics.color :refer [->color]]
             [anvil.grid :as grid]
             [anvil.hitpoints :as hp]
             [anvil.info :as info]
@@ -32,7 +33,7 @@
              :as ui]
             [anvil.val-max :as val-max]
             [anvil.world :as world]
-            [anvil.utils :refer [defsystem]]
+            [anvil.utils :refer [dispose defsystem]]
             [clojure.gdx :as gdx]
             [anvil.ui.actor :refer [user-object] :as actor]
             [anvil.ui.group :refer [add-actor! find-actor]]
@@ -285,7 +286,7 @@
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (gdx/->color 1 1 1 0.4))))
+    (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
 
 (defsystem clicked-inventory-cell)
 (defmethod clicked-inventory-cell :default [_ cell])
@@ -426,7 +427,7 @@
 
 (defn dispose-world []
   (when (bound? #'level/tiled-map)
-    (gdx/dispose level/tiled-map)))
+    (dispose level/tiled-map)))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
