@@ -1,7 +1,10 @@
 (ns anvil.db
-  (:require [clojure.edn :as edn]
+  (:require [anvil.animation :as animation]
+            [anvil.graphics :refer [edn->image]]
+            [anvil.val-max :as val-max]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit!]]
+            [clojure.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
             [malli.core :as m]
             [malli.error :as me]))
 
@@ -130,3 +133,77 @@
                 (apply distinct? (map :property/id properties))))
     (run! validate! properties)
     (def db-data (zipmap (map :property/id properties) properties))))
+
+(defmethod malli-form :s/val-max [_] (m/form val-max/schema))
+
+(defmethod malli-form :s/number  [_] number?)
+(defmethod malli-form :s/nat-int [_] nat-int?)
+(defmethod malli-form :s/int     [_] int?)
+(defmethod malli-form :s/pos     [_] pos?)
+(defmethod malli-form :s/pos-int [_] pos-int?)
+
+(defmethod malli-form :s/sound [_] :string)
+
+(defmethods :s/image
+  (malli-form  [_]
+    [:map {:closed true}
+     [:file :string]
+     [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
+
+  (edn->value [_ edn]
+    (edn->image edn)))
+
+(defmethods :s/animation
+  (malli-form [_]
+    [:map {:closed true}
+     [:frames :some] ; FIXME actually images
+     [:frame-duration pos?]
+     [:looping? :boolean]])
+
+  (edn->value [_ {:keys [frames frame-duration looping?]}]
+    (animation/create (map edn->image frames)
+                      :frame-duration frame-duration
+                      :looping? looping?)))
+
+(defn- type->id-namespace [property-type]
+  (keyword (name property-type)))
+
+(defmethods :s/one-to-one
+  (malli-form [[_ property-type]]
+    [:qualified-keyword {:namespace (type->id-namespace property-type)}])
+  (edn->value [_ property-id]
+    (build property-id)))
+
+(defmethods :s/one-to-many
+  (malli-form [[_ property-type]]
+    [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
+  (edn->value [_ property-ids]
+    (set (map build property-ids))))
+
+(defn- attribute-form
+  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
+  [ks]
+  (for [k ks
+        :let [k? (keyword? k)
+              schema-props (if k? nil (k 1))
+              k (if k? k (k 0))]]
+    (do
+     (assert (keyword? k))
+     (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
+     [k schema-props (malli-form (schema-of k))])))
+
+(defn- map-form [ks]
+  (apply vector :map {:closed true} (attribute-form ks)))
+
+(defmethod malli-form :s/map [[_ ks]]
+  (map-form ks))
+
+(defmethod malli-form :s/map-optional [[_ ks]]
+  (map-form (map (fn [k] [k {:optional true}]) ks)))
+
+(defn- namespaced-ks [ns-name-k]
+  (filter #(= (name ns-name-k) (namespace %))
+          (keys schemas)))
+
+(defmethod malli-form :s/components-ns [[_ ns-name-k]]
+  (malli-form [:s/map-optional (namespaced-ks ns-name-k)]))
