@@ -1,8 +1,8 @@
 (ns anvil.mapgen
   (:require [anvil.property :as property]
             [anvil.tiled :as tiled]
-            [clojure.rand :refer [sshuffle srand srand-int]]
-            [clojure.utils :refer [assoc-ks]]
+            [anvil.rand :refer [sshuffle srand srand-int]]
+            [anvil.utils :refer [assoc-ks]]
             [data.grid2d :as g2d]))
 
 (defn creatures-with-level [creature-properties level]

@@ -25,10 +25,10 @@
             [anvil.potential-field :as potential-field]
             [anvil.ui :refer [window-title-bar? button?]]
             [anvil.world :as world]
-            [clojure.utils :refer [defsystem]]
+            [anvil.utils :refer [defsystem]]
             [clojure.gdx :as gdx]
             [anvil.ui.actor :as actor]
-            [clojure.utils :refer [bind-root sort-by-order find-first]]
+            [anvil.utils :refer [bind-root sort-by-order find-first]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
             [malli.core :as m]))
 

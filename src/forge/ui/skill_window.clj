@@ -1,6 +1,6 @@
 (ns ^:no-doc forge.ui.skill-window
   (:require [anvil.skills :as skills]
-            [clojure.utils :refer [defsystem]]))
+            [anvil.utils :refer [defsystem]]))
 
 (defsystem clicked-skillmenu-skill)
 (defmethod clicked-skillmenu-skill :default [_ skill])

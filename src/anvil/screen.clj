@@ -1,5 +1,5 @@
 (ns anvil.screen
-  (:require [clojure.utils :refer [defsystem]]))
+  (:require [anvil.utils :refer [defsystem]]))
 
 (defsystem enter)
 (defmethod enter :default [_])

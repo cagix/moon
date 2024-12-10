@@ -5,7 +5,7 @@
             [anvil.ui :as ui]
             [anvil.ui.actor :as actor]
             [anvil.ui.group :as group]
-            [clojure.utils :refer [pretty-pst with-err-str bind-root]])
+            [anvil.utils :refer [pretty-pst with-err-str bind-root]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))
 

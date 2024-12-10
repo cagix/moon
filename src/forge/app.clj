@@ -18,7 +18,7 @@
             [anvil.graphics.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.utils :refer [bind-root defsystem defmethods dev-mode? mapvals]]
+            [anvil.utils :refer [bind-root defsystem defmethods dev-mode? mapvals]]
             [clojure.vis-ui :as vis]
             [forge.screens.editor :as editor]
             [forge.screens.minimap :as minimap]

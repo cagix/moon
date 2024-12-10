@@ -9,7 +9,7 @@
                                 nearest-entity-distance
                                 cached-adjacent-cells]]
             [anvil.math.vector :as v]
-            [clojure.utils :refer [when-seq utils-positions]]))
+            [anvil.utils :refer [when-seq utils-positions]]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

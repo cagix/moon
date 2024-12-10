@@ -3,7 +3,7 @@
             [anvil.stage :refer [message-to-player player-message-duration-seconds]]
             [anvil.ui :as ui :refer [ui-actor]]
             [clojure.gdx :as gdx]
-            [clojure.utils :refer [bind-root]]))
+            [anvil.utils :refer [bind-root]]))
 
 
 (defn- draw-player-message []

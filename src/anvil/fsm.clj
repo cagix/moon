@@ -9,7 +9,7 @@
             [anvil.stat :as stat]
             [anvil.string-effect :as string-effect]
             [anvil.time :refer [timer]]
-            [clojure.utils :refer [defsystem defmethods]]
+            [anvil.utils :refer [defsystem defmethods]]
             [reduce-fsm :as fsm]))
 
 (defn state-k [entity]

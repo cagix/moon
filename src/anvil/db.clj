@@ -4,7 +4,7 @@
             [anvil.val-max :as val-max]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
+            [anvil.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
             [malli.core :as m]
             [malli.error :as me]))
 

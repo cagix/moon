@@ -4,7 +4,7 @@
             [clojure.gdx :as gdx]
             [anvil.graphics.viewport :as vp]
             [clojure.string :as str]
-            [clojure.utils :refer [safe-get]])
+            [anvil.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)))
 

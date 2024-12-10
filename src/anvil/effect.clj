@@ -12,8 +12,8 @@
             [anvil.stat :as stat]
             [anvil.string-effect :as string-effect]
             [anvil.time :refer [timer]]
-            [clojure.rand :refer [rand-int-between]]
-            [clojure.utils :refer [defmethods defsystem]]))
+            [anvil.rand :refer [rand-int-between]]
+            [anvil.utils :refer [defmethods defsystem]]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn check-update-ctx

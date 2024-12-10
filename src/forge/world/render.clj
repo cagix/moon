@@ -14,9 +14,9 @@
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.val-max :as val-max]
             [anvil.world :as world]
-            [clojure.utils :refer [defsystem]]
+            [anvil.utils :refer [defsystem]]
             [clojure.gdx :as gdx]
-            [clojure.utils :refer [sort-by-order pretty-pst]]
+            [anvil.utils :refer [sort-by-order pretty-pst]]
             [forge.world.potential-fields :refer [factions-iterations]]))
 
 (defsystem render-effect)

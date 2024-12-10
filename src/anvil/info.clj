@@ -8,7 +8,7 @@
             [clojure.gdx :as gdx]
             [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.utils :refer [defsystem index-of readable-number]]))
+            [anvil.utils :refer [defsystem index-of readable-number]]))
 
 (gdx/add-color "PRETTY_NAME" [0.84 0.8 0.52])
 

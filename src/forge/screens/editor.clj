@@ -30,7 +30,7 @@
             [anvil.ui.table :refer [add-rows!]]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
-            [clojure.utils :refer [->edn-str
+            [anvil.utils :refer [->edn-str
                                    truncate
                                    find-first
                                    index-of]]

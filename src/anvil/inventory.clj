@@ -1,6 +1,6 @@
 (ns anvil.inventory
   (:require [anvil.modifiers :as mods]
-            [clojure.utils :refer [find-first]]
+            [anvil.utils :refer [find-first]]
             [data.grid2d :as g2d]))
 
 (def empty-inventory
