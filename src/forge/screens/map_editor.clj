@@ -3,7 +3,6 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.graphics.color :as color]
             [anvil.input :refer [key-just-pressed? key-pressed?]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
@@ -92,13 +91,13 @@
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world/camera))
         [x y] (mapv int (world/mouse-position))]
-    (g/rectangle x y 1 1 color/white)
+    (g/rectangle x y 1 1 g/white)
     (when start-position
       (g/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
+        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 g/black)
         (g/filled-circle [(+ x 0.5) (+ y 0.5)]
                          0.05
                          (case prop
@@ -142,7 +141,7 @@
 
 (defn render [_]
   #_(world/draw-tiled-map (:tiled-map @current-data)
-                          (constantly color/white))
+                          (constantly g/white))
   #_(world/draw-on-view render-on-map)
   #_(if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))

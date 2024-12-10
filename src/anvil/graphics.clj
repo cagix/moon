@@ -1,14 +1,30 @@
 (ns anvil.graphics
-  (:require [anvil.graphics.color :as color :refer [->color]]
-            [anvil.graphics.shape-drawer :as sd]
+  (:require [anvil.graphics.shape-drawer :as sd]
             [clojure.string :as str]
-            [anvil.utils :refer [clamp safe-get degree->radians]])
+            [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians]])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics Color Colors Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+(def ^Color black Color/BLACK)
+(def ^Color white Color/WHITE)
+
+(defn ->color
+  ([r g b]
+   (->color r g b 1))
+  ([r g b a]
+   (Color. (float r) (float g) (float b) (float a)))
+  (^Color [c]
+          (cond (= Color (class c)) c
+                (keyword? c) (gdx-static-field "graphics.Color" c)
+                (vector? c) (apply ->color c)
+                :else (throw (ex-info "Cannot understand color" c)))))
+
+(defn add-color [name-str color]
+  (Colors/put name-str (->color color)))
 
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
@@ -116,7 +132,7 @@
          1 ; scaling factor
          1
          rotation)
-  (if color (.setColor batch color/white)))
+  (if color (.setColor batch white)))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -187,7 +203,7 @@
   (draw-rotated-centered image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
+  (.setColor batch white) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (.combined (Viewport/.getCamera viewport)))
   (.begin batch)
   (draw-fn)

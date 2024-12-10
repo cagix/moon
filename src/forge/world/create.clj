@@ -8,7 +8,6 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.graphics.color :refer [->color]]
             [anvil.grid :as grid]
             [anvil.hitpoints :as hp]
             [anvil.info :as info]
@@ -284,7 +283,7 @@
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
+    (scene2d.utils/tint drawable (g/->color 1 1 1 0.4))))
 
 (defsystem clicked-inventory-cell)
 (defmethod clicked-inventory-cell :default [_ cell])

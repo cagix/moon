@@ -4,7 +4,6 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.graphics.color :as color]
             [anvil.graphics.freetype :as freetype]
             [anvil.graphics.shape-drawer :as sd]
             [anvil.input :refer [key-just-pressed?]]
@@ -124,7 +123,7 @@
   (defmethods :shape-drawer
     (setup [_]
       (reset! pixel-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                           (.setColor color/white)
+                                           (.setColor g/white)
                                            (.drawPixel 0 0))
                                   texture (Texture. pixmap)]
                               (dispose pixmap)
@@ -212,7 +211,7 @@
     (screen/dispose-all))
 
   (render [_]
-    (ScreenUtils/clear color/black)
+    (ScreenUtils/clear g/black)
     (screen/render-current)))
 
 (defn- background-image []
