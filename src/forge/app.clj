@@ -30,9 +30,7 @@
             [forge.world.create :refer [create-world]]
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
-            [forge.world.update :refer [update-world]]
-            forge.mapgen.generate
-            forge.mapgen.uf-caves)
+            [forge.world.update :refer [update-world]])
   (:import (forge OrthogonalTiledMapRenderer)))
 
 #_(def effect {:required [#'effect/applicable?

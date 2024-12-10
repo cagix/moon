@@ -1,7 +1,6 @@
-(ns ^:no-doc forge.mapgen.uf-caves
+(ns ^:no-doc anvil.level.uf-caves
   (:require [anvil.app :as app]
             [anvil.db :as db]
-            [anvil.level :refer [generate-level*]]
             [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.tiled :as tiled]
@@ -105,7 +104,7 @@
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
-(defn- create [{:keys [world/map-size world/spawn-rate]}]
+(defn create [{:keys [world/map-size world/spawn-rate]}]
   (let [{:keys [start grid]} (cave-grid :size map-size)
         {:keys [start-position grid]} (scale-grid grid start scaling)
         grid (assoc-transition-cells grid)
@@ -116,10 +115,3 @@
     (set-creatures-tiles spawn-rate tiled-map spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))
-
-(defmethod generate-level* :world.generator/uf-caves [world]
-  (create world))
-
-(defmethod generate-level* :world.generator/tiled-map [world]
-  {:tiled-map (tiled/load-tmx-map (:world/tiled-map world))
-   :start-position [32 71]})

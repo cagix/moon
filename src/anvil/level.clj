@@ -1,4 +1,7 @@
-(ns anvil.level)
+(ns anvil.level
+  (:require [anvil.level.modules :refer [generate-modules]]
+            [anvil.level.uf-caves :as uf-caves]
+            [clojure.gdx.tiled :as tiled]))
 
 (defmulti generate-level* (fn [world] (:world/generator world)))
 
@@ -9,3 +12,13 @@
 
 (declare tiled-map
          explored-tile-corners)
+
+(defmethod generate-level* :world.generator/uf-caves [world]
+  (uf-caves/create world))
+
+(defmethod generate-level* :world.generator/tiled-map [world]
+  {:tiled-map (tiled/load-tmx-map (:world/tiled-map world))
+   :start-position [32 71]})
+
+(defmethod generate-level* :world.generator/modules [world]
+  (generate-modules world))

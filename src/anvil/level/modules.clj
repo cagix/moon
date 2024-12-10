@@ -1,6 +1,5 @@
-(ns ^:no-doc forge.mapgen.generate
+(ns ^:no-doc anvil.level.modules
   (:require [anvil.db :as db]
-            [anvil.level :refer [generate-level*]]
             [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
             [clojure.gdx.tiled :as tiled]
@@ -69,7 +68,7 @@
           (when (seq creatures)
             (tiled/set-tile! layer position (creature-tile (rand-nth creatures)))))))))
 
-(defn- generate-modules
+(defn generate-modules
   "The generated tiled-map needs to be disposed."
   [{:keys [world/map-size
            world/max-area-level
@@ -123,6 +122,3 @@
     {:tiled-map tiled-map
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
-
-(defmethod generate-level* :world.generator/modules [world]
-  (generate-modules world))
