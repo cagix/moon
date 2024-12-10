@@ -1,9 +1,9 @@
 (ns anvil.audio
-  (:require [anvil.app :as app]
+  (:require [anvil.assets :as assets]
             [clojure.gdx.audio.sound :as sound]))
 
 (defn play-sound [sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
-       app/asset-manager
+       assets/manager
        sound/play))

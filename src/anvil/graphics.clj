@@ -1,5 +1,6 @@
 (ns anvil.graphics
   (:require [anvil.app :as app :refer [sd]]
+            [anvil.assets :as assets]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
@@ -216,7 +217,7 @@
       map->Sprite))
 
 (defn ->image [path]
-  (sprite* (g/texture-region (app/asset-manager path))))
+  (sprite* (g/texture-region (assets/manager path))))
 
 (defn sub-image [image bounds]
   (sprite* (apply g/->texture-region (:texture-region image) bounds)))

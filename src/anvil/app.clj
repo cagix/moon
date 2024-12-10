@@ -6,8 +6,7 @@
 (defmacro post-runnable [& exprs]
   `(app/post-runnable (fn [] ~@exprs)))
 
-(declare asset-manager
-         batch
+(declare batch
          sd
          default-font
          cursors

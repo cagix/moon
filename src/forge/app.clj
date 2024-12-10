@@ -1,5 +1,6 @@
 (ns forge.app
   (:require [anvil.app :as app]
+            [anvil.assets :as assets]
             [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.graphics :refer [set-cursor world-camera]]
@@ -103,15 +104,15 @@
 
 (defmethods :asset-manager
   (setup [[_ folder]]
-    (bind-root app/asset-manager (manager/load-all
-                                  (for [[asset-type exts] [[:sound   #{"wav"}]
-                                                           [:texture #{"png" "bmp"}]]
-                                        file (map #(str/replace-first % folder "")
-                                                  (files/recursively-search folder exts))]
-                                    [file asset-type]))))
+    (bind-root assets/manager (manager/load-all
+                               (for [[asset-type exts] [[:sound   #{"wav"}]
+                                                        [:texture #{"png" "bmp"}]]
+                                     file (map #(str/replace-first % folder "")
+                                               (files/recursively-search folder exts))]
+                                 [file asset-type]))))
 
   (cleanup [_]
-    (dispose app/asset-manager)))
+    (dispose assets/manager)))
 
 (defmethods :sprite-batch
   (setup [_]
