@@ -287,6 +287,10 @@
       (when (<= distance (stat/->value entity :entity/aggro-range))
         (fsm/event eid :alert)))))
 
+(defmethod tick :npc-moving [[_ {:keys [counter]}] eid]
+  (when (stopped? counter)
+    (fsm/event eid :timer-finished)))
+
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?

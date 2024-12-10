@@ -9,6 +9,7 @@
             [anvil.inventory :as inventory]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.skills :as skills]
+            [anvil.stat :as stat]
             [anvil.time :refer [timer]]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
@@ -266,6 +267,11 @@
 
 (defmethod ->v :npc-sleeping [[_ eid]]
   {:eid eid})
+
+(defmethod ->v :npc-moving [[_ eid movement-vector]]
+  {:eid eid
+   :movement-vector movement-vector
+   :counter (timer (* (stat/->value @eid :entity/reaction-time) 0.016))})
 
 (defn- create-vs [components]
   (reduce (fn [m [k v]]

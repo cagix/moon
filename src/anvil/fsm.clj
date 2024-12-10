@@ -61,6 +61,14 @@
                         0.2)
   (swap! eid string-effect/add "[WHITE]!"))
 
+(defmethods :npc-moving
+  (enter [[_ {:keys [eid movement-vector]}]]
+    (swap! eid assoc :entity/movement {:direction movement-vector
+                                       :speed (or (stat/->value @eid :entity/movement-speed) 0)}))
+
+  (exit [[_ {:keys [eid]}]]
+    (swap! eid dissoc :entity/movement)))
+
 (defsystem cursor)
 (defmethod cursor :default [_])
 

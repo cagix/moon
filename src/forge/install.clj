@@ -43,8 +43,11 @@
                           #'clicked-skillmenu-skill
                           #'draw-gui-view]}))
 
+; npc moving is basically a performance optimization so npcs do not have to check
+; usable skills every frame
+; also prevents fast twitching around changing directions every frame
+
 (doseq [[ns-sym k] '[[forge.entity.state.active-skill :active-skill]
                      [forge.entity.state.npc-dead :npc-dead]
-                     [forge.entity.state.npc-idle :npc-idle]
-                     [forge.entity.state.npc-moving :npc-moving]]]
+                     [forge.entity.state.npc-idle :npc-idle]]]
   (install-component entity-state ns-sym k))
