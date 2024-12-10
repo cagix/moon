@@ -1,4 +1,4 @@
-(ns ^:no-doc forge.screens.editor
+(ns ^:no-doc forge.editor
   (:require [anvil.assets :as assets]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
