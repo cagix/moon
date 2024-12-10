@@ -148,7 +148,7 @@
       (swap! current-data update :show-grid-lines not))
   #_(if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
-  #_(controls/world-camera-zoom)
+  #_(controls/adjust-zoom (world/camera))
   #_(camera-controls (world/camera))
   #_(when (key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))

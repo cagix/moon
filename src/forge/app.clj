@@ -301,7 +301,8 @@
   (:windows (stage/get)))
 
 (defn- check-window-hotkeys []
-  (doseq [window-id [:inventory-window :entity-info-window]
+  (doseq [window-id [:inventory-window
+                     :entity-info-window]
           :when (controls/toggle-visible? window-id)]
     (actor/toggle-visible! (get (windows) window-id))))
 
@@ -320,7 +321,7 @@
   (screen/render [_]
     (render-world)
     (update-world)
-    (controls/world-camera-zoom)
+    (controls/adjust-zoom (world/camera))
     (check-window-hotkeys)
     (cond (controls/close-windows?)
           (close-all-windows)
