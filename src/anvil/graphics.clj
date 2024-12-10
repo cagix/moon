@@ -1,5 +1,6 @@
 (ns anvil.graphics
-  (:require [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]]
+  (:require [anvil.tiled :as tiled]
+            [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
@@ -8,7 +9,8 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (space.earlygrey.shapedrawer ShapeDrawer)
+           (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -28,6 +30,54 @@
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
+
+(defn texture-region
+  ([^Texture texture]
+   (TextureRegion. texture))
+  ([^Texture texture x y w h]
+   (TextureRegion. texture (int x) (int y) (int w) (int h))))
+
+(defn create [{:keys [default-font cursors viewport world-viewport]}]
+  (def batch (SpriteBatch.))
+  (def sd-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                 (.setColor Color/WHITE)
+                                 (.drawPixel 0 0))
+                        texture (Texture. pixmap)]
+                    (dispose pixmap)
+                    texture))
+  (def sd (ShapeDrawer. batch (texture-region sd-texture 1 0 1 1)))
+  (def default-font (generate-font default-font))
+  (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                          (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                            (dispose pixmap)
+                            cursor))
+                        cursors))
+  (def viewport-width  (:width  viewport))
+  (def viewport-height (:height viewport))
+  (def viewport (FitViewport. viewport-width viewport-height (OrthographicCamera.)))
+  (def world-unit-scale (float (/ (:tile-size world-viewport))))
+  (def world-viewport-width  (:width  world-viewport))
+  (def world-viewport-height (:height world-viewport))
+  (def camera (OrthographicCamera.))
+  (def world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
+                            world-height (* world-viewport-height world-unit-scale)
+                            y-down? false]
+                        (.setToOrtho camera y-down? world-width world-height)
+                        (FitViewport. world-width world-height camera)))
+  (def tiled-map-renderer
+    (memoize (fn [tiled-map]
+               (OrthogonalTiledMapRenderer. tiled-map (float world-unit-scale) batch)))))
+
+(defn cleanup []
+  (dispose batch)
+  (dispose sd-texture)
+  (dispose default-font)
+  (run! dispose (vals cursors)))
+
+(defn resize [w h]
+  (Viewport/.update viewport w h true)
+  (Viewport/.update world-viewport w h false))
 
 (def ^Color black Color/BLACK)
 (def ^Color white Color/WHITE)
@@ -55,46 +105,9 @@
 (defn ->texture-region [^TextureRegion texture-region x y w h]
   (TextureRegion. texture-region (int x) (int y) (int w) (int h)))
 
-(defn texture-region
-  ([^Texture texture]
-   (TextureRegion. texture))
-  ([^Texture texture x y w h]
-   (TextureRegion. texture (int x) (int y) (int w) (int h))))
-
 (defn texture-dimensions [^TextureRegion texture-region]
   [(.getRegionWidth  texture-region)
    (.getRegionHeight texture-region)])
-
-(defn create [{:keys [default-font cursors viewport]}]
-  (def batch (SpriteBatch.))
-  (def sd-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                 (.setColor white)
-                                 (.drawPixel 0 0))
-                        texture (Texture. pixmap)]
-                    (dispose pixmap)
-                    texture))
-  (def sd (ShapeDrawer. batch (texture-region sd-texture 1 0 1 1)))
-  (def default-font (generate-font default-font))
-  (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                            (dispose pixmap)
-                            cursor))
-                        cursors))
-  (def viewport-width  (:width  viewport))
-  (def viewport-height (:height viewport))
-  (def viewport (FitViewport. viewport-width
-                              viewport-height
-                              (OrthographicCamera.))))
-
-(defn cleanup []
-  (dispose batch)
-  (dispose sd-texture)
-  (dispose default-font)
-  (run! dispose (vals cursors)))
-
-(defn resize [w h]
-  (Viewport/.update viewport w h true))
 
 (defn- sd-color [color]
   (.setColor sd (->color color)))
@@ -293,7 +306,7 @@
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
-(defn unproject-mouse-position
+(defn- unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
   (let [mouse-x (clamp (.getX Gdx/input)
@@ -308,3 +321,40 @@
 (defn mouse-position []
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position viewport)))
+
+(defn world-mouse-position []
+  ; TODO clamping only works for gui-viewport ? check. comment if true
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (unproject-mouse-position viewport))
+
+(defn pixels->world-units [pixels]
+  (* (int pixels) world-unit-scale))
+
+(defn draw-on-world-view [render-fn]
+  (draw-with world-viewport world-unit-scale render-fn))
+
+(defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
+  (.setColorSetter this (reify ColorSetter
+                          (apply [_ color x y]
+                            (color-setter color x y))))
+  (.setView this camera)
+  (->> tiled-map
+       tiled/layers
+       (filter tiled/visible?)
+       (map (partial tiled/layer-index tiled-map))
+       int-array
+       (.render this)))
+
+(defn draw-tiled-map
+  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
+
+  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
+
+  Can be used for lights & shadows.
+
+  Renders only visible layers."
+  [tiled-map color-setter]
+  (draw-tiled-map* (tiled-map-renderer tiled-map)
+                   tiled-map
+                   color-setter
+                   camera))

@@ -20,10 +20,10 @@
                       :cursors/use-skill             ["pointer004"   [0   0]]
                       :cursors/walking               ["walking"      [16 16]]}
             :viewport {:width 1440
-                       :height 900}}
- :world-viewport {:tile-size 48
-                  :width 1440
-                  :height 900}
+                       :height 900}
+            :world-viewport {:tile-size 48
+                             :width 1440
+                             :height 900}}
  :ui-skin-scale :skin-scale/x1
  :title "Forge"
  :fps 60

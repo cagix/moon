@@ -9,10 +9,9 @@
             [anvil.stage :as stage]
             [anvil.sprite :as sprite]
             [anvil.ui :refer [ui-actor text-button] :as ui]
-            [anvil.world :as world]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children]]
-            [anvil.utils :refer [dispose bind-root defmethods dev-mode?]]
+            [anvil.utils :refer [dispose defmethods dev-mode?]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [forge.screens.editor :as editor]
@@ -23,12 +22,9 @@
             [forge.world.update :refer [update-world]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
-           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)
-           (forge OrthogonalTiledMapRenderer)))
+           (org.lwjgl.system Configuration)))
 
 (defn setup-ui [skin-scale]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
@@ -44,16 +40,7 @@
       (set! true))
   (ui/configure-tooltips {:default-appear-delay-time 0}))
 
-(defn start [{:keys [db
-                     dock-icon
-                     asset-folder
-                     graphics
-                     world-viewport
-                     ui-skin-scale
-                     title
-                     fps
-                     width
-                     height]}]
+(defn start [{:keys [db dock-icon asset-folder graphics ui-skin-scale title fps width height]}]
   (db/setup db)
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
@@ -67,20 +54,6 @@
                                                   [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                                                    [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])
                           (g/create graphics)
-                          (bind-root world/unit-scale (float (/ (:tile-size world-viewport))))
-                          (bind-root world/viewport-width  width)
-                          (bind-root world/viewport-height height)
-                          (bind-root world/viewport (let [world-width  (* (:width world-viewport)  world/unit-scale)
-                                                          world-height (* (:height world-viewport) world/unit-scale)
-                                                          camera (OrthographicCamera.)
-                                                          y-down? false]
-                                                      (.setToOrtho camera y-down? world-width world-height)
-                                                      (FitViewport. world-width world-height camera)))
-                          (bind-root world/tiled-map-renderer
-                                     (memoize (fn [tiled-map]
-                                                (OrthogonalTiledMapRenderer. tiled-map
-                                                                             (float world/unit-scale)
-                                                                             g/batch))))
                           (setup-ui ui-skin-scale)
                           (screen/setup (into {} (for [k [:screens/main-menu
                                                           :screens/map-editor
@@ -89,17 +62,19 @@
                                                           :screens/world]]
                                                    [k (stage/screen [k])]))
                                         :screens/main-menu))
+
                         (dispose []
                           (assets/cleanup)
                           (g/cleanup)
                           (ui/dispose)
                           (screen/dispose-all))
+
                         (render []
                           (ScreenUtils/clear g/black)
                           (screen/render-current))
+
                         (resize [w h]
-                          (g/resize w h)
-                          (Viewport/.update world/viewport w h false)))
+                          (g/resize w h)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle title)
                         (.setForegroundFPS fps)
@@ -175,7 +150,7 @@
 
 (defmethods :screens/world
   (screen/enter [_]
-    (cam/set-zoom! (world/camera) 0.8))
+    (cam/set-zoom! g/camera 0.8))
 
   (screen/exit [_]
     (g/set-cursor :cursors/default))
@@ -183,7 +158,7 @@
   (screen/render [_]
     (render-world)
     (update-world)
-    (controls/adjust-zoom (world/camera))
+    (controls/adjust-zoom g/camera)
     (check-window-hotkeys)
     (cond (controls/close-windows?)
           (close-all-windows)

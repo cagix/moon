@@ -25,7 +25,6 @@
             [anvil.raycaster :refer [path-blocked?]]
             [anvil.potential-field :as potential-field]
             [anvil.ui :refer [window-title-bar? button?]]
-            [anvil.world :as world]
             [anvil.utils :refer [defsystem]]
             [anvil.ui.actor :as actor]
             [anvil.utils :refer [bind-root sort-by-order find-first]]
@@ -154,7 +153,7 @@
 
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
-                            (world/mouse-position))]
+                            (g/world-mouse-position))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position
@@ -402,7 +401,7 @@
   (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (grid/point->entities
-                      (world/mouse-position)))]
+                      (g/world-mouse-position)))]
     (->> render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse

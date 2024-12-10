@@ -3,6 +3,7 @@
             [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.db :as db]
+            [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
             [anvil.grid :as grid]
             [anvil.inventory :as inventory]
@@ -11,7 +12,6 @@
             [anvil.stat :as stat]
             [anvil.time :refer [timer]]
             [anvil.math.vector :as v]
-            [anvil.world :as world]
             [anvil.utils :refer [defsystem define-order safe-merge unique-number!]]
             [reduce-fsm :as fsm]))
 
@@ -82,14 +82,14 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position (world/camera))
+        [cx cy] (cam/position g/camera)
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float world/viewport-width)  2)))
-     (<= ydist (inc (/ (float world/viewport-height) 2))))))
+     (<= xdist (inc (/ (float g/world-viewport-width)  2)))
+     (<= ydist (inc (/ (float g/world-viewport-height) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see

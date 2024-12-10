@@ -1,7 +1,6 @@
 (ns anvil.sprite
   (:require [anvil.assets :as assets]
-            [anvil.graphics :as g]
-            [anvil.world :as world]))
+            [anvil.graphics :as g]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -18,7 +17,7 @@
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions world/unit-scale))))
+           :world-unit-dimensions (scale-dimensions pixel-dimensions g/world-unit-scale))))
 
 (defrecord Sprite [texture-region
                    pixel-dimensions

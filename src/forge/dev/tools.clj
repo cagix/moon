@@ -6,7 +6,6 @@
             [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
-            [anvil.world :as world]
             [anvil.ui.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
@@ -80,7 +79,7 @@
    (entity/item (:position @player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
-  @(grid/get (mapv int (world/mouse-position))))
+  @(grid/get (mapv int (g/world-mouse-position))))
 
 (defn- class->label-str [class]
   (case class

@@ -3,8 +3,7 @@
             [anvil.graphics.camera :as cam]
             [anvil.input :refer [key-just-pressed?]]
             [anvil.level :as level :refer [explored-tile-corners]]
-            [anvil.screen :as screen]
-            [anvil.world :as world]))
+            [anvil.screen :as screen]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight
@@ -24,7 +23,7 @@
         top    (apply max-key (fn [[x y]] y) positions-explored)
         right  (apply max-key (fn [[x y]] x) positions-explored)
         bottom (apply min-key (fn [[x y]] y) positions-explored)]
-    (cam/calculate-zoom (world/camera)
+    (cam/calculate-zoom g/camera
                         :left left
                         :top top
                         :right right
@@ -35,17 +34,17 @@
     (if (get explored? [x y]) g/white g/black)))
 
 (defn enter []
-  (cam/set-zoom! (world/camera) (minimap-zoom)))
+  (cam/set-zoom! g/camera (minimap-zoom)))
 
 (defn exit []
-  (cam/reset-zoom! (world/camera)))
+  (cam/reset-zoom! g/camera))
 
 (defn render []
-  (world/draw-tiled-map level/tiled-map
+  (g/draw-tiled-map level/tiled-map
                         (->tile-corner-color-setter @explored-tile-corners))
-  (world/draw-on-view
+  (g/draw-on-world-view
    (fn []
-     (g/filled-circle (cam/position (world/camera)) 0.5 :green)))
+     (g/filled-circle (cam/position g/camera) 0.5 :green)))
   (when (or (key-just-pressed? :keys/tab)
             (key-just-pressed? :keys/escape))
     (screen/change :screens/world)))

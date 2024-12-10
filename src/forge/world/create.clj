@@ -31,7 +31,6 @@
                               remove-tooltip!]
              :as ui]
             [anvil.val-max :as val-max]
-            [anvil.world :as world]
             [anvil.utils :refer [dispose defsystem]]
             [anvil.ui.actor :refer [user-object] :as actor]
             [anvil.ui.group :refer [add-actor! find-actor]]
@@ -208,9 +207,9 @@
                     {:label "GUI"
                      :update-fn g/mouse-position}
                     {:label "World"
-                     :update-fn #(mapv int (world/mouse-position))}
+                     :update-fn #(mapv int (g/world-mouse-position))}
                     {:label "Zoom"
-                     :update-fn #(cam/zoom (world/camera))
+                     :update-fn #(cam/zoom g/camera)
                      :icon "images/zoom.png"}
                     {:label "FPS"
                      :update-fn g/frames-per-second
