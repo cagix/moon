@@ -1,7 +1,7 @@
 (ns forge.entity.state.active-skill
   (:require [anvil.audio :refer [play-sound]]
             [anvil.effect :as effect]
-            [anvil.entity :refer [line-of-sight?]]
+            [anvil.entity :refer [line-of-sight? creatures-in-los-of-player]]
             [anvil.mana :as mana]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [draw-image]]
@@ -78,6 +78,24 @@
 
 (defsystem render)
 (defmethod render :default [_ _ctx])
+
+(defmethod render :effects/target-all [_ {:keys [effect/source]}]
+  (let [source* @source]
+    (doseq [target* (map deref (creatures-in-los-of-player))]
+      (g/line (:position source*) #_(start-point source* target*)
+              (:position target*)
+              [1 0 0 0.5]))))
+
+(defmethod render :effects/target-entity
+  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (when target
+    (let [source* @source
+          target* @target]
+      (g/line (effect/start-point source* target*)
+              (effect/end-point source* target* maxrange)
+              (if (effect/in-range? source* target* maxrange)
+                [1 0 0 0.5]
+                [1 1 0 0.5])))))
 
 (defn- render-effects [ctx effects]
   (run! #(render % ctx) effects))

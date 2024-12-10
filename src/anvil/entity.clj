@@ -296,3 +296,9 @@
 (defn mouseover-entity []
   (and mouseover-eid
        @mouseover-eid))
+
+(defn creatures-in-los-of-player []
+  (->> (active-entities)
+       (filter #(:entity/species @%))
+       (filter #(line-of-sight? @player-eid @%))
+       (remove #(:entity/player? @%))))

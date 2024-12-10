@@ -17,24 +17,10 @@
             [forge.world.create :refer [draw-gui-view]]
             [forge.world.update :as world.update]))
 
-(install "forge"
-         {:required [#'effect/applicable?
-                     #'effect/handle]
-          :optional [#'npc-idle/useful?
-                     #'active-skill/render]}
-         (map vector [:effects/projectile
-                      :effects/spawn
-                      :effects/target-all
-                      :effects/target-entity
-
-                      :effects.target/audiovisual
-                      :effects.target/convert
-                      :effects.target/damage
-                      ;:effects.target/hp
-                      :effects.target/kill
-                      :effects.target/melee-damage
-                      :effects.target/spiderweb
-                      :effects.target/stun]))
+#_(def effect {:required [#'effect/applicable?
+                          #'effect/handle]
+               :optional [#'npc-idle/useful?
+                          #'active-skill/render]})
 
 (def entity
   {:optional [#'entity/->v
