@@ -24,7 +24,7 @@
     (.load manager ^String file (class-k->class asset-type)))
   (.finishLoading manager))
 
-(defn- asset-manager [assets]
+(defn asset-manager [assets]
   (doto (asset-manager*)
     (load-assets assets)))
 
