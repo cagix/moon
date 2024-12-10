@@ -41,8 +41,8 @@
                 ;*assert* false
                 ;*print-level* 3
                 }
-  :profiles {:uberjar {:aot [forge.app]}}
-  #_:main #_forge.app
+  :profiles {:uberjar {:aot [anvil.app]}}
+  #_:main #_anvil.app
   )
 
 ; * Notes

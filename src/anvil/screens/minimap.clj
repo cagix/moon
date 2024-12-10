@@ -1,4 +1,4 @@
-(ns ^:no-doc forge.minimap
+(ns ^:no-doc anvil.screens.minimap
   (:require [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
             [anvil.input :refer [key-just-pressed?]]

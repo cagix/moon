@@ -1,4 +1,4 @@
-(ns ^:no-doc forge.map-editor
+(ns ^:no-doc anvil.screens.map-editor
   (:require [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.graphics :as g]
