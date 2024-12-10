@@ -3,7 +3,6 @@
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.info :as info]
-            [anvil.input :refer [key-just-pressed?]]
             [anvil.property :as property]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
@@ -22,13 +21,13 @@
                               add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
-            [clojure.gdx.asset-manager :as asset-manager]
-            [clojure.gdx.scene2d.actor :refer [user-object]]
-            [clojure.gdx.scene2d.group :refer [children
+            [clojure.gdx :as gdx]
+            [anvil.ui.actor :refer [user-object]]
+            [anvil.ui.group :refer [children
                                                clear-children
                                                add-actor!
                                                find-actor]]
-            [clojure.gdx.scene2d.ui.table :refer [add-rows!]]
+            [anvil.ui.table :refer [add-rows!]]
             [clojure.string :as str]
             [clojure.vis-ui :as vis]
             [clojure.utils :refer [->edn-str
@@ -100,7 +99,7 @@
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
     (add-actor! window (ui-actor {:act (fn []
-                                         (when (key-just-pressed? :enter)
+                                         (when (gdx/key-just-pressed? :enter)
                                            (save!)))}))
     (.pack window)
     window))
@@ -145,7 +144,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (asset-manager/all-of-class assets/manager :sound)]
+  (let [rows (for [sound-file (gdx/all-of-class assets/manager :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -430,7 +429,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (asset-manager/all-of-class assets/manager :texture))]
+  (for [file (sort (gdx/all-of-class assets/manager :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 

@@ -1,7 +1,7 @@
 (ns anvil.item-on-cursor
   (:require [anvil.stage :refer [mouse-on-actor?]]
-            [anvil.world :as world]
-            [clojure.gdx.math.vector2 :as v]))
+            [anvil.math.vector :as v]
+            [anvil.world :as world]))
 
 (defn world-item? []
   (not (mouse-on-actor?)))

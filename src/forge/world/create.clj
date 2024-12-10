@@ -33,13 +33,11 @@
             [anvil.val-max :as val-max]
             [anvil.world :as world]
             [clojure.component :refer [defsystem]]
-            [clojure.gdx.graphics :refer [frames-per-second]]
-            [clojure.gdx.graphics.color :refer [->color]]
-            [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
-            [clojure.gdx.scene2d.group :refer [add-actor! find-actor]]
-            [clojure.gdx.scene2d.utils :as scene2d.utils]
+            [clojure.gdx :as gdx]
+            [anvil.ui.actor :refer [user-object] :as actor]
+            [anvil.ui.group :refer [add-actor! find-actor]]
+            [anvil.ui.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.utils :refer [dev-mode? tile->middle bind-root readable-number]]
             [clojure.vis-ui :as vis]
             [data.grid2d :as g2d]
@@ -217,7 +215,7 @@
                      :update-fn #(cam/zoom (world/camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn frames-per-second
+                     :update-fn gdx/frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- dev-menu []
@@ -287,7 +285,7 @@
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
+    (scene2d.utils/tint drawable (gdx/->color 1 1 1 0.4))))
 
 (defsystem clicked-inventory-cell)
 (defmethod clicked-inventory-cell :default [_ cell])
@@ -428,7 +426,7 @@
 
 (defn dispose-world []
   (when (bound? #'level/tiled-map)
-    (dispose level/tiled-map)))
+    (gdx/dispose level/tiled-map)))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 

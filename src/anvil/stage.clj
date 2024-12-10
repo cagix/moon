@@ -3,8 +3,8 @@
   (:require [anvil.graphics :as g]
             [anvil.screen :as screen]
             [anvil.ui :as ui]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
+            [anvil.ui.actor :as actor]
+            [anvil.ui.group :as group]
             [clojure.utils :refer [pretty-pst with-err-str bind-root]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))

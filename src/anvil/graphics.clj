@@ -1,9 +1,8 @@
 (ns anvil.graphics
-  (:require [clojure.gdx.graphics :as g]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.math.utils :refer [degree->radians]]
-            [clojure.gdx.utils.viewport :as vp]
+  (:require [anvil.graphics.shape-drawer :as sd]
+            [anvil.math.utils :refer [degree->radians]]
+            [clojure.gdx :as gdx]
+            [anvil.graphics.viewport :as vp]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
@@ -15,7 +14,7 @@
          cursors)
 
 (defn- sd-color [color]
-  (sd/set-color sd (color/->color color)))
+  (sd/set-color sd (gdx/->color color)))
 
 (defn ellipse [position radius-x radius-y color]
   (sd-color color)
@@ -81,7 +80,7 @@
     (sd/set-default-line-width sd old-line-width)))
 
 (defn set-cursor [cursor-key]
-  (g/set-cursor (safe-get cursors cursor-key)))
+  (gdx/set-cursor (safe-get cursors cursor-key)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -96,7 +95,7 @@
          1 ; scaling factor
          1
          rotation)
-  (if color (.setColor batch color/white)))
+  (if color (.setColor batch gdx/white)))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -167,7 +166,7 @@
   (draw-rotated-centered image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
+  (.setColor batch gdx/white) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (.combined (vp/camera viewport)))
   (.begin batch)
   (draw-fn)

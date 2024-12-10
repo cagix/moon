@@ -1,4 +1,4 @@
-(ns clojure.gdx.scene2d.actor
+(ns anvil.ui.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.math Vector2)))
 

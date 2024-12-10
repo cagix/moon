@@ -1,5 +1,5 @@
 (ns anvil.raycaster
-  (:require [clojure.math.raycaster :as raycaster]))
+  (:require [anvil.math.raycaster :as raycaster]))
 
 (declare raycaster)
 

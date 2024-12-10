@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.shape-drawer
+(ns anvil.graphics.shape-drawer
   (:import (com.badlogic.gdx.graphics Color)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 

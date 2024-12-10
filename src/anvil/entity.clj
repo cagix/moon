@@ -10,9 +10,9 @@
             [anvil.skills :as skills]
             [anvil.stat :as stat]
             [anvil.time :refer [timer]]
+            [anvil.math.vector :as v]
             [anvil.world :as world]
             [clojure.component :refer [defsystem]]
-            [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [define-order safe-merge unique-number!]]
             [reduce-fsm :as fsm]))
 

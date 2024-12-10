@@ -1,11 +1,10 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.input :refer [key-just-pressed?]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.screen :as screen]
             [anvil.world :as world]
-            [clojure.gdx.graphics.color :as color]))
+            [clojure.gdx :as gdx]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight
@@ -33,7 +32,7 @@
 
 (defn- ->tile-corner-color-setter [explored?]
   (fn tile-corner-color-setter [color x y]
-    (if (get explored? [x y]) color/white color/black)))
+    (if (get explored? [x y]) gdx/white gdx/black)))
 
 (defn enter []
   (cam/set-zoom! (world/camera) (minimap-zoom)))
@@ -47,6 +46,6 @@
   (world/draw-on-view
    (fn []
      (g/filled-circle (cam/position (world/camera)) 0.5 :green)))
-  (when (or (key-just-pressed? :keys/tab)
-            (key-just-pressed? :keys/escape))
+  (when (or (gdx/key-just-pressed? :keys/tab)
+            (gdx/key-just-pressed? :keys/escape))
     (screen/change :screens/world)))

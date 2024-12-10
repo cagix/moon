@@ -8,7 +8,7 @@
                                 nearest-entity
                                 nearest-entity-distance
                                 cached-adjacent-cells]]
-            [clojure.gdx.math.vector2 :as v]
+            [anvil.math.vector :as v]
             [clojure.utils :refer [when-seq utils-positions]]))
 
 (let [order (get-8-neighbour-positions [0 0])]

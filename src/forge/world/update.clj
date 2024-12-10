@@ -10,10 +10,10 @@
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
-            [anvil.input :refer [button-just-pressed?]]
             [anvil.grid :as grid]
             [anvil.inventory :as inventory]
             [anvil.item-on-cursor :refer [world-item?]]
+            [anvil.math.vector :as v]
             [anvil.modifiers :as mods]
             [anvil.skill :as skill]
             [anvil.skills :as skills]
@@ -26,9 +26,8 @@
             [anvil.ui :refer [window-title-bar? button?]]
             [anvil.world :as world]
             [clojure.component :refer [defsystem]]
-            [clojure.gdx.graphics :refer [delta-time]]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.math.vector2 :as v]
+            [clojure.gdx :as gdx]
+            [anvil.ui.actor :as actor]
             [clojure.utils :refer [bind-root sort-by-order find-first]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
             [malli.core :as m]))
@@ -395,7 +394,7 @@
   (run! tick-entity entities))
 
 (defn- time-update []
-  (let [delta-ms (min (delta-time) time/max-delta)]
+  (let [delta-ms (min (gdx/delta-time) time/max-delta)]
     (alter-var-root #'time/elapsed + delta-ms)
     (bind-root time/delta delta-ms)))
 
@@ -438,7 +437,7 @@
 (defmethod manual-tick :default [_])
 
 (defmethod manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
-  (when (and (button-just-pressed? :left)
+  (when (and (gdx/button-just-pressed? :left)
              (world-item?))
     (fsm/event eid :drop-item)))
 
@@ -447,7 +446,7 @@
     (fsm/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
       (g/set-cursor cursor)
-      (when (button-just-pressed? :left)
+      (when (gdx/button-just-pressed? :left)
         (on-click)))))
 
 (defsystem pause-game?)

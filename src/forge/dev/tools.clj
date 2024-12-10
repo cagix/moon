@@ -6,8 +6,8 @@
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
             [anvil.world :as world]
-            [clojure.gdx.app :refer [post-runnable]]
-            [clojure.gdx.scene2d.group :refer [children]]
+            [clojure.gdx :refer [post-runnable]]
+            [anvil.ui.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.vis-ui :as vis])

@@ -2,9 +2,10 @@
   (:require [anvil.assets :as assets]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.graphics :as graphics :refer [set-cursor]]
+            [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.input :refer [key-just-pressed?]]
+            [anvil.graphics.freetype :as freetype]
+            [anvil.graphics.shape-drawer :as sd]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.sprite :as sprite]
@@ -12,18 +13,10 @@
             [anvil.world :as world]
             [clojure.component :refer [defsystem]]
             [clojure.edn :as edn]
-            [clojure.gdx.app :as app]
-            [clojure.gdx.asset-manager :as manager]
-            [clojure.gdx.files :as files]
-            [clojure.gdx.graphics :as g]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
-            [clojure.gdx.scene2d.group :refer [children]]
-            [clojure.gdx.scene2d.stage :as scene2d.stage]
-            [clojure.gdx.utils.disposable :refer [dispose]]
-            [clojure.gdx.utils.viewport :as vp :refer [fit-viewport]]
+            [clojure.gdx :as gdx]
+            [anvil.ui.actor :refer [visible? set-visible] :as actor]
+            [anvil.ui.group :refer [children find-actor-with-id]]
+            [anvil.graphics.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.utils :refer [bind-root defmethods dev-mode? mapvals]]
@@ -36,10 +29,22 @@
             [forge.world.update :refer [update-world]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
            (forge OrthogonalTiledMapRenderer)))
+
+(defn- stage [viewport batch actors]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [viewport batch]
+                (valAt
+                  ([id]
+                   (find-actor-with-id (.getRoot this) id))
+                  ([id not-found]
+                   (or (find-actor-with-id (.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    stage))
 
 (defsystem setup)
 
@@ -113,61 +118,61 @@
 
 (defmethods :asset-manager
   (setup [[_ folder]]
-    (bind-root assets/manager (manager/load-all
+    (bind-root assets/manager (gdx/asset-manager
                                (for [[asset-type exts] [[:sound   #{"wav"}]
                                                         [:texture #{"png" "bmp"}]]
                                      file (map #(str/replace-first % folder "")
-                                               (files/recursively-search folder exts))]
+                                               (gdx/recursively-search folder exts))]
                                  [file asset-type]))))
 
   (cleanup [_]
-    (dispose assets/manager)))
+    (gdx/dispose assets/manager)))
 
 (defmethods :sprite-batch
   (setup [_]
-    (bind-root graphics/batch (g/sprite-batch)))
+    (bind-root g/batch (gdx/sprite-batch)))
 
   (cleanup [_]
-    (dispose graphics/batch)))
+    (gdx/dispose g/batch)))
 
 (let [pixel-texture (atom nil)]
   (defmethods :shape-drawer
     (setup [_]
-      (reset! pixel-texture (let [pixmap (doto (g/pixmap 1 1)
-                                           (.setColor color/white)
+      (reset! pixel-texture (let [pixmap (doto (gdx/pixmap 1 1)
+                                           (.setColor gdx/white)
                                            (.drawPixel 0 0))
-                                  texture (g/texture pixmap)]
-                              (dispose pixmap)
+                                  texture (gdx/texture pixmap)]
+                              (gdx/dispose pixmap)
                               texture))
-      (bind-root graphics/sd (sd/create graphics/batch (g/texture-region @pixel-texture 1 0 1 1))))
+      (bind-root g/sd (sd/create g/batch (gdx/texture-region @pixel-texture 1 0 1 1))))
 
     (cleanup [_]
-      (dispose @pixel-texture))))
+      (gdx/dispose @pixel-texture))))
 
 (defmethods :default-font
   (setup [[_ font]]
-    (bind-root graphics/default-font (freetype/generate-font font)))
+    (bind-root g/default-font (freetype/generate-font font)))
 
   (cleanup [_]
-    (dispose graphics/default-font)))
+    (gdx/dispose g/default-font)))
 
 (defmethods :cursors
   (setup [[_ data]]
-    (bind-root graphics/cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                      (let [pixmap (g/pixmap (files/internal (str "cursors/" file ".png")))
-                                            cursor (g/cursor pixmap hotspot-x hotspot-y)]
-                                        (dispose pixmap)
-                                        cursor))
-                                    data)))
+    (bind-root g/cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                                    (let [pixmap (gdx/pixmap (gdx/internal (str "cursors/" file ".png")))
+                                          cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
+                                      (gdx/dispose pixmap)
+                                      cursor))
+                                  data)))
 
   (cleanup [_]
-    (run! dispose (vals graphics/cursors))))
+    (run! gdx/dispose (vals g/cursors))))
 
 (defmethods :gui-viewport
   (setup [[_ [width height]]]
     (bind-root ui/viewport-width  width)
     (bind-root ui/viewport-height height)
-    (bind-root ui/viewport (fit-viewport width height (g/orthographic-camera))))
+    (bind-root ui/viewport (fit-viewport width height (gdx/orthographic-camera))))
 
   (resize [_ w h]
     (vp/update ui/viewport w h :center-camera? true)))
@@ -179,7 +184,7 @@
     (bind-root world/viewport-height height)
     (bind-root world/viewport (let [world-width  (* width  world/unit-scale)
                                     world-height (* height world/unit-scale)
-                                    camera (g/orthographic-camera)
+                                    camera (gdx/orthographic-camera)
                                     y-down? false]
                                 (.setToOrtho camera y-down? world-width world-height)
                                 (fit-viewport world-width world-height camera))))
@@ -192,7 +197,7 @@
                (memoize (fn [tiled-map]
                           (OrthogonalTiledMapRenderer. tiled-map
                                                        (float world/unit-scale)
-                                                       graphics/batch))))))
+                                                       g/batch))))))
 
 (defmethods :vis-ui
   (setup [[_ skin-scale]]
@@ -216,7 +221,7 @@
 (defmethod actors :default [_])
 
 (defmethods :screens/stage
-  (screen/enter [[_ {:keys [stage sub-screen]}]]
+  (screen/enter [[_ {:keys [^Stage stage sub-screen]}]]
     (.setInputProcessor Gdx/input stage)
     (screen/enter sub-screen))
 
@@ -225,21 +230,19 @@
     (screen/exit sub-screen))
 
   (screen/render [[_ {:keys [stage sub-screen]}]]
-    (scene2d.stage/act stage)
+    (.act stage)
     (screen/render sub-screen)
-    (scene2d.stage/draw stage))
+    (.draw stage))
 
   (screen/dispose [[_ {:keys [stage sub-screen]}]]
-    (dispose stage)
+    (.dispose stage)
     (screen/dispose sub-screen)))
 
 (defmethods :screens
   (setup [[_ {:keys [screens first-k]}]]
     (screen/setup (into {}
                         (for [k screens]
-                          [k [:screens/stage {:stage (scene2d.stage/create ui/viewport
-                                                                           graphics/batch
-                                                                           (actors [k]))
+                          [k [:screens/stage {:stage (stage ui/viewport g/batch (actors [k]))
                                               :sub-screen [k]}]]))
                   first-k))
 
@@ -247,7 +250,7 @@
     (screen/dispose-all))
 
   (render [_]
-    (g/clear-screen color/black)
+    (gdx/clear-screen gdx/black)
     (screen/render-current)))
 
 (defn- background-image []
@@ -274,22 +277,22 @@
                  (when dev-mode?
                    [(text-button "Property editor"
                                  #(screen/change :screens/editor))])
-                 [(text-button "Exit" app/exit)]]))
+                 [(text-button "Exit" gdx/exit)]]))
        :cell-defaults {:pad-bottom 25}
        :fill-parent? true})
      (ui-actor {:act (fn []
-                       (when (key-just-pressed? :keys/escape)
-                         (app/exit)))})])
+                       (when (gdx/key-just-pressed? :keys/escape)
+                         (gdx/exit)))})])
 
   (screen/enter [_]
-    (set-cursor :cursors/default)))
+    (g/set-cursor :cursors/default)))
 
 (defmethods :screens/editor
   (actors [_]
     [(background-image)
      (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
      (ui-actor {:act (fn []
-                       (when (key-just-pressed? :shift-left)
+                       (when (gdx/key-just-pressed? :shift-left)
                          (screen/change :screens/main-menu)))})]))
 
 (defmethods :screens/minimap
@@ -316,7 +319,7 @@
     (cam/set-zoom! (world/camera) 0.8))
 
   (screen/exit [_]
-    (set-cursor :cursors/default))
+    (g/set-cursor :cursors/default))
 
   (screen/render [_]
     (render-world)

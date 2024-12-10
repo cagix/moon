@@ -7,12 +7,12 @@
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
             [anvil.hitpoints :as hp]
+            [anvil.math.vector :as v]
             [anvil.modifiers :as mods]
             [anvil.stat :as stat]
             [anvil.string-effect :as string-effect]
             [anvil.time :refer [timer]]
             [clojure.component :refer [defsystem]]
-            [clojure.gdx.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defmethods]]))
 

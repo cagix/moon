@@ -3,17 +3,15 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.input :refer [key-just-pressed? key-pressed?]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [anvil.world :as world]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.scene2d.group :refer [add-actor!]]
+            [clojure.gdx :as gdx]
+            [anvil.ui.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.utils.disposable :as disposable]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]))
 
@@ -79,10 +77,10 @@
                                             (update (cam/position camera)
                                                     idx
                                                     #(f % camera-movement-speed))))]
-    (if (key-pressed? :keys/left)  (apply-position 0 -))
-    (if (key-pressed? :keys/right) (apply-position 0 +))
-    (if (key-pressed? :keys/up)    (apply-position 1 +))
-    (if (key-pressed? :keys/down)  (apply-position 1 -))))
+    (if (gdx/key-pressed? :keys/left)  (apply-position 0 -))
+    (if (gdx/key-pressed? :keys/right) (apply-position 0 +))
+    (if (gdx/key-pressed? :keys/up)    (apply-position 1 +))
+    (if (gdx/key-pressed? :keys/down)  (apply-position 1 -))))
 
 (defn- render-on-map []
   (let [{:keys [tiled-map
@@ -92,13 +90,13 @@
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (world/camera))
         [x y] (mapv int (world/mouse-position))]
-    (g/rectangle x y 1 1 color/white)
+    (g/rectangle x y 1 1 gdx/white)
     (when start-position
       (g/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 color/black)
+        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 gdx/black)
         (g/filled-circle [(+ x 0.5) (+ y 0.5)]
                          0.05
                          (case prop
@@ -116,7 +114,7 @@
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
         atom-data (current-data)]
-    (disposable/dispose (:tiled-map @atom-data))
+    (gdx/dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
@@ -142,15 +140,15 @@
 
 (defn render [_]
   #_(world/draw-tiled-map (:tiled-map @current-data)
-                          (constantly color/white))
+                          (constantly gdx/white))
   #_(world/draw-on-view render-on-map)
-  #_(if (key-just-pressed? :keys/l)
+  #_(if (gdx/key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
-  #_(if (key-just-pressed? :keys/m)
+  #_(if (gdx/key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
   #_(controls/adjust-zoom (world/camera))
   #_(camera-controls (world/camera))
-  #_(when (key-just-pressed? :keys/escape)
+  #_(when (gdx/key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))
 
 (defn dispose [_]

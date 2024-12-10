@@ -1,4 +1,4 @@
-(ns clojure.gdx.scene2d.ui.cell
+(ns anvil.ui.cell
   (:import (com.badlogic.gdx.scenes.scene2d.ui Cell)))
 
 (defn set-opts [^Cell cell opts]

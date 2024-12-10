@@ -1,9 +1,9 @@
 (ns anvil.grid
   (:refer-clojure :exclude [get])
-  (:require [clojure.gdx.math.shapes :refer [rectangle->tiles
-                                             circle->outer-rectangle
-                                             rect-contains?
-                                             overlaps?]]))
+  (:require [anvil.math.shapes :refer [rectangle->tiles
+                                       circle->outer-rectangle
+                                       rect-contains?
+                                       overlaps?]]))
 
 (defprotocol Cell
   (cell-blocked? [cell* z-order])

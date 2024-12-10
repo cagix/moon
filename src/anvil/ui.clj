@@ -1,10 +1,10 @@
 (ns anvil.ui
-  (:require [clojure.gdx.graphics :as g]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :refer [find-actor-with-id add-actor!]]
-            [clojure.gdx.scene2d.ui.table :as table]
-            [clojure.gdx.scene2d.utils :as scene2d.utils]
-            [clojure.gdx.utils.viewport :as vp]
+  (:require [clojure.gdx :as gdx]
+            [anvil.ui.actor :as actor]
+            [anvil.ui.group :refer [find-actor-with-id add-actor!]]
+            [anvil.ui.table :as table]
+            [anvil.ui.utils :as scene2d.utils]
+            [anvil.graphics.viewport :as vp]
             [clojure.vis-ui :as vis])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -210,8 +210,8 @@
    (let [drawable (texture-region-drawable texture-region)
          button (vis/image-button drawable)]
      (when scale
-       (let [[w h] [(g/region-width  texture-region)
-                    (g/region-height texture-region)]]
+       (let [[w h] [(gdx/region-width  texture-region)
+                    (gdx/region-height texture-region)]]
          (scene2d.utils/set-min-size! drawable
                                       (* scale w)
                                       (* scale h))))

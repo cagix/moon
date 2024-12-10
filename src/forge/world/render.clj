@@ -8,14 +8,14 @@
             [anvil.grid :as grid]
             [anvil.hitpoints :as hp]
             [anvil.item-on-cursor :refer [world-item? item-place-position]]
+            [anvil.math.shapes :refer [circle->outer-rectangle]]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.time :refer [finished-ratio]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.val-max :as val-max]
             [anvil.world :as world]
             [clojure.component :refer [defsystem]]
-            [clojure.gdx.graphics.color :as color :refer [->color]]
-            [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
+            [clojure.gdx :as gdx]
             [clojure.utils :refer [sort-by-order pretty-pst]]
             [forge.world.potential-fields :refer [factions-iterations]]))
 
@@ -85,7 +85,7 @@
           y (+ y half-height)
           height (world/pixels->units 5)
           border (world/pixels->units borders-px)]
-      (g/filled-rectangle x y width height color/black)
+      (g/filled-rectangle x y width height gdx/black)
       (g/filled-rectangle (+ x border)
                           (+ y border)
                           (- (* width ratio)
@@ -156,7 +156,7 @@
   #_(geom-test)
   (highlight-mouseover-tile))
 
-(def ^:private explored-tile-color (->color 0.5 0.5 0.5 1))
+(def ^:private explored-tile-color (gdx/->color 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 
@@ -179,7 +179,7 @@
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
           explored? (get @explored-tile-corners position) ; TODO needs int call ?
-          base-color (if explored? explored-tile-color color/black)
+          base-color (if explored? explored-tile-color gdx/black)
           cache-entry (get @light-cache position :not-found)
           blocked? (if (= cache-entry :not-found)
                      (let [blocked? (ray-blocked? light-position position)]
@@ -189,10 +189,10 @@
       #_(when @do-once
           (swap! ray-positions conj position))
       (if blocked?
-        (if see-all-tiles? color/white base-color)
+        (if see-all-tiles? gdx/white base-color)
         (do (when-not explored?
               (swap! explored-tile-corners assoc (mapv int position) true))
-            color/white)))))
+            gdx/white)))))
 
 (defn tile-color-setter [light-position]
   (tile-color-setter* (atom {}) light-position))
@@ -206,7 +206,7 @@
 (defn- render-entity! [system entity]
   (try
    (when show-body-bounds
-     (draw-body-rect entity (if (:collides? entity) color/white :gray)))
+     (draw-body-rect entity (if (:collides? entity) gdx/white :gray)))
    (run! #(system % entity) entity)
    (catch Throwable t
      (draw-body-rect entity :red)

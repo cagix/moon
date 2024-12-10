@@ -1,39 +1,39 @@
 (ns anvil.controls
   (:require [anvil.graphics.camera :as cam]
-            [anvil.input :refer [key-just-pressed? key-pressed?]]
-            [clojure.gdx.math.vector2 :as v]))
+            [anvil.math.vector :as v]
+            [clojure.gdx :as gdx]))
 
 (defn unpaused? []
-  (or (key-just-pressed? :keys/p)
-      (key-pressed? :keys/space)))
+  (or (gdx/key-just-pressed? :keys/p)
+      (gdx/key-pressed? :keys/space)))
 
 (def ^:private zoom-speed 0.025)
 
 (defn adjust-zoom [camera]
-  (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
-  (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
+  (when (gdx/key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (gdx/key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (defn close-windows? []
-  (key-just-pressed? :keys/escape))
+  (gdx/key-just-pressed? :keys/escape))
 
 (defn minimap? []
-  (key-just-pressed? :keys/tab))
+  (gdx/key-just-pressed? :keys/tab))
 
 (def window-hotkeys
   {:inventory-window   :keys/i
    :entity-info-window :keys/e})
 
 (defn toggle-visible? [window-id]
-  (key-just-pressed? (get window-hotkeys window-id)))
+  (gdx/key-just-pressed? (get window-hotkeys window-id)))
 
 (defn- add-vs [vs]
   (v/normalise (reduce v/add [0 0] vs)))
 
 (defn- WASD-movement-vector []
-  (let [r (when (key-pressed? :d) [1  0])
-        l (when (key-pressed? :a) [-1 0])
-        u (when (key-pressed? :w) [0  1])
-        d (when (key-pressed? :s) [0 -1])]
+  (let [r (when (gdx/key-pressed? :d) [1  0])
+        l (when (gdx/key-pressed? :a) [-1 0])
+        u (when (gdx/key-pressed? :w) [0  1])
+        d (when (gdx/key-pressed? :s) [0 -1])]
     (when (or r l u d)
       (let [v (add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
