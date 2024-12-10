@@ -1,14 +1,33 @@
 (ns anvil.graphics
-  (:require [anvil.graphics.freetype :as freetype]
-            [anvil.graphics.shape-drawer :as sd]
-            [clojure.string :as str]
-            [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]])
+  (:require [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]]
+            [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors Texture Texture Pixmap Pixmap$Format)
+           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format)
            (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+           (com.badlogic.gdx.utils.viewport Viewport)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- ttf-params [size quality-scaling]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) (* size quality-scaling))
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
+    (set! (.magFilter params) Texture$TextureFilter/Linear)
+    params))
+
+(defn- generate-font [{:keys [file size quality-scaling]}]
+  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
+        font (.generateFont generator (ttf-params size quality-scaling))]
+    (.dispose generator)
+    (.setScale (.getData font) (float (/ quality-scaling)))
+    (set! (.markupEnabled (.getData font)) true)
+    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
+    font))
 
 (def ^Color black Color/BLACK)
 (def ^Color white Color/WHITE)
@@ -54,8 +73,8 @@
                         texture (Texture. pixmap)]
                     (dispose pixmap)
                     texture))
-  (def sd (sd/create batch (texture-region sd-texture 1 0 1 1)))
-  (def default-font (freetype/generate-font default-font))
+  (def sd (ShapeDrawer. batch (texture-region sd-texture 1 0 1 1)))
+  (def default-font (generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
                                 cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
@@ -70,51 +89,79 @@
   (run! dispose (vals cursors)))
 
 (defn- sd-color [color]
-  (sd/set-color sd (->color color)))
+  (.setColor sd (->color color)))
 
-(defn ellipse [position radius-x radius-y color]
+(defn ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (sd/ellipse sd position radius-x radius-y))
+  (.ellipse sd
+            (float x)
+            (float y)
+            (float radius-x)
+            (float radius-y)))
 
-(defn filled-ellipse [position radius-x radius-y color]
+(defn filled-ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (sd/filled-ellipse sd position radius-x radius-y))
+  (.filledEllipse sd
+                  (float x)
+                  (float y)
+                  (float radius-x)
+                  (float radius-y)))
 
-(defn circle [position radius color]
+(defn circle [[x y] radius color]
   (sd-color color)
-  (sd/circle sd position radius))
+  (.circle sd
+           (float x)
+           (float y)
+           (float radius)))
 
-(defn filled-circle [position radius color]
+(defn filled-circle [[x y] radius color]
   (sd-color color)
-  (sd/filled-circle sd position radius))
+  (.filledCircle sd
+                 (float x)
+                 (float y)
+                 (float radius)))
 
-(defn arc [center radius start-angle degree color]
+(defn arc [[center-x center-y] radius start-angle degree color]
   (sd-color color)
-  (sd/arc sd
-          center
-          radius
-          (degree->radians start-angle)
-          (degree->radians degree)))
+  (.arc sd
+        (float center-x)
+        (float center-y)
+        (float radius)
+        (float (degree->radians start-angle))
+        (float (degree->radians degree))))
 
-(defn sector [center radius start-angle degree color]
+(defn sector [[center-x center-y] radius start-angle degree color]
   (sd-color color)
-  (sd/sector sd
-             center
-             radius
-             (degree->radians start-angle)
-             (degree->radians degree)))
+  (.sector sd
+           (float center-x)
+           (float center-y)
+           (float radius)
+           (float (degree->radians start-angle))
+           (float (degree->radians degree))))
 
 (defn rectangle [x y w h color]
   (sd-color color)
-  (sd/rectangle sd x y w h))
+  (.rectangle sd
+              (float x)
+              (float y)
+              (float w)
+              (float h)))
 
 (defn filled-rectangle [x y w h color]
   (sd-color color)
-  (sd/filled-rectangle sd x y w h))
+  (.filledRectangle sd
+                    (float x)
+                    (float y)
+                    (float w)
+                    (float h)))
 
-(defn line [start end color]
+(defn line [[sx sy] [ex ey] color]
   (sd-color color)
-  (sd/line sd start end))
+  (.line sd
+         (float sx)
+         (float sy)
+         (float ex)
+         (float ey)))
 
 (defn grid [leftx bottomy gridw gridh cellw cellh color]
   (sd-color color)
@@ -130,10 +177,10 @@
       (line [leftx liney] [rightx liney]))))
 
 (defn with-line-width [width draw-fn]
-  (let [old-line-width (sd/default-line-width sd)]
-    (sd/set-default-line-width sd (* width old-line-width))
+  (let [old-line-width (.getDefaultLineWidth sd)]
+    (.setDefaultLineWidth sd (* width old-line-width))
     (draw-fn)
-    (sd/set-default-line-width sd old-line-width)))
+    (.setDefaultLineWidth sd old-line-width)))
 
 (defn set-cursor [cursor-key]
   (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
