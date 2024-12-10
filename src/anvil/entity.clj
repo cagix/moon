@@ -273,6 +273,9 @@
    :movement-vector movement-vector
    :counter (timer (* (stat/->value @eid :entity/reaction-time) 0.016))})
 
+(defmethod ->v :npc-idle [[_ eid]]
+  {:eid eid})
+
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
             (assoc m k (->v [k v])))

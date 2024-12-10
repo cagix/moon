@@ -3,7 +3,6 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity]
             [forge.entity.state.active-skill :as active-skill]
-            [forge.entity.state.npc-idle :as npc-idle]
             [anvil.fsm :as fsm]
             [forge.world.render :as render]
             [anvil.screen :as screen]
@@ -18,7 +17,7 @@
 
 #_(def effect {:required [#'effect/applicable?
                           #'effect/handle]
-               :optional [#'npc-idle/useful?
+               :optional [#'world.update/useful?
                           #'active-skill/render]})
 
 (def entity
@@ -48,6 +47,5 @@
 ; also prevents fast twitching around changing directions every frame
 
 (doseq [[ns-sym k] '[[forge.entity.state.active-skill :active-skill]
-                     [forge.entity.state.npc-dead :npc-dead]
-                     [forge.entity.state.npc-idle :npc-idle]]]
+                     [forge.entity.state.npc-dead :npc-dead]]]
   (install-component entity-state ns-sym k))

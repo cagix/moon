@@ -1,10 +1,11 @@
 (ns forge.world.update
   (:require [anvil.animation :as animation]
+            [anvil.audio :refer [play-sound]]
             [anvil.body :as body]
             [anvil.db :as db]
             [anvil.controls :as controls]
             [anvil.effect :as effect]
-            [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order]]
+            [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order projectile-size]]
             [anvil.error :as error]
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
@@ -19,6 +20,8 @@
             [anvil.stage :as stage]
             [anvil.time :as time :refer [stopped?]]
             [anvil.level :as level :refer [explored-tile-corners]]
+            [anvil.raycaster :refer [path-blocked?]]
+            [anvil.potential-field :as potential-field]
             [anvil.ui :refer [window-title-bar? button?]]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [delta-time]]
@@ -28,6 +31,67 @@
             [clojure.utils :refer [bind-root sort-by-order find-first]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
             [malli.core :as m]))
+
+(defsystem useful?)
+(defmethod useful? :default [_ _ctx] true)
+
+(defmethod useful? :effects.target/audiovisual [_ _]
+  false)
+
+; TODO valid params direction has to be  non-nil (entities not los player ) ?
+(defmethod useful? :effects/projectile
+  [[_ {:keys [projectile/max-range] :as projectile}]
+   {:keys [effect/source effect/target]}]
+  (let [source-p (:position @source)
+        target-p (:position @target)]
+    ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
+    (and (not (path-blocked? ; TODO test
+                             source-p
+                             target-p
+                             (projectile-size projectile)))
+         ; TODO not taking into account body sizes
+         (< (v/distance source-p ; entity/distance function protocol EntityPosition
+                        target-p)
+            max-range))))
+
+(defmethod useful? :effects/target-all [_ _]
+  ; TODO
+  false)
+
+(defmethod useful? :effects/target-entity
+  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (effect/in-range? @source @target maxrange))
+
+(defn- some-useful-and-applicable? [ctx effects]
+  (->> effects
+       (effect/filter-applicable? ctx)
+       (some #(useful? % ctx))))
+
+(defn- npc-choose-skill [entity ctx]
+  (->> entity
+       :entity/skills
+       vals
+       (sort-by #(or (:skill/cost %) 0))
+       reverse
+       (filter #(and (= :usable (skill/usable-state entity % ctx))
+                     (some-useful-and-applicable? ctx (:skill/effects %))))
+       first))
+
+(defn- nearest-enemy [entity]
+  (grid/nearest-entity @(grid/get (body/tile entity))
+                       (faction/enemy entity)))
+
+(defn- npc-effect-ctx [eid]
+  (let [entity @eid
+        target (nearest-enemy entity)
+        target (when (and target
+                          (line-of-sight? entity @target))
+                 target)]
+    {:effect/source eid
+     :effect/target target
+     :effect/target-direction (when target
+                                (body/direction entity @target))}))
+
 
 (defn- denied [text]
   (play-sound "bfxr_denied")
@@ -290,6 +354,12 @@
 (defmethod tick :npc-moving [[_ {:keys [counter]}] eid]
   (when (stopped? counter)
     (fsm/event eid :timer-finished)))
+
+(defmethod tick :npc-idle [_ eid]
+  (let [effect-ctx (npc-effect-ctx eid)]
+    (if-let [skill (npc-choose-skill @eid effect-ctx)]
+      (fsm/event eid :start-action [skill effect-ctx])
+      (fsm/event eid :movement-direction (or (potential-field/find-direction eid) [0 0])))))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
