@@ -64,3 +64,6 @@
   "Sets the zoom value to 1."
   [camera]
   (set-zoom! camera 1))
+
+(defn inc-zoom [camera by]
+  (set-zoom! camera (max 0.1 (+ (zoom camera) by))))

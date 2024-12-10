@@ -9,12 +9,9 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn- inc-zoom [camera by]
-  (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
-
 (defn adjust-zoom [camera]
-  (when (key-pressed? :keys/minus)  (inc-zoom camera    zoom-speed))
-  (when (key-pressed? :keys/equals) (inc-zoom camera (- zoom-speed))))
+  (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (defn close-windows? []
   (key-just-pressed? :keys/escape))
