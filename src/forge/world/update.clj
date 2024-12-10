@@ -10,6 +10,7 @@
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
+            [anvil.input :refer [button-just-pressed?]]
             [anvil.grid :as grid]
             [anvil.inventory :as inventory]
             [anvil.item-on-cursor :refer [world-item?]]
@@ -437,7 +438,7 @@
 (defmethod manual-tick :default [_])
 
 (defmethod manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
-  (when (and (gdx/button-just-pressed? :left)
+  (when (and (button-just-pressed? :left)
              (world-item?))
     (fsm/event eid :drop-item)))
 
@@ -446,7 +447,7 @@
     (fsm/event eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
       (g/set-cursor cursor)
-      (when (gdx/button-just-pressed? :left)
+      (when (button-just-pressed? :left)
         (on-click)))))
 
 (defsystem pause-game?)

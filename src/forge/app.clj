@@ -6,6 +6,7 @@
             [anvil.graphics.camera :as cam]
             [anvil.graphics.freetype :as freetype]
             [anvil.graphics.shape-drawer :as sd]
+            [anvil.input :refer [key-just-pressed?]]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.sprite :as sprite]
@@ -280,7 +281,7 @@
        :cell-defaults {:pad-bottom 25}
        :fill-parent? true})
      (ui-actor {:act (fn []
-                       (when (gdx/key-just-pressed? :keys/escape)
+                       (when (key-just-pressed? :keys/escape)
                          (gdx/exit)))})])
 
   (screen/enter [_]
@@ -291,7 +292,7 @@
     [(background-image)
      (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
      (ui-actor {:act (fn []
-                       (when (gdx/key-just-pressed? :shift-left)
+                       (when (key-just-pressed? :shift-left)
                          (screen/change :screens/main-menu)))})]))
 
 (defmethods :screens/minimap

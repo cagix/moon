@@ -3,6 +3,7 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
+            [anvil.input :refer [key-just-pressed? key-pressed?]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
             [anvil.screen :as screen]
@@ -77,10 +78,10 @@
                                             (update (cam/position camera)
                                                     idx
                                                     #(f % camera-movement-speed))))]
-    (if (gdx/key-pressed? :keys/left)  (apply-position 0 -))
-    (if (gdx/key-pressed? :keys/right) (apply-position 0 +))
-    (if (gdx/key-pressed? :keys/up)    (apply-position 1 +))
-    (if (gdx/key-pressed? :keys/down)  (apply-position 1 -))))
+    (if (key-pressed? :keys/left)  (apply-position 0 -))
+    (if (key-pressed? :keys/right) (apply-position 0 +))
+    (if (key-pressed? :keys/up)    (apply-position 1 +))
+    (if (key-pressed? :keys/down)  (apply-position 1 -))))
 
 (defn- render-on-map []
   (let [{:keys [tiled-map
@@ -142,13 +143,13 @@
   #_(world/draw-tiled-map (:tiled-map @current-data)
                           (constantly gdx/white))
   #_(world/draw-on-view render-on-map)
-  #_(if (gdx/key-just-pressed? :keys/l)
+  #_(if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
-  #_(if (gdx/key-just-pressed? :keys/m)
+  #_(if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
   #_(controls/adjust-zoom (world/camera))
   #_(camera-controls (world/camera))
-  #_(when (gdx/key-just-pressed? :keys/escape)
+  #_(when (key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))
 
 (defn dispose [_]

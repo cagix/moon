@@ -1,5 +1,6 @@
 (ns clojure.gdx
-  (:require [clojure.string :as str])
+  (:require [anvil.utils :refer [gdx-static-field]]
+            [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.files FileHandle)
@@ -8,21 +9,6 @@
            (com.badlogic.gdx.utils Disposable ScreenUtils)))
 
 (def dispose Disposable/.dispose)
-
-(defn static-field [klass-str k]
-  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
-
-(def ^:private k->input-button (partial static-field "Input$Buttons"))
-(def ^:private k->input-key    (partial static-field "Input$Keys"))
-
-(defn button-just-pressed? [b]
-  (.isButtonJustPressed Gdx/input (k->input-button b)))
-
-(defn key-just-pressed? [k]
-  (.isKeyJustPressed Gdx/input (k->input-key k)))
-
-(defn key-pressed? [k]
-  (.isKeyPressed Gdx/input (k->input-key k)))
 
 (def ^Color black Color/BLACK)
 (def ^Color white Color/WHITE)
@@ -34,7 +20,7 @@
    (Color. (float r) (float g) (float b) (float a)))
   (^Color [c]
           (cond (= Color (class c)) c
-                (keyword? c) (static-field "graphics.Color" c)
+                (keyword? c) (gdx-static-field "graphics.Color" c)
                 (vector? c) (apply ->color c)
                 :else (throw (ex-info "Cannot understand color" c)))))
 

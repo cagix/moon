@@ -1,5 +1,5 @@
 (ns anvil.math.vector
-  (:require [anvil.math.utils :refer [equal?]])
+  (:require [anvil.utils :refer [equal?]])
   (:import (com.badlogic.gdx.math Vector2)))
 
 (defn- m-v2

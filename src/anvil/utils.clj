@@ -1,7 +1,20 @@
 (ns anvil.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.pprint :refer [pprint]]
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx.math MathUtils)))
+
+(defn gdx-static-field [klass-str k]
+  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
+
+(defn equal? [a b]
+  (MathUtils/isEqual a b))
+
+(defn clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
+
+(defn degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
 
 (defmacro bind-root [sym value]
   `(clojure.lang.Var/.bindRoot (var ~sym) ~value))

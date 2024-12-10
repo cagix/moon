@@ -1,6 +1,6 @@
 (ns anvil.graphics.viewport
   (:refer-clojure :exclude [update])
-  (:require [anvil.math.utils :refer [clamp]])
+  (:require [anvil.utils :refer [clamp]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (com.badlogic.gdx.math Vector2)))

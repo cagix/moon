@@ -3,6 +3,7 @@
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.info :as info]
+            [anvil.input :refer [key-just-pressed?]]
             [anvil.property :as property]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
@@ -99,7 +100,7 @@
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
     (add-actor! window (ui-actor {:act (fn []
-                                         (when (gdx/key-just-pressed? :enter)
+                                         (when (key-just-pressed? :enter)
                                            (save!)))}))
     (.pack window)
     window))

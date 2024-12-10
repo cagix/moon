@@ -1,10 +1,9 @@
 (ns anvil.graphics
   (:require [anvil.graphics.shape-drawer :as sd]
-            [anvil.math.utils :refer [degree->radians]]
             [clojure.gdx :as gdx]
             [anvil.graphics.viewport :as vp]
             [clojure.string :as str]
-            [anvil.utils :refer [safe-get]])
+            [anvil.utils :refer [safe-get degree->radians]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.utils Align)))
 

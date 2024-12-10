@@ -1,6 +1,7 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
+            [anvil.input :refer [key-just-pressed?]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.screen :as screen]
             [anvil.world :as world]
@@ -46,6 +47,6 @@
   (world/draw-on-view
    (fn []
      (g/filled-circle (cam/position (world/camera)) 0.5 :green)))
-  (when (or (gdx/key-just-pressed? :keys/tab)
-            (gdx/key-just-pressed? :keys/escape))
+  (when (or (key-just-pressed? :keys/tab)
+            (key-just-pressed? :keys/escape))
     (screen/change :screens/world)))
