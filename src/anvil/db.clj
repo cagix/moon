@@ -2,9 +2,9 @@
   (:require [anvil.animation :as animation]
             [anvil.sprite :as sprite]
             [anvil.val-max :as val-max]
+            [anvil.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [anvil.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
             [malli.core :as m]
             [malli.error :as me]))
 

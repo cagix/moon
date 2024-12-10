@@ -9,8 +9,8 @@
             [clojure.java.io :as io]
             [forge.main-menu :as main-menu]
             [forge.world :as world]
-            [forge.screens.editor :as editor]
-            [forge.screens.minimap :as minimap])
+            [forge.editor :as editor]
+            [forge.minimap :as minimap])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)

@@ -4,7 +4,6 @@
             [anvil.ui :refer [ui-actor]]
             [anvil.utils :refer [bind-root]]))
 
-
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
     (draw-text {:x (/ g/viewport-width 2)
