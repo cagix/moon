@@ -1,8 +1,8 @@
 (ns anvil.world
   (:require [anvil.graphics :as g]
-            [anvil.tiled :as tiled]
-            [anvil.graphics.viewport :as vp])
-  (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
+            [anvil.tiled :as tiled])
+  (:import (forge OrthogonalTiledMapRenderer ColorSetter)
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 (declare unit-scale
          viewport-width
@@ -15,10 +15,10 @@
 (defn mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-position viewport))
+  (g/unproject-mouse-position viewport))
 
 (defn camera []
-  (vp/camera viewport))
+  (Viewport/.getCamera viewport))
 
 (defn draw-on-view [render-fn]
   (g/draw-with viewport unit-scale render-fn))

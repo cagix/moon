@@ -4,8 +4,7 @@
             [anvil.ui.actor :as actor]
             [anvil.ui.group :refer [find-actor-with-id add-actor!]]
             [anvil.ui.table :as table]
-            [anvil.ui.utils :as scene2d.utils]
-            [anvil.graphics.viewport :as vp])
+            [anvil.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -20,7 +19,7 @@
 
 (defn mouse-position []
   ; TODO mapv int needed?
-  (mapv int (vp/unproject-mouse-position viewport)))
+  (mapv int (g/unproject-mouse-position viewport)))
 
 (defn horizontal-separator-cell [colspan]
   {:actor (Separator. "default")

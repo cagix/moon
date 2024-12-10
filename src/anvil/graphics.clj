@@ -1,13 +1,14 @@
 (ns anvil.graphics
   (:require [anvil.graphics.color :as color :refer [->color]]
             [anvil.graphics.shape-drawer :as sd]
-            [anvil.graphics.viewport :as vp]
             [clojure.string :as str]
-            [anvil.utils :refer [safe-get degree->radians]])
+            [anvil.utils :refer [clamp safe-get degree->radians]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
-           (com.badlogic.gdx.utils Align)))
+           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils Align)
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
@@ -187,7 +188,7 @@
 
 (defn- draw-on-viewport [batch viewport draw-fn]
   (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (.combined (vp/camera viewport)))
+  (.setProjectionMatrix batch (.combined (Viewport/.getCamera viewport)))
   (.begin batch)
   (draw-fn)
   (.end batch))
@@ -199,3 +200,17 @@
                        (fn []
                          (binding [*unit-scale* unit-scale]
                            (draw-fn))))))
+
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+(defn unproject-mouse-position
+  "Returns vector of [x y]."
+  [^Viewport viewport]
+  (let [mouse-x (clamp (.getX Gdx/input)
+                       (.getLeftGutterWidth viewport)
+                       (.getRightGutterX viewport))
+        mouse-y (clamp (.getY Gdx/input)
+                       (.getTopGutterHeight viewport)
+                       (.getTopGutterY viewport))
+        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
+    [(.x coords) (.y coords)]))

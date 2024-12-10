@@ -16,7 +16,6 @@
             [clojure.edn :as edn]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children]]
-            [anvil.graphics.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
             [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode? mapvals]]
             [forge.screens.editor :as editor]
@@ -30,6 +29,7 @@
            (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
+           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
            (forge OrthogonalTiledMapRenderer)))
@@ -157,10 +157,10 @@
   (setup [[_ [width height]]]
     (bind-root ui/viewport-width  width)
     (bind-root ui/viewport-height height)
-    (bind-root ui/viewport (fit-viewport width height (OrthographicCamera.))))
+    (bind-root ui/viewport (FitViewport. width height (OrthographicCamera.))))
 
   (resize [_ w h]
-    (vp/update ui/viewport w h :center-camera? true)))
+    (Viewport/.update ui/viewport w h true)))
 
 (defmethods :world-viewport
   (setup [[_ [width height tile-size]]]
@@ -172,9 +172,9 @@
                                     camera (OrthographicCamera.)
                                     y-down? false]
                                 (.setToOrtho camera y-down? world-width world-height)
-                                (fit-viewport world-width world-height camera))))
+                                (FitViewport. world-width world-height camera))))
   (resize [_ w h]
-    (vp/update world/viewport w h)))
+    (Viewport/.update world/viewport w h false)))
 
 (defmethods :cached-map-renderer
   (setup [_]
