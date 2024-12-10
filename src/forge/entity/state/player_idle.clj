@@ -24,7 +24,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (actor/visible? (inventory/window))
+     (actor/visible? (stage/get-inventory))
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
@@ -42,7 +42,7 @@
       (stage/show-player-msg "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (actor/toggle-visible! (inventory/window)))
+  (actor/toggle-visible! (stage/get-inventory)))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -90,7 +90,7 @@
      (clickable-entity-interaction entity mouseover-eid)
 
      :else
-     (if-let [skill-id (skills/selected)]
+     (if-let [skill-id (stage/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]

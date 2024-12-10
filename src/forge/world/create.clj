@@ -1,9 +1,9 @@
 (ns forge.world.create
-  (:require [anvil.app :as app]
+  (:require [anvil.app :as app :refer [gui-viewport-width gui-viewport-height]]
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.entity :as entity :refer [mouseover-entity]]
+            [anvil.entity :as entity :refer [player-eid mouseover-entity]]
             [anvil.error :as error]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g]
@@ -18,20 +18,32 @@
             [anvil.skills :as skills]
             [anvil.stage :as stage]
             [anvil.time :as time]
-            [anvil.ui :refer [ui-actor] :as ui]
+            [anvil.ui :refer [ui-actor
+                              set-drawable!
+                              ui-widget
+                              texture-region-drawable
+                              image-widget
+                              ui-stack
+                              add-tooltip!
+                              remove-tooltip!]
+             :as ui]
             [anvil.val-max :as val-max]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
-            [clojure.gdx.scene2d.group :refer [add-actor!]]
+            [clojure.gdx.graphics.color :refer [->color]]
+            [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
+            [clojure.gdx.scene2d.group :refer [add-actor! find-actor]]
+            [clojure.gdx.scene2d.utils :as scene2d.utils]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.utils :refer [dev-mode? tile->middle bind-root readable-number]]
             [clojure.vis-ui :as vis]
             [data.grid2d :as g2d]
             [forge.ui.player-message :as player-message])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+           (com.badlogic.gdx.scenes.scene2d.ui Table Button ButtonGroup)
+           (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (g/draw-text {:text infostr
@@ -180,6 +192,164 @@
                       :fill-y? true}]]
              :fill-parent? true}))
 
+; Items are also smaller than 48x48 all of them
+; so wasting space ...
+; can maybe make a smaller textureatlas or something...
+
+(def ^:private cell-size 48)
+(def ^:private droppable-color    [0   0.6 0 0.8])
+(def ^:private not-allowed-color  [0.6 0   0 0.8])
+
+(defn- draw-cell-rect [player-entity x y mouseover? cell]
+  (g/rectangle x y cell-size cell-size :gray)
+  (when (and mouseover?
+             (= :player-item-on-cursor (fsm/state-k player-entity)))
+    (let [item (:entity/item-on-cursor player-entity)
+          color (if (inventory/valid-slot? cell item)
+                  droppable-color
+                  not-allowed-color)]
+      (g/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+
+; TODO why do I need to call getX ?
+; is not layouted automatically to cell , use 0/0 ??
+; (maybe (.setTransform stack true) ? , but docs say it should work anyway
+(defn- draw-rect-actor []
+  (ui-widget
+   (fn [^Actor this]
+     (draw-cell-rect @player-eid
+                     (.getX this)
+                     (.getY this)
+                     (actor/hit this (g/gui-mouse-position))
+                     (user-object (.getParent this))))))
+
+(def ^:private slot->y-sprite-idx
+  #:inventory.slot {:weapon   0
+                    :shield   1
+                    :rings    2
+                    :necklace 3
+                    :helm     4
+                    :cloak    5
+                    :chest    6
+                    :leg      7
+                    :glove    8
+                    :boot     9
+                    :bag      10}) ; transparent
+
+(defn- slot->sprite-idx [slot]
+  [21 (+ (slot->y-sprite-idx slot) 2)])
+
+(defn- slot->sprite [slot]
+  (-> (g/sprite-sheet "images/items.png" 48 48)
+      (g/->sprite (slot->sprite-idx slot))))
+
+(defn- slot->background [slot]
+  (let [drawable (-> (slot->sprite slot)
+                     :texture-region
+                     texture-region-drawable)]
+    (scene2d.utils/set-min-size! drawable cell-size)
+    (scene2d.utils/tint drawable (->color 1 1 1 0.4))))
+
+(defsystem clicked-inventory-cell)
+(defmethod clicked-inventory-cell :default [_ cell])
+
+(defn- ->cell ^Actor [slot & {:keys [position]}]
+  (let [cell [slot (or position [0 0])]
+        image-widget (image-widget (slot->background slot) {:id :image})
+        stack (ui-stack [(draw-rect-actor)
+                         image-widget])]
+    (.setName stack "inventory-cell")
+    (.setUserObject stack cell)
+    (.addListener stack (proxy [ClickListener] []
+                          (clicked [event x y]
+                            (clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
+    stack))
+
+(defn- inventory-table []
+  (let [table (ui/table {:id ::table})]
+    (.clear table) ; no need as we create new table ... TODO
+    (doto table .add .add
+      (.add (->cell :inventory.slot/helm))
+      (.add (->cell :inventory.slot/necklace)) .row)
+    (doto table .add
+      (.add (->cell :inventory.slot/weapon))
+      (.add (->cell :inventory.slot/chest))
+      (.add (->cell :inventory.slot/cloak))
+      (.add (->cell :inventory.slot/shield)) .row)
+    (doto table .add .add
+      (.add (->cell :inventory.slot/leg)) .row)
+    (doto table .add
+      (.add (->cell :inventory.slot/glove))
+      (.add (->cell :inventory.slot/rings :position [0 0]))
+      (.add (->cell :inventory.slot/rings :position [1 0]))
+      (.add (->cell :inventory.slot/boot)) .row)
+    (doseq [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
+      (doseq [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+        (.add table (->cell :inventory.slot/bag :position [x y])))
+      (.row table))
+    table))
+
+(defn- create-inventory []
+  (ui/window {:title "Inventory"
+              :id :inventory-window
+              :visible? false
+              :pack? true
+              :position [gui-viewport-width
+                         gui-viewport-height]
+              :rows [[{:actor (inventory-table)
+                       :pad 4}]]}))
+
+(defn- cell-widget [cell]
+  (get (::table (stage/get-inventory)) cell))
+
+(defn- set-item-image-in-widget [cell item]
+  (let [cell-widget (cell-widget cell)
+        image-widget (get cell-widget :image)
+        drawable (texture-region-drawable (:texture-region (:entity/image item)))]
+    (scene2d.utils/set-min-size! drawable cell-size)
+    (set-drawable! image-widget drawable)
+    (add-tooltip! cell-widget #(info/text item))))
+
+(defn- remove-item-from-widget [cell]
+  (let [cell-widget (cell-widget cell)
+        image-widget (get cell-widget :image)]
+    (set-drawable! image-widget (slot->background (cell 0)))
+    (remove-tooltip! cell-widget)))
+
+(bind-root inventory/player-set-item    set-item-image-in-widget)
+(bind-root inventory/player-remove-item remove-item-from-widget)
+
+(defn- action-bar-button-group []
+  (let [actor (ui-actor {})]
+    (.setName actor "action-bar/button-group")
+    (Actor/.setUserObject actor (ui/button-group {:max-check-count 1
+                                                  :min-check-count 0}))
+    actor))
+
+(defn- action-bar []
+  (let [group (ui/horizontal-group {:pad 2 :space 2})]
+    (.setUserObject group :ui/action-bar)
+    (add-actor! group (action-bar-button-group))
+    group))
+
+(defn- action-bar-add-skill [{:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar)
+        button (ui/image-button image (fn []) {:scale 2})]
+    (Actor/.setUserObject button id)
+    (add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (add-actor! horizontal-group button)
+    (ButtonGroup/.add button-group button)
+    nil))
+
+(defn- action-bar-remove-skill [{:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar)
+        ^Button button (get horizontal-group id)]
+    (.remove button)
+    (ButtonGroup/.remove button-group button)
+    nil))
+
+(bind-root skills/player-add-skill    action-bar-add-skill)
+(bind-root skills/player-remove-skill action-bar-remove-skill)
+
 (defsystem draw-gui-view)
 (defmethod draw-gui-view :default [_])
 
@@ -187,7 +357,7 @@
   [(if dev-mode?
      (dev-menu)
      (ui-actor {}))
-   (ui/table {:rows [[{:actor (skills/action-bar)
+   (ui/table {:rows [[{:actor (action-bar)
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table
@@ -196,7 +366,7 @@
    (hp-mana-bar)
    (ui/group {:id :windows
               :actors [(entity-info-window)
-                       (inventory/create)]})
+                       (create-inventory)]})
    (ui-actor {:draw #(draw-gui-view (fsm/state-obj @entity/player-eid))})
    (player-message/actor)])
 
@@ -276,7 +446,7 @@
   (nearest-entity-distance [this faction]
     (-> this faction :distance)))
 
-(defn- ->cell [position movement]
+(defn- grid-cell [position movement]
   {:pre [(#{:none :air :all} movement)]}
   (map->RCell
    {:position position
@@ -290,11 +460,11 @@
                         (tiled/tm-width tiled-map)
                         (tiled/tm-height tiled-map)
                         (fn [position]
-                          (atom (->cell position
-                                        (case (tiled/movement-property tiled-map position)
-                                          "none" :none
-                                          "air"  :air
-                                          "all"  :all)))))))
+                          (atom (grid-cell position
+                                           (case (tiled/movement-property tiled-map position)
+                                             "none" :none
+                                             "air"  :air
+                                             "all"  :all)))))))
 
 (defn- world-init [{:keys [tiled-map start-position]}]
   (bind-root level/tiled-map tiled-map)

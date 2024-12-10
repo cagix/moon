@@ -153,6 +153,12 @@
                        :effect/target hit-entity}
                       entity-effects))))
 
+(defmethod tick :entity/skills [[k skills] eid]
+  (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
+          :when (and cooling-down?
+                     (stopped? cooling-down?))]
+    (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
+
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?

@@ -5,7 +5,6 @@
             [forge.entity.state.active-skill :as active-skill]
             [forge.entity.state.npc-idle :as npc-idle]
             [anvil.fsm :as fsm]
-            [anvil.inventory :as inventory]
             [forge.world.render :as render]
             [anvil.screen :as screen]
             [clojure.utils :refer [install install-component]]
@@ -32,11 +31,6 @@
               #'render/render-above
               #'render/render-info]})
 
-(install "forge"
-         entity
-         (map vector [:entity/inventory
-                      :entity/skills]))
-
 (def entity-state
   (merge-with concat
               entity
@@ -45,7 +39,7 @@
                           #'fsm/cursor
                           #'world.update/pause-game?
                           #'world.update/manual-tick
-                          #'inventory/clicked-inventory-cell
+                          #'forge.world.create/clicked-inventory-cell
                           #'clicked-skillmenu-skill
                           #'draw-gui-view]}))
 

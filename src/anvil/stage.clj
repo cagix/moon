@@ -4,11 +4,26 @@
             [anvil.graphics :as g]
             [anvil.screen :as screen]
             [anvil.ui :as ui]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.utils :refer [pretty-pst with-err-str bind-root]])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))
 
 (defn get []
   (:stage ((screen/current) 1)))
+
+(defn get-inventory []
+  (clojure.core/get (:windows (get)) :inventory-window))
+
+(defn get-action-bar []
+  (let [group (:ui/action-bar (:action-bar-table (get)))]
+    {:horizontal-group group
+     :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
+
+(defn selected-skill []
+  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar)))]
+    (actor/user-object skill-button)))
 
 (defn add-actor [actor]
   (.addActor (get) actor))

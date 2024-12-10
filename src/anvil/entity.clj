@@ -6,7 +6,9 @@
             [anvil.db :as db]
             [anvil.graphics :refer [world-camera]]
             [anvil.grid :as grid]
+            [anvil.inventory :as inventory]
             [anvil.raycaster :refer [ray-blocked?]]
+            [anvil.skills :as skills]
             [anvil.time :refer [timer]]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
@@ -255,6 +257,16 @@
 
 (defsystem create)
 (defmethod create :default [_ eid])
+
+(defmethod create :entity/skills [[k skills] eid]
+  (swap! eid assoc k nil)
+  (doseq [skill skills]
+    (swap! eid skills/add skill)))
+
+(defmethod create :entity/inventory [[k items] eid]
+  (swap! eid assoc k inventory/empty-inventory)
+  (doseq [item items]
+    (inventory/pickup-item eid item)))
 
 (defmethod create :entity/delete-after-animation-stopped? [_ eid]
   (-> @eid :entity/animation :looping? not assert))
