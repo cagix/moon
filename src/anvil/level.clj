@@ -1,7 +1,7 @@
 (ns anvil.level
   (:require [anvil.level.modules :refer [generate-modules]]
             [anvil.level.uf-caves :as uf-caves]
-            [clojure.gdx.tiled :as tiled]))
+            [anvil.tiled :as tiled]))
 
 (defmulti generate-level* (fn [world] (:world/generator world)))
 

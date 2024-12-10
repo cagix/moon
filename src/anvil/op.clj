@@ -1,7 +1,6 @@
 (ns anvil.op
   (:refer-clojure :exclude [apply])
-  (:require [clojure.component :refer [defsystem]]
-            [clojure.utils :refer [defmethods]]))
+  (:require [clojure.utils :refer [defsystem  defmethods]]))
 
 (defsystem apply)
 (defsystem order)

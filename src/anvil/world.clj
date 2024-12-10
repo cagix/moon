@@ -1,6 +1,6 @@
 (ns anvil.world
   (:require [anvil.graphics :as g]
-            [clojure.gdx.tiled :as tiled]
+            [anvil.tiled :as tiled]
             [anvil.graphics.viewport :as vp])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 

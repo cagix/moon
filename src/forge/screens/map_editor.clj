@@ -11,7 +11,7 @@
             [anvil.world :as world]
             [clojure.gdx :as gdx]
             [anvil.ui.group :refer [add-actor!]]
-            [clojure.gdx.tiled :as tiled]
+            [anvil.tiled :as tiled]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]))
 

@@ -3,7 +3,7 @@
             [anvil.db :as db]
             [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx :as gdx]
-            [clojure.gdx.tiled :as tiled]
+            [anvil.tiled :as tiled]
             [clojure.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]))
 

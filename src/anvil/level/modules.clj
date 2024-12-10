@@ -2,7 +2,7 @@
   (:require [anvil.db :as db]
             [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
-            [clojure.gdx.tiled :as tiled]
+            [anvil.tiled :as tiled]
             [data.grid2d :as g2d]))
 
 ; can adjust:

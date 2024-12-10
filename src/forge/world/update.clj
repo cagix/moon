@@ -25,7 +25,7 @@
             [anvil.potential-field :as potential-field]
             [anvil.ui :refer [window-title-bar? button?]]
             [anvil.world :as world]
-            [clojure.component :refer [defsystem]]
+            [clojure.utils :refer [defsystem]]
             [clojure.gdx :as gdx]
             [anvil.ui.actor :as actor]
             [clojure.utils :refer [bind-root sort-by-order find-first]]

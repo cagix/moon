@@ -12,8 +12,7 @@
             [anvil.time :refer [timer]]
             [anvil.math.vector :as v]
             [anvil.world :as world]
-            [clojure.component :refer [defsystem]]
-            [clojure.utils :refer [define-order safe-merge unique-number!]]
+            [clojure.utils :refer [defsystem define-order safe-merge unique-number!]]
             [reduce-fsm :as fsm]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
