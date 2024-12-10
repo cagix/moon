@@ -5,7 +5,7 @@
             [anvil.ui :as ui]
             [anvil.ui.actor :as actor]
             [anvil.ui.group :as group]
-            [anvil.utils :refer [pretty-pst with-err-str bind-root defsystem defmethods]])
+            [anvil.utils :refer [pretty-pst with-err-str bind-root]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))
@@ -21,33 +21,36 @@
     (run! #(.addActor stage %) actors)
     stage))
 
-(defsystem actors)
-(defmethod actors :default [_])
-
-(defmethods ::screen
-  (screen/enter [[_ {:keys [^Stage stage sub-screen]}]]
+(defrecord StageScreen [^Stage stage sub-screen]
+  screen/Screen
+  (enter [_]
     (.setInputProcessor Gdx/input stage)
     (screen/enter sub-screen))
 
-  (screen/exit [[_ {:keys [stage sub-screen]}]]
+  (exit [_]
     (.setInputProcessor Gdx/input nil)
     (screen/exit sub-screen))
 
-  (screen/render [[_ {:keys [^Stage stage sub-screen]}]]
+  (render [_]
     (.act stage)
     (screen/render sub-screen)
     (.draw stage))
 
-  (screen/dispose [[_ {:keys [^Stage stage sub-screen]}]]
+  (dispose [_]
     (.dispose stage)
     (screen/dispose sub-screen)))
 
-(defn screen [sub-screen]
-  [::screen {:stage (stage* g/viewport g/batch (actors sub-screen))
-             :sub-screen sub-screen}])
+(defn screen [& {:keys [sub-screen actors]}]
+  (->StageScreen (stage* g/viewport g/batch actors)
+                 (or sub-screen
+                     (reify screen/Screen
+                       (enter   [_])
+                       (exit    [_])
+                       (render  [_])
+                       (dispose [_])))))
 
 (defn get []
-  (:stage ((screen/current) 1)))
+  (:stage (screen/current)))
 
 (defn get-inventory []
   (clojure.core/get (:windows (get)) :inventory-window))

@@ -27,7 +27,7 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> ((screen/current) 1)
+  (-> (screen/current)
       :sub-screen
       :current-data))
 

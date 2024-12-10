@@ -1,11 +1,10 @@
-(ns anvil.screen
-  (:require [anvil.utils :refer [defsystem]]))
+(ns anvil.screen)
 
-(defsystem enter)
-(defmethod enter :default [_])
-
-(defsystem exit)
-(defmethod exit :default [_])
+(defprotocol Screen
+  (enter   [_])
+  (exit    [_])
+  (dispose [_])
+  (render  [_]))
 
 (declare screens
          current-k)
@@ -28,14 +27,8 @@
   (def screens screens)
   (change first-k))
 
-(defsystem dispose)
-(defmethod dispose :default [_])
-
 (defn dispose-all []
   (run! dispose (vals screens)))
-
-(defsystem render)
-(defmethod render :default [_])
 
 (defn render-current []
   (render (current)))
