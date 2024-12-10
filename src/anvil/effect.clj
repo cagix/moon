@@ -1,18 +1,18 @@
 (ns anvil.effect
   (:require [anvil.audio :refer [play-sound]]
-            [anvil.body :as body]
-            [anvil.damage :as damage]
             [anvil.db :as db]
             [anvil.entity :as entity :refer [creatures-in-los-of-player line-of-sight?]]
-            [anvil.faction :as faction]
-            [anvil.fsm :as fsm]
-            [anvil.hitpoints :as hp]
+            [anvil.entity.body :as body]
+            [anvil.entity.damage :as damage]
+            [anvil.entity.faction :as faction]
+            [anvil.entity.fsm :as fsm]
+            [anvil.entity.hitpoints :as hp]
+            [anvil.entity.modifiers :as mods]
+            [anvil.entity.stat :as stat]
+            [anvil.entity.string-effect :as string-effect]
             [anvil.math.vector :as v]
-            [anvil.modifiers :as mods]
-            [anvil.stat :as stat]
-            [anvil.string-effect :as string-effect]
-            [anvil.time :refer [timer]]
             [anvil.rand :refer [rand-int-between]]
+            [anvil.world.time :refer [timer]]
             [anvil.utils :refer [defmethods defsystem]]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.

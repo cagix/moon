@@ -1,4 +1,4 @@
-(ns anvil.skills
+(ns anvil.entity.skills
   (:refer-clojure :exclude [contains? remove]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]

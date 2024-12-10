@@ -1,4 +1,4 @@
-(ns anvil.body
+(ns anvil.entity.body
   (:require [anvil.math.vector :as v]
             [anvil.math.shapes :as shape]))
 

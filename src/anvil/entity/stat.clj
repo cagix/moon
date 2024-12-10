@@ -1,5 +1,5 @@
-(ns anvil.stat
-  (:require [anvil.modifiers :as mods]))
+(ns anvil.entity.stat
+  (:require [anvil.entity.modifiers :as mods]))
 
 (defn ->value [entity k]
   (when-let [base-value (k entity)]

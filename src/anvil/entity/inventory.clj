@@ -1,5 +1,5 @@
-(ns anvil.inventory
-  (:require [anvil.modifiers :as mods]
+(ns anvil.entity.inventory
+  (:require [anvil.entity.modifiers :as mods]
             [anvil.utils :refer [find-first]]
             [data.grid2d :as g2d]))
 

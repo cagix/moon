@@ -1,5 +1,5 @@
 (ns ^:no-doc forge.ui.skill-window
-  (:require [anvil.skills :as skills]
+  (:require [anvil.entity.skills :as skills]
             [anvil.utils :refer [defsystem]]))
 
 (defsystem clicked-skillmenu-skill)

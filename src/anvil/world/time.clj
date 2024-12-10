@@ -1,4 +1,4 @@
-(ns anvil.time)
+(ns anvil.world.time)
 
 (declare ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed)

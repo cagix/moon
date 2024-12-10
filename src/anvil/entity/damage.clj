@@ -1,5 +1,5 @@
-(ns anvil.damage
-  (:require [anvil.modifiers :as mods]))
+(ns anvil.entity.damage
+  (:require [anvil.entity.modifiers :as mods]))
 
 (defn ->value
   ([source damage]

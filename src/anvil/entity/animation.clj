@@ -1,4 +1,4 @@
-(ns anvil.animation)
+(ns anvil.entity.animation)
 
 (defprotocol Animation
   (tick [_ delta])

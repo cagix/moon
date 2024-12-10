@@ -1,6 +1,6 @@
 (ns anvil.skill
   (:require [anvil.effect :as effect]
-            [anvil.mana :as mana]))
+            [anvil.entity.mana :as mana]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (mana/val entity))))

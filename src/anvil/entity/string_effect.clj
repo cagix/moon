@@ -1,5 +1,5 @@
-(ns anvil.string-effect
-  (:require [anvil.time :refer [timer reset-timer]]))
+(ns anvil.entity.string-effect
+  (:require [anvil.world.time :refer [timer reset-timer]]))
 
 (defn add [entity text]
   (assoc entity

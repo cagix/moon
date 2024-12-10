@@ -1,11 +1,11 @@
 (ns anvil.info
-  (:require [anvil.damage :as damage]
+  (:require [anvil.entity.damage :as damage]
+            [anvil.entity.hitpoints :as hp]
+            [anvil.entity.mana :as mana]
+            [anvil.entity.stat :as stat]
             [anvil.graphics :as g]
-            [anvil.hitpoints :as hp]
-            [anvil.mana :as mana]
-            [anvil.stat :as stat]
             [anvil.op :as op]
-            [anvil.time :refer [finished-ratio]]
+            [anvil.world.time :refer [finished-ratio]]
             [clojure.math :as math]
             [clojure.string :as str]
             [anvil.utils :refer [defsystem index-of readable-number]]))

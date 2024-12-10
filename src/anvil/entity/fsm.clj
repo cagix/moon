@@ -1,14 +1,14 @@
-(ns anvil.fsm
+(ns anvil.entity.fsm
   (:require [anvil.audio :refer [play-sound]]
             [anvil.entity :as entity]
+            [anvil.entity.mana :as mana]
+            [anvil.entity.stat :as stat]
+            [anvil.entity.string-effect :as string-effect]
             [anvil.graphics :as g]
             [anvil.item-on-cursor :refer [item-place-position]]
-            [anvil.mana :as mana]
             [anvil.screen :as screen]
             [anvil.stage :refer [show-modal]]
-            [anvil.stat :as stat]
-            [anvil.string-effect :as string-effect]
-            [anvil.time :refer [timer]]
+            [anvil.world.time :refer [timer]]
             [anvil.utils :refer [defsystem defmethods]]
             [reduce-fsm :as fsm]))
 

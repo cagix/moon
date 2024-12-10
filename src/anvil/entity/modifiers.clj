@@ -1,4 +1,4 @@
-(ns anvil.modifiers
+(ns anvil.entity.modifiers
   (:refer-clojure :exclude [remove])
   (:require [anvil.ops :as ops]
             [anvil.val-max :as val-max]

@@ -1,15 +1,15 @@
-(ns anvil.potential-field
-  (:require [anvil.faction :as faction]
-            [anvil.grid :refer [get-8-neighbour-positions
+(ns anvil.world.potential-field
+  (:require [anvil.entity.faction :as faction]
+            [anvil.math.vector :as v]
+            [anvil.utils :refer [when-seq utils-positions]]
+            [anvil.world.grid :refer [get-8-neighbour-positions
                                 cell-blocked?
                                 occupied-by-other?
                                 grid
                                 rectangle->cells
                                 nearest-entity
                                 nearest-entity-distance
-                                cached-adjacent-cells]]
-            [anvil.math.vector :as v]
-            [anvil.utils :refer [when-seq utils-positions]]))
+                                cached-adjacent-cells]]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

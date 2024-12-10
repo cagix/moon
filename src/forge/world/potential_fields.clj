@@ -1,7 +1,7 @@
 (ns forge.world.potential-fields
-  (:require [anvil.body :as body]
-            [anvil.grid :as grid]
-            [anvil.potential-field :refer [pf-cell-blocked?]]))
+  (:require [anvil.entity.body :as body]
+            [anvil.world.grid :as grid]
+            [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})

@@ -2,19 +2,19 @@
   (:require [anvil.effect :as effect]
             [anvil.entity :as entity :refer [line-of-sight? player-eid
                                              creatures-in-los-of-player]]
-            [anvil.faction :as faction]
+            [anvil.entity.faction :as faction]
+            [anvil.entity.hitpoints :as hp]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.grid :as grid]
-            [anvil.hitpoints :as hp]
             [anvil.item-on-cursor :refer [world-item? item-place-position]]
             [anvil.math.shapes :refer [circle->outer-rectangle]]
-            [anvil.raycaster :refer [ray-blocked?]]
-            [anvil.time :refer [finished-ratio]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.val-max :as val-max]
             [anvil.utils :refer [defsystem]]
             [anvil.utils :refer [sort-by-order pretty-pst]]
+            [anvil.world.grid :as grid]
+            [anvil.world.time :refer [finished-ratio]]
+            [anvil.world.raycaster :refer [ray-blocked?]]
             [forge.world.potential-fields :refer [factions-iterations]]))
 
 (defsystem render-effect)

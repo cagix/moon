@@ -1,5 +1,5 @@
 (ns forge.damage-test
-  (:require [anvil.damage :refer [->value]]
+  (:require [anvil.entity.damage :refer [->value]]
             [clojure.test :refer :all]))
 
 (deftest modify-source-damage

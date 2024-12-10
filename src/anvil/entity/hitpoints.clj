@@ -1,5 +1,5 @@
-(ns anvil.hitpoints
-  (:require [anvil.modifiers :as mods]))
+(ns anvil.entity.hitpoints
+  (:require [anvil.entity.modifiers :as mods]))
 
 (defn ->value
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

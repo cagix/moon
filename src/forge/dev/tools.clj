@@ -1,12 +1,12 @@
 (ns forge.dev.tools
   (:require [anvil.db :as db]
             [anvil.entity :as entity :refer [player-eid mouseover-entity]]
+            [anvil.entity.skills :as skills]
             [anvil.graphics :as g]
-            [anvil.grid :as grid]
-            [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
             [anvil.ui.group :refer [children]]
+            [anvil.world.grid :as grid]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx Gdx)

@@ -1,6 +1,6 @@
-(ns anvil.mana
+(ns anvil.entity.mana
   (:refer-clojure :exclude [val])
-  (:require [anvil.modifiers :as mods]))
+  (:require [anvil.entity.modifiers :as mods]))
 
 (defn ->value
   "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

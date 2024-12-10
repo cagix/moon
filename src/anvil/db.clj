@@ -1,5 +1,5 @@
 (ns anvil.db
-  (:require [anvil.animation :as animation]
+  (:require [anvil.entity.animation :as animation]
             [anvil.sprite :as sprite]
             [anvil.val-max :as val-max]
             [anvil.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
