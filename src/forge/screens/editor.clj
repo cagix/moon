@@ -470,7 +470,7 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn tabs-table [label-str]
+(defn- tabs-table [label-str]
   (let [table (ui/table {:fill-parent? true})
         container (ui/table {})
         tabbed-pane (TabbedPane.)]
@@ -487,3 +487,10 @@
     (doseq [tab-data (property-type-tabs)]
       (.add tabbed-pane (tab-widget tab-data)))
     table))
+
+(defn create [background-image]
+  (stage/screen :actors [(background-image)
+                         (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
+                         (ui-actor {:act (fn []
+                                           (when (key-just-pressed? :shift-left)
+                                             (screen/change :screens/main-menu)))})]))

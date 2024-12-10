@@ -33,18 +33,22 @@
   (fn tile-corner-color-setter [color x y]
     (if (get explored? [x y]) g/white g/black)))
 
-(defn enter []
-  (cam/set-zoom! g/camera (minimap-zoom)))
+(deftype MinimapScreen []
+  screen/Screen
+  (enter [_]
+    (cam/set-zoom! g/camera (minimap-zoom)))
+  (exit [_]
+    (cam/reset-zoom! g/camera))
+  (dispose [_])
+  (render [_]
+    (g/draw-tiled-map level/tiled-map
+                      (->tile-corner-color-setter @explored-tile-corners))
+    (g/draw-on-world-view
+     (fn []
+       (g/filled-circle (cam/position g/camera) 0.5 :green)))
+    (when (or (key-just-pressed? :keys/tab)
+              (key-just-pressed? :keys/escape))
+      (screen/change :screens/world))))
 
-(defn exit []
-  (cam/reset-zoom! g/camera))
-
-(defn render []
-  (g/draw-tiled-map level/tiled-map
-                        (->tile-corner-color-setter @explored-tile-corners))
-  (g/draw-on-world-view
-   (fn []
-     (g/filled-circle (cam/position g/camera) 0.5 :green)))
-  (when (or (key-just-pressed? :keys/tab)
-            (key-just-pressed? :keys/escape))
-    (screen/change :screens/world)))
+(defn screen []
+  (->MinimapScreen))
