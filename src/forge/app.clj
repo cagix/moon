@@ -18,7 +18,6 @@
             [anvil.ui.group :refer [children find-actor-with-id]]
             [anvil.graphics.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
-            [clojure.string :as str]
             [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode? mapvals]]
             [clojure.vis-ui :as vis]
             [forge.screens.editor :as editor]
@@ -28,9 +27,7 @@
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.scenes.scene2d Stage)
@@ -120,49 +117,14 @@
   (setup [[_ config]]
     (db/setup config)))
 
-(defn- asset-manager* ^AssetManager []
-  (proxy [AssetManager clojure.lang.IFn] []
-    (invoke [^String path]
-      (if (AssetManager/.contains this path)
-        (AssetManager/.get this path)
-        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
-
-(defn- load-assets [^AssetManager manager assets]
-  (doseq [[file class] assets]
-    (.load manager ^String file class))
-  (.finishLoading manager))
-
-(defn- asset-manager [assets]
-  (doto (asset-manager*)
-    (load-assets assets)))
-
-(defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (.list (.internal Gdx/files folder))
-         result []]
-    (cond (nil? file)
-          result
-
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
-
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
-
-          :else
-          (recur remaining result))))
-
 (defmethods :asset-manager
   (setup [[_ folder]]
-    (bind-root assets/manager (asset-manager
-                               (for [[asset-type exts] [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                                                        [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]
-                                     file (map #(str/replace-first % folder "")
-                                               (recursively-search folder exts))]
-                                 [file asset-type])))
-    (println "Loaded assets: " assets/manager))
+    (assets/search-and-load folder
+                            [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+                             [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]))
 
   (cleanup [_]
-    (dispose assets/manager)))
+    (assets/cleanup)))
 
 (defmethods :sprite-batch
   (setup [_]
