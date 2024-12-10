@@ -9,6 +9,7 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.grid :as grid]
+            [anvil.item-on-cursor :refer [world-item?]]
             [anvil.modifiers :as mods]
             [anvil.stat :as stat]
             [anvil.stage :as stage]
@@ -16,6 +17,7 @@
             [anvil.level :as level :refer [explored-tile-corners]]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [delta-time]]
+            [clojure.gdx.input :refer [button-just-pressed?]]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [bind-root sort-by-order find-first]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
@@ -231,11 +233,17 @@
 (defsystem manual-tick)
 (defmethod manual-tick :default [_])
 
+(defmethod manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
+  (when (and (button-just-pressed? :left)
+             (world-item?))
+    (fsm/event eid :drop-item)))
+
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
-(defmethod pause-game? :stunned       [_] false)
-(defmethod pause-game? :player-moving [_] false)
+(defmethod pause-game? :stunned               [_] false)
+(defmethod pause-game? :player-moving         [_] false)
+(defmethod pause-game? :player-item-on-cursor [_] true)
 
 (defn update-world []
   (manual-tick (fsm/state-obj @player-eid))

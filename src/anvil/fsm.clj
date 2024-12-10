@@ -1,8 +1,11 @@
 (ns anvil.fsm
-  (:require [anvil.entity :as entity]
+  (:require [anvil.audio :refer [play-sound]]
+            [anvil.entity :as entity]
             [anvil.graphics :as g]
+            [anvil.item-on-cursor :refer [item-place-position]]
             [anvil.stat :as stat]
             [clojure.component :refer [defsystem]]
+            [clojure.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
 
 (defn state-k [entity]
@@ -26,11 +29,28 @@
   (exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement)))
 
+(defmethods :player-item-on-cursor
+  (enter [[_ {:keys [eid item]}]]
+    (swap! eid assoc :entity/item-on-cursor item))
+
+  (exit [[_ {:keys [eid]}]]
+    ; at clicked-cell when we put it into a inventory-cell
+    ; we do not want to drop it on the ground too additonally,
+    ; so we dissoc it there manually. Otherwise it creates another item
+    ; on the ground
+    (let [entity @eid]
+      (when (:entity/item-on-cursor entity)
+        (play-sound "bfxr_itemputground")
+        (swap! eid dissoc :entity/item-on-cursor)
+        (entity/item (item-place-position entity)
+                     (:entity/item-on-cursor entity))))))
+
 (defsystem cursor)
 (defmethod cursor :default [_])
 
-(defmethod cursor :stunned       [_] :cursors/denied)
-(defmethod cursor :player-moving [_] :cursors/walking)
+(defmethod cursor :stunned               [_] :cursors/denied)
+(defmethod cursor :player-moving         [_] :cursors/walking)
+(defmethod cursor :player-item-on-cursor [_] :cursors/hand-grab)
 
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]

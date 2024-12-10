@@ -257,6 +257,10 @@
   {:eid eid
    :movement-vector movement-vector})
 
+(defmethod ->v :player-item-on-cursor [[_ eid item]]
+  {:eid eid
+   :item item})
+
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
             (assoc m k (->v [k v])))

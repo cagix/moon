@@ -5,6 +5,7 @@
             [anvil.graphics :as g]
             [anvil.grid :as grid]
             [anvil.hitpoints :as hp]
+            [anvil.item-on-cursor :refer [world-item? item-place-position]]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.val-max :as val-max]
@@ -176,6 +177,11 @@
 
 (defmethod render-below :stunned [_ entity]
   (g/circle (:position entity) 0.5 [1 1 1 0.6]))
+
+(defmethod render-below :player-item-on-cursor [[_ {:keys [item]}] entity]
+  (when (world-item?)
+    (g/draw-centered (:entity/image item)
+                     (item-place-position entity))))
 
 (defmethod render-below :entity/mouseover? [_ {:keys [entity/faction] :as entity}]
   (let [player @player-eid]

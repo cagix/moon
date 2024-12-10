@@ -1,5 +1,6 @@
 (ns forge.world.create
   (:require [anvil.app :as app :refer [gui-viewport-width gui-viewport-height]]
+            [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
             [anvil.db :as db]
@@ -11,6 +12,7 @@
             [anvil.hitpoints :as hp]
             [anvil.info :as info]
             [anvil.inventory :as inventory]
+            [anvil.item-on-cursor :refer [world-item?]]
             [anvil.level :as level :refer [generate-level]]
             [anvil.mana :as mana]
             [anvil.raycaster :as raycaster]
@@ -44,6 +46,43 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table Button ButtonGroup)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
+
+(defn- clicked-cell [eid cell]
+  (let [entity @eid
+        inventory (:entity/inventory entity)
+        item-in-cell (get-in inventory cell)
+        item-on-cursor (:entity/item-on-cursor entity)]
+    (cond
+     ; PUT ITEM IN EMPTY CELL
+     (and (not item-in-cell)
+          (inventory/valid-slot? cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (inventory/set-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item))
+
+     ; STACK ITEMS
+     (and item-in-cell
+          (inventory/stackable? item-in-cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (inventory/stack-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item))
+
+     ; SWAP ITEMS
+     (and item-in-cell
+          (inventory/valid-slot? cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+      ; TODO? coud handle pickup-item from item-on-cursor state also
+      (swap! eid dissoc :entity/item-on-cursor)
+      (inventory/remove-item eid cell)
+      (inventory/set-item eid cell item-on-cursor)
+      (fsm/event eid :dropped-item)
+      (fsm/event eid :pickup-item item-in-cell)))))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (g/draw-text {:text infostr
@@ -252,6 +291,10 @@
 (defsystem clicked-inventory-cell)
 (defmethod clicked-inventory-cell :default [_ cell])
 
+(defmethod clicked-inventory-cell :player-item-on-cursor
+  [[_ {:keys [eid]}] cell]
+  (clicked-cell eid cell))
+
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background slot) {:id :image})
@@ -352,6 +395,11 @@
 
 (defsystem draw-gui-view)
 (defmethod draw-gui-view :default [_])
+
+(defmethod draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
+  (when (not (world-item?))
+    (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
+                     (g/gui-mouse-position))))
 
 (defn- widgets []
   [(if dev-mode?
