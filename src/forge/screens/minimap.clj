@@ -1,7 +1,8 @@
 (ns ^:no-doc forge.screens.minimap
-  (:require [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-camera]]
+  (:require [anvil.graphics :as g]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.screen :as screen]
+            [anvil.world :as world]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?]]))
@@ -24,7 +25,7 @@
         top    (apply max-key (fn [[x y]] y) positions-explored)
         right  (apply max-key (fn [[x y]] x) positions-explored)
         bottom (apply min-key (fn [[x y]] y) positions-explored)]
-    (cam/calculate-zoom (world-camera)
+    (cam/calculate-zoom (world/camera)
                         :left left
                         :top top
                         :right right
@@ -35,17 +36,17 @@
     (if (get explored? [x y]) color/white color/black)))
 
 (defn enter []
-  (cam/set-zoom! (world-camera) (minimap-zoom)))
+  (cam/set-zoom! (world/camera) (minimap-zoom)))
 
 (defn exit []
-  (cam/reset-zoom! (world-camera)))
+  (cam/reset-zoom! (world/camera)))
 
 (defn render []
-  (draw-tiled-map level/tiled-map
-                  (->tile-corner-color-setter @explored-tile-corners))
-  (draw-on-world-view
+  (world/draw-tiled-map level/tiled-map
+                        (->tile-corner-color-setter @explored-tile-corners))
+  (world/draw-on-view
    (fn []
-     (g/filled-circle (cam/position (world-camera)) 0.5 :green)))
+     (g/filled-circle (cam/position (world/camera)) 0.5 :green)))
   (when (or (key-just-pressed? :keys/tab)
             (key-just-pressed? :keys/escape))
     (screen/change :screens/world)))

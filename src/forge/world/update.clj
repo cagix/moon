@@ -9,7 +9,7 @@
             [anvil.error :as error]
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
-            [anvil.graphics :as g :refer [world-mouse-position]]
+            [anvil.graphics :as g]
             [anvil.grid :as grid]
             [anvil.inventory :as inventory]
             [anvil.item-on-cursor :refer [world-item?]]
@@ -23,6 +23,7 @@
             [anvil.raycaster :refer [path-blocked?]]
             [anvil.potential-field :as potential-field]
             [anvil.ui :refer [window-title-bar? button?]]
+            [anvil.world :as world]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.gdx.input :refer [button-just-pressed?]]
@@ -154,7 +155,7 @@
 
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
-                            (world-mouse-position))]
+                            (world/mouse-position))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position
@@ -402,7 +403,7 @@
   (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (grid/point->entities
-                      (world-mouse-position)))]
+                      (world/mouse-position)))]
     (->> render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse

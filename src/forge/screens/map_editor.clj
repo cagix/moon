@@ -1,12 +1,13 @@
 (ns ^:no-doc forge.screens.map-editor
   (:require [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-mouse-position world-camera]]
+            [anvil.graphics :as g]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.ui :refer [ui-actor text-button] :as ui]
+            [anvil.world :as world]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
@@ -40,14 +41,14 @@
   direction keys: move")
 
 (defn- map-infos ^String []
-  (let [tile (mapv int (world-mouse-position))
+  (let [tile (mapv int (world/mouse-position))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (world-mouse-position)
+                                 (world/mouse-position)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
@@ -89,8 +90,8 @@
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles (world-camera))
-        [x y] (mapv int (world-mouse-position))]
+        visible-tiles (cam/visible-tiles (world/camera))
+        [x y] (mapv int (world/mouse-position))]
     (g/rectangle x y 1 1 color/white)
     (when start-position
       (g/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
@@ -120,7 +121,7 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! (world-camera) tiled-map)
+    (show-whole-map! (world/camera) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
@@ -134,21 +135,21 @@
               :pack? true}))
 
 (defn enter [_]
-  #_(show-whole-map! (world-camera) (:tiled-map @current-data)))
+  #_(show-whole-map! (world/camera) (:tiled-map @current-data)))
 
 (defn exit [_]
-  #_(cam/reset-zoom! (world-camera)))
+  #_(cam/reset-zoom! (world/camera)))
 
 (defn render [_]
-  #_(draw-tiled-map (:tiled-map @current-data)
-                    (constantly color/white))
-  #_(draw-on-world-view render-on-map)
+  #_(world/draw-tiled-map (:tiled-map @current-data)
+                          (constantly color/white))
+  #_(world/draw-on-view render-on-map)
   #_(if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))
   #_(if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
   #_(controls/world-camera-zoom)
-  #_(camera-controls (world-camera))
+  #_(camera-controls (world/camera))
   #_(when (key-just-pressed? :keys/escape)
       (screen/change :screens/main-menu)))
 

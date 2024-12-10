@@ -1,17 +1,13 @@
 (ns anvil.graphics
-  (:require [anvil.app :as app]
-            [anvil.assets :as assets]
-            [clojure.gdx.graphics :as g]
+  (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.math.utils :refer [degree->radians]]
-            [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as vp]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get]])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.utils Align)
-           (forge OrthogonalTiledMapRenderer ColorSetter)))
+           (com.badlogic.gdx.utils Align)))
 
 (declare batch
          sd
@@ -102,13 +98,6 @@
          rotation)
   (if color (.setColor batch color/white)))
 
-(defn- draw-on-viewport [batch viewport draw-fn]
-  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (.combined (vp/camera viewport)))
-  (.begin batch)
-  (draw-fn)
-  (.end batch))
-
 (def ^:dynamic ^:private *unit-scale* 1)
 
 (defn- text-height [^BitmapFont font text]
@@ -177,107 +166,17 @@
 (defn draw-centered [image position]
   (draw-rotated-centered image 0 position))
 
-(defn- draw-with [viewport unit-scale draw-fn]
+(defn- draw-on-viewport [batch viewport draw-fn]
+  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
+  (.setProjectionMatrix batch (.combined (vp/camera viewport)))
+  (.begin batch)
+  (draw-fn)
+  (.end batch))
+
+(defn draw-with [viewport unit-scale draw-fn]
   (draw-on-viewport batch
                     viewport
                     #(with-line-width unit-scale
                        (fn []
                          (binding [*unit-scale* unit-scale]
                            (draw-fn))))))
-
-(defn draw-on-world-view [render-fn]
-  (draw-with app/world-viewport
-             app/world-unit-scale
-             render-fn))
-
-(defn- scale-dimensions [dimensions scale]
-  (mapv (comp float (partial * scale)) dimensions))
-
-(defn- texture-dimensions [texture-region]
-  [(g/region-width  texture-region)
-   (g/region-height texture-region)])
-
-(defn- assoc-dimensions
-  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [texture-region] :as image} scale]
-  {:pre [(or (number? scale)
-             (and (vector? scale)
-                  (number? (scale 0))
-                  (number? (scale 1))))]}
-  (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions (texture-dimensions texture-region) scale)
-                           scale)]
-    (assoc image
-           :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions app/world-unit-scale))))
-
-(defrecord Sprite [texture-region
-                   pixel-dimensions
-                   world-unit-dimensions
-                   color]) ; optional
-
-(defn- sprite* [texture-region]
-  (-> {:texture-region texture-region}
-      (assoc-dimensions 1) ; = scale 1
-      map->Sprite))
-
-(defn ->image [path]
-  (sprite* (g/texture-region (assets/manager path))))
-
-(defn sub-image [image bounds]
-  (sprite* (apply g/->texture-region (:texture-region image) bounds)))
-
-(defn sprite-sheet [path tilew tileh]
-  {:image (->image path)
-   :tilew tilew
-   :tileh tileh})
-
-(defn ->sprite [{:keys [image tilew tileh]} [x y]]
-  (sub-image image
-             [(* x tilew) (* y tileh) tilew tileh]))
-
-(defn edn->image [{:keys [file sub-image-bounds]}]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (->sprite (sprite-sheet file tilew tileh)
-                [(int (/ sprite-x tilew))
-                 (int (/ sprite-y tileh))]))
-    (->image file)))
-
-(defn pixels->world-units [pixels]
-  (* (int pixels) app/world-unit-scale))
-
-(defn world-mouse-position []
-  ; TODO clamping only works for gui-viewport ? check. comment if true
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (vp/unproject-mouse-position app/world-viewport))
-
-(defn world-camera []
-  (vp/camera app/world-viewport))
-
-(defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
-  (.setColorSetter this (reify ColorSetter
-                          (apply [_ color x y]
-                            (color-setter color x y))))
-  (.setView this camera)
-  (->> tiled-map
-       tiled/layers
-       (filter tiled/visible?)
-       (map (partial tiled/layer-index tiled-map))
-       int-array
-       (.render this)))
-
-(defn draw-tiled-map
-  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
-
-  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
-
-  Can be used for lights & shadows.
-
-  Renders only visible layers."
-  [tiled-map color-setter]
-  (draw-tiled-map* (app/cached-map-renderer tiled-map)
-                   tiled-map
-                   color-setter
-                   (world-camera)))

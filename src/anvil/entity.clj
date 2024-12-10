@@ -1,16 +1,15 @@
 (ns anvil.entity
   (:require [anvil.animation :as animation]
-            [anvil.app :refer [world-viewport-width world-viewport-height]]
             [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.db :as db]
-            [anvil.graphics :refer [world-camera]]
             [anvil.grid :as grid]
             [anvil.inventory :as inventory]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.skills :as skills]
             [anvil.stat :as stat]
             [anvil.time :refer [timer]]
+            [anvil.world :as world]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
@@ -84,14 +83,14 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position (world-camera))
+        [cx cy] (cam/position (world/camera))
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float world-viewport-width)  2)))
-     (<= ydist (inc (/ (float world-viewport-height) 2))))))
+     (<= xdist (inc (/ (float world/viewport-width)  2)))
+     (<= ydist (inc (/ (float world/viewport-height) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see

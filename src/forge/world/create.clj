@@ -18,6 +18,7 @@
             [anvil.screen :as screen]
             [anvil.skills :as skills]
             [anvil.stage :as stage]
+            [anvil.sprite :as sprite]
             [anvil.time :as time]
             [anvil.ui :refer [ui-actor
                               set-drawable!
@@ -29,6 +30,7 @@
                               remove-tooltip!]
              :as ui]
             [anvil.val-max :as val-max]
+            [anvil.world :as world]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [frames-per-second]]
             [clojure.gdx.graphics.camera :as cam]
@@ -90,16 +92,16 @@
                 :up? true}))
 
 (defn- hp-mana-bar []
-  (let [rahmen      (g/->image "images/rahmen.png")
-        hpcontent   (g/->image "images/hp.png")
-        manacontent (g/->image "images/mana.png")
+  (let [rahmen      (sprite/create "images/rahmen.png")
+        hpcontent   (sprite/create "images/hp.png")
+        manacontent (sprite/create "images/mana.png")
         x (/ ui/viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
                             (g/draw-image rahmen [x y])
-                            (g/draw-image (g/sub-image contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                            (g/draw-image (sprite/sub contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                           [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
@@ -114,7 +116,7 @@
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (g/->image icon) {})
+   (let [icon (ui/image->widget (sprite/create icon) {})
          label (vis/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
@@ -210,9 +212,9 @@
                     {:label "GUI"
                      :update-fn ui/mouse-position}
                     {:label "World"
-                     :update-fn #(mapv int (g/world-mouse-position))}
+                     :update-fn #(mapv int (world/mouse-position))}
                     {:label "Zoom"
-                     :update-fn #(cam/zoom (g/world-camera))
+                     :update-fn #(cam/zoom (world/camera))
                      :icon "images/zoom.png"}
                     {:label "FPS"
                      :update-fn frames-per-second
@@ -277,8 +279,8 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (-> (g/sprite-sheet "images/items.png" 48 48)
-      (g/->sprite (slot->sprite-idx slot))))
+  (-> (sprite/sheet "images/items.png" 48 48)
+      (sprite/from-sheet (slot->sprite-idx slot))))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)

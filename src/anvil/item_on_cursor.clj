@@ -1,6 +1,6 @@
 (ns anvil.item-on-cursor
-  (:require [anvil.graphics :refer [world-mouse-position]]
-            [anvil.stage :refer [mouse-on-actor?]]
+  (:require [anvil.stage :refer [mouse-on-actor?]]
+            [anvil.world :as world]
             [clojure.gdx.math.vector2 :as v]))
 
 (defn world-item? []
@@ -18,6 +18,6 @@
 
 (defn item-place-position [entity]
   (placement-point (:position entity)
-                   (world-mouse-position)
+                   (world/mouse-position)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))

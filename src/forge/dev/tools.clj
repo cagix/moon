@@ -1,12 +1,12 @@
 (ns forge.dev.tools
-  (:require [anvil.app :refer [post-runnable]]
-            [anvil.db :as db]
+  (:require [anvil.db :as db]
             [anvil.entity :as entity :refer [player-eid mouseover-entity]]
-            [anvil.graphics :refer [world-mouse-position]]
             [anvil.grid :as grid]
             [anvil.skills :as skills]
             [anvil.stage :refer [add-actor]]
             [anvil.ui :refer [t-node scroll-pane] :as ui]
+            [anvil.world :as world]
+            [clojure.gdx.app :refer [post-runnable]]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -77,7 +77,7 @@
    (entity/item (:position @player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
-  @(grid/get (mapv int (world-mouse-position))))
+  @(grid/get (mapv int (world/mouse-position))))
 
 (defn- class->label-str [class]
   (case class

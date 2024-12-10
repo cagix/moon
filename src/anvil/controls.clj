@@ -1,5 +1,5 @@
 (ns anvil.controls
-  (:require [anvil.graphics :refer [world-camera]]
+  (:require [anvil.world :as world]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.input :refer [key-just-pressed?
                                        key-pressed?]]
@@ -15,7 +15,7 @@
   (cam/set-zoom! camera (max 0.1 (+ (cam/zoom camera) by))))
 
 (defn world-camera-zoom []
-  (let [camera (world-camera)]
+  (let [camera (world/camera)]
     (when (key-pressed? :keys/minus)  (inc-zoom camera    zoom-speed))
     (when (key-pressed? :keys/equals) (inc-zoom camera (- zoom-speed)))))
 

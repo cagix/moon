@@ -1,6 +1,5 @@
 (ns forge.world.render
-  (:require [anvil.app :refer [world-viewport-width world-viewport-height]]
-            [anvil.effect :as effect]
+  (:require [anvil.effect :as effect]
             [anvil.entity :as entity :refer [line-of-sight? player-eid
                                              creatures-in-los-of-player]]
             [anvil.faction :as faction]
@@ -12,6 +11,7 @@
             [anvil.time :refer [finished-ratio]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.val-max :as val-max]
+            [anvil.world :as world]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
@@ -83,8 +83,8 @@
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (g/pixels->world-units 5)
-          border (g/pixels->world-units borders-px)]
+          height (world/pixels->units 5)
+          border (world/pixels->units borders-px)]
       (g/filled-rectangle x y width height color/black)
       (g/filled-rectangle (+ x border)
                           (+ y border)
@@ -95,7 +95,7 @@
                           (hpbar-color ratio)))))
 
 (defn- geom-test []
-  (let [position (g/world-mouse-position)
+  (let [position (world/mouse-position)
         radius 0.8
         circle {:position position :radius radius}]
     (g/circle position radius [1 0 0 0.5])
@@ -110,13 +110,13 @@
 (def ^:private ^:dbg-flag cell-occupied? false)
 
 (defn- tile-debug []
-  (let [cam (g/world-camera)
+  (let [cam (world/camera)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
       (g/grid (int left-x) (int bottom-y)
-              (inc (int world-viewport-width))
-              (+ 2 (int world-viewport-height))
+              (inc (int world/viewport-width))
+              (+ 2 (int world/viewport-height))
               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
@@ -141,7 +141,7 @@
 
 (defn- highlight-mouseover-tile []
   (when highlight-blocked-cell?
-    (let [[x y] (mapv int (g/world-mouse-position))
+    (let [[x y] (mapv int (world/mouse-position))
           cell (grid/get [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (g/rectangle x y 1 1
@@ -274,7 +274,7 @@
                   :x x
                   :y (+ y
                         (:half-height entity)
-                        (g/pixels->world-units 5))
+                        (world/pixels->units 5))
                   :scale 2
                   :up? true})))
 
@@ -316,13 +316,13 @@
 
 (defn render-world []
   ; FIXME position DRY
-  (cam/set-position! (g/world-camera)
+  (cam/set-position! (world/camera)
                      (:position @entity/player-eid))
   ; FIXME position DRY
-  (g/draw-tiled-map level/tiled-map
-                    (tile-color-setter (cam/position (g/world-camera))))
-  (g/draw-on-world-view (fn []
-                          (debug-render-before-entities)
-                          ; FIXME position DRY (from player)
-                          (render-entities (map deref (entity/active-entities)))
-                          (debug-render-after-entities))))
+  (world/draw-tiled-map level/tiled-map
+                        (tile-color-setter (cam/position (world/camera))))
+  (world/draw-on-view (fn []
+                        (debug-render-before-entities)
+                        ; FIXME position DRY (from player)
+                        (render-entities (map deref (entity/active-entities)))
+                        (debug-render-after-entities))))

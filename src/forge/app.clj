@@ -1,15 +1,17 @@
 (ns forge.app
-  (:require [anvil.app :as app]
-            [anvil.assets :as assets]
+  (:require [anvil.assets :as assets]
             [anvil.controls :as controls]
             [anvil.db :as db]
-            [anvil.graphics :as graphics :refer [set-cursor world-camera]]
+            [anvil.graphics :as graphics :refer [set-cursor]]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
+            [anvil.sprite :as sprite]
             [anvil.ui :refer [ui-actor text-button] :as ui]
+            [anvil.world :as world]
             [clojure.awt :as awt]
             [clojure.component :refer [defsystem]]
             [clojure.edn :as edn]
+            [clojure.gdx.app :as app]
             [clojure.gdx.asset-manager :as manager]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.files :as files]
@@ -165,25 +167,25 @@
 
 (defmethods :world-viewport
   (setup [[_ [width height tile-size]]]
-    (bind-root app/world-unit-scale (float (/ tile-size)))
-    (bind-root app/world-viewport-width  width)
-    (bind-root app/world-viewport-height height)
-    (bind-root app/world-viewport (let [world-width  (* width  app/world-unit-scale)
-                                        world-height (* height app/world-unit-scale)
-                                        camera (g/orthographic-camera)
-                                        y-down? false]
-                                    (.setToOrtho camera y-down? world-width world-height)
-                                    (fit-viewport world-width world-height camera))))
+    (bind-root world/unit-scale (float (/ tile-size)))
+    (bind-root world/viewport-width  width)
+    (bind-root world/viewport-height height)
+    (bind-root world/viewport (let [world-width  (* width  world/unit-scale)
+                                    world-height (* height world/unit-scale)
+                                    camera (g/orthographic-camera)
+                                    y-down? false]
+                                (.setToOrtho camera y-down? world-width world-height)
+                                (fit-viewport world-width world-height camera))))
   (resize [_ w h]
-    (vp/update app/world-viewport w h)))
+    (vp/update world/viewport w h)))
 
 (defmethods :cached-map-renderer
   (setup [_]
-    (bind-root app/cached-map-renderer
-      (memoize (fn [tiled-map]
-                 (OrthogonalTiledMapRenderer. tiled-map
-                                              (float app/world-unit-scale)
-                                              graphics/batch))))))
+    (bind-root world/tiled-map-renderer
+               (memoize (fn [tiled-map]
+                          (OrthogonalTiledMapRenderer. tiled-map
+                                                       (float world/unit-scale)
+                                                       graphics/batch))))))
 
 (defmethods :vis-ui
   (setup [[_ skin-scale]]
@@ -242,7 +244,7 @@
     (screen/render-current)))
 
 (defn- background-image []
-  (ui/image->widget (graphics/->image "images/moon_background.png")
+  (ui/image->widget (sprite/create "images/moon_background.png")
                     {:fill-parent? true
                      :scaling :fill
                      :align :center}))
@@ -303,7 +305,7 @@
 
 (defmethods :screens/world
   (screen/enter [_]
-    (cam/set-zoom! (world-camera) 0.8))
+    (cam/set-zoom! (world/camera) 0.8))
 
   (screen/exit [_]
     (set-cursor :cursors/default))

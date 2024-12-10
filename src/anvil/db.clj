@@ -1,6 +1,6 @@
 (ns anvil.db
   (:require [anvil.animation :as animation]
-            [anvil.graphics :refer [edn->image]]
+            [anvil.sprite :as sprite]
             [anvil.val-max :as val-max]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -144,6 +144,15 @@
 
 (defmethod malli-form :s/sound [_] :string)
 
+(defn- edn->sprite [{:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (sprite/from-sheet (sprite/sheet file tilew tileh)
+                         [(int (/ sprite-x tilew))
+                          (int (/ sprite-y tileh))]))
+    (sprite/create file)))
+
 (defmethods :s/image
   (malli-form  [_]
     [:map {:closed true}
@@ -151,7 +160,7 @@
      [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
 
   (edn->value [_ edn]
-    (edn->image edn)))
+    (edn->sprite edn)))
 
 (defmethods :s/animation
   (malli-form [_]
@@ -161,7 +170,7 @@
      [:looping? :boolean]])
 
   (edn->value [_ {:keys [frames frame-duration looping?]}]
-    (animation/create (map edn->image frames)
+    (animation/create (map edn->sprite frames)
                       :frame-duration frame-duration
                       :looping? looping?)))
 

@@ -4,5 +4,5 @@
 (defn exit []
   (.exit Gdx/app))
 
-(defn post-runnable [runnable]
-  (.postRunnable Gdx/app runnable))
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))
