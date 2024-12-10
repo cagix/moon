@@ -30,8 +30,43 @@
             [forge.world.create :refer [create-world]]
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
-            [forge.world.update :refer [update-world]])
+            [forge.world.update :refer [update-world]]
+            forge.schemas
+            forge.info
+            forge.mapgen.generate
+            forge.mapgen.uf-caves)
   (:import (forge OrthogonalTiledMapRenderer)))
+
+#_(def effect {:required [#'effect/applicable?
+                          #'effect/handle]
+               :optional [#'world.update/useful?
+                          #'active-skill/render]})
+
+#_(def entity
+    {:optional [#'entity/->v
+                #'entity/create
+                #'world.update/destroy
+                #'world.update/tick
+                #'render/render-below
+                #'render/render-default
+                #'render/render-above
+                #'render/render-info]})
+
+#_(def entity-state
+  (merge-with concat
+              entity
+              {:optional [#'fsm/enter
+                          #'fsm/exit
+                          #'fsm/cursor
+                          #'world.update/pause-game?
+                          #'world.update/manual-tick
+                          #'forge.world.create/clicked-inventory-cell
+                          #'clicked-skillmenu-skill
+                          #'draw-gui-view]}))
+
+; npc moving is basically a performance optimization so npcs do not have to check
+; usable skills every frame
+; also prevents fast twitching around changing directions every frame
 
 (defmethods :db
   (app/create [[_ config]]

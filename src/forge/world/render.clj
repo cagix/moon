@@ -1,12 +1,15 @@
 (ns forge.world.render
   (:require [anvil.app :refer [world-viewport-width world-viewport-height]]
-            [anvil.entity :as entity :refer [line-of-sight? player-eid]]
+            [anvil.effect :as effect]
+            [anvil.entity :as entity :refer [line-of-sight? player-eid
+                                             creatures-in-los-of-player]]
             [anvil.faction :as faction]
             [anvil.graphics :as g]
             [anvil.grid :as grid]
             [anvil.hitpoints :as hp]
             [anvil.item-on-cursor :refer [world-item? item-place-position]]
             [anvil.raycaster :refer [ray-blocked?]]
+            [anvil.time :refer [finished-ratio]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.val-max :as val-max]
             [clojure.component :refer [defsystem]]
@@ -15,6 +18,43 @@
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
             [clojure.utils :refer [sort-by-order pretty-pst]]
             [forge.world.potential-fields :refer [factions-iterations]]))
+
+(defsystem render-effect)
+(defmethod render-effect :default [_ _ctx])
+
+(defmethod render-effect :effects/target-all [_ {:keys [effect/source]}]
+  (let [source* @source]
+    (doseq [target* (map deref (creatures-in-los-of-player))]
+      (g/line (:position source*) #_(start-point source* target*)
+              (:position target*)
+              [1 0 0 0.5]))))
+
+(defmethod render-effect :effects/target-entity
+  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (when target
+    (let [source* @source
+          target* @target]
+      (g/line (effect/start-point source* target*)
+              (effect/end-point source* target* maxrange)
+              (if (effect/in-range? source* target* maxrange)
+                [1 0 0 0.5]
+                [1 1 0 0.5])))))
+
+(defn- render-effects [ctx effects]
+  (run! #(render-effect % ctx) effects))
+
+(defn- draw-skill-image [image entity [x y] action-counter-ratio]
+  (let [[width height] (:world-unit-dimensions image)
+        _ (assert (= width height))
+        radius (/ (float width) 2)
+        y (+ (float y) (float (:half-height entity)) (float 0.15))
+        center [x (+ y radius)]]
+    (g/filled-circle center radius [1 1 1 0.125])
+    (g/sector center radius
+              90 ; start-angle
+              (* (float action-counter-ratio) 360) ; degree
+              [1 1 1 0.5])
+    (g/draw-image image [(- (float x) radius) y])))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -252,6 +292,11 @@
   (let [ratio (val-max/ratio (hp/->value entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))
+
+(defmethod render-info :active-skill [[_ {:keys [skill effect-ctx counter]}] entity]
+  (let [{:keys [entity/image skill/effects]} skill]
+    (draw-skill-image image entity (:position entity) (finished-ratio counter))
+    (render-effects (effect/check-update-ctx effect-ctx) effects)))
 
 (defn- render-entities
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."

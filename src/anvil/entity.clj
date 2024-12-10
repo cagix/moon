@@ -17,6 +17,11 @@
             [clojure.utils :refer [define-order safe-merge unique-number!]]
             [reduce-fsm :as fsm]))
 
+(defn- apply-action-speed-modifier [entity skill action-time]
+  (/ action-time
+     (or (stat/->value entity (:skill/action-time-modifier-key skill))
+         1)))
+
 (def ^:private npc-fsm
   (fsm/fsm-inc
    [[:npc-sleeping
@@ -275,6 +280,18 @@
 
 (defmethod ->v :npc-idle [[_ eid]]
   {:eid eid})
+
+(defmethod ->v :npc-dead [[_ eid]]
+  {:eid eid})
+
+(defmethod ->v :active-skill [[_ eid [skill effect-ctx]]]
+  {:eid eid
+   :skill skill
+   :effect-ctx effect-ctx
+   :counter (->> skill
+                 :skill/action-time
+                 (apply-action-speed-modifier @eid skill)
+                 timer)})
 
 (defn- create-vs [components]
   (reduce (fn [m [k v]]

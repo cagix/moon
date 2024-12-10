@@ -3,7 +3,7 @@
             [anvil.body :as body]
             [anvil.damage :as damage]
             [anvil.db :as db]
-            [anvil.entity :as entity :refer [creatures-in-los-of-player]]
+            [anvil.entity :as entity :refer [creatures-in-los-of-player line-of-sight?]]
             [anvil.faction :as faction]
             [anvil.fsm :as fsm]
             [anvil.hitpoints :as hp]
@@ -15,6 +15,16 @@
             [clojure.gdx.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defmethods]]))
+
+; this is not necessary if effect does not need target, but so far not other solution came up.
+(defn check-update-ctx
+  "Call this on effect-context if the time of using the context is not the time when context was built."
+  [{:keys [effect/source effect/target] :as ctx}]
+  (if (and target
+           (not (:entity/destroyed? @target))
+           (line-of-sight? @source @target))
+    ctx
+    (dissoc ctx :effect/target)))
 
 (defsystem applicable?)
 

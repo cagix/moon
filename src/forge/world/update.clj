@@ -361,6 +361,20 @@
       (fsm/event eid :start-action [skill effect-ctx])
       (fsm/event eid :movement-direction (or (potential-field/find-direction eid) [0 0])))))
 
+(defmethod tick :active-skill [[_ {:keys [skill effect-ctx counter]}] eid]
+  (cond
+   (not (effect/some-applicable? (effect/check-update-ctx effect-ctx)
+                                 (:skill/effects skill)))
+   (do
+    (fsm/event eid :action-done)
+    ; TODO some sound ?
+    )
+
+   (stopped? counter)
+   (do
+    (effect/do-all! effect-ctx (:skill/effects skill))
+    (fsm/event eid :action-done))))
+
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?
@@ -438,6 +452,7 @@
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
+(defmethod pause-game? :active-skill          [_] false)
 (defmethod pause-game? :stunned               [_] false)
 (defmethod pause-game? :player-moving         [_] false)
 (defmethod pause-game? :player-item-on-cursor [_] true)

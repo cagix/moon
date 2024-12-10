@@ -43,9 +43,7 @@
                 }
   :profiles {:uberjar {:aot [forge.app]}}
   #_:main #_forge.app
-
-  ; for lein codox, otherwise :no-doc is not set
-  :injections [(load "forge/install")])
+  )
 
 ; * Notes
 

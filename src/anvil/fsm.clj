@@ -3,10 +3,12 @@
             [anvil.entity :as entity]
             [anvil.graphics :as g]
             [anvil.item-on-cursor :refer [item-place-position]]
+            [anvil.mana :as mana]
             [anvil.screen :as screen]
             [anvil.stage :refer [show-modal]]
             [anvil.stat :as stat]
             [anvil.string-effect :as string-effect]
+            [anvil.time :refer [timer]]
             [clojure.component :refer [defsystem]]
             [clojure.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
@@ -69,6 +71,19 @@
   (exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement)))
 
+(defmethod enter :npc-dead [[_ {:keys [eid]}]]
+  (swap! eid assoc :entity/destroyed? true))
+
+(defmethod enter :active-skill [[_ {:keys [eid skill]}]]
+  (play-sound (:skill/start-action-sound skill))
+  (when (:skill/cooldown skill)
+    (swap! eid assoc-in
+           [:entity/skills (:property/id skill) :skill/cooling-down?]
+           (timer (:skill/cooldown skill))))
+  (when (and (:skill/cost skill)
+             (not (zero? (:skill/cost skill))))
+    (swap! eid mana/pay-cost (:skill/cost skill))))
+
 (defsystem cursor)
 (defmethod cursor :default [_])
 
@@ -76,6 +91,7 @@
 (defmethod cursor :player-moving         [_] :cursors/walking)
 (defmethod cursor :player-item-on-cursor [_] :cursors/hand-grab)
 (defmethod cursor :player-dead           [_] :cursors/black-x)
+(defmethod cursor :active-skill          [_] :cursors/sandclock)
 
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
