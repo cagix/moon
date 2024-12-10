@@ -1,5 +1,6 @@
 (ns anvil.entity
-  (:require [anvil.app :refer [world-viewport-width world-viewport-height]]
+  (:require [anvil.animation :as animation]
+            [anvil.app :refer [world-viewport-width world-viewport-height]]
             [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.db :as db]
@@ -10,7 +11,58 @@
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [define-order safe-merge unique-number!]]))
+            [clojure.utils :refer [define-order safe-merge unique-number!]]
+            [reduce-fsm :as fsm]))
+
+(def ^:private npc-fsm
+  (fsm/fsm-inc
+   [[:npc-sleeping
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :alert -> :npc-idle]
+    [:npc-idle
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :movement-direction -> :npc-moving]
+    [:npc-moving
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :timer-finished -> :npc-idle]
+    [:active-skill
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :action-done -> :npc-idle]
+    [:stunned
+     :kill -> :npc-dead
+     :effect-wears-off -> :npc-idle]
+    [:npc-dead]]))
+
+(def ^:private player-fsm
+  (fsm/fsm-inc
+   [[:player-idle
+     :kill -> :player-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :pickup-item -> :player-item-on-cursor
+     :movement-input -> :player-moving]
+    [:player-moving
+     :kill -> :player-dead
+     :stun -> :stunned
+     :no-movement-input -> :player-idle]
+    [:active-skill
+     :kill -> :player-dead
+     :stun -> :stunned
+     :action-done -> :player-idle]
+    [:stunned
+     :kill -> :player-dead
+     :effect-wears-off -> :player-idle]
+    [:player-item-on-cursor
+     :kill -> :player-dead
+     :stun -> :stunned
+     :drop-item -> :player-idle
+     :dropped-item -> :player-idle]
+    [:player-dead]]))
 
 (declare player-eid
          ids)
@@ -183,6 +235,18 @@
 (defmethod ->v :default [[_ v]]
   v)
 
+(defmethod ->v :entity/delete-after-duration [[_ duration]]
+  (timer duration))
+
+(defmethod ->v :entity/hp [[_ v]]
+  [v v])
+
+(defmethod ->v :entity/mana [[_ v]]
+  [v v])
+
+(defmethod ->v :entity/projectile-collision [[_ v]]
+  (assoc v :already-hit-bodies #{}))
+
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
             (assoc m k (->v [k v])))
@@ -191,6 +255,25 @@
 
 (defsystem create)
 (defmethod create :default [_ eid])
+
+(defmethod create :entity/delete-after-animation-stopped? [_ eid]
+  (-> @eid :entity/animation :looping? not assert))
+
+(defmethod create :entity/animation [[_ animation] eid]
+  (swap! eid assoc :entity/image (animation/current-frame animation)))
+
+; fsm throws when initial-state is not part of states, so no need to assert initial-state
+; initial state is nil, so associng it. make bug report at reduce-fsm?
+(defn- ->init-fsm [fsm initial-state]
+  (assoc (fsm initial-state nil) :state initial-state))
+
+(defmethod create :entity/fsm [[k {:keys [fsm initial-state]}] eid]
+  (swap! eid assoc
+         k (->init-fsm (case fsm
+                         :fsms/player player-fsm
+                         :fsms/npc npc-fsm)
+                       initial-state)
+         initial-state (->v [initial-state eid])))
 
 (defn- spawn-entity [position body components]
   (assert (and (not (contains? components :position))

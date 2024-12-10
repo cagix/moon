@@ -1,16 +1,57 @@
 (ns forge.world.render
   (:require [anvil.app :refer [world-viewport-width world-viewport-height]]
-            [anvil.entity :as entity :refer [line-of-sight?]]
+            [anvil.entity :as entity :refer [line-of-sight? player-eid]]
+            [anvil.faction :as faction]
             [anvil.graphics :as g]
             [anvil.grid :as grid]
+            [anvil.hitpoints :as hp]
             [anvil.raycaster :refer [ray-blocked?]]
             [anvil.level :as level :refer [explored-tile-corners]]
+            [anvil.val-max :as val-max]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics.camera :as cam]
             [clojure.gdx.graphics.color :as color :refer [->color]]
             [clojure.gdx.math.shapes :refer [circle->outer-rectangle]]
             [clojure.utils :refer [sort-by-order pretty-pst]]
             [forge.world.potential-fields :refer [factions-iterations]]))
+
+(def ^:private outline-alpha 0.4)
+(def ^:private enemy-color    [1 0 0 outline-alpha])
+(def ^:private friendly-color [0 1 0 outline-alpha])
+(def ^:private neutral-color  [1 1 1 outline-alpha])
+
+(def ^:private hpbar-colors
+  {:green     [0 0.8 0]
+   :darkgreen [0 0.5 0]
+   :yellow    [0.5 0.5 0]
+   :red       [0.5 0 0]})
+
+(defn- hpbar-color [ratio]
+  (let [ratio (float ratio)
+        color (cond
+               (> ratio 0.75) :green
+               (> ratio 0.5)  :darkgreen
+               (> ratio 0.25) :yellow
+               :else          :red)]
+    (color hpbar-colors)))
+
+(def ^:private borders-px 1)
+
+(defn- draw-hpbar [{:keys [position width half-width half-height]}
+                   ratio]
+  (let [[x y] position]
+    (let [x (- x half-width)
+          y (+ y half-height)
+          height (g/pixels->world-units 5)
+          border (g/pixels->world-units borders-px)]
+      (g/filled-rectangle x y width height color/black)
+      (g/filled-rectangle (+ x border)
+                          (+ y border)
+                          (- (* width ratio)
+                             (* 2 border))
+                          (- height
+                             (* 2 border))
+                          (hpbar-color ratio)))))
 
 (defn- geom-test []
   (let [position (g/world-mouse-position)
@@ -133,14 +174,68 @@
 (defsystem render-below)
 (defmethod render-below :default [_ entity])
 
+(defmethod render-below :entity/mouseover? [_ {:keys [entity/faction] :as entity}]
+  (let [player @player-eid]
+    (g/with-line-width 3
+      #(g/ellipse (:position entity)
+                  (:half-width entity)
+                  (:half-height entity)
+                  (cond (= faction (faction/enemy player))
+                        enemy-color
+                        (= faction (:entity/faction player))
+                        friendly-color
+                        :else
+                        neutral-color)))))
+
 (defsystem render-default)
 (defmethod render-default :default [_ entity])
+
+(defmethod render-default :entity/clickable
+  [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
+  (when (and mouseover? text)
+    (let [[x y] (:position entity)]
+      (g/draw-text {:text text
+                    :x x
+                    :y (+ y (:half-height entity))
+                    :up? true}))))
+
+(defmethod render-default :entity/image [[_ image] entity]
+  (g/draw-rotated-centered image
+                           (or (:rotation-angle entity) 0)
+                           (:position entity)))
+
+(defmethod render-default :entity/line-render [[_ {:keys [thick? end color]}] entity]
+  (let [position (:position entity)]
+    (if thick?
+      (g/with-line-width 4
+        #(g/line position end color))
+      (g/line position end color))))
 
 (defsystem render-above)
 (defmethod render-above :default [_ entity])
 
+; TODO draw opacity as of counter ratio?
+(defmethod render-above :entity/temp-modifier [_ entity]
+  (g/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
+
+(defmethod render-above :entity/string-effect
+  [[_ {:keys [text]}] entity]
+  (let [[x y] (:position entity)]
+    (g/draw-text {:text text
+                  :x x
+                  :y (+ y
+                        (:half-height entity)
+                        (g/pixels->world-units 5))
+                  :scale 2
+                  :up? true})))
+
 (defsystem render-info)
 (defmethod render-info :default [_ entity])
+
+(defmethod render-info :entity/hp [_ entity]
+  (let [ratio (val-max/ratio (hp/->value entity))]
+    (when (or (< ratio 1) (:entity/mouseover? entity))
+      (draw-hpbar entity ratio))))
 
 (defn- render-entities
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."

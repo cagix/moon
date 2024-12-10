@@ -34,24 +34,8 @@
 
 (install "forge"
          entity
-         (map vector [:entity/alert-friendlies-after-duration
-                      :entity/animation
-                      :entity/clickable
-                      :entity/delete-after-animation-stopped?
-                      :entity/delete-after-duration
-                      :entity/destroy-audiovisual
-                      :entity/fsm
-                      :entity/hp
-                      :entity/image
-                      :entity/inventory
-                      :entity/line-render
-                      :entity/mana
-                      :entity/mouseover?
-                      :entity/movement
-                      :entity/string-effect
-                      :entity/skills
-                      :entity/projectile-collision
-                      :entity/temp-modifier]))
+         (map vector [:entity/inventory
+                      :entity/skills]))
 
 (def entity-state
   (merge-with concat

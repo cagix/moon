@@ -1,23 +1,157 @@
 (ns forge.world.update
-  (:require [anvil.controls :as controls]
+  (:require [anvil.animation :as animation]
+            [anvil.body :as body]
+            [anvil.db :as db]
+            [anvil.controls :as controls]
+            [anvil.effect :as effect]
             [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order]]
             [anvil.error :as error]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.grid :as grid]
+            [anvil.modifiers :as mods]
             [anvil.stage :as stage]
-            [anvil.time :as time]
+            [anvil.time :as time :refer [stopped?]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [delta-time]]
-            [clojure.utils :refer [bind-root sort-by-order]]
-            [forge.world.potential-fields :refer [update-potential-fields!]]))
+            [clojure.gdx.math.vector2 :as v]
+            [clojure.utils :refer [bind-root sort-by-order find-first]]
+            [forge.world.potential-fields :refer [update-potential-fields!]]
+            [malli.core :as m]))
+
+(def ^:private shout-radius 4)
+
+(defn- friendlies-in-radius [position faction]
+  (->> {:position position
+        :radius shout-radius}
+       grid/circle->entities
+       (filter #(= (:entity/faction @%) faction))))
+
+(defn- move-position [position {:keys [direction speed delta-time]}]
+  (mapv #(+ %1 (* %2 speed delta-time)) position direction))
+
+(defn- move-body [body movement]
+  (-> body
+      (update :position    move-position movement)
+      (update :left-bottom move-position movement)))
+
+(defn- valid-position? [{:keys [entity/id z-order] :as body}]
+  {:pre [(:collides? body)]}
+  (let [cells* (into [] (map deref) (grid/rectangle->cells body))]
+    (and (not-any? #(grid/cell-blocked? % z-order) cells*)
+         (->> cells*
+              grid/cells->entities
+              (not-any? (fn [other-entity]
+                          (let [other-entity @other-entity]
+                            (and (not= (:entity/id other-entity) id)
+                                 (:collides? other-entity)
+                                 (body/collides? other-entity body)))))))))
+
+(defn- try-move [body movement]
+  (let [new-body (move-body body movement)]
+    (when (valid-position? new-body)
+      new-body)))
+
+; TODO sliding threshold
+; TODO name - with-sliding? 'on'
+; TODO if direction was [-1 0] and invalid-position then this algorithm tried to move with
+; direection [0 0] which is a waste of processor power...
+(defn- try-move-solid-body [body {[vx vy] :direction :as movement}]
+  (let [xdir (Math/signum (float vx))
+        ydir (Math/signum (float vy))]
+    (or (try-move body movement)
+        (try-move body (assoc movement :direction [xdir 0]))
+        (try-move body (assoc movement :direction [0 ydir])))))
+
+; set max speed so small entities are not skipped by projectiles
+; could set faster than max-speed if I just do multiple smaller movement steps in one frame
+(def ^:private max-speed (/ entity/minimum-body-size
+                            time/max-delta)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+
+(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
 
 (defsystem tick)
 (defmethod tick :default [_ eid])
+
+(defmethod tick :entity/animation [[k animation] eid]
+  (swap! eid #(-> %
+                  (assoc :entity/image (animation/current-frame animation))
+                  (assoc k (animation/tick animation time/delta)))))
+
+(defmethod tick :entity/delete-after-animation-stopped? [_ eid]
+  (when (animation/stopped? (:entity/animation @eid))
+    (swap! eid assoc :entity/destroyed? true)))
+
+(defmethod tick :entity/movement
+  [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
+   eid]
+  (assert (m/validate speed-schema speed)
+          (pr-str speed))
+  (assert (or (zero? (v/length direction))
+              (v/normalised? direction))
+          (str "cannot understand direction: " (pr-str direction)))
+  (when-not (or (zero? (v/length direction))
+                (nil? speed)
+                (zero? speed))
+    (let [movement (assoc movement :delta-time time/delta)
+          body @eid]
+      (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
+                        (try-move-solid-body body movement)
+                        (move-body body movement))]
+        (entity/position-changed eid)
+        (swap! eid assoc
+               :position (:position body)
+               :left-bottom (:left-bottom body))
+        (when rotate-in-movement-direction?
+          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
+
+(defmethod tick :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
+  (when (stopped? counter)
+    (swap! eid assoc :entity/destroyed? true)
+    (doseq [friendly-eid (friendlies-in-radius (:position @eid) faction)]
+      (fsm/event friendly-eid :alert))))
+
+(defmethod tick :entity/delete-after-duration [[_ counter] eid]
+  (when (stopped? counter)
+    (swap! eid assoc :entity/destroyed? true)))
+
+(defmethod tick :entity/string-effect [[k {:keys [counter]}] eid]
+  (when (stopped? counter)
+    (swap! eid dissoc k)))
+
+(defmethod tick :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
+  (when (stopped? counter)
+    (swap! eid dissoc k)
+    (swap! eid mods/remove modifiers)))
+
+(defmethod tick :entity/projectile-collision
+  [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
+  ; TODO this could be called from body on collision
+  ; for non-solid
+  ; means non colliding with other entities
+  ; but still collding with other stuff here ? o.o
+  (let [entity @eid
+        cells* (map deref (grid/rectangle->cells entity)) ; just use cached-touched -cells
+        hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
+                                     (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
+                                           (:entity/faction @%))
+                                     (:collides? @%)
+                                     (body/collides? entity @%))
+                               (grid/cells->entities cells*))
+        destroy? (or (and hit-entity (not piercing?))
+                     (some #(grid/cell-blocked? % (:z-order entity)) cells*))]
+    (when destroy?
+      (swap! eid assoc :entity/destroyed? true))
+    (when hit-entity
+      (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
+    (when hit-entity
+      (effect/do-all! {:effect/source eid
+                       :effect/target hit-entity}
+                      entity-effects))))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
@@ -65,6 +199,10 @@
 
 (defsystem destroy)
 (defmethod destroy :default [_ eid])
+
+(defmethod destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
+  (entity/audiovisual (:position @eid)
+                      (db/build audiovisuals-id)))
 
 (defn- remove-destroyed-entities []
   (doseq [eid (filter (comp :entity/destroyed? deref)
