@@ -31,7 +31,11 @@
           :else
           (recur remaining result))))
 
-(defn search-and-load [folder class-extensions]
+(def ^:private class-extensions
+  [[com.badlogic.gdx.audio.Sound      #{"wav"}]
+   [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])
+
+(defn setup [folder]
   (def manager (doto (asset-manager*)
                  (load-assets (for [[asset-type exts] class-extensions
                                     file (map #(str/replace-first % folder "")

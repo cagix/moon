@@ -121,21 +121,7 @@
 (defn world-screen []
   (stage/screen :sub-screen (->WorldScreen)))
 
-(defn setup-ui [skin-scale]
-  ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
-  ; => actually there is a deeper issue at play
-  ; we need to dispose ALL resources which were loaded already ...
-  (when (ui/loaded?)
-    (ui/dispose))
-  (ui/load skin-scale)
-  (-> (ui/skin)
-      (.getFont "default-font")
-      .getData
-      .markupEnabled
-      (set! true))
-  (ui/configure-tooltips {:default-appear-delay-time 0}))
-
-(defn start [{:keys [db dock-icon asset-folder graphics ui-skin-scale title fps width height]}]
+(defn- start [{:keys [db dock-icon asset-folder graphics ui-skin-scale title fps width height]}]
   (db/setup db)
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
@@ -145,11 +131,9 @@
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create  []
-                          (assets/search-and-load asset-folder
-                                                  [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-                                                   [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])
-                          (g/create graphics)
-                          (setup-ui ui-skin-scale)
+                          (assets/setup asset-folder)
+                          (g/setup graphics)
+                          (ui/setup ui-skin-scale)
                           (screen/setup {:screens/main-menu (main-menu-screen)
                                          ;:screens/map-editor
                                          :screens/editor (editor-screen)
@@ -160,8 +144,8 @@
                         (dispose []
                           (assets/cleanup)
                           (g/cleanup)
-                          (ui/dispose)
-                          (screen/dispose-all))
+                          (ui/cleanup)
+                          (screen/cleanup))
 
                         (render []
                           (ScreenUtils/clear g/black)

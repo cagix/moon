@@ -27,7 +27,7 @@
   (def screens screens)
   (change first-k))
 
-(defn dispose-all []
+(defn cleanup []
   (run! dispose (vals screens)))
 
 (defn render-current []

@@ -37,7 +37,7 @@
   ([^Texture texture x y w h]
    (TextureRegion. texture (int x) (int y) (int w) (int h))))
 
-(defn create [{:keys [default-font cursors viewport world-viewport]}]
+(defn setup [{:keys [default-font cursors viewport world-viewport]}]
   (def batch (SpriteBatch.))
   (def sd-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                  (.setColor Color/WHITE)
