@@ -156,12 +156,12 @@
 
 (defmethods :gui-viewport
   (setup [[_ [width height]]]
-    (bind-root app/gui-viewport-width  width)
-    (bind-root app/gui-viewport-height height)
-    (bind-root app/gui-viewport (fit-viewport width height (g/orthographic-camera))))
+    (bind-root ui/viewport-width  width)
+    (bind-root ui/viewport-height height)
+    (bind-root ui/viewport (fit-viewport width height (g/orthographic-camera))))
 
   (resize [_ w h]
-    (vp/update app/gui-viewport w h :center-camera? true)))
+    (vp/update ui/viewport w h :center-camera? true)))
 
 (defmethods :world-viewport
   (setup [[_ [width height tile-size]]]
@@ -228,7 +228,7 @@
   (setup [[_ {:keys [screens first-k]}]]
     (screen/setup (into {}
                         (for [k screens]
-                          [k [:screens/stage {:stage (scene2d.stage/create app/gui-viewport
+                          [k [:screens/stage {:stage (scene2d.stage/create ui/viewport
                                                                            graphics/batch
                                                                            (actors [k]))
                                               :sub-screen [k]}]]))
@@ -241,9 +241,15 @@
     (g/clear-screen color/black)
     (screen/render-current)))
 
+(defn- background-image []
+  (ui/image->widget (graphics/->image "images/moon_background.png")
+                    {:fill-parent? true
+                     :scaling :fill
+                     :align :center}))
+
 (defmethods :screens/main-menu
   (actors [_]
-    [(ui/background-image)
+    [(background-image)
      (ui/table
       {:rows
        (remove nil?
@@ -271,7 +277,7 @@
 
 (defmethods :screens/editor
   (actors [_]
-    [(ui/background-image)
+    [(background-image)
      (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
      (ui-actor {:act (fn []
                        (when (key-just-pressed? :shift-left)

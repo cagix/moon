@@ -245,10 +245,6 @@
                  (int (/ sprite-y tileh))]))
     (->image file)))
 
-(defn gui-mouse-position []
-  ; TODO mapv int needed?
-  (mapv int (vp/unproject-mouse-position app/gui-viewport)))
-
 (defn pixels->world-units [pixels]
   (* (int pixels) app/world-unit-scale))
 

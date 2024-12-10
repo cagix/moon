@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.editor
-  (:require [anvil.app :refer [gui-viewport-height]]
-            [anvil.assets :as assets]
+  (:require [anvil.assets :as assets]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.info :as info]
@@ -62,7 +61,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- gui-viewport-height 50)
+     :height (min (- ui/viewport-height 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]

@@ -1,6 +1,5 @@
 (ns ^:no-doc forge.screens.map-editor
-  (:require [anvil.app :as app :refer [gui-viewport-height]]
-            [anvil.controls :as controls]
+  (:require [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.graphics :as g :refer [draw-on-world-view draw-tiled-map world-mouse-position world-camera]]
             [anvil.level :refer [generate-level]]
@@ -67,8 +66,7 @@
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos))
                                          (.pack window))}))
-    (.setPosition window 0 gui-viewport-height)
-    window))
+    (.setPosition window 0 ui/viewport-height) window))
 
 (def ^:private camera-movement-speed 1)
 

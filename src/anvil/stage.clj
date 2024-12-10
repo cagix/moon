@@ -1,7 +1,6 @@
 (ns anvil.stage
   (:refer-clojure :exclude [get])
-  (:require [anvil.app :as app]
-            [anvil.graphics :as g]
+  (:require [anvil.graphics :as g]
             [anvil.screen :as screen]
             [anvil.ui :as ui]
             [clojure.gdx.scene2d.actor :as actor]
@@ -33,7 +32,7 @@
   (run! add-actor new-actors))
 
 (defn mouse-on-actor? []
-  (let [[x y] (g/gui-mouse-position)]
+  (let [[x y] (ui/mouse-position)]
     (.hit (get) x y true)))
 
 ; no window movable type cursor appears here like in player idle
@@ -51,8 +50,8 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ app/gui-viewport-width 2)
-                                 (* app/gui-viewport-height (/ 3 4))]
+               :center-position [(/ ui/viewport-width 2)
+                                 (* ui/viewport-height (/ 3 4))]
                :pack? true})))
 
 

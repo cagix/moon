@@ -1,6 +1,5 @@
 (ns forge.world.create
-  (:require [anvil.app :as app :refer [gui-viewport-width gui-viewport-height]]
-            [anvil.audio :refer [play-sound]]
+  (:require [anvil.audio :refer [play-sound]]
             [anvil.content-grid :as content-grid]
             [anvil.controls :as controls]
             [anvil.db :as db]
@@ -94,7 +93,7 @@
   (let [rahmen      (g/->image "images/rahmen.png")
         hpcontent   (g/->image "images/hp.png")
         manacontent (g/->image "images/mana.png")
-        x (/ app/gui-viewport-width 2)
+        x (/ ui/viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
@@ -159,7 +158,7 @@
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [app/gui-viewport-width 0]
+                           :position [ui/viewport-width 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
@@ -209,7 +208,7 @@
                     {:label "paused?"
                      :update-fn (fn [] time/paused?)}
                     {:label "GUI"
-                     :update-fn g/gui-mouse-position}
+                     :update-fn ui/mouse-position}
                     {:label "World"
                      :update-fn #(mapv int (g/world-mouse-position))}
                     {:label "Zoom"
@@ -258,7 +257,7 @@
      (draw-cell-rect @player-eid
                      (.getX this)
                      (.getY this)
-                     (actor/hit this (g/gui-mouse-position))
+                     (actor/hit this (ui/mouse-position))
                      (user-object (.getParent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -343,8 +342,8 @@
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [gui-viewport-width
-                         gui-viewport-height]
+              :position [ui/viewport-width
+                         ui/viewport-height]
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
@@ -406,7 +405,7 @@
 (defmethod draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (not (world-item?))
     (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                     (g/gui-mouse-position))))
+                     (ui/mouse-position))))
 
 (defn- widgets []
   [(if dev-mode?

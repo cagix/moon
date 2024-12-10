@@ -1,17 +1,24 @@
 (ns anvil.ui
-  (:require [anvil.graphics]
-            [clojure.gdx.graphics :as g]
+  (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :refer [find-actor-with-id
-                                               add-actor!]]
+            [clojure.gdx.scene2d.group :refer [find-actor-with-id add-actor!]]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.utils :as scene2d.utils]
+            [clojure.gdx.utils.viewport :as vp]
             [clojure.vis-ui :as vis])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisWindow VisTable)))
+
+(declare viewport-width
+         viewport-height
+         viewport)
+
+(defn mouse-position []
+  ; TODO mapv int needed?
+  (mapv int (vp/unproject-mouse-position viewport)))
 
 (defn horizontal-separator-cell [colspan]
   {:actor (vis/separator :default)
@@ -228,9 +235,3 @@
 
 (defn t-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
-
-(defn background-image []
-  (image->widget (anvil.graphics/->image "images/moon_background.png")
-                 {:fill-parent? true
-                  :scaling :fill
-                  :align :center}))
