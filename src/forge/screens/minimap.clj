@@ -1,11 +1,11 @@
 (ns ^:no-doc forge.screens.minimap
   (:require [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
+            [anvil.input :refer [key-just-pressed?]]
             [anvil.level :as level :refer [explored-tile-corners]]
             [anvil.screen :as screen]
             [anvil.world :as world]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :refer [key-just-pressed?]]))
+            [clojure.gdx.graphics.color :as color]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight

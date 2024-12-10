@@ -3,6 +3,7 @@
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.info :as info]
+            [anvil.input :refer [key-just-pressed?]]
             [anvil.property :as property]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
@@ -22,7 +23,6 @@
              :as ui]
             [clojure.edn :as edn]
             [clojure.gdx.asset-manager :as asset-manager]
-            [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [children
                                                clear-children

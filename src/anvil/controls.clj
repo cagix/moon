@@ -1,6 +1,6 @@
 (ns anvil.controls
   (:require [anvil.graphics.camera :as cam]
-            [clojure.gdx.input :refer [key-just-pressed? key-pressed?]]
+            [anvil.input :refer [key-just-pressed? key-pressed?]]
             [clojure.gdx.math.vector2 :as v]))
 
 (defn unpaused? []

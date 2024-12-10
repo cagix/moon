@@ -1,4 +1,4 @@
-(ns clojure.gdx.input
+(ns anvil.input
   (:require [clojure.gdx.interop :refer [static-field]])
   (:import (com.badlogic.gdx Gdx)))
 
