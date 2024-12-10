@@ -51,6 +51,5 @@
                      [forge.entity.state.player-dead :player-dead]
                      [forge.entity.state.player-idle :player-idle]
                      [forge.entity.state.player-item-on-cursor :player-item-on-cursor]
-                     [forge.entity.state.player-moving :player-moving]
-                     [forge.entity.state.stunned :stunned]]]
+                     [forge.entity.state.player-moving :player-moving]]]
   (install-component entity-state ns-sym k))

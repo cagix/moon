@@ -249,6 +249,10 @@
 (defmethod ->v :entity/projectile-collision [[_ v]]
   (assoc v :already-hit-bodies #{}))
 
+(defmethod ->v :stunned [[_ eid duration]]
+  {:eid eid
+   :counter (timer duration)})
+
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
             (assoc m k (->v [k v])))

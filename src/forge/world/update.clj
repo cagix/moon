@@ -159,6 +159,10 @@
                      (stopped? cooling-down?))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
 
+(defmethod tick :stunned [[_ {:keys [counter]}] eid]
+  (when (stopped? counter)
+    (fsm/event eid :effect-wears-off)))
+
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?
@@ -222,6 +226,8 @@
 
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
+
+(defmethod pause-game? :stunned [_] false)
 
 (defn update-world []
   (manual-tick (fsm/state-obj @player-eid))

@@ -20,6 +20,9 @@
 (defsystem cursor)
 (defmethod cursor :default [_])
 
+(defmethod cursor :stunned [_]
+  :cursors/denied)
+
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)

@@ -174,6 +174,9 @@
 (defsystem render-below)
 (defmethod render-below :default [_ entity])
 
+(defmethod render-below :stunned [_ entity]
+  (g/circle (:position entity) 0.5 [1 1 1 0.6]))
+
 (defmethod render-below :entity/mouseover? [_ {:keys [entity/faction] :as entity}]
   (let [player @player-eid]
     (g/with-line-width 3
