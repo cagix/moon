@@ -31,7 +31,6 @@
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]]
-            forge.info
             forge.mapgen.generate
             forge.mapgen.uf-caves)
   (:import (forge OrthogonalTiledMapRenderer)))
