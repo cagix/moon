@@ -6,6 +6,7 @@
             [anvil.screen :as screen]
             [anvil.stage :refer [show-modal]]
             [anvil.stat :as stat]
+            [anvil.string-effect :as string-effect]
             [clojure.component :refer [defsystem]]
             [clojure.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
@@ -53,6 +54,12 @@
         (swap! eid dissoc :entity/item-on-cursor)
         (entity/item (item-place-position entity)
                      (:entity/item-on-cursor entity))))))
+
+(defmethod exit :npc-sleeping [[_ {:keys [eid]}]]
+  (entity/delayed-alert (:position       @eid)
+                        (:entity/faction @eid)
+                        0.2)
+  (swap! eid string-effect/add "[WHITE]!"))
 
 (defsystem cursor)
 (defmethod cursor :default [_])

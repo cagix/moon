@@ -6,6 +6,7 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order]]
             [anvil.error :as error]
+            [anvil.faction :as faction]
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.grid :as grid]
@@ -278,6 +279,13 @@
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (stat/->value @eid :entity/movement-speed)})
     (fsm/event eid :no-movement-input)))
+
+(defmethod tick :npc-sleeping [_ eid]
+  (let [entity @eid
+        cell (grid/get (body/tile entity))] ; pattern!
+    (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
+      (when (<= distance (stat/->value entity :entity/aggro-range))
+        (fsm/event eid :alert)))))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?

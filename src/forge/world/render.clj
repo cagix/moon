@@ -238,6 +238,13 @@
                   :scale 2
                   :up? true})))
 
+(defmethod render-above :npc-sleeping [_ entity]
+  (let [[x y] (:position entity)]
+    (g/draw-text {:text "zzz"
+                  :x x
+                  :y (+ y (:half-height entity))
+                  :up? true})))
+
 (defsystem render-info)
 (defmethod render-info :default [_ entity])
 

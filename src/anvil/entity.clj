@@ -264,6 +264,9 @@
 (defmethod ->v :player-idle [[_ eid]]
   {:eid eid})
 
+(defmethod ->v :npc-sleeping [[_ eid]]
+  {:eid eid})
+
 (defn- create-vs [components]
   (reduce (fn [m [k v]]
             (assoc m k (->v [k v])))
