@@ -1,8 +1,8 @@
 (ns clojure.gdx.utils.viewport
   (:refer-clojure :exclude [update])
-  (:require [clojure.gdx.input :as input]
-            [clojure.gdx.math.utils :refer [clamp]])
-  (:import (com.badlogic.gdx.utils.viewport FitViewport Viewport)
+  (:require [clojure.gdx.math.utils :refer [clamp]])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (com.badlogic.gdx.math Vector2)))
 
 (defn fit-viewport [width height camera]
@@ -18,10 +18,10 @@
 (defn unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (clamp (input/x)
+  (let [mouse-x (clamp (.getX Gdx/input)
                        (.getLeftGutterWidth viewport)
                        (.getRightGutterX viewport))
-        mouse-y (clamp (input/y)
+        mouse-y (clamp (.getY Gdx/input)
                        (.getTopGutterHeight viewport)
                        (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]

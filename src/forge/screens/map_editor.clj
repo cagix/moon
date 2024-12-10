@@ -10,7 +10,7 @@
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [anvil.world :as world]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :refer [key-just-pressed?  key-pressed?]]
+            [clojure.gdx.input :refer [key-just-pressed? key-pressed?]]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :as disposable]

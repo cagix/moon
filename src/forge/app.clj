@@ -18,7 +18,7 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.input :as input :refer [key-just-pressed?]]
+            [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.gdx.scene2d.actor :refer [visible? set-visible] :as actor]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.gdx.scene2d.stage :as scene2d.stage]
@@ -34,7 +34,7 @@
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]])
-  (:import (com.badlogic.gdx ApplicationAdapter)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (java.awt Taskbar Toolkit)
@@ -217,11 +217,11 @@
 
 (defmethods :screens/stage
   (screen/enter [[_ {:keys [stage sub-screen]}]]
-    (input/set-processor stage)
+    (.setInputProcessor Gdx/input stage)
     (screen/enter sub-screen))
 
   (screen/exit [[_ {:keys [stage sub-screen]}]]
-    (input/set-processor nil)
+    (.setInputProcessor Gdx/input nil)
     (screen/exit sub-screen))
 
   (screen/render [[_ {:keys [stage sub-screen]}]]
