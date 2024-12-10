@@ -4,8 +4,6 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
-            [anvil.graphics.freetype :as freetype]
-            [anvil.graphics.shape-drawer :as sd]
             [anvil.input :refer [key-just-pressed?]]
             [anvil.screen :as screen]
             [anvil.stage :as stage]
@@ -16,7 +14,7 @@
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children]]
             [clojure.java.io :as io]
-            [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode? mapvals]]
+            [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode?]]
             [forge.screens.editor :as editor]
             [forge.screens.minimap :as minimap]
             [forge.world.create :refer [create-world]]
@@ -25,8 +23,7 @@
             [forge.world.update :refer [update-world]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (java.awt Taskbar Toolkit)
@@ -112,47 +109,14 @@
   (cleanup [_]
     (assets/cleanup)))
 
-(defmethods :sprite-batch
-  (setup [_]
-    (bind-root g/batch (SpriteBatch.)))
+(defmethods :graphics
+  (setup [[_ config]]
+    (g/setup config))
 
   (cleanup [_]
-    (dispose g/batch)))
+    (g/cleanup)))
 
-(let [pixel-texture (atom nil)]
-  (defmethods :shape-drawer
-    (setup [_]
-      (reset! pixel-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                           (.setColor g/white)
-                                           (.drawPixel 0 0))
-                                  texture (Texture. pixmap)]
-                              (dispose pixmap)
-                              texture))
-      (bind-root g/sd (sd/create g/batch (g/texture-region @pixel-texture 1 0 1 1))))
-
-    (cleanup [_]
-      (dispose @pixel-texture))))
-
-(defmethods :default-font
-  (setup [[_ font]]
-    (bind-root g/default-font (freetype/generate-font font)))
-
-  (cleanup [_]
-    (dispose g/default-font)))
-
-(defmethods :cursors
-  (setup [[_ data]]
-    (bind-root g/cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                          cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                                      (dispose pixmap)
-                                      cursor))
-                                  data)))
-
-  (cleanup [_]
-    (run! dispose (vals g/cursors))))
-
-(defmethods :gui-viewport
+(defmethods :ui-viewport
   (setup [[_ [width height]]]
     (bind-root ui/viewport-width  width)
     (bind-root ui/viewport-height height)

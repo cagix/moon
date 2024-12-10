@@ -1,10 +1,11 @@
 (ns anvil.graphics
-  (:require [anvil.graphics.shape-drawer :as sd]
+  (:require [anvil.graphics.freetype :as freetype]
+            [anvil.graphics.shape-drawer :as sd]
             [clojure.string :as str]
-            [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians]])
+            [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors Texture)
-           (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
+           (com.badlogic.gdx.graphics Color Colors Texture Texture Pixmap Pixmap$Format)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport Viewport)))
@@ -45,10 +46,28 @@
   [(.getRegionWidth  texture-region)
    (.getRegionHeight texture-region)])
 
-(declare batch
-         sd
-         default-font
-         cursors)
+(defn setup [{:keys [default-font cursors]}]
+  (def batch (SpriteBatch.))
+  (def sd-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                 (.setColor white)
+                                 (.drawPixel 0 0))
+                        texture (Texture. pixmap)]
+                    (dispose pixmap)
+                    texture))
+  (def sd (sd/create batch (texture-region sd-texture 1 0 1 1)))
+  (def default-font (freetype/generate-font default-font))
+  (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
+                          (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                            (dispose pixmap)
+                            cursor))
+                        cursors)))
+
+(defn cleanup []
+  (dispose batch)
+  (dispose sd-texture)
+  (dispose default-font)
+  (run! dispose (vals cursors)))
 
 (defn- sd-color [color]
   (sd/set-color sd (->color color)))
