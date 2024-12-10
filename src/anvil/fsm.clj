@@ -3,6 +3,8 @@
             [anvil.entity :as entity]
             [anvil.graphics :as g]
             [anvil.item-on-cursor :refer [item-place-position]]
+            [anvil.screen :as screen]
+            [anvil.stage :refer [show-modal]]
             [anvil.stat :as stat]
             [clojure.component :refer [defsystem]]
             [clojure.utils :refer [defmethods]]
@@ -20,6 +22,13 @@
 
 (defsystem exit)
 (defmethod exit :default [_])
+
+(defmethod enter :player-dead [_]
+  (play-sound "bfxr_playerdeath")
+  (show-modal {:title "YOU DIED"
+               :text "\nGood luck next time"
+               :button-text ":("
+               :on-click #(screen/change :screens/main-menu)}))
 
 (defmethods :player-moving
   (enter [[_ {:keys [eid movement-vector]}]]
@@ -51,6 +60,7 @@
 (defmethod cursor :stunned               [_] :cursors/denied)
 (defmethod cursor :player-moving         [_] :cursors/walking)
 (defmethod cursor :player-item-on-cursor [_] :cursors/hand-grab)
+(defmethod cursor :player-dead           [_] :cursors/black-x)
 
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]

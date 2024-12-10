@@ -360,6 +360,7 @@
 (defmethod pause-game? :player-moving         [_] false)
 (defmethod pause-game? :player-item-on-cursor [_] true)
 (defmethod pause-game? :player-idle           [_] true)
+(defmethod pause-game? :player-dead           [_] true)
 
 (defn update-world []
   (manual-tick (fsm/state-obj @player-eid))
