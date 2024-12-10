@@ -1,6 +1,5 @@
 (ns forge.app
-  (:require [anvil.app :as app]
-            [anvil.assets :as assets]
+  (:require [anvil.assets :as assets]
             [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.graphics :as g]
@@ -13,7 +12,7 @@
             [anvil.world :as world]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
             [anvil.ui.group :refer [children]]
-            [anvil.utils :refer [dispose bind-root defmethods dev-mode?]]
+            [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode?]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [forge.screens.editor :as editor]
@@ -31,6 +30,17 @@
            (org.lwjgl.system Configuration)
            (forge OrthogonalTiledMapRenderer)))
 
+(defsystem setup)
+
+(defsystem cleanup)
+(defmethod cleanup :default [_])
+
+(defsystem render)
+(defmethod render :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ w h])
+
 (defn start [{:keys [dock-icon title fps width height lifecycle]}]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
@@ -39,10 +49,10 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create  []   (run! app/create           lifecycle))
-                        (dispose []   (run! app/dispose          lifecycle))
-                        (render  []   (run! app/render           lifecycle))
-                        (resize  [w h] (run! #(app/resize % w h) lifecycle)))
+                        (create  []   (run! setup            lifecycle))
+                        (dispose []   (run! cleanup          lifecycle))
+                        (render  []   (run! render           lifecycle))
+                        (resize  [w h] (run! #(resize % w h) lifecycle)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle title)
                         (.setForegroundFPS fps)
@@ -56,36 +66,36 @@
       start))
 
 (defmethods :db
-  (app/create [[_ config]]
+  (setup [[_ config]]
     (db/setup config)))
 
 (defmethods :asset-manager
-  (app/create [[_ folder]]
+  (setup [[_ folder]]
     (assets/search-and-load folder
                             [[com.badlogic.gdx.audio.Sound      #{"wav"}]
                              [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]]))
 
-  (app/dispose [_]
+  (cleanup [_]
     (assets/cleanup)))
 
 (defmethods :graphics
-  (app/create [[_ config]]
+  (setup [[_ config]]
     (g/setup config))
 
-  (app/dispose [_]
+  (cleanup [_]
     (g/cleanup)))
 
 (defmethods :ui-viewport
-  (app/create [[_ [width height]]]
+  (setup [[_ [width height]]]
     (bind-root ui/viewport-width  width)
     (bind-root ui/viewport-height height)
     (bind-root ui/viewport (FitViewport. width height (OrthographicCamera.))))
 
-  (app/resize [_ w h]
+  (resize [_ w h]
     (Viewport/.update ui/viewport w h true)))
 
 (defmethods :world-viewport
-  (app/create [[_ [width height tile-size]]]
+  (setup [[_ [width height tile-size]]]
     (bind-root world/unit-scale (float (/ tile-size)))
     (bind-root world/viewport-width  width)
     (bind-root world/viewport-height height)
@@ -95,11 +105,11 @@
                                     y-down? false]
                                 (.setToOrtho camera y-down? world-width world-height)
                                 (FitViewport. world-width world-height camera))))
-  (app/resize [_ w h]
+  (resize [_ w h]
     (Viewport/.update world/viewport w h false)))
 
 (defmethods :cached-map-renderer
-  (app/create [_]
+  (setup [_]
     (bind-root world/tiled-map-renderer
                (memoize (fn [tiled-map]
                           (OrthogonalTiledMapRenderer. tiled-map
@@ -107,7 +117,7 @@
                                                        g/batch))))))
 
 (defmethods :vis-ui
-  (app/create [[_ skin-scale]]
+  (setup [[_ skin-scale]]
     ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
     ; => actually there is a deeper issue at play
     ; we need to dispose ALL resources which were loaded already ...
@@ -121,19 +131,19 @@
         (set! true))
     (ui/configure-tooltips {:default-appear-delay-time 0}))
 
-  (app/dispose [_]
+  (cleanup [_]
     (ui/dispose)))
 
 (defmethods :screens
-  (app/create [[_ {:keys [screens first-k]}]]
+  (setup [[_ {:keys [screens first-k]}]]
     (screen/setup (into {} (for [k screens]
                              [k (stage/screen [k])]))
                   first-k))
 
-  (app/dispose [_]
+  (cleanup [_]
     (screen/dispose-all))
 
-  (app/render [_]
+  (render [_]
     (ScreenUtils/clear g/black)
     (screen/render-current)))
 
