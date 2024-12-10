@@ -15,7 +15,7 @@
             [anvil.world :as world]
             [clojure.edn :as edn]
             [anvil.ui.actor :refer [visible? set-visible] :as actor]
-            [anvil.ui.group :refer [children find-actor-with-id]]
+            [anvil.ui.group :refer [children]]
             [anvil.graphics.viewport :as vp :refer [fit-viewport]]
             [clojure.java.io :as io]
             [anvil.utils :refer [dispose bind-root defsystem defmethods dev-mode? mapvals]]
@@ -30,22 +30,10 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
-           (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils SharedLibraryLoader ScreenUtils)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
            (forge OrthogonalTiledMapRenderer)))
-
-(defn- stage [viewport batch actors]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [viewport batch]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    stage))
 
 (defsystem setup)
 
@@ -215,34 +203,10 @@
   (cleanup [_]
     (vis/dispose)))
 
-(defsystem actors)
-(defmethod actors :default [_])
-
-(defmethods :screens/stage
-  (screen/enter [[_ {:keys [^Stage stage sub-screen]}]]
-    (.setInputProcessor Gdx/input stage)
-    (screen/enter sub-screen))
-
-  (screen/exit [[_ {:keys [stage sub-screen]}]]
-    (.setInputProcessor Gdx/input nil)
-    (screen/exit sub-screen))
-
-  (screen/render [[_ {:keys [stage sub-screen]}]]
-    (.act stage)
-    (screen/render sub-screen)
-    (.draw stage))
-
-  (screen/dispose [[_ {:keys [stage sub-screen]}]]
-    (dispose stage)
-    (screen/dispose sub-screen)))
-
 (defmethods :screens
   (setup [[_ {:keys [screens first-k]}]]
-    (println "Setting up screens")
-    (screen/setup (into {}
-                        (for [k screens]
-                          [k [:screens/stage {:stage (stage ui/viewport g/batch (actors [k]))
-                                              :sub-screen [k]}]]))
+    (screen/setup (into {} (for [k screens]
+                             [k (stage/screen [k])]))
                   first-k))
 
   (cleanup [_]
@@ -259,7 +223,7 @@
                      :align :center}))
 
 (defmethods :screens/main-menu
-  (actors [_]
+  (stage/actors [_]
     [(background-image)
      (ui/table
       {:rows
@@ -287,7 +251,7 @@
     (g/set-cursor :cursors/default)))
 
 (defmethods :screens/editor
-  (actors [_]
+  (stage/actors [_]
     [(background-image)
      (editor/tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
      (ui-actor {:act (fn []
