@@ -9,19 +9,126 @@
             [anvil.fsm :as fsm]
             [anvil.graphics :as g :refer [world-mouse-position]]
             [anvil.grid :as grid]
+            [anvil.inventory :as inventory]
             [anvil.item-on-cursor :refer [world-item?]]
             [anvil.modifiers :as mods]
+            [anvil.skill :as skill]
+            [anvil.skills :as skills]
             [anvil.stat :as stat]
             [anvil.stage :as stage]
             [anvil.time :as time :refer [stopped?]]
             [anvil.level :as level :refer [explored-tile-corners]]
+            [anvil.ui :refer [window-title-bar? button?]]
             [clojure.component :refer [defsystem]]
             [clojure.gdx.graphics :refer [delta-time]]
             [clojure.gdx.input :refer [button-just-pressed?]]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [bind-root sort-by-order find-first]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
             [malli.core :as m]))
+
+(defn- denied [text]
+  (play-sound "bfxr_denied")
+  (stage/show-player-msg text))
+
+(defmulti ^:private on-clicked
+  (fn [eid]
+    (:type (:entity/clickable @eid))))
+
+(defmethod on-clicked :clickable/item [eid]
+  (let [item (:entity/item @eid)]
+    (cond
+     (actor/visible? (stage/get-inventory))
+     (do
+      (play-sound "bfxr_takeit")
+      (swap! eid assoc :entity/destroyed? true)
+      (fsm/event player-eid :pickup-item item))
+
+     (inventory/can-pickup-item? @player-eid item)
+     (do
+      (play-sound "bfxr_pickup")
+      (swap! eid assoc :entity/destroyed? true)
+      (inventory/pickup-item player-eid item))
+
+     :else
+     (do
+      (play-sound "bfxr_denied")
+      (stage/show-player-msg "Your Inventory is full")))))
+
+(defmethod on-clicked :clickable/player [_]
+  (actor/toggle-visible! (stage/get-inventory)))
+
+(defn- clickable->cursor [entity too-far-away?]
+  (case (:type (:entity/clickable entity))
+    :clickable/item (if too-far-away?
+                      :cursors/hand-before-grab-gray
+                      :cursors/hand-before-grab)
+    :clickable/player :cursors/bag))
+
+(defn- clickable-entity-interaction [player-entity clicked-eid]
+  (if (< (v/distance (:position player-entity)
+                     (:position @clicked-eid))
+         (:entity/click-distance-tiles player-entity))
+    [(clickable->cursor @clicked-eid false) (fn [] (on-clicked clicked-eid))]
+    [(clickable->cursor @clicked-eid true)  (fn [] (denied "Too far away"))]))
+
+(defn- inventory-cell-with-item? [^com.badlogic.gdx.scenes.scene2d.Actor actor]
+  (and (.getParent actor)
+       (= "inventory-cell" (.getName (.getParent actor)))
+       (get-in (:entity/inventory @player-eid)
+               (actor/user-object (.getParent actor)))))
+
+(defn- mouseover-actor->cursor []
+  (let [actor (stage/mouse-on-actor?)]
+    (cond
+     (inventory-cell-with-item? actor) :cursors/hand-before-grab
+     (window-title-bar? actor)      :cursors/move-window
+     (button? actor)                :cursors/over-button
+     :else                             :cursors/default)))
+
+(defn- player-effect-ctx [eid]
+  (let [target-position (or (and mouseover-eid (:position @mouseover-eid))
+                            (world-mouse-position))]
+    {:effect/source eid
+     :effect/target mouseover-eid
+     :effect/target-position target-position
+     :effect/target-direction (v/direction (:position @eid) target-position)}))
+
+(defn- interaction-state [eid]
+  (let [entity @eid]
+    (cond
+     (stage/mouse-on-actor?)
+     [(mouseover-actor->cursor) (fn [] nil)] ; handled by actors themself, they check player state
+
+     (and mouseover-eid (:entity/clickable @mouseover-eid))
+     (clickable-entity-interaction entity mouseover-eid)
+
+     :else
+     (if-let [skill-id (stage/selected-skill)]
+       (let [skill (skill-id (:entity/skills entity))
+             effect-ctx (player-effect-ctx eid)
+             state (skill/usable-state entity skill effect-ctx)]
+         (if (= state :usable)
+           (do
+            ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
+            ; different color ?
+            ; => e.g. meditation no TARGET .. etc.
+            [:cursors/use-skill
+             (fn [] (fsm/event eid :start-action [skill effect-ctx]))])
+           (do
+            ; TODO cursor as of usable state
+            ; cooldown -> sanduhr kleine
+            ; not-enough-mana x mit kreis?
+            ; invalid-params -> depends on params ...
+            [:cursors/skill-not-usable
+             (fn []
+               (denied (case state
+                         :cooldown "Skill is still on cooldown"
+                         :not-enough-mana "Not enough mana"
+                         :invalid-params "Cannot use this here")))])))
+       [:cursors/no-skill-selected
+        (fn [] (denied "No selected skill"))]))))
 
 (def ^:private shout-radius 4)
 
@@ -238,12 +345,21 @@
              (world-item?))
     (fsm/event eid :drop-item)))
 
+(defmethod manual-tick :player-idle [[_ {:keys [eid]}]]
+  (if-let [movement-vector (controls/movement-vector)]
+    (fsm/event eid :movement-input movement-vector)
+    (let [[cursor on-click] (interaction-state eid)]
+      (g/set-cursor cursor)
+      (when (button-just-pressed? :left)
+        (on-click)))))
+
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
 (defmethod pause-game? :stunned               [_] false)
 (defmethod pause-game? :player-moving         [_] false)
 (defmethod pause-game? :player-item-on-cursor [_] true)
+(defmethod pause-game? :player-idle           [_] true)
 
 (defn update-world []
   (manual-tick (fsm/state-obj @player-eid))

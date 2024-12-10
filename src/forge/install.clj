@@ -48,6 +48,5 @@
                      [forge.entity.state.npc-idle :npc-idle]
                      [forge.entity.state.npc-moving :npc-moving]
                      [forge.entity.state.npc-sleeping :npc-sleeping]
-                     [forge.entity.state.player-dead :player-dead]
-                     [forge.entity.state.player-idle :player-idle]]]
+                     [forge.entity.state.player-dead :player-dead]]]
   (install-component entity-state ns-sym k))

@@ -295,6 +295,13 @@
   [[_ {:keys [eid]}] cell]
   (clicked-cell eid cell))
 
+(defmethod clicked-inventory-cell :player-idle [[_ {:keys [eid]}] cell]
+  ; TODO no else case
+  (when-let [item (get-in (:entity/inventory @eid) cell)]
+    (play-sound "bfxr_takeit")
+    (fsm/event eid :pickup-item item)
+    (inventory/remove-item eid cell)))
+
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background slot) {:id :image})

@@ -1,8 +1,17 @@
 (ns ^:no-doc forge.ui.skill-window
-  (:require [clojure.component :refer [defsystem]]))
+  (:require [anvil.skills :as skills]
+            [clojure.component :refer [defsystem]]))
 
 (defsystem clicked-skillmenu-skill)
 (defmethod clicked-skillmenu-skill :default [_ skill])
+
+(defmethod clicked-skillmenu-skill :player-idle [[_ {:keys [eid]}] skill]
+  (let [free-skill-points (:entity/free-skill-points @eid)]
+    ; TODO no else case, no visible free-skill-points
+    (when (and (pos? free-skill-points)
+               (not (skills/contains? @eid skill)))
+      (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
+      (swap! eid skills/add skill))))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @player-eid))
