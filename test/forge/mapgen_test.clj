@@ -1,19 +1,19 @@
 (ns forge.mapgen-test
   (:require [anvil.controls :as controls]
-            [gdl.graphics :as g]
-            [gdl.graphics.camera :as cam]
-            [gdl.input :refer [key-just-pressed? key-pressed?]]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
-            [gdl.screen :as screen]
-            [gdl.stage :as stage]
-            [gdl.ui :refer [ui-actor text-button] :as ui]
-            [gdl.utils :refer [dispose]]
-            [gdl.ui.group :refer [add-actor!]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.db :as db]
-            [gdl.tiled :as tiled]))
+            [gdl.graphics :as g]
+            [gdl.graphics.camera :as cam]
+            [gdl.input :refer [key-just-pressed? key-pressed?]]
+            [gdl.screen :as screen]
+            [gdl.stage :as stage]
+            [gdl.tiled :as tiled]
+            [gdl.ui :refer [ui-actor text-button] :as ui]
+            [gdl.utils :refer [dispose]]
+            [gdl.ui.group :refer [add-actor!]]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
