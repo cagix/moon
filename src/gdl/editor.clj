@@ -1,4 +1,4 @@
-(ns editor.app
+(ns gdl.editor
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
             [clojure.string :as str]

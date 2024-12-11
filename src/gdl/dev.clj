@@ -1,4 +1,4 @@
-(ns forge.dev.loop
+(ns gdl.dev
   "Starts a dev loop using clojure.tools.namespace.repl/refresh in order to restart the app without
   restarting the JVM.
   Also starts an nrepl server which will keep up even between app crashes and restarts.
