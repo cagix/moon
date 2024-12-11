@@ -7,10 +7,12 @@
             [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics :as g]
-            [gdl.graphics.sprite :as sprite]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
             [forge.world.create :refer [create-world]]))
+
+; Next: remove minimap ....
+; Then: can remove screens themself ?!
 
 (defn- start [{:keys [db app-config graphics ui world-id]}]
   (db/setup db)
