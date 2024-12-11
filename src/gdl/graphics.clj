@@ -12,7 +12,7 @@
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
-(defn clear-screen []
+(defn clear []
   (ScreenUtils/clear Color/BLACK))
 
 (defn- ttf-params [size quality-scaling]

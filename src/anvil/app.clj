@@ -96,7 +96,7 @@
                  (screen/cleanup))
 
                (render [_]
-                 (g/clear-screen)
+                 (g/clear)
                  (screen/render-current))
 
                (resize [_ w h]
