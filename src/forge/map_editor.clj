@@ -1,4 +1,4 @@
-(ns ^:no-doc anvil.screens.map-editor
+(ns ^:no-doc forge.map-editor
   (:require [anvil.controls :as controls]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
