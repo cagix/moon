@@ -1,4 +1,4 @@
-(ns ^:no-doc forge.map-editor
+(ns forge.mapgen-test
   (:require [anvil.controls :as controls]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
