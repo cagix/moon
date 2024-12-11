@@ -1,4 +1,4 @@
-(ns clojure.gdx.assets
+(ns clojure.gd.assets
   (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
@@ -57,7 +57,7 @@
 (defn play-sound [sound-name]
   (->> sound-name
        (format sound-asset-format)
-       assets/manager
+       manager
        Sound/.play))
 
 (defn all-of-type

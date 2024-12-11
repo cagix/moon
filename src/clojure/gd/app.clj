@@ -1,4 +1,4 @@
-(ns clojure.gdx.app
+(ns clojure.gd.app
   (:require [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -42,5 +42,3 @@
                         (.setTitle title)
                         (.setForegroundFPS fps)
                         (.setWindowedMode width height))))
-
-

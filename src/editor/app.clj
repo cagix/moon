@@ -22,14 +22,11 @@
                               add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
-            [clojure.gdx.app :as app]
-            [clojure.gdx.assets :as assets :refer [play-sound]]
+            [clojure.gd.app :as app]
+            [clojure.gd.assets :as assets :refer [play-sound]]
             [clojure.set :as set]
             [anvil.ui.actor :refer [user-object]]
-            [anvil.ui.group :refer [children
-                                               clear-children
-                                               add-actor!
-                                               find-actor]]
+            [anvil.ui.group :refer [children clear-children add-actor! find-actor]]
             [anvil.ui.table :refer [add-rows!]]
             [clojure.string :as str]
             [anvil.utils :refer [->edn-str
