@@ -1,4 +1,4 @@
-(ns ^:no-doc forge.ui.skill-window
+(ns ^:no-doc anvil.ui.skill-window
   (:require [anvil.entity.skills :as skills]
             [gdl.utils :refer [defsystem]]))
 
