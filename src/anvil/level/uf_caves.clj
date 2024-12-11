@@ -1,11 +1,11 @@
 (ns ^:no-doc anvil.level.uf-caves
   (:require [anvil.graphics :as g]
             [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
-            [anvil.tiled :as tiled]
             [anvil.rand :refer [get-rand-weighted-item]]
+            [data.grid2d :as g2d]
             [gdl.assets :as assets]
             [gdl.db :as db]
-            [data.grid2d :as g2d]))
+            [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)
 

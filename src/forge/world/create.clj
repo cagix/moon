@@ -29,7 +29,6 @@
             [anvil.ui.actor :refer [user-object] :as actor]
             [anvil.ui.group :refer [add-actor! find-actor]]
             [anvil.ui.utils :as scene2d.utils]
-            [anvil.tiled :as tiled]
             [anvil.utils :refer [dev-mode? tile->middle bind-root readable-number]]
             [anvil.world.content-grid :as content-grid]
             [anvil.world.grid :as grid]
@@ -38,7 +37,8 @@
             [data.grid2d :as g2d]
             [forge.ui.player-message :as player-message]
             [gdl.assets :refer [play-sound]]
-            [gdl.db :as db])
+            [gdl.db :as db]
+            [gdl.tiled :as tiled])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table Button ButtonGroup)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))

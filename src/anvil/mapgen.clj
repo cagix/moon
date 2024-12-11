@@ -1,9 +1,9 @@
 (ns anvil.mapgen
   (:require [anvil.property :as property]
-            [anvil.tiled :as tiled]
             [anvil.rand :refer [sshuffle srand srand-int]]
             [anvil.utils :refer [assoc-ks]]
-            [data.grid2d :as g2d]))
+            [data.grid2d :as g2d]
+            [gdl.tiled :as tiled]))
 
 (defn creatures-with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

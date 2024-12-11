@@ -1,11 +1,17 @@
 (ns editor.app
   (:require [anvil.graphics :as g]
             [anvil.info :as info]
+
             [anvil.input :refer [key-just-pressed?]]
+
             [anvil.property :as property]
+
             [anvil.screen :as screen]
+
             [anvil.stage :as stage]
+
             [anvil.sprite :as sprite]
+
             [anvil.ui :refer [horizontal-separator-cell
                               vertical-separator-cell
                               ui-actor
@@ -20,19 +26,24 @@
                               text-field
                               add-tooltip!]
              :as ui]
+
             [clojure.edn :as edn]
             [clojure.set :as set]
+
             [gdl.app :as app]
             [gdl.assets :as assets :refer [play-sound]]
+            [gdl.db :as db]
+
             [anvil.ui.actor :refer [user-object]]
             [anvil.ui.group :refer [children clear-children add-actor! find-actor]]
             [anvil.ui.table :refer [add-rows!]]
-            [clojure.string :as str]
+
             [anvil.utils :refer [->edn-str
                                    truncate
                                    find-first
                                    index-of]]
-            [gdl.db :as db]
+            [clojure.string :as str]
+
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)

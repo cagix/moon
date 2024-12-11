@@ -10,10 +10,10 @@
             [anvil.ui :refer [ui-actor text-button] :as ui]
             [anvil.utils :refer [dispose]]
             [anvil.ui.group :refer [add-actor!]]
-            [anvil.tiled :as tiled]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [gdl.db :as db]))
+            [gdl.db :as db]
+            [gdl.tiled :as tiled]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
