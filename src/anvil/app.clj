@@ -1,14 +1,20 @@
 (ns anvil.app
-  (:require [anvil.screens.world :as world]
+  (:require [anvil.controls :as controls]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics :as g]
+            [gdl.graphics.camera :as cam]
             [gdl.screen :as screen]
+            [gdl.stage :as stage]
             [gdl.ui :as ui]
-            [forge.world.create :refer [create-world]]))
+            [gdl.ui.actor :refer [visible? set-visible] :as actor]
+            [gdl.ui.group :refer [children]]
+            [forge.world.create :refer [create-world dispose-world]]
+            [forge.world.render :refer [render-world]]
+            [forge.world.update :refer [update-world]]))
 
 ; Next: remove minimap ....
 ; Then: can remove screens themself ?!
@@ -16,6 +22,42 @@
 ; cursors/etc ?
 ; * @ editor doesn't need cursors/default-font/world-viewport
 ; * also make app mapgen-test -> also doesn't need certain stuffs
+
+(defn- windows []
+  (:windows (stage/get)))
+
+(defn- check-window-hotkeys []
+  (doseq [window-id [:inventory-window
+                     :entity-info-window]
+          :when (controls/toggle-visible? window-id)]
+    (actor/toggle-visible! (get (windows) window-id))))
+
+(defn- close-all-windows []
+  (let [windows (children (windows))]
+    (when (some visible? windows)
+      (run! #(set-visible % false) windows))))
+
+(deftype WorldScreen []
+  screen/Screen
+  (enter [_]
+    (cam/set-zoom! g/camera 0.8))
+
+  (exit [_]
+    (g/set-cursor :cursors/default))
+
+  (render [_]
+    (render-world)
+    (update-world)
+    (controls/adjust-zoom g/camera)
+    (check-window-hotkeys)
+    (when (controls/close-windows?)
+      (close-all-windows)))
+
+  (dispose [_]
+    (dispose-world)))
+
+(defn world-screen []
+  (stage/screen :sub-screen (->WorldScreen)))
 
 (defn- start [{:keys [db app-config graphics ui world-id]}]
   (db/setup db)
@@ -25,7 +67,7 @@
                  (assets/setup)
                  (g/setup graphics)
                  (ui/setup ui)
-                 (screen/setup {:screens/world (world/screen)}
+                 (screen/setup {:screens/world (world-screen)}
                                :screens/world)
                  (create-world (db/build world-id)))
 
