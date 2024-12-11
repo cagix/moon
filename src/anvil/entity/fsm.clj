@@ -1,6 +1,5 @@
 (ns anvil.entity.fsm
-  (:require [anvil.audio :refer [play-sound]]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
             [anvil.entity.string-effect :as string-effect]
@@ -9,6 +8,7 @@
             [anvil.stage :refer [show-modal]]
             [anvil.world.time :refer [timer]]
             [anvil.utils :refer [defsystem defmethods]]
+            [clojure.gdx.assets :refer [play-sound]]
             [reduce-fsm :as fsm]))
 
 (defn state-k [entity]

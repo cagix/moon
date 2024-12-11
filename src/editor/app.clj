@@ -1,7 +1,5 @@
 (ns editor.app
-  (:require [anvil.assets :as assets]
-            [anvil.audio :refer [play-sound]]
-            [anvil.db :as db]
+  (:require [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.info :as info]
             [anvil.input :refer [key-just-pressed?]]
@@ -25,6 +23,7 @@
              :as ui]
             [clojure.edn :as edn]
             [clojure.gdx.app :as app]
+            [clojure.gdx.assets :as assets :refer [play-sound]]
             [clojure.set :as set]
             [anvil.ui.actor :refer [user-object]]
             [anvil.ui.group :refer [children
@@ -180,14 +179,8 @@
 
 (declare columns)
 
-(defn- all-of-class
-  "Returns all asset paths with the specific asset-type."
-  [^com.badlogic.gdx.assets.AssetManager manager class]
-  (filter #(= (.getAssetType manager %) class)
-          (.getAssetNames manager)))
-
 (defn- choose-window [table]
-  (let [rows (for [sound-file (all-of-class assets/manager com.badlogic.gdx.audio.Sound)]
+  (let [rows (for [sound-file (assets/all-of-type :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -472,7 +465,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (all-of-class assets/manager com.badlogic.gdx.graphics.Texture))]
+  (for [file (sort (assets/all-of-type :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -555,9 +548,7 @@
               :taskbar-icon "moon.png"}
              (reify app/Listener
                (create [_]
-                 (assets/setup {:folder "resources/"
-                                :asset-type-exts {:sound   #{"wav"}
-                                                  :texture #{"png" "bmp"}}})
+                 (assets/setup)
                  (g/setup graphics)
                  (ui/setup :skin-scale/x1)
                  (screen/setup {:screens/editor (create-screen)}

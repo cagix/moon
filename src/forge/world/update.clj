@@ -1,6 +1,5 @@
 (ns forge.world.update
-  (:require [anvil.audio :refer [play-sound]]
-            [anvil.db :as db]
+  (:require [anvil.db :as db]
             [anvil.controls :as controls]
             [anvil.effect :as effect]
             [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order projectile-size]]
@@ -28,6 +27,7 @@
             [anvil.world.time :as time :refer [stopped?]]
             [anvil.world.raycaster :refer [path-blocked?]]
             [anvil.world.potential-field :as potential-field]
+            [clojure.gdx.assets :refer [play-sound]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
             [malli.core :as m]))
 

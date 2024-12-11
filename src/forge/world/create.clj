@@ -1,6 +1,5 @@
 (ns forge.world.create
-  (:require [anvil.audio :refer [play-sound]]
-            [anvil.controls :as controls]
+  (:require [anvil.controls :as controls]
             [anvil.db :as db]
             [anvil.entity :as entity :refer [player-eid mouseover-entity]]
             [anvil.entity.inventory :as inventory]
@@ -37,6 +36,7 @@
             [anvil.world.grid :as grid]
             [anvil.world.raycaster :as raycaster]
             [anvil.world.time :as time]
+            [clojure.gdx.assets :refer [play-sound]]
             [data.grid2d :as g2d]
             [forge.ui.player-message :as player-message])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)

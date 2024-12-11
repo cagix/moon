@@ -1,6 +1,5 @@
 (ns anvil.entity
-  (:require [anvil.audio :refer [play-sound]]
-            [anvil.db :as db]
+  (:require [anvil.db :as db]
             [anvil.entity.animation :as animation]
             [anvil.entity.inventory :as inventory]
             [anvil.entity.stat :as stat]
@@ -13,6 +12,7 @@
             [anvil.world.grid :as grid]
             [anvil.world.raycaster :refer [ray-blocked?]]
             [anvil.world.time :refer [timer]]
+            [clojure.gdx.assets :refer [play-sound]]
             [reduce-fsm :as fsm]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]

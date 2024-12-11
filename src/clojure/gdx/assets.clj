@@ -1,7 +1,8 @@
-(ns anvil.assets
+(ns clojure.gdx.assets
   (:require [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)))
 
 (defn- asset-manager* ^AssetManager []
@@ -11,11 +12,14 @@
         (AssetManager/.get this path)
         (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
 
+(defn- asset-type->class [k]
+  (case k
+    :sound   com.badlogic.gdx.audio.Sound
+    :texture com.badlogic.gdx.graphics.Texture))
+
 (defn- load-assets [^AssetManager manager assets]
   (doseq [[file class-k] assets]
-    (.load manager ^String file (case class-k
-                                  :sound   com.badlogic.gdx.audio.Sound
-                                  :texture com.badlogic.gdx.graphics.Texture)))
+    (.load manager ^String file (asset-type->class class-k)))
   (.finishLoading manager))
 
 (defn- recursively-search [folder extensions]
@@ -33,7 +37,12 @@
           :else
           (recur remaining result))))
 
-(defn setup [{:keys [folder asset-type-exts]}]
+(def folder "resources/")
+
+(def asset-type-exts {:sound   #{"wav"}
+                      :texture #{"png" "bmp"}})
+
+(defn setup []
   (def manager (doto (asset-manager*)
                  (load-assets (for [[asset-type exts] asset-type-exts
                                     file (map #(str/replace-first % folder "")
@@ -42,3 +51,17 @@
 
 (defn cleanup []
   (AssetManager/.dispose manager))
+
+(def sound-asset-format "sounds/%s.wav")
+
+(defn play-sound [sound-name]
+  (->> sound-name
+       (format sound-asset-format)
+       assets/manager
+       Sound/.play))
+
+(defn all-of-type
+  "Returns all asset paths with the specific asset-type."
+  [asset-type]
+  (filter #(= (.getAssetType manager %) (asset-type->class asset-type))
+          (.getAssetNames manager)))
