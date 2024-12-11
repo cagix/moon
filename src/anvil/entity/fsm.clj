@@ -6,7 +6,6 @@
             [anvil.entity.string-effect :as string-effect]
             [anvil.graphics :as g]
             [anvil.item-on-cursor :refer [item-place-position]]
-            [anvil.screen :as screen]
             [anvil.stage :refer [show-modal]]
             [anvil.world.time :refer [timer]]
             [anvil.utils :refer [defsystem defmethods]]
@@ -30,7 +29,7 @@
   (show-modal {:title "YOU DIED"
                :text "\nGood luck next time"
                :button-text ":("
-               :on-click #(screen/change :screens/main-menu)}))
+               :on-click (fn [])}))
 
 (defmethods :player-moving
   (enter [[_ {:keys [eid movement-vector]}]]

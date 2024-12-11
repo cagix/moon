@@ -187,9 +187,7 @@
              :items [{:label "Map-editor"
                       :on-click (partial screen/change :screens/map-editor)}
                      {:label "Editor"
-                      :on-click (partial screen/change :screens/editor)}
-                     {:label "Main-Menu"
-                      :on-click (partial screen/change :screens/main-menu)}]}
+                      :on-click (partial screen/change :screens/editor)}]}
             {:label "World"
              :items (for [world (db/build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))

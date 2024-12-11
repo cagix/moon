@@ -147,9 +147,7 @@
   #_(if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
   #_(controls/adjust-zoom g/camera)
-  #_(camera-controls g/camera)
-  #_(when (key-just-pressed? :keys/escape)
-      (screen/change :screens/main-menu)))
+  #_(camera-controls g/camera))
 
 #_(defn dispose [_]
   #_(dispose (:tiled-map @current-data)))

@@ -4,13 +4,13 @@
             [anvil.graphics :as g]
             [anvil.screen :as screen]
             [anvil.screens.editor :as editor]
-            [anvil.screens.main-menu :as main-menu]
             [anvil.screens.minimap :as minimap]
             [anvil.screens.world :as world]
             [anvil.sprite :as sprite]
             [anvil.ui :as ui]
             [clojure.edn :as edn]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [forge.world.create :refer [create-world]])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
@@ -36,14 +36,7 @@
                         (.setForegroundFPS fps)
                         (.setWindowedMode width height))))
 
-(defn- background-image [path]
-  (fn []
-    (ui/image->widget (sprite/create path)
-                      {:fill-parent? true
-                       :scaling :fill
-                       :align :center})))
-
-(defn- start [{:keys [db dock-icon lwjgl3-config assets graphics ui background]}]
+(defn- start [{:keys [db dock-icon lwjgl3-config assets graphics ui world-id]}]
   (db/setup db)
   (set-dock-icon dock-icon)
   (start-app lwjgl3-config
@@ -52,12 +45,11 @@
                  (assets/setup assets)
                  (g/setup graphics)
                  (ui/setup ui)
-                 (screen/setup {:screens/main-menu (main-menu/create (background-image background))
-                                ;:screens/map-editor
-                                :screens/editor (editor/create (background-image background))
+                 (screen/setup {:screens/editor (editor/create)
                                 :screens/minimap (minimap/screen)
                                 :screens/world (world/screen)}
-                               :screens/main-menu))
+                               :screens/world)
+                 (create-world (db/build world-id)))
 
                (dispose []
                  (assets/cleanup)

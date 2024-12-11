@@ -31,4 +31,4 @@
             :world-viewport {:tile-size 48
                              :width 1440
                              :height 900}}
- :background "images/moon_background.png"}
+ :world-id :worlds/uf-caves}

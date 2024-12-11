@@ -6,8 +6,8 @@
             [anvil.info :as info]
             [anvil.input :refer [key-just-pressed?]]
             [anvil.property :as property]
-            [anvil.screen :as screen]
             [anvil.stage :as stage]
+            [anvil.sprite :as sprite]
             [anvil.ui :refer [horizontal-separator-cell
                               vertical-separator-cell
                               ui-actor
@@ -522,9 +522,12 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn create [background-image]
-  (stage/screen :actors [(background-image)
-                         (tabs-table "[LIGHT_GRAY]Left-Shift: Back to Main Menu[]")
-                         (ui-actor {:act (fn []
-                                           (when (key-just-pressed? :shift-left)
-                                             (screen/change :screens/main-menu)))})]))
+(defn- background-image [path]
+  (ui/image->widget (sprite/create path)
+                    {:fill-parent? true
+                     :scaling :fill
+                     :align :center}))
+
+(defn create []
+  (stage/screen :actors [(background-image "images/moon_background.png")
+                         (tabs-table "custom label text here")]))
