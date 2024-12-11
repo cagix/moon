@@ -24,6 +24,23 @@
 
 ; * Remove non-essential stuff (windows, widgets?, text?!)
 
+; * When you die, restart world - needs to be an abstraction - so can be called
+; from implementation component - ...
+
+; * Move components out of defmulti namespaces
+
+; * Info only for ingame is super idea
+
+; * Stage knows about inventory/action-bar/modal/player-message!!
+
+; * an extra layer _behind_ gdl can be a clojure.gdx or clojure.vis-ui
+; but this comes later
+
+; * it _already_ is an amazing library/framework because it works
+
+; * next check our layers in anvil/forge - maybe effect will get
+; a common API for world & gdl together?! -> doesn't need to know about gdl anymore?!
+
 (defn- windows []
   (:windows (stage/get)))
 
