@@ -1,6 +1,5 @@
 (ns forge.dev.tools
-  (:require [anvil.db :as db]
-            [anvil.entity :as entity :refer [player-eid mouseover-entity]]
+  (:require [anvil.entity :as entity :refer [player-eid mouseover-entity]]
             [anvil.entity.skills :as skills]
             [anvil.graphics :as g]
             [anvil.stage :refer [add-actor]]
@@ -9,7 +8,8 @@
             [anvil.world.grid :as grid]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.app :refer [post-runnable]])
+            [gdl.app :refer [post-runnable]]
+            [gdl.db :as db])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment

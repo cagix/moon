@@ -1,4 +1,4 @@
-(ns anvil.db
+(ns gdl.db
   (:require [anvil.entity.animation :as animation]
             [anvil.sprite :as sprite]
             [anvil.val-max :as val-max]

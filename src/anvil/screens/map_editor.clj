@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.screens.map-editor
   (:require [anvil.controls :as controls]
-            [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.graphics.camera :as cam]
             [anvil.input :refer [key-just-pressed? key-pressed?]]
@@ -13,7 +12,8 @@
             [anvil.ui.group :refer [add-actor!]]
             [anvil.tiled :as tiled]
             [clojure.pprint :refer [pprint]]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [gdl.db :as db]))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera

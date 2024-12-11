@@ -1,6 +1,5 @@
 (ns anvil.app
-  (:require [anvil.db :as db]
-            [anvil.graphics :as g]
+  (:require [anvil.graphics :as g]
             [anvil.screen :as screen]
             [anvil.screens.minimap :as minimap]
             [anvil.screens.world :as world]
@@ -10,6 +9,7 @@
             [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.assets :as assets]
+            [gdl.db :as db]
             [forge.world.create :refer [create-world]])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils ScreenUtils)))

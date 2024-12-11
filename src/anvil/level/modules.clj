@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.level.modules
-  (:require [anvil.db :as db]
-            [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
+  (:require [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
             [anvil.tiled :as tiled]
-            [data.grid2d :as g2d]))
+            [data.grid2d :as g2d]
+            [gdl.db :as db]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)

@@ -1,6 +1,5 @@
 (ns editor.app
-  (:require [anvil.db :as db]
-            [anvil.graphics :as g]
+  (:require [anvil.graphics :as g]
             [anvil.info :as info]
             [anvil.input :refer [key-just-pressed?]]
             [anvil.property :as property]
@@ -33,6 +32,7 @@
                                    truncate
                                    find-first
                                    index-of]]
+            [gdl.db :as db]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)

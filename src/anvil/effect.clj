@@ -1,6 +1,5 @@
 (ns anvil.effect
-  (:require [anvil.db :as db]
-            [anvil.entity :as entity :refer [creatures-in-los-of-player line-of-sight?]]
+  (:require [anvil.entity :as entity :refer [creatures-in-los-of-player line-of-sight?]]
             [anvil.entity.body :as body]
             [anvil.entity.damage :as damage]
             [anvil.entity.faction :as faction]
@@ -13,7 +12,8 @@
             [anvil.rand :refer [rand-int-between]]
             [anvil.world.time :refer [timer]]
             [anvil.utils :refer [defmethods defsystem]]
-            [gdl.assets :refer [play-sound]]))
+            [gdl.assets :refer [play-sound]]
+            [gdl.db :as db]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn check-update-ctx

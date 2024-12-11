@@ -1,6 +1,5 @@
 (ns forge.world.create
   (:require [anvil.controls :as controls]
-            [anvil.db :as db]
             [anvil.entity :as entity :refer [player-eid mouseover-entity]]
             [anvil.entity.inventory :as inventory]
             [anvil.entity.fsm :as fsm]
@@ -38,7 +37,8 @@
             [anvil.world.time :as time]
             [data.grid2d :as g2d]
             [forge.ui.player-message :as player-message]
-            [gdl.assets :refer [play-sound]])
+            [gdl.assets :refer [play-sound]]
+            [gdl.db :as db])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table Button ButtonGroup)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
