@@ -1,6 +1,5 @@
 (ns anvil.app
-  (:require [anvil.screens.minimap :as minimap]
-            [anvil.screens.world :as world]
+  (:require [anvil.screens.world :as world]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.app :as app]
@@ -13,6 +12,10 @@
 
 ; Next: remove minimap ....
 ; Then: can remove screens themself ?!
+; also: world-viewport ?!
+; cursors/etc ?
+; * @ editor doesn't need cursors/default-font/world-viewport
+; * also make app mapgen-test -> also doesn't need certain stuffs
 
 (defn- start [{:keys [db app-config graphics ui world-id]}]
   (db/setup db)
@@ -22,8 +25,7 @@
                  (assets/setup)
                  (g/setup graphics)
                  (ui/setup ui)
-                 (screen/setup {:screens/minimap (minimap/screen)
-                                :screens/world (world/screen)}
+                 (screen/setup {:screens/world (world/screen)}
                                :screens/world)
                  (create-world (db/build world-id)))
 

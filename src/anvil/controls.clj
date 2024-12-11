@@ -16,9 +16,6 @@
 (defn close-windows? []
   (key-just-pressed? :keys/escape))
 
-(defn minimap? []
-  (key-just-pressed? :keys/tab))
-
 (def window-hotkeys
   {:inventory-window   :keys/i
    :entity-info-window :keys/e})

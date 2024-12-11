@@ -37,11 +37,8 @@
     (update-world)
     (controls/adjust-zoom g/camera)
     (check-window-hotkeys)
-    (cond (controls/close-windows?)
-          (close-all-windows)
-
-          (controls/minimap?)
-          (screen/change :screens/minimap)))
+    (when (controls/close-windows?)
+      (close-all-windows)))
 
   (dispose [_]
     (dispose-world)))

@@ -12,7 +12,6 @@
             [anvil.info :as info]
             [anvil.item-on-cursor :refer [world-item?]]
             [anvil.level :as level :refer [generate-level]]
-            [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.graphics.sprite :as sprite]
             [gdl.ui :refer [ui-actor
@@ -183,19 +182,15 @@
 
 (defn- dev-menu-bar []
   (dev-menu*
-   {:menus [{:label "Screens"
-             :items [{:label "Map-editor"
-                      :on-click (partial screen/change :screens/map-editor)}
-                     {:label "Editor"
-                      :on-click (partial screen/change :screens/editor)}]}
-            {:label "World"
+   {:menus [{:label "World"
              :items (for [world (db/build-all :properties/worlds)]
                       {:label (str "Start " (:property/id world))
                        :on-click #(create-world world)})}
             {:label "Help"
              :items [{:label controls/help-text}]}]
     :update-labels [{:label "Mouseover-entity id"
-                     :update-fn #(when-let [entity (mouseover-entity)] (:entity/id entity))
+                     :update-fn #(when-let [entity (mouseover-entity)]
+                                   (:entity/id entity))
                      :icon "images/mouseover.png"}
                     {:label "elapsed-time"
                      :update-fn #(str (readable-number time/elapsed) " seconds")
