@@ -1,6 +1,6 @@
-(ns clojure.gd.app
+(ns gdl.app
   (:require [clojure.java.io :as io])
-  (:import (com.badlogic.gdx ApplicationAdapter)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
@@ -42,3 +42,9 @@
                         (.setTitle title)
                         (.setForegroundFPS fps)
                         (.setWindowedMode width height))))
+
+(defn exit []
+  (.exit Gdx/app))
+
+(defmacro post-runnable [& exprs]
+  `(.postRunnable Gdx/app (fn [] ~@exprs)))

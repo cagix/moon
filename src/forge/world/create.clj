@@ -36,9 +36,9 @@
             [anvil.world.grid :as grid]
             [anvil.world.raycaster :as raycaster]
             [anvil.world.time :as time]
-            [clojure.gd.assets :refer [play-sound]]
             [data.grid2d :as g2d]
-            [forge.ui.player-message :as player-message])
+            [forge.ui.player-message :as player-message]
+            [gdl.assets :refer [play-sound]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table Button ButtonGroup)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))

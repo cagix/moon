@@ -1,6 +1,6 @@
 (ns anvil.sprite
   (:require [anvil.graphics :as g]
-            [clojure.gd.assets :as assets]))
+            [gdl.assets :as assets]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))

@@ -4,7 +4,7 @@
             [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [anvil.tiled :as tiled]
             [anvil.rand :refer [get-rand-weighted-item]]
-            [clojure.gd.assets :as assets]
+            [gdl.assets :as assets]
             [data.grid2d :as g2d]))
 
 (def ^:private scaling 4)

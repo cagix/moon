@@ -13,7 +13,7 @@
             [anvil.rand :refer [rand-int-between]]
             [anvil.world.time :refer [timer]]
             [anvil.utils :refer [defmethods defsystem]]
-            [clojure.gd.assets :refer [play-sound]]))
+            [gdl.assets :refer [play-sound]]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn check-update-ctx

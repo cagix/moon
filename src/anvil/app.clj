@@ -7,9 +7,9 @@
             [anvil.sprite :as sprite]
             [anvil.ui :as ui]
             [clojure.edn :as edn]
-            [clojure.gd.app :as app]
-            [clojure.gd.assets :as assets]
             [clojure.java.io :as io]
+            [gdl.app :as app]
+            [gdl.assets :as assets]
             [forge.world.create :refer [create-world]])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils ScreenUtils)))

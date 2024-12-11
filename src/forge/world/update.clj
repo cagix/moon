@@ -27,8 +27,8 @@
             [anvil.world.time :as time :refer [stopped?]]
             [anvil.world.raycaster :refer [path-blocked?]]
             [anvil.world.potential-field :as potential-field]
-            [clojure.gd.assets :refer [play-sound]]
             [forge.world.potential-fields :refer [update-potential-fields!]]
+            [gdl.assets :refer [play-sound]]
             [malli.core :as m]))
 
 (defsystem useful?)

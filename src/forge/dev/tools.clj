@@ -8,9 +8,9 @@
             [anvil.ui.group :refer [children]]
             [anvil.world.grid :as grid]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Stage)))
+            [clojure.pprint :refer [pprint]]
+            [gdl.app :refer [post-runnable]])
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
 
@@ -67,8 +67,7 @@
 
  )
 
-(defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+
 
 (defn- learn-skill! [skill-id]
   (post-runnable

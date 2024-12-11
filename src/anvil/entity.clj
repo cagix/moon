@@ -12,7 +12,7 @@
             [anvil.world.grid :as grid]
             [anvil.world.raycaster :refer [ray-blocked?]]
             [anvil.world.time :refer [timer]]
-            [clojure.gd.assets :refer [play-sound]]
+            [gdl.assets :refer [play-sound]]
             [reduce-fsm :as fsm]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]

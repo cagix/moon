@@ -8,7 +8,7 @@
             [anvil.stage :refer [show-modal]]
             [anvil.world.time :refer [timer]]
             [anvil.utils :refer [defsystem defmethods]]
-            [clojure.gd.assets :refer [play-sound]]
+            [gdl.assets :refer [play-sound]]
             [reduce-fsm :as fsm]))
 
 (defn state-k [entity]
