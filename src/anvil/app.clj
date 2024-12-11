@@ -16,12 +16,13 @@
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]]))
 
-; Next: remove minimap ....
-; Then: can remove screens themself ?!
-; also: world-viewport ?!
-; cursors/etc ?
-; * @ editor doesn't need cursors/default-font/world-viewport
-; * also make app mapgen-test -> also doesn't need certain stuffs
+; * Minimal dependencies editor (no world-viewport?, default-font,cursors?)
+
+; * Mapgen Test (or test itself) a separate app make working - is the 'tests' app
+
+; * Remove screens themself, tag it
+
+; * Remove non-essential stuff (windows, widgets?, text?!)
 
 (defn- windows []
   (:windows (stage/get)))
@@ -40,10 +41,10 @@
 (deftype WorldScreen []
   screen/Screen
   (enter [_]
-    (cam/set-zoom! g/camera 0.8))
+    (cam/set-zoom! g/camera 0.8)) ; TODO no enter -> pass as arg to camera
 
   (exit [_]
-    (g/set-cursor :cursors/default))
+    (g/set-cursor :cursors/default)) ; TODO no exit
 
   (render [_]
     (render-world)
