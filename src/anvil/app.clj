@@ -1,21 +1,16 @@
 (ns anvil.app
-  (:require [gdl.screen :as screen]
-            [anvil.screens.minimap :as minimap]
+  (:require [anvil.screens.minimap :as minimap]
             [anvil.screens.world :as world]
-            [gdl.graphics.sprite :as sprite]
-            [gdl.ui :as ui]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics :as g]
-            [forge.world.create :refer [create-world]])
-  (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.utils ScreenUtils)))
-
-(defn- clear-screen []
-  (ScreenUtils/clear Color/BLACK))
+            [gdl.graphics.sprite :as sprite]
+            [gdl.screen :as screen]
+            [gdl.ui :as ui]
+            [forge.world.create :refer [create-world]]))
 
 (defn- start [{:keys [db app-config graphics ui world-id]}]
   (db/setup db)
@@ -37,7 +32,7 @@
                  (screen/cleanup))
 
                (render [_]
-                 (clear-screen)
+                 (g/clear-screen)
                  (screen/render-current))
 
                (resize [_ w h]
