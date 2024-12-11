@@ -1,4 +1,4 @@
-(ns forge.world.update
+(ns anvil.lifecycle.update
   (:require [anvil.controls :as controls]
             [anvil.effect :as effect]
             [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order projectile-size]]
@@ -26,7 +26,7 @@
             [anvil.world.time :as time :refer [stopped?]]
             [anvil.world.raycaster :refer [path-blocked?]]
             [anvil.world.potential-field :as potential-field]
-            [forge.world.potential-fields :refer [update-potential-fields!]]
+            [anvil.lifecycle.potential-fields :refer [update-potential-fields!]]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
             [malli.core :as m]))

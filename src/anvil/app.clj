@@ -1,5 +1,8 @@
 (ns anvil.app
   (:require [anvil.controls :as controls]
+            [anvil.lifecycle.create :refer [create-world dispose-world]]
+            [anvil.lifecycle.render :refer [render-world]]
+            [anvil.lifecycle.update :refer [update-world]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.app :as app]
@@ -11,10 +14,7 @@
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :refer [visible? set-visible] :as actor]
-            [gdl.ui.group :refer [children]]
-            [forge.world.create :refer [create-world dispose-world]]
-            [forge.world.render :refer [render-world]]
-            [forge.world.update :refer [update-world]]))
+            [gdl.ui.group :refer [children]]))
 
 ; * Minimal dependencies editor (no world-viewport?, default-font,cursors?)
 

@@ -1,4 +1,4 @@
-(ns forge.world.create
+(ns anvil.lifecycle.create
   (:require [anvil.controls :as controls]
             [anvil.entity :as entity :refer [player-eid mouseover-entity]]
             [anvil.entity.inventory :as inventory]

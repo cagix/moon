@@ -1,4 +1,4 @@
-(ns forge.world.render
+(ns anvil.lifecycle.render
   (:require [anvil.effect :as effect]
             [anvil.entity :as entity :refer [line-of-sight? player-eid
                                              creatures-in-los-of-player]]
@@ -15,7 +15,7 @@
             [anvil.world.grid :as grid]
             [anvil.world.time :refer [finished-ratio]]
             [anvil.world.raycaster :refer [ray-blocked?]]
-            [forge.world.potential-fields :refer [factions-iterations]]))
+            [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
 
 (defsystem render-effect)
 (defmethod render-effect :default [_ _ctx])

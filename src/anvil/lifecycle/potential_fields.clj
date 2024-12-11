@@ -1,4 +1,4 @@
-(ns forge.world.potential-fields
+(ns anvil.lifecycle.potential-fields
   (:require [anvil.entity.body :as body]
             [anvil.world.grid :as grid]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
