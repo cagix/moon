@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.screens.minimap
-  (:require [anvil.graphics :as g]
-            [anvil.graphics.camera :as cam]
-            [anvil.input :refer [key-just-pressed?]]
+  (:require [gdl.graphics :as g]
+            [gdl.graphics.camera :as cam]
+            [gdl.input :refer [key-just-pressed?]]
             [anvil.level :as level :refer [explored-tile-corners]]
-            [anvil.screen :as screen]))
+            [gdl.screen :as screen]))
 
 ; 28.4 viewportwidth
 ; 16 viewportheight

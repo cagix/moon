@@ -1,11 +1,11 @@
 (ns anvil.screens.world
-  (:require [anvil.graphics :as g]
-            [anvil.graphics.camera :as cam]
+  (:require [gdl.graphics :as g]
+            [gdl.graphics.camera :as cam]
             [anvil.controls :as controls]
-            [anvil.screen :as screen]
-            [anvil.stage :as stage]
-            [anvil.ui.actor :refer [visible? set-visible] :as actor]
-            [anvil.ui.group :refer [children]]
+            [gdl.screen :as screen]
+            [gdl.stage :as stage]
+            [gdl.ui.actor :refer [visible? set-visible] :as actor]
+            [gdl.ui.group :refer [children]]
             [forge.world.create :refer [dispose-world]]
             [forge.world.render :refer [render-world]]
             [forge.world.update :refer [update-world]]))

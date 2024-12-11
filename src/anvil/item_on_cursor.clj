@@ -1,7 +1,7 @@
 (ns anvil.item-on-cursor
-  (:require [anvil.graphics :as g]
-            [anvil.stage :refer [mouse-on-actor?]]
-            [anvil.math.vector :as v]))
+  (:require [gdl.graphics :as g]
+            [gdl.stage :refer [mouse-on-actor?]]
+            [gdl.math.vector :as v]))
 
 (defn world-item? []
   (not (mouse-on-actor?)))

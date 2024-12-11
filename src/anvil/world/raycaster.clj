@@ -1,5 +1,5 @@
 (ns anvil.world.raycaster
-  (:require [anvil.math.raycaster :as raycaster]))
+  (:require [gdl.math.raycaster :as raycaster]))
 
 (declare raycaster)
 

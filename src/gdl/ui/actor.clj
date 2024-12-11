@@ -1,4 +1,4 @@
-(ns anvil.ui.actor
+(ns gdl.ui.actor
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.math Vector2)))
 

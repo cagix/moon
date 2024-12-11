@@ -1,7 +1,7 @@
 (ns anvil.entity.modifiers
   (:refer-clojure :exclude [remove])
   (:require [anvil.ops :as ops]
-            [anvil.val-max :as val-max]
+            [gdl.val-max :as val-max]
             [malli.core :as m]))
 
 (defn- mods-add    [mods other-mods] (merge-with ops/add    mods other-mods))

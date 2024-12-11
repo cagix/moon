@@ -1,5 +1,5 @@
-(ns anvil.input
-  (:require [anvil.utils :refer [gdx-static-field]])
+(ns gdl.input
+  (:require [gdl.utils :refer [gdx-static-field]])
   (:import (com.badlogic.gdx Gdx)))
 
 (def ^:private k->input-button (partial gdx-static-field "Input$Buttons"))

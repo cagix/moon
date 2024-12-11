@@ -8,10 +8,10 @@
             [anvil.entity.modifiers :as mods]
             [anvil.entity.stat :as stat]
             [anvil.entity.string-effect :as string-effect]
-            [anvil.math.vector :as v]
-            [anvil.rand :refer [rand-int-between]]
+            [gdl.math.vector :as v]
+            [gdl.rand :refer [rand-int-between]]
             [anvil.world.time :refer [timer]]
-            [anvil.utils :refer [defmethods defsystem]]
+            [gdl.utils :refer [defmethods defsystem]]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]))
 

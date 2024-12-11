@@ -1,7 +1,7 @@
 (ns anvil.controls
-  (:require [anvil.graphics.camera :as cam]
-            [anvil.input :refer [key-just-pressed? key-pressed?]]
-            [anvil.math.vector :as v]))
+  (:require [gdl.graphics.camera :as cam]
+            [gdl.input :refer [key-just-pressed? key-pressed?]]
+            [gdl.math.vector :as v]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

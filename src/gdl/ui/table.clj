@@ -1,5 +1,5 @@
-(ns anvil.ui.table
-  (:require [anvil.ui.cell :as cell])
+(ns gdl.ui.table
+  (:require [gdl.ui.cell :as cell])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 

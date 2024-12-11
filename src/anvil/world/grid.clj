@@ -1,6 +1,6 @@
 (ns anvil.world.grid
   (:refer-clojure :exclude [get])
-  (:require [anvil.math.shapes :refer [rectangle->tiles
+  (:require [gdl.math.shapes :refer [rectangle->tiles
                                        circle->outer-rectangle
                                        rect-contains?
                                        overlaps?]]))

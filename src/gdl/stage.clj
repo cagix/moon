@@ -1,11 +1,11 @@
-(ns anvil.stage
+(ns gdl.stage
   (:refer-clojure :exclude [get])
-  (:require [anvil.graphics :as g]
-            [anvil.screen :as screen]
-            [anvil.ui :as ui]
-            [anvil.ui.actor :as actor]
-            [anvil.ui.group :as group]
-            [anvil.utils :refer [pretty-pst with-err-str bind-root]])
+  (:require [gdl.graphics :as g]
+            [gdl.screen :as screen]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
+            [gdl.utils :refer [pretty-pst with-err-str bind-root]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))

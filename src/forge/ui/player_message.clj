@@ -1,8 +1,8 @@
 (ns forge.ui.player-message
-  (:require [anvil.graphics :as g :refer [draw-text]]
-            [anvil.stage :refer [message-to-player player-message-duration-seconds]]
-            [anvil.ui :refer [ui-actor]]
-            [anvil.utils :refer [bind-root]]))
+  (:require [gdl.graphics :as g :refer [draw-text]]
+            [gdl.stage :refer [message-to-player player-message-duration-seconds]]
+            [gdl.ui :refer [ui-actor]]
+            [gdl.utils :refer [bind-root]]))
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]

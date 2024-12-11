@@ -1,10 +1,10 @@
-(ns anvil.ui
+(ns gdl.ui
   (:refer-clojure :exclude [load])
-  (:require [anvil.graphics :as g]
-            [anvil.ui.actor :as actor]
-            [anvil.ui.group :refer [find-actor-with-id add-actor!]]
-            [anvil.ui.table :as table]
-            [anvil.ui.utils :as scene2d.utils])
+  (:require [gdl.graphics :as g]
+            [gdl.ui.actor :as actor]
+            [gdl.ui.group :refer [find-actor-with-id add-actor!]]
+            [gdl.ui.table :as table]
+            [gdl.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)

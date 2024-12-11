@@ -1,6 +1,6 @@
 (ns anvil.entity.body
-  (:require [anvil.math.vector :as v]
-            [anvil.math.shapes :as shape]))
+  (:require [gdl.math.vector :as v]
+            [gdl.math.shapes :as shape]))
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))

@@ -1,7 +1,7 @@
-(ns anvil.graphics
-  (:require [anvil.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]]
-            [clojure.string :as str]
-            [gdl.tiled :as tiled])
+(ns gdl.graphics
+  (:require [clojure.string :as str]
+            [gdl.tiled :as tiled]
+            [gdl.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)

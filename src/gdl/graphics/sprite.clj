@@ -1,5 +1,5 @@
-(ns anvil.sprite
-  (:require [anvil.graphics :as g]
+(ns gdl.graphics.sprite
+  (:require [gdl.graphics :as g]
             [gdl.assets :as assets]))
 
 (defn- scale-dimensions [dimensions scale]

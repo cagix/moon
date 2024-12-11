@@ -1,53 +1,42 @@
 (ns editor.app
-  (:require [anvil.graphics :as g]
-            [anvil.info :as info]
-
-            [anvil.input :refer [key-just-pressed?]]
-
-            [anvil.property :as property]
-
-            [anvil.screen :as screen]
-
-            [anvil.stage :as stage]
-
-            [anvil.sprite :as sprite]
-
-            [anvil.ui :refer [horizontal-separator-cell
-                              vertical-separator-cell
-                              ui-actor
-                              image-button
-                              text-button
-                              *on-clicked-actor*
-                              find-ancestor-window
-                              pack-ancestor-window!
-                              scroll-pane
-                              image->widget
-                              ui-stack
-                              text-field
-                              add-tooltip!]
-             :as ui]
-
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.set :as set]
-
+            [clojure.string :as str]
             [gdl.app :as app]
             [gdl.assets :as assets :refer [play-sound]]
             [gdl.db :as db]
-
-            [anvil.ui.actor :refer [user-object]]
-            [anvil.ui.group :refer [children clear-children add-actor! find-actor]]
-            [anvil.ui.table :refer [add-rows!]]
-
-            [anvil.utils :refer [->edn-str
-                                   truncate
-                                   find-first
-                                   index-of]]
-            [clojure.string :as str]
-
+            [gdl.graphics :as g]
+            [gdl.graphics.sprite :as sprite]
+            [gdl.input :refer [key-just-pressed?]]
+            [gdl.screen :as screen]
+            [gdl.stage :as stage]
+            [gdl.ui :refer [horizontal-separator-cell
+                            vertical-separator-cell
+                            ui-actor
+                            image-button
+                            text-button
+                            *on-clicked-actor*
+                            find-ancestor-window
+                            pack-ancestor-window!
+                            scroll-pane
+                            image->widget
+                            ui-stack
+                            text-field
+                            add-tooltip!]
+             :as ui]
+            [gdl.ui.actor :refer [user-object]]
+            [gdl.ui.group :refer [children clear-children add-actor! find-actor]]
+            [gdl.ui.table :refer [add-rows!]]
+            [gdl.utils :refer [->edn-str truncate find-first index-of]]
             [malli.generator :as mg])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
+
+(defn- info-text [property]
+  (binding [*print-level* 3]
+    (with-out-str
+     (clojure.pprint/pprint property))))
 
 (defn map-keys [m-schema]
   (let [[_m _p & ks] m-schema]
@@ -213,12 +202,12 @@
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
-        button (if-let [image (property/image props)]
+        button (if-let [image (db/property->image props)]
                  (image-button image on-clicked {:scale scale})
                  (text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui-stack [button top-widget])]
-    (add-tooltip! button #(info/text props))
+    (add-tooltip! button #(info-text props))
     (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
 
@@ -281,9 +270,9 @@
                         (stage/add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/build property-id)
-              image-widget (image->widget (property/image property)
+              image-widget (image->widget (db/property->image property)
                                           {:id property-id})]
-          (add-tooltip! image-widget #(info/text property))))
+          (add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
         (text-button "-" #(redo-rows (disj property-ids id))))])))
 
@@ -320,9 +309,9 @@
                           (stage/add-actor window)))))]
       [(when property-id
          (let [property (db/build property-id)
-               image-widget (image->widget (property/image property)
+               image-widget (image->widget (db/property->image property)
                                            {:id property-id})]
-           (add-tooltip! image-widget #(info/text property))
+           (add-tooltip! image-widget #(info-text property))
            image-widget))]
       [(when property-id
          (text-button "-" #(redo-rows nil)))]])))

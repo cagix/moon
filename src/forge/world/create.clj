@@ -7,15 +7,15 @@
             [anvil.entity.mana :as mana]
             [anvil.entity.skills :as skills]
             [anvil.error :as error]
-            [anvil.graphics :as g]
-            [anvil.graphics.camera :as cam]
+            [gdl.graphics :as g]
+            [gdl.graphics.camera :as cam]
             [anvil.info :as info]
             [anvil.item-on-cursor :refer [world-item?]]
             [anvil.level :as level :refer [generate-level]]
-            [anvil.screen :as screen]
-            [anvil.stage :as stage]
-            [anvil.sprite :as sprite]
-            [anvil.ui :refer [ui-actor
+            [gdl.screen :as screen]
+            [gdl.stage :as stage]
+            [gdl.graphics.sprite :as sprite]
+            [gdl.ui :refer [ui-actor
                               set-drawable!
                               ui-widget
                               texture-region-drawable
@@ -24,12 +24,12 @@
                               add-tooltip!
                               remove-tooltip!]
              :as ui]
-            [anvil.val-max :as val-max]
-            [anvil.utils :refer [dispose defsystem]]
-            [anvil.ui.actor :refer [user-object] :as actor]
-            [anvil.ui.group :refer [add-actor! find-actor]]
-            [anvil.ui.utils :as scene2d.utils]
-            [anvil.utils :refer [dev-mode? tile->middle bind-root readable-number]]
+            [gdl.val-max :as val-max]
+            [gdl.utils :refer [dispose defsystem]]
+            [gdl.ui.actor :refer [user-object] :as actor]
+            [gdl.ui.group :refer [add-actor! find-actor]]
+            [gdl.ui.utils :as scene2d.utils]
+            [gdl.utils :refer [dev-mode? tile->middle bind-root readable-number]]
             [anvil.world.content-grid :as content-grid]
             [anvil.world.grid :as grid]
             [anvil.world.raycaster :as raycaster]

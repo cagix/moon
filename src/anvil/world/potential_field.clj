@@ -1,7 +1,7 @@
 (ns anvil.world.potential-field
   (:require [anvil.entity.faction :as faction]
-            [anvil.math.vector :as v]
-            [anvil.utils :refer [when-seq utils-positions]]
+            [gdl.math.vector :as v]
+            [gdl.utils :refer [when-seq utils-positions]]
             [anvil.world.grid :refer [get-8-neighbour-positions
                                 cell-blocked?
                                 occupied-by-other?

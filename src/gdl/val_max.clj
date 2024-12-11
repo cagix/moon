@@ -1,4 +1,4 @@
-(ns anvil.val-max
+(ns gdl.val-max
   (:require [malli.core :as m]))
 
 (def schema

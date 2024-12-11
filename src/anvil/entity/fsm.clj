@@ -3,11 +3,11 @@
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
             [anvil.entity.string-effect :as string-effect]
-            [anvil.graphics :as g]
+            [gdl.graphics :as g]
             [anvil.item-on-cursor :refer [item-place-position]]
-            [anvil.stage :refer [show-modal]]
+            [gdl.stage :refer [show-modal]]
             [anvil.world.time :refer [timer]]
-            [anvil.utils :refer [defsystem defmethods]]
+            [gdl.utils :refer [defsystem defmethods]]
             [gdl.assets :refer [play-sound]]
             [reduce-fsm :as fsm]))
 

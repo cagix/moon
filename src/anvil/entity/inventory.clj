@@ -1,6 +1,6 @@
 (ns anvil.entity.inventory
   (:require [anvil.entity.modifiers :as mods]
-            [anvil.utils :refer [find-first]]
+            [gdl.utils :refer [find-first]]
             [data.grid2d :as g2d]))
 
 (def empty-inventory

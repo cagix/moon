@@ -1,4 +1,4 @@
-(ns anvil.ui.utils
+(ns gdl.ui.utils
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable)))
 

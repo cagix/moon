@@ -1,4 +1,4 @@
-(ns anvil.screen)
+(ns gdl.screen)
 
 (defprotocol Screen
   (enter   [_])

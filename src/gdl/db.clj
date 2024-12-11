@@ -1,10 +1,10 @@
 (ns gdl.db
-  (:require [anvil.entity.animation :as animation]
-            [anvil.sprite :as sprite]
-            [anvil.val-max :as val-max]
-            [anvil.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [gdl.graphics.animation :as animation]
+            [gdl.graphics.sprite :as sprite]
+            [gdl.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
+            [gdl.val-max :as val-max]
             [malli.core :as m]
             [malli.error :as me]))
 
@@ -216,3 +216,8 @@
 
 (defmethod malli-form :s/components-ns [[_ ns-name-k]]
   (malli-form [:s/map-optional (namespaced-ks ns-name-k)]))
+
+(defn property->image [{:keys [entity/image entity/animation]}]
+  (or image
+      (first (:frames animation))))
+

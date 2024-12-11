@@ -1,5 +1,5 @@
-(ns anvil.ui.group
-  (:require [anvil.ui.actor :as actor])
+(ns gdl.ui.group
+  (:require [gdl.ui.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn children
