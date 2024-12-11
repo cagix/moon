@@ -12,8 +12,10 @@
         (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
 
 (defn- load-assets [^AssetManager manager assets]
-  (doseq [[file class] assets]
-    (.load manager ^String file class))
+  (doseq [[file class-k] assets]
+    (.load manager ^String file (case class-k
+                                  :sound   com.badlogic.gdx.audio.Sound
+                                  :texture com.badlogic.gdx.graphics.Texture)))
   (.finishLoading manager))
 
 (defn- recursively-search [folder extensions]
@@ -31,13 +33,9 @@
           :else
           (recur remaining result))))
 
-(def ^:private class-extensions
-  [[com.badlogic.gdx.audio.Sound      #{"wav"}]
-   [com.badlogic.gdx.graphics.Texture #{"png" "bmp"}]])
-
-(defn setup [folder]
+(defn setup [{:keys [folder asset-type-exts]}]
   (def manager (doto (asset-manager*)
-                 (load-assets (for [[asset-type exts] class-extensions
+                 (load-assets (for [[asset-type exts] asset-type-exts
                                     file (map #(str/replace-first % folder "")
                                               (recursively-search folder exts))]
                                 [file asset-type])))))

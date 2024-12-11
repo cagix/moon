@@ -5,7 +5,9 @@
                  :fps 60
                  :width 1440
                  :height 900}
- :assets "resources/"
+ :assets {:folder "resources/"
+          :asset-type-exts {:sound   #{"wav"}
+                            :texture #{"png" "bmp"}}}
  :ui :skin-scale/x1
  :graphics {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
                            :size 16
