@@ -1,6 +1,5 @@
 (ns editor.app
-  (:require [anvil.app :as app]
-            [anvil.assets :as assets]
+  (:require [anvil.assets :as assets]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.graphics :as g]
@@ -25,6 +24,7 @@
                               add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
+            [clojure.gdx.app :as app]
             [clojure.set :as set]
             [anvil.ui.actor :refer [user-object]]
             [anvil.ui.group :refer [children
@@ -548,29 +548,29 @@
 (defn -main []
   (db/setup {:schema "schema.edn"
              :properties "properties.edn"})
-  (app/set-dock-icon "moon.png")
-  (app/start-app {:title "Editor"
-                  :fps 60
-                  :width 1440
-                  :height 900}
-                 (proxy [com.badlogic.gdx.ApplicationAdapter] []
-                   (create []
-                     (assets/setup {:folder "resources/"
-                                    :asset-type-exts {:sound   #{"wav"}
-                                                      :texture #{"png" "bmp"}}})
-                     (g/setup graphics)
-                     (ui/setup :skin-scale/x1)
-                     (screen/setup {:screens/editor (create-screen)}
-                                   :screens/editor))
+  (app/start {:title "Editor"
+              :fps 60
+              :width 1440
+              :height 900
+              :taskbar-icon "moon.png"}
+             (reify app/Listener
+               (create [_]
+                 (assets/setup {:folder "resources/"
+                                :asset-type-exts {:sound   #{"wav"}
+                                                  :texture #{"png" "bmp"}}})
+                 (g/setup graphics)
+                 (ui/setup :skin-scale/x1)
+                 (screen/setup {:screens/editor (create-screen)}
+                               :screens/editor))
 
-                   (dispose []
-                     (assets/cleanup)
-                     (g/cleanup)
-                     (ui/cleanup)
-                     (screen/cleanup))
+               (dispose [_]
+                 (assets/cleanup)
+                 (g/cleanup)
+                 (ui/cleanup)
+                 (screen/cleanup))
 
-                   (render []
-                     (screen/render-current))
+               (render [_]
+                 (screen/render-current))
 
-                   (resize [w h]
-                     (g/resize w h)))))
+               (resize [_ w h]
+                 (g/resize w h)))))

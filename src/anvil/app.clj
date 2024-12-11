@@ -8,39 +8,20 @@
             [anvil.sprite :as sprite]
             [anvil.ui :as ui]
             [clojure.edn :as edn]
+            [clojure.gdx.app :as app]
             [clojure.java.io :as io]
             [forge.world.create :refer [create-world]])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils ScreenUtils SharedLibraryLoader)
-           (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)))
+  (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.utils ScreenUtils)))
 
 (defn- clear-screen []
   (ScreenUtils/clear Color/BLACK))
 
-(defn set-dock-icon [icon]
-  (.setIconImage (Taskbar/getTaskbar)
-                 (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource icon))))
-
-(defn start-app [{:keys [title fps width height]} listener]
-  (when SharedLibraryLoader/isMac
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (Lwjgl3Application. listener
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setForegroundFPS fps)
-                        (.setWindowedMode width height))))
-
-(defn- start [{:keys [db dock-icon lwjgl3-config assets graphics ui world-id]}]
+(defn- start [{:keys [db app-config assets graphics ui world-id]}]
   (db/setup db)
-  (set-dock-icon dock-icon)
-  (start-app lwjgl3-config
-             (proxy [ApplicationAdapter] []
-               (create []
+  (app/start app-config
+             (reify app/Listener
+               (create [_]
                  (assets/setup assets)
                  (g/setup graphics)
                  (ui/setup ui)
@@ -49,17 +30,17 @@
                                :screens/world)
                  (create-world (db/build world-id)))
 
-               (dispose []
+               (dispose [_]
                  (assets/cleanup)
                  (g/cleanup)
                  (ui/cleanup)
                  (screen/cleanup))
 
-               (render []
+               (render [_]
                  (clear-screen)
                  (screen/render-current))
 
-               (resize [w h]
+               (resize [_ w h]
                  (g/resize w h)))))
 
 (defn -main []
