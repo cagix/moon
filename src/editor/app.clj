@@ -1,11 +1,13 @@
-(ns ^:no-doc anvil.screens.editor
-  (:require [anvil.assets :as assets]
+(ns editor.app
+  (:require [anvil.app :as app]
+            [anvil.assets :as assets]
             [anvil.audio :refer [play-sound]]
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.info :as info]
             [anvil.input :refer [key-just-pressed?]]
             [anvil.property :as property]
+            [anvil.screen :as screen]
             [anvil.stage :as stage]
             [anvil.sprite :as sprite]
             [anvil.ui :refer [horizontal-separator-cell
@@ -528,6 +530,47 @@
                      :scaling :fill
                      :align :center}))
 
-(defn create []
+(defn create-screen []
   (stage/screen :actors [(background-image "images/moon_background.png")
                          (tabs-table "custom label text here")]))
+
+(def graphics
+  {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                  :size 16
+                  :quality-scaling 2}
+   :cursors {}
+   :viewport {:width 1440
+              :height 900}
+   :world-viewport {:tile-size 48
+                    :width 1440
+                    :height 900}})
+
+(defn -main []
+  (db/setup {:schema "schema.edn"
+             :properties "properties.edn"})
+  (app/set-dock-icon "moon.png")
+  (app/start-app {:title "Editor"
+                  :fps 60
+                  :width 1440
+                  :height 900}
+                 (proxy [com.badlogic.gdx.ApplicationAdapter] []
+                   (create []
+                     (assets/setup {:folder "resources/"
+                                    :asset-type-exts {:sound   #{"wav"}
+                                                      :texture #{"png" "bmp"}}})
+                     (g/setup graphics)
+                     (ui/setup :skin-scale/x1)
+                     (screen/setup {:screens/editor (create-screen)}
+                                   :screens/editor))
+
+                   (dispose []
+                     (assets/cleanup)
+                     (g/cleanup)
+                     (ui/cleanup)
+                     (screen/cleanup))
+
+                   (render []
+                     (screen/render-current))
+
+                   (resize [w h]
+                     (g/resize w h)))))

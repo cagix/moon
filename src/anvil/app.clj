@@ -3,7 +3,6 @@
             [anvil.db :as db]
             [anvil.graphics :as g]
             [anvil.screen :as screen]
-            [anvil.screens.editor :as editor]
             [anvil.screens.minimap :as minimap]
             [anvil.screens.world :as world]
             [anvil.sprite :as sprite]
@@ -21,12 +20,12 @@
 (defn- clear-screen []
   (ScreenUtils/clear Color/BLACK))
 
-(defn- set-dock-icon [icon]
+(defn set-dock-icon [icon]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
                             (io/resource icon))))
 
-(defn- start-app [{:keys [title fps width height]} listener]
+(defn start-app [{:keys [title fps width height]} listener]
   (when SharedLibraryLoader/isMac
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
@@ -45,8 +44,7 @@
                  (assets/setup assets)
                  (g/setup graphics)
                  (ui/setup ui)
-                 (screen/setup {:screens/editor (editor/create)
-                                :screens/minimap (minimap/screen)
+                 (screen/setup {:screens/minimap (minimap/screen)
                                 :screens/world (world/screen)}
                                :screens/world)
                  (create-world (db/build world-id)))
