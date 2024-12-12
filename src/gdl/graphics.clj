@@ -228,7 +228,7 @@
 
 (defn- draw-on-viewport [batch viewport draw-fn]
   (batch/set-color batch white) ; fix scene2d.ui.tooltip flickering
-  (batch/set-projection-matrix batch (camera/combined (viewport/camera viewport)))
+  (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
   (batch/begin batch)
   (draw-fn)
   (batch/end batch))
@@ -247,11 +247,11 @@
   "Returns vector of [x y]."
   [viewport]
   (let [mouse-x (clamp (gdx/input-x)
-                       (viewport/left-gutter-width viewport)
-                       (viewport/right-gutter-x viewport))
+                       (:left-gutter-width viewport)
+                       (:right-gutter-x    viewport))
         mouse-y (clamp (gdx/input-y)
-                       (viewport/top-gutter-height viewport)
-                       (viewport/top-gutter-y viewport))]
+                       (:top-gutter-height viewport)
+                       (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
 (defn mouse-position []
