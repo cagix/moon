@@ -261,7 +261,7 @@
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position viewport))
+  (unproject-mouse-position world-viewport))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
