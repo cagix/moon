@@ -1,8 +1,19 @@
+; Release as separate library with javafx app
+; and way to add schemas inside the app (build up your database....)
+; and decouple schema from malli etc.
+; even how the property-types are handled.....?
+
+; wait why do I even need property-types ?
+; we just validate each property against its key
+; as we know we are dealing with a thing when we use it ?
+
+; even the dev-loop itself....
 (ns gdl.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
+            [gdl.schema :as schema]
             [gdl.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
             [gdl.val-max :as val-max]
             [malli.core :as m]

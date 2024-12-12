@@ -1,3 +1,5 @@
+; TODO this also separate library ... deosn't even have anything to diwht libgdx ....
+; any application and call 'gdl.dev-loop'
 (ns gdl.dev
   "Starts a dev loop using clojure.tools.namespace.repl/refresh in order to restart the app without
   restarting the JVM.
