@@ -1,6 +1,7 @@
 (ns gdl.ui
   (:refer-clojure :exclude [load])
-  (:require [gdl.graphics :as g]
+  (:require [clojure.vis-ui :as vis]
+            [gdl.graphics :as g]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :refer [find-actor-with-id add-actor!]]
             [gdl.ui.table :as table]
@@ -10,19 +11,16 @@
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Separator VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
 
 (defn setup [skin-scale]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
-  (when (VisUI/isLoaded)
-    (VisUI/dispose))
-  (VisUI/load (case skin-scale
-                :skin-scale/x1 VisUI$SkinScale/X1
-                :skin-scale/x2 VisUI$SkinScale/X2))
-  (-> (VisUI/getSkin)
+  (when (vis/loaded?)
+    (vis/dispose))
+  (vis/load skin-scale)
+  (-> (vis/skin)
       (.getFont "default-font")
       .getData
       .markupEnabled
@@ -33,7 +31,7 @@
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
 (defn cleanup []
-  (VisUI/dispose))
+  (vis/dispose))
 
 (defn horizontal-separator-cell [colspan]
   {:actor (Separator. "default")
