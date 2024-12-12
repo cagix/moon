@@ -27,17 +27,10 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create []
-                          (create listener))
-
-                        (dispose []
-                          (dispose listener))
-
-                        (render []
-                          (render listener))
-
-                        (resize [w h]
-                          (resize listener w h)))
+                        (create  []    (create  listener))
+                        (dispose []    (dispose listener))
+                        (render  []    (render  listener))
+                        (resize  [w h] (resize  listener w h)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle title)
                         (.setForegroundFPS fps)
