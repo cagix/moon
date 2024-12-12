@@ -3,12 +3,14 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
+            [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.gdx.utils.disposable :refer [dispose]]
@@ -16,9 +18,7 @@
             [clojure.string :as str]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [gdx-static-field safe-get mapvals]])
-  (:import (com.badlogic.gdx.utils Align)
-           (space.earlygrey.shapedrawer ShapeDrawer)
-           (forge OrthogonalTiledMapRenderer ColorSetter)))
+  (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn clear []
   (screen-utils/clear color/black))
@@ -33,7 +33,7 @@
                         texture (texture/create pixmap)]
                     (dispose pixmap)
                     texture))
-  (def sd (ShapeDrawer. batch (texture-region sd-texture 1 0 1 1)))
+  (def sd (sd/create batch (texture-region sd-texture 1 0 1 1)))
   (def default-font (freetype/generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (pixmap/create (gdx/internal-file (str "cursors/" file ".png")))
@@ -94,79 +94,43 @@
 (def texture-dimensions texture-region/dimensions)
 
 (defn- sd-color [color]
-  (ShapeDrawer/.setColor sd ^com.badlogic.gdx.graphics.Color (->color color)))
+  (sd/set-color sd (->color color)))
 
 (defn ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (.ellipse sd
-            (float x)
-            (float y)
-            (float radius-x)
-            (float radius-y)))
+  (sd/ellipse sd x y radius-x radius-y))
 
 (defn filled-ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (.filledEllipse sd
-                  (float x)
-                  (float y)
-                  (float radius-x)
-                  (float radius-y)))
+  (sd/filled-ellipse sd x y radius-x radius-y))
 
 (defn circle [[x y] radius color]
   (sd-color color)
-  (.circle sd
-           (float x)
-           (float y)
-           (float radius)))
+  (sd/circle sd x y radius))
 
 (defn filled-circle [[x y] radius color]
   (sd-color color)
-  (.filledCircle sd
-                 (float x)
-                 (float y)
-                 (float radius)))
+  (sd/filled-circle sd x y radius))
 
 (defn arc [[center-x center-y] radius start-angle degree color]
   (sd-color color)
-  (.arc sd
-        (float center-x)
-        (float center-y)
-        (float radius)
-        (float (degree->radians start-angle))
-        (float (degree->radians degree))))
+  (sd/arc sd center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
 
 (defn sector [[center-x center-y] radius start-angle degree color]
   (sd-color color)
-  (.sector sd
-           (float center-x)
-           (float center-y)
-           (float radius)
-           (float (degree->radians start-angle))
-           (float (degree->radians degree))))
+  (sd/sector sd center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
 
 (defn rectangle [x y w h color]
   (sd-color color)
-  (.rectangle sd
-              (float x)
-              (float y)
-              (float w)
-              (float h)))
+  (sd/rectangle sd x y w h))
 
 (defn filled-rectangle [x y w h color]
   (sd-color color)
-  (.filledRectangle sd
-                    (float x)
-                    (float y)
-                    (float w)
-                    (float h)))
+  (sd/filled-rectangle sd x y w h))
 
 (defn line [[sx sy] [ex ey] color]
   (sd-color color)
-  (.line sd
-         (float sx)
-         (float sy)
-         (float ex)
-         (float ey)))
+  (sd/line sd sx sy ex ey))
 
 (defn grid [leftx bottomy gridw gridh cellw cellh color]
   (sd-color color)
@@ -182,10 +146,10 @@
       (line [leftx liney] [rightx liney]))))
 
 (defn with-line-width [width draw-fn]
-  (let [old-line-width (.getDefaultLineWidth sd)]
-    (.setDefaultLineWidth sd (* width old-line-width))
+  (let [old-line-width (sd/default-line-width sd)]
+    (sd/set-default-line-width sd (* width old-line-width))
     (draw-fn)
-    (.setDefaultLineWidth sd old-line-width)))
+    (sd/set-default-line-width sd old-line-width)))
 
 (defn set-cursor [cursor-key]
   (gdx/set-cursor (safe-get cursors cursor-key)))
@@ -213,12 +177,6 @@
       count
       (* (bitmap-font/line-height font))))
 
-(defn- gdx-align [k]
-  (case k
-    :center Align/center
-    :left   Align/left
-    :right  Align/right))
-
 (defn draw-text
   "font, h-align, up? and scale are optional.
   h-align one of: :center, :left, :right. Default :center.
@@ -236,7 +194,7 @@
                       :text text
                       :x x
                       :y (+ y (if up? (text-height font text) 0))
-                      :align (gdx-align (or h-align :center)))
+                      :align (interop/k->align (or h-align :center)))
     (.setScale data old-scale)))
 
 (defn- unit-dimensions [image unit-scale]
