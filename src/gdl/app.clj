@@ -1,18 +1,9 @@
 (ns gdl.app
-  (:require [clojure.java.io :as io])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
-           (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)))
-
-(defn- set-taskbar-icon
-  "On MacOs this is the dock-icon."
-  [icon]
-  (.setIconImage (Taskbar/getTaskbar)
-                 (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource icon))))
+  (:require [clojure.gdx.app :as app]
+            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.utils.shared-library-loader :as shared-library-loader]
+            [clojure.java.awt :as awt]
+            [clojure.lwjgl :as lwjgl]))
 
 (defprotocol Listener
   (create  [_])
@@ -20,24 +11,19 @@
   (render  [_])
   (resize  [_ w h]))
 
-(defn start [{:keys [title fps width height taskbar-icon]} listener]
+(defn start [{:keys [taskbar-icon] :as config} listener]
   (when taskbar-icon
-    (set-taskbar-icon taskbar-icon))
-  (when SharedLibraryLoader/isMac
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
-    (.set Configuration/GLFW_CHECK_THREAD0 false))
-  (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create  []    (create  listener))
-                        (dispose []    (dispose listener))
-                        (render  []    (render  listener))
-                        (resize  [w h] (resize  listener w h)))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setForegroundFPS fps)
-                        (.setWindowedMode width height))))
+    (awt/set-taskbar-icon taskbar-icon))
+  (when shared-library-loader/mac?
+    (lwjgl/configure-glfw-for-mac))
+  (lwjgl3/app (proxy [com.badlogic.gdx.ApplicationAdapter] []
+                (create  []    (create  listener))
+                (dispose []    (dispose listener))
+                (render  []    (render  listener))
+                (resize  [w h] (resize  listener w h)))
+              (lwjgl3/config config)))
 
-(defn exit []
-  (.exit Gdx/app))
+(def exit app/exit)
 
 (defmacro post-runnable [& exprs]
-  `(.postRunnable Gdx/app (fn [] ~@exprs)))
+  `(app/post-runnable (fn [] ~@exprs)))
