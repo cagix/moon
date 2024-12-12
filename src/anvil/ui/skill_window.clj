@@ -33,6 +33,6 @@
                                                            (fsm/state-obj @player-eid)
                                                            (db/build id))))]]
                          (do
-                          (add-tooltip! button #(info/->text (db/build id))) ; TODO no player modifiers applied (see actionbar)
+                          (add-tooltip! button #(info/text (db/build id))) ; TODO no player modifiers applied (see actionbar)
                           button))]
                 :pack? true}))

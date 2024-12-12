@@ -66,9 +66,9 @@
   (render [_]
     (render-world)
     (update-world)
-    (controls/adjust-zoom g/camera)
-    (check-window-hotkeys)
-    (when (controls/close-windows?)
+    (controls/adjust-zoom g/camera) ; TODO do I need adjust-zoom? no !
+    (check-window-hotkeys)          ; do I need windows? no !
+    (when (controls/close-windows?) ; no windows ! complicated! vampire survivors has no windows! although I like items -> open inventory there?
       (close-all-windows)))
 
   (dispose [_]
