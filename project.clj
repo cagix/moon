@@ -1,4 +1,4 @@
-(def libgdx-version "1.12.1")
+(def libgdx-version "1.13.0")
 
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
