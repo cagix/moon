@@ -8,10 +8,12 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.screen-utils :as screen-utils]
+            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.string :as str]
             [gdl.tiled :as tiled]
-            [gdl.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]])
+            [gdl.utils :refer [gdx-static-field safe-get mapvals]])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)

@@ -12,7 +12,6 @@
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
             [gdl.ui :refer [ui-actor text-button] :as ui]
-            [gdl.utils :refer [dispose]]
             [gdl.ui.group :refer [add-actor!]]))
 
 (defn- show-whole-map! [camera tiled-map]
@@ -114,7 +113,7 @@
 (defn- generate-screen-ctx [properties]
   (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
         atom-data (current-data)]
-    (dispose (:tiled-map @atom-data))
+    (tiled/dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid

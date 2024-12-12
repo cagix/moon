@@ -24,7 +24,7 @@
                               remove-tooltip!]
              :as ui]
             [gdl.val-max :as val-max]
-            [gdl.utils :refer [dispose defsystem]]
+            [gdl.utils :refer [defsystem]]
             [gdl.ui.actor :refer [user-object] :as actor]
             [gdl.ui.group :refer [add-actor! find-actor]]
             [gdl.ui.utils :as scene2d.utils]
@@ -416,7 +416,7 @@
 
 (defn dispose-world []
   (when (bound? #'level/tiled-map)
-    (dispose level/tiled-map)))
+    (tiled/dispose level/tiled-map)))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 

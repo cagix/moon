@@ -9,6 +9,11 @@
   [file]
   (.load (TmxMapLoader.) file))
 
+(defn dispose
+  "Disposes all resources like Texture instances that the map may own."
+  [tiled-map]
+  (TiledMap/.dispose tiled-map))
+
 (defn layer-name ^String [layer]
   (if (keyword? layer)
     (name layer)
