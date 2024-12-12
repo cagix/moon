@@ -10,7 +10,7 @@
 (defn set-position!
   "Sets x and y and calls update on the camera."
   [camera position]
-  (camera/set-position camera position) ; => set -> camera has to become immutable!!! (or a setter)?
+  (camera/set-position camera position)
   (camera/update camera))
 
 (defn frustum [camera]

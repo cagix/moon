@@ -2,8 +2,8 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
 
-                 [clojure.gdx                 "1.13.0-0.1"]
-                 [clojure.gdx.backends.lwjgl3 "1.13.0-0.1"]
+                 [clojure.gdx                                 "1.13.0-0.1"]
+                 [com.github.damn/clojure.gdx.backends.lwjgl3 "1.13.0-0.1"]
 
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.0" :classifier "natives-desktop"]

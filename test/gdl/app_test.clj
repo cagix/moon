@@ -1,19 +1,14 @@
 (ns gdl.app-test
-  (:require [gdl.app :as app]))
-
-(defn start-simple-app [listener]
-  (app/start {:title "GDL.TEST"
-              :width 800
-              :height 600
-              :fps 60
-              :taskbar-icon "moon.png"}
-             listener))
+  (:require [clojure.gdx.backends.lwjgl3 :as lwjgl3]))
 
 (defn -main []
-  (start-simple-app (reify app/Listener
-                      (create [_]
-                        (Thread/sleep 1000)
-                        (app/exit))
-                      (dispose [_])
-                      (render [_])
-                      (resize [_ w h]))))
+  (lwjgl3/start {:title "Hello World"
+                 :width 800
+                 :height 600
+                 :fps 60
+                 :taskbar-icon "icon.png"} ; optional
+                (reify lwjgl3/Application
+                  (create [_])
+                  (dispose [_])
+                  (render [_])
+                  (resize [_ w h]))))
