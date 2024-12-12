@@ -8,7 +8,7 @@
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.0" :classifier "natives-desktop"]
 
-                 [space.earlygrey/shapedrawer "2.5.0"]
+                 [clojure.gdx.graphics.shape-drawer "2.5.0-0.1"]
 
                  [com.kotcrab.vis/vis-ui "1.5.2"]
 
