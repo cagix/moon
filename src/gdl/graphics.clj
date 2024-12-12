@@ -6,6 +6,7 @@
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
@@ -155,19 +156,19 @@
   (gdx/set-cursor (safe-get cursors cursor-key)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
-  (if color (.setColor batch color))
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; rotation origin
-         (/ (float h) 2)
-         w ; width height
-         h
-         1 ; scaling factor
-         1
-         rotation)
-  (if color (.setColor batch white)))
+  (if color (batch/set-color batch color))
+  (batch/draw batch
+              texture-region
+              :x x
+              :y y
+              :origin-x (/ (float w) 2) ; rotation origin
+              :origin-y (/ (float h) 2)
+              :width w
+              :height h
+              :scale-x 1
+              :scale-y 1
+              :rotation rotation)
+  (if color (batch/set-color batch white)))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -226,11 +227,11 @@
   (draw-rotated-centered image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (.setColor batch white) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (.combined (viewport/camera viewport)))
-  (.begin batch)
+  (batch/set-color batch white) ; fix scene2d.ui.tooltip flickering
+  (batch/set-projection-matrix batch (camera/combined (viewport/camera viewport)))
+  (batch/begin batch)
   (draw-fn)
-  (.end batch))
+  (batch/end batch))
 
 (defn draw-with [viewport unit-scale draw-fn]
   (draw-on-viewport batch

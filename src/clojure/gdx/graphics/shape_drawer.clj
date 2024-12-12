@@ -1,5 +1,6 @@
 (ns clojure.gdx.graphics.shape-drawer
-  (:import (space.earlygrey.shapedrawer ShapeDrawer)))
+  (:import (com.badlogic.gdx.graphics Color)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [batch texture-region]
   (ShapeDrawer. batch texture-region))
@@ -8,10 +9,10 @@
   (ShapeDrawer/.getDefaultLineWidth sd))
 
 (defn set-default-line-width [sd width]
-  (.setDefaultLineWidth sd width))
+  (ShapeDrawer/.setDefaultLineWidth sd (float width)))
 
 (defn set-color [sd color]
-  (ShapeDrawer/.setColor sd color))
+  (ShapeDrawer/.setColor sd ^Color color))
 
 (defn ellipse [sd x y radius-x radius-y]
   (ShapeDrawer/.ellipse sd
