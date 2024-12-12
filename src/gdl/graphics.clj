@@ -12,12 +12,11 @@
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.gdx.utils.disposable :refer [dispose]]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [gdx-static-field safe-get mapvals]])
-  (:import (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils Align)
-           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
+  (:import (com.badlogic.gdx.utils Align)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
@@ -44,7 +43,7 @@
                         cursors))
   (def viewport-width  (:width  viewport))
   (def viewport-height (:height viewport))
-  (def viewport (FitViewport. viewport-width viewport-height (camera/orthographic)))
+  (def viewport (viewport/fit viewport-width viewport-height (camera/orthographic)))
   (def world-unit-scale (float (/ (:tile-size world-viewport))))
   (def world-viewport-width  (:width  world-viewport))
   (def world-viewport-height (:height world-viewport))
@@ -52,7 +51,7 @@
   (def world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
                             world-height (* world-viewport-height world-unit-scale)]
                         (camera/set-to-ortho camera world-width world-height :y-down? false)
-                        (FitViewport. world-width world-height camera)))
+                        (viewport/fit world-width world-height camera)))
   (def tiled-map-renderer
     (memoize (fn [tiled-map]
                (OrthogonalTiledMapRenderer. tiled-map (float world-unit-scale) batch)))))
@@ -64,8 +63,8 @@
   (run! dispose (vals cursors)))
 
 (defn resize [w h]
-  (Viewport/.update viewport w h true)
-  (Viewport/.update world-viewport w h false))
+  (viewport/update viewport       w h :center-camera? true)
+  (viewport/update world-viewport w h :center-camera? false))
 
 (def black color/black)
 (def white color/white)
@@ -270,7 +269,7 @@
 
 (defn- draw-on-viewport [batch viewport draw-fn]
   (.setColor batch white) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (.combined (Viewport/.getCamera viewport)))
+  (.setProjectionMatrix batch (.combined (viewport/camera viewport)))
   (.begin batch)
   (draw-fn)
   (.end batch))
@@ -287,15 +286,14 @@
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
-  [^Viewport viewport]
+  [viewport]
   (let [mouse-x (clamp (gdx/input-x)
-                       (.getLeftGutterWidth viewport)
-                       (.getRightGutterX viewport))
+                       (viewport/left-gutter-width viewport)
+                       (viewport/right-gutter-x viewport))
         mouse-y (clamp (gdx/input-y)
-                       (.getTopGutterHeight viewport)
-                       (.getTopGutterY viewport))
-        coords (.unproject viewport (Vector2. mouse-x mouse-y))]
-    [(.x coords) (.y coords)]))
+                       (viewport/top-gutter-height viewport)
+                       (viewport/top-gutter-y viewport))]
+    (viewport/unproject viewport mouse-x mouse-y)))
 
 (defn mouse-position []
   ; TODO mapv int needed?

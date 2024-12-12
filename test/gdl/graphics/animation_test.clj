@@ -1,6 +1,6 @@
 (ns gdl.graphics.animation-test
   (:require [gdl.app :as app]
-            [gdl.app-test :refer [start-simple-app]]
+            ;[gdl.app-test :refer [start-simple-app]]
             [gdl.assets :as assets]
             [gdl.graphics :as g]))
 
@@ -20,22 +20,22 @@
                     :width 600
                     :height 600}})
 
-(defn -main []
-  (start-simple-app (reify app/Listener
-                      (create [_]
-                        (assets/setup)
-                        (g/setup graphics))
-                      (dispose [_]
-                        (assets/cleanup)
-                        (g/cleanup))
-                      (render [_]
-                        (g/clear)
-                        (g/draw-with g/viewport
-                                     1
-                                     (fn []
-                                       (g/filled-rectangle 200 200 100 100 g/white))))
-                      (resize [_ w h]
-                        (g/resize w h)))))
+#_(defn -main []
+    (start-simple-app (reify app/Listener
+                        (create [_]
+                          (assets/setup)
+                          (g/setup graphics))
+                        (dispose [_]
+                          (assets/cleanup)
+                          (g/cleanup))
+                        (render [_]
+                          (g/clear)
+                          (g/draw-with g/viewport
+                                       1
+                                       (fn []
+                                         (g/filled-rectangle 200 200 100 100 g/white))))
+                        (resize [_ w h]
+                          (g/resize w h)))))
 
 ; for many apps it is duplicated effeort
 ; always setup/cleanup/resize ....
