@@ -59,7 +59,7 @@
   (loop []
     (when-not @thrown
       (do
-       (.bindRoot #'refresh-error (refresh :after 'gdl.dev.loop/start-dev-loop!))
+       (.bindRoot #'refresh-error (refresh :after 'gdl.dev/start-dev-loop!))
        (handle-throwable! refresh-error)))
     (wait!)
     (recur)))
