@@ -6,6 +6,7 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
@@ -14,9 +15,7 @@
             [clojure.string :as str]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [gdx-static-field safe-get mapvals]])
-  (:import (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math Vector2)
+  (:import (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
@@ -24,25 +23,6 @@
 
 (defn clear []
   (screen-utils/clear color/black))
-
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) texture/filter-linear) ; because scaling to world-units
-    (set! (.magFilter params) texture/filter-linear)
-    params))
-
-(defn- generate-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (gdx/internal-file file))
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (.dispose generator)
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
 
 (def texture-region texture-region/create)
 
@@ -55,7 +35,7 @@
                     (dispose pixmap)
                     texture))
   (def sd (ShapeDrawer. batch (texture-region sd-texture 1 0 1 1)))
-  (def default-font (generate-font default-font))
+  (def default-font (freetype/generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (pixmap/create (gdx/internal-file (str "cursors/" file ".png")))
                                 cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
@@ -70,8 +50,7 @@
   (def world-viewport-height (:height world-viewport))
   (def camera (camera/orthographic))
   (def world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
-                            world-height (* world-viewport-height world-unit-scale)
-                            y-down? false]
+                            world-height (* world-viewport-height world-unit-scale)]
                         (camera/set-to-ortho camera world-width world-height :y-down? false)
                         (FitViewport. world-width world-height camera)))
   (def tiled-map-renderer
