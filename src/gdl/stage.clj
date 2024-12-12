@@ -1,13 +1,13 @@
 (ns gdl.stage
   (:refer-clojure :exclude [get])
-  (:require [gdl.graphics :as g]
+  (:require [clojure.gdx :as gdx]
+            [gdl.graphics :as g]
             [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
             [gdl.utils :refer [pretty-pst with-err-str bind-root]])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Actor Stage)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))
 
 (defn- stage* [viewport batch actors]
@@ -24,11 +24,11 @@
 (defrecord StageScreen [^Stage stage sub-screen]
   screen/Screen
   (enter [_]
-    (.setInputProcessor Gdx/input stage)
+    (gdx/set-input-processor stage)
     (screen/enter sub-screen))
 
   (exit [_]
-    (.setInputProcessor Gdx/input nil)
+    (gdx/set-input-processor nil)
     (screen/exit sub-screen))
 
   (render [_]

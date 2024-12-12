@@ -1,38 +1,26 @@
 (ns gdl.assets
-  (:require [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)))
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.assets :as assets]
+            [clojure.gdx.files.file-handle :as fh]
+            [clojure.string :as str]))
 
-(defn- asset-manager* ^AssetManager []
-  (proxy [AssetManager clojure.lang.IFn] []
-    (invoke [^String path]
-      (if (AssetManager/.contains this path)
-        (AssetManager/.get this path)
-        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))
-
-(defn- asset-type->class [k]
-  (case k
-    :sound   com.badlogic.gdx.audio.Sound
-    :texture com.badlogic.gdx.graphics.Texture))
-
-(defn- load-assets [^AssetManager manager assets]
-  (doseq [[file class-k] assets]
-    (.load manager ^String file (asset-type->class class-k)))
-  (.finishLoading manager))
+(defn- load-all [manager assets]
+  (doseq [[file asset-type] assets]
+    (assets/load manager file asset-type))
+  (assets/finish-loading manager))
 
 (defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (.list (.internal Gdx/files folder))
+  (loop [[file & remaining] (fh/list (gdx/internal-file folder))
          result []]
     (cond (nil? file)
           result
 
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
+          (fh/directory? file)
+          (recur (concat remaining (fh/list file)) result)
 
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
+          (extensions (fh/extension file))
+          (recur remaining (conj result (fh/path file)))
 
           :else
           (recur remaining result))))
@@ -43,14 +31,14 @@
                       :texture #{"png" "bmp"}})
 
 (defn setup []
-  (def manager (doto (asset-manager*)
-                 (load-assets (for [[asset-type exts] asset-type-exts
-                                    file (map #(str/replace-first % folder "")
-                                              (recursively-search folder exts))]
-                                [file asset-type])))))
+  (def manager (doto (assets/manager)
+                 (load-all (for [[asset-type exts] asset-type-exts
+                                 file (map #(str/replace-first % folder "")
+                                           (recursively-search folder exts))]
+                             [file asset-type])))))
 
 (defn cleanup []
-  (AssetManager/.dispose manager))
+  (assets/dispose manager))
 
 (def sound-asset-format "sounds/%s.wav")
 
@@ -58,10 +46,10 @@
   (->> sound-name
        (format sound-asset-format)
        manager
-       Sound/.play))
+       sound/play))
 
 (defn all-of-type
   "Returns all asset paths with the specific asset-type."
   [asset-type]
-  (filter #(= (.getAssetType manager %) (asset-type->class asset-type))
-          (.getAssetNames manager)))
+  (filter #(= (assets/type manager %) asset-type)
+          (assets/names manager)))

@@ -3,9 +3,9 @@
             [anvil.lifecycle.create :refer [create-world dispose-world]]
             [anvil.lifecycle.render :refer [render-world]]
             [anvil.lifecycle.update :refer [update-world]]
+            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics :as g]
@@ -79,28 +79,28 @@
 
 (defn- start [{:keys [db app-config graphics ui world-id]}]
   (db/setup db)
-  (app/start app-config
-             (reify app/Listener
-               (create [_]
-                 (assets/setup)
-                 (g/setup graphics)
-                 (ui/setup ui)
-                 (screen/setup {:screens/world (world-screen)}
-                               :screens/world)
-                 (create-world (db/build world-id)))
+  (lwjgl3/start app-config
+                (reify lwjgl3/Application
+                  (create [_]
+                    (assets/setup)
+                    (g/setup graphics)
+                    (ui/setup ui)
+                    (screen/setup {:screens/world (world-screen)}
+                                  :screens/world)
+                    (create-world (db/build world-id)))
 
-               (dispose [_]
-                 (assets/cleanup)
-                 (g/cleanup)
-                 (ui/cleanup)
-                 (screen/cleanup))
+                  (dispose [_]
+                    (assets/cleanup)
+                    (g/cleanup)
+                    (ui/cleanup)
+                    (screen/cleanup))
 
-               (render [_]
-                 (g/clear)
-                 (screen/render-current))
+                  (render [_]
+                    (g/clear)
+                    (screen/render-current))
 
-               (resize [_ w h]
-                 (g/resize w h)))))
+                  (resize [_ w h]
+                    (g/resize w h)))))
 
 (defn -main []
   (-> "app.edn"

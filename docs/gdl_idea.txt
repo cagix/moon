@@ -7,3 +7,5 @@ its just a layer - a way to draw a line -
 => there _can_ be one more _very primitive_ clojure.gdx layer which is just redirected @ gdl ...
 
 but tahts not necessary?
+
+; => set -> camera has to become immutable!!! (or a setter)?

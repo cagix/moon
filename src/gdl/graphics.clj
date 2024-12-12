@@ -1,19 +1,27 @@
 (ns gdl.graphics
-  (:require [clojure.string :as str]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.colors :as colors]
+            [clojure.gdx.graphics.texture :as texture]
+            [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.utils.screen-utils :as screen-utils]
+            [clojure.string :as str]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [gdx-static-field clamp safe-get degree->radians dispose mapvals]])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter Pixmap Pixmap$Format OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch BitmapFont TextureRegion)
+  (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils Align ScreenUtils)
+           (com.badlogic.gdx.utils Align)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn clear []
-  (ScreenUtils/clear Color/BLACK))
+  (screen-utils/clear color/black))
 
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -21,12 +29,12 @@
     ; .color and this:
     ;(set! (.borderWidth parameter) 1)
     ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
+    (set! (.minFilter params) texture/filter-linear) ; because scaling to world-units
+    (set! (.magFilter params) texture/filter-linear)
     params))
 
 (defn- generate-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. (.internal Gdx/files file))
+  (let [generator (FreeTypeFontGenerator. (gdx/internal-file file))
         font (.generateFont generator (ttf-params size quality-scaling))]
     (.dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
@@ -34,39 +42,35 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn texture-region
-  ([^Texture texture]
-   (TextureRegion. texture))
-  ([^Texture texture x y w h]
-   (TextureRegion. texture (int x) (int y) (int w) (int h))))
+(def texture-region texture-region/create)
 
 (defn setup [{:keys [default-font cursors viewport world-viewport]}]
-  (def batch (SpriteBatch.))
-  (def sd-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                 (.setColor Color/WHITE)
-                                 (.drawPixel 0 0))
-                        texture (Texture. pixmap)]
+  (def batch (sprite-batch/create))
+  (def sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
+                                 (pixmap/set-color color/white)
+                                 (pixmap/draw-pixel 0 0))
+                        texture (texture/create pixmap)]
                     (dispose pixmap)
                     texture))
   (def sd (ShapeDrawer. batch (texture-region sd-texture 1 0 1 1)))
   (def default-font (generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                          (let [pixmap (pixmap/create (gdx/internal-file (str "cursors/" file ".png")))
+                                cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
                             (dispose pixmap)
                             cursor))
                         cursors))
   (def viewport-width  (:width  viewport))
   (def viewport-height (:height viewport))
-  (def viewport (FitViewport. viewport-width viewport-height (OrthographicCamera.)))
+  (def viewport (FitViewport. viewport-width viewport-height (camera/orthographic)))
   (def world-unit-scale (float (/ (:tile-size world-viewport))))
   (def world-viewport-width  (:width  world-viewport))
   (def world-viewport-height (:height world-viewport))
-  (def camera (OrthographicCamera.))
+  (def camera (camera/orthographic))
   (def world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
                             world-height (* world-viewport-height world-unit-scale)
                             y-down? false]
-                        (.setToOrtho camera y-down? world-width world-height)
+                        (camera/set-to-ortho camera world-width world-height :y-down? false)
                         (FitViewport. world-width world-height camera)))
   (def tiled-map-renderer
     (memoize (fn [tiled-map]
@@ -82,38 +86,35 @@
   (Viewport/.update viewport w h true)
   (Viewport/.update world-viewport w h false))
 
-(def ^Color black Color/BLACK)
-(def ^Color white Color/WHITE)
+(def black color/black)
+(def white color/white)
+
+(defn- color? [object]
+  (= com.badlogic.gdx.graphics.Color (class object)))
 
 (defn ->color
   ([r g b]
-   (->color r g b 1))
+   (color/create r g b))
   ([r g b a]
-   (Color. (float r) (float g) (float b) (float a)))
-  (^Color [c]
-          (cond (= Color (class c)) c
-                (keyword? c) (gdx-static-field "graphics.Color" c)
-                (vector? c) (apply ->color c)
-                :else (throw (ex-info "Cannot understand color" c)))))
+   (color/create r g b a))
+  ([c]
+   (cond (color? c) c
+         (keyword? c) (gdx-static-field "graphics.Color" c)
+         (vector? c) (apply ->color c)
+         :else (throw (ex-info "Cannot understand color" c)))))
 
 (defn add-color [name-str color]
-  (Colors/put name-str (->color color)))
+  (colors/put name-str (->color color)))
 
-(defn frames-per-second []
-  (.getFramesPerSecond Gdx/graphics))
+(def frames-per-second gdx/frames-per-second)
+(def delta-time        gdx/delta-time)
 
-(defn delta-time []
-  (.getDeltaTime Gdx/graphics))
+(def ->texture-region texture-region/->create)
 
-(defn ->texture-region [^TextureRegion texture-region x y w h]
-  (TextureRegion. texture-region (int x) (int y) (int w) (int h)))
-
-(defn texture-dimensions [^TextureRegion texture-region]
-  [(.getRegionWidth  texture-region)
-   (.getRegionHeight texture-region)])
+(def texture-dimensions texture-region/dimensions)
 
 (defn- sd-color [color]
-  (.setColor sd (->color color)))
+  (ShapeDrawer/.setColor sd ^com.badlogic.gdx.graphics.Color (->color color)))
 
 (defn ellipse [[x y] radius-x radius-y color]
   (sd-color color)
@@ -207,7 +208,7 @@
     (.setDefaultLineWidth sd old-line-width)))
 
 (defn set-cursor [cursor-key]
-  (.setCursor Gdx/graphics (safe-get cursors cursor-key)))
+  (gdx/set-cursor (safe-get cursors cursor-key)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -226,11 +227,11 @@
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
-(defn- text-height [^BitmapFont font text]
+(defn- text-height [font text]
   (-> text
       (str/split #"\n")
       count
-      (* (.getLineHeight font))))
+      (* (bitmap-font/line-height font))))
 
 (defn- gdx-align [k]
   (case k
@@ -244,24 +245,18 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font default-font)
-        data (.getData font)
+  (let [font (or font default-font)
+        data (bitmap-font/data font)
         old-scale (float (.scaleX data))]
     (.setScale data (* old-scale
                        (float *unit-scale*)
                        (float (or scale 1))))
-    (.draw font
-           batch
-           (str text)
-           (float x)
-           (+ (float y)
-              (float (if up?
-                       (text-height font text)
-                       0)))
-           (float 0) ; target-width
-           (gdx-align (or h-align
-                          :center))
-           false) ; wrap false, no need target-width
+    (bitmap-font/draw :font font
+                      :batch batch
+                      :text text
+                      :x x
+                      :y (+ y (if up? (text-height font text) 0))
+                      :align (gdx-align (or h-align :center)))
     (.setScale data old-scale)))
 
 (defn- unit-dimensions [image unit-scale]
@@ -312,10 +307,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [^Viewport viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
+  (let [mouse-x (clamp (gdx/input-x)
                        (.getLeftGutterWidth viewport)
                        (.getRightGutterX viewport))
-        mouse-y (clamp (.getY Gdx/input)
+        mouse-y (clamp (gdx/input-y)
                        (.getTopGutterHeight viewport)
                        (.getTopGutterY viewport))
         coords (.unproject viewport (Vector2. mouse-x mouse-y))]

@@ -1,8 +1,8 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
+            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.set :as set]
             [clojure.string :as str]
-            [gdl.app :as app]
             [gdl.assets :as assets :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics :as g]
@@ -538,27 +538,27 @@
 (defn -main []
   (db/setup {:schema "schema.edn"
              :properties "properties.edn"})
-  (app/start {:title "Editor"
-              :fps 60
-              :width 1440
-              :height 900
-              :taskbar-icon "moon.png"}
-             (reify app/Listener
-               (create [_]
-                 (assets/setup)
-                 (g/setup graphics)
-                 (ui/setup :skin-scale/x1)
-                 (screen/setup {:screens/editor (create-screen)}
-                               :screens/editor))
+  (lwjgl3/start {:title "Editor"
+                 :fps 60
+                 :width 1440
+                 :height 900
+                 :taskbar-icon "moon.png"}
+                (reify lwjgl3/Application
+                  (create [_]
+                    (assets/setup)
+                    (g/setup graphics)
+                    (ui/setup :skin-scale/x1)
+                    (screen/setup {:screens/editor (create-screen)}
+                                  :screens/editor))
 
-               (dispose [_]
-                 (assets/cleanup)
-                 (g/cleanup)
-                 (ui/cleanup)
-                 (screen/cleanup))
+                  (dispose [_]
+                    (assets/cleanup)
+                    (g/cleanup)
+                    (ui/cleanup)
+                    (screen/cleanup))
 
-               (render [_]
-                 (screen/render-current))
+                  (render [_]
+                    (screen/render-current))
 
-               (resize [_ w h]
-                 (g/resize w h)))))
+                  (resize [_ w h]
+                    (g/resize w h)))))

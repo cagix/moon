@@ -1,25 +1,20 @@
 (ns gdl.graphics.camera
-  (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)
-           (com.badlogic.gdx.math Vector3)))
+  (:require [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.math.frustum :as frustum]))
 
 (defn position
   "Returns camera position as [x y] vector."
-  [^Camera camera]
-  [(.x (.position camera))
-   (.y (.position camera))])
+  [camera]
+  (camera/position camera))
 
 (defn set-position!
   "Sets x and y and calls update on the camera."
-  [^Camera camera [x y]]
-  (set! (.x (.position camera)) (float x))
-  (set! (.y (.position camera)) (float y))
-  (.update camera))
+  [camera position]
+  (camera/set-position camera position) ; => set -> camera has to become immutable!!! (or a setter)?
+  (camera/update camera))
 
-(defn frustum [^Camera camera]
-  (let [frustum-points (for [^Vector3 point (take 4 (.planePoints (.frustum camera)))
-                             :let [x (.x point)
-                                   y (.y point)]]
-                         [x y])
+(defn frustum [camera]
+  (let [frustum-points (take 4 (frustum/plane-points (camera/frustum camera)))
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))
         bottom-y (apply min (map second frustum-points))
@@ -34,9 +29,9 @@
 
 (defn calculate-zoom
   "calculates the zoom value for camera to see all the 4 points."
-  [^Camera camera & {:keys [left top right bottom]}]
-  (let [viewport-width  (.viewportWidth  camera)
-        viewport-height (.viewportHeight camera)
+  [camera & {:keys [left top right bottom]}]
+  (let [viewport-width  (camera/viewport-width  camera)
+        viewport-height (camera/viewport-height camera)
         [px py] (position camera)
         px (float px)
         py (float py)
@@ -51,13 +46,13 @@
         new-zoom (max vp-ratio-w vp-ratio-h)]
     new-zoom))
 
-(defn zoom [^OrthographicCamera camera]
-  (.zoom camera))
+(defn zoom [camera]
+  (camera/zoom camera))
 
 (defn set-zoom!
   "Sets the zoom value and updates."
-  [^OrthographicCamera camera amount]
-  (set! (.zoom camera) amount)
+  [camera amount]
+  (camera/set-zoom camera amount)
   (.update camera))
 
 (defn reset-zoom!
