@@ -13,71 +13,23 @@
     (schema 0)
     schema))
 
-(declare schemas
-         properties-file
-         db-data)
+(defn- property-type [{:keys [property/id]}]
+  (keyword "properties" (namespace id)))
+
+(declare schemas)
+
+(defn property-types []
+  (filter #(= "properties" (namespace %))
+          (keys schemas)))
 
 (defn schema-of [k]
   (safe-get schemas k))
-
-(defn- property-type [{:keys [property/id]}]
-  (keyword "properties" (namespace id)))
 
 (defn schema-of-property [property]
   (schema-of (property-type property)))
 
 (defmulti malli-form schema-type)
 (defmethod malli-form :default [schema] schema)
-
-(defn- invalid-ex-info [m-schema value]
-  (ex-info (str (me/humanize (m/explain m-schema value)))
-           {:value value
-            :schema (m/form m-schema)}))
-
-(defn- property->m-schema [property]
-  (try (-> property
-           schema-of-property
-           malli-form
-           m/schema)
-       (catch clojure.lang.ExceptionInfo e
-         (throw (ex-info "property->m-schema fail"
-                         (merge (ex-data e)
-                                {:property/id (:property/id property)
-                                 :property property
-                                 :schema-of-property (schema-of-property property)
-                                 :malli-form (malli-form (schema-of-property property))}))))))
-
-(defn validate! [property]
-  (let [m-schema (property->m-schema property)]
-    (when-not (m/validate m-schema property)
-      (throw (invalid-ex-info m-schema property)))))
-
-(defn- async-write-to-file! []
-  (->> db-data
-       vals
-       (sort-by property-type)
-       (map recur-sort-map)
-       doall
-       (async-pprint-spit! properties-file)))
-
-(defn update! [{:keys [property/id] :as property}]
-  {:pre [(contains? property :property/id)
-         (contains? db-data id)]}
-  (validate! property)
-  (alter-var-root #'db-data assoc id property)
-  (async-write-to-file!))
-
-(defn delete! [property-id]
-  {:pre [(contains? db-data property-id)]}
-  (alter-var-root #'db-data dissoc property-id)
-  (async-write-to-file!))
-
-(defn get-raw [id]
-  (safe-get db-data id))
-
-(defn all-raw [type]
-  (->> (vals db-data)
-       (filter #(= type (property-type %)))))
 
 (declare build)
 
@@ -109,15 +61,65 @@
                       (catch Throwable t
                         (throw (ex-info " " {:k k :v v} t))))))))
 
+
+(defn- invalid-ex-info [m-schema value]
+  (ex-info (str (me/humanize (m/explain m-schema value)))
+           {:value value
+            :schema (m/form m-schema)}))
+
+(defn- property->m-schema [property]
+  (try (-> property
+           schema-of-property
+           malli-form
+           m/schema)
+       (catch clojure.lang.ExceptionInfo e
+         (throw (ex-info "property->m-schema fail"
+                         (merge (ex-data e)
+                                {:property/id (:property/id property)
+                                 :property property
+                                 :schema-of-property (schema-of-property property)
+                                 :malli-form (malli-form (schema-of-property property))}))))))
+
+(defn validate! [property]
+  (let [m-schema (property->m-schema property)]
+    (when-not (m/validate m-schema property)
+      (throw (invalid-ex-info m-schema property)))))
+
+(declare properties-file
+         db-data)
+
+(defn- async-write-to-file! []
+  (->> db-data
+       vals
+       (sort-by property-type)
+       (map recur-sort-map)
+       doall
+       (async-pprint-spit! properties-file)))
+
+(defn update! [{:keys [property/id] :as property}]
+  {:pre [(contains? property :property/id)
+         (contains? db-data id)]}
+  (validate! property)
+  (alter-var-root #'db-data assoc id property)
+  (async-write-to-file!))
+
+(defn delete! [property-id]
+  {:pre [(contains? db-data property-id)]}
+  (alter-var-root #'db-data dissoc property-id)
+  (async-write-to-file!))
+
+(defn get-raw [id]
+  (safe-get db-data id))
+
+(defn all-raw [type]
+  (->> (vals db-data)
+       (filter #(= type (property-type %)))))
+
 (defn build [id]
   (build* (get-raw id)))
 
 (defn build-all [type]
   (map build* (all-raw type)))
-
-(defn property-types []
-  (filter #(= "properties" (namespace %))
-          (keys schemas)))
 
 (defn migrate [property-type update-fn]
   (doseq [id (map :property/id (all-raw property-type))]
