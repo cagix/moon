@@ -1,0 +1,18 @@
+* db does too much and too complicated
+* context-free library/functions make
+* val/max/sprite/etc really needed there ?
+
+
+
+; TODO update/delete only used @ editor .....
+; returns a new db? & write file separately?!
+; (async-write-to-file!)
+; (async-write-to-file!)
+
+; TODO LIST:
+; * update! / delete!
+; * in this ns where db-data/ec. is used (get-raw)
+; * build
+; * validate used before db is ready - actually schema-of/validate
+; does _not_ need db, only schemas ......
+; it is something separate?!

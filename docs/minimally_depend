@@ -1,0 +1,14 @@
+
+  ; * Minimal dependencies
+  ; 1. app
+  ;   1.1 app/set-dock-icon & app/start-app
+  ;         => backends lwjgl3 ... -> gdx.app ?
+  ; => each function only itself minimal context right place
+
+
+
+  ; clojure.slick2d? its not gdx
+  ; but 2d ...
+  ; its your interpretation / abstraction on top of gdx / some stuff removed / some stuff added
+  ; give it your own name ?
+  ; or its the API for _me_ ?

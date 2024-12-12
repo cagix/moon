@@ -1,0 +1,9 @@
+# GDL IS THE APPLICATION LAYER _ WITHOUT ANY GAME LOGIC _ - nothing from/world/entity/time/etc.
+
+# shared by editor - editor knows nothing about anvil
+
+its just a layer - a way to draw a line -
+
+=> there _can_ be one more _very primitive_ clojure.gdx layer which is just redirected @ gdl ...
+
+but tahts not necessary?

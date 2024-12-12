@@ -1,0 +1,19 @@
+
+; remove main-menu / all screens - different apps (mapgen:test, db: editor/can do javafx)
+; minimap:include ( ? )
+
+
+; # 1. Remove main-menu screen
+
+[ ] enter :player-dead => does not do anything now -> what should happen ? cannot call create world as dependend on concretions ....
+
+
+=> next step also reduce UI elements
+
+
+
+; # EDITOR APP
+; => use those parts I need and only depend on _exactly_ what I need
+; e.g. split up graphics only to depend on those stuffs I need over here
+; => move all state inside editor.app ? use context-free functions otherwise??
+; => only db/ui not?!
