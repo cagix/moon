@@ -7,7 +7,7 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.batch :as batch]
-            [clojure.gdx.graphics.g2d.bitmap-font :as bitmap-font]
+            [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -176,7 +176,7 @@
   (-> text
       (str/split #"\n")
       count
-      (* (bitmap-font/line-height font))))
+      (* (font/line-height font))))
 
 (defn draw-text
   "font, h-align, up? and scale are optional.
@@ -185,18 +185,18 @@
   scale will multiply the drawn text size with the scale."
   [{:keys [font x y text h-align up? scale]}]
   (let [font (or font default-font)
-        data (bitmap-font/data font)
-        old-scale (float (.scaleX data))]
-    (.setScale data (* old-scale
-                       (float *unit-scale*)
-                       (float (or scale 1))))
-    (bitmap-font/draw :font font
-                      :batch batch
-                      :text text
-                      :x x
-                      :y (+ y (if up? (text-height font text) 0))
-                      :align (interop/k->align (or h-align :center)))
-    (.setScale data old-scale)))
+        data (font/data font)
+        old-scale (float (font/scale-x data))]
+    (font/set-scale data (* old-scale
+                            (float *unit-scale*)
+                            (float (or scale 1))))
+    (font/draw :font font
+               :batch batch
+               :text text
+               :x x
+               :y (+ y (if up? (text-height font text) 0))
+               :align (interop/k->align (or h-align :center)))
+    (font/set-scale data old-scale)))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
