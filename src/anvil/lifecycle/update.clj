@@ -1,7 +1,7 @@
 (ns anvil.lifecycle.update
-  (:require [anvil.controls :as controls]
+  (:require [anvil.component :as component :refer [tick manual-tick pause-game?]]
+            [anvil.controls :as controls]
             [anvil.effect :as effect]
-            [anvil.entity :as entity :refer [render-z-order projectile-size]]
             [gdl.graphics.animation :as animation]
             [anvil.entity.body :as body]
             [anvil.entity.faction :as faction]
@@ -43,7 +43,7 @@
     (and (not (world/path-blocked? ; TODO test
                                    source-p
                                    target-p
-                                   (projectile-size projectile)))
+                                   (world/projectile-size projectile)))
          ; TODO not taking into account body sizes
          (< (v/distance source-p ; entity/distance function protocol EntityPosition
                         target-p)
@@ -236,16 +236,13 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ entity/minimum-body-size
+(def ^:private max-speed (/ body/minimum-size
                             world/max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
 
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
-
-(defsystem tick)
-(defmethod tick :default [_ eid])
 
 (defmethod tick :entity/animation [[k animation] eid]
   (swap! eid #(-> %
@@ -393,7 +390,7 @@
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities
                       (g/world-mouse-position)))]
-    (->> render-z-order
+    (->> body/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse
          (filter #(line-of-sight? player @%))
@@ -409,22 +406,9 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (bind-root mouseover-eid new-eid)))
 
-(defsystem destroy)
-(defmethod destroy :default [_ eid])
-
-(defmethod destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
-  (entity/audiovisual (:position @eid)
-                      (db/build audiovisuals-id)))
-
-(defn- remove-destroyed-entities []
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (world/all-entities))]
-    (world/remove-entity eid)
-    (doseq [component @eid]
-      (destroy component eid))))
-
-(defsystem manual-tick)
-(defmethod manual-tick :default [_])
+(defmethod component/destroy :entity/destroy-audiovisual [[_ audiovisuals-id] eid]
+  (world/audiovisual (:position @eid)
+                     (db/build audiovisuals-id)))
 
 (defmethod manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (and (button-just-pressed? :left)
@@ -438,9 +422,6 @@
       (g/set-cursor cursor)
       (when (button-just-pressed? :left)
         (on-click)))))
-
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
 
 (defmethod pause-game? :active-skill          [_] false)
 (defmethod pause-game? :stunned               [_] false)
@@ -466,4 +447,4 @@
            (catch Throwable t
              (stage/error-window! t)
              (bind-root world/error t)))))
-  (remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.
+  (world/remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.

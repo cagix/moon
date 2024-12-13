@@ -1,6 +1,6 @@
 (ns anvil.lifecycle.create
-  (:require [anvil.controls :as controls]
-            [anvil.entity :as entity]
+  (:require [anvil.component :refer [clicked-inventory-cell draw-gui-view]]
+            [anvil.controls :as controls]
             [anvil.entity.inventory :as inventory]
             [anvil.entity.fsm :as fsm]
             [anvil.entity.hitpoints :as hp]
@@ -24,7 +24,6 @@
                               remove-tooltip!]
              :as ui]
             [gdl.val-max :as val-max]
-            [gdl.utils :refer [defsystem]]
             [gdl.ui.actor :refer [user-object] :as actor]
             [gdl.ui.group :refer [add-actor! find-actor]]
             [gdl.ui.utils :as scene2d.utils]
@@ -274,9 +273,6 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (g/->color 1 1 1 0.4))))
 
-(defsystem clicked-inventory-cell)
-(defmethod clicked-inventory-cell :default [_ cell])
-
 (defmethod clicked-inventory-cell :player-item-on-cursor
   [[_ {:keys [eid]}] cell]
   (clicked-cell eid cell))
@@ -386,9 +382,6 @@
 (bind-root skills/player-add-skill    action-bar-add-skill)
 (bind-root skills/player-remove-skill action-bar-remove-skill)
 
-(defsystem draw-gui-view)
-(defmethod draw-gui-view :default [_])
-
 (defmethod draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (not (world-item?))
     (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
@@ -424,7 +417,7 @@
                    :components {:entity/fsm {:fsm :fsms/npc
                                              :initial-state :npc-sleeping}
                                 :entity/faction :evil}})]
-    (entity/creature (update props :position tile->middle))))
+    (world/creature (update props :position tile->middle))))
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
@@ -520,7 +513,7 @@
   (bind-root world/raycaster (->raycaster world/grid world/blocks-vision?))
   (bind-root world/elapsed-time 0)
   (bind-root world/delta-time nil)
-  (bind-root world/player-eid (entity/creature (player-entity-props start-position)))
+  (bind-root world/player-eid (world/creature (player-entity-props start-position)))
   (when spawn-enemies?
     (spawn-enemies tiled-map))
   (bind-root world/mouseover-eid nil))

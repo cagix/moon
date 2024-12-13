@@ -1,9 +1,6 @@
 (ns ^:no-doc anvil.ui.skill-window
-  (:require [anvil.entity.skills :as skills]
-            [gdl.utils :refer [defsystem]]))
-
-(defsystem clicked-skillmenu-skill)
-(defmethod clicked-skillmenu-skill :default [_ skill])
+  (:require [anvil.component :refer [clicked-skillmenu-skill]]
+            [anvil.entity.skills :as skills]))
 
 (defmethod clicked-skillmenu-skill :player-idle [[_ {:keys [eid]}] skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]

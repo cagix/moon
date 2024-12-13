@@ -1,6 +1,10 @@
 (ns anvil.lifecycle.render
-  (:require [anvil.effect :as effect]
-            [anvil.entity :as entity]
+  (:require [anvil.component :refer [render-below
+                                     render-default
+                                     render-above
+                                     render-info]]
+            [anvil.effect :as effect]
+            [anvil.entity.body :as body]
             [anvil.entity.faction :as faction]
             [anvil.entity.hitpoints :as hp]
             [gdl.graphics :as g]
@@ -9,8 +13,7 @@
             [gdl.math.shapes :refer [circle->outer-rectangle]]
             [anvil.world :as world :refer [finished-ratio line-of-sight?]]
             [gdl.val-max :as val-max]
-            [gdl.utils :refer [defsystem]]
-            [gdl.utils :refer [sort-by-order pretty-pst]]
+            [gdl.utils :refer [sort-by-order pretty-pst defsystem]]
             [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
 
 (defsystem render-effect)
@@ -206,9 +209,6 @@
      (draw-body-rect entity :red)
      (pretty-pst t))))
 
-(defsystem render-below)
-(defmethod render-below :default [_ entity])
-
 (defmethod render-below :stunned [_ entity]
   (g/circle (:position entity) 0.5 [1 1 1 0.6]))
 
@@ -230,9 +230,6 @@
                         :else
                         neutral-color)))))
 
-(defsystem render-default)
-(defmethod render-default :default [_ entity])
-
 (defmethod render-default :entity/clickable
   [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
@@ -253,9 +250,6 @@
       (g/with-line-width 4
         #(g/line position end color))
       (g/line position end color))))
-
-(defsystem render-above)
-(defmethod render-above :default [_ entity])
 
 ; TODO draw opacity as of counter ratio?
 (defmethod render-above :entity/temp-modifier [_ entity]
@@ -279,9 +273,6 @@
                   :y (+ y (:half-height entity))
                   :up? true})))
 
-(defsystem render-info)
-(defmethod render-info :default [_ entity])
-
 (defmethod render-info :entity/hp [_ entity]
   (let [ratio (val-max/ratio (hp/->value entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
@@ -298,7 +289,7 @@
   (let [player @world/player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
-                                              entity/render-z-order)
+                                              body/render-z-order)
             system [render-below
                     render-default
                     render-above

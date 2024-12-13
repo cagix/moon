@@ -1,6 +1,5 @@
 (ns anvil.effect
-  (:require [anvil.entity :as entity]
-            [anvil.entity.body :as body]
+  (:require [anvil.entity.body :as body]
             [anvil.entity.damage :as damage]
             [anvil.entity.faction :as faction]
             [anvil.entity.fsm :as fsm]
@@ -43,7 +42,7 @@
     target)
 
   (handle [[_ audiovisual] {:keys [effect/target]}]
-    (entity/audiovisual (:position @target) audiovisual)))
+    (world/audiovisual (:position @target) audiovisual)))
 
 (defmethods :effects.target/convert
   (applicable? [_ {:keys [effect/source effect/target]}]
@@ -90,8 +89,8 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
-         (entity/audiovisual (:position target*)
-                             (db/build :audiovisuals/damage))
+         (world/audiovisual (:position target*)
+                            (db/build :audiovisuals/damage))
          (fsm/event target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))
 
@@ -152,12 +151,12 @@
 
   (handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
     (play-sound "bfxr_waypointunlock")
-    (entity/projectile {:position (projectile-start-point @source
-                                                          target-direction
-                                                          (entity/projectile-size projectile))
-                        :direction target-direction
-                        :faction (:entity/faction @source)}
-                       projectile)))
+    (world/projectile {:position (projectile-start-point @source
+                                                         target-direction
+                                                         (world/projectile-size projectile))
+                       :direction target-direction
+                       :faction (:entity/faction @source)}
+                      projectile)))
 
 (comment
  ; mass shooting
@@ -183,11 +182,11 @@
   (handle [[_ {:keys [property/id]}]
                 {:keys [effect/source effect/target-position]}]
     (play-sound "bfxr_shield_consume")
-    (entity/creature {:position target-position
-                      :creature-id id ; already properties/get called through one-to-one, now called again.
-                      :components {:entity/fsm {:fsm :fsms/npc
-                                                :initial-state :npc-idle}
-                                   :entity/faction (:entity/faction @source)}})))
+    (world/creature {:position target-position
+                     :creature-id id ; already properties/get called through one-to-one, now called again.
+                     :components {:entity/fsm {:fsm :fsms/npc
+                                               :initial-state :npc-idle}
+                                  :entity/faction (:entity/faction @source)}})))
 
 
 
@@ -213,11 +212,11 @@
   (handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target (world/creatures-in-los-of-player)]
-        (entity/line-render {:start (:position source*) #_(start-point source* target*)
-                             :end (:position @target)
-                             :duration 0.05
-                             :color [1 0 0 0.75]
-                             :thick? true})
+        (world/line-render {:start (:position source*) #_(start-point source* target*)
+                            :end (:position @target)
+                            :duration 0.05
+                            :color [1 0 0 0.75]
+                            :thick? true})
         ; some sound .... or repeat smae sound???
         ; skill do sound  / skill start sound >?
         ; problem : nested tx/effect , we are still having direction/target-position
@@ -255,14 +254,14 @@
           target* @target]
       (if (in-range? source* target* maxrange)
         (do
-         (entity/line-render {:start (start-point source* target*)
-                              :end (:position target*)
-                              :duration 0.05
-                              :color [1 0 0 0.75]
-                              :thick? true})
+         (world/line-render {:start (start-point source* target*)
+                             :end (:position target*)
+                             :duration 0.05
+                             :color [1 0 0 0.75]
+                             :thick? true})
          (do-all! ctx entity-effects))
-        (entity/audiovisual (end-point source* target* maxrange)
-                            (db/build :audiovisuals/hit-ground))))))
+        (world/audiovisual (end-point source* target* maxrange)
+                           (db/build :audiovisuals/hit-ground))))))
 
 #_(defn- stat-k [effect-k]
     (keyword "stats" (name effect-k)))

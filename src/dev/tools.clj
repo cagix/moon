@@ -1,6 +1,5 @@
 (ns dev.tools
-  (:require [anvil.entity :as entity]
-            [anvil.entity.skills :as skills]
+  (:require [anvil.entity.skills :as skills]
             [anvil.world :as world]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -48,11 +47,11 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable
-  (entity/creature {:position [35 73]
-                    :creature-id :creatures/dragon-red
-                    :components {:entity/fsm {:fsm :fsms/npc
-                                              :initial-state :npc-sleeping}
-                                 :entity/faction :evil}}))
+  (world/creature {:position [35 73]
+                   :creature-id :creatures/dragon-red
+                   :components {:entity/fsm {:fsm :fsms/npc
+                                             :initial-state :npc-sleeping}
+                                :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
@@ -75,7 +74,7 @@
 
 (defn- create-item! [item-id]
   (post-runnable
-   (entity/item (:position @world/player-eid) (db/build item-id))))
+   (world/item (:position @world/player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
   @(world/grid (mapv int (g/world-mouse-position))))

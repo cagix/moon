@@ -1,13 +1,10 @@
 (ns anvil.entity
-  (:require [anvil.entity.inventory :as inventory]
+  (:require [anvil.component :as component]
+            [anvil.entity.inventory :as inventory]
             [anvil.entity.stat :as stat]
             [anvil.entity.skills :as skills]
-            [anvil.world :as world :refer [timer]]
-            [gdl.assets :refer [play-sound]]
-            [gdl.db :as db]
+            [anvil.world :refer [timer]]
             [gdl.graphics.animation :as animation]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [defsystem define-order safe-merge unique-number!]]
             [reduce-fsm :as fsm]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
@@ -65,105 +62,48 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defrecord Body [position
-                 left-bottom
-                 width
-                 height
-                 half-width
-                 half-height
-                 radius
-                 collides?
-                 z-order
-                 rotation-angle])
-
-; setting a min-size for colliding bodies so movement can set a max-speed for not
-; skipping bodies at too fast movement
-; TODO assert at properties load
-(def minimum-body-size 0.39) ; == spider smallest creature size.
-
-(def ^:private z-orders [:z-order/on-ground
-                         :z-order/ground
-                         :z-order/flying
-                         :z-order/effect])
-
-(def render-z-order (define-order z-orders))
-
-(defn- create-body [{[x y] :position
-                     :keys [position
-                            width
-                            height
-                            collides?
-                            z-order
-                            rotation-angle]}]
-  (assert position)
-  (assert width)
-  (assert height)
-  (assert (>= width  (if collides? minimum-body-size 0)))
-  (assert (>= height (if collides? minimum-body-size 0)))
-  (assert (or (boolean? collides?) (nil? collides?)))
-  (assert ((set z-orders) z-order))
-  (assert (or (nil? rotation-angle)
-              (<= 0 rotation-angle 360)))
-  (map->Body
-   {:position (mapv float position)
-    :left-bottom [(float (- x (/ width  2)))
-                  (float (- y (/ height 2)))]
-    :width  (float width)
-    :height (float height)
-    :half-width  (float (/ width  2))
-    :half-height (float (/ height 2))
-    :radius (float (max (/ width  2)
-                        (/ height 2)))
-    :collides? collides?
-    :z-order z-order
-    :rotation-angle (or rotation-angle 0)}))
-
-(defsystem ->v)
-(defmethod ->v :default [[_ v]]
-  v)
-
-(defmethod ->v :entity/delete-after-duration [[_ duration]]
+(defmethod component/->v :entity/delete-after-duration [[_ duration]]
   (timer duration))
 
-(defmethod ->v :entity/hp [[_ v]]
+(defmethod component/->v :entity/hp [[_ v]]
   [v v])
 
-(defmethod ->v :entity/mana [[_ v]]
+(defmethod component/->v :entity/mana [[_ v]]
   [v v])
 
-(defmethod ->v :entity/projectile-collision [[_ v]]
+(defmethod component/->v :entity/projectile-collision [[_ v]]
   (assoc v :already-hit-bodies #{}))
 
-(defmethod ->v :stunned [[_ eid duration]]
+(defmethod component/->v :stunned [[_ eid duration]]
   {:eid eid
    :counter (timer duration)})
 
-(defmethod ->v :player-moving [[_ eid movement-vector]]
+(defmethod component/->v :player-moving [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector})
 
-(defmethod ->v :player-item-on-cursor [[_ eid item]]
+(defmethod component/->v :player-item-on-cursor [[_ eid item]]
   {:eid eid
    :item item})
 
-(defmethod ->v :player-idle [[_ eid]]
+(defmethod component/->v :player-idle [[_ eid]]
   {:eid eid})
 
-(defmethod ->v :npc-sleeping [[_ eid]]
+(defmethod component/->v :npc-sleeping [[_ eid]]
   {:eid eid})
 
-(defmethod ->v :npc-moving [[_ eid movement-vector]]
+(defmethod component/->v :npc-moving [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector
    :counter (timer (* (stat/->value @eid :entity/reaction-time) 0.016))})
 
-(defmethod ->v :npc-idle [[_ eid]]
+(defmethod component/->v :npc-idle [[_ eid]]
   {:eid eid})
 
-(defmethod ->v :npc-dead [[_ eid]]
+(defmethod component/->v :npc-dead [[_ eid]]
   {:eid eid})
 
-(defmethod ->v :active-skill [[_ eid [skill effect-ctx]]]
+(defmethod component/->v :active-skill [[_ eid [skill effect-ctx]]]
   {:eid eid
    :skill skill
    :effect-ctx effect-ctx
@@ -172,29 +112,20 @@
                  (apply-action-speed-modifier @eid skill)
                  timer)})
 
-(defn- create-vs [components]
-  (reduce (fn [m [k v]]
-            (assoc m k (->v [k v])))
-          {}
-          components))
-
-(defsystem create)
-(defmethod create :default [_ eid])
-
-(defmethod create :entity/skills [[k skills] eid]
+(defmethod component/create :entity/skills [[k skills] eid]
   (swap! eid assoc k nil)
   (doseq [skill skills]
     (swap! eid skills/add skill)))
 
-(defmethod create :entity/inventory [[k items] eid]
+(defmethod component/create :entity/inventory [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
     (inventory/pickup-item eid item)))
 
-(defmethod create :entity/delete-after-animation-stopped? [_ eid]
+(defmethod component/create :entity/delete-after-animation-stopped? [_ eid]
   (-> @eid :entity/animation :looping? not assert))
 
-(defmethod create :entity/animation [[_ animation] eid]
+(defmethod component/create :entity/animation [[_ animation] eid]
   (swap! eid assoc :entity/image (animation/current-frame animation)))
 
 ; fsm throws when initial-state is not part of states, so no need to assert initial-state
@@ -202,109 +133,10 @@
 (defn- ->init-fsm [fsm initial-state]
   (assoc (fsm initial-state nil) :state initial-state))
 
-(defmethod create :entity/fsm [[k {:keys [fsm initial-state]}] eid]
+(defmethod component/create :entity/fsm [[k {:keys [fsm initial-state]}] eid]
   (swap! eid assoc
          k (->init-fsm (case fsm
                          :fsms/player player-fsm
                          :fsms/npc npc-fsm)
                        initial-state)
-         initial-state (->v [initial-state eid])))
-
-(defn- spawn-entity [position body components]
-  (assert (and (not (contains? components :position))
-               (not (contains? components :entity/id))))
-  (let [eid (atom (-> body
-                      (assoc :position position)
-                      create-body
-                      (safe-merge (-> components
-                                      (assoc :entity/id (unique-number!))
-                                      create-vs))))]
-    (world/add-entity eid)
-    (doseq [component @eid]
-      (create component eid))
-    eid))
-
-(def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
-       :private true}
-  effect-body-props
-  {:width 0.5
-   :height 0.5
-   :z-order :z-order/effect})
-
-(defn audiovisual [position {:keys [tx/sound entity/animation]}]
-  (play-sound sound)
-  (spawn-entity position
-                effect-body-props
-                {:entity/animation animation
-                 :entity/delete-after-animation-stopped? true}))
-
-; # :z-order/flying has no effect for now
-; * entities with :z-order/flying are not flying over water,etc. (movement/air)
-; because using potential-field for z-order/ground
-; -> would have to add one more potential-field for each faction for z-order/flying
-; * they would also (maybe) need a separate occupied-cells if they don't collide with other
-; * they could also go over ground units and not collide with them
-; ( a test showed then flying OVER player entity )
-; -> so no flying units for now
-(defn- ->body [{:keys [body/width body/height #_body/flying?]}]
-  {:width  width
-   :height height
-   :collides? true
-   :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
-
-(defn creature [{:keys [position creature-id components]}]
-  (let [props (db/build creature-id)]
-    (spawn-entity position
-                  (->body (:entity/body props))
-                  (-> props
-                      (dissoc :entity/body)
-                      (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
-                      (safe-merge components)))))
-
-(defn item [position item]
-  (spawn-entity position
-                {:width 0.75
-                 :height 0.75
-                 :z-order :z-order/on-ground}
-                {:entity/image (:entity/image item)
-                 :entity/item item
-                 :entity/clickable {:type :clickable/item
-                                    :text (:property/pretty-name item)}}))
-
-(defn delayed-alert [position faction duration]
-  (spawn-entity position
-                effect-body-props
-                {:entity/alert-friendlies-after-duration
-                 {:counter (timer duration)
-                  :faction faction}}))
-
-(defn line-render [{:keys [start end duration color thick?]}]
-  (spawn-entity start
-                effect-body-props
-                #:entity {:line-render {:thick? thick? :end end :color color}
-                          :delete-after-duration duration}))
-
-(defn projectile-size [projectile]
-  {:pre [(:entity/image projectile)]}
-  (first (:world-unit-dimensions (:entity/image projectile))))
-
-(defn projectile [{:keys [position direction faction]}
-                  {:keys [entity/image
-                          projectile/max-range
-                          projectile/speed
-                          entity-effects
-                          projectile/piercing?] :as projectile}]
-  (let [size (projectile-size projectile)]
-    (spawn-entity position
-                  {:width size
-                   :height size
-                   :z-order :z-order/flying
-                   :rotation-angle (v/angle-from-vector direction)}
-                  {:entity/movement {:direction direction
-                                     :speed speed}
-                   :entity/image image
-                   :entity/faction faction
-                   :entity/delete-after-duration (/ max-range speed)
-                   :entity/destroy-audiovisual :audiovisuals/hit-wall
-                   :entity/projectile-collision {:entity-effects entity-effects
-                                                 :piercing? piercing?}})))
+         initial-state (component/->v [initial-state eid])))

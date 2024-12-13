@@ -1,12 +1,12 @@
 (ns anvil.world.potential-field
   (:require [anvil.entity.faction :as faction]
-            [anvil.world :as world :refer [get-8-neighbour-positions
+            [anvil.world :as world :refer [rectangle->cells
+                                           get-8-neighbour-positions
+                                           cached-adjacent-cells
                                            cell-blocked?
                                            occupied-by-other?
-                                           rectangle->cells
                                            nearest-entity
-                                           nearest-entity-distance
-                                           cached-adjacent-cells]]
+                                           nearest-entity-distance]]
             [gdl.math.vector :as v]
             [gdl.utils :refer [when-seq utils-positions]]))
 

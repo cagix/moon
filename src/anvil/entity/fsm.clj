@@ -1,13 +1,13 @@
 (ns anvil.entity.fsm
-  (:require [anvil.entity :as entity]
+  (:require [anvil.component :as component :refer [enter exit cursor]]
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
             [anvil.item-on-cursor :refer [item-place-position]]
-            [anvil.world :refer [timer add-text-effect]]
+            [anvil.world :as world :refer [timer add-text-effect]]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
             [gdl.stage :refer [show-modal]]
-            [gdl.utils :refer [defsystem defmethods]]
+            [gdl.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
 
 (defn state-k [entity]
@@ -16,12 +16,6 @@
 (defn state-obj [entity]
   (let [k (state-k entity)]
     [k (k entity)]))
-
-(defsystem enter)
-(defmethod enter :default [_])
-
-(defsystem exit)
-(defmethod exit :default [_])
 
 (defmethod enter :player-dead [_]
   (play-sound "bfxr_playerdeath")
@@ -51,13 +45,13 @@
       (when (:entity/item-on-cursor entity)
         (play-sound "bfxr_itemputground")
         (swap! eid dissoc :entity/item-on-cursor)
-        (entity/item (item-place-position entity)
-                     (:entity/item-on-cursor entity))))))
+        (world/item (item-place-position entity)
+                    (:entity/item-on-cursor entity))))))
 
 (defmethod exit :npc-sleeping [[_ {:keys [eid]}]]
-  (entity/delayed-alert (:position       @eid)
-                        (:entity/faction @eid)
-                        0.2)
+  (world/delayed-alert (:position       @eid)
+                       (:entity/faction @eid)
+                       0.2)
   (swap! eid add-text-effect "[WHITE]!"))
 
 (defmethods :npc-moving
@@ -81,9 +75,6 @@
              (not (zero? (:skill/cost skill))))
     (swap! eid mana/pay-cost (:skill/cost skill))))
 
-(defsystem cursor)
-(defmethod cursor :default [_])
-
 (defmethod cursor :stunned               [_] :cursors/denied)
 (defmethod cursor :player-moving         [_] :cursors/walking)
 (defmethod cursor :player-item-on-cursor [_] :cursors/hand-grab)
@@ -97,9 +88,9 @@
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (entity/->v (if params
-                                                       [new-state-k eid params]
-                                                       [new-state-k eid]))]]
+              new-state-obj [new-state-k (component/->v (if params
+                                                          [new-state-k eid params]
+                                                          [new-state-k eid]))]]
           (when (:entity/player? @eid)
             (when-let [cursor-k (cursor new-state-obj)]
               (g/set-cursor cursor-k)))
