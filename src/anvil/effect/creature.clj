@@ -1,16 +1,16 @@
 (ns anvil.effect.creature
-  (:require [anvil.component :refer [applicable? handle]]
+  (:require [anvil.component :as component]
             [anvil.world :as world]
             [gdl.assets :refer [play-sound]]
             [gdl.utils :refer [defmethods]]))
 
 ; "https://github.com/damn/core/issues/29"
 (defmethods :effects/spawn
-  (applicable? [_ {:keys [effect/source effect/target-position]}]
+  (component/applicable? [_ {:keys [effect/source effect/target-position]}]
     (and (:entity/faction @source)
          target-position))
 
-  (handle [[_ {:keys [property/id]}]
+  (component/handle [[_ {:keys [property/id]}]
                 {:keys [effect/source effect/target-position]}]
     (play-sound "bfxr_shield_consume")
     (world/creature {:position target-position

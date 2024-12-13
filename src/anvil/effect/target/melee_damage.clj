@@ -1,5 +1,5 @@
 (ns anvil.effect.target.melee-damage
-  (:require [anvil.component :refer [info applicable? handle]]
+  (:require [anvil.component :as component]
             [anvil.entity.stat :as stat]
             [anvil.world :as world]
             [gdl.utils :refer [defmethods]]))
@@ -14,13 +14,13 @@
 (defmethods :effects.target/melee-damage
   ; FIXME no source
   ; => to entity move
-  (info [_]
+  (component/info [_]
     (str "Damage based on entity strength."
          #_(when source
              (str "\n" (damage-info (entity->melee-damage @source))))))
 
-  (applicable? [_ {:keys [effect/source] :as ctx}]
-    (applicable? (damage-effect @source) ctx))
+  (component/applicable? [_ {:keys [effect/source] :as ctx}]
+    (component/applicable? (damage-effect @source) ctx))
 
-  (handle [_ {:keys [effect/source] :as ctx}]
-    (handle (damage-effect @source) ctx)))
+  (component/handle [_ {:keys [effect/source] :as ctx}]
+    (component/handle (damage-effect @source) ctx)))

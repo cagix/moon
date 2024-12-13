@@ -1,5 +1,5 @@
 (ns anvil.effect.projectile
-  (:require [anvil.component :refer [applicable? useful? handle]]
+  (:require [anvil.component :as component]
             [anvil.world :as world]
             [gdl.assets :refer [play-sound]]
             [gdl.math.vector :as v]
@@ -12,11 +12,11 @@
 
 (defmethods :effects/projectile
   ; TODO for npcs need target -- anyway only with direction
-  (applicable? [_ {:keys [effect/target-direction]}]
+  (component/applicable? [_ {:keys [effect/target-direction]}]
     target-direction) ; faction @ source also ?
 
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
-  (useful? [[_ {:keys [projectile/max-range] :as projectile}]
+  (component/useful? [[_ {:keys [projectile/max-range] :as projectile}]
             {:keys [effect/source effect/target]}]
     (let [source-p (:position @source)
           target-p (:position @target)]
@@ -30,7 +30,7 @@
                           target-p)
               max-range))))
 
-  (handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
+  (component/handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
     (play-sound "bfxr_waypointunlock")
     (world/projectile {:position (projectile-start-point @source
                                                          target-direction

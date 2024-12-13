@@ -1,5 +1,5 @@
 (ns anvil.effect.target.spiderweb
-  (:require [anvil.component :refer [applicable? handle info]]
+  (:require [anvil.component :as component]
             [anvil.entity.modifiers :as mods]
             [anvil.world :refer [timer]]
             [gdl.utils :refer [defmethods]]))
@@ -8,18 +8,18 @@
       duration 5]
 
   (defmethods :effects.target/spiderweb
-    (info [_]
+    (component/info [_]
       "Spiderweb slows 50% for 5 seconds."
       ; modifiers same like item/modifiers has info-text
       ; counter ?
       )
 
-    (applicable? [_ _]
+    (component/applicable? [_ _]
       ; ?
       true)
 
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-    (handle [_ {:keys [effect/target]}]
+    (component/handle [_ {:keys [effect/target]}]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                    :counter (timer duration)})

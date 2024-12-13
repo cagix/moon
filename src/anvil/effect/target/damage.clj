@@ -1,5 +1,5 @@
 (ns anvil.effect.target.damage
-  (:require [anvil.component :refer [info applicable? handle]]
+  (:require [anvil.component :as component]
             [anvil.entity.damage :as damage]
             [anvil.entity.fsm :as fsm]
             [anvil.entity.hp :as hp]
@@ -28,7 +28,7 @@
   (< (rand) (effective-armor-save source* target*)))
 
 (defmethods :effects.target/damage
-  (info [[_ damage]]
+  (component/info [[_ damage]]
     (damage-info damage)
     #_(if source
         (let [modified (damage/->value @source damage)]
@@ -38,11 +38,11 @@
         (damage-info damage)) ; property menu no source,modifiers
     )
 
-  (applicable? [_ {:keys [effect/target]}]
+  (component/applicable? [_ {:keys [effect/target]}]
     (and target
          (:entity/hp @target)))
 
-  (handle [[_ damage] {:keys [effect/source effect/target]}]
+  (component/handle [[_ damage] {:keys [effect/source effect/target]}]
     (let [source* @source
           target* @target
           hp (hp/->value target*)]
