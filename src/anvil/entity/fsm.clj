@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]
+            [gdl.utils :refer [defmethods defn-impl]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -79,20 +79,20 @@
 (defmethod component/cursor :player-dead           [_] :cursors/black-x)
 (defmethod component/cursor :active-skill          [_] :cursors/sandclock)
 
-(defn state-k [entity]
+(defn-impl entity/state-k [entity]
   (-> entity :entity/fsm :state))
 
-(defn state-obj [entity]
-  (let [k (state-k entity)]
+(defn-impl entity/state-obj [entity]
+  (let [k (entity/state-k entity)]
     [k (k entity)]))
 
-(defn send-event! [eid event params]
+(defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)
           new-fsm (fsm/fsm-event fsm event)
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (state-obj @eid)
+        (let [old-state-obj (entity/state-obj @eid)
               new-state-obj [new-state-k (component/->v (if params
                                                           [new-state-k eid params]
                                                           [new-state-k eid]))]]
@@ -105,3 +105,9 @@
                           (dissoc old-state-k)))
           (component/exit old-state-obj)
           (component/enter new-state-obj))))))
+
+(defn-impl entity/event
+  ([eid event]
+   (send-event! eid event nil))
+  ([eid event params]
+   (send-event! eid event params)))

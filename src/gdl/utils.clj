@@ -9,6 +9,9 @@
 (defmacro bind-root [sym value]
   `(clojure.lang.Var/.bindRoot (var ~sym) ~value))
 
+(defmacro defn-impl [sym & fn-body]
+  `(bind-root ~sym (fn ~@fn-body)))
+
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
     (if (= result ::not-found)
