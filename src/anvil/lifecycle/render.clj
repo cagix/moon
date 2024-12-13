@@ -4,7 +4,6 @@
                                      render-above
                                      render-info]]
             [anvil.effect :as effect]
-            [anvil.entity :as entity]
             [anvil.entity.hp :as hp]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
@@ -138,7 +137,7 @@
   (let [player @world/player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
-                                              entity/render-z-order)
+                                              world/render-z-order)
             system [render-below
                     render-default
                     render-above
