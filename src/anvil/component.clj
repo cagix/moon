@@ -2,6 +2,9 @@
   "Entity component API to be implemented by each component."
   (:require [gdl.utils :refer [defsystem]]))
 
+(defsystem info)
+(defmethod info :default [_])
+
 (defsystem ->v)
 (defmethod ->v :default [[_ v]]
   v)

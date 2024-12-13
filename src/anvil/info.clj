@@ -1,5 +1,6 @@
 (ns anvil.info
-  (:require [anvil.entity.damage :as damage]
+  (:require [anvil.component :as component]
+            [anvil.entity.damage :as damage]
             [anvil.entity.hitpoints :as hp]
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
@@ -70,15 +71,12 @@
 
 (declare ^:dynamic *info-text-entity*)
 
-(defsystem segment)
-(defmethod segment :default [_])
-
 (defn text [components]
   (->> components
        sort-k-order
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k (segment component)))
+                           (apply-color k (component/info component)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create
@@ -92,13 +90,13 @@
 (defn k->pretty-name [k]
   (str/capitalize (name k)))
 
-(defmethod segment :effects.target/convert [_]
+(defmethod component/info :effects.target/convert [_]
   "Converts target to your side.")
 
 (defn- damage-info [{[min max] :damage/min-max}]
   (str min "-" max " damage"))
 
-(defmethod segment :effects.target/damage [[_ damage]]
+(defmethod component/info :effects.target/damage [[_ damage]]
   (damage-info damage)
   #_(if source
       (let [modified (damage/->value @source damage)]
@@ -108,41 +106,41 @@
       (damage-info damage)) ; property menu no source,modifiers
   )
 
-(defmethod segment :effects.target/kill [_]
+(defmethod component/info :effects.target/kill [_]
   "Kills target")
 
 ; FIXME no source
-(defmethod segment :effects.target/melee-damage [_]
+(defmethod component/info :effects.target/melee-damage [_]
   (str "Damage based on entity strength."
        #_(when source
            (str "\n" (damage-info (entity->melee-damage @source))))))
 ; => to entity move
 
-(defmethod segment :effects.target/spiderweb [_]
+(defmethod component/info :effects.target/spiderweb [_]
   "Spiderweb slows 50% for 5 seconds."
   ; modifiers same like item/modifiers has info-text
   ; counter ?
   )
 
-(defmethod segment :effects.target/stun [duration]
+(defmethod component/info :effects.target/stun [duration]
   (str "Stuns for " (readable-number duration) " seconds"))
 
-(defmethod segment :effects/target-all [_]
+(defmethod component/info :effects/target-all [_]
   "All visible targets")
 
-(defmethod segment :entity/delete-after-duration [counter]
+(defmethod component/info :entity/delete-after-duration [counter]
   (str "Remaining: " (readable-number (finished-ratio counter)) "/1"))
 
-(defmethod segment :entity/faction [faction]
+(defmethod component/info :entity/faction [faction]
   (str "Faction: " (name faction)))
 
-(defmethod segment :entity/fsm [[_ fsm]]
+(defmethod component/info :entity/fsm [[_ fsm]]
   (str "State: " (name (:state fsm))))
 
-(defmethod segment :entity/hp [_]
+(defmethod component/info :entity/hp [_]
   (str "Hitpoints: " (hp/->value *info-text-entity*)))
 
-(defmethod segment :entity/mana [_]
+(defmethod component/info :entity/mana [_]
   (str "Mana: " (mana/->value *info-text-entity*)))
 
 (defn- +? [n]
@@ -165,48 +163,48 @@
                  (str (+? v) (op/value-text op) " " (k->pretty-name k))))
              (sort-by op/order ops))))
 
-(defmethod segment :entity/modifiers [[_ mods]]
+(defmethod component/info :entity/modifiers [[_ mods]]
   (when (seq mods)
     (str/join "\n" (keep (fn [[k ops]]
                            (ops-info ops k)) mods))))
 
-#_(defmethod segment [skills]
+#_(defmethod component/info [skills]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))
 
-(defmethod segment :entity/species [[_ species]]
+(defmethod component/info :entity/species [[_ species]]
   (str "Creature - " (str/capitalize (name species))))
 
-(defmethod segment :entity/temp-modifier [[_ {:keys [counter]}]]
+(defmethod component/info :entity/temp-modifier [[_ {:keys [counter]}]]
   (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))
 
-(defmethod segment :property/pretty-name [[_ v]] v)
-(defmethod segment :maxrange             [[_ v]] v)
+(defmethod component/info :property/pretty-name [[_ v]] v)
+(defmethod component/info :maxrange             [[_ v]] v)
 
-(defmethod segment :creature/level [[_ v]]
+(defmethod component/info :creature/level [[_ v]]
   (str "Level: " v))
 
-(defmethod segment :projectile/piercing? [_] ; TODO also when false ?!
+(defmethod component/info :projectile/piercing? [_] ; TODO also when false ?!
   "Piercing")
 
-(defmethod segment :skill/action-time-modifier-key [[_ v]]
+(defmethod component/info :skill/action-time-modifier-key [[_ v]]
   (case v
     :entity/cast-speed "Spell"
     :entity/attack-speed "Attack"))
 
-(defmethod segment :skill/action-time [[_ v]]
+(defmethod component/info :skill/action-time [[_ v]]
   (str "Action-Time: " (readable-number v) " seconds"))
 
-(defmethod segment :skill/cooldown [[_ v]]
+(defmethod component/info :skill/cooldown [[_ v]]
   (when-not (zero? v)
     (str "Cooldown: " (readable-number v) " seconds")))
 
-(defmethod segment :skill/cost [[_ v]]
+(defmethod component/info :skill/cost [[_ v]]
   (when-not (zero? v)
     (str "Cost: " v " Mana")))
 
-(defmethod segment ::stat [[k _]]
+(defmethod component/info ::stat [[k _]]
   (str (k->pretty-name k) ": " (stat/->value *info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
