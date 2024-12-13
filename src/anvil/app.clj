@@ -25,7 +25,6 @@
 
             anvil.entity.alert-friendlies-after-duration
             anvil.entity.animation
-            anvil.entity.body
             anvil.entity.clickable
             anvil.entity.damage
             anvil.entity.delete-after-animation-stopped?

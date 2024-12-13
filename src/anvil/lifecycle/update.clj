@@ -2,7 +2,6 @@
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
             [anvil.entity :as entity]
-            [anvil.entity.body :as body]
             [anvil.world :as world :refer [mouseover-eid line-of-sight?]]
             [gdl.graphics :as g]
             [gdl.stage :as stage]
@@ -35,7 +34,7 @@
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities
                       (g/world-mouse-position)))]
-    (->> body/render-z-order
+    (->> entity/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse
          (filter #(line-of-sight? player @%))

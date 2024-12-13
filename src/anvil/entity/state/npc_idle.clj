@@ -2,7 +2,6 @@
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]
-            [anvil.entity.body :as body]
             [anvil.skill :as skill]
             [anvil.world :as world]
             [anvil.world.potential-field :as potential-field]
@@ -17,7 +16,7 @@
     {:effect/source eid
      :effect/target target
      :effect/target-direction (when target
-                                (body/direction entity @target))}))
+                                (entity/direction entity @target))}))
 
 (defn- npc-choose-skill [entity ctx]
   (->> entity

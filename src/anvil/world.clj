@@ -1,7 +1,6 @@
 (ns anvil.world
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.entity.body :as body]
             [anvil.world.content-grid :as content-grid]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
@@ -251,7 +250,7 @@
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
                       (assoc :position position)
-                      body/create
+                      entity/create
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
                                       create-vs))))]
@@ -367,5 +366,5 @@
        (filter #(= (:entity/faction @%) faction))))
 
 (defn nearest-enemy [entity]
-  (nearest-entity @(grid (body/tile entity))
+  (nearest-entity @(grid (entity/tile entity))
                   (entity/enemy entity)))

@@ -1,7 +1,7 @@
 (ns anvil.entity.projectile-collision
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
-            [anvil.entity.body :as body]
+            [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.utils :refer [defmethods find-first]]))
 
@@ -20,7 +20,7 @@
                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                              (:entity/faction @%))
                                        (:collides? @%)
-                                       (body/collides? entity @%))
+                                       (entity/collides? entity @%))
                                  (world/cells->entities cells*))
           destroy? (or (and hit-entity (not piercing?))
                        (some #(world/cell-blocked? % (:z-order entity)) cells*))]

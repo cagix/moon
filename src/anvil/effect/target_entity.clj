@@ -1,7 +1,7 @@
 (ns anvil.effect.target-entity
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all! filter-applicable?]]
-            [anvil.entity.body :as body]
+            [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.graphics :as g]
             [gdl.math.vector :as v]
@@ -18,12 +18,12 @@
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
   (v/add (:position entity)
-         (v/scale (body/direction entity target*)
+         (v/scale (entity/direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
   (v/add (start-point entity target*)
-         (v/scale (body/direction entity target*)
+         (v/scale (entity/direction entity target*)
                   maxrange)))
 
 (defmethods :effects/target-entity

@@ -1,6 +1,6 @@
 (ns anvil.entity.movement
   (:require [anvil.component :as component]
-            [anvil.entity.body :as body]
+            [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.math.vector :as v]
             [gdl.utils :refer [defmethods]]
@@ -24,7 +24,7 @@
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
                                  (:collides? other-entity)
-                                 (body/collides? other-entity body)))))))))
+                                 (entity/collides? other-entity body)))))))))
 
 (defn- try-move [body movement]
   (let [new-body (move-body body movement)]
@@ -44,7 +44,7 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ body/minimum-size
+(def ^:private max-speed (/ entity/minimum-size
                             world/max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
 
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))

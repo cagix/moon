@@ -1,5 +1,6 @@
 (ns anvil.entity.fsm
   (:require [anvil.component :as component]
+            [anvil.entity :as entity]
             [gdl.graphics :as g]
             [gdl.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
@@ -72,18 +73,18 @@
                          initial-state)
            initial-state (component/->v [initial-state eid]))))
 
+(defmethod component/cursor :stunned               [_] :cursors/denied)
+(defmethod component/cursor :player-moving         [_] :cursors/walking)
+(defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
+(defmethod component/cursor :player-dead           [_] :cursors/black-x)
+(defmethod component/cursor :active-skill          [_] :cursors/sandclock)
+
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
 
 (defn state-obj [entity]
   (let [k (state-k entity)]
     [k (k entity)]))
-
-(defmethod component/cursor :stunned               [_] :cursors/denied)
-(defmethod component/cursor :player-moving         [_] :cursors/walking)
-(defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
-(defmethod component/cursor :player-dead           [_] :cursors/black-x)
-(defmethod component/cursor :active-skill          [_] :cursors/sandclock)
 
 (defn send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]

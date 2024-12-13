@@ -1,5 +1,5 @@
 (ns anvil.lifecycle.potential-fields
-  (:require [anvil.entity.body :as body]
+  (:require [anvil.entity :as entity]
             [anvil.world :as world]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
@@ -48,7 +48,7 @@
                                        (filter   #(:entity/faction @%))
                                        (group-by #(:entity/faction @%)))]
            [faction
-            (zipmap (map #(body/tile @%) entities)
+            (zipmap (map #(entity/tile @%) entities)
                     entities)])))
 
  (def max-iterations 1)
@@ -122,7 +122,7 @@
 (defn- tiles->entities [entities faction]
   (let [entities (filter #(= (:entity/faction @%) faction)
                          entities)]
-    (zipmap (map #(body/tile @%) entities)
+    (zipmap (map #(entity/tile @%) entities)
             entities)))
 
 (defn- update-faction-potential-field [faction entities max-iterations]
