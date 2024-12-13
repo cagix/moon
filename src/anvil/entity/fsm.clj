@@ -6,7 +6,6 @@
             [anvil.world :as world :refer [timer add-text-effect]]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
-            [gdl.stage :refer [show-modal]]
             [gdl.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
 
@@ -16,13 +15,6 @@
 (defn state-obj [entity]
   (let [k (state-k entity)]
     [k (k entity)]))
-
-(defmethod enter :player-dead [_]
-  (play-sound "bfxr_playerdeath")
-  (show-modal {:title "YOU DIED"
-               :text "\nGood luck next time"
-               :button-text ":("
-               :on-click (fn [])}))
 
 (defmethods :player-moving
   (enter [[_ {:keys [eid movement-vector]}]]

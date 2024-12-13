@@ -1,5 +1,5 @@
 (ns anvil.lifecycle.render
-  (:require [anvil.impl.effects :as effect-impl]
+  (:require [anvil.effect.target-entity :as effect-impl]
             [anvil.component :refer [render-below
                                      render-default
                                      render-above

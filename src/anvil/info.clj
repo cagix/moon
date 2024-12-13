@@ -127,9 +127,6 @@
 (defmethod component/info :effects/target-all [_]
   "All visible targets")
 
-(defmethod component/info :entity/delete-after-duration [counter]
-  (str "Remaining: " (readable-number (finished-ratio counter)) "/1"))
-
 (defmethod component/info :entity/faction [faction]
   (str "Faction: " (name faction)))
 

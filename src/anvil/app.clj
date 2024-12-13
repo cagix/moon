@@ -1,6 +1,21 @@
 (ns anvil.app
-  (:require [anvil.impl.entity]
-            [anvil.impl.effects]
+  (:require anvil.effect.creature
+            anvil.effect.projectile
+            anvil.effect.target-all
+            anvil.effect.target-entity
+
+            anvil.effect.target.audiovisual
+            anvil.effect.target.convert
+            anvil.effect.target.damage
+            anvil.effect.target.kill
+            anvil.effect.target.melee-damage
+            anvil.effect.target.spiderweb
+            anvil.effect.target.stun
+
+            anvil.entity.state.player-dead
+            anvil.entity.delete-after-duration
+
+            [anvil.impl.entity]
 
             [anvil.controls :as controls]
             [anvil.lifecycle.create :refer [create-world dispose-world]]

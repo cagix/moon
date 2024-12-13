@@ -1,5 +1,5 @@
 (ns anvil.lifecycle.update
-  (:require [anvil.impl.effects :as effects.impl]
+  (:require [anvil.effect.target-entity :as effects.impl]
             [anvil.component :as component :refer [tick manual-tick pause-game?
                                                    useful?]]
             [anvil.controls :as controls]
@@ -27,9 +27,6 @@
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
             [malli.core :as m]))
-
-(defmethod useful? :effects.target/audiovisual [_ _]
-  false)
 
 ; TODO valid params direction has to be  non-nil (entities not los player ) ?
 (defmethod useful? :effects/projectile
@@ -279,10 +276,6 @@
     (swap! eid assoc :entity/destroyed? true)
     (doseq [friendly-eid (friendlies-in-radius (:position @eid) faction)]
       (fsm/event friendly-eid :alert))))
-
-(defmethod tick :entity/delete-after-duration [[_ counter] eid]
-  (when (stopped? counter)
-    (swap! eid assoc :entity/destroyed? true)))
 
 (defmethod tick :entity/string-effect [[k {:keys [counter]}] eid]
   (when (stopped? counter)

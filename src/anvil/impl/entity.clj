@@ -62,9 +62,6 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defmethod component/->v :entity/delete-after-duration [[_ duration]]
-  (timer duration))
-
 (defmethod component/->v :entity/hp [[_ v]]
   [v v])
 
