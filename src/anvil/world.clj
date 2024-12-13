@@ -145,6 +145,10 @@
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
 
+; this as protocols & impl implements it? same with send-event ?
+; so we could add those protocols to 'entity'?
+; => also add render stuff
+; so each component is together all stuff (but question is if we have open data)
 (defn add-text-effect [entity text]
   (assoc entity
          :entity/string-effect

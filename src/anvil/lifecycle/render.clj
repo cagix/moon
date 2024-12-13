@@ -1,5 +1,6 @@
 (ns anvil.lifecycle.render
-  (:require [anvil.component :refer [render-below
+  (:require [anvil.impl.effects :as effect-impl]
+            [anvil.component :refer [render-below
                                      render-default
                                      render-above
                                      render-info]]
@@ -31,9 +32,9 @@
   (when target
     (let [source* @source
           target* @target]
-      (g/line (effect/start-point source* target*)
-              (effect/end-point source* target* maxrange)
-              (if (effect/in-range? source* target* maxrange)
+      (g/line (effect-impl/start-point source* target*)
+              (effect-impl/end-point source* target* maxrange)
+              (if (effect-impl/in-range? source* target* maxrange)
                 [1 0 0 0.5]
                 [1 1 0 0.5])))))
 

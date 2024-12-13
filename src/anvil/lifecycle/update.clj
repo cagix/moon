@@ -1,5 +1,6 @@
 (ns anvil.lifecycle.update
-  (:require [anvil.component :as component :refer [tick manual-tick pause-game?]]
+  (:require [anvil.impl.effects :as effects.impl]
+            [anvil.component :as component :refer [tick manual-tick pause-game?]]
             [anvil.controls :as controls]
             [anvil.effect :as effect]
             [gdl.graphics.animation :as animation]
@@ -55,7 +56,7 @@
 
 (defmethod useful? :effects/target-entity
   [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
-  (effect/in-range? @source @target maxrange))
+  (effects.impl/in-range? @source @target maxrange))
 
 (defn- some-useful-and-applicable? [ctx effects]
   (->> effects

@@ -1,4 +1,4 @@
-(ns anvil.entity
+(ns anvil.impl.entity
   (:require [anvil.component :as component]
             [anvil.entity.inventory :as inventory]
             [anvil.entity.stat :as stat]

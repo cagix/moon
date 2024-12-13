@@ -1,5 +1,6 @@
 (ns anvil.app
-  (:require [anvil.entity]
+  (:require [anvil.impl.entity]
+            [anvil.impl.effects]
 
             [anvil.controls :as controls]
             [anvil.lifecycle.create :refer [create-world dispose-world]]
