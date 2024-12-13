@@ -1,7 +1,7 @@
 (ns anvil.lifecycle.update
   (:require [anvil.controls :as controls]
             [anvil.effect :as effect]
-            [anvil.entity :as entity :refer [line-of-sight? render-z-order projectile-size]]
+            [anvil.entity :as entity :refer [render-z-order projectile-size]]
             [gdl.graphics.animation :as animation]
             [anvil.entity.body :as body]
             [anvil.entity.faction :as faction]
@@ -10,7 +10,7 @@
             [anvil.entity.modifiers :as mods]
             [anvil.entity.stat :as stat]
             [anvil.entity.skills :as skills]
-            [anvil.world :as world :refer [stopped? mouseover-eid]]
+            [anvil.world :as world :refer [stopped? mouseover-eid line-of-sight?]]
             [gdl.graphics :as g]
             [gdl.input :refer [button-just-pressed?]]
             [anvil.item-on-cursor :refer [world-item?]]
@@ -418,7 +418,7 @@
 
 (defn- remove-destroyed-entities []
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (entity/all-entities))]
+                      (world/all-entities))]
     (entity/remove-entity eid)
     (doseq [component @eid]
       (destroy component eid))))

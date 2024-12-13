@@ -1,5 +1,5 @@
 (ns anvil.effect
-  (:require [anvil.entity :as entity :refer [creatures-in-los-of-player line-of-sight?]]
+  (:require [anvil.entity :as entity :refer [creatures-in-los-of-player]]
             [anvil.entity.body :as body]
             [anvil.entity.damage :as damage]
             [anvil.entity.faction :as faction]
@@ -8,7 +8,7 @@
             [anvil.entity.modifiers :as mods]
             [anvil.entity.stat :as stat]
             [anvil.entity.string-effect :as string-effect]
-            [anvil.world :refer [timer]]
+            [anvil.world :refer [timer line-of-sight?]]
             [gdl.math.vector :as v]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defmethods defsystem]]
