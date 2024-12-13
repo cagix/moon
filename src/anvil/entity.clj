@@ -1,18 +1,17 @@
 (ns anvil.entity
-  (:require [gdl.graphics.animation :as animation]
-            [anvil.entity.inventory :as inventory]
+  (:require [anvil.entity.inventory :as inventory]
             [anvil.entity.stat :as stat]
             [anvil.entity.skills :as skills]
+            [anvil.world.content-grid :as content-grid]
+            [anvil.world.grid :as grid]
+            [anvil.world :as world :refer [timer]]
+            [gdl.assets :refer [play-sound]]
+            [gdl.db :as db]
             [gdl.graphics :as g]
+            [gdl.graphics.animation :as animation]
             [gdl.graphics.camera :as cam]
             [gdl.math.vector :as v]
             [gdl.utils :refer [defsystem define-order safe-merge unique-number!]]
-            [anvil.world.content-grid :as content-grid]
-            [anvil.world.grid :as grid]
-            [anvil.world.raycaster :refer [ray-blocked?]]
-            [anvil.world.time :refer [timer]]
-            [gdl.assets :refer [play-sound]]
-            [gdl.db :as db]
             [reduce-fsm :as fsm]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
@@ -70,11 +69,8 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(declare player-eid
-         ids)
-
 (defn all-entities []
-  (vals ids))
+  (vals world/entity-ids))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -101,7 +97,7 @@
   (and (or (not (:entity/player? source))
            (on-screen? target))
        (not (and los-checks?
-                 (ray-blocked? (:position source) (:position target))))))
+                 (world/ray-blocked? (:position source) (:position target))))))
 
 (defn- set-cells! [eid]
   (let [cells (grid/rectangle->cells @eid)]
@@ -121,8 +117,8 @@
 (defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
   (if (or (> (float width) 1) (> (float height) 1))
     (grid/rectangle->cells rectangle)
-    [(grid/get [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-                (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
+    [(world/grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
+                  (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
 
 (defn- set-occupied-cells! [eid]
   (let [cells (rectangle->occupied-cells @eid)]
@@ -156,22 +152,21 @@
 (defn- entity-ids-add-entity [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
-    (alter-var-root #'ids assoc id eid)))
+    (alter-var-root #'world/entity-ids assoc id eid)))
 
 (defn- entity-ids-remove-entity [eid]
   (let [id (:entity/id @eid)]
-    (assert (contains? ids id))
-    (alter-var-root #'ids dissoc id)))
-
-(declare content-grid)
+    (assert (contains? world/entity-ids id))
+    (alter-var-root #'world/entity-ids dissoc id)))
 
 (defn active-entities []
-  (content-grid/active-entities content-grid @player-eid))
+  (content-grid/active-entities world/content-grid
+                                @world/player-eid))
 
 (defn- add-entity [eid]
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (content-grid/add-entity content-grid eid)
+  (content-grid/add-entity world/content-grid eid)
   (entity-ids-add-entity   eid)
   (grid-add-entity         eid))
 
@@ -181,7 +176,7 @@
   (grid-remove-entity         eid))
 
 (defn position-changed [eid]
-  (content-grid/entity-position-changed content-grid eid)
+  (content-grid/entity-position-changed world/content-grid eid)
   (grid-entity-position-changed         eid))
 
 (defrecord Body [position
@@ -428,14 +423,8 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(def mouseover-eid nil)
-
-(defn mouseover-entity []
-  (and mouseover-eid
-       @mouseover-eid))
-
 (defn creatures-in-los-of-player []
   (->> (active-entities)
        (filter #(:entity/species @%))
-       (filter #(line-of-sight? @player-eid @%))
+       (filter #(line-of-sight? @world/player-eid @%))
        (remove #(:entity/player? @%))))

@@ -1,17 +1,17 @@
 (ns anvil.lifecycle.create
   (:require [anvil.controls :as controls]
-            [anvil.entity :as entity :refer [player-eid mouseover-entity]]
+            [anvil.entity :as entity]
             [anvil.entity.inventory :as inventory]
             [anvil.entity.fsm :as fsm]
             [anvil.entity.hitpoints :as hp]
             [anvil.entity.mana :as mana]
             [anvil.entity.skills :as skills]
-            [anvil.error :as error]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [anvil.info :as info]
             [anvil.item-on-cursor :refer [world-item?]]
-            [anvil.level :as level :refer [generate-level]]
+            [anvil.level :refer [generate-level]]
+            [anvil.world :as world]
             [gdl.stage :as stage]
             [gdl.graphics.sprite :as sprite]
             [gdl.ui :refer [ui-actor
@@ -32,8 +32,6 @@
             [anvil.ui.player-message :as player-message]
             [anvil.world.content-grid :as content-grid]
             [anvil.world.grid :as grid]
-            [anvil.world.raycaster :as raycaster]
-            [anvil.world.time :as time]
             [data.grid2d :as g2d]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
@@ -99,7 +97,7 @@
                                           [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
-                       (let [player-entity @entity/player-eid
+                       (let [player-entity @world/player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (hp/->value   player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (mana/->value player-entity) "MP")))})))
@@ -161,11 +159,11 @@
     (add-actor! window (ui-actor {:act (fn update-label-text []
                                          ; items then have 2x pretty-name
                                          #_(.setText (.getTitleLabel window)
-                                                     (if-let [entity (mouseover-entity)]
+                                                     (if-let [entity (world/mouseover-entity)]
                                                        (info/text [:property/pretty-name (:property/pretty-name entity)])
                                                        "Entity Info"))
                                          (.setText label
-                                                   (str (when-let [entity (mouseover-entity)]
+                                                   (str (when-let [entity (world/mouseover-entity)]
                                                           (info/text
                                                            ; don't use select-keys as it loses Entity record type
                                                            (apply dissoc entity disallowed-keys)))))
@@ -189,14 +187,14 @@
             {:label "Help"
              :items [{:label controls/help-text}]}]
     :update-labels [{:label "Mouseover-entity id"
-                     :update-fn #(when-let [entity (mouseover-entity)]
+                     :update-fn #(when-let [entity (world/mouseover-entity)]
                                    (:entity/id entity))
                      :icon "images/mouseover.png"}
                     {:label "elapsed-time"
-                     :update-fn #(str (readable-number time/elapsed) " seconds")
+                     :update-fn #(str (readable-number world/elapsed-time) " seconds")
                      :icon "images/clock.png"}
                     {:label "paused?"
-                     :update-fn (fn [] time/paused?)}
+                     :update-fn (fn [] world/paused?)}
                     {:label "GUI"
                      :update-fn g/mouse-position}
                     {:label "World"
@@ -244,7 +242,7 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [^Actor this]
-     (draw-cell-rect @player-eid
+     (draw-cell-rect @world/player-eid
                      (.getX this)
                      (.getY this)
                      (actor/hit this (g/mouse-position))
@@ -300,7 +298,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (clicked-inventory-cell (fsm/state-obj @player-eid) cell))))
+                            (clicked-inventory-cell (fsm/state-obj @world/player-eid) cell))))
     stack))
 
 (defn- inventory-table []
@@ -411,12 +409,12 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (create-inventory)]})
-   (ui-actor {:draw #(draw-gui-view (fsm/state-obj @entity/player-eid))})
+   (ui-actor {:draw #(draw-gui-view (fsm/state-obj @world/player-eid))})
    (player-message/actor)])
 
 (defn dispose-world []
-  (when (bound? #'level/tiled-map)
-    (tiled/dispose level/tiled-map)))
+  (when (bound? #'world/tiled-map)
+    (tiled/dispose world/tiled-map)))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
@@ -442,24 +440,17 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
-(defn- time-init []
-  (bind-root time/elapsed 0)
-  (bind-root time/delta nil))
-
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn- init-raycaster* [grid position->blocked?]
+(defn- ->raycaster [grid position->blocked?]
   (let [width  (g2d/width  grid)
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]
     (doseq [cell (g2d/cells grid)]
       (set-arr arr @cell position->blocked?))
-    (bind-root raycaster/raycaster [arr width height])))
-
-(defn init-raycaster [tiled-map]
-  (init-raycaster* grid/grid grid/blocks-vision?))
+    [arr width height]))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -499,42 +490,47 @@
     :entities #{}
     :occupied #{}}))
 
-(defn- init-world-grid [tiled-map]
-  (bind-root grid/grid (g2d/create-grid
-                        (tiled/tm-width tiled-map)
-                        (tiled/tm-height tiled-map)
-                        (fn [position]
-                          (atom (grid-cell position
-                                           (case (tiled/movement-property tiled-map position)
-                                             "none" :none
-                                             "air"  :air
-                                             "all"  :all)))))))
+(defn- ->world-grid [tiled-map]
+  (g2d/create-grid
+   (tiled/tm-width tiled-map)
+   (tiled/tm-height tiled-map)
+   (fn [position]
+     (atom (grid-cell position
+                      (case (tiled/movement-property tiled-map position)
+                        "none" :none
+                        "air"  :air
+                        "all"  :all))))))
+
+(defn- ->explored-tile-corners [tiled-map]
+  (atom (g2d/create-grid
+         (tiled/tm-width  tiled-map)
+         (tiled/tm-height tiled-map)
+         (constantly false))))
+
+(defn- ->content-grid [tiled-map]
+  (content-grid/create {:cell-size 16  ; FIXME global config
+                        :width  (tiled/tm-width  tiled-map)
+                        :height (tiled/tm-height tiled-map)}))
 
 (defn- world-init [{:keys [tiled-map start-position]}]
-  (bind-root level/tiled-map tiled-map)
-  (bind-root level/explored-tile-corners (atom (g2d/create-grid
-                                                (tiled/tm-width  tiled-map)
-                                                (tiled/tm-height tiled-map)
-                                                (constantly false))))
-  (init-world-grid tiled-map)
-  (bind-root entity/ids {})
-  (bind-root entity/content-grid
-             (content-grid/create {:cell-size 16  ; FIXME global config
-                                   :width  (tiled/tm-width  tiled-map)
-                                   :height (tiled/tm-height tiled-map)}))
-  (init-raycaster tiled-map)
-  (time-init)
-  (bind-root entity/player-eid
-             (entity/creature
-              (player-entity-props start-position)))
+  (bind-root world/tiled-map tiled-map)
+  (bind-root world/explored-tile-corners (->explored-tile-corners tiled-map))
+  (bind-root world/grid                  (->world-grid            tiled-map))
+  (bind-root world/content-grid          (->content-grid          tiled-map))
+  (bind-root world/entity-ids {})
+  (bind-root world/raycaster (->raycaster world/grid grid/blocks-vision?))
+  (bind-root world/elapsed-time 0)
+  (bind-root world/delta-time nil)
+  (bind-root world/player-eid (entity/creature (player-entity-props start-position)))
   (when spawn-enemies?
-    (spawn-enemies tiled-map)))
+    (spawn-enemies tiled-map))
+  (bind-root world/mouseover-eid nil))
 
 (defn create-world [world-props]
   ; TODO assert is :screens/world
   (stage/reset (widgets))
   (dispose-world)
-  (bind-root error/throwable nil)
+  (bind-root world/error nil)
   ; generate level -> creates actually the tiled-map and
   ; start-position?
   ; other stuff just depend on it?!

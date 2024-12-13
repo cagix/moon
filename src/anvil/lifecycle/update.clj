@@ -1,7 +1,7 @@
 (ns anvil.lifecycle.update
   (:require [anvil.controls :as controls]
             [anvil.effect :as effect]
-            [anvil.entity :as entity :refer [player-eid mouseover-entity mouseover-eid line-of-sight? render-z-order projectile-size]]
+            [anvil.entity :as entity :refer [line-of-sight? render-z-order projectile-size]]
             [gdl.graphics.animation :as animation]
             [anvil.entity.body :as body]
             [anvil.entity.faction :as faction]
@@ -10,21 +10,18 @@
             [anvil.entity.modifiers :as mods]
             [anvil.entity.stat :as stat]
             [anvil.entity.skills :as skills]
-            [anvil.error :as error]
+            [anvil.world :as world :refer [stopped? mouseover-eid]]
             [gdl.graphics :as g]
             [gdl.input :refer [button-just-pressed?]]
             [anvil.item-on-cursor :refer [world-item?]]
             [gdl.math.vector :as v]
             [anvil.skill :as skill]
             [gdl.stage :as stage]
-            [anvil.level :as level :refer [explored-tile-corners]]
             [gdl.ui :refer [window-title-bar? button?]]
             [gdl.utils :refer [defsystem]]
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [bind-root sort-by-order find-first]]
             [anvil.world.grid :as grid]
-            [anvil.world.time :as time :refer [stopped?]]
-            [anvil.world.raycaster :refer [path-blocked?]]
             [anvil.world.potential-field :as potential-field]
             [anvil.lifecycle.potential-fields :refer [update-potential-fields!]]
             [gdl.assets :refer [play-sound]]
@@ -44,10 +41,10 @@
   (let [source-p (:position @source)
         target-p (:position @target)]
     ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-    (and (not (path-blocked? ; TODO test
-                             source-p
-                             target-p
-                             (projectile-size projectile)))
+    (and (not (world/path-blocked? ; TODO test
+                                   source-p
+                                   target-p
+                                   (projectile-size projectile)))
          ; TODO not taking into account body sizes
          (< (v/distance source-p ; entity/distance function protocol EntityPosition
                         target-p)
@@ -77,7 +74,7 @@
        first))
 
 (defn- nearest-enemy [entity]
-  (grid/nearest-entity @(grid/get (body/tile entity))
+  (grid/nearest-entity @(world/grid (body/tile entity))
                        (faction/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
@@ -107,13 +104,13 @@
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (fsm/event player-eid :pickup-item item))
+      (fsm/event world/player-eid :pickup-item item))
 
-     (inventory/can-pickup-item? @player-eid item)
+     (inventory/can-pickup-item? @world/player-eid item)
      (do
       (play-sound "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (inventory/pickup-item player-eid item))
+      (inventory/pickup-item world/player-eid item))
 
      :else
      (do
@@ -140,7 +137,7 @@
 (defn- inventory-cell-with-item? [^com.badlogic.gdx.scenes.scene2d.Actor actor]
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
-       (get-in (:entity/inventory @player-eid)
+       (get-in (:entity/inventory @world/player-eid)
                (actor/user-object (.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
@@ -241,7 +238,7 @@
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
 (def ^:private max-speed (/ entity/minimum-body-size
-                            time/max-delta)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+                            world/max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
 
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
@@ -254,7 +251,7 @@
 (defmethod tick :entity/animation [[k animation] eid]
   (swap! eid #(-> %
                   (assoc :entity/image (animation/current-frame animation))
-                  (assoc k (animation/tick animation time/delta)))))
+                  (assoc k (animation/tick animation world/delta-time)))))
 
 (defmethod tick :entity/delete-after-animation-stopped? [_ eid]
   (when (animation/stopped? (:entity/animation @eid))
@@ -271,7 +268,7 @@
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time time/delta)
+    (let [movement (assoc movement :delta-time world/delta-time)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)
@@ -345,7 +342,7 @@
 
 (defmethod tick :npc-sleeping [_ eid]
   (let [entity @eid
-        cell (grid/get (body/tile entity))] ; pattern!
+        cell (world/grid (body/tile entity))] ; pattern!
     (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
       (when (<= distance (stat/->value entity :entity/aggro-range))
         (fsm/event eid :alert)))))
@@ -392,13 +389,8 @@
 (defn- tick-entities [entities]
   (run! tick-entity entities))
 
-(defn- time-update []
-  (let [delta-ms (min (g/delta-time) time/max-delta)]
-    (alter-var-root #'time/elapsed + delta-ms)
-    (bind-root time/delta delta-ms)))
-
 (defn- calculate-eid []
-  (let [player @player-eid
+  (let [player @world/player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (grid/point->entities
                       (g/world-mouse-position)))]
@@ -459,18 +451,20 @@
 (defmethod pause-game? :player-dead           [_] true)
 
 (defn update-world []
-  (manual-tick (fsm/state-obj @player-eid))
+  (manual-tick (fsm/state-obj @world/player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
-  (bind-root time/paused? (or error/throwable
-                              (and pausing?
-                                   (pause-game? (fsm/state-obj @player-eid))
-                                   (not (controls/unpaused?)))))
-  (when-not time/paused?
-    (time-update)
+  (bind-root world/paused? (or world/error
+                               (and pausing?
+                                    (pause-game? (fsm/state-obj @world/player-eid))
+                                    (not (controls/unpaused?)))))
+  (when-not world/paused?
+    (let [delta-ms (min (g/delta-time) world/max-delta-time)]
+      (alter-var-root #'world/elapsed-time + delta-ms)
+      (bind-root world/delta-time delta-ms))
     (let [entities (entity/active-entities)]
       (update-potential-fields! entities)
       (try (tick-entities entities)
            (catch Throwable t
              (stage/error-window! t)
-             (bind-root error/throwable t)))))
+             (bind-root world/error t)))))
   (remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.

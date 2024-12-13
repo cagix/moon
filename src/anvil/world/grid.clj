@@ -1,9 +1,9 @@
 (ns anvil.world.grid
-  (:refer-clojure :exclude [get])
-  (:require [gdl.math.shapes :refer [rectangle->tiles
-                                       circle->outer-rectangle
-                                       rect-contains?
-                                       overlaps?]]))
+  (:require [anvil.world :as world]
+            [gdl.math.shapes :refer [rectangle->tiles
+                                     circle->outer-rectangle
+                                     rect-contains?
+                                     overlaps?]]))
 
 (defprotocol Cell
   (cell-blocked? [cell* z-order])
@@ -14,13 +14,8 @@
   (nearest-entity          [cell* faction])
   (nearest-entity-distance [cell* faction]))
 
-(declare grid)
-
-(defn get [position]
-  (clojure.core/get grid position))
-
 (defn rectangle->cells [rectangle]
-  (into [] (keep grid) (rectangle->tiles rectangle)))
+  (into [] (keep world/grid) (rectangle->tiles rectangle)))
 
 (defn circle->cells [circle]
   (->> circle
@@ -51,11 +46,11 @@
 (defn cached-adjacent-cells [cell]
   (if-let [result (:adjacent-cells @cell)]
     result
-    (let [result (into [] (keep grid) (-> @cell :position get-8-neighbour-positions))]
+    (let [result (into [] (keep world/grid) (-> @cell :position get-8-neighbour-positions))]
       (swap! cell assoc :adjacent-cells result)
       result)))
 
 (defn point->entities [position]
-  (when-let [cell (get (mapv int position))]
+  (when-let [cell (world/grid (mapv int position))]
     (filter #(rect-contains? @% position)
             (:entities @cell))))

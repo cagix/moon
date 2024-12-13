@@ -1,5 +1,6 @@
 (ns anvil.lifecycle.potential-fields
   (:require [anvil.entity.body :as body]
+            [anvil.world :as world]
             [anvil.world.grid :as grid]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
@@ -105,7 +106,7 @@
   "returns the marked-cells"
   [faction tiles->entities max-iterations]
   (let [entity-cell-seq (for [[tile eid] tiles->entities] ; FIXME lazy seq
-                          [eid (grid/get tile)])
+                          [eid (world/grid tile)])
         marked (map second entity-cell-seq)]
     (doseq [[eid cell] entity-cell-seq]
       (add-field-data! cell faction 0 eid))

@@ -14,7 +14,7 @@
       (swap! eid skills/add skill))))
 
 ; TODO render text label free-skill-points
-; (str "Free points: " (:entity/free-skill-points @player-eid))
+; (str "Free points: " (:entity/free-skill-points @world/player-eid))
 #_(defn ->skill-window []
     (ui/window {:title "Skills"
                 :id :skill-window
@@ -30,7 +30,7 @@
                                                         ; => should probably build this window @ game start
                                                         (fn []
                                                           (clicked-skillmenu-skill
-                                                           (fsm/state-obj @player-eid)
+                                                           (fsm/state-obj @world/player-eid)
                                                            (db/build id))))]]
                          (do
                           (add-tooltip! button #(info/text (db/build id))) ; TODO no player modifiers applied (see actionbar)

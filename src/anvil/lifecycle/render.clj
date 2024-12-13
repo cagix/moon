@@ -1,20 +1,17 @@
 (ns anvil.lifecycle.render
   (:require [anvil.effect :as effect]
-            [anvil.entity :as entity :refer [line-of-sight? player-eid
-                                             creatures-in-los-of-player]]
+            [anvil.entity :as entity :refer [line-of-sight? creatures-in-los-of-player]]
             [anvil.entity.faction :as faction]
             [anvil.entity.hitpoints :as hp]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [anvil.item-on-cursor :refer [world-item? item-place-position]]
             [gdl.math.shapes :refer [circle->outer-rectangle]]
-            [anvil.level :as level :refer [explored-tile-corners]]
+            [anvil.world :as world :refer [finished-ratio]]
             [gdl.val-max :as val-max]
             [gdl.utils :refer [defsystem]]
             [gdl.utils :refer [sort-by-order pretty-pst]]
             [anvil.world.grid :as grid]
-            [anvil.world.time :refer [finished-ratio]]
-            [anvil.world.raycaster :refer [ray-blocked?]]
             [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
 
 (defsystem render-effect)
@@ -118,7 +115,7 @@
               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
-            :let [cell (grid/get [x y])]
+            :let [cell (world/grid [x y])]
             :when cell
             :let [cell* @cell]]
 
@@ -140,7 +137,7 @@
 (defn- highlight-mouseover-tile []
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (g/world-mouse-position))
-          cell (grid/get [x y])]
+          cell (world/grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (g/rectangle x y 1 1
                       (case (:movement @cell)
@@ -176,11 +173,11 @@
   #_(reset! do-once false)
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
-          explored? (get @explored-tile-corners position) ; TODO needs int call ?
+          explored? (get @world/explored-tile-corners position) ; TODO needs int call ?
           base-color (if explored? explored-tile-color g/black)
           cache-entry (get @light-cache position :not-found)
           blocked? (if (= cache-entry :not-found)
-                     (let [blocked? (ray-blocked? light-position position)]
+                     (let [blocked? (world/ray-blocked? light-position position)]
                        (swap! light-cache assoc position blocked?)
                        blocked?)
                      cache-entry)]
@@ -189,7 +186,7 @@
       (if blocked?
         (if see-all-tiles? g/white base-color)
         (do (when-not explored?
-              (swap! explored-tile-corners assoc (mapv int position) true))
+              (swap! world/explored-tile-corners assoc (mapv int position) true))
             g/white)))))
 
 (defn tile-color-setter [light-position]
@@ -222,7 +219,7 @@
                      (item-place-position entity))))
 
 (defmethod render-below :entity/mouseover? [_ {:keys [entity/faction] :as entity}]
-  (let [player @player-eid]
+  (let [player @world/player-eid]
     (g/with-line-width 3
       #(g/ellipse (:position entity)
                   (:half-width entity)
@@ -299,7 +296,7 @@
 (defn- render-entities
   "Draws entities in the correct z-order and in the order of render-systems for each z-order."
   [entities]
-  (let [player @entity/player-eid]
+  (let [player @world/player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               entity/render-z-order)
@@ -315,9 +312,9 @@
 (defn render-world []
   ; FIXME position DRY
   (cam/set-position! g/camera
-                     (:position @entity/player-eid))
+                     (:position @world/player-eid))
   ; FIXME position DRY
-  (g/draw-tiled-map level/tiled-map
+  (g/draw-tiled-map world/tiled-map
                     (tile-color-setter (cam/position g/camera)))
   (g/draw-on-world-view (fn []
                           (debug-render-before-entities)

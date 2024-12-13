@@ -2,14 +2,14 @@
   (:require [anvil.entity.faction :as faction]
             [gdl.math.vector :as v]
             [gdl.utils :refer [when-seq utils-positions]]
+            [anvil.world :as world]
             [anvil.world.grid :refer [get-8-neighbour-positions
-                                cell-blocked?
-                                occupied-by-other?
-                                grid
-                                rectangle->cells
-                                nearest-entity
-                                nearest-entity-distance
-                                cached-adjacent-cells]]))
+                                      cell-blocked?
+                                      occupied-by-other?
+                                      rectangle->cells
+                                      nearest-entity
+                                      nearest-entity-distance
+                                      cached-adjacent-cells]]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes
@@ -99,7 +99,7 @@
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
 (defn find-direction [eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
-        own-cell (get grid (mapv int position))
+        own-cell (world/grid (mapv int position))
         {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
     (cond
      target-entity

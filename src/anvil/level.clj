@@ -10,9 +10,6 @@
          :world/player-creature
          (:world/player-creature world-props)))
 
-(declare tiled-map
-         explored-tile-corners)
-
 (defmethod generate-level* :world.generator/uf-caves [world]
   (uf-caves/create world))
 

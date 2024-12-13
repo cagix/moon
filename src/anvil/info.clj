@@ -3,11 +3,11 @@
             [anvil.entity.hitpoints :as hp]
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
-            [gdl.graphics :as g]
             [anvil.op :as op]
-            [anvil.world.time :refer [finished-ratio]]
+            [anvil.world :refer [finished-ratio]]
             [clojure.math :as math]
             [clojure.string :as str]
+            [gdl.graphics :as g]
             [gdl.utils :refer [defsystem index-of readable-number]]))
 
 (g/add-color "PRETTY_NAME" [0.84 0.8 0.52])

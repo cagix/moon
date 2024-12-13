@@ -1,7 +1,7 @@
 (ns dev.tools
-  (:require [anvil.entity :as entity :refer [player-eid mouseover-entity]]
+  (:require [anvil.entity :as entity]
             [anvil.entity.skills :as skills]
-            [anvil.world.grid :as grid]
+            [anvil.world :as world]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.app :refer [post-runnable]]
@@ -18,7 +18,7 @@
 
  (print-app-values-tree "app-values-tree.clj")
 
- (show-tree-view! (mouseover-entity))
+ (show-tree-view! (world/mouseover-entity))
  (show-tree-view! (mouseover-grid-cell))
  (show-tree-view! (ns-value-vars #{"forge"}))
 
@@ -71,14 +71,14 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! player-eid skills/add (db/build skill-id))))
+   (swap! world/player-eid skills/add (db/build skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable
-   (entity/item (:position @player-eid) (db/build item-id))))
+   (entity/item (:position @world/player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
-  @(grid/get (mapv int (g/world-mouse-position))))
+  @(world/grid (mapv int (g/world-mouse-position))))
 
 (defn- class->label-str [class]
   (case class
