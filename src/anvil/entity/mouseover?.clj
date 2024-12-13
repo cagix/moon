@@ -1,6 +1,6 @@
 (ns anvil.entity.mouseover?
   (:require [anvil.component :as component]
-            [anvil.entity.faction :as faction]
+            [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.graphics :as g]
             [gdl.utils :refer [defmethods]]))
@@ -17,7 +17,7 @@
         #(g/ellipse (:position entity)
                     (:half-width entity)
                     (:half-height entity)
-                    (cond (= faction (faction/enemy player))
+                    (cond (= faction (entity/enemy player))
                           enemy-color
                           (= faction (:entity/faction player))
                           friendly-color

@@ -1,7 +1,7 @@
 (ns anvil.world
   (:require [anvil.component :as component]
+            [anvil.entity :as entity]
             [anvil.entity.body :as body]
-            [anvil.entity.faction :as faction]
             [anvil.world.content-grid :as content-grid]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
@@ -368,4 +368,4 @@
 
 (defn nearest-enemy [entity]
   (nearest-entity @(grid (body/tile entity))
-                  (faction/enemy entity)))
+                  (entity/enemy entity)))

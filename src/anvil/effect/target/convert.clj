@@ -1,6 +1,6 @@
 (ns anvil.effect.target.convert
   (:require [anvil.component :as component]
-            [anvil.entity.faction :as faction]
+            [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.utils :refer [defmethods]]))
 
@@ -11,7 +11,7 @@
   (component/applicable? [_ {:keys [effect/source effect/target]}]
     (and target
          (= (:entity/faction @target)
-            (faction/enemy @source))))
+            (entity/enemy @source))))
 
   (component/handle [_ {:keys [effect/source effect/target]}]
     (swap! target assoc :entity/faction (:entity/faction @source))))

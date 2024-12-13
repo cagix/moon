@@ -1,5 +1,5 @@
 (ns anvil.world.potential-field
-  (:require [anvil.entity.faction :as faction]
+  (:require [anvil.entity :as entity]
             [anvil.world :as world :refer [rectangle->cells
                                            get-8-neighbour-positions
                                            cached-adjacent-cells
@@ -59,7 +59,7 @@
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
   [eid own-cell]
-  (let [faction (faction/enemy @eid)
+  (let [faction (entity/enemy @eid)
         distance-to    #(nearest-entity-distance @% faction)
         nearest-entity #(nearest-entity          @% faction)
         own-dist (distance-to own-cell)

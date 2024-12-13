@@ -1,7 +1,7 @@
 (ns anvil.entity.state.npc-sleeping
   (:require [anvil.component :as component]
+            [anvil.entity :as entity]
             [anvil.entity.body :as body]
-            [anvil.entity.faction :as faction]
             [anvil.entity.fsm :as fsm]
             [anvil.entity.stat :as stat]
             [anvil.world :as world :refer [add-text-effect]]
@@ -21,7 +21,7 @@
   (component/tick [_ eid]
     (let [entity @eid
           cell (world/grid (body/tile entity))] ; pattern!
-      (when-let [distance (world/nearest-entity-distance @cell (faction/enemy entity))]
+      (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (stat/->value entity :entity/aggro-range))
           (fsm/event eid :alert)))))
 

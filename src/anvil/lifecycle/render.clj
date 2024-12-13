@@ -5,7 +5,6 @@
                                      render-info]]
             [anvil.effect :as effect]
             [anvil.entity.body :as body]
-            [anvil.entity.faction :as faction]
             [anvil.entity.hp :as hp]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
