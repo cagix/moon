@@ -1,5 +1,5 @@
 (ns anvil.effect
-  (:require [anvil.entity :as entity :refer [creatures-in-los-of-player]]
+  (:require [anvil.entity :as entity]
             [anvil.entity.body :as body]
             [anvil.entity.damage :as damage]
             [anvil.entity.faction :as faction]
@@ -7,8 +7,7 @@
             [anvil.entity.hitpoints :as hp]
             [anvil.entity.modifiers :as mods]
             [anvil.entity.stat :as stat]
-            [anvil.entity.string-effect :as string-effect]
-            [anvil.world :refer [timer line-of-sight?]]
+            [anvil.world :as world :refer [timer line-of-sight? add-text-effect]]
             [gdl.math.vector :as v]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defmethods defsystem]]
@@ -84,7 +83,7 @@
        nil
 
        (armor-saves? source* target*)
-       (swap! target string-effect/add "[WHITE]ARMOR")
+       (swap! target add-text-effect "[WHITE]ARMOR")
 
        :else
        (let [min-max (:damage/min-max (damage/->value source* target* damage))
@@ -94,7 +93,7 @@
          (entity/audiovisual (:position target*)
                              (db/build :audiovisuals/damage))
          (fsm/event target (if (zero? new-hp-val) :kill :alert))
-         (swap! target string-effect/add (str "[RED]" dmg-amount "[]")))))))
+         (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))
 
 (defmethods :effects.target/kill
   (applicable? [_ {:keys [effect/target]}]
@@ -200,7 +199,7 @@
  ; TODO showing one a bit further up
  ; maybe world view port is cut
  ; not quite showing correctly.
- (let [targets (creatures-in-los-of-player)]
+ (let [targets (world/creatures-in-los-of-player)]
    (count targets)
    #_(sort-by #(% 1) (map #(vector (:entity.creature/name @%)
                                    (:position @%)) targets)))
@@ -213,7 +212,7 @@
 
   (handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target (creatures-in-los-of-player)]
+      (doseq [target (world/creatures-in-los-of-player)]
         (entity/line-render {:start (:position source*) #_(start-point source* target*)
                              :end (:position @target)
                              :duration 0.05

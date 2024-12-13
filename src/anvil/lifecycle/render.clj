@@ -1,6 +1,6 @@
 (ns anvil.lifecycle.render
   (:require [anvil.effect :as effect]
-            [anvil.entity :as entity :refer [creatures-in-los-of-player]]
+            [anvil.entity :as entity]
             [anvil.entity.faction :as faction]
             [anvil.entity.hitpoints :as hp]
             [gdl.graphics :as g]
@@ -18,7 +18,7 @@
 
 (defmethod render-effect :effects/target-all [_ {:keys [effect/source]}]
   (let [source* @source]
-    (doseq [target* (map deref (creatures-in-los-of-player))]
+    (doseq [target* (map deref (world/creatures-in-los-of-player))]
       (g/line (:position source*) #_(start-point source* target*)
               (:position target*)
               [1 0 0 0.5]))))
@@ -318,5 +318,5 @@
   (g/draw-on-world-view (fn []
                           (debug-render-before-entities)
                           ; FIXME position DRY (from player)
-                          (render-entities (map deref (entity/active-entities)))
+                          (render-entities (map deref (world/active-entities)))
                           (debug-render-after-entities))))

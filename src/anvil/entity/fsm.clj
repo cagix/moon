@@ -2,9 +2,8 @@
   (:require [anvil.entity :as entity]
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
-            [anvil.entity.string-effect :as string-effect]
             [anvil.item-on-cursor :refer [item-place-position]]
-            [anvil.world :refer [timer]]
+            [anvil.world :refer [timer add-text-effect]]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
             [gdl.stage :refer [show-modal]]
@@ -59,7 +58,7 @@
   (entity/delayed-alert (:position       @eid)
                         (:entity/faction @eid)
                         0.2)
-  (swap! eid string-effect/add "[WHITE]!"))
+  (swap! eid add-text-effect "[WHITE]!"))
 
 (defmethods :npc-moving
   (enter [[_ {:keys [eid movement-vector]}]]

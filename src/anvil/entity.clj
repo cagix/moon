@@ -2,12 +2,10 @@
   (:require [anvil.entity.inventory :as inventory]
             [anvil.entity.stat :as stat]
             [anvil.entity.skills :as skills]
-            [anvil.world.content-grid :as content-grid]
             [anvil.world :as world :refer [timer]]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics.animation :as animation]
-            [gdl.graphics.camera :as cam]
             [gdl.math.vector :as v]
             [gdl.utils :refer [defsystem define-order safe-merge unique-number!]]
             [reduce-fsm :as fsm]))
@@ -66,86 +64,6 @@
      :drop-item -> :player-idle
      :dropped-item -> :player-idle]
     [:player-dead]]))
-
-(defn- set-cells! [eid]
-  (let [cells (world/rectangle->cells @eid)]
-    (assert (not-any? nil? cells))
-    (swap! eid assoc ::touched-cells cells)
-    (doseq [cell cells]
-      (assert (not (get (:entities @cell) eid)))
-      (swap! cell update :entities conj eid))))
-
-(defn- remove-from-cells! [eid]
-  (doseq [cell (::touched-cells @eid)]
-    (assert (get (:entities @cell) eid))
-    (swap! cell update :entities disj eid)))
-
-; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
-; => only now there are no >1 tile entities anyway
-(defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
-  (if (or (> (float width) 1) (> (float height) 1))
-    (world/rectangle->cells rectangle)
-    [(world/grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-                  (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
-
-(defn- set-occupied-cells! [eid]
-  (let [cells (rectangle->occupied-cells @eid)]
-    (doseq [cell cells]
-      (assert (not (get (:occupied @cell) eid)))
-      (swap! cell update :occupied conj eid))
-    (swap! eid assoc ::occupied-cells cells)))
-
-(defn- remove-from-occupied-cells! [eid]
-  (doseq [cell (::occupied-cells @eid)]
-    (assert (get (:occupied @cell) eid))
-    (swap! cell update :occupied disj eid)))
-
-(defn- grid-add-entity [eid]
-  (set-cells! eid)
-  (when (:collides? @eid)
-    (set-occupied-cells! eid)))
-
-(defn- grid-remove-entity [eid]
-  (remove-from-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)))
-
-(defn- grid-entity-position-changed [eid]
-  (remove-from-cells! eid)
-  (set-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)
-    (set-occupied-cells! eid)))
-
-(defn- entity-ids-add-entity [eid]
-  (let [id (:entity/id @eid)]
-    (assert (number? id))
-    (alter-var-root #'world/entity-ids assoc id eid)))
-
-(defn- entity-ids-remove-entity [eid]
-  (let [id (:entity/id @eid)]
-    (assert (contains? world/entity-ids id))
-    (alter-var-root #'world/entity-ids dissoc id)))
-
-(defn active-entities []
-  (content-grid/active-entities world/content-grid
-                                @world/player-eid))
-
-(defn- add-entity [eid]
-  ; https://github.com/damn/core/issues/58
-  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (content-grid/add-entity world/content-grid eid)
-  (entity-ids-add-entity   eid)
-  (grid-add-entity         eid))
-
-(defn remove-entity [eid]
-  (content-grid/remove-entity eid)
-  (entity-ids-remove-entity   eid)
-  (grid-remove-entity         eid))
-
-(defn position-changed [eid]
-  (content-grid/entity-position-changed world/content-grid eid)
-  (grid-entity-position-changed         eid))
 
 (defrecord Body [position
                  left-bottom
@@ -301,7 +219,7 @@
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
                                       create-vs))))]
-    (add-entity eid)
+    (world/add-entity eid)
     (doseq [component @eid]
       (create component eid))
     eid))
@@ -390,9 +308,3 @@
                    :entity/destroy-audiovisual :audiovisuals/hit-wall
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
-
-(defn creatures-in-los-of-player []
-  (->> (active-entities)
-       (filter #(:entity/species @%))
-       (filter #(line-of-sight? @world/player-eid @%))
-       (remove #(:entity/player? @%))))

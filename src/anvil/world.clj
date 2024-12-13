@@ -1,5 +1,7 @@
 (ns anvil.world
-  (:require [gdl.graphics :as g]
+  (:require [anvil.world.content-grid :as content-grid]
+            [gdl.graphics :as g]
+            [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.shapes :refer [rectangle->tiles
                                      circle->outer-rectangle
@@ -7,17 +9,11 @@
                                      overlaps?]]))
 
 (declare tiled-map
-
          explored-tile-corners
-
          grid
-
          entity-ids
-
          content-grid
-
          player-eid
-
          raycaster
 
          ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
@@ -27,9 +23,7 @@
          delta-time
 
          paused?
-
          mouseover-eid
-
          error)
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
@@ -144,3 +138,99 @@
            (on-screen? target))
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
+
+(defn add-text-effect [entity text]
+  (assoc entity
+         :entity/string-effect
+         (if-let [string-effect (:entity/string-effect entity)]
+           (-> string-effect
+               (update :text str "\n" text)
+               (update :counter reset-timer))
+           {:text text
+            :counter (timer 0.4)})))
+
+(defn- set-cells! [eid]
+  (let [cells (rectangle->cells @eid)]
+    (assert (not-any? nil? cells))
+    (swap! eid assoc ::touched-cells cells)
+    (doseq [cell cells]
+      (assert (not (get (:entities @cell) eid)))
+      (swap! cell update :entities conj eid))))
+
+(defn- remove-from-cells! [eid]
+  (doseq [cell (::touched-cells @eid)]
+    (assert (get (:entities @cell) eid))
+    (swap! cell update :entities disj eid)))
+
+; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
+; => only now there are no >1 tile entities anyway
+(defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
+  (if (or (> (float width) 1) (> (float height) 1))
+    (rectangle->cells rectangle)
+    [(grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
+            (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
+
+(defn- set-occupied-cells! [eid]
+  (let [cells (rectangle->occupied-cells @eid)]
+    (doseq [cell cells]
+      (assert (not (get (:occupied @cell) eid)))
+      (swap! cell update :occupied conj eid))
+    (swap! eid assoc ::occupied-cells cells)))
+
+(defn- remove-from-occupied-cells! [eid]
+  (doseq [cell (::occupied-cells @eid)]
+    (assert (get (:occupied @cell) eid))
+    (swap! cell update :occupied disj eid)))
+
+(defn- grid-add-entity [eid]
+  (set-cells! eid)
+  (when (:collides? @eid)
+    (set-occupied-cells! eid)))
+
+(defn- grid-remove-entity [eid]
+  (remove-from-cells! eid)
+  (when (:collides? @eid)
+    (remove-from-occupied-cells! eid)))
+
+(defn- grid-entity-position-changed [eid]
+  (remove-from-cells! eid)
+  (set-cells! eid)
+  (when (:collides? @eid)
+    (remove-from-occupied-cells! eid)
+    (set-occupied-cells! eid)))
+
+(defn- entity-ids-add-entity [eid]
+  (let [id (:entity/id @eid)]
+    (assert (number? id))
+    (alter-var-root #'entity-ids assoc id eid)))
+
+(defn- entity-ids-remove-entity [eid]
+  (let [id (:entity/id @eid)]
+    (assert (contains? entity-ids id))
+    (alter-var-root #'entity-ids dissoc id)))
+
+(defn active-entities []
+  (content-grid/active-entities content-grid
+                                @player-eid))
+
+(defn add-entity [eid]
+  ; https://github.com/damn/core/issues/58
+  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
+  (content-grid/add-entity content-grid eid)
+  (entity-ids-add-entity   eid)
+  (grid-add-entity         eid))
+
+(defn remove-entity [eid]
+  (content-grid/remove-entity eid)
+  (entity-ids-remove-entity   eid)
+  (grid-remove-entity         eid))
+
+(defn position-changed [eid]
+  (content-grid/entity-position-changed content-grid eid)
+  (grid-entity-position-changed         eid))
+
+(defn creatures-in-los-of-player []
+  (->> (active-entities)
+       (filter #(:entity/species @%))
+       (filter #(line-of-sight? @player-eid @%))
+       (remove #(:entity/player? @%))))

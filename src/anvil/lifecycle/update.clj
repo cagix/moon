@@ -272,7 +272,7 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body body movement)
                         (move-body body movement))]
-        (entity/position-changed eid)
+        (world/position-changed eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))
@@ -419,7 +419,7 @@
 (defn- remove-destroyed-entities []
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (world/all-entities))]
-    (entity/remove-entity eid)
+    (world/remove-entity eid)
     (doseq [component @eid]
       (destroy component eid))))
 
@@ -460,7 +460,7 @@
     (let [delta-ms (min (g/delta-time) world/max-delta-time)]
       (alter-var-root #'world/elapsed-time + delta-ms)
       (bind-root world/delta-time delta-ms))
-    (let [entities (entity/active-entities)]
+    (let [entities (world/active-entities)]
       (update-potential-fields! entities)
       (try (tick-entities entities)
            (catch Throwable t
