@@ -1,6 +1,5 @@
 (ns anvil.lifecycle.render
-  (:require [anvil.effect.target-entity :as effect-impl]
-            [anvil.component :refer [render-below
+  (:require [anvil.component :refer [render-below
                                      render-default
                                      render-above
                                      render-info
@@ -17,24 +16,6 @@
             [gdl.val-max :as val-max]
             [gdl.utils :refer [sort-by-order pretty-pst]]
             [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
-
-(defmethod render-effect :effects/target-all [_ {:keys [effect/source]}]
-  (let [source* @source]
-    (doseq [target* (map deref (world/creatures-in-los-of-player))]
-      (g/line (:position source*) #_(start-point source* target*)
-              (:position target*)
-              [1 0 0 0.5]))))
-
-(defmethod render-effect :effects/target-entity
-  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
-  (when target
-    (let [source* @source
-          target* @target]
-      (g/line (effect-impl/start-point source* target*)
-              (effect-impl/end-point source* target* maxrange)
-              (if (effect-impl/in-range? source* target* maxrange)
-                [1 0 0 0.5]
-                [1 1 0 0.5])))))
 
 (defn- render-effects [ctx effects]
   (run! #(render-effect % ctx) effects))

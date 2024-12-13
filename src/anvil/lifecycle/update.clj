@@ -1,6 +1,5 @@
 (ns anvil.lifecycle.update
-  (:require [anvil.effect.target-entity :as effects.impl]
-            [anvil.component :as component :refer [tick manual-tick pause-game?
+  (:require [anvil.component :as component :refer [tick manual-tick pause-game?
                                                    useful?]]
             [anvil.controls :as controls]
             [anvil.effect :as effect]
@@ -27,30 +26,6 @@
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
             [malli.core :as m]))
-
-; TODO valid params direction has to be  non-nil (entities not los player ) ?
-(defmethod useful? :effects/projectile
-  [[_ {:keys [projectile/max-range] :as projectile}]
-   {:keys [effect/source effect/target]}]
-  (let [source-p (:position @source)
-        target-p (:position @target)]
-    ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-    (and (not (world/path-blocked? ; TODO test
-                                   source-p
-                                   target-p
-                                   (world/projectile-size projectile)))
-         ; TODO not taking into account body sizes
-         (< (v/distance source-p ; entity/distance function protocol EntityPosition
-                        target-p)
-            max-range))))
-
-(defmethod useful? :effects/target-all [_ _]
-  ; TODO
-  false)
-
-(defmethod useful? :effects/target-entity
-  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
-  (effects.impl/in-range? @source @target maxrange))
 
 (defn- some-useful-and-applicable? [ctx effects]
   (->> effects
