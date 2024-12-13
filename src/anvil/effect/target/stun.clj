@@ -1,6 +1,6 @@
 (ns anvil.effect.target.stun
   (:require [anvil.component :as component]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [gdl.utils :refer [defmethods readable-number]]))
 
 (defmethods :effects.target/stun
@@ -12,4 +12,4 @@
          (:entity/fsm @target)))
 
   (component/handle [[_ duration] {:keys [effect/target]}]
-    (fsm/event target :stun duration)))
+    (entity/event target :stun duration)))

@@ -1,6 +1,6 @@
 (ns anvil.entity.state.npc-moving
   (:require [anvil.component :as component]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [anvil.entity.stat :as stat]
             [anvil.world :refer [timer stopped?]]
             [gdl.utils :refer [defmethods]]))
@@ -20,4 +20,4 @@
 
   (component/tick [[_ {:keys [counter]}] eid]
     (when (stopped? counter)
-      (fsm/event eid :timer-finished))))
+      (entity/event eid :timer-finished))))

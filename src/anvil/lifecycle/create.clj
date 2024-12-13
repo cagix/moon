@@ -1,8 +1,8 @@
 (ns anvil.lifecycle.create
   (:require [anvil.component :refer [clicked-inventory-cell draw-gui-view]]
             [anvil.controls :as controls]
+            [anvil.entity :as entity]
             [anvil.entity.inventory :as inventory]
-            [anvil.entity.fsm :as fsm]
             [anvil.entity.hp :as hp]
             [anvil.entity.mana :as mana]
             [anvil.entity.skills :as skills]
@@ -50,7 +50,7 @@
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/set-item eid cell item-on-cursor)
-      (fsm/event eid :dropped-item))
+      (entity/event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -59,7 +59,7 @@
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/stack-item eid cell item-on-cursor)
-      (fsm/event eid :dropped-item))
+      (entity/event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -71,8 +71,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (inventory/remove-item eid cell)
       (inventory/set-item eid cell item-on-cursor)
-      (fsm/event eid :dropped-item)
-      (fsm/event eid :pickup-item item-in-cell)))))
+      (entity/event eid :dropped-item)
+      (entity/event eid :pickup-item item-in-cell)))))
 
 (defn- render-infostr-on-bar [infostr x y h]
   (g/draw-text {:text infostr
@@ -226,7 +226,7 @@
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
   (g/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
-             (= :player-item-on-cursor (fsm/state-k player-entity)))
+             (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
                   droppable-color
@@ -280,7 +280,7 @@
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play-sound "bfxr_takeit")
-    (fsm/event eid :pickup-item item)
+    (entity/event eid :pickup-item item)
     (inventory/remove-item eid cell)))
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
@@ -292,7 +292,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (clicked-inventory-cell (fsm/state-obj @world/player-eid) cell))))
+                            (clicked-inventory-cell (entity/state-obj @world/player-eid) cell))))
     stack))
 
 (defn- inventory-table []
@@ -395,7 +395,7 @@
    (ui/group {:id :windows
               :actors [(entity-info-window)
                        (create-inventory)]})
-   (ui-actor {:draw #(draw-gui-view (fsm/state-obj @world/player-eid))})
+   (ui-actor {:draw #(draw-gui-view (entity/state-obj @world/player-eid))})
    (player-message/actor)])
 
 (defn dispose-world []

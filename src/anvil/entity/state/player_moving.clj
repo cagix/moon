@@ -1,7 +1,7 @@
 (ns anvil.entity.state.player-moving
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [anvil.entity.stat :as stat]
             [gdl.utils :refer [defmethods]]))
 
@@ -21,6 +21,6 @@
     (if-let [movement-vector (controls/movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (stat/->value @eid :entity/movement-speed)})
-      (fsm/event eid :no-movement-input))))
+      (entity/event eid :no-movement-input))))
 
 

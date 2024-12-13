@@ -1,6 +1,6 @@
 (ns anvil.entity.state.stunned
   (:require [anvil.component :as component]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [anvil.world :refer [timer stopped?]]
             [gdl.graphics :as g]
             [gdl.utils :refer [defmethods]]))
@@ -12,7 +12,7 @@
 
   (component/tick [[_ {:keys [counter]}] eid]
     (when (stopped? counter)
-      (fsm/event eid :effect-wears-off)))
+      (entity/event eid :effect-wears-off)))
 
   (component/render-below [_ entity]
     (g/circle (:position entity) 0.5 [1 1 1 0.6])))

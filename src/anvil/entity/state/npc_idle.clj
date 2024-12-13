@@ -1,8 +1,8 @@
 (ns anvil.entity.state.npc-idle
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
+            [anvil.entity :as entity]
             [anvil.entity.body :as body]
-            [anvil.entity.fsm :as fsm]
             [anvil.skill :as skill]
             [anvil.world :as world]
             [anvil.world.potential-field :as potential-field]
@@ -36,5 +36,5 @@
   (component/tick [_ eid]
     (let [effect-ctx (effect-context eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
-        (fsm/event eid :start-action [skill effect-ctx])
-        (fsm/event eid :movement-direction (or (potential-field/find-direction eid) [0 0]))))))
+        (entity/event eid :start-action [skill effect-ctx])
+        (entity/event eid :movement-direction (or (potential-field/find-direction eid) [0 0]))))))

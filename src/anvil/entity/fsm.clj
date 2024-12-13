@@ -85,7 +85,7 @@
 (defmethod component/cursor :player-dead           [_] :cursors/black-x)
 (defmethod component/cursor :active-skill          [_] :cursors/sandclock)
 
-(defn- send-event! [eid event params]
+(defn send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)
           new-fsm (fsm/fsm-event fsm event)
@@ -104,9 +104,3 @@
                           (dissoc old-state-k)))
           (component/exit old-state-obj)
           (component/enter new-state-obj))))))
-
-(defn event
-  ([eid event]
-   (send-event! eid event nil))
-  ([eid event params]
-   (send-event! eid event params)))

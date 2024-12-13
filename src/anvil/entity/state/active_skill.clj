@@ -1,7 +1,7 @@
 (ns anvil.entity.state.active-skill
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
             [anvil.world :refer [timer finished-ratio stopped?]]
@@ -52,14 +52,14 @@
      (not (effect/some-applicable? (effect/check-update-ctx effect-ctx)
                                    (:skill/effects skill)))
      (do
-      (fsm/event eid :action-done)
+      (entity/event eid :action-done)
       ; TODO some sound ?
       )
 
      (stopped? counter)
      (do
       (effect/do-all! effect-ctx (:skill/effects skill))
-      (fsm/event eid :action-done))))
+      (entity/event eid :action-done))))
 
   (component/render-info [[_ {:keys [skill effect-ctx counter]}] entity]
     (let [{:keys [entity/image skill/effects]} skill]

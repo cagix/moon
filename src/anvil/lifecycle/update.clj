@@ -1,8 +1,8 @@
 (ns anvil.lifecycle.update
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
+            [anvil.entity :as entity]
             [anvil.entity.body :as body]
-            [anvil.entity.fsm :as fsm]
             [anvil.world :as world :refer [mouseover-eid line-of-sight?]]
             [gdl.graphics :as g]
             [gdl.stage :as stage]
@@ -59,11 +59,11 @@
 (defmethod component/pause-game? :player-dead           [_] true)
 
 (defn update-world []
-  (component/manual-tick (fsm/state-obj @world/player-eid))
+  (component/manual-tick (entity/state-obj @world/player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root world/paused? (or world/error
                                (and pausing?
-                                    (component/pause-game? (fsm/state-obj @world/player-eid))
+                                    (component/pause-game? (entity/state-obj @world/player-eid))
                                     (not (controls/unpaused?)))))
   (when-not world/paused?
     (let [delta-ms (min (g/delta-time) world/max-delta-time)]

@@ -1,7 +1,7 @@
 (ns anvil.entity.state.player-idle
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [anvil.entity.inventory :as inventory]
             [anvil.skill :as skill]
             [anvil.world :as world]
@@ -29,7 +29,7 @@
      (do
       (play-sound "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (fsm/event world/player-eid :pickup-item item))
+      (entity/event world/player-eid :pickup-item item))
 
      (inventory/can-pickup-item? @world/player-eid item)
      (do
@@ -103,7 +103,7 @@
             ; different color ?
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
-             (fn [] (fsm/event eid :start-action [skill effect-ctx]))])
+             (fn [] (entity/event eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -124,7 +124,7 @@
 
   (component/manual-tick [[_ {:keys [eid]}]]
     (if-let [movement-vector (controls/movement-vector)]
-      (fsm/event eid :movement-input movement-vector)
+      (entity/event eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
         (g/set-cursor cursor)
         (when (button-just-pressed? :left)

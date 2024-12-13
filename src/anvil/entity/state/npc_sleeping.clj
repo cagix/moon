@@ -2,7 +2,6 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.entity.body :as body]
-            [anvil.entity.fsm :as fsm]
             [anvil.entity.stat :as stat]
             [anvil.world :as world :refer [add-text-effect]]
             [gdl.graphics :as g]
@@ -23,7 +22,7 @@
           cell (world/grid (body/tile entity))] ; pattern!
       (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (stat/->value entity :entity/aggro-range))
-          (fsm/event eid :alert)))))
+          (entity/event eid :alert)))))
 
   (component/render-above [_ entity]
     (let [[x y] (:position entity)]

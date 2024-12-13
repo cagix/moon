@@ -1,6 +1,6 @@
 (ns anvil.entity.state.player-item-on-cursor
   (:require [anvil.component :as component]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
@@ -51,7 +51,7 @@
   (component/manual-tick [[_ {:keys [eid]}]]
     (when (and (button-just-pressed? :left)
                (world-item?))
-      (fsm/event eid :drop-item)))
+      (entity/event eid :drop-item)))
 
   (component/render-below [[_ {:keys [item]}] entity]
     (when (world-item?)

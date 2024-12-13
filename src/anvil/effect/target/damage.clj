@@ -1,7 +1,7 @@
 (ns anvil.effect.target.damage
   (:require [anvil.component :as component]
+            [anvil.entity :as entity]
             [anvil.entity.damage :as damage]
-            [anvil.entity.fsm :as fsm]
             [anvil.entity.hp :as hp]
             [anvil.entity.stat :as stat]
             [anvil.world :as world :refer [add-text-effect]]
@@ -60,5 +60,5 @@
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (world/audiovisual (:position target*)
                             (db/build :audiovisuals/damage))
-         (fsm/event target (if (zero? new-hp-val) :kill :alert))
+         (entity/event target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))

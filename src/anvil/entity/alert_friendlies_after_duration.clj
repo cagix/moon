@@ -1,6 +1,6 @@
 (ns anvil.entity.alert-friendlies-after-duration
   (:require [anvil.component :as component]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [anvil.world :refer [stopped? friendlies-in-radius]]
             [gdl.utils :refer [defmethods]]))
 
@@ -9,4 +9,4 @@
     (when (stopped? counter)
       (swap! eid assoc :entity/destroyed? true)
       (doseq [friendly-eid (friendlies-in-radius (:position @eid) faction)]
-        (fsm/event friendly-eid :alert)))))
+        (entity/event friendly-eid :alert)))))

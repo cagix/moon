@@ -1,6 +1,6 @@
 (ns anvil.effect.target.kill
   (:require [anvil.component :as component]
-            [anvil.entity.fsm :as fsm]
+            [anvil.entity :as entity]
             [gdl.utils :refer [defmethods]]))
 
 (defmethods :effects.target/kill
@@ -12,4 +12,4 @@
          (:entity/fsm @target)))
 
   (component/handle [_ {:keys [effect/target]}]
-    (fsm/event target :kill)))
+    (entity/event target :kill)))
