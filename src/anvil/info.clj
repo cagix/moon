@@ -4,12 +4,11 @@
             [anvil.entity.hitpoints :as hp]
             [anvil.entity.mana :as mana]
             [anvil.entity.stat :as stat]
-            [anvil.op :as op]
             [anvil.world :refer [finished-ratio]]
             [clojure.math :as math]
             [clojure.string :as str]
             [gdl.graphics :as g]
-            [gdl.utils :refer [defsystem index-of readable-number]]))
+            [gdl.utils :refer [index-of readable-number]]))
 
 (g/add-color "PRETTY_NAME" [0.84 0.8 0.52])
 
@@ -149,24 +148,24 @@
     1.0 "+"
     -1.0 ""))
 
-(defmethod op/value-text :op/inc [[_ value]]
+(defmethod component/value-text :op/inc [[_ value]]
   (str value))
 
-(defmethod op/value-text :op/mult [[_ value]]
+(defmethod component/value-text :op/mult [[_ value]]
   (str value "%"))
 
-(defn- ops-info [ops k]
+(defn- op-info [op k]
   (str/join "\n"
             (keep
-             (fn [{v 1 :as op}]
+             (fn [{v 1 :as component}]
                (when-not (zero? v)
-                 (str (+? v) (op/value-text op) " " (k->pretty-name k))))
-             (sort-by op/order ops))))
+                 (str (+? v) (component/value-text component) " " (k->pretty-name k))))
+             (sort-by component/order op))))
 
 (defmethod component/info :entity/modifiers [[_ mods]]
   (when (seq mods)
     (str/join "\n" (keep (fn [[k ops]]
-                           (ops-info ops k)) mods))))
+                           (op-info ops k)) mods))))
 
 #_(defmethod component/info [skills]
   ; => recursive info-text leads to endless text wall

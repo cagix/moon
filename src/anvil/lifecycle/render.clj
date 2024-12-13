@@ -3,7 +3,8 @@
             [anvil.component :refer [render-below
                                      render-default
                                      render-above
-                                     render-info]]
+                                     render-info
+                                     render-effect]]
             [anvil.effect :as effect]
             [anvil.entity.body :as body]
             [anvil.entity.faction :as faction]
@@ -14,11 +15,8 @@
             [gdl.math.shapes :refer [circle->outer-rectangle]]
             [anvil.world :as world :refer [finished-ratio line-of-sight?]]
             [gdl.val-max :as val-max]
-            [gdl.utils :refer [sort-by-order pretty-pst defsystem]]
+            [gdl.utils :refer [sort-by-order pretty-pst]]
             [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
-
-(defsystem render-effect)
-(defmethod render-effect :default [_ _ctx])
 
 (defmethod render-effect :effects/target-all [_ {:keys [effect/source]}]
   (let [source* @source]

@@ -1,6 +1,6 @@
 (ns anvil.effect
-  (:require [anvil.world :as world]
-            [gdl.utils :refer [defsystem]]))
+  (:require [anvil.component :as component]
+            [anvil.world :as world]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn check-update-ctx
@@ -12,16 +12,17 @@
     ctx
     (dissoc ctx :effect/target)))
 
-(defsystem applicable?)
-
-(defsystem handle)
+; TODO 'effect' with 'effect-components' which have a certain defsystem 'protocol'
+; of required and optional defsystems
+; so just do/applicable?/useful?/and grep 'effects', e.t.c. rename keywords?
+; => so sound is just a component....
 
 (defn filter-applicable? [ctx effects]
-  (filter #(applicable? % ctx) effects))
+  (filter #(component/applicable? % ctx) effects))
 
 (defn some-applicable? [ctx effects]
   (seq (filter-applicable? ctx effects)))
 
 (defn do-all! [ctx effects]
-  (run! #(handle % ctx)
+  (run! #(component/handle % ctx)
         (filter-applicable? ctx effects)))

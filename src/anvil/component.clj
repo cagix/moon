@@ -1,9 +1,22 @@
 (ns anvil.component
-  "Entity component API to be implemented by each component."
-  (:require [gdl.utils :refer [defsystem]]))
+  (:refer-clojure :exclude [apply]))
+
+(defn system-dispatch [[k] & args]
+  k)
+
+(defmacro ^:private defsystem
+  {:arglists '([name docstring?])}
+  [name-sym & args]
+  (let [docstring (if (string? (first args))
+                    (first args))]
+    `(defmulti ~name-sym
+       ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
+       system-dispatch)))
 
 (defsystem info)
 (defmethod info :default [_])
+
+;; Entity
 
 (defsystem ->v)
 (defmethod ->v :default [[_ v]]
@@ -30,6 +43,8 @@
 (defsystem render-info)
 (defmethod render-info :default [_ entity])
 
+;; Entity State
+
 (defsystem enter)
 (defmethod enter :default [_])
 
@@ -53,3 +68,21 @@
 
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
+
+;; Effect
+
+(defsystem applicable?)
+
+(defsystem handle)
+
+(defsystem useful?)
+(defmethod useful? :default [_ _ctx] true)
+
+(defsystem render-effect)
+(defmethod render-effect :default [_ _ctx])
+
+;; Operation
+
+(defsystem apply)
+(defsystem order)
+(defsystem value-text)

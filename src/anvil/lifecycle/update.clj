@@ -1,6 +1,7 @@
 (ns anvil.lifecycle.update
   (:require [anvil.impl.effects :as effects.impl]
-            [anvil.component :as component :refer [tick manual-tick pause-game?]]
+            [anvil.component :as component :refer [tick manual-tick pause-game?
+                                                   useful?]]
             [anvil.controls :as controls]
             [anvil.effect :as effect]
             [gdl.graphics.animation :as animation]
@@ -19,7 +20,6 @@
             [anvil.skill :as skill]
             [gdl.stage :as stage]
             [gdl.ui :refer [window-title-bar? button?]]
-            [gdl.utils :refer [defsystem]]
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [bind-root sort-by-order find-first]]
             [anvil.world.potential-field :as potential-field]
@@ -27,9 +27,6 @@
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
             [malli.core :as m]))
-
-(defsystem useful?)
-(defmethod useful? :default [_ _ctx] true)
 
 (defmethod useful? :effects.target/audiovisual [_ _]
   false)

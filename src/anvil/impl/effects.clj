@@ -1,5 +1,7 @@
+; just anvil.effect.foo ....
 (ns anvil.impl.effects
-  (:require [anvil.effect :refer [applicable? handle do-all! filter-applicable?]]
+  (:require [anvil.component :refer [applicable? handle]]
+            [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity.body :as body]
             [anvil.entity.damage :as damage]
             [anvil.entity.faction :as faction]

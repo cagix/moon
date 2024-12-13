@@ -1,5 +1,5 @@
 (ns forge.operations-test
-  (:require [anvil.ops :as ops]
+  (:require [anvil.operation :as ops]
             [clojure.test :refer :all]))
 
 (deftest add-and-remove
