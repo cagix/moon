@@ -3,13 +3,12 @@
             [anvil.controls :as controls]
             [anvil.entity.inventory :as inventory]
             [anvil.entity.fsm :as fsm]
-            [anvil.entity.hitpoints :as hp]
+            [anvil.entity.hp :as hp]
             [anvil.entity.mana :as mana]
             [anvil.entity.skills :as skills]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [anvil.info :as info]
-            [anvil.item-on-cursor :refer [world-item?]]
             [anvil.level :refer [generate-level]]
             [anvil.world :as world]
             [gdl.stage :as stage]
@@ -381,11 +380,6 @@
 
 (bind-root skills/player-add-skill    action-bar-add-skill)
 (bind-root skills/player-remove-skill action-bar-remove-skill)
-
-(defmethod draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
-  (when (not (world-item?))
-    (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                     (g/mouse-position))))
 
 (defn- widgets []
   [(if dev-mode?

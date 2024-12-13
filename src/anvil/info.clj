@@ -1,14 +1,8 @@
 (ns anvil.info
   (:require [anvil.component :as component]
-            [anvil.entity.damage :as damage]
-            [anvil.entity.hitpoints :as hp]
-            [anvil.entity.mana :as mana]
-            [anvil.entity.stat :as stat]
-            [anvil.world :refer [finished-ratio]]
-            [clojure.math :as math]
             [clojure.string :as str]
             [gdl.graphics :as g]
-            [gdl.utils :refer [index-of readable-number]]))
+            [gdl.utils :refer [index-of]]))
 
 (g/add-color "PRETTY_NAME" [0.84 0.8 0.52])
 
@@ -46,9 +40,6 @@
               :entity/projectile-collision
               :maxrange
               :entity-effects])
-
-(declare k->colors
-         k-order)
 
 (defn- apply-color [k info-text]
   (if-let [color (k->colors k)]
@@ -88,88 +79,3 @@
 
 (defn k->pretty-name [k]
   (str/capitalize (name k)))
-
-
-(defmethod component/info :entity/faction [faction]
-  (str "Faction: " (name faction)))
-
-(defmethod component/info :entity/fsm [[_ fsm]]
-  (str "State: " (name (:state fsm))))
-
-(defmethod component/info :entity/hp [_]
-  (str "Hitpoints: " (hp/->value *info-text-entity*)))
-
-(defmethod component/info :entity/mana [_]
-  (str "Mana: " (mana/->value *info-text-entity*)))
-
-(defn- +? [n]
-  (case (math/signum n)
-    0.0 ""
-    1.0 "+"
-    -1.0 ""))
-
-(defmethod component/value-text :op/inc [[_ value]]
-  (str value))
-
-(defmethod component/value-text :op/mult [[_ value]]
-  (str value "%"))
-
-(defn- op-info [op k]
-  (str/join "\n"
-            (keep
-             (fn [{v 1 :as component}]
-               (when-not (zero? v)
-                 (str (+? v) (component/value-text component) " " (k->pretty-name k))))
-             (sort-by component/order op))))
-
-(defmethod component/info :entity/modifiers [[_ mods]]
-  (when (seq mods)
-    (str/join "\n" (keep (fn [[k ops]]
-                           (op-info ops k)) mods))))
-
-#_(defmethod component/info [skills]
-  ; => recursive info-text leads to endless text wall
-  #_(when (seq skills)
-      (str "Skills: " (str/join "," (map name (keys skills))))))
-
-(defmethod component/info :entity/species [[_ species]]
-  (str "Creature - " (str/capitalize (name species))))
-
-(defmethod component/info :entity/temp-modifier [[_ {:keys [counter]}]]
-  (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))
-
-(defmethod component/info :property/pretty-name [[_ v]] v)
-(defmethod component/info :maxrange             [[_ v]] v)
-
-(defmethod component/info :creature/level [[_ v]]
-  (str "Level: " v))
-
-(defmethod component/info :projectile/piercing? [_] ; TODO also when false ?!
-  "Piercing")
-
-(defmethod component/info :skill/action-time-modifier-key [[_ v]]
-  (case v
-    :entity/cast-speed "Spell"
-    :entity/attack-speed "Attack"))
-
-(defmethod component/info :skill/action-time [[_ v]]
-  (str "Action-Time: " (readable-number v) " seconds"))
-
-(defmethod component/info :skill/cooldown [[_ v]]
-  (when-not (zero? v)
-    (str "Cooldown: " (readable-number v) " seconds")))
-
-(defmethod component/info :skill/cost [[_ v]]
-  (when-not (zero? v)
-    (str "Cost: " v " Mana")))
-
-(defmethod component/info ::stat [[k _]]
-  (str (k->pretty-name k) ": " (stat/->value *info-text-entity* k)))
-
-(derive :entity/reaction-time  ::stat)
-(derive :entity/movement-speed ::stat)
-(derive :entity/strength       ::stat)
-(derive :entity/cast-speed     ::stat)
-(derive :entity/attack-speed   ::stat)
-(derive :entity/armor-save     ::stat)
-(derive :entity/armor-pierce   ::stat)

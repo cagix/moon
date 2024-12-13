@@ -1,10 +1,5 @@
 (ns anvil.app
-  (:require anvil.effect.creature
-            anvil.effect.projectile
-            anvil.effect.target-all
-            anvil.effect.target-entity
-
-            anvil.effect.target.audiovisual
+  (:require anvil.effect.target.audiovisual
             anvil.effect.target.convert
             anvil.effect.target.damage
             anvil.effect.target.kill
@@ -12,10 +7,53 @@
             anvil.effect.target.spiderweb
             anvil.effect.target.stun
 
-            anvil.entity.state.player-dead
-            anvil.entity.delete-after-duration
+            anvil.effect.creature
+            anvil.effect.projectile
+            anvil.effect.target-all
+            anvil.effect.target-entity
 
-            [anvil.impl.entity]
+            anvil.entity.state.active-skill
+            anvil.entity.state.npc-dead
+            anvil.entity.state.npc-idle
+            anvil.entity.state.npc-moving
+            anvil.entity.state.npc-sleeping
+            anvil.entity.state.player-dead
+            anvil.entity.state.player-idle
+            anvil.entity.state.player-item-on-cursor
+            anvil.entity.state.player-moving
+            anvil.entity.state.stunned
+
+            anvil.entity.alert-friendlies-after-duration
+            anvil.entity.animation
+            anvil.entity.body
+            anvil.entity.clickable
+            anvil.entity.damage
+            anvil.entity.delete-after-animation-stopped?
+            anvil.entity.delete-after-duration
+            anvil.entity.destroy-audiovisual
+            anvil.entity.faction
+            anvil.entity.fsm
+            anvil.entity.hp
+            anvil.entity.image
+            anvil.entity.inventory
+            anvil.entity.line-render
+            anvil.entity.mana
+            anvil.entity.modifiers
+            anvil.entity.mouseover?
+            anvil.entity.movement
+            anvil.entity.projectile-collision
+            anvil.entity.skills
+            anvil.entity.species
+            anvil.entity.stat
+            anvil.entity.string-effect
+            anvil.entity.temp-modifier
+
+            ;; info stuff
+            [anvil.component :as component]
+            [anvil.entity.stat :as stat]
+            [anvil.info :as info]
+            [gdl.utils :refer [readable-number]]
+            ;; info stuff
 
             [anvil.controls :as controls]
             [anvil.lifecycle.create :refer [create-world dispose-world]]
@@ -33,6 +71,42 @@
             [gdl.ui :as ui]
             [gdl.ui.actor :refer [visible? set-visible] :as actor]
             [gdl.ui.group :refer [children]]))
+
+(defmethod component/info :property/pretty-name [[_ v]] v)
+(defmethod component/info :maxrange             [[_ v]] v)
+
+(defmethod component/info :creature/level [[_ v]]
+  (str "Level: " v))
+
+(defmethod component/info :projectile/piercing? [_] ; TODO also when false ?!
+  "Piercing")
+
+(defmethod component/info :skill/action-time-modifier-key [[_ v]]
+  (case v
+    :entity/cast-speed "Spell"
+    :entity/attack-speed "Attack"))
+
+(defmethod component/info :skill/action-time [[_ v]]
+  (str "Action-Time: " (readable-number v) " seconds"))
+
+(defmethod component/info :skill/cooldown [[_ v]]
+  (when-not (zero? v)
+    (str "Cooldown: " (readable-number v) " seconds")))
+
+(defmethod component/info :skill/cost [[_ v]]
+  (when-not (zero? v)
+    (str "Cost: " v " Mana")))
+
+(defmethod component/info ::stat [[k _]]
+  (str (info/k->pretty-name k) ": " (stat/->value info/*info-text-entity* k)))
+
+(derive :entity/reaction-time  ::stat)
+(derive :entity/movement-speed ::stat)
+(derive :entity/strength       ::stat)
+(derive :entity/cast-speed     ::stat)
+(derive :entity/attack-speed   ::stat)
+(derive :entity/armor-save     ::stat)
+(derive :entity/armor-pierce   ::stat)
 
 ; * Minimal dependencies editor (no world-viewport?, default-font,cursors?)
 

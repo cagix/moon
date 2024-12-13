@@ -17,12 +17,20 @@
 ; so just do/applicable?/useful?/and grep 'effects', e.t.c. rename keywords?
 ; => so sound is just a component....
 
-(defn filter-applicable? [ctx effects]
-  (filter #(component/applicable? % ctx) effects))
+(defn filter-applicable? [ctx effect]
+  (filter #(component/applicable? % ctx) effect))
 
-(defn some-applicable? [ctx effects]
-  (seq (filter-applicable? ctx effects)))
+(defn some-applicable? [ctx effect]
+  (seq (filter-applicable? ctx effect)))
 
-(defn do-all! [ctx effects]
+(defn applicable-and-useful? [ctx effect]
+  (->> effect
+       (filter-applicable? ctx)
+       (some #(component/useful? % ctx))))
+
+(defn do-all! [ctx effect]
   (run! #(component/handle % ctx)
-        (filter-applicable? ctx effects)))
+        (filter-applicable? ctx effect)))
+
+(defn render-info [ctx effect]
+  (run! #(component/render-effect % ctx) effect))

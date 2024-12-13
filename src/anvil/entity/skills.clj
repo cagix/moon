@@ -1,5 +1,8 @@
 (ns anvil.entity.skills
-  (:refer-clojure :exclude [contains? remove]))
+  (:refer-clojure :exclude [contains? remove])
+  (:require [anvil.component :as component]
+            [anvil.world :refer [stopped?]]
+            [gdl.utils :refer [defmethods]]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]
   (clojure.core/contains? skills id))
@@ -18,3 +21,20 @@
   (when (:entity/player? entity)
     (player-remove-skill skill))
   (update entity :entity/skills dissoc id))
+
+#_(defmethod component/info [skills]
+  ; => recursive info-text leads to endless text wall
+  #_(when (seq skills)
+      (str "Skills: " (str/join "," (map name (keys skills))))))
+
+(defmethods :entity/skills
+  (component/create [[k skills] eid]
+    (swap! eid assoc k nil)
+    (doseq [skill skills]
+      (swap! eid add skill)))
+
+  (component/tick [[k skills] eid]
+    (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
+            :when (and cooling-down?
+                       (stopped? cooling-down?))]
+      (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false))))

@@ -1,5 +1,5 @@
 (ns anvil.effect.target-entity
-  (:require [anvil.component :refer [applicable? handle]]
+  (:require [anvil.component :as component]
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity.body :as body]
             [anvil.world :as world]
@@ -27,14 +27,14 @@
                   maxrange)))
 
 (defmethods :effects/target-entity
-  (applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
+  (component/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
     (and target
          (seq (filter-applicable? ctx entity-effects))))
 
-  (useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (component/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (in-range? @source @target maxrange))
 
-  (handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx}]
+  (component/handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx}]
     (let [source* @source
           target* @target]
       (if (in-range? source* target* maxrange)
@@ -48,7 +48,7 @@
         (world/audiovisual (end-point source* target* maxrange)
                            (db/build :audiovisuals/hit-ground)))))
 
-  (render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (component/render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (when target
       (let [source* @source
             target* @target]

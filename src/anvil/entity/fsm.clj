@@ -1,13 +1,76 @@
 (ns anvil.entity.fsm
-  (:require [anvil.component :as component :refer [enter exit cursor]]
-            [anvil.entity.mana :as mana]
-            [anvil.entity.stat :as stat]
-            [anvil.item-on-cursor :refer [item-place-position]]
-            [anvil.world :as world :refer [timer add-text-effect]]
-            [gdl.assets :refer [play-sound]]
+  (:require [anvil.component :as component]
             [gdl.graphics :as g]
             [gdl.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
+
+(def ^:private npc-fsm
+  (fsm/fsm-inc
+   [[:npc-sleeping
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :alert -> :npc-idle]
+    [:npc-idle
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :movement-direction -> :npc-moving]
+    [:npc-moving
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :timer-finished -> :npc-idle]
+    [:active-skill
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :action-done -> :npc-idle]
+    [:stunned
+     :kill -> :npc-dead
+     :effect-wears-off -> :npc-idle]
+    [:npc-dead]]))
+
+(def ^:private player-fsm
+  (fsm/fsm-inc
+   [[:player-idle
+     :kill -> :player-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :pickup-item -> :player-item-on-cursor
+     :movement-input -> :player-moving]
+    [:player-moving
+     :kill -> :player-dead
+     :stun -> :stunned
+     :no-movement-input -> :player-idle]
+    [:active-skill
+     :kill -> :player-dead
+     :stun -> :stunned
+     :action-done -> :player-idle]
+    [:stunned
+     :kill -> :player-dead
+     :effect-wears-off -> :player-idle]
+    [:player-item-on-cursor
+     :kill -> :player-dead
+     :stun -> :stunned
+     :drop-item -> :player-idle
+     :dropped-item -> :player-idle]
+    [:player-dead]]))
+
+; fsm throws when initial-state is not part of states, so no need to assert initial-state
+; initial state is nil, so associng it. make bug report at reduce-fsm?
+(defn- ->init-fsm [fsm initial-state]
+  (assoc (fsm initial-state nil) :state initial-state))
+
+(defmethods :entity/fsm
+  (component/info [[_ fsm]]
+    (str "State: " (name (:state fsm))))
+
+
+  (component/create [[k {:keys [fsm initial-state]}] eid]
+    (swap! eid assoc
+           k (->init-fsm (case fsm
+                           :fsms/player player-fsm
+                           :fsms/npc npc-fsm)
+                         initial-state)
+           initial-state (component/->v [initial-state eid]))))
 
 (defn state-k [entity]
   (-> entity :entity/fsm :state))
@@ -16,62 +79,11 @@
   (let [k (state-k entity)]
     [k (k entity)]))
 
-(defmethods :player-moving
-  (enter [[_ {:keys [eid movement-vector]}]]
-    (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (stat/->value @eid :entity/movement-speed)}))
-
-  (exit [[_ {:keys [eid]}]]
-    (swap! eid dissoc :entity/movement)))
-
-(defmethods :player-item-on-cursor
-  (enter [[_ {:keys [eid item]}]]
-    (swap! eid assoc :entity/item-on-cursor item))
-
-  (exit [[_ {:keys [eid]}]]
-    ; at clicked-cell when we put it into a inventory-cell
-    ; we do not want to drop it on the ground too additonally,
-    ; so we dissoc it there manually. Otherwise it creates another item
-    ; on the ground
-    (let [entity @eid]
-      (when (:entity/item-on-cursor entity)
-        (play-sound "bfxr_itemputground")
-        (swap! eid dissoc :entity/item-on-cursor)
-        (world/item (item-place-position entity)
-                    (:entity/item-on-cursor entity))))))
-
-(defmethod exit :npc-sleeping [[_ {:keys [eid]}]]
-  (world/delayed-alert (:position       @eid)
-                       (:entity/faction @eid)
-                       0.2)
-  (swap! eid add-text-effect "[WHITE]!"))
-
-(defmethods :npc-moving
-  (enter [[_ {:keys [eid movement-vector]}]]
-    (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (or (stat/->value @eid :entity/movement-speed) 0)}))
-
-  (exit [[_ {:keys [eid]}]]
-    (swap! eid dissoc :entity/movement)))
-
-(defmethod enter :npc-dead [[_ {:keys [eid]}]]
-  (swap! eid assoc :entity/destroyed? true))
-
-(defmethod enter :active-skill [[_ {:keys [eid skill]}]]
-  (play-sound (:skill/start-action-sound skill))
-  (when (:skill/cooldown skill)
-    (swap! eid assoc-in
-           [:entity/skills (:property/id skill) :skill/cooling-down?]
-           (timer (:skill/cooldown skill))))
-  (when (and (:skill/cost skill)
-             (not (zero? (:skill/cost skill))))
-    (swap! eid mana/pay-cost (:skill/cost skill))))
-
-(defmethod cursor :stunned               [_] :cursors/denied)
-(defmethod cursor :player-moving         [_] :cursors/walking)
-(defmethod cursor :player-item-on-cursor [_] :cursors/hand-grab)
-(defmethod cursor :player-dead           [_] :cursors/black-x)
-(defmethod cursor :active-skill          [_] :cursors/sandclock)
+(defmethod component/cursor :stunned               [_] :cursors/denied)
+(defmethod component/cursor :player-moving         [_] :cursors/walking)
+(defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
+(defmethod component/cursor :player-dead           [_] :cursors/black-x)
+(defmethod component/cursor :active-skill          [_] :cursors/sandclock)
 
 (defn- send-event! [eid event params]
   (when-let [fsm (:entity/fsm @eid)]
@@ -84,14 +96,14 @@
                                                           [new-state-k eid params]
                                                           [new-state-k eid]))]]
           (when (:entity/player? @eid)
-            (when-let [cursor-k (cursor new-state-obj)]
-              (g/set-cursor cursor-k)))
+            (when-let [cursor (component/cursor new-state-obj)]
+              (g/set-cursor cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (exit old-state-obj)
-          (enter new-state-obj))))))
+          (component/exit old-state-obj)
+          (component/enter new-state-obj))))))
 
 (defn event
   ([eid event]

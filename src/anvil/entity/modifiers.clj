@@ -1,8 +1,17 @@
 (ns anvil.entity.modifiers
   (:refer-clojure :exclude [remove])
-  (:require [anvil.operation :as op]
+  (:require [anvil.component :as component]
+            [anvil.operation :as op]
+            [clojure.string :as str]
+            [gdl.utils :refer [defmethods]]
             [gdl.val-max :as val-max]
             [malli.core :as m]))
+
+(defmethods :entity/modifiers
+  (component/info [[_ mods]]
+    (when (seq mods)
+      (str/join "\n" (keep (fn [[k ops]]
+                             (op/info ops k)) mods)))))
 
 (defn- mods-add    [mods other-mods] (merge-with op/add    mods other-mods))
 (defn- mods-remove [mods other-mods] (merge-with op/remove mods other-mods))

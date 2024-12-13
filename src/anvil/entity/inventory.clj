@@ -1,6 +1,7 @@
 (ns anvil.entity.inventory
-  (:require [anvil.entity.modifiers :as mods]
-            [gdl.utils :refer [find-first]]
+  (:require [anvil.component :as component]
+            [anvil.entity.modifiers :as mods]
+            [gdl.utils :refer [find-first defmethods]]
             [data.grid2d :as g2d]))
 
 (def empty-inventory
@@ -101,3 +102,9 @@
     (if (stackable? item cell-item)
       (stack-item eid cell item)
       (set-item   eid cell item))))
+
+(defmethods :entity/inventory
+  (component/create [[k items] eid]
+    (swap! eid assoc k empty-inventory)
+    (doseq [item items]
+      (pickup-item eid item))))

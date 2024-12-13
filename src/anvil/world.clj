@@ -1,6 +1,7 @@
 (ns anvil.world
   (:require [anvil.component :as component]
             [anvil.entity.body :as body]
+            [anvil.entity.faction :as faction]
             [anvil.world.content-grid :as content-grid]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
@@ -356,3 +357,15 @@
        (filter #(:entity/species @%))
        (filter #(line-of-sight? @player-eid @%))
        (remove #(:entity/player? @%))))
+
+(def ^:private shout-radius 4)
+
+(defn friendlies-in-radius [position faction]
+  (->> {:position position
+        :radius shout-radius}
+       circle->entities
+       (filter #(= (:entity/faction @%) faction))))
+
+(defn nearest-enemy [entity]
+  (nearest-entity @(grid (body/tile entity))
+                  (faction/enemy entity)))

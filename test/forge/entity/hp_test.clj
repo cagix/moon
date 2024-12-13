@@ -1,5 +1,5 @@
 (ns forge.entity.hp-test
-  (:require [anvil.entity.hitpoints :refer [->value]]
+  (:require [anvil.entity.hp :refer [->value]]
             [clojure.test :refer :all]))
 
 (deftest max-modifier

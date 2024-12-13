@@ -1,5 +1,5 @@
 (ns anvil.effect.target-all
-  (:require [anvil.component :refer [info applicable? handle]]
+  (:require [anvil.component :as component]
             [anvil.effect :refer [do-all!]]
             [anvil.world :as world]
             [gdl.graphics :as g]
@@ -8,17 +8,17 @@
 ; TODO targets projectiles with -50% hp !!
 
 (defmethods :effects/target-all
-  (info [_]
+  (component/info [_]
     "All visible targets")
 
-  (applicable? [_ _]
+  (component/applicable? [_ _]
     true)
 
-  (useful? :effects/target-all [_ _]
+  (component/useful? [_ _]
     ; TODO
     false)
 
-  (handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
+  (component/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target (world/creatures-in-los-of-player)]
         (world/line-render {:start (:position source*) #_(start-point source* target*)
@@ -35,7 +35,7 @@
         (do-all! {:effect/source source :effect/target target}
                  entity-effects))))
 
-  (render-effect [_ {:keys [effect/source]}]
+  (component/render-effect [_ {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target* (map deref (world/creatures-in-los-of-player))]
         (g/line (:position source*) #_(start-point source* target*)

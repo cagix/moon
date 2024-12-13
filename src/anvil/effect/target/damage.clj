@@ -2,7 +2,7 @@
   (:require [anvil.component :refer [info applicable? handle]]
             [anvil.entity.damage :as damage]
             [anvil.entity.fsm :as fsm]
-            [anvil.entity.hitpoints :as hp]
+            [anvil.entity.hp :as hp]
             [anvil.entity.stat :as stat]
             [anvil.world :as world :refer [add-text-effect]]
             [gdl.db :as db]
