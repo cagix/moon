@@ -11,7 +11,6 @@
             [gdl.val-max :as val-max]
             [gdl.utils :refer [defsystem]]
             [gdl.utils :refer [sort-by-order pretty-pst]]
-            [anvil.world.grid :as grid]
             [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
 
 (defsystem render-effect)
@@ -94,7 +93,7 @@
         radius 0.8
         circle {:position position :radius radius}]
     (g/circle position radius [1 0 0 0.5])
-    (doseq [[x y] (map #(:position @%) (grid/circle->cells circle))]
+    (doseq [[x y] (map #(:position @%) (world/circle->cells circle))]
       (g/rectangle x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
       (g/rectangle x y width height [0 0 1 1]))))

@@ -21,7 +21,6 @@
             [gdl.utils :refer [defsystem]]
             [gdl.ui.actor :as actor]
             [gdl.utils :refer [bind-root sort-by-order find-first]]
-            [anvil.world.grid :as grid]
             [anvil.world.potential-field :as potential-field]
             [anvil.lifecycle.potential-fields :refer [update-potential-fields!]]
             [gdl.assets :refer [play-sound]]
@@ -74,8 +73,8 @@
        first))
 
 (defn- nearest-enemy [entity]
-  (grid/nearest-entity @(world/grid (body/tile entity))
-                       (faction/enemy entity)))
+  (world/nearest-entity @(world/grid (body/tile entity))
+                        (faction/enemy entity)))
 
 (defn- npc-effect-ctx [eid]
   (let [entity @eid
@@ -196,7 +195,7 @@
 (defn- friendlies-in-radius [position faction]
   (->> {:position position
         :radius shout-radius}
-       grid/circle->entities
+       world/circle->entities
        (filter #(= (:entity/faction @%) faction))))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
@@ -209,10 +208,10 @@
 
 (defn- valid-position? [{:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
-  (let [cells* (into [] (map deref) (grid/rectangle->cells body))]
-    (and (not-any? #(grid/cell-blocked? % z-order) cells*)
+  (let [cells* (into [] (map deref) (world/rectangle->cells body))]
+    (and (not-any? #(world/cell-blocked? % z-order) cells*)
          (->> cells*
-              grid/cells->entities
+              world/cells->entities
               (not-any? (fn [other-entity]
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
@@ -306,15 +305,15 @@
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (grid/rectangle->cells entity)) ; just use cached-touched -cells
+        cells* (map deref (world/rectangle->cells entity)) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
                                      (:collides? @%)
                                      (body/collides? entity @%))
-                               (grid/cells->entities cells*))
+                               (world/cells->entities cells*))
         destroy? (or (and hit-entity (not piercing?))
-                     (some #(grid/cell-blocked? % (:z-order entity)) cells*))]
+                     (some #(world/cell-blocked? % (:z-order entity)) cells*))]
     (when destroy?
       (swap! eid assoc :entity/destroyed? true))
     (when hit-entity
@@ -343,7 +342,7 @@
 (defmethod tick :npc-sleeping [_ eid]
   (let [entity @eid
         cell (world/grid (body/tile entity))] ; pattern!
-    (when-let [distance (grid/nearest-entity-distance @cell (faction/enemy entity))]
+    (when-let [distance (world/nearest-entity-distance @cell (faction/enemy entity))]
       (when (<= distance (stat/->value entity :entity/aggro-range))
         (fsm/event eid :alert)))))
 
@@ -392,7 +391,7 @@
 (defn- calculate-eid []
   (let [player @world/player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
-                     (grid/point->entities
+                     (world/point->entities
                       (g/world-mouse-position)))]
     (->> render-z-order
          (sort-by-order hits #(:z-order @%))

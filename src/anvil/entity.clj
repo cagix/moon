@@ -3,7 +3,6 @@
             [anvil.entity.stat :as stat]
             [anvil.entity.skills :as skills]
             [anvil.world.content-grid :as content-grid]
-            [anvil.world.grid :as grid]
             [anvil.world :as world :refer [timer]]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
@@ -100,7 +99,7 @@
                  (world/ray-blocked? (:position source) (:position target))))))
 
 (defn- set-cells! [eid]
-  (let [cells (grid/rectangle->cells @eid)]
+  (let [cells (world/rectangle->cells @eid)]
     (assert (not-any? nil? cells))
     (swap! eid assoc ::touched-cells cells)
     (doseq [cell cells]
@@ -116,7 +115,7 @@
 ; => only now there are no >1 tile entities anyway
 (defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
   (if (or (> (float width) 1) (> (float height) 1))
-    (grid/rectangle->cells rectangle)
+    (world/rectangle->cells rectangle)
     [(world/grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
                   (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
 

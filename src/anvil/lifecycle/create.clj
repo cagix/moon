@@ -31,7 +31,6 @@
             [gdl.utils :refer [dev-mode? tile->middle bind-root readable-number]]
             [anvil.ui.player-message :as player-message]
             [anvil.world.content-grid :as content-grid]
-            [anvil.world.grid :as grid]
             [data.grid2d :as g2d]
             [gdl.assets :refer [play-sound]]
             [gdl.db :as db]
@@ -460,7 +459,7 @@
                   occupied
                   good
                   evil]
-  grid/Cell
+  world/Cell
   (cell-blocked? [_ z-order]
     (case movement
       :none true ; wall
@@ -518,7 +517,7 @@
   (bind-root world/grid                  (->world-grid            tiled-map))
   (bind-root world/content-grid          (->content-grid          tiled-map))
   (bind-root world/entity-ids {})
-  (bind-root world/raycaster (->raycaster world/grid grid/blocks-vision?))
+  (bind-root world/raycaster (->raycaster world/grid world/blocks-vision?))
   (bind-root world/elapsed-time 0)
   (bind-root world/delta-time nil)
   (bind-root world/player-eid (entity/creature (player-entity-props start-position)))

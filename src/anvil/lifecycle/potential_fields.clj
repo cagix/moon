@@ -1,7 +1,6 @@
 (ns anvil.lifecycle.potential-fields
   (:require [anvil.entity.body :as body]
             [anvil.world :as world]
-            [anvil.world.grid :as grid]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
 ; FIXME config !
@@ -84,12 +83,12 @@
 ; (or teleported?)
 (defn- step [faction last-marked-cells]
   (let [marked-cells (transient [])
-        distance       #(grid/nearest-entity-distance % faction)
-        nearest-entity #(grid/nearest-entity          % faction)
+        distance       #(world/nearest-entity-distance % faction)
+        nearest-entity #(world/nearest-entity          % faction)
         marked? faction]
     ; sorting important because of diagonal-cell values, flow from lower dist first for correct distance
     (doseq [cell (sort-by #(distance @%) last-marked-cells)
-            adjacent-cell (grid/cached-adjacent-cells cell)
+            adjacent-cell (world/cached-adjacent-cells cell)
             :let [cell* @cell
                   adjacent-cell* @adjacent-cell]
             :when (not (or (pf-cell-blocked? adjacent-cell*)
