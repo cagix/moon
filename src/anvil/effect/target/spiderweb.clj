@@ -1,5 +1,5 @@
 (ns anvil.effect.target.spiderweb
-  (:require [anvil.component :refer [applicable? handle]]
+  (:require [anvil.component :refer [applicable? handle info]]
             [anvil.entity.modifiers :as mods]
             [anvil.world :refer [timer]]
             [gdl.utils :refer [defmethods]]))
@@ -8,6 +8,12 @@
       duration 5]
 
   (defmethods :effects.target/spiderweb
+    (info [_]
+      "Spiderweb slows 50% for 5 seconds."
+      ; modifiers same like item/modifiers has info-text
+      ; counter ?
+      )
+
     (applicable? [_ _]
       ; ?
       true)

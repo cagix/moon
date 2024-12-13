@@ -1,5 +1,5 @@
 (ns anvil.effect.target.damage
-  (:require [anvil.component :refer [applicable? handle]]
+  (:require [anvil.component :refer [info applicable? handle]]
             [anvil.entity.damage :as damage]
             [anvil.entity.fsm :as fsm]
             [anvil.entity.hitpoints :as hp]
@@ -8,6 +8,9 @@
             [gdl.db :as db]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defmethods]]))
+
+(defn- damage-info [{[min max] :damage/min-max}]
+  (str min "-" max " damage"))
 
 (defn- effective-armor-save [source* target*]
   (max (- (or (stat/->value target* :entity/armor-save) 0)
@@ -25,6 +28,16 @@
   (< (rand) (effective-armor-save source* target*)))
 
 (defmethods :effects.target/damage
+  (info [[_ damage]]
+    (damage-info damage)
+    #_(if source
+        (let [modified (damage/->value @source damage)]
+          (if (= damage modified)
+            (damage-info damage)
+            (str (damage-info damage) "\nModified: " (damage/info modified))))
+        (damage-info damage)) ; property menu no source,modifiers
+    )
+
   (applicable? [_ {:keys [effect/target]}]
     (and target
          (:entity/hp @target)))

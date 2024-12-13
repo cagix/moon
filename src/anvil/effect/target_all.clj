@@ -1,5 +1,5 @@
 (ns anvil.effect.target-all
-  (:require [anvil.component :refer [applicable? handle]]
+  (:require [anvil.component :refer [info applicable? handle]]
             [anvil.effect :refer [do-all!]]
             [anvil.world :as world]
             [gdl.graphics :as g]
@@ -8,6 +8,9 @@
 ; TODO targets projectiles with -50% hp !!
 
 (defmethods :effects/target-all
+  (info [_]
+    "All visible targets")
+
   (applicable? [_ _]
     true)
 

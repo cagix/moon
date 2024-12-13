@@ -89,43 +89,6 @@
 (defn k->pretty-name [k]
   (str/capitalize (name k)))
 
-(defmethod component/info :effects.target/convert [_]
-  "Converts target to your side.")
-
-(defn- damage-info [{[min max] :damage/min-max}]
-  (str min "-" max " damage"))
-
-(defmethod component/info :effects.target/damage [[_ damage]]
-  (damage-info damage)
-  #_(if source
-      (let [modified (damage/->value @source damage)]
-        (if (= damage modified)
-          (damage-info damage)
-          (str (damage-info damage) "\nModified: " (damage/info modified))))
-      (damage-info damage)) ; property menu no source,modifiers
-  )
-
-(defmethod component/info :effects.target/kill [_]
-  "Kills target")
-
-; FIXME no source
-(defmethod component/info :effects.target/melee-damage [_]
-  (str "Damage based on entity strength."
-       #_(when source
-           (str "\n" (damage-info (entity->melee-damage @source))))))
-; => to entity move
-
-(defmethod component/info :effects.target/spiderweb [_]
-  "Spiderweb slows 50% for 5 seconds."
-  ; modifiers same like item/modifiers has info-text
-  ; counter ?
-  )
-
-(defmethod component/info :effects.target/stun [duration]
-  (str "Stuns for " (readable-number duration) " seconds"))
-
-(defmethod component/info :effects/target-all [_]
-  "All visible targets")
 
 (defmethod component/info :entity/faction [faction]
   (str "Faction: " (name faction)))
