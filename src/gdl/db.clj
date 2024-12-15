@@ -17,7 +17,7 @@
 (defn- property-type [{:keys [property/id]}]
   (keyword "properties" (namespace id)))
 
-(declare schemas)
+(declare ^:private schemas)
 
 (defn property-types []
   (filter #(= "properties" (namespace %))
