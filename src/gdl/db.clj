@@ -3,7 +3,6 @@
             [clojure.java.io :as io]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
-            [gdl.schema :as schema]
             [gdl.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
             [gdl.val-max :as val-max]
             [malli.core :as m]
