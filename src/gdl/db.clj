@@ -8,6 +8,15 @@
 ; as we know we are dealing with a thing when we use it ?
 
 ; even the dev-loop itself....
+
+
+; Idea: property/type remove, make whole 'db-schema' instead of schemas
+; db is map of {:audiovisuals, creatures, etc.}
+; and we know when we fetch something against what to check it ?
+; also complete db schema also textures -> image :file is getting to texture
+; file is one-to-one texture ? or spritesheets we can have as separate properties ?!
+
+; But first make context-free db so I can abstract mallis/schema, .... its just API -> optional-map-keys/validate something ...
 (ns gdl.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
