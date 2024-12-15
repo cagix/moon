@@ -3,17 +3,16 @@
             [clojure.java.io :as io]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
+            [gdl.malli :as malli]
             [gdl.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
-            [gdl.val-max :as val-max]
-            [malli.core :as m]
-            [malli.error :as me]))
+            [gdl.val-max :as val-max]))
 
 (defn schema-type [schema]
   (if (vector? schema)
     (schema 0)
     schema))
 
-(defn- property-type [{:keys [property/id]}]
+(defn property-type [{:keys [property/id]}]
   (keyword "properties" (namespace id)))
 
 (declare ^:private schemas)
@@ -24,9 +23,6 @@
 
 (defn schema-of [k]
   (safe-get schemas k))
-
-(defn schema-of-property [property]
-  (schema-of (property-type property)))
 
 (defmulti malli-form schema-type)
 (defmethod malli-form :default [schema] schema)
@@ -61,29 +57,12 @@
                       (catch Throwable t
                         (throw (ex-info " " {:k k :v v} t))))))))
 
-
-(defn- invalid-ex-info [m-schema value]
-  (ex-info (str (me/humanize (m/explain m-schema value)))
-           {:value value
-            :schema (m/form m-schema)}))
-
-(defn- property->m-schema [property]
-  (try (-> property
-           schema-of-property
-           malli-form
-           m/schema)
-       (catch clojure.lang.ExceptionInfo e
-         (throw (ex-info "property->m-schema fail"
-                         (merge (ex-data e)
-                                {:property/id (:property/id property)
-                                 :property property
-                                 :schema-of-property (schema-of-property property)
-                                 :malli-form (malli-form (schema-of-property property))}))))))
-
 (defn validate! [property]
-  (let [m-schema (property->m-schema property)]
-    (when-not (m/validate m-schema property)
-      (throw (invalid-ex-info m-schema property)))))
+  (malli/validate! (-> property
+                       property-type
+                       schema-of
+                       malli-form)
+                   property))
 
 (declare properties-file
          db-data)
@@ -136,7 +115,7 @@
     (run! validate! properties)
     (def db-data (zipmap (map :property/id properties) properties))))
 
-(defmethod malli-form :s/val-max [_] (m/form val-max/schema))
+(defmethod malli-form :s/val-max [_] val-max/schema-form)
 
 (defmethod malli-form :s/number  [_] number?)
 (defmethod malli-form :s/nat-int [_] nat-int?)

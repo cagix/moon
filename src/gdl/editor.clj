@@ -115,7 +115,7 @@
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schema (db/schema-of-property props)
+  (let [schema (db/schema-of (db/property-type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
