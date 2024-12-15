@@ -2,9 +2,9 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]
+            [gdl.malli :as m]
             [gdl.math.vector :as v]
-            [gdl.utils :refer [defmethods]]
-            [malli.core :as m]))
+            [gdl.utils :refer [defmethods]]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

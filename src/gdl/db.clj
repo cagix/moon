@@ -3,9 +3,8 @@
             [clojure.java.io :as io]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
-            [gdl.malli :as malli]
-            [gdl.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]
-            [gdl.val-max :as val-max]))
+            [gdl.malli :as m]
+            [gdl.utils :refer [safe-get recur-sort-map apply-kvs async-pprint-spit! defmethods]]))
 
 (defn schema-type [schema]
   (if (vector? schema)
@@ -58,11 +57,11 @@
                         (throw (ex-info " " {:k k :v v} t))))))))
 
 (defn validate! [property]
-  (malli/validate! (-> property
-                       property-type
-                       schema-of
-                       malli-form)
-                   property))
+  (m/validate! (-> property
+                   property-type
+                   schema-of
+                   malli-form)
+               property))
 
 (declare properties-file
          db-data)
@@ -115,15 +114,13 @@
     (run! validate! properties)
     (def db-data (zipmap (map :property/id properties) properties))))
 
-(defmethod malli-form :s/val-max [_] val-max/schema-form)
-
-(defmethod malli-form :s/number  [_] number?)
-(defmethod malli-form :s/nat-int [_] nat-int?)
-(defmethod malli-form :s/int     [_] int?)
-(defmethod malli-form :s/pos     [_] pos?)
-(defmethod malli-form :s/pos-int [_] pos-int?)
-
-(defmethod malli-form :s/sound [_] :string)
+(defmethod malli-form :s/val-max [_] m/val-max-schema)
+(defmethod malli-form :s/number  [_] m/number-schema)
+(defmethod malli-form :s/nat-int [_] m/nat-int-schema)
+(defmethod malli-form :s/int     [_] m/int-schema)
+(defmethod malli-form :s/pos     [_] m/pos-schema)
+(defmethod malli-form :s/pos-int [_] m/pos-int-schema)
+(defmethod malli-form :s/sound   [_] m/string-schema)
 
 (defn- edn->sprite [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds
@@ -136,19 +133,14 @@
 
 (defmethods :s/image
   (malli-form  [_]
-    [:map {:closed true}
-     [:file :string]
-     [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
+    m/image-schema)
 
   (edn->value [_ edn]
     (edn->sprite edn)))
 
 (defmethods :s/animation
   (malli-form [_]
-    [:map {:closed true}
-     [:frames :some] ; FIXME actually images
-     [:frame-duration pos?]
-     [:looping? :boolean]])
+    m/animation-schema)
 
   (edn->value [_ {:keys [frames frame-duration looping?]}]
     (animation/create (map edn->sprite frames)
@@ -160,30 +152,18 @@
 
 (defmethods :s/one-to-one
   (malli-form [[_ property-type]]
-    [:qualified-keyword {:namespace (type->id-namespace property-type)}])
+    (m/qualified-keyword-schema (type->id-namespace property-type)))
   (edn->value [_ property-id]
     (build property-id)))
 
 (defmethods :s/one-to-many
   (malli-form [[_ property-type]]
-    [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
+    (m/set-schema (m/qualified-keyword-schema (type->id-namespace property-type))))
   (edn->value [_ property-ids]
     (set (map build property-ids))))
 
-(defn- attribute-form
-  "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
-  [ks]
-  (for [k ks
-        :let [k? (keyword? k)
-              schema-props (if k? nil (k 1))
-              k (if k? k (k 0))]]
-    (do
-     (assert (keyword? k))
-     (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
-     [k schema-props (malli-form (schema-of k))])))
-
 (defn- map-form [ks]
-  (apply vector :map {:closed true} (attribute-form ks)))
+  (m/map-schema ks (comp malli-form schema-of)))
 
 (defmethod malli-form :s/map [[_ ks]]
   (map-form ks))

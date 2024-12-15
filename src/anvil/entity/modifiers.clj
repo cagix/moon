@@ -4,8 +4,7 @@
             [anvil.operation :as op]
             [clojure.string :as str]
             [gdl.utils :refer [defmethods]]
-            [gdl.val-max :as val-max]
-            [malli.core :as m]))
+            [gdl.malli :as m]))
 
 (defmethods :entity/modifiers
   (component/info [[_ mods]]
@@ -28,15 +27,15 @@
   (mapv #(-> % int (max 0)) val-max))
 
 (defn apply-max-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
+  {:pre  [(m/validate m/val-max-schema val-max)]
+   :post [(m/validate m/val-max-schema val-max)]}
   (let [val-max (update val-max 1 ->value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn apply-min-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate val-max/schema val-max)]
-   :post [(m/validate val-max/schema val-max)]}
+  {:pre  [(m/validate m/val-max-schema val-max)]
+   :post [(m/validate m/val-max-schema val-max)]}
   (let [val-max (update val-max 0 ->value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))

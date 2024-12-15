@@ -9,7 +9,6 @@
             [gdl.graphics.camera :as cam]
             [gdl.math.shapes :refer [circle->outer-rectangle]]
             [anvil.world :as world :refer [finished-ratio line-of-sight?]]
-            [gdl.val-max :as val-max]
             [gdl.utils :refer [sort-by-order pretty-pst]]
             [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
 

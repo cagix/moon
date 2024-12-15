@@ -1,13 +1,13 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.set :as set]
             [clojure.string :as str]
             [gdl.assets :as assets :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.sprite :as sprite]
             [gdl.input :refer [key-just-pressed?]]
+            [gdl.malli :as m]
             [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.ui :refer [horizontal-separator-cell
@@ -27,8 +27,7 @@
             [gdl.ui.actor :refer [user-object]]
             [gdl.ui.group :refer [children clear-children add-actor! find-actor]]
             [gdl.ui.table :refer [add-rows!]]
-            [gdl.utils :refer [->edn-str truncate find-first index-of]]
-            [malli.generator :as mg])
+            [gdl.utils :refer [->edn-str truncate find-first index-of]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
@@ -37,40 +36,6 @@
   (binding [*print-level* 3]
     (with-out-str
      (clojure.pprint/pprint property))))
-
-(defn map-keys [m-schema]
-  (let [[_m _p & ks] m-schema]
-    (for [[k m? _schema] ks]
-      k)))
-
-(defn map-form-k->properties
-  "Given a map schema gives a map of key to key properties (like :optional)."
-  [m-schema]
-  (let [[_m _p & ks] m-schema]
-    (into {} (for [[k m? _schema] ks]
-               [k (if (map? m?) m?)]))))
-
-(defn optional? [k map-schema]
-  (:optional (k (map-form-k->properties map-schema))))
-
-(defn optional-keyset [m-schema]
-  (set (filter #(optional? % m-schema) (map-keys m-schema))))
-
-(comment
- (= (optional-keyset
-     [:map {:closed true}
-      [:foo]
-      [:bar]
-      [:baz {:optional true}]
-      [:boz {:optional false}]
-      [:asdf {:optional true}]])
-    [:baz :asdf])
-
- )
-
-(defn optional-keys-left [m-schema m]
-  (seq (set/difference (optional-keyset m-schema)
-                       (set (keys m)))))
 
 (defn- widget-type [schema _]
   (let [stype (db/schema-type schema)]
@@ -357,7 +322,7 @@
 (defn- attribute-label [k m-schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                         (name k))
-        delete-button (when (optional? k m-schema)
+        delete-button (when (m/optional? k m-schema)
                         (text-button "-"
                                      (fn []
                                        (Actor/.remove (find-kv-widget table k))
@@ -385,7 +350,7 @@
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (mg/generate (db/malli-form schema) {:size 3}))))
+     :else (m/generate (db/malli-form schema) {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
@@ -396,7 +361,7 @@
                            :cell-defaults {:pad 5}})
         malli-form (db/malli-form schema)
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
-                                   (map-keys malli-form)))]
+                                   (m/map-keys malli-form)))]
     (add-rows!
      window
      (for [k remaining-ks]
@@ -442,7 +407,7 @@
                           (map #(component-row % (db/malli-form schema) table)
                                (sort-by component-order m)))
         colspan component-row-cols
-        opt? (optional-keys-left (db/malli-form schema) m)]
+        opt? (m/optional-keys-left (db/malli-form schema) m)]
     (add-rows!
      table
      (concat [(when opt?
