@@ -1,4 +1,4 @@
-(ns anvil.entity.delete-after-duration
+(ns ^:no-doc anvil.entity.delete-after-duration
   (:require [anvil.component :as component]
             [anvil.world :refer [timer finished-ratio stopped?]]
             [gdl.utils :refer [defmethods index-of readable-number]]))

@@ -1,4 +1,4 @@
-(ns anvil.effect.target-entity
+(ns ^:no-doc anvil.effect.target-entity
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]

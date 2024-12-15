@@ -1,4 +1,4 @@
-(ns anvil.entity.fsm
+(ns ^:no-doc anvil.entity.fsm
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [gdl.graphics :as g]

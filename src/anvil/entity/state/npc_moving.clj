@@ -1,4 +1,4 @@
-(ns anvil.entity.state.npc-moving
+(ns ^:no-doc anvil.entity.state.npc-moving
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.entity.stat :as stat]

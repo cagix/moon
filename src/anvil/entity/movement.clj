@@ -1,4 +1,4 @@
-(ns anvil.entity.movement
+(ns ^:no-doc anvil.entity.movement
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]

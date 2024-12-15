@@ -1,4 +1,4 @@
-(ns anvil.entity.state.active-skill
+(ns ^:no-doc anvil.entity.state.active-skill
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]

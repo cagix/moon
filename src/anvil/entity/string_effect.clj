@@ -1,4 +1,4 @@
-(ns anvil.entity.string-effect
+(ns ^:no-doc anvil.entity.string-effect
   (:require [anvil.component :as component]
             [anvil.world :refer [stopped?]]
             [gdl.graphics :as g]

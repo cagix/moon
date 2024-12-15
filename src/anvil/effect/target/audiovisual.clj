@@ -1,4 +1,4 @@
-(ns anvil.effect.target.audiovisual
+(ns ^:no-doc anvil.effect.target.audiovisual
   (:require [anvil.component :as component]
             [anvil.world :as world]
             [gdl.utils :refer [defmethods]]))

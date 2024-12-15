@@ -1,4 +1,4 @@
-(ns anvil.entity.faction
+(ns ^:no-doc anvil.entity.faction
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [gdl.utils :refer [defmethods defn-impl]]))

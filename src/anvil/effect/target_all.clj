@@ -1,4 +1,4 @@
-(ns anvil.effect.target-all
+(ns ^:no-doc anvil.effect.target-all
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all!]]
             [anvil.world :as world]

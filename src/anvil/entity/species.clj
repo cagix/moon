@@ -1,4 +1,4 @@
-(ns anvil.entity.species
+(ns ^:no-doc anvil.entity.species
   (:require [anvil.component :as component]
             [clojure.string :as str]
             [gdl.utils :refer [defmethods]]))

@@ -1,4 +1,4 @@
-(ns anvil.entity.alert-friendlies-after-duration
+(ns ^:no-doc anvil.entity.alert-friendlies-after-duration
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :refer [stopped? friendlies-in-radius]]

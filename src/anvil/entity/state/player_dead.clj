@@ -1,4 +1,4 @@
-(ns anvil.entity.state.player-dead
+(ns ^:no-doc anvil.entity.state.player-dead
   (:require [anvil.component :as component]
             [gdl.assets :refer [play-sound]]
             [gdl.stage :refer [show-modal]]

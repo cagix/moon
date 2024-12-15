@@ -1,4 +1,4 @@
-(ns anvil.entity.state.npc-idle
+(ns ^:no-doc anvil.entity.state.npc-idle
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]

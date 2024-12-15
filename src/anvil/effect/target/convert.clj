@@ -1,4 +1,4 @@
-(ns anvil.effect.target.convert
+(ns ^:no-doc anvil.effect.target.convert
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [gdl.utils :refer [defmethods]]))

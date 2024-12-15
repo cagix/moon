@@ -1,4 +1,4 @@
-(ns anvil.effect.projectile
+(ns ^:no-doc anvil.effect.projectile
   (:require [anvil.component :as component]
             [anvil.world :as world]
             [gdl.assets :refer [play-sound]]

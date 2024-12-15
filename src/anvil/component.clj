@@ -1,7 +1,7 @@
 (ns anvil.component
   (:refer-clojure :exclude [apply]))
 
-(defn system-dispatch [[k] & args]
+(defn- system-dispatch [[k] & args]
   k)
 
 (defmacro ^:private defsystem

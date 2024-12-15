@@ -166,7 +166,7 @@
   (dispose [_]
     (dispose-world)))
 
-(defn world-screen []
+(defn- world-screen []
   (stage/screen :sub-screen (->WorldScreen)))
 
 (defn- start [{:keys [db app-config graphics ui world-id]}]

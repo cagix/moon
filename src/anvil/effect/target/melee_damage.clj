@@ -1,4 +1,4 @@
-(ns anvil.effect.target.melee-damage
+(ns ^:no-doc anvil.effect.target.melee-damage
   (:require [anvil.component :as component]
             [anvil.entity.stat :as stat]
             [anvil.world :as world]

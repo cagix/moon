@@ -1,4 +1,4 @@
-(ns anvil.effect.target.damage
+(ns ^:no-doc anvil.effect.target.damage
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.entity.damage :as damage]

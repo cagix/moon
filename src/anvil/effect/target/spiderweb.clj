@@ -1,4 +1,4 @@
-(ns anvil.effect.target.spiderweb
+(ns ^:no-doc anvil.effect.target.spiderweb
   (:require [anvil.component :as component]
             [anvil.entity.modifiers :as mods]
             [anvil.world :refer [timer]]

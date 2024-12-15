@@ -1,4 +1,4 @@
-(ns anvil.entity.state.player-idle
+(ns ^:no-doc anvil.entity.state.player-idle
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
             [anvil.entity :as entity]

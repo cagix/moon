@@ -1,4 +1,4 @@
-(ns anvil.effect.target.hp)
+(ns ^:no-doc anvil.effect.target.hp)
 
 #_(defn- stat-k [effect-k]
     (keyword "stats" (name effect-k)))

@@ -1,4 +1,4 @@
-(ns anvil.entity.line-render
+(ns ^:no-doc anvil.entity.line-render
   (:require [anvil.component :as component]
             [gdl.graphics :as g]
             [gdl.utils :refer [defmethods]]))

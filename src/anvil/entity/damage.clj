@@ -1,4 +1,4 @@
-(ns anvil.entity.damage
+(ns ^:no-doc anvil.entity.damage
   (:require [anvil.entity.modifiers :as mods]))
 
 (defn ->value

@@ -1,4 +1,4 @@
-(ns anvil.entity.delete-after-animation-stopped?
+(ns ^:no-doc anvil.entity.delete-after-animation-stopped?
   (:require [anvil.component :as component]
             [gdl.graphics.animation :as animation]
             [gdl.utils :refer [defmethods]]))

@@ -1,4 +1,4 @@
-(ns anvil.entity.projectile-collision
+(ns ^:no-doc anvil.entity.projectile-collision
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]

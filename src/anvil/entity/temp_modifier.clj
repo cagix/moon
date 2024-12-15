@@ -1,4 +1,4 @@
-(ns anvil.entity.temp-modifier
+(ns ^:no-doc anvil.entity.temp-modifier
   (:require [anvil.component :as component]
             [anvil.entity.modifiers :as mods]
             [anvil.world :refer [finished-ratio stopped?]]

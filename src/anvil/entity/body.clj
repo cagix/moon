@@ -1,4 +1,4 @@
-(ns anvil.entity.body
+(ns ^:no-doc anvil.entity.body
   (:require [anvil.entity :as entity]
             [gdl.math.vector :as v]
             [gdl.math.shapes :as shape]

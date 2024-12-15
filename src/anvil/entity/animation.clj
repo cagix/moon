@@ -1,4 +1,4 @@
-(ns anvil.entity.animation
+(ns ^:no-doc anvil.entity.animation
   (:require [anvil.component :as component]
             [anvil.world :as world]
             [gdl.graphics.animation :as animation]

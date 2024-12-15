@@ -1,4 +1,4 @@
-(ns anvil.entity.state.player-item-on-cursor
+(ns ^:no-doc anvil.entity.state.player-item-on-cursor
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]

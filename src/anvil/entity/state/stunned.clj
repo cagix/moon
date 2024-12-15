@@ -1,4 +1,4 @@
-(ns anvil.entity.state.stunned
+(ns ^:no-doc anvil.entity.state.stunned
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :refer [timer stopped?]]

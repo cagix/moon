@@ -1,4 +1,4 @@
-(ns anvil.entity.state.player-moving
+(ns ^:no-doc anvil.entity.state.player-moving
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
             [anvil.entity :as entity]

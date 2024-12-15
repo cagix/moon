@@ -1,4 +1,4 @@
-(ns anvil.entity.mouseover?
+(ns ^:no-doc anvil.entity.mouseover?
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]

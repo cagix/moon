@@ -1,4 +1,4 @@
-(ns anvil.effect.creature
+(ns ^:no-doc anvil.effect.creature
   (:require [anvil.component :as component]
             [anvil.world :as world]
             [gdl.assets :refer [play-sound]]
