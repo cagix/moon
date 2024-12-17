@@ -3,7 +3,7 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
             [gdl.assets :as assets :refer [play-sound]]
-            [gdl.db-ctx-free :as db]
+            [gdl.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.sprite :as sprite]
             [gdl.input :refer [key-just-pressed?]]

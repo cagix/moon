@@ -1,11 +1,11 @@
 (ns ^:no-doc anvil.effect.target.damage
   (:require [anvil.component :as component]
+            [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.entity.damage :as damage]
             [anvil.entity.hp :as hp]
             [anvil.entity.stat :as stat]
             [anvil.world :as world :refer [add-text-effect]]
-            [gdl.db :as db]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defmethods]]))
 

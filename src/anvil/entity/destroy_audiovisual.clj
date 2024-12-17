@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.destroy-audiovisual
   (:require [anvil.component :as component]
+            [anvil.db :as db]
             [anvil.world :as world]
-            [gdl.db :as db]
             [gdl.utils :refer [defmethods]]))
 
 (defmethods :entity/destroy-audiovisual

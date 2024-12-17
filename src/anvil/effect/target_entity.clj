@@ -1,12 +1,12 @@
 (ns ^:no-doc anvil.effect.target-entity
   (:require [anvil.component :as component]
+            [anvil.db :as db]
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.graphics :as g]
             [gdl.math.vector :as v]
-            [gdl.utils :refer [defmethods]]
-            [gdl.db :as db]))
+            [gdl.utils :refer [defmethods]]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)

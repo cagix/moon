@@ -56,6 +56,7 @@
             ;; info stuff
 
             [anvil.controls :as controls]
+            [anvil.db :as db]
             [anvil.lifecycle.create :refer [create-world dispose-world]]
             [anvil.lifecycle.render :refer [render-world]]
             [anvil.lifecycle.update :refer [update-world]]
@@ -63,7 +64,6 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.assets :as assets]
-            [gdl.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.screen :as screen]

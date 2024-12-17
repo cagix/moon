@@ -1,10 +1,10 @@
 (ns dev.tools
-  (:require [anvil.entity.skills :as skills]
+  (:require [anvil.db :as db]
+            [anvil.entity.skills :as skills]
             [anvil.world :as world]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.app :refer [post-runnable]]
-            [gdl.db :as db]
             [gdl.graphics :as g]
             [gdl.stage :refer [add-actor]]
             [gdl.ui :refer [t-node scroll-pane] :as ui]

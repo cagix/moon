@@ -1,6 +1,7 @@
 (ns anvil.lifecycle.create
   (:require [anvil.component :refer [clicked-inventory-cell draw-gui-view]]
             [anvil.controls :as controls]
+            [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.entity.inventory :as inventory]
             [anvil.entity.hp :as hp]
@@ -31,7 +32,6 @@
             [anvil.world.content-grid :as content-grid]
             [data.grid2d :as g2d]
             [gdl.assets :refer [play-sound]]
-            [gdl.db :as db]
             [gdl.tiled :as tiled])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table Button ButtonGroup)
