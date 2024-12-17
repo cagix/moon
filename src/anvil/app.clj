@@ -1,54 +1,5 @@
 (ns anvil.app
-  (:require anvil.effect.target.audiovisual
-            anvil.effect.target.convert
-            anvil.effect.target.damage
-            anvil.effect.target.kill
-            anvil.effect.target.melee-damage
-            anvil.effect.target.spiderweb
-            anvil.effect.target.stun
-
-            anvil.effect.creature
-            anvil.effect.projectile
-            anvil.effect.target-all
-            anvil.effect.target-entity
-
-            anvil.entity.state.active-skill
-            anvil.entity.state.npc-dead
-            anvil.entity.state.npc-idle
-            anvil.entity.state.npc-moving
-            anvil.entity.state.npc-sleeping
-            anvil.entity.state.player-dead
-            anvil.entity.state.player-idle
-            anvil.entity.state.player-item-on-cursor
-            anvil.entity.state.player-moving
-            anvil.entity.state.stunned
-
-            anvil.entity.alert-friendlies-after-duration
-            anvil.entity.animation
-            anvil.entity.body
-            anvil.entity.clickable
-            anvil.entity.damage
-            anvil.entity.delete-after-animation-stopped?
-            anvil.entity.delete-after-duration
-            anvil.entity.destroy-audiovisual
-            anvil.entity.faction
-            anvil.entity.fsm
-            anvil.entity.hp
-            anvil.entity.image
-            anvil.entity.inventory
-            anvil.entity.line-render
-            anvil.entity.mana
-            anvil.entity.modifiers
-            anvil.entity.mouseover?
-            anvil.entity.movement
-            anvil.entity.projectile-collision
-            anvil.entity.skills
-            anvil.entity.species
-            anvil.entity.stat
-            anvil.entity.string-effect
-            anvil.entity.temp-modifier
-
-            ;; info stuff
+  (:require ;; info stuff
             [anvil.component :as component]
             [anvil.entity.stat :as stat]
             [anvil.info :as info]
@@ -144,7 +95,8 @@
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
-(defn- start [{:keys [db app-config graphics ui world-id]}]
+(defn- start [{:keys [requires db app-config graphics ui world-id]}]
+  (run! require requires)
   (db/setup db)
   (lwjgl3/start app-config
                 (reify lwjgl3/Application
