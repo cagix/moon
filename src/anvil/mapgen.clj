@@ -1,8 +1,8 @@
 (ns anvil.mapgen
   (:require [gdl.rand :refer [sshuffle srand srand-int]]
             [data.grid2d :as g2d]
-            [gdl.db :as db]
             [gdl.tiled :as tiled]
+            [gdl.property :as property]
             [gdl.utils :refer [assoc-ks]]))
 
 (defn creatures-with-level [creature-properties level]
@@ -12,7 +12,7 @@
   (memoize
    (fn [{:keys [property/id] :as prop}]
      (assert id)
-     (let [image (db/property->image prop)
+     (let [image (property/->image prop)
            tile (tiled/static-tiled-map-tile (:texture-region image))]
        (tiled/put! (tiled/m-props tile) "id" id)
        tile))))

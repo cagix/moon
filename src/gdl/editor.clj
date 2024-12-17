@@ -8,8 +8,10 @@
             [gdl.graphics.sprite :as sprite]
             [gdl.input :refer [key-just-pressed?]]
             [gdl.malli :as m]
+            [gdl.schema :as schema]
             [gdl.screen :as screen]
             [gdl.stage :as stage]
+            [gdl.property :as property]
             [gdl.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
                             ui-actor
@@ -38,7 +40,7 @@
      (clojure.pprint/pprint property))))
 
 (defn- widget-type [schema _]
-  (let [stype (db/schema-type schema)]
+  (let [stype (schema/type schema)]
     (cond
      (#{:s/map-optional :s/components-ns} stype)
      :s/map
@@ -76,11 +78,13 @@
         (catch Throwable t
           (stage/error-window! t))))
 
+(declare db)
+
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schema (db/schema-of (db/property-type props))
+  (let [schema (db/schema-of (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -167,7 +171,7 @@
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
-        button (if-let [image (db/property->image props)]
+        button (if-let [image (property/->image props)]
                  (image-button image on-clicked {:scale scale})
                  (text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
@@ -235,7 +239,7 @@
                         (stage/add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/build property-id)
-              image-widget (image->widget (db/property->image property)
+              image-widget (image->widget (property/->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
@@ -274,7 +278,7 @@
                           (stage/add-actor window)))))]
       [(when property-id
          (let [property (db/build property-id)
-               image-widget (image->widget (db/property->image property)
+               image-widget (image->widget (property/->image property)
                                            {:id property-id})]
            (add-tooltip! image-widget #(info-text property))
            image-widget))]
@@ -346,11 +350,11 @@
 (defn- k->default-value [k]
   (let [schema (db/schema-of k)]
     (cond
-     (#{:s/one-to-one :s/one-to-many} (db/schema-type schema)) nil
+     (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (m/generate (db/malli-form schema) {:size 3}))))
+     :else (m/generate (schema/malli-form schema) {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
@@ -359,7 +363,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        malli-form (db/malli-form schema)
+        malli-form (schema/malli-form schema)
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
                                    (m/map-keys malli-form)))]
     (add-rows!
@@ -404,10 +408,10 @@
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
-                          (map #(component-row % (db/malli-form schema) table)
+                          (map #(component-row % (schema/malli-form schema) table)
                                (sort-by component-order m)))
         colspan component-row-cols
-        opt? (m/optional-keys-left (db/malli-form schema) m)]
+        opt? (m/optional-keys-left (schema/malli-form schema) m)]
     (add-rows!
      table
      (concat [(when opt?
@@ -432,7 +436,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (db/edn->value schema image)
+  (image-button (schema/edn->value schema image)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -441,7 +445,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (db/edn->value :s/image image)
+                      (image-button (schema/edn->value :s/image image)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))

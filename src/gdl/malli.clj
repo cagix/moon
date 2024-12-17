@@ -100,3 +100,38 @@
 (defn optional-keys-left [m-schema m]
   (seq (set/difference (optional-keyset m-schema)
                        (set (keys m)))))
+
+(comment
+
+ ; * Database itself has a schema - just one key :db/data
+ ; is validated against it at setup
+
+ :db/data [:s/map
+           [:db/audiovisuals
+            :db/creatures
+            :db/items
+            :db/projectiles
+            :db/skills
+            :db/worlds]]
+
+ :db/audiovisuals [:map-of ::id ::audiovisuals]
+
+
+
+ (def db-schema [:map {:closed true}
+                 [:db/audiovisuals
+                  :db/creatures
+                  :db/items
+                  :db/projectiles
+                  :db/skills
+                  :db/worlds]])
+
+ ; and then each :db/stuff
+
+ [:map-of :id :properties/audivisuals]
+
+ ; but thats also kinda weird?!
+
+ ; also I am using the property/ids at skill/item right?!!
+
+ )
