@@ -1,3 +1,20 @@
+
+; The database *works* !!!
+; tests ...
+; then can change things
+; it fucking works why do I want to remove property types
+; can change it to just ':type'
+; whats the issue?
+; => validation of db as a map of property-type to id of properties etc....
+; how do databases do this?!
+; why not use a readymade database?
+; what are my requirements/features/...?
+; => make also context-free DB
+; {:db/schemas :db/data :db/data-file}
+; and schemas editable .. ?
+
+
+
 ; Release as separate library with javafx app
 ; and way to add schemas inside the app (build up your database....)
 ; and decouple schema from malli etc.
