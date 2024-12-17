@@ -31,8 +31,7 @@
             [gdl.utils :refer [->edn-str truncate find-first index-of]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
-           (com.kotcrab.vis.ui.widget.tabbedpane Tab
-                                                 TabbedPane)))
+           (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- info-text [property]
   (binding [*print-level* 3]
