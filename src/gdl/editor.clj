@@ -515,6 +515,17 @@
                     :width 1440
                     :height 900}})
 
+; next: assets state move in here
+; db image/animation creates sprites -
+; but we dont need sprites w. unit-scale!
+; just 'texture' / instead of file in edn
+; and just load the texture (through asset-manager state still ?)
+; => Sprite should not depend on assets
+; => all code should be dependency-less
+; or just pure wiring code
+; separate that ....
+; like anvil.db
+
 (defn -main []
   (def db (db/create {:schema "schema.edn"
                       :properties "properties.edn"}))
