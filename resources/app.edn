@@ -1,4 +1,6 @@
-{:requires [anvil.effect.target.audiovisual
+{:requires [anvil.info.impl
+
+            anvil.effect.target.audiovisual
             anvil.effect.target.convert
             anvil.effect.target.damage
             anvil.effect.target.kill
