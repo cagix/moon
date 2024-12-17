@@ -8,7 +8,6 @@
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.input :refer [key-just-pressed? key-pressed?]]
-            [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
             [gdl.ui :refer [ui-actor text-button] :as ui]
@@ -26,9 +25,9 @@
                                      :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
-  (-> (screen/current)
-      :sub-screen
-      :current-data))
+  #_(-> (screen/current)
+        :sub-screen
+        :current-data))
 
 (def ^:private infotext
   "L: grid lines

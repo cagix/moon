@@ -66,7 +66,6 @@
             [gdl.assets :as assets]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
-            [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.ui :as ui]
             [gdl.ui.actor :refer [visible? set-visible] :as actor]
@@ -112,8 +111,6 @@
 
 ; * Mapgen Test (or test itself) a separate app make working - is the 'tests' app
 
-; * Remove screens themself, tag it
-
 ; * Remove non-essential stuff (windows, widgets?, text?!)
 
 ; * When you die, restart world - needs to be an abstraction - so can be called
@@ -147,28 +144,6 @@
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
-(deftype WorldScreen []
-  screen/Screen
-  (enter [_]
-    (cam/set-zoom! g/camera 0.8)) ; TODO no enter -> pass as arg to camera
-
-  (exit [_]
-    (g/set-cursor :cursors/default)) ; TODO no exit
-
-  (render [_]
-    (render-world)
-    (update-world)
-    (controls/adjust-zoom g/camera) ; TODO do I need adjust-zoom? no !
-    (check-window-hotkeys)          ; do I need windows? no !
-    (when (controls/close-windows?) ; no windows ! complicated! vampire survivors has no windows! although I like items -> open inventory there?
-      (close-all-windows)))
-
-  (dispose [_]
-    (dispose-world)))
-
-(defn- world-screen []
-  (stage/screen :sub-screen (->WorldScreen)))
-
 (defn- start [{:keys [db app-config graphics ui world-id]}]
   (db/setup db)
   (lwjgl3/start app-config
@@ -176,20 +151,28 @@
                   (create [_]
                     (assets/setup)
                     (g/setup graphics)
+                    (cam/set-zoom! g/camera 0.8)
                     (ui/setup ui)
-                    (screen/setup {:screens/world (world-screen)}
-                                  :screens/world)
+                    (stage/setup)
                     (create-world (db/build world-id)))
 
                   (dispose [_]
                     (assets/cleanup)
                     (g/cleanup)
                     (ui/cleanup)
-                    (screen/cleanup))
+                    (stage/cleanup)
+                    (dispose-world))
 
                   (render [_]
                     (g/clear)
-                    (screen/render-current))
+                    (stage/act)
+                    (render-world)
+                    (update-world)
+                    (controls/adjust-zoom g/camera) ; TODO do I need adjust-zoom? no !
+                    (check-window-hotkeys)          ; do I need windows? no !
+                    (when (controls/close-windows?) ; no windows ! complicated! vampire survivors has no windows! although I like items -> open inventory there?
+                      (close-all-windows))
+                    (stage/render))
 
                   (resize [_ w h]
                     (g/resize w h)))))

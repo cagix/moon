@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [get])
   (:require [clojure.gdx :as gdx]
             [gdl.graphics :as g]
-            [gdl.screen :as screen]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
@@ -21,36 +20,24 @@
     (run! #(.addActor stage %) actors)
     stage))
 
-(defrecord StageScreen [^Stage stage sub-screen]
-  screen/Screen
-  (enter [_]
-    (gdx/set-input-processor stage)
-    (screen/enter sub-screen))
+(defn setup
+  ([]
+   (setup nil))
+  ([actors]
+   (def this (stage* g/viewport g/batch actors))
+   (gdx/set-input-processor this)))
 
-  (exit [_]
-    (gdx/set-input-processor nil)
-    (screen/exit sub-screen))
+(defn cleanup []
+  (.dispose this))
 
-  (render [_]
-    (.act stage)
-    (screen/render sub-screen)
-    (.draw stage))
+(defn act []
+  (.act this))
 
-  (dispose [_]
-    (.dispose stage)
-    (screen/dispose sub-screen)))
-
-(defn screen [& {:keys [sub-screen actors]}]
-  (->StageScreen (stage* g/viewport g/batch actors)
-                 (or sub-screen
-                     (reify screen/Screen
-                       (enter   [_])
-                       (exit    [_])
-                       (render  [_])
-                       (dispose [_])))))
+(defn render []
+  (.draw this))
 
 (defn get []
-  (:stage (screen/current)))
+  this)
 
 (defn get-inventory []
   (clojure.core/get (:windows (get)) :inventory-window))

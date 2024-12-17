@@ -9,7 +9,6 @@
             [gdl.input :refer [key-just-pressed?]]
             [gdl.malli :as m]
             [gdl.schema :as schema]
-            [gdl.screen :as screen]
             [gdl.stage :as stage]
             [gdl.property :as property]
             [gdl.ui :refer [horizontal-separator-cell
@@ -500,10 +499,6 @@
                      :scaling :fill
                      :align :center}))
 
-(defn create-screen []
-  (stage/screen :actors [(background-image "images/moon_background.png")
-                         (tabs-table "custom label text here")]))
-
 (def graphics
   {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
                   :size 16
@@ -539,17 +534,18 @@
                     (assets/setup)
                     (g/setup graphics)
                     (ui/setup :skin-scale/x1)
-                    (screen/setup {:screens/editor (create-screen)}
-                                  :screens/editor))
+                    (stage/setup [(background-image "images/moon_background.png")
+                                  (tabs-table "custom label text here")]))
 
                   (dispose [_]
                     (assets/cleanup)
                     (g/cleanup)
                     (ui/cleanup)
-                    (screen/cleanup))
+                    (stage/cleanup))
 
                   (render [_]
-                    (screen/render-current))
+                    (stage/act)
+                    (stage/render))
 
                   (resize [_ w h]
                     (g/resize w h)))))
