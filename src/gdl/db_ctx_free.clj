@@ -16,39 +16,39 @@
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
     (run! (partial schema/validate! schemas) properties)
-    {:db-data (zipmap (map :property/id properties) properties)
-     :properties-file properties-file
-     :schemas schemas}))
+    {:db/data (zipmap (map :property/id properties) properties)
+     :db/properties-file properties-file
+     :db/schemas schemas}))
 
-(defn schema-of [{:keys [schemas]} k]
+(defn schema-of [{:keys [db/schemas]} k]
   (schema/schema-of schemas k))
 
-(defn property-types [{:keys [schemas]}]
+(defn property-types [{:keys [db/schemas]}]
   (schema/property-types schemas))
 
-(defn async-write-to-file! [{:keys [db-data properties-file]}]
-  (->> db-data
+(defn async-write-to-file! [{:keys [db/data db/properties-file]}]
+  (->> data
        vals
        (sort-by property/type)
        (map recur-sort-map)
        doall
        (async-pprint-spit! properties-file)))
 
-(defn update [{:keys [db-data schemas]} {:keys [property/id] :as property}]
+(defn update [{:keys [db/data db/schemas]} {:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
-         (contains? db-data id)]}
+         (contains? data id)]}
   (schema/validate! schemas property)
-  (assoc db-data id property))
+  (assoc data id property))
 
-(defn delete [{:keys [db-data]} property-id]
-  {:pre [(contains? db-data property-id)]}
-  (dissoc db-data property-id))
+(defn delete [{:keys [db/data]} property-id]
+  {:pre [(contains? data property-id)]}
+  (dissoc data property-id))
 
-(defn get-raw [{:keys [db-data]} id]
-  (safe-get db-data id))
+(defn get-raw [{:keys [db/data]} id]
+  (safe-get data id))
 
-(defn all-raw [{:keys [db-data]} type]
-  (->> (vals db-data)
+(defn all-raw [{:keys [db/data]} type]
+  (->> (vals data)
        (filter #(= type (property/type %)))))
 
 (defmulti edn->value (fn [schema v _db]
