@@ -80,18 +80,22 @@
 
 (declare db)
 
-(defn db-update! [property]
+(defn update! [property]
   (alter-var-root #'db db/update property)
   (db/async-write-to-file! db))
 
-(defn db-delete! [property-id]
+(defn delete! [property-id]
   (alter-var-root #'db db/delete property-id)
   (db/async-write-to-file! db))
+
+(defn- malli-form [schema]
+  (schema/malli-form schema (:db/schemas db)))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
+  (let [schema (db/schema-of db (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -100,8 +104,8 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (schema->widget schema props)
-        save!   (apply-context-fn window #(db-update! (->value schema widget)))
-        delete! (apply-context-fn window #(db-delete! (:property/id props)))]
+        save!   (apply-context-fn window #(update! (->value schema widget)))
+        delete! (apply-context-fn window #(delete! (:property/id props)))]
     (add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                            [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
                                              :center? true}
@@ -361,7 +365,7 @@
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (m/generate (schema/malli-form schema) {:size 3}))))
+     :else (m/generate (malli-form schema) {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
@@ -370,7 +374,7 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        malli-form (schema/malli-form schema)
+        malli-form (malli-form schema)
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
                                    (m/map-keys malli-form)))]
     (add-rows!
@@ -415,10 +419,10 @@
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
-                          (map #(component-row % (schema/malli-form schema) table)
+                          (map #(component-row % (malli-form schema) table)
                                (sort-by component-order m)))
         colspan component-row-cols
-        opt? (m/optional-keys-left (schema/malli-form schema) m)]
+        opt? (m/optional-keys-left (malli-form schema) m)]
     (add-rows!
      table
      (concat [(when opt?

@@ -34,15 +34,16 @@
        doall
        (async-pprint-spit! properties-file)))
 
-(defn update [{:keys [db/data db/schemas]} {:keys [property/id] :as property}]
+(defn update [{:keys [db/data db/schemas] :as db}
+              {:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
          (contains? data id)]}
   (schema/validate! schemas property)
-  (assoc data id property))
+  (clojure.core/update db :db/data assoc id property))
 
-(defn delete [{:keys [db/data]} property-id]
+(defn delete [{:keys [db/data] :as db} property-id]
   {:pre [(contains? data property-id)]}
-  (dissoc data property-id))
+  (clojure.core/update db dissoc :db/data property-id))
 
 (defn get-raw [{:keys [db/data]} id]
   (safe-get data id))
