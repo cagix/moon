@@ -3,7 +3,7 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
             [gdl.assets :as assets :refer [play-sound]]
-            [gdl.db :as db]
+            [gdl.db-ctx-free :as db]
             [gdl.graphics :as g]
             [gdl.graphics.sprite :as sprite]
             [gdl.input :refer [key-just-pressed?]]
@@ -80,11 +80,18 @@
 
 (declare db)
 
+(defn db-update! [property]
+  (alter-var-root #'db db/update property)
+  (db/async-write-to-file! db))
+
+(defn db-delete! [property-id]
+  (alter-var-root #'db db/delete property-id)
+  (db/async-write-to-file! db))
+
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schema (db/schema-of (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -93,8 +100,8 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (schema->widget schema props)
-        save!   (apply-context-fn window #(db/update! (->value schema widget)))
-        delete! (apply-context-fn window #(db/delete! (:property/id props)))]
+        save!   (apply-context-fn window #(db-update! (->value schema widget)))
+        delete! (apply-context-fn window #(db-delete! (:property/id props)))]
     (add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                            [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
                                              :center? true}
@@ -205,7 +212,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all property-type)
+        properties (db/build-all db property-type)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -238,7 +245,7 @@
                         (.pack window)
                         (stage/add-actor window))))]
       (for [property-id property-ids]
-        (let [property (db/build property-id)
+        (let [property (db/build db property-id)
               image-widget (image->widget (property/->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget #(info-text property))))
@@ -277,7 +284,7 @@
                           (.pack window)
                           (stage/add-actor window)))))]
       [(when property-id
-         (let [property (db/build property-id)
+         (let [property (db/build db property-id)
                image-widget (image->widget (property/->image property)
                                            {:id property-id})]
            (add-tooltip! image-widget #(info-text property))
@@ -311,7 +318,7 @@
     (stage/add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (schema->widget (db/schema-of k) v)]
+  (let [widget (schema->widget (db/schema-of db k) v)]
     (Actor/.setUserObject widget [k v])
     widget))
 
@@ -348,7 +355,7 @@
   [(horizontal-separator-cell component-row-cols)])
 
 (defn- k->default-value [k]
-  (let [schema (db/schema-of k)]
+  (let [schema (db/schema-of db k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
@@ -426,7 +433,7 @@
   (into {}
         (for [widget (filter value-widget? (children table))
               :let [[k _] (user-object widget)]]
-          [k (->value (db/schema-of k) widget)])))
+          [k (->value (db/schema-of db k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
@@ -436,7 +443,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (schema/edn->value schema image)
+  (image-button (db/edn->value schema image db)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -445,7 +452,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (schema/edn->value :s/image image)
+                      (image-button (db/edn->value :s/image image db)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))
@@ -453,10 +460,10 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (stage/add-actor (editor-window (db/get-raw id))))
+  (stage/add-actor (editor-window (db/get-raw db id))))
 
 (defn- property-type-tabs []
-  (for [property-type (sort (db/property-types))]
+  (for [property-type (sort (db/property-types db))]
     {:title (str/capitalize (name property-type))
      :content (overview-table property-type edit-property)}))
 
@@ -505,8 +512,8 @@
                     :height 900}})
 
 (defn -main []
-  (db/setup {:schema "schema.edn"
-             :properties "properties.edn"})
+  (def db (db/create {:schema "schema.edn"
+                      :properties "properties.edn"}))
   (lwjgl3/start {:title "Editor"
                  :fps 60
                  :width 1440

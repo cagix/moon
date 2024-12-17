@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [type])
   (:require [gdl.property :as property]
             [gdl.malli :as m]
-            [gdl.utils :refer [safe-get apply-kvs]]))
+            [gdl.utils :refer [safe-get]]))
 
 (defn type [schema]
   (if (vector? schema)
@@ -12,11 +12,9 @@
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
 
-(defmulti edn->value (fn [schema v]
-                       (when schema  ; undefined-data-ks
-                         (type schema))))
-(defmethod edn->value :default [_schema v] v)
-
+; TODO here only namespace 'schema', not knowing about 'schemas' ??
+; or namespace 'schemas' ?!
+; abstraction over whole 'schemas' ?!
 (defn property-types [schemas]
   (filter #(= "properties" (namespace %))
           (keys schemas)))
@@ -32,26 +30,3 @@
   (m/validate! (malli-form (schema-of schemas (property/type property))
                            schemas)
                property))
-
-#_(def ^:private undefined-data-ks (atom #{}))
-
-(comment
- #{:frames
-   :looping?
-   :frame-duration
-   :file ; => this is texture ... convert that key itself only?!
-   :sub-image-bounds})
-
-(defn build [schemas property]
-  (apply-kvs property
-             (fn [k v]
-               (let [schema (try (schema-of schemas k)
-                                 (catch Throwable _t
-                                   #_(swap! undefined-data-ks conj k)
-                                   nil))
-                     v (if (map? v)
-                         (build schemas v)
-                         v)]
-                 (try (edn->value schema v)
-                      (catch Throwable t
-                        (throw (ex-info " " {:k k :v v} t))))))))
