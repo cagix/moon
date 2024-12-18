@@ -27,6 +27,7 @@
   (schema/property-types schemas))
 
 (defn async-write-to-file! [{:keys [db/data db/properties-file]}]
+  ; TODO validate them again!?
   (->> data
        vals
        (sort-by property/type)
@@ -39,11 +40,11 @@
   {:pre [(contains? property :property/id)
          (contains? data id)]}
   (schema/validate! schemas property)
-  (clojure.core/update db :db/data assoc id property))
+  (clojure.core/update db :db/data assoc id property)) ; assoc-in ?
 
 (defn delete [{:keys [db/data] :as db} property-id]
   {:pre [(contains? data property-id)]}
-  (clojure.core/update db dissoc :db/data property-id))
+  (clojure.core/update db dissoc :db/data property-id)) ; dissoc-in ?
 
 (defn get-raw [{:keys [db/data]} id]
   (safe-get data id))
