@@ -18,26 +18,23 @@
             [gdl.ui.actor :refer [visible? set-visible] :as actor]
             [gdl.ui.group :refer [children]]))
 
-(defn- windows []
-  (:windows (stage/get)))
-
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window
                      :entity-info-window]
           :when (key-just-pressed? (get controls/window-hotkeys window-id))]
-    (actor/toggle-visible! (get (windows) window-id))))
+    (actor/toggle-visible! (get (:windows (stage/get)) window-id))))
 
 (defn- close-all-windows []
-  (let [windows (children (windows))]
+  (let [windows (children (:windows (stage/get)))]
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
 (defn- start [{:keys [requires db app-config graphics ui world-id]}]
-  (run! require requires)
-  (db/setup db)
   (lwjgl3/start app-config
                 (reify lwjgl3/Application
                   (create [_]
+                    (run! require requires)
+                    (db/setup db)
                     (assets/setup)
                     (g/setup graphics)
                     (cam/set-zoom! g/camera 0.8)
