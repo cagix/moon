@@ -1,6 +1,5 @@
 (ns gdl.graphics.animation-test
-  (:require [gdl.app :as app]
-            ;[gdl.app-test :refer [start-simple-app]]
+  (:require ;[gdl.app-test :refer [start-simple-app]]
             [gdl.assets :as assets]
             [gdl.graphics :as g]))
 
