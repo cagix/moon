@@ -1,12 +1,12 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.string :as str]
             [gdl.assets :as assets :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.sprite :as sprite]
-            [gdl.input :refer [key-just-pressed?]]
             [gdl.malli :as m]
             [gdl.schema :as schema]
             [gdl.stage :as stage]

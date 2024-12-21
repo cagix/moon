@@ -2,9 +2,9 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]
+            [clojure.gdx.input :refer [button-just-pressed?]]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
-            [gdl.input :refer [button-just-pressed?]]
             [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]
             [gdl.utils :refer [defmethods]]))

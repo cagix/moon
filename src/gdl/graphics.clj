@@ -1,5 +1,6 @@
 (ns gdl.graphics
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx.files :as files]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -11,6 +12,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.screen-utils :as screen-utils]
@@ -18,7 +20,7 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.tiled :as tiled]
-            [gdl.utils :refer [gdx-static-field safe-get mapvals]])
+            [gdl.utils :refer [safe-get mapvals]])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn clear []
@@ -37,8 +39,8 @@
   (def sd (sd/create batch (texture-region sd-texture 1 0 1 1)))
   (def default-font (freetype/generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (pixmap/create (gdx/internal-file (str "cursors/" file ".png")))
-                                cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
+                          (let [pixmap (pixmap/create (files/internal (str "cursors/" file ".png")))
+                                cursor (g/cursor pixmap hotspot-x hotspot-y)]
                             (dispose pixmap)
                             cursor))
                         cursors))
@@ -80,15 +82,15 @@
    (color/create r g b a))
   ([c]
    (cond (color? c) c
-         (keyword? c) (gdx-static-field "graphics.Color" c)
+         (keyword? c) (interop/k->color c)
          (vector? c) (apply ->color c)
          :else (throw (ex-info "Cannot understand color" c)))))
 
 (defn add-color [name-str color]
   (colors/put name-str (->color color)))
 
-(def frames-per-second gdx/frames-per-second)
-(def delta-time        gdx/delta-time)
+(def frames-per-second g/frames-per-second)
+(def delta-time        g/delta-time)
 
 (def ->texture-region texture-region/->create)
 
@@ -153,7 +155,7 @@
     (sd/set-default-line-width sd old-line-width)))
 
 (defn set-cursor [cursor-key]
-  (gdx/set-cursor (safe-get cursors cursor-key)))
+  (g/set-cursor (safe-get cursors cursor-key)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
   (if color (batch/set-color batch color))
@@ -246,10 +248,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (gdx/input-x)
+  (let [mouse-x (clamp (input/x)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (gdx/input-y)
+        mouse-y (clamp (input/y)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))

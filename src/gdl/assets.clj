@@ -1,7 +1,7 @@
 (ns gdl.assets
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.audio.sound :as sound]
+  (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.assets :as assets]
+            [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str]))
 
@@ -11,7 +11,7 @@
   (assets/finish-loading manager))
 
 (defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (fh/list (gdx/internal-file folder))
+  (loop [[file & remaining] (fh/list (files/internal folder))
          result []]
     (cond (nil? file)
           result

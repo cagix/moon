@@ -1,10 +1,6 @@
 (ns gdl.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.pprint :refer [pprint]]
-            [clojure.string :as str]))
-
-(defn gdx-static-field [klass-str k]
-  (eval (symbol (str "com.badlogic.gdx." klass-str "/" (str/replace (str/upper-case (name k)) "-" "_")))))
+            [clojure.pprint :refer [pprint]]))
 
 (defmacro bind-root [sym value]
   `(clojure.lang.Var/.bindRoot (var ~sym) ~value))
