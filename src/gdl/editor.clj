@@ -6,7 +6,6 @@
             [gdl.assets :as assets :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics :as g]
-            [gdl.graphics.sprite :as sprite]
             [gdl.malli :as m]
             [gdl.schema :as schema]
             [gdl.stage :as stage]
@@ -494,10 +493,10 @@
     table))
 
 (defn- background-image [path]
-  (ui/image->widget (sprite/create path)
-                    {:fill-parent? true
-                     :scaling :fill
-                     :align :center}))
+  (ui/image-widget (assets/manager path)
+                   {:fill-parent? true
+                    :scaling :fill
+                    :align :center}))
 
 (def graphics
   {:default-font {:file "fonts/exocet/films.EXL_____.ttf"

@@ -6,7 +6,8 @@
             [gdl.ui.group :refer [find-actor-with-id add-actor!]]
             [gdl.ui.table :as table]
             [gdl.ui.utils :as scene2d.utils])
-  (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
+  (:import (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable ChangeListener)
@@ -174,6 +175,9 @@
 
 (defmethod image* Drawable [^Drawable drawable]
   (VisImage. drawable))
+
+(defmethod image* Texture [^Texture texture]
+  (VisImage. (TextureRegion. texture)))
 
 (defmethod image* TextureRegion [^TextureRegion tr]
   (VisImage. tr))
