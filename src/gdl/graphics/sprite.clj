@@ -1,5 +1,6 @@
 (ns gdl.graphics.sprite
-  (:require [gdl.graphics :as g]
+  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [gdl.graphics :as g]
             [gdl.assets :as assets]))
 
 (defn- scale-dimensions [dimensions scale]
@@ -13,7 +14,7 @@
                   (number? (scale 0))
                   (number? (scale 1))))]}
   (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions (g/texture-dimensions texture-region) scale)
+                           (scale-dimensions (texture-region/dimensions texture-region) scale)
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
@@ -30,10 +31,10 @@
       map->Sprite))
 
 (defn create [path]
-  (create* (g/texture-region (assets/manager path))))
+  (create* (texture-region/create (assets/manager path))))
 
 (defn sub [image bounds]
-  (create* (apply g/->texture-region (:texture-region image) bounds)))
+  (create* (apply texture-region/->create (:texture-region image) bounds)))
 
 (defn sheet [path tilew tileh]
   {:image (create path)

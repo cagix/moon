@@ -26,8 +26,6 @@
 (defn clear []
   (screen-utils/clear color/black))
 
-(def texture-region texture-region/create)
-
 (defn setup [{:keys [default-font cursors viewport world-viewport]}]
   (def batch (sprite-batch/create))
   (def sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
@@ -36,7 +34,7 @@
                         texture (texture/create pixmap)]
                     (dispose pixmap)
                     texture))
-  (def sd (sd/create batch (texture-region sd-texture 1 0 1 1)))
+  (def sd (sd/create batch (texture-region/create sd-texture 1 0 1 1)))
   (def default-font (freetype/generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (pixmap/create (files/internal (str "cursors/" file ".png")))
@@ -91,10 +89,6 @@
 
 (def frames-per-second g/frames-per-second)
 (def delta-time        g/delta-time)
-
-(def ->texture-region texture-region/->create)
-
-(def texture-dimensions texture-region/dimensions)
 
 (defn- sd-color [color]
   (sd/set-color sd (->color color)))
