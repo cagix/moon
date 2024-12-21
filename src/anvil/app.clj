@@ -1,33 +1,17 @@
 (ns anvil.app
-  (:require [anvil.controls :as controls]
-            [anvil.db :as db]
+  (:require [anvil.db :as db]
             [anvil.lifecycle.create :refer [create-world dispose-world]]
             [anvil.lifecycle.render :refer [render-world]]
             [anvil.lifecycle.update :refer [update-world]]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.assets :as assets]
             [gdl.graphics :as g]
-            [gdl.graphics.camera :as cam]
             [gdl.stage :as stage]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :refer [visible? set-visible] :as actor]
-            [gdl.ui.group :refer [children]]))
-
-(defn- check-window-hotkeys []
-  (doseq [window-id [:inventory-window
-                     :entity-info-window]
-          :when (key-just-pressed? (get controls/window-hotkeys window-id))]
-    (actor/toggle-visible! (get (:windows (stage/get)) window-id))))
-
-(defn- close-all-windows []
-  (let [windows (children (:windows (stage/get)))]
-    (when (some visible? windows)
-      (run! #(set-visible % false) windows))))
+            [gdl.ui :as ui]))
 
 (defn- start [{:keys [requires db app-config graphics ui world-id]}]
   (lwjgl3/start app-config
@@ -37,7 +21,6 @@
                     (db/setup db)
                     (assets/setup)
                     (g/setup graphics)
-                    (cam/set-zoom! g/camera 0.8)
                     (ui/setup ui)
                     (stage/setup)
                     (create-world (db/build world-id)))
@@ -54,11 +37,7 @@
                     (render-world)
                     (stage/render)
                     (stage/act)
-                    (update-world)
-                    (controls/adjust-zoom g/camera)
-                    (check-window-hotkeys)
-                    (when (key-just-pressed? controls/close-windows-key)
-                      (close-all-windows)))
+                    (update-world))
 
                   (resize [_ w h]
                     (g/resize w h)))))

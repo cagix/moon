@@ -2,11 +2,14 @@
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
             [anvil.entity :as entity]
+            [anvil.lifecycle.potential-fields :refer [update-potential-fields!]]
             [anvil.world :as world :refer [mouseover-eid line-of-sight?]]
+            [clojure.gdx.input :refer [key-just-pressed?]]
             [gdl.graphics :as g]
             [gdl.stage :as stage]
-            [gdl.utils :refer [bind-root sort-by-order]]
-            [anvil.lifecycle.potential-fields :refer [update-potential-fields!]]))
+            [gdl.ui.actor :refer [visible? set-visible] :as actor]
+            [gdl.ui.group :refer [children]]
+            [gdl.utils :refer [bind-root sort-by-order]]))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
@@ -57,6 +60,17 @@
 (defmethod component/pause-game? :player-idle           [_] true)
 (defmethod component/pause-game? :player-dead           [_] true)
 
+(defn- check-window-hotkeys []
+  (doseq [window-id [:inventory-window
+                     :entity-info-window]
+          :when (key-just-pressed? (get controls/window-hotkeys window-id))]
+    (actor/toggle-visible! (get (:windows (stage/get)) window-id))))
+
+(defn- close-all-windows []
+  (let [windows (children (:windows (stage/get)))]
+    (when (some visible? windows)
+      (run! #(set-visible % false) windows))))
+
 (defn update-world []
   (component/manual-tick (entity/state-obj @world/player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
@@ -74,4 +88,8 @@
            (catch Throwable t
              (stage/error-window! t)
              (bind-root world/error t)))))
-  (world/remove-destroyed-entities)) ; do not pause this as for example pickup item, should be destroyed.
+  (world/remove-destroyed-entities)  ; do not pause this as for example pickup item, should be destroyed.
+  (controls/adjust-zoom g/camera)
+  (check-window-hotkeys)
+  (when (key-just-pressed? controls/close-windows-key)
+    (close-all-windows)))
