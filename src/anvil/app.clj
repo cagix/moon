@@ -6,6 +6,7 @@
             [anvil.lifecycle.update :refer [update-world]]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -23,7 +24,7 @@
 (defn- check-window-hotkeys []
   (doseq [window-id [:inventory-window
                      :entity-info-window]
-          :when (controls/toggle-visible? window-id)]
+          :when (key-just-pressed? (get controls/window-hotkeys window-id))]
     (actor/toggle-visible! (get (windows) window-id))))
 
 (defn- close-all-windows []

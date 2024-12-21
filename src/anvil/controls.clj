@@ -13,15 +13,11 @@
   (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
   (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
 
-(defn close-windows? []
-  (key-just-pressed? :keys/escape))
+(def close-windows-key :keys/escape)
 
 (def window-hotkeys
   {:inventory-window   :keys/i
    :entity-info-window :keys/e})
-
-(defn toggle-visible? [window-id]
-  (key-just-pressed? (get window-hotkeys window-id)))
 
 (defn- add-vs [vs]
   (v/normalise (reduce v/add [0 0] vs)))
