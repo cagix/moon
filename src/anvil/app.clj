@@ -54,14 +54,14 @@
 
                   (render [_]
                     (screen-utils/clear color/black)
-                    (stage/act)
                     (render-world)
+                    (stage/render)
+                    (stage/act)
                     (update-world)
                     (controls/adjust-zoom g/camera)
                     (check-window-hotkeys)
-                    (when (controls/close-windows?)
-                      (close-all-windows))
-                    (stage/render))
+                    (when (key-just-pressed? controls/close-windows-key)
+                      (close-all-windows)))
 
                   (resize [_ w h]
                     (g/resize w h)))))
