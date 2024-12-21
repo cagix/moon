@@ -5,6 +5,8 @@
             [anvil.lifecycle.render :refer [render-world]]
             [anvil.lifecycle.update :refer [update-world]]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.assets :as assets]
@@ -50,7 +52,7 @@
                     (dispose-world))
 
                   (render [_]
-                    (g/clear)
+                    (screen-utils/clear color/black)
                     (stage/act)
                     (render-world)
                     (update-world)

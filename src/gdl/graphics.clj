@@ -15,16 +15,12 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
-            [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.tiled :as tiled]
             [gdl.utils :refer [safe-get mapvals]])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
-
-(defn clear []
-  (screen-utils/clear color/black))
 
 (defn setup [{:keys [default-font cursors viewport world-viewport]}]
   (def batch (sprite-batch/create))
