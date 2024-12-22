@@ -17,11 +17,10 @@
             anvil.app.dispose.ui
             anvil.app.dispose.world
 
-            anvil.app.render.world
-
-            anvil.app.tick.world
 
             anvil.world.create
+            anvil.world.tick
+            anvil.world.render
 
             anvil.info.impl
 

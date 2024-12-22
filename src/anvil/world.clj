@@ -16,6 +16,8 @@
 
 (defn create [_])
 (defn dispose [])
+(defn render [])
+(defn tick [])
 
 (declare tiled-map
          explored-tile-corners

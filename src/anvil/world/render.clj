@@ -1,6 +1,5 @@
-(ns anvil.app.render.world
-  (:require [anvil.app.render :as render]
-            [anvil.component :refer [render-below
+(ns anvil.world.render
+  (:require [anvil.component :refer [render-below
                                      render-default
                                      render-above
                                      render-info]]
@@ -147,7 +146,7 @@
                       (line-of-sight? player entity))]
       (render-entity! system entity))))
 
-(defn-impl render/world []
+(defn-impl world/render []
   ; FIXME position DRY
   (cam/set-position! g/camera
                      (:position @world/player-eid))

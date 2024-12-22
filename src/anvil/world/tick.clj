@@ -1,6 +1,5 @@
-(ns anvil.app.tick.world
-  (:require [anvil.app.tick :as tick]
-            [anvil.component :as component]
+(ns anvil.world.tick
+  (:require [anvil.component :as component]
             [anvil.controls :as controls]
             [anvil.entity :as entity]
             [anvil.lifecycle.potential-fields :refer [update-potential-fields!]]
@@ -72,7 +71,7 @@
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
-(defn-impl tick/world []
+(defn-impl world/tick []
   (component/manual-tick (entity/state-obj @world/player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root world/paused? (or world/error
