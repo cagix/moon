@@ -1,5 +1,6 @@
-(ns anvil.lifecycle.update
-  (:require [anvil.component :as component]
+(ns anvil.app.tick.world
+  (:require [anvil.app.tick :as tick]
+            [anvil.component :as component]
             [anvil.controls :as controls]
             [anvil.entity :as entity]
             [anvil.lifecycle.potential-fields :refer [update-potential-fields!]]
@@ -9,7 +10,7 @@
             [gdl.stage :as stage]
             [gdl.ui.actor :refer [visible? set-visible] :as actor]
             [gdl.ui.group :refer [children]]
-            [gdl.utils :refer [bind-root sort-by-order]]))
+            [gdl.utils :refer [bind-root sort-by-order defn-impl]]))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)
@@ -71,7 +72,7 @@
     (when (some visible? windows)
       (run! #(set-visible % false) windows))))
 
-(defn update-world []
+(defn-impl tick/world []
   (component/manual-tick (entity/state-obj @world/player-eid))
   (update-mouseover-entity) ; this do always so can get debug info even when game not running
   (bind-root world/paused? (or world/error

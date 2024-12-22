@@ -5,7 +5,7 @@
             [gdl.stage :as stage]
             [gdl.utils :refer [defn-impl]]))
 
-(defn world [_])
+(defn world [])
 
 (defn-impl app/render [_]
   (screen-utils/clear color/black)

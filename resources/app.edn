@@ -13,6 +13,8 @@
 
             anvil.app.render.world
 
+            anvil.app.tick.world
+
             anvil.info.impl
 
             anvil.effect.target.audiovisual
