@@ -1,13 +1,13 @@
 (ns anvil.app
-  (:require [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+  (:require [anvil.db :as db]
+            [anvil.world :as world]
+            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
-            [clojure.java.io :as io]))
-
-(defn create  [_])
-(defn dispose [_])
-(defn render  [_])
-(defn tick    [_])
-(defn resize  [_ w h])
+            [clojure.java.io :as io]
+            [gdl.assets :as assets]
+            [gdl.graphics :as g]
+            [gdl.stage :as stage]
+            [gdl.ui :as ui]))
 
 (defn -main []
   (let [{:keys [requires lwjgl3 lifecycle]} (-> "app.edn" io/resource slurp edn/read-string)]
@@ -15,14 +15,26 @@
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
                     (create [_]
-                      (create lifecycle))
+                      (db/setup (:db lifecycle))
+                      (assets/setup)
+                      (g/setup (:graphics lifecycle))
+                      (ui/setup (:ui lifecycle))
+                      (stage/setup)
+                      (world/create (:world lifecycle)))
 
                     (dispose [_]
-                      (dispose lifecycle))
+                      (assets/cleanup)
+                      (g/cleanup)
+                      (stage/cleanup)
+                      (ui/cleanup)
+                      (world/dispose))
 
                     (render [_]
-                      (render lifecycle)
-                      (tick   lifecycle))
+                      (g/clear-screen)
+                      (world/render)
+                      (stage/render)
+                      (stage/act)
+                      (world/tick))
 
                     (resize [_ w h]
-                      (resize lifecycle w h))))))
+                      (g/resize w h))))))

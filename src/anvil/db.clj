@@ -1,7 +1,8 @@
 (ns anvil.db
   (:require [gdl.db :as db]))
 
-(declare db)
+(defn setup [config]
+  (def db (db/create config)))
 
 (defn build [id]
   (db/build db id))
