@@ -1,7 +1,6 @@
 (ns anvil.app.render
   (:require [anvil.app :as app]
             [anvil.lifecycle.render :refer [render-world]]
-            [anvil.lifecycle.update :refer [update-world]]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils.screen-utils :as screen-utils]
             [gdl.stage :as stage]
@@ -10,6 +9,4 @@
 (defn-impl app/render [_]
   (screen-utils/clear color/black)
   (render-world)
-  (stage/render)
-  (stage/act)
-  (update-world))
+  (stage/render))

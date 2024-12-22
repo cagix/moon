@@ -6,6 +6,7 @@
 (defn create  [_])
 (defn dispose [_])
 (defn render  [_])
+(defn tick    [_])
 (defn resize  [_ w h])
 
 (defn -main []
@@ -20,7 +21,8 @@
                       (dispose lifecycle))
 
                     (render [_]
-                      (render lifecycle))
+                      (render lifecycle)
+                      (tick   lifecycle))
 
                     (resize [_ w h]
                       (resize lifecycle w h))))))

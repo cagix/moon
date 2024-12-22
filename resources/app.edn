@@ -2,6 +2,7 @@
             anvil.app.dispose
             anvil.app.render
             anvil.app.resize
+            anvil.app.tick
 
             anvil.app.create.assets
             anvil.app.create.db
