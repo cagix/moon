@@ -1,6 +1,5 @@
 (ns anvil.player.interaction-state
   (:require [anvil.entity :as entity]
-            [anvil.entity.inventory :as inventory]
             [anvil.skill :as skill]
             [anvil.player :as player]
             [anvil.world :as world]
@@ -29,11 +28,11 @@
       (swap! eid assoc :entity/destroyed? true)
       (entity/event world/player-eid :pickup-item item))
 
-     (inventory/can-pickup-item? @world/player-eid item)
+     (entity/can-pickup-item? @world/player-eid item)
      (do
       (play-sound "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (inventory/pickup-item world/player-eid item))
+      (entity/pickup-item world/player-eid item))
 
      :else
      (do

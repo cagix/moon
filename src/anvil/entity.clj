@@ -15,3 +15,17 @@
 (defn event
   ([eid event])
   ([eid event params]))
+
+(defn valid-slot? [[slot _] item])
+
+(defn set-item [eid cell item])
+
+(defn remove-item [eid cell])
+
+(defn stackable? [item-a item-b])
+
+(defn stack-item [eid cell item])
+
+(defn can-pickup-item? [{:keys [entity/inventory]} item])
+
+(defn pickup-item [eid item])

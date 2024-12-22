@@ -45,32 +45,32 @@
     (cond
      ; PUT ITEM IN EMPTY CELL
      (and (not item-in-cell)
-          (inventory/valid-slot? cell item-on-cursor))
+          (entity/valid-slot? cell item-on-cursor))
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (inventory/set-item eid cell item-on-cursor)
+      (entity/set-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
-          (inventory/stackable? item-in-cell item-on-cursor))
+          (entity/stackable? item-in-cell item-on-cursor))
      (do
       (play-sound "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (inventory/stack-item eid cell item-on-cursor)
+      (entity/stack-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
-          (inventory/valid-slot? cell item-on-cursor))
+          (entity/valid-slot? cell item-on-cursor))
      (do
       (play-sound "bfxr_itemput")
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (inventory/remove-item eid cell)
-      (inventory/set-item eid cell item-on-cursor)
+      (entity/remove-item eid cell)
+      (entity/set-item eid cell item-on-cursor)
       (entity/event eid :dropped-item)
       (entity/event eid :pickup-item item-in-cell)))))
 
@@ -228,7 +228,7 @@
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
-          color (if (inventory/valid-slot? cell item)
+          color (if (entity/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
       (g/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
@@ -281,7 +281,7 @@
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play-sound "bfxr_takeit")
     (entity/event eid :pickup-item item)
-    (inventory/remove-item eid cell)))
+    (entity/remove-item eid cell)))
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
