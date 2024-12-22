@@ -2,13 +2,12 @@
   (:refer-clojure :exclude [val])
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.entity.modifiers :as mods]
             [anvil.info :as info]))
 
 (defn-impl entity/mana [entity]
   (-> entity
       :entity/mana
-      (mods/apply-max-modifier entity :modifier/mana-max)))
+      (entity/apply-max-modifier entity :modifier/mana-max)))
 
 (defn-impl entity/mana-val [entity]
   (if (:entity/mana entity)

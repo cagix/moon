@@ -1,7 +1,6 @@
 (ns anvil.entity.hp
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.entity.modifiers :as mods]
             [anvil.info :as info]
             [gdl.graphics :as g]
             [gdl.val-max :as val-max]))
@@ -43,7 +42,7 @@
   [entity]
   (-> entity
       :entity/hp
-      (mods/apply-max-modifier entity :modifier/hp-max)))
+      (entity/apply-max-modifier entity :modifier/hp-max)))
 
 (defmethods :entity/hp
   (component/info [_]

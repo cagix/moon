@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.effect.target.spiderweb
   (:require [anvil.component :as component]
-            [anvil.entity.modifiers :as mods]
+            [anvil.entity :as entity]
             [anvil.world :refer [timer]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
@@ -22,4 +22,4 @@
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                    :counter (timer duration)})
-        (swap! target mods/add modifiers)))))
+        (swap! target entity/mod-add modifiers)))))

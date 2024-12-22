@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.temp-modifier
   (:require [anvil.component :as component]
-            [anvil.entity.modifiers :as mods]
+            [anvil.entity :as entity]
             [anvil.world :refer [finished-ratio stopped?]]
             [gdl.graphics :as g]))
 
@@ -11,7 +11,7 @@
   (component/tick [[k {:keys [modifiers counter]}] eid]
     (when (stopped? counter)
       (swap! eid dissoc k)
-      (swap! eid mods/remove modifiers)))
+      (swap! eid entity/mod-remove modifiers)))
 
   ; TODO draw opacity as of counter ratio?
   (component/render-above [_ entity]

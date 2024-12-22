@@ -1,7 +1,6 @@
 (ns anvil.entity.inventory
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.entity.modifiers :as mods]
             [anvil.widgets :as widgets]
             [data.grid2d :as g2d]))
 
@@ -39,7 +38,7 @@
       (widgets/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
-      (swap! eid mods/add (:entity/modifiers item)))))
+      (swap! eid entity/mod-add (:entity/modifiers item)))))
 
 (defn-impl entity/remove-item [eid cell]
   (let [entity @eid
@@ -49,7 +48,7 @@
       (widgets/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
-      (swap! eid mods/remove (:entity/modifiers item)))))
+      (swap! eid entity/mod-remove (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
 #_(defn-impl entity/remove-one-item [eid cell]
