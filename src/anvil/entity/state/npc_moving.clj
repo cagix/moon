@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.entity.state.npc-moving
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.entity.stat :as stat]
             [anvil.world :refer [timer stopped?]]
             [gdl.utils :refer [defmethods]]))
 
@@ -9,11 +8,11 @@
   (component/->v [[_ eid movement-vector]]
     {:eid eid
      :movement-vector movement-vector
-     :counter (timer (* (stat/->value @eid :entity/reaction-time) 0.016))})
+     :counter (timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
   (component/enter [[_ {:keys [eid movement-vector]}]]
     (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (or (stat/->value @eid :entity/movement-speed) 0)}))
+                                       :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
   (component/exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))

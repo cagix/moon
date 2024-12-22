@@ -1,6 +1,6 @@
 (ns anvil.info.impl
   (:require [anvil.component :as component]
-            [anvil.entity.stat :as stat]
+            [anvil.entity :as entity]
             [anvil.info :as info]
             [gdl.utils :refer [readable-number]]))
 
@@ -30,7 +30,7 @@
     (str "Cost: " v " Mana")))
 
 (defmethod component/info ::stat [[k _]]
-  (str (info/k->pretty-name k) ": " (stat/->value info/*info-text-entity* k)))
+  (str (info/k->pretty-name k) ": " (entity/stat info/*info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)

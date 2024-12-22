@@ -3,7 +3,6 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity]
             [anvil.entity.mana :as mana]
-            [anvil.entity.stat :as stat]
             [anvil.world :refer [timer finished-ratio stopped?]]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
@@ -24,7 +23,7 @@
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
-     (or (stat/->value entity (:skill/action-time-modifier-key skill))
+     (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
 (defmethods :active-skill

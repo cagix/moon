@@ -1,7 +1,9 @@
 (ns anvil.entity.stat
-  (:require [anvil.entity.modifiers :as mods]))
+  (:require [anvil.entity :as entity]
+            [anvil.entity.modifiers :as mods]
+            [gdl.utils :refer [defn-impl]]))
 
-(defn ->value [entity k]
+(defn-impl entity/stat [entity k]
   (when-let [base-value (k entity)]
     (mods/->value base-value
                   entity

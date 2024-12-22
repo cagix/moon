@@ -1,11 +1,11 @@
 (ns ^:no-doc anvil.effect.target.melee-damage
   (:require [anvil.component :as component]
-            [anvil.entity.stat :as stat]
+            [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.utils :refer [defmethods]]))
 
 (defn- entity->melee-damage [entity]
-  (let [strength (or (stat/->value entity :entity/strength) 0)]
+  (let [strength (or (entity/stat entity :entity/strength) 0)]
     {:damage/min-max [strength strength]}))
 
 (defn- damage-effect [entity]

@@ -12,8 +12,8 @@
 (defn potential-fields [])
 (defn entities [])
 (defn remove-destroyed-entities [])
-(defn camera-controls [])
-(defn window-hotkeys  [])
+(defn camera-controls [camera])
+(defn window-hotkeys  [stage])
 
 (defn-impl world/tick []
   (player-input)

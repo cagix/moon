@@ -29,3 +29,5 @@
 (defn can-pickup-item? [{:keys [entity/inventory]} item])
 
 (defn pickup-item [eid item])
+
+(defn stat [entity k])

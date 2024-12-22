@@ -4,7 +4,6 @@
             [anvil.entity :as entity]
             [anvil.entity.damage :as damage]
             [anvil.entity.hp :as hp]
-            [anvil.entity.stat :as stat]
             [anvil.world :as world :refer [add-text-effect]]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defmethods]]))
@@ -13,8 +12,8 @@
   (str min "-" max " damage"))
 
 (defn- effective-armor-save [source* target*]
-  (max (- (or (stat/->value target* :entity/armor-save) 0)
-          (or (stat/->value source* :entity/armor-pierce) 0))
+  (max (- (or (entity/stat target* :entity/armor-save) 0)
+          (or (entity/stat source* :entity/armor-pierce) 0))
        0))
 
 (comment
