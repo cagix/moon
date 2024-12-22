@@ -2,7 +2,6 @@
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]
-            [anvil.entity.mana :as mana]
             [anvil.world :refer [timer finished-ratio stopped?]]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
@@ -44,7 +43,7 @@
              (timer (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
-      (swap! eid mana/pay-cost (:skill/cost skill))))
+      (swap! eid entity/pay-mana-cost (:skill/cost skill))))
 
   (component/tick [[_ {:keys [skill effect-ctx counter]}] eid]
     (cond

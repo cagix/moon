@@ -1,11 +1,11 @@
 (ns anvil.skill.usable-state
   (:require [anvil.effect :as effect]
-            [anvil.entity.mana :as mana]
+            [anvil.entity :as entity]
             [anvil.skill :as skill]
             [gdl.utils :refer [defn-impl]]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
-  (and cost (> cost (mana/val entity))))
+  (and cost (> cost (entity/mana-val entity))))
 
 (defn-impl skill/usable-state
   [entity {:keys [skill/cooling-down? skill/effects] :as skill} effect-ctx]

@@ -31,3 +31,21 @@
 (defn pickup-item [eid item])
 
 (defn stat [entity k])
+
+(defn mana
+  "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
+  Current-mana is capped by max-mana."
+  [entity])
+
+(defn mana-val [entity])
+
+(defn pay-mana-cost [entity cost])
+
+(defn damage
+  ([source damage])
+  ([source target damage]))
+
+(defn hitpoints
+  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
+  Current-hp is capped by max-hp."
+  [entity])

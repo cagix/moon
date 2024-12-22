@@ -1,7 +1,9 @@
 (ns ^:no-doc anvil.entity.damage
-  (:require [anvil.entity.modifiers :as mods]))
+  (:require [anvil.entity :as entity]
+            [anvil.entity.modifiers :as mods]
+            [gdl.utils :refer [defn-impl]]))
 
-(defn ->value
+(defn-impl entity/damage
   ([source damage]
    (update damage
            :damage/min-max
@@ -10,7 +12,7 @@
                 (mods/apply-max-modifier source :modifier/damage-deal-max))))
 
   ([source target damage]
-   (update (->value source damage)
+   (update (entity/damage source damage)
            :damage/min-max
            mods/apply-max-modifier
            target

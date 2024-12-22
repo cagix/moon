@@ -1,9 +1,10 @@
 (ns anvil.entity.hp
   (:require [anvil.component :as component]
+            [anvil.entity :as entity]
             [anvil.entity.modifiers :as mods]
             [anvil.info :as info]
             [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]
+            [gdl.utils :refer [defmethods defn-impl]]
             [gdl.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -39,9 +40,7 @@
                              (* 2 border))
                           (hpbar-color ratio)))))
 
-(defn ->value
-  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-hp is capped by max-hp."
+(defn-impl entity/hitpoints
   [entity]
   (-> entity
       :entity/hp
@@ -49,12 +48,12 @@
 
 (defmethods :entity/hp
   (component/info [_]
-    (str "Hitpoints: " (->value info/*info-text-entity*)))
+    (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 
   (component/->v [[_ v]]
     [v v])
 
   (component/render-info [_ entity]
-    (let [ratio (val-max/ratio (->value entity))]
+    (let [ratio (val-max/ratio (entity/hitpoints entity))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
         (draw-hpbar entity ratio)))))

@@ -2,8 +2,6 @@
   (:require [anvil.component :as component]
             [anvil.db :as db]
             [anvil.entity :as entity]
-            [anvil.entity.damage :as damage]
-            [anvil.entity.hp :as hp]
             [anvil.world :as world :refer [add-text-effect]]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defmethods]]))
@@ -30,7 +28,7 @@
   (component/info [[_ damage]]
     (damage-info damage)
     #_(if source
-        (let [modified (damage/->value @source damage)]
+        (let [modified (entity/damage @source damage)]
           (if (= damage modified)
             (damage-info damage)
             (str (damage-info damage) "\nModified: " (damage/info modified))))
@@ -44,7 +42,7 @@
   (component/handle [[_ damage] {:keys [effect/source effect/target]}]
     (let [source* @source
           target* @target
-          hp (hp/->value target*)]
+          hp (entity/hitpoints target*)]
       (cond
        (zero? (hp 0))
        nil
@@ -53,7 +51,7 @@
        (swap! target add-text-effect "[WHITE]ARMOR")
 
        :else
-       (let [min-max (:damage/min-max (damage/->value source* target* damage))
+       (let [min-max (:damage/min-max (entity/damage source* target* damage))
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)

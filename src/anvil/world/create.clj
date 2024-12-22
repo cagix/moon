@@ -4,8 +4,6 @@
             [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.entity.inventory :as inventory]
-            [anvil.entity.hp :as hp]
-            [anvil.entity.mana :as mana]
             [anvil.entity.skills :as skills]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
@@ -96,8 +94,8 @@
     (ui-actor {:draw (fn []
                        (let [player-entity @world/player-eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (hp/->value   player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (mana/->value player-entity) "MP")))})))
+                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
+                         (render-hpmana-bar x y-mana manacontent (entity/mana player-entity) "MP")))})))
 
 (defn- menu-item [text on-clicked]
   (doto (ui/menu-item text)
