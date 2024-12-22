@@ -1,6 +1,5 @@
 (ns anvil.world.tick.camera-controls
   (:require [anvil.world.tick :as tick]
-            [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.utils :refer [defn-impl]]))
 
@@ -10,5 +9,5 @@
   (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
   (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
 
-(defn-impl tick/camera-controls []
-  (adjust-zoom g/camera))
+(defn-impl tick/camera-controls [camera]
+  (adjust-zoom camera))

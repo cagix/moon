@@ -1,6 +1,8 @@
 (ns anvil.world.tick
   (:refer-clojure :exclude [time])
   (:require [anvil.world :as world]
+            [gdl.graphics :as g]
+            [gdl.stage :as stage]
             [gdl.utils :refer [defn-impl]]))
 
 (defn player-input [])
@@ -22,5 +24,5 @@
     (potential-fields)
     (entities))
   (remove-destroyed-entities) ; do not pause this as for example pickup item, should be destroyed.
-  (camera-controls)
-  (window-hotkeys))
+  (camera-controls g/camera)
+  (window-hotkeys (stage/get)))

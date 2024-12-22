@@ -1,6 +1,10 @@
 (ns anvil.controls.movement-vector
-  (:require [gdl.math.vector :as v]
+  (:require [anvil.controls :as controls]
+            [gdl.math.vector :as v]
             [gdl.utils :refer [defn-impl]]))
+
+(defn- add-vs [vs]
+  (v/normalise (reduce v/add [0 0] vs)))
 
 (defn- WASD-movement-vector []
   (let [r (when (key-pressed? :d) [1  0])
@@ -11,9 +15,6 @@
       (let [v (add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
           v)))))
-
-(defn- add-vs [vs]
-  (v/normalise (reduce v/add [0 0] vs)))
 
 (defn-impl controls/movement-vector []
   (WASD-movement-vector))
