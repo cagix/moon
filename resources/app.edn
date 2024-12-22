@@ -22,12 +22,12 @@
             anvil.world.render
             anvil.world.widgets
 
-            anvil.world.widgets.action-bar
-            anvil.world.widgets.dev-menu
-            anvil.world.widgets.entity-info-window
-            anvil.world.widgets.hp-mana-bar
-            anvil.world.widgets.inventory
-            anvil.world.widgets.player-message
+            anvil.widgets.action-bar
+            anvil.widgets.dev-menu
+            anvil.widgets.entity-info-window
+            anvil.widgets.hp-mana-bar
+            anvil.widgets.inventory
+            anvil.widgets.player-message
 
             anvil.world.render.debug-after-entities
             anvil.world.render.debug-before-entities

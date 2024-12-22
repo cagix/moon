@@ -1,7 +1,7 @@
-(ns anvil.world.widgets.hp-mana-bar
+(ns anvil.widgets.hp-mana-bar
   (:require [anvil.entity :as entity]
+            [anvil.widgets :as widgets]
             [anvil.world :as world]
-            [anvil.world.widgets :as widgets]
             [gdl.graphics :as g]
             [gdl.graphics.sprite :as sprite]
             [gdl.ui :refer [ui-actor]]

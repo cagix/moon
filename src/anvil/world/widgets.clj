@@ -1,34 +1,23 @@
 (ns anvil.world.widgets
   (:require [anvil.component :refer [draw-gui-view]]
             [anvil.entity :as entity]
+            [anvil.widgets :as widgets]
             [anvil.world :as world]
             [gdl.ui :refer [ui-actor] :as ui]))
 
-(defn hp-mana-bar [])
-
-(defn dev-menu [])
-
-(defn action-bar [])
-
-(defn inventory [])
-
-(defn entity-info-window [])
-
-(defn player-message [])
-
 (defn-impl world/widgets []
   [(if dev-mode?
-     (dev-menu)
+     (widgets/dev-menu)
      (ui-actor {}))
-   (ui/table {:rows [[{:actor (action-bar)
+   (ui/table {:rows [[{:actor (widgets/action-bar)
                        :expand? true
                        :bottom? true}]]
               :id :action-bar-table
               :cell-defaults {:pad 2}
               :fill-parent? true})
-   (hp-mana-bar)
+   (widgets/hp-mana-bar)
    (ui/group {:id :windows
-              :actors [(entity-info-window)
-                       (inventory)]})
+              :actors [(widgets/entity-info-window)
+                       (widgets/inventory)]})
    (ui-actor {:draw #(draw-gui-view (entity/state-obj @world/player-eid))})
-   (player-message)])
+   (widgets/player-message)])

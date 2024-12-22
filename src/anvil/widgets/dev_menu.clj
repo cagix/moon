@@ -1,8 +1,8 @@
-(ns anvil.world.widgets.dev-menu
+(ns anvil.widgets.dev-menu
   (:require [anvil.controls :as controls]
             [anvil.db :as db]
+            [anvil.widgets :as widgets]
             [anvil.world :as world]
-            [anvil.world.widgets :as widgets]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.graphics.sprite :as sprite]

@@ -1,10 +1,10 @@
-(ns anvil.world.widgets.inventory
-  (:require [anvil.world.widgets :as widgets]
-            [anvil.component :refer [clicked-inventory-cell]]
+(ns anvil.widgets.inventory
+  (:require [anvil.component :refer [clicked-inventory-cell]]
             [anvil.entity :as entity]
             [anvil.entity.inventory :as inventory]
             [gdl.graphics :as g]
             [anvil.info :as info]
+            [anvil.widgets :as widgets]
             [anvil.world :as world]
             [gdl.stage :as stage]
             [gdl.graphics.sprite :as sprite]

@@ -1,9 +1,9 @@
-(ns anvil.world.widgets.action-bar
+(ns anvil.widgets.action-bar
   (:require [anvil.entity :as entity]
             [anvil.entity.skills :as skills]
             [anvil.info :as info]
+            [anvil.widgets :as widgets]
             [anvil.world :as world]
-            [anvil.world.widgets :as widgets]
             [gdl.stage :as stage]
             [gdl.ui :refer [ui-actor add-tooltip!] :as ui]
             [gdl.ui.group :refer [add-actor!]])

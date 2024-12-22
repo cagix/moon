@@ -1,5 +1,5 @@
-(ns anvil.world.widgets.player-message
-  (:require [anvil.world.widgets :as widgets]
+(ns anvil.widgets.player-message
+  (:require [anvil.widgets :as widgets]
             [gdl.graphics :as g :refer [draw-text]]
             [gdl.stage :refer [message-to-player player-message-duration-seconds]]
             [gdl.ui :refer [ui-actor]]))

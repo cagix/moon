@@ -1,7 +1,7 @@
-(ns anvil.world.widgets.entity-info-window
+(ns anvil.widgets.entity-info-window
   (:require [anvil.info :as info]
+            [anvil.widgets :as widgets]
             [anvil.world :as world]
-            [anvil.world.widgets :as widgets]
             [gdl.graphics :as g]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :as group]))
