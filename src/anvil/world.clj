@@ -13,6 +13,8 @@
                                      overlaps?]]
             [gdl.math.vector :as v]))
 
+(defn widgets [])
+
 (defn create [_])
 (defn dispose [])
 (defn render [])

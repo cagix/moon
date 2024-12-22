@@ -20,6 +20,7 @@
             anvil.world.create
             anvil.world.tick
             anvil.world.render
+            anvil.world.widgets
 
             anvil.world.render.debug-after-entities
             anvil.world.render.debug-before-entities

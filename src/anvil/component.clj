@@ -1,18 +1,6 @@
 (ns anvil.component
   (:refer-clojure :exclude [apply]))
 
-(defn- system-dispatch [[k] & args]
-  k)
-
-(defmacro ^:private defsystem
-  {:arglists '([name docstring?])}
-  [name-sym & args]
-  (let [docstring (if (string? (first args))
-                    (first args))]
-    `(defmulti ~name-sym
-       ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
-       system-dispatch)))
-
 (defsystem info)
 (defmethod info :default [_])
 
