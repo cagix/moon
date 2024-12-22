@@ -1,0 +1,17 @@
+{:lwjgl3 {:title "Ultimate Fantasy"
+          :fps 60
+          :width 1440
+          :height 900
+          :taskbar-icon "moon.png"}
+ :lifecycle {:db {:schema     "uf_schema.edn"
+                  :properties "uf_properties.edn"}
+             :ui :skin-scale/x1
+             :graphics {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                                       :size 16
+                                       :quality-scaling 2}
+                        :cursors {:cursors/default ["default" [0 0]]}
+                        :viewport {:width 1440
+                                   :height 900}
+                        :world-viewport {:tile-size 48
+                                         :width 1440
+                                         :height 900}}}}

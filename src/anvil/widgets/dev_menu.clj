@@ -46,11 +46,10 @@
     (run! #(add-menu menu-bar %) menus)
     menu-bar))
 
-(defn- dev-menu* [{:keys [menus update-labels]}]
+(defn dev-menu* [{:keys [menus update-labels]}]
   (let [menu-bar (create-menu-bar menus)]
     (add-update-labels menu-bar update-labels)
     menu-bar))
-
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (stage/mouse-on-actor?)]
