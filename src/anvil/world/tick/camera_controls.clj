@@ -1,8 +1,15 @@
 (ns anvil.world.tick.camera-controls
-  (:require [anvil.controls :as controls]
-            [anvil.world.tick :as tick]
+  (:require [anvil.world.tick :as tick]
+            [clojure.gdx.input :refer [key-pressed?]]
             [gdl.graphics :as g]
+            [gdl.graphics.camera :as cam]
             [gdl.utils :refer [defn-impl]]))
 
+(def ^:private zoom-speed 0.025)
+
+(defn adjust-zoom [camera]
+  (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
+
 (defn-impl tick/camera-controls []
-  (controls/adjust-zoom g/camera))
+  (adjust-zoom g/camera))

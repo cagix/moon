@@ -1,17 +1,9 @@
 (ns anvil.controls
-  (:require [clojure.gdx.input :refer [key-just-pressed? key-pressed?]]
-            [gdl.graphics.camera :as cam]
-            [gdl.math.vector :as v]))
+  (:require [clojure.gdx.input :refer [key-just-pressed? key-pressed?]]))
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)
       (key-pressed? :keys/space)))
-
-(def ^:private zoom-speed 0.025)
-
-(defn adjust-zoom [camera]
-  (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
-  (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (def close-windows-key :keys/escape)
 
@@ -19,21 +11,7 @@
   {:inventory-window   :keys/i
    :entity-info-window :keys/e})
 
-(defn- add-vs [vs]
-  (v/normalise (reduce v/add [0 0] vs)))
-
-(defn- WASD-movement-vector []
-  (let [r (when (key-pressed? :d) [1  0])
-        l (when (key-pressed? :a) [-1 0])
-        u (when (key-pressed? :w) [0  1])
-        d (when (key-pressed? :s) [0 -1])]
-    (when (or r l u d)
-      (let [v (add-vs (remove nil? [r l u d]))]
-        (when (pos? (v/length v))
-          v)))))
-
-(defn movement-vector []
-  (WASD-movement-vector))
+(defn movement-vector [])
 
 (def help-text
   "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")

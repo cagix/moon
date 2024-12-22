@@ -34,6 +34,7 @@
 
             anvil.player.interaction-state
             anvil.skill.usable-state
+            anvil.controls.movement-vector
 
             anvil.info.impl
 

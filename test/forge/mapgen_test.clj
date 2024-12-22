@@ -130,6 +130,12 @@
                                                       (println t))))]]
               :pack? true}))
 
+(def ^:private zoom-speed 0.025)
+
+(defn adjust-zoom [camera]
+  (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
+
 (defn enter [_]
   #_(show-whole-map! g/camera (:tiled-map @current-data)))
 
@@ -144,7 +150,7 @@
       (swap! current-data update :show-grid-lines not))
   #_(if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
-  #_(controls/adjust-zoom g/camera)
+  #_(adjust-zoom g/camera)
   #_(camera-controls g/camera))
 
 #_(defn dispose [_]
