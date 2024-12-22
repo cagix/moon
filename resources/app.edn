@@ -3,6 +3,13 @@
             anvil.app.render
             anvil.app.resize
 
+            anvil.app.create.assets
+            anvil.app.create.db
+            anvil.app.create.graphics
+            anvil.app.create.stage
+            anvil.app.create.ui
+            anvil.app.create.world
+
             anvil.info.impl
 
             anvil.effect.target.audiovisual
@@ -83,4 +90,4 @@
                         :world-viewport {:tile-size 48
                                          :width 1440
                                          :height 900}}
-             :world-id :worlds/uf-caves}}
+             :world :worlds/uf-caves}}
