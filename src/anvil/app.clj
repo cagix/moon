@@ -5,7 +5,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.assets :as assets]
-            [gdl.graphics :as g]
+            [gdl.graphics :as graphics]
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
 
@@ -17,24 +17,24 @@
                     (create [_]
                       (db/setup (:db lifecycle))
                       (assets/setup)
-                      (g/setup (:graphics lifecycle))
+                      (graphics/setup (:graphics lifecycle))
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (world/create (:world lifecycle)))
 
                     (dispose [_]
                       (assets/cleanup)
-                      (g/cleanup)
+                      (graphics/cleanup)
                       (stage/cleanup)
                       (ui/cleanup)
                       (world/dispose))
 
                     (render [_]
-                      (g/clear-screen)
+                      (graphics/clear-screen)
                       (world/render)
                       (stage/render)
                       (stage/act)
                       (world/tick))
 
                     (resize [_ w h]
-                      (g/resize w h))))))
+                      (graphics/resize w h))))))
