@@ -9,8 +9,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.math.shapes :refer [circle->outer-rectangle]]
             [anvil.world :as world :refer [finished-ratio line-of-sight?]]
-            [gdl.utils :refer [sort-by-order pretty-pst defn-impl]]
-            [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
+            [gdl.utils :refer [sort-by-order pretty-pst defn-impl]]))
 
 (defn- geom-test []
   (let [position (g/world-mouse-position)
@@ -52,7 +51,7 @@
         (let [faction :good
               {:keys [distance]} (faction cell*)]
           (when distance
-            (let [ratio (/ distance (factions-iterations faction))]
+            (let [ratio (/ distance (world/factions-iterations faction))]
               (g/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
