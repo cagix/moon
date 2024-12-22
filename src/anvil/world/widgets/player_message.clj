@@ -1,5 +1,6 @@
-(ns anvil.ui.player-message
-  (:require [gdl.graphics :as g :refer [draw-text]]
+(ns anvil.world.widgets.player-message
+  (:require [anvil.world.widgets :as widgets]
+            [gdl.graphics :as g :refer [draw-text]]
             [gdl.stage :refer [message-to-player player-message-duration-seconds]]
             [gdl.ui :refer [ui-actor]]))
 
@@ -17,6 +18,6 @@
     (when (>= counter player-message-duration-seconds)
       (bind-root message-to-player nil))))
 
-(defn actor []
+(defn-impl widgets/player-message []
   (ui-actor {:draw draw-player-message
              :act check-remove-message}))
