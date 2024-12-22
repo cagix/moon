@@ -1,8 +1,8 @@
-(ns anvil.entity.state.player-idle.interaction-state
+(ns anvil.player.interaction-state
   (:require [anvil.entity :as entity]
             [anvil.entity.inventory :as inventory]
-            [anvil.entity.state.player-idle :as player-idle]
             [anvil.skill :as skill]
+            [anvil.player :as player]
             [anvil.world :as world]
             [gdl.assets :refer [play-sound]]
             [gdl.graphics :as g]
@@ -116,5 +116,5 @@
        [:cursors/no-skill-selected
         (fn [] (denied "No selected skill"))]))))
 
-(defn-impl player-idle/interaction-state [eid]
+(defn-impl player/interaction-state [eid]
   (interaction-state eid))

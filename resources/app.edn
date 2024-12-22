@@ -32,6 +32,7 @@
             anvil.world.tick.time
             anvil.world.tick.window-hotkeys
 
+            anvil.player.interaction-state
 
             anvil.info.impl
 
@@ -55,7 +56,6 @@
             anvil.entity.state.npc-sleeping
             anvil.entity.state.player-dead
             anvil.entity.state.player-idle
-            anvil.entity.state.player-idle.interaction-state
             anvil.entity.state.player-item-on-cursor
             anvil.entity.state.player-moving
             anvil.entity.state.stunned
