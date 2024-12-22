@@ -1,5 +1,6 @@
-(ns anvil.lifecycle.render
-  (:require [anvil.component :refer [render-below
+(ns anvil.app.render.world
+  (:require [anvil.app.render :as render]
+            [anvil.component :refer [render-below
                                      render-default
                                      render-above
                                      render-info]]
@@ -9,7 +10,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.math.shapes :refer [circle->outer-rectangle]]
             [anvil.world :as world :refer [finished-ratio line-of-sight?]]
-            [gdl.utils :refer [sort-by-order pretty-pst]]
+            [gdl.utils :refer [sort-by-order pretty-pst defn-impl]]
             [anvil.lifecycle.potential-fields :refer [factions-iterations]]))
 
 (defn- geom-test []
@@ -146,7 +147,7 @@
                       (line-of-sight? player entity))]
       (render-entity! system entity))))
 
-(defn render-world []
+(defn-impl render/world []
   ; FIXME position DRY
   (cam/set-position! g/camera
                      (:position @world/player-eid))

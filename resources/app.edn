@@ -11,6 +11,8 @@
             anvil.app.create.ui
             anvil.app.create.world
 
+            anvil.app.render.world
+
             anvil.info.impl
 
             anvil.effect.target.audiovisual
