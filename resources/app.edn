@@ -4,19 +4,6 @@
             anvil.app.resize
             anvil.app.tick
 
-            anvil.app.create.assets
-            anvil.app.create.db
-            anvil.app.create.graphics
-            anvil.app.create.stage
-            anvil.app.create.ui
-            anvil.app.create.world
-
-            anvil.app.dispose.assets
-            anvil.app.dispose.graphics
-            anvil.app.dispose.stage
-            anvil.app.dispose.ui
-            anvil.app.dispose.world
-
             anvil.world.create
             anvil.world.tick
             anvil.world.render

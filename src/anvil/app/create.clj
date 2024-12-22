@@ -1,17 +1,17 @@
 (ns anvil.app.create
-  (:require [anvil.app :as app]))
-
-(defn db       [_])
-(defn assets   [_])
-(defn graphics [_])
-(defn ui       [_])
-(defn stage    [ ])
-(defn world    [_])
+  (:require [anvil.app :as app]
+            [anvil.db]
+            [anvil.world :as world]
+            [gdl.assets :as assets]
+            [gdl.db]
+            [gdl.graphics :as g]
+            [gdl.stage :as stage]
+            [gdl.ui :as ui]))
 
 (defn-impl app/create [config]
-  (db       (:db       config))
-  (assets   (:assets   config))
-  (graphics (:graphics config))
-  (ui       (:ui       config))
-  (stage)
-  (world    (:world    config)))
+  (bind-root anvil.db/db (gdl.db/create (:db config)))
+  (assets/setup)
+  (g/setup (:graphics config))
+  (ui/setup  (:ui config))
+  (stage/setup)
+  (world/create (:world config)))

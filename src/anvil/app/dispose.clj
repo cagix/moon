@@ -1,15 +1,14 @@
 (ns anvil.app.dispose
-  (:require [anvil.app :as app]))
-
-(defn assets   [])
-(defn graphics [])
-(defn ui       [])
-(defn stage    [])
-(defn world    [])
+  (:require [anvil.app :as app]
+            [anvil.world :as world]
+            [gdl.assets :as assets]
+            [gdl.graphics :as g]
+            [gdl.stage :as stage]
+            [gdl.ui :as ui]))
 
 (defn-impl app/dispose [_]
-  (assets)
-  (graphics)
-  (ui)
-  (stage)
-  (world))
+  (assets/cleanup)
+  (g/cleanup)
+  (stage/cleanup)
+  (ui/cleanup)
+  (world/dispose))
