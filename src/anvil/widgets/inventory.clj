@@ -1,7 +1,6 @@
 (ns anvil.widgets.inventory
   (:require [anvil.component :refer [clicked-inventory-cell]]
             [anvil.entity :as entity]
-            [anvil.entity.inventory :as inventory]
             [gdl.graphics :as g]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
@@ -159,8 +158,8 @@
       (.add (->cell :inventory.slot/rings :position [0 0]))
       (.add (->cell :inventory.slot/rings :position [1 0]))
       (.add (->cell :inventory.slot/boot)) .row)
-    (doseq [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-      (doseq [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+    (doseq [y (range (g2d/height (:inventory.slot/bag entity/empty-inventory)))]
+      (doseq [x (range (g2d/width (:inventory.slot/bag entity/empty-inventory)))]
         (.add table (->cell :inventory.slot/bag :position [x y])))
       (.row table))
     table))
@@ -178,7 +177,7 @@
 (defn- cell-widget [cell]
   (get (::table (stage/get-inventory)) cell))
 
-(defn- set-item-image-in-widget [cell item]
+(defn-impl widgets/set-item-image-in-widget [cell item]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
@@ -186,11 +185,8 @@
     (set-drawable! image-widget drawable)
     (add-tooltip! cell-widget #(info/text item))))
 
-(defn- remove-item-from-widget [cell]
+(defn-impl widgets/remove-item-from-widget [cell]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)]
     (set-drawable! image-widget (slot->background (cell 0)))
     (remove-tooltip! cell-widget)))
-
-(bind-root inventory/player-set-item    set-item-image-in-widget)
-(bind-root inventory/player-remove-item remove-item-from-widget)

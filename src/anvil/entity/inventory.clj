@@ -2,9 +2,10 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.entity.modifiers :as mods]
+            [anvil.widgets :as widgets]
             [data.grid2d :as g2d]))
 
-(def empty-inventory
+(bind-root entity/empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
                         :weapon   [1 1]
                         :shield   [1 1]
@@ -29,16 +30,13 @@
 (defn- applies-modifiers? [[slot _]]
   (not= :inventory.slot/bag slot))
 
-(declare player-set-item
-         player-remove-item)
-
 (defn-impl entity/set-item [eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
                  (entity/valid-slot? cell item)))
     (when (:entity/player? entity)
-      (player-set-item cell item))
+      (widgets/set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
       (swap! eid mods/add (:entity/modifiers item)))))
@@ -48,7 +46,7 @@
         item (get-in (:entity/inventory entity) cell)]
     (assert item)
     (when (:entity/player? entity)
-      (player-remove-item cell))
+      (widgets/remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (applies-modifiers? cell)
       (swap! eid mods/remove (:entity/modifiers item)))))
@@ -105,6 +103,6 @@
 
 (defmethods :entity/inventory
   (component/create [[k items] eid]
-    (swap! eid assoc k empty-inventory)
+    (swap! eid assoc k entity/empty-inventory)
     (doseq [item items]
       (entity/pickup-item eid item))))

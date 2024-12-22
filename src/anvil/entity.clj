@@ -16,6 +16,8 @@
   ([eid event])
   ([eid event params]))
 
+(def empty-inventory)
+
 (defn valid-slot? [[slot _] item])
 
 (defn set-item [eid cell item])
