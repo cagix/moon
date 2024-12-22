@@ -14,6 +14,9 @@
             [gdl.math.vector :as v]
             [gdl.utils :refer [define-order safe-merge unique-number!]]))
 
+(defn create [_])
+(defn dispose [])
+
 (declare tiled-map
          explored-tile-corners
          grid

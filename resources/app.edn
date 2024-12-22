@@ -21,6 +21,8 @@
 
             anvil.app.tick.world
 
+            anvil.world.create
+
             anvil.info.impl
 
             anvil.effect.target.audiovisual

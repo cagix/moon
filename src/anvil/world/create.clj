@@ -1,4 +1,4 @@
-(ns anvil.lifecycle.create
+(ns anvil.world.create
   (:require [anvil.component :refer [clicked-inventory-cell draw-gui-view]]
             [anvil.controls :as controls]
             [anvil.db :as db]
@@ -27,7 +27,7 @@
             [gdl.ui.actor :refer [user-object] :as actor]
             [gdl.ui.group :refer [add-actor! find-actor]]
             [gdl.ui.utils :as scene2d.utils]
-            [gdl.utils :refer [dev-mode? tile->middle bind-root readable-number]]
+            [gdl.utils :refer [dev-mode? tile->middle bind-root readable-number defn-impl]]
             [anvil.ui.player-message :as player-message]
             [anvil.world.content-grid :as content-grid]
             [data.grid2d :as g2d]
@@ -398,7 +398,7 @@
    (ui-actor {:draw #(draw-gui-view (entity/state-obj @world/player-eid))})
    (player-message/actor)])
 
-(defn dispose-world []
+(defn-impl world/dispose []
   (when (bound? #'world/tiled-map)
     (tiled/dispose world/tiled-map)))
 
@@ -512,12 +512,12 @@
     (spawn-enemies tiled-map))
   (bind-root world/mouseover-eid nil))
 
-(defn create-world [world-props]
+(defn-impl world/create [world-id]
   ; TODO assert is :screens/world
   (stage/reset (widgets))
-  (dispose-world)
+  (world/dispose)
   (bind-root world/error nil)
   ; generate level -> creates actually the tiled-map and
   ; start-position?
   ; other stuff just depend on it?!
-  (world-init (generate-level world-props)))
+  (world-init (generate-level (db/build world-id))))
