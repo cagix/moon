@@ -1,6 +1,5 @@
 (ns anvil.controls.movement-vector
-  (:require [clojure.gdx.input :refer [key-pressed?]]
-            [gdl.math.vector :as v]
+  (:require [gdl.math.vector :as v]
             [gdl.utils :refer [defn-impl]]))
 
 (defn- WASD-movement-vector []

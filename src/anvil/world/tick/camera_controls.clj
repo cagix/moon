@@ -1,6 +1,5 @@
 (ns anvil.world.tick.camera-controls
   (:require [anvil.world.tick :as tick]
-            [clojure.gdx.input :refer [key-pressed?]]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.utils :refer [defn-impl]]))

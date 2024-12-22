@@ -1,5 +1,4 @@
-(ns anvil.controls
-  (:require [clojure.gdx.input :refer [key-just-pressed? key-pressed?]]))
+(ns anvil.controls)
 
 (defn unpaused? []
   (or (key-just-pressed? :keys/p)

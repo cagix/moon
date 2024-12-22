@@ -2,7 +2,6 @@
   (:require [anvil.controls :as controls]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
-            [clojure.gdx.input :refer [key-just-pressed? key-pressed?]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [anvil.db :as db]

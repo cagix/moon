@@ -1,7 +1,6 @@
 (ns anvil.world.tick.window-hotkeys
   (:require [anvil.controls :as controls]
             [anvil.world.tick :as tick]
-            [clojure.gdx.input :refer [key-just-pressed?]]
             [gdl.stage :as stage]
             [gdl.ui.actor :refer [visible? set-visible] :as actor]
             [gdl.ui.group :refer [children]]

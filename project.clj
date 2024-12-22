@@ -48,7 +48,7 @@
                 }
   :profiles {:uberjar {:aot [anvil.app]}}
   #_:main #_anvil.app
-  )
+  :injections [(load "clojure/gdx")])
 
 ; * Notes
 

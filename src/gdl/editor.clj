@@ -1,7 +1,6 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.gdx.input :refer [key-just-pressed?]]
             [clojure.string :as str]
             [gdl.assets :as assets :refer [play-sound]]
             [gdl.db :as db]
