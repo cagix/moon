@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.entity.state.npc-moving
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :refer [timer stopped?]]
-            [gdl.utils :refer [defmethods]]))
+            [anvil.world :refer [timer stopped?]]))
 
 (defmethods :npc-moving
   (component/->v [[_ eid movement-vector]]

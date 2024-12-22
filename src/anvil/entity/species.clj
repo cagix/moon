@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.entity.species
   (:require [anvil.component :as component]
-            [clojure.string :as str]
-            [gdl.utils :refer [defmethods]]))
+            [clojure.string :as str]))
 
 (defmethods :entity/species
   (component/info [[_ species]]

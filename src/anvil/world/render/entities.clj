@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.world :as world :refer [line-of-sight?]]
             [anvil.world.render :as render]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defn-impl pretty-pst sort-by-order]]))
+            [gdl.graphics :as g]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 

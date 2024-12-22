@@ -2,7 +2,6 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods defn-impl]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm

@@ -3,8 +3,7 @@
             [anvil.controls :as controls]
             [anvil.world :as world]
             [anvil.world.tick :as tick]
-            [anvil.entity :as entity]
-            [gdl.utils :refer [defn-impl bind-root]]))
+            [anvil.entity :as entity]))
 
 ; FIXME config/changeable inside the app (dev-menu ?)
 (def ^:private ^:dbg-flag pausing? true)

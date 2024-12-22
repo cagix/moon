@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity.modifiers :as mods]
             [anvil.world :refer [finished-ratio stopped?]]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods readable-number]]))
+            [gdl.graphics :as g]))
 
 (defmethods :entity/temp-modifier
   (component/info [[_ {:keys [counter]}]]

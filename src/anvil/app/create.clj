@@ -1,6 +1,5 @@
 (ns anvil.app.create
-  (:require [anvil.app :as app]
-            [gdl.utils :refer [defn-impl]]))
+  (:require [anvil.app :as app]))
 
 (defn db       [_])
 (defn assets   [_])

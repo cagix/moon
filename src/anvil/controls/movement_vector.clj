@@ -1,7 +1,6 @@
 (ns anvil.controls.movement-vector
   (:require [anvil.controls :as controls]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.math.vector :as v]))
 
 (defn- add-vs [vs]
   (v/normalise (reduce v/add [0 0] vs)))

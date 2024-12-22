@@ -3,9 +3,7 @@
             [anvil.controls :as controls]
             [anvil.entity :as entity]
             [anvil.player :as player]
-            [clojure.gdx.input :refer [button-just-pressed?]]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 (defmethods :player-idle
   (component/->v [[_ eid]]

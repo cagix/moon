@@ -1,22 +1,18 @@
 (ns anvil.world.tick.window-hotkeys
-  (:require [anvil.controls :as controls]
-            [anvil.world.tick :as tick]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.group :as group]
-            [gdl.utils :refer [defn-impl]]))
+  (:require [anvil.world.tick :as tick]))
 
-(defn- check-window-hotkeys [stage]
+(defn- check-window-hotkeys [{:keys [controls/window-hotkeys]} stage]
   (doseq [window-id [:inventory-window
                      :entity-info-window]
-          :when (key-just-pressed? (get controls/window-hotkeys window-id))]
-    (actor/toggle-visible! (get (:windows stage) window-id))))
+          :when (key-just-pressed? (get window-hotkeys window-id))]
+    (toggle-visible! (get (:windows stage) window-id))))
 
 (defn- close-all-windows [stage]
-  (let [windows (group/children (:windows stage))]
-    (when (some actor/visible? windows)
-      (run! #(actor/set-visible % false) windows))))
+  (let [windows (children (:windows stage))]
+    (when (some visible? windows)
+      (run! #(set-visible % false) windows))))
 
-(defn-impl tick/window-hotkeys [stage]
-  (check-window-hotkeys stage)
-  (when (key-just-pressed? controls/close-windows-key)
+(defn-impl tick/window-hotkeys [{:keys [controls/close-windows-key] :as controls} stage]
+  (check-window-hotkeys controls stage)
+  (when (key-just-pressed? close-windows-key)
     (close-all-windows stage)))

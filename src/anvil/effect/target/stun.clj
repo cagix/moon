@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.target.stun
   (:require [anvil.component :as component]
-            [anvil.entity :as entity]
-            [gdl.utils :refer [defmethods readable-number]]))
+            [anvil.entity :as entity]))
 
 (defmethods :effects.target/stun
   (component/info [duration]

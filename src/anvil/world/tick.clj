@@ -1,9 +1,9 @@
 (ns anvil.world.tick
   (:refer-clojure :exclude [time])
-  (:require [anvil.world :as world]
+  (:require [anvil.controls :as controls]
+            [anvil.world :as world]
             [gdl.graphics :as g]
-            [gdl.stage :as stage]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.stage :as stage]))
 
 (defn player-input [])
 (defn mouseover-entity [])
@@ -25,4 +25,6 @@
     (entities))
   (remove-destroyed-entities) ; do not pause this as for example pickup item, should be destroyed.
   (camera-controls g/camera)
-  (window-hotkeys (stage/get)))
+  (window-hotkeys {:controls/close-windows-key controls/close-windows-key
+                   :controls/window-hotkeys    controls/window-hotkeys}
+                  (stage/get)))

@@ -4,8 +4,7 @@
             [anvil.entity :as entity]
             [anvil.skill :as skill]
             [anvil.world :as world]
-            [anvil.world.potential-field :as potential-field]
-            [gdl.utils :refer [defmethods]]))
+            [anvil.world.potential-field :as potential-field]))
 
 (defn- effect-context [eid]
   (let [entity @eid

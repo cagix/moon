@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.entity.body
   (:require [anvil.entity :as entity]
             [gdl.math.vector :as v]
-            [gdl.math.shapes :as shape]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.math.shapes :as shape]))
 
 (defn-impl entity/direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))

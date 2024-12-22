@@ -3,7 +3,6 @@
   (:require [anvil.component :as component]
             [anvil.operation :as op]
             [clojure.string :as str]
-            [gdl.utils :refer [defmethods]]
             [gdl.malli :as m]))
 
 (defmethods :entity/modifiers

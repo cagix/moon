@@ -1,8 +1,7 @@
 (ns anvil.info
   (:require [anvil.component :as component]
             [clojure.string :as str]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [index-of]]))
+            [gdl.graphics :as g]))
 
 (g/add-color "PRETTY_NAME" [0.84 0.8 0.52])
 

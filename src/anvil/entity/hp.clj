@@ -4,7 +4,6 @@
             [anvil.entity.modifiers :as mods]
             [anvil.info :as info]
             [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods defn-impl]]
             [gdl.val-max :as val-max]))
 
 (def ^:private hpbar-colors

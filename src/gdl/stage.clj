@@ -1,11 +1,9 @@
 (ns gdl.stage
   (:refer-clojure :exclude [get])
-  (:require [clojure.gdx.input :as input]
-            [gdl.graphics :as g]
+  (:require [gdl.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
-            [gdl.ui.group :as group]
-            [gdl.utils :refer [pretty-pst with-err-str bind-root]])
+            [gdl.ui.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))
 
@@ -25,7 +23,7 @@
    (setup nil))
   ([actors]
    (def this (stage* g/viewport g/batch actors))
-   (input/set-processor this)))
+   (set-input-processor this)))
 
 (defn cleanup []
   (.dispose this))

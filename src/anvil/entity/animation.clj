@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.entity.animation
   (:require [anvil.component :as component]
             [anvil.world :as world]
-            [gdl.graphics.animation :as animation]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics.animation :as animation]))
 
 (defmethods :entity/animation
   (component/create [[_ animation] eid]

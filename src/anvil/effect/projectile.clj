@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.world :as world]
             [gdl.assets :refer [play-sound]]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.math.vector :as v]))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)

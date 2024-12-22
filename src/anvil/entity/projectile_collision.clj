@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]
-            [anvil.world :as world]
-            [gdl.utils :refer [defmethods find-first]]))
+            [anvil.world :as world]))
 
 (defmethods :entity/projectile-collision
   (component/->v [[_ v]]

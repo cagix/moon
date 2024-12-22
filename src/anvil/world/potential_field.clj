@@ -7,8 +7,7 @@
                                            occupied-by-other?
                                            nearest-entity
                                            nearest-entity-distance]]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [when-seq utils-positions]]))
+            [gdl.math.vector :as v]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

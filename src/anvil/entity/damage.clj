@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.entity.damage
   (:require [anvil.entity :as entity]
-            [anvil.entity.modifiers :as mods]
-            [gdl.utils :refer [defn-impl]]))
+            [anvil.entity.modifiers :as mods]))
 
 (defn-impl entity/damage
   ([source damage]

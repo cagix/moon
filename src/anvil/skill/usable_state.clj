@@ -1,8 +1,7 @@
 (ns anvil.skill.usable-state
   (:require [anvil.effect :as effect]
             [anvil.entity :as entity]
-            [anvil.skill :as skill]
-            [gdl.utils :refer [defn-impl]]))
+            [anvil.skill :as skill]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))

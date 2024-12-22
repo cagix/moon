@@ -3,8 +3,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.entity.modifiers :as mods]
-            [anvil.info :as info]
-            [gdl.utils :refer [defn-impl defmethods]]))
+            [anvil.info :as info]))
 
 (defn-impl entity/mana [entity]
   (-> entity

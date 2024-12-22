@@ -2,8 +2,7 @@
   (:require [gdl.rand :refer [sshuffle srand srand-int]]
             [data.grid2d :as g2d]
             [gdl.tiled :as tiled]
-            [gdl.property :as property]
-            [gdl.utils :refer [assoc-ks]]))
+            [gdl.property :as property]))
 
 (defn creatures-with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

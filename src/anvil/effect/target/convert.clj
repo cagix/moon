@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.target.convert
   (:require [anvil.component :as component]
-            [anvil.entity :as entity]
-            [gdl.utils :refer [defmethods]]))
+            [anvil.entity :as entity]))
 
 (defmethods :effects.target/convert
   (component/info [_]

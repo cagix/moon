@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]
-            [anvil.world.tick :as tick]
-            [gdl.utils :refer [defn-impl]]))
+            [anvil.world.tick :as tick]))
 
 (defn-impl tick/player-input []
   (component/manual-tick (entity/state-obj @world/player-eid)))

@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])

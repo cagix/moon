@@ -11,8 +11,7 @@
                                      circle->outer-rectangle
                                      rect-contains?
                                      overlaps?]]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [define-order safe-merge unique-number!]]))
+            [gdl.math.vector :as v]))
 
 (defn create [_])
 (defn dispose [])

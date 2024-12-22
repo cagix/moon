@@ -13,19 +13,18 @@
             [gdl.stage :as stage]
             [gdl.graphics.sprite :as sprite]
             [gdl.ui :refer [ui-actor
-                              set-drawable!
-                              ui-widget
-                              texture-region-drawable
-                              image-widget
-                              ui-stack
-                              add-tooltip!
-                              remove-tooltip!]
+                            set-drawable!
+                            ui-widget
+                            texture-region-drawable
+                            image-widget
+                            ui-stack
+                            add-tooltip!
+                            remove-tooltip!]
              :as ui]
             [gdl.val-max :as val-max]
             [gdl.ui.actor :refer [user-object] :as actor]
             [gdl.ui.group :refer [add-actor! find-actor]]
             [gdl.ui.utils :as scene2d.utils]
-            [gdl.utils :refer [dev-mode? tile->middle bind-root readable-number defn-impl]]
             [anvil.ui.player-message :as player-message]
             [anvil.world.content-grid :as content-grid]
             [data.grid2d :as g2d]

@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all!]]
             [anvil.world :as world]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 ; TODO targets projectiles with -50% hp !!
 

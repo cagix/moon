@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :refer [timer stopped?]]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 (defmethods :stunned
   (component/->v [[_ eid duration]]

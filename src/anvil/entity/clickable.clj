@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.entity.clickable
   (:require [anvil.component :as component]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 (defmethods :entity/clickable
   (component/render-default [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]

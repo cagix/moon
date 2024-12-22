@@ -2,8 +2,7 @@
   (:require [anvil.world :as world]
             [anvil.world.render :as render]
             [gdl.graphics :as g]
-            [gdl.graphics.camera :as cam]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.graphics.camera :as cam]))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)

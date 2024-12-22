@@ -3,8 +3,7 @@
             [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.world :as world :refer [add-text-effect]]
-            [gdl.rand :refer [rand-int-between]]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.rand :refer [rand-int-between]]))
 
 (defn- damage-info [{[min max] :damage/min-max}]
   (str min "-" max " damage"))

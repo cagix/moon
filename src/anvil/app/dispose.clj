@@ -1,6 +1,5 @@
 (ns anvil.app.dispose
-  (:require [anvil.app :as app]
-            [gdl.utils :refer [defn-impl]]))
+  (:require [anvil.app :as app]))
 
 (defn assets   [])
 (defn graphics [])

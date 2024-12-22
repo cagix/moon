@@ -1,8 +1,7 @@
 (ns anvil.world.render
   (:require [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
-            [anvil.world :as world]
-            [gdl.utils :refer [defn-impl]]))
+            [anvil.world :as world]))
 
 (defn tiled-map [tiled-map light-position])
 

@@ -1,6 +1,7 @@
-(ns gdl.utils
-  (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.pprint :refer [pprint]]))
+(in-ns 'clojure.core)
+
+(require '[clj-commons.pretty.repl :as pretty-repl]
+         '[clojure.pprint :refer [pprint]])
 
 (defmacro bind-root [sym value]
   `(clojure.lang.Var/.bindRoot (var ~sym) ~value))

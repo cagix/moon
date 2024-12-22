@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.target.audiovisual
   (:require [anvil.component :as component]
-            [anvil.world :as world]
-            [gdl.utils :refer [defmethods]]))
+            [anvil.world :as world]))
 
 (defmethods :effects.target/audiovisual
   (component/applicable? [_ {:keys [effect/target]}]

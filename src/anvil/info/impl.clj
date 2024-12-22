@@ -1,8 +1,7 @@
 (ns anvil.info.impl
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.info :as info]
-            [gdl.utils :refer [readable-number]]))
+            [anvil.info :as info]))
 
 (defmethod component/info :property/pretty-name [[_ v]] v)
 (defmethod component/info :maxrange             [[_ v]] v)

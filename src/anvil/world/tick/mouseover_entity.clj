@@ -2,8 +2,7 @@
   (:require [anvil.world.tick :as tick]
             [anvil.world :as world :refer [mouseover-eid line-of-sight?]]
             [gdl.graphics :as g]
-            [gdl.stage :as stage]
-            [gdl.utils :refer [bind-root sort-by-order defn-impl]]))
+            [gdl.stage :as stage]))
 
 (defn- calculate-eid []
   (let [player @world/player-eid

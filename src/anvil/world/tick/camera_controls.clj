@@ -1,7 +1,6 @@
 (ns anvil.world.tick.camera-controls
   (:require [anvil.world.tick :as tick]
-            [gdl.graphics.camera :as cam]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.graphics.camera :as cam]))
 
 (def ^:private zoom-speed 0.025)
 

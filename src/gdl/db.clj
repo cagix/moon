@@ -6,8 +6,7 @@
             [gdl.graphics.sprite :as sprite]
             [gdl.schema :as schema]
             [gdl.property :as property]
-            [gdl.malli :as m]
-            [gdl.utils :refer [recur-sort-map async-pprint-spit! safe-get apply-kvs defmethods]]))
+            [gdl.malli :as m]))
 
 (defn create [{:keys [schema properties]}]
   (let [properties-file (io/resource properties)

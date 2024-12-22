@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.world :as world]
             [anvil.world.tick :as tick]
-            [gdl.stage :as stage]
-            [gdl.utils :refer [defn-impl bind-root]]))
+            [gdl.stage :as stage]))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?

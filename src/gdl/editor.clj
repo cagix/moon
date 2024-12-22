@@ -25,8 +25,7 @@
              :as ui]
             [gdl.ui.actor :refer [user-object]]
             [gdl.ui.group :refer [children clear-children add-actor! find-actor]]
-            [gdl.ui.table :refer [add-rows!]]
-            [gdl.utils :refer [->edn-str truncate find-first index-of]])
+            [gdl.ui.table :refer [add-rows!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))

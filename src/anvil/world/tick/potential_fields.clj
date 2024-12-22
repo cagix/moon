@@ -2,8 +2,7 @@
   (:require [anvil.entity :as entity]
             [anvil.world :as world]
             [anvil.world.tick :as tick]
-            [anvil.world.potential-field :refer [pf-cell-blocked?]]
-            [gdl.utils :refer [defn-impl]]))
+            [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
 ; adjacent cells are walls and blocked.

@@ -2,8 +2,7 @@
   (:require [anvil.world :as world]
             [anvil.world.render :as render]
             [gdl.graphics :as g]
-            [gdl.math.shapes :refer [circle->outer-rectangle]]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.math.shapes :refer [circle->outer-rectangle]]))
 
 (defn- geom-test []
   (let [position (g/world-mouse-position)

@@ -5,8 +5,7 @@
             [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.graphics :as g]
-            [gdl.math.vector :as v]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.math.vector :as v]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
   (< (- (float (v/distance (:position entity)

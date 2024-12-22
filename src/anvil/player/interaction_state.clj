@@ -8,8 +8,7 @@
             [gdl.math.vector :as v]
             [gdl.stage :as stage]
             [gdl.ui :refer [window-title-bar? button?]]
-            [gdl.ui.actor :as actor]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.ui.actor :as actor]))
 
 (defn- denied [text]
   (play-sound "bfxr_denied")

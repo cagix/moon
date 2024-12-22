@@ -1,8 +1,7 @@
 (ns anvil.world.render.tiled-map
   (:require [anvil.world :as world]
             [anvil.world.render :as render]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defn-impl]]))
+            [gdl.graphics :as g]))
 
 (def ^:private explored-tile-color (g/->color 0.5 0.5 0.5 1))
 

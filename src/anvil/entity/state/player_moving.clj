@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.entity.state.player-moving
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
-            [anvil.entity :as entity]
-            [gdl.utils :refer [defmethods]]))
+            [anvil.entity :as entity]))
 
 (defmethods :player-moving
   (component/->v [[_ eid movement-vector]]

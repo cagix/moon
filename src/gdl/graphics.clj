@@ -18,8 +18,7 @@
             [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
-            [gdl.tiled :as tiled]
-            [gdl.utils :refer [safe-get mapvals]])
+            [gdl.tiled :as tiled])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn setup [{:keys [default-font cursors viewport world-viewport]}]

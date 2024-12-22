@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.entity.string-effect
   (:require [anvil.component :as component]
             [anvil.world :refer [stopped?]]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 (defmethods :entity/string-effect
   (component/tick [[k {:keys [counter]}] eid]

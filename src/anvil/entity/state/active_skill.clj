@@ -4,8 +4,7 @@
             [anvil.entity :as entity]
             [anvil.world :refer [timer finished-ratio stopped?]]
             [gdl.assets :refer [play-sound]]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)

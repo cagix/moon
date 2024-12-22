@@ -2,7 +2,6 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.entity.modifiers :as mods]
-            [gdl.utils :refer [find-first defn-impl defmethods]]
             [data.grid2d :as g2d]))
 
 (def empty-inventory

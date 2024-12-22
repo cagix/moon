@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.entity.image
   (:require [anvil.component :as component]
-            [gdl.graphics :as g]
-            [gdl.utils :refer [defmethods]]))
+            [gdl.graphics :as g]))
 
 (defmethods :entity/image
   (component/render-default [[_ image] entity]
