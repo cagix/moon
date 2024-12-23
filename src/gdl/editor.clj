@@ -498,8 +498,7 @@
                     :align :center}))
 
 (def graphics
-  {:cursors {}
-   :viewport {:width 1440
+  {:viewport {:width 1440
               :height 900}
    :world-viewport {:tile-size 48
                     :width 1440

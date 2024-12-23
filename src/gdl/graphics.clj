@@ -27,14 +27,19 @@
 (defn dispose-default-font []
   (dispose default-font))
 
-(defn setup [{:keys [default-font cursors viewport world-viewport]}]
-  (ctx/setup-sprite-batch)
+(defn setup-cursors [cursors]
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (pixmap/create (files/internal (str "cursors/" file ".png")))
                                 cursor (g/cursor pixmap hotspot-x hotspot-y)]
                             (dispose pixmap)
                             cursor))
-                        cursors))
+                        cursors)))
+
+(defn dispose-cursors []
+  (run! dispose (vals cursors)))
+
+(defn setup [{:keys [default-font viewport world-viewport]}]
+  (ctx/setup-sprite-batch)
   (def viewport-width  (:width  viewport))
   (def viewport-height (:height viewport))
   (def viewport (viewport/fit viewport-width viewport-height (camera/orthographic)))
@@ -62,8 +67,7 @@
   (def sd (sd/create ctx/batch (texture-region/create sd-texture 1 0 1 1))))
 
 (defn cleanup []
-  (ctx/dispose-sprite-batch)
-  (run! dispose (vals cursors)))
+  (ctx/dispose-sprite-batch))
 
 (defn dispose-shape-drawer []
   (dispose sd-texture))
