@@ -150,21 +150,6 @@
 (defn set-cursor [cursor-key]
   (g/set-cursor (safe-get cursors cursor-key)))
 
-(defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
-  (if color (batch/set-color batch color))
-  (batch/draw batch
-              texture-region
-              :x x
-              :y y
-              :origin-x (/ (float w) 2) ; rotation origin
-              :origin-y (/ (float h) 2)
-              :width w
-              :height h
-              :scale-x 1
-              :scale-y 1
-              :rotation rotation)
-  (if color (batch/set-color batch white)))
-
 (def ^:dynamic ^:private *unit-scale* 1)
 
 (defn- text-height [font text]
@@ -197,6 +182,21 @@
   (if (= unit-scale 1)
     (:pixel-dimensions image)
     (:world-unit-dimensions image)))
+
+(defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
+  (if color (batch/set-color batch color))
+  (batch/draw batch
+              texture-region
+              :x x
+              :y y
+              :origin-x (/ (float w) 2) ; rotation origin
+              :origin-y (/ (float h) 2)
+              :width w
+              :height h
+              :scale-x 1
+              :scale-y 1
+              :rotation rotation)
+  (if color (batch/set-color batch white)))
 
 (defn draw-image
   [{:keys [texture-region color] :as image} position]
