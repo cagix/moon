@@ -9,7 +9,7 @@
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
 
-(def ^:private ^:dbg-flag pausing? false)
+(def ^:private ^:dbg-flag pausing? true)
 
 (defn -main []
   (let [{:keys [requires lwjgl3 lifecycle]} (-> "app.edn" io/resource slurp edn/read-string)]
