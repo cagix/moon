@@ -25,16 +25,18 @@
                    world-unit-dimensions
                    color]) ; optional
 
-(defn- create* [texture-region]
+(defn- create* [world-unit-scale texture-region]
   (-> {:texture-region texture-region}
-      (assoc-dimensions g/world-unit-scale 1) ; = scale 1
+      (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
 (defn create [path]
-  (create* (texture-region/create (assets/manager path))))
+  (create* g/world-unit-scale
+           (texture-region/create (assets/manager path))))
 
 (defn sub [image bounds]
-  (create* (apply texture-region/->create (:texture-region image) bounds)))
+  (create* g/world-unit-scale
+           (apply texture-region/->create (:texture-region image) bounds)))
 
 (defn sheet [path tilew tileh]
   {:image (create path)
