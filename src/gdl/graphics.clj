@@ -75,8 +75,10 @@
 (defn dispose-shape-drawer []
   (dispose sd-texture))
 
-(defn resize [w h]
-  (viewport/update viewport       w h :center-camera? true)
+(defn resize-viewport [w h]
+  (viewport/update viewport w h :center-camera? true))
+
+(defn resize-world-viewport [w h]
   (viewport/update world-viewport w h :center-camera? false))
 
 (def black color/black)

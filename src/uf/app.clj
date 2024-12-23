@@ -69,4 +69,5 @@
                       (stage/act))
 
                     (resize [_ w h]
-                      (graphics/resize w h))))))
+                      (graphics/resize-viewport w h)
+                      (graphics/resize-world-viewport w h))))))

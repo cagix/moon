@@ -525,4 +525,4 @@
                     (stage/render))
 
                   (resize [_ w h]
-                    (g/resize w h)))))
+                    (g/resize-viewport w h)))))
