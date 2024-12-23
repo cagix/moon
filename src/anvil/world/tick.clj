@@ -15,10 +15,10 @@
 (defn camera-controls [camera])
 (defn window-hotkeys  [stage])
 
-(defn-impl world/tick []
+(defn-impl world/tick [pausing?]
   (player-input)
   (mouseover-entity)
-  (paused-state)
+  (paused-state pausing?)
   (when-not world/paused?
     (time)
     (potential-fields)

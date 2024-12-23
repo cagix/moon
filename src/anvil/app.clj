@@ -9,6 +9,8 @@
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
 
+(def ^:private ^:dbg-flag pausing? false)
+
 (defn -main []
   (let [{:keys [requires lwjgl3 lifecycle]} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require requires)
@@ -34,7 +36,7 @@
                       (world/render)
                       (stage/render)
                       (stage/act)
-                      (world/tick))
+                      (world/tick pausing?))
 
                     (resize [_ w h]
                       (graphics/resize w h))))))
