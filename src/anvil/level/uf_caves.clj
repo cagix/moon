@@ -1,10 +1,10 @@
 (ns ^:no-doc anvil.level.uf-caves
-  (:require [anvil.db :as db]
-            [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
+  (:require [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
             [gdl.context :as ctx]
+            [gdl.context.db :as db]
             [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)

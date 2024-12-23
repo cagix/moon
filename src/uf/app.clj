@@ -1,10 +1,10 @@
 (ns uf.app
-  (:require [anvil.db :as db]
-            [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
+  (:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx]
+            [gdl.context.db :as db]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]

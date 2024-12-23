@@ -1,10 +1,10 @@
 (ns anvil.app
-  (:require [anvil.db :as db]
-            [anvil.world :as world]
+  (:require [anvil.world :as world]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx]
+            [gdl.context.db :as db]
             [gdl.graphics :as graphics]
             [gdl.stage :as stage]
             [gdl.ui :as ui]))

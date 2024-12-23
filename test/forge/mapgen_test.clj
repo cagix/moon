@@ -4,7 +4,7 @@
             [anvil.modules :as modules]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [anvil.db :as db]
+            [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.stage :as stage]

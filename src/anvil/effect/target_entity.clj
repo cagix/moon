@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.effect.target-entity
   (:require [anvil.component :as component]
-            [anvil.db :as db]
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
             [anvil.world :as world]
+            [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.math.vector :as v]))
 

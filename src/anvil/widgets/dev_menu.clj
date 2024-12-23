@@ -1,9 +1,9 @@
 (ns anvil.widgets.dev-menu
   (:require [anvil.controls :as controls]
-            [anvil.db :as db]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
             [gdl.context :as ctx]
+            [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]

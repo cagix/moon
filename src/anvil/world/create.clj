@@ -1,10 +1,10 @@
 (ns anvil.world.create
-  (:require [anvil.db :as db]
-            [anvil.level :refer [generate-level]]
+  (:require [anvil.level :refer [generate-level]]
             [anvil.world :as world]
             [gdl.stage :as stage]
             [anvil.world.content-grid :as content-grid]
             [data.grid2d :as g2d]
+            [gdl.context.db :as db]
             [gdl.tiled :as tiled]))
 
 (defn-impl world/dispose []

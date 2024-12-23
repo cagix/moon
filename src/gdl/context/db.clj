@@ -1,4 +1,4 @@
-(ns anvil.db
+(ns gdl.context.db
   (:require [gdl.db :as db]))
 
 (defn setup [config]

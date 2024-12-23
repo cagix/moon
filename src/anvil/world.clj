@@ -1,9 +1,9 @@
 (ns anvil.world
   (:require [anvil.component :as component]
-            [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
             [gdl.context :refer [play-sound]]
+            [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]

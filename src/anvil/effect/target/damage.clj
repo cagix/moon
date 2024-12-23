@@ -1,8 +1,8 @@
 (ns ^:no-doc anvil.effect.target.damage
   (:require [anvil.component :as component]
-            [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.world :as world :refer [add-text-effect]]
+            [gdl.context.db :as db]
             [gdl.rand :refer [rand-int-between]]))
 
 (defn- damage-info [{[min max] :damage/min-max}]
