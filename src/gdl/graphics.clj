@@ -4,39 +4,14 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.graphics.texture :as texture]
-            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
-            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
-            [gdl.context :as ctx]
-            [gdl.tiled :as tiled])
-  (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
-
-(defn setup-tiled-map-renderer [world-unit-scale batch]
-  (def tiled-map-renderer
-    (memoize (fn [tiled-map]
-               (OrthogonalTiledMapRenderer. tiled-map
-                                            (float world-unit-scale)
-                                            batch)))))
-
-(defn setup-shape-drawer []
-  (def sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
-                                 (pixmap/set-color color/white)
-                                 (pixmap/draw-pixel 0 0))
-                        texture (texture/create pixmap)]
-                    (dispose pixmap)
-                    texture))
-  (def sd (sd/create ctx/batch (texture-region/create sd-texture 1 0 1 1))))
-
-(defn dispose-shape-drawer []
-  (dispose sd-texture))
+            [gdl.context :as ctx]))
 
 (defn resize-world-viewport [w h]
   (viewport/update ctx/world-viewport w h :center-camera? false))
@@ -65,43 +40,43 @@
 (def delta-time        g/delta-time)
 
 (defn- sd-color [color]
-  (sd/set-color sd (->color color)))
+  (sd/set-color ctx/shape-drawer (->color color)))
 
 (defn ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (sd/ellipse sd x y radius-x radius-y))
+  (sd/ellipse ctx/shape-drawer x y radius-x radius-y))
 
 (defn filled-ellipse [[x y] radius-x radius-y color]
   (sd-color color)
-  (sd/filled-ellipse sd x y radius-x radius-y))
+  (sd/filled-ellipse ctx/shape-drawer x y radius-x radius-y))
 
 (defn circle [[x y] radius color]
   (sd-color color)
-  (sd/circle sd x y radius))
+  (sd/circle ctx/shape-drawer x y radius))
 
 (defn filled-circle [[x y] radius color]
   (sd-color color)
-  (sd/filled-circle sd x y radius))
+  (sd/filled-circle ctx/shape-drawer x y radius))
 
 (defn arc [[center-x center-y] radius start-angle degree color]
   (sd-color color)
-  (sd/arc sd center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
+  (sd/arc ctx/shape-drawer center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
 
 (defn sector [[center-x center-y] radius start-angle degree color]
   (sd-color color)
-  (sd/sector sd center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
+  (sd/sector ctx/shape-drawer center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
 
 (defn rectangle [x y w h color]
   (sd-color color)
-  (sd/rectangle sd x y w h))
+  (sd/rectangle ctx/shape-drawer x y w h))
 
 (defn filled-rectangle [x y w h color]
   (sd-color color)
-  (sd/filled-rectangle sd x y w h))
+  (sd/filled-rectangle ctx/shape-drawer x y w h))
 
 (defn line [[sx sy] [ex ey] color]
   (sd-color color)
-  (sd/line sd sx sy ex ey))
+  (sd/line ctx/shape-drawer sx sy ex ey))
 
 (defn grid [leftx bottomy gridw gridh cellw cellh color]
   (sd-color color)
@@ -117,10 +92,10 @@
       (line [leftx liney] [rightx liney]))))
 
 (defn with-line-width [width draw-fn]
-  (let [old-line-width (sd/default-line-width sd)]
-    (sd/set-default-line-width sd (* width old-line-width))
+  (let [old-line-width (sd/default-line-width ctx/shape-drawer)]
+    (sd/set-default-line-width ctx/shape-drawer (* width old-line-width))
     (draw-fn)
-    (sd/set-default-line-width sd old-line-width)))
+    (sd/set-default-line-width ctx/shape-drawer old-line-width)))
 
 (def ^:dynamic ^:private *unit-scale* 1)
 
@@ -235,29 +210,3 @@
 
 (defn draw-on-world-view [render-fn]
   (draw-with ctx/world-viewport ctx/world-unit-scale render-fn))
-
-(defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
-  (.setColorSetter this (reify ColorSetter
-                          (apply [_ color x y]
-                            (color-setter color x y))))
-  (.setView this camera)
-  (->> tiled-map
-       tiled/layers
-       (filter tiled/visible?)
-       (map (partial tiled/layer-index tiled-map))
-       int-array
-       (.render this)))
-
-(defn draw-tiled-map
-  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
-
-  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
-
-  Can be used for lights & shadows.
-
-  Renders only visible layers."
-  [tiled-map color-setter]
-  (draw-tiled-map* (tiled-map-renderer tiled-map)
-                   tiled-map
-                   color-setter
-                   ctx/camera))

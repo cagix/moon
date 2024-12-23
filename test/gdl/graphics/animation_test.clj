@@ -1,6 +1,7 @@
 (ns gdl.graphics.animation-test
   (:require ;[gdl.app-test :refer [start-simple-app]]
             [gdl.context.assets :as assets]
+            [gdl.context.shape-drawer :as shape-drawer]
             [gdl.graphics :as g]))
 
 ; how do I just draw a texture/sprite first?!
@@ -20,11 +21,11 @@
                         (create [_]
                           (assets/setup "resources/")
                           (g/setup graphics)
-                          (graphics/setup-shape-drawer))
+                          (shape-drawer/setup))
                         (dispose [_]
                           (assets/cleanup)
                           (g/cleanup)
-                          (graphics/dispose-shape-drawer))
+                          (shape-drawer/cleanup))
                         (render [_]
                           (g/clear)
                           (g/draw-with g/viewport

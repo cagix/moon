@@ -4,7 +4,7 @@
             [anvil.modules :as modules]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [gdl.context :as ctx]
+            [gdl.context :as ctx :refer [draw-tiled-map]]
             [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
@@ -143,8 +143,8 @@
   #_(cam/reset-zoom! ctx/camera))
 
 (defn render [_]
-  #_(g/draw-tiled-map (:tiled-map @current-data)
-                          (constantly g/white))
+  #_(draw-tiled-map (:tiled-map @current-data)
+                    (constantly g/white))
   #_(g/draw-on-world-view render-on-map)
   #_(if (key-just-pressed? :keys/l)
       (swap! current-data update :show-grid-lines not))

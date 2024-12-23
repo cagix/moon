@@ -3,10 +3,11 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.context :as ctx]
+            [gdl.context :as ctx :refer [draw-tiled-map]]
             [gdl.context.assets :as assets]
             [gdl.context.db :as db]
             [gdl.context.sprite-batch :as sprite-batch]
+            [gdl.context.tiled-map-renderer :as tiled-map-renderer]
             [gdl.context.viewport :as viewport]
             [gdl.context.world-viewport :as world-viewport]
             [gdl.graphics :as graphics]
@@ -50,8 +51,8 @@
                       (sprite-batch/setup)
                       (viewport/setup (:viewport lifecycle))
                       (world-viewport/setup (:world-viewport lifecycle))
-                      (graphics/setup-tiled-map-renderer ctx/world-unit-scale
-                                                         ctx/batch)
+                      (tiled-map-renderer/setup ctx/world-unit-scale
+                                                ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (stage/add-actor (uf-dev-menu-table))
@@ -66,8 +67,7 @@
 
                     (render [_]
                       (clear-screen)
-                      (graphics/draw-tiled-map tiled-map
-                                               tile-color-setter)
+                      (draw-tiled-map tiled-map tile-color-setter)
                       (stage/render)
                       (stage/act))
 

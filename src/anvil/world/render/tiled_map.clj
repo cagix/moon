@@ -1,6 +1,7 @@
 (ns anvil.world.render.tiled-map
   (:require [anvil.world :as world]
             [anvil.world.render :as render]
+            [gdl.context :refer [draw-tiled-map]]
             [gdl.graphics :as g]))
 
 (def ^:private explored-tile-color (g/->color 0.5 0.5 0.5 1))
@@ -45,5 +46,5 @@
   (tile-color-setter* (atom {}) light-position))
 
 (defn-impl render/tiled-map [tiled-map light-position]
-  (g/draw-tiled-map tiled-map
-                    (tile-color-setter light-position)))
+  (draw-tiled-map tiled-map
+                  (tile-color-setter light-position)))

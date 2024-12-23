@@ -8,7 +8,9 @@
             [gdl.context.cursors :as cursors]
             [gdl.context.db :as db]
             [gdl.context.default-font :as default-font]
+            [gdl.context.shape-drawer :as shape-drawer]
             [gdl.context.sprite-batch :as sprite-batch]
+            [gdl.context.tiled-map-renderer :as tiled-map-renderer]
             [gdl.context.viewport :as viewport]
             [gdl.context.world-viewport :as world-viewport]
             [gdl.graphics :as graphics]
@@ -26,13 +28,13 @@
                       (db/setup (:db lifecycle))
                       (assets/setup "resources/")
                       (sprite-batch/setup)
-                      (graphics/setup-shape-drawer)
+                      (shape-drawer/setup)
                       (default-font/setup (:default-font lifecycle))
                       (cursors/setup (:cursors lifecycle))
                       (viewport/setup (:viewport lifecycle))
                       (world-viewport/setup (:world-viewport lifecycle))
-                      (graphics/setup-tiled-map-renderer ctx/world-unit-scale
-                                                         ctx/batch)
+                      (tiled-map-renderer/setup ctx/world-unit-scale
+                                                ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (world/create (:world lifecycle)))
@@ -40,7 +42,7 @@
                     (dispose [_]
                       (assets/cleanup)
                       (sprite-batch/cleanup)
-                      (graphics/dispose-shape-drawer)
+                      (shape-drawer/cleanup)
                       (default-font/cleanup)
                       (cursors/cleanup)
                       (stage/cleanup)
