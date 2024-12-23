@@ -19,6 +19,7 @@
             [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
+            [gdl.context :as ctx]
             [gdl.tiled :as tiled])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
@@ -44,17 +45,17 @@
   (def viewport-width  (:width  viewport))
   (def viewport-height (:height viewport))
   (def viewport (viewport/fit viewport-width viewport-height (camera/orthographic)))
-  (def world-unit-scale (float (/ (:tile-size world-viewport))))
+  (ctx/setup-world-unit-scale (:tile-size world-viewport))
   (def world-viewport-width  (:width  world-viewport))
   (def world-viewport-height (:height world-viewport))
   (def camera (camera/orthographic))
-  (def world-viewport (let [world-width  (* world-viewport-width  world-unit-scale)
-                            world-height (* world-viewport-height world-unit-scale)]
+  (def world-viewport (let [world-width  (* world-viewport-width  ctx/world-unit-scale)
+                            world-height (* world-viewport-height ctx/world-unit-scale)]
                         (camera/set-to-ortho camera world-width world-height :y-down? false)
                         (viewport/fit world-width world-height camera)))
   (def tiled-map-renderer
     (memoize (fn [tiled-map]
-               (OrthogonalTiledMapRenderer. tiled-map (float world-unit-scale) batch)))))
+               (OrthogonalTiledMapRenderer. tiled-map (float ctx/world-unit-scale) batch)))))
 
 (defn cleanup []
   (dispose batch)
@@ -259,10 +260,10 @@
   (unproject-mouse-position world-viewport))
 
 (defn pixels->world-units [pixels]
-  (* (int pixels) world-unit-scale))
+  (* (int pixels) ctx/world-unit-scale))
 
 (defn draw-on-world-view [render-fn]
-  (draw-with world-viewport world-unit-scale render-fn))
+  (draw-with world-viewport ctx/world-unit-scale render-fn))
 
 (defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
