@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.effect.creature
   (:require [anvil.component :as component]
             [anvil.world :as world]
-            [gdl.context :refer [play-sound]]))
+            [gdl.context.assets :refer [play-sound]]))
 
 ; "https://github.com/damn/core/issues/29"
 (defmethods :effects/spawn

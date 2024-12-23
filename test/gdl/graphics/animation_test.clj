@@ -1,6 +1,6 @@
 (ns gdl.graphics.animation-test
   (:require ;[gdl.app-test :refer [start-simple-app]]
-            [gdl.assets :as assets]
+            [gdl.context.assets :as assets]
             [gdl.graphics :as g]))
 
 ; how do I just draw a texture/sprite first?!

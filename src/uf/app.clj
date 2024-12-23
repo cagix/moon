@@ -42,7 +42,7 @@
                   (reify lwjgl3/Application
                     (create [_]
                       (db/setup (:db lifecycle))
-                      (ctx/assets-setup)
+                      (assets/setup)
                       (ctx/setup-sprite-batch)
                       (graphics/setup-viewport (:viewport lifecycle))
                       (graphics/setup-world-viewport (:world-viewport lifecycle))
@@ -55,7 +55,7 @@
                       (camera/set-position! graphics/camera [30 70]))
 
                     (dispose [_]
-                      (ctx/assets-cleanup)
+                      (assets/cleanup)
                       (ctx/dispose-sprite-batch)
                       (stage/cleanup)
                       (ui/cleanup))

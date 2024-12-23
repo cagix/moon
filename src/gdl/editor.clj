@@ -2,8 +2,8 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
-            [gdl.assets :as assets]
-            [gdl.context :as ctx :refer [play-sound]]
+            [gdl.context :as ctx]
+            [gdl.context.assets :as assets :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics :as g]
             [gdl.malli :as m]
@@ -154,7 +154,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (assets/all-of-type ctx/assets :sound)]
+  (let [rows (for [sound-file (assets/all-of-type :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -439,7 +439,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-of-type ctx/assets :texture))]
+  (for [file (sort (assets/all-of-type :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -492,7 +492,7 @@
     table))
 
 (defn- background-image [path]
-  (ui/image-widget (ctx/assets path)
+  (ui/image-widget (assets/manager path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))
@@ -507,7 +507,7 @@
                  :taskbar-icon "moon.png"}
                 (reify lwjgl3/Application
                   (create [_]
-                    (ctx/assets-setup)
+                    (assets/setup)
                     (ctx/setup-sprite-batch)
                     (g/setup-viewport {:width 1440 :height 900})
                     (ui/setup :skin-scale/x1)
@@ -515,7 +515,7 @@
                                   (tabs-table "custom label text here")]))
 
                   (dispose [_]
-                    (ctx/assets-cleanup)
+                    (assets/cleanup)
                     (ctx/dispose-sprite-batch)
                     (ui/cleanup)
                     (stage/cleanup))

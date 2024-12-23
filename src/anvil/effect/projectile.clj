@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.effect.projectile
   (:require [anvil.component :as component]
             [anvil.world :as world]
-            [gdl.context :refer [play-sound]]
+            [gdl.context.assets :refer [play-sound]]
             [gdl.math.vector :as v]))
 
 (defn- projectile-start-point [entity direction size]

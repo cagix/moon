@@ -4,6 +4,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx]
+            [gdl.context.assets :as assets]
             [gdl.context.db :as db]
             [gdl.graphics :as graphics]
             [gdl.stage :as stage]
@@ -18,7 +19,7 @@
                   (reify lwjgl3/Application
                     (create [_]
                       (db/setup (:db lifecycle))
-                      (ctx/assets-setup)
+                      (assets/setup)
                       (ctx/setup-sprite-batch)
                       (graphics/setup-shape-drawer)
                       (graphics/setup-default-font (:default-font lifecycle))
@@ -32,7 +33,7 @@
                       (world/create (:world lifecycle)))
 
                     (dispose [_]
-                      (ctx/assets-cleanup)
+                      (assets/cleanup)
                       (ctx/dispose-sprite-batch)
                       (graphics/dispose-shape-drawer)
                       (graphics/dispose-default-font)

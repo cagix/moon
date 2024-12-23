@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]
-            [gdl.context :refer [play-sound]]
+            [gdl.context.assets :refer [play-sound]]
             [gdl.graphics :as g]
             [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]))

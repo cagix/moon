@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.state.player-dead
   (:require [anvil.component :as component]
-            [gdl.context :refer [play-sound]]
+            [gdl.context.assets :refer [play-sound]]
             [gdl.stage :refer [show-modal]]))
 
 (defmethods :player-dead
