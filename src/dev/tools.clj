@@ -15,7 +15,8 @@
 
  (print-vimrc-names-forge-core-publics 'forge.core "vimrc")
 
- (print-app-values-tree "app-values-tree.clj")
+ (print-app-values-tree "app-values-tree.clj"
+                        #{"anvil", "gdl", "uf"})
 
  (show-tree-view! (world/mouseover-entity))
  (show-tree-view! (mouseover-grid-cell))
@@ -217,11 +218,11 @@
                  :when (seq value-vars)]
              [(ns-name nmspace) value-vars])))
 
-(defn print-app-values-tree [file]
+(defn print-app-values-tree [file namespaces-set]
   (spit file
         (with-out-str
          (pprint
-          (for [[ns-name vars] (ns-value-vars #{"forge"})]
+          (for [[ns-name vars] (ns-value-vars namespaces-set)]
             [ns-name (map #(:name (meta %)) vars)])))))
 
 (defn print-vimrc-names-forge-core-publics [ns-sym file]
