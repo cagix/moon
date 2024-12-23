@@ -8,7 +8,7 @@
 
 (defn- assoc-dimensions
   "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [texture-region] :as image} scale]
+  [{:keys [texture-region] :as image} world-unit-scale scale]
   {:pre [(or (number? scale)
              (and (vector? scale)
                   (number? (scale 0))
@@ -18,7 +18,7 @@
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions g/world-unit-scale))))
+           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
 
 (defrecord Sprite [texture-region
                    pixel-dimensions
@@ -27,7 +27,7 @@
 
 (defn- create* [texture-region]
   (-> {:texture-region texture-region}
-      (assoc-dimensions 1) ; = scale 1
+      (assoc-dimensions g/world-unit-scale 1) ; = scale 1
       map->Sprite))
 
 (defn create [path]
