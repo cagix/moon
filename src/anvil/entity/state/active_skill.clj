@@ -3,7 +3,7 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity]
             [anvil.world :refer [timer finished-ratio stopped?]]
-            [gdl.assets :refer [play-sound]]
+            [gdl.context :refer [play-sound]]
             [gdl.graphics :as g]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]

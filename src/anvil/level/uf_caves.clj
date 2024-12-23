@@ -4,7 +4,7 @@
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
-            [gdl.assets :as assets]
+            [gdl.context :as ctx]
             [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)
@@ -35,7 +35,7 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (texture-region/create (assets/manager "maps/uf_terrain.png")
+  (tm-tile (texture-region/create (ctx/assets "maps/uf_terrain.png")
                                   (* sprite-x sprite-size)
                                   (* sprite-y sprite-size)
                                   sprite-size

@@ -4,7 +4,7 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.assets :as assets]
+            [gdl.context :as ctx]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]
@@ -42,7 +42,7 @@
                   (reify lwjgl3/Application
                     (create [_]
                       (db/setup (:db lifecycle))
-                      (assets/setup)
+                      (ctx/assets-setup)
                       (graphics/setup (:graphics lifecycle))
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
@@ -51,7 +51,7 @@
                       (camera/set-position! graphics/camera [30 70]))
 
                     (dispose [_]
-                      (assets/cleanup)
+                      (ctx/assets-cleanup)
                       (graphics/cleanup)
                       (stage/cleanup)
                       (ui/cleanup))

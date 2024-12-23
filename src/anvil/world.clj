@@ -3,7 +3,7 @@
             [anvil.db :as db]
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
-            [gdl.assets :refer [play-sound]]
+            [gdl.context :refer [play-sound]]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]

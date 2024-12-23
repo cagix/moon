@@ -1,6 +1,6 @@
 (ns anvil.widgets.inventory
   (:require [anvil.component :refer [clicked-inventory-cell]]
-            [gdl.context :as ctx]
+            [gdl.context :as ctx :refer [play-sound]]
             [anvil.entity :as entity]
             [gdl.graphics :as g]
             [anvil.info :as info]
@@ -18,8 +18,7 @@
             [gdl.val-max :as val-max]
             [gdl.ui.actor :refer [user-object] :as actor]
             [gdl.ui.utils :as scene2d.utils]
-            [data.grid2d :as g2d]
-            [gdl.assets :refer [play-sound]])
+            [data.grid2d :as g2d])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 

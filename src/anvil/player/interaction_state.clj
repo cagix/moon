@@ -3,7 +3,7 @@
             [anvil.skill :as skill]
             [anvil.player :as player]
             [anvil.world :as world]
-            [gdl.assets :refer [play-sound]]
+            [gdl.context :refer [play-sound]]
             [gdl.graphics :as g]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]

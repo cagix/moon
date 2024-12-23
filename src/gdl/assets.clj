@@ -1,6 +1,5 @@
 (ns gdl.assets
-  (:require [clojure.gdx.audio.sound :as sound]
-            [clojure.gdx.assets :as assets]
+  (:require [clojure.gdx.assets :as assets]
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str]))
@@ -25,31 +24,21 @@
           :else
           (recur remaining result))))
 
-(def folder "resources/")
+(def ^:private asset-type-exts {:sound   #{"wav"}
+                                :texture #{"png" "bmp"}})
 
-(def asset-type-exts {:sound   #{"wav"}
-                      :texture #{"png" "bmp"}})
+(defn manager [folder]
+  (doto (assets/manager)
+    (load-all (for [[asset-type exts] asset-type-exts
+                    file (map #(str/replace-first % folder "")
+                              (recursively-search folder exts))]
+                [file asset-type]))))
 
-(defn setup []
-  (def manager (doto (assets/manager)
-                 (load-all (for [[asset-type exts] asset-type-exts
-                                 file (map #(str/replace-first % folder "")
-                                           (recursively-search folder exts))]
-                             [file asset-type])))))
-
-(defn cleanup []
+(defn cleanup [manager]
   (assets/dispose manager))
-
-(def sound-asset-format "sounds/%s.wav")
-
-(defn play-sound [sound-name]
-  (->> sound-name
-       (format sound-asset-format)
-       manager
-       sound/play))
 
 (defn all-of-type
   "Returns all asset paths with the specific asset-type."
-  [asset-type]
+  [manager asset-type]
   (filter #(= (assets/type manager %) asset-type)
           (assets/names manager)))
