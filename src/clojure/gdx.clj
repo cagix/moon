@@ -1,8 +1,13 @@
 (in-ns 'clojure.core)
 
-(require '[clojure.gdx.input :as input]
+(require '[clojure.gdx.graphics.color :as color]
+         '[clojure.gdx.input :as input]
+         '[clojure.gdx.utils.screen-utils :as screen-utils]
          '[gdl.ui.group :as group]
          '[gdl.ui.actor :as actor])
+
+(defn clear-screen []
+  (screen-utils/clear color/black))
 
 (def key-just-pressed?    input/key-just-pressed?)
 (def key-pressed?         input/key-pressed?)

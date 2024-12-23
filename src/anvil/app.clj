@@ -32,7 +32,7 @@
                       (world/dispose))
 
                     (render [_]
-                      (graphics/clear-screen)
+                      (clear-screen)
                       (world/render)
                       (stage/render)
                       (stage/act)

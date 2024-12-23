@@ -57,7 +57,7 @@
                       (ui/cleanup))
 
                     (render [_]
-                      (graphics/clear-screen)
+                      (clear-screen)
                       (graphics/draw-tiled-map tiled-map
                                                tile-color-setter)
                       (stage/render)
