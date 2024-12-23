@@ -2,7 +2,9 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
-            [gdl.context :refer [play-sound]]
+            [gdl.context :as ctx :refer [play-sound
+                                         world-viewport-width
+                                         world-viewport-height]]
             [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
@@ -133,14 +135,14 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position g/camera)
+        [cx cy] (cam/position ctx/camera)
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float g/world-viewport-width)  2)))
-     (<= ydist (inc (/ (float g/world-viewport-height) 2))))))
+     (<= xdist (inc (/ (float world-viewport-width)  2)))
+     (<= ydist (inc (/ (float world-viewport-height) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see

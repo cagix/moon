@@ -86,7 +86,7 @@
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles g/camera)
+        visible-tiles (cam/visible-tiles ctx/camera)
         [x y] (mapv int (g/world-mouse-position))]
     (g/rectangle x y 1 1 g/white)
     (when start-position
@@ -117,7 +117,7 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! g/camera tiled-map)
+    (show-whole-map! ctx/camera tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
@@ -137,10 +137,10 @@
   (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (defn enter [_]
-  #_(show-whole-map! g/camera (:tiled-map @current-data)))
+  #_(show-whole-map! ctx/camera (:tiled-map @current-data)))
 
 (defn exit [_]
-  #_(cam/reset-zoom! g/camera))
+  #_(cam/reset-zoom! ctx/camera))
 
 (defn render [_]
   #_(g/draw-tiled-map (:tiled-map @current-data)
@@ -150,8 +150,8 @@
       (swap! current-data update :show-grid-lines not))
   #_(if (key-just-pressed? :keys/m)
       (swap! current-data update :show-movement-properties not))
-  #_(adjust-zoom g/camera)
-  #_(camera-controls g/camera))
+  #_(adjust-zoom ctx/camera)
+  #_(camera-controls ctx/camera))
 
 #_(defn dispose [_]
   #_(dispose (:tiled-map @current-data)))

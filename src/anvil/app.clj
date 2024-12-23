@@ -10,6 +10,7 @@
             [gdl.context.default-font :as default-font]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.viewport :as viewport]
+            [gdl.context.world-viewport :as world-viewport]
             [gdl.graphics :as graphics]
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
@@ -29,7 +30,7 @@
                       (default-font/setup (:default-font lifecycle))
                       (cursors/setup (:cursors lifecycle))
                       (viewport/setup (:viewport lifecycle))
-                      (graphics/setup-world-viewport (:world-viewport lifecycle))
+                      (world-viewport/setup (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
                                                          ctx/batch)
                       (ui/setup (:ui lifecycle))

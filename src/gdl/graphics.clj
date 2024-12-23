@@ -19,16 +19,6 @@
             [gdl.tiled :as tiled])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
-(defn setup-world-viewport [{:keys [tile-size width height]}]
-  (ctx/setup-world-unit-scale tile-size)
-  (def world-viewport-width  width)
-  (def world-viewport-height height)
-  (def camera (camera/orthographic))
-  (def world-viewport (let [world-width  (* width  ctx/world-unit-scale)
-                            world-height (* height ctx/world-unit-scale)]
-                        (camera/set-to-ortho camera world-width world-height :y-down? false)
-                        (viewport/fit world-width world-height camera))))
-
 (defn setup-tiled-map-renderer [world-unit-scale batch]
   (def tiled-map-renderer
     (memoize (fn [tiled-map]
@@ -49,7 +39,7 @@
   (dispose sd-texture))
 
 (defn resize-world-viewport [w h]
-  (viewport/update world-viewport w h :center-camera? false))
+  (viewport/update ctx/world-viewport w h :center-camera? false))
 
 (def black color/black)
 (def white color/white)
@@ -238,13 +228,13 @@
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position world-viewport))
+  (unproject-mouse-position ctx/world-viewport))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) ctx/world-unit-scale))
 
 (defn draw-on-world-view [render-fn]
-  (draw-with world-viewport ctx/world-unit-scale render-fn))
+  (draw-with ctx/world-viewport ctx/world-unit-scale render-fn))
 
 (defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
@@ -270,4 +260,4 @@
   (draw-tiled-map* (tiled-map-renderer tiled-map)
                    tiled-map
                    color-setter
-                   camera))
+                   ctx/camera))

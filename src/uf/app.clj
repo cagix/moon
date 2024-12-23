@@ -8,6 +8,7 @@
             [gdl.context.db :as db]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.viewport :as viewport]
+            [gdl.context.world-viewport :as world-viewport]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]
@@ -25,8 +26,8 @@
 ; card - one of creatures/items/etc.
 
 (comment
- (camera/position graphics/camera)
- (camera/set-position! graphics/camera [30 70])
+ (camera/position ctx/camera)
+ (camera/set-position! ctx/camera [30 70])
  (tiled/tm-height tiled-map)
  )
 
@@ -48,14 +49,14 @@
                       (assets/setup "resources/")
                       (sprite-batch/setup)
                       (viewport/setup (:viewport lifecycle))
-                      (graphics/setup-world-viewport (:world-viewport lifecycle))
+                      (world-viewport/setup (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
                                                          ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (stage/add-actor (uf-dev-menu-table))
                       (bind-root tiled-map (tiled/load-tmx-map "maps/vampire.tmx"))
-                      (camera/set-position! graphics/camera [30 70]))
+                      (camera/set-position! ctx/camera [30 70]))
 
                     (dispose [_]
                       (assets/cleanup)

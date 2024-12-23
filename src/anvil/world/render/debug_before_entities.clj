@@ -1,6 +1,7 @@
 (ns anvil.world.render.debug-before-entities
   (:require [anvil.world :as world]
             [anvil.world.render :as render]
+            [gdl.context :as ctx]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]))
 
@@ -10,13 +11,13 @@
 (def ^:private ^:dbg-flag cell-occupied? false)
 
 (defn-impl render/debug-before-entities []
-  (let [cam g/camera
+  (let [cam ctx/camera
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
       (g/grid (int left-x) (int bottom-y)
-              (inc (int g/world-viewport-width))
-              (+ 2 (int g/world-viewport-height))
+              (inc (int ctx/world-viewport-width))
+              (+ 2 (int ctx/world-viewport-height))
               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)

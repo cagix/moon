@@ -1,4 +1,12 @@
 (ns gdl.context
+  "Abstract context, the vars have to be defined first - allows dependency-free use of context.
+
+  - this ns is not allowed to have any dependencies ! -
+
+  Why?
+
+  Because otherwise we do not have an abstract 'context' concept.
+  "
   (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -20,8 +28,11 @@
       get-sound
       sound/play))
 
-(defn setup-world-unit-scale [tile-size]
-  (def world-unit-scale (float (/ tile-size))))
+(declare world-unit-scale
+         world-viewport-width
+         world-viewport-height
+         world-viewport
+         camera)
 
 (defn texture-region [path]
   (texture-region/create (assets path)))

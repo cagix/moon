@@ -7,8 +7,8 @@
             [gdl.context.assets :as assets]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.viewport :as viewport]
+            [gdl.context.world-viewport :as world-viewport]
             [gdl.db :as db]
-            [gdl.graphics :as g]
             [gdl.malli :as m]
             [gdl.schema :as schema]
             [gdl.stage :as stage]
@@ -513,7 +513,7 @@
                     (assets/setup "resources/")
                     (sprite-batch/setup)
                     (viewport/setup {:width 1440 :height 900})
-                    (g/setup-world-viewport {:tile-size 48 :width 1440 :height 900}) ; just because of sprite edn->value of db requires world-unit-scale
+                    (world-viewport/setup {:tile-size 48 :width 1440 :height 900}) ; just because of sprite edn->value of db requires world-unit-scale
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")
                                   (tabs-table "custom label text here")]))

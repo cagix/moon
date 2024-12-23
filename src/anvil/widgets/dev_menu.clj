@@ -78,7 +78,7 @@
                     {:label "World"
                      :update-fn #(mapv int (g/world-mouse-position))}
                     {:label "Zoom"
-                     :update-fn #(cam/zoom g/camera)
+                     :update-fn #(cam/zoom ctx/camera)
                      :icon "images/zoom.png"}
                     {:label "FPS"
                      :update-fn g/frames-per-second
@@ -105,7 +105,7 @@
                    {:label "World"
                     :update-fn #(mapv int (g/world-mouse-position))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom g/camera)
+                    :update-fn #(cam/zoom ctx/camera)
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn g/frames-per-second
