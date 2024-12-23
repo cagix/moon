@@ -2,8 +2,8 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
-            [gdl.context :as ctx]
             [gdl.context.assets :as assets :refer [play-sound]]
+            [gdl.context.sprite-batch :as sprite-batch]
             [gdl.db :as db]
             [gdl.graphics :as g]
             [gdl.malli :as m]
@@ -508,7 +508,7 @@
                 (reify lwjgl3/Application
                   (create [_]
                     (assets/setup)
-                    (ctx/setup-sprite-batch)
+                    (sprite-batch/setup)
                     (g/setup-viewport {:width 1440 :height 900})
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")
@@ -516,7 +516,7 @@
 
                   (dispose [_]
                     (assets/cleanup)
-                    (ctx/dispose-sprite-batch)
+                    (sprite-batch/cleanup)
                     (ui/cleanup)
                     (stage/cleanup))
 

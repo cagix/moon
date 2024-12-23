@@ -1,7 +1,5 @@
 (ns gdl.context
-  (:require [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
-            [clojure.gdx.utils.disposable :refer [dispose]]
-            [gdl.context.assets :as assets]
+  (:require [gdl.context.assets :as assets]
             [gdl.graphics.sprite :as sprite]))
 
 (defn setup-world-unit-scale [tile-size]
@@ -26,9 +24,3 @@
   (sprite/from-sheet world-unit-scale
                      sprite-sheet
                      xy))
-
-(defn setup-sprite-batch []
-  (def batch (sprite-batch/create)))
-
-(defn dispose-sprite-batch []
-  (dispose batch))

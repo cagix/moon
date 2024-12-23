@@ -6,6 +6,7 @@
             [gdl.context :as ctx]
             [gdl.context.assets :as assets]
             [gdl.context.db :as db]
+            [gdl.context.sprite-batch :as sprite-batch]
             [gdl.graphics :as graphics]
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
@@ -20,21 +21,21 @@
                     (create [_]
                       (db/setup (:db lifecycle))
                       (assets/setup)
-                      (ctx/setup-sprite-batch)
+                      (sprite-batch/setup)
                       (graphics/setup-shape-drawer)
                       (graphics/setup-default-font (:default-font lifecycle))
                       (graphics/setup-cursors (:cursors lifecycle))
                       (graphics/setup-viewport (:viewport lifecycle))
                       (graphics/setup-world-viewport (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
-                                                         ctx/batch)
+                                                         sprite-batch/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (world/create (:world lifecycle)))
 
                     (dispose [_]
                       (assets/cleanup)
-                      (ctx/dispose-sprite-batch)
+                      (sprite-batch/cleanup)
                       (graphics/dispose-shape-drawer)
                       (graphics/dispose-default-font)
                       (graphics/dispose-cursors)

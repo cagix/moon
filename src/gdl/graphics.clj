@@ -18,6 +18,7 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.context :as ctx]
+            [gdl.context.sprite-batch :refer [batch]]
             [gdl.tiled :as tiled])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
@@ -69,7 +70,7 @@
                         texture (texture/create pixmap)]
                     (dispose pixmap)
                     texture))
-  (def sd (sd/create ctx/batch (texture-region/create sd-texture 1 0 1 1))))
+  (def sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))))
 
 (defn dispose-shape-drawer []
   (dispose sd-texture))
@@ -183,7 +184,7 @@
                             (float *unit-scale*)
                             (float (or scale 1))))
     (font/draw :font font
-               :batch ctx/batch
+               :batch batch
                :text text
                :x x
                :y (+ y (if up? (text-height font text) 0))
@@ -212,7 +213,7 @@
 
 (defn draw-image
   [{:keys [texture-region color] :as image} position]
-  (draw-texture-region ctx/batch
+  (draw-texture-region batch
                        texture-region
                        position
                        (unit-dimensions image *unit-scale*)
@@ -222,7 +223,7 @@
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region ctx/batch
+    (draw-texture-region batch
                          texture-region
                          [(- (float x) (/ (float w) 2))
                           (- (float y) (/ (float h) 2))]
@@ -241,7 +242,7 @@
   (batch/end batch))
 
 (defn draw-with [viewport unit-scale draw-fn]
-  (draw-on-viewport ctx/batch
+  (draw-on-viewport batch
                     viewport
                     #(with-line-width unit-scale
                        (fn []

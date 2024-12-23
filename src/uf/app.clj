@@ -5,6 +5,7 @@
             [clojure.java.io :as io]
             [gdl.context :as ctx]
             [gdl.context.db :as db]
+            [gdl.context.sprite-batch :as sprite-batch]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]
@@ -43,11 +44,11 @@
                     (create [_]
                       (db/setup (:db lifecycle))
                       (assets/setup)
-                      (ctx/setup-sprite-batch)
+                      (sprite-batch/setup)
                       (graphics/setup-viewport (:viewport lifecycle))
                       (graphics/setup-world-viewport (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
-                                                         ctx/batch)
+                                                         sprite-batch/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (stage/add-actor (uf-dev-menu-table))
@@ -56,7 +57,7 @@
 
                     (dispose [_]
                       (assets/cleanup)
-                      (ctx/dispose-sprite-batch)
+                      (sprite-batch/cleanup)
                       (stage/cleanup)
                       (ui/cleanup))
 
