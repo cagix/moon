@@ -498,10 +498,7 @@
                     :align :center}))
 
 (def graphics
-  {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                  :size 16
-                  :quality-scaling 2}
-   :cursors {}
+  {:cursors {}
    :viewport {:width 1440
               :height 900}
    :world-viewport {:tile-size 48

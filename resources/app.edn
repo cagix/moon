@@ -87,10 +87,10 @@
  :lifecycle {:db {:schema "schema.edn"
                   :properties "properties.edn"}
              :ui :skin-scale/x1
-             :graphics {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                       :size 16
-                                       :quality-scaling 2}
-                        :cursors {:cursors/bag                   ["bag001"       [0   0]]
+             :default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                            :size 16
+                            :quality-scaling 2}
+             :graphics {:cursors {:cursors/bag                   ["bag001"       [0   0]]
                                   :cursors/black-x               ["black_x"      [0   0]]
                                   :cursors/default               ["default"      [0   0]]
                                   :cursors/denied                ["denied"       [16 16]]

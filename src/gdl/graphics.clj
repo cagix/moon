@@ -21,9 +21,14 @@
             [gdl.tiled :as tiled])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
+(defn setup-default-font [config]
+  (def default-font (freetype/generate-font config)))
+
+(defn dispose-default-font []
+  (dispose default-font))
+
 (defn setup [{:keys [default-font cursors viewport world-viewport]}]
   (ctx/setup-sprite-batch)
-  (def default-font (freetype/generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (pixmap/create (files/internal (str "cursors/" file ".png")))
                                 cursor (g/cursor pixmap hotspot-x hotspot-y)]
@@ -58,7 +63,6 @@
 
 (defn cleanup []
   (ctx/dispose-sprite-batch)
-  (dispose default-font)
   (run! dispose (vals cursors)))
 
 (defn dispose-shape-drawer []
