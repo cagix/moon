@@ -3,11 +3,12 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
             [gdl.assets]
-            [gdl.context :as ctx :refer [play-sound]]
+            [gdl.context :refer [assets play-sound resize-viewport viewport-height]]
             [gdl.context.assets :as assets]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.viewport :as viewport]
             [gdl.db :as db]
+            [gdl.graphics :as g]
             [gdl.malli :as m]
             [gdl.schema :as schema]
             [gdl.stage :as stage]
@@ -59,7 +60,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- ctx/viewport-height 50)
+     :height (min (- viewport-height 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -156,7 +157,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (gdl.assets/all-of-type ctx/assets :sound)]
+  (let [rows (for [sound-file (gdl.assets/all-of-type assets :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -441,7 +442,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (gdl.assets/all-of-type ctx/asseets :texture))]
+  (for [file (sort (gdl.assets/all-of-type assets :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -494,7 +495,7 @@
     table))
 
 (defn- background-image [path]
-  (ui/image-widget (ctx/assets path)
+  (ui/image-widget (assets path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))
@@ -512,6 +513,7 @@
                     (assets/setup "resources/")
                     (sprite-batch/setup)
                     (viewport/setup {:width 1440 :height 900})
+                    (g/setup-world-viewport {:tile-size 48 :width 1440 :height 900}) ; just because of sprite edn->value of db requires world-unit-scale
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")
                                   (tabs-table "custom label text here")]))
@@ -527,4 +529,4 @@
                     (stage/render))
 
                   (resize [_ w h]
-                    (ctx/resize-viewport w h)))))
+                    (resize-viewport w h)))))
