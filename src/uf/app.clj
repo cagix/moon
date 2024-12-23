@@ -4,8 +4,10 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx]
+            [gdl.context.assets :as assets]
             [gdl.context.db :as db]
             [gdl.context.sprite-batch :as sprite-batch]
+            [gdl.context.viewport :as viewport]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]
@@ -45,7 +47,7 @@
                       (db/setup (:db lifecycle))
                       (assets/setup "resources/")
                       (sprite-batch/setup)
-                      (graphics/setup-viewport (:viewport lifecycle))
+                      (viewport/setup (:viewport lifecycle))
                       (graphics/setup-world-viewport (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
                                                          ctx/batch)
@@ -69,5 +71,5 @@
                       (stage/act))
 
                     (resize [_ w h]
-                      (graphics/resize-viewport w h)
+                      (ctx/resize-viewport w h)
                       (graphics/resize-world-viewport w h))))))

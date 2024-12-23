@@ -2,11 +2,12 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
-            [gdl.assets :as assets]
-            [gdl.context :refer [play-sound]]
+            [gdl.assets]
+            [gdl.context :as ctx :refer [play-sound]]
+            [gdl.context.assets :as assets]
             [gdl.context.sprite-batch :as sprite-batch]
+            [gdl.context.viewport :as viewport]
             [gdl.db :as db]
-            [gdl.graphics :as g]
             [gdl.malli :as m]
             [gdl.schema :as schema]
             [gdl.stage :as stage]
@@ -58,7 +59,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- g/viewport-height 50)
+     :height (min (- ctx/viewport-height 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -155,7 +156,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (assets/all-of-type ctx/assets :sound)]
+  (let [rows (for [sound-file (gdl.assets/all-of-type ctx/assets :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -440,7 +441,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-of-type ctx/asseets :texture))]
+  (for [file (sort (gdl.assets/all-of-type ctx/asseets :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -510,7 +511,7 @@
                   (create [_]
                     (assets/setup "resources/")
                     (sprite-batch/setup)
-                    (g/setup-viewport {:width 1440 :height 900})
+                    (viewport/setup {:width 1440 :height 900})
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")
                                   (tabs-table "custom label text here")]))
@@ -526,4 +527,4 @@
                     (stage/render))
 
                   (resize [_ w h]
-                    (g/resize-viewport w h)))))
+                    (ctx/resize-viewport w h)))))

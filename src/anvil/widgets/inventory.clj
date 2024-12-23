@@ -168,8 +168,8 @@
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [g/viewport-width
-                         g/viewport-height]
+              :position [ctx/viewport-width
+                         ctx/viewport-height]
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 

@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.fsm
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [gdl.graphics :as g]
+            [gdl.context :refer [set-cursor]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -97,7 +97,7 @@
                                                           [new-state-k eid]))]]
           (when (:entity/player? @eid)
             (when-let [cursor (component/cursor new-state-obj)]
-              (g/set-cursor cursor)))
+              (set-cursor cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))

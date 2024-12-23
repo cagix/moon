@@ -23,7 +23,7 @@
   ([]
    (setup nil))
   ([actors]
-   (def this (stage* g/viewport ctx/batch actors))
+   (def this (stage* ctx/viewport ctx/batch actors))
    (set-input-processor this)))
 
 (defn cleanup []
@@ -76,8 +76,8 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ g/viewport-width 2)
-                                 (* g/viewport-height (/ 3 4))]
+               :center-position [(/ ctx/viewport-width 2)
+                                 (* ctx/viewport-height (/ 3 4))]
                :pack? true})))
 
 

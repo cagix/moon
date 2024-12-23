@@ -2,7 +2,7 @@
   (:require [anvil.info :as info]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
-            [gdl.graphics :as g]
+            [gdl.context :as ctx]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :as group]))
 
@@ -16,7 +16,7 @@
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [g/viewport-width 0]
+                           :position [ctx/viewport-width 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.

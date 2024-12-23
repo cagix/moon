@@ -4,6 +4,7 @@
             [anvil.modules :as modules]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
+            [gdl.context :as ctx]
             [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
@@ -62,7 +63,7 @@
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos))
                                          (.pack window))}))
-    (.setPosition window 0 g/viewport-height) window))
+    (.setPosition window 0 ctx/viewport-height) window))
 
 (def ^:private camera-movement-speed 1)
 

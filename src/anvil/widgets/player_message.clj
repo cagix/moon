@@ -1,13 +1,14 @@
 (ns anvil.widgets.player-message
   (:require [anvil.widgets :as widgets]
+            [gdl.context :as ctx]
             [gdl.graphics :as g :refer [draw-text]]
             [gdl.stage :refer [message-to-player player-message-duration-seconds]]
             [gdl.ui :refer [ui-actor]]))
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ g/viewport-width 2)
-                :y (+ (/ g/viewport-height 2) 200)
+    (draw-text {:x (/ ctx/viewport-width 2)
+                :y (+ (/ ctx/viewport-height 2) 200)
                 :text message
                 :scale 2.5
                 :up? true})))

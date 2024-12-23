@@ -1,6 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.files :as files]
-            [clojure.gdx.graphics :as g]
+  (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -9,7 +8,6 @@
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
@@ -20,30 +18,6 @@
             [gdl.context :as ctx]
             [gdl.tiled :as tiled])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
-
-(defn setup-default-font [config]
-  (def default-font (freetype/generate-font config)))
-
-(defn dispose-default-font []
-  (dispose default-font))
-
-(defn setup-cursors [cursors]
-  (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (pixmap/create (files/internal (str "cursors/" file ".png")))
-                                cursor (g/cursor pixmap hotspot-x hotspot-y)]
-                            (dispose pixmap)
-                            cursor))
-                        cursors)))
-
-(defn dispose-cursors []
-  (run! dispose (vals cursors)))
-
-(defn setup-viewport [{:keys [width height]}]
-  (def viewport-width  width)
-  (def viewport-height height)
-  (def viewport (viewport/fit viewport-width
-                              viewport-height
-                              (camera/orthographic))))
 
 (defn setup-world-viewport [{:keys [tile-size width height]}]
   (ctx/setup-world-unit-scale tile-size)
@@ -73,9 +47,6 @@
 
 (defn dispose-shape-drawer []
   (dispose sd-texture))
-
-(defn resize-viewport [w h]
-  (viewport/update viewport w h :center-camera? true))
 
 (defn resize-world-viewport [w h]
   (viewport/update world-viewport w h :center-camera? false))
@@ -161,9 +132,6 @@
     (draw-fn)
     (sd/set-default-line-width sd old-line-width)))
 
-(defn set-cursor [cursor-key]
-  (g/set-cursor (safe-get cursors cursor-key)))
-
 (def ^:dynamic ^:private *unit-scale* 1)
 
 (defn- text-height [font text]
@@ -178,7 +146,7 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font x y text h-align up? scale]}]
-  (let [font (or font default-font)
+  (let [font (or font ctx/default-font)
         data (font/data font)
         old-scale (float (font/scale-x data))]
     (font/set-scale data (* old-scale
@@ -265,7 +233,7 @@
 
 (defn mouse-position []
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position viewport)))
+  (mapv int (unproject-mouse-position ctx/viewport)))
 
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true

@@ -1,6 +1,8 @@
 (ns gdl.context
   (:require [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.utils.viewport :as viewport]
             [gdl.graphics.sprite :as sprite]))
 
 (declare assets
@@ -8,11 +10,15 @@
 
 (def sound-asset-format "sounds/%s.wav")
 
-(defn play-sound [sound-name]
+(defn get-sound [sound-name]
   (->> sound-name
        (format sound-asset-format)
-       assets
-       sound/play))
+       assets))
+
+(defn play-sound [sound-name]
+  (-> sound-name
+      get-sound
+      sound/play))
 
 (defn setup-world-unit-scale [tile-size]
   (def world-unit-scale (float (/ tile-size))))
@@ -39,3 +45,17 @@
   (sprite/from-sheet world-unit-scale
                      sprite-sheet
                      xy))
+
+(declare default-font)
+
+(declare cursors)
+
+(defn set-cursor [cursor-key]
+  (g/set-cursor (safe-get cursors cursor-key)))
+
+(declare viewport
+         viewport-width
+         viewport-height)
+
+(defn resize-viewport [w h]
+  (viewport/update viewport w h :center-camera? true))

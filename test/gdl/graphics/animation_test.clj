@@ -9,11 +9,7 @@
 ; => sprite needs a texture they don't know about each other
 
 (def graphics
-  {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                  :size 16
-                  :quality-scaling 2}
-   :cursors {}
-   :viewport {:width 800
+  {:viewport {:width 800
               :height 600}
    :world-viewport {:tile-size 48
                     :width 600

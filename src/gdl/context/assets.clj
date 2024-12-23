@@ -3,7 +3,7 @@
             [gdl.context :as ctx]))
 
 (defn setup [folder]
-  (bind-root ctx/assets (assets/manager assets-folder)))
+  (bind-root ctx/assets (assets/manager folder)))
 
 (defn cleanup []
   (assets/cleanup ctx/assets))

@@ -5,8 +5,11 @@
             [clojure.java.io :as io]
             [gdl.context :as ctx]
             [gdl.context.assets :as assets]
+            [gdl.context.cursors :as cursors]
             [gdl.context.db :as db]
+            [gdl.context.default-font :as default-font]
             [gdl.context.sprite-batch :as sprite-batch]
+            [gdl.context.viewport :as viewport]
             [gdl.graphics :as graphics]
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
@@ -23,9 +26,9 @@
                       (assets/setup "resources/")
                       (sprite-batch/setup)
                       (graphics/setup-shape-drawer)
-                      (graphics/setup-default-font (:default-font lifecycle))
-                      (graphics/setup-cursors (:cursors lifecycle))
-                      (graphics/setup-viewport (:viewport lifecycle))
+                      (default-font/setup (:default-font lifecycle))
+                      (cursors/setup (:cursors lifecycle))
+                      (viewport/setup (:viewport lifecycle))
                       (graphics/setup-world-viewport (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
                                                          ctx/batch)
@@ -37,8 +40,8 @@
                       (assets/cleanup)
                       (sprite-batch/cleanup)
                       (graphics/dispose-shape-drawer)
-                      (graphics/dispose-default-font)
-                      (graphics/dispose-cursors)
+                      (default-font/cleanup)
+                      (cursors/cleanup)
                       (stage/cleanup)
                       (ui/cleanup)
                       (world/dispose))
@@ -51,5 +54,5 @@
                       (world/tick pausing?))
 
                     (resize [_ w h]
-                      (graphics/resize-viewport w h)
+                      (ctx/resize-viewport w h)
                       (graphics/resize-world-viewport w h))))))

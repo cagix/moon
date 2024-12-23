@@ -4,6 +4,7 @@
             [clojure.gdx.app :refer [post-runnable]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
+            [gdl.context :as ctx]
             [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.stage :refer [add-actor]]
@@ -167,10 +168,10 @@
                          :pack? true})
         scroll-pane (scroll-pane table)]
     {:actor scroll-pane
-     :width (/ g/viewport-width 2)
+     :width (/ ctx/viewport-width 2)
      :height
-     (- g/viewport-height 50)
-     #_(min (- g/viewport-height 50) (height table))}))
+     (- ctx/viewport-height 50)
+     #_(min (- ctx/viewport-height 50) (height table))}))
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}

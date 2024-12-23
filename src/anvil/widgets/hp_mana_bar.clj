@@ -17,7 +17,7 @@
   (let [rahmen      (ctx/sprite "images/rahmen.png")
         hpcontent   (ctx/sprite "images/hp.png")
         manacontent (ctx/sprite "images/mana.png")
-        x (/ g/viewport-width 2)
+        x (/ ctx/viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
