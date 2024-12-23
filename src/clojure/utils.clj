@@ -4,7 +4,7 @@
          '[clojure.pprint :refer [pprint]])
 
 (defmacro bind-root [sym value]
-  `(clojure.lang.Var/.bindRoot (var ~sym) ~value))
+  `(alter-var-root (var ~sym) (constantly ~value)))
 
 (defmacro defn-impl [sym & fn-body]
   `(bind-root ~sym (fn ~@fn-body)))

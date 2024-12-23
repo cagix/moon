@@ -508,7 +508,7 @@
                  :taskbar-icon "moon.png"}
                 (reify lwjgl3/Application
                   (create [_]
-                    (assets/setup)
+                    (assets/setup "resources/")
                     (sprite-batch/setup)
                     (g/setup-viewport {:width 1440 :height 900})
                     (ui/setup :skin-scale/x1)

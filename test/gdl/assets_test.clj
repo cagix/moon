@@ -8,7 +8,7 @@
 #_(defn -main []
   (start-simple-app (reify app/Listener
                       (create [_]
-                        (assets/setup)
+                        (assets/setup "resources/")
                         (ctx/play-sound "bfxr_caveenter"))
                       (dispose [_]
                         (assets/cleanup))

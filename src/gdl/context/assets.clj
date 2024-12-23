@@ -2,9 +2,7 @@
   (:require [gdl.assets :as assets]
             [gdl.context :as ctx]))
 
-(def assets-folder "resources/")
-
-(defn setup []
+(defn setup [folder]
   (bind-root ctx/assets (assets/manager assets-folder)))
 
 (defn cleanup []

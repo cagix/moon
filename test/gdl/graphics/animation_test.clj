@@ -22,7 +22,7 @@
 #_(defn -main []
     (start-simple-app (reify app/Listener
                         (create [_]
-                          (assets/setup)
+                          (assets/setup "resources/")
                           (g/setup graphics)
                           (graphics/setup-shape-drawer))
                         (dispose [_]

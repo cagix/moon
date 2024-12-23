@@ -20,7 +20,7 @@
                   (reify lwjgl3/Application
                     (create [_]
                       (db/setup (:db lifecycle))
-                      (assets/setup)
+                      (assets/setup "resources/")
                       (sprite-batch/setup)
                       (graphics/setup-shape-drawer)
                       (graphics/setup-default-font (:default-font lifecycle))

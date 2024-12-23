@@ -43,7 +43,7 @@
                   (reify lwjgl3/Application
                     (create [_]
                       (db/setup (:db lifecycle))
-                      (assets/setup)
+                      (assets/setup "resources/")
                       (sprite-batch/setup)
                       (graphics/setup-viewport (:viewport lifecycle))
                       (graphics/setup-world-viewport (:world-viewport lifecycle))
