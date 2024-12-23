@@ -47,6 +47,7 @@
 
 (defn setup [{:keys [default-font viewport world-viewport]}]
   (ctx/setup-sprite-batch)
+
   (ctx/setup-world-unit-scale (:tile-size world-viewport))
   (def world-viewport-width  (:width  world-viewport))
   (def world-viewport-height (:height world-viewport))
@@ -54,12 +55,14 @@
   (def world-viewport (let [world-width  (* world-viewport-width  ctx/world-unit-scale)
                             world-height (* world-viewport-height ctx/world-unit-scale)]
                         (camera/set-to-ortho camera world-width world-height :y-down? false)
-                        (viewport/fit world-width world-height camera)))
+                        (viewport/fit world-width world-height camera))))
+
+(defn setup-tiled-map-renderer [world-unit-scale batch]
   (def tiled-map-renderer
     (memoize (fn [tiled-map]
                (OrthogonalTiledMapRenderer. tiled-map
-                                            (float ctx/world-unit-scale)
-                                            ctx/batch)))))
+                                            (float world-unit-scale)
+                                            batch)))))
 
 (defn setup-shape-drawer []
   (def sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)

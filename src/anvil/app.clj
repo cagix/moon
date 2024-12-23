@@ -24,6 +24,8 @@
                       (graphics/setup-default-font (:default-font lifecycle))
                       (graphics/setup-cursors (:cursors lifecycle))
                       (graphics/setup-viewport (:viewport lifecycle))
+                      (graphics/setup-tiled-map-renderer ctx/world-unit-scale
+                                                         ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (world/create (:world lifecycle)))
