@@ -23,10 +23,12 @@
     (start-simple-app (reify app/Listener
                         (create [_]
                           (assets/setup)
-                          (g/setup graphics))
+                          (g/setup graphics)
+                          (graphics/setup-shape-drawer))
                         (dispose [_]
                           (assets/cleanup)
-                          (g/cleanup))
+                          (g/cleanup)
+                          (graphics/dispose-shape-drawer))
                         (render [_]
                           (g/clear)
                           (g/draw-with g/viewport

@@ -23,13 +23,6 @@
 
 (defn setup [{:keys [default-font cursors viewport world-viewport]}]
   (ctx/setup-sprite-batch)
-  (def sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
-                                 (pixmap/set-color color/white)
-                                 (pixmap/draw-pixel 0 0))
-                        texture (texture/create pixmap)]
-                    (dispose pixmap)
-                    texture))
-  (def sd (sd/create ctx/batch (texture-region/create sd-texture 1 0 1 1)))
   (def default-font (freetype/generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (pixmap/create (files/internal (str "cursors/" file ".png")))
@@ -54,11 +47,22 @@
                                             (float ctx/world-unit-scale)
                                             ctx/batch)))))
 
+(defn setup-shape-drawer []
+  (def sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
+                                 (pixmap/set-color color/white)
+                                 (pixmap/draw-pixel 0 0))
+                        texture (texture/create pixmap)]
+                    (dispose pixmap)
+                    texture))
+  (def sd (sd/create ctx/batch (texture-region/create sd-texture 1 0 1 1))))
+
 (defn cleanup []
   (ctx/dispose-sprite-batch)
-  (dispose sd-texture)
   (dispose default-font)
   (run! dispose (vals cursors)))
+
+(defn dispose-shape-drawer []
+  (dispose sd-texture))
 
 (defn resize [w h]
   (viewport/update viewport       w h :center-camera? true)

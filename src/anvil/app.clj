@@ -20,6 +20,7 @@
                       (db/setup (:db lifecycle))
                       (ctx/assets-setup)
                       (graphics/setup (:graphics lifecycle))
+                      (graphics/setup-shape-drawer)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (world/create (:world lifecycle)))
@@ -27,6 +28,7 @@
                     (dispose [_]
                       (ctx/assets-cleanup)
                       (graphics/cleanup)
+                      (graphics/dispose-shape-drawer)
                       (stage/cleanup)
                       (ui/cleanup)
                       (world/dispose))
