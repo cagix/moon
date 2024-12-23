@@ -1,6 +1,7 @@
 (in-ns 'clojure.core)
 
-(require '[clojure.gdx.graphics.color :as color]
+(require '[clojure.gdx :as gdx]
+         '[clojure.gdx.graphics.color :as color]
          '[clojure.gdx.input :as input]
          '[clojure.gdx.utils.screen-utils :as screen-utils]
          '[gdl.ui.group :as group]
@@ -9,10 +10,14 @@
 (defn clear-screen []
   (screen-utils/clear color/black))
 
-(def key-just-pressed?    input/key-just-pressed?)
-(def key-pressed?         input/key-pressed?)
-(def button-just-pressed? input/button-just-pressed?)
-(def set-input-processor  input/set-processor)
+(defn key-just-pressed? [k]
+  (input/key-just-pressed? gdx/input k))
+
+(defn key-pressed? [k]
+  (input/key-pressed? gdx/input k))
+
+(defn button-just-pressed? [b]
+  (input/button-just-pressed? gdx/input b))
 
 (def children group/children)
 

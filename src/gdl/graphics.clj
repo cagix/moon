@@ -1,5 +1,6 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics :as g]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -36,8 +37,11 @@
 (defn add-color [name-str color]
   (colors/put name-str (->color color)))
 
-(def frames-per-second g/frames-per-second)
-(def delta-time        g/delta-time)
+(defn frames-per-second []
+  (g/frames-per-second gdx/graphics))
+
+(defn delta-time []
+  (g/delta-time gdx/graphics))
 
 (defn- sd-color [color]
   (sd/set-color ctx/shape-drawer (->color color)))
@@ -188,10 +192,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (input/x)
+  (let [mouse-x (clamp (input/x gdx/input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y)
+        mouse-y (clamp (input/y gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))

@@ -2,22 +2,31 @@
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
 
-                 [clojure.gdx                                 "1.13.0-0.1"]
-                 [com.github.damn/clojure.gdx.backends.lwjgl3 "1.13.0-0.1"]
+                 [clojure.gdx "1.13.0-0.1"]
+                 ;[com.github.damn/clojure.gdx                 "42cc27bd53"]
 
+                 [clojure.gdx.backends.lwjgl3 "1.13.0-0.1"]
+                 ;[com.github.damn/clojure.gdx.backends.lwjgl3 "1.13.0-0.1"]
+                 [com.github.damn/clojure.gdx.graphics.shape-drawer "f70150d4a1"]
+
+                 ; TODO release lib with docs
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
+                 ; TODO this manual ?
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.0" :classifier "natives-desktop"]
 
-                 [clojure.gdx.graphics.shape-drawer "2.5.0-0.1"]
-
+                 ; - no dep ? - gdl -
                  [com.kotcrab.vis/vis-ui "1.5.2"]
 
-                 [nrepl "0.9.0"]
+                 ; this clojure.utils / gdl.utils
                  [org.clj-commons/pretty "3.2.0"]
+
+                 ; this gdl.dev.loop
+                 [nrepl "0.9.0"]
                  [org.clojure/tools.namespace "1.3.0"]
 
                  [com.github.damn/grid2d "1.0"]
 
+                 ; this only gdl.db ?
                  [metosin/malli "0.13.0"]
 
                  [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
@@ -49,7 +58,7 @@
   :profiles {:uberjar {:aot [anvil.app]}}
   #_:main #_anvil.app
   :injections [(load "clojure/utils"
-                     "clojure/gdx")])
+                     "clojure/gdx_inject")])
 
 ; * Notes
 

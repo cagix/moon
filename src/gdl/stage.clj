@@ -1,6 +1,8 @@
 (ns gdl.stage
   (:refer-clojure :exclude [get])
-  (:require [gdl.context :as ctx]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.input :as input]
+            [gdl.context :as ctx]
             [gdl.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
@@ -24,7 +26,7 @@
    (setup nil))
   ([actors]
    (def this (stage* ctx/viewport ctx/batch actors))
-   (set-input-processor this)))
+   (input/set-processor gdx/input this)))
 
 (defn cleanup []
   (.dispose this))

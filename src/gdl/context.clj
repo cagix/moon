@@ -6,8 +6,13 @@
   Why?
 
   Because otherwise we do not have an abstract 'context' concept.
+
+  Or: `gdl.core` - game development language
+  ; - dependency free - ;
+  ; e.g. gdl.audio.sound -> protocol ... !?
   "
-  (:require [clojure.gdx.audio.sound :as sound]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.utils.viewport :as viewport]
@@ -64,7 +69,7 @@
 (declare cursors)
 
 (defn set-cursor [cursor-key]
-  (g/set-cursor (safe-get cursors cursor-key)))
+  (g/set-cursor gdx/graphics (safe-get cursors cursor-key)))
 
 (declare viewport
          viewport-width
