@@ -498,9 +498,7 @@
                     :align :center}))
 
 (def graphics
-  {:viewport {:width 1440
-              :height 900}
-   :world-viewport {:tile-size 48
+  {:world-viewport {:tile-size 48
                     :width 1440
                     :height 900}})
 
@@ -516,6 +514,8 @@
                   (create [_]
                     (ctx/assets-setup)
                     (g/setup graphics)
+                    (graphics/setup-viewport {:width 1440
+                                              :height 900})
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")
                                   (tabs-table "custom label text here")]))

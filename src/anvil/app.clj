@@ -23,6 +23,7 @@
                       (graphics/setup-shape-drawer)
                       (graphics/setup-default-font (:default-font lifecycle))
                       (graphics/setup-cursors (:cursors lifecycle))
+                      (graphics/setup-viewport (:viewport lifecycle))
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (world/create (:world lifecycle)))

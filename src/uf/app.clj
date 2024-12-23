@@ -44,6 +44,7 @@
                       (db/setup (:db lifecycle))
                       (ctx/assets-setup)
                       (graphics/setup (:graphics lifecycle))
+                      (graphics/setup-viewport (:viewport lifecycle))
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (stage/add-actor (uf-dev-menu-table))

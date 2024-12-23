@@ -38,11 +38,15 @@
 (defn dispose-cursors []
   (run! dispose (vals cursors)))
 
+(defn setup-viewport [{:keys [width height]}]
+  (def viewport-width  width)
+  (def viewport-height height)
+  (def viewport (viewport/fit viewport-width
+                              viewport-height
+                              (camera/orthographic))))
+
 (defn setup [{:keys [default-font viewport world-viewport]}]
   (ctx/setup-sprite-batch)
-  (def viewport-width  (:width  viewport))
-  (def viewport-height (:height viewport))
-  (def viewport (viewport/fit viewport-width viewport-height (camera/orthographic)))
   (ctx/setup-world-unit-scale (:tile-size world-viewport))
   (def world-viewport-width  (:width  world-viewport))
   (def world-viewport-height (:height world-viewport))

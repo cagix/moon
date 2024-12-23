@@ -6,8 +6,8 @@
  :lifecycle {:db {:schema     "uf_schema.edn"
                   :properties "uf_properties.edn"}
              :ui :skin-scale/x1
-             :graphics {:viewport {:width 1440
-                                   :height 900}
-                        :world-viewport {:tile-size 48
+             :viewport {:width 1440
+                        :height 900}
+             :graphics {:world-viewport {:tile-size 48
                                          :width 1440
                                          :height 900}}}}
