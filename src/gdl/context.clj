@@ -1,6 +1,8 @@
 (ns gdl.context
   (:require [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.utils.disposable :refer [dispose]]
             [gdl.assets :as assets]
             [gdl.graphics.sprite :as sprite]))
 
@@ -44,3 +46,9 @@
   (sprite/from-sheet world-unit-scale
                      sprite-sheet
                      xy))
+
+(defn setup-sprite-batch []
+  (def batch (sprite-batch/create)))
+
+(defn dispose-sprite-batch []
+  (dispose batch))

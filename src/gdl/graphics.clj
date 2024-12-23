@@ -10,7 +10,6 @@
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
@@ -27,14 +26,14 @@
   (screen-utils/clear color/black))
 
 (defn setup [{:keys [default-font cursors viewport world-viewport]}]
-  (def batch (sprite-batch/create))
+  (ctx/setup-sprite-batch)
   (def sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                  (pixmap/set-color color/white)
                                  (pixmap/draw-pixel 0 0))
                         texture (texture/create pixmap)]
                     (dispose pixmap)
                     texture))
-  (def sd (sd/create batch (texture-region/create sd-texture 1 0 1 1)))
+  (def sd (sd/create ctx/batch (texture-region/create sd-texture 1 0 1 1)))
   (def default-font (freetype/generate-font default-font))
   (def cursors (mapvals (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (pixmap/create (files/internal (str "cursors/" file ".png")))
@@ -55,10 +54,12 @@
                         (viewport/fit world-width world-height camera)))
   (def tiled-map-renderer
     (memoize (fn [tiled-map]
-               (OrthogonalTiledMapRenderer. tiled-map (float ctx/world-unit-scale) batch)))))
+               (OrthogonalTiledMapRenderer. tiled-map
+                                            (float ctx/world-unit-scale)
+                                            ctx/batch)))))
 
 (defn cleanup []
-  (dispose batch)
+  (ctx/dispose-sprite-batch)
   (dispose sd-texture)
   (dispose default-font)
   (run! dispose (vals cursors)))
@@ -172,7 +173,7 @@
                             (float *unit-scale*)
                             (float (or scale 1))))
     (font/draw :font font
-               :batch batch
+               :batch ctx/batch
                :text text
                :x x
                :y (+ y (if up? (text-height font text) 0))
@@ -201,7 +202,7 @@
 
 (defn draw-image
   [{:keys [texture-region color] :as image} position]
-  (draw-texture-region batch
+  (draw-texture-region ctx/batch
                        texture-region
                        position
                        (unit-dimensions image *unit-scale*)
@@ -211,7 +212,7 @@
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image *unit-scale*)]
-    (draw-texture-region batch
+    (draw-texture-region ctx/batch
                          texture-region
                          [(- (float x) (/ (float w) 2))
                           (- (float y) (/ (float h) 2))]
@@ -230,7 +231,7 @@
   (batch/end batch))
 
 (defn draw-with [viewport unit-scale draw-fn]
-  (draw-on-viewport batch
+  (draw-on-viewport ctx/batch
                     viewport
                     #(with-line-width unit-scale
                        (fn []
