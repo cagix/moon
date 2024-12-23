@@ -19,11 +19,12 @@
                     (create [_]
                       (db/setup (:db lifecycle))
                       (ctx/assets-setup)
-                      (graphics/setup (:graphics lifecycle))
+                      (ctx/setup-sprite-batch)
                       (graphics/setup-shape-drawer)
                       (graphics/setup-default-font (:default-font lifecycle))
                       (graphics/setup-cursors (:cursors lifecycle))
                       (graphics/setup-viewport (:viewport lifecycle))
+                      (graphics/setup-world-viewport (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
                                                          ctx/batch)
                       (ui/setup (:ui lifecycle))
@@ -32,7 +33,7 @@
 
                     (dispose [_]
                       (ctx/assets-cleanup)
-                      (graphics/cleanup)
+                      (ctx/dispose-sprite-batch)
                       (graphics/dispose-shape-drawer)
                       (graphics/dispose-default-font)
                       (graphics/dispose-cursors)

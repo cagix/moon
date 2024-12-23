@@ -43,8 +43,9 @@
                     (create [_]
                       (db/setup (:db lifecycle))
                       (ctx/assets-setup)
-                      (graphics/setup (:graphics lifecycle))
+                      (ctx/setup-sprite-batch)
                       (graphics/setup-viewport (:viewport lifecycle))
+                      (graphics/setup-world-viewport (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
                                                          ctx/batch)
                       (ui/setup (:ui lifecycle))
@@ -55,7 +56,7 @@
 
                     (dispose [_]
                       (ctx/assets-cleanup)
-                      (graphics/cleanup)
+                      (ctx/dispose-sprite-batch)
                       (stage/cleanup)
                       (ui/cleanup))
 

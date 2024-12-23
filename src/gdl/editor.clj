@@ -497,11 +497,6 @@
                     :scaling :fill
                     :align :center}))
 
-(def graphics
-  {:world-viewport {:tile-size 48
-                    :width 1440
-                    :height 900}})
-
 (defn -main []
   (def db (db/create {:schema "schema.edn"
                       :properties "properties.edn"}))
@@ -513,16 +508,15 @@
                 (reify lwjgl3/Application
                   (create [_]
                     (ctx/assets-setup)
-                    (g/setup graphics)
-                    (graphics/setup-viewport {:width 1440
-                                              :height 900})
+                    (ctx/setup-sprite-batch)
+                    (g/setup-viewport {:width 1440 :height 900})
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")
                                   (tabs-table "custom label text here")]))
 
                   (dispose [_]
                     (ctx/assets-cleanup)
-                    (g/cleanup)
+                    (ctx/dispose-sprite-batch)
                     (ui/cleanup)
                     (stage/cleanup))
 

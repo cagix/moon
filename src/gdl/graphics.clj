@@ -45,15 +45,13 @@
                               viewport-height
                               (camera/orthographic))))
 
-(defn setup [{:keys [default-font viewport world-viewport]}]
-  (ctx/setup-sprite-batch)
-
-  (ctx/setup-world-unit-scale (:tile-size world-viewport))
-  (def world-viewport-width  (:width  world-viewport))
-  (def world-viewport-height (:height world-viewport))
+(defn setup-world-viewport [{:keys [tile-size width height]}]
+  (ctx/setup-world-unit-scale tile-size)
+  (def world-viewport-width  width)
+  (def world-viewport-height height)
   (def camera (camera/orthographic))
-  (def world-viewport (let [world-width  (* world-viewport-width  ctx/world-unit-scale)
-                            world-height (* world-viewport-height ctx/world-unit-scale)]
+  (def world-viewport (let [world-width  (* width  ctx/world-unit-scale)
+                            world-height (* height ctx/world-unit-scale)]
                         (camera/set-to-ortho camera world-width world-height :y-down? false)
                         (viewport/fit world-width world-height camera))))
 
@@ -72,9 +70,6 @@
                     (dispose pixmap)
                     texture))
   (def sd (sd/create ctx/batch (texture-region/create sd-texture 1 0 1 1))))
-
-(defn cleanup []
-  (ctx/dispose-sprite-batch))
 
 (defn dispose-shape-drawer []
   (dispose sd-texture))
