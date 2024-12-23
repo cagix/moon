@@ -1,5 +1,6 @@
 (ns uf.app
   (:require [anvil.db :as db]
+            [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -9,6 +10,16 @@
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]))
+
+; Cards:
+; * uf_heroes_simple - images/creatures.png
+; * uf_items   - images/items.png
+; * uf_skills  - images/skills.png
+
+; => Mix all together as properties w. image / name / etc.
+
+; library - deck of cards -
+; card - one of creatures/items/etc.
 
 (comment
  (camera/position graphics/camera)
@@ -35,6 +46,7 @@
                       (graphics/setup (:graphics lifecycle))
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
+                      (stage/add-actor (uf-dev-menu-table))
                       (bind-root tiled-map (tiled/load-tmx-map "maps/vampire.tmx"))
                       (camera/set-position! graphics/camera [30 70]))
 

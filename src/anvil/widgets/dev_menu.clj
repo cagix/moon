@@ -56,24 +56,24 @@
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
-(defn- dev-menu-bar []
-  (dev-menu*
-   {:menus [{:label "World"
-             :items (for [world (db/build-all :properties/worlds)]
-                      {:label (str "Start " (:property/id world))
-                       :on-click #(world/create world)})}
-            {:label "Help"
-             :items [{:label controls/help-text}]}]
-    :update-labels [{:label "Mouseover-entity id"
-                     :update-fn #(when-let [entity (world/mouseover-entity)]
-                                   (:entity/id entity))
-                     :icon "images/mouseover.png"}
-                    {:label "elapsed-time"
-                     :update-fn #(str (readable-number world/elapsed-time) " seconds")
-                     :icon "images/clock.png"}
-                    {:label "paused?"
-                     :update-fn (fn [] world/paused?)}
-                    {:label "GUI"
+(defn dev-menu-table [config]
+  (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu* config))
+                      :expand-x? true
+                      :fill-x? true
+                      :colspan 1}]
+                    [{:actor (doto (ui/label "")
+                               (.setTouchable Touchable/disabled))
+                      :expand? true
+                      :fill-x? true
+                      :fill-y? true}]]
+             :fill-parent? true}))
+
+(defn uf-dev-menu-table []
+  (dev-menu-table
+   {:menus [{:label "Menu1"
+             :items [{:label "Button1"
+                      :on-click (fn [])}]}]
+    :update-labels [{:label "GUI"
                      :update-fn g/mouse-position}
                     {:label "World"
                      :update-fn #(mapv int (g/world-mouse-position))}
@@ -84,14 +84,32 @@
                      :update-fn g/frames-per-second
                      :icon "images/fps.png"}]}))
 
+(def config
+  {:menus [{:label "World"
+            :items (for [world (db/build-all :properties/worlds)]
+                     {:label (str "Start " (:property/id world))
+                      :on-click #(world/create world)})}
+           {:label "Help"
+            :items [{:label controls/help-text}]}]
+   :update-labels [{:label "Mouseover-entity id"
+                    :update-fn #(when-let [entity (world/mouseover-entity)]
+                                  (:entity/id entity))
+                    :icon "images/mouseover.png"}
+                   {:label "elapsed-time"
+                    :update-fn #(str (readable-number world/elapsed-time) " seconds")
+                    :icon "images/clock.png"}
+                   {:label "paused?"
+                    :update-fn (fn [] world/paused?)}
+                   {:label "GUI"
+                    :update-fn g/mouse-position}
+                   {:label "World"
+                    :update-fn #(mapv int (g/world-mouse-position))}
+                   {:label "Zoom"
+                    :update-fn #(cam/zoom g/camera)
+                    :icon "images/zoom.png"}
+                   {:label "FPS"
+                    :update-fn g/frames-per-second
+                    :icon "images/fps.png"}]})
+
 (defn-impl widgets/dev-menu []
-  (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu-bar))
-                      :expand-x? true
-                      :fill-x? true
-                      :colspan 1}]
-                    [{:actor (doto (ui/label "")
-                               (.setTouchable Touchable/disabled))
-                      :expand? true
-                      :fill-x? true
-                      :fill-y? true}]]
-             :fill-parent? true}))
+  (dev-menu-table config))

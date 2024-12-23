@@ -1,1 +1,19 @@
-{:property/id :qualified-keyword}
+{:property/id :qualified-keyword
+ :card/pretty-name :string
+ :card/image :s/image
+ :properties/cards [:s/map [:property/id
+                            :card/image
+                            :card/pretty-name
+                            ]]}
+
+; Take over items into uf_properties
+; w. only id/image
+
+(comment
+ {:property/id      (:property/id          item)
+  :card/image       (:entity/image         item)
+  :card/pretty-name (:property/pretty-name item)}
+
+ ; creatures can also take id/pretty-name
+ ; but then have to assign ...
+ )
