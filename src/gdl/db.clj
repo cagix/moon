@@ -1,9 +1,9 @@
 (ns gdl.db
   (:refer-clojure :exclude [update])
-  (:require [clojure.edn :as edn]
+  (:require [gdl.context :as ctx]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.graphics.animation :as animation]
-            [gdl.graphics.sprite :as sprite]
             [gdl.schema :as schema]
             [gdl.property :as property]
             [gdl.malli :as m]))
@@ -106,10 +106,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (sprite/from-sheet (sprite/sheet file tilew tileh)
-                         [(int (/ sprite-x tilew))
-                          (int (/ sprite-y tileh))]))
-    (sprite/create file)))
+      (ctx/from-sprite-sheet (ctx/sprite-sheet file tilew tileh)
+                             [(int (/ sprite-x tilew))
+                              (int (/ sprite-y tileh))]))
+    (ctx/sprite file)))
 
 (defmethods :s/image
   (schema/malli-form  [_ _schemas]

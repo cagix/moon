@@ -3,9 +3,9 @@
             [anvil.db :as db]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
+            [gdl.context :as ctx]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
-            [gdl.graphics.sprite :as sprite]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :refer [add-actor!]])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)
@@ -17,7 +17,7 @@
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (sprite/create icon) {})
+   (let [icon (ui/image->widget (ctx/sprite icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))

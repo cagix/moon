@@ -2,8 +2,8 @@
   (:require [anvil.entity :as entity]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
+            [gdl.context :as ctx]
             [gdl.graphics :as g]
-            [gdl.graphics.sprite :as sprite]
             [gdl.ui :refer [ui-actor]]
             [gdl.val-max :as val-max]))
 
@@ -14,16 +14,17 @@
                 :up? true}))
 
 (defn-impl widgets/hp-mana-bar []
-  (let [rahmen      (sprite/create "images/rahmen.png")
-        hpcontent   (sprite/create "images/hp.png")
-        manacontent (sprite/create "images/mana.png")
+  (let [rahmen      (ctx/sprite "images/rahmen.png")
+        hpcontent   (ctx/sprite "images/hp.png")
+        manacontent (ctx/sprite "images/mana.png")
         x (/ g/viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
                             (g/draw-image rahmen [x y])
-                            (g/draw-image (sprite/sub contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                            (g/draw-image (ctx/sub-sprite contentimage
+                                                          [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                           [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []

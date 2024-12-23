@@ -1,12 +1,12 @@
 (ns anvil.widgets.inventory
   (:require [anvil.component :refer [clicked-inventory-cell]]
+            [gdl.context :as ctx]
             [anvil.entity :as entity]
             [gdl.graphics :as g]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
             [gdl.stage :as stage]
-            [gdl.graphics.sprite :as sprite]
             [gdl.ui :refer [set-drawable!
                             ui-widget
                             texture-region-drawable
@@ -107,8 +107,8 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (-> (sprite/sheet "images/items.png" 48 48)
-      (sprite/from-sheet (slot->sprite-idx slot))))
+  (-> (ctx/sprite-sheet "images/items.png" 48 48)
+      (ctx/from-sprite-sheet (slot->sprite-idx slot))))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
