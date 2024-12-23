@@ -84,11 +84,11 @@
                      :update-fn g/frames-per-second
                      :icon "images/fps.png"}]}))
 
-(def config
+(defn- config []
   {:menus [{:label "World"
             :items (for [world (db/build-all :properties/worlds)]
                      {:label (str "Start " (:property/id world))
-                      :on-click #(world/create world)})}
+                      :on-click #(world/create (:property/id world))})}
            {:label "Help"
             :items [{:label controls/help-text}]}]
    :update-labels [{:label "Mouseover-entity id"
@@ -112,4 +112,4 @@
                     :icon "images/fps.png"}]})
 
 (defn-impl widgets/dev-menu []
-  (dev-menu-table config))
+  (dev-menu-table (config)))
