@@ -1,7 +1,6 @@
 (ns anvil.widgets.inventory
   (:require [anvil.component :refer [clicked-inventory-cell]]
-            [gdl.context :as ctx]
-            [gdl.context.assets :refer [play-sound]]
+            [gdl.context :as ctx :refer [play-sound]]
             [anvil.entity :as entity]
             [gdl.graphics :as g]
             [anvil.info :as info]

@@ -1,15 +1,28 @@
 (ns gdl.context
-  (:require [gdl.context.assets :as assets]
+  (:require [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.graphics.sprite :as sprite]))
 
-(declare batch)
+(declare assets
+         batch)
+
+(def sound-asset-format "sounds/%s.wav")
+
+(defn play-sound [sound-name]
+  (->> sound-name
+       (format sound-asset-format)
+       assets
+       sound/play))
 
 (defn setup-world-unit-scale [tile-size]
   (def world-unit-scale (float (/ tile-size))))
 
+(defn texture-region [path]
+  (texture-region/create (assets path)))
+
 (defn sprite [path]
   (sprite/create world-unit-scale
-                 (assets/texture-region path)))
+                 (texture-region path)))
 
 (defn sub-sprite [sprite xywh]
   (sprite/sub world-unit-scale
@@ -18,7 +31,7 @@
 
 (defn sprite-sheet [path tilew tileh]
   (sprite/sheet world-unit-scale
-                (assets/texture-region path)
+                (texture-region path)
                 tilew
                 tileh))
 

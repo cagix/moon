@@ -2,7 +2,8 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
-            [gdl.context.assets :as assets :refer [play-sound]]
+            [gdl.assets :as assets]
+            [gdl.context :refer [play-sound]]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.db :as db]
             [gdl.graphics :as g]
@@ -154,7 +155,7 @@
 (declare columns)
 
 (defn- choose-window [table]
-  (let [rows (for [sound-file (assets/all-of-type :sound)]
+  (let [rows (for [sound-file (assets/all-of-type ctx/assets :sound)]
                [(text-button (str/replace-first sound-file "sounds/" "")
                              (fn []
                                (clear-children table)
@@ -439,7 +440,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-of-type :texture))]
+  (for [file (sort (assets/all-of-type ctx/asseets :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -492,7 +493,7 @@
     table))
 
 (defn- background-image [path]
-  (ui/image-widget (assets/manager path)
+  (ui/image-widget (ctx/assets path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))

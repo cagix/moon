@@ -1,5 +1,6 @@
 (ns gdl.assets-test
   (:require ;[gdl.app-test :refer [start-simple-app]]
+            [gdl.context :as ctx]
             [gdl.context.assets :as assets]))
 
 ; why do I need to load all assets & do that searching thing?
@@ -8,7 +9,7 @@
   (start-simple-app (reify app/Listener
                       (create [_]
                         (assets/setup)
-                        (assets/play-sound "bfxr_caveenter"))
+                        (ctx/play-sound "bfxr_caveenter"))
                       (dispose [_]
                         (assets/cleanup))
                       (render [_])
