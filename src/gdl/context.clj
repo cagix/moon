@@ -2,6 +2,8 @@
   (:require [gdl.context.assets :as assets]
             [gdl.graphics.sprite :as sprite]))
 
+(declare batch)
+
 (defn setup-world-unit-scale [tile-size]
   (def world-unit-scale (float (/ tile-size))))
 

@@ -48,7 +48,7 @@
                       (graphics/setup-viewport (:viewport lifecycle))
                       (graphics/setup-world-viewport (:world-viewport lifecycle))
                       (graphics/setup-tiled-map-renderer ctx/world-unit-scale
-                                                         sprite-batch/batch)
+                                                         ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (stage/add-actor (uf-dev-menu-table))
