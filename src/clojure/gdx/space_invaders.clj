@@ -6,6 +6,30 @@
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils ScreenUtils)))
 
+;; TODO clojure.java.interop repo ... - or in 'clojure.reflect'
+
+; clojure java interop patterns - proxy Ilookup, etc. , cool stuff, cool ideas
+; guide for writing a clojure API for a java library
+
+; TODO release as separate repo - example - ..
+
+; TODO android / iOs - ask chatGPT for help ...
+; TODO viewport
+; TODO aliens move /
+; TODO win/lose
+; TODO music/sound
+; TODO animations
+; TODO score/screens ?
+; TODO powerups ?
+; TODO collision debug / pause / overlay FPS,etc. (dev-menu?)
+; TODO alien/player/bullet width/height has to fit with image
+; TODO exit ?
+; TODO pass gdx app stuffs static with create as a map
+; TODO render text, show controls ...
+; TODO one version w. interop / one w. your 'API' ////....
+; TODO dev-menu for game-stat map - depending on class can inspect ...
+; I have this already ....
+
 (def screen-width 800)
 (def screen-height 600)
 
@@ -99,9 +123,12 @@
 
 (def state (atom nil))
 
+(def gdx-stuff nil)
+
 (defn game-listener []
   (reify lwjgl3/Application
-    (create [_]
+    (create [_ gdx-state]
+      (def gdx-stuff gdx-state)
       (reset! state (make-game-state))
       (swap! state assoc :camera (OrthographicCamera. screen-width screen-height)))
 

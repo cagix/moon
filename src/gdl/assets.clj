@@ -1,9 +1,9 @@
 (ns gdl.assets
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.assets :as assets]
+  (:require [clojure.gdx.assets :as assets]
             [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as fh]
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn- load-all [manager assets]
   (doseq [[file asset-type] assets]
@@ -11,7 +11,7 @@
   (assets/finish-loading manager))
 
 (defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (fh/list (files/internal gdx/files folder))
+  (loop [[file & remaining] (fh/list (files/internal Gdx/files folder))
          result []]
     (cond (nil? file)
           result

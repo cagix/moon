@@ -509,7 +509,7 @@
                  :height 900
                  :taskbar-icon "moon.png"}
                 (reify lwjgl3/Application
-                  (create [_]
+                  (create [_ _gdx-state]
                     (assets/setup "resources/")
                     (sprite-batch/setup)
                     (viewport/setup {:width 1440 :height 900})

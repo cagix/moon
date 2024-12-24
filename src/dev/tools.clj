@@ -1,7 +1,6 @@
 (ns dev.tools
   (:require [anvil.entity.skills :as skills]
             [anvil.world :as world]
-            [clojure.gdx :as gdx]
             [clojure.gdx.application :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -11,7 +10,8 @@
             [gdl.stage :refer [add-actor]]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [gdl.ui.group :refer [children]])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
 
@@ -70,7 +70,7 @@
  )
 
 (defmacro post-runnable [& exprs]
-  `(app/post-runnable gdx/app (fn [] ~@exprs)))
+  `(app/post-runnable Gdx/app (fn [] ~@exprs)))
 
 (defn- learn-skill! [skill-id]
   (post-runnable

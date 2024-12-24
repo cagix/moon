@@ -75,10 +75,10 @@
                                             (update (cam/position camera)
                                                     idx
                                                     #(f % camera-movement-speed))))]
-    (if (key-pressed? :keys/left)  (apply-position 0 -))
-    (if (key-pressed? :keys/right) (apply-position 0 +))
-    (if (key-pressed? :keys/up)    (apply-position 1 +))
-    (if (key-pressed? :keys/down)  (apply-position 1 -))))
+    (if (key-pressed? :left)  (apply-position 0 -))
+    (if (key-pressed? :right) (apply-position 0 +))
+    (if (key-pressed? :up)    (apply-position 1 +))
+    (if (key-pressed? :down)  (apply-position 1 -))))
 
 (defn- render-on-map []
   (let [{:keys [tiled-map
@@ -133,8 +133,8 @@
 (def ^:private zoom-speed 0.025)
 
 (defn adjust-zoom [camera]
-  (when (key-pressed? :keys/minus)  (cam/inc-zoom camera    zoom-speed))
-  (when (key-pressed? :keys/equals) (cam/inc-zoom camera (- zoom-speed))))
+  (when (key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (defn enter [_]
   #_(show-whole-map! ctx/camera (:tiled-map @current-data)))
@@ -146,9 +146,9 @@
   #_(draw-tiled-map (:tiled-map @current-data)
                     (constantly g/white))
   #_(g/draw-on-world-view render-on-map)
-  #_(if (key-just-pressed? :keys/l)
+  #_(if (key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
-  #_(if (key-just-pressed? :keys/m)
+  #_(if (key-just-pressed? :m)
       (swap! current-data update :show-movement-properties not))
   #_(adjust-zoom ctx/camera)
   #_(camera-controls ctx/camera))

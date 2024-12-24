@@ -1,23 +1,24 @@
 (in-ns 'clojure.core)
 
-(require '[clojure.gdx :as gdx]
-         '[clojure.gdx.graphics.color :as color]
+(require '[clojure.gdx.graphics.color :as color]
          '[clojure.gdx.input :as input]
          '[clojure.gdx.utils.screen-utils :as screen-utils]
          '[gdl.ui.group :as group]
          '[gdl.ui.actor :as actor])
 
+(import '(com.badlogic.gdx Gdx))
+
 (defn clear-screen []
   (screen-utils/clear color/black))
 
 (defn key-just-pressed? [k]
-  (input/key-just-pressed? gdx/input k))
+  (input/key-just-pressed? Gdx/input k))
 
 (defn key-pressed? [k]
-  (input/key-pressed? gdx/input k))
+  (input/key-pressed? Gdx/input k))
 
 (defn button-just-pressed? [b]
-  (input/button-just-pressed? gdx/input b))
+  (input/button-just-pressed? Gdx/input b))
 
 (def children group/children)
 

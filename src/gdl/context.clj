@@ -11,14 +11,14 @@
   ; - dependency free - ;
   ; e.g. gdl.audio.sound -> protocol ... !?
   "
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.audio.sound :as sound]
+  (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.utils.viewport :as viewport]
             [gdl.graphics.sprite :as sprite]
             [gdl.tiled :as tiled])
-  (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
+  (:import (com.badlogic.gdx Gdx)
+           (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (declare assets
          batch)
@@ -69,7 +69,7 @@
 (declare cursors)
 
 (defn set-cursor [cursor-key]
-  (g/set-cursor gdx/graphics (safe-get cursors cursor-key)))
+  (g/set-cursor Gdx/graphics (safe-get cursors cursor-key)))
 
 (declare viewport
          viewport-width

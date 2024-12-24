@@ -1,14 +1,14 @@
 (ns anvil.controls)
 
 (defn unpaused? []
-  (or (key-just-pressed? :keys/p)
-      (key-pressed? :keys/space)))
+  (or (key-just-pressed? :p)
+      (key-pressed? :space)))
 
-(def close-windows-key :keys/escape)
+(def close-windows-key :escape)
 
 (def window-hotkeys
-  {:inventory-window   :keys/i
-   :entity-info-window :keys/e})
+  {:inventory-window   :i
+   :entity-info-window :e})
 
 (defn movement-vector [])
 

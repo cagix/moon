@@ -1,6 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.graphics :as g]
+  (:require [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -12,7 +11,8 @@
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
-            [gdl.context :as ctx]))
+            [gdl.context :as ctx])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn resize-world-viewport [w h]
   (viewport/update ctx/world-viewport w h :center-camera? false))
@@ -38,10 +38,10 @@
   (colors/put name-str (->color color)))
 
 (defn frames-per-second []
-  (g/frames-per-second gdx/graphics))
+  (g/frames-per-second Gdx/graphics))
 
 (defn delta-time []
-  (g/delta-time gdx/graphics))
+  (g/delta-time Gdx/graphics))
 
 (defn- sd-color [color]
   (sd/set-color ctx/shape-drawer (->color color)))
@@ -192,10 +192,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (input/x gdx/input)
+  (let [mouse-x (clamp (input/x Gdx/input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y gdx/input)
+        mouse-y (clamp (input/y Gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))

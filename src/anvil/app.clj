@@ -24,7 +24,7 @@
     (run! require requires)
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
-                    (create [_]
+                    (create [_ _gdx-state]
                       (db/setup (:db lifecycle))
                       (assets/setup "resources/")
                       (sprite-batch/setup)
