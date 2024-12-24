@@ -17,9 +17,6 @@
 (defn resize-world-viewport [w h]
   (viewport/update ctx/world-viewport w h :center-camera? false))
 
-(def black color/black)
-(def white color/white)
-
 (defn- color? [object]
   (= com.badlogic.gdx.graphics.Color (class object)))
 
@@ -147,7 +144,7 @@
               :scale-x 1
               :scale-y 1
               :rotation rotation)
-  (if color (batch/set-color batch white)))
+  (if color (batch/set-color batch color/white)))
 
 (defn draw-image
   [{:keys [texture-region color] :as image} position]
@@ -173,7 +170,7 @@
   (draw-rotated-centered image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (batch/set-color batch white) ; fix scene2d.ui.tooltip flickering
+  (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
   (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
   (batch/begin batch)
   (draw-fn)

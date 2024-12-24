@@ -1,5 +1,6 @@
 (ns uf.app
   (:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -35,7 +36,7 @@
 (declare tiled-map)
 
 (defn- tile-color-setter [color x y]
-  graphics/white)
+  color/white)
 
 (defn -main []
   (let [{:keys [requires lwjgl3 lifecycle]} (-> "uf_app.edn"

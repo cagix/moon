@@ -16,7 +16,7 @@
 
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (component/useful? [[_ {:keys [projectile/max-range] :as projectile}]
-            {:keys [effect/source effect/target]}]
+                      {:keys [effect/source effect/target]}]
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?

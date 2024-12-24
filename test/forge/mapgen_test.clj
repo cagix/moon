@@ -2,6 +2,7 @@
   (:require [anvil.controls :as controls]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
+            [clojure.gdx.graphics.color :as color]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as ctx :refer [draw-tiled-map]]
@@ -88,13 +89,13 @@
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles ctx/camera)
         [x y] (mapv int (g/world-mouse-position))]
-    (g/rectangle x y 1 1 g/white)
+    (g/rectangle x y 1 1 :white)
     (when start-position
       (g/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 g/black)
+        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
         (g/filled-circle [(+ x 0.5) (+ y 0.5)]
                          0.05
                          (case prop
@@ -144,7 +145,7 @@
 
 (defn render [_]
   #_(draw-tiled-map (:tiled-map @current-data)
-                    (constantly g/white))
+                    (constantly color/white))
   #_(g/draw-on-world-view render-on-map)
   #_(if (key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
