@@ -100,7 +100,13 @@
 (defmethod schema/malli-form :s/int     [_ _schemas] m/int-schema)
 (defmethod schema/malli-form :s/pos     [_ _schemas] m/pos-schema)
 (defmethod schema/malli-form :s/pos-int [_ _schemas] m/pos-int-schema)
-(defmethod schema/malli-form :s/sound   [_ _schemas] m/string-schema)
+
+(defmethods :s/sound
+  (schema/malli-form [_ _schemas]
+    m/string-schema)
+
+  (edn->value [_ sound-name _db]
+    (ctx/get-sound sound-name)))
 
 (defn- edn->sprite [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds

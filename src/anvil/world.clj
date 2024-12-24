@@ -2,8 +2,8 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
-            [gdl.context :as ctx :refer [play-sound
-                                         world-viewport-width
+            [clojure.gdx.audio.sound :as sound]
+            [gdl.context :as ctx :refer [world-viewport-width
                                          world-viewport-height]]
             [gdl.context.db :as db]
             [gdl.graphics :as g]
@@ -331,7 +331,7 @@
    :z-order :z-order/effect})
 
 (defn audiovisual [position {:keys [tx/sound entity/animation]}]
-  (play-sound sound)
+  (sound/play sound)
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation
