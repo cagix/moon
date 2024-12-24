@@ -1,16 +1,4 @@
 (ns gdl.context
-  "Abstract context, the vars have to be defined first - allows dependency-free use of context.
-
-  - this ns is not allowed to have any dependencies ! -
-
-  Why?
-
-  Because otherwise we do not have an abstract 'context' concept.
-
-  Or: `gdl.core` - game development language
-  ; - dependency free - ;
-  ; e.g. gdl.audio.sound -> protocol ... !?
-  "
   (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
