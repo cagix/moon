@@ -63,7 +63,6 @@
   :property/id :audiovisuals/hit-ground,
   :tx/sound "bfxr_fisthit"}
  {:creature/level 1,
-  :entity/species :species/toad,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -80,11 +79,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/toad,
   :entity/strength 1,
   :property/id :creatures/toad-horned,
   :property/pretty-name "Toad-horned"}
  {:creature/level 2,
-  :entity/species :species/goblin,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -105,11 +104,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 31,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/goblin,
   :entity/strength 1,
   :property/id :creatures/goblin-warrior,
   :property/pretty-name "Goblin-warrior"}
  {:creature/level 4,
-  :entity/species :species/lizardman-blue,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -126,11 +125,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/lizardman-blue,
   :entity/strength 1,
   :property/id :creatures/lizardman-blue-shaman,
   :property/pretty-name "Lizardman-blue-shaman"}
  {:creature/level 3,
-  :entity/species :species/barbarian,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -147,11 +146,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/barbarian,
   :entity/strength 1,
   :property/id :creatures/barbarian-f,
   :property/pretty-name "Barbarian-f"}
  {:creature/level 14,
-  :entity/species :species/mummy,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -168,11 +167,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/mummy,
   :entity/strength 1,
   :property/id :creatures/mummy,
   :property/pretty-name "Mummy"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -190,11 +189,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 3,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 10,
   :property/id :creatures/helion,
   :property/pretty-name "Helion"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -211,11 +210,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/priest,
   :property/pretty-name "Priest"}
  {:creature/level 4,
-  :entity/species :species/lizardman-green,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -232,11 +231,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/lizardman-green,
   :entity/strength 1,
   :property/id :creatures/lizardman-green-spear,
   :property/pretty-name "Lizardman-green-spear"}
  {:creature/level 5,
-  :entity/species :species/dwarf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -253,11 +252,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dwarf,
   :entity/strength 1,
   :property/id :creatures/dwarf-cleric,
   :property/pretty-name "Dwarf-cleric"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -274,11 +273,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/thief,
   :property/pretty-name "Thief"}
  {:creature/level 4,
-  :entity/species :species/lizardman-green,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -295,11 +294,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/lizardman-green,
   :entity/strength 1,
   :property/id :creatures/lizardman-green-shaman,
   :property/pretty-name "Lizardman-green-shaman"}
  {:creature/level 5,
-  :entity/species :species/beholder,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -316,11 +315,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/beholder,
   :entity/strength 1,
   :property/id :creatures/beholder,
   :property/pretty-name "Beholder"}
  {:creature/level 1,
-  :entity/species :species/spider,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -337,11 +336,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/spider,
   :entity/strength 1,
   :property/id :creatures/spider-brown,
   :property/pretty-name "Spider-brown"}
  {:creature/level 6,
-  :entity/species :species/vampire,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -359,11 +358,11 @@
   :entity/movement-speed 6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/vampire,
   :entity/strength 1,
   :property/id :creatures/vampire-lord,
   :property/pretty-name "Vampire-lord"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -380,11 +379,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/witch,
   :property/pretty-name "Witch"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -401,11 +400,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/minstrel-f,
   :property/pretty-name "Minstrel-f"}
  {:creature/level 6,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -422,11 +421,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/lady-b,
   :property/pretty-name "Lady-b"}
  {:creature/level 5,
-  :entity/species :species/dwarf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -443,11 +442,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dwarf,
   :entity/strength 1,
   :property/id :creatures/dwarf,
   :property/pretty-name "Dwarf"}
  {:creature/level 5,
-  :entity/species :species/elemental,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -464,11 +463,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elemental,
   :entity/strength 1,
   :property/id :creatures/elemental-air,
   :property/pretty-name "Elemental-air"}
  {:creature/level 2,
-  :entity/species :species/beetle,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -485,11 +484,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/beetle,
   :entity/strength 1,
   :property/id :creatures/beetle-fire,
   :property/pretty-name "Beetle-fire"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -506,11 +505,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/warrior-f,
   :property/pretty-name "Warrior-f"}
  {:creature/level 4,
-  :entity/species :species/golem,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -527,11 +526,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/golem,
   :entity/strength 1,
   :property/id :creatures/golem-mud,
   :property/pretty-name "Golem-mud"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -548,11 +547,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/merchant-f,
   :property/pretty-name "Merchant-f"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -569,11 +568,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/minstrel-m,
   :property/pretty-name "Minstrel-m"}
  {:creature/level 4,
-  :entity/species :species/spirit,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -589,11 +588,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/spirit,
   :entity/strength 1,
   :property/id :creatures/spirit-greater,
   :property/pretty-name "Spirit-greater"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -614,11 +613,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 2,
   :property/id :creatures/knight,
   :property/pretty-name "Knight"}
  {:creature/level 8,
-  :entity/species :species/zombie,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -635,11 +634,11 @@
   :entity/movement-speed 1.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/zombie,
   :entity/strength 1,
   :property/id :creatures/zombie-b,
   :property/pretty-name "Zombie-b"}
  {:creature/level 6,
-  :entity/species :species/demon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -656,11 +655,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/demon,
   :entity/strength 1,
   :property/id :creatures/demon-green,
   :property/pretty-name "Demon-green"}
  {:creature/level 5,
-  :entity/species :species/drow,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -677,11 +676,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/drow,
   :entity/strength 1,
   :property/id :creatures/drow-wizard,
   :property/pretty-name "Drow-wizard"}
  {:creature/level 2,
-  :entity/species :species/goblin,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -698,11 +697,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/goblin,
   :entity/strength 1,
   :property/id :creatures/goblin-shaman,
   :property/pretty-name "Goblin-shaman"}
  {:creature/level 2,
-  :entity/species :species/beetle,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -719,11 +718,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/beetle,
   :entity/strength 1,
   :property/id :creatures/beetle-giant,
   :property/pretty-name "Beetle-giant"}
  {:creature/level 2,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -740,11 +739,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/prisoner-b,
   :property/pretty-name "Prisoner-b"}
  {:creature/level 5,
-  :entity/species :species/dwarf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -761,11 +760,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dwarf,
   :entity/strength 1,
   :property/id :creatures/dwarf-mage,
   :property/pretty-name "Dwarf-mage"}
  {:creature/level 1,
-  :entity/species :species/bird,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -781,11 +780,11 @@
   :entity/movement-speed 1,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/bird,
   :entity/strength 1,
   :property/id :creatures/bird-hawk,
   :property/pretty-name "Bird-hawk"}
  {:creature/level 4,
-  :entity/species :species/pixie,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -802,11 +801,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/pixie,
   :entity/strength 1,
   :property/id :creatures/pixie-b,
   :property/pretty-name "Pixie-b"}
  {:creature/level 6,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -822,11 +821,11 @@
   :entity/movement-speed 1,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/lady-a,
   :property/pretty-name "Lady-a"}
  {:creature/level 5,
-  :entity/species :species/drow,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -843,11 +842,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/drow,
   :entity/strength 1,
   :property/id :creatures/drow,
   :property/pretty-name "Drow"}
  {:creature/level 2,
-  :entity/species :species/goblin,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -863,11 +862,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/goblin,
   :entity/strength 2,
   :property/id :creatures/goblin,
   :property/pretty-name "Goblin"}
  {:creature/level 1,
-  :entity/species :species/wolf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -884,11 +883,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/wolf,
   :entity/strength 1,
   :property/id :creatures/wolf-black,
   :property/pretty-name "Wolf-black"}
  {:creature/level 1,
-  :entity/species :species/bird,
   :entity/aggro-range 3,
   :entity/animation
   {:frame-duration 0.1,
@@ -905,11 +904,11 @@
   :entity/movement-speed 6,
   :entity/reaction-time 5,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/bird,
   :entity/strength 1,
   :property/id :creatures/bird-crow,
   :property/pretty-name "Crow"}
  {:creature/level 6,
-  :entity/species :species/demon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -926,11 +925,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/demon,
   :entity/strength 1,
   :property/id :creatures/demon-red,
   :property/pretty-name "Demon-red"}
  {:creature/level 4,
-  :entity/species :species/pixie,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -947,11 +946,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/pixie,
   :entity/strength 1,
   :property/id :creatures/pixie-a,
   :property/pretty-name "Pixie-a"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -968,11 +967,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/bow :skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/archer,
   :property/pretty-name "Archer"}
  {:creature/level 2,
-  :entity/species :species/rat,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -989,11 +988,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/rat,
   :entity/strength 1,
   :property/id :creatures/rat-giant,
   :property/pretty-name "Rat-giant"}
  {:creature/level 6,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1010,11 +1009,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/lord-a,
   :property/pretty-name "Lord-a"}
  {:creature/level 6,
-  :entity/species :species/wraith,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1031,11 +1030,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/wraith,
   :entity/strength 1,
   :property/id :creatures/wraith-black,
   :property/pretty-name "Wraith-black"}
  {:creature/level 6,
-  :entity/species :species/wraith,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1052,11 +1051,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/wraith,
   :entity/strength 1,
   :property/id :creatures/wraith-red,
   :property/pretty-name "Wraith-red"}
  {:creature/level 4,
-  :entity/species :species/golem,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1073,11 +1072,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/golem,
   :entity/strength 1,
   :property/id :creatures/golem-fire,
   :property/pretty-name "Golem-fire"}
  {:creature/level 4,
-  :entity/species :species/wisp,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1093,11 +1092,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/wisp,
   :entity/strength 1,
   :property/id :creatures/wisp-ancient,
   :property/pretty-name "Wisp-ancient"}
  {:creature/level 2,
-  :entity/species :species/troll,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1114,11 +1113,11 @@
   :entity/movement-speed 1.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/troll,
   :entity/strength 1,
   :property/id :creatures/troll,
   :property/pretty-name "Troll"}
  {:creature/level 6,
-  :entity/species :species/wraith,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1135,11 +1134,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/wraith,
   :entity/strength 1,
   :property/id :creatures/wraith-blue,
   :property/pretty-name "Wraith-blue"}
  {:creature/level 2,
-  :entity/species :species/beetle,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1156,11 +1155,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/beetle,
   :entity/strength 1,
   :property/id :creatures/beetle-fire-giant,
   :property/pretty-name "Beetle-fire-giant"}
  {:creature/level 4,
-  :entity/species :species/lizardman-blue,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1177,11 +1176,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/lizardman-blue,
   :entity/strength 1,
   :property/id :creatures/lizardman-blue-spear,
   :property/pretty-name "Lizardman-blue-spear"}
  {:creature/level 5,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1198,11 +1197,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/spawn :skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/dark-knight,
   :property/pretty-name "Dark-knight"}
  {:creature/level 1,
-  :entity/species :species/wolf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1219,11 +1218,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/wolf,
   :entity/strength 1,
   :property/id :creatures/wolf-brown,
   :property/pretty-name "Wolf-brown"}
  {:creature/level 6,
-  :entity/species :species/demon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1240,11 +1239,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/demon,
   :entity/strength 1,
   :property/id :creatures/demon-blue,
   :property/pretty-name "Demon-blue"}
  {:creature/level 1,
-  :entity/species :species/moth,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1261,11 +1260,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/moth,
   :entity/strength 1,
   :property/id :creatures/moth-red,
   :property/pretty-name "Moth-red"}
  {:creature/level 2,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1282,11 +1281,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/prisoner-c,
   :property/pretty-name "Prisoner-c"}
  {:creature/level 17,
-  :entity/species :species/mimic,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1303,11 +1302,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/mimic,
   :entity/strength 1,
   :property/id :creatures/mimic,
   :property/pretty-name "Mimic"}
  {:creature/level 4,
-  :entity/species :species/lizardman-green,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1324,11 +1323,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/lizardman-green,
   :entity/strength 1,
   :property/id :creatures/lizardman-green,
   :property/pretty-name "Lizardman-green"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1345,11 +1344,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/paladin,
   :property/pretty-name "Paladin"}
  {:creature/level 6,
-  :entity/species :species/dragon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1366,11 +1365,11 @@
   :entity/movement-speed 1.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dragon,
   :entity/strength 1,
   :property/id :creatures/dragon-green,
   :property/pretty-name "Dragon-green"}
  {:creature/level 1,
-  :entity/species :species/rat,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1387,11 +1386,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/rat,
   :entity/strength 1,
   :property/id :creatures/rat,
   :property/pretty-name "Rat"}
  {:creature/level 5,
-  :entity/species :species/elemental,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1408,11 +1407,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elemental,
   :entity/strength 1,
   :property/id :creatures/elemental-vorpal,
   :property/pretty-name "Elemental-vorpal"}
  {:creature/level 8,
-  :entity/species :species/zombie,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1429,11 +1428,11 @@
   :entity/movement-speed 1.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/zombie,
   :entity/strength 1,
   :property/id :creatures/zombie-a,
   :property/pretty-name "Zombie-a"}
  {:creature/level 6,
-  :entity/species :species/dragon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1450,11 +1449,11 @@
   :entity/movement-speed 1.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dragon,
   :entity/strength 1,
   :property/id :creatures/dragon-blue,
   :property/pretty-name "Dragon-blue"}
  {:creature/level 2,
-  :entity/species :species/spider,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1471,11 +1470,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/spider,
   :entity/strength 1,
   :property/id :creatures/spider-black,
   :property/pretty-name "Spider-black"}
  {:creature/level 4,
-  :entity/species :species/ogre,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1492,11 +1491,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/ogre,
   :entity/strength 1,
   :property/id :creatures/ogre,
   :property/pretty-name "Ogre"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1514,11 +1513,11 @@
   :entity/reaction-time 12,
   :entity/skills
   #{:skills/meditation :skills/projectile :skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/wizard,
   :property/pretty-name "Wizard"}
  {:creature/level 4,
-  :entity/species :species/elemental,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1535,11 +1534,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elemental,
   :entity/strength 1,
   :property/id :creatures/elemental-earth,
   :property/pretty-name "Elemental-earth"}
  {:creature/level 6,
-  :entity/species :species/dragon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1555,11 +1554,11 @@
   :entity/movement-speed 5.5,
   :entity/reaction-time 3,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dragon,
   :entity/strength 100,
   :property/id :creatures/dragon-shadow,
   :property/pretty-name "Dragon-shadow"}
  {:creature/level 5,
-  :entity/species :species/banshee,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1576,11 +1575,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/banshee,
   :entity/strength 1,
   :property/id :creatures/banshee,
   :property/pretty-name "Banshee"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1597,11 +1596,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/warrior-m,
   :property/pretty-name "Warrior-m"}
  {:creature/level 1,
-  :entity/species :species/moth,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1618,11 +1617,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/moth,
   :entity/strength 1,
   :property/id :creatures/moth-white,
   :property/pretty-name "Moth-white"}
  {:creature/level 1,
-  :entity/species :species/bird,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1639,11 +1638,11 @@
   :entity/movement-speed 4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/bird,
   :entity/strength 1,
   :property/id :creatures/bird-dove,
   :property/pretty-name "Bird-dove"}
  {:creature/level 4,
-  :entity/species :species/lizardman-blue,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1660,11 +1659,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/lizardman-blue,
   :entity/strength 1,
   :property/id :creatures/lizardman-blue,
   :property/pretty-name "Lizardman-blue"}
  {:creature/level 6,
-  :entity/species :species/dragon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1681,11 +1680,11 @@
   :entity/movement-speed 1.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dragon,
   :entity/strength 1,
   :property/id :creatures/dragon-red,
   :property/pretty-name "Dragon-red"}
  {:creature/level 2,
-  :entity/species :species/spider,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1702,11 +1701,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/slow :skills/melee-attack},
+  :entity/species :species/spider,
   :entity/strength 1,
   :property/id :creatures/spider-brown-giant,
   :property/pretty-name "Spider-brown-giant"}
  {:creature/level 4,
-  :entity/species :species/spirit,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1722,11 +1721,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/spirit,
   :entity/strength 1,
   :property/id :creatures/spirit,
   :property/pretty-name "Spirit"}
  {:creature/level 6,
-  :entity/species :species/lich,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1743,11 +1742,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/lich,
   :entity/strength 1,
   :property/id :creatures/lich,
   :property/pretty-name "Lich"}
  {:creature/level 11,
-  :entity/species :species/skeleton,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1764,11 +1763,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/skeleton,
   :entity/strength 1,
   :property/id :creatures/skeleton-archer,
   :property/pretty-name "Skeleton-archer"}
  {:creature/level 4,
-  :entity/species :species/ogre,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1785,11 +1784,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/ogre,
   :entity/strength 1,
   :property/id :creatures/ogre-mystic,
   :property/pretty-name "Ogre-mystic"}
  {:creature/level 6,
-  :entity/species :species/dragon,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1805,11 +1804,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/dragon,
   :entity/strength 1,
   :property/id :creatures/bone-dragon,
   :property/pretty-name "Bone-dragon"}
  {:creature/level 4,
-  :entity/species :species/golem,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1826,11 +1825,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/golem,
   :entity/strength 1,
   :property/id :creatures/golem-metal,
   :property/pretty-name "Golem-metal"}
  {:creature/level 5,
-  :entity/species :species/elemental,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1847,11 +1846,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elemental,
   :entity/strength 1,
   :property/id :creatures/elemental-fire,
   :property/pretty-name "Elemental-fire"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1868,11 +1867,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/templar,
   :property/pretty-name "Templar"}
  {:creature/level 4,
-  :entity/species :species/wisp,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1888,11 +1887,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/wisp,
   :entity/strength 1,
   :property/id :creatures/wisp,
   :property/pretty-name "Wisp"}
  {:creature/level 2,
-  :entity/species :species/snake,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1909,11 +1908,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/snake,
   :entity/strength 1,
   :property/id :creatures/snake-giant,
   :property/pretty-name "Snake-giant"}
  {:creature/level 5,
-  :entity/species :species/minotaur,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1930,11 +1929,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/minotaur,
   :entity/strength 1,
   :property/id :creatures/minotaur,
   :property/pretty-name "Minotaur"}
  {:creature/level 5,
-  :entity/species :species/valkyrie,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1951,11 +1950,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/valkyrie,
   :entity/strength 1,
   :property/id :creatures/valkyrie-a,
   :property/pretty-name "Valkyrie-a"}
  {:creature/level 1,
-  :entity/species :species/toad,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -1972,11 +1971,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/toad,
   :entity/strength 1,
   :property/id :creatures/toad-green,
   :property/pretty-name "Toad-green"}
  {:creature/level 17,
-  :entity/species :species/vampire,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2019,11 +2018,11 @@
     :skills/death-ray
     :skills/projectile
     :skills/melee-attack},
+  :entity/species :species/vampire,
   :entity/strength 1,
   :property/id :creatures/vampire,
   :property/pretty-name "Vampire"}
  {:creature/level 1,
-  :entity/species :species/moth,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2040,11 +2039,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/moth,
   :entity/strength 1,
   :property/id :creatures/moth-black,
   :property/pretty-name "Moth-black"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2061,11 +2060,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/monk,
   :property/pretty-name "Monk"}
  {:creature/level 6,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2082,11 +2081,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/lord-b,
   :property/pretty-name "Lord-b"}
  {:creature/level 2,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2103,11 +2102,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/warden,
   :property/pretty-name "Warden"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2124,11 +2123,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/druid,
   :property/pretty-name "Druid"}
  {:creature/level 5,
-  :entity/species :species/elf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2145,11 +2144,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elf,
   :entity/strength 1,
   :property/id :creatures/elf-wizard,
   :property/pretty-name "Elf-wizard"}
  {:creature/level 11,
-  :entity/species :species/skeleton,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2166,11 +2165,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/skeleton,
   :entity/strength 1,
   :property/id :creatures/skeleton-mage,
   :property/pretty-name "Skeleton-mage"}
  {:creature/level 1,
-  :entity/species :species/halfling,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2187,11 +2186,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/halfling,
   :entity/strength 1,
   :property/id :creatures/halfling-fighter,
   :property/pretty-name "Halfling-fighter"}
  {:creature/level 11,
-  :entity/species :species/skeleton,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2208,11 +2207,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/skeleton,
   :entity/strength 1,
   :property/id :creatures/skeleton-warrior,
   :property/pretty-name "Skeleton-warrior"}
  {:creature/level 1,
-  :entity/species :species/halfling,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2229,11 +2228,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/halfling,
   :entity/strength 1,
   :property/id :creatures/halfling-thief,
   :property/pretty-name "Halfling-thief"}
  {:creature/level 3,
-  :entity/species :species/barbarian,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2250,11 +2249,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/barbarian,
   :entity/strength 1,
   :property/id :creatures/barbarian-m,
   :property/pretty-name "Barbarian-m"}
  {:creature/level 5,
-  :entity/species :species/elf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2271,11 +2270,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elf,
   :entity/strength 1,
   :property/id :creatures/elf-bowman,
   :property/pretty-name "Elf-bowman"}
  {:creature/level 2,
-  :entity/species :species/beetle,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2292,11 +2291,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/beetle,
   :entity/strength 1,
   :property/id :creatures/beetle,
   :property/pretty-name "Beetle"}
  {:creature/level 2,
-  :entity/species :species/bat,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2312,11 +2311,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/bat,
   :entity/strength 1,
   :property/id :creatures/bat-giant,
   :property/pretty-name "Bat-giant"}
  {:creature/level 1,
-  :entity/species :species/toad,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2333,11 +2332,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/toad,
   :entity/strength 1,
   :property/id :creatures/toad-blue,
   :property/pretty-name "Toad-blue"}
  {:creature/level 4,
-  :entity/species :species/golem,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2354,11 +2353,11 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/golem,
   :entity/strength 10,
   :property/id :creatures/golem-stone,
   :property/pretty-name "Golem-stone"}
  {:creature/level 6,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2375,11 +2374,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/necromancer,
   :property/pretty-name "Necromancer"}
  {:creature/level 2,
-  :entity/species :species/spider,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2396,11 +2395,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/spider,
   :entity/strength 1,
   :property/id :creatures/spider-black-giant,
   :property/pretty-name "Spider-black-giant"}
  {:creature/level 5,
-  :entity/species :species/valkyrie,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2417,11 +2416,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/valkyrie,
   :entity/strength 1,
   :property/id :creatures/valkyrie-b,
   :property/pretty-name "Valkyrie-b"}
  {:creature/level 2,
-  :entity/species :species/bat,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2438,11 +2437,11 @@
   :entity/movement-speed 1,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/bat,
   :entity/strength 1,
   :property/id :creatures/bat,
   :property/pretty-name "Bat"}
  {:creature/level 1,
-  :entity/species :species/snake,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2463,11 +2462,11 @@
   :entity/movement-speed 3.1,
   :entity/reaction-time 6,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/snake,
   :entity/strength 3,
   :property/id :creatures/snake,
   :property/pretty-name "Snake"}
  {:creature/level 1,
-  :entity/species :species/flies,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2484,11 +2483,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/flies,
   :entity/strength 1,
   :property/id :creatures/flies,
   :property/pretty-name "Flies"}
  {:creature/level 2,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2505,11 +2504,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/prisoner-a,
   :property/pretty-name "Prisoner-a"}
  {:creature/level 5,
-  :entity/species :species/beholder,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2526,11 +2525,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/beholder,
   :entity/strength 1,
   :property/id :creatures/beholder-deep,
   :property/pretty-name "Beholder-deep"}
  {:creature/level 11,
-  :entity/species :species/skeleton,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2547,11 +2546,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/skeleton,
   :entity/strength 1,
   :property/id :creatures/skeleton,
   :property/pretty-name "Skeleton"}
  {:creature/level 5,
-  :entity/species :species/elemental,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2568,11 +2567,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elemental,
   :entity/strength 1,
   :property/id :creatures/elemental-water,
   :property/pretty-name "Elemental-water"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2589,11 +2588,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/cultist,
   :property/pretty-name "Cultist"}
  {:creature/level 14,
-  :entity/species :species/mummy,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2610,11 +2609,11 @@
   :entity/movement-speed 1.6,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/mummy,
   :entity/strength 1,
   :property/id :creatures/mummy-pharao,
   :property/pretty-name "Mummy-pharao"}
  {:creature/level 1,
-  :entity/species :species/halfling,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2631,11 +2630,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/halfling,
   :entity/strength 1,
   :property/id :creatures/halfling-wizard,
   :property/pretty-name "Halfling-wizard"}
  {:creature/level 5,
-  :entity/species :species/drow,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2652,11 +2651,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/drow,
   :entity/strength 1,
   :property/id :creatures/drow-bowman,
   :property/pretty-name "Drow-bowman"}
  {:creature/level 2,
-  :entity/species :species/worm,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2673,11 +2672,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/worm,
   :entity/strength 1,
   :property/id :creatures/worm-giant,
   :property/pretty-name "Worm-giant"}
  {:creature/level 3,
-  :entity/species :species/human,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2694,11 +2693,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/human,
   :entity/strength 1,
   :property/id :creatures/merchant-m,
   :property/pretty-name "Merchant-m"}
  {:creature/level 5,
-  :entity/species :species/elf,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2715,11 +2714,11 @@
   :entity/movement-speed 3.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/elf,
   :entity/strength 1,
   :property/id :creatures/elf,
   :property/pretty-name "Elf"}
  {:creature/level 1,
-  :entity/species :species/worm,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2736,11 +2735,11 @@
   :entity/movement-speed 2.4,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/worm,
   :entity/strength 1,
   :property/id :creatures/worm,
   :property/pretty-name "Worm"}
  {:creature/level 1,
-  :entity/species :species/halfling,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2757,11 +2756,11 @@
   :entity/movement-speed 2.0,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/halfling,
   :entity/strength 1,
   :property/id :creatures/halfling-sling,
   :property/pretty-name "Halfling-sling"}
  {:creature/level 4,
-  :entity/species :species/golem,
   :entity/aggro-range 6,
   :entity/animation
   {:frame-duration 0.1,
@@ -2778,6 +2777,7 @@
   :entity/movement-speed 2,
   :entity/reaction-time 12,
   :entity/skills #{:skills/melee-attack},
+  :entity/species :species/golem,
   :entity/strength 1,
   :property/id :creatures/golem-ice,
   :property/pretty-name "Golem-ice"}
