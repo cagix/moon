@@ -36,6 +36,7 @@
                                                 ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
+                      (ctx/create)
                       (world/create (ctx/get-ctx)
                                     (:world lifecycle)))
 

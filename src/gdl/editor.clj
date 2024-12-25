@@ -529,7 +529,8 @@
                     (world-viewport/setup {:tile-size 48 :width 1440 :height 900}) ; just because of sprite edn->value of db requires world-unit-scale
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")
-                                  (tabs-table "custom label text here")]))
+                                  (tabs-table "custom label text here")])
+                    (ctx/create))
 
                   (dispose [_]
                     (assets/cleanup)

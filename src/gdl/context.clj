@@ -281,19 +281,25 @@
 (defn setup-db [config]
   (def db (db/create config)))
 
+(def state (atom nil))
+
+(defn create []
+  (reset! state
+          {::assets             assets
+           ::camera             camera
+           ::cursors            cursors
+           ::default-font       default-font
+           ::batch              batch
+           ::unit-scale         *unit-scale* ; TODO this is only assoc'ed at draw , but gui has default-value 1 too
+           ::shape-drawer       shape-drawer
+           ::tiled-map-renderer tiled-map-renderer
+           ::viewport           viewport
+           ::world-unit-scale   world-unit-scale
+           ::world-viewport     world-viewport
+           ::db                 db}))
+
 (defn get-ctx []
-  {::assets             assets
-   ::camera             camera
-   ::cursors            cursors
-   ::default-font       default-font
-   ::batch              batch
-   ::unit-scale         *unit-scale* ; TODO this is only assoc'ed at draw , but gui has default-value 1 too
-   ::shape-drawer       shape-drawer
-   ::tiled-map-renderer tiled-map-renderer
-   ::viewport           viewport
-   ::world-unit-scale   world-unit-scale
-   ::world-viewport     world-viewport
-   ::db                 db})
+  @state)
 
 (defn build [{::keys [db] :as c} id]
   (db/build db id c))
