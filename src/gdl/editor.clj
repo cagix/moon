@@ -216,9 +216,12 @@
                                                   :image/scale 2}
                          :properties/skills {:columns 16
                                              :image/scale 2}
-                         :properties/worlds {:columns 10}})
+                         :properties/worlds {:columns 10}
+                         :properties/player-dead {:columns 1}})
 
 (defn- overview-table ^Actor [property-type clicked-id-fn]
+  (assert (contains? overview property-type)
+          (pr-str property-type))
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns

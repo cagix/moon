@@ -4126,6 +4126,11 @@
   :item/slot :inventory.slot/shield,
   :property/id :items/shield-mystic-heater,
   :property/pretty-name "Heater Mystic Shield"}
+ {:modal/button-text "OK",
+  :modal/text "Good luck next time!",
+  :modal/title "YOU DIED - again!",
+  :property/id :player-dead/component.enter,
+  :tx/sound "bfxr_playerdeath"}
  {:entity-effects
   {:effects.target/damage {:damage/min-max [4 8]},
    :effects.target/stun 0.5},

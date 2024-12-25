@@ -198,4 +198,12 @@
  :effects.target/melee-damage :some,
  :effects.target/spiderweb :some,
  :effects.target/stun :s/pos,
- }
+
+ :modal/title       :string
+ :modal/text        :string
+ :modal/button-text :string
+ :properties/player-dead [:s/map [:property/id
+                                  :tx/sound
+                                  :modal/title
+                                  :modal/text
+                                  :modal/button-text]]}
