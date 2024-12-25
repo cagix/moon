@@ -6,14 +6,16 @@
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c]))
 
-(defn- draw-skill-image [image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [c image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (c/filled-circle center radius [1 1 1 0.125])
-    (c/sector center radius
+    (c/filled-circle c center radius [1 1 1 0.125])
+    (c/sector c
+              center
+              radius
               90 ; start-angle
               (* (float action-counter-ratio) 360) ; degree
               [1 1 1 0.5])
@@ -59,8 +61,10 @@
       (entity/event eid :action-done))))
 
   (component/render-info [[_ {:keys [skill effect-ctx counter]}] entity]
-    (let [{:keys [entity/image skill/effects]} skill]
-      (draw-skill-image image
+    (let [c (c/get-ctx)
+          {:keys [entity/image skill/effects]} skill]
+      (draw-skill-image c
+                        image
                         entity
                         (:position entity)
                         (finished-ratio counter))

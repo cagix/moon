@@ -15,4 +15,4 @@
 
   ; TODO draw opacity as of counter ratio?
   (component/render-above [_ entity]
-    (c/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
+    (c/filled-circle (c/get-ctx) (:position entity) 0.5 [0.5 0.5 0.5 0.4])))

@@ -11,9 +11,11 @@
 
 (defmethods :entity/mouseover?
   (component/render-below [_ {:keys [entity/faction] :as entity}]
-    (let [player @world/player-eid]
-      (c/with-line-width 3
-        #(c/ellipse (:position entity)
+    (let [c (c/get-ctx)
+          player @world/player-eid]
+      (c/with-line-width c 3
+        #(c/ellipse c
+                    (:position entity)
                     (:half-width entity)
                     (:half-height entity)
                     (cond (= faction (entity/enemy player))

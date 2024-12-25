@@ -4,8 +4,9 @@
 
 (defmethods :entity/line-render
   (component/render-default [[_ {:keys [thick? end color]}] entity]
-    (let [position (:position entity)]
+    (let [c (c/get-ctx)
+          position (:position entity)]
       (if thick?
-        (c/with-line-width 4
-          #(c/line position end color))
-        (c/line position end color)))))
+        (c/with-line-width c 4
+          #(c/line c position end color))
+        (c/line c position end color)))))

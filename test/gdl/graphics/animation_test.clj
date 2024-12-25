@@ -30,7 +30,7 @@
                           (g/draw-with g/viewport
                                        1
                                        (fn []
-                                         (g/filled-rectangle 200 200 100 100 g/white))))
+                                         (g/filled-rectangle c 200 200 100 100 g/white))))
                         (resize [_ w h]
                           (g/resize w h)))))
 

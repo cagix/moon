@@ -80,7 +80,7 @@
     (if (key-pressed? :up)    (apply-position 1 +))
     (if (key-pressed? :down)  (apply-position 1 -))))
 
-(defn- render-on-map []
+(defn- render-on-map [c]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
@@ -88,21 +88,22 @@
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles c/camera)
         [x y] (mapv int (c/world-mouse-position))]
-    (c/rectangle x y 1 1 :white)
+    (c/rectangle c x y 1 1 :white)
     (when start-position
-      (c/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (c/filled-rectangle c (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (c/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
-        (c/filled-circle [(+ x 0.5) (+ y 0.5)]
+        (c/filled-circle c [(+ x 0.5) (+ y 0.5)] 0.08 :black)
+        (c/filled-circle c [(+ x 0.5) (+ y 0.5)]
                          0.05
                          (case prop
                            "all"   :green
                            "air"   :orange
                            "none"  :red))))
     (when show-grid-lines
-      (c/grid 0
+      (c/grid c
+              0
               0
               (tiled/tm-width  tiled-map)
               (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
@@ -146,7 +147,7 @@
   #_(draw-tiled-map (c/get-ctx)
                     (:tiled-map @current-data)
                     (constantly color/white))
-  #_(c/draw-on-world-view (c/get-ctx) render-on-map)
+  #_(c/draw-on-world-view (c/get-ctx) #(render-on-map (c/get-ctx)))
   #_(if (key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
   #_(if (key-just-pressed? :m)

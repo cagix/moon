@@ -6,21 +6,22 @@
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
-(defn- draw-body-rect [entity color]
+(defn- draw-body-rect [c entity color]
   (let [[x y] (:left-bottom entity)]
-    (c/rectangle x y (:width entity) (:height entity) color)))
+    (c/rectangle c x y (:width entity) (:height entity) color)))
 
-(defn- render-entity! [system entity]
+(defn- render-entity! [c system entity]
   (try
    (when show-body-bounds
-     (draw-body-rect entity (if (:collides? entity) :white :gray)))
+     (draw-body-rect c entity (if (:collides? entity) :white :gray)))
    (run! #(system % entity) entity)
    (catch Throwable t
-     (draw-body-rect entity :red)
+     (draw-body-rect c entity :red)
      (pretty-pst t))))
 
 (defn-impl render/entities [entities]
-  (let [player @world/player-eid]
+  (let [c (c/get-ctx)
+        player @world/player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               world/render-z-order)
@@ -31,4 +32,4 @@
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? player entity))]
-      (render-entity! system entity))))
+      (render-entity! c system entity))))

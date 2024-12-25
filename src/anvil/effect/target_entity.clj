@@ -49,9 +49,11 @@
 
   (component/render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (when target
-      (let [source* @source
+      (let [c (c/get-ctx)
+            source* @source
             target* @target]
-        (c/line (start-point source* target*)
+        (c/line c
+                (start-point source* target*)
                 (end-point source* target* maxrange)
                 (if (in-range? source* target* maxrange)
                   [1 0 0 0.5]

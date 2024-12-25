@@ -14,4 +14,4 @@
       (entity/event eid :effect-wears-off)))
 
   (component/render-below [_ entity]
-    (c/circle (:position entity) 0.5 [1 1 1 0.6])))
+    (c/circle (c/get-ctx) (:position entity) 0.5 [1 1 1 0.6])))

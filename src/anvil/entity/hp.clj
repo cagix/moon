@@ -30,8 +30,9 @@
           y (+ y half-height)
           height (c/pixels->world-units c 5)
           border (c/pixels->world-units c borders-px)]
-      (c/filled-rectangle x y width height :black)
-      (c/filled-rectangle (+ x border)
+      (c/filled-rectangle c x y width height :black)
+      (c/filled-rectangle c
+                          (+ x border)
                           (+ y border)
                           (- (* width ratio)
                              (* 2 border))
