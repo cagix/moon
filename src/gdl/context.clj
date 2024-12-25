@@ -18,13 +18,9 @@
   (:import (com.badlogic.gdx Gdx)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
-(declare batch)
-
-(def sound-asset-format "sounds/%s.wav")
-
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
-       (format sound-asset-format)
+       (format "sounds/%s.wav")
        assets))
 
 (defn play-sound [c sound-name]
@@ -103,6 +99,8 @@
 (def ^:dynamic *unit-scale* 1)
 
 (declare assets)
+
+(declare batch)
 
 (defn get-ctx []
   {::assets       assets
