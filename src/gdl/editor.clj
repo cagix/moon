@@ -218,7 +218,8 @@
                                              :image/scale 2}
                          :properties/worlds {:columns 10}
                          :properties/player-dead {:columns 1}
-                         :properties/player-idle {:columns 1}})
+                         :properties/player-idle {:columns 1}
+                         :properties/player-item-on-cursor {:columns 1}})
 
 (defn- overview-table ^Actor [property-type clicked-id-fn]
   (assert (contains? overview property-type)

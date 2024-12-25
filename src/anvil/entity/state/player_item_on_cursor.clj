@@ -2,7 +2,8 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]
-            [gdl.context :refer [play-sound]]
+            [clojure.gdx.audio.sound :as sound]
+            [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]))
@@ -26,7 +27,7 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn- clicked-cell [eid cell]
+(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell]
   (let [entity @eid
         inventory (:entity/inventory entity)
         item-in-cell (get-in inventory cell)
@@ -36,7 +37,7 @@
      (and (not item-in-cell)
           (entity/valid-slot? cell item-on-cursor))
      (do
-      (play-sound "bfxr_itemput")
+      (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/set-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
@@ -45,7 +46,7 @@
      (and item-in-cell
           (entity/stackable? item-in-cell item-on-cursor))
      (do
-      (play-sound "bfxr_itemput")
+      (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/stack-item eid cell item-on-cursor)
       (entity/event eid :dropped-item))
@@ -54,7 +55,7 @@
      (and item-in-cell
           (entity/valid-slot? cell item-on-cursor))
      (do
-      (play-sound "bfxr_itemput")
+      (sound/play item-put-sound)
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -65,20 +66,21 @@
 
 (defmethods :player-item-on-cursor
   (component/->v [[_ eid item]]
-    {:eid eid
-     :item item})
+    (safe-merge (db/build :player-item-on-cursor/component)
+                {:eid eid
+                 :item item}))
 
   (component/enter [[_ {:keys [eid item]}]]
     (swap! eid assoc :entity/item-on-cursor item))
 
-  (component/exit [[_ {:keys [eid]}]]
+  (component/exit [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}]]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (play-sound "bfxr_itemputground")
+        (sound/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
         (world/item (item-place-position entity)
                     (:entity/item-on-cursor entity)))))
@@ -98,5 +100,5 @@
       (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
                        (g/mouse-position))))
 
-  (component/clicked-inventory-cell [[_ {:keys [eid]}] cell]
-    (clicked-cell eid cell)))
+  (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell]
+    (clicked-cell data eid cell)))

@@ -210,4 +210,10 @@
  :player-idle/pickup-item-sound :s/sound
  :properties/player-idle [:s/map [:property/id
                                   :player-idle/pickup-item-sound]]
+
+ :player-item-on-cursor/place-world-item-sound :s/sound
+ :player-item-on-cursor/item-put-sound :s/sound
+ :properties/player-item-on-cursor [:s/map [:property/id
+                                            :player-item-on-cursor/place-world-item-sound
+                                            :player-item-on-cursor/item-put-sound]]
  }
