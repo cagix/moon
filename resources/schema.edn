@@ -206,4 +206,8 @@
                                   :tx/sound
                                   :modal/title
                                   :modal/text
-                                  :modal/button-text]]}
+                                  :modal/button-text]]
+ :player-idle/pickup-item-sound :s/sound
+ :properties/player-idle [:s/map [:property/id
+                                  :player-idle/pickup-item-sound]]
+ }

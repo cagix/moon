@@ -4131,6 +4131,8 @@
   :modal/title "YOU DIED - again!",
   :property/id :player-dead/component.enter,
   :tx/sound "bfxr_playerdeath"}
+ {:property/id :player-idle/clicked-inventory-cell
+  :player-idle/pickup-item-sound "bfxr_takeit"}
  {:entity-effects
   {:effects.target/damage {:damage/min-max [4 8]},
    :effects.target/stun 0.5},
