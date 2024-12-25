@@ -260,8 +260,6 @@
 
 (declare shape-drawer)
 
-(def ^:dynamic *unit-scale* 1)
-
 (declare assets)
 (declare default-font)
 (declare batch)
@@ -290,7 +288,7 @@
            ::cursors            cursors
            ::default-font       default-font
            ::batch              batch
-           ::unit-scale         *unit-scale* ; TODO this is only assoc'ed at draw , but gui has default-value 1 too
+           ::unit-scale         1
            ::shape-drawer       shape-drawer
            ::tiled-map-renderer tiled-map-renderer
            ::viewport           viewport
