@@ -50,12 +50,12 @@
 
                     (dispose [_]
                       (ctx/cleanup @app/state)
-                      (world/dispose))
+                      (world/dispose (world/state)))
 
                     (render [_]
                       (let [{:keys [gdl.context/stage] :as c} @app/state]
                         (clear-screen)
-                        (world/render c)
+                        (world/render (merge c (world/state)))
                         (.draw stage)
                         (.act stage)
                         (world/tick c pausing?)))

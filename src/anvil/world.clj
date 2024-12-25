@@ -15,14 +15,14 @@
 (defn widgets [c])
 
 (defn create [c world-id])
-(defn dispose [])
+(defn dispose [w])
 (defn render [])
 (defn tick [])
 
 ; FIXME config !
 (def factions-iterations {:good 15 :evil 5})
 
-(declare tiled-map
+(declare ^:private tiled-map ; no accesses
          explored-tile-corners
          grid
          entity-ids
@@ -39,6 +39,11 @@
          paused?
          mouseover-eid
          error)
+
+(defn state []
+  {:cdq.context/tiled-map tiled-map
+   :cdq.context/player-eid player-eid
+   })
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)

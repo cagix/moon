@@ -7,9 +7,9 @@
             [gdl.context :as c]
             [gdl.tiled :as tiled]))
 
-(defn-impl world/dispose []
-  (when (bound? #'world/tiled-map)
-    (tiled/dispose world/tiled-map)))
+(defn-impl world/dispose [{:keys [cdq.context/tiled-map]}]
+  (when tiled-map
+    (tiled/dispose tiled-map)))
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
@@ -124,7 +124,7 @@
 (defn-impl world/create [c world-id]
   ; TODO assert is :screens/world
   (stage/reset (world/widgets c))
-  (world/dispose)
+  (world/dispose c) ; TODO ... call here?
   (bind-root world/error nil)
   ; generate level -> creates actually the tiled-map and
   ; start-position?
