@@ -32,5 +32,5 @@
   (run! #(component/handle % ctx)
         (filter-applicable? ctx effect)))
 
-(defn render-info [ctx effect]
-  (run! #(component/render-effect % ctx) effect))
+(defn render-info [c ctx effect]
+  (run! #(component/render-effect % ctx c) effect))

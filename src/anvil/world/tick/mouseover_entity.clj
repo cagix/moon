@@ -5,10 +5,11 @@
             [gdl.stage :as stage]))
 
 (defn- calculate-eid []
-  (let [player @world/player-eid
+  (let [c (c/get-ctx)
+        player @world/player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities
-                      (c/world-mouse-position)))]
+                      (c/world-mouse-position c)))]
     (->> world/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse

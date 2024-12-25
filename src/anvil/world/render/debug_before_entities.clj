@@ -9,9 +9,8 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn-impl render/debug-before-entities []
-  (let [c (c/get-ctx)
-        cam c/camera
+(defn-impl render/debug-before-entities [c]
+  (let [cam c/camera
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?

@@ -20,16 +20,16 @@
 (defmethod tick :default [_ eid])
 
 (defsystem render-below)
-(defmethod render-below :default [_ entity])
+(defmethod render-below :default [_ entity c])
 
 (defsystem render-default)
-(defmethod render-default :default [_ entity])
+(defmethod render-default :default [_ entity c])
 
 (defsystem render-above)
-(defmethod render-above :default [_ entity])
+(defmethod render-above :default [_ entity c])
 
 (defsystem render-info)
-(defmethod render-info :default [_ entity])
+(defmethod render-info :default [_ entity c])
 
 ;; Entity State
 
@@ -67,7 +67,7 @@
 (defmethod useful? :default [_ _ctx] true)
 
 (defsystem render-effect)
-(defmethod render-effect :default [_ _ctx])
+(defmethod render-effect :default [_ _ctx c])
 
 ;; Operation
 

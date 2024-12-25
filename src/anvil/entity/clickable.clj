@@ -3,10 +3,10 @@
             [gdl.context :as c]))
 
 (defmethods :entity/clickable
-  (component/render-default [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
+  (component/render-default [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity} c]
     (when (and mouseover? text)
       (let [[x y] (:position entity)]
-        (c/draw-text (c/get-ctx)
+        (c/draw-text c
                      {:text text
                       :x x
                       :y (+ y (:half-height entity))

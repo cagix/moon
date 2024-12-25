@@ -5,7 +5,7 @@
             [gdl.math.shapes :refer [circle->outer-rectangle]]))
 
 (defn- geom-test [c]
-  (let [position (c/world-mouse-position)
+  (let [position (c/world-mouse-position c)
         radius 0.8
         circle {:position position :radius radius}]
     (c/circle c position radius [1 0 0 0.5])
@@ -18,7 +18,7 @@
 
 (defn- highlight-mouseover-tile [c]
   (when highlight-blocked-cell?
-    (let [[x y] (mapv int (c/world-mouse-position))
+    (let [[x y] (mapv int (c/world-mouse-position c))
           cell (world/grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (c/rectangle c x y 1 1
@@ -26,6 +26,6 @@
                        :air  [1 1 0 0.5]
                        :none [1 0 0 0.5]))))))
 
-(defn-impl render/debug-after-entities []
-  #_(geom-test (c/get-ctx))
-  (highlight-mouseover-tile (c/get-ctx)))
+(defn-impl render/debug-after-entities [c]
+  #_(geom-test c)
+  (highlight-mouseover-tile c))

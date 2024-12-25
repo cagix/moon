@@ -34,9 +34,8 @@
         (do-all! {:effect/source source :effect/target target}
                  entity-effects))))
 
-  (component/render-effect [_ {:keys [effect/source]}]
-    (let [c (c/get-ctx)
-          source* @source]
+  (component/render-effect [_ {:keys [effect/source]} c]
+    (let [source* @source]
       (doseq [target* (map deref (world/creatures-in-los-of-player))]
         (c/line c
                 (:position source*) #_(start-point source* target*)

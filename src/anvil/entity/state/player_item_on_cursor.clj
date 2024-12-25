@@ -23,7 +23,7 @@
 
 (defn- item-place-position [entity]
   (placement-point (:position entity)
-                   (c/world-mouse-position)
+                   (c/world-mouse-position (c/get-ctx))
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -90,15 +90,17 @@
                (world-item?))
       (entity/event eid :drop-item)))
 
-  (component/render-below [[_ {:keys [item]}] entity]
+  (component/render-below [[_ {:keys [item]}] entity c]
     (when (world-item?)
-      (c/draw-centered (:entity/image item)
+      (c/draw-centered c
+                       (:entity/image item)
                        (item-place-position entity))))
 
   (component/draw-gui-view [[_ {:keys [eid]}]]
     (when (not (world-item?))
-      (c/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                       (c/mouse-position))))
+      (c/draw-centered (c/get-ctx)
+                       (:entity/image (:entity/item-on-cursor @eid))
+                       (c/mouse-position (c/get-ctx)))))
 
   (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell]
     (clicked-cell data eid cell)))

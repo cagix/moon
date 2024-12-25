@@ -75,9 +75,9 @@
              :items [{:label "Button1"
                       :on-click (fn [])}]}]
     :update-labels [{:label "GUI"
-                     :update-fn c/mouse-position}
+                     :update-fn #(c/mouse-position (c/get-ctx))}
                     {:label "World"
-                     :update-fn #(mapv int (c/world-mouse-position))}
+                     :update-fn #(mapv int (c/world-mouse-position (c/get-ctx)))}
                     {:label "Zoom"
                      :update-fn #(cam/zoom c/camera)
                      :icon "images/zoom.png"}
@@ -102,9 +102,9 @@
                    {:label "paused?"
                     :update-fn (fn [] world/paused?)}
                    {:label "GUI"
-                    :update-fn c/mouse-position}
+                    :update-fn #(c/mouse-position (c/get-ctx))}
                    {:label "World"
-                    :update-fn #(mapv int (c/world-mouse-position))}
+                    :update-fn #(mapv int (c/world-mouse-position (c/get-ctx)))}
                    {:label "Zoom"
                     :update-fn #(cam/zoom c/camera)
                     :icon "images/zoom.png"}

@@ -46,12 +46,13 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [^Actor this]
-     (draw-cell-rect (c/get-ctx)
-                     @world/player-eid
-                     (.getX this)
-                     (.getY this)
-                     (actor/hit this (c/mouse-position))
-                     (user-object (.getParent this))))))
+     (let [c (c/get-ctx)]
+       (draw-cell-rect c
+                       @world/player-eid
+                       (.getX this)
+                       (.getY this)
+                       (actor/hit this c)
+                       (user-object (.getParent this)))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0

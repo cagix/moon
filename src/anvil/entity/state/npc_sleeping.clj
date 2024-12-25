@@ -21,9 +21,9 @@
         (when (<= distance (entity/stat entity :entity/aggro-range))
           (entity/event eid :alert)))))
 
-  (component/render-above [_ entity]
+  (component/render-above [_ entity c]
     (let [[x y] (:position entity)]
-      (c/draw-text (c/get-ctx)
+      (c/draw-text c
                    {:text "zzz"
                     :x x
                     :y (+ y (:half-height entity))

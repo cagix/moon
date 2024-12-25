@@ -5,11 +5,11 @@
 
 (defn tiled-map [tiled-map light-position])
 
-(defn debug-before-entities [])
+(defn debug-before-entities [c])
 
-(defn entities [entities])
+(defn entities [c entities])
 
-(defn debug-after-entities [])
+(defn debug-after-entities [c])
 
 (defn-impl world/render []
   ; FIXME position DRY
@@ -17,8 +17,8 @@
   ; FIXME position DRY
   (tiled-map world/tiled-map (cam/position c/camera))
   (c/draw-on-world-view (c/get-ctx)
-                        (fn []
-                          (debug-before-entities)
+                        (fn [c]
+                          (debug-before-entities c)
                           ; FIXME position DRY (from player)
-                          (entities (map deref (world/active-entities)))
-                          (debug-after-entities))))
+                          (entities c (map deref (world/active-entities)))
+                          (debug-after-entities c))))

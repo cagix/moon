@@ -6,8 +6,8 @@
             [gdl.ui :refer [ui-actor]]
             [gdl.val-max :as val-max]))
 
-(defn- render-infostr-on-bar [infostr x y h]
-  (c/draw-text (c/get-ctx)
+(defn- render-infostr-on-bar [c infostr x y h]
+  (c/draw-text c
                {:text infostr
                 :x (+ x 75)
                 :y (+ y 2)
@@ -23,12 +23,13 @@
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
-                            (c/draw-image rahmen [x y])
-                            (c/draw-image (c/sub-sprite c
+                            (c/draw-image c rahmen [x y])
+                            (c/draw-image c
+                                          (c/sub-sprite c
                                                         contentimage
                                                         [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                           [x y])
-                            (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+                            (render-infostr-on-bar c (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
                        (let [player-entity @world/player-eid
                              x (- x (/ rahmenw 2))]

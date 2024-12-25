@@ -14,5 +14,5 @@
       (swap! eid entity/mod-remove modifiers)))
 
   ; TODO draw opacity as of counter ratio?
-  (component/render-above [_ entity]
-    (c/filled-circle (c/get-ctx) (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
+  (component/render-above [_ entity c]
+    (c/filled-circle c (:position entity) 0.5 [0.5 0.5 0.5 0.4])))

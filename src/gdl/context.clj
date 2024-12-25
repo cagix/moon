@@ -78,33 +78,6 @@
                    color-setter
                    camera))
 
-(declare shape-drawer)
-
-(def ^:dynamic *unit-scale* 1)
-
-(declare assets)
-(declare default-font)
-(declare batch)
-(declare cursors)
-(declare world-unit-scale
-         world-viewport
-         world-viewport-width
-         world-viewport-height)
-
-(declare camera)
-(declare tiled-map-renderer)
-
-(defn get-ctx []
-  {::assets             assets
-   ::camera             camera
-   ::cursors            cursors
-   ::default-font       default-font
-   ::batch              batch
-   ::unit-scale         *unit-scale*
-   ::shape-drawer       shape-drawer
-   ::tiled-map-renderer tiled-map-renderer
-   ::world-unit-scale   world-unit-scale})
-
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
         (keyword? c) (interop/k->color c)
@@ -217,17 +190,17 @@
   (if color (batch/set-color batch color/white)))
 
 (defn draw-image
-  [{:keys [texture-region color] :as image} position]
+  [{::keys [batch unit-scale]} {:keys [texture-region color] :as image} position]
   (draw-texture-region batch
                        texture-region
                        position
-                       (unit-dimensions image *unit-scale*)
+                       (unit-dimensions image unit-scale)
                        0 ; rotation
                        color))
 
 (defn draw-rotated-centered
-  [{:keys [texture-region color] :as image} rotation [x y]]
-  (let [[w h] (unit-dimensions image *unit-scale*)]
+  [{::keys [batch unit-scale]} {:keys [texture-region color] :as image} rotation [x y]]
+  (let [[w h] (unit-dimensions image unit-scale)]
     (draw-texture-region batch
                          texture-region
                          [(- (float x) (/ (float w) 2))
@@ -236,8 +209,8 @@
                          rotation
                          color)))
 
-(defn draw-centered [image position]
-  (draw-rotated-centered image 0 position))
+(defn draw-centered [c image position]
+  (draw-rotated-centered c image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
   (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
@@ -246,17 +219,12 @@
   (draw-fn)
   (batch/end batch))
 
-(defn draw-with [viewport unit-scale draw-fn]
+(defn draw-with [{::keys [batch] :as c} viewport unit-scale draw-fn]
   (draw-on-viewport batch
                     viewport
-                    #(with-line-width (get-ctx) unit-scale
+                    #(with-line-width c unit-scale
                        (fn []
-                         (binding [*unit-scale* unit-scale]
-                           (draw-fn))))))
-
-(declare viewport
-         viewport-width
-         viewport-height)
+                         (draw-fn (assoc c ::unit-scale unit-scale))))))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -271,11 +239,11 @@
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position []
+(defn mouse-position [{::keys [viewport]}]
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position viewport)))
 
-(defn world-mouse-position []
+(defn world-mouse-position [{::keys [world-viewport]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position world-viewport))
@@ -283,5 +251,38 @@
 (defn pixels->world-units [{::keys [world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
 
-(defn draw-on-world-view [{::keys [world-unit-scale]} render-fn]
-  (draw-with world-viewport world-unit-scale render-fn))
+(defn draw-on-world-view [{::keys [world-viewport world-unit-scale] :as c} render-fn]
+  (draw-with c world-viewport world-unit-scale render-fn))
+
+(declare shape-drawer)
+
+(def ^:dynamic *unit-scale* 1)
+
+(declare assets)
+(declare default-font)
+(declare batch)
+(declare cursors)
+(declare world-unit-scale
+         world-viewport
+         world-viewport-width
+         world-viewport-height)
+
+(declare camera)
+(declare tiled-map-renderer)
+
+(declare viewport
+         viewport-width
+         viewport-height)
+
+(defn get-ctx []
+  {::assets             assets
+   ::camera             camera
+   ::cursors            cursors
+   ::default-font       default-font
+   ::batch              batch
+   ::unit-scale         *unit-scale*
+   ::shape-drawer       shape-drawer
+   ::tiled-map-renderer tiled-map-renderer
+   ::viewport           viewport
+   ::world-unit-scale   world-unit-scale
+   ::world-viewport     world-viewport})

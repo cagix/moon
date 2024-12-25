@@ -14,14 +14,13 @@
   (try
    (when show-body-bounds
      (draw-body-rect c entity (if (:collides? entity) :white :gray)))
-   (run! #(system % entity) entity)
+   (run! #(system % entity c) entity)
    (catch Throwable t
      (draw-body-rect c entity :red)
      (pretty-pst t))))
 
-(defn-impl render/entities [entities]
-  (let [c (c/get-ctx)
-        player @world/player-eid]
+(defn-impl render/entities [c entities]
+  (let [player @world/player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               world/render-z-order)

@@ -53,7 +53,7 @@
   (component/->v [[_ v]]
     [v v])
 
-  (component/render-info [_ entity]
+  (component/render-info [_ entity c]
     (let [ratio (val-max/ratio (entity/hitpoints entity))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
-        (draw-hpbar (c/get-ctx) entity ratio)))))
+        (draw-hpbar c entity ratio)))))

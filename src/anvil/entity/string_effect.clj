@@ -8,9 +8,9 @@
     (when (stopped? counter)
       (swap! eid dissoc k)))
 
-  (component/render-above [[_ {:keys [text]}] entity]
+  (component/render-above [[_ {:keys [text]}] entity c]
     (let [[x y] (:position entity)]
-      (c/draw-text (c/get-ctx)
+      (c/draw-text c
                    {:text text
                     :x x
                     :y (+ y

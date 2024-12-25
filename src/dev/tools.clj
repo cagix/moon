@@ -80,7 +80,7 @@
    (world/item (:position @world/player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
-  @(world/grid (mapv int (c/world-mouse-position))))
+  @(world/grid (mapv int (c/world-mouse-position (c/get-ctx)))))
 
 (defn- class->label-str [class]
   (case class

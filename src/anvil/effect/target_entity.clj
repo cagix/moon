@@ -47,10 +47,9 @@
         (world/audiovisual (end-point source* target* maxrange)
                            (db/build :audiovisuals/hit-ground)))))
 
-  (component/render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (component/render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} c]
     (when target
-      (let [c (c/get-ctx)
-            source* @source
+      (let [source* @source
             target* @target]
         (c/line c
                 (start-point source* target*)

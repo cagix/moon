@@ -19,7 +19,7 @@
               90 ; start-angle
               (* (float action-counter-ratio) 360) ; degree
               [1 1 1 0.5])
-    (c/draw-image image [(- (float x) radius) y])))
+    (c/draw-image c image [(- (float x) radius) y])))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
@@ -60,13 +60,13 @@
       (effect/do-all! effect-ctx (:skill/effects skill))
       (entity/event eid :action-done))))
 
-  (component/render-info [[_ {:keys [skill effect-ctx counter]}] entity]
-    (let [c (c/get-ctx)
-          {:keys [entity/image skill/effects]} skill]
+  (component/render-info [[_ {:keys [skill effect-ctx counter]}] entity c]
+    (let [{:keys [entity/image skill/effects]} skill]
       (draw-skill-image c
                         image
                         entity
                         (:position entity)
                         (finished-ratio counter))
-      (effect/render-info (effect/check-update-ctx effect-ctx)
+      (effect/render-info c
+                          (effect/check-update-ctx effect-ctx)
                           effects))))

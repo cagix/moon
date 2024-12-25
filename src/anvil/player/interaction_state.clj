@@ -70,7 +70,7 @@
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and world/mouseover-eid
                                  (:position @world/mouseover-eid))
-                            (c/world-mouse-position))]
+                            (c/world-mouse-position (c/get-ctx)))]
     {:effect/source eid
      :effect/target world/mouseover-eid
      :effect/target-position target-position
