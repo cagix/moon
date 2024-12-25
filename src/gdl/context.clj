@@ -283,7 +283,7 @@
     (sd/create batch
                (texture-region/create (sd-texture) 1 0 1 1)))
   (component/dispose [[_ sd]]
-    (dispose sd)))
+    #_(dispose sd)))
 ; TODO this will break ... proxy with extra-data -> get texture through sd ...
 ; => shape-drawer-texture as separate component?!
 ; that would work
@@ -365,7 +365,12 @@
   (component/dispose [[_ stage]]
     (.dispose stage)))
 
-(def state (atom nil))
+(defmethods ::ui
+  (component/->v [[_ config] _c]
+    (ui/setup config)
+    com.kotcrab.vis.ui.VisUI)
+  (component/dispose [_]
+    (ui/cleanup)))
 
 (defn- create-into [c components]
   (reduce (fn [c [k v]]
@@ -373,6 +378,8 @@
             (assoc c k (component/->v [k v] c)))
           c
           components))
+
+(def state (atom nil))
 
 (defn create [c components]
   (reset! state (create-into c components)))

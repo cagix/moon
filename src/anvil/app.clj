@@ -15,8 +15,23 @@
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
                     (create [_ gdx-context]
-                      (ui/setup (:ui lifecycle))
                       ; TODO pass vector because order is important
+                      ; TODO delete 'Gdx'
+                      ; TODO document 'c'
+                      ; TODO make world without global state
+                      ; TODO ui takes params?! - implicit ...
+                      ; TODO context explorer in dev-menu ( & entity explorer )
+                      ; ( & map tile explorer)
+                      ; & dev-tools
+                      ; & editor ?!
+                      ; & map-editor ?!
+                      ; its the editor itself - new game , etc .
+                      ; rightclick edit sth /
+                      ; pausing as part of state?
+                      ; _defrecord namespaed keys!!! _
+                      ; documented, arglist .. etc
+                      ; only 'c' functions in gdl.context ...
+                      ; schema not ...
                       (ctx/create gdx-context
                                   {:gdl.context/unit-scale 1
                                    :gdl.context/assets "resources/"
@@ -29,12 +44,12 @@
                                    :gdl.context/tiled-map-renderer nil
                                    :gdl.context/world-unit-scale (:tile-size lifecycle)
                                    :gdl.context/world-viewport (:world-viewport lifecycle)
-                                   :gdl.context/stage nil})
+                                   :gdl.context/stage nil
+                                   :gdl.context/ui (:ui lifecycle)})
                       (world/create @ctx/state
                                     (:world lifecycle)))
 
                     (dispose [_]
-                      (ui/cleanup)
                       (ctx/cleanup @ctx/state)
                       (world/dispose))
 

@@ -522,7 +522,6 @@
                  :taskbar-icon "moon.png"}
                 (reify lwjgl3/Application
                   (create [_ _gdx-state]
-                    (ui/setup :skin-scale/x1)
                     (ctx/create {:gdl.context/unit-scale 1
                                  :gdl.context/assets "resources/"
                                  :gdl.context/batch nil
@@ -531,11 +530,11 @@
                                  :gdl.context/world-unit-scale 1
                                  :gdl.context/world-viewport {:width 1440 :height 900}
                                  :gdl.context/stage [(background-image "images/moon_background.png")
-                                                     (tabs-table "custom label text here")]}))
+                                                     (tabs-table "custom label text here")]
+                                 :gdl.context/ui :skin-scale/x1}))
 
                   (dispose [_]
-                    (ctx/cleanup @ctx/state)
-                    (ui/cleanup))
+                    (ctx/cleanup @ctx/state))
 
                   (render [_]
                     (let [{:keys [gdl.context/stage]} @ctx/state]
