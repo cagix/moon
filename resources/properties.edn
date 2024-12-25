@@ -33,16 +33,6 @@
  {:entity/animation
   {:frame-duration 0.05,
    :frames
-   ({:file "images/uf_FX_impact.png", :sub-image-bounds [288 48 48 48]}
-    {:file "images/uf_FX_impact.png", :sub-image-bounds [336 48 48 48]}
-    {:file "images/uf_FX_impact.png",
-     :sub-image-bounds [384 48 48 48]}),
-   :looping? false},
-  :property/id :audiovisuals/spawn,
-  :tx/sound "bfxr_curse"}
- {:entity/animation
-  {:frame-duration 0.05,
-   :frames
    ({:file "images/uf_FX.png", :sub-image-bounds [96 144 24 24]}
     {:file "images/uf_FX.png", :sub-image-bounds [120 144 24 24]}
     {:file "images/uf_FX.png", :sub-image-bounds [144 144 24 24]}
@@ -62,6 +52,16 @@
    :looping? false},
   :property/id :audiovisuals/hit-ground,
   :tx/sound "bfxr_fisthit"}
+ {:entity/animation
+  {:frame-duration 0.05,
+   :frames
+   ({:file "images/uf_FX_impact.png", :sub-image-bounds [288 48 48 48]}
+    {:file "images/uf_FX_impact.png", :sub-image-bounds [336 48 48 48]}
+    {:file "images/uf_FX_impact.png",
+     :sub-image-bounds [384 48 48 48]}),
+   :looping? false},
+  :property/id :audiovisuals/spawn,
+  :tx/sound "bfxr_curse"}
  {:creature/level 1,
   :entity/aggro-range 6,
   :entity/animation
