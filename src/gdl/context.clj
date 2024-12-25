@@ -280,7 +280,10 @@
     (sd/create batch
                (texture-region/create (sd-texture) 1 0 1 1)))
   (component/dispose [[_ sd]]
-    (dispose sd))) ; TODO this will break ... proxy with extra-data
+    (dispose sd)))
+; TODO this will break ... proxy with extra-data -> get texture through sd ...
+; => shape-drawer-texture as separate component?!
+; that would work
 
 (defmethods ::assets
   (component/->v [[_ folder] _c]

@@ -29,16 +29,15 @@
                                    :gdl.context/viewport (:viewport lifecycle)
                                    :gdl.context/tiled-map-renderer nil
                                    :gdl.context/world-unit-scale (:tile-size lifecycle)
-                                   :gdl.context/world-viewport (:world-viewport lifecycle)
-                                   })
+                                   :gdl.context/world-viewport (:world-viewport lifecycle)})
                       (stage/setup)
                       (world/create @ctx/state
                                     (:world lifecycle)))
 
                     (dispose [_]
+                      (ui/cleanup)
                       (ctx/cleanup @ctx/state)
                       (stage/cleanup)
-                      (ui/cleanup)
                       (world/dispose))
 
                     (render [_]
