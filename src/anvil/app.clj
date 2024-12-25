@@ -1,11 +1,9 @@
 (ns anvil.app
   (:require [anvil.world :as world]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.gdx.utils.viewport :as viewport]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.context :as ctx]
-            [gdl.ui :as ui]))
+            [gdl.context :as ctx]))
 
 (def ^:private ^:dbg-flag pausing? true)
 
@@ -62,7 +60,4 @@
                         (world/tick c pausing?)))
 
                     (resize [_ w h]
-                      (let [{:keys [gdl.context/viewport
-                                    gdl.context/world-viewport]} @ctx/state]
-                        (viewport/update viewport w h :center-camera? true)
-                        (viewport/update world-viewport w h :center-camera? false)))))))
+                      (ctx/resize @ctx/state w h))))))

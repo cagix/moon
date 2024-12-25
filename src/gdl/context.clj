@@ -324,7 +324,9 @@
 
 (defmethods ::viewport
   (component/->v [[_ {:keys [width height]}] _c]
-    (viewport/fit width height (camera/orthographic))))
+    (viewport/fit width height (camera/orthographic)))
+  (component/resize [[_ viewport] w h]
+    (viewport/update viewport w h :center-camera? true)))
 
 (defmethods ::world-unit-scale
   (component/->v [[_ tile-size] _c]
@@ -337,7 +339,9 @@
           world-width  (* width  world-unit-scale)
           world-height (* height world-unit-scale)]
       (camera/set-to-ortho camera world-width world-height :y-down? false)
-      (viewport/fit world-width world-height camera))))
+      (viewport/fit world-width world-height camera)))
+  (component/resize [[_ viewport] w h]
+    (viewport/update viewport w h :center-camera? false)))
 
 (defmethods ::tiled-map-renderer
   (component/->v [_ {::keys [world-unit-scale batch]}]
@@ -384,8 +388,11 @@
 (defn create [c components]
   (reset! state (create-into c components)))
 
-(defn cleanup [components]
-  (run! component/dispose components))
+(defn cleanup [c]
+  (run! component/dispose c))
+
+(defn resize [c w h]
+  (run! #(component/resize % w h) c))
 
 (defn build [{::keys [db] :as c} id]
   (db/build db id c))

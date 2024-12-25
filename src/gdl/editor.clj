@@ -1,7 +1,6 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.context :as ctx :refer [play-sound]]
@@ -542,5 +541,4 @@
                       (.draw stage)))
 
                   (resize [_ w h]
-                    (let [{:keys [gdl.context/viewport]} @ctx/state]
-                      (viewport/update viewport w h :center-camera? true))))))
+                    (ctx/resize @ctx/state w h)))))
