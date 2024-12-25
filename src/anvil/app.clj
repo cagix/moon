@@ -5,7 +5,6 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx]
-            [gdl.stage :as stage]
             [gdl.ui :as ui]))
 
 (def ^:private ^:dbg-flag pausing? true)
@@ -29,23 +28,22 @@
                                    :gdl.context/viewport (:viewport lifecycle)
                                    :gdl.context/tiled-map-renderer nil
                                    :gdl.context/world-unit-scale (:tile-size lifecycle)
-                                   :gdl.context/world-viewport (:world-viewport lifecycle)})
-                      (stage/setup)
+                                   :gdl.context/world-viewport (:world-viewport lifecycle)
+                                   :gdl.context/stage nil})
                       (world/create @ctx/state
                                     (:world lifecycle)))
 
                     (dispose [_]
                       (ui/cleanup)
                       (ctx/cleanup @ctx/state)
-                      (stage/cleanup)
                       (world/dispose))
 
                     (render [_]
-                      (let [c @ctx/state]
+                      (let [{:keys [gdl.context/stage] :as c} @ctx/state]
                         (clear-screen)
                         (world/render c)
-                        (stage/render)
-                        (stage/act)
+                        (.draw stage)
+                        (.act stage)
                         (world/tick c pausing?)))
 
                     (resize [_ w h]

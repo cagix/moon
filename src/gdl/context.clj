@@ -26,8 +26,11 @@
             [gdl.graphics.sprite :as sprite]
             [gdl.malli :as m]
             [gdl.schema :as schema]
-            [gdl.tiled :as tiled])
+            [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
+            [gdl.ui.group :as group])
   (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn get-sound [{::keys [assets]} sound-name]
@@ -343,9 +346,24 @@
                                             (float world-unit-scale)
                                             batch)))))
 
-#_(defmethods ::ui
-  (component/->v [])
-  )
+(defn- stage* [viewport batch actors]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [viewport batch]
+                (valAt
+                  ([id]
+                   (group/find-actor-with-id (.getRoot this) id))
+                  ([id not-found]
+                   (or (group/find-actor-with-id (.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    stage))
+
+(defmethods ::stage
+  (component/->v [[_ actors] {::keys [viewport batch]}]
+    (let [stage (stage* viewport batch actors)]
+      (input/set-processor Gdx/input stage) ; side effects here?!
+      stage))
+  (component/dispose [[_ stage]]
+    (.dispose stage)))
 
 (def state (atom nil))
 

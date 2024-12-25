@@ -529,18 +529,18 @@
                                  :gdl.context/viewport {:width 1440 :height 900}
                                  ; just because of sprite edn->value of db requires world-unit-scale
                                  :gdl.context/world-unit-scale 1
-                                 :gdl.context/world-viewport {:width 1440 :height 900} })
-                    (stage/setup [(background-image "images/moon_background.png")
-                                  (tabs-table "custom label text here")]))
+                                 :gdl.context/world-viewport {:width 1440 :height 900}
+                                 :gdl.context/stage [(background-image "images/moon_background.png")
+                                                     (tabs-table "custom label text here")]}))
 
                   (dispose [_]
                     (ctx/cleanup @ctx/state)
-                    (ui/cleanup)
-                    (stage/cleanup))
+                    (ui/cleanup))
 
                   (render [_]
-                    (stage/act)
-                    (stage/render))
+                    (let [{:keys [gdl.context/stage]} @ctx/state]
+                      (.act stage)
+                      (.draw stage)))
 
                   (resize [_ w h]
                     (let [{:keys [gdl.context/viewport]} @ctx/state]

@@ -1,7 +1,6 @@
 (ns gdl.stage
   (:refer-clojure :exclude [get])
-  (:require [clojure.gdx.input :as input]
-            [gdl.context :as ctx]
+  (:require [gdl.context :as ctx]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group])
@@ -9,37 +8,8 @@
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))
 
-(defn- stage* [viewport batch actors]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [viewport batch]
-                (valAt
-                  ([id]
-                   (group/find-actor-with-id (.getRoot this) id))
-                  ([id not-found]
-                   (or (group/find-actor-with-id (.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    stage))
-
-(defn setup
-  ([]
-   (setup nil))
-  ([actors]
-   (def this (stage* (:gdl.context/viewport @ctx/state)
-                     (:gdl.context/batch    @ctx/state)
-                     actors))
-   (input/set-processor Gdx/input this)))
-
-(defn cleanup []
-  (.dispose this))
-
-(defn act []
-  (.act this))
-
-(defn render []
-  (.draw this))
-
 (defn get []
-  this)
+  (:gdl.context/stage @ctx/state))
 
 (defn get-inventory []
   (clojure.core/get (:windows (get)) :inventory-window))
@@ -64,28 +34,6 @@
   (let [[x y] (ctx/mouse-position c)]
     (.hit (get) x y true)))
 
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [gdl.context/viewport]}
-                  {:keys [title text button-text on-click]}]
-  (assert (not (::modal (get))))
-  (add-actor
-   (ui/window {:title title
-               :rows [[(ui/label text)]
-                      [(ui/text-button button-text
-                                       (fn []
-                                         (Actor/.remove (::modal (get)))
-                                         (on-click)))]]
-               :id ::modal
-               :modal? true
-               :center-position [(/ (:width viewport) 2)
-                                 (* (:height viewport) (/ 3 4))]
-               :pack? true})))
-
-
-
 (defn error-window! [throwable]
   (pretty-pst throwable)
   (add-actor
@@ -105,3 +53,24 @@
 
 (defn show-player-msg [message]
   (bind-root message-to-player {:message message :counter 0}))
+
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn show-modal [{::keys [viewport]}
+                  {:keys [title text button-text on-click]}]
+  (assert (not (::modal (get))))
+  (add-actor
+   (ui/window {:title title
+               :rows [[(ui/label text)]
+                      [(ui/text-button button-text
+                                       (fn []
+                                         (Actor/.remove (::modal (get)))
+                                         (on-click)))]]
+               :id ::modal
+               :modal? true
+               :center-position [(/ (:width viewport) 2)
+                                 (* (:height viewport) (/ 3 4))]
+               :pack? true})))
