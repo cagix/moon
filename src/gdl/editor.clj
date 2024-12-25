@@ -227,7 +227,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all db property-type)
+        properties (db/build-all db property-type @ctx/state)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -505,8 +505,8 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn- background-image [path]
-  (ui/image-widget ((:gdl.context/assets @ctx/state) path)
+(defn- background-image [{:keys [gdl.context/assets]} path]
+  (ui/image-widget (assets path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))
@@ -520,17 +520,23 @@
                  :height 900
                  :taskbar-icon "moon.png"}
                 (reify lwjgl3/Application
-                  (create [_ _gdx-state]
-                    (ctx/create {:gdl.context/unit-scale 1
+                  (create [_ gdx-context]
+                    (ctx/create gdx-context
+                                {:gdl.context/unit-scale 1
                                  :gdl.context/assets "resources/"
                                  :gdl.context/batch nil
                                  :gdl.context/viewport {:width 1440 :height 900}
-                                 ; just because of sprite edn->value of db requires world-unit-scale
+
+                                 ;; just because of sprite edn->value of db requires world-unit-scale
                                  :gdl.context/world-unit-scale 1
                                  :gdl.context/world-viewport {:width 1440 :height 900}
-                                 :gdl.context/stage [(background-image "images/moon_background.png")
-                                                     (tabs-table "custom label text here")]
-                                 :gdl.context/ui :skin-scale/x1}))
+                                 ;;
+
+                                 :gdl.context/ui :skin-scale/x1
+                                 :gdl.context/stage (fn [c]
+                                                      [(background-image c "images/moon_background.png")])})
+
+                    (stage/add-actor (tabs-table "custom label text here")))
 
                   (dispose [_]
                     (ctx/cleanup @ctx/state))

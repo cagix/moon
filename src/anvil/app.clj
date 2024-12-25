@@ -42,8 +42,8 @@
                                    :gdl.context/tiled-map-renderer nil
                                    :gdl.context/world-unit-scale (:tile-size lifecycle)
                                    :gdl.context/world-viewport (:world-viewport lifecycle)
-                                   :gdl.context/stage nil
-                                   :gdl.context/ui (:ui lifecycle)})
+                                   :gdl.context/ui (:ui lifecycle)
+                                   :gdl.context/stage (fn [c] nil)})
                       (world/create @ctx/state
                                     (:world lifecycle)))
 
