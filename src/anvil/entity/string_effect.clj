@@ -4,7 +4,7 @@
             [gdl.context :as c]))
 
 (defmethods :entity/string-effect
-  (component/tick [[k {:keys [counter]}] eid]
+  (component/tick [[k {:keys [counter]}] eid c]
     (when (stopped? counter)
       (swap! eid dissoc k)))
 

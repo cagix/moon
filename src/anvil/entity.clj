@@ -13,8 +13,8 @@
 (defn state-obj [entity])
 
 (defn event
-  ([eid event])
-  ([eid event params]))
+  ([c eid event])
+  ([c eid event params]))
 
 (def empty-inventory)
 

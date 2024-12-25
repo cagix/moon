@@ -46,19 +46,19 @@
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill))))
 
-  (component/tick [[_ {:keys [skill effect-ctx counter]}] eid]
+  (component/tick [[_ {:keys [skill effect-ctx counter]}] eid c]
     (cond
      (not (effect/some-applicable? (effect/check-update-ctx effect-ctx)
                                    (:skill/effects skill)))
      (do
-      (entity/event eid :action-done)
+      (entity/event c eid :action-done)
       ; TODO some sound ?
       )
 
      (stopped? counter)
      (do
-      (effect/do-all! effect-ctx (:skill/effects skill))
-      (entity/event eid :action-done))))
+      (effect/do-all! c effect-ctx (:skill/effects skill))
+      (entity/event c eid :action-done))))
 
   (component/render-info [[_ {:keys [skill effect-ctx counter]}] entity c]
     (let [{:keys [entity/image skill/effects]} skill]

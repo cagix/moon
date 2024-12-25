@@ -14,12 +14,12 @@
                          0.2)
     (swap! eid add-text-effect "[WHITE]!"))
 
-  (component/tick [_ eid]
+  (component/tick [_ eid c]
     (let [entity @eid
           cell (world/grid (entity/tile entity))] ; pattern!
       (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
-          (entity/event eid :alert)))))
+          (entity/event c eid :alert)))))
 
   (component/render-above [_ entity c]
     (let [[x y] (:position entity)]

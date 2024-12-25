@@ -38,7 +38,7 @@
     (and target
          (:entity/hp @target)))
 
-  (component/handle [[_ damage] {:keys [effect/source effect/target]}]
+  (component/handle [[_ damage] {:keys [effect/source effect/target]} c]
     (let [source* @source
           target* @target
           hp (entity/hitpoints target*)]
@@ -56,5 +56,5 @@
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (world/audiovisual (:position target*)
                             (db/build :audiovisuals/damage))
-         (entity/event target (if (zero? new-hp-val) :kill :alert))
+         (entity/event c target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))

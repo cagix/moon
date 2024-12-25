@@ -9,5 +9,5 @@
   (component/useful? [_ _]
     false)
 
-  (component/handle [[_ sound] _ctx]
+  (component/handle [[_ sound] _ctx c]
     (sound/play sound)))

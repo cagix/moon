@@ -4,5 +4,6 @@
             [anvil.world :as world]
             [anvil.world.tick :as tick]))
 
-(defn-impl tick/player-input []
-  (component/manual-tick (entity/state-obj @world/player-eid)))
+(defn-impl tick/player-input [c]
+  (component/manual-tick (entity/state-obj @world/player-eid)
+                         c))

@@ -33,7 +33,7 @@
   (component/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (in-range? @source @target maxrange))
 
-  (component/handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx}]
+  (component/handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx} c]
     (let [source* @source
           target* @target]
       (if (in-range? source* target* maxrange)
@@ -43,7 +43,7 @@
                              :duration 0.05
                              :color [1 0 0 0.75]
                              :thick? true})
-         (do-all! ctx entity-effects))
+         (do-all! c ctx entity-effects))
         (world/audiovisual (end-point source* target* maxrange)
                            (db/build :audiovisuals/hit-ground)))))
 

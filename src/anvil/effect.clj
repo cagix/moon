@@ -28,8 +28,8 @@
        (filter-applicable? ctx)
        (some #(component/useful? % ctx))))
 
-(defn do-all! [ctx effect]
-  (run! #(component/handle % ctx)
+(defn do-all! [c ctx effect]
+  (run! #(component/handle % ctx c)
         (filter-applicable? ctx effect)))
 
 (defn render-info [c ctx effect]

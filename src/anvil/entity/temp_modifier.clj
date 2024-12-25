@@ -8,7 +8,7 @@
   (component/info [[_ {:keys [counter]}]]
     (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))
 
-  (component/tick [[k {:keys [modifiers counter]}] eid]
+  (component/tick [[k {:keys [modifiers counter]}] eid c]
     (when (stopped? counter)
       (swap! eid dissoc k)
       (swap! eid entity/mod-remove modifiers)))

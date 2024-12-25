@@ -6,6 +6,6 @@
   (component/create [_ eid]
     (-> @eid :entity/animation :looping? not assert))
 
-  (component/tick [_ eid]
+  (component/tick [_ eid c]
     (when (animation/stopped? (:entity/animation @eid))
       (swap! eid assoc :entity/destroyed? true))))

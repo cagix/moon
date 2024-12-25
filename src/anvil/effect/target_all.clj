@@ -17,7 +17,7 @@
     ; TODO
     false)
 
-  (component/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
+  (component/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} c]
     (let [source* @source]
       (doseq [target (world/creatures-in-los-of-player)]
         (world/line-render {:start (:position source*) #_(start-point source* target*)
@@ -31,7 +31,8 @@
         ; at sub-effects
         ; and no more safe - merge
         ; find a way to pass ctx / effect-ctx separate ?
-        (do-all! {:effect/source source :effect/target target}
+        (do-all! c
+                 {:effect/source source :effect/target target}
                  entity-effects))))
 
   (component/render-effect [_ {:keys [effect/source]} c]

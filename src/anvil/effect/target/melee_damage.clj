@@ -21,5 +21,5 @@
   (component/applicable? [_ {:keys [effect/source] :as ctx}]
     (component/applicable? (damage-effect @source) ctx))
 
-  (component/handle [_ {:keys [effect/source] :as ctx}]
-    (component/handle (damage-effect @source) ctx)))
+  (component/handle [_ {:keys [effect/source] :as ctx} c]
+    (component/handle (damage-effect @source) ctx c)))

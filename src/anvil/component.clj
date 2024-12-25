@@ -17,7 +17,7 @@
 (defmethod destroy :default [_ eid])
 
 (defsystem tick)
-(defmethod tick :default [_ eid])
+(defmethod tick :default [_ eid c])
 
 (defsystem render-below)
 (defmethod render-below :default [_ entity c])
@@ -43,7 +43,7 @@
 (defmethod cursor :default [_])
 
 (defsystem clicked-inventory-cell)
-(defmethod clicked-inventory-cell :default [_ cell])
+(defmethod clicked-inventory-cell :default [_ cell c])
 
 (defsystem clicked-skillmenu-skill)
 (defmethod clicked-skillmenu-skill :default [_ skill])
@@ -52,7 +52,7 @@
 (defmethod draw-gui-view :default [_])
 
 (defsystem manual-tick)
-(defmethod manual-tick :default [_])
+(defmethod manual-tick :default [_ c])
 
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])

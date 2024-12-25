@@ -12,18 +12,17 @@
     (safe-merge (db/build :player-idle/clicked-inventory-cell)
                 {:eid eid}))
 
-  (component/manual-tick [[_ {:keys [eid]}]]
-    (let [c (c/get-ctx)]
-      (if-let [movement-vector (controls/movement-vector)]
-        (entity/event eid :movement-input movement-vector)
-        (let [[cursor on-click] (player/interaction-state c eid)]
-          (c/set-cursor c cursor)
-          (when (button-just-pressed? :left)
-            (on-click))))))
+  (component/manual-tick [[_ {:keys [eid]}] c]
+    (if-let [movement-vector (controls/movement-vector)]
+      (entity/event c eid :movement-input movement-vector)
+      (let [[cursor on-click] (player/interaction-state c eid)]
+        (c/set-cursor c cursor)
+        (when (button-just-pressed? :left)
+          (on-click)))))
 
-  (component/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell]
+  (component/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (sound/play pickup-item-sound)
-      (entity/event eid :pickup-item item)
+      (entity/event c eid :pickup-item item)
       (entity/remove-item eid cell))))

@@ -20,7 +20,7 @@
      (do
       (play-sound c "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/event world/player-eid :pickup-item item))
+      (entity/event c world/player-eid :pickup-item item))
 
      (entity/can-pickup-item? @world/player-eid item)
      (do
@@ -98,7 +98,8 @@
             ; different color ?
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
-             (fn [] (entity/event eid :start-action [skill effect-ctx]))])
+             (fn []
+               (entity/event c eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine

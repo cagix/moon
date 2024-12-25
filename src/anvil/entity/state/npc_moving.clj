@@ -16,6 +16,6 @@
   (component/exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
-  (component/tick [[_ {:keys [counter]}] eid]
+  (component/tick [[_ {:keys [counter]}] eid c]
     (when (stopped? counter)
-      (entity/event eid :timer-finished))))
+      (entity/event c eid :timer-finished))))

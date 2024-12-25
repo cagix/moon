@@ -9,5 +9,5 @@
   (component/useful? [_ _]
     false)
 
-  (component/handle [[_ audiovisual] {:keys [effect/target-position]}]
+  (component/handle [[_ audiovisual] {:keys [effect/target-position]} c]
     (c/audiovisual target-position audiovisual)))

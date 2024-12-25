@@ -9,5 +9,5 @@
   (component/useful? [_ _]
     false)
 
-  (component/handle [[_ audiovisual] {:keys [effect/target]}]
+  (component/handle [[_ audiovisual] {:keys [effect/target]} c]
     (world/audiovisual (:position @target) audiovisual)))

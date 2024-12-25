@@ -11,5 +11,5 @@
          (= (:entity/faction @target)
             (entity/enemy @source))))
 
-  (component/handle [_ {:keys [effect/source effect/target]}]
+  (component/handle [_ {:keys [effect/source effect/target]} c]
     (swap! target assoc :entity/faction (:entity/faction @source))))

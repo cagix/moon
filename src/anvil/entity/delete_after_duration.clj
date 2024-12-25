@@ -9,6 +9,6 @@
   (component/info [counter]
     (str "Remaining: " (readable-number (finished-ratio counter)) "/1"))
 
-  (component/tick [[_ counter] eid]
+  (component/tick [[_ counter] eid c]
     (when (stopped? counter)
       (swap! eid assoc :entity/destroyed? true))))

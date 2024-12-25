@@ -9,9 +9,9 @@
     {:eid eid
      :counter (timer duration)})
 
-  (component/tick [[_ {:keys [counter]}] eid]
+  (component/tick [[_ {:keys [counter]}] eid c]
     (when (stopped? counter)
-      (entity/event eid :effect-wears-off)))
+      (entity/event c eid :effect-wears-off)))
 
   (component/render-below [_ entity c]
     (c/circle c (:position entity) 0.5 [1 1 1 0.6])))

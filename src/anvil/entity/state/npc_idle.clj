@@ -31,8 +31,8 @@
   (component/->v [[_ eid]]
     {:eid eid})
 
-  (component/tick [_ eid]
+  (component/tick [_ eid c]
     (let [effect-ctx (effect-context eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
-        (entity/event eid :start-action [skill effect-ctx])
-        (entity/event eid :movement-direction (or (potential-field/find-direction eid) [0 0]))))))
+        (entity/event c eid :start-action [skill effect-ctx])
+        (entity/event c eid :movement-direction (or (potential-field/find-direction eid) [0 0]))))))

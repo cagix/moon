@@ -27,7 +27,7 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell]
+(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
   (let [entity @eid
         inventory (:entity/inventory entity)
         item-in-cell (get-in inventory cell)
@@ -40,7 +40,7 @@
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/set-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item))
+      (entity/event c eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -49,7 +49,7 @@
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/stack-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item))
+      (entity/event c eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -61,8 +61,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/remove-item eid cell)
       (entity/set-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item)
-      (entity/event eid :pickup-item item-in-cell)))))
+      (entity/event c eid :dropped-item)
+      (entity/event c eid :pickup-item item-in-cell)))))
 
 (defmethods :player-item-on-cursor
   (component/->v [[_ eid item]]
@@ -86,11 +86,10 @@
         (world/item (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (component/manual-tick [[_ {:keys [eid]}]]
-    (let [c (c/get-ctx)]
-      (when (and (button-just-pressed? :left)
-                 (world-item? c))
-        (entity/event eid :drop-item))))
+  (component/manual-tick [[_ {:keys [eid]}] c]
+    (when (and (button-just-pressed? :left)
+               (world-item? c))
+      (entity/event c eid :drop-item)))
 
   (component/render-below [[_ {:keys [item]}] entity c]
     (when (world-item? c)
@@ -105,5 +104,5 @@
                          (:entity/image (:entity/item-on-cursor @eid))
                          (c/mouse-position c)))))
 
-  (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell]
-    (clicked-cell data eid cell)))
+  (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
+    (clicked-cell data eid cell c)))

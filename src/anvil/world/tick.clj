@@ -5,24 +5,24 @@
             [gdl.context :as ctx]
             [gdl.stage :as stage]))
 
-(defn player-input [])
+(defn player-input [c])
 (defn mouseover-entity [c])
 (defn paused-state [])
 (defn time [])
 (defn potential-fields [])
-(defn entities [])
+(defn entities [c])
 (defn remove-destroyed-entities [])
 (defn camera-controls [camera])
 (defn window-hotkeys  [stage])
 
 (defn-impl world/tick [c pausing?]
-  (player-input)
+  (player-input c)
   (mouseover-entity c)
   (paused-state pausing?)
   (when-not world/paused?
     (time)
     (potential-fields)
-    (entities))
+    (entities c))
   (remove-destroyed-entities) ; do not pause this as for example pickup item, should be destroyed.
   (camera-controls ctx/camera)
   (window-hotkeys {:controls/close-windows-key controls/close-windows-key

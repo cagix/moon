@@ -106,7 +106,7 @@
           (component/enter new-state-obj))))))
 
 (defn-impl entity/event
-  ([eid event]
-   (send-event! (c/get-ctx) eid event nil))
-  ([eid event params]
-   (send-event! (c/get-ctx) eid event params)))
+  ([c eid event]
+   (send-event! c eid event nil))
+  ([c eid event params]
+   (send-event! c eid event params)))

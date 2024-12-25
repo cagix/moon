@@ -10,5 +10,5 @@
     (and target
          (:entity/fsm @target)))
 
-  (component/handle [[_ duration] {:keys [effect/target]}]
-    (entity/event target :stun duration)))
+  (component/handle [[_ duration] {:keys [effect/target]} c]
+    (entity/event c target :stun duration)))

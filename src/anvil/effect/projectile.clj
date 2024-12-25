@@ -28,7 +28,7 @@
                           target-p)
               max-range))))
 
-  (component/handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
+  (component/handle [[_ projectile] {:keys [effect/source effect/target-direction]} c]
     (world/projectile {:position (projectile-start-point @source
                                                          target-direction
                                                          (world/projectile-size projectile))

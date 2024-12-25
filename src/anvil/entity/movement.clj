@@ -50,7 +50,8 @@
 
 (defmethods :entity/movement
   (component/tick [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
-                   eid]
+                   eid
+                   c]
     (assert (m/validate speed-schema speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))

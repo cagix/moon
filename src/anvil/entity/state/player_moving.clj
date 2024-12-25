@@ -15,10 +15,10 @@
   (component/exit [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement))
 
-  (component/tick [[_ {:keys [movement-vector]}] eid]
+  (component/tick [[_ {:keys [movement-vector]}] eid c]
     (if-let [movement-vector (controls/movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
-      (entity/event eid :no-movement-input))))
+      (entity/event c eid :no-movement-input))))
 
 

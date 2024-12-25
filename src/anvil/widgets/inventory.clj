@@ -93,7 +93,8 @@
                           (clicked [event x y]
                             (component/clicked-inventory-cell
                              (entity/state-obj @world/player-eid)
-                             cell))))
+                             cell
+                             (c/get-ctx)))))
     stack))
 
 (defn- inventory-table []

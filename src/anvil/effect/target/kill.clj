@@ -10,5 +10,5 @@
     (and target
          (:entity/fsm @target)))
 
-  (component/handle [_ {:keys [effect/target]}]
-    (entity/event target :kill)))
+  (component/handle [_ {:keys [effect/target]} c]
+    (entity/event c target :kill)))

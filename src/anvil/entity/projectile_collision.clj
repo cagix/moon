@@ -8,7 +8,7 @@
   (component/->v [[_ v]]
     (assoc v :already-hit-bodies #{}))
 
-  (component/tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
+  (component/tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
     ; TODO this could be called from body on collision
     ; for non-solid
     ; means non colliding with other entities
@@ -28,6 +28,7 @@
       (when hit-entity
         (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
       (when hit-entity
-        (effect/do-all! {:effect/source eid
+        (effect/do-all! c
+                        {:effect/source eid
                          :effect/target hit-entity}
                         entity-effects)))))

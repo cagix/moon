@@ -32,7 +32,7 @@
     (doseq [skill skills]
       (swap! eid add skill)))
 
-  (component/tick [[k skills] eid]
+  (component/tick [[k skills] eid c]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
             :when (and cooling-down?
                        (stopped? cooling-down?))]
