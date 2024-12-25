@@ -38,7 +38,7 @@
     {:file "images/uf_FX_impact.png",
      :sub-image-bounds [384 48 48 48]}),
    :looping? false},
-  :property/id :audiovisuals/unused,
+  :property/id :audiovisuals/spawn,
   :tx/sound "bfxr_curse"}
  {:entity/animation
   {:frame-duration 0.05,
@@ -4161,7 +4161,9 @@
   :skill/action-time-modifier-key :entity/cast-speed,
   :skill/cooldown 0,
   :skill/cost 0,
-  :skill/effects {:effects/spawn :creatures/skeleton-warrior},
+  :skill/effects
+  {:effects/audiovisual :audiovisuals/spawn,
+   :effects/spawn :creatures/skeleton-warrior},
   :skill/start-action-sound "bfxr_minedeath"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [0 64 32 32]},

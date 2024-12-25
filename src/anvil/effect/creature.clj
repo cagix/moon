@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.creature
   (:require [anvil.component :as component]
-            [anvil.world :as world]
-            [gdl.context :refer [play-sound]]))
+            [anvil.world :as world]))
 
 ; "https://github.com/damn/core/issues/29"
 (defmethods :effects/spawn
@@ -11,7 +10,6 @@
 
   (component/handle [[_ {:keys [property/id]}]
                      {:keys [effect/source effect/target-position]}]
-    (play-sound "bfxr_shield_consume")
     (world/creature {:position target-position
                      :creature-id id ; already properties/get called through one-to-one, now called again.
                      :components {:entity/fsm {:fsm :fsms/npc
