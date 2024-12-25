@@ -249,7 +249,7 @@
 (defn draw-with [viewport unit-scale draw-fn]
   (draw-on-viewport batch
                     viewport
-                    #(with-line-width unit-scale
+                    #(with-line-width (get-ctx) unit-scale
                        (fn []
                          (binding [*unit-scale* unit-scale]
                            (draw-fn))))))
