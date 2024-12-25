@@ -4,7 +4,7 @@
             [gdl.graphics.animation :as animation]))
 
 (defmethods :entity/animation
-  (component/create [[_ animation] eid]
+  (component/create [[_ animation] eid c]
     (swap! eid assoc :entity/image (animation/current-frame animation)))
 
   (component/tick [[k animation] eid c]

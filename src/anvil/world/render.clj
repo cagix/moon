@@ -3,7 +3,7 @@
             [gdl.graphics.camera :as cam]
             [anvil.world :as world]))
 
-(defn tiled-map [tiled-map light-position])
+(defn tiled-map [c tiled-map light-position])
 
 (defn debug-before-entities [c])
 
@@ -11,12 +11,12 @@
 
 (defn debug-after-entities [c])
 
-(defn-impl world/render []
+(defn-impl world/render [c]
   ; FIXME position DRY
   (cam/set-position! c/camera (:position @world/player-eid))
   ; FIXME position DRY
-  (tiled-map world/tiled-map (cam/position c/camera))
-  (c/draw-on-world-view (c/get-ctx)
+  (tiled-map c world/tiled-map (cam/position c/camera))
+  (c/draw-on-world-view c
                         (fn [c]
                           (debug-before-entities c)
                           ; FIXME position DRY (from player)

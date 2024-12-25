@@ -26,7 +26,7 @@
      (do
       (play-sound c "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/pickup-item world/player-eid item))
+      (entity/pickup-item c world/player-eid item))
 
      :else
      (do

@@ -64,7 +64,7 @@
     (str "State: " (name (:state fsm))))
 
 
-  (component/create [[k {:keys [fsm initial-state]}] eid]
+  (component/create [[k {:keys [fsm initial-state]}] eid c]
     (swap! eid assoc
            k (->init-fsm (case fsm
                            :fsms/player player-fsm
@@ -102,8 +102,8 @@
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (component/exit old-state-obj)
-          (component/enter new-state-obj))))))
+          (component/exit old-state-obj c)
+          (component/enter new-state-obj c))))))
 
 (defn-impl entity/event
   ([c eid event]

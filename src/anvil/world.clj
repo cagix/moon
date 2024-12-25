@@ -14,9 +14,9 @@
                                      overlaps?]]
             [gdl.math.vector :as v]))
 
-(defn widgets [])
+(defn widgets [c])
 
-(defn create [_])
+(defn create [c world-id])
 (defn dispose [])
 (defn render [])
 (defn tick [])
@@ -311,7 +311,8 @@
 (defn spawn-entity [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
-  (let [eid (atom (-> body
+  (let [c (c/get-ctx)
+        eid (atom (-> body
                       (assoc :position position)
                       create-body
                       (safe-merge (-> components
@@ -319,7 +320,7 @@
                                       create-vs))))]
     (add-entity eid)
     (doseq [component @eid]
-      (component/create component eid))
+      (component/create component eid c))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."

@@ -5,5 +5,5 @@
   (component/->v [[_ eid]]
     {:eid eid})
 
-  (component/enter [[_ {:keys [eid]}]]
+  (component/enter [[_ {:keys [eid]}] c]
     (swap! eid assoc :entity/destroyed? true)))

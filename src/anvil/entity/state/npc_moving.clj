@@ -9,11 +9,11 @@
      :movement-vector movement-vector
      :counter (timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
-  (component/enter [[_ {:keys [eid movement-vector]}]]
+  (component/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
-  (component/exit [[_ {:keys [eid]}]]
+  (component/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
   (component/tick [[_ {:keys [counter]}] eid c]

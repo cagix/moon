@@ -36,7 +36,7 @@
                    (apply-action-speed-modifier @eid skill)
                    timer)})
 
-  (component/enter [[_ {:keys [eid skill]}]]
+  (component/enter [[_ {:keys [eid skill]}] c]
     (sound/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in

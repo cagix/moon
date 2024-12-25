@@ -13,9 +13,8 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn-impl widgets/hp-mana-bar []
-  (let [c (c/get-ctx)
-        rahmen      (c/sprite c "images/rahmen.png")
+(defn-impl widgets/hp-mana-bar [c]
+  (let [rahmen      (c/sprite c "images/rahmen.png")
         hpcontent   (c/sprite c "images/hp.png")
         manacontent (c/sprite c "images/mana.png")
         x (/ c/viewport-width 2)

@@ -121,9 +121,9 @@
     (spawn-enemies tiled-map))
   (bind-root world/mouseover-eid nil))
 
-(defn-impl world/create [world-id]
+(defn-impl world/create [c world-id]
   ; TODO assert is :screens/world
-  (stage/reset (world/widgets))
+  (stage/reset (world/widgets c))
   (world/dispose)
   (bind-root world/error nil)
   ; generate level -> creates actually the tiled-map and

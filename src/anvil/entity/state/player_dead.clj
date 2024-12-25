@@ -11,7 +11,8 @@
   (component/enter [[_ {:keys [tx/sound
                                modal/title
                                modal/text
-                               modal/button-text]}]]
+                               modal/button-text]}]
+                    c]
     (sound/play sound)
     (show-modal {:title title
                  :text text

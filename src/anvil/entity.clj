@@ -22,15 +22,15 @@
 
 (defn set-item [eid cell item])
 
-(defn remove-item [eid cell])
+(defn remove-item [c eid cell])
 
 (defn stackable? [item-a item-b])
 
-(defn stack-item [eid cell item])
+(defn stack-item [c eid cell item])
 
 (defn can-pickup-item? [{:keys [entity/inventory]} item])
 
-(defn pickup-item [eid item])
+(defn pickup-item [c eid item])
 
 (defn stat [entity k])
 

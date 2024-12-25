@@ -37,7 +37,8 @@
                                                 ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
-                      (world/create (:world lifecycle)))
+                      (world/create (ctx/get-ctx)
+                                    (:world lifecycle)))
 
                     (dispose [_]
                       (assets/cleanup)
@@ -52,7 +53,7 @@
                     (render [_]
                       (let [c (ctx/get-ctx)]
                         (clear-screen)
-                        (world/render)
+                        (world/render c)
                         (stage/render)
                         (stage/act)
                         (world/tick c pausing?)))

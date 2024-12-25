@@ -3,7 +3,7 @@
             [gdl.graphics.animation :as animation]))
 
 (defmethods :entity/delete-after-animation-stopped?
-  (component/create [_ eid]
+  (component/create [_ eid c]
     (-> @eid :entity/animation :looping? not assert))
 
   (component/tick [_ eid c]

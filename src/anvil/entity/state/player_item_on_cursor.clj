@@ -48,7 +48,7 @@
      (do
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/stack-item eid cell item-on-cursor)
+      (entity/stack-item c eid cell item-on-cursor)
       (entity/event c eid :dropped-item))
 
      ; SWAP ITEMS
@@ -70,16 +70,15 @@
                 {:eid eid
                  :item item}))
 
-  (component/enter [[_ {:keys [eid item]}]]
+  (component/enter [[_ {:keys [eid item]}] c]
     (swap! eid assoc :entity/item-on-cursor item))
 
-  (component/exit [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}]]
+  (component/exit [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
     ; on the ground
-    (let [c (c/get-ctx)
-          entity @eid]
+    (let [entity @eid]
       (when (:entity/item-on-cursor entity)
         (sound/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
@@ -97,12 +96,11 @@
                        (:entity/image item)
                        (item-place-position c entity))))
 
-  (component/draw-gui-view [[_ {:keys [eid]}]]
-    (let [c (c/get-ctx)]
-      (when (not (world-item? c))
-        (c/draw-centered c
-                         (:entity/image (:entity/item-on-cursor @eid))
-                         (c/mouse-position c)))))
+  (component/draw-gui-view [[_ {:keys [eid]}] c]
+    (when (not (world-item? c))
+      (c/draw-centered c
+                       (:entity/image (:entity/item-on-cursor @eid))
+                       (c/mouse-position c))))
 
   (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
     (clicked-cell data eid cell c)))

@@ -82,53 +82,53 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (color/create 1 1 1 0.4))))
 
-(defn- ->cell ^Actor [slot & {:keys [position]}]
+(defn- ->cell ^Actor [c slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
-        image-widget (image-widget (slot->background (c/get-ctx) slot) {:id :image})
+        image-widget (image-widget (slot->background c slot)
+                                   {:id :image})
         stack (ui-stack [(draw-rect-actor)
                          image-widget])]
     (.setName stack "inventory-cell")
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (component/clicked-inventory-cell
-                             (entity/state-obj @world/player-eid)
-                             cell
-                             (c/get-ctx)))))
+                            (component/clicked-inventory-cell (entity/state-obj @world/player-eid)
+                                                              cell
+                                                              c))))
     stack))
 
-(defn- inventory-table []
+(defn- inventory-table [c]
   (let [table (ui/table {:id ::table})]
     (.clear table) ; no need as we create new table ... TODO
     (doto table .add .add
-      (.add (->cell :inventory.slot/helm))
-      (.add (->cell :inventory.slot/necklace)) .row)
+      (.add (->cell c :inventory.slot/helm))
+      (.add (->cell c :inventory.slot/necklace)) .row)
     (doto table .add
-      (.add (->cell :inventory.slot/weapon))
-      (.add (->cell :inventory.slot/chest))
-      (.add (->cell :inventory.slot/cloak))
-      (.add (->cell :inventory.slot/shield)) .row)
+      (.add (->cell c :inventory.slot/weapon))
+      (.add (->cell c :inventory.slot/chest))
+      (.add (->cell c :inventory.slot/cloak))
+      (.add (->cell c :inventory.slot/shield)) .row)
     (doto table .add .add
-      (.add (->cell :inventory.slot/leg)) .row)
+      (.add (->cell c :inventory.slot/leg)) .row)
     (doto table .add
-      (.add (->cell :inventory.slot/glove))
-      (.add (->cell :inventory.slot/rings :position [0 0]))
-      (.add (->cell :inventory.slot/rings :position [1 0]))
-      (.add (->cell :inventory.slot/boot)) .row)
+      (.add (->cell c :inventory.slot/glove))
+      (.add (->cell c :inventory.slot/rings :position [0 0]))
+      (.add (->cell c :inventory.slot/rings :position [1 0]))
+      (.add (->cell c :inventory.slot/boot)) .row)
     (doseq [y (range (g2d/height (:inventory.slot/bag entity/empty-inventory)))]
       (doseq [x (range (g2d/width (:inventory.slot/bag entity/empty-inventory)))]
-        (.add table (->cell :inventory.slot/bag :position [x y])))
+        (.add table (->cell c :inventory.slot/bag :position [x y])))
       (.row table))
     table))
 
-(defn-impl widgets/inventory []
+(defn-impl widgets/inventory [c]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
               :position [c/viewport-width
                          c/viewport-height]
-              :rows [[{:actor (inventory-table)
+              :rows [[{:actor (inventory-table c)
                        :pad 4}]]}))
 
 (defn- cell-widget [cell]
@@ -142,8 +142,8 @@
     (set-drawable! image-widget drawable)
     (add-tooltip! cell-widget #(info/text item))))
 
-(defn-impl widgets/remove-item-from-widget [cell]
+(defn-impl widgets/remove-item-from-widget [c cell]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)]
-    (set-drawable! image-widget (slot->background (c/get-ctx) (cell 0)))
+    (set-drawable! image-widget (slot->background c (cell 0)))
     (remove-tooltip! cell-widget)))

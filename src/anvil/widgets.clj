@@ -1,16 +1,16 @@
 (ns anvil.widgets)
 
-(defn hp-mana-bar [])
+(defn hp-mana-bar [c])
 
-(defn dev-menu [])
+(defn dev-menu [c])
 
 (defn action-bar [])
 
-(defn inventory [])
+(defn inventory [c])
 
 (defn set-item-image-in-widget [cell item])
 
-(defn remove-item-from-widget [cell])
+(defn remove-item-from-widget [c cell])
 
 (defn entity-info-window [])
 

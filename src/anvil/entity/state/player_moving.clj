@@ -8,11 +8,11 @@
     {:eid eid
      :movement-vector movement-vector})
 
-  (component/enter [[_ {:keys [eid movement-vector]}]]
+  (component/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)}))
 
-  (component/exit [[_ {:keys [eid]}]]
+  (component/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
   (component/tick [[_ {:keys [movement-vector]}] eid c]

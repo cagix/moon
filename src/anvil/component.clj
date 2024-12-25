@@ -34,10 +34,10 @@
 ;; Entity State
 
 (defsystem enter)
-(defmethod enter :default [_])
+(defmethod enter :default [_ c])
 
 (defsystem exit)
-(defmethod exit :default [_])
+(defmethod exit :default [_ c])
 
 (defsystem cursor)
 (defmethod cursor :default [_])
@@ -49,7 +49,7 @@
 (defmethod clicked-skillmenu-skill :default [_ skill])
 
 (defsystem draw-gui-view)
-(defmethod draw-gui-view :default [_])
+(defmethod draw-gui-view :default [_ c])
 
 (defsystem manual-tick)
 (defmethod manual-tick :default [_ c])

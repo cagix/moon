@@ -20,7 +20,7 @@
                         #{"anvil", "gdl", "uf"})
 
  (show-tree-view! (world/mouseover-entity))
- (show-tree-view! (mouseover-grid-cell))
+ (show-tree-view! (mouseover-grid-cell (c/get-ctx)))
  (show-tree-view! (ns-value-vars #{"forge"}))
 
  ; Idea:
@@ -79,8 +79,8 @@
   (post-runnable
    (world/item (:position @world/player-eid) (db/build item-id))))
 
-(defn- mouseover-grid-cell []
-  @(world/grid (mapv int (c/world-mouse-position (c/get-ctx)))))
+(defn- mouseover-grid-cell [c]
+  @(world/grid (mapv int (c/world-mouse-position c))))
 
 (defn- class->label-str [class]
   (case class

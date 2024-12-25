@@ -25,4 +25,4 @@
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (sound/play pickup-item-sound)
       (entity/event c eid :pickup-item item)
-      (entity/remove-item eid cell))))
+      (entity/remove-item c eid cell))))

@@ -8,7 +8,7 @@
   (component/->v [[_ eid]]
     {:eid eid})
 
-  (component/exit [[_ {:keys [eid]}]]
+  (component/exit [[_ {:keys [eid]}] c]
     (world/delayed-alert (:position       @eid)
                          (:entity/faction @eid)
                          0.2)

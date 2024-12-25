@@ -56,7 +56,7 @@
                                                 ctx/batch)
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
-                      (stage/add-actor (uf-dev-menu-table))
+                      (stage/add-actor (uf-dev-menu-table (ctx/get-ctx)))
                       (bind-root tiled-map (tiled/load-tmx-map "maps/vampire.tmx"))
                       (camera/set-position! ctx/camera [30 70]))
 

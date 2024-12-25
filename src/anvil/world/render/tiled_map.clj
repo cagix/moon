@@ -45,7 +45,7 @@
 (defn tile-color-setter [light-position]
   (tile-color-setter* (atom {}) light-position))
 
-(defn-impl render/tiled-map [tiled-map light-position]
-  (c/draw-tiled-map (c/get-ctx)
+(defn-impl render/tiled-map [c tiled-map light-position]
+  (c/draw-tiled-map c
                     tiled-map
                     (tile-color-setter light-position)))

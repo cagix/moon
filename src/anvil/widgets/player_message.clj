@@ -6,9 +6,9 @@
             [gdl.ui :refer [ui-actor]])
   (:import (com.badlogic.gdx Gdx)))
 
-(defn- draw-player-message []
+(defn- draw-player-message [c]
   (when-let [{:keys [message]} message-to-player]
-    (draw-text (ctx/get-ctx)
+    (draw-text c
                {:x (/ ctx/viewport-width 2)
                 :y (+ (/ ctx/viewport-height 2) 200)
                 :text message
@@ -22,5 +22,6 @@
       (bind-root message-to-player nil))))
 
 (defn-impl widgets/player-message []
-  (ui-actor {:draw draw-player-message
+  (ui-actor {:draw (fn []
+                     (draw-player-message (ctx/get-ctx)))
              :act check-remove-message}))

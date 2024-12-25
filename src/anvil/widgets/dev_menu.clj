@@ -17,39 +17,41 @@
     (.addListener (ui/change-listener on-clicked))))
 
 (defn- add-upd-label
-  ([table text-fn icon]
-   (let [icon (ui/image->widget (c/sprite (c/get-ctx) icon) {})
+  ([c table text-fn icon]
+   (let [icon (ui/image->widget (c/sprite c icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
      (.expandX (.right (Table/.add table sub-table)))))
-  ([table text-fn]
+  ([c table text-fn]
    (let [label (ui/label "")]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
      (.expandX (.right (Table/.add table label))))))
 
-(defn- add-update-labels [menu-bar update-labels]
+(defn- add-update-labels [c menu-bar update-labels]
   (let [table (ui/menu-bar->table menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
-      (let [update-fn #(str label ": " (update-fn))]
+      (let [update-fn #(str label ": " (update-fn c))]
         (if icon
-          (add-upd-label table update-fn icon)
-          (add-upd-label table update-fn))))))
+          (add-upd-label c table update-fn icon)
+          (add-upd-label c table update-fn))))))
 
-(defn- add-menu [menu-bar {:keys [label items]}]
+(defn- add-menu [c menu-bar {:keys [label items]}]
   (let [app-menu (ui/menu label)]
     (doseq [{:keys [label on-click]} items]
-      (.addItem app-menu (menu-item label (or on-click (fn [])))))
+      (.addItem app-menu (menu-item label (if on-click
+                                            #(on-click c)
+                                            (fn [])))))
     (ui/add-menu menu-bar app-menu)))
 
-(defn- create-menu-bar [menus]
+(defn- create-menu-bar [c menus]
   (let [menu-bar (ui/menu-bar)]
-    (run! #(add-menu menu-bar %) menus)
+    (run! #(add-menu c menu-bar %) menus)
     menu-bar))
 
-(defn dev-menu* [{:keys [menus update-labels]}]
-  (let [menu-bar (create-menu-bar menus)]
-    (add-update-labels menu-bar update-labels)
+(defn dev-menu* [c {:keys [menus update-labels]}]
+  (let [menu-bar (create-menu-bar c menus)]
+    (add-update-labels c menu-bar update-labels)
     menu-bar))
 
 ;"Mouseover-Actor: "
@@ -57,8 +59,8 @@
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
-(defn dev-menu-table [config]
-  (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu* config))
+(defn dev-menu-table [c config]
+  (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu* c config))
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]
@@ -69,48 +71,53 @@
                       :fill-y? true}]]
              :fill-parent? true}))
 
-(defn uf-dev-menu-table []
-  (dev-menu-table
+(defn uf-dev-menu-table [c]
+  (dev-menu-table c
    {:menus [{:label "Menu1"
              :items [{:label "Button1"
-                      :on-click (fn [])}]}]
+                      :on-click (fn [_c])}]}]
     :update-labels [{:label "GUI"
-                     :update-fn #(c/mouse-position (c/get-ctx))}
+                     :update-fn c/mouse-position}
                     {:label "World"
-                     :update-fn #(mapv int (c/world-mouse-position (c/get-ctx)))}
+                     :update-fn #(mapv int (c/world-mouse-position %))}
                     {:label "Zoom"
-                     :update-fn #(cam/zoom c/camera)
+                     :update-fn #(cam/zoom (:gdl.context/camera %))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn #(graphics/frames-per-second Gdx/graphics)
+                     :update-fn (fn [_c]
+                                  (graphics/frames-per-second Gdx/graphics))
                      :icon "images/fps.png"}]}))
 
 (defn- config []
   {:menus [{:label "World"
             :items (for [world (db/build-all :properties/worlds)]
                      {:label (str "Start " (:property/id world))
-                      :on-click #(world/create (:property/id world))})}
+                      :on-click #(world/create % (:property/id world))})}
            {:label "Help"
             :items [{:label controls/help-text}]}]
    :update-labels [{:label "Mouseover-entity id"
-                    :update-fn #(when-let [entity (world/mouseover-entity)]
-                                  (:entity/id entity))
+                    :update-fn (fn [_c]
+                                 (when-let [entity (world/mouseover-entity)]
+                                   (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"
-                    :update-fn #(str (readable-number world/elapsed-time) " seconds")
+                    :update-fn (fn [_c]
+                                 (str (readable-number world/elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
-                    :update-fn (fn [] world/paused?)}
+                    :update-fn (fn [_c]
+                                 world/paused?)}
                    {:label "GUI"
-                    :update-fn #(c/mouse-position (c/get-ctx))}
+                    :update-fn c/mouse-position}
                    {:label "World"
-                    :update-fn #(mapv int (c/world-mouse-position (c/get-ctx)))}
+                    :update-fn #(mapv int (c/world-mouse-position %))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom c/camera)
+                    :update-fn #(cam/zoom (:gdl.context/camera %))
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn #(graphics/frames-per-second Gdx/graphics)
+                    :update-fn (fn [_c]
+                                 (graphics/frames-per-second Gdx/graphics))
                     :icon "images/fps.png"}]})
 
-(defn-impl widgets/dev-menu []
-  (dev-menu-table (config)))
+(defn-impl widgets/dev-menu [c]
+  (dev-menu-table c (config)))
