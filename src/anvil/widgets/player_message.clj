@@ -7,7 +7,8 @@
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
-    (draw-text {:x (/ ctx/viewport-width 2)
+    (draw-text (ctx/get-ctx)
+               {:x (/ ctx/viewport-width 2)
                 :y (+ (/ ctx/viewport-height 2) 200)
                 :text message
                 :scale 2.5

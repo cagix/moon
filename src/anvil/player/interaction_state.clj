@@ -112,7 +112,7 @@
                                         :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
-          (play-sound "bfx_denied")
+          (play-sound "bfxr_denied")
           (stage/show-player-msg "No selected skill"))]))))
 
 (defn-impl player/interaction-state [eid]

@@ -97,3 +97,8 @@
 (declare shape-drawer)
 
 (def ^:dynamic *unit-scale* 1)
+
+(defn get-ctx []
+  {::default-font default-font
+   ::batch        batch
+   ::unit-scale   *unit-scale*})

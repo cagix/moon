@@ -8,7 +8,8 @@
             [gdl.val-max :as val-max]))
 
 (defn- render-infostr-on-bar [infostr x y h]
-  (g/draw-text {:text infostr
+  (g/draw-text (ctx/get-ctx)
+               {:text infostr
                 :x (+ x 75)
                 :y (+ y 2)
                 :up? true}))

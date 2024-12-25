@@ -109,15 +109,18 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{:keys [font x y text h-align up? scale]}]
-  (let [font (or font ctx/default-font)
+  [{:keys [gdl.context/default-font
+           gdl.context/batch
+           gdl.context/unit-scale]}
+   {:keys [font x y text h-align up? scale]}]
+  (let [font (or font default-font)
         data (font/data font)
         old-scale (float (font/scale-x data))]
     (font/set-scale data (* old-scale
-                            (float ctx/*unit-scale*)
+                            (float unit-scale)
                             (float (or scale 1))))
     (font/draw :font font
-               :batch ctx/batch
+               :batch batch
                :text text
                :x x
                :y (+ y (if up? (text-height font text) 0))
