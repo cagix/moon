@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [get])
   (:require [clojure.gdx.input :as input]
             [gdl.context :as ctx]
-            [gdl.graphics :as g]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group])
@@ -60,7 +59,7 @@
   (run! add-actor new-actors))
 
 (defn mouse-on-actor? []
-  (let [[x y] (g/mouse-position)]
+  (let [[x y] (ctx/mouse-position)]
     (.hit (get) x y true)))
 
 ; no window movable type cursor appears here like in player idle

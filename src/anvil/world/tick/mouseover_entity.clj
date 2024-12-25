@@ -1,14 +1,14 @@
 (ns anvil.world.tick.mouseover-entity
   (:require [anvil.world.tick :as tick]
             [anvil.world :as world :refer [mouseover-eid line-of-sight?]]
-            [gdl.graphics :as g]
+            [gdl.context :as c]
             [gdl.stage :as stage]))
 
 (defn- calculate-eid []
   (let [player @world/player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities
-                      (g/world-mouse-position)))]
+                      (c/world-mouse-position)))]
     (->> world/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse

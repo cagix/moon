@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.info :as info]
-            [gdl.graphics :as g]
+            [gdl.context :as c]
             [gdl.val-max :as val-max]))
 
 (def ^:private hpbar-colors
@@ -27,10 +27,10 @@
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (g/pixels->world-units 5)
-          border (g/pixels->world-units borders-px)]
-      (g/filled-rectangle x y width height :black)
-      (g/filled-rectangle (+ x border)
+          height (c/pixels->world-units 5)
+          border (c/pixels->world-units borders-px)]
+      (c/filled-rectangle x y width height :black)
+      (c/filled-rectangle (+ x border)
                           (+ y border)
                           (- (* width ratio)
                              (* 2 border))

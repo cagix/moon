@@ -4,9 +4,8 @@
             [clojure.gdx.application :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.context :as ctx]
+            [gdl.context :as c]
             [gdl.context.db :as db]
-            [gdl.graphics :as g]
             [gdl.stage :refer [add-actor]]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [gdl.ui.group :refer [children]])
@@ -81,7 +80,7 @@
    (world/item (:position @world/player-eid) (db/build item-id))))
 
 (defn- mouseover-grid-cell []
-  @(world/grid (mapv int (g/world-mouse-position))))
+  @(world/grid (mapv int (c/world-mouse-position))))
 
 (defn- class->label-str [class]
   (case class
@@ -170,10 +169,10 @@
                          :pack? true})
         scroll-pane (scroll-pane table)]
     {:actor scroll-pane
-     :width (/ ctx/viewport-width 2)
+     :width (/ c/viewport-width 2)
      :height
-     (- ctx/viewport-height 50)
-     #_(min (- ctx/viewport-height 50) (height table))}))
+     (- c/viewport-height 50)
+     #_(min (- c/viewport-height 50) (height table))}))
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}

@@ -4,7 +4,7 @@
             [anvil.entity :as entity]
             [anvil.world :refer [timer finished-ratio stopped?]]
             [clojure.gdx.audio.sound :as sound]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
@@ -12,12 +12,12 @@
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (g/filled-circle center radius [1 1 1 0.125])
-    (g/sector center radius
+    (c/filled-circle center radius [1 1 1 0.125])
+    (c/sector center radius
               90 ; start-angle
               (* (float action-counter-ratio) 360) ; degree
               [1 1 1 0.5])
-    (g/draw-image image [(- (float x) radius) y])))
+    (c/draw-image image [(- (float x) radius) y])))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time

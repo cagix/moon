@@ -1,8 +1,7 @@
 (ns anvil.widgets.player-message
   (:require [anvil.widgets :as widgets]
             [clojure.gdx.graphics :as g]
-            [gdl.context :as ctx]
-            [gdl.graphics :refer [draw-text]]
+            [gdl.context :as ctx :refer [draw-text]]
             [gdl.stage :refer [message-to-player player-message-duration-seconds]]
             [gdl.ui :refer [ui-actor]])
   (:import (com.badlogic.gdx Gdx)))

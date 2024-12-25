@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -12,8 +12,8 @@
 (defmethods :entity/mouseover?
   (component/render-below [_ {:keys [entity/faction] :as entity}]
     (let [player @world/player-eid]
-      (g/with-line-width 3
-        #(g/ellipse (:position entity)
+      (c/with-line-width 3
+        #(c/ellipse (:position entity)
                     (:half-width entity)
                     (:half-height entity)
                     (cond (= faction (entity/enemy player))

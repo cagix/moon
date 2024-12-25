@@ -2,30 +2,29 @@
   (:require [anvil.entity :as entity]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
-            [gdl.context :as ctx]
-            [gdl.graphics :as g]
+            [gdl.context :as c]
             [gdl.ui :refer [ui-actor]]
             [gdl.val-max :as val-max]))
 
 (defn- render-infostr-on-bar [infostr x y h]
-  (g/draw-text (ctx/get-ctx)
+  (c/draw-text (c/get-ctx)
                {:text infostr
                 :x (+ x 75)
                 :y (+ y 2)
                 :up? true}))
 
 (defn-impl widgets/hp-mana-bar []
-  (let [rahmen      (ctx/sprite "images/rahmen.png")
-        hpcontent   (ctx/sprite "images/hp.png")
-        manacontent (ctx/sprite "images/mana.png")
-        x (/ ctx/viewport-width 2)
+  (let [rahmen      (c/sprite "images/rahmen.png")
+        hpcontent   (c/sprite "images/hp.png")
+        manacontent (c/sprite "images/mana.png")
+        x (/ c/viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
-                            (g/draw-image rahmen [x y])
-                            (g/draw-image (ctx/sub-sprite contentimage
-                                                          [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                            (c/draw-image rahmen [x y])
+                            (c/draw-image (c/sub-sprite contentimage
+                                                        [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                           [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []

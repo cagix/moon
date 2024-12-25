@@ -10,9 +10,8 @@
             [gdl.context.db :as db]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.context.viewport :as viewport]
+            [gdl.context.viewport :as viewport-ctx]
             [gdl.context.world-viewport :as world-viewport]
-            [gdl.graphics :as graphics]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
@@ -51,7 +50,7 @@
                       (db/setup (:db lifecycle))
                       (assets/setup "resources/")
                       (sprite-batch/setup)
-                      (viewport/setup (:viewport lifecycle))
+                      (viewport-ctx/setup (:viewport lifecycle))
                       (world-viewport/setup (:world-viewport lifecycle))
                       (tiled-map-renderer/setup ctx/world-unit-scale
                                                 ctx/batch)

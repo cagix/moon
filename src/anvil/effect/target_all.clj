@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all!]]
             [anvil.world :as world]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 ; TODO targets projectiles with -50% hp !!
 
@@ -37,6 +37,6 @@
   (component/render-effect [_ {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target* (map deref (world/creatures-in-los-of-player))]
-        (g/line (:position source*) #_(start-point source* target*)
+        (c/line (:position source*) #_(start-point source* target*)
                 (:position target*)
                 [1 0 0 0.5])))))

@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :refer [finished-ratio stopped?]]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 (defmethods :entity/temp-modifier
   (component/info [[_ {:keys [counter]}]]
@@ -15,4 +15,4 @@
 
   ; TODO draw opacity as of counter ratio?
   (component/render-above [_ entity]
-    (g/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))
+    (c/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4])))

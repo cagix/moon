@@ -3,8 +3,8 @@
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
             [anvil.world :as world]
+            [gdl.context :as c]
             [gdl.context.db :as db]
-            [gdl.graphics :as g]
             [gdl.math.vector :as v]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
@@ -51,7 +51,7 @@
     (when target
       (let [source* @source
             target* @target]
-        (g/line (start-point source* target*)
+        (c/line (start-point source* target*)
                 (end-point source* target* maxrange)
                 (if (in-range? source* target* maxrange)
                   [1 0 0 0.5]

@@ -1,9 +1,8 @@
 (ns anvil.widgets.inventory
   (:require [anvil.component :as component]
             [clojure.gdx.graphics.color :as color]
-            [gdl.context :as ctx]
+            [gdl.context :as c]
             [anvil.entity :as entity]
-            [gdl.graphics :as g]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
@@ -32,14 +31,14 @@
 (def ^:private not-allowed-color  [0.6 0   0 0.8])
 
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
-  (g/rectangle x y cell-size cell-size :gray)
+  (c/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (entity/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (g/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (c/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??
@@ -50,7 +49,7 @@
      (draw-cell-rect @world/player-eid
                      (.getX this)
                      (.getY this)
-                     (actor/hit this (g/mouse-position))
+                     (actor/hit this (c/mouse-position))
                      (user-object (.getParent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -70,8 +69,8 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (-> (ctx/sprite-sheet "images/items.png" 48 48)
-      (ctx/from-sprite-sheet (slot->sprite-idx slot))))
+  (-> (c/sprite-sheet "images/items.png" 48 48)
+      (c/from-sprite-sheet (slot->sprite-idx slot))))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
@@ -123,8 +122,8 @@
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [ctx/viewport-width
-                         ctx/viewport-height]
+              :position [c/viewport-width
+                         c/viewport-height]
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 

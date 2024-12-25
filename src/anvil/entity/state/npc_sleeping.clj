@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world :refer [add-text-effect]]
-            [gdl.context :as c]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 (defmethods :npc-sleeping
   (component/->v [[_ eid]]
@@ -24,7 +23,7 @@
 
   (component/render-above [_ entity]
     (let [[x y] (:position entity)]
-      (g/draw-text (c/get-ctx)
+      (c/draw-text (c/get-ctx)
                    {:text "zzz"
                     :x x
                     :y (+ y (:half-height entity))

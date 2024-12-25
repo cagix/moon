@@ -4,10 +4,10 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.assets]
-            [gdl.context :refer [assets play-sound viewport-height]]
+            [gdl.context :as ctx :refer [assets play-sound viewport-height]]
             [gdl.context.assets :as assets]
             [gdl.context.sprite-batch :as sprite-batch]
-            [gdl.context.viewport :as viewport]
+            [gdl.context.viewport :as viewport-ctx]
             [gdl.context.world-viewport :as world-viewport]
             [gdl.db :as db]
             [gdl.malli :as m]
@@ -525,7 +525,7 @@
                   (create [_ _gdx-state]
                     (assets/setup "resources/")
                     (sprite-batch/setup)
-                    (viewport/setup {:width 1440 :height 900})
+                    (viewport-ctx/setup {:width 1440 :height 900})
                     (world-viewport/setup {:tile-size 48 :width 1440 :height 900}) ; just because of sprite edn->value of db requires world-unit-scale
                     (ui/setup :skin-scale/x1)
                     (stage/setup [(background-image "images/moon_background.png")

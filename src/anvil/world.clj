@@ -3,10 +3,9 @@
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
             [clojure.gdx.audio.sound :as sound]
-            [gdl.context :as ctx :refer [world-viewport-width
-                                         world-viewport-height]]
+            [gdl.context :as c :refer [world-viewport-width
+                                       world-viewport-height]]
             [gdl.context.db :as db]
-            [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.shapes :refer [rectangle->tiles
@@ -135,7 +134,7 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position ctx/camera)
+        [cx cy] (cam/position c/camera)
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))

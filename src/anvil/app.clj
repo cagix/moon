@@ -12,9 +12,8 @@
             [gdl.context.shape-drawer :as shape-drawer]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.context.viewport :as viewport]
+            [gdl.context.viewport :as viewport-ctx]
             [gdl.context.world-viewport :as world-viewport]
-            [gdl.graphics :as graphics]
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
 
@@ -32,7 +31,7 @@
                       (shape-drawer/setup)
                       (default-font/setup (:default-font lifecycle))
                       (cursors/setup (:cursors lifecycle))
-                      (viewport/setup (:viewport lifecycle))
+                      (viewport-ctx/setup (:viewport lifecycle))
                       (world-viewport/setup (:world-viewport lifecycle))
                       (tiled-map-renderer/setup ctx/world-unit-scale
                                                 ctx/batch)

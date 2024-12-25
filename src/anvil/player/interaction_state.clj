@@ -3,8 +3,7 @@
             [anvil.skill :as skill]
             [anvil.player :as player]
             [anvil.world :as world]
-            [gdl.context :refer [play-sound]]
-            [gdl.graphics :as g]
+            [gdl.context :as c :refer [play-sound]]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]
             [gdl.ui :refer [window-title-bar? button?]]
@@ -70,7 +69,7 @@
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and world/mouseover-eid
                                  (:position @world/mouseover-eid))
-                            (g/world-mouse-position))]
+                            (c/world-mouse-position))]
     {:effect/source eid
      :effect/target world/mouseover-eid
      :effect/target-position target-position

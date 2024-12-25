@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :refer [timer stopped?]]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 (defmethods :stunned
   (component/->v [[_ eid duration]]
@@ -14,4 +14,4 @@
       (entity/event eid :effect-wears-off)))
 
   (component/render-below [_ entity]
-    (g/circle (:position entity) 0.5 [1 1 1 0.6])))
+    (c/circle (:position entity) 0.5 [1 1 1 0.6])))

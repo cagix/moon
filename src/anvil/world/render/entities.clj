@@ -2,13 +2,13 @@
   (:require [anvil.component :as component]
             [anvil.world :as world :refer [line-of-sight?]]
             [anvil.world.render :as render]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
 (defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (g/rectangle x y (:width entity) (:height entity) color)))
+    (c/rectangle x y (:width entity) (:height entity) color)))
 
 (defn- render-entity! [system entity]
   (try

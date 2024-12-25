@@ -3,9 +3,8 @@
             [anvil.widgets :as widgets]
             [anvil.world :as world]
             [clojure.gdx.graphics :as graphics]
-            [gdl.context :as ctx]
+            [gdl.context :as c]
             [gdl.context.db :as db]
-            [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :refer [add-actor!]])
@@ -19,7 +18,7 @@
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (ctx/sprite icon) {})
+   (let [icon (ui/image->widget (c/sprite icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
@@ -76,11 +75,11 @@
              :items [{:label "Button1"
                       :on-click (fn [])}]}]
     :update-labels [{:label "GUI"
-                     :update-fn g/mouse-position}
+                     :update-fn c/mouse-position}
                     {:label "World"
-                     :update-fn #(mapv int (g/world-mouse-position))}
+                     :update-fn #(mapv int (c/world-mouse-position))}
                     {:label "Zoom"
-                     :update-fn #(cam/zoom ctx/camera)
+                     :update-fn #(cam/zoom c/camera)
                      :icon "images/zoom.png"}
                     {:label "FPS"
                      :update-fn #(graphics/frames-per-second Gdx/graphics)
@@ -103,11 +102,11 @@
                    {:label "paused?"
                     :update-fn (fn [] world/paused?)}
                    {:label "GUI"
-                    :update-fn g/mouse-position}
+                    :update-fn c/mouse-position}
                    {:label "World"
-                    :update-fn #(mapv int (g/world-mouse-position))}
+                    :update-fn #(mapv int (c/world-mouse-position))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom ctx/camera)
+                    :update-fn #(cam/zoom c/camera)
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn #(graphics/frames-per-second Gdx/graphics)

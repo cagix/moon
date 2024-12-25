@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.entity.string-effect
   (:require [anvil.component :as component]
             [anvil.world :refer [stopped?]]
-            [gdl.context :as c]
-            [gdl.graphics :as g]))
+            [gdl.context :as c]))
 
 (defmethods :entity/string-effect
   (component/tick [[k {:keys [counter]}] eid]
@@ -11,11 +10,11 @@
 
   (component/render-above [[_ {:keys [text]}] entity]
     (let [[x y] (:position entity)]
-      (g/draw-text (c/get-ctx)
+      (c/draw-text (c/get-ctx)
                    {:text text
                     :x x
                     :y (+ y
                           (:half-height entity)
-                          (g/pixels->world-units 5))
+                          (c/pixels->world-units 5))
                     :scale 2
                     :up? true}))))

@@ -1,6 +1,5 @@
 (ns anvil.world.render
-  (:require [gdl.context :as ctx]
-            [gdl.graphics :as g]
+  (:require [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [anvil.world :as world]))
 
@@ -14,10 +13,10 @@
 
 (defn-impl world/render []
   ; FIXME position DRY
-  (cam/set-position! ctx/camera (:position @world/player-eid))
+  (cam/set-position! c/camera (:position @world/player-eid))
   ; FIXME position DRY
-  (tiled-map world/tiled-map (cam/position ctx/camera))
-  (g/draw-on-world-view (fn []
+  (tiled-map world/tiled-map (cam/position c/camera))
+  (c/draw-on-world-view (fn []
                           (debug-before-entities)
                           ; FIXME position DRY (from player)
                           (entities (map deref (world/active-entities)))

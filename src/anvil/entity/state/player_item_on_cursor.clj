@@ -3,8 +3,8 @@
             [anvil.entity :as entity]
             [anvil.world :as world]
             [clojure.gdx.audio.sound :as sound]
+            [gdl.context :as c]
             [gdl.context.db :as db]
-            [gdl.graphics :as g]
             [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]))
 
@@ -23,7 +23,7 @@
 
 (defn- item-place-position [entity]
   (placement-point (:position entity)
-                   (g/world-mouse-position)
+                   (c/world-mouse-position)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -92,13 +92,13 @@
 
   (component/render-below [[_ {:keys [item]}] entity]
     (when (world-item?)
-      (g/draw-centered (:entity/image item)
+      (c/draw-centered (:entity/image item)
                        (item-place-position entity))))
 
   (component/draw-gui-view [[_ {:keys [eid]}]]
     (when (not (world-item?))
-      (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                       (g/mouse-position))))
+      (c/draw-centered (:entity/image (:entity/item-on-cursor @eid))
+                       (c/mouse-position))))
 
   (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell]
     (clicked-cell data eid cell)))
