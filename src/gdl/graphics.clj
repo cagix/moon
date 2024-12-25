@@ -98,8 +98,6 @@
     (draw-fn)
     (sd/set-default-line-width ctx/shape-drawer old-line-width)))
 
-(def ^:dynamic ^:private *unit-scale* 1)
-
 (defn- text-height [font text]
   (-> text
       (str/split #"\n")
@@ -116,7 +114,7 @@
         data (font/data font)
         old-scale (float (font/scale-x data))]
     (font/set-scale data (* old-scale
-                            (float *unit-scale*)
+                            (float ctx/*unit-scale*)
                             (float (or scale 1))))
     (font/draw :font font
                :batch ctx/batch
@@ -151,13 +149,13 @@
   (draw-texture-region ctx/batch
                        texture-region
                        position
-                       (unit-dimensions image *unit-scale*)
+                       (unit-dimensions image ctx/*unit-scale*)
                        0 ; rotation
                        color))
 
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
-  (let [[w h] (unit-dimensions image *unit-scale*)]
+  (let [[w h] (unit-dimensions image ctx/*unit-scale*)]
     (draw-texture-region ctx/batch
                          texture-region
                          [(- (float x) (/ (float w) 2))
@@ -181,7 +179,7 @@
                     viewport
                     #(with-line-width unit-scale
                        (fn []
-                         (binding [*unit-scale* unit-scale]
+                         (binding [ctx/*unit-scale* unit-scale]
                            (draw-fn))))))
 
 ; touch coordinates are y-down, while screen coordinates are y-up

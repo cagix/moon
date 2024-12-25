@@ -95,3 +95,5 @@
                    camera))
 
 (declare shape-drawer)
+
+(def ^:dynamic *unit-scale* 1)
