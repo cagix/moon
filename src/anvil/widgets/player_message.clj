@@ -1,9 +1,11 @@
 (ns anvil.widgets.player-message
   (:require [anvil.widgets :as widgets]
+            [clojure.gdx.graphics :as g]
             [gdl.context :as ctx]
-            [gdl.graphics :as g :refer [draw-text]]
+            [gdl.graphics :refer [draw-text]]
             [gdl.stage :refer [message-to-player player-message-duration-seconds]]
-            [gdl.ui :refer [ui-actor]]))
+            [gdl.ui :refer [ui-actor]])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn- draw-player-message []
   (when-let [{:keys [message]} message-to-player]
@@ -16,7 +18,7 @@
 
 (defn- check-remove-message []
   (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (g/delta-time))
+    (alter-var-root #'message-to-player update :counter + (g/delta-time Gdx/graphics))
     (when (>= counter player-message-duration-seconds)
       (bind-root message-to-player nil))))
 

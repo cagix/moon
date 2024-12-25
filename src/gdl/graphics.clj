@@ -1,6 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics :as g]
-            [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.shape-drawer :as sd]
@@ -27,12 +26,6 @@
          (keyword? c) (interop/k->color c)
          (vector? c) (apply ->color c)
          :else (throw (ex-info "Cannot understand color" c)))))
-
-(defn frames-per-second []
-  (g/frames-per-second Gdx/graphics))
-
-(defn delta-time []
-  (g/delta-time Gdx/graphics))
 
 (defn- sd-color [color]
   (sd/set-color ctx/shape-drawer (->color color)))

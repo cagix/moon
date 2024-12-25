@@ -2,13 +2,15 @@
   (:require [anvil.controls :as controls]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
+            [clojure.gdx.graphics :as graphics]
             [gdl.context :as ctx]
             [gdl.context.db :as db]
             [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :refer [add-actor!]])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn- menu-item [text on-clicked]
@@ -81,7 +83,7 @@
                      :update-fn #(cam/zoom ctx/camera)
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn g/frames-per-second
+                     :update-fn #(graphics/frames-per-second Gdx/graphics)
                      :icon "images/fps.png"}]}))
 
 (defn- config []
@@ -108,7 +110,7 @@
                     :update-fn #(cam/zoom ctx/camera)
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn g/frames-per-second
+                    :update-fn #(graphics/frames-per-second Gdx/graphics)
                     :icon "images/fps.png"}]})
 
 (defn-impl widgets/dev-menu []
