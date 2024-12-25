@@ -10,10 +10,6 @@
             [gdl.ui :refer [window-title-bar? button?]]
             [gdl.ui.actor :as actor]))
 
-(defn- denied [text]
-  (play-sound "bfxr_denied")
-  (stage/show-player-msg text))
-
 (defmulti ^:private on-clicked
   (fn [eid]
     (:type (:entity/clickable @eid))))
@@ -53,7 +49,9 @@
                      (:position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
     [(clickable->cursor @clicked-eid false) (fn [] (on-clicked clicked-eid))]
-    [(clickable->cursor @clicked-eid true)  (fn [] (denied "Too far away"))]))
+    [(clickable->cursor @clicked-eid true)  (fn []
+                                              (play-sound "bfx_denied")
+                                              (stage/show-player-msg "Too far away"))]))
 
 (defn- inventory-cell-with-item? [^com.badlogic.gdx.scenes.scene2d.Actor actor]
   (and (.getParent actor)
@@ -107,12 +105,15 @@
             ; invalid-params -> depends on params ...
             [:cursors/skill-not-usable
              (fn []
-               (denied (case state
-                         :cooldown "Skill is still on cooldown"
-                         :not-enough-mana "Not enough mana"
-                         :invalid-params "Cannot use this here")))])))
+               (play-sound "bfx_denied")
+               (stage/show-player-msg (case state
+                                        :cooldown "Skill is still on cooldown"
+                                        :not-enough-mana "Not enough mana"
+                                        :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
-        (fn [] (denied "No selected skill"))]))))
+        (fn []
+          (play-sound "bfx_denied")
+          (stage/show-player-msg "No selected skill"))]))))
 
 (defn-impl player/interaction-state [eid]
   (interaction-state eid))
