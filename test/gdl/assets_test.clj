@@ -9,7 +9,7 @@
   (start-simple-app (reify app/Listener
                       (create [_]
                         (assets/setup "resources/")
-                        (ctx/play-sound (ctx/get-ctx) "bfxr_caveenter"))
+                        (ctx/play-sound @ctx/state "bfxr_caveenter"))
                       (dispose [_]
                         (assets/cleanup))
                       (render [_])
