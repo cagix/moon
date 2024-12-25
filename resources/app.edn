@@ -39,6 +39,7 @@
             anvil.effect.target.spiderweb
             anvil.effect.target.stun
 
+            anvil.effect.audiovisual
             anvil.effect.creature
             anvil.effect.projectile
             anvil.effect.target-all
