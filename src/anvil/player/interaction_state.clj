@@ -10,30 +10,30 @@
             [gdl.ui.actor :as actor]))
 
 (defmulti ^:private on-clicked
-  (fn [eid]
+  (fn [eid c]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid]
+(defmethod on-clicked :clickable/item [eid c]
   (let [item (:entity/item @eid)]
     (cond
      (actor/visible? (stage/get-inventory))
      (do
-      (play-sound "bfxr_takeit")
+      (play-sound c "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
       (entity/event world/player-eid :pickup-item item))
 
      (entity/can-pickup-item? @world/player-eid item)
      (do
-      (play-sound "bfxr_pickup")
+      (play-sound c "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
       (entity/pickup-item world/player-eid item))
 
      :else
      (do
-      (play-sound "bfxr_denied")
+      (play-sound c "bfxr_denied")
       (stage/show-player-msg "Your Inventory is full")))))
 
-(defmethod on-clicked :clickable/player [_]
+(defmethod on-clicked :clickable/player [_ c]
   (actor/toggle-visible! (stage/get-inventory)))
 
 (defn- clickable->cursor [entity too-far-away?]
@@ -43,13 +43,14 @@
                       :cursors/hand-before-grab)
     :clickable/player :cursors/bag))
 
-(defn- clickable-entity-interaction [player-entity clicked-eid]
+(defn- clickable-entity-interaction [c player-entity clicked-eid]
   (if (< (v/distance (:position player-entity)
                      (:position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
-    [(clickable->cursor @clicked-eid false) (fn [] (on-clicked clicked-eid))]
+    [(clickable->cursor @clicked-eid false) (fn []
+                                              (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
-                                              (play-sound "bfx_denied")
+                                              (play-sound c "bfx_denied")
                                               (stage/show-player-msg "Too far away"))]))
 
 (defn- inventory-cell-with-item? [^com.badlogic.gdx.scenes.scene2d.Actor actor]
@@ -75,7 +76,7 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [eid]
+(defn- interaction-state [c eid]
   (let [entity @eid]
     (cond
      (stage/mouse-on-actor?)
@@ -83,7 +84,7 @@
 
      (and world/mouseover-eid
           (:entity/clickable @world/mouseover-eid))
-     (clickable-entity-interaction entity world/mouseover-eid)
+     (clickable-entity-interaction c entity world/mouseover-eid)
 
      :else
      (if-let [skill-id (stage/selected-skill)]
@@ -104,15 +105,15 @@
             ; invalid-params -> depends on params ...
             [:cursors/skill-not-usable
              (fn []
-               (play-sound "bfx_denied")
+               (play-sound c "bfx_denied")
                (stage/show-player-msg (case state
                                         :cooldown "Skill is still on cooldown"
                                         :not-enough-mana "Not enough mana"
                                         :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
-          (play-sound "bfxr_denied")
+          (play-sound c "bfxr_denied")
           (stage/show-player-msg "No selected skill"))]))))
 
 (defn-impl player/interaction-state [eid]
-  (interaction-state eid))
+  (interaction-state (c/get-ctx) eid))

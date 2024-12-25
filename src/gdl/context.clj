@@ -23,15 +23,13 @@
 
 (def sound-asset-format "sounds/%s.wav")
 
-(defn get-sound [sound-name]
+(defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
        (format sound-asset-format)
        assets))
 
-(defn play-sound [sound-name]
-  (-> sound-name
-      get-sound
-      sound/play))
+(defn play-sound [c sound-name]
+  (sound/play (get-sound c sound-name)))
 
 (declare world-unit-scale
          world-viewport-width
@@ -106,7 +104,8 @@
 (def ^:dynamic *unit-scale* 1)
 
 (defn get-ctx []
-  {::default-font default-font
+  {::assets       assets
+   ::default-font default-font
    ::batch        batch
    ::unit-scale   *unit-scale*})
 
@@ -185,9 +184,7 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{:keys [gdl.context/default-font
-           gdl.context/batch
-           gdl.context/unit-scale]}
+  [{::keys [default-font batch unit-scale]}
    {:keys [font x y text h-align up? scale]}]
   (let [font (or font default-font)
         data (font/data font)

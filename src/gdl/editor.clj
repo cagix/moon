@@ -153,7 +153,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(play-sound sound-name)))
+  (text-button "play!" #(play-sound (ctx/get-ctx) sound-name)))
 
 (declare columns)
 

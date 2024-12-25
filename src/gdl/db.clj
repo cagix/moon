@@ -106,7 +106,7 @@
     m/string-schema)
 
   (edn->value [_ sound-name _db]
-    (ctx/get-sound sound-name)))
+    (ctx/get-sound (ctx/get-ctx) sound-name)))
 
 (defn- edn->sprite [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds
