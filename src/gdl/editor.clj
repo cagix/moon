@@ -153,7 +153,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(play-sound (ctx/get-ctx) sound-name)))
+  (text-button "play!" #(play-sound @ctx/state sound-name)))
 
 (declare columns)
 
@@ -460,7 +460,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (db/edn->value schema image db (ctx/get-ctx))
+  (image-button (db/edn->value schema image db @ctx/state)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -469,7 +469,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (db/edn->value :s/image image db (ctx/get-ctx))
+                      (image-button (db/edn->value :s/image image db @ctx/state)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))

@@ -37,7 +37,7 @@
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (ctx/create)
-                      (world/create (ctx/get-ctx)
+                      (world/create @ctx/state
                                     (:world lifecycle)))
 
                     (dispose [_]
@@ -51,7 +51,7 @@
                       (world/dispose))
 
                     (render [_]
-                      (let [c (ctx/get-ctx)]
+                      (let [c @ctx/state]
                         (clear-screen)
                         (world/render c)
                         (stage/render)

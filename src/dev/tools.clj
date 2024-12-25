@@ -19,7 +19,7 @@
                         #{"anvil", "gdl", "uf"})
 
  (show-tree-view! (world/mouseover-entity))
- (show-tree-view! (mouseover-grid-cell (c/get-ctx)))
+ (show-tree-view! (mouseover-grid-cell @c/state))
  (show-tree-view! (ns-value-vars #{"forge"}))
 
  ; Idea:
@@ -48,7 +48,7 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable
-  (world/creature (c/get-ctx)
+  (world/creature @c/state
                   {:position [35 73]
                    :creature-id :creatures/dragon-red
                    :components {:entity/fsm {:fsm :fsms/npc
@@ -73,13 +73,13 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! world/player-eid skills/add (c/build (c/get-ctx) skill-id))))
+   (swap! world/player-eid skills/add (c/build @c/state skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable
-   (world/item (c/get-ctx)
+   (world/item @c/state
                (:position @world/player-eid)
-               (c/build (c/get-ctx) item-id))))
+               (c/build @c/state item-id))))
 
 (defn- mouseover-grid-cell [c]
   @(world/grid (mapv int (c/world-mouse-position c))))

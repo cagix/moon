@@ -46,7 +46,7 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [^Actor this]
-     (let [c (c/get-ctx)]
+     (let [c @c/state]
        (draw-cell-rect c
                        @world/player-eid
                        (.getX this)

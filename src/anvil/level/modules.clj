@@ -58,7 +58,7 @@
 
 (defn- place-creatures! [spawn-rate tiled-map spawn-positions area-level-grid]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        creature-properties (c/build-all (c/get-ctx) :properties/creatures)]
+        creature-properties (c/build-all @c/state :properties/creatures)]
     (when spawn-creatures?
       (doseq [position spawn-positions
               :let [area-level (get area-level-grid position)]

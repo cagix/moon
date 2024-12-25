@@ -23,5 +23,5 @@
 
 (defn-impl widgets/player-message []
   (ui-actor {:draw (fn []
-                     (draw-player-message (ctx/get-ctx)))
+                     (draw-player-message @ctx/state))
              :act check-remove-message}))

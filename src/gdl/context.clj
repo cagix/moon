@@ -298,9 +298,6 @@
            ::world-viewport     world-viewport
            ::db                 db}))
 
-(defn get-ctx []
-  @state)
-
 (defn build [{::keys [db] :as c} id]
   (db/build db id c))
 
