@@ -73,7 +73,7 @@
     (assert (entity/stackable? item cell-item))
     ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
     ; first remove and then place, just update directly  item ...
-    (concat (entity/remove-item c m eid cell)
+    (concat (entity/remove-item c eid cell)
             (entity/set-item eid cell (update cell-item :count + (:count item))))))
 
 (defn- cells-and-items [inventory slot]

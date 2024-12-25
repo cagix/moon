@@ -36,9 +36,8 @@
   ESCAPE: leave
   direction keys: move")
 
-(defn- map-infos ^String []
-  (let [c (c/get-ctx)
-        tile (mapv int (c/world-mouse-position c))
+(defn- map-infos ^String [c]
+  (let [tile (mapv int (c/world-mouse-position c))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
@@ -58,11 +57,11 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window []
+(defn- ->info-window [c]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
-                                         (.setText label (map-infos))
+                                         (.setText label (map-infos c))
                                          (.pack window))}))
     (.setPosition window 0 c/viewport-height) window))
 
@@ -166,6 +165,6 @@
         :show-grid-lines false})
  )
 
-(defn actors [_]
-  [(->generate-map-window world-id)
-   (->info-window)])
+#_(defn actors [_]
+    [(->generate-map-window world-id)
+     (->info-window c)])

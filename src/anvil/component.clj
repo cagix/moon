@@ -11,7 +11,7 @@
   v)
 
 (defsystem create)
-(defmethod create :default [_ eid])
+(defmethod create :default [_ eid c])
 
 (defsystem destroy)
 (defmethod destroy :default [_ eid])
