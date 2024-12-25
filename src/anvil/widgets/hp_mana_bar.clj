@@ -14,9 +14,10 @@
                 :up? true}))
 
 (defn-impl widgets/hp-mana-bar []
-  (let [rahmen      (c/sprite "images/rahmen.png")
-        hpcontent   (c/sprite "images/hp.png")
-        manacontent (c/sprite "images/mana.png")
+  (let [c (c/get-ctx)
+        rahmen      (c/sprite c "images/rahmen.png")
+        hpcontent   (c/sprite c "images/hp.png")
+        manacontent (c/sprite c "images/mana.png")
         x (/ c/viewport-width 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size

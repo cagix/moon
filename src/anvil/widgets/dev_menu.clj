@@ -18,7 +18,7 @@
 
 (defn- add-upd-label
   ([table text-fn icon]
-   (let [icon (ui/image->widget (c/sprite icon) {})
+   (let [icon (ui/image->widget (c/sprite (c/get-ctx) icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))

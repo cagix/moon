@@ -18,8 +18,7 @@
   (:import (com.badlogic.gdx Gdx)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
-(declare assets
-         batch)
+(declare batch)
 
 (def sound-asset-format "sounds/%s.wav")
 
@@ -37,21 +36,21 @@
          world-viewport
          camera)
 
-(defn texture-region [path]
+(defn- texture-region [{::keys [assets]} path]
   (texture-region/create (assets path)))
 
-(defn sprite [path]
+(defn sprite [c path]
   (sprite/create world-unit-scale
-                 (texture-region path)))
+                 (texture-region c path)))
 
 (defn sub-sprite [sprite xywh]
   (sprite/sub world-unit-scale
               sprite
               xywh))
 
-(defn sprite-sheet [path tilew tileh]
+(defn sprite-sheet [c path tilew tileh]
   (sprite/sheet world-unit-scale
-                (texture-region path)
+                (texture-region c path)
                 tilew
                 tileh))
 
@@ -102,6 +101,8 @@
 (declare shape-drawer)
 
 (def ^:dynamic *unit-scale* 1)
+
+(declare assets)
 
 (defn get-ctx []
   {::assets       assets

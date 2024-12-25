@@ -68,12 +68,12 @@
 (defn- slot->sprite-idx [slot]
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
-(defn- slot->sprite [slot]
-  (-> (c/sprite-sheet "images/items.png" 48 48)
+(defn- slot->sprite [c slot]
+  (-> (c/sprite-sheet c "images/items.png" 48 48)
       (c/from-sprite-sheet (slot->sprite-idx slot))))
 
-(defn- slot->background [slot]
-  (let [drawable (-> (slot->sprite slot)
+(defn- slot->background [c slot]
+  (let [drawable (-> (slot->sprite c slot)
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
@@ -81,7 +81,7 @@
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
-        image-widget (image-widget (slot->background slot) {:id :image})
+        image-widget (image-widget (slot->background (c/get-ctx) slot) {:id :image})
         stack (ui-stack [(draw-rect-actor)
                          image-widget])]
     (.setName stack "inventory-cell")
@@ -141,5 +141,5 @@
 (defn-impl widgets/remove-item-from-widget [cell]
   (let [cell-widget (cell-widget cell)
         image-widget (get cell-widget :image)]
-    (set-drawable! image-widget (slot->background (cell 0)))
+    (set-drawable! image-widget (slot->background (c/get-ctx) (cell 0)))
     (remove-tooltip! cell-widget)))

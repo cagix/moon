@@ -108,28 +108,28 @@
   (edn->value [_ sound-name _db]
     (ctx/get-sound (ctx/get-ctx) sound-name)))
 
-(defn- edn->sprite [{:keys [file sub-image-bounds]}]
+(defn- edn->sprite [c {:keys [file sub-image-bounds]}]
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (ctx/from-sprite-sheet (ctx/sprite-sheet file tilew tileh)
+      (ctx/from-sprite-sheet (ctx/sprite-sheet c file tilew tileh)
                              [(int (/ sprite-x tilew))
                               (int (/ sprite-y tileh))]))
-    (ctx/sprite file)))
+    (ctx/sprite c file)))
 
 (defmethods :s/image
   (schema/malli-form  [_ _schemas]
     m/image-schema)
 
   (edn->value [_ edn _db]
-    (edn->sprite edn)))
+    (edn->sprite (ctx/get-ctx) edn)))
 
 (defmethods :s/animation
   (schema/malli-form [_ _schemas]
     m/animation-schema)
 
   (edn->value [_ {:keys [frames frame-duration looping?]} _db]
-    (animation/create (map edn->sprite frames)
+    (animation/create (map #(edn->sprite (ctx/get-ctx) %) frames)
                       :frame-duration frame-duration
                       :looping? looping?)))
 
