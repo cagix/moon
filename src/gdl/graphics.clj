@@ -28,9 +28,6 @@
          (vector? c) (apply ->color c)
          :else (throw (ex-info "Cannot understand color" c)))))
 
-(defn add-color [name-str color]
-  (colors/put name-str (->color color)))
-
 (defn frames-per-second []
   (g/frames-per-second Gdx/graphics))
 
