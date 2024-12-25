@@ -51,7 +51,7 @@
                        @world/player-eid
                        (.getX this)
                        (.getY this)
-                       (actor/hit this c)
+                       (actor/hit this (c/mouse-position c))
                        (user-object (.getParent this)))))))
 
 (def ^:private slot->y-sprite-idx

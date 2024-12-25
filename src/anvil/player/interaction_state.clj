@@ -107,7 +107,7 @@
             ; invalid-params -> depends on params ...
             [:cursors/skill-not-usable
              (fn []
-               (play-sound c "bfx_denied")
+               (play-sound c "bfxr_denied")
                (stage/show-player-msg (case state
                                         :cooldown "Skill is still on cooldown"
                                         :not-enough-mana "Not enough mana"
