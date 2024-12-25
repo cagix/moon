@@ -53,7 +53,7 @@
     menu-bar))
 
 ;"Mouseover-Actor: "
-#_(when-let [actor (stage/mouse-on-actor?)]
+#_(when-let [actor (stage/mouse-on-actor? c)]
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 

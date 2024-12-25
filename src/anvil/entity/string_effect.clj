@@ -15,6 +15,6 @@
                     :x x
                     :y (+ y
                           (:half-height entity)
-                          (c/pixels->world-units (c/get-ctx) 5))
+                          (c/pixels->world-units c 5))
                     :scale 2
                     :up? true}))))

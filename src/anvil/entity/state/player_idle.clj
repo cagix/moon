@@ -13,12 +13,13 @@
                 {:eid eid}))
 
   (component/manual-tick [[_ {:keys [eid]}]]
-    (if-let [movement-vector (controls/movement-vector)]
-      (entity/event eid :movement-input movement-vector)
-      (let [[cursor on-click] (player/interaction-state eid)]
-        (c/set-cursor (c/get-ctx) cursor)
-        (when (button-just-pressed? :left)
-          (on-click)))))
+    (let [c (c/get-ctx)]
+      (if-let [movement-vector (controls/movement-vector)]
+        (entity/event eid :movement-input movement-vector)
+        (let [[cursor on-click] (player/interaction-state c eid)]
+          (c/set-cursor c cursor)
+          (when (button-just-pressed? :left)
+            (on-click))))))
 
   (component/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell]
     ; TODO no else case

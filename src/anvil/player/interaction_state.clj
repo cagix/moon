@@ -59,18 +59,18 @@
        (get-in (:entity/inventory @world/player-eid)
                (actor/user-object (.getParent actor)))))
 
-(defn- mouseover-actor->cursor []
-  (let [actor (stage/mouse-on-actor?)]
+(defn- mouseover-actor->cursor [c]
+  (let [actor (stage/mouse-on-actor? c)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
      (window-title-bar? actor)      :cursors/move-window
      (button? actor)                :cursors/over-button
      :else                             :cursors/default)))
 
-(defn- player-effect-ctx [eid]
+(defn- player-effect-ctx [c eid]
   (let [target-position (or (and world/mouseover-eid
                                  (:position @world/mouseover-eid))
-                            (c/world-mouse-position (c/get-ctx)))]
+                            (c/world-mouse-position c))]
     {:effect/source eid
      :effect/target world/mouseover-eid
      :effect/target-position target-position
@@ -79,8 +79,9 @@
 (defn- interaction-state [c eid]
   (let [entity @eid]
     (cond
-     (stage/mouse-on-actor?)
-     [(mouseover-actor->cursor) (fn [] nil)] ; handled by actors themself, they check player state
+     (stage/mouse-on-actor? c)
+     [(mouseover-actor->cursor c)
+      (fn [] nil)] ; handled by actors themself, they check player state
 
      (and world/mouseover-eid
           (:entity/clickable @world/mouseover-eid))
@@ -89,7 +90,7 @@
      :else
      (if-let [skill-id (stage/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
-             effect-ctx (player-effect-ctx eid)
+             effect-ctx (player-effect-ctx c eid)
              state (skill/usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
@@ -115,5 +116,5 @@
           (play-sound c "bfxr_denied")
           (stage/show-player-msg "No selected skill"))]))))
 
-(defn-impl player/interaction-state [eid]
-  (interaction-state (c/get-ctx) eid))
+(defn-impl player/interaction-state [c eid]
+  (interaction-state c eid))

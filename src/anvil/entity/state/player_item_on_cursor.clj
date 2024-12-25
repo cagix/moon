@@ -8,8 +8,8 @@
             [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]))
 
-(defn- world-item? []
-  (not (mouse-on-actor?)))
+(defn- world-item? [c]
+  (not (mouse-on-actor? c)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -21,9 +21,9 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn- item-place-position [entity]
+(defn- item-place-position [c entity]
   (placement-point (:position entity)
-                   (c/world-mouse-position (c/get-ctx))
+                   (c/world-mouse-position c)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -78,29 +78,31 @@
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
     ; on the ground
-    (let [entity @eid]
+    (let [c (c/get-ctx)
+          entity @eid]
       (when (:entity/item-on-cursor entity)
         (sound/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
-        (world/item (item-place-position entity)
+        (world/item (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
   (component/manual-tick [[_ {:keys [eid]}]]
     (when (and (button-just-pressed? :left)
-               (world-item?))
+               (world-item? c))
       (entity/event eid :drop-item)))
 
   (component/render-below [[_ {:keys [item]}] entity c]
-    (when (world-item?)
+    (when (world-item? c)
       (c/draw-centered c
                        (:entity/image item)
-                       (item-place-position entity))))
+                       (item-place-position c entity))))
 
   (component/draw-gui-view [[_ {:keys [eid]}]]
-    (when (not (world-item?))
-      (c/draw-centered (c/get-ctx)
-                       (:entity/image (:entity/item-on-cursor @eid))
-                       (c/mouse-position (c/get-ctx)))))
+    (let [c (c/get-ctx)]
+      (when (not (world-item? c))
+        (c/draw-centered c
+                         (:entity/image (:entity/item-on-cursor @eid))
+                         (c/mouse-position c)))))
 
   (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell]
     (clicked-cell data eid cell)))

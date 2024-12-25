@@ -1,3 +1,3 @@
 (ns anvil.player)
 
-(defn interaction-state [eid])
+(defn interaction-state [c eid])

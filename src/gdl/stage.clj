@@ -58,8 +58,8 @@
   (.clear (get))
   (run! add-actor new-actors))
 
-(defn mouse-on-actor? []
-  (let [[x y] (ctx/mouse-position (ctx/get-ctx))]
+(defn mouse-on-actor? [c]
+  (let [[x y] (ctx/mouse-position c)]
     (.hit (get) x y true)))
 
 ; no window movable type cursor appears here like in player idle

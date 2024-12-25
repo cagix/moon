@@ -85,7 +85,7 @@
   (let [k (entity/state-k entity)]
     [k (k entity)]))
 
-(defn- send-event! [eid event params]
+(defn- send-event! [c eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)
           new-fsm (fsm/fsm-event fsm event)
@@ -97,7 +97,7 @@
                                                           [new-state-k eid]))]]
           (when (:entity/player? @eid)
             (when-let [cursor (component/cursor new-state-obj)]
-              (c/set-cursor (c/get-ctx) cursor)))
+              (c/set-cursor c cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
@@ -107,6 +107,6 @@
 
 (defn-impl entity/event
   ([eid event]
-   (send-event! eid event nil))
+   (send-event! (c/get-ctx) eid event nil))
   ([eid event params]
-   (send-event! eid event params)))
+   (send-event! (c/get-ctx) eid event params)))

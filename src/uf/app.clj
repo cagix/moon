@@ -67,10 +67,11 @@
                       (ui/cleanup))
 
                     (render [_]
-                      (clear-screen)
-                      (draw-tiled-map (ctx/get-ctx) tiled-map tile-color-setter)
-                      (stage/render)
-                      (stage/act))
+                      (let [c (ctx/get-ctx)]
+                        (clear-screen)
+                        (draw-tiled-map c tiled-map tile-color-setter)
+                        (stage/render)
+                        (stage/act)))
 
                     (resize [_ w h]
                       (viewport/update ctx/viewport w h :center-camera? true)

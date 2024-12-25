@@ -17,7 +17,7 @@
          first)))
 
 (defn- update-mouseover-entity []
-  (let [new-eid (if (stage/mouse-on-actor?)
+  (let [new-eid (if (stage/mouse-on-actor? (ctx/get-ctx))
                   nil
                   (calculate-eid))]
     (when mouseover-eid
