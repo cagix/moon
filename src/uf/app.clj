@@ -1,16 +1,11 @@
 (ns uf.app
-  (:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
+  #_(:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx :refer [draw-tiled-map]]
-            [gdl.context.assets :as assets]
-            [gdl.context.sprite-batch :as sprite-batch]
-            [gdl.context.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.context.viewport :as viewport-ctx]
-            [gdl.context.world-viewport :as world-viewport]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
@@ -32,12 +27,12 @@
  (tiled/tm-height tiled-map)
  )
 
-(declare tiled-map)
+#_(declare tiled-map)
 
-(defn- tile-color-setter [color x y]
+#_(defn- tile-color-setter [color x y]
   color/white)
 
-(defn -main []
+#_(defn -main []
   (let [{:keys [requires lwjgl3 lifecycle]} (-> "uf_app.edn"
                                                 io/resource
                                                 slurp

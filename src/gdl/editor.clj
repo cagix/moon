@@ -3,12 +3,8 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
-            [gdl.assets]
-            [gdl.context :as ctx :refer [assets play-sound viewport-height]]
-            [gdl.context.assets :as assets]
-            [gdl.context.sprite-batch :as sprite-batch]
-            [gdl.context.viewport :as viewport-ctx]
-            [gdl.context.world-viewport :as world-viewport]
+            [gdl.assets :as assets]
+            [gdl.context :as ctx :refer [play-sound]]
             [gdl.db :as db]
             [gdl.malli :as m]
             [gdl.schema :as schema]
@@ -61,7 +57,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- viewport-height 50)
+     :height (min (- (:height (:gdl.context/viewport @ctx/state)) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -152,6 +148,10 @@
 (defmethod ->value :enum [_ widget]
   (edn/read-string (ui/selected widget)))
 
+(defn- all-of-type [asset-type]
+  (assets/all-of-type (:gdl.context/assets @ctx/state)
+                      asset-type))
+
 (defn- play-button [sound-name]
   (text-button "play!" #(play-sound @ctx/state sound-name)))
 
@@ -163,8 +163,7 @@
       (str/replace ".wav" "")))
 
 (defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name
-                                   (gdl.assets/all-of-type assets :sound))]
+  (let [rows (for [sound-name (map sound-file->sound-name (all-of-type :sound))]
                [(text-button sound-name
                              (fn []
                                (clear-children table)
@@ -455,7 +454,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (gdl.assets/all-of-type assets :texture))]
+  (for [file (sort (all-of-type :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -508,7 +507,7 @@
     table))
 
 (defn- background-image [path]
-  (ui/image-widget (assets path)
+  (ui/image-widget ((:gdl.context/assets @ctx/state) path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))
@@ -523,18 +522,19 @@
                  :taskbar-icon "moon.png"}
                 (reify lwjgl3/Application
                   (create [_ _gdx-state]
-                    (assets/setup "resources/")
-                    (sprite-batch/setup)
-                    (viewport-ctx/setup {:width 1440 :height 900})
-                    (world-viewport/setup {:tile-size 48 :width 1440 :height 900}) ; just because of sprite edn->value of db requires world-unit-scale
                     (ui/setup :skin-scale/x1)
+                    (ctx/create {:gdl.context/unit-scale 1
+                                 :gdl.context/assets "resources/"
+                                 :gdl.context/batch nil
+                                 :gdl.context/viewport {:width 1440 :height 900}
+                                 ; just because of sprite edn->value of db requires world-unit-scale
+                                 :gdl.context/world-unit-scale 1
+                                 :gdl.context/world-viewport {:width 1440 :height 900} })
                     (stage/setup [(background-image "images/moon_background.png")
-                                  (tabs-table "custom label text here")])
-                    (ctx/create))
+                                  (tabs-table "custom label text here")]))
 
                   (dispose [_]
-                    (assets/cleanup)
-                    (sprite-batch/cleanup)
+                    (ctx/cleanup @ctx/state)
                     (ui/cleanup)
                     (stage/cleanup))
 
@@ -543,4 +543,5 @@
                     (stage/render))
 
                   (resize [_ w h]
-                    (viewport/update ctx/viewport w h :center-camera? true)))))
+                    (let [{:keys [gdl.context/viewport]} @ctx/state]
+                      (viewport/update viewport w h :center-camera? true))))))

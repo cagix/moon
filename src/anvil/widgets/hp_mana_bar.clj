@@ -13,11 +13,11 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn-impl widgets/hp-mana-bar [c]
+(defn-impl widgets/hp-mana-bar [{:keys [gdl.context/viewport] :as c}]
   (let [rahmen      (c/sprite c "images/rahmen.png")
         hpcontent   (c/sprite c "images/hp.png")
         manacontent (c/sprite c "images/mana.png")
-        x (/ c/viewport-width 2)
+        x (/ (:width viewport) 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)

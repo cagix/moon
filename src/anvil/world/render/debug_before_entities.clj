@@ -9,15 +9,15 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn-impl render/debug-before-entities [c]
-  (let [cam c/camera
+(defn-impl render/debug-before-entities [{:keys [gdl.context/world-viewport] :as c}]
+  (let [cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
       (c/grid c
               (int left-x) (int bottom-y)
-              (inc (int c/world-viewport-width))
-              (+ 2 (int c/world-viewport-height))
+              (inc (int (:width  world-viewport)))
+              (+ 2 (int (:height world-viewport)))
               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)

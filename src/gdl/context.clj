@@ -1,18 +1,26 @@
 (ns gdl.context
-  (:require [clojure.gdx.audio.sound :as sound]
+  (:require [anvil.component :as component]
+            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
+            [clojure.gdx.utils.disposable :refer [dispose]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
+            [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
@@ -76,11 +84,11 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [{::keys [camera tiled-map-renderer]} tiled-map color-setter]
+  [{::keys [world-viewport tiled-map-renderer]} tiled-map color-setter]
   (draw-tiled-map* (tiled-map-renderer tiled-map)
                    tiled-map
                    color-setter
-                   camera))
+                   (:camera world-viewport)))
 
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
@@ -258,43 +266,98 @@
 (defn draw-on-world-view [{::keys [world-viewport world-unit-scale] :as c} render-fn]
   (draw-with c world-viewport world-unit-scale render-fn))
 
-(declare shape-drawer)
+(defn- sd-texture []
+  (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
+                 (pixmap/set-color color/white)
+                 (pixmap/draw-pixel 0 0))
+        texture (texture/create pixmap)]
+    (dispose pixmap)
+    texture))
 
-(declare assets)
-(declare default-font)
-(declare batch)
-(declare cursors)
-(declare world-unit-scale
-         world-viewport
-         world-viewport-width
-         world-viewport-height)
+(defmethods ::shape-drawer
+  (component/->v [_ {::keys [batch]}]
+    (assert batch)
+    (sd/create batch
+               (texture-region/create (sd-texture) 1 0 1 1)))
+  (component/dispose [[_ sd]]
+    (dispose sd))) ; TODO this will break ... proxy with extra-data
 
-(declare camera)
-(declare tiled-map-renderer)
+(defmethods ::assets
+  (component/->v [[_ folder] _c]
+    (assets/manager folder))
+  (component/dispose [[_ assets]]
+    (assets/cleanup assets)))
 
-(declare viewport
-         viewport-width
-         viewport-height)
+(defmethods ::batch
+  (component/->v [_ _c]
+    (sprite-batch/create))
+  (component/dispose [[_ batch]]
+    (dispose batch)))
 
-(defn setup-db [config]
-  (def db (db/create config)))
+(defmethods ::db
+  (component/->v [[_ config] _c]
+    (db/create config)))
+
+(defmethods ::default-font
+  (component/->v [[_ config] _c]
+    (freetype/generate-font config))
+  (component/dispose [[_ font]]
+    (dispose font)))
+
+(defmethods ::cursors
+  (component/->v [[_ cursors] _c]
+    (mapvals (fn [[file [hotspot-x hotspot-y]]]
+               (let [pixmap (pixmap/create (files/internal Gdx/files (str "cursors/" file ".png")))
+                     cursor (g/cursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                 (dispose pixmap)
+                 cursor))
+             cursors))
+
+  (component/dispose [[_ cursors]]
+    (run! dispose (vals cursors))))
+
+(defmethods ::viewport
+  (component/->v [[_ {:keys [width height]}] _c]
+    (viewport/fit width height (camera/orthographic))))
+
+(defmethods ::world-unit-scale
+  (component/->v [[_ tile-size] _c]
+    (float (/ tile-size))))
+
+(defmethods ::world-viewport
+  (component/->v [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
+    (assert world-unit-scale)
+    (let [camera (camera/orthographic)
+          world-width  (* width  world-unit-scale)
+          world-height (* height world-unit-scale)]
+      (camera/set-to-ortho camera world-width world-height :y-down? false)
+      (viewport/fit world-width world-height camera))))
+
+(defmethods ::tiled-map-renderer
+  (component/->v [_ {::keys [world-unit-scale batch]}]
+    (memoize (fn [tiled-map]
+               (OrthogonalTiledMapRenderer. tiled-map
+                                            (float world-unit-scale)
+                                            batch)))))
+
+#_(defmethods ::ui
+  (component/->v [])
+  )
 
 (def state (atom nil))
 
-(defn create []
-  (reset! state
-          {::assets             assets
-           ::camera             camera
-           ::cursors            cursors
-           ::default-font       default-font
-           ::batch              batch
-           ::unit-scale         1
-           ::shape-drawer       shape-drawer
-           ::tiled-map-renderer tiled-map-renderer
-           ::viewport           viewport
-           ::world-unit-scale   world-unit-scale
-           ::world-viewport     world-viewport
-           ::db                 db}))
+(defn- create-into [c components]
+  (reduce (fn [c [k v]]
+            (assert (not (contains? c k)))
+            (assoc c k (component/->v [k v] c)))
+          c
+          components))
+
+(defn create [c components]
+  (reset! state (create-into c components)))
+
+(defn cleanup [components]
+  (run! component/dispose components))
 
 (defn build [{::keys [db] :as c} id]
   (db/build db id c))

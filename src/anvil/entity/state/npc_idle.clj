@@ -6,11 +6,11 @@
             [anvil.world :as world]
             [anvil.world.potential-field :as potential-field]))
 
-(defn- effect-context [eid]
+(defn- effect-context [c eid]
   (let [entity @eid
         target (world/nearest-enemy entity)
         target (when (and target
-                          (world/line-of-sight? entity @target))
+                          (world/line-of-sight? c entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -32,7 +32,7 @@
     {:eid eid})
 
   (component/tick [_ eid c]
-    (let [effect-ctx (effect-context eid)]
+    (let [effect-ctx (effect-context c eid)]
       (if-let [skill (npc-choose-skill @eid effect-ctx)]
         (entity/event c eid :start-action [skill effect-ctx])
         (entity/event c eid :movement-direction (or (potential-field/find-direction eid) [0 0]))))))

@@ -4,6 +4,9 @@
 (defsystem info)
 (defmethod info :default [_])
 
+(defsystem dispose)
+(defmethod dispose :default [_])
+
 ;; Entity
 
 (defsystem ->v)

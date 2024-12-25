@@ -15,7 +15,7 @@
 (defn camera-controls [camera])
 (defn window-hotkeys  [stage])
 
-(defn-impl world/tick [c pausing?]
+(defn-impl world/tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
   (player-input c)
   (mouseover-entity c)
   (paused-state pausing?)
@@ -24,7 +24,7 @@
     (potential-fields)
     (entities c))
   (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
-  (camera-controls ctx/camera)
+  (camera-controls (:camera world-viewport))
   (window-hotkeys {:controls/close-windows-key controls/close-windows-key
                    :controls/window-hotkeys    controls/window-hotkeys}
                   (stage/get)))

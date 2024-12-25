@@ -11,12 +11,12 @@
                                 :entity/faction
                                 :active-skill])
 
-(defn-impl widgets/entity-info-window []
+(defn-impl widgets/entity-info-window [{:keys [gdl.context/viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [ctx/viewport-width 0]
+                           :position [(:width viewport) 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.

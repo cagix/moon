@@ -48,7 +48,7 @@
 
   (component/tick [[_ {:keys [skill effect-ctx counter]}] eid c]
     (cond
-     (not (effect/some-applicable? (effect/check-update-ctx effect-ctx)
+     (not (effect/some-applicable? (effect/check-update-ctx c effect-ctx)
                                    (:skill/effects skill)))
      (do
       (entity/event c eid :action-done)
@@ -68,5 +68,5 @@
                         (:position entity)
                         (finished-ratio counter))
       (effect/render-info c
-                          (effect/check-update-ctx effect-ctx)
+                          (effect/check-update-ctx c effect-ctx)
                           effects))))

@@ -80,7 +80,7 @@
                     {:label "World"
                      :update-fn #(mapv int (c/world-mouse-position %))}
                     {:label "Zoom"
-                     :update-fn #(cam/zoom (:gdl.context/camera %))
+                     :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %)))
                      :icon "images/zoom.png"}
                     {:label "FPS"
                      :update-fn (fn [_c]
@@ -111,7 +111,7 @@
                    {:label "World"
                     :update-fn #(mapv int (c/world-mouse-position %))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom (:gdl.context/camera %))
+                    :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [_c]

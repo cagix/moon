@@ -14,7 +14,7 @@
                                modal/button-text]}]
                     c]
     (sound/play sound)
-    (show-modal {:title title
-                 :text text
-                 :button-text button-text
-                 :on-click (fn [])})))
+    (show-modal c {:title title
+                   :text text
+                   :button-text button-text
+                   :on-click (fn [])})))

@@ -12,7 +12,7 @@
     (->> world/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse
-         (filter #(line-of-sight? player @%))
+         (filter #(line-of-sight? c player @%))
          first)))
 
 (defn- update-mouseover-entity [c]

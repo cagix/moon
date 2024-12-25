@@ -11,11 +11,12 @@
 
 (defn debug-after-entities [c])
 
-(defn-impl world/render [c]
+(defn-impl world/render [{:keys [gdl.context/world-viewport] :as c}]
   ; FIXME position DRY
-  (cam/set-position! c/camera (:position @world/player-eid))
+  (cam/set-position! (:camera world-viewport)
+                     (:position @world/player-eid))
   ; FIXME position DRY
-  (tiled-map c world/tiled-map (cam/position c/camera))
+  (tiled-map c world/tiled-map (cam/position (:camera world-viewport)))
   (c/draw-on-world-view c
                         (fn [c]
                           (debug-before-entities c)

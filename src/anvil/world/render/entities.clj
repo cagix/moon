@@ -30,5 +30,5 @@
                     component/render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (line-of-sight? player entity))]
+                      (line-of-sight? c player entity))]
       (render-entity! c system entity))))

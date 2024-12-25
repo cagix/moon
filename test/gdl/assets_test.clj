@@ -1,7 +1,5 @@
 (ns gdl.assets-test
-  (:require ;[gdl.app-test :refer [start-simple-app]]
-            [gdl.context :as ctx]
-            [gdl.context.assets :as assets]))
+  (:require [gdl.context :as ctx]))
 
 ; why do I need to load all assets & do that searching thing?
 

@@ -56,13 +56,13 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window [c]
+(defn- ->info-window [{:keys [gdl.context/viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos c))
                                          (.pack window))}))
-    (.setPosition window 0 c/viewport-height) window))
+    (.setPosition window 0 (:height viewport)) window))
 
 (def ^:private camera-movement-speed 1)
 
@@ -79,13 +79,13 @@
     (if (key-pressed? :up)    (apply-position 1 +))
     (if (key-pressed? :down)  (apply-position 1 -))))
 
-(defn- render-on-map [c]
+(defn- render-on-map [{:keys [gdl.context/world-viewport] :as c}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles c/camera)
+        visible-tiles (cam/visible-tiles (:camera world-viewport))
         [x y] (mapv int (c/world-mouse-position c))]
     (c/rectangle c x y 1 1 :white)
     (when start-position
@@ -109,7 +109,7 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [properties]
+(defn- generate-screen-ctx [{:keys [gdl.context/world-viewport] :as c} properties]
   (let [{:keys [tiled-map start-position]} (generate-level (c/build world-id))
         atom-data (current-data)]
     (tiled/dispose (:tiled-map @atom-data))
@@ -117,14 +117,14 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! c/camera tiled-map)
+    (show-whole-map! (:camera world-viewport) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
-(defn ->generate-map-window [level-id]
+(defn ->generate-map-window [c level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (pprint (c/build level-id))))]
-                     [(text-button "Generate" #(try (generate-screen-ctx (c/build level-id))
+              :rows [[(ui/label (with-out-str (pprint (c/build c level-id))))]
+                     [(text-button "Generate" #(try (generate-screen-ctx c (c/build c level-id))
                                                     (catch Throwable t
                                                       (stage/error-window! t)
                                                       (println t))))]]
@@ -165,5 +165,5 @@
  )
 
 #_(defn actors [_]
-    [(->generate-map-window world-id)
+    [(->generate-map-window c world-id)
      (->info-window c)])

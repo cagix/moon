@@ -34,7 +34,7 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (texture-region/create (ctx/assets "maps/uf_terrain.png")
+  (tm-tile (texture-region/create ((:gdl.context/assets @ctx/state) "maps/uf_terrain.png")
                                   (* sprite-x sprite-size)
                                   (* sprite-y sprite-size)
                                   sprite-size

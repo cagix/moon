@@ -18,7 +18,7 @@
               :fill-parent? true})
    (widgets/hp-mana-bar c)
    (ui/group {:id :windows
-              :actors [(widgets/entity-info-window)
+              :actors [(widgets/entity-info-window c)
                        (widgets/inventory c)]})
    (ui-actor {:draw #(draw-gui-view (entity/state-obj @world/player-eid)
                                     c)})

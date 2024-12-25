@@ -166,15 +166,16 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [table (ui/table {:rows rows
+  (let [viewport (:gdl.context/viewport @c/state)
+        table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
         scroll-pane (scroll-pane table)]
     {:actor scroll-pane
-     :width (/ c/viewport-width 2)
+     :width (/ (:width viewport) 2)
      :height
-     (- c/viewport-height 50)
-     #_(min (- c/viewport-height 50) (height table))}))
+     (- (:height viewport) 50)
+     #_(min (- (:height viewport) 50) (height table))}))
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}

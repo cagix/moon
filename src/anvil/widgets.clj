@@ -12,6 +12,6 @@
 
 (defn remove-item-from-widget [c cell])
 
-(defn entity-info-window [])
+(defn entity-info-window [c])
 
 (defn player-message [])

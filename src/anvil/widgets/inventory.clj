@@ -121,13 +121,12 @@
       (.row table))
     table))
 
-(defn-impl widgets/inventory [c]
+(defn-impl widgets/inventory [{:keys [gdl.context/viewport] :as c}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [c/viewport-width
-                         c/viewport-height]
+              :position [(:width viewport) (:height viewport)]
               :rows [[{:actor (inventory-table c)
                        :pad 4}]]}))
 

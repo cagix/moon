@@ -3,8 +3,7 @@
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
             [clojure.gdx.audio.sound :as sound]
-            [gdl.context :as c :refer [world-viewport-width
-                                       world-viewport-height]]
+            [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.shapes :refer [rectangle->tiles
@@ -129,18 +128,18 @@
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
-(defn- on-screen? [entity]
+(defn- on-screen? [viewport entity]
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position c/camera)
+        [cx cy] (cam/position (:camera viewport))
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
         ydist (Math/abs (- y py))]
     (and
-     (<= xdist (inc (/ (float world-viewport-width)  2)))
-     (<= ydist (inc (/ (float world-viewport-height) 2))))))
+     (<= xdist (inc (/ (float (:width viewport))  2)))
+     (<= ydist (inc (/ (float (:height viewport)) 2))))))
 
 ; TODO at wrong point , this affects targeting logic of npcs
 ; move the debug flag to either render or mouseover or lets see
@@ -148,9 +147,9 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn line-of-sight? [source target]
+(defn line-of-sight? [{:keys [gdl.context/world-viewport]} source target]
   (and (or (not (:entity/player? source))
-           (on-screen? target))
+           (on-screen? world-viewport target))
        (not (and los-checks?
                  (ray-blocked? (:position source) (:position target))))))
 
@@ -420,10 +419,10 @@
     (doseq [component @eid]
       (component/destroy component eid c))))
 
-(defn creatures-in-los-of-player []
+(defn creatures-in-los-of-player [c]
   (->> (active-entities)
        (filter #(:entity/species @%))
-       (filter #(line-of-sight? @player-eid @%))
+       (filter #(line-of-sight? c @player-eid @%))
        (remove #(:entity/player? @%))))
 
 (def ^:private shout-radius 4)

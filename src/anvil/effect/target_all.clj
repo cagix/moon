@@ -19,7 +19,7 @@
 
   (component/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} c]
     (let [source* @source]
-      (doseq [target (world/creatures-in-los-of-player)]
+      (doseq [target (world/creatures-in-los-of-player c)]
         (world/line-render c
                            {:start (:position source*) #_(start-point source* target*)
                             :end (:position @target)
@@ -38,7 +38,7 @@
 
   (component/render-effect [_ {:keys [effect/source]} c]
     (let [source* @source]
-      (doseq [target* (map deref (world/creatures-in-los-of-player))]
+      (doseq [target* (map deref (world/creatures-in-los-of-player c))]
         (c/line c
                 (:position source*) #_(start-point source* target*)
                 (:position target*)

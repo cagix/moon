@@ -24,7 +24,9 @@
   ([]
    (setup nil))
   ([actors]
-   (def this (stage* ctx/viewport ctx/batch actors))
+   (def this (stage* (:gdl.context/viewport @ctx/state)
+                     (:gdl.context/batch    @ctx/state)
+                     actors))
    (input/set-processor Gdx/input this)))
 
 (defn cleanup []
@@ -66,7 +68,8 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [title text button-text on-click]}]
+(defn show-modal [{:keys [gdl.context/viewport]}
+                  {:keys [title text button-text on-click]}]
   (assert (not (::modal (get))))
   (add-actor
    (ui/window {:title title
@@ -77,8 +80,8 @@
                                          (on-click)))]]
                :id ::modal
                :modal? true
-               :center-position [(/ ctx/viewport-width 2)
-                                 (* ctx/viewport-height (/ 3 4))]
+               :center-position [(/ (:width viewport) 2)
+                                 (* (:height viewport) (/ 3 4))]
                :pack? true})))
 
 

@@ -108,7 +108,7 @@
                        :cursors/walking               ["walking"      [16 16]]}
              :viewport {:width 1440
                         :height 900}
-             :world-viewport {:tile-size 48
-                              :width 1440
+             :tile-size 48
+             :world-viewport {:width 1440
                               :height 900}
              :world :worlds/uf-caves}}

@@ -6,11 +6,11 @@
             [gdl.ui :refer [ui-actor]])
   (:import (com.badlogic.gdx Gdx)))
 
-(defn- draw-player-message [c]
+(defn- draw-player-message [{:keys [gdl.context/viewport] :as c}]
   (when-let [{:keys [message]} message-to-player]
     (draw-text c
-               {:x (/ ctx/viewport-width 2)
-                :y (+ (/ ctx/viewport-height 2) 200)
+               {:x (/ (:width viewport) 2)
+                :y (+ (/ (:height viewport) 2) 200)
                 :text message
                 :scale 2.5
                 :up? true})))

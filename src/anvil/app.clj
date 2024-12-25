@@ -5,14 +5,6 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx]
-            [gdl.context.assets :as assets]
-            [gdl.context.cursors :as cursors]
-            [gdl.context.default-font :as default-font]
-            [gdl.context.shape-drawer :as shape-drawer]
-            [gdl.context.sprite-batch :as sprite-batch]
-            [gdl.context.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.context.viewport :as viewport-ctx]
-            [gdl.context.world-viewport :as world-viewport]
             [gdl.stage :as stage]
             [gdl.ui :as ui]))
 
@@ -23,29 +15,28 @@
     (run! require requires)
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
-                    (create [_ _gdx-state]
-                      (ctx/setup-db (:db lifecycle))
-                      (assets/setup "resources/")
-                      (sprite-batch/setup)
-                      (shape-drawer/setup)
-                      (default-font/setup (:default-font lifecycle))
-                      (cursors/setup (:cursors lifecycle))
-                      (viewport-ctx/setup (:viewport lifecycle))
-                      (world-viewport/setup (:world-viewport lifecycle))
-                      (tiled-map-renderer/setup ctx/world-unit-scale
-                                                ctx/batch)
+                    (create [_ gdx-context]
                       (ui/setup (:ui lifecycle))
+                      ; TODO pass vector because order is important
+                      (ctx/create gdx-context
+                                  {:gdl.context/unit-scale 1
+                                   :gdl.context/assets "resources/"
+                                   :gdl.context/db (:db lifecycle)
+                                   :gdl.context/batch nil
+                                   :gdl.context/shape-drawer nil
+                                   :gdl.context/default-font (:default-font lifecycle)
+                                   :gdl.context/cursors (:cursors lifecycle)
+                                   :gdl.context/viewport (:viewport lifecycle)
+                                   :gdl.context/tiled-map-renderer nil
+                                   :gdl.context/world-unit-scale (:tile-size lifecycle)
+                                   :gdl.context/world-viewport (:world-viewport lifecycle)
+                                   })
                       (stage/setup)
-                      (ctx/create)
                       (world/create @ctx/state
                                     (:world lifecycle)))
 
                     (dispose [_]
-                      (assets/cleanup)
-                      (sprite-batch/cleanup)
-                      (shape-drawer/cleanup)
-                      (default-font/cleanup)
-                      (cursors/cleanup)
+                      (ctx/cleanup @ctx/state)
                       (stage/cleanup)
                       (ui/cleanup)
                       (world/dispose))
@@ -59,5 +50,7 @@
                         (world/tick c pausing?)))
 
                     (resize [_ w h]
-                      (viewport/update ctx/viewport w h :center-camera? true)
-                      (viewport/update ctx/world-viewport w h :center-camera? false))))))
+                      (let [{:keys [gdl.context/viewport
+                                    gdl.context/world-viewport]} @ctx/state]
+                        (viewport/update viewport w h :center-camera? true)
+                        (viewport/update world-viewport w h :center-camera? false)))))))
