@@ -1,8 +1,7 @@
 (ns gdl.graphics.animation-test
   (:require ;[gdl.app-test :refer [start-simple-app]]
             [gdl.context.assets :as assets]
-            [gdl.context.shape-drawer :as shape-drawer]
-            [gdl.graphics :as g]))
+            [gdl.context.shape-drawer :as shape-drawer]))
 
 ; how do I just draw a texture/sprite first?!
 ; and why does it need a 'world-viewport' ?

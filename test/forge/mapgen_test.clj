@@ -5,9 +5,8 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [gdl.context :as ctx :refer [draw-tiled-map]]
+            [gdl.context :as c :refer [draw-tiled-map]]
             [gdl.context.db :as db]
-            [gdl.graphics :as g]
             [gdl.graphics.camera :as cam]
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
@@ -38,14 +37,14 @@
   direction keys: move")
 
 (defn- map-infos ^String []
-  (let [tile (mapv int (g/world-mouse-position))
+  (let [tile (mapv int (c/world-mouse-position))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (g/world-mouse-position)
+                                 (c/world-mouse-position)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
@@ -64,7 +63,7 @@
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos))
                                          (.pack window))}))
-    (.setPosition window 0 ctx/viewport-height) window))
+    (.setPosition window 0 c/viewport-height) window))
 
 (def ^:private camera-movement-speed 1)
 
@@ -87,23 +86,23 @@
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles ctx/camera)
-        [x y] (mapv int (g/world-mouse-position))]
-    (g/rectangle x y 1 1 :white)
+        visible-tiles (cam/visible-tiles c/camera)
+        [x y] (mapv int (c/world-mouse-position))]
+    (c/rectangle x y 1 1 :white)
     (when start-position
-      (g/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (c/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (g/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
-        (g/filled-circle [(+ x 0.5) (+ y 0.5)]
+        (c/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
+        (c/filled-circle [(+ x 0.5) (+ y 0.5)]
                          0.05
                          (case prop
                            "all"   :green
                            "air"   :orange
                            "none"  :red))))
     (when show-grid-lines
-      (g/grid 0
+      (c/grid 0
               0
               (tiled/tm-width  tiled-map)
               (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
@@ -118,7 +117,7 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! ctx/camera tiled-map)
+    (show-whole-map! c/camera tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [level-id]
@@ -138,21 +137,21 @@
   (when (key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (defn enter [_]
-  #_(show-whole-map! ctx/camera (:tiled-map @current-data)))
+  #_(show-whole-map! c/camera (:tiled-map @current-data)))
 
 (defn exit [_]
-  #_(cam/reset-zoom! ctx/camera))
+  #_(cam/reset-zoom! c/camera))
 
 (defn render [_]
   #_(draw-tiled-map (:tiled-map @current-data)
                     (constantly color/white))
-  #_(g/draw-on-world-view render-on-map)
+  #_(c/draw-on-world-view render-on-map)
   #_(if (key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
   #_(if (key-just-pressed? :m)
       (swap! current-data update :show-movement-properties not))
-  #_(adjust-zoom ctx/camera)
-  #_(camera-controls ctx/camera))
+  #_(adjust-zoom c/camera)
+  #_(camera-controls c/camera))
 
 #_(defn dispose [_]
   #_(dispose (:tiled-map @current-data)))
