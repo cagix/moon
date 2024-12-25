@@ -1,6 +1,6 @@
 (ns anvil.world.potential-field
   (:require [anvil.entity :as entity]
-            [anvil.world :as world :refer [rectangle->cells
+            [cdq.context :as world :refer [rectangle->cells
                                            get-8-neighbour-positions
                                            cached-adjacent-cells
                                            cell-blocked?

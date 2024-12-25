@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.movement
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.malli :as m]
             [gdl.math.vector :as v]))
 

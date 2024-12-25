@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.mouseover?
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.context :as c]))
 
 (def ^:private outline-alpha 0.4)

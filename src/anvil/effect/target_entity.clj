@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
 

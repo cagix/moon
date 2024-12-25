@@ -1,7 +1,7 @@
 (ns anvil.world.tick.paused-state
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [anvil.world.tick :as tick]
             [anvil.entity :as entity]))
 

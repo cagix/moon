@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.string-effect
   (:require [anvil.component :as component]
-            [anvil.world :refer [stopped?]]
+            [cdq.context :refer [stopped?]]
             [gdl.context :as c]))
 
 (defmethods :entity/string-effect

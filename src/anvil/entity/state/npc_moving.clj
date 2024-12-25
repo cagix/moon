@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.state.npc-moving
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :refer [timer stopped?]]))
+            [cdq.context :refer [timer stopped?]]))
 
 (defmethods :npc-moving
   (component/->v [[_ eid movement-vector] c]

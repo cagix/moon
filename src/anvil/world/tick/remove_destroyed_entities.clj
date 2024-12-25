@@ -1,5 +1,5 @@
 (ns anvil.world.tick.remove-destroyed-entities
-  (:require [anvil.world :as world]
+  (:require [cdq.context :as world]
             [anvil.world.tick :as tick]))
 
 (defn-impl tick/remove-destroyed-entities [c]

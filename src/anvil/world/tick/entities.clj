@@ -1,6 +1,6 @@
 (ns anvil.world.tick.entities
   (:require [anvil.component :as component]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [anvil.world.tick :as tick]
             [gdl.stage :as stage]))
 

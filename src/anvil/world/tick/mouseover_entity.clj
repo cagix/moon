@@ -1,6 +1,6 @@
 (ns anvil.world.tick.mouseover-entity
   (:require [anvil.world.tick :as tick]
-            [anvil.world :as world :refer [mouseover-eid line-of-sight?]]
+            [cdq.context :as world :refer [mouseover-eid line-of-sight?]]
             [gdl.context :as c]
             [gdl.stage :as stage]))
 

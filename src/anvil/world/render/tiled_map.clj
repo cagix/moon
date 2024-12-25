@@ -1,5 +1,5 @@
 (ns anvil.world.render.tiled-map
-  (:require [anvil.world :as world]
+  (:require [cdq.context :as world]
             [anvil.world.render :as render]
             [clojure.gdx.graphics.color :as color]
             [gdl.context :as c]))

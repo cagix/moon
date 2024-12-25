@@ -1,5 +1,5 @@
 (ns anvil.world.tick.time
-  (:require [anvil.world :as world]
+  (:require [cdq.context :as world]
             [anvil.world.tick :as tick]
             [clojure.gdx.graphics :as g])
   (:import (com.badlogic.gdx Gdx)))

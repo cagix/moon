@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [clojure.gdx.graphics.color :as color]
             [data.grid2d :as g2d]
             [gdl.app :as app]

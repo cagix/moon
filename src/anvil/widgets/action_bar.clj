@@ -3,7 +3,7 @@
             [anvil.entity.skills :as skills]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.stage :as stage]
             [gdl.ui :refer [ui-actor add-tooltip!] :as ui]
             [gdl.ui.group :refer [add-actor!]])

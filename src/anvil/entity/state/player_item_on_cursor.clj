@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.state.player-item-on-cursor
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c]
             [gdl.stage :refer [mouse-on-actor?]]

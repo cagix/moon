@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.effect.projectile
   (:require [anvil.component :as component]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.math.vector :as v]))
 
 (defn- projectile-start-point [entity direction size]

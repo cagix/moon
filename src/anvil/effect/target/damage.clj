@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.effect.target.damage
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :as world :refer [add-text-effect]]
+            [cdq.context :as world :refer [add-text-effect]]
             [gdl.context :as c]
             [gdl.rand :refer [rand-int-between]]))
 

@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.effect.creature
   (:require [anvil.component :as component]
-            [anvil.world :as world]))
+            [cdq.context :as world]))
 
 ; "https://github.com/damn/core/issues/29"
 (defmethods :effects/spawn

@@ -3,7 +3,7 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity]
             [anvil.skill :as skill]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [anvil.world.potential-field :as potential-field]))
 
 (defn- effect-context [c eid]

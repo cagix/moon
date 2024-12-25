@@ -2,7 +2,7 @@
   (:require [anvil.entity :as entity]
             [anvil.skill :as skill]
             [anvil.player :as player]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.context :as c :refer [play-sound]]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]

@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.state.stunned
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :refer [timer stopped?]]
+            [cdq.context :refer [timer stopped?]]
             [gdl.context :as c]))
 
 (defmethods :stunned

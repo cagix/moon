@@ -1,5 +1,5 @@
 (ns anvil.app
-  (:require [anvil.world :as world]
+  (:require [cdq.context :as world]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]

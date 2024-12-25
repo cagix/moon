@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.state.npc-sleeping
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :as world :refer [add-text-effect]]
+            [cdq.context :as world :refer [add-text-effect]]
             [gdl.context :as c]))
 
 (defmethods :npc-sleeping

@@ -1,4 +1,4 @@
-(ns anvil.world
+(ns cdq.context
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
@@ -41,9 +41,9 @@
          error)
 
 (defn state []
-  {:cdq.context/tiled-map tiled-map
-   :cdq.context/player-eid player-eid
-   :cdq.context/explored-tile-corners explored-tile-corners
+  {::tiled-map tiled-map
+   ::player-eid player-eid
+   ::explored-tile-corners explored-tile-corners
    })
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions

@@ -2,7 +2,7 @@
   (:require [anvil.component :refer [draw-gui-view]]
             [anvil.entity :as entity]
             [anvil.widgets :as widgets]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.context :as c]
             [gdl.ui :refer [ui-actor] :as ui]))
 

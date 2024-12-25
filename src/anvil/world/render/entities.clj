@@ -1,6 +1,6 @@
 (ns anvil.world.render.entities
   (:require [anvil.component :as component]
-            [anvil.world :as world :refer [line-of-sight?]]
+            [cdq.context :as world :refer [line-of-sight?]]
             [anvil.world.render :as render]
             [gdl.context :as c]))
 

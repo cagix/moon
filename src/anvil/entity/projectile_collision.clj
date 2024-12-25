@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]
-            [anvil.world :as world]))
+            [cdq.context :as world]))
 
 (defmethods :entity/projectile-collision
   (component/->v [[_ v] c]

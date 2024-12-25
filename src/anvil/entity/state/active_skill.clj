@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.effect :as effect]
             [anvil.entity :as entity]
-            [anvil.world :refer [timer finished-ratio stopped?]]
+            [cdq.context :refer [timer finished-ratio stopped?]]
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c]))
 

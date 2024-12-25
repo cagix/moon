@@ -1,7 +1,7 @@
 (ns anvil.entity.skills
   (:refer-clojure :exclude [contains? remove])
   (:require [anvil.component :as component]
-            [anvil.world :refer [stopped?]]))
+            [cdq.context :refer [stopped?]]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]
   (clojure.core/contains? skills id))

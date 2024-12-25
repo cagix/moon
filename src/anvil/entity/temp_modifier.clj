@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.temp-modifier
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.world :refer [finished-ratio stopped?]]
+            [cdq.context :refer [finished-ratio stopped?]]
             [gdl.context :as c]))
 
 (defmethods :entity/temp-modifier

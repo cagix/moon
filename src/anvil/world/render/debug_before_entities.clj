@@ -1,5 +1,5 @@
 (ns anvil.world.render.debug-before-entities
-  (:require [anvil.world :as world]
+  (:require [cdq.context :as world]
             [anvil.world.render :as render]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]))

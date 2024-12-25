@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.effect.target-all
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all!]]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.context :as c]))
 
 ; TODO targets projectiles with -50% hp !!

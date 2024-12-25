@@ -1,7 +1,7 @@
 (ns anvil.widgets.dev-menu
   (:require [anvil.controls :as controls]
             [anvil.widgets :as widgets]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [clojure.gdx.graphics :as graphics]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]

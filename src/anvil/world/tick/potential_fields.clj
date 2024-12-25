@@ -1,6 +1,6 @@
 (ns anvil.world.tick.potential-fields
   (:require [anvil.entity :as entity]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [anvil.world.tick :as tick]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 

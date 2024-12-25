@@ -1,6 +1,6 @@
 (ns anvil.effect
   (:require [anvil.component :as component]
-            [anvil.world :as world]))
+            [cdq.context :as world]))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn check-update-ctx

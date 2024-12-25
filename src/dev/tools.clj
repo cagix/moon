@@ -1,6 +1,6 @@
 (ns dev.tools
   (:require [anvil.entity.skills :as skills]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [clojure.gdx.application :as application]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]

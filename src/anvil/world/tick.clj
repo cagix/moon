@@ -1,7 +1,7 @@
 (ns anvil.world.tick
   (:refer-clojure :exclude [time])
   (:require [anvil.controls :as controls]
-            [anvil.world :as world]
+            [cdq.context :as world]
             [gdl.context :as ctx]
             [gdl.stage :as stage]))
 
