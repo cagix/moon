@@ -42,6 +42,7 @@
             anvil.effect.audiovisual
             anvil.effect.creature
             anvil.effect.projectile
+            anvil.effect.sound
             anvil.effect.target-all
             anvil.effect.target-entity
 

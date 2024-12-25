@@ -151,32 +151,39 @@
 (defmethod ->value :enum [_ widget]
   (edn/read-string (ui/selected widget)))
 
-(defn- play-button [sound-file]
-  (text-button "play!" #(play-sound sound-file)))
+(defn- play-button [sound-name]
+  (text-button "play!" #(play-sound sound-name)))
 
 (declare columns)
 
+(defn- sound-file->sound-name [sound-file]
+  (-> sound-file
+      (str/replace-first "sounds/" "")
+      (str/replace ".wav" "")))
+
 (defn- choose-window [table]
-  (let [rows (for [sound-file (gdl.assets/all-of-type assets :sound)]
-               [(text-button (str/replace-first sound-file "sounds/" "")
+  (let [rows (for [sound-name (map sound-file->sound-name
+                                   (gdl.assets/all-of-type assets :sound))]
+               [(text-button sound-name
                              (fn []
                                (clear-children table)
-                               (add-rows! table [(columns table sound-file)])
+                               (add-rows! table [(columns table sound-name)])
                                (Actor/.remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
                                (let [[k _] (user-object table)]
-                                 (Actor/.setUserObject table [k sound-file]))))
-                (play-button sound-file)])]
+                                 (Actor/.setUserObject table [k sound-name]))))
+                (play-button sound-name)])]
     (stage/add-actor (scrollable-choose-window rows))))
 
-(defn- columns [table sound-file]
-  [(text-button (name sound-file) #(choose-window table))
-   (play-button sound-file)])
+(defn- columns [table sound-name]
+  [(text-button sound-name
+                #(choose-window table))
+   (play-button sound-name)])
 
-(defmethod schema->widget :s/sound [_ sound-file]
+(defmethod schema->widget :s/sound [_ sound-name]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
-    (add-rows! table [(if sound-file
-                        (columns table sound-file)
+    (add-rows! table [(if sound-name
+                        (columns table sound-name)
                         [(text-button "No sound" #(choose-window table))])])
     table))
 

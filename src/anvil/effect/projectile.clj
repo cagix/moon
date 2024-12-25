@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.projectile
   (:require [anvil.component :as component]
             [anvil.world :as world]
-            [gdl.context :refer [play-sound]]
             [gdl.math.vector :as v]))
 
 (defn- projectile-start-point [entity direction size]
@@ -30,7 +29,6 @@
               max-range))))
 
   (component/handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
-    (play-sound "bfxr_waypointunlock")
     (world/projectile {:position (projectile-start-point @source
                                                          target-direction
                                                          (world/projectile-size projectile))

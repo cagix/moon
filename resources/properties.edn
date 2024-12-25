@@ -4151,7 +4151,9 @@
   :skill/action-time-modifier-key :entity/cast-speed,
   :skill/cooldown 0,
   :skill/cost 0,
-  :skill/effects {:effects/projectile :projectiles/double-fireball},
+  :skill/effects
+  {:effects/projectile :projectiles/double-fireball,
+   :effects/sound "bfxr_potionuse"},
   :skill/start-action-sound "bfxr_cast"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [160 64 32 32]},
