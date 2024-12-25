@@ -2,7 +2,6 @@
   (:require [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.utils.viewport :as viewport]
             [gdl.graphics.sprite :as sprite]
             [gdl.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
@@ -62,9 +61,6 @@
 (declare viewport
          viewport-width
          viewport-height)
-
-(defn resize-viewport [w h]
-  (viewport/update viewport w h :center-camera? true))
 
 (declare tiled-map-renderer)
 

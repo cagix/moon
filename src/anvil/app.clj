@@ -1,6 +1,7 @@
 (ns anvil.app
   (:require [anvil.world :as world]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx]
@@ -57,5 +58,5 @@
                       (world/tick pausing?))
 
                     (resize [_ w h]
-                      (ctx/resize-viewport w h)
-                      (graphics/resize-world-viewport w h))))))
+                      (viewport/update ctx/viewport w h :center-camera? true)
+                      (viewport/update ctx/world-viewport w h :center-camera? false))))))

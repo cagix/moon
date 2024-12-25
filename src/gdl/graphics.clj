@@ -14,9 +14,6 @@
             [gdl.context :as ctx])
   (:import (com.badlogic.gdx Gdx)))
 
-(defn resize-world-viewport [w h]
-  (viewport/update ctx/world-viewport w h :center-camera? false))
-
 (defn- color? [object]
   (= com.badlogic.gdx.graphics.Color (class object)))
 

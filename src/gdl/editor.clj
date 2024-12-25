@@ -1,9 +1,10 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.assets]
-            [gdl.context :refer [assets play-sound resize-viewport viewport-height]]
+            [gdl.context :refer [assets play-sound viewport-height]]
             [gdl.context.assets :as assets]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.viewport :as viewport]
@@ -541,4 +542,4 @@
                     (stage/render))
 
                   (resize [_ w h]
-                    (resize-viewport w h)))))
+                    (viewport/update ctx/viewport w h :center-camera? true)))))

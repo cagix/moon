@@ -2,6 +2,7 @@
   (:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx :refer [draw-tiled-map]]
@@ -73,5 +74,5 @@
                       (stage/act))
 
                     (resize [_ w h]
-                      (ctx/resize-viewport w h)
-                      (graphics/resize-world-viewport w h))))))
+                      (viewport/update ctx/viewport w h :center-camera? true)
+                      (viewport/update ctx/world-viewport w h :center-camera? false))))))
