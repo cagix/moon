@@ -26,6 +26,43 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
+(defn- clicked-cell [eid cell]
+  (let [entity @eid
+        inventory (:entity/inventory entity)
+        item-in-cell (get-in inventory cell)
+        item-on-cursor (:entity/item-on-cursor entity)]
+    (cond
+     ; PUT ITEM IN EMPTY CELL
+     (and (not item-in-cell)
+          (entity/valid-slot? cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (entity/set-item eid cell item-on-cursor)
+      (entity/event eid :dropped-item))
+
+     ; STACK ITEMS
+     (and item-in-cell
+          (entity/stackable? item-in-cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (entity/stack-item eid cell item-on-cursor)
+      (entity/event eid :dropped-item))
+
+     ; SWAP ITEMS
+     (and item-in-cell
+          (entity/valid-slot? cell item-on-cursor))
+     (do
+      (play-sound "bfxr_itemput")
+      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+      ; TODO? coud handle pickup-item from item-on-cursor state also
+      (swap! eid dissoc :entity/item-on-cursor)
+      (entity/remove-item eid cell)
+      (entity/set-item eid cell item-on-cursor)
+      (entity/event eid :dropped-item)
+      (entity/event eid :pickup-item item-in-cell)))))
+
 (defmethods :player-item-on-cursor
   (component/->v [[_ eid item]]
     {:eid eid
@@ -59,4 +96,7 @@
   (component/draw-gui-view [[_ {:keys [eid]}]]
     (when (not (world-item?))
       (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                       (g/mouse-position)))))
+                       (g/mouse-position))))
+
+  (component/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+    (clicked-cell eid cell)))

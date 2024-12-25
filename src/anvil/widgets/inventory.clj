@@ -1,6 +1,6 @@
 (ns anvil.widgets.inventory
-  (:require [anvil.component :refer [clicked-inventory-cell]]
-            [gdl.context :as ctx :refer [play-sound]]
+  (:require [anvil.component :as component]
+            [gdl.context :as ctx]
             [anvil.entity :as entity]
             [gdl.graphics :as g]
             [anvil.info :as info]
@@ -21,43 +21,6 @@
             [data.grid2d :as g2d])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
-
-(defn- clicked-cell [eid cell]
-  (let [entity @eid
-        inventory (:entity/inventory entity)
-        item-in-cell (get-in inventory cell)
-        item-on-cursor (:entity/item-on-cursor entity)]
-    (cond
-     ; PUT ITEM IN EMPTY CELL
-     (and (not item-in-cell)
-          (entity/valid-slot? cell item-on-cursor))
-     (do
-      (play-sound "bfxr_itemput")
-      (swap! eid dissoc :entity/item-on-cursor)
-      (entity/set-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item))
-
-     ; STACK ITEMS
-     (and item-in-cell
-          (entity/stackable? item-in-cell item-on-cursor))
-     (do
-      (play-sound "bfxr_itemput")
-      (swap! eid dissoc :entity/item-on-cursor)
-      (entity/stack-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item))
-
-     ; SWAP ITEMS
-     (and item-in-cell
-          (entity/valid-slot? cell item-on-cursor))
-     (do
-      (play-sound "bfxr_itemput")
-      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
-      ; TODO? coud handle pickup-item from item-on-cursor state also
-      (swap! eid dissoc :entity/item-on-cursor)
-      (entity/remove-item eid cell)
-      (entity/set-item eid cell item-on-cursor)
-      (entity/event eid :dropped-item)
-      (entity/event eid :pickup-item item-in-cell)))))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -116,17 +79,6 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (g/->color 1 1 1 0.4))))
 
-(defmethod clicked-inventory-cell :player-item-on-cursor
-  [[_ {:keys [eid]}] cell]
-  (clicked-cell eid cell))
-
-(defmethod clicked-inventory-cell :player-idle [[_ {:keys [eid]}] cell]
-  ; TODO no else case
-  (when-let [item (get-in (:entity/inventory @eid) cell)]
-    (play-sound "bfxr_takeit")
-    (entity/event eid :pickup-item item)
-    (entity/remove-item eid cell)))
-
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background slot) {:id :image})
@@ -136,7 +88,9 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (clicked-inventory-cell (entity/state-obj @world/player-eid) cell))))
+                            (component/clicked-inventory-cell
+                             (entity/state-obj @world/player-eid)
+                             cell))))
     stack))
 
 (defn- inventory-table []
