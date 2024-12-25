@@ -17,7 +17,7 @@
 (defn- color? [object]
   (= com.badlogic.gdx.graphics.Color (class object)))
 
-(defn ->color
+(defn- ->color
   ([r g b]
    (color/create r g b))
   ([r g b a]

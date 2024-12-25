@@ -2,10 +2,9 @@
   (:require [anvil.world :as world]
             [anvil.world.render :as render]
             [clojure.gdx.graphics.color :as color]
-            [gdl.context :refer [draw-tiled-map]]
-            [gdl.graphics :as g]))
+            [gdl.context :refer [draw-tiled-map]]))
 
-(def ^:private explored-tile-color (g/->color 0.5 0.5 0.5 1))
+(def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 

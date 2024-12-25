@@ -1,5 +1,6 @@
 (ns anvil.widgets.inventory
   (:require [anvil.component :as component]
+            [clojure.gdx.graphics.color :as color]
             [gdl.context :as ctx]
             [anvil.entity :as entity]
             [gdl.graphics :as g]
@@ -77,7 +78,7 @@
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (g/->color 1 1 1 0.4))))
+    (scene2d.utils/tint drawable (color/create 1 1 1 0.4))))
 
 (defn- ->cell ^Actor [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
