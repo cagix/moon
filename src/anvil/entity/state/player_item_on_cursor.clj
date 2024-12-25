@@ -82,7 +82,8 @@
       (when (:entity/item-on-cursor entity)
         (sound/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
-        (world/item (item-place-position c entity)
+        (world/item c
+                    (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
   (component/manual-tick [[_ {:keys [eid]}] c]

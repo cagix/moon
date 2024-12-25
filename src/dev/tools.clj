@@ -49,7 +49,8 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable
-  (world/creature {:position [35 73]
+  (world/creature (c/get-ctx)
+                  {:position [35 73]
                    :creature-id :creatures/dragon-red
                    :components {:entity/fsm {:fsm :fsms/npc
                                              :initial-state :npc-sleeping}
@@ -77,7 +78,9 @@
 
 (defn- create-item! [item-id]
   (post-runnable
-   (world/item (:position @world/player-eid) (db/build item-id))))
+   (world/item (c/get-ctx)
+               (:position @world/player-eid)
+               (db/build item-id))))
 
 (defn- mouseover-grid-cell [c]
   @(world/grid (mapv int (c/world-mouse-position c))))

@@ -11,7 +11,8 @@
   (component/handle [[_ {:keys [property/id]}]
                      {:keys [effect/source effect/target-position]}
                      c]
-    (world/creature {:position target-position
+    (world/creature c
+                    {:position target-position
                      :creature-id id ; already properties/get called through one-to-one, now called again.
                      :components {:entity/fsm {:fsm :fsms/npc
                                                :initial-state :npc-idle}

@@ -20,7 +20,8 @@
   (component/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} c]
     (let [source* @source]
       (doseq [target (world/creatures-in-los-of-player)]
-        (world/line-render {:start (:position source*) #_(start-point source* target*)
+        (world/line-render c
+                           {:start (:position source*) #_(start-point source* target*)
                             :end (:position @target)
                             :duration 0.05
                             :color [1 0 0 0.75]

@@ -10,4 +10,6 @@
     false)
 
   (component/handle [[_ audiovisual] {:keys [effect/target]} c]
-    (world/audiovisual (:position @target) audiovisual)))
+    (world/audiovisual c
+                       (:position @target)
+                       audiovisual)))

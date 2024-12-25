@@ -38,13 +38,15 @@
           target* @target]
       (if (in-range? source* target* maxrange)
         (do
-         (world/line-render {:start (start-point source* target*)
+         (world/line-render c
+                            {:start (start-point source* target*)
                              :end (:position target*)
                              :duration 0.05
                              :color [1 0 0 0.75]
                              :thick? true})
          (do-all! c ctx entity-effects))
-        (world/audiovisual (end-point source* target* maxrange)
+        (world/audiovisual c
+                           (end-point source* target* maxrange)
                            (db/build :audiovisuals/hit-ground)))))
 
   (component/render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} c]

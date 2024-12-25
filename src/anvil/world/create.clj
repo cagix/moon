@@ -13,14 +13,14 @@
 
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
-(defn- spawn-enemies [tiled-map]
+(defn- spawn-enemies [c tiled-map]
   (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
                   {:position position
                    :creature-id (keyword creature-id)
                    :components {:entity/fsm {:fsm :fsms/npc
                                              :initial-state :npc-sleeping}
                                 :entity/faction :evil}})]
-    (world/creature (update props :position tile->middle))))
+    (world/creature c (update props :position tile->middle))))
 
 ; player-creature needs mana & inventory
 ; till then hardcode :creatures/vampire
@@ -107,7 +107,7 @@
                         :width  (tiled/tm-width  tiled-map)
                         :height (tiled/tm-height tiled-map)}))
 
-(defn- world-init [{:keys [tiled-map start-position]}]
+(defn- world-init [c {:keys [tiled-map start-position]}]
   (bind-root world/tiled-map tiled-map)
   (bind-root world/explored-tile-corners (->explored-tile-corners tiled-map))
   (bind-root world/grid                  (->world-grid            tiled-map))
@@ -116,9 +116,9 @@
   (bind-root world/raycaster (->raycaster world/grid world/blocks-vision?))
   (bind-root world/elapsed-time 0)
   (bind-root world/delta-time nil)
-  (bind-root world/player-eid (world/creature (player-entity-props start-position)))
+  (bind-root world/player-eid (world/creature c (player-entity-props start-position)))
   (when spawn-enemies?
-    (spawn-enemies tiled-map))
+    (spawn-enemies c tiled-map))
   (bind-root world/mouseover-eid nil))
 
 (defn-impl world/create [c world-id]
@@ -129,4 +129,5 @@
   ; generate level -> creates actually the tiled-map and
   ; start-position?
   ; other stuff just depend on it?!
-  (world-init (generate-level (db/build world-id))))
+  (world-init c
+              (generate-level (db/build world-id))))

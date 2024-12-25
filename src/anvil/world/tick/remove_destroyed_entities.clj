@@ -2,5 +2,5 @@
   (:require [anvil.world :as world]
             [anvil.world.tick :as tick]))
 
-(defn-impl tick/remove-destroyed-entities []
-  (world/remove-destroyed-entities))
+(defn-impl tick/remove-destroyed-entities [c]
+  (world/remove-destroyed-entities c))

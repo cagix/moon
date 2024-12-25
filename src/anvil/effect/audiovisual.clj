@@ -10,4 +10,4 @@
     false)
 
   (component/handle [[_ audiovisual] {:keys [effect/target-position]} c]
-    (c/audiovisual target-position audiovisual)))
+    (c/audiovisual c target-position audiovisual)))

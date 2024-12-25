@@ -11,7 +11,7 @@
 (defn time [])
 (defn potential-fields [])
 (defn entities [c])
-(defn remove-destroyed-entities [])
+(defn remove-destroyed-entities [c])
 (defn camera-controls [camera])
 (defn window-hotkeys  [stage])
 
@@ -23,7 +23,7 @@
     (time)
     (potential-fields)
     (entities c))
-  (remove-destroyed-entities) ; do not pause this as for example pickup item, should be destroyed.
+  (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
   (camera-controls ctx/camera)
   (window-hotkeys {:controls/close-windows-key controls/close-windows-key
                    :controls/window-hotkeys    controls/window-hotkeys}

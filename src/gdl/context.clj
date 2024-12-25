@@ -280,7 +280,7 @@
    ::cursors            cursors
    ::default-font       default-font
    ::batch              batch
-   ::unit-scale         *unit-scale*
+   ::unit-scale         *unit-scale* ; TODO this is only assoc'ed at draw , but gui has default-value 1 too
    ::shape-drawer       shape-drawer
    ::tiled-map-renderer tiled-map-renderer
    ::viewport           viewport

@@ -308,11 +308,10 @@
           {}
           components))
 
-(defn spawn-entity [position body components]
+(defn spawn-entity [c position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
-  (let [c (c/get-ctx)
-        eid (atom (-> body
+  (let [eid (atom (-> body
                       (assoc :position position)
                       create-body
                       (safe-merge (-> components
@@ -330,9 +329,10 @@
    :height 0.5
    :z-order :z-order/effect})
 
-(defn audiovisual [position {:keys [tx/sound entity/animation]}]
+(defn audiovisual [c position {:keys [tx/sound entity/animation]}]
   (sound/play sound)
-  (spawn-entity position
+  (spawn-entity c
+                position
                 effect-body-props
                 {:entity/animation animation
                  :entity/delete-after-animation-stopped? true}))
@@ -351,17 +351,19 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn creature [{:keys [position creature-id components]}]
+(defn creature [c {:keys [position creature-id components]}]
   (let [props (db/build creature-id)]
-    (spawn-entity position
+    (spawn-entity c
+                  position
                   (->body (:entity/body props))
                   (-> props
                       (dissoc :entity/body)
                       (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                       (safe-merge components)))))
 
-(defn item [position item]
-  (spawn-entity position
+(defn item [c position item]
+  (spawn-entity c
+                position
                 {:width 0.75
                  :height 0.75
                  :z-order :z-order/on-ground}
@@ -370,15 +372,17 @@
                  :entity/clickable {:type :clickable/item
                                     :text (:property/pretty-name item)}}))
 
-(defn delayed-alert [position faction duration]
-  (spawn-entity position
+(defn delayed-alert [c position faction duration]
+  (spawn-entity c
+                position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
                  {:counter (timer duration)
                   :faction faction}}))
 
-(defn line-render [{:keys [start end duration color thick?]}]
-  (spawn-entity start
+(defn line-render [c {:keys [start end duration color thick?]}]
+  (spawn-entity c
+                start
                 effect-body-props
                 #:entity {:line-render {:thick? thick? :end end :color color}
                           :delete-after-duration duration}))
@@ -387,14 +391,16 @@
   {:pre [(:entity/image projectile)]}
   (first (:world-unit-dimensions (:entity/image projectile))))
 
-(defn projectile [{:keys [position direction faction]}
+(defn projectile [c
+                  {:keys [position direction faction]}
                   {:keys [entity/image
                           projectile/max-range
                           projectile/speed
                           entity-effects
                           projectile/piercing?] :as projectile}]
   (let [size (projectile-size projectile)]
-    (spawn-entity position
+    (spawn-entity c
+                  position
                   {:width size
                    :height size
                    :z-order :z-order/flying
@@ -408,12 +414,12 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(defn remove-destroyed-entities []
+(defn remove-destroyed-entities [c]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (all-entities))]
     (remove-entity eid)
     (doseq [component @eid]
-      (component/destroy component eid))))
+      (component/destroy component eid c))))
 
 (defn creatures-in-los-of-player []
   (->> (active-entities)

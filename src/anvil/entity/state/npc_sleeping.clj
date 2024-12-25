@@ -9,7 +9,8 @@
     {:eid eid})
 
   (component/exit [[_ {:keys [eid]}] c]
-    (world/delayed-alert (:position       @eid)
+    (world/delayed-alert c
+                         (:position       @eid)
                          (:entity/faction @eid)
                          0.2)
     (swap! eid add-text-effect "[WHITE]!"))

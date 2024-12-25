@@ -4,6 +4,7 @@
             [anvil.world :as world]))
 
 (defmethods :entity/destroy-audiovisual
-  (component/destroy [[_ audiovisuals-id] eid]
-    (world/audiovisual (:position @eid)
+  (component/destroy [[_ audiovisuals-id] eid c]
+    (world/audiovisual c
+                       (:position @eid)
                        (db/build audiovisuals-id))))
