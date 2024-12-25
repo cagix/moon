@@ -1,12 +1,9 @@
 (ns gdl.db
   (:refer-clojure :exclude [update])
-  (:require [gdl.context :as ctx]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.graphics.animation :as animation]
             [gdl.schema :as schema]
-            [gdl.property :as property]
-            [gdl.malli :as m]))
+            [gdl.property :as property]))
 
 (defn create [{:keys [schema properties]}]
   (let [properties-file (io/resource properties)
@@ -52,11 +49,11 @@
   (->> (vals data)
        (filter #(= type (property/type %)))))
 
-(defmulti edn->value (fn [schema v _db]
+(defmulti edn->value (fn [schema v db _c]
                        (when schema  ; undefined-data-ks
                          (schema/type schema))))
 
-(defmethod edn->value :default [_schema v _db]
+(defmethod edn->value :default [_schema v db _c]
   v)
 
 #_(def ^:private undefined-data-ks (atom #{}))
@@ -68,7 +65,7 @@
    :file ; => this is texture ... convert that key itself only?!
    :sub-image-bounds})
 
-(defn build* [db property]
+(defn build* [c db property]
   (apply-kvs property
              (fn [k v]
                (let [schema (try (schema-of db k)
@@ -76,97 +73,18 @@
                                    #_(swap! undefined-data-ks conj k)
                                    nil))
                      v (if (map? v)
-                         (build* db v)
+                         (build* c db v)
                          v)]
-                 (try (edn->value schema v db)
+                 (try (edn->value schema v db c)
                       (catch Throwable t
                         (throw (ex-info " " {:k k :v v} t))))))))
 
 ; <- fetch ... ? & fetch-raw ? or fetch&build?!
 ; or just 'get' ... actually ....
 ; that textures/relationships get cnverted is normal
-(defn build [db id]
-  (build* db (get-raw db id)))
+(defn build [db id c]
+  (build* c db (get-raw db id)))
 
-(defn build-all [db property-type]
-  (map (partial build* db)
+(defn build-all [db property-type c]
+  (map (partial build* c db)
        (all-raw db property-type)))
-
-; TODO do we care in here about malli-form ?! - where used? - hide inside 'schemas' ? or schemas/validation
-
-(defmethod schema/malli-form :s/val-max [_ _schemas] m/val-max-schema)
-(defmethod schema/malli-form :s/number  [_ _schemas] m/number-schema)
-(defmethod schema/malli-form :s/nat-int [_ _schemas] m/nat-int-schema)
-(defmethod schema/malli-form :s/int     [_ _schemas] m/int-schema)
-(defmethod schema/malli-form :s/pos     [_ _schemas] m/pos-schema)
-(defmethod schema/malli-form :s/pos-int [_ _schemas] m/pos-int-schema)
-
-(defmethods :s/sound
-  (schema/malli-form [_ _schemas]
-    m/string-schema)
-
-  (edn->value [_ sound-name _db]
-    (ctx/get-sound (ctx/get-ctx) sound-name)))
-
-(defn- edn->sprite [c {:keys [file sub-image-bounds]}]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (ctx/from-sprite-sheet c
-                             (ctx/sprite-sheet c file tilew tileh)
-                             [(int (/ sprite-x tilew))
-                              (int (/ sprite-y tileh))]))
-    (ctx/sprite c file)))
-
-(defmethods :s/image
-  (schema/malli-form  [_ _schemas]
-    m/image-schema)
-
-  (edn->value [_ edn _db]
-    (edn->sprite (ctx/get-ctx) edn)))
-
-(defmethods :s/animation
-  (schema/malli-form [_ _schemas]
-    m/animation-schema)
-
-  (edn->value [_ {:keys [frames frame-duration looping?]} _db]
-    (animation/create (map #(edn->sprite (ctx/get-ctx) %) frames)
-                      :frame-duration frame-duration
-                      :looping? looping?)))
-
-(defn- type->id-namespace [property-type]
-  (keyword (name property-type)))
-
-(defmethods :s/one-to-one
-  (schema/malli-form [[_ property-type] _schemas]
-    (m/qualified-keyword-schema (type->id-namespace property-type)))
-  (edn->value [_ property-id db]
-    (build db property-id)))
-
-(defmethods :s/one-to-many
-  (schema/malli-form [[_ property-type] _schemas]
-    (m/set-schema (m/qualified-keyword-schema (type->id-namespace property-type))))
-  (edn->value [_ property-ids db]
-    (set (map (partial build db) property-ids))))
-
-(defn- map-form [ks schemas]
-  (m/map-schema ks (fn [k]
-                     (schema/malli-form (schema/schema-of schemas k)
-                                        schemas))))
-; TODO schema/validate comes to this...
-; but db-data is not yet existing?
-
-(defmethod schema/malli-form :s/map [[_ ks] schemas]
-  (map-form ks schemas))
-
-(defmethod schema/malli-form :s/map-optional [[_ ks] schemas]
-  (map-form (map (fn [k] [k {:optional true}]) ks)
-            schemas))
-
-(defn- namespaced-ks [schemas ns-name-k]
-  (filter #(= (name ns-name-k) (namespace %))
-          (keys schemas)))
-
-(defmethod schema/malli-form :s/components-ns [[_ ns-name-k] schemas]
-  (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
-                     schemas))

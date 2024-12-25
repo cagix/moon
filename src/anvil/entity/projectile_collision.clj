@@ -5,7 +5,7 @@
             [anvil.world :as world]))
 
 (defmethods :entity/projectile-collision
-  (component/->v [[_ v]]
+  (component/->v [[_ v] c]
     (assoc v :already-hit-bodies #{}))
 
   (component/tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]

@@ -70,7 +70,7 @@
                            :fsms/player player-fsm
                            :fsms/npc npc-fsm)
                          initial-state)
-           initial-state (component/->v [initial-state eid]))))
+           initial-state (component/->v [initial-state eid] c))))
 
 (defmethod component/cursor :stunned               [_] :cursors/denied)
 (defmethod component/cursor :player-moving         [_] :cursors/walking)
@@ -94,7 +94,8 @@
         (let [old-state-obj (entity/state-obj @eid)
               new-state-obj [new-state-k (component/->v (if params
                                                           [new-state-k eid params]
-                                                          [new-state-k eid]))]]
+                                                          [new-state-k eid])
+                                                        c)]]
           (when (:entity/player? @eid)
             (when-let [cursor (component/cursor new-state-obj)]
               (c/set-cursor c cursor)))

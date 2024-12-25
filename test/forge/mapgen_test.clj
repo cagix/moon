@@ -6,7 +6,6 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]
-            [gdl.context.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
@@ -111,7 +110,7 @@
 (def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [properties]
-  (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
+  (let [{:keys [tiled-map start-position]} (generate-level (c/build world-id))
         atom-data (current-data)]
     (tiled/dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
@@ -124,8 +123,8 @@
 (defn ->generate-map-window [level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (pprint (db/build level-id))))]
-                     [(text-button "Generate" #(try (generate-screen-ctx (db/build level-id))
+              :rows [[(ui/label (with-out-str (pprint (c/build level-id))))]
+                     [(text-button "Generate" #(try (generate-screen-ctx (c/build level-id))
                                                     (catch Throwable t
                                                       (stage/error-window! t)
                                                       (println t))))]]

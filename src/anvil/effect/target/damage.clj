@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world :as world :refer [add-text-effect]]
-            [gdl.context.db :as db]
+            [gdl.context :as c]
             [gdl.rand :refer [rand-int-between]]))
 
 (defn- damage-info [{[min max] :damage/min-max}]
@@ -56,6 +56,6 @@
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (world/audiovisual c
                             (:position target*)
-                            (db/build :audiovisuals/damage))
+                            (c/build c :audiovisuals/damage))
          (entity/event c target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))

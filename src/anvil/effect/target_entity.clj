@@ -4,7 +4,6 @@
             [anvil.entity :as entity]
             [anvil.world :as world]
             [gdl.context :as c]
-            [gdl.context.db :as db]
             [gdl.math.vector :as v]))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?
@@ -47,7 +46,7 @@
          (do-all! c ctx entity-effects))
         (world/audiovisual c
                            (end-point source* target* maxrange)
-                           (db/build :audiovisuals/hit-ground)))))
+                           (c/build c :audiovisuals/hit-ground)))))
 
   (component/render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} c]
     (when target

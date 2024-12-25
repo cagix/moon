@@ -5,7 +5,6 @@
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.context :as c]
-            [gdl.context.db :as db]
             [gdl.stage :refer [add-actor]]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [gdl.ui.group :refer [children]])
@@ -74,13 +73,13 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! world/player-eid skills/add (db/build skill-id))))
+   (swap! world/player-eid skills/add (c/build (c/get-ctx) skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable
    (world/item (c/get-ctx)
                (:position @world/player-eid)
-               (db/build item-id))))
+               (c/build (c/get-ctx) item-id))))
 
 (defn- mouseover-grid-cell [c]
   @(world/grid (mapv int (c/world-mouse-position c))))

@@ -50,7 +50,7 @@
   (component/info [_]
     (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 
-  (component/->v [[_ v]]
+  (component/->v [[_ v] c]
     [v v])
 
   (component/render-info [_ entity c]

@@ -1,10 +1,10 @@
 (ns ^:no-doc anvil.entity.destroy-audiovisual
   (:require [anvil.component :as component]
-            [gdl.context.db :as db]
+            [gdl.context :as c]
             [anvil.world :as world]))
 
 (defmethods :entity/destroy-audiovisual
   (component/destroy [[_ audiovisuals-id] eid c]
     (world/audiovisual c
                        (:position @eid)
-                       (db/build audiovisuals-id))))
+                       (c/build c audiovisuals-id))))

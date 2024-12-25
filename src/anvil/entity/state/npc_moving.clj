@@ -4,7 +4,7 @@
             [anvil.world :refer [timer stopped?]]))
 
 (defmethods :npc-moving
-  (component/->v [[_ eid movement-vector]]
+  (component/->v [[_ eid movement-vector] c]
     {:eid eid
      :movement-vector movement-vector
      :counter (timer (* (entity/stat @eid :entity/reaction-time) 0.016))})

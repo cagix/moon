@@ -5,7 +5,7 @@
             [gdl.context :as c]))
 
 (defmethods :stunned
-  (component/->v [[_ eid duration]]
+  (component/->v [[_ eid duration] c]
     {:eid eid
      :counter (timer duration)})
 

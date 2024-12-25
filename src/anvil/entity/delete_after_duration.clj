@@ -3,7 +3,7 @@
             [anvil.world :refer [timer finished-ratio stopped?]]))
 
 (defmethods :entity/delete-after-duration
-  (component/->v  [[_ duration]]
+  (component/->v [[_ duration] c]
     (timer duration))
 
   (component/info [counter]

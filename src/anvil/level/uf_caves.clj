@@ -4,7 +4,6 @@
             [gdl.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
             [gdl.context :as ctx]
-            [gdl.context.db :as db]
             [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)
@@ -17,7 +16,7 @@
 
 (defn- set-creatures-tiles [spawn-rate tiled-map spawn-positions]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        creatures (db/build-all :properties/creatures)
+        creatures (ctx/build-all (ctx/get-ctx) :properties/creatures)
         level (inc (rand-int 6))
         creatures (creatures-with-level creatures level)]
     (doseq [position spawn-positions

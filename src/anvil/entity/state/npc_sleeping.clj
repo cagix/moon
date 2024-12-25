@@ -5,7 +5,7 @@
             [gdl.context :as c]))
 
 (defmethods :npc-sleeping
-  (component/->v [[_ eid]]
+  (component/->v [[_ eid] c]
     {:eid eid})
 
   (component/exit [[_ {:keys [eid]}] c]

@@ -1,12 +1,12 @@
 (ns ^:no-doc anvil.entity.state.player-dead
   (:require [anvil.component :as component]
             [clojure.gdx.audio.sound :as sound]
-            [gdl.context.db :as db]
+            [gdl.context :as c]
             [gdl.stage :refer [show-modal]]))
 
 (defmethods :player-dead
-  (component/->v [[k]]
-    (db/build :player-dead/component.enter))
+  (component/->v [[k] c]
+    (c/build c :player-dead/component.enter))
 
   (component/enter [[_ {:keys [tx/sound
                                modal/title

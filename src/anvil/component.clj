@@ -7,14 +7,14 @@
 ;; Entity
 
 (defsystem ->v)
-(defmethod ->v :default [[_ v]]
+(defmethod ->v :default [[_ v] _c]
   v)
 
 (defsystem create)
 (defmethod create :default [_ eid c])
 
 (defsystem destroy)
-(defmethod destroy :default [_ eid])
+(defmethod destroy :default [_ eid c])
 
 (defsystem tick)
 (defmethod tick :default [_ eid c])

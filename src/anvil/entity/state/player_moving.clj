@@ -4,7 +4,7 @@
             [anvil.entity :as entity]))
 
 (defmethods :player-moving
-  (component/->v [[_ eid movement-vector]]
+  (component/->v [[_ eid movement-vector] c]
     {:eid eid
      :movement-vector movement-vector})
 

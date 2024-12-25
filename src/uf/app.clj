@@ -7,7 +7,6 @@
             [clojure.java.io :as io]
             [gdl.context :as ctx :refer [draw-tiled-map]]
             [gdl.context.assets :as assets]
-            [gdl.context.db :as db]
             [gdl.context.sprite-batch :as sprite-batch]
             [gdl.context.tiled-map-renderer :as tiled-map-renderer]
             [gdl.context.viewport :as viewport-ctx]
@@ -47,7 +46,7 @@
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
                     (create [_ _gdx-state]
-                      (db/setup (:db lifecycle))
+                      (ctx/setup-db (:db lifecycle))
                       (assets/setup "resources/")
                       (sprite-batch/setup)
                       (viewport-ctx/setup (:viewport lifecycle))

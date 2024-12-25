@@ -28,7 +28,7 @@
        first))
 
 (defmethods :npc-idle
-  (component/->v [[_ eid]]
+  (component/->v [[_ eid] c]
     {:eid eid})
 
   (component/tick [_ eid c]

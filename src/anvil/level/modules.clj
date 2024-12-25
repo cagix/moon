@@ -2,7 +2,7 @@
   (:require [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
             [data.grid2d :as g2d]
-            [gdl.context.db :as db]
+            [gdl.context :as c]
             [gdl.tiled :as tiled]))
 
 ; can adjust:
@@ -58,7 +58,7 @@
 
 (defn- place-creatures! [spawn-rate tiled-map spawn-positions area-level-grid]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        creature-properties (db/build-all :properties/creatures)]
+        creature-properties (c/build-all (c/get-ctx) :properties/creatures)]
     (when spawn-creatures?
       (doseq [position spawn-positions
               :let [area-level (get area-level-grid position)]

@@ -23,5 +23,5 @@
   (component/info [_]
     (str "Mana: " (entity/mana info/*info-text-entity*)))
 
-  (component/->v [[_ v]]
+  (component/->v [[_ v] c]
     [v v]))

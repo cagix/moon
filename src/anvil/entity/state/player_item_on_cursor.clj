@@ -4,7 +4,6 @@
             [anvil.world :as world]
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c]
-            [gdl.context.db :as db]
             [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]))
 
@@ -65,8 +64,8 @@
       (entity/event c eid :pickup-item item-in-cell)))))
 
 (defmethods :player-item-on-cursor
-  (component/->v [[_ eid item]]
-    (safe-merge (db/build :player-item-on-cursor/component)
+  (component/->v [[_ eid item] c]
+    (safe-merge (c/build c :player-item-on-cursor/component)
                 {:eid eid
                  :item item}))
 

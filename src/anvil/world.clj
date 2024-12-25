@@ -5,7 +5,6 @@
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c :refer [world-viewport-width
                                        world-viewport-height]]
-            [gdl.context.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.shapes :refer [rectangle->tiles
@@ -302,9 +301,9 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
-(defn- create-vs [components]
+(defn- create-vs [components c]
   (reduce (fn [m [k v]]
-            (assoc m k (component/->v [k v])))
+            (assoc m k (component/->v [k v] c)))
           {}
           components))
 
@@ -316,7 +315,7 @@
                       create-body
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
-                                      create-vs))))]
+                                      (create-vs c)))))]
     (add-entity eid)
     (doseq [component @eid]
       (component/create component eid c))
@@ -352,7 +351,7 @@
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
 (defn creature [c {:keys [position creature-id components]}]
-  (let [props (db/build creature-id)]
+  (let [props (c/build c creature-id)]
     (spawn-entity c
                   position
                   (->body (:entity/body props))

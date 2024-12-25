@@ -7,7 +7,6 @@
             [gdl.context :as ctx]
             [gdl.context.assets :as assets]
             [gdl.context.cursors :as cursors]
-            [gdl.context.db :as db]
             [gdl.context.default-font :as default-font]
             [gdl.context.shape-drawer :as shape-drawer]
             [gdl.context.sprite-batch :as sprite-batch]
@@ -25,7 +24,7 @@
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
                     (create [_ _gdx-state]
-                      (db/setup (:db lifecycle))
+                      (ctx/setup-db (:db lifecycle))
                       (assets/setup "resources/")
                       (sprite-batch/setup)
                       (shape-drawer/setup)

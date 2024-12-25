@@ -13,7 +13,11 @@
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
+            [gdl.db :as db]
+            [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
+            [gdl.malli :as m]
+            [gdl.schema :as schema]
             [gdl.tiled :as tiled])
   (:import (com.badlogic.gdx Gdx)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
@@ -274,6 +278,9 @@
          viewport-width
          viewport-height)
 
+(defn setup-db [config]
+  (def db (db/create config)))
+
 (defn get-ctx []
   {::assets             assets
    ::camera             camera
@@ -285,4 +292,90 @@
    ::tiled-map-renderer tiled-map-renderer
    ::viewport           viewport
    ::world-unit-scale   world-unit-scale
-   ::world-viewport     world-viewport})
+   ::world-viewport     world-viewport
+   ::db                 db})
+
+(defn build [{::keys [db] :as c} id]
+  (db/build db id c))
+
+(defn build-all [{::keys [db] :as c} property-type]
+  (db/build-all db property-type c))
+
+; TODO do we care in here about malli-form ?! - where used? - hide inside 'schemas' ? or schemas/validation
+
+(defmethod schema/malli-form :s/val-max [_ _schemas] m/val-max-schema)
+(defmethod schema/malli-form :s/number  [_ _schemas] m/number-schema)
+(defmethod schema/malli-form :s/nat-int [_ _schemas] m/nat-int-schema)
+(defmethod schema/malli-form :s/int     [_ _schemas] m/int-schema)
+(defmethod schema/malli-form :s/pos     [_ _schemas] m/pos-schema)
+(defmethod schema/malli-form :s/pos-int [_ _schemas] m/pos-int-schema)
+
+(defmethods :s/sound
+  (schema/malli-form [_ _schemas]
+    m/string-schema)
+
+  (db/edn->value [_ sound-name _db c]
+    (get-sound c sound-name)))
+
+(defn- edn->sprite [c {:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (from-sprite-sheet c
+                         (sprite-sheet c file tilew tileh)
+                         [(int (/ sprite-x tilew))
+                          (int (/ sprite-y tileh))]))
+    (sprite c file)))
+
+(defmethods :s/image
+  (schema/malli-form  [_ _schemas]
+    m/image-schema)
+
+  (db/edn->value [_ edn _db c]
+    (edn->sprite c edn)))
+
+(defmethods :s/animation
+  (schema/malli-form [_ _schemas]
+    m/animation-schema)
+
+  (db/edn->value [_ {:keys [frames frame-duration looping?]} _db c]
+    (animation/create (map #(edn->sprite c %) frames)
+                      :frame-duration frame-duration
+                      :looping? looping?)))
+
+(defn- type->id-namespace [property-type]
+  (keyword (name property-type)))
+
+(defmethods :s/one-to-one
+  (schema/malli-form [[_ property-type] _schemas]
+    (m/qualified-keyword-schema (type->id-namespace property-type)))
+  (db/edn->value [_ property-id db c]
+    (build c property-id)))
+
+(defmethods :s/one-to-many
+  (schema/malli-form [[_ property-type] _schemas]
+    (m/set-schema (m/qualified-keyword-schema (type->id-namespace property-type))))
+  (db/edn->value [_ property-ids db c]
+    (set (map #(build c %) property-ids))))
+
+(defn- map-form [ks schemas]
+  (m/map-schema ks (fn [k]
+                     (schema/malli-form (schema/schema-of schemas k)
+                                        schemas))))
+; TODO schema/validate comes to this...
+; but db-data is not yet existing?
+
+(defmethod schema/malli-form :s/map [[_ ks] schemas]
+  (map-form ks schemas))
+
+(defmethod schema/malli-form :s/map-optional [[_ ks] schemas]
+  (map-form (map (fn [k] [k {:optional true}]) ks)
+            schemas))
+
+(defn- namespaced-ks [schemas ns-name-k]
+  (filter #(= (name ns-name-k) (namespace %))
+          (keys schemas)))
+
+(defmethod schema/malli-form :s/components-ns [[_ ns-name-k] schemas]
+  (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
+                     schemas))

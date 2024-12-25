@@ -4,7 +4,6 @@
             [anvil.world :as world]
             [clojure.gdx.graphics :as graphics]
             [gdl.context :as c]
-            [gdl.context.db :as db]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :refer [add-actor!]])
@@ -88,9 +87,9 @@
                                   (graphics/frames-per-second Gdx/graphics))
                      :icon "images/fps.png"}]}))
 
-(defn- config []
+(defn- config [c]
   {:menus [{:label "World"
-            :items (for [world (db/build-all :properties/worlds)]
+            :items (for [world (c/build-all c :properties/worlds)]
                      {:label (str "Start " (:property/id world))
                       :on-click #(world/create % (:property/id world))})}
            {:label "Help"
@@ -120,4 +119,4 @@
                     :icon "images/fps.png"}]})
 
 (defn-impl widgets/dev-menu [c]
-  (dev-menu-table c (config)))
+  (dev-menu-table c (config c)))

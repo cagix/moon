@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]))
 
 (defmethods :npc-dead
-  (component/->v [[_ eid]]
+  (component/->v [[_ eid] c]
     {:eid eid})
 
   (component/enter [[_ {:keys [eid]}] c]

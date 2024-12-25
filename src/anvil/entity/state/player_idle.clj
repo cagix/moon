@@ -4,12 +4,11 @@
             [clojure.gdx.audio.sound :as sound]
             [anvil.entity :as entity]
             [anvil.player :as player]
-            [gdl.context :as c]
-            [gdl.context.db :as db]))
+            [gdl.context :as c]))
 
 (defmethods :player-idle
-  (component/->v [[_ eid]]
-    (safe-merge (db/build :player-idle/clicked-inventory-cell)
+  (component/->v [[_ eid] c]
+    (safe-merge (c/build c :player-idle/clicked-inventory-cell)
                 {:eid eid}))
 
   (component/manual-tick [[_ {:keys [eid]}] c]

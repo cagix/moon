@@ -4,7 +4,7 @@
             [gdl.stage :as stage]
             [anvil.world.content-grid :as content-grid]
             [data.grid2d :as g2d]
-            [gdl.context.db :as db]
+            [gdl.context :as c]
             [gdl.tiled :as tiled]))
 
 (defn-impl world/dispose []
@@ -130,4 +130,4 @@
   ; start-position?
   ; other stuff just depend on it?!
   (world-init c
-              (generate-level (db/build world-id))))
+              (generate-level (c/build c world-id))))
