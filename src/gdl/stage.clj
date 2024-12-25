@@ -1,6 +1,7 @@
 (ns gdl.stage
   (:refer-clojure :exclude [get])
-  (:require [gdl.context :as ctx]
+  (:require [gdl.app :as app]
+            [gdl.context :as ctx]
             [gdl.ui :as ui]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group])
@@ -9,7 +10,7 @@
            (com.badlogic.gdx.scenes.scene2d.ui Table ButtonGroup)))
 
 (defn get []
-  (:gdl.context/stage @ctx/state))
+  (:gdl.context/stage @app/state))
 
 (defn get-inventory []
   (clojure.core/get (:windows (get)) :inventory-window))

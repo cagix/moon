@@ -376,17 +376,12 @@
   (component/dispose [_]
     (ui/cleanup)))
 
-(defn- create-into [c components]
+(defn create-into [c components]
   (reduce (fn [c [k v]]
             (assert (not (contains? c k)))
             (assoc c k (component/->v [k v] c)))
           c
           components))
-
-(def state (atom nil))
-
-(defn create [c components]
-  (reset! state (create-into c components)))
 
 (defn cleanup [c]
   (run! component/dispose c))

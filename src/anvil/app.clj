@@ -3,6 +3,7 @@
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [gdl.app :as app]
             [gdl.context :as ctx]))
 
 (def ^:private ^:dbg-flag pausing? true)
@@ -30,29 +31,29 @@
                       ; documented, arglist .. etc
                       ; only 'c' functions in gdl.context ...
                       ; schema not ...
-                      (ctx/create gdx-context
-                                  {:gdl.context/unit-scale 1
-                                   :gdl.context/assets "resources/"
-                                   :gdl.context/db (:db lifecycle)
-                                   :gdl.context/batch nil
-                                   :gdl.context/shape-drawer nil
-                                   :gdl.context/default-font (:default-font lifecycle)
-                                   :gdl.context/cursors (:cursors lifecycle)
-                                   :gdl.context/viewport (:viewport lifecycle)
-                                   :gdl.context/tiled-map-renderer nil
-                                   :gdl.context/world-unit-scale (:tile-size lifecycle)
-                                   :gdl.context/world-viewport (:world-viewport lifecycle)
-                                   :gdl.context/ui (:ui lifecycle)
-                                   :gdl.context/stage (fn [c] nil)})
-                      (world/create @ctx/state
+                      (reset! app/state (ctx/create-into gdx-context
+                                                         {:gdl.context/unit-scale 1
+                                                          :gdl.context/assets "resources/"
+                                                          :gdl.context/db (:db lifecycle)
+                                                          :gdl.context/batch nil
+                                                          :gdl.context/shape-drawer nil
+                                                          :gdl.context/default-font (:default-font lifecycle)
+                                                          :gdl.context/cursors (:cursors lifecycle)
+                                                          :gdl.context/viewport (:viewport lifecycle)
+                                                          :gdl.context/tiled-map-renderer nil
+                                                          :gdl.context/world-unit-scale (:tile-size lifecycle)
+                                                          :gdl.context/world-viewport (:world-viewport lifecycle)
+                                                          :gdl.context/ui (:ui lifecycle)
+                                                          :gdl.context/stage (fn [c] nil)}))
+                      (world/create @app/state
                                     (:world lifecycle)))
 
                     (dispose [_]
-                      (ctx/cleanup @ctx/state)
+                      (ctx/cleanup @app/state)
                       (world/dispose))
 
                     (render [_]
-                      (let [{:keys [gdl.context/stage] :as c} @ctx/state]
+                      (let [{:keys [gdl.context/stage] :as c} @app/state]
                         (clear-screen)
                         (world/render c)
                         (.draw stage)
@@ -60,4 +61,4 @@
                         (world/tick c pausing?)))
 
                     (resize [_ w h]
-                      (ctx/resize @ctx/state w h))))))
+                      (ctx/resize @app/state w h))))))

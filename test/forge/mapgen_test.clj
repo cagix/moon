@@ -5,6 +5,7 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
+            [gdl.app :as app]
             [gdl.context :as c :refer [draw-tiled-map]]
             [gdl.graphics.camera :as cam]
             [gdl.stage :as stage]
@@ -143,10 +144,10 @@
   #_(cam/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(draw-tiled-map @c/state
+  #_(draw-tiled-map @app/state
                     (:tiled-map @current-data)
                     (constantly color/white))
-  #_(c/draw-on-world-view @c/state
+  #_(c/draw-on-world-view @app/state
                           render-on-map)
   #_(if (key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))

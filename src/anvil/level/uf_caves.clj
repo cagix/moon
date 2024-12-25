@@ -3,6 +3,7 @@
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [gdl.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
+            [gdl.app :as app]
             [gdl.context :as ctx]
             [gdl.tiled :as tiled]))
 
@@ -16,7 +17,7 @@
 
 (defn- set-creatures-tiles [spawn-rate tiled-map spawn-positions]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        creatures (ctx/build-all @ctx/state :properties/creatures)
+        creatures (ctx/build-all @app/state :properties/creatures)
         level (inc (rand-int 6))
         creatures (creatures-with-level creatures level)]
     (doseq [position spawn-positions
@@ -34,7 +35,7 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (texture-region/create ((:gdl.context/assets @ctx/state) "maps/uf_terrain.png")
+  (tm-tile (texture-region/create ((:gdl.context/assets @app/state) "maps/uf_terrain.png")
                                   (* sprite-x sprite-size)
                                   (* sprite-y sprite-size)
                                   sprite-size

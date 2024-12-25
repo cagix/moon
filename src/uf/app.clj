@@ -51,7 +51,7 @@
                       (ui/setup (:ui lifecycle))
                       (stage/setup)
                       (ctx/create)
-                      (stage/add-actor (uf-dev-menu-table @ctx/state))
+                      (stage/add-actor (uf-dev-menu-table @app/state))
                       (bind-root tiled-map (tiled/load-tmx-map "maps/vampire.tmx"))
                       (camera/set-position! ctx/camera [30 70]))
 
@@ -62,7 +62,7 @@
                       (ui/cleanup))
 
                     (render [_]
-                      (let [c @ctx/state]
+                      (let [c @app/state]
                         (clear-screen)
                         (draw-tiled-map c tiled-map tile-color-setter)
                         (stage/render)

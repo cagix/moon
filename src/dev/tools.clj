@@ -1,9 +1,10 @@
 (ns dev.tools
   (:require [anvil.entity.skills :as skills]
             [anvil.world :as world]
-            [clojure.gdx.application :as app]
+            [clojure.gdx.application :as application]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.stage :refer [add-actor]]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
@@ -19,7 +20,7 @@
                         #{"anvil", "gdl", "uf"})
 
  (show-tree-view! (world/mouseover-entity))
- (show-tree-view! (mouseover-grid-cell @c/state))
+ (show-tree-view! (mouseover-grid-cell @app/state))
  (show-tree-view! (ns-value-vars #{"forge"}))
 
  ; Idea:
@@ -48,7 +49,7 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable
-  (world/creature @c/state
+  (world/creature @app/state
                   {:position [35 73]
                    :creature-id :creatures/dragon-red
                    :components {:entity/fsm {:fsm :fsms/npc
@@ -69,17 +70,17 @@
  )
 
 (defmacro post-runnable [& exprs]
-  `(app/post-runnable Gdx/app (fn [] ~@exprs)))
+  `(application/post-runnable Gdx/app (fn [] ~@exprs)))
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! world/player-eid skills/add (c/build @c/state skill-id))))
+   (swap! world/player-eid skills/add (c/build @app/state skill-id))))
 
 (defn- create-item! [item-id]
   (post-runnable
-   (world/item @c/state
+   (world/item @app/state
                (:position @world/player-eid)
-               (c/build @c/state item-id))))
+               (c/build @app/state item-id))))
 
 (defn- mouseover-grid-cell [c]
   @(world/grid (mapv int (c/world-mouse-position c))))
@@ -166,7 +167,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:gdl.context/viewport @c/state)
+  (let [viewport (:gdl.context/viewport @app/state)
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})

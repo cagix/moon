@@ -1,11 +1,13 @@
 (ns anvil.widgets.inventory
   (:require [anvil.component :as component]
-            [clojure.gdx.graphics.color :as color]
-            [gdl.context :as c]
             [anvil.entity :as entity]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [anvil.world :as world]
+            [clojure.gdx.graphics.color :as color]
+            [data.grid2d :as g2d]
+            [gdl.app :as app]
+            [gdl.context :as c]
             [gdl.stage :as stage]
             [gdl.ui :refer [set-drawable!
                             ui-widget
@@ -17,8 +19,7 @@
              :as ui]
             [gdl.val-max :as val-max]
             [gdl.ui.actor :refer [user-object] :as actor]
-            [gdl.ui.utils :as scene2d.utils]
-            [data.grid2d :as g2d])
+            [gdl.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
@@ -46,7 +47,7 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [^Actor this]
-     (let [c @c/state]
+     (let [c @app/state]
        (draw-cell-rect c
                        @world/player-eid
                        (.getX this)
