@@ -6,7 +6,7 @@
             [gdl.stage :as stage]))
 
 (defn player-input [])
-(defn mouseover-entity [])
+(defn mouseover-entity [c])
 (defn paused-state [])
 (defn time [])
 (defn potential-fields [])
@@ -15,9 +15,9 @@
 (defn camera-controls [camera])
 (defn window-hotkeys  [stage])
 
-(defn-impl world/tick [pausing?]
+(defn-impl world/tick [c pausing?]
   (player-input)
-  (mouseover-entity)
+  (mouseover-entity c)
   (paused-state pausing?)
   (when-not world/paused?
     (time)

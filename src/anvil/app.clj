@@ -50,11 +50,12 @@
                       (world/dispose))
 
                     (render [_]
-                      (clear-screen)
-                      (world/render)
-                      (stage/render)
-                      (stage/act)
-                      (world/tick pausing?))
+                      (let [c (ctx/get-ctx)]
+                        (clear-screen)
+                        (world/render)
+                        (stage/render)
+                        (stage/act)
+                        (world/tick c pausing?)))
 
                     (resize [_ w h]
                       (viewport/update ctx/viewport w h :center-camera? true)

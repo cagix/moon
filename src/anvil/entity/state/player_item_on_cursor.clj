@@ -87,9 +87,10 @@
                     (:entity/item-on-cursor entity)))))
 
   (component/manual-tick [[_ {:keys [eid]}]]
-    (when (and (button-just-pressed? :left)
-               (world-item? c))
-      (entity/event eid :drop-item)))
+    (let [c (c/get-ctx)]
+      (when (and (button-just-pressed? :left)
+                 (world-item? c))
+        (entity/event eid :drop-item))))
 
   (component/render-below [[_ {:keys [item]}] entity c]
     (when (world-item? c)

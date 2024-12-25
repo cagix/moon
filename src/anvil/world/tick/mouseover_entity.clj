@@ -4,9 +4,8 @@
             [gdl.context :as c]
             [gdl.stage :as stage]))
 
-(defn- calculate-eid []
-  (let [c (c/get-ctx)
-        player @world/player-eid
+(defn- calculate-eid [c]
+  (let [player @world/player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities
                       (c/world-mouse-position c)))]
@@ -16,15 +15,15 @@
          (filter #(line-of-sight? player @%))
          first)))
 
-(defn- update-mouseover-entity []
-  (let [new-eid (if (stage/mouse-on-actor? (ctx/get-ctx))
+(defn- update-mouseover-entity [c]
+  (let [new-eid (if (stage/mouse-on-actor? c)
                   nil
-                  (calculate-eid))]
+                  (calculate-eid c))]
     (when mouseover-eid
       (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
     (bind-root mouseover-eid new-eid)))
 
-(defn-impl tick/mouseover-entity []
-  (update-mouseover-entity))
+(defn-impl tick/mouseover-entity [c]
+  (update-mouseover-entity c))
