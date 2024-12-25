@@ -22,11 +22,11 @@
  2432
  )
 
-(defn- tile-color-setter* [light-cache light-position]
+(defn- tile-color-setter [explored-tile-corners light-cache light-position]
   #_(reset! do-once false)
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
-          explored? (get @world/explored-tile-corners position) ; TODO needs int call ?
+          explored? (get @explored-tile-corners position) ; TODO needs int call ?
           base-color (if explored? explored-tile-color color/black)
           cache-entry (get @light-cache position :not-found)
           blocked? (if (= cache-entry :not-found)
@@ -39,13 +39,14 @@
       (if blocked?
         (if see-all-tiles? color/white base-color)
         (do (when-not explored?
-              (swap! world/explored-tile-corners assoc (mapv int position) true))
+              (swap! explored-tile-corners assoc (mapv int position) true))
             color/white)))))
 
-(defn tile-color-setter [light-position]
-  (tile-color-setter* (atom {}) light-position))
-
-(defn-impl render/render-tiled-map [c tiled-map light-position]
+(defn-impl render/render-tiled-map [{:keys [cdq.context/explored-tile-corners] :as c}
+                                    tiled-map
+                                    light-position]
   (c/draw-tiled-map c
                     tiled-map
-                    (tile-color-setter light-position)))
+                    (tile-color-setter explored-tile-corners
+                                       (atom {})
+                                       light-position)))

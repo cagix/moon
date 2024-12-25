@@ -23,7 +23,7 @@
 (def factions-iterations {:good 15 :evil 5})
 
 (declare ^:private tiled-map ; no accesses
-         explored-tile-corners
+         ^:private explored-tile-corners
          grid
          entity-ids
          content-grid
@@ -43,6 +43,7 @@
 (defn state []
   {:cdq.context/tiled-map tiled-map
    :cdq.context/player-eid player-eid
+   :cdq.context/explored-tile-corners explored-tile-corners
    })
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
