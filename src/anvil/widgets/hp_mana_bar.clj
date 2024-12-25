@@ -24,7 +24,8 @@
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
                             (c/draw-image rahmen [x y])
-                            (c/draw-image (c/sub-sprite contentimage
+                            (c/draw-image (c/sub-sprite c
+                                                        contentimage
                                                         [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                           [x y])
                             (render-infostr-on-bar (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]

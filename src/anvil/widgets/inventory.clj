@@ -69,8 +69,9 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [c slot]
-  (-> (c/sprite-sheet c "images/items.png" 48 48)
-      (c/from-sprite-sheet (slot->sprite-idx slot))))
+  (c/from-sprite-sheet c
+                       (c/sprite-sheet c "images/items.png" 48 48)
+                       (slot->sprite-idx slot)))
 
 (defn- slot->background [c slot]
   (let [drawable (-> (slot->sprite c slot)

@@ -112,7 +112,8 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (ctx/from-sprite-sheet (ctx/sprite-sheet c file tilew tileh)
+      (ctx/from-sprite-sheet c
+                             (ctx/sprite-sheet c file tilew tileh)
                              [(int (/ sprite-x tilew))
                               (int (/ sprite-y tileh))]))
     (ctx/sprite c file)))

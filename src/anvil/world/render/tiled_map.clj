@@ -2,7 +2,7 @@
   (:require [anvil.world :as world]
             [anvil.world.render :as render]
             [clojure.gdx.graphics.color :as color]
-            [gdl.context :refer [draw-tiled-map]]))
+            [gdl.context :as c]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
@@ -46,5 +46,6 @@
   (tile-color-setter* (atom {}) light-position))
 
 (defn-impl render/tiled-map [tiled-map light-position]
-  (draw-tiled-map tiled-map
-                  (tile-color-setter light-position)))
+  (c/draw-tiled-map (c/get-ctx)
+                    tiled-map
+                    (tile-color-setter light-position)))

@@ -143,9 +143,10 @@
   #_(cam/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(draw-tiled-map (:tiled-map @current-data)
+  #_(draw-tiled-map (c/get-ctx)
+                    (:tiled-map @current-data)
                     (constantly color/white))
-  #_(c/draw-on-world-view render-on-map)
+  #_(c/draw-on-world-view (c/get-ctx) render-on-map)
   #_(if (key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
   #_(if (key-just-pressed? :m)

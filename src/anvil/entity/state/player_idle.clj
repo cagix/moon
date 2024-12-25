@@ -4,7 +4,7 @@
             [clojure.gdx.audio.sound :as sound]
             [anvil.entity :as entity]
             [anvil.player :as player]
-            [gdl.context :refer [set-cursor]]
+            [gdl.context :as c]
             [gdl.context.db :as db]))
 
 (defmethods :player-idle
@@ -16,7 +16,7 @@
     (if-let [movement-vector (controls/movement-vector)]
       (entity/event eid :movement-input movement-vector)
       (let [[cursor on-click] (player/interaction-state eid)]
-        (set-cursor cursor)
+        (c/set-cursor (c/get-ctx) cursor)
         (when (button-just-pressed? :left)
           (on-click)))))
 

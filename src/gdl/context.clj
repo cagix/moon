@@ -26,47 +26,31 @@
 (defn play-sound [c sound-name]
   (sound/play (get-sound c sound-name)))
 
-(declare world-unit-scale
-         world-viewport-width
-         world-viewport-height
-         world-viewport
-         camera)
-
 (defn- texture-region [{::keys [assets]} path]
   (texture-region/create (assets path)))
 
-(defn sprite [c path]
+(defn sprite [{::keys [world-unit-scale] :as c} path]
   (sprite/create world-unit-scale
                  (texture-region c path)))
 
-(defn sub-sprite [sprite xywh]
+(defn sub-sprite [{::keys [world-unit-scale]} sprite xywh]
   (sprite/sub world-unit-scale
               sprite
               xywh))
 
-(defn sprite-sheet [c path tilew tileh]
+(defn sprite-sheet [{::keys [world-unit-scale] :as c} path tilew tileh]
   (sprite/sheet world-unit-scale
                 (texture-region c path)
                 tilew
                 tileh))
 
-(defn from-sprite-sheet [sprite-sheet xy]
+(defn from-sprite-sheet [{::keys [world-unit-scale]} sprite-sheet xy]
   (sprite/from-sheet world-unit-scale
                      sprite-sheet
                      xy))
 
-(declare default-font)
-
-(declare cursors)
-
-(defn set-cursor [cursor-key]
+(defn set-cursor [{::keys [cursors]} cursor-key]
   (g/set-cursor Gdx/graphics (safe-get cursors cursor-key)))
-
-(declare viewport
-         viewport-width
-         viewport-height)
-
-(declare tiled-map-renderer)
 
 (defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
@@ -88,7 +72,7 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [tiled-map color-setter]
+  [{::keys [camera tiled-map-renderer]} tiled-map color-setter]
   (draw-tiled-map* (tiled-map-renderer tiled-map)
                    tiled-map
                    color-setter
@@ -99,14 +83,27 @@
 (def ^:dynamic *unit-scale* 1)
 
 (declare assets)
-
+(declare default-font)
 (declare batch)
+(declare cursors)
+(declare world-unit-scale
+         world-viewport
+         world-viewport-width
+         world-viewport-height)
+
+(declare camera)
+(declare tiled-map-renderer)
 
 (defn get-ctx []
-  {::assets       assets
-   ::default-font default-font
-   ::batch        batch
-   ::unit-scale   *unit-scale*})
+  {::assets             assets
+   ::camera             camera
+   ::cursors            cursors
+   ::default-font       default-font
+   ::batch              batch
+   ::unit-scale         *unit-scale*
+   ::shape-drawer       shape-drawer
+   ::tiled-map-renderer tiled-map-renderer
+   ::world-unit-scale   world-unit-scale})
 
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
@@ -257,6 +254,10 @@
                          (binding [*unit-scale* unit-scale]
                            (draw-fn))))))
 
+(declare viewport
+         viewport-width
+         viewport-height)
+
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
@@ -279,8 +280,8 @@
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position world-viewport))
 
-(defn pixels->world-units [pixels]
+(defn pixels->world-units [{::keys [world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
 
-(defn draw-on-world-view [render-fn]
+(defn draw-on-world-view [{::keys [world-unit-scale]} render-fn]
   (draw-with world-viewport world-unit-scale render-fn))

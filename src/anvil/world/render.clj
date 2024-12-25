@@ -16,7 +16,8 @@
   (cam/set-position! c/camera (:position @world/player-eid))
   ; FIXME position DRY
   (tiled-map world/tiled-map (cam/position c/camera))
-  (c/draw-on-world-view (fn []
+  (c/draw-on-world-view (c/get-ctx)
+                        (fn []
                           (debug-before-entities)
                           ; FIXME position DRY (from player)
                           (entities (map deref (world/active-entities)))

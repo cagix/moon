@@ -68,7 +68,7 @@
 
                     (render [_]
                       (clear-screen)
-                      (draw-tiled-map tiled-map tile-color-setter)
+                      (draw-tiled-map (ctx/get-ctx) tiled-map tile-color-setter)
                       (stage/render)
                       (stage/act))
 
