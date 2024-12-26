@@ -24,5 +24,5 @@
                         (fn [c]
                           (debug-before-entities c)
                           ; FIXME position DRY (from player)
-                          (entities c (map deref (world/active-entities)))
+                          (entities c (map deref (world/active-entities c)))
                           (debug-after-entities c))))

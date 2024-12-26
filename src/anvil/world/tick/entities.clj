@@ -20,7 +20,7 @@
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
 
 (defn-impl tick/entities [c]
-  (try (run! #(tick-entity c %) (world/active-entities))
+  (try (run! #(tick-entity c %) (world/active-entities c))
        (catch Throwable t
          (stage/error-window! t)
          (bind-root world/error t))))

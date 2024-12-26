@@ -19,8 +19,8 @@
 (declare ^:private tiled-map
          ^:private explored-tile-corners
          ^:private grid
-         entity-ids
-         content-grid
+         ^:private entity-ids
+         ^:private content-grid
          player-eid
          raycaster
 
@@ -40,6 +40,8 @@
    ::tiled-map tiled-map
    ::player-eid player-eid
    ::explored-tile-corners explored-tile-corners
+   ::entity-ids entity-ids
+   ::content-grid content-grid
    })
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
@@ -93,7 +95,7 @@
   (and mouseover-eid
        @mouseover-eid))
 
-(defn all-entities []
+(defn all-entities [{::keys [entity-ids]}]
   (vals entity-ids))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -147,9 +149,8 @@
     (assert (contains? entity-ids id))
     (alter-var-root #'entity-ids dissoc id)))
 
-(defn active-entities []
-  (content-grid/active-entities content-grid
-                                @player-eid))
+(defn active-entities [{::keys [content-grid]}]
+  (content-grid/active-entities content-grid @player-eid))
 
 (defn- add-entity [eid]
   ; https://github.com/damn/core/issues/58
@@ -334,13 +335,13 @@
 
 (defn remove-destroyed-entities [c]
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (all-entities))]
+                      (all-entities c))]
     (remove-entity eid)
     (doseq [component @eid]
       (component/destroy component eid c))))
 
 (defn creatures-in-los-of-player [c]
-  (->> (active-entities)
+  (->> (active-entities c)
        (filter #(:entity/species @%))
        (filter #(line-of-sight? c @player-eid @%))
        (remove #(:entity/player? @%))))

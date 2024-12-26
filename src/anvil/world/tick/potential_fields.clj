@@ -145,4 +145,4 @@
     (update-faction-potential-field grid faction entities max-iterations)))
 
 (defn-impl tick/potential-fields [c]
-  (update-potential-fields! c (world/active-entities)))
+  (update-potential-fields! c (world/active-entities c)))
