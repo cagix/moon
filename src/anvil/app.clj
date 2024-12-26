@@ -1,6 +1,6 @@
 (ns anvil.app
   (:require [cdq.context :as world]
-            [clojure.gdx :as gdx]
+            [clojure.gdx :as gdx :refer [clear-screen black]]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -57,7 +57,7 @@
 
                     (render [_]
                       (let [{:keys [gdl.context/stage] :as c} @app/state]
-                        (clear-screen)
+                        (clear-screen black)
                         (world/render c)
                         (.draw stage)
                         (.act stage))
