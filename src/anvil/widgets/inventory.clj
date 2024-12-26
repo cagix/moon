@@ -46,7 +46,7 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [^Actor this]
-     (let [{:keys [cdq.context/player-eid] :as c} (safe-merge (cdq.context/state) @gdl.app/state)]
+     (let [{:keys [cdq.context/player-eid] :as c} @app/state]
        (draw-cell-rect c
                        @player-eid
                        (.getX this)
@@ -139,8 +139,7 @@
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (scene2d.utils/set-min-size! drawable cell-size)
     (set-drawable! image-widget drawable)
-    (add-tooltip! cell-widget #(info/text (safe-merge (cdq.context/state) @gdl.app/state)
-                                          item))))
+    (add-tooltip! cell-widget #(info/text @app/state item))))
 
 (defn-impl widgets/remove-item-from-widget [c cell]
   (let [cell-widget (cell-widget cell)

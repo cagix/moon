@@ -4,10 +4,125 @@
             [anvil.world.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.gdx.audio.sound :as sound]
+            [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
-            [gdl.math.vector :as v]))
+            [gdl.math.vector :as v]
+            [gdl.tiled :as tiled]))
+
+(defmethods ::tiled-map
+  (component/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
+    (tiled/dispose tiled-map)))
+
+(defmethods ::error
+  (component/->v [_ _c]
+    nil))
+
+(defmethods ::explored-tile-corners
+  (component/->v [_ {::keys [tiled-map]}]
+    (atom (g2d/create-grid
+           (tiled/tm-width  tiled-map)
+           (tiled/tm-height tiled-map)
+           (constantly false)))))
+
+(defrecord RCell [position
+                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
+                  adjacent-cells
+                  movement
+                  entities
+                  occupied
+                  good
+                  evil]
+  grid/Cell
+  (blocked? [_ z-order]
+    (case movement
+      :none true ; wall
+      :air (case z-order ; water/doodads
+             :z-order/flying false
+             :z-order/ground true)
+      :all false)) ; ground/floor
+
+  (blocks-vision? [_]
+    (= movement :none))
+
+  (occupied-by-other? [_ eid]
+    (some #(not= % eid) occupied)) ; contains? faster?
+
+  (nearest-entity [this faction]
+    (-> this faction :eid))
+
+  (nearest-entity-distance [this faction]
+    (-> this faction :distance)))
+
+(defn- ->grid-cell [position movement]
+  {:pre [(#{:none :air :all} movement)]}
+  (map->RCell
+   {:position position
+    :middle (tile->middle position)
+    :movement movement
+    :entities #{}
+    :occupied #{}}))
+
+(defmethods ::grid
+  (component/->v [_ {::keys [tiled-map]}]
+    (g2d/create-grid
+     (tiled/tm-width tiled-map)
+     (tiled/tm-height tiled-map)
+     (fn [position]
+       (atom (->grid-cell position
+                          (case (tiled/movement-property tiled-map position)
+                            "none" :none
+                            "air"  :air
+                            "all"  :all)))))))
+
+(defmethods ::content-grid
+  (component/->v [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
+    (content-grid/create {:cell-size cell-size
+                          :width  (tiled/tm-width  tiled-map)
+                          :height (tiled/tm-height tiled-map)})))
+
+(defmethods ::entity-ids
+  (component/->v [_ _c]
+    (atom {})))
+
+(defmethods ::elapsed-time
+  (component/->v [_ _c]
+    0))
+
+; TODO this passing w. world props ...
+; player-creature needs mana & inventory
+; till then hardcode :creatures/vampire
+(defn- player-entity-props [start-position]
+  {:position (tile->middle start-position)
+   :creature-id :creatures/vampire
+   :components {:entity/fsm {:fsm :fsms/player
+                             :initial-state :player-idle}
+                :entity/faction :good
+                :entity/player? true
+                :entity/free-skill-points 3
+                :entity/clickable {:type :clickable/player}
+                :entity/click-distance-tiles 1.5}})
+
+(declare creature)
+
+(defmethods ::player-eid
+  (component/->v [_ {::keys [start-position] :as c}]
+    (assert start-position)
+    (creature c (player-entity-props start-position))))
+
+(defn- set-arr [arr cell cell->blocked?]
+  (let [[x y] (:position cell)]
+    (aset arr x y (boolean (cell->blocked? cell)))))
+
+(defmethods ::raycaster
+  (component/->v [_ {::keys [grid]}]
+    (let [width  (g2d/width  grid)
+          height (g2d/height grid)
+          arr (make-array Boolean/TYPE width height)]
+      (doseq [cell (g2d/cells grid)]
+        (set-arr arr @cell grid/blocks-vision?))
+      [arr width height])))
 
 (defn widgets [c])
 
@@ -15,36 +130,6 @@
 (defn dispose [w])
 (defn render [])
 (defn tick [])
-
-(declare ^:private tiled-map
-         ^:private explored-tile-corners
-         ^:private grid
-         ^:private entity-ids ; alter-var-root
-         ^:private content-grid
-         ^:private player-eid
-         ^:private raycaster
-
-         ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
-         elapsed-time ; alter-var-root
-
-         ^{:doc "The game logic update delta-time in ms."}
-         delta-time ; bind-root
-
-         paused? ; bind-root
-         mouseover-eid ; bind-root
-         error) ; bind-root
-
-(defn state []
-  {::grid grid
-   ::factions-iterations {:good 15 :evil 5}
-   ::tiled-map tiled-map
-   ::player-eid player-eid
-   ::explored-tile-corners explored-tile-corners
-   ::entity-ids entity-ids
-   ::content-grid content-grid
-   ::raycaster raycaster
-   ::elapsed-time elapsed-time
-   })
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
@@ -96,12 +181,12 @@
     ; min 1 because floating point math inaccuracies
     (min 1 (/ (- stop-time elapsed-time) duration))))
 
-(defn mouseover-entity []
+(defn mouseover-entity [{::keys [mouseover-eid]}]
   (and mouseover-eid
        @mouseover-eid))
 
 (defn all-entities [{::keys [entity-ids]}]
-  (vals entity-ids))
+  (vals @entity-ids))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -144,32 +229,26 @@
            {:text text
             :counter (timer c 0.4)})))
 
-(defn- entity-ids-add-entity [eid]
-  (let [id (:entity/id @eid)]
-    (assert (number? id))
-    (alter-var-root #'entity-ids assoc id eid)))
-
-(defn- entity-ids-remove-entity [eid]
-  (let [id (:entity/id @eid)]
-    (assert (contains? entity-ids id))
-    (alter-var-root #'entity-ids dissoc id)))
-
 (defn active-entities [{::keys [content-grid player-eid]}]
   (content-grid/active-entities content-grid @player-eid))
 
-(defn- add-entity [eid]
+(defn- add-entity [{::keys [content-grid grid entity-ids]} eid]
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (content-grid/add-entity content-grid eid)
-  (entity-ids-add-entity   eid)
+  (let [id (:entity/id @eid)]
+    (assert (number? id))
+    (swap! entity-ids assoc id eid))
   (grid/add-entity grid eid))
 
-(defn- remove-entity [eid]
+(defn- remove-entity [{::keys [entity-ids]} eid]
   (content-grid/remove-entity eid)
-  (entity-ids-remove-entity   eid)
+  (let [id (:entity/id @eid)]
+    (assert (contains? @entity-ids id))
+    (swap! entity-ids dissoc id))
   (grid/remove-entity         eid))
 
-(defn position-changed [eid]
+(defn position-changed [{::keys [content-grid grid]} eid]
   (content-grid/entity-position-changed content-grid eid)
   (grid/entity-position-changed grid eid))
 
@@ -241,7 +320,7 @@
                       (safe-merge (-> components
                                       (assoc :entity/id (unique-number!))
                                       (create-vs c)))))]
-    (add-entity eid)
+    (add-entity c eid)
     (doseq [component @eid]
       (component/create component eid c))
     eid))
@@ -341,7 +420,7 @@
 (defn remove-destroyed-entities [c]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (all-entities c))]
-    (remove-entity eid)
+    (remove-entity c eid)
     (doseq [component @eid]
       (component/destroy component eid c))))
 
@@ -359,6 +438,6 @@
        (circle->entities c)
        (filter #(= (:entity/faction @%) faction))))
 
-(defn nearest-enemy [entity]
+(defn nearest-enemy [{::keys [grid]} entity]
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))

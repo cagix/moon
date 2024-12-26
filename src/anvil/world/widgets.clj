@@ -3,6 +3,7 @@
             [anvil.entity :as entity]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [ui-actor] :as ui]))
 
@@ -20,6 +21,6 @@
    (ui/group {:id :windows
               :actors [(widgets/entity-info-window c)
                        (widgets/inventory c)]})
-   (ui-actor {:draw #(draw-gui-view (entity/state-obj @(:cdq.context/player-eid (world/state)))
+   (ui-actor {:draw #(draw-gui-view (entity/state-obj @(:cdq.context/player-eid @app/state))
                                     c)})
    (widgets/player-message)])

@@ -2,7 +2,6 @@
   (:require [anvil.entity :as entity]
             [anvil.skill :as skill]
             [anvil.player :as player]
-            [cdq.context :as world]
             [gdl.context :as c :refer [play-sound]]
             [gdl.math.vector :as v]
             [gdl.stage :as stage]
@@ -68,25 +67,25 @@
      (button? actor)                     :cursors/over-button
      :else                               :cursors/default)))
 
-(defn- player-effect-ctx [c eid]
-  (let [target-position (or (and world/mouseover-eid
-                                 (:position @world/mouseover-eid))
+(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid] :as c} eid]
+  (let [target-position (or (and mouseover-eid
+                                 (:position @mouseover-eid))
                             (c/world-mouse-position c))]
     {:effect/source eid
-     :effect/target world/mouseover-eid
+     :effect/target mouseover-eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [c eid]
+(defn- interaction-state [{:keys [cdq.context/mouseover-eid] :as c} eid]
   (let [entity @eid]
     (cond
      (stage/mouse-on-actor? c)
      [(mouseover-actor->cursor c)
       (fn [] nil)] ; handled by actors themself, they check player state
 
-     (and world/mouseover-eid
-          (:entity/clickable @world/mouseover-eid))
-     (clickable-entity-interaction c entity world/mouseover-eid)
+     (and mouseover-eid
+          (:entity/clickable @mouseover-eid))
+     (clickable-entity-interaction c entity mouseover-eid)
 
      :else
      (if-let [skill-id (stage/selected-skill)]

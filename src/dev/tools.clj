@@ -19,7 +19,7 @@
  (print-app-values-tree "app-values-tree.clj"
                         #{"anvil", "gdl", "uf"})
 
- (show-tree-view! (world/mouseover-entity))
+ (show-tree-view! (world/mouseover-entity @app/state))
  (show-tree-view! (mouseover-grid-cell @app/state))
  (show-tree-view! (ns-value-vars #{"forge"}))
 

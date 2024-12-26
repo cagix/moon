@@ -23,4 +23,5 @@
   (try (run! #(tick-entity c %) (world/active-entities c))
        (catch Throwable t
          (stage/error-window! t)
-         (bind-root world/error t))))
+         #_(bind-root world/error t))) ; FIXME ... either reduce or use an atom ...
+  c)

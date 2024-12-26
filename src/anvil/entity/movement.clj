@@ -52,7 +52,7 @@
 (defmethods :entity/movement
   (component/tick [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
                    eid
-                   c]
+                   {:keys [cdq.context/delta-time] :as c}]
     (assert (m/validate speed-schema speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))
@@ -61,12 +61,12 @@
     (when-not (or (zero? (v/length direction))
                   (nil? speed)
                   (zero? speed))
-      (let [movement (assoc movement :delta-time world/delta-time)
+      (let [movement (assoc movement :delta-time delta-time)
             body @eid]
         (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                           (try-move-solid-body c body movement)
                           (move-body body movement))]
-          (world/position-changed eid)
+          (world/position-changed c eid)
           (swap! eid assoc
                  :position (:position body)
                  :left-bottom (:left-bottom body))

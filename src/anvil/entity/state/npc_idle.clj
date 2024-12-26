@@ -8,7 +8,7 @@
 
 (defn- effect-context [c eid]
   (let [entity @eid
-        target (world/nearest-enemy entity)
+        target (world/nearest-enemy c entity)
         target (when (and target
                           (world/line-of-sight? c entity @target))
                  target)]

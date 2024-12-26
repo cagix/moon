@@ -30,7 +30,7 @@
                                           [x y])
                             (render-infostr-on-bar c (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
-                       (let [{:keys [cdq.context/player-eid]} (cdq.context/state)
+                       (let [{:keys [cdq.context/player-eid]} @app/state
                              player-entity @player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")

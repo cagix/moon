@@ -378,7 +378,8 @@
 (defn create-into [c components]
   (reduce (fn [c [k v]]
             (assert (not (contains? c k)))
-            (assoc c k (component/->v [k v] c)))
+            (println k)
+            (assoc c k (time (component/->v [k v] c))))
           c
           components))
 

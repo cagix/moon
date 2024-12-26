@@ -31,8 +31,7 @@
 (defn- add-update-labels [c menu-bar update-labels]
   (let [table (ui/menu-bar->table menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
-      (let [update-fn #(str label ": " (update-fn (safe-merge @app/state
-                                                              (world/state))))]
+      (let [update-fn #(str label ": " (update-fn @app/state))]
         (if icon
           (add-upd-label c table update-fn icon)
           (add-upd-label c table update-fn))))))
@@ -93,12 +92,12 @@
   {:menus [{:label "World"
             :items (for [world (c/build-all c :properties/worlds)]
                      {:label (str "Start " (:property/id world))
-                      :on-click #(world/create % (:property/id world))})}
+                      :on-click #(world/create % (:property/id world))})} ; TODO fixme
            {:label "Help"
             :items [{:label controls/help-text}]}]
    :update-labels [{:label "Mouseover-entity id"
-                    :update-fn (fn [_c]
-                                 (when-let [entity (world/mouseover-entity)]
+                    :update-fn (fn [c]
+                                 (when-let [entity (world/mouseover-entity c)]
                                    (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"
@@ -106,8 +105,7 @@
                                  (str (readable-number elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
-                    :update-fn (fn [_c]
-                                 world/paused?)}
+                    :update-fn :cdq.context/paused?}
                    {:label "GUI"
                     :update-fn c/mouse-position}
                    {:label "World"

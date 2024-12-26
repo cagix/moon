@@ -10,7 +10,8 @@
 
 (defn -main []
   (let [{:keys [requires lwjgl3 lifecycle]} (-> "app.edn" io/resource slurp edn/read-string)]
-    (run! require requires)
+    (println "(run! require requires)")
+    (time (run! require requires))
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
                     (create [_ gdx-context]
@@ -36,6 +37,7 @@
                                                           :gdl.context/assets "resources/"
                                                           :gdl.context/db (:db lifecycle)
                                                           :gdl.context/batch nil
+                                                          ; TODO shape-drawer-texture separate
                                                           :gdl.context/shape-drawer nil
                                                           :gdl.context/default-font (:default-font lifecycle)
                                                           :gdl.context/cursors (:cursors lifecycle)
@@ -45,21 +47,20 @@
                                                           :gdl.context/world-viewport (:world-viewport lifecycle)
                                                           :gdl.context/ui (:ui lifecycle)
                                                           :gdl.context/stage (fn [c] nil)}))
-                      (world/create @app/state
-                                    (:world lifecycle)))
+                      (world/create @app/state (:world lifecycle)))
+
+                    ; TODO restart won't work because create-into checks ccontains? 'safe-create-into?'
 
                     (dispose [_]
-                      (ctx/cleanup @app/state)
-                      (world/dispose (world/state)))
+                      (ctx/cleanup @app/state))
 
                     (render [_]
                       (let [{:keys [gdl.context/stage] :as c} @app/state]
                         (clear-screen)
-                        (world/render (safe-merge c (world/state)))
+                        (world/render c)
                         (.draw stage)
-                        (.act stage)
-                        (world/tick (safe-merge c (world/state))
-                                    pausing?)))
+                        (.act stage))
+                      (swap! app/state world/tick pausing?))
 
                     (resize [_ w h]
                       (ctx/resize @app/state w h))))))
