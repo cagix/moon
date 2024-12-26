@@ -1,10 +1,10 @@
 (ns anvil.info
   (:require [anvil.component :as component]
-            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.string :as str]))
 
-(colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52))
+(colors/put "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
 
 (def k->colors {:property/pretty-name "PRETTY_NAME"
                 :entity/modifiers "CYAN"

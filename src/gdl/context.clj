@@ -1,8 +1,7 @@
 (ns gdl.context
   (:require [anvil.component :as component]
-            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians]]
+            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white]]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
@@ -97,7 +96,7 @@
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
         (keyword? c) (interop/k->color c)
-        (vector? c) (apply color/create c)
+        (vector? c) (apply gdx/color c)
         :else (throw (ex-info "Cannot understand color" c))))
 
 (defn- sd-color [shape-drawer color]
@@ -203,7 +202,7 @@
               :scale-x 1
               :scale-y 1
               :rotation rotation)
-  (if color (batch/set-color batch color/white)))
+  (if color (batch/set-color batch white)))
 
 (defn draw-image
   [{::keys [batch unit-scale]} {:keys [texture-region color] :as image} position]
@@ -229,7 +228,7 @@
   (draw-rotated-centered c image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
+  (batch/set-color batch white) ; fix scene2d.ui.tooltip flickering
   (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
   (batch/begin batch)
   (draw-fn)
@@ -272,7 +271,7 @@
 
 (defn- sd-texture []
   (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
-                 (pixmap/set-color color/white)
+                 (pixmap/set-color white)
                  (pixmap/draw-pixel 0 0))
         texture (texture/create pixmap)]
     (dispose pixmap)

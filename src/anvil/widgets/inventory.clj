@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
-            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx :as gdx]
             [data.grid2d :as g2d]
             [gdl.app :as app]
             [gdl.context :as c]
@@ -80,7 +80,7 @@
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (color/create 1 1 1 0.4))))
+    (scene2d.utils/tint drawable (gdx/color 1 1 1 0.4))))
 
 (defn- ->cell ^Actor [{:keys [cdq.context/player-eid] :as c} slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]

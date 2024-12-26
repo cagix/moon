@@ -1,10 +1,10 @@
 (ns anvil.world.render.tiled-map
   (:require [anvil.world.render :as render]
-            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx :as gdx :refer [white black]]
             [gdl.context :as c]
             [gdl.math.raycaster :as raycaster]))
 
-(def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
+(def ^:private explored-tile-color (gdx/color 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 
@@ -27,7 +27,7 @@
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
           explored? (get @explored-tile-corners position) ; TODO needs int call ?
-          base-color (if explored? explored-tile-color color/black)
+          base-color (if explored? explored-tile-color black)
           cache-entry (get @light-cache position :not-found)
           blocked? (if (= cache-entry :not-found)
                      (let [blocked? (raycaster/blocked? raycaster light-position position)]
@@ -37,7 +37,7 @@
       #_(when @do-once
           (swap! ray-positions conj position))
       (if blocked?
-        (if see-all-tiles? color/white base-color)
+        (if see-all-tiles? white base-color)
         (do (when-not explored?
               (swap! explored-tile-corners assoc (mapv int position) true))
             color/white)))))

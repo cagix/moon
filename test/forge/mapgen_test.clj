@@ -2,7 +2,7 @@
   (:require [anvil.controls :as controls]
             [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
-            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx :refer [white]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.app :as app]
@@ -147,7 +147,7 @@
 (defn render [_]
   #_(draw-tiled-map @app/state
                     (:tiled-map @current-data)
-                    (constantly color/white))
+                    (constantly white))
   #_(c/draw-on-world-view @app/state
                           render-on-map)
   #_(if (key-just-pressed? :l)
