@@ -4,8 +4,9 @@
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [gdl.app :as app]
             [gdl.context :as ctx]))
+
+(def state (atom nil))
 
 (def ^:private ^:dbg-flag pausing? true)
 
@@ -33,35 +34,35 @@
                      ; documented, arglist .. etc
                      ; only 'c' functions in gdl.context ...
                      ; schema not ...
-                     (reset! app/state (ctx/create-into (gdx/context)
-                                                        {:gdl.context/unit-scale 1
-                                                         :gdl.context/assets "resources/"
-                                                         :gdl.context/db (:db lifecycle)
-                                                         :gdl.context/batch nil
-                                                         ; TODO shape-drawer-texture separate
-                                                         :gdl.context/shape-drawer nil
-                                                         :gdl.context/default-font (:default-font lifecycle)
-                                                         :gdl.context/cursors (:cursors lifecycle)
-                                                         :gdl.context/viewport (:viewport lifecycle)
-                                                         :gdl.context/tiled-map-renderer nil
-                                                         :gdl.context/world-unit-scale (:tile-size lifecycle)
-                                                         :gdl.context/world-viewport (:world-viewport lifecycle)
-                                                         :gdl.context/ui (:ui lifecycle)
-                                                         :gdl.context/stage (fn [c] nil)}))
-                     (world/create @app/state (:world lifecycle)))
+                     (reset! state (ctx/create-into (gdx/context)
+                                                    {:gdl.context/unit-scale 1
+                                                     :gdl.context/assets "resources/"
+                                                     :gdl.context/db (:db lifecycle)
+                                                     :gdl.context/batch nil
+                                                     ; TODO shape-drawer-texture separate
+                                                     :gdl.context/shape-drawer nil
+                                                     :gdl.context/default-font (:default-font lifecycle)
+                                                     :gdl.context/cursors (:cursors lifecycle)
+                                                     :gdl.context/viewport (:viewport lifecycle)
+                                                     :gdl.context/tiled-map-renderer nil
+                                                     :gdl.context/world-unit-scale (:tile-size lifecycle)
+                                                     :gdl.context/world-viewport (:world-viewport lifecycle)
+                                                     :gdl.context/ui (:ui lifecycle)
+                                                     :gdl.context/stage (fn [c] nil)}))
+                     (world/create @state (:world lifecycle)))
 
                    ; TODO restart won't work because create-into checks ccontains? 'safe-create-into?'
 
                    (dispose [_]
-                     (ctx/cleanup @app/state))
+                     (ctx/cleanup @state))
 
                    (render [_]
-                     (let [{:keys [gdl.context/stage] :as c} @app/state]
+                     (let [{:keys [gdl.context/stage] :as c} @state]
                        (clear-screen black)
                        (world/render c)
                        (.draw stage)
                        (.act stage))
-                     (swap! app/state world/tick pausing?))
+                     (swap! state world/tick pausing?))
 
                    (resize [_ w h]
-                     (ctx/resize @app/state w h))))))
+                     (ctx/resize @state w h))))))

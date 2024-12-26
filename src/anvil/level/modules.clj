@@ -2,7 +2,7 @@
   (:require [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
             [data.grid2d :as g2d]
-            [gdl.app :as app]
+            [anvil.app :as app]
             [gdl.context :as c]
             [gdl.tiled :as tiled]))
 

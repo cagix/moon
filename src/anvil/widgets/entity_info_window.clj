@@ -2,7 +2,7 @@
   (:require [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
-            [gdl.app :as app]
+            [anvil.app :as app]
             [gdl.context :as ctx]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :as group]))

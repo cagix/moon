@@ -31,7 +31,7 @@
                                                            (db/build c id)
                                                            c)))]]
                          (do
-                          (add-tooltip! button #(info/text @gdl.app/state
+                          (add-tooltip! button #(info/text @anvil.app/state
                                                            (db/build c id))) ; TODO no player modifiers applied (see actionbar)
                           button))]
                 :pack? true}))

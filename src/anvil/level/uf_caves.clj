@@ -3,7 +3,7 @@
             [clojure.gdx :as gdx]
             [gdl.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
-            [gdl.app :as app]
+            [anvil.app :as app]
             [gdl.context :as ctx]
             [gdl.tiled :as tiled]))
 

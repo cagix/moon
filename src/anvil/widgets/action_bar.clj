@@ -4,7 +4,7 @@
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
-            [gdl.app :as app]
+            [anvil.app :as app]
             [gdl.ui :refer [ui-actor add-tooltip!] :as ui]
             [gdl.ui.group :refer [add-actor!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)

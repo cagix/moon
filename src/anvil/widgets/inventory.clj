@@ -6,7 +6,7 @@
             [cdq.context :as w]
             [clojure.gdx :as gdx]
             [data.grid2d :as g2d]
-            [gdl.app :as app]
+            [anvil.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [set-drawable!
                             ui-widget

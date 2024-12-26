@@ -1,7 +1,7 @@
 (ns anvil.widgets.player-message
   (:require [anvil.widgets :as widgets]
             [cdq.context :refer [message-to-player player-message-duration-seconds]]
-            [gdl.app :as app]
+            [anvil.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [ui-actor]]))
 

@@ -2,7 +2,7 @@
   (:require [anvil.level :refer [generate-level]]
             [cdq.context :as world]
             [cdq.grid :as grid]
-            [gdl.app :as app]
+            [anvil.app :as app]
             [gdl.context :as c]
             [gdl.tiled :as tiled]))
 
