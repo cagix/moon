@@ -1,7 +1,7 @@
 (ns gdl.context
   (:require [anvil.component :as component]
             [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
-                                         set-projection-matrix begin end set-color draw]]
+                                         set-projection-matrix begin end set-color draw pixmap draw-pixel]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
@@ -269,9 +269,9 @@
   (draw-with c world-viewport world-unit-scale render-fn))
 
 (defn- sd-texture []
-  (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
+  (let [pixmap (doto (pixmap 1 1 pixmap/format-RGBA8888)
                  (pixmap/set-color white)
-                 (pixmap/draw-pixel 0 0))
+                 (draw-pixel 0 0))
         texture (texture/create pixmap)]
     (dispose pixmap)
     texture))
