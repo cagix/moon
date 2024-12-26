@@ -1,5 +1,6 @@
 (ns gdl.assets
-  (:require [clojure.gdx.assets :as assets]
+  (:require [clojure.gdx :refer [dispose]]
+            [clojure.gdx.assets :as assets]
             [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)))
@@ -35,7 +36,7 @@
                 [file asset-type]))))
 
 (defn cleanup [manager]
-  (assets/dispose manager))
+  (dispose manager))
 
 (defn all-of-type
   "Returns all asset paths with the specific asset-type."
