@@ -1,12 +1,12 @@
 (ns gdl.context
   (:require [anvil.component :as component]
-            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white]]
+            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
+                                         set-projection-matrix begin end set-color draw]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
-            [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -190,19 +190,19 @@
     (:world-unit-dimensions image)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
-  (if color (batch/set-color batch color))
-  (batch/draw batch
-              texture-region
-              :x x
-              :y y
-              :origin-x (/ (float w) 2) ; rotation origin
-              :origin-y (/ (float h) 2)
-              :width w
-              :height h
-              :scale-x 1
-              :scale-y 1
-              :rotation rotation)
-  (if color (batch/set-color batch white)))
+  (if color (set-color batch color))
+  (draw batch
+        texture-region
+        :x x
+        :y y
+        :origin-x (/ (float w) 2) ; rotation origin
+        :origin-y (/ (float h) 2)
+        :width w
+        :height h
+        :scale-x 1
+        :scale-y 1
+        :rotation rotation)
+  (if color (set-color batch white)))
 
 (defn draw-image
   [{::keys [batch unit-scale]} {:keys [texture-region color] :as image} position]
@@ -228,11 +228,11 @@
   (draw-rotated-centered c image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (batch/set-color batch white) ; fix scene2d.ui.tooltip flickering
-  (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
-  (batch/begin batch)
+  (set-color batch white) ; fix scene2d.ui.tooltip flickering
+  (set-projection-matrix batch (camera/combined (:camera viewport)))
+  (begin batch)
   (draw-fn)
-  (batch/end batch))
+  (end batch))
 
 (defn draw-with [{::keys [batch] :as c} viewport unit-scale draw-fn]
   (draw-on-viewport batch

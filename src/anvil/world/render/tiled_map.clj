@@ -40,7 +40,7 @@
         (if see-all-tiles? white base-color)
         (do (when-not explored?
               (swap! explored-tile-corners assoc (mapv int position) true))
-            color/white)))))
+            white)))))
 
 (defn-impl render/render-tiled-map [{:keys [cdq.context/raycaster
                                             cdq.context/explored-tile-corners] :as c}
