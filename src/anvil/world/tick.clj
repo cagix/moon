@@ -25,7 +25,7 @@
   (assoc c :cdq.context/paused? (or error
                                     (and pausing?
                                          (component/pause-game? (entity/state-obj @player-eid))
-                                         (not (controls/unpaused?))))))
+                                         (not (controls/unpaused? c))))))
 
 (defn- calculate-eid [{:keys [cdq.context/player-eid] :as c}]
   (let [player @player-eid
@@ -73,8 +73,9 @@
                 potential-fields
                 entities))]
     (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
-    (camera-controls (:camera world-viewport))
-    (window-hotkeys {:controls/close-windows-key controls/close-windows-key
+    (camera-controls c (:camera world-viewport))
+    (window-hotkeys c
+                    {:controls/close-windows-key controls/close-windows-key
                      :controls/window-hotkeys    controls/window-hotkeys}
                     (stage/get))
     c))

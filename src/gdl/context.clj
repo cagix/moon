@@ -1,8 +1,7 @@
 (ns gdl.context
   (:require [anvil.component :as component]
+            [clojure.gdx :as gdx]
             [clojure.gdx.audio.sound :as sound]
-            [clojure.gdx.files :as files]
-            [clojure.gdx.graphics :as g]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -14,7 +13,6 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.disposable :refer [dispose]]
@@ -33,11 +31,11 @@
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
-(defn delta-time [{:keys [gdx/graphics]}]
-  (g/delta-time graphics))
+(defn delta-time [c]
+  (gdx/delta-time c))
 
-(defn frames-per-second [{:keys [gdx/graphics]}]
-  (g/frames-per-second graphics))
+(defn frames-per-second [c]
+  (gdx/frames-per-second c))
 
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
@@ -70,9 +68,9 @@
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{::keys [cursors] :keys [gdx/graphics]}
+(defn set-cursor [{::keys [cursors] :as c}
                   cursor-key]
-  (g/set-cursor graphics (safe-get cursors cursor-key)))
+  (gdx/set-cursor c (safe-get cursors cursor-key)))
 
 (defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
@@ -253,10 +251,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (input/x Gdx/input)
+  (let [mouse-x (clamp (.getX Gdx/input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y Gdx/input)
+        mouse-y (clamp (.getY Gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
@@ -318,10 +316,10 @@
     (dispose font)))
 
 (defmethods ::cursors
-  (component/->v [[_ cursors] {:keys [gdx/files gdx/graphics]}]
+  (component/->v [[_ cursors] c]
     (mapvals (fn [[file [hotspot-x hotspot-y]]]
-               (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
-                     cursor (g/cursor graphics pixmap hotspot-x hotspot-y)]
+               (let [pixmap (pixmap/create (gdx/internal-file c (str "cursors/" file ".png")))
+                     cursor (gdx/cursor c pixmap hotspot-x hotspot-y)]
                  (dispose pixmap)
                  cursor))
              cursors))
@@ -373,7 +371,7 @@
                                  :keys [gdx/input]
                                  :as c}]
     (let [stage (stage* viewport batch (actors-fn c))]
-      (input/set-processor input stage) ; side effects here?!
+      (.setInputProcessor Gdx/input stage) ; side effects here?!
       stage))
   (component/dispose [[_ stage]]
     (.dispose stage)))

@@ -1,5 +1,5 @@
 (ns clojure.gdx.space-invaders
-  (:require [clojure.gdx.files :as files]
+  (:require [clojure.gdx :as gdx]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3])
   (:import (com.badlogic.gdx Gdx Input$Keys)
@@ -28,8 +28,8 @@
 (def screen-width 800)
 (def screen-height 600)
 
-(defn texture [{:keys [gdx/files]} path]
-  (texture/create (files/internal files path)))
+(defn texture [c path]
+  (texture/create (gdx/internal-file c path)))
 
 (defn make-player [context]
   {:x (/ screen-width 2)
@@ -128,8 +128,8 @@
 
 (defn game-listener []
   (reify lwjgl3/Application
-    (create [_ gdx-state]
-      (reset! state (make-game-state gdx-state))
+    (create [_]
+      (reset! state (make-game-state (gdx/context)))
       (swap! state assoc :camera (OrthographicCamera. screen-width screen-height)))
 
     (dispose [_]

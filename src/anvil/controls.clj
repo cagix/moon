@@ -1,8 +1,9 @@
-(ns anvil.controls)
+(ns anvil.controls
+  (:require [clojure.gdx :refer [key-pressed? key-just-pressed?]]))
 
-(defn unpaused? []
-  (or (key-just-pressed? :p)
-      (key-pressed? :space)))
+(defn unpaused? [c]
+  (or (key-just-pressed? c :p)
+      (key-pressed? c :space)))
 
 (def close-windows-key :escape)
 

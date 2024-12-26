@@ -7,6 +7,7 @@
             [clojure.string :as str]
             [gdl.app :as app]
             [gdl.context :as c :refer [draw-tiled-map]]
+            [clojure.gdx :refer [key-pressed?]]
             [gdl.graphics.camera :as cam]
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]

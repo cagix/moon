@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :as world]
+            [clojure.gdx :refer [button-just-pressed?]]
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c]
             [gdl.stage :refer [mouse-on-actor?]]
@@ -86,7 +87,7 @@
                     (:entity/item-on-cursor entity)))))
 
   (component/manual-tick [[_ {:keys [eid]}] c]
-    (when (and (button-just-pressed? :left)
+    (when (and (button-just-pressed? c :left)
                (world-item? c))
       (entity/event c eid :drop-item)))
 

@@ -1,5 +1,6 @@
 (ns anvil.app
   (:require [cdq.context :as world]
+            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -14,7 +15,7 @@
     (time (run! require requires))
     (lwjgl3/start lwjgl3
                   (reify lwjgl3/Application
-                    (create [_ gdx-context]
+                    (create [_]
                       ; TODO pass vector because order is important
                       ; TODO delete 'Gdx'
                       ; TODO document 'c'
@@ -32,7 +33,7 @@
                       ; documented, arglist .. etc
                       ; only 'c' functions in gdl.context ...
                       ; schema not ...
-                      (reset! app/state (ctx/create-into gdx-context
+                      (reset! app/state (ctx/create-into (gdx/context)
                                                          {:gdl.context/unit-scale 1
                                                           :gdl.context/assets "resources/"
                                                           :gdl.context/db (:db lifecycle)

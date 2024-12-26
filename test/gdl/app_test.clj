@@ -8,7 +8,7 @@
                  :fps 60
                  :taskbar-icon "icon.png"} ; optional
                 (reify lwjgl3/Application
-                  (create [_ _gdx-state])
+                  (create [_])
                   (dispose [_])
                   (render [_])
                   (resize [_ w h]))))

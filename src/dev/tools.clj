@@ -1,7 +1,7 @@
 (ns dev.tools
   (:require [anvil.entity.skills :as skills]
             [cdq.context :as world]
-            [clojure.gdx.application :as application]
+            [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.app :as app]
@@ -70,7 +70,7 @@
  )
 
 (defmacro post-runnable [& exprs]
-  `(application/post-runnable Gdx/app (fn [] ~@exprs)))
+  `(gdx/post-runnable @app/state (fn [] ~@exprs)))
 
 (defn- learn-skill! [skill-id]
   (post-runnable

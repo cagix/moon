@@ -1,5 +1,6 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
+            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
             [clojure.string :as str]
             [gdl.app :as app]
@@ -109,7 +110,7 @@
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
     (add-actor! window (ui-actor {:act (fn []
-                                         (when (key-just-pressed? :enter)
+                                         (when (gdx/key-just-pressed? @app/state :enter)
                                            (save!)))}))
     (.pack window)
     window))
@@ -521,8 +522,8 @@
                  :height 900
                  :taskbar-icon "moon.png"}
                 (reify lwjgl3/Application
-                  (create [_ gdx-context]
-                    (reset! app/state (ctx/create-into gdx-context
+                  (create [_]
+                    (reset! app/state (ctx/create-into (gdx/context)
                                                        {:gdl.context/unit-scale 1
                                                         :gdl.context/assets "resources/"
                                                         :gdl.context/batch nil
