@@ -371,8 +371,7 @@
 
 (defmethods ::ui
   (component/->v [[_ config] _c]
-    (ui/setup config)
-    com.kotcrab.vis.ui.VisUI)
+    (ui/setup config))
   (component/dispose [_]
     (ui/cleanup)))
 

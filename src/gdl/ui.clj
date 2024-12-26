@@ -29,7 +29,8 @@
   ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+  com.kotcrab.vis.ui.VisUI)
 
 (defn cleanup []
   (vis/dispose))
