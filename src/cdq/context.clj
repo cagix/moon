@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
+            [cdq.grid.cell :as cell]
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
@@ -47,15 +48,6 @@
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
-
-(defprotocol Cell
-  (cell-blocked? [cell* z-order])
-  (blocks-vision? [cell*])
-  (occupied-by-other? [cell* eid]
-                      "returns true if there is some occupying body with center-tile = this cell
-                      or a multiple-cell-size body which touches this cell.")
-  (nearest-entity          [cell* faction])
-  (nearest-entity-distance [cell* faction]))
 
 (defn rectangle->cells [rectangle]
   (into [] (keep grid) (rectangle->tiles rectangle)))
@@ -439,5 +431,5 @@
        (filter #(= (:entity/faction @%) faction))))
 
 (defn nearest-enemy [entity]
-  (nearest-entity @(grid (entity/tile entity))
-                  (entity/enemy entity)))
+  (cell/nearest-entity @(grid (entity/tile entity))
+                       (entity/enemy entity)))

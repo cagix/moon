@@ -1,6 +1,7 @@
 (ns anvil.world.tick.potential-fields
   (:require [anvil.entity :as entity]
             [cdq.context :as world]
+            [cdq.grid.cell :as cell]
             [anvil.world.tick :as tick]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
@@ -81,8 +82,8 @@
 ; (or teleported?)
 (defn- step [faction last-marked-cells]
   (let [marked-cells (transient [])
-        distance       #(world/nearest-entity-distance % faction)
-        nearest-entity #(world/nearest-entity          % faction)
+        distance       #(cell/nearest-entity-distance % faction)
+        nearest-entity #(cell/nearest-entity          % faction)
         marked? faction]
     ; sorting important because of diagonal-cell values, flow from lower dist first for correct distance
     (doseq [cell (sort-by #(distance @%) last-marked-cells)

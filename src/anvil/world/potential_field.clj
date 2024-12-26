@@ -2,11 +2,11 @@
   (:require [anvil.entity :as entity]
             [cdq.context :as world :refer [rectangle->cells
                                            get-8-neighbour-positions
-                                           cached-adjacent-cells
-                                           cell-blocked?
-                                           occupied-by-other?
-                                           nearest-entity
-                                           nearest-entity-distance]]
+                                           cached-adjacent-cells]]
+            [cdq.grid.cell :refer [blocked?
+                                   occupied-by-other?
+                                   nearest-entity
+                                   nearest-entity-distance]]
             [gdl.math.vector :as v]))
 
 (let [order (get-8-neighbour-positions [0 0])]
@@ -31,7 +31,7 @@
             adjacent-cells)))
 
 (defn pf-cell-blocked? [cell*]
-  (cell-blocked? cell* :z-order/ground))
+  (blocked? cell* :z-order/ground))
 
 ; not using filter because nil cells considered @ remove-not-allowed-diagonals
 ; TODO only non-nil cells check

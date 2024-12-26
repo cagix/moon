@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
+            [cdq.grid.cell :as cell]
             [gdl.context :as c]))
 
 (defmethods :npc-sleeping
@@ -18,7 +19,7 @@
   (component/tick [_ eid c]
     (let [entity @eid
           cell (world/grid (entity/tile entity))] ; pattern!
-      (when-let [distance (world/nearest-entity-distance @cell (entity/enemy entity))]
+      (when-let [distance (cell/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           (entity/event c eid :alert)))))
 
