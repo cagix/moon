@@ -4,10 +4,8 @@
             [anvil.controls :as controls]
             [anvil.entity :as entity]
             [cdq.context :as w]
-            [clojure.gdx.graphics :as g]
             [gdl.context :as c]
-            [gdl.stage :as stage])
-  (:import (com.badlogic.gdx Gdx)))
+            [gdl.stage :as stage]))
 
 (defn player-input [{:keys [cdq.context/player-eid] :as c}]
   (component/manual-tick (entity/state-obj @player-eid)
@@ -50,7 +48,7 @@
     (assoc c :cdq.context/mouseover-eid new-eid)))
 
 (defn- update-time [c]
-  (let [delta-ms (min (g/delta-time Gdx/graphics)
+  (let [delta-ms (min (c/delta-time c)
                       w/max-delta-time)]
     (-> c
         (update :cdq.context/elapsed-time + delta-ms)

@@ -33,6 +33,12 @@
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
+(defn delta-time [{:keys [gdx/graphics]}]
+  (g/delta-time graphics))
+
+(defn frames-per-second [{:keys [gdx/graphics]}]
+  (g/frames-per-second graphics))
+
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
@@ -64,8 +70,9 @@
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{::keys [cursors]} cursor-key]
-  (g/set-cursor Gdx/graphics (safe-get cursors cursor-key)))
+(defn set-cursor [{::keys [cursors] :keys [gdx/graphics]}
+                  cursor-key]
+  (g/set-cursor graphics (safe-get cursors cursor-key)))
 
 (defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
@@ -311,10 +318,10 @@
     (dispose font)))
 
 (defmethods ::cursors
-  (component/->v [[_ cursors] _c]
+  (component/->v [[_ cursors] {:keys [gdx/files gdx/graphics]}]
     (mapvals (fn [[file [hotspot-x hotspot-y]]]
-               (let [pixmap (pixmap/create (files/internal Gdx/files (str "cursors/" file ".png")))
-                     cursor (g/cursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+               (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
+                     cursor (g/cursor graphics pixmap hotspot-x hotspot-y)]
                  (dispose pixmap)
                  cursor))
              cursors))
@@ -362,9 +369,11 @@
     stage))
 
 (defmethods ::stage
-  (component/->v [[_ actors-fn] {::keys [viewport batch] :as c}]
+  (component/->v [[_ actors-fn] {::keys [viewport batch]
+                                 :keys [gdx/input]
+                                 :as c}]
     (let [stage (stage* viewport batch (actors-fn c))]
-      (input/set-processor Gdx/input stage) ; side effects here?!
+      (input/set-processor input stage) ; side effects here?!
       stage))
   (component/dispose [[_ stage]]
     (.dispose stage)))
