@@ -18,7 +18,7 @@
 
 (declare ^:private tiled-map
          ^:private explored-tile-corners
-         grid
+         ^:private grid
          entity-ids
          content-grid
          player-eid
@@ -35,7 +35,8 @@
          error)
 
 (defn state []
-  {::factions-iterations {:good 15 :evil 5}
+  {::grid grid
+   ::factions-iterations {:good 15 :evil 5}
    ::tiled-map tiled-map
    ::player-eid player-eid
    ::explored-tile-corners explored-tile-corners
@@ -44,19 +45,22 @@
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
 
-(defn rectangle->cells [rectangle]
+(defn grid-cell [{::keys [grid]} position]
+  (grid position))
+
+(defn rectangle->cells [{::keys [grid]} rectangle]
   (grid/rectangle->cells grid rectangle))
 
-(defn circle->cells [circle]
+(defn circle->cells [{::keys [grid]} circle]
   (grid/circle->cells grid circle))
 
-(defn circle->entities [circle]
+(defn circle->entities [{::keys [grid]} circle]
   (grid/circle->entities grid circle))
 
-(defn cached-adjacent-cells [cell]
+(defn cached-adjacent-cells [{::keys [grid]} cell]
   (grid/cached-adjacent-cells grid cell))
 
-(defn point->entities [position]
+(defn point->entities [{::keys [grid]} position]
   (grid/point->entities grid position))
 
 (defn ray-blocked? [start target]
@@ -343,10 +347,10 @@
 
 (def ^:private shout-radius 4)
 
-(defn friendlies-in-radius [position faction]
+(defn friendlies-in-radius [c position faction]
   (->> {:position position
         :radius shout-radius}
-       circle->entities
+       (circle->entities c)
        (filter #(= (:entity/faction @%) faction))))
 
 (defn nearest-enemy [entity]

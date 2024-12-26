@@ -80,14 +80,14 @@
 ; * sorted-set-by ?
 ; * do not refresh the potential-fields EVERY frame, maybe very 100ms & check for exists? target if they died inbetween.
 ; (or teleported?)
-(defn- step [faction last-marked-cells]
+(defn- step [grid faction last-marked-cells]
   (let [marked-cells (transient [])
         distance       #(grid/nearest-entity-distance % faction)
         nearest-entity #(grid/nearest-entity          % faction)
         marked? faction]
     ; sorting important because of diagonal-cell values, flow from lower dist first for correct distance
     (doseq [cell (sort-by #(distance @%) last-marked-cells)
-            adjacent-cell (world/cached-adjacent-cells cell)
+            adjacent-cell (grid/cached-adjacent-cells grid cell)
             :let [cell* @cell
                   adjacent-cell* @adjacent-cell]
             :when (not (or (pf-cell-blocked? adjacent-cell*)
@@ -102,9 +102,9 @@
 
 (defn- generate-potential-field
   "returns the marked-cells"
-  [faction tiles->entities max-iterations]
+  [grid faction tiles->entities max-iterations]
   (let [entity-cell-seq (for [[tile eid] tiles->entities] ; FIXME lazy seq
-                          [eid (world/grid tile)])
+                          [eid (grid tile)])
         marked (map second entity-cell-seq)]
     (doseq [[eid cell] entity-cell-seq]
       (add-field-data! cell faction 0 eid))
@@ -113,7 +113,7 @@
            iterations 0]
       (if (= iterations max-iterations)
         marked-cells
-        (let [new-marked (step faction new-marked-cells)]
+        (let [new-marked (step grid faction new-marked-cells)]
           (recur (concat marked-cells new-marked) ; FIXME lazy seq
                  new-marked
                  (inc iterations)))))))
@@ -124,7 +124,7 @@
     (zipmap (map #(entity/tile @%) entities)
             entities)))
 
-(defn- update-faction-potential-field [faction entities max-iterations]
+(defn- update-faction-potential-field [grid faction entities max-iterations]
   (let [tiles->entities (tiles->entities entities faction)
         last-state   [faction :tiles->entities]
         marked-cells [faction :marked-cells]]
@@ -133,13 +133,16 @@
       (doseq [cell (get-in @pf-cache marked-cells)]
         (remove-field-data! cell faction))
       (swap! pf-cache assoc-in marked-cells (generate-potential-field
+                                             grid
                                              faction
                                              tiles->entities
                                              max-iterations)))))
 
-(defn update-potential-fields! [{:keys [cdq.context/factions-iterations]} entities]
+(defn update-potential-fields! [{:keys [cdq.context/factions-iterations
+                                        cdq.context/grid]}
+                                entities]
   (doseq [[faction max-iterations] factions-iterations]
-    (update-faction-potential-field faction entities max-iterations)))
+    (update-faction-potential-field grid faction entities max-iterations)))
 
 (defn-impl tick/potential-fields [c]
   (update-potential-fields! c (world/active-entities)))

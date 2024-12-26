@@ -114,7 +114,7 @@
   (bind-root world/grid                  (->world-grid            tiled-map))
   (bind-root world/content-grid          (->content-grid          tiled-map))
   (bind-root world/entity-ids {})
-  (bind-root world/raycaster (->raycaster world/grid grid/blocks-vision?))
+  (bind-root world/raycaster (->raycaster @#'world/grid grid/blocks-vision?))
   (bind-root world/elapsed-time 0)
   (bind-root world/delta-time nil)
   (bind-root world/player-eid (world/creature c (player-entity-props start-position)))

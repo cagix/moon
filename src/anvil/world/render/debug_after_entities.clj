@@ -9,7 +9,7 @@
         radius 0.8
         circle {:position position :radius radius}]
     (c/circle c position radius [1 0 0 0.5])
-    (doseq [[x y] (map #(:position @%) (world/circle->cells circle))]
+    (doseq [[x y] (map #(:position @%) (world/circle->cells c circle))]
       (c/rectangle c x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
       (c/rectangle c x y width height [0 0 1 1]))))
@@ -19,7 +19,7 @@
 (defn- highlight-mouseover-tile [c]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (c/world-mouse-position c))
-          cell (world/grid [x y])]
+          cell (world/grid-cell c [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (c/rectangle c x y 1 1
                      (case (:movement @cell)

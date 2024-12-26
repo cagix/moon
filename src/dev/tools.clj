@@ -83,7 +83,7 @@
                (c/build @app/state item-id))))
 
 (defn- mouseover-grid-cell [c]
-  @(world/grid (mapv int (c/world-mouse-position c))))
+  @(world/grid-cell c (mapv int (c/world-mouse-position c))))
 
 (defn- class->label-str [class]
   (case class

@@ -23,7 +23,7 @@
               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
-            :let [cell (world/grid [x y])]
+            :let [cell (world/grid-cell c [x y])]
             :when cell
             :let [cell* @cell]]
 

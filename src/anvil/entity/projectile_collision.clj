@@ -15,7 +15,7 @@
     ; means non colliding with other entities
     ; but still collding with other stuff here ? o.o
     (let [entity @eid
-          cells* (map deref (world/rectangle->cells entity)) ; just use cached-touched -cells
+          cells* (map deref (world/rectangle->cells c entity)) ; just use cached-touched -cells
           hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                        (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                              (:entity/faction @%))

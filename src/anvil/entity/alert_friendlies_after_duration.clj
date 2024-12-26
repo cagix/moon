@@ -7,5 +7,5 @@
   (component/tick [[_ {:keys [counter faction]}] eid c]
     (when (stopped? counter)
       (swap! eid assoc :entity/destroyed? true)
-      (doseq [friendly-eid (friendlies-in-radius (:position @eid) faction)]
+      (doseq [friendly-eid (friendlies-in-radius c (:position @eid) faction)]
         (entity/event c friendly-eid :alert)))))

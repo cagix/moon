@@ -7,8 +7,7 @@
 (defn- calculate-eid [c]
   (let [player @world/player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
-                     (world/point->entities
-                      (c/world-mouse-position c)))]
+                     (world/point->entities c (c/world-mouse-position c)))]
     (->> world/render-z-order
          (sort-by-order hits #(:z-order @%))
          reverse

@@ -1,8 +1,8 @@
 (ns anvil.world.potential-field
   (:require [anvil.entity :as entity]
-            [cdq.context :as world :refer [rectangle->cells
-                                           cached-adjacent-cells]]
-            [cdq.grid :refer [blocked?
+            [cdq.grid :refer [rectangle->cells
+                              cached-adjacent-cells
+                              blocked?
                               occupied-by-other?
                               nearest-entity
                               nearest-entity-distance
@@ -48,21 +48,21 @@
     (apply min-key distance-to cells)))
 
 ; rarely called -> no performance bottleneck
-(defn- viable-cell? [distance-to own-dist eid cell]
+(defn- viable-cell? [grid distance-to own-dist eid cell]
   (when-let [best-cell (get-min-dist-cell
                         distance-to
-                        (filter-viable-cells eid (cached-adjacent-cells cell)))]
+                        (filter-viable-cells eid (cached-adjacent-cells grid cell)))]
     (when (< (float (distance-to best-cell)) (float own-dist))
       cell)))
 
 (defn- find-next-cell
   "returns {:target-entity eid} or {:target-cell cell}. Cell can be nil."
-  [eid own-cell]
+  [grid eid own-cell]
   (let [faction (entity/enemy @eid)
         distance-to    #(nearest-entity-distance @% faction)
         nearest-entity #(nearest-entity          @% faction)
         own-dist (distance-to own-cell)
-        adjacent-cells (cached-adjacent-cells own-cell)]
+        adjacent-cells (cached-adjacent-cells grid own-cell)]
     (if (and own-dist (zero? (float own-dist)))
       {:target-entity (nearest-entity own-cell)}
       (if-let [adjacent-cell (first (filter #(and (distance-to %)
@@ -86,19 +86,19 @@
 
                          (= (distance-to min-key-cell) own-dist) ; yellow
                          (or
-                          (some #(viable-cell? distance-to own-dist eid %) cells)
+                          (some #(viable-cell? grid distance-to own-dist eid %) cells)
                           own-cell)))}))))
 
-(defn- inside-cell? [entity cell]
-  (let [cells (rectangle->cells entity)]
+(defn- inside-cell? [grid entity cell]
+  (let [cells (rectangle->cells grid entity)]
     (and (= 1 (count cells))
          (= cell (first cells)))))
 
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
-(defn find-direction [eid] ; TODO pass faction here, one less dependency.
+(defn find-direction [{:keys [cdq.context/grid]} eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
-        own-cell (world/grid (mapv int position))
-        {:keys [target-entity target-cell]} (find-next-cell eid own-cell)]
+        own-cell (grid (mapv int position))
+        {:keys [target-entity target-cell]} (find-next-cell grid eid own-cell)]
     (cond
      target-entity
      (v/direction position (:position @target-entity))
@@ -109,5 +109,5 @@
      :else
      (when-not (and (= target-cell own-cell)
                     (occupied-by-other? @own-cell eid)) ; prevent friction 2 move to center
-       (when-not (inside-cell? @eid target-cell)
+       (when-not (inside-cell? grid @eid target-cell)
          (v/direction position (:middle @target-cell)))))))

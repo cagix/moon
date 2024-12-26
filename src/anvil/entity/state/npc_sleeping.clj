@@ -18,7 +18,7 @@
 
   (component/tick [_ eid c]
     (let [entity @eid
-          cell (world/grid (entity/tile entity))] ; pattern!
+          cell (world/grid-cell c (entity/tile entity))] ; pattern!
       (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           (entity/event c eid :alert)))))
