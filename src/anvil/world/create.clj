@@ -6,10 +6,6 @@
             [gdl.context :as c]
             [gdl.tiled :as tiled]))
 
-(defn-impl world/dispose [{:keys [cdq.context/tiled-map]}]
-  (when tiled-map
-    (tiled/dispose tiled-map)))
-
 (defn- spawn-enemies [c tiled-map]
   (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
                   {:position position
@@ -43,7 +39,6 @@
   ; TODO assert is :screens/world
   (c/reset-stage c (world/widgets c))
   (world/dispose c) ; TODO ... call here? separate world reset/dispose than ctx reset/dispose ? multimethods move to gdl.contxt?!
-  (println "(swap! app/state c/create-into (world-components c world-id))")
   (swap! app/state c/create-into (world-components c world-id))
   (when spawn-enemies?
     (spawn-enemies @app/state (:cdq.context/tiled-map @app/state))))

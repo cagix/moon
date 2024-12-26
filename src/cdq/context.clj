@@ -131,8 +131,11 @@
 
 (defn widgets [c])
 
+(defn dispose [{::keys [tiled-map]}]
+  (when tiled-map
+    (tiled/dispose tiled-map)))
+
 (defn create [c world-id])
-(defn dispose [w])
 (defn render [])
 (defn tick [])
 
