@@ -12,8 +12,8 @@
 (defmethod component/pause-game? :player-idle           [_] true)
 (defmethod component/pause-game? :player-dead           [_] true)
 
-(defn-impl tick/paused-state [pausing?]
+(defn-impl tick/paused-state [{:keys [cdq.context/player-eid] :as c} pausing?]
   (bind-root world/paused? (or world/error
                                (and pausing?
-                                    (component/pause-game? (entity/state-obj @world/player-eid))
+                                    (component/pause-game? (entity/state-obj @player-eid))
                                     (not (controls/unpaused?))))))

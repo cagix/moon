@@ -1,7 +1,7 @@
 (ns anvil.widgets.hp-mana-bar
   (:require [anvil.entity :as entity]
             [anvil.widgets :as widgets]
-            [cdq.context :as world]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [ui-actor]]
             [gdl.val-max :as val-max]))
@@ -30,7 +30,8 @@
                                           [x y])
                             (render-infostr-on-bar c (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
-                       (let [player-entity @world/player-eid
+                       (let [{:keys [cdq.context/player-eid]} (cdq.context/state)
+                             player-entity @player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (entity/mana player-entity) "MP")))})))
+                         (render-hpmana-bar x y-mana manacontent (entity/mana        player-entity) "MP")))})))

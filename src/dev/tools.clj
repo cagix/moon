@@ -74,13 +74,15 @@
 
 (defn- learn-skill! [skill-id]
   (post-runnable
-   (swap! world/player-eid skills/add (c/build @app/state skill-id))))
+   (let [{:keys [cdq.context/player-eid] :as c} @app/state]
+     (swap! player-eid skills/add (c/build c skill-id)))))
 
 (defn- create-item! [item-id]
   (post-runnable
-   (world/item @app/state
-               (:position @world/player-eid)
-               (c/build @app/state item-id))))
+   (let [{:keys [cdq.context/player-eid] :as c} @app/state]
+     (world/item c
+                 (:position @player-eid)
+                 (c/build c item-id)))))
 
 (defn- mouseover-grid-cell [c]
   @(world/grid-cell c (mapv int (c/world-mouse-position c))))

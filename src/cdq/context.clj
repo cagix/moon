@@ -21,7 +21,7 @@
          ^:private grid
          ^:private entity-ids
          ^:private content-grid
-         player-eid
+         ^:private player-eid
          raycaster
 
          ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
@@ -149,7 +149,7 @@
     (assert (contains? entity-ids id))
     (alter-var-root #'entity-ids dissoc id)))
 
-(defn active-entities [{::keys [content-grid]}]
+(defn active-entities [{::keys [content-grid player-eid]}]
   (content-grid/active-entities content-grid @player-eid))
 
 (defn- add-entity [eid]
@@ -340,7 +340,7 @@
     (doseq [component @eid]
       (component/destroy component eid c))))
 
-(defn creatures-in-los-of-player [c]
+(defn creatures-in-los-of-player [{::keys [player-eid] :as c}]
   (->> (active-entities c)
        (filter #(:entity/species @%))
        (filter #(line-of-sight? c @player-eid @%))

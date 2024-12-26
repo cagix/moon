@@ -12,7 +12,7 @@
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player-eid))
-#_(defn ->skill-window []
+#_(defn ->skill-window [{:keys [cdq.context/player-eid] :as c}]
     (ui/window {:title "Skills"
                 :id :skill-window
                 :visible? false
@@ -27,7 +27,7 @@
                                                         ; => should probably build this window @ game start
                                                         (fn []
                                                           (clicked-skillmenu-skill
-                                                           (entity/state-obj @world/player-eid)
+                                                           (entity/state-obj @player-eid)
                                                            (db/build c id))))]]
                          (do
                           (add-tooltip! button #(info/text (db/build c id))) ; TODO no player modifiers applied (see actionbar)

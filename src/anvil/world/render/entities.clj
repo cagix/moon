@@ -19,8 +19,8 @@
      (draw-body-rect c entity :red)
      (pretty-pst t))))
 
-(defn-impl render/entities [c entities]
-  (let [player @world/player-eid]
+(defn-impl render/entities [{:keys [cdq.context/player-eid] :as c} entities]
+  (let [player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               world/render-z-order)

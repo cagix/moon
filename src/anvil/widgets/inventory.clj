@@ -3,7 +3,6 @@
             [anvil.entity :as entity]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
-            [cdq.context :as world]
             [clojure.gdx.graphics.color :as color]
             [data.grid2d :as g2d]
             [gdl.app :as app]
@@ -47,9 +46,9 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [^Actor this]
-     (let [c @app/state]
+     (let [{:keys [cdq.context/player-eid] :as c} @app/state]
        (draw-cell-rect c
-                       @world/player-eid
+                       @player-eid
                        (.getX this)
                        (.getY this)
                        (actor/hit this (c/mouse-position c))
@@ -83,7 +82,7 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (color/create 1 1 1 0.4))))
 
-(defn- ->cell ^Actor [c slot & {:keys [position]}]
+(defn- ->cell ^Actor [{:keys [cdq.context/player-eid] :as c} slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background c slot)
                                    {:id :image})
@@ -93,7 +92,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (component/clicked-inventory-cell (entity/state-obj @world/player-eid)
+                            (component/clicked-inventory-cell (entity/state-obj @player-eid)
                                                               cell
                                                               c))))
     stack))

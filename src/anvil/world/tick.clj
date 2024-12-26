@@ -7,7 +7,7 @@
 
 (defn player-input [c])
 (defn mouseover-entity [c])
-(defn paused-state [])
+(defn paused-state [c])
 (defn time [])
 (defn potential-fields [c])
 (defn entities [c])
@@ -18,7 +18,7 @@
 (defn-impl world/tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
   (player-input c)
   (mouseover-entity c)
-  (paused-state pausing?)
+  (paused-state c pausing?)
   (when-not world/paused?
     (time)
     (potential-fields c)

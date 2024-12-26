@@ -13,20 +13,20 @@
   (fn [eid c]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid c]
+(defmethod on-clicked :clickable/item [eid {:keys [cdq.context/player-eid] :as c}]
   (let [item (:entity/item @eid)]
     (cond
      (actor/visible? (stage/get-inventory))
      (do
       (play-sound c "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/event c world/player-eid :pickup-item item))
+      (entity/event c player-eid :pickup-item item))
 
-     (entity/can-pickup-item? @world/player-eid item)
+     (entity/can-pickup-item? @player-eid item)
      (do
       (play-sound c "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/pickup-item c world/player-eid item))
+      (entity/pickup-item c player-eid item))
 
      :else
      (do
@@ -53,19 +53,20 @@
                                               (play-sound c "bfx_denied")
                                               (stage/show-player-msg "Too far away"))]))
 
-(defn- inventory-cell-with-item? [^com.badlogic.gdx.scenes.scene2d.Actor actor]
+(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c}
+                                  ^com.badlogic.gdx.scenes.scene2d.Actor actor]
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
-       (get-in (:entity/inventory @world/player-eid)
+       (get-in (:entity/inventory @player-eid)
                (actor/user-object (.getParent actor)))))
 
 (defn- mouseover-actor->cursor [c]
   (let [actor (stage/mouse-on-actor? c)]
     (cond
-     (inventory-cell-with-item? actor) :cursors/hand-before-grab
-     (window-title-bar? actor)      :cursors/move-window
-     (button? actor)                :cursors/over-button
-     :else                             :cursors/default)))
+     (inventory-cell-with-item? c actor) :cursors/hand-before-grab
+     (window-title-bar? actor)           :cursors/move-window
+     (button? actor)                     :cursors/over-button
+     :else                               :cursors/default)))
 
 (defn- player-effect-ctx [c eid]
   (let [target-position (or (and world/mouseover-eid

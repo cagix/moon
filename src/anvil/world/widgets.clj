@@ -6,7 +6,7 @@
             [gdl.context :as c]
             [gdl.ui :refer [ui-actor] :as ui]))
 
-(defn-impl world/widgets [c]
+(defn-impl world/widgets [{:keys [cdq.context/player-eid] :as c}]
   [(if dev-mode?
      (widgets/dev-menu c)
      (ui-actor {}))
@@ -20,6 +20,6 @@
    (ui/group {:id :windows
               :actors [(widgets/entity-info-window c)
                        (widgets/inventory c)]})
-   (ui-actor {:draw #(draw-gui-view (entity/state-obj @world/player-eid)
+   (ui-actor {:draw #(draw-gui-view (entity/state-obj @(:cdq.context/player-eid (world/state)))
                                     c)})
    (widgets/player-message)])

@@ -4,8 +4,8 @@
             [gdl.context :as c]
             [gdl.stage :as stage]))
 
-(defn- calculate-eid [c]
-  (let [player @world/player-eid
+(defn- calculate-eid [{:keys [cdq.context/player-eid] :as c}]
+  (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
                      (world/point->entities c (c/world-mouse-position c)))]
     (->> world/render-z-order
