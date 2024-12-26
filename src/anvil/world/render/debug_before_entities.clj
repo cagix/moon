@@ -9,7 +9,9 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn-impl render/debug-before-entities [{:keys [gdl.context/world-viewport] :as c}]
+(defn-impl render/debug-before-entities [{:keys [gdl.context/world-viewport
+                                                 cdq.context/factions-iterations]
+                                          :as c}]
   (let [cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
@@ -35,5 +37,5 @@
         (let [faction :good
               {:keys [distance]} (faction cell*)]
           (when distance
-            (let [ratio (/ distance (world/factions-iterations faction))]
+            (let [ratio (/ distance (factions-iterations faction))]
               (c/filled-rectangle c x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))

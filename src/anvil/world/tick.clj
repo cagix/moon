@@ -9,7 +9,7 @@
 (defn mouseover-entity [c])
 (defn paused-state [])
 (defn time [])
-(defn potential-fields [])
+(defn potential-fields [c])
 (defn entities [c])
 (defn remove-destroyed-entities [c])
 (defn camera-controls [camera])
@@ -21,7 +21,7 @@
   (paused-state pausing?)
   (when-not world/paused?
     (time)
-    (potential-fields)
+    (potential-fields c)
     (entities c))
   (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
   (camera-controls (:camera world-viewport))

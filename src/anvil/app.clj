@@ -55,10 +55,11 @@
                     (render [_]
                       (let [{:keys [gdl.context/stage] :as c} @app/state]
                         (clear-screen)
-                        (world/render (merge c (world/state)))
+                        (world/render (safe-merge c (world/state)))
                         (.draw stage)
                         (.act stage)
-                        (world/tick c pausing?)))
+                        (world/tick (safe-merge c (world/state))
+                                    pausing?)))
 
                     (resize [_ w h]
                       (ctx/resize @app/state w h))))))

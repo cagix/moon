@@ -16,9 +16,7 @@
 (defn render [])
 (defn tick [])
 
-(def factions-iterations {:good 15 :evil 5})
-
-(declare ^:private tiled-map ; no accesses
+(declare ^:private tiled-map
          ^:private explored-tile-corners
          grid
          entity-ids
@@ -37,7 +35,8 @@
          error)
 
 (defn state []
-  {::tiled-map tiled-map
+  {::factions-iterations {:good 15 :evil 5}
+   ::tiled-map tiled-map
    ::player-eid player-eid
    ::explored-tile-corners explored-tile-corners
    })

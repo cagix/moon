@@ -137,9 +137,9 @@
                                              tiles->entities
                                              max-iterations)))))
 
-(defn update-potential-fields! [entities]
-  (doseq [[faction max-iterations] world/factions-iterations]
+(defn update-potential-fields! [{:keys [cdq.context/factions-iterations]} entities]
+  (doseq [[faction max-iterations] factions-iterations]
     (update-faction-potential-field faction entities max-iterations)))
 
-(defn-impl tick/potential-fields []
-  (update-potential-fields! (world/active-entities)))
+(defn-impl tick/potential-fields [c]
+  (update-potential-fields! c (world/active-entities)))
