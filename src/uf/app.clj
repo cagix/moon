@@ -2,7 +2,6 @@
   #_(:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
               [clojure.gdx :refer [white]]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.gdx.utils.viewport :as viewport]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.context :as ctx :refer [draw-tiled-map]]

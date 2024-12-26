@@ -1,7 +1,8 @@
 (ns gdl.context
   (:require [anvil.component :as component]
             [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
-                                         set-projection-matrix begin end set-color draw pixmap draw-pixel]]
+                                         set-projection-matrix begin end set-color draw pixmap draw-pixel resize fit-viewport
+                                         unproject]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
@@ -10,7 +11,6 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.assets :as assets]
             [gdl.db :as db]
@@ -251,7 +251,7 @@
         mouse-y (clamp (.getY Gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
-    (viewport/unproject viewport mouse-x mouse-y)))
+    (unproject viewport mouse-x mouse-y)))
 
 (defn mouse-position [{::keys [viewport]}]
   ; TODO mapv int needed?
@@ -312,7 +312,7 @@
 (defmethods ::cursors
   (component/->v [[_ cursors] c]
     (mapvals (fn [[file [hotspot-x hotspot-y]]]
-               (let [pixmap (pixmap/create (gdx/internal-file c (str "cursors/" file ".png")))
+               (let [pixmap (pixmap (gdx/internal-file c (str "cursors/" file ".png")))
                      cursor (gdx/cursor c pixmap hotspot-x hotspot-y)]
                  (dispose pixmap)
                  cursor))
@@ -323,9 +323,9 @@
 
 (defmethods ::viewport
   (component/->v [[_ {:keys [width height]}] _c]
-    (viewport/fit width height (orthographic-camera)))
+    (fit-viewport width height (orthographic-camera)))
   (component/resize [[_ viewport] w h]
-    (viewport/update viewport w h :center-camera? true)))
+    (resize viewport w h :center-camera? true)))
 
 (defmethods ::world-unit-scale
   (component/->v [[_ tile-size] _c]
@@ -338,9 +338,9 @@
           world-width  (* width  world-unit-scale)
           world-height (* height world-unit-scale)]
       (camera/set-to-ortho camera world-width world-height :y-down? false)
-      (viewport/fit world-width world-height camera)))
+      (fit-viewport world-width world-height camera)))
   (component/resize [[_ viewport] w h]
-    (viewport/update viewport w h :center-camera? false)))
+    (resize viewport w h :center-camera? false)))
 
 (defmethods ::tiled-map-renderer
   (component/->v [_ {::keys [world-unit-scale batch]}]
