@@ -1,6 +1,6 @@
 (ns gdl.context
   (:require [anvil.component :as component]
-            [clojure.gdx :as gdx :refer [play]]
+            [clojure.gdx :as gdx :refer [play sprite-batch]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -10,7 +10,6 @@
             [clojure.gdx.graphics.g2d.batch :as batch]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
@@ -300,7 +299,7 @@
 
 (defmethods ::batch
   (component/->v [_ _c]
-    (sprite-batch/create))
+    (sprite-batch))
   (component/dispose [[_ batch]]
     (dispose batch)))
 
