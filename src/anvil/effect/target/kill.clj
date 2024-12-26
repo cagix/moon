@@ -3,7 +3,7 @@
             [anvil.entity :as entity]))
 
 (defmethods :effects.target/kill
-  (component/info [_]
+  (component/info [_ _c]
     "Kills target")
 
   (component/applicable? [_ {:keys [effect/target]}]

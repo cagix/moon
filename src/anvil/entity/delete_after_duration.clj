@@ -4,11 +4,11 @@
 
 (defmethods :entity/delete-after-duration
   (component/->v [[_ duration] c]
-    (timer duration))
+    (timer c duration))
 
-  (component/info [counter]
-    (str "Remaining: " (readable-number (finished-ratio counter)) "/1"))
+  (component/info [counter c]
+    (str "Remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
   (component/tick [[_ counter] eid c]
-    (when (stopped? counter)
+    (when (stopped? c counter)
       (swap! eid assoc :entity/destroyed? true))))

@@ -24,11 +24,13 @@
                                                ; items then have 2x pretty-name
                                                #_(.setText (.getTitleLabel window)
                                                            (if-let [entity (world/mouseover-entity)]
-                                                             (info/text [:property/pretty-name (:property/pretty-name entity)])
+                                                             (info/text (safe-merge (cdq.context/state) @gdl.app/state)
+                                                                        [:property/pretty-name (:property/pretty-name entity)])
                                                              "Entity Info"))
                                                (.setText label
                                                          (str (when-let [entity (world/mouseover-entity)]
                                                                 (info/text
+                                                                 (safe-merge (cdq.context/state) @gdl.app/state)
                                                                  ; don't use select-keys as it loses Entity record type
                                                                  (apply dissoc entity disallowed-keys)))))
                                                (.pack window))}))

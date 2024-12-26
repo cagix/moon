@@ -20,7 +20,7 @@
     (assoc-in entity [:entity/mana 0] (- mana-val cost))))
 
 (defmethods :entity/mana
-  (component/info [_]
+  (component/info [_ _c]
     (str "Mana: " (entity/mana info/*info-text-entity*)))
 
   (component/->v [[_ v] c]

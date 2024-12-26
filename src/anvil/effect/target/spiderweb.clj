@@ -7,7 +7,7 @@
       duration 5]
 
   (defmethods :effects.target/spiderweb
-    (component/info [_]
+    (component/info [_ _c]
       "Spiderweb slows 50% for 5 seconds."
       ; modifiers same like item/modifiers has info-text
       ; counter ?
@@ -21,5 +21,5 @@
     (component/handle [_ {:keys [effect/target]} c]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
-                                                   :counter (timer duration)})
+                                                   :counter (timer c duration)})
         (swap! target entity/mod-add modifiers)))))

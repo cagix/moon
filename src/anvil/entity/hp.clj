@@ -47,7 +47,7 @@
       (entity/apply-max-modifier entity :modifier/hp-max)))
 
 (defmethods :entity/hp
-  (component/info [_]
+  (component/info [_ _c]
     (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 
   (component/->v [[_ v] c]

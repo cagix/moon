@@ -5,7 +5,7 @@
 
 (defmethods :entity/alert-friendlies-after-duration
   (component/tick [[_ {:keys [counter faction]}] eid c]
-    (when (stopped? counter)
+    (when (stopped? c counter)
       (swap! eid assoc :entity/destroyed? true)
       (doseq [friendly-eid (friendlies-in-radius c (:position @eid) faction)]
         (entity/event c friendly-eid :alert)))))

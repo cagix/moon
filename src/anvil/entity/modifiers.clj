@@ -6,7 +6,7 @@
             [gdl.malli :as m]))
 
 (defmethods :entity/modifiers
-  (component/info [[_ mods]]
+  (component/info [[_ mods] _c]
     (when (seq mods)
       (str/join "\n" (keep (fn [[k ops]]
                              (op/info ops k)) mods)))))

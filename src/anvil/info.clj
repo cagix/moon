@@ -61,19 +61,19 @@
 
 (declare ^:dynamic *info-text-entity*)
 
-(defn text [components]
+(defn text [c components]
   (->> components
        sort-k-order
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k (component/info component)))
+                           (apply-color k (component/info component c)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create
                            ; and info-text might break
                            (pr-str component)))
                     (when (map? v)
-                      (str "\n" (text v))))))
+                      (str "\n" (text c v))))))
        (str/join "\n")
        remove-newlines))
 

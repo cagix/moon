@@ -5,7 +5,7 @@
 
 (defmethods :entity/string-effect
   (component/tick [[k {:keys [counter]}] eid c]
-    (when (stopped? counter)
+    (when (stopped? c counter)
       (swap! eid dissoc k)))
 
   (component/render-above [[_ {:keys [text]}] entity c]

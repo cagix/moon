@@ -34,14 +34,14 @@
      :counter (->> skill
                    :skill/action-time
                    (apply-action-speed-modifier @eid skill)
-                   timer)})
+                   (timer c))})
 
   (component/enter [[_ {:keys [eid skill]}] c]
     (sound/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (timer (:skill/cooldown skill))))
+             (timer c (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill))))
@@ -55,7 +55,7 @@
       ; TODO some sound ?
       )
 
-     (stopped? counter)
+     (stopped? c counter)
      (do
       (effect/do-all! c effect-ctx (:skill/effects skill))
       (entity/event c eid :action-done))))
@@ -66,7 +66,7 @@
                         image
                         entity
                         (:position entity)
-                        (finished-ratio counter))
+                        (finished-ratio c counter))
       (effect/render-info c
                           (effect/check-update-ctx c effect-ctx)
                           effects))))

@@ -3,7 +3,7 @@
             [anvil.entity :as entity]))
 
 (defmethods :effects.target/convert
-  (component/info [_]
+  (component/info [_ _c]
     "Converts target to your side.")
 
   (component/applicable? [_ {:keys [effect/source effect/target]}]

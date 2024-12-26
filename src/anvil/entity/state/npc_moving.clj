@@ -7,7 +7,7 @@
   (component/->v [[_ eid movement-vector] c]
     {:eid eid
      :movement-vector movement-vector
-     :counter (timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
+     :counter (timer c (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
   (component/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
@@ -17,5 +17,5 @@
     (swap! eid dissoc :entity/movement))
 
   (component/tick [[_ {:keys [counter]}] eid c]
-    (when (stopped? counter)
+    (when (stopped? c counter)
       (entity/event c eid :timer-finished))))

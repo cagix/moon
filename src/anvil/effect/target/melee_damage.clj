@@ -13,7 +13,7 @@
 (defmethods :effects.target/melee-damage
   ; FIXME no source
   ; => to entity move
-  (component/info [_]
+  (component/info [_ _c]
     (str "Damage based on entity strength."
          #_(when source
              (str "\n" (damage-info (entity->melee-damage @source))))))

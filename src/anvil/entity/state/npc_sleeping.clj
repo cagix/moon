@@ -14,7 +14,7 @@
                          (:position       @eid)
                          (:entity/faction @eid)
                          0.2)
-    (swap! eid add-text-effect "[WHITE]!"))
+    (swap! eid add-text-effect c "[WHITE]!"))
 
   (component/tick [_ eid c]
     (let [entity @eid

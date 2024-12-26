@@ -3,7 +3,7 @@
             [anvil.entity :as entity]))
 
 (defmethods :entity/faction
-  (component/info [faction]
+  (component/info [faction _c]
     (str "Faction: " (name faction))))
 
 (defn-impl entity/enemy [{:keys [entity/faction]}]

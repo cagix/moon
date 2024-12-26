@@ -60,7 +60,7 @@
   (assoc (fsm initial-state nil) :state initial-state))
 
 (defmethods :entity/fsm
-  (component/info [[_ fsm]]
+  (component/info [[_ fsm] _c]
     (str "State: " (name (:state fsm))))
 
 

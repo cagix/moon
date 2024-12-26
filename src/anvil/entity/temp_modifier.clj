@@ -5,11 +5,11 @@
             [gdl.context :as c]))
 
 (defmethods :entity/temp-modifier
-  (component/info [[_ {:keys [counter]}]]
-    (str "Spiderweb - remaining: " (readable-number (finished-ratio counter)) "/1"))
+  (component/info [[_ {:keys [counter]}] c]
+    (str "Spiderweb - remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
   (component/tick [[k {:keys [modifiers counter]}] eid c]
-    (when (stopped? counter)
+    (when (stopped? c counter)
       (swap! eid dissoc k)
       (swap! eid entity/mod-remove modifiers)))
 

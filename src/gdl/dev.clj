@@ -38,7 +38,7 @@
 
 (defn- handle-throwable! [t]
   (binding [*print-level* 3]
-    (pretty-pst t 48))
+    (pretty-pst t))
   (reset! thrown t))
 
 (defn restart!

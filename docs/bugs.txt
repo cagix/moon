@@ -1,3 +1,5 @@
+FIXME entity info window empty
+
 ; TODO check _only_ systems as public fns (private?)
 ; e.g. no info which isnt possible anymore
 

@@ -24,7 +24,7 @@
   (< (rand) (effective-armor-save source* target*)))
 
 (defmethods :effects.target/damage
-  (component/info [[_ damage]]
+  (component/info [[_ damage] _c]
     (damage-info damage)
     #_(if source
         (let [modified (entity/damage @source damage)]
@@ -47,7 +47,7 @@
        nil
 
        (armor-saves? source* target*)
-       (swap! target add-text-effect "[WHITE]ARMOR")
+       (swap! target add-text-effect c "[WHITE]ARMOR")
 
        :else
        (let [min-max (:damage/min-max (entity/damage source* target* damage))
@@ -58,4 +58,4 @@
                             (:position target*)
                             (c/build c :audiovisuals/damage))
          (entity/event c target (if (zero? new-hp-val) :kill :alert))
-         (swap! target add-text-effect (str "[RED]" dmg-amount "[]")))))))
+         (swap! target add-text-effect c (str "[RED]" dmg-amount "[]")))))))

@@ -3,6 +3,7 @@
             [anvil.widgets :as widgets]
             [cdq.context :as world]
             [clojure.gdx.graphics :as graphics]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]
@@ -30,7 +31,8 @@
 (defn- add-update-labels [c menu-bar update-labels]
   (let [table (ui/menu-bar->table menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
-      (let [update-fn #(str label ": " (update-fn c))]
+      (let [update-fn #(str label ": " (update-fn (safe-merge @app/state
+                                                              (world/state))))]
         (if icon
           (add-upd-label c table update-fn icon)
           (add-upd-label c table update-fn))))))
@@ -100,8 +102,8 @@
                                    (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"
-                    :update-fn (fn [_c]
-                                 (str (readable-number world/elapsed-time) " seconds"))
+                    :update-fn (fn [{:keys [cdq.context/elapsed-time]}]
+                                 (str (readable-number elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
                     :update-fn (fn [_c]

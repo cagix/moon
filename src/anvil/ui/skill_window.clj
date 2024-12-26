@@ -30,6 +30,7 @@
                                                            (entity/state-obj @player-eid)
                                                            (db/build c id))))]]
                          (do
-                          (add-tooltip! button #(info/text (db/build c id))) ; TODO no player modifiers applied (see actionbar)
+                          (add-tooltip! button #(info/text (safe-merge (cdq.context/state) @gdl.app/state)
+                                                           (db/build c id))) ; TODO no player modifiers applied (see actionbar)
                           button))]
                 :pack? true}))

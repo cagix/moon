@@ -7,10 +7,10 @@
 (defmethods :stunned
   (component/->v [[_ eid duration] c]
     {:eid eid
-     :counter (timer duration)})
+     :counter (timer c duration)})
 
   (component/tick [[_ {:keys [counter]}] eid c]
-    (when (stopped? counter)
+    (when (stopped? c counter)
       (entity/event c eid :effect-wears-off)))
 
   (component/render-below [_ entity c]

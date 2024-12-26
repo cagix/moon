@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [apply]))
 
 (defsystem info)
-(defmethod info :default [_])
+(defmethod info :default [_ c])
 
 (defsystem dispose)
 (defmethod dispose :default [_])

@@ -19,20 +19,20 @@
 (declare ^:private tiled-map
          ^:private explored-tile-corners
          ^:private grid
-         ^:private entity-ids
+         ^:private entity-ids ; alter-var-root
          ^:private content-grid
          ^:private player-eid
          ^:private raycaster
 
          ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
-         elapsed-time
+         elapsed-time ; alter-var-root
 
          ^{:doc "The game logic update delta-time in ms."}
-         delta-time
+         delta-time ; bind-root
 
-         paused?
-         mouseover-eid
-         error)
+         paused? ; bind-root
+         mouseover-eid ; bind-root
+         error) ; bind-root
 
 (defn state []
   {::grid grid
@@ -43,6 +43,7 @@
    ::entity-ids entity-ids
    ::content-grid content-grid
    ::raycaster raycaster
+   ::elapsed-time elapsed-time
    })
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
@@ -74,20 +75,23 @@
   [{::keys [raycaster]} start target path-w]
   (raycaster/path-blocked? raycaster start target path-w))
 
-(defn timer [duration]
+(defn timer [{::keys [elapsed-time]} duration]
   {:pre [(>= duration 0)]}
   {:duration duration
    :stop-time (+ elapsed-time duration)})
 
-(defn stopped? [{:keys [stop-time]}]
+(defn stopped? [{::keys [elapsed-time]}
+                {:keys [stop-time]}]
   (>= elapsed-time stop-time))
 
-(defn reset-timer [{:keys [duration] :as counter}]
+(defn reset-timer [{::keys [elapsed-time]}
+                   {:keys [duration] :as counter}]
   (assoc counter :stop-time (+ elapsed-time duration)))
 
-(defn finished-ratio [{:keys [duration stop-time] :as counter}]
+(defn finished-ratio [{::keys [elapsed-time] :as c}
+                      {:keys [duration stop-time] :as counter}]
   {:post [(<= 0 % 1)]}
-  (if (stopped? counter)
+  (if (stopped? c counter)
     0
     ; min 1 because floating point math inaccuracies
     (min 1 (/ (- stop-time elapsed-time) duration))))
@@ -130,15 +134,15 @@
 ; so we could add those protocols to 'entity'?
 ; => also add render stuff
 ; so each component is together all stuff (but question is if we have open data)
-(defn add-text-effect [entity text]
+(defn add-text-effect [entity c text]
   (assoc entity
          :entity/string-effect
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter reset-timer))
+               (update :counter #(reset-timer c %)))
            {:text text
-            :counter (timer 0.4)})))
+            :counter (timer c 0.4)})))
 
 (defn- entity-ids-add-entity [eid]
   (let [id (:entity/id @eid)]
@@ -297,7 +301,7 @@
                 position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
-                 {:counter (timer duration)
+                 {:counter (timer c duration)
                   :faction faction}}))
 
 (defn line-render [c {:keys [start end duration color thick?]}]
