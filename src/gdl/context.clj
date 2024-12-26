@@ -1,6 +1,6 @@
 (ns gdl.context
   (:require [anvil.component :as component]
-            [clojure.gdx :as gdx :refer [play sprite-batch dispose]]
+            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -326,7 +326,7 @@
 
 (defmethods ::viewport
   (component/->v [[_ {:keys [width height]}] _c]
-    (viewport/fit width height (camera/orthographic)))
+    (viewport/fit width height (orthographic-camera)))
   (component/resize [[_ viewport] w h]
     (viewport/update viewport w h :center-camera? true)))
 
@@ -337,7 +337,7 @@
 (defmethods ::world-viewport
   (component/->v [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
     (assert world-unit-scale)
-    (let [camera (camera/orthographic)
+    (let [camera (orthographic-camera)
           world-width  (* width  world-unit-scale)
           world-height (* height world-unit-scale)]
       (camera/set-to-ortho camera world-width world-height :y-down? false)
