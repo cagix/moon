@@ -1,5 +1,5 @@
 (ns gdl.graphics.sprite
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
+  (:require [clojure.gdx :refer [dimensions ->texture-region]]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
@@ -12,7 +12,7 @@
                   (number? (scale 0))
                   (number? (scale 1))))]}
   (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions (texture-region/dimensions texture-region) scale)
+                           (scale-dimensions (dimensions texture-region) scale)
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
@@ -30,7 +30,7 @@
 
 (defn sub [world-unit-scale sprite bounds]
   (create world-unit-scale
-          (apply texture-region/->create (:texture-region sprite) bounds)))
+          (apply ->texture-region (:texture-region sprite) bounds)))
 
 (defn sheet [world-unit-scale texture-region tilew tileh]
   {:image (create world-unit-scale texture-region)

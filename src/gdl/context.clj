@@ -9,7 +9,6 @@
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
             [clojure.string :as str]
             [gdl.assets :as assets]
@@ -40,7 +39,7 @@
   (play (get-sound c sound-name)))
 
 (defn- texture-region [{::keys [assets]} path]
-  (texture-region/create (assets path)))
+  (gdx/texture-region (assets path)))
 
 (defn sprite [{::keys [world-unit-scale] :as c} path]
   (sprite/create world-unit-scale
@@ -279,8 +278,7 @@
 (defmethods ::shape-drawer
   (component/->v [_ {::keys [batch]}]
     (assert batch)
-    (sd/create batch
-               (texture-region/create (sd-texture) 1 0 1 1)))
+    (sd/create batch (gdx/texture-region (sd-texture) 1 0 1 1)))
   (component/dispose [[_ sd]]
     #_(dispose sd)))
 ; TODO this will break ... proxy with extra-data -> get texture through sd ...
