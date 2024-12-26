@@ -13,7 +13,7 @@
   (component/applicable? [_ _]
     true)
 
-  (component/useful? [_ _]
+  (component/useful? [_ _ _c]
     ; TODO
     false)
 

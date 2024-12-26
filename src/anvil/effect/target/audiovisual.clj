@@ -6,7 +6,7 @@
   (component/applicable? [_ {:keys [effect/target]}]
     target)
 
-  (component/useful? [_ _]
+  (component/useful? [_ _ _c]
     false)
 
   (component/handle [[_ audiovisual] {:keys [effect/target]} c]

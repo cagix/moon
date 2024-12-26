@@ -1,8 +1,8 @@
 (ns anvil.world.render.tiled-map
-  (:require [cdq.context :as world]
-            [anvil.world.render :as render]
+  (:require [anvil.world.render :as render]
             [clojure.gdx.graphics.color :as color]
-            [gdl.context :as c]))
+            [gdl.context :as c]
+            [gdl.math.raycaster :as raycaster]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
@@ -22,7 +22,7 @@
  2432
  )
 
-(defn- tile-color-setter [explored-tile-corners light-cache light-position]
+(defn- tile-color-setter [raycaster explored-tile-corners light-cache light-position]
   #_(reset! do-once false)
   (fn tile-color-setter [_color x y]
     (let [position [(int x) (int y)]
@@ -30,7 +30,7 @@
           base-color (if explored? explored-tile-color color/black)
           cache-entry (get @light-cache position :not-found)
           blocked? (if (= cache-entry :not-found)
-                     (let [blocked? (world/ray-blocked? light-position position)]
+                     (let [blocked? (raycaster/blocked? raycaster light-position position)]
                        (swap! light-cache assoc position blocked?)
                        blocked?)
                      cache-entry)]
@@ -42,11 +42,13 @@
               (swap! explored-tile-corners assoc (mapv int position) true))
             color/white)))))
 
-(defn-impl render/render-tiled-map [{:keys [cdq.context/explored-tile-corners] :as c}
+(defn-impl render/render-tiled-map [{:keys [cdq.context/raycaster
+                                            cdq.context/explored-tile-corners] :as c}
                                     tiled-map
                                     light-position]
   (c/draw-tiled-map c
                     tiled-map
-                    (tile-color-setter explored-tile-corners
+                    (tile-color-setter raycaster
+                                       explored-tile-corners
                                        (atom {})
                                        light-position)))

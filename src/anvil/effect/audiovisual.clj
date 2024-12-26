@@ -6,7 +6,7 @@
   (component/applicable? [_ {:keys [effect/target-position]}]
     target-position)
 
-  (component/useful? [_ _]
+  (component/useful? [_ _ _c]
     false)
 
   (component/handle [[_ audiovisual] {:keys [effect/target-position]} c]

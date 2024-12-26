@@ -22,7 +22,7 @@
          ^:private entity-ids
          ^:private content-grid
          ^:private player-eid
-         raycaster
+         ^:private raycaster
 
          ^{:doc "The elapsed in-game-time in seconds (not counting when game is paused)."}
          elapsed-time
@@ -42,6 +42,7 @@
    ::explored-tile-corners explored-tile-corners
    ::entity-ids entity-ids
    ::content-grid content-grid
+   ::raycaster raycaster
    })
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
@@ -65,12 +66,12 @@
 (defn point->entities [{::keys [grid]} position]
   (grid/point->entities grid position))
 
-(defn ray-blocked? [start target]
+(defn ray-blocked? [{::keys [raycaster]} start target]
   (raycaster/blocked? raycaster start target))
 
 (defn path-blocked?
   "path-w in tiles. casts two rays."
-  [start target path-w]
+  [{::keys [raycaster]} start target path-w]
   (raycaster/path-blocked? raycaster start target path-w))
 
 (defn timer [duration]
@@ -119,11 +120,11 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn line-of-sight? [{:keys [gdl.context/world-viewport]} source target]
+(defn line-of-sight? [{:keys [gdl.context/world-viewport] :as c} source target]
   (and (or (not (:entity/player? source))
            (on-screen? world-viewport target))
        (not (and los-checks?
-                 (ray-blocked? (:position source) (:position target))))))
+                 (ray-blocked? c (:position source) (:position target))))))
 
 ; this as protocols & impl implements it? same with send-event ?
 ; so we could add those protocols to 'entity'?

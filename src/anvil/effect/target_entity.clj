@@ -29,7 +29,7 @@
     (and target
          (seq (filter-applicable? ctx entity-effects))))
 
-  (component/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
+  (component/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _c]
     (in-range? @source @target maxrange))
 
   (component/handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx} c]

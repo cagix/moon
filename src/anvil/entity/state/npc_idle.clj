@@ -17,14 +17,14 @@
      :effect/target-direction (when target
                                 (entity/direction entity @target))}))
 
-(defn- npc-choose-skill [entity ctx]
+(defn- npc-choose-skill [c entity ctx]
   (->> entity
        :entity/skills
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect/applicable-and-useful? ctx (:skill/effects %))))
+                     (effect/applicable-and-useful? c ctx (:skill/effects %))))
        first))
 
 (defmethods :npc-idle
@@ -33,6 +33,6 @@
 
   (component/tick [_ eid c]
     (let [effect-ctx (effect-context c eid)]
-      (if-let [skill (npc-choose-skill @eid effect-ctx)]
+      (if-let [skill (npc-choose-skill c @eid effect-ctx)]
         (entity/event c eid :start-action [skill effect-ctx])
         (entity/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0]))))))

@@ -2,6 +2,8 @@
   (:require [anvil.component :as component]
             [cdq.context :as world]))
 
+; TODO the 'ctx' is actually 'effect' itself with position/target/etc. as part of ':effect/'
+
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn check-update-ctx
   "Call this on effect-context if the time of using the context is not the time when context was built."
@@ -23,10 +25,10 @@
 (defn some-applicable? [ctx effect]
   (seq (filter-applicable? ctx effect)))
 
-(defn applicable-and-useful? [ctx effect]
+(defn applicable-and-useful? [c ctx effect]
   (->> effect
        (filter-applicable? ctx)
-       (some #(component/useful? % ctx))))
+       (some #(component/useful? % ctx c))))
 
 (defn do-all! [c ctx effect]
   (run! #(component/handle % ctx c)

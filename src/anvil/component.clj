@@ -70,7 +70,7 @@
 (defsystem handle)
 
 (defsystem useful?)
-(defmethod useful? :default [_ _ctx] true)
+(defmethod useful? :default [_ _ctx c] true)
 
 (defsystem render-effect)
 (defmethod render-effect :default [_ _ctx c])

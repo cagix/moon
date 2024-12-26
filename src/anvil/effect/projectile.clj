@@ -15,11 +15,12 @@
 
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (component/useful? [[_ {:keys [projectile/max-range] :as projectile}]
-                      {:keys [effect/source effect/target]}]
+                      {:keys [effect/source effect/target]}
+                      c]
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-      (and (not (world/path-blocked? ; TODO test
+      (and (not (world/path-blocked? c ; TODO test
                                      source-p
                                      target-p
                                      (world/projectile-size projectile)))

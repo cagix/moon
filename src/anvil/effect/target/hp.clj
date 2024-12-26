@@ -10,7 +10,7 @@
     (and effect/target
          (mods/value @target (stat-k k))))
 
-#_(defn useful? [_ _]
+#_(defn useful? [_ _ _c]
     true)
 
 #_(defn handle [[k operations] {:keys [effect/source effect/target]}]
