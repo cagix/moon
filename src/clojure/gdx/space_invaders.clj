@@ -1,6 +1,6 @@
 (ns clojure.gdx.space-invaders
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl3 :as lwjgl3])
+            [clojure.gdx.lwjgl :as lwjgl])
   (:import (com.badlogic.gdx Gdx Input$Keys)
            (com.badlogic.gdx.graphics OrthographicCamera)
            (com.badlogic.gdx.graphics Texture)
@@ -126,7 +126,7 @@
 (def state (atom nil))
 
 (defn game-listener []
-  (reify lwjgl3/Application
+  (reify lwjgl/Application
     (create [_]
       (reset! state (make-game-state (gdx/context)))
       (swap! state assoc :camera (OrthographicCamera. screen-width screen-height)))
@@ -145,8 +145,8 @@
       (.setToOrtho (:camera @state) false))))
 
 (defn -main []
-  (lwjgl3/start {:title "Space Invaders"
-                 :width screen-width
-                 :height screen-height
-                 :fps 60}
-                (game-listener)))
+  (lwjgl/start {:title "Space Invaders"
+                :width screen-width
+                :height screen-height
+                :fps 60}
+               (game-listener)))

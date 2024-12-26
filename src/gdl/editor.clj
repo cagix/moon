@@ -1,7 +1,7 @@
 (ns gdl.editor
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl3 :as lwjgl3]
+            [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
             [gdl.app :as app]
             [gdl.assets :as assets]
@@ -516,37 +516,37 @@
 (defn -main []
   (def db (db/create {:schema "schema.edn"
                       :properties "properties.edn"}))
-  (lwjgl3/start {:title "Editor"
-                 :fps 60
-                 :width 1440
-                 :height 900
-                 :taskbar-icon "moon.png"}
-                (reify lwjgl3/Application
-                  (create [_]
-                    (reset! app/state (ctx/create-into (gdx/context)
-                                                       {:gdl.context/unit-scale 1
-                                                        :gdl.context/assets "resources/"
-                                                        :gdl.context/batch nil
-                                                        :gdl.context/viewport {:width 1440 :height 900}
+  (lwjgl/start {:title "Editor"
+                :fps 60
+                :width 1440
+                :height 900
+                :taskbar-icon "moon.png"}
+               (reify lwjgl/Application
+                 (create [_]
+                   (reset! app/state (ctx/create-into (gdx/context)
+                                                      {:gdl.context/unit-scale 1
+                                                       :gdl.context/assets "resources/"
+                                                       :gdl.context/batch nil
+                                                       :gdl.context/viewport {:width 1440 :height 900}
 
-                                                        ;; just because of sprite edn->value of db requires world-unit-scale
-                                                        :gdl.context/world-unit-scale 1
-                                                        :gdl.context/world-viewport {:width 1440 :height 900}
-                                                        ;;
+                                                       ;; just because of sprite edn->value of db requires world-unit-scale
+                                                       :gdl.context/world-unit-scale 1
+                                                       :gdl.context/world-viewport {:width 1440 :height 900}
+                                                       ;;
 
-                                                        :gdl.context/ui :skin-scale/x1
-                                                        :gdl.context/stage (fn [c]
-                                                                             [(background-image c "images/moon_background.png")])}))
+                                                       :gdl.context/ui :skin-scale/x1
+                                                       :gdl.context/stage (fn [c]
+                                                                            [(background-image c "images/moon_background.png")])}))
 
-                    (stage/add-actor (tabs-table "custom label text here")))
+                   (stage/add-actor (tabs-table "custom label text here")))
 
-                  (dispose [_]
-                    (ctx/cleanup @app/state))
+                 (dispose [_]
+                   (ctx/cleanup @app/state))
 
-                  (render [_]
-                    (let [{:keys [gdl.context/stage]} @app/state]
-                      (.act stage)
-                      (.draw stage)))
+                 (render [_]
+                   (let [{:keys [gdl.context/stage]} @app/state]
+                     (.act stage)
+                     (.draw stage)))
 
-                  (resize [_ w h]
-                    (ctx/resize @app/state w h)))))
+                 (resize [_ w h]
+                   (ctx/resize @app/state w h)))))

@@ -5,8 +5,8 @@
                  [clojure.gdx "1.13.0-0.1"]
                  ;[com.github.damn/clojure.gdx                 "42cc27bd53"]
 
-                 [clojure.gdx.backends.lwjgl3 "1.13.0-0.1"]
-                 ;[com.github.damn/clojure.gdx.backends.lwjgl3 "1.13.0-0.1"]
+                 [clojure.gdx.lwjgl "1.13.0-0.1"]
+                 ;[com.github.damn/clojure.gdx.lwjgl "1.13.0-0.1"]
                  [com.github.damn/clojure.gdx.graphics.shape-drawer "f70150d4a1"]
 
                  ; TODO release lib with docs
