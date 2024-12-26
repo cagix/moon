@@ -6,7 +6,6 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
-            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.interop :as interop]
@@ -271,7 +270,7 @@
   (let [pixmap (doto (pixmap 1 1 pixmap/format-RGBA8888)
                  (pixmap/set-color white)
                  (draw-pixel 0 0))
-        texture (texture/create pixmap)]
+        texture (gdx/texture pixmap)]
     (dispose pixmap)
     texture))
 

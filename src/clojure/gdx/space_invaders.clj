@@ -1,6 +1,5 @@
 (ns clojure.gdx.space-invaders
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3])
   (:import (com.badlogic.gdx Gdx Input$Keys)
            (com.badlogic.gdx.graphics OrthographicCamera)
@@ -29,7 +28,7 @@
 (def screen-height 600)
 
 (defn texture [c path]
-  (texture/create (gdx/internal-file c path)))
+  (gdx/texture (gdx/internal-file c path)))
 
 (defn make-player [context]
   {:x (/ screen-width 2)
