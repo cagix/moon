@@ -1,5 +1,5 @@
 (ns gdl.assets
-  (:require [clojure.gdx :refer [dispose]]
+  (:require [clojure.gdx :refer [asset-manager dispose]]
             [clojure.gdx.assets :as assets]
             [clojure.gdx.file-handle :as fh]
             [clojure.string :as str])
@@ -29,7 +29,7 @@
                                 :texture #{"png" "bmp"}})
 
 (defn manager [folder]
-  (doto (assets/manager)
+  (doto (asset-manager)
     (load-all (for [[asset-type exts] asset-type-exts
                     file (map #(str/replace-first % folder "")
                               (recursively-search folder exts))]
