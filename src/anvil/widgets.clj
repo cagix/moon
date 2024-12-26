@@ -8,7 +8,7 @@
 
 (defn inventory [c])
 
-(defn set-item-image-in-widget [cell item])
+(defn set-item-image-in-widget [c cell item])
 
 (defn remove-item-from-widget [c cell])
 

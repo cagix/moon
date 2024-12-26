@@ -3,11 +3,11 @@
             [anvil.entity :as entity]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
+            [cdq.context :as w]
             [clojure.gdx :as gdx]
             [data.grid2d :as g2d]
             [gdl.app :as app]
             [gdl.context :as c]
-            [gdl.stage :as stage]
             [gdl.ui :refer [set-drawable!
                             ui-widget
                             texture-region-drawable
@@ -130,11 +130,11 @@
               :rows [[{:actor (inventory-table c)
                        :pad 4}]]}))
 
-(defn- cell-widget [cell]
-  (get (::table (stage/get-inventory)) cell))
+(defn- cell-widget [c cell]
+  (get (::table (w/get-inventory c)) cell))
 
-(defn-impl widgets/set-item-image-in-widget [cell item]
-  (let [cell-widget (cell-widget cell)
+(defn-impl widgets/set-item-image-in-widget [c cell item]
+  (let [cell-widget (cell-widget c cell)
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (scene2d.utils/set-min-size! drawable cell-size)
@@ -142,7 +142,7 @@
     (add-tooltip! cell-widget #(info/text @app/state item))))
 
 (defn-impl widgets/remove-item-from-widget [c cell]
-  (let [cell-widget (cell-widget cell)
+  (let [cell-widget (cell-widget c cell)
         image-widget (get cell-widget :image)]
     (set-drawable! image-widget (slot->background c (cell 0)))
     (remove-tooltip! cell-widget)))

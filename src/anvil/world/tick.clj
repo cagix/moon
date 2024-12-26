@@ -4,8 +4,7 @@
             [anvil.controls :as controls]
             [anvil.entity :as entity]
             [cdq.context :as w]
-            [gdl.context :as c]
-            [gdl.stage :as stage]))
+            [gdl.context :as c]))
 
 (defn player-input [{:keys [cdq.context/player-eid] :as c}]
   (component/manual-tick (entity/state-obj @player-eid)
@@ -38,7 +37,7 @@
          first)))
 
 (defn- update-mouseover-entity [{:keys [cdq.context/mouseover-eid] :as c}]
-  (let [new-eid (if (stage/mouse-on-actor? c)
+  (let [new-eid (if (c/mouse-on-actor? c)
                   nil
                   (calculate-eid c))]
     (when mouseover-eid
@@ -77,5 +76,5 @@
     (window-hotkeys c
                     {:controls/close-windows-key controls/close-windows-key
                      :controls/window-hotkeys    controls/window-hotkeys}
-                    (stage/get))
+                    (c/stage c))
     c))

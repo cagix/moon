@@ -1,8 +1,8 @@
 (ns anvil.world.tick.entities
   (:require [anvil.component :as component]
-            [cdq.context :as world]
             [anvil.world.tick :as tick]
-            [gdl.stage :as stage]))
+            [cdq.context :as world]
+            [gdl.context :as c]))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
@@ -22,6 +22,6 @@
 (defn-impl tick/entities [c]
   (try (run! #(tick-entity c %) (world/active-entities c))
        (catch Throwable t
-         (stage/error-window! t)
+         (c/error-window c t)
          #_(bind-root world/error t))) ; FIXME ... either reduce or use an atom ...
   c)

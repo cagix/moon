@@ -4,11 +4,10 @@
             [cdq.context :as world]
             [clojure.gdx :refer [button-just-pressed? play]]
             [gdl.context :as c]
-            [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]))
 
 (defn- world-item? [c]
-  (not (mouse-on-actor? c)))
+  (not (c/mouse-on-actor? c)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -38,7 +37,7 @@
      (do
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/set-item eid cell item-on-cursor)
+      (entity/set-item c eid cell item-on-cursor)
       (entity/event c eid :dropped-item))
 
      ; STACK ITEMS
@@ -59,7 +58,7 @@
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/remove-item eid cell)
-      (entity/set-item eid cell item-on-cursor)
+      (entity/set-item c eid cell item-on-cursor)
       (entity/event c eid :dropped-item)
       (entity/event c eid :pickup-item item-in-cell)))))
 

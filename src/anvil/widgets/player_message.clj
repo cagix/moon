@@ -1,8 +1,8 @@
 (ns anvil.widgets.player-message
   (:require [anvil.widgets :as widgets]
+            [cdq.context :refer [message-to-player player-message-duration-seconds]]
             [gdl.app :as app]
             [gdl.context :as c]
-            [gdl.stage :refer [message-to-player player-message-duration-seconds]]
             [gdl.ui :refer [ui-actor]]))
 
 (defn- draw-player-message [{:keys [gdl.context/viewport] :as c}]

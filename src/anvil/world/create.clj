@@ -2,7 +2,6 @@
   (:require [anvil.level :refer [generate-level]]
             [cdq.context :as world]
             [cdq.grid :as grid]
-            [gdl.stage :as stage]
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.tiled :as tiled]))
@@ -42,7 +41,7 @@
 
 (defn-impl world/create [c world-id]
   ; TODO assert is :screens/world
-  (stage/reset (world/widgets c))
+  (c/reset-stage c (world/widgets c))
   (world/dispose c) ; TODO ... call here? separate world reset/dispose than ctx reset/dispose ? multimethods move to gdl.contxt?!
   (println "(swap! app/state c/create-into (world-components c world-id))")
   (swap! app/state c/create-into (world-components c world-id))

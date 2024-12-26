@@ -6,7 +6,6 @@
             [clojure.pprint :refer [pprint]]
             [gdl.app :as app]
             [gdl.context :as c]
-            [gdl.stage :refer [add-actor]]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [gdl.ui.group :refer [children]])
   (:import (com.badlogic.gdx Gdx)
@@ -75,7 +74,7 @@
 (defn- learn-skill! [skill-id]
   (post-runnable
    (let [{:keys [cdq.context/player-eid] :as c} @app/state]
-     (swap! player-eid skills/add (c/build c skill-id)))))
+     (skills/add c player-eid (c/build c skill-id)))))
 
 (defn- create-item! [item-id]
   (post-runnable
@@ -184,7 +183,7 @@
   {:pre [(map? m)]}
   (let [tree (ui/tree)]
     (add-map-nodes! tree (into (sorted-map) m) 0)
-    (add-actor
+    (c/add-actor
      (ui/window {:title "Tree View"
                  :close-button? true
                  :close-on-escape? true

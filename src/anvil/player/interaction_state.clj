@@ -2,9 +2,9 @@
   (:require [anvil.entity :as entity]
             [anvil.skill :as skill]
             [anvil.player :as player]
+            [cdq.context :as w]
             [gdl.context :as c :refer [play-sound]]
             [gdl.math.vector :as v]
-            [gdl.stage :as stage]
             [gdl.ui :refer [window-title-bar? button?]]
             [gdl.ui.actor :as actor]))
 
@@ -15,7 +15,7 @@
 (defmethod on-clicked :clickable/item [eid {:keys [cdq.context/player-eid] :as c}]
   (let [item (:entity/item @eid)]
     (cond
-     (actor/visible? (stage/get-inventory))
+     (actor/visible? (w/get-inventory c))
      (do
       (play-sound c "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
@@ -30,10 +30,10 @@
      :else
      (do
       (play-sound c "bfxr_denied")
-      (stage/show-player-msg "Your Inventory is full")))))
+      (w/show-player-msg "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
-  (actor/toggle-visible! (stage/get-inventory)))
+  (actor/toggle-visible! (w/get-inventory c)))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -50,7 +50,7 @@
                                               (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (play-sound c "bfx_denied")
-                                              (stage/show-player-msg "Too far away"))]))
+                                              (w/show-player-msg "Too far away"))]))
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c}
                                   ^com.badlogic.gdx.scenes.scene2d.Actor actor]
@@ -60,7 +60,7 @@
                (actor/user-object (.getParent actor)))))
 
 (defn- mouseover-actor->cursor [c]
-  (let [actor (stage/mouse-on-actor? c)]
+  (let [actor (c/mouse-on-actor? c)]
     (cond
      (inventory-cell-with-item? c actor) :cursors/hand-before-grab
      (window-title-bar? actor)           :cursors/move-window
@@ -79,7 +79,7 @@
 (defn- interaction-state [{:keys [cdq.context/mouseover-eid] :as c} eid]
   (let [entity @eid]
     (cond
-     (stage/mouse-on-actor? c)
+     (c/mouse-on-actor? c)
      [(mouseover-actor->cursor c)
       (fn [] nil)] ; handled by actors themself, they check player state
 
@@ -88,7 +88,7 @@
      (clickable-entity-interaction c entity mouseover-eid)
 
      :else
-     (if-let [skill-id (stage/selected-skill)]
+     (if-let [skill-id (w/selected-skill c)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx c eid)
              state (skill/usable-state entity skill effect-ctx)]
@@ -108,14 +108,14 @@
             [:cursors/skill-not-usable
              (fn []
                (play-sound c "bfxr_denied")
-               (stage/show-player-msg (case state
-                                        :cooldown "Skill is still on cooldown"
-                                        :not-enough-mana "Not enough mana"
-                                        :invalid-params "Cannot use this here")))])))
+               (w/show-player-msg (case state
+                                    :cooldown "Skill is still on cooldown"
+                                    :not-enough-mana "Not enough mana"
+                                    :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
           (play-sound c "bfxr_denied")
-          (stage/show-player-msg "No selected skill"))]))))
+          (w/show-player-msg "No selected skill"))]))))
 
 (defn-impl player/interaction-state [c eid]
   (interaction-state c eid))

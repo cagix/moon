@@ -9,17 +9,17 @@
 (declare player-add-skill
          player-remove-skill)
 
-(defn add [entity {:keys [property/id] :as skill}]
-  {:pre [(not (contains? entity skill))]}
-  (when (:entity/player? entity)
-    (player-add-skill skill))
-  (assoc-in entity [:entity/skills id] skill))
+(defn add [c eid {:keys [property/id] :as skill}]
+  {:pre [(not (contains? @eid skill))]}
+  (when (:entity/player? @eid)
+    (player-add-skill c skill))
+  (swap! eid assoc-in [:entity/skills id] skill))
 
-(defn remove [entity {:keys [property/id] :as skill}]
-  {:pre [(contains? entity skill)]}
-  (when (:entity/player? entity)
-    (player-remove-skill skill))
-  (update entity :entity/skills dissoc id))
+(defn remove [c eid {:keys [property/id] :as skill}]
+  {:pre [(contains? @eid skill)]}
+  (when (:entity/player? @eid)
+    (player-remove-skill c skill))
+  (swap! eid update :entity/skills dissoc id))
 
 #_(defmethod component/info [skills _c]
   ; => recursive info-text leads to endless text wall
@@ -30,7 +30,7 @@
   (component/create [[k skills] eid c]
     (swap! eid assoc k nil)
     (doseq [skill skills]
-      (swap! eid add skill)))
+      (add c eid skill)))
 
   (component/tick [[k skills] eid c]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)

@@ -1,4 +1,4 @@
-(ns uf.app
+(ns uf.app ; TODO keep own state
   #_(:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
               [clojure.gdx :refer [white]]
             [clojure.gdx.lwjgl :as lwjgl]
@@ -50,7 +50,7 @@
                        (ui/setup (:ui lifecycle))
                        (stage/setup)
                        (ctx/create)
-                       (stage/add-actor (uf-dev-menu-table @app/state))
+                       (ctx/add-actor @app/state (uf-dev-menu-table @app/state))
                        (bind-root tiled-map (tiled/load-tmx-map "maps/vampire.tmx"))
                        (camera/set-position! ctx/camera [30 70]))
 

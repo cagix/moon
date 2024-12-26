@@ -8,7 +8,6 @@
             [gdl.context :as c :refer [draw-tiled-map]]
             [clojure.gdx :refer [key-pressed?]]
             [gdl.graphics.camera :as cam]
-            [gdl.stage :as stage]
             [gdl.tiled :as tiled]
             [gdl.ui :refer [ui-actor text-button] :as ui]
             [gdl.ui.group :refer [add-actor!]]))
@@ -129,7 +128,7 @@
               :rows [[(ui/label (with-out-str (pprint (c/build c level-id))))]
                      [(text-button "Generate" #(try (generate-screen-ctx c (c/build c level-id))
                                                     (catch Throwable t
-                                                      (stage/error-window! t)
+                                                      (c/error-window @state t)
                                                       (println t))))]]
               :pack? true}))
 

@@ -1,3 +1,3 @@
 (ns gdl.app)
 
-(def state (atom nil))
+(def state (atom nil)) ; TODO anvil.app !

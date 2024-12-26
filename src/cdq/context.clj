@@ -9,7 +9,12 @@
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.vector :as v]
-            [gdl.tiled :as tiled]))
+            [gdl.tiled :as tiled]
+            [gdl.ui :as ui]
+            [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
 
 (defmethods ::tiled-map
   (component/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
@@ -441,3 +446,42 @@
 (defn nearest-enemy [{::keys [grid]} entity]
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
+
+(defn get-inventory [c]
+  (get (:windows (c/stage c)) :inventory-window))
+
+(defn get-action-bar [c]
+  (let [group (:ui/action-bar (:action-bar-table (c/stage c)))]
+    {:horizontal-group group
+     :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
+
+(defn selected-skill [c]
+  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar c)))]
+    (actor/user-object skill-button)))
+
+(def player-message-duration-seconds 1.5)
+
+(def message-to-player nil)
+
+(defn show-player-msg [message]
+  (bind-root message-to-player {:message message :counter 0}))
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn show-modal [{:keys [gdl.context/viewport] :as c}
+                  {:keys [title text button-text on-click]}]
+  (assert (not (::modal (c/stage c))))
+  (c/add-actor c
+               (ui/window {:title title
+                           :rows [[(ui/label text)]
+                                  [(ui/text-button button-text
+                                                   (fn []
+                                                     (Actor/.remove (::modal (c/stage c)))
+                                                     (on-click)))]]
+                           :id ::modal
+                           :modal? true
+                           :center-position [(/ (:width viewport) 2)
+                                             (* (:height viewport) (/ 3 4))]
+                           :pack? true})))

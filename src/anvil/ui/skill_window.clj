@@ -2,13 +2,13 @@
   (:require [anvil.component :refer [clicked-skillmenu-skill]]
             [anvil.entity.skills :as skills]))
 
-(defmethod clicked-skillmenu-skill :player-idle [[_ {:keys [eid]}] skill]
+(defmethod clicked-skillmenu-skill :player-idle [[_ {:keys [eid]}] skill c]
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
                (not (skills/contains? @eid skill)))
       (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-      (swap! eid skills/add skill))))
+      (skills/add c eid skill))))
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player-eid))
@@ -28,7 +28,8 @@
                                                         (fn []
                                                           (clicked-skillmenu-skill
                                                            (entity/state-obj @player-eid)
-                                                           (db/build c id))))]]
+                                                           (db/build c id)
+                                                           c)))]]
                          (do
                           (add-tooltip! button #(info/text @gdl.app/state
                                                            (db/build c id))) ; TODO no player modifiers applied (see actionbar)

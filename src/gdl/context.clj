@@ -393,6 +393,32 @@
 (defn build-all [{::keys [db] :as c} property-type]
   (db/build-all db property-type c))
 
+(def stage ::stage)
+
+(defn add-actor [{::keys [stage]} actor]
+  (.addActor stage actor))
+
+(defn reset-stage [{::keys [stage]} new-actors]
+  (.clear stage)
+  (run! #(.addActor stage %) new-actors))
+
+(defn mouse-on-actor? [{::keys [stage] :as c}]
+  (let [[x y] (mouse-position c)]
+    (.hit stage x y true)))
+
+(defn error-window [c throwable]
+  (pretty-pst throwable)
+  (add-actor c
+   (ui/window {:title "Error"
+               :rows [[(ui/label (binding [*print-level* 3]
+                                   (with-err-str
+                                     (clojure.repl/pst throwable))))]]
+               :modal? true
+               :close-button? true
+               :close-on-escape? true
+               :center? true
+               :pack? true})))
+
 ; TODO do we care in here about malli-form ?! - where used? - hide inside 'schemas' ? or schemas/validation
 
 (defmethod schema/malli-form :s/val-max [_ _schemas] m/val-max-schema)

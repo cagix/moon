@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [clojure.gdx :refer [play]]
             [gdl.context :as c]
-            [gdl.stage :refer [show-modal]]))
+            [cdq.context :refer [show-modal]]))
 
 (defmethods :player-dead
   (component/->v [[k] c]

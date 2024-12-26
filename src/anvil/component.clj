@@ -52,7 +52,7 @@
 (defmethod clicked-inventory-cell :default [_ cell c])
 
 (defsystem clicked-skillmenu-skill)
-(defmethod clicked-skillmenu-skill :default [_ skill])
+(defmethod clicked-skillmenu-skill :default [_ skill c])
 
 (defsystem draw-gui-view)
 (defmethod draw-gui-view :default [_ c])

@@ -29,13 +29,13 @@
 (defn- applies-modifiers? [[slot _]]
   (not= :inventory.slot/bag slot))
 
-(defn-impl entity/set-item [eid cell item]
+(defn-impl entity/set-item [c eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
                  (entity/valid-slot? cell item)))
     (when (:entity/player? entity)
-      (widgets/set-item-image-in-widget cell item))
+      (widgets/set-item-image-in-widget c cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (applies-modifiers? cell)
       (swap! eid entity/mod-add (:entity/modifiers item)))))
@@ -74,7 +74,7 @@
     ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
     ; first remove and then place, just update directly  item ...
     (concat (entity/remove-item c eid cell)
-            (entity/set-item eid cell (update cell-item :count + (:count item))))))
+            (entity/set-item c eid cell (update cell-item :count + (:count item))))))
 
 (defn- cells-and-items [inventory slot]
   (for [[position item] (slot inventory)]
@@ -98,7 +98,7 @@
                 (nil? cell-item)))
     (if (entity/stackable? item cell-item)
       (entity/stack-item c eid cell item)
-      (entity/set-item eid cell item))))
+      (entity/set-item c eid cell item))))
 
 (defmethods :entity/inventory
   (component/create [[k items] eid c]
