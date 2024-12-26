@@ -3,7 +3,7 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity]
             [cdq.context :as world]
-            [cdq.grid.cell :as cell]))
+            [cdq.grid :as grid]))
 
 (defmethods :entity/projectile-collision
   (component/->v [[_ v] c]
@@ -21,9 +21,9 @@
                                              (:entity/faction @%))
                                        (:collides? @%)
                                        (entity/collides? entity @%))
-                                 (world/cells->entities cells*))
+                                 (grid/cells->entities cells*))
           destroy? (or (and hit-entity (not piercing?))
-                       (some #(cell/blocked? % (:z-order entity)) cells*))]
+                       (some #(grid/blocked? % (:z-order entity)) cells*))]
       (when destroy?
         (swap! eid assoc :entity/destroyed? true))
       (when hit-entity

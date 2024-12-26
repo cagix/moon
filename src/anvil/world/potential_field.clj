@@ -1,12 +1,12 @@
 (ns anvil.world.potential-field
   (:require [anvil.entity :as entity]
             [cdq.context :as world :refer [rectangle->cells
-                                           get-8-neighbour-positions
                                            cached-adjacent-cells]]
-            [cdq.grid.cell :refer [blocked?
-                                   occupied-by-other?
-                                   nearest-entity
-                                   nearest-entity-distance]]
+            [cdq.grid :refer [blocked?
+                              occupied-by-other?
+                              nearest-entity
+                              nearest-entity-distance
+                              get-8-neighbour-positions]]
             [gdl.math.vector :as v]))
 
 (let [order (get-8-neighbour-positions [0 0])]

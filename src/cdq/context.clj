@@ -2,15 +2,11 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
-            [cdq.grid.cell :as cell]
+            [cdq.grid :as grid]
             [clojure.gdx.audio.sound :as sound]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
-            [gdl.math.shapes :refer [rectangle->tiles
-                                     circle->outer-rectangle
-                                     rect-contains?
-                                     overlaps?]]
             [gdl.math.vector :as v]))
 
 (defn widgets [c])
@@ -50,45 +46,19 @@
 (def max-delta-time 0.04)
 
 (defn rectangle->cells [rectangle]
-  (into [] (keep grid) (rectangle->tiles rectangle)))
+  (grid/rectangle->cells grid rectangle))
 
 (defn circle->cells [circle]
-  (->> circle
-       circle->outer-rectangle
-       rectangle->cells))
-
-(defn cells->entities [cells]
-  (into #{} (mapcat :entities) cells))
+  (grid/circle->cells grid circle))
 
 (defn circle->entities [circle]
-  (->> (circle->cells circle)
-       (map deref)
-       cells->entities
-       (filter #(overlaps? circle @%))))
-
-(def ^:private offsets [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]])
-
-; using this instead of g2d/get-8-neighbour-positions, because `for` there creates a lazy seq.
-(defn get-8-neighbour-positions [position]
-  (mapv #(mapv + position %) offsets))
-
-#_(defn- get-8-neighbour-positions [[x y]]
-    (mapv (fn [tx ty]
-            [tx ty])
-          (range (dec x) (+ x 2))
-          (range (dec y) (+ y 2))))
+  (grid/circle->entities grid circle))
 
 (defn cached-adjacent-cells [cell]
-  (if-let [result (:adjacent-cells @cell)]
-    result
-    (let [result (into [] (keep grid) (-> @cell :position get-8-neighbour-positions))]
-      (swap! cell assoc :adjacent-cells result)
-      result)))
+  (grid/cached-adjacent-cells grid cell))
 
 (defn point->entities [position]
-  (when-let [cell (grid (mapv int position))]
-    (filter #(rect-contains? @% position)
-            (:entities @cell))))
+  (grid/point->entities grid position))
 
 (defn ray-blocked? [start target]
   (raycaster/blocked? raycaster start target))
@@ -164,56 +134,6 @@
            {:text text
             :counter (timer 0.4)})))
 
-(defn- set-cells! [eid]
-  (let [cells (rectangle->cells @eid)]
-    (assert (not-any? nil? cells))
-    (swap! eid assoc ::touched-cells cells)
-    (doseq [cell cells]
-      (assert (not (get (:entities @cell) eid)))
-      (swap! cell update :entities conj eid))))
-
-(defn- remove-from-cells! [eid]
-  (doseq [cell (::touched-cells @eid)]
-    (assert (get (:entities @cell) eid))
-    (swap! cell update :entities disj eid)))
-
-; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
-; => only now there are no >1 tile entities anyway
-(defn- rectangle->occupied-cells [{:keys [left-bottom width height] :as rectangle}]
-  (if (or (> (float width) 1) (> (float height) 1))
-    (rectangle->cells rectangle)
-    [(grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-            (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
-
-(defn- set-occupied-cells! [eid]
-  (let [cells (rectangle->occupied-cells @eid)]
-    (doseq [cell cells]
-      (assert (not (get (:occupied @cell) eid)))
-      (swap! cell update :occupied conj eid))
-    (swap! eid assoc ::occupied-cells cells)))
-
-(defn- remove-from-occupied-cells! [eid]
-  (doseq [cell (::occupied-cells @eid)]
-    (assert (get (:occupied @cell) eid))
-    (swap! cell update :occupied disj eid)))
-
-(defn- grid-add-entity [eid]
-  (set-cells! eid)
-  (when (:collides? @eid)
-    (set-occupied-cells! eid)))
-
-(defn- grid-remove-entity [eid]
-  (remove-from-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)))
-
-(defn- grid-entity-position-changed [eid]
-  (remove-from-cells! eid)
-  (set-cells! eid)
-  (when (:collides? @eid)
-    (remove-from-occupied-cells! eid)
-    (set-occupied-cells! eid)))
-
 (defn- entity-ids-add-entity [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
@@ -233,16 +153,16 @@
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (content-grid/add-entity content-grid eid)
   (entity-ids-add-entity   eid)
-  (grid-add-entity         eid))
+  (grid/add-entity grid eid))
 
 (defn- remove-entity [eid]
   (content-grid/remove-entity eid)
   (entity-ids-remove-entity   eid)
-  (grid-remove-entity         eid))
+  (grid/remove-entity         eid))
 
 (defn position-changed [eid]
   (content-grid/entity-position-changed content-grid eid)
-  (grid-entity-position-changed         eid))
+  (grid/entity-position-changed grid eid))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
@@ -431,5 +351,5 @@
        (filter #(= (:entity/faction @%) faction))))
 
 (defn nearest-enemy [entity]
-  (cell/nearest-entity @(grid (entity/tile entity))
+  (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))

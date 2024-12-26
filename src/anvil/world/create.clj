@@ -1,7 +1,7 @@
 (ns anvil.world.create
   (:require [anvil.level :refer [generate-level]]
             [cdq.context :as world]
-            [cdq.grid.cell :as cell]
+            [cdq.grid :as grid]
             [gdl.stage :as stage]
             [anvil.world.content-grid :as content-grid]
             [data.grid2d :as g2d]
@@ -56,7 +56,7 @@
                   occupied
                   good
                   evil]
-  cell/Cell
+  grid/Cell
   (blocked? [_ z-order]
     (case movement
       :none true ; wall
@@ -114,7 +114,7 @@
   (bind-root world/grid                  (->world-grid            tiled-map))
   (bind-root world/content-grid          (->content-grid          tiled-map))
   (bind-root world/entity-ids {})
-  (bind-root world/raycaster (->raycaster world/grid cell/blocks-vision?))
+  (bind-root world/raycaster (->raycaster world/grid grid/blocks-vision?))
   (bind-root world/elapsed-time 0)
   (bind-root world/delta-time nil)
   (bind-root world/player-eid (world/creature c (player-entity-props start-position)))

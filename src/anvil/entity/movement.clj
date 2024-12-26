@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :as world]
-            [cdq.grid.cell :as cell]
+            [cdq.grid :as grid]
             [gdl.malli :as m]
             [gdl.math.vector :as v]))
 
@@ -17,9 +17,9 @@
 (defn- valid-position? [{:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
   (let [cells* (into [] (map deref) (world/rectangle->cells body))]
-    (and (not-any? #(cell/blocked? % z-order) cells*)
+    (and (not-any? #(grid/blocked? % z-order) cells*)
          (->> cells*
-              world/cells->entities
+              grid/cells->entities
               (not-any? (fn [other-entity]
                           (let [other-entity @other-entity]
                             (and (not= (:entity/id other-entity) id)
