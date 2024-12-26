@@ -3,7 +3,6 @@
             [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
                                          set-projection-matrix begin end set-color draw]]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.texture :as texture]
