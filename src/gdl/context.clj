@@ -1,6 +1,6 @@
 (ns gdl.context
   (:require [anvil.component :as component]
-            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera]]
+            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -12,7 +12,6 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.string :as str]
             [gdl.assets :as assets]

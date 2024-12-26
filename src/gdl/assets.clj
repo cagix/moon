@@ -1,7 +1,7 @@
 (ns gdl.assets
   (:require [clojure.gdx :refer [dispose]]
             [clojure.gdx.assets :as assets]
-            [clojure.gdx.files.file-handle :as fh]
+            [clojure.gdx.file-handle :as fh]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)))
 
