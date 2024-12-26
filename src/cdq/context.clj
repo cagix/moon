@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [anvil.world.content-grid :as content-grid]
             [cdq.grid :as grid]
-            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx :refer [play]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
@@ -333,7 +333,7 @@
    :z-order :z-order/effect})
 
 (defn audiovisual [c position {:keys [tx/sound entity/animation]}]
-  (sound/play sound)
+  (play sound)
   (spawn-entity c
                 position
                 effect-body-props

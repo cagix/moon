@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.entity.state.player-idle
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
-            [clojure.gdx :refer [button-just-pressed?]]
-            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx :refer [button-just-pressed? play]]
             [anvil.entity :as entity]
             [anvil.player :as player]
             [gdl.context :as c]))
@@ -23,6 +22,6 @@
   (component/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
-      (sound/play pickup-item-sound)
+      (play pickup-item-sound)
       (entity/event c eid :pickup-item item)
       (entity/remove-item c eid cell))))

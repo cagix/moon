@@ -3,7 +3,7 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity]
             [cdq.context :refer [timer finished-ratio stopped?]]
-            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx :refer [play]]
             [gdl.context :as c]))
 
 (defn- draw-skill-image [c image entity [x y] action-counter-ratio]
@@ -37,7 +37,7 @@
                    (timer c))})
 
   (component/enter [[_ {:keys [eid skill]}] c]
-    (sound/play (:skill/start-action-sound skill))
+    (play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]

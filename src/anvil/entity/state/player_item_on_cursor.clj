@@ -2,8 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :as world]
-            [clojure.gdx :refer [button-just-pressed?]]
-            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx :refer [button-just-pressed? play]]
             [gdl.context :as c]
             [gdl.stage :refer [mouse-on-actor?]]
             [gdl.math.vector :as v]))
@@ -37,7 +36,7 @@
      (and (not item-in-cell)
           (entity/valid-slot? cell item-on-cursor))
      (do
-      (sound/play item-put-sound)
+      (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/set-item eid cell item-on-cursor)
       (entity/event c eid :dropped-item))
@@ -46,7 +45,7 @@
      (and item-in-cell
           (entity/stackable? item-in-cell item-on-cursor))
      (do
-      (sound/play item-put-sound)
+      (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/stack-item c eid cell item-on-cursor)
       (entity/event c eid :dropped-item))
@@ -55,7 +54,7 @@
      (and item-in-cell
           (entity/valid-slot? cell item-on-cursor))
      (do
-      (sound/play item-put-sound)
+      (play item-put-sound)
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -80,7 +79,7 @@
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (sound/play place-world-item-sound)
+        (play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
         (world/item c
                     (item-place-position c entity)

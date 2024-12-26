@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.state.player-dead
   (:require [anvil.component :as component]
-            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx :refer [play]]
             [gdl.context :as c]
             [gdl.stage :refer [show-modal]]))
 
@@ -13,7 +13,7 @@
                                modal/text
                                modal/button-text]}]
                     c]
-    (sound/play sound)
+    (play sound)
     (show-modal c {:title title
                    :text text
                    :button-text button-text

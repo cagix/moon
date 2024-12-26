@@ -1,7 +1,6 @@
 (ns gdl.context
   (:require [anvil.component :as component]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx :as gdx :refer [play]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
@@ -43,7 +42,7 @@
        assets))
 
 (defn play-sound [c sound-name]
-  (sound/play (get-sound c sound-name)))
+  (play (get-sound c sound-name)))
 
 (defn- texture-region [{::keys [assets]} path]
   (texture-region/create (assets path)))
