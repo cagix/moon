@@ -3,7 +3,6 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.context :as ctx :refer [play-sound]]
             [gdl.db :as db]
@@ -32,6 +31,8 @@
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
+(def state (atom nil))
+
 (defn- info-text [property]
   (binding [*print-level* 3]
     (with-out-str
@@ -58,7 +59,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (:height (:gdl.context/viewport @app/state)) 50)
+     :height (min (- (:height (:gdl.context/viewport @state)) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -110,7 +111,7 @@
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
     (add-actor! window (ui-actor {:act (fn []
-                                         (when (gdx/key-just-pressed? @app/state :enter)
+                                         (when (gdx/key-just-pressed? @state :enter)
                                            (save!)))}))
     (.pack window)
     window))
@@ -150,11 +151,11 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (assets/all-of-type (:gdl.context/assets @app/state)
+  (assets/all-of-type (:gdl.context/assets @state)
                       asset-type))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(play-sound @app/state sound-name)))
+  (text-button "play!" #(play-sound @state sound-name)))
 
 (declare columns)
 
@@ -229,7 +230,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all db property-type @app/state)
+        properties (db/build-all db property-type @state)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -460,7 +461,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (db/edn->value schema image db @app/state)
+  (image-button (db/edn->value schema image db @state)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -469,7 +470,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (db/edn->value :s/image image db @app/state)
+                      (image-button (db/edn->value :s/image image db @state)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))
@@ -523,30 +524,30 @@
                 :taskbar-icon "moon.png"}
                (reify lwjgl/Application
                  (create [_]
-                   (reset! app/state (ctx/create-into (gdx/context)
-                                                      {:gdl.context/unit-scale 1
-                                                       :gdl.context/assets "resources/"
-                                                       :gdl.context/batch nil
-                                                       :gdl.context/viewport {:width 1440 :height 900}
+                   (reset! state (ctx/create-into (gdx/context)
+                                                  {:gdl.context/unit-scale 1
+                                                   :gdl.context/assets "resources/"
+                                                   :gdl.context/batch nil
+                                                   :gdl.context/viewport {:width 1440 :height 900}
 
-                                                       ;; just because of sprite edn->value of db requires world-unit-scale
-                                                       :gdl.context/world-unit-scale 1
-                                                       :gdl.context/world-viewport {:width 1440 :height 900}
-                                                       ;;
+                                                   ;; just because of sprite edn->value of db requires world-unit-scale
+                                                   :gdl.context/world-unit-scale 1
+                                                   :gdl.context/world-viewport {:width 1440 :height 900}
+                                                   ;;
 
-                                                       :gdl.context/ui :skin-scale/x1
-                                                       :gdl.context/stage (fn [c]
-                                                                            [(background-image c "images/moon_background.png")])}))
+                                                   :gdl.context/ui :skin-scale/x1
+                                                   :gdl.context/stage (fn [c]
+                                                                        [(background-image c "images/moon_background.png")])}))
 
                    (stage/add-actor (tabs-table "custom label text here")))
 
                  (dispose [_]
-                   (ctx/cleanup @app/state))
+                   (ctx/cleanup @state))
 
                  (render [_]
-                   (let [{:keys [gdl.context/stage]} @app/state]
+                   (let [{:keys [gdl.context/stage]} @state]
                      (.act stage)
                      (.draw stage)))
 
                  (resize [_ w h]
-                   (ctx/resize @app/state w h)))))
+                   (ctx/resize @state w h)))))

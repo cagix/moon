@@ -5,7 +5,6 @@
             [clojure.gdx :refer [white]]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [gdl.app :as app]
             [gdl.context :as c :refer [draw-tiled-map]]
             [clojure.gdx :refer [key-pressed?]]
             [gdl.graphics.camera :as cam]
@@ -13,6 +12,8 @@
             [gdl.tiled :as tiled]
             [gdl.ui :refer [ui-actor text-button] :as ui]
             [gdl.ui.group :refer [add-actor!]]))
+
+(def state (atom nil))
 
 (defn- show-whole-map! [camera tiled-map]
   (cam/set-position! camera
@@ -145,10 +146,10 @@
   #_(cam/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(draw-tiled-map @app/state
+  #_(draw-tiled-map @state
                     (:tiled-map @current-data)
                     (constantly white))
-  #_(c/draw-on-world-view @app/state
+  #_(c/draw-on-world-view @state
                           render-on-map)
   #_(if (key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
