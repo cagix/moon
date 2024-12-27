@@ -354,7 +354,7 @@
 
 (defmethods stage
   (component/->v [[_ actors-fn] {::keys [viewport batch] :as c}]
-    (let [stage (stage* viewport batch (actors-fn c))]
+    (let [stage (stage* viewport batch (and actors-fn (actors-fn c)))]
       (set-input-processor c stage)
       stage))
   (component/dispose [[_ stage]]

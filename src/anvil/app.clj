@@ -34,7 +34,7 @@
                                   [:gdl.context/world-viewport (:world-viewport config)]
                                   [:gdl.context/tiled-map-renderer]
                                   [:gdl.context/ui (:ui config)]
-                                  [:gdl.context/stage (fn [c] nil)]])]
+                                  [:gdl.context/stage]])]
     (world/create context (:world config))))
 
 (defn -main []
