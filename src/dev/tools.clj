@@ -18,6 +18,7 @@
  (print-app-values-tree "app-values-tree.clj"
                         #{"anvil", "gdl", "uf"})
 
+ (post-runnable show-tree-view!)
  (show-tree-view! (world/mouseover-entity @app/state))
  (show-tree-view! (mouseover-grid-cell @app/state))
  (show-tree-view! (ns-value-vars #{"forge"}))
@@ -47,13 +48,12 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable
-  (world/creature @app/state
-                  {:position [35 73]
-                   :creature-id :creatures/dragon-red
-                   :components {:entity/fsm {:fsm :fsms/npc
-                                             :initial-state :npc-sleeping}
-                                :entity/faction :evil}}))
+ (post-runnable #(world/creature %
+                                 {:position [35 73]
+                                  :creature-id :creatures/dragon-red
+                                  :components {:entity/fsm {:fsm :fsms/npc
+                                                            :initial-state :npc-sleeping}
+                                               :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
@@ -68,20 +68,19 @@
 
  )
 
-(defmacro post-runnable [& exprs]
-  `(gdx/post-runnable @app/state (fn [] ~@exprs)))
+(defn post-runnable [f]
+  (let [context @app/state]
+    (gdx/post-runnable context (f context))))
 
-(defn- learn-skill! [skill-id]
-  (post-runnable
-   (let [{:keys [cdq.context/player-eid] :as c} @app/state]
-     (skills/add c player-eid (c/build c skill-id)))))
+(defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
+  (skills/add c
+              player-eid
+              (c/build c skill-id)))
 
-(defn- create-item! [item-id]
-  (post-runnable
-   (let [{:keys [cdq.context/player-eid] :as c} @app/state]
-     (world/item c
-                 (:position @player-eid)
-                 (c/build c item-id)))))
+(defn- create-item! [{:keys [cdq.context/player-eid] :as c} item-id]
+  (world/item c
+              (:position @player-eid)
+              (c/build c item-id)))
 
 (defn- mouseover-grid-cell [c]
   @(world/grid-cell c (mapv int (c/world-mouse-position c))))
