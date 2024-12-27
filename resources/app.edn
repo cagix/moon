@@ -1,7 +1,6 @@
 {:requires [anvil.world.create
             anvil.world.tick
             anvil.world.render
-            anvil.world.widgets
 
             anvil.widgets.action-bar
             anvil.widgets.dev-menu

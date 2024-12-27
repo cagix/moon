@@ -1,6 +1,7 @@
 (ns cdq.context
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
+            [anvil.widgets :as widgets]
             [anvil.world.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.gdx :refer [play]]
@@ -10,7 +11,7 @@
             [gdl.math.raycaster :as raycaster]
             [gdl.math.vector :as v]
             [gdl.tiled :as tiled]
-            [gdl.ui :as ui]
+            [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
@@ -129,7 +130,23 @@
         (set-arr arr @cell grid/blocks-vision?))
       [arr width height])))
 
-(defn widgets [c])
+(defn widgets [{:keys [cdq.context/player-eid] :as c}]
+  [(if dev-mode?
+     (widgets/dev-menu c)
+     (ui-actor {}))
+   (ui/table {:rows [[{:actor (widgets/action-bar)
+                       :expand? true
+                       :bottom? true}]]
+              :id :action-bar-table
+              :cell-defaults {:pad 2}
+              :fill-parent? true})
+   (widgets/hp-mana-bar c)
+   (ui/group {:id :windows
+              :actors [(widgets/entity-info-window c)
+                       (widgets/inventory c)]})
+   (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
+                                              %)})
+   (widgets/player-message)])
 
 (defn dispose [{::keys [tiled-map]}]
   (when tiled-map
