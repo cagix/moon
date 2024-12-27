@@ -8,8 +8,7 @@
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [gdl.ui.group :refer [children]])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Stage)))
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment
 

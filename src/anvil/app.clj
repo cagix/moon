@@ -18,7 +18,6 @@
                  (reify lwjgl/Application
                    (create [_]
                      ; TODO pass vector because order is important
-                     ; TODO delete 'Gdx'
                      ; TODO document 'c'
                      ; TODO make world without global state
                      ; TODO ui takes params?! - implicit ...

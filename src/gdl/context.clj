@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
                                          set-projection-matrix begin end set-color draw pixmap draw-pixel resize fit-viewport
-                                         unproject]]
+                                         unproject set-input-processor internal-file input-x input-y]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
@@ -19,8 +19,7 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.group :as group])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Actor Stage)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn get-sound [{::keys [assets]} sound-name]
@@ -236,23 +235,23 @@
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
-  [viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
+  [c viewport]
+  (let [mouse-x (clamp (input-x c)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (.getY Gdx/input)
+        mouse-y (clamp (input-y c)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{::keys [viewport]}]
+(defn mouse-position [{::keys [viewport] :as c}]
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position viewport)))
+  (mapv int (unproject-mouse-position c viewport)))
 
-(defn world-mouse-position [{::keys [world-viewport]}]
+(defn world-mouse-position [{::keys [world-viewport] :as c}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position world-viewport))
+  (unproject-mouse-position c world-viewport))
 
 (defn pixels->world-units [{::keys [world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
@@ -279,8 +278,8 @@
 ; that would work
 
 (defmethods ::assets
-  (component/->v [[_ folder] _c]
-    (assets/manager folder))
+  (component/->v [[_ folder] c]
+    (assets/manager c folder))
   (component/dispose [[_ assets]]
     (assets/cleanup assets)))
 
@@ -295,15 +294,15 @@
     (db/create config)))
 
 (defmethods ::default-font
-  (component/->v [[_ config] _c]
-    (freetype/generate-font config))
+  (component/->v [[_ config] c]
+    (freetype/generate-font (update config :file #(internal-file c %))))
   (component/dispose [[_ font]]
     (dispose font)))
 
 (defmethods ::cursors
   (component/->v [[_ cursors] c]
     (mapvals (fn [[file [hotspot-x hotspot-y]]]
-               (let [pixmap (pixmap (gdx/internal-file c (str "cursors/" file ".png")))
+               (let [pixmap (pixmap (internal-file c (str "cursors/" file ".png")))
                      cursor (gdx/cursor c pixmap hotspot-x hotspot-y)]
                  (dispose pixmap)
                  cursor))
@@ -356,7 +355,7 @@
                                  :keys [gdx/input]
                                  :as c}]
     (let [stage (stage* viewport batch (actors-fn c))]
-      (.setInputProcessor Gdx/input stage) ; side effects here?!
+      (set-input-processor c stage)
       stage))
   (component/dispose [[_ stage]]
     (.dispose stage)))

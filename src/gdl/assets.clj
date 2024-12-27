@@ -1,9 +1,8 @@
 (ns gdl.assets
-  (:require [clojure.gdx :refer [asset-manager dispose]]
+  (:require [clojure.gdx :refer [asset-manager dispose internal-file]]
             [clojure.gdx.assets :as assets]
             [clojure.gdx.file-handle :as fh]
-            [clojure.string :as str])
-  (:import (com.badlogic.gdx Gdx)))
+            [clojure.string :as str]))
 
 (defn- load-all [manager assets]
   (doseq [[file asset-type] assets]
@@ -11,7 +10,7 @@
   (assets/finish-loading manager))
 
 (defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (fh/list (.internal Gdx/files folder))
+  (loop [[file & remaining] (fh/list folder)
          result []]
     (cond (nil? file)
           result
@@ -28,11 +27,11 @@
 (def ^:private asset-type-exts {:sound   #{"wav"}
                                 :texture #{"png" "bmp"}})
 
-(defn manager [folder]
+(defn manager [c folder]
   (doto (asset-manager)
     (load-all (for [[asset-type exts] asset-type-exts
                     file (map #(str/replace-first % folder "")
-                              (recursively-search folder exts))]
+                              (recursively-search (internal-file c folder) exts))]
                 [file asset-type]))))
 
 (defn cleanup [manager]
