@@ -62,7 +62,7 @@
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
-                                         (.setText label (map-infos c))
+                                         (.setText label (map-infos %))
                                          (.pack window))}))
     (.setPosition window 0 (:height viewport)) window))
 

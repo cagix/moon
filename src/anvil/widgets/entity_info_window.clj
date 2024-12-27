@@ -2,7 +2,6 @@
   (:require [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
-            [anvil.app :as app]
             [gdl.context :as ctx]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :as group]))
@@ -31,7 +30,7 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (group/add-actor! window (ui-actor {:act (fn []
-                                               (.setText label (str (->label-text @app/state)))
+    (group/add-actor! window (ui-actor {:act (fn [context]
+                                               (.setText label (str (->label-text context)))
                                                (.pack window))}))
     window))

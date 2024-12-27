@@ -14,7 +14,7 @@
 (defmethod generate-level* :world.generator/uf-caves [world c]
   (uf-caves/create world
                    (c/build-all c :properties/creatures)
-                   ((:gdl.context/assets c) "maps/uf_terrain.png")))
+                   ((:gdl.context/assets c) "maps/uf_terrain.png"))) ; TODO use (def assets ::assets)
 
 (defmethod generate-level* :world.generator/tiled-map [world c]
   {:tiled-map (tiled/load-tmx-map (:world/tiled-map world))

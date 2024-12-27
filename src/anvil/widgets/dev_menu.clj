@@ -3,7 +3,6 @@
             [anvil.widgets :as widgets]
             [cdq.context :as world]
             [clojure.gdx :refer [frames-per-second]]
-            [anvil.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]
@@ -15,22 +14,26 @@
   (doto (ui/menu-item text)
     (.addListener (ui/change-listener on-clicked))))
 
+(defn- set-label-text-fn [label text-fn]
+  (fn [context]
+    (.setText label (str (text-fn context)))))
+
 (defn- add-upd-label
   ([c table text-fn icon]
    (let [icon (ui/image->widget (c/sprite c icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
-     (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
+     (add-actor! table (ui-actor {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table sub-table)))))
   ([c table text-fn]
    (let [label (ui/label "")]
-     (add-actor! table (ui-actor {:act #(.setText label (str (text-fn)))}))
+     (add-actor! table (ui-actor {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels [c menu-bar update-labels]
   (let [table (ui/menu-bar->table menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
-      (let [update-fn #(str label ": " (update-fn @app/state))]
+      (let [update-fn #(str label ": " (update-fn %))]
         (if icon
           (add-upd-label c table update-fn icon)
           (add-upd-label c table update-fn))))))
@@ -106,13 +109,13 @@
                                  (str (readable-number elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
-                    :update-fn :cdq.context/paused?}
+                    :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
                    {:label "GUI"
                     :update-fn c/mouse-position}
                    {:label "World"
                     :update-fn #(mapv int (c/world-mouse-position %))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %)))
+                    :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %))) ; TODO (def ::world-viewport)
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn frames-per-second

@@ -113,8 +113,8 @@
                                              :center? true}
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn []
-                                         (when (gdx/key-just-pressed? @state :enter)
+    (add-actor! window (ui-actor {:act (fn [context]
+                                         (when (gdx/key-just-pressed? context :enter)
                                            (save!)))}))
     (.pack window)
     window))
@@ -199,7 +199,7 @@
                  (text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui-stack [button top-widget])]
-    (add-tooltip! button #(info-text props))
+    (add-tooltip! button (fn [_context] (info-text props)))
     (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
 
@@ -269,7 +269,7 @@
         (let [property (db/build (get-db) property-id)
               image-widget (image->widget (property/->image property)
                                           {:id property-id})]
-          (add-tooltip! image-widget #(info-text property))))
+          (add-tooltip! image-widget (fn [_context] (info-text property)))))
       (for [id property-ids]
         (text-button "-" #(redo-rows (disj property-ids id))))])))
 
@@ -308,7 +308,7 @@
          (let [property (db/build (get-db) property-id)
                image-widget (image->widget (property/->image property)
                                            {:id property-id})]
-           (add-tooltip! image-widget #(info-text property))
+           (add-tooltip! image-widget (fn [_context] (info-text property)))
            image-widget))]
       [(when property-id
          (text-button "-" #(redo-rows nil)))]])))
@@ -548,7 +548,8 @@
                    (ctx/cleanup @state))
 
                  (render [_]
-                   (let [{:keys [gdl.context/stage]} @state]
+                   (let [{:keys [gdl.context/stage] :as c} @state]
+                     (set! (.applicationState stage) c)
                      (.act stage)
                      (.draw stage)))
 

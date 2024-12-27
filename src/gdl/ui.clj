@@ -97,8 +97,12 @@
     (run! #(add-actor! group %) actors)
     group))
 
+(defn- application-state [actor]
+  (when-let [stage (.getStage actor)]
+    (.applicationState stage)))
+
 (defn add-tooltip!
-  "tooltip-text is a (fn []) or a string. If it is a function will be-recalculated every show.
+  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
   Returns the actor."
   [^Actor actor tooltip-text]
   (let [text? (string? tooltip-text)
@@ -111,7 +115,8 @@
                   (getWidth []
                     (let [^Tooltip this this]
                       (when-not text?
-                        (.setText this (str (tooltip-text))))
+                        (when-let [context (application-state (.getTarget this))]
+                          (.setText this (str (tooltip-text context)))))
                       (proxy-super getWidth))))]
     (.setAlignment label Align/center)
     (.setTarget  tooltip actor)
@@ -267,14 +272,16 @@
 (defn ui-actor ^Actor [{:keys [draw act]}]
   (proxy [Actor] []
     (draw [_batch _parent-alpha]
-      (when draw (draw)))
+      (when draw
+        (draw (application-state this))))
     (act [_delta]
-      (when act (act)))))
+      (when act
+        (act (application-state this))))))
 
 (defn ui-widget [draw!]
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (draw! this))))
+      (draw! this (application-state this)))))
 
 (defn set-drawable! [^Image image drawable]
   (.setDrawable image drawable))

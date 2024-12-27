@@ -4,7 +4,6 @@
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
-            [anvil.app :as app]
             [gdl.ui :refer [ui-actor add-tooltip!] :as ui]
             [gdl.ui.group :refer [add-actor!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
@@ -27,7 +26,7 @@
   (let [{:keys [horizontal-group button-group]} (world/get-action-bar c)
         button (ui/image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
-    (add-tooltip! button #(info/text @app/state skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (add-actor! horizontal-group button)
     (ButtonGroup/.add button-group button)
     nil))

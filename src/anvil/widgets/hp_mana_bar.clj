@@ -29,9 +29,8 @@
                                                         [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                           [x y])
                             (render-infostr-on-bar c (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn []
-                       (let [{:keys [cdq.context/player-eid]} @app/state
-                             player-entity @player-eid
+    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid]}]
+                       (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (entity/mana        player-entity) "MP")))})))

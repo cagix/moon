@@ -59,6 +59,7 @@
                      (let [{:keys [gdl.context/stage] :as c} @state]
                        (clear-screen black)
                        (world/render c)
+                       (set! (.applicationState stage) c)
                        (.draw stage)
                        (.act stage))
                      (swap! state world/tick pausing?))

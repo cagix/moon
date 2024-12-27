@@ -1,6 +1,5 @@
 (ns anvil.widgets.player-message
   (:require [anvil.widgets :as widgets]
-            [anvil.app :as app]
             [cdq.context :refer [message-to-player player-message-duration-seconds]]
             [clojure.gdx :as gdx]
             [gdl.context :as c]
@@ -22,5 +21,5 @@
       (bind-root message-to-player nil))))
 
 (defn-impl widgets/player-message []
-  (ui-actor {:draw #(draw-player-message  @app/state)
-             :act  #(check-remove-message @app/state)}))
+  (ui-actor {:draw draw-player-message
+             :act  check-remove-message}))

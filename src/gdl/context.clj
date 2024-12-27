@@ -19,8 +19,8 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)
-           (forge OrthogonalTiledMapRenderer ColorSetter)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (forge OrthogonalTiledMapRenderer ColorSetter StageWithState)))
 
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
@@ -340,7 +340,7 @@
                                             batch)))))
 
 (defn- stage* [viewport batch actors]
-  (let [stage (proxy [Stage clojure.lang.ILookup] [viewport batch]
+  (let [stage (proxy [StageWithState clojure.lang.ILookup] [viewport batch]
                 (valAt
                   ([id]
                    (group/find-actor-with-id (.getRoot this) id))
