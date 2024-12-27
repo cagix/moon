@@ -10,27 +10,40 @@
 
 (def ^:private ^:dbg-flag pausing? true)
 
+; TODO
+; * move state out of world/create
+; * dev-menu restart world
+; * change world
+
+;; * create initial world context
+;; * reset to initial-world context
+;; * change world (but keep player&inventoryui,etc....)
+;; * first remove all other state / vars like player message ....
+
+(defn- create-context [config]
+  (let [context (ctx/create-into (gdx/context)
+                                 [[:gdl.context/unit-scale 1]
+                                  [:gdl.context/assets "resources/"]
+                                  [:gdl.context/db (:db config)]
+                                  [:gdl.context/batch nil]
+                                  [:gdl.context/shape-drawer nil]
+                                  [:gdl.context/default-font (:default-font config)]
+                                  [:gdl.context/cursors (:cursors config)]
+                                  [:gdl.context/viewport (:viewport config)]
+                                  [:gdl.context/world-unit-scale (:tile-size config)]
+                                  [:gdl.context/world-viewport (:world-viewport config)]
+                                  [:gdl.context/tiled-map-renderer nil]
+                                  [:gdl.context/ui (:ui config)]
+                                  [:gdl.context/stage (fn [c] nil)]])]
+    (world/create context (:world config))))
+
 (defn -main []
-  (let [{:keys [requires lwjgl3 lifecycle]} (-> "app.edn" io/resource slurp edn/read-string)]
+  (let [{:keys [requires lwjgl3 context]} (-> "app.edn" io/resource slurp edn/read-string)]
     (run! require requires)
     (lwjgl/start lwjgl3
                  (reify lwjgl/Application
                    (create [_]
-                     (reset! state (ctx/create-into (gdx/context)
-                                                    [[:gdl.context/unit-scale 1]
-                                                     [:gdl.context/assets "resources/"]
-                                                     [:gdl.context/db (:db lifecycle)]
-                                                     [:gdl.context/batch nil]
-                                                     [:gdl.context/shape-drawer nil]
-                                                     [:gdl.context/default-font (:default-font lifecycle)]
-                                                     [:gdl.context/cursors (:cursors lifecycle)]
-                                                     [:gdl.context/viewport (:viewport lifecycle)]
-                                                     [:gdl.context/world-unit-scale (:tile-size lifecycle)]
-                                                     [:gdl.context/world-viewport (:world-viewport lifecycle)]
-                                                     [:gdl.context/tiled-map-renderer nil]
-                                                     [:gdl.context/ui (:ui lifecycle)]
-                                                     [:gdl.context/stage (fn [c] nil)]]))
-                     (world/create @state (:world lifecycle)))
+                     (reset! state (create-context context)))
 
                    (dispose [_]
                      (ctx/cleanup @state))

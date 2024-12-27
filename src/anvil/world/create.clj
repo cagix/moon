@@ -2,7 +2,6 @@
   (:require [anvil.level :refer [generate-level]]
             [cdq.context :as world]
             [cdq.grid :as grid]
-            [anvil.app :as app]
             [gdl.context :as c]
             [gdl.tiled :as tiled]))
 
@@ -37,8 +36,9 @@
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
 (defn-impl world/create [c world-id]
+  (world/dispose c)
   (c/reset-stage c (world/widgets c))
-  (world/dispose c) ; TODO ... call here? separate world reset/dispose than ctx reset/dispose ? multimethods move to gdl.contxt?!
-  (swap! app/state c/create-into (world-components c world-id))
-  (when spawn-enemies?
-    (spawn-enemies @app/state (:cdq.context/tiled-map @app/state))))
+  (let [c (c/create-into c (world-components c world-id))]
+    (when spawn-enemies?
+      (spawn-enemies c (:cdq.context/tiled-map c)))
+    c))
