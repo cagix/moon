@@ -548,8 +548,9 @@
                    (ctx/cleanup @state))
 
                  (render [_]
-                   (let [{:keys [gdl.context/stage] :as c} @state]
-                     (set! (.applicationState stage) c)
+                   (let [context @state
+                         stage (ctx/stage context)]
+                     (set! (.applicationState stage) context)
                      (.act stage)
                      (.draw stage)))
 

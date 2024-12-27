@@ -350,7 +350,9 @@
     (run! #(.addActor stage %) actors)
     stage))
 
-(defmethods ::stage
+(def stage ::stage)
+
+(defmethods stage
   (component/->v [[_ actors-fn] {::keys [viewport batch] :as c}]
     (let [stage (stage* viewport batch (actors-fn c))]
       (set-input-processor c stage)
@@ -383,8 +385,6 @@
 
 (defn build-all [{::keys [db] :as c} property-type]
   (db/build-all db property-type c))
-
-(def stage ::stage)
 
 (defn add-actor [{::keys [stage]} actor]
   (.addActor stage actor))

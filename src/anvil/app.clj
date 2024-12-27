@@ -36,10 +36,11 @@
                      (ctx/cleanup @state))
 
                    (render [_]
-                     (let [{:keys [gdl.context/stage] :as c} @state]
-                       (clear-screen black)
-                       (world/render c)
-                       (set! (.applicationState stage) c)
+                     (clear-screen black)
+                     (let [context @state
+                           stage (ctx/stage context)]
+                       (world/render context)
+                       (set! (.applicationState stage) context)
                        (.draw stage)
                        (.act stage))
                      (swap! state world/tick pausing?))
