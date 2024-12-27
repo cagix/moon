@@ -16,7 +16,8 @@
     (world/creature c (update props :position tile->middle))))
 
 (defn- world-components [c world-id]
-  (let [{:keys [tiled-map start-position]} (generate-level (c/build c world-id))]
+  (let [{:keys [tiled-map start-position]} (generate-level c
+                                                           (c/build c world-id))]
     [[:cdq.context/tiled-map tiled-map]
      [:cdq.context/start-position start-position]
      [:cdq.context/grid nil]

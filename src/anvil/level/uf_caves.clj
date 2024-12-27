@@ -3,8 +3,6 @@
             [clojure.gdx :as gdx]
             [gdl.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
-            [anvil.app :as app]
-            [gdl.context :as ctx]
             [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)
@@ -33,8 +31,8 @@
 
 (def ^:private sprite-size 48)
 
-(defn- uf-tile [& {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (gdx/texture-region ((:gdl.context/assets @app/state) "maps/uf_terrain.png")
+(defn- uf-tile [texture & {:keys [sprite-x sprite-y movement]}]
+  (tm-tile (gdx/texture-region texture
                                (* sprite-x sprite-size)
                                (* sprite-y sprite-size)
                                sprite-size
@@ -52,18 +50,21 @@
         y [13,16,19,22,25,28]]
     [x y]))
 
-(defn- ground-tile [[x y]]
-  (uf-tile :sprite-x (+ x (rand-0-3))
+(defn- ground-tile [texture [x y]]
+  (uf-tile texture
+           :sprite-x (+ x (rand-0-3))
            :sprite-y y
            :movement "all"))
 
-(defn- wall-tile [[x y]]
-  (uf-tile :sprite-x (+ x (rand-0-5))
+(defn- wall-tile [texture [x y]]
+  (uf-tile texture
+           :sprite-x (+ x (rand-0-5))
            :sprite-y y
            :movement "none"))
 
-(defn- transition-tile [[x y]]
-  (uf-tile :sprite-x (+ x (rand-0-5))
+(defn- transition-tile [texture [x y]]
+  (uf-tile texture
+           :sprite-x (+ x (rand-0-5))
            :sprite-y y
            :movement "none"))
 
@@ -88,27 +89,28 @@
     {:start-position (mapv #(* % scale) start)
      :grid grid}))
 
-(defn- generate-tiled-map [grid]
+(defn- generate-tiled-map [texture grid]
   (let [ground-idx (rand-nth uf-grounds)
         {wall-x 0 wall-y 1 :as wall-idx} (rand-nth uf-walls)
         transition-idx [wall-x (inc wall-y)]
         position->tile (fn [position]
                          (case (get grid position)
-                           :wall (wall-tile wall-idx)
+                           :wall (wall-tile texture wall-idx)
                            :transition (if (transition? grid position)
-                                         (transition-tile transition-idx)
-                                         (wall-tile wall-idx))
-                           :ground (ground-tile ground-idx)))]
+                                         (transition-tile texture transition-idx)
+                                         (wall-tile texture wall-idx))
+                           :ground (ground-tile texture ground-idx)))]
     (wgt-grid->tiled-map sprite-size grid position->tile)))
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
 (defn create [{:keys [world/map-size world/spawn-rate]}
-              creature-properties]
+              creature-properties
+              texture]
   (let [{:keys [start grid]} (cave-grid :size map-size)
         {:keys [start-position grid]} (scale-grid grid start scaling)
         grid (assoc-transition-cells grid)
-        tiled-map (generate-tiled-map grid)
+        tiled-map (generate-tiled-map texture grid)
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill grid start-position can-spawn?)]

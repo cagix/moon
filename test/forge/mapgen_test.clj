@@ -112,7 +112,8 @@
 (def ^:private world-id :worlds/uf-caves)
 
 (defn- generate-screen-ctx [{:keys [gdl.context/world-viewport] :as c} properties]
-  (let [{:keys [tiled-map start-position]} (generate-level (c/build world-id))
+  (let [{:keys [tiled-map start-position]} (generate-level c
+                                                           (c/build world-id))
         atom-data (current-data)]
     (tiled/dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
