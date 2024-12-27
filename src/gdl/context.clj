@@ -351,9 +351,7 @@
     stage))
 
 (defmethods ::stage
-  (component/->v [[_ actors-fn] {::keys [viewport batch]
-                                 :keys [gdx/input]
-                                 :as c}]
+  (component/->v [[_ actors-fn] {::keys [viewport batch] :as c}]
     (let [stage (stage* viewport batch (actors-fn c))]
       (set-input-processor c stage)
       stage))
