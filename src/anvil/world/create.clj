@@ -15,8 +15,7 @@
     (world/creature c (update props :position tile->middle))))
 
 (defn- world-components [c world-id]
-  (let [{:keys [tiled-map start-position]} (generate-level c
-                                                           (c/build c world-id))]
+  (let [{:keys [tiled-map start-position]} (generate-level c (c/build c world-id))] ; ?
     [[:cdq.context/tiled-map tiled-map]
      [:cdq.context/start-position start-position]
      [:cdq.context/grid nil]
@@ -36,9 +35,9 @@
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
 (defn-impl world/create [c world-id]
-  (world/dispose c)
-  (c/reset-stage c (world/widgets c))
-  (let [c (c/create-into c (world-components c world-id))]
+  (world/dispose c) ; only for reset / change lvl
+  (c/reset-stage c (world/widgets c)) ; pass to stage . simply! and at reset do the same
+  (let [c (c/create-into c (world-components c world-id))] ; same ...
     (when spawn-enemies?
-      (spawn-enemies c (:cdq.context/tiled-map c)))
+      (spawn-enemies c (:cdq.context/tiled-map c))) ; ??? creature-props!
     c))

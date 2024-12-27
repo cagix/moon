@@ -20,22 +20,13 @@
 ;; * change world (but keep player&inventoryui,etc....)
 ;; * first remove all other state / vars like player message ....
 
-(defn- create-context [config]
-  (let [context (ctx/create-into (gdx/context)
-                                 [[:gdl.context/unit-scale 1]
-                                  [:gdl.context/batch]
-                                  [:gdl.context/assets "resources/"]
-                                  [:gdl.context/db (:db config)]
-                                  [:gdl.context/shape-drawer]
-                                  [:gdl.context/default-font (:default-font config)]
-                                  [:gdl.context/cursors (:cursors config)]
-                                  [:gdl.context/viewport (:viewport config)]
-                                  [:gdl.context/world-unit-scale (:tile-size config)]
-                                  [:gdl.context/world-viewport (:world-viewport config)]
-                                  [:gdl.context/tiled-map-renderer]
-                                  [:gdl.context/ui (:ui config)]
-                                  [:gdl.context/stage]])]
-    (world/create context (:world config))))
+(defn- create-context [{:keys [gdl world]}]
+  (let [context (ctx/create-into (gdx/context) gdl)]
+    ; TODO how to pass world/widgets as configuration?
+    ; just a list of 'components' /// ?
+    ; :cdq.context/dev-menu
+    ; etc. ?
+    (world/create context world)))
 
 (defn -main []
   (let [{:keys [requires lwjgl3 context]} (-> "app.edn" io/resource slurp edn/read-string)]
