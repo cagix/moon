@@ -4,6 +4,7 @@
             [anvil.controls :as controls]
             [anvil.entity :as entity]
             [cdq.context :as w]
+            [clojure.gdx :as gdx]
             [gdl.context :as c]))
 
 (defn player-input [{:keys [cdq.context/player-eid] :as c}]
@@ -47,7 +48,7 @@
     (assoc c :cdq.context/mouseover-eid new-eid)))
 
 (defn- update-time [c]
-  (let [delta-ms (min (c/delta-time c)
+  (let [delta-ms (min (gdx/delta-time c)
                       w/max-delta-time)]
     (-> c
         (update :cdq.context/elapsed-time + delta-ms)

@@ -23,12 +23,6 @@
            (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
-(defn delta-time [c]
-  (gdx/delta-time c))
-
-(defn frames-per-second [c]
-  (gdx/frames-per-second c))
-
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")

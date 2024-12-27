@@ -1,7 +1,8 @@
 (ns anvil.widgets.player-message
   (:require [anvil.widgets :as widgets]
-            [cdq.context :refer [message-to-player player-message-duration-seconds]]
             [anvil.app :as app]
+            [cdq.context :refer [message-to-player player-message-duration-seconds]]
+            [clojure.gdx :as gdx]
             [gdl.context :as c]
             [gdl.ui :refer [ui-actor]]))
 
@@ -16,7 +17,7 @@
 
 (defn- check-remove-message [c]
   (when-let [{:keys [counter]} message-to-player]
-    (alter-var-root #'message-to-player update :counter + (c/delta-time c))
+    (alter-var-root #'message-to-player update :counter + (gdx/delta-time c))
     (when (>= counter player-message-duration-seconds)
       (bind-root message-to-player nil))))
 

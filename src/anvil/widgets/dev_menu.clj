@@ -2,6 +2,7 @@
   (:require [anvil.controls :as controls]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
+            [clojure.gdx :refer [frames-per-second]]
             [anvil.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
@@ -82,7 +83,7 @@
                      :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %)))
                      :icon "images/zoom.png"}
                     {:label "FPS"
-                     :update-fn c/frames-per-second
+                     :update-fn frames-per-second
                      :icon "images/fps.png"}]}))
 
 (defn- config [c]
@@ -111,7 +112,7 @@
                     :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn c/frames-per-second
+                    :update-fn frames-per-second
                     :icon "images/fps.png"}]})
 
 (defn-impl widgets/dev-menu [c]
