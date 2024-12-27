@@ -1,71 +1,8 @@
-{:requires [anvil.widgets.action-bar
-            anvil.widgets.dev-menu
-            anvil.widgets.entity-info-window
-            anvil.widgets.hp-mana-bar
-            anvil.widgets.inventory
-            anvil.widgets.player-message
-
-            anvil.player.interaction-state
-            anvil.skill.usable-state
-            anvil.controls.movement-vector
-
-            anvil.info.impl
-
-            anvil.effect.target.audiovisual
-            anvil.effect.target.convert
-            anvil.effect.target.damage
-            anvil.effect.target.kill
-            anvil.effect.target.melee-damage
-            anvil.effect.target.spiderweb
-            anvil.effect.target.stun
-
-            anvil.effect.audiovisual
-            anvil.effect.creature
-            anvil.effect.projectile
-            anvil.effect.sound
-            anvil.effect.target-all
-            anvil.effect.target-entity
-
-            anvil.entity.state.active-skill
-            anvil.entity.state.npc-dead
-            anvil.entity.state.npc-idle
-            anvil.entity.state.npc-moving
-            anvil.entity.state.npc-sleeping
-            anvil.entity.state.player-dead
-            anvil.entity.state.player-idle
-            anvil.entity.state.player-item-on-cursor
-            anvil.entity.state.player-moving
-            anvil.entity.state.stunned
-
-            anvil.entity.alert-friendlies-after-duration
-            anvil.entity.animation
-            anvil.entity.body
-            anvil.entity.clickable
-            anvil.entity.damage
-            anvil.entity.delete-after-animation-stopped?
-            anvil.entity.delete-after-duration
-            anvil.entity.destroy-audiovisual
-            anvil.entity.faction
-            anvil.entity.fsm
-            anvil.entity.hp
-            anvil.entity.image
-            anvil.entity.inventory
-            anvil.entity.line-render
-            anvil.entity.mana
-            anvil.entity.modifiers
-            anvil.entity.mouseover?
-            anvil.entity.movement
-            anvil.entity.projectile-collision
-            anvil.entity.skills
-            anvil.entity.species
-            anvil.entity.stat
-            anvil.entity.string-effect
-            anvil.entity.temp-modifier]
- :lwjgl3 {:title "Forge"
-          :fps 60
-          :width 1440
-          :height 900
-          :taskbar-icon "moon.png"}
+{:app-config {:title "Forge"
+              :fps 60
+              :width 1440
+              :height 900
+              :taskbar-icon "moon.png"}
  :context {:gdl [[:gdl.context/unit-scale 1]
                  [:gdl.context/batch]
                  [:gdl.context/assets "resources/"]
@@ -97,4 +34,67 @@
                  [:gdl.context/tiled-map-renderer]
                  [:gdl.context/ui :skin-scale/x1]
                  [:gdl.context/stage]]
-           :world :worlds/uf-caves}}
+           :world :worlds/uf-caves
+           :requires [anvil.widgets.action-bar
+                      anvil.widgets.dev-menu
+                      anvil.widgets.entity-info-window
+                      anvil.widgets.hp-mana-bar
+                      anvil.widgets.inventory
+                      anvil.widgets.player-message
+
+                      anvil.player.interaction-state
+                      anvil.skill.usable-state
+                      anvil.controls.movement-vector
+
+                      anvil.info.impl
+
+                      anvil.effect.target.audiovisual
+                      anvil.effect.target.convert
+                      anvil.effect.target.damage
+                      anvil.effect.target.kill
+                      anvil.effect.target.melee-damage
+                      anvil.effect.target.spiderweb
+                      anvil.effect.target.stun
+
+                      anvil.effect.audiovisual
+                      anvil.effect.creature
+                      anvil.effect.projectile
+                      anvil.effect.sound
+                      anvil.effect.target-all
+                      anvil.effect.target-entity
+
+                      anvil.entity.state.active-skill
+                      anvil.entity.state.npc-dead
+                      anvil.entity.state.npc-idle
+                      anvil.entity.state.npc-moving
+                      anvil.entity.state.npc-sleeping
+                      anvil.entity.state.player-dead
+                      anvil.entity.state.player-idle
+                      anvil.entity.state.player-item-on-cursor
+                      anvil.entity.state.player-moving
+                      anvil.entity.state.stunned
+
+                      anvil.entity.alert-friendlies-after-duration
+                      anvil.entity.animation
+                      anvil.entity.body
+                      anvil.entity.clickable
+                      anvil.entity.damage
+                      anvil.entity.delete-after-animation-stopped?
+                      anvil.entity.delete-after-duration
+                      anvil.entity.destroy-audiovisual
+                      anvil.entity.faction
+                      anvil.entity.fsm
+                      anvil.entity.hp
+                      anvil.entity.image
+                      anvil.entity.inventory
+                      anvil.entity.line-render
+                      anvil.entity.mana
+                      anvil.entity.modifiers
+                      anvil.entity.mouseover?
+                      anvil.entity.movement
+                      anvil.entity.projectile-collision
+                      anvil.entity.skills
+                      anvil.entity.species
+                      anvil.entity.stat
+                      anvil.entity.string-effect
+                      anvil.entity.temp-modifier]}}

@@ -1,6 +1,8 @@
 (in-ns 'clojure.core)
 
 (require '[clj-commons.pretty.repl :as pretty-repl]
+         '[clojure.edn :as edn]
+         '[clojure.java.io :as io]
          '[clojure.pprint :refer [pprint]])
 
 (defmacro bind-root [sym value]
@@ -194,3 +196,6 @@
        ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
        (fn [[k#] & args#]
          k#))))
+
+(defn read-edn-resource [file]
+  (-> file io/resource slurp edn/read-string))

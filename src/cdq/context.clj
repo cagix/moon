@@ -773,7 +773,8 @@
       (spawn-enemies c (:cdq.context/tiled-map c))) ; ??? creature-props!
     c))
 
-(defn create [{:keys [gdl world]}]
+(defn create [{:keys [requires gdl world]}]
+  (run! require requires)
   (let [context (c/create-into (gdx/context) gdl)]
     (add-game-state context world)))
 
@@ -786,7 +787,7 @@
 
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn render [context]
+(defn frame [context]
   (clear-screen black)
   (render-world context)
   (let [stage (c/stage context)]
