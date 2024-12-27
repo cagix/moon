@@ -14,7 +14,6 @@
 ; TODO assert @ mapload no NAD's and @ potential field init & remove from
 ; potential-field-following the removal of NAD's.
 
-(def ^:private pf-cache (atom nil))
 
 ; FIXME assert @ mapload no NAD's and @ potential field init & remove from
 ; potential-field-following the removal of NAD's.
@@ -124,7 +123,7 @@
     (zipmap (map #(entity/tile @%) entities)
             entities)))
 
-(defn- update-faction-potential-field [grid faction entities max-iterations]
+(defn- update-faction-potential-field [pf-cache grid faction entities max-iterations]
   (let [tiles->entities (tiles->entities entities faction)
         last-state   [faction :tiles->entities]
         marked-cells [faction :marked-cells]]
@@ -138,11 +137,17 @@
                                              tiles->entities
                                              max-iterations)))))
 
+(def ^:private pf-cache (atom nil))
+
 (defn update-potential-fields! [{:keys [cdq.context/factions-iterations
                                         cdq.context/grid]}
                                 entities]
   (doseq [[faction max-iterations] factions-iterations]
-    (update-faction-potential-field grid faction entities max-iterations)))
+    (update-faction-potential-field pf-cache
+                                    grid
+                                    faction
+                                    entities
+                                    max-iterations)))
 
 (defn-impl tick/potential-fields [c]
   (update-potential-fields! c (world/active-entities c))
