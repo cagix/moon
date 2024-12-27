@@ -20,6 +20,9 @@
 ;; * change world (but keep player&inventoryui,etc....)
 ;; * first remove all other state / vars like player message ....
 
+; for reset/change-lvl: (removed from first world/create)
+; (world/dispose c) ; only for reset / change lvl
+
 (defn- create-context [{:keys [gdl world]}]
   (let [context (ctx/create-into (gdx/context) gdl)]
     ; TODO how to pass world/widgets as configuration?

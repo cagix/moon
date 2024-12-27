@@ -35,8 +35,8 @@
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
 (defn-impl world/create [c world-id]
-  (world/dispose c) ; only for reset / change lvl
   (c/reset-stage c (world/widgets c)) ; pass to stage . simply! and at reset do the same
+  ; stage required before spawn-player because inventory .... make explicit those dependencies ... ?
   (let [c (c/create-into c (world-components c world-id))] ; same ...
     (when spawn-enemies?
       (spawn-enemies c (:cdq.context/tiled-map c))) ; ??? creature-props!
