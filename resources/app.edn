@@ -1,5 +1,4 @@
 {:requires [anvil.world.create
-            anvil.world.tick
 
             anvil.widgets.action-bar
             anvil.widgets.dev-menu
@@ -7,12 +6,6 @@
             anvil.widgets.hp-mana-bar
             anvil.widgets.inventory
             anvil.widgets.player-message
-
-            anvil.world.tick.camera-controls
-            anvil.world.tick.entities
-            anvil.world.tick.potential-fields
-            anvil.world.tick.remove-destroyed-entities
-            anvil.world.tick.window-hotkeys
 
             anvil.player.interaction-state
             anvil.skill.usable-state

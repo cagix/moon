@@ -1,8 +1,6 @@
-(ns anvil.world.tick.potential-fields
+(ns cdq.potential-fields
   (:require [anvil.entity :as entity]
-            [cdq.context :as world]
             [cdq.grid :as grid]
-            [anvil.world.tick :as tick]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both
@@ -123,7 +121,7 @@
     (zipmap (map #(entity/tile @%) entities)
             entities)))
 
-(defn- update-faction-potential-field [pf-cache grid faction entities max-iterations]
+(defn tick [pf-cache grid faction entities max-iterations]
   (let [tiles->entities (tiles->entities entities faction)
         last-state   [faction :tiles->entities]
         marked-cells [faction :marked-cells]]
@@ -136,19 +134,3 @@
                                              faction
                                              tiles->entities
                                              max-iterations)))))
-
-(def ^:private pf-cache (atom nil))
-
-(defn update-potential-fields! [{:keys [cdq.context/factions-iterations
-                                        cdq.context/grid]}
-                                entities]
-  (doseq [[faction max-iterations] factions-iterations]
-    (update-faction-potential-field pf-cache
-                                    grid
-                                    faction
-                                    entities
-                                    max-iterations)))
-
-(defn-impl tick/potential-fields [c]
-  (update-potential-fields! c (world/active-entities c))
-  c)

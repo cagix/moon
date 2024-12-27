@@ -1,11 +1,13 @@
 (ns cdq.context
   (:require [anvil.component :as component]
+            [anvil.controls :as controls]
             [anvil.entity :as entity]
             [anvil.widgets :as widgets]
             [anvil.world.content-grid :as content-grid]
             [cdq.grid :as grid]
+            [cdq.potential-fields :as potential-fields]
             [cdq.tile-color-setter :as tile-color-setter]
-            [clojure.gdx :refer [play]]
+            [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed?]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
@@ -138,7 +140,7 @@
                       (widgets/inventory c)]}))
 
 (defn- widgets-player-state-draw-component [_context]
-  (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
+  (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(::player-eid %))
                                              %)}))
 
 (defn widgets [c]
@@ -154,8 +156,6 @@
     (tiled/dispose tiled-map)))
 
 (defn create [c world-id])
-
-(defn tick [])
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
@@ -443,7 +443,7 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(defn remove-destroyed-entities [c]
+(defn- remove-destroyed-entities [c]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (all-entities c))]
     (remove-entity c eid)
@@ -622,3 +622,121 @@
                           ; FIXME position DRY (from player)
                           (render-entities c (map deref (active-entities c)))
                           (render-debug-after-entities c))))
+
+(defn- check-player-input [{::keys [player-eid] :as c}]
+  (component/manual-tick (entity/state-obj @player-eid)
+                         c))
+
+(defmethod component/pause-game? :active-skill          [_] false)
+(defmethod component/pause-game? :stunned               [_] false)
+(defmethod component/pause-game? :player-moving         [_] false)
+(defmethod component/pause-game? :player-item-on-cursor [_] true)
+(defmethod component/pause-game? :player-idle           [_] true)
+(defmethod component/pause-game? :player-dead           [_] true)
+
+(defn- update-paused-state [{::keys [player-eid error] :as c} pausing?]
+  (assoc c ::paused? (or error
+                         (and pausing?
+                              (component/pause-game? (entity/state-obj @player-eid))
+                              (not (controls/unpaused? c))))))
+
+(defn- calculate-mouseover-eid [{::keys [player-eid] :as c}]
+  (let [player @player-eid
+        hits (remove #(= (:z-order @%) :z-order/effect)
+                     (point->entities c (c/world-mouse-position c)))]
+    (->> render-z-order
+         (sort-by-order hits #(:z-order @%))
+         reverse
+         (filter #(line-of-sight? c player @%))
+         first)))
+
+(defn- update-mouseover-entity [{::keys [mouseover-eid] :as c}]
+  (let [new-eid (if (c/mouse-on-actor? c)
+                  nil
+                  (calculate-mouseover-eid c))]
+    (when mouseover-eid
+      (swap! mouseover-eid dissoc :entity/mouseover?))
+    (when new-eid
+      (swap! new-eid assoc :entity/mouseover? true))
+    (assoc c ::mouseover-eid new-eid)))
+
+(defn- update-time [c]
+  (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
+    (-> c
+        (update ::elapsed-time + delta-ms)
+        (assoc ::delta-time delta-ms))))
+
+(def ^:private pf-cache (atom nil))
+
+(defn- tick-potential-fields [{::keys [factions-iterations grid] :as c}]
+  (let [entities (active-entities c)]
+    (doseq [[faction max-iterations] factions-iterations]
+      (potential-fields/tick pf-cache
+                             grid
+                             faction
+                             entities
+                             max-iterations)))
+  c)
+
+; precaution in case a component gets removed by another component
+; the question is do we still want to update nil components ?
+; should be contains? check ?
+; but then the 'order' is important? in such case dependent components
+; should be moved together?
+(defn- tick-entity [c eid]
+  (try
+   (doseq [k (keys @eid)]
+     (try (when-let [v (k @eid)]
+            (component/tick [k v] eid c))
+          (catch Throwable t
+            (throw (ex-info "entity-tick" {:k k} t)))))
+   (catch Throwable t
+     (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+
+(defn- tick-entities [c]
+  (try (run! #(tick-entity c %) (active-entities c))
+       (catch Throwable t
+         (c/error-window c t)
+         #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
+  c)
+
+(def ^:private zoom-speed 0.025)
+
+(defn- check-camera-controls [c camera]
+  (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed))) )
+
+(defn- check-window-hotkeys [c {:keys [controls/window-hotkeys]} stage]
+  (doseq [window-id [:inventory-window
+                     :entity-info-window]
+          :when (key-just-pressed? c (get window-hotkeys window-id))]
+    (toggle-visible! (get (:windows stage) window-id))))
+
+(defn- close-all-windows [stage]
+  (let [windows (children (:windows stage))]
+    (when (some visible? windows)
+      (run! #(set-visible % false) windows))))
+
+(defn- check-ui-key-listeners [c {:keys [controls/close-windows-key] :as controls} stage]
+  (check-window-hotkeys c controls stage)
+  (when (key-just-pressed? c close-windows-key)
+    (close-all-windows stage)))
+
+(defn tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
+  (check-player-input c)
+  (let [c (-> c
+              update-mouseover-entity
+              (update-paused-state pausing?))
+        c (if (::paused? c)
+            c
+            (-> c
+                update-time
+                tick-potential-fields
+                tick-entities))]
+    (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
+    (check-camera-controls c (:camera world-viewport))
+    (check-ui-key-listeners c
+                            {:controls/close-windows-key controls/close-windows-key
+                             :controls/window-hotkeys    controls/window-hotkeys}
+                            (c/stage c))
+    c))
