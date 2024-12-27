@@ -2,8 +2,6 @@
   (:require [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
             [data.grid2d :as g2d]
-            [anvil.app :as app]
-            [gdl.context :as c]
             [gdl.tiled :as tiled]))
 
 ; can adjust:
@@ -57,9 +55,8 @@
 
 (def ^:private spawn-creatures? true)
 
-(defn- place-creatures! [spawn-rate tiled-map spawn-positions area-level-grid]
-  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        creature-properties (c/build-all @app/state :properties/creatures)]
+(defn- place-creatures! [creature-properties spawn-rate tiled-map spawn-positions area-level-grid]
+  (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)]
     (when spawn-creatures?
       (doseq [position spawn-positions
               :let [area-level (get area-level-grid position)]
@@ -73,7 +70,8 @@
   "The generated tiled-map needs to be disposed."
   [{:keys [world/map-size
            world/max-area-level
-           world/spawn-rate]}]
+           world/spawn-rate]}
+   creature-properties]
   (assert (<= max-area-level map-size))
   (let [{:keys [start grid]} (cave-grid :size map-size)
         ;_ (printgrid grid)
@@ -119,7 +117,11 @@
                                                    (#{:no-cell :undefined}
                                                     (tiled/property-value tiled-map :creatures p :id))))
                                             spawn-positions)))]
-    (place-creatures! spawn-rate tiled-map spawn-positions scaled-area-level-grid)
+    (place-creatures! creature-properties
+                      spawn-rate
+                      tiled-map
+                      spawn-positions
+                      scaled-area-level-grid)
     {:tiled-map tiled-map
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
