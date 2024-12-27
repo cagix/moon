@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
             [anvil.entity :as entity]
+            [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
             [anvil.world.content-grid :as content-grid]
             [cdq.grid :as grid]
@@ -154,8 +155,6 @@
 (defn dispose [{::keys [tiled-map]}]
   (when tiled-map
     (tiled/dispose tiled-map)))
-
-(defn create [c world-id])
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
@@ -740,3 +739,44 @@
                              :controls/window-hotkeys    controls/window-hotkeys}
                             (c/stage c))
     c))
+
+(defn- spawn-enemies [c tiled-map]
+  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                  {:position position
+                   :creature-id (keyword creature-id)
+                   :components {:entity/fsm {:fsm :fsms/npc
+                                             :initial-state :npc-sleeping}
+                                :entity/faction :evil}})]
+    (creature c (update props :position tile->middle))))
+
+(defn- world-components [c world-id]
+  (let [{:keys [tiled-map start-position]} (generate-level c (c/build c world-id))] ; ?
+    [[:cdq.context/tiled-map tiled-map]
+     [:cdq.context/start-position start-position]
+     [:cdq.context/grid nil]
+     [:cdq.context/explored-tile-corners nil]
+     [:cdq.context/content-grid {:cell-size 16}]
+     [:cdq.context/entity-ids nil]
+     [:cdq.context/raycaster nil]
+     [:cdq.context/factions-iterations {:good 15 :evil 5}]
+     ; "The elapsed in-game-time in seconds (not counting when game is paused)."
+     [:cdq.context/elapsed-time nil] ; game speed config!?
+     [:cdq.context/player-eid nil] ; pass props
+     ;:mouseover-eid nil ; ?
+     ;:delta-time "The game logic update delta-time in ms."
+     ;(bind-root world/delta-time nil) ?
+     [:cdq.context/error nil]]))
+
+(def ^:private ^:dbg-flag spawn-enemies? true)
+
+(defn- add-game-state [c world-id]
+  (c/reset-stage c (widgets c)) ; pass to stage . simply! and at reset do the same
+  ; stage required before spawn-player because inventory .... make explicit those dependencies ... ?
+  (let [c (c/create-into c (world-components c world-id))] ; same ...
+    (when spawn-enemies?
+      (spawn-enemies c (:cdq.context/tiled-map c))) ; ??? creature-props!
+    c))
+
+(defn create [{:keys [gdl world]}]
+  (let [context (c/create-into (gdx/context) gdl)]
+    (add-game-state context world)))
