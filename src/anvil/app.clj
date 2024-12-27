@@ -25,9 +25,9 @@
                                                      [:gdl.context/default-font (:default-font lifecycle)]
                                                      [:gdl.context/cursors (:cursors lifecycle)]
                                                      [:gdl.context/viewport (:viewport lifecycle)]
-                                                     [:gdl.context/tiled-map-renderer nil]
                                                      [:gdl.context/world-unit-scale (:tile-size lifecycle)]
                                                      [:gdl.context/world-viewport (:world-viewport lifecycle)]
+                                                     [:gdl.context/tiled-map-renderer nil]
                                                      [:gdl.context/ui (:ui lifecycle)]
                                                      [:gdl.context/stage (fn [c] nil)]]))
                      (world/create @state (:world lifecycle)))
