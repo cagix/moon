@@ -122,4 +122,6 @@
                     :icon "images/fps.png"}]})
 
 (defn-impl widgets/dev-menu [c]
-  (dev-menu-table c (config c)))
+  (if dev-mode?
+    (dev-menu-table c (config c))
+    (ui-actor {})))

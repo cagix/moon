@@ -131,9 +131,7 @@
       [arr width height])))
 
 (defn widgets [{:keys [cdq.context/player-eid] :as c}]
-  [(if dev-mode?
-     (widgets/dev-menu c)
-     (ui-actor {}))
+  [(widgets/dev-menu c)
    (ui/table {:rows [[{:actor (widgets/action-bar)
                        :expand? true
                        :bottom? true}]]
