@@ -10,6 +10,7 @@
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black]]
             [data.grid2d :as g2d]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
@@ -717,7 +718,7 @@
   (when (key-just-pressed? c close-windows-key)
     (close-all-windows stage)))
 
-(defn- tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
+(defn- tick-context [{:keys [gdl.context/world-viewport] :as c} pausing?]
   (check-player-input c)
   (let [c (-> c
               update-mouseover-entity
@@ -773,28 +774,36 @@
       (spawn-enemies c (:cdq.context/tiled-map c))) ; ??? creature-props!
     c))
 
-(defn create [{:keys [requires gdl world]}]
+(defn- create-context [{:keys [requires gdl world]}]
   (run! require requires)
   (let [context (c/create-into (gdx/context) gdl)]
     (add-game-state context world)))
 
+; TODO unused
 (defn- dispose-game-state [{::keys [tiled-map]}]
   (when tiled-map
     (tiled/dispose tiled-map)))
 
-(defn dispose [context]
-  (c/cleanup context))
-
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn frame [context]
-  (clear-screen black)
-  (render-world context)
-  (let [stage (c/stage context)]
-    (set! (.applicationState stage) context)
-    (.draw stage)
-    (.act stage))
-  (tick context pausing?))
+(defrecord Context []
+  app/Context
+  (dispose [context]
+    (c/cleanup context))
 
-(defn resize [context width height]
-  (c/resize context width height))
+  (render [context]
+    (clear-screen black)
+    (render-world context)
+    (let [stage (c/stage context)]
+      (set! (.applicationState stage) context)
+      (.draw stage)
+      (.act stage))
+    (tick-context context pausing?))
+
+  (resize [context width height]
+    (c/resize context width height)))
+
+(defn -main []
+  (let [config (read-edn-resource "app.edn")]
+    (app/start (:app config)
+               #(map->Context (create-context (:context config))))))

@@ -4,7 +4,7 @@
             [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [anvil.app :as app]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [gdl.ui.group :refer [children]])

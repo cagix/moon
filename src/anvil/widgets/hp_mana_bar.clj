@@ -1,7 +1,6 @@
 (ns anvil.widgets.hp-mana-bar
   (:require [anvil.entity :as entity]
             [anvil.widgets :as widgets]
-            [anvil.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [ui-actor]]
             [gdl.val-max :as val-max]))

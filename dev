@@ -1,1 +1,1 @@
-DEV_MODE=true lein run -m gdl.dev anvil.app
+DEV_MODE=true lein run -m gdl.dev cdq.context

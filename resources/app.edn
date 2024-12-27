@@ -1,8 +1,8 @@
-{:app-config {:title "Forge"
-              :fps 60
-              :width 1440
-              :height 900
-              :taskbar-icon "moon.png"}
+{:app {:title "Forge"
+       :fps 60
+       :width 1440
+       :height 900
+       :taskbar-icon "moon.png"}
  :context {:gdl [[:gdl.context/unit-scale 1]
                  [:gdl.context/batch]
                  [:gdl.context/assets "resources/"]

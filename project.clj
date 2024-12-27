@@ -55,8 +55,8 @@
                 ;*assert* false
                 ;*print-level* 3
                 }
-  :profiles {:uberjar {:aot [anvil.app]}}
-  #_:main #_anvil.app
+  :profiles {:uberjar {:aot [cdq.context]}}
+  #_:main #_cdq.context
   :injections [(load "clojure/utils"
                      "clojure/gdx_inject")])
 

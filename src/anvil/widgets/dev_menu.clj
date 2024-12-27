@@ -93,7 +93,11 @@
   {:menus [{:label "World"
             :items (for [world (c/build-all c :properties/worlds)]
                      {:label (str "Start " (:property/id world))
-                      :on-click #(world/create % (:property/id world))})}
+                      :on-click
+                      (fn [_context])
+                      ;#(world/create % (:property/id world))
+
+                      })}
            ; TODO fixme does not work because create world uses create-into which checks key is not preseent
            ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
            ; => also world-change should be supported, use component systems
