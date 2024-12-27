@@ -4,11 +4,13 @@
             [anvil.widgets :as widgets]
             [anvil.world.content-grid :as content-grid]
             [cdq.grid :as grid]
+            [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :refer [play]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
+            [gdl.math.shapes :refer [circle->outer-rectangle]]
             [gdl.math.vector :as v]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
@@ -152,7 +154,7 @@
     (tiled/dispose tiled-map)))
 
 (defn create [c world-id])
-(defn render [])
+
 (defn tick [])
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
@@ -504,3 +506,119 @@
                            :center-position [(/ (:width viewport) 2)
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
+
+(defn- render-tiled-map [{::keys [raycaster explored-tile-corners] :as c}
+                         tiled-map
+                         light-position]
+  (c/draw-tiled-map c
+                    tiled-map
+                    (tile-color-setter/create raycaster
+                                              explored-tile-corners
+                                              (atom {})
+                                              light-position)))
+
+(def ^:private ^:dbg-flag tile-grid? false)
+(def ^:private ^:dbg-flag potential-field-colors? false)
+(def ^:private ^:dbg-flag cell-entities? false)
+(def ^:private ^:dbg-flag cell-occupied? false)
+
+(defn- render-debug-before-entities [{:keys [gdl.context/world-viewport]
+                                      ::keys [factions-iterations]
+                                      :as c}]
+  (let [cam (:camera world-viewport)
+        [left-x right-x bottom-y top-y] (cam/frustum cam)]
+
+    (when tile-grid?
+      (c/grid c
+              (int left-x) (int bottom-y)
+              (inc (int (:width  world-viewport)))
+              (+ 2 (int (:height world-viewport)))
+              1 1 [1 1 1 0.8]))
+
+    (doseq [[x y] (cam/visible-tiles cam)
+            :let [cell (grid-cell c [x y])]
+            :when cell
+            :let [cell* @cell]]
+
+      (when (and cell-entities? (seq (:entities cell*)))
+        (c/filled-rectangle c x y 1 1 [1 0 0 0.6]))
+
+      (when (and cell-occupied? (seq (:occupied cell*)))
+        (c/filled-rectangle c x y 1 1 [0 0 1 0.6]))
+
+      (when potential-field-colors?
+        (let [faction :good
+              {:keys [distance]} (faction cell*)]
+          (when distance
+            (let [ratio (/ distance (factions-iterations faction))]
+              (c/filled-rectangle c x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
+
+(defn- geom-test [c]
+  (let [position (c/world-mouse-position c)
+        radius 0.8
+        circle {:position position :radius radius}]
+    (c/circle c position radius [1 0 0 0.5])
+    (doseq [[x y] (map #(:position @%) (circle->cells c circle))]
+      (c/rectangle c x y 1 1 [1 0 0 0.5]))
+    (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
+      (c/rectangle c x y width height [0 0 1 1]))))
+
+(def ^:private ^:dbg-flag highlight-blocked-cell? true)
+
+(defn- highlight-mouseover-tile [c]
+  (when highlight-blocked-cell?
+    (let [[x y] (mapv int (c/world-mouse-position c))
+          cell (grid-cell c [x y])]
+      (when (and cell (#{:air :none} (:movement @cell)))
+        (c/rectangle c x y 1 1
+                     (case (:movement @cell)
+                       :air  [1 1 0 0.5]
+                       :none [1 0 0 0.5]))))))
+
+(defn- render-debug-after-entities [c]
+  #_(geom-test c)
+  (highlight-mouseover-tile c))
+
+(def ^:private ^:dbg-flag show-body-bounds false)
+
+(defn- draw-body-rect [c entity color]
+  (let [[x y] (:left-bottom entity)]
+    (c/rectangle c x y (:width entity) (:height entity) color)))
+
+(defn- render-entity! [c system entity]
+  (try
+   (when show-body-bounds
+     (draw-body-rect c entity (if (:collides? entity) :white :gray)))
+   (run! #(system % entity c) entity)
+   (catch Throwable t
+     (draw-body-rect c entity :red)
+     (pretty-pst t))))
+
+(defn- render-entities [{::keys [player-eid] :as c} entities]
+  (let [player @player-eid]
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              render-z-order)
+            system [component/render-below
+                    component/render-default
+                    component/render-above
+                    component/render-info]
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (line-of-sight? c player entity))]
+      (render-entity! c system entity))))
+
+(defn render [{:keys [gdl.context/world-viewport]
+               ::keys [tiled-map player-eid]
+               :as c}]
+  ; FIXME position DRY
+  (cam/set-position! (:camera world-viewport)
+                     (:position @player-eid))
+  ; FIXME position DRY
+  (render-tiled-map c tiled-map (cam/position (:camera world-viewport)))
+  (c/draw-on-world-view c
+                        (fn [c]
+                          (render-debug-before-entities c)
+                          ; FIXME position DRY (from player)
+                          (render-entities c (map deref (active-entities c)))
+                          (render-debug-after-entities c))))

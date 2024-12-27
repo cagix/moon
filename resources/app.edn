@@ -1,6 +1,5 @@
 {:requires [anvil.world.create
             anvil.world.tick
-            anvil.world.render
 
             anvil.widgets.action-bar
             anvil.widgets.dev-menu
@@ -8,11 +7,6 @@
             anvil.widgets.hp-mana-bar
             anvil.widgets.inventory
             anvil.widgets.player-message
-
-            anvil.world.render.debug-after-entities
-            anvil.world.render.debug-before-entities
-            anvil.world.render.entities
-            anvil.world.render.tiled-map
 
             anvil.world.tick.camera-controls
             anvil.world.tick.entities

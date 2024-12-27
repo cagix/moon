@@ -1,5 +1,6 @@
 (ns anvil.app
-  (:require [cdq.context :as world]
+  (:require [cdq.context :as world]  ; TODO only cdq.context :as ctx !
+            ; and this one uses gdl.context and gdx
             [clojure.gdx :as gdx :refer [clear-screen black]]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.edn :as edn]
