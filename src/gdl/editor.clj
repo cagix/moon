@@ -3,6 +3,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
+            [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.context :as ctx :refer [play-sound]]
             [gdl.db :as db]
@@ -30,8 +31,6 @@
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
-(def state (atom nil))
-
 (defn- info-text [property]
   (binding [*print-level* 3]
     (with-out-str
@@ -58,7 +57,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (:height (:gdl.context/viewport @state)) 50)
+     :height (min (- (:height (:gdl.context/viewport @app/state)) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -74,21 +73,24 @@
   #(try (f)
         (Actor/.remove window)
         (catch Throwable t
-          (ctx/error-window @state t))))
+          (ctx/error-window @app/state t))))
 
 (defn- async-write-to-file! [{:keys [gdl.context/db]}]
   (db/async-write-to-file! db))
 
 (defn update! [property]
-  (swap! state update :gdl.context/db db/update property)
-  (async-write-to-file! @state))
+  (swap! app/state update :gdl.context/db db/update property)
+  (async-write-to-file! @app/state))
 
 (defn delete! [property-id]
-  (swap! state update :gdl.context/db db/delete property-id)
-  (async-write-to-file! @state))
+  (swap! app/state update :gdl.context/db db/delete property-id)
+  (async-write-to-file! @app/state))
 
-(defn- get-db []
-  (:gdl.context/db @state))
+(defn- get-db
+  ([]
+   (get-db @app/state))
+  ([context]
+   (:gdl.context/db context)))
 
 (defn- malli-form [schema]
   (schema/malli-form schema (:db/schemas (get-db))))
@@ -154,11 +156,11 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (assets/all-of-type (:gdl.context/assets @state)
+  (assets/all-of-type (:gdl.context/assets @app/state)
                       asset-type))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(play-sound @state sound-name)))
+  (text-button "play!" #(play-sound @app/state sound-name)))
 
 (declare columns)
 
@@ -178,7 +180,7 @@
                                (let [[k _] (user-object table)]
                                  (Actor/.setUserObject table [k sound-name]))))
                 (play-button sound-name)])]
-    (ctx/add-actor @state (scrollable-choose-window rows))))
+    (ctx/add-actor @app/state (scrollable-choose-window rows))))
 
 (defn- columns [table sound-name]
   [(text-button sound-name
@@ -226,14 +228,14 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
-(defn- overview-table ^Actor [property-type clicked-id-fn]
+(defn- overview-table ^Actor [context property-type clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all (get-db) property-type @state)
+        properties (db/build-all (get-db context) property-type context)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -264,7 +266,7 @@
                                             (redo-rows (conj property-ids id)))]
                         (.add window (overview-table property-type clicked-id-fn))
                         (.pack window)
-                        (ctx/add-actor @state window))))]
+                        (ctx/add-actor @app/state window))))]
       (for [property-id property-ids]
         (let [property (db/build (get-db) property-id)
               image-widget (image->widget (property/->image property)
@@ -303,7 +305,7 @@
                                               (redo-rows id))]
                           (.add window (overview-table property-type clicked-id-fn))
                           (.pack window)
-                          (ctx/add-actor @state window)))))]
+                          (ctx/add-actor @app/state window)))))]
       [(when property-id
          (let [property (db/build (get-db) property-id)
                image-widget (image->widget (property/->image property)
@@ -324,7 +326,7 @@
        first))
 
 (defn- get-editor-window []
-  (:property-editor-window (ctx/stage @state)))
+  (:property-editor-window (ctx/stage @app/state)))
 
 (defn- window->property-value []
  (let [window (get-editor-window)
@@ -336,7 +338,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (Actor/.remove (get-editor-window))
-    (ctx/add-actor @state (editor-window prop-value))))
+    (ctx/add-actor @app/state (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (db/schema-of (get-db) k) v)]
@@ -406,7 +408,7 @@
                                                      map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
-    (ctx/add-actor @state window)))
+    (ctx/add-actor @app/state window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -464,16 +466,16 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (db/edn->value schema image (get-db) @state)
+  (image-button (db/edn->value schema image (get-db) @app/state)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
-                  #(ctx/add-actor @state (scrollable-choose-window (texture-rows)))
+                  #(ctx/add-actor @app/state (scrollable-choose-window (texture-rows)))
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (db/edn->value :s/image image (get-db) @state)
+                      (image-button (db/edn->value :s/image image (get-db) @app/state)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))
@@ -481,19 +483,21 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (ctx/add-actor @state (editor-window (db/get-raw (get-db) id))))
+  (ctx/add-actor @app/state (editor-window (db/get-raw (get-db) id))))
 
-(defn- property-type-tabs []
-  (for [property-type (sort (db/property-types (get-db)))]
+(defn- property-type-tabs [context]
+  (for [property-type (sort (db/property-types (get-db context)))]
     {:title (str/capitalize (name property-type))
-     :content (overview-table property-type edit-property)}))
+     :content (overview-table context
+                              property-type
+                              edit-property)}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
   (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn- tabs-table [label-str]
+(defn- tabs-table [context label-str]
   (let [table (ui/table {:fill-parent? true})
         container (ui/table {})
         tabbed-pane (TabbedPane.)]
@@ -507,7 +511,7 @@
     (.fill (.expand (.add table container)))
     (.row table)
     (.pad (.left (.add table (ui/label label-str))) (float 10))
-    (doseq [tab-data (property-type-tabs)]
+    (doseq [tab-data (property-type-tabs context)]
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
@@ -517,42 +521,44 @@
                     :scaling :fill
                     :align :center}))
 
+(defrecord Context []
+  app/Context
+  (dispose [context]
+    (ctx/cleanup context))
+
+  (render [context]
+    (let [stage (ctx/stage context)]
+      (set! (.applicationState stage) context)
+      (.act stage)
+      (.draw stage))
+    context)
+
+  (resize [context width height]
+    (ctx/resize context width height)))
+
+(defn- create-context [gdx-context]
+  (map->Context (ctx/create-into gdx-context
+                                 [[:gdl.context/unit-scale 1]
+                                  [:gdl.context/batch]
+                                  [:gdl.context/db {:schema "schema.edn"
+                                                    :properties "properties.edn"}]
+                                  [:gdl.context/assets "resources/"]
+                                  [:gdl.context/viewport {:width 1440 :height 900}]
+
+                                  ;; just because of sprite edn->value of db requires world-unit-scale
+                                  [:gdl.context/world-unit-scale 1]
+                                  [:gdl.context/world-viewport {:width 1440 :height 900}]
+                                  ;;
+
+                                  [:gdl.context/ui :skin-scale/x1]
+                                  [:gdl.context/stage (fn [c]
+                                                        [(background-image c "images/moon_background.png")
+                                                         (tabs-table c "custom label text here")])]])))
+
 (defn -main []
-  (lwjgl/start {:title "Editor"
-                :fps 60
-                :width 1440
-                :height 900
-                :taskbar-icon "moon.png"}
-               (reify lwjgl/Application
-                 (create [_]
-                   (reset! state (ctx/create-into (gdx/context)
-                                                  [[:gdl.context/unit-scale 1]
-                                                   [:gdl.context/batch]
-                                                   [:gdl.context/db {:schema "schema.edn"
-                                                                     :properties "properties.edn"}]
-                                                   [:gdl.context/assets "resources/"]
-                                                   [:gdl.context/viewport {:width 1440 :height 900}]
-
-                                                   ;; just because of sprite edn->value of db requires world-unit-scale
-                                                   [:gdl.context/world-unit-scale 1]
-                                                   [:gdl.context/world-viewport {:width 1440 :height 900}]
-                                                   ;;
-
-                                                   [:gdl.context/ui :skin-scale/x1]
-                                                   [:gdl.context/stage (fn [c]
-                                                                         [(background-image c "images/moon_background.png")])]]))
-
-                   (ctx/add-actor @state (tabs-table "custom label text here")))
-
-                 (dispose [_]
-                   (ctx/cleanup @state))
-
-                 (render [_]
-                   (let [context @state
-                         stage (ctx/stage context)]
-                     (set! (.applicationState stage) context)
-                     (.act stage)
-                     (.draw stage)))
-
-                 (resize [_ w h]
-                   (ctx/resize @state w h)))))
+  (app/start {:title "Editor"
+              :fps 60
+              :width 1440
+              :height 900
+              :taskbar-icon "moon.png"}
+             create-context))
