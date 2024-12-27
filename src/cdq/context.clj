@@ -130,20 +130,21 @@
         (set-arr arr @cell grid/blocks-vision?))
       [arr width height])))
 
-(defn widgets [{:keys [cdq.context/player-eid] :as c}]
+(defn- widgets-windows [c]
+  (ui/group {:id :windows
+             :actors [(widgets/entity-info-window c)
+                      (widgets/inventory c)]}))
+
+(defn- widgets-player-state-draw-component [_context]
+  (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
+                                             %)}))
+
+(defn widgets [c]
   [(widgets/dev-menu c)
-   (ui/table {:rows [[{:actor (widgets/action-bar)
-                       :expand? true
-                       :bottom? true}]]
-              :id :action-bar-table
-              :cell-defaults {:pad 2}
-              :fill-parent? true})
+   (widgets/action-bar-table c)
    (widgets/hp-mana-bar c)
-   (ui/group {:id :windows
-              :actors [(widgets/entity-info-window c)
-                       (widgets/inventory c)]})
-   (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
-                                              %)})
+   (widgets-windows c)
+   (widgets-player-state-draw-component c)
    (widgets/player-message)])
 
 (defn dispose [{::keys [tiled-map]}]

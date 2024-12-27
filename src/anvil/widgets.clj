@@ -4,7 +4,7 @@
 
 (defn dev-menu [c])
 
-(defn action-bar [])
+(defn action-bar-table [c])
 
 (defn inventory [c])
 

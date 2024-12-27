@@ -16,11 +16,19 @@
                                                   :min-check-count 0}))
     actor))
 
-(defn-impl widgets/action-bar []
+(defn- action-bar []
   (let [group (ui/horizontal-group {:pad 2 :space 2})]
     (.setUserObject group :ui/action-bar)
     (add-actor! group (action-bar-button-group))
     group))
+
+(defn-impl widgets/action-bar-table [_context]
+  (ui/table {:rows [[{:actor (action-bar)
+                      :expand? true
+                      :bottom? true}]]
+             :id :action-bar-table
+             :cell-defaults {:pad 2}
+             :fill-parent? true}))
 
 (defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (world/get-action-bar c)
