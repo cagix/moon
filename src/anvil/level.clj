@@ -14,7 +14,8 @@
          (:world/player-creature world-props)))
 
 (defmethod generate-level* :world.generator/uf-caves [world]
-  (uf-caves/create world))
+  (uf-caves/create world
+                   (c/build-all @app/state :properties/creatures)))
 
 (defmethod generate-level* :world.generator/tiled-map [world]
   {:tiled-map (tiled/load-tmx-map (:world/tiled-map world))

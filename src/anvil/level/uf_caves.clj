@@ -15,11 +15,10 @@
 (defn- rand-0-5 []
   (get-rand-weighted-item {0 30 1 1 2 1 3 1 4 1 5 1}))
 
-(defn- set-creatures-tiles [spawn-rate tiled-map spawn-positions]
+(defn- set-creatures-tiles [creature-properties spawn-rate tiled-map spawn-positions]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)
-        creatures (ctx/build-all @app/state :properties/creatures)
         level (inc (rand-int 6))
-        creatures (creatures-with-level creatures level)]
+        creatures (creatures-with-level creature-properties level)]
     (doseq [position spawn-positions
             :when (<= (rand) spawn-rate)]
       (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))
@@ -104,7 +103,8 @@
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
-(defn create [{:keys [world/map-size world/spawn-rate]}]
+(defn create [{:keys [world/map-size world/spawn-rate]}
+              creature-properties]
   (let [{:keys [start grid]} (cave-grid :size map-size)
         {:keys [start-position grid]} (scale-grid grid start scaling)
         grid (assoc-transition-cells grid)
@@ -112,6 +112,9 @@
         can-spawn? #(= "all" (tiled/movement-property tiled-map %))
         _ (assert (can-spawn? start-position)) ; assuming hoping bottom left is movable
         spawn-positions (flood-fill grid start-position can-spawn?)]
-    (set-creatures-tiles spawn-rate tiled-map spawn-positions)
+    (set-creatures-tiles creature-properties
+                         spawn-rate
+                         tiled-map
+                         spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))
