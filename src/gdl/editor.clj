@@ -526,11 +526,11 @@
                (reify lwjgl/Application
                  (create [_]
                    (reset! state (ctx/create-into (gdx/context)
-                                                  [[:gdl.context/db {:schema "schema.edn"
+                                                  [[:gdl.context/unit-scale 1]
+                                                   [:gdl.context/batch]
+                                                   [:gdl.context/db {:schema "schema.edn"
                                                                      :properties "properties.edn"}]
-                                                   [:gdl.context/unit-scale 1]
                                                    [:gdl.context/assets "resources/"]
-                                                   [:gdl.context/batch nil]
                                                    [:gdl.context/viewport {:width 1440 :height 900}]
 
                                                    ;; just because of sprite edn->value of db requires world-unit-scale
