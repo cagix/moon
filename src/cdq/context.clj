@@ -774,9 +774,9 @@
       (spawn-enemies c (:cdq.context/tiled-map c))) ; ??? creature-props!
     c))
 
-(defn- create-context [{:keys [requires gdl world]}]
+(defn- create-context [gdx-context {:keys [requires gdl world]}]
   (run! require requires)
-  (let [context (c/create-into (gdx/context) gdl)]
+  (let [context (c/create-into gdx-context gdl)]
     (add-game-state context world)))
 
 ; TODO unused
@@ -806,4 +806,4 @@
 (defn -main []
   (let [config (read-edn-resource "app.edn")]
     (app/start (:app config)
-               #(map->Context (create-context (:context config))))))
+               #(map->Context (create-context % (:context config))))))
