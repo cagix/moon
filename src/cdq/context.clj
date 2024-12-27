@@ -8,7 +8,7 @@
             [cdq.grid :as grid]
             [cdq.potential-fields :as potential-fields]
             [cdq.tile-color-setter :as tile-color-setter]
-            [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed?]]
+            [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
@@ -151,10 +151,6 @@
    (widgets-windows c)
    (widgets-player-state-draw-component c)
    (widgets/player-message)])
-
-(defn dispose [{::keys [tiled-map]}]
-  (when tiled-map
-    (tiled/dispose tiled-map)))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
@@ -607,9 +603,9 @@
                       (line-of-sight? c player entity))]
       (render-entity! c system entity))))
 
-(defn render [{:keys [gdl.context/world-viewport]
-               ::keys [tiled-map player-eid]
-               :as c}]
+(defn- render-world [{:keys [gdl.context/world-viewport]
+                      ::keys [tiled-map player-eid]
+                      :as c}]
   ; FIXME position DRY
   (cam/set-position! (:camera world-viewport)
                      (:position @player-eid))
@@ -721,7 +717,7 @@
   (when (key-just-pressed? c close-windows-key)
     (close-all-windows stage)))
 
-(defn tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
+(defn- tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
   (check-player-input c)
   (let [c (-> c
               update-mouseover-entity
@@ -780,3 +776,24 @@
 (defn create [{:keys [gdl world]}]
   (let [context (c/create-into (gdx/context) gdl)]
     (add-game-state context world)))
+
+(defn- dispose-game-state [{::keys [tiled-map]}]
+  (when tiled-map
+    (tiled/dispose tiled-map)))
+
+(defn dispose [context]
+  (c/cleanup context))
+
+(def ^:private ^:dbg-flag pausing? true)
+
+(defn render [context]
+  (clear-screen black)
+  (render-world context)
+  (let [stage (c/stage context)]
+    (set! (.applicationState stage) context)
+    (.draw stage)
+    (.act stage))
+  (tick context pausing?))
+
+(defn resize [context width height]
+  (c/resize context width height))
