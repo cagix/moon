@@ -1,4 +1,4 @@
-(ns anvil.world.content-grid
+(ns cdq.world.content-grid
   (:require [data.grid2d :as g2d]))
 
 (defn create [{:keys [cell-size width height]}]

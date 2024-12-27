@@ -4,7 +4,7 @@
             [anvil.entity :as entity]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
-            [anvil.world.content-grid :as content-grid]
+            [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [cdq.potential-fields :as potential-fields]
             [cdq.tile-color-setter :as tile-color-setter]
