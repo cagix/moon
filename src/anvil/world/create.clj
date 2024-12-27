@@ -37,7 +37,6 @@
 (def ^:private ^:dbg-flag spawn-enemies? true)
 
 (defn-impl world/create [c world-id]
-  ; TODO assert is :screens/world
   (c/reset-stage c (world/widgets c))
   (world/dispose c) ; TODO ... call here? separate world reset/dispose than ctx reset/dispose ? multimethods move to gdl.contxt?!
   (swap! app/state c/create-into (world-components c world-id))
