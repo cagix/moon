@@ -42,8 +42,6 @@
                           anvil.widgets.inventory
                           anvil.widgets.player-message
 
-                          anvil.player.interaction-state
-
                           anvil.info.impl
 
                           anvil.effect.target.audiovisual
