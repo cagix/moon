@@ -8,8 +8,6 @@
 
 (defn hp-mana-bar [c])
 
-(defn dev-menu [c])
-
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
     (.setName actor "action-bar/button-group")
@@ -36,8 +34,6 @@
 (defn set-item-image-in-widget [c cell item])
 
 (defn remove-item-from-widget [c cell])
-
-(defn entity-info-window [c])
 
 (defn- draw-player-message [{:keys [gdl.context/viewport
                                     cdq.context/player-message] :as c}]
