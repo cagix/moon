@@ -43,7 +43,6 @@
                           anvil.widgets.player-message
 
                           anvil.player.interaction-state
-                          anvil.skill.usable-state
 
                           anvil.info.impl
 
