@@ -4,7 +4,20 @@
 ; ns+ better? ...
 ; => common :refer's then from utils/etc. ///
 (load "clojure/utils"
-      "clojure/gdx_inject")
+
+      ;"clojure/gdx_inject"
+
+      )
+
+; but the idea is generally good to inject everything
+; which the whole project depends on ?
+; makes the code more focused?
+; but then with ns+ its a better way ?!
+
+; but doesn;t work with codox ? in that case inject @ project.clj ?
+
+; and reloading/ ?
+
 (ns cdq.context
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
@@ -715,12 +728,12 @@
   (doseq [window-id [:inventory-window
                      :entity-info-window]
           :when (key-just-pressed? c (get window-hotkeys window-id))]
-    (toggle-visible! (get (:windows stage) window-id))))
+    (actor/toggle-visible! (get (:windows stage) window-id))))
 
 (defn- close-all-windows [stage]
-  (let [windows (children (:windows stage))]
-    (when (some visible? windows)
-      (run! #(set-visible % false) windows))))
+  (let [windows (group/children (:windows stage))]
+    (when (some actor/visible? windows)
+      (run! #(actor/set-visible % false) windows))))
 
 (defn- check-ui-key-listeners [c {:keys [controls/close-windows-key] :as controls} stage]
   (check-window-hotkeys c controls stage)
