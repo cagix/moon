@@ -1,6 +1,11 @@
 (ns anvil.entity
   (:require [anvil.component :as component]
+            [anvil.operation :as op]
+            [anvil.widgets :as widgets]
+            [cdq.inventory :as inventory]
+            [clojure.string :as str]
             [gdl.context :refer [set-cursor]]
+            [gdl.malli :as m]
             [gdl.math.vector :as v]
             [gdl.math.shapes :as shape]
             [reduce-fsm :as fsm]))
@@ -59,15 +64,101 @@
   ([c eid event params]
    (send-event! c eid event params)))
 
-(defn set-item [eid cell item])
+(defmethods :entity/modifiers
+  (component/info [[_ mods] _c]
+    (when (seq mods)
+      (str/join "\n" (keep (fn [[k ops]]
+                             (op/info ops k)) mods)))))
 
-(defn remove-item [c eid cell])
+(defn- mods-add    [mods other-mods] (merge-with op/add    mods other-mods))
+(defn- mods-remove [mods other-mods] (merge-with op/remove mods other-mods))
 
-(defn stack-item [c eid cell item])
+(defn mod-add    [entity mods] (update entity :entity/modifiers mods-add    mods))
+(defn mod-remove [entity mods] (update entity :entity/modifiers mods-remove mods))
 
-(defn can-pickup-item? [{:keys [entity/inventory]} item])
+(defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
+  {:pre [(= "modifier" (namespace modifier-k))]}
+  (op/apply (modifier-k modifiers)
+            base-value))
 
-(defn pickup-item [c eid item])
+(defn- ->pos-int [val-max]
+  (mapv #(-> % int (max 0)) val-max))
+
+(defn apply-max-modifier [val-max entity modifier-k]
+  {:pre  [(m/validate m/val-max-schema val-max)]
+   :post [(m/validate m/val-max-schema val-max)]}
+  (let [val-max (update val-max 1 mod-value entity modifier-k)
+        [v mx] (->pos-int val-max)]
+    [(min v mx) mx]))
+
+(defn apply-min-modifier [val-max entity modifier-k]
+  {:pre  [(m/validate m/val-max-schema val-max)]
+   :post [(m/validate m/val-max-schema val-max)]}
+  (let [val-max (update val-max 0 mod-value entity modifier-k)
+        [v mx] (->pos-int val-max)]
+    [v (max v mx)]))
+
+(defn set-item [c eid cell item]
+  (let [entity @eid
+        inventory (:entity/inventory entity)]
+    (assert (and (nil? (get-in inventory cell))
+                 (inventory/valid-slot? cell item)))
+    (when (:entity/player? entity)
+      (widgets/set-item-image-in-widget c cell item))
+    (swap! eid assoc-in (cons :entity/inventory cell) item)
+    (when (inventory/applies-modifiers? cell)
+      (swap! eid mod-add (:entity/modifiers item)))))
+
+(defn remove-item [c eid cell]
+  (let [entity @eid
+        item (get-in (:entity/inventory entity) cell)]
+    (assert item)
+    (when (:entity/player? entity)
+      (widgets/remove-item-from-widget c cell))
+    (swap! eid assoc-in (cons :entity/inventory cell) nil)
+    (when (inventory/applies-modifiers? cell)
+      (swap! eid mod-remove (:entity/modifiers item)))))
+
+; TODO doesnt exist, stackable, usable items with action/skillbar thingy
+#_(defn remove-one-item [eid cell]
+  (let [item (get-in (:entity/inventory @eid) cell)]
+    (if (and (:count item)
+             (> (:count item) 1))
+      (do
+       ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
+       ; first remove and then place, just update directly  item ...
+       (remove-item! eid cell)
+       (set-item! eid cell (update item :count dec)))
+      (remove-item! eid cell))))
+
+; TODO no items which stack are available
+(defn stack-item [c eid cell item]
+  (let [cell-item (get-in (:entity/inventory @eid) cell)]
+    (assert (inventory/stackable? item cell-item))
+    ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
+    ; first remove and then place, just update directly  item ...
+    (concat (remove-item c eid cell)
+            (set-item c eid cell (update cell-item :count + (:count item))))))
+
+(defn can-pickup-item? [{:keys [entity/inventory]} item]
+  (or
+   (inventory/free-cell inventory (:item/slot item)   item)
+   (inventory/free-cell inventory :inventory.slot/bag item)))
+
+(defn pickup-item [c eid item]
+  (let [[cell cell-item] (can-pickup-item? @eid item)]
+    (assert cell)
+    (assert (or (inventory/stackable? item cell-item)
+                (nil? cell-item)))
+    (if (inventory/stackable? item cell-item)
+      (stack-item c eid cell item)
+      (set-item c eid cell item))))
+
+(defmethods :entity/inventory
+  (component/create [[k items] eid c]
+    (swap! eid assoc k inventory/empty-inventory)
+    (doseq [item items]
+      (pickup-item c eid item))))
 
 (defn stat [entity k])
 
@@ -79,12 +170,6 @@
 (defn mana-val [entity])
 
 (defn pay-mana-cost [entity cost])
-
-(defn mod-add    [entity mod])
-(defn mod-remove [entity mod])
-(defn mod-value  [base-value entity modifier-k])
-(defn apply-max-modifier [val-max entity modifier-k])
-(defn apply-min-modifier [val-max entity modifier-k])
 
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
