@@ -114,5 +114,6 @@
   ;:delta-time "The game logic update delta-time in ms."
   ;(bind-root world/delta-time nil) ?
   [:cdq.context/error nil]
-  [:cdq.context/spawn-enemies]]
+  [:cdq.context/spawn-enemies]
+  [:cdq.context/player-message {:duration-seconds 1.5}]]
  }

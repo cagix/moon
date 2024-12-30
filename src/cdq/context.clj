@@ -506,12 +506,12 @@
   (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
 
-(def player-message-duration-seconds 1.5)
+(defmethods ::player-message
+  (app/create [[_ {:keys [duration-seconds]}] _context]
+    (atom {:duration-seconds duration-seconds})))
 
-(def message-to-player nil)
-
-(defn show-player-msg [message]
-  (bind-root message-to-player {:message message :counter 0}))
+(defn show-player-msg [{::keys [player-message]} text]
+  (swap! player-message assoc :text text :counter 0))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

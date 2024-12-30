@@ -30,7 +30,7 @@
      :else
      (do
       (play-sound c "bfxr_denied")
-      (w/show-player-msg "Your Inventory is full")))))
+      (w/show-player-msg c "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
   (actor/toggle-visible! (w/get-inventory c)))
@@ -50,7 +50,7 @@
                                               (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (play-sound c "bfx_denied")
-                                              (w/show-player-msg "Too far away"))]))
+                                              (w/show-player-msg c "Too far away"))]))
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c}
                                   ^com.badlogic.gdx.scenes.scene2d.Actor actor]
@@ -108,14 +108,14 @@
             [:cursors/skill-not-usable
              (fn []
                (play-sound c "bfxr_denied")
-               (w/show-player-msg (case state
-                                    :cooldown "Skill is still on cooldown"
-                                    :not-enough-mana "Not enough mana"
-                                    :invalid-params "Cannot use this here")))])))
+               (w/show-player-msg c (case state
+                                      :cooldown "Skill is still on cooldown"
+                                      :not-enough-mana "Not enough mana"
+                                      :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
           (play-sound c "bfxr_denied")
-          (w/show-player-msg "No selected skill"))]))))
+          (w/show-player-msg c "No selected skill"))]))))
 
 (defn-impl player/interaction-state [c eid]
   (interaction-state c eid))
