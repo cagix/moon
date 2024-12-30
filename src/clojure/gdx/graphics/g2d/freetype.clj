@@ -1,4 +1,7 @@
 (ns clojure.gdx.graphics.g2d.freetype
+  "https://javadoc.io/doc/com.badlogicgames.gdx/gdx-freetype/latest/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGenerator.html
+
+  https://javadoc.io/static/com.badlogicgames.gdx/gdx-freetype/1.13.0/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGenerator.FreeTypeFontParameter.html"
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
