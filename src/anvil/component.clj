@@ -4,12 +4,6 @@
 (defsystem info)
 (defmethod info :default [_ c])
 
-(defsystem dispose)
-(defmethod dispose :default [_])
-
-(defsystem resize)
-(defmethod resize :default [_ w h])
-
 ;; Entity
 
 (defsystem ->v)

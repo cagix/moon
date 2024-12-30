@@ -521,39 +521,35 @@
                     :scaling :fill
                     :align :center}))
 
-(defrecord Context []
-  app/Context
-  (dispose [context]
-    (ctx/cleanup context))
+(defmethods ::stage-actors
+  (app/create [_ context]
+    (doseq [actor [(background-image context "images/moon_background.png")
+                   (tabs-table       context "custom label text here")]]
+      (ctx/add-actor context actor))))
 
-  (render [context]
-    (let [stage (ctx/stage context)]
-      (set! (.applicationState stage) context)
-      (.act stage)
-      (.draw stage))
-    context)
+(defn- render-stage [context]
+  (let [stage (ctx/stage context)]
+    (set! (.applicationState stage) context)
+    (.act stage)
+    (.draw stage))
+  context)
 
-  (resize [context width height]
-    (ctx/resize context width height)))
+(def ^:private components
+  [[:gdl.context/unit-scale 1]
+   [:gdl.context/batch]
+   [:gdl.context/db {:schema "schema.edn"
+                     :properties "properties.edn"}]
+   [:gdl.context/assets "resources/"]
+   [:gdl.context/viewport {:width 1440 :height 900}]
 
-(defn- create-context [gdx-context]
-  (map->Context (ctx/create-into gdx-context
-                                 [[:gdl.context/unit-scale 1]
-                                  [:gdl.context/batch]
-                                  [:gdl.context/db {:schema "schema.edn"
-                                                    :properties "properties.edn"}]
-                                  [:gdl.context/assets "resources/"]
-                                  [:gdl.context/viewport {:width 1440 :height 900}]
+   ;; just because of sprite edn->value of db requires world-unit-scale
+   [:gdl.context/world-unit-scale 1]
+   [:gdl.context/world-viewport {:width 1440 :height 900}]
+   ;;
 
-                                  ;; just because of sprite edn->value of db requires world-unit-scale
-                                  [:gdl.context/world-unit-scale 1]
-                                  [:gdl.context/world-viewport {:width 1440 :height 900}]
-                                  ;;
-
-                                  [:gdl.context/ui :skin-scale/x1]
-                                  [:gdl.context/stage (fn [c]
-                                                        [(background-image c "images/moon_background.png")
-                                                         (tabs-table c "custom label text here")])]])))
+   [:gdl.context/ui :skin-scale/x1]
+   [:gdl.context/stage]
+   [::stage-actors]])
 
 (defn -main []
   (app/start {:title "Editor"
@@ -561,4 +557,5 @@
               :width 1440
               :height 900
               :taskbar-icon "moon.png"}
-             create-context))
+             components
+             render-stage))

@@ -1,6 +1,5 @@
 (ns gdl.context
-  (:require [anvil.component :as component]
-            [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
+  (:require [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
                                          set-projection-matrix begin end set-color draw pixmap draw-pixel resize fit-viewport
                                          unproject set-input-processor internal-file input-x input-y]]
             [clojure.gdx.graphics.camera :as camera]
@@ -10,6 +9,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.interop :as interop]
             [clojure.string :as str]
+            [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics.animation :as animation]
@@ -268,39 +268,39 @@
     texture))
 
 (defmethods ::shape-drawer
-  (component/->v [_ {::keys [batch]}]
+  (app/create [_ {::keys [batch]}]
     (assert batch)
     (sd/create batch (gdx/texture-region (sd-texture) 1 0 1 1)))
-  (component/dispose [[_ sd]]
+  (app/dispose [[_ sd]]
     #_(dispose sd)))
 ; TODO this will break ... proxy with extra-data -> get texture through sd ...
 ; => shape-drawer-texture as separate component?!
 ; that would work
 
 (defmethods ::assets
-  (component/->v [[_ folder] c]
+  (app/create [[_ folder] c]
     (assets/manager c folder))
-  (component/dispose [[_ assets]]
+  (app/dispose [[_ assets]]
     (assets/cleanup assets)))
 
 (defmethods ::batch
-  (component/->v [_ _c]
+  (app/create [_ _c]
     (sprite-batch))
-  (component/dispose [[_ batch]]
+  (app/dispose [[_ batch]]
     (dispose batch)))
 
 (defmethods ::db
-  (component/->v [[_ config] _c]
+  (app/create [[_ config] _c]
     (db/create config)))
 
 (defmethods ::default-font
-  (component/->v [[_ config] c]
+  (app/create [[_ config] c]
     (freetype/generate-font (update config :file #(internal-file c %))))
-  (component/dispose [[_ font]]
+  (app/dispose [[_ font]]
     (dispose font)))
 
 (defmethods ::cursors
-  (component/->v [[_ cursors] c]
+  (app/create [[_ cursors] c]
     (mapvals (fn [[file [hotspot-x hotspot-y]]]
                (let [pixmap (pixmap (internal-file c (str "cursors/" file ".png")))
                      cursor (gdx/cursor c pixmap hotspot-x hotspot-y)]
@@ -308,38 +308,38 @@
                  cursor))
              cursors))
 
-  (component/dispose [[_ cursors]]
+  (app/dispose [[_ cursors]]
     (run! dispose (vals cursors))))
 
 (defmethods ::viewport
-  (component/->v [[_ {:keys [width height]}] _c]
+  (app/create [[_ {:keys [width height]}] _c]
     (fit-viewport width height (orthographic-camera)))
-  (component/resize [[_ viewport] w h]
+  (app/resize [[_ viewport] w h]
     (resize viewport w h :center-camera? true)))
 
 (defmethods ::world-unit-scale
-  (component/->v [[_ tile-size] _c]
+  (app/create [[_ tile-size] _c]
     (float (/ tile-size))))
 
 (defmethods ::world-viewport
-  (component/->v [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
+  (app/create [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
     (assert world-unit-scale)
     (let [camera (orthographic-camera)
           world-width  (* width  world-unit-scale)
           world-height (* height world-unit-scale)]
       (camera/set-to-ortho camera world-width world-height :y-down? false)
       (fit-viewport world-width world-height camera)))
-  (component/resize [[_ viewport] w h]
+  (app/resize [[_ viewport] w h]
     (resize viewport w h :center-camera? false)))
 
 (defmethods ::tiled-map-renderer
-  (component/->v [_ {::keys [world-unit-scale batch]}]
+  (app/create [_ {::keys [world-unit-scale batch]}]
     (memoize (fn [tiled-map]
                (OrthogonalTiledMapRenderer. tiled-map
                                             (float world-unit-scale)
                                             batch)))))
 
-(defn- stage* [viewport batch actors]
+(defn- stage* [viewport batch actors] ; FIXME actors not necessary ?!
   (let [stage (proxy [StageWithState clojure.lang.ILookup] [viewport batch]
                 (valAt
                   ([id]
@@ -353,31 +353,18 @@
 (def stage ::stage)
 
 (defmethods stage
-  (component/->v [[_ actors-fn] {::keys [viewport batch] :as c}]
-    (let [stage (stage* viewport batch (and actors-fn (actors-fn c)))]
+  (app/create [_ {::keys [viewport batch] :as c}]
+    (let [stage (stage* viewport batch nil)] ; TODO
       (set-input-processor c stage)
       stage))
-  (component/dispose [[_ stage]]
+  (app/dispose [[_ stage]]
     (.dispose stage)))
 
 (defmethods ::ui
-  (component/->v [[_ config] _c]
+  (app/create [[_ config] _c]
     (ui/setup config))
-  (component/dispose [_]
+  (app/dispose [_]
     (ui/cleanup)))
-
-(defn create-into [c components]
-  (reduce (fn [c [k v]]
-            (assert (not (contains? c k)))
-            (assoc c k (component/->v [k v] c)))
-          c
-          components))
-
-(defn cleanup [c]
-  (run! component/dispose c))
-
-(defn resize [c w h]
-  (run! #(component/resize % w h) c))
 
 (defn build [{::keys [db] :as c} id]
   (db/build db id c))

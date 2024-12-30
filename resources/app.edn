@@ -3,98 +3,116 @@
        :width 1440
        :height 900
        :taskbar-icon "moon.png"}
- :context {:gdl [[:gdl.context/unit-scale 1]
-                 [:gdl.context/batch]
-                 [:gdl.context/assets "resources/"]
-                 [:gdl.context/db {:schema "schema.edn"
-                                   :properties "properties.edn"}]
-                 [:gdl.context/shape-drawer]
-                 [:gdl.context/default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                             :size 16
-                                             :quality-scaling 2}]
-                 [:gdl.context/cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                        :cursors/black-x               ["black_x"      [0   0]]
-                                        :cursors/default               ["default"      [0   0]]
-                                        :cursors/denied                ["denied"       [16 16]]
-                                        :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                        :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                        :cursors/hand-grab             ["hand003"      [4  16]]
-                                        :cursors/move-window           ["move002"      [16 16]]
-                                        :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                        :cursors/over-button           ["hand002"      [0   0]]
-                                        :cursors/sandclock             ["sandclock"    [16 16]]
-                                        :cursors/skill-not-usable      ["x007"         [0   0]]
-                                        :cursors/use-skill             ["pointer004"   [0   0]]
-                                        :cursors/walking               ["walking"      [16 16]]}]
-                 [:gdl.context/viewport {:width 1440
-                                         :height 900}]
-                 [:gdl.context/world-unit-scale 48]
-                 [:gdl.context/world-viewport {:width 1440
-                                               :height 900}]
-                 [:gdl.context/tiled-map-renderer]
-                 [:gdl.context/ui :skin-scale/x1]
-                 [:gdl.context/stage]]
-           :world :worlds/uf-caves
-           :requires [anvil.widgets.action-bar
-                      anvil.widgets.dev-menu
-                      anvil.widgets.entity-info-window
-                      anvil.widgets.hp-mana-bar
-                      anvil.widgets.inventory
-                      anvil.widgets.player-message
+ :context
+ [[:gdl.context/unit-scale 1]
+  [:gdl.context/batch]
+  [:gdl.context/assets "resources/"]
+  [:gdl.context/db {:schema "schema.edn"
+                    :properties "properties.edn"}]
+  [:gdl.context/shape-drawer]
+  [:gdl.context/default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                              :size 16
+                              :quality-scaling 2}]
+  [:gdl.context/cursors {:cursors/bag                   ["bag001"       [0   0]]
+                         :cursors/black-x               ["black_x"      [0   0]]
+                         :cursors/default               ["default"      [0   0]]
+                         :cursors/denied                ["denied"       [16 16]]
+                         :cursors/hand-before-grab      ["hand004"      [4  16]]
+                         :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                         :cursors/hand-grab             ["hand003"      [4  16]]
+                         :cursors/move-window           ["move002"      [16 16]]
+                         :cursors/no-skill-selected     ["denied003"    [0   0]]
+                         :cursors/over-button           ["hand002"      [0   0]]
+                         :cursors/sandclock             ["sandclock"    [16 16]]
+                         :cursors/skill-not-usable      ["x007"         [0   0]]
+                         :cursors/use-skill             ["pointer004"   [0   0]]
+                         :cursors/walking               ["walking"      [16 16]]}]
+  [:gdl.context/viewport {:width 1440
+                          :height 900}]
+  [:gdl.context/world-unit-scale 48]
+  [:gdl.context/world-viewport {:width 1440
+                                :height 900}]
+  [:gdl.context/tiled-map-renderer]
+  [:gdl.context/ui :skin-scale/x1]
+  [:gdl.context/stage]
+  [:cdq.context/requires [anvil.widgets.action-bar
+                          anvil.widgets.dev-menu
+                          anvil.widgets.entity-info-window
+                          anvil.widgets.hp-mana-bar
+                          anvil.widgets.inventory
+                          anvil.widgets.player-message
 
-                      anvil.player.interaction-state
-                      anvil.skill.usable-state
-                      anvil.controls.movement-vector
+                          anvil.player.interaction-state
+                          anvil.skill.usable-state
+                          anvil.controls.movement-vector
 
-                      anvil.info.impl
+                          anvil.info.impl
 
-                      anvil.effect.target.audiovisual
-                      anvil.effect.target.convert
-                      anvil.effect.target.damage
-                      anvil.effect.target.kill
-                      anvil.effect.target.melee-damage
-                      anvil.effect.target.spiderweb
-                      anvil.effect.target.stun
+                          anvil.effect.target.audiovisual
+                          anvil.effect.target.convert
+                          anvil.effect.target.damage
+                          anvil.effect.target.kill
+                          anvil.effect.target.melee-damage
+                          anvil.effect.target.spiderweb
+                          anvil.effect.target.stun
 
-                      anvil.effect.audiovisual
-                      anvil.effect.creature
-                      anvil.effect.projectile
-                      anvil.effect.sound
-                      anvil.effect.target-all
-                      anvil.effect.target-entity
+                          anvil.effect.audiovisual
+                          anvil.effect.creature
+                          anvil.effect.projectile
+                          anvil.effect.sound
+                          anvil.effect.target-all
+                          anvil.effect.target-entity
 
-                      anvil.entity.state.active-skill
-                      anvil.entity.state.npc-dead
-                      anvil.entity.state.npc-idle
-                      anvil.entity.state.npc-moving
-                      anvil.entity.state.npc-sleeping
-                      anvil.entity.state.player-dead
-                      anvil.entity.state.player-idle
-                      anvil.entity.state.player-item-on-cursor
-                      anvil.entity.state.player-moving
-                      anvil.entity.state.stunned
+                          anvil.entity.state.active-skill
+                          anvil.entity.state.npc-dead
+                          anvil.entity.state.npc-idle
+                          anvil.entity.state.npc-moving
+                          anvil.entity.state.npc-sleeping
+                          anvil.entity.state.player-dead
+                          anvil.entity.state.player-idle
+                          anvil.entity.state.player-item-on-cursor
+                          anvil.entity.state.player-moving
+                          anvil.entity.state.stunned
 
-                      anvil.entity.alert-friendlies-after-duration
-                      anvil.entity.animation
-                      anvil.entity.body
-                      anvil.entity.clickable
-                      anvil.entity.damage
-                      anvil.entity.delete-after-animation-stopped?
-                      anvil.entity.delete-after-duration
-                      anvil.entity.destroy-audiovisual
-                      anvil.entity.faction
-                      anvil.entity.fsm
-                      anvil.entity.hp
-                      anvil.entity.image
-                      anvil.entity.inventory
-                      anvil.entity.line-render
-                      anvil.entity.mana
-                      anvil.entity.modifiers
-                      anvil.entity.mouseover?
-                      anvil.entity.movement
-                      anvil.entity.projectile-collision
-                      anvil.entity.skills
-                      anvil.entity.species
-                      anvil.entity.stat
-                      anvil.entity.string-effect
-                      anvil.entity.temp-modifier]}}
+                          anvil.entity.alert-friendlies-after-duration
+                          anvil.entity.animation
+                          anvil.entity.body
+                          anvil.entity.clickable
+                          anvil.entity.damage
+                          anvil.entity.delete-after-animation-stopped?
+                          anvil.entity.delete-after-duration
+                          anvil.entity.destroy-audiovisual
+                          anvil.entity.faction
+                          anvil.entity.fsm
+                          anvil.entity.hp
+                          anvil.entity.image
+                          anvil.entity.inventory
+                          anvil.entity.line-render
+                          anvil.entity.mana
+                          anvil.entity.modifiers
+                          anvil.entity.mouseover?
+                          anvil.entity.movement
+                          anvil.entity.projectile-collision
+                          anvil.entity.skills
+                          anvil.entity.species
+                          anvil.entity.stat
+                          anvil.entity.string-effect
+                          anvil.entity.temp-modifier]]
+  [:cdq.context/stage-actors]
+  [:cdq.context/level :worlds/uf-caves]
+  [:cdq.context/tiled-map]
+  [:cdq.context/grid nil]
+  [:cdq.context/explored-tile-corners nil]
+  [:cdq.context/content-grid {:cell-size 16}]
+  [:cdq.context/entity-ids nil]
+  [:cdq.context/raycaster nil]
+  [:cdq.context/factions-iterations {:good 15 :evil 5}]
+  ; "The elapsed in-game-time in seconds (not counting when game is paused)."
+  [:cdq.context/elapsed-time nil] ; game speed config!?
+  [:cdq.context/player-eid nil] ; pass props
+  ;:mouseover-eid nil ; ?
+  ;:delta-time "The game logic update delta-time in ms."
+  ;(bind-root world/delta-time nil) ?
+  [:cdq.context/error nil]
+  [:cdq.context/spawn-enemies]]
+ }

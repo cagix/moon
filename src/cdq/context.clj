@@ -24,15 +24,17 @@
            (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
 
 (defmethods ::tiled-map
-  (component/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
+  (app/create [_ {::keys [level]}]
+    (:tiled-map level))
+  (app/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
     (tiled/dispose tiled-map)))
 
 (defmethods ::error
-  (component/->v [_ _c]
+  (app/create [_ _c]
     nil))
 
 (defmethods ::explored-tile-corners
-  (component/->v [_ {::keys [tiled-map]}]
+  (app/create [_ {::keys [tiled-map]}]
     (atom (g2d/create-grid
            (tiled/tm-width  tiled-map)
            (tiled/tm-height tiled-map)
@@ -77,7 +79,7 @@
     :occupied #{}}))
 
 (defmethods ::grid
-  (component/->v [_ {::keys [tiled-map]}]
+  (app/create [_ {::keys [tiled-map]}]
     (g2d/create-grid
      (tiled/tm-width tiled-map)
      (tiled/tm-height tiled-map)
@@ -89,17 +91,17 @@
                             "all"  :all)))))))
 
 (defmethods ::content-grid
-  (component/->v [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
+  (app/create [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
     (content-grid/create {:cell-size cell-size
                           :width  (tiled/tm-width  tiled-map)
                           :height (tiled/tm-height tiled-map)})))
 
 (defmethods ::entity-ids
-  (component/->v [_ _c]
+  (app/create [_ _c]
     (atom {})))
 
 (defmethods ::elapsed-time
-  (component/->v [_ _c]
+  (app/create [_ _c]
     0))
 
 ; TODO this passing w. world props ...
@@ -119,16 +121,16 @@
 (declare creature)
 
 (defmethods ::player-eid
-  (component/->v [_ {::keys [start-position] :as c}]
-    (assert start-position)
-    (creature c (player-entity-props start-position))))
+  (app/create [_ {::keys [level] :as c}]
+    (assert (:start-position level))
+    (creature c (player-entity-props (:start-position level)))))
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
 (defmethods ::raycaster
-  (component/->v [_ {::keys [grid]}]
+  (app/create [_ {::keys [grid]}]
     (let [width  (g2d/width  grid)
           height (g2d/height grid)
           arr (make-array Boolean/TYPE width height)]
@@ -746,38 +748,21 @@
                                 :entity/faction :evil}})]
     (creature c (update props :position tile->middle))))
 
-(defn- world-components [c world-id]
-  (let [{:keys [tiled-map start-position]} (generate-level c (c/build c world-id))] ; ?
-    [[:cdq.context/tiled-map tiled-map]
-     [:cdq.context/start-position start-position]
-     [:cdq.context/grid nil]
-     [:cdq.context/explored-tile-corners nil]
-     [:cdq.context/content-grid {:cell-size 16}]
-     [:cdq.context/entity-ids nil]
-     [:cdq.context/raycaster nil]
-     [:cdq.context/factions-iterations {:good 15 :evil 5}]
-     ; "The elapsed in-game-time in seconds (not counting when game is paused)."
-     [:cdq.context/elapsed-time nil] ; game speed config!?
-     [:cdq.context/player-eid nil] ; pass props
-     ;:mouseover-eid nil ; ?
-     ;:delta-time "The game logic update delta-time in ms."
-     ;(bind-root world/delta-time nil) ?
-     [:cdq.context/error nil]]))
+(defmethods ::level
+  (app/create [[_ world-id] c]
+    (generate-level c (c/build c world-id))))
 
-(def ^:private ^:dbg-flag spawn-enemies? true)
+(defmethods ::stage-actors
+  (app/create [_ c]
+    (c/reset-stage c (widgets c))))
 
-(defn- add-game-state [c world-id]
-  (c/reset-stage c (widgets c)) ; pass to stage . simply! and at reset do the same
-  ; stage required before spawn-player because inventory .... make explicit those dependencies ... ?
-  (let [c (c/create-into c (world-components c world-id))] ; same ...
-    (when spawn-enemies?
-      (spawn-enemies c (:cdq.context/tiled-map c))) ; ??? creature-props!
-    c))
+(defmethods ::spawn-enemies
+  (app/create [_ c]
+    (spawn-enemies c (::tiled-map c))))
 
-(defn- create-context [gdx-context {:keys [requires gdl world]}]
-  (run! require requires)
-  (let [context (c/create-into gdx-context gdl)]
-    (add-game-state context world)))
+(defmethods ::requires
+  (app/create [[_ namespaces] _context]
+    (run! require namespaces)))
 
 ; TODO unused
 (defn- dispose-game-state [{::keys [tiled-map]}]
@@ -786,24 +771,17 @@
 
 (def ^:private ^:dbg-flag pausing? true)
 
-(defrecord Context []
-  app/Context
-  (dispose [context]
-    (c/cleanup context))
-
-  (render [context]
-    (clear-screen black)
-    (render-world context)
-    (let [stage (c/stage context)]
-      (set! (.applicationState stage) context)
-      (.draw stage)
-      (.act stage))
-    (tick-context context pausing?))
-
-  (resize [context width height]
-    (c/resize context width height)))
+(defn- render-game [context]
+  (clear-screen black)
+  (render-world context)
+  (let [stage (c/stage context)]
+    (set! (.applicationState stage) context)
+    (.draw stage)
+    (.act stage))
+  (tick-context context pausing?))
 
 (defn -main []
   (let [config (read-edn-resource "app.edn")]
     (app/start (:app config)
-               #(map->Context (create-context % (:context config))))))
+               (:context config)
+               render-game)))
