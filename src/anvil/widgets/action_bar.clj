@@ -1,6 +1,5 @@
 (ns anvil.widgets.action-bar
-  (:require [anvil.entity.skills :as skills]
-            [anvil.info :as info]
+  (:require [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
             [gdl.ui :refer [ui-actor add-tooltip!] :as ui]
@@ -29,7 +28,7 @@
              :cell-defaults {:pad 2}
              :fill-parent? true}))
 
-(defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
+(defn action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (world/get-action-bar c)
         button (ui/image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
@@ -38,12 +37,9 @@
     (ButtonGroup/.add button-group button)
     nil))
 
-(defn- action-bar-remove-skill [c {:keys [property/id]}]
+(defn action-bar-remove-skill [c {:keys [property/id]}]
   (let [{:keys [horizontal-group button-group]} (world/get-action-bar c)
         ^Button button (get horizontal-group id)]
     (.remove button)
     (ButtonGroup/.remove button-group button)
     nil))
-
-(bind-root skills/player-add-skill    action-bar-add-skill)
-(bind-root skills/player-remove-skill action-bar-remove-skill)
