@@ -1,3 +1,8 @@
+
+; 1. fix reflections / move functions where used (gdl/actor/gdx?)
+; 2. gdl separate project unifying the 'clojure.gdx' stuff
+; => cdq does not use clojure.gdx directly then but new layer 'gdl' ?
+
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]

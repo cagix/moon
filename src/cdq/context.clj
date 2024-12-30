@@ -18,6 +18,14 @@
 
 ; and reloading/ ?
 
+; => use potemkin & define them all into clojure.core ?
+
+; => Find nsx stuff again
+
+; => (context-ns) ?
+
+; => first get rid of bin-root / defn-impl ...
+
 (ns cdq.context
   (:require [anvil.component :as component]
             [anvil.controls :as controls]

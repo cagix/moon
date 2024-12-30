@@ -35,7 +35,7 @@
   [:gdl.context/tiled-map-renderer]
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
-  [:cdq.context/requires [anvil.widgets.action-bar
+  [:cdq.context/requires [;anvil.widgets.action-bar
                           anvil.widgets.dev-menu
                           anvil.widgets.entity-info-window
                           anvil.widgets.hp-mana-bar
