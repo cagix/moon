@@ -8,6 +8,7 @@
                  [clojure.gdx.lwjgl "1.13.0-0.1"]
                  ;[com.github.damn/clojure.gdx.lwjgl "1.13.0-0.1"]
                  [com.github.damn/clojure.gdx.graphics.shape-drawer "f70150d4a1"]
+                 [clojure.gdx.dev-loop "-SNAPSHOT"]
 
                  ; TODO release lib with docs
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
@@ -17,12 +18,6 @@
                  ; - no dep ? - gdl -
                  [com.kotcrab.vis/vis-ui "1.5.2"]
 
-                 ; this clojure.utils / gdl.utils
-                 [org.clj-commons/pretty "3.2.0"]
-
-                 ; this gdl.dev.loop
-                 [nrepl "0.9.0"]
-                 [org.clojure/tools.namespace "1.3.0"]
 
                  [com.github.damn/grid2d "1.0"]
 
