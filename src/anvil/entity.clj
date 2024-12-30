@@ -1,6 +1,5 @@
 (ns anvil.entity
   (:require [anvil.component :as component]
-            [data.grid2d :as g2d]
             [gdl.context :refer [set-cursor]]
             [gdl.math.vector :as v]
             [gdl.math.shapes :as shape]
@@ -60,31 +59,9 @@
   ([c eid event params]
    (send-event! c eid event params)))
 
-(def empty-inventory
-  (->> #:inventory.slot{:bag      [6 4]
-                        :weapon   [1 1]
-                        :shield   [1 1]
-                        :helm     [1 1]
-                        :chest    [1 1]
-                        :leg      [1 1]
-                        :glove    [1 1]
-                        :boot     [1 1]
-                        :cloak    [1 1]
-                        :necklace [1 1]
-                        :rings    [2 1]}
-       (map (fn [[slot [width height]]]
-              [slot (g2d/create-grid width
-                                     height
-                                     (constantly nil))]))
-       (into {})))
-
-(defn valid-slot? [[slot _] item])
-
 (defn set-item [eid cell item])
 
 (defn remove-item [c eid cell])
-
-(defn stackable? [item-a item-b])
 
 (defn stack-item [c eid cell item])
 

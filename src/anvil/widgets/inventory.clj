@@ -4,6 +4,7 @@
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as w]
+            [cdq.inventory :refer [empty-inventory] :as inventory]
             [clojure.gdx :as gdx]
             [data.grid2d :as g2d]
             [gdl.context :as c]
@@ -34,7 +35,7 @@
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
-          color (if (entity/valid-slot? cell item)
+          color (if (inventory/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
       (c/filled-rectangle c (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
@@ -113,8 +114,8 @@
       (.add (->cell c :inventory.slot/rings :position [0 0]))
       (.add (->cell c :inventory.slot/rings :position [1 0]))
       (.add (->cell c :inventory.slot/boot)) .row)
-    (doseq [y (range (g2d/height (:inventory.slot/bag entity/empty-inventory)))]
-      (doseq [x (range (g2d/width (:inventory.slot/bag entity/empty-inventory)))]
+    (doseq [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
+      (doseq [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
         (.add table (->cell c :inventory.slot/bag :position [x y])))
       (.row table))
     table))

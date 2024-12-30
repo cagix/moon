@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :as world]
+            [cdq.inventory :as inventory]
             [clojure.gdx :refer [button-just-pressed? play]]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
@@ -33,7 +34,7 @@
     (cond
      ; PUT ITEM IN EMPTY CELL
      (and (not item-in-cell)
-          (entity/valid-slot? cell item-on-cursor))
+          (inventory/valid-slot? cell item-on-cursor))
      (do
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
@@ -42,7 +43,7 @@
 
      ; STACK ITEMS
      (and item-in-cell
-          (entity/stackable? item-in-cell item-on-cursor))
+          (inventory/stackable? item-in-cell item-on-cursor))
      (do
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
@@ -51,7 +52,7 @@
 
      ; SWAP ITEMS
      (and item-in-cell
-          (entity/valid-slot? cell item-on-cursor))
+          (inventory/valid-slot? cell item-on-cursor))
      (do
       (play item-put-sound)
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again

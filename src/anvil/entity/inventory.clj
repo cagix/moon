@@ -1,24 +1,18 @@
 (ns anvil.entity.inventory
-  (:require [anvil.component :as component]
+  (:require [cdq.inventory :as inventory :refer [empty-inventory]]
+            [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.widgets :as widgets]))
-
-(defn-impl entity/valid-slot? [[slot _] item]
-  (or (= :inventory.slot/bag slot)
-      (= (:item/slot item) slot)))
-
-(defn- applies-modifiers? [[slot _]]
-  (not= :inventory.slot/bag slot))
 
 (defn-impl entity/set-item [c eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
-                 (entity/valid-slot? cell item)))
+                 (inventory/valid-slot? cell item)))
     (when (:entity/player? entity)
       (widgets/set-item-image-in-widget c cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
-    (when (applies-modifiers? cell)
+    (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-add (:entity/modifiers item)))))
 
 (defn-impl entity/remove-item [c eid cell]
@@ -28,7 +22,7 @@
     (when (:entity/player? entity)
       (widgets/remove-item-from-widget c cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
-    (when (applies-modifiers? cell)
+    (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-remove (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
@@ -43,46 +37,31 @@
        (set-item! eid cell (update item :count dec)))
       (remove-item! eid cell))))
 
-(defn-impl entity/stackable? [item-a item-b]
-  (and (:count item-a)
-       (:count item-b) ; this is not required but can be asserted, all of one name should have count if others have count
-       (= (:property/id item-a) (:property/id item-b))))
-
 ; TODO no items which stack are available
 (defn-impl entity/stack-item [c eid cell item]
   (let [cell-item (get-in (:entity/inventory @eid) cell)]
-    (assert (entity/stackable? item cell-item))
+    (assert (inventory/stackable? item cell-item))
     ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
     ; first remove and then place, just update directly  item ...
     (concat (entity/remove-item c eid cell)
             (entity/set-item c eid cell (update cell-item :count + (:count item))))))
 
-(defn- cells-and-items [inventory slot]
-  (for [[position item] (slot inventory)]
-    [[slot position] item]))
-
-(defn- free-cell [inventory slot item]
-  (find-first (fn [[_cell cell-item]]
-                (or (entity/stackable? item cell-item)
-                    (nil? cell-item)))
-              (cells-and-items inventory slot)))
-
 (defn-impl entity/can-pickup-item? [{:keys [entity/inventory]} item]
   (or
-   (free-cell inventory (:item/slot item)   item)
-   (free-cell inventory :inventory.slot/bag item)))
+   (inventory/free-cell inventory (:item/slot item)   item)
+   (inventory/free-cell inventory :inventory.slot/bag item)))
 
 (defn-impl entity/pickup-item [c eid item]
   (let [[cell cell-item] (entity/can-pickup-item? @eid item)]
     (assert cell)
-    (assert (or (entity/stackable? item cell-item)
+    (assert (or (inventory/stackable? item cell-item)
                 (nil? cell-item)))
-    (if (entity/stackable? item cell-item)
+    (if (inventory/stackable? item cell-item)
       (entity/stack-item c eid cell item)
       (entity/set-item c eid cell item))))
 
 (defmethods :entity/inventory
   (component/create [[k items] eid c]
-    (swap! eid assoc k entity/empty-inventory)
+    (swap! eid assoc k empty-inventory)
     (doseq [item items]
       (entity/pickup-item c eid item))))
