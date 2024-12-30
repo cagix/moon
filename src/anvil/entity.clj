@@ -12,7 +12,10 @@
 (defn tile [entity]
   (mapv int (:position entity)))
 
-(defn enemy [entity])
+(defn enemy [{:keys [entity/faction]}]
+  (case faction
+    :evil :good
+    :good :evil))
 
 (defn state-k [entity])
 
