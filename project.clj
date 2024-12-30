@@ -53,8 +53,7 @@
                 }
   :profiles {:uberjar {:aot [cdq.context]}}
   #_:main #_cdq.context
-  :injections [(load "clojure/utils"
-                     "clojure/gdx_inject")])
+  )
 
 ; * Notes
 

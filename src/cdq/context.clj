@@ -1,3 +1,10 @@
+; Inject here and not @ project.clj otherwise injecting into
+; dependent libraries !!!
+; injection then probably not good idea ...
+; ns+ better? ...
+; => common :refer's then from utils/etc. ///
+(load "clojure/utils"
+      "clojure/gdx_inject")
 (ns cdq.context
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
