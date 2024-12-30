@@ -1,5 +1,7 @@
 (ns anvil.widgets
-  (:require [gdl.ui :as ui :refer [ui-actor]]
+  (:require [clojure.gdx :as gdx]
+            [gdl.context :as c]
+            [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
@@ -37,4 +39,23 @@
 
 (defn entity-info-window [c])
 
-(defn player-message [])
+(defn- draw-player-message [{:keys [gdl.context/viewport
+                                    cdq.context/player-message] :as c}]
+  (when-let [text (:text @player-message)]
+    (c/draw-text c
+                 {:x (/ (:width viewport) 2)
+                  :y (+ (/ (:height viewport) 2) 200)
+                  :text text
+                  :scale 2.5
+                  :up? true})))
+
+(defn- check-remove-message [{:keys [cdq.context/player-message] :as c}]
+  (when (:text @player-message)
+    (swap! player-message update :counter + (gdx/delta-time c))
+    (when (>= (:counter @player-message)
+              (:duration-seconds @player-message))
+      (swap! player-message dissoc :counter :text))))
+
+(defn player-message []
+  (ui-actor {:draw draw-player-message
+             :act  check-remove-message}))

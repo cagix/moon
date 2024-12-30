@@ -40,7 +40,6 @@
                           anvil.widgets.entity-info-window
                           anvil.widgets.hp-mana-bar
                           anvil.widgets.inventory
-                          anvil.widgets.player-message
 
                           anvil.info.impl
 
