@@ -103,16 +103,19 @@
 
 (defn pay-mana-cost [entity cost])
 
-(defn hitpoints
-  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-hp is capped by max-hp."
-  [entity])
-
 (defn mod-add    [entity mod])
 (defn mod-remove [entity mod])
 (defn mod-value  [base-value entity modifier-k])
 (defn apply-max-modifier [val-max entity modifier-k])
 (defn apply-min-modifier [val-max entity modifier-k])
+
+(defn hitpoints
+  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
+  Current-hp is capped by max-hp."
+  [entity]
+  (-> entity
+      :entity/hp
+      (apply-max-modifier entity :modifier/hp-max)))
 
 (defn damage
   ([source damage]

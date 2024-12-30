@@ -40,12 +40,6 @@
                              (* 2 border))
                           (hpbar-color ratio)))))
 
-(defn-impl entity/hitpoints
-  [entity]
-  (-> entity
-      :entity/hp
-      (entity/apply-max-modifier entity :modifier/hp-max)))
-
 (defmethods :entity/hp
   (component/info [_ _c]
     (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
