@@ -3,11 +3,13 @@
   :dependencies [[org.clojure/clojure "1.12.0"]
 
                  [clojure.gdx "1.13.0-0.1"]
-                 ;[com.github.damn/clojure.gdx                 "42cc27bd53"]
+                 ;[com.github.damn/clojure.gdx "42cc27bd53"]
 
                  [clojure.gdx.lwjgl "1.13.0-0.1"]
                  ;[com.github.damn/clojure.gdx.lwjgl "1.13.0-0.1"]
+
                  [com.github.damn/clojure.gdx.graphics.shape-drawer "f70150d4a1"]
+
                  [clojure.gdx.dev-loop "-SNAPSHOT"]
 
                  ; TODO release lib with docs
@@ -17,7 +19,6 @@
 
                  ; - no dep ? - gdl -
                  [com.kotcrab.vis/vis-ui "1.5.2"]
-
 
                  [com.github.damn/grid2d "1.0"]
 
