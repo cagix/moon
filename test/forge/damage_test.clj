@@ -1,6 +1,5 @@
 (ns forge.damage-test
   (:require [anvil.entity :as entity]
-            anvil.entity.damage
             [clojure.test :refer :all]))
 
 (deftest modify-source-damage

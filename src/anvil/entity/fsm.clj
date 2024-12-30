@@ -1,7 +1,5 @@
 (ns ^:no-doc anvil.entity.fsm
   (:require [anvil.component :as component]
-            [anvil.entity :as entity]
-            [gdl.context :as c]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -71,36 +69,3 @@
                            :fsms/npc npc-fsm)
                          initial-state)
            initial-state (component/->v [initial-state eid] c))))
-
-(defmethod component/cursor :stunned               [_] :cursors/denied)
-(defmethod component/cursor :player-moving         [_] :cursors/walking)
-(defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
-(defmethod component/cursor :player-dead           [_] :cursors/black-x)
-(defmethod component/cursor :active-skill          [_] :cursors/sandclock)
-
-(defn- send-event! [c eid event params]
-  (when-let [fsm (:entity/fsm @eid)]
-    (let [old-state-k (:state fsm)
-          new-fsm (fsm/fsm-event fsm event)
-          new-state-k (:state new-fsm)]
-      (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (entity/state-obj @eid)
-              new-state-obj [new-state-k (component/->v (if params
-                                                          [new-state-k eid params]
-                                                          [new-state-k eid])
-                                                        c)]]
-          (when (:entity/player? @eid)
-            (when-let [cursor (component/cursor new-state-obj)]
-              (c/set-cursor c cursor)))
-          (swap! eid #(-> %
-                          (assoc :entity/fsm new-fsm
-                                 new-state-k (new-state-obj 1))
-                          (dissoc old-state-k)))
-          (component/exit old-state-obj c)
-          (component/enter new-state-obj c))))))
-
-(defn-impl entity/event
-  ([c eid event]
-   (send-event! c eid event nil))
-  ([c eid event params]
-   (send-event! c eid event params)))

@@ -1,7 +1,10 @@
 (ns anvil.entity
-  (:require [data.grid2d :as g2d]
+  (:require [anvil.component :as component]
+            [data.grid2d :as g2d]
+            [gdl.context :refer [set-cursor]]
             [gdl.math.vector :as v]
-            [gdl.math.shapes :as shape]))
+            [gdl.math.shapes :as shape]
+            [reduce-fsm :as fsm]))
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
@@ -24,9 +27,38 @@
   (let [k (state-k entity)]
     [k (k entity)]))
 
+(defmethod component/cursor :stunned               [_] :cursors/denied)
+(defmethod component/cursor :player-moving         [_] :cursors/walking)
+(defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
+(defmethod component/cursor :player-dead           [_] :cursors/black-x)
+(defmethod component/cursor :active-skill          [_] :cursors/sandclock)
+
+(defn- send-event! [c eid event params]
+  (when-let [fsm (:entity/fsm @eid)]
+    (let [old-state-k (:state fsm)
+          new-fsm (fsm/fsm-event fsm event)
+          new-state-k (:state new-fsm)]
+      (when-not (= old-state-k new-state-k)
+        (let [old-state-obj (state-obj @eid)
+              new-state-obj [new-state-k (component/->v (if params
+                                                          [new-state-k eid params]
+                                                          [new-state-k eid])
+                                                        c)]]
+          (when (:entity/player? @eid)
+            (when-let [cursor (component/cursor new-state-obj)]
+              (set-cursor c cursor)))
+          (swap! eid #(-> %
+                          (assoc :entity/fsm new-fsm
+                                 new-state-k (new-state-obj 1))
+                          (dissoc old-state-k)))
+          (component/exit  old-state-obj c)
+          (component/enter new-state-obj c))))))
+
 (defn event
-  ([c eid event])
-  ([c eid event params]))
+  ([c eid event]
+   (send-event! c eid event nil))
+  ([c eid event params]
+   (send-event! c eid event params)))
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]
@@ -71,6 +103,17 @@
 
 (defn pay-mana-cost [entity cost])
 
+(defn hitpoints
+  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
+  Current-hp is capped by max-hp."
+  [entity])
+
+(defn mod-add    [entity mod])
+(defn mod-remove [entity mod])
+(defn mod-value  [base-value entity modifier-k])
+(defn apply-max-modifier [val-max entity modifier-k])
+(defn apply-min-modifier [val-max entity modifier-k])
+
 (defn damage
   ([source damage]
    (update damage
@@ -85,14 +128,3 @@
            apply-max-modifier
            target
            :modifier/damage-receive-max)))
-
-(defn hitpoints
-  "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
-  Current-hp is capped by max-hp."
-  [entity])
-
-(defn mod-add    [entity mod])
-(defn mod-remove [entity mod])
-(defn mod-value  [base-value entity modifier-k])
-(defn apply-max-modifier [val-max entity modifier-k])
-(defn apply-min-modifier [val-max entity modifier-k])
