@@ -1,5 +1,6 @@
 (ns anvil.entity
   (:require [anvil.component :as component]
+            [anvil.info :as info]
             [anvil.operation :as op]
             [anvil.widgets :as widgets]
             [cdq.inventory :as inventory]
@@ -160,16 +161,36 @@
     (doseq [item items]
       (pickup-item c eid item))))
 
-(defn stat [entity k])
+(defn stat [entity k]
+  (when-let [base-value (k entity)]
+    (mod-value base-value
+               entity
+               (keyword "modifier" (name k)))))
 
 (defn mana
   "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
   Current-mana is capped by max-mana."
-  [entity])
+  [entity]
+  (-> entity
+      :entity/mana
+      (apply-max-modifier entity :modifier/mana-max)))
 
-(defn mana-val [entity])
+(defn mana-val [entity]
+  (if (:entity/mana entity)
+    ((mana entity) 0)
+    0))
 
-(defn pay-mana-cost [entity cost])
+(defn pay-mana-cost [entity cost]
+  (let [mana-val ((mana entity) 0)]
+    (assert (<= cost mana-val))
+    (assoc-in entity [:entity/mana 0] (- mana-val cost))))
+
+(defmethods :entity/mana
+  (component/info [_ _c]
+    (str "Mana: " (mana info/*info-text-entity*)))
+
+  (component/->v [[_ v] c]
+    [v v]))
 
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
