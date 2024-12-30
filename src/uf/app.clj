@@ -1,6 +1,5 @@
 (ns uf.app ; TODO keep own state
-  #_(:require [anvil.widgets.dev-menu :refer [uf-dev-menu-table]]
-              [clojure.gdx :refer [white]]
+  #_(:require [clojure.gdx :refer [white]]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -9,6 +8,22 @@
             [gdl.stage :as stage]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]))
+
+#_(defn uf-dev-menu-table [c]
+  (dev-menu-table c
+   {:menus [{:label "Menu1"
+             :items [{:label "Button1"
+                      :on-click (fn [_c])}]}]
+    :update-labels [{:label "GUI"
+                     :update-fn c/mouse-position}
+                    {:label "World"
+                     :update-fn #(mapv int (c/world-mouse-position %))}
+                    {:label "Zoom"
+                     :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %)))
+                     :icon "images/zoom.png"}
+                    {:label "FPS"
+                     :update-fn frames-per-second
+                     :icon "images/fps.png"}]}))
 
 ; Cards:
 ; * uf_heroes_simple - images/creatures.png

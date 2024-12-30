@@ -35,9 +35,7 @@
   [:gdl.context/tiled-map-renderer]
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
-  [:cdq.context/requires [;anvil.widgets.action-bar
-                          anvil.widgets.dev-menu
-                          anvil.widgets.entity-info-window
+  [:cdq.context/requires [anvil.widgets.entity-info-window
                           anvil.widgets.hp-mana-bar
                           anvil.widgets.inventory
 
@@ -79,16 +77,12 @@
                           anvil.entity.fsm
                           anvil.entity.hp
                           anvil.entity.image
-                          ;anvil.entity.inventory
                           anvil.entity.line-render
-                          ;anvil.entity.mana
-                          ;anvil.entity.modifiers
                           anvil.entity.mouseover?
                           anvil.entity.movement
                           anvil.entity.projectile-collision
                           anvil.entity.skills
                           anvil.entity.species
-                          ;anvil.entity.stat
                           anvil.entity.string-effect
                           anvil.entity.temp-modifier]]
   [:cdq.context/stage-actors]

@@ -47,6 +47,7 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.actor :as actor]
+            [gdl.ui.dev-menu :as dev-menu]
             [gdl.ui.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
@@ -175,8 +176,51 @@
   (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(::player-eid %))
                                              %)}))
 
+(declare mouseover-entity)
+
+(defn- dev-menu-config [c]
+  {:menus [{:label "World"
+            :items (for [world (c/build-all c :properties/worlds)]
+                     {:label (str "Start " (:property/id world))
+                      :on-click
+                      (fn [_context])
+                      ;#(world/create % (:property/id world))
+
+                      })}
+           ; TODO fixme does not work because create world uses create-into which checks key is not preseent
+           ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
+           ; => also world-change should be supported, use component systems
+           {:label "Help"
+            :items [{:label controls/help-text}]}]
+   :update-labels [{:label "Mouseover-entity id"
+                    :update-fn (fn [c]
+                                 (when-let [entity (mouseover-entity c)]
+                                   (:entity/id entity)))
+                    :icon "images/mouseover.png"}
+                   {:label "elapsed-time"
+                    :update-fn (fn [{::keys [elapsed-time]}]
+                                 (str (readable-number elapsed-time) " seconds"))
+                    :icon "images/clock.png"}
+                   {:label "paused?"
+                    :update-fn ::paused?} ; TODO (def paused ::paused) @ cdq.context
+                   {:label "GUI"
+                    :update-fn c/mouse-position}
+                   {:label "World"
+                    :update-fn #(mapv int (c/world-mouse-position %))}
+                   {:label "Zoom"
+                    :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %))) ; TODO (def ::world-viewport)
+                    :icon "images/zoom.png"}
+                   {:label "FPS"
+                    :update-fn gdx/frames-per-second
+                    :icon "images/fps.png"}]})
+
+(defn- dev-menu [c]
+  (if dev-mode?
+    (dev-menu/table c (dev-menu-config c))
+    (ui-actor {})))
+
 (defn widgets [c]
-  [(widgets/dev-menu c)
+  [(dev-menu c)
    (widgets/action-bar-table c)
    (widgets/hp-mana-bar c)
    (widgets-windows c)
