@@ -78,13 +78,6 @@
 (defmethod component/cursor :player-dead           [_] :cursors/black-x)
 (defmethod component/cursor :active-skill          [_] :cursors/sandclock)
 
-(defn-impl entity/state-k [entity]
-  (-> entity :entity/fsm :state))
-
-(defn-impl entity/state-obj [entity]
-  (let [k (entity/state-k entity)]
-    [k (k entity)]))
-
 (defn- send-event! [c eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)

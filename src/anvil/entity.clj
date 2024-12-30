@@ -17,9 +17,12 @@
     :evil :good
     :good :evil))
 
-(defn state-k [entity])
+(defn state-k [entity]
+  (-> entity :entity/fsm :state))
 
-(defn state-obj [entity])
+(defn state-obj [entity]
+  (let [k (state-k entity)]
+    [k (k entity)]))
 
 (defn event
   ([c eid event])
