@@ -1,6 +1,5 @@
 (ns anvil.widgets.action-bar
-  (:require [anvil.entity :as entity]
-            [anvil.entity.skills :as skills]
+  (:require [anvil.entity.skills :as skills]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as world]
