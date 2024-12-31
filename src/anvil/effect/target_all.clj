@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.effect.target-all
-  (:require [anvil.component :as component]
+  (:require [gdl.effect.component :as component]
             [anvil.effect :refer [do-all!]]
             [gdl.info :as info]
             [cdq.context :as world]

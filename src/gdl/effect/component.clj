@@ -1,4 +1,4 @@
-(ns anvil.component
+(ns gdl.effect.component
   (:require [clojure.utils :refer [defsystem]]))
 
 (defsystem applicable?)
@@ -6,7 +6,7 @@
 (defsystem handle)
 
 (defsystem useful?)
-(defmethod useful? :default [_ _ctx c] true)
+(defmethod useful? :default [_ _effect-ctx context] true)
 
 (defsystem render-effect)
-(defmethod render-effect :default [_ _ctx c])
+(defmethod render-effect :default [_ _effect-ctx context])

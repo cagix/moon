@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.effect.audiovisual
-  (:require [anvil.component :as component]
+  (:require [gdl.effect.component :as component]
             [cdq.context :as c]
             [clojure.utils :refer [defmethods]]))
 

@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.effect.target.spiderweb
-  (:require [anvil.component :as component]
+  (:require [gdl.effect.component :as component]
             [anvil.entity :as entity]
             [gdl.info :as info]
             [cdq.context :refer [timer]]

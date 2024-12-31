@@ -1,5 +1,5 @@
 (ns anvil.effect
-  (:require [anvil.component :as component]
+  (:require [gdl.effect.component :as component]
             [cdq.context :as world]))
 
 ; TODO the 'ctx' is actually 'effect' itself with position/target/etc. as part of ':effect/'

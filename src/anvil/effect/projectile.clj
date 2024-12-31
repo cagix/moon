@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.effect.projectile
-  (:require [anvil.component :as component]
+  (:require [gdl.effect.component :as component]
             [cdq.context :as world]
             [clojure.utils :refer [defmethods]]
             [gdl.math.vector :as v]))

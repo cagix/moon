@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.effect.target-entity
-  (:require [anvil.component :as component]
+  (:require [gdl.effect.component :as component]
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
             [cdq.context :as world]
