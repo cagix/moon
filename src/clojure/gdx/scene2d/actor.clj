@@ -1,4 +1,5 @@
 (ns clojure.gdx.scene2d.actor
+  (:refer-clojure :exclude [remove])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.math Vector2)))
 
@@ -36,3 +37,8 @@
   (when-let [[x y] center-position] (set-center    a x y))
   (when-let [[x y] position]        (.setPosition  a x y))
   a)
+
+(defn remove
+  "Removes this actor from its parent, if it has a parent."
+  [actor]
+  (Actor/.remove actor))
