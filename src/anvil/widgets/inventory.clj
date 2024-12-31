@@ -81,7 +81,7 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (gdx/color 1 1 1 0.4))))
 
-(defn- ->cell ^Actor [{:keys [cdq.context/player-eid] :as c} slot & {:keys [position]}]
+(defn- ->cell ^Actor [c slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background c slot)
                                    {:id :image})
@@ -91,9 +91,10 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (entity/clicked-inventory-cell (entity/state-obj @player-eid)
-                                                           cell
-                                                           c))))
+                            (let [{:keys [cdq.context/player-eid] :as context} (ui/application-state stack)]
+                              (entity/clicked-inventory-cell (entity/state-obj @player-eid)
+                                                             cell
+                                                             context)))))
     stack))
 
 (defn- inventory-table [c]
