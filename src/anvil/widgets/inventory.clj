@@ -18,8 +18,7 @@
              :as ui]
             [gdl.val-max :as val-max]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
-            [gdl.ui.utils :as scene2d.utils])
-  (:import (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
+            [gdl.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -88,8 +87,8 @@
                          image-widget])]
     (.setName stack "inventory-cell")
     (.setUserObject stack cell)
-    (.addListener stack (proxy [ClickListener] []
-                          (clicked [event x y]
+    (.addListener stack (ui/click-listener
+                          (fn [_click-context]
                             (let [{:keys [cdq.context/player-eid] :as context} (ui/application-state stack)]
                               (entity/clicked-inventory-cell (entity/state-obj @player-eid)
                                                              cell
