@@ -3,7 +3,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first index-of]]
+            [clojure.utils :refer [truncate ->edn-str find-first index-of defmethods]]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.context :as ctx :refer [play-sound]]
