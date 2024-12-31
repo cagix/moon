@@ -1,6 +1,6 @@
 (ns anvil.entity
   (:require [gdl.info :as info]
-            [anvil.operation :as op]
+            [gdl.operation :as op]
             [anvil.widgets :as widgets]
             [cdq.inventory :as inventory]
             [clojure.string :as str]

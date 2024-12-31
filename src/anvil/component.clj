@@ -1,8 +1,5 @@
 (ns anvil.component
-  (:require [clojure.utils :refer [defsystem]])
-  (:refer-clojure :exclude [apply]))
-
-;; Effect
+  (:require [clojure.utils :refer [defsystem]]))
 
 (defsystem applicable?)
 
@@ -13,9 +10,3 @@
 
 (defsystem render-effect)
 (defmethod render-effect :default [_ _ctx c])
-
-;; Operation
-
-(defsystem apply)
-(defsystem order)
-(defsystem value-text)

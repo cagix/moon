@@ -1,35 +1,38 @@
-(ns anvil.operation
+(ns gdl.operation
   (:refer-clojure :exclude [remove])
-  (:require [anvil.component :as component]
-            [clojure.math :as math]
+  (:require [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.utils :refer [defmethods k->pretty-name]]))
+            [clojure.utils :refer [defsystem defmethods k->pretty-name]]))
+
+(defsystem ^:private -apply)
+(defsystem ^:private -order)
+(defsystem ^:private -value-text)
 
 (defmethods :op/inc
-  (component/value-text [[_ value]]
+  (-value-text [[_ value]]
     (str value))
 
-  (component/apply [[_ value] base-value]
+  (-apply [[_ value] base-value]
     (+ base-value value))
 
-  (component/order [_]
+  (-order [_]
     0))
 
 (defmethods :op/mult
-  (component/value-text [[_ value]]
+  (-value-text [[_ value]]
     (str value "%"))
 
-  (component/apply [[_ value] base-value]
+  (-apply [[_ value] base-value]
     (* base-value (inc (/ value 100))))
 
-  (component/order [_]
+  (-order [_]
     1))
 
 (defn apply [op value]
   (reduce (fn [value op]
-            (component/apply op value))
+            (-apply op value))
           value
-          (sort-by component/order op)))
+          (sort-by -order op)))
 
 (defn add    [op other-op] (merge-with + op other-op))
 (defn remove [op other-op] (merge-with - op other-op))
@@ -45,5 +48,5 @@
             (keep
              (fn [{v 1 :as component}]
                (when-not (zero? v)
-                 (str (+? v) (component/value-text component) " " (k->pretty-name k))))
-             (sort-by component/order op))))
+                 (str (+? v) (-value-text component) " " (k->pretty-name k))))
+             (sort-by -order op))))
