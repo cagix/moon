@@ -9,6 +9,7 @@
 (def parent Actor/.getParent)
 
 (def set-id Actor/.setUserObject)
+(def set-user-object Actor/.setUserObject)
 
 (def user-object Actor/.getUserObject)
 (def set-visible Actor/.setVisible)

@@ -10,3 +10,8 @@ The canCheck(Button, boolean) method can be overridden to control if a button ch
 
 (defn remove [button-group button]
   (ButtonGroup/.remove button-group ^Button button))
+
+(defn checked
+  "The first checked button, or nil."
+  [button-group]
+  (ButtonGroup/.getChecked button-group))

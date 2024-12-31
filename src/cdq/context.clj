@@ -9,6 +9,8 @@
             [cdq.potential-fields :as potential-fields]
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black]]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.utils :refer [defmethods tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst read-edn-resource]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
@@ -22,9 +24,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [gdl.ui.dev-menu :as dev-menu]
             [clojure.gdx.scene2d.group :as group]
-            [gdl.val-max :as val-max])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
+            [gdl.val-max :as val-max]))
 
 (defmethods ::tiled-map
   (app/create [_ {::keys [level]}]
@@ -579,7 +579,7 @@
      :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
 
 (defn selected-skill [c]
-  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar c)))]
+  (when-let [skill-button (button-group/checked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
 
 (defmethods ::player-message
@@ -601,7 +601,7 @@
                            :rows [[(ui/label text)]
                                   [(ui/text-button button-text
                                                    (fn []
-                                                     (Actor/.remove (::modal (c/stage c)))
+                                                     (actor/remove (::modal (c/stage c)))
                                                      (on-click)))]]
                            :id ::modal
                            :modal? true

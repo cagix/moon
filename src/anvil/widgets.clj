@@ -2,17 +2,16 @@
   (:require [clojure.gdx :as gdx]
             [gdl.context :as c]
             [gdl.ui :as ui :refer [ui-actor]]
-            [clojure.gdx.scene2d.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]))
 
 (defn hp-mana-bar [c])
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
     (.setName actor "action-bar/button-group")
-    (Actor/.setUserObject actor (ui/button-group {:max-check-count 1
-                                                  :min-check-count 0}))
+    (actor/set-user-object actor (ui/button-group {:max-check-count 1
+                                                   :min-check-count 0}))
     actor))
 
 (defn- action-bar []
