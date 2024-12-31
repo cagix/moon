@@ -58,7 +58,7 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/remove-item eid cell)
+      (entity/remove-item c eid cell)
       (entity/set-item c eid cell item-on-cursor)
       (entity/event c eid :dropped-item)
       (entity/event c eid :pickup-item item-in-cell)))))
