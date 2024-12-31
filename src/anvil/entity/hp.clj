@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [anvil.info :as info]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]
             [gdl.val-max :as val-max]))
 

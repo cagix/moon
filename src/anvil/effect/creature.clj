@@ -1,6 +1,7 @@
 (ns ^:no-doc anvil.effect.creature
   (:require [anvil.component :as component]
-            [cdq.context :as world]))
+            [cdq.context :as world]
+            [clojure.utils :refer [defmethods]]))
 
 ; "https://github.com/damn/core/issues/29"
 (defmethods :effects/spawn

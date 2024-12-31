@@ -1,7 +1,8 @@
 (ns ^:no-doc anvil.entity.state.npc-moving
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [cdq.context :refer [timer stopped?]]))
+            [cdq.context :refer [timer stopped?]]
+            [clojure.utils :refer [defmethods]]))
 
 (defmethods :npc-moving
   (component/->v [[_ eid movement-vector] c]

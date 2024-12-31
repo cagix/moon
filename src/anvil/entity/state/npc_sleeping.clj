@@ -3,6 +3,7 @@
             [anvil.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
             [cdq.grid :as grid]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 (defmethods :npc-sleeping

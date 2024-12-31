@@ -1,8 +1,9 @@
 (ns ^:no-doc anvil.entity.state.player-dead
   (:require [anvil.component :as component]
+            [cdq.context :refer [show-modal]]
             [clojure.gdx :refer [play]]
-            [gdl.context :as c]
-            [cdq.context :refer [show-modal]]))
+            [clojure.utils :refer [defmethods]]
+            [gdl.context :as c]))
 
 (defmethods :player-dead
   (component/->v [[k] c]

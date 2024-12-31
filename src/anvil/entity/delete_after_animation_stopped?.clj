@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.delete-after-animation-stopped?
   (:require [anvil.component :as component]
+            [clojure.utils :refer [defmethods]]
             [gdl.graphics.animation :as animation]))
 
 (defmethods :entity/delete-after-animation-stopped?

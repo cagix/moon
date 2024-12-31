@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.clickable
   (:require [anvil.component :as component]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 (defmethods :entity/clickable

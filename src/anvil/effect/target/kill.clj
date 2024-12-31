@@ -1,6 +1,7 @@
 (ns ^:no-doc anvil.effect.target.kill
   (:require [anvil.component :as component]
-            [anvil.entity :as entity]))
+            [anvil.entity :as entity]
+            [clojure.utils :refer [defmethods]]))
 
 (defmethods :effects.target/kill
   (component/info [_ _c]

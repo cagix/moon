@@ -1,6 +1,7 @@
 (ns ^:no-doc anvil.effect.audiovisual
   (:require [anvil.component :as component]
-            [cdq.context :as c]))
+            [cdq.context :as c]
+            [clojure.utils :refer [defmethods]]))
 
 (defmethods :effects/audiovisual
   (component/applicable? [_ {:keys [effect/target-position]}]

@@ -4,6 +4,7 @@
             [anvil.entity :as entity]
             [anvil.skill :as skill]
             [cdq.context :as world]
+            [clojure.utils :refer [defmethods]]
             [anvil.world.potential-field :as potential-field]))
 
 (defn- effect-context [c eid]

@@ -3,6 +3,7 @@
             [anvil.entity :as entity]
             [cdq.context :as world]
             [cdq.grid :as grid]
+            [clojure.utils :refer [defmethods]]
             [gdl.malli :as m]
             [gdl.math.vector :as v]))
 

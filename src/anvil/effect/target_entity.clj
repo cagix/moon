@@ -3,6 +3,7 @@
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
             [cdq.context :as world]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
 

@@ -2,7 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.controls :as controls]
             [clojure.gdx :refer [button-just-pressed? play]]
-            [clojure.utils :refer [safe-merge]]
+            [clojure.utils :refer [defmethods safe-merge]]
             [anvil.entity :as entity]
             [anvil.player :as player]
             [gdl.context :as c]))

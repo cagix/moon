@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :refer [timer stopped?]]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 (defmethods :stunned

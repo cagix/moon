@@ -4,7 +4,7 @@
             [anvil.entity :as entity]
             [cdq.context :as world]
             [cdq.grid :as grid]
-            [clojure.utils :refer [find-first]]))
+            [clojure.utils :refer [defmethods find-first]]))
 
 (defmethods :entity/projectile-collision
   (component/->v [[_ v] c]

@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.image
   (:require [anvil.component :as component]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 (defmethods :entity/image

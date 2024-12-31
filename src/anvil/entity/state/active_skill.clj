@@ -4,6 +4,7 @@
             [anvil.entity :as entity]
             [cdq.context :refer [timer finished-ratio stopped?]]
             [clojure.gdx :refer [play]]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 (defn- draw-skill-image [c image entity [x y] action-counter-ratio]

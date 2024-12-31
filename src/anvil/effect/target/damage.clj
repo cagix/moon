@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]
             [gdl.rand :refer [rand-int-between]]))
 

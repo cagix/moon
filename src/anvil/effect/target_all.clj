@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all!]]
             [cdq.context :as world]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 ; TODO targets projectiles with -50% hp !!

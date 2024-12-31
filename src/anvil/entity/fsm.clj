@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.fsm
   (:require [anvil.component :as component]
+            [clojure.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm

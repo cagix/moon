@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.state.npc-dead
-  (:require [anvil.component :as component]))
+  (:require [anvil.component :as component]
+            [clojure.utils :refer [defmethods]]))
 
 (defmethods :npc-dead
   (component/->v [[_ eid] c]

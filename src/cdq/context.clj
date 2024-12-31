@@ -1,19 +1,3 @@
-(in-ns 'clojure.core)
-
-(def overwrite-warnings? false)
-
-(defmacro defmethods [k & sys-impls]
-  `(do
-    ~@(for [[sys & fn-body] sys-impls
-            :let [sys-var (resolve sys)]]
-        `(do
-          (when (and overwrite-warnings?
-                     (get (methods @~sys-var) ~k))
-            (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
-          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
-            ~@fn-body)))
-    ~k))
-
 (ns cdq.context
   (:require [anvil.component :as component]
             [anvil.controls :as controls]

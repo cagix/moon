@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.animation
   (:require [anvil.component :as component]
+            [clojure.utils :refer [defmethods]]
             [gdl.graphics.animation :as animation]))
 
 (defmethods :entity/animation

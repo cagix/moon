@@ -1,7 +1,8 @@
 (ns ^:no-doc anvil.effect.target.melee-damage
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [cdq.context :as world]))
+            [cdq.context :as world]
+            [clojure.utils :refer [defmethods]]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]

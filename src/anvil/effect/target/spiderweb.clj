@@ -1,7 +1,8 @@
 (ns ^:no-doc anvil.effect.target.spiderweb
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [cdq.context :refer [timer]]))
+            [cdq.context :refer [timer]]
+            [clojure.utils :refer [defmethods]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]

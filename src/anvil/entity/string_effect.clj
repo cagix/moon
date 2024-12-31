@@ -1,6 +1,7 @@
 (ns ^:no-doc anvil.entity.string-effect
   (:require [anvil.component :as component]
             [cdq.context :refer [stopped?]]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 (defmethods :entity/string-effect
