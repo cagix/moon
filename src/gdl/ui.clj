@@ -99,7 +99,7 @@
     (run! #(add-actor! group %) actors)
     group))
 
-(defn- application-state [actor]
+(defn application-state [actor]
   (when-let [stage (.getStage actor)]
     (.applicationState stage)))
 

@@ -31,10 +31,6 @@
 
 (defn inventory [c])
 
-(defn set-item-image-in-widget [c cell item])
-
-(defn remove-item-from-widget [c cell])
-
 (defn- draw-player-message [{:keys [gdl.context/viewport
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]

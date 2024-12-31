@@ -133,7 +133,7 @@
 (defn- cell-widget [c cell]
   (get (::table (w/get-inventory c)) cell))
 
-(defn-impl widgets/set-item-image-in-widget [c cell item]
+(defn- set-item-image-in-widget [c cell item]
   (let [cell-widget (cell-widget c cell)
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
@@ -141,8 +141,16 @@
     (set-drawable! image-widget drawable)
     (add-tooltip! cell-widget #(info/text % item))))
 
-(defn-impl widgets/remove-item-from-widget [c cell]
+(defn- remove-item-from-widget [c cell]
   (let [cell-widget (cell-widget c cell)
         image-widget (get cell-widget :image)]
     (set-drawable! image-widget (slot->background c (cell 0)))
     (remove-tooltip! cell-widget)))
+
+(defn-impl entity/notify-controller-item-set [context entity cell item]
+  (when (:entity/player? entity)
+    (set-item-image-in-widget context cell item)))
+
+(defn-impl entity/notify-controller-item-removed [context entity cell]
+  (when (:entity/player? entity)
+    (remove-item-from-widget context cell)))

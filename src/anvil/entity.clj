@@ -1,11 +1,10 @@
 (ns anvil.entity
-  (:require [gdl.info :as info]
-            [gdl.operation :as op]
-            [anvil.widgets :as widgets]
-            [cdq.inventory :as inventory]
+  (:require [cdq.inventory :as inventory]
             [clojure.string :as str]
             [clojure.utils :refer [defsystem defmethods]]
             [gdl.context :refer [set-cursor]]
+            [gdl.info :as info]
+            [gdl.operation :as op]
             [gdl.malli :as m]
             [gdl.math.vector :as v]
             [gdl.math.shapes :as shape]
@@ -148,13 +147,16 @@
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
 
+(defn notify-controller-item-set [context entity cell item])
+
+(defn notify-controller-item-removed [context entity cell])
+
 (defn set-item [c eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
                  (inventory/valid-slot? cell item)))
-    (when (:entity/player? entity)
-      (widgets/set-item-image-in-widget c cell item))
+    (notify-controller-item-set c entity cell item)
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (inventory/applies-modifiers? cell)
       (swap! eid mod-add (:entity/modifiers item)))))
@@ -163,8 +165,7 @@
   (let [entity @eid
         item (get-in (:entity/inventory entity) cell)]
     (assert item)
-    (when (:entity/player? entity)
-      (widgets/remove-item-from-widget c cell))
+    (notify-controller-item-removed c entity cell)
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (inventory/applies-modifiers? cell)
       (swap! eid mod-remove (:entity/modifiers item)))))
