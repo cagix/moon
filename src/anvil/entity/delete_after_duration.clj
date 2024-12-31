@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.delete-after-duration
   (:require [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [cdq.context :refer [timer finished-ratio stopped?]]
             [clojure.utils :refer [defmethods readable-number]]))
 

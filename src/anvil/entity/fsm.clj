@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.fsm
   (:require [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [clojure.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
 

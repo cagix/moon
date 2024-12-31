@@ -1,7 +1,7 @@
 (ns anvil.operation
   (:refer-clojure :exclude [remove])
   (:require [anvil.component :as component]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [defmethods]]))

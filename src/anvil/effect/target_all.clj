@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.effect.target-all
   (:require [anvil.component :as component]
             [anvil.effect :refer [do-all!]]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [cdq.context :as world]
             [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))

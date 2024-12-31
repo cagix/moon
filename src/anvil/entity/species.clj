@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.entity.species
-  (:require [anvil.info :as info]
+  (:require [gdl.info :as info]
             [clojure.string :as str]
             [clojure.utils :refer [defmethods]]))
 

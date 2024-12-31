@@ -1,7 +1,7 @@
 (ns anvil.entity.skills
   (:refer-clojure :exclude [contains? remove])
   (:require [anvil.entity :as entity]
-            #_[anvil.info :as info]
+            #_[gdl.info :as info]
             [anvil.widgets.action-bar :refer [action-bar-add-skill
                                               action-bar-remove-skill]]
             [cdq.context :refer [stopped?]]

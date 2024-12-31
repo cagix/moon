@@ -1,4 +1,4 @@
-(ns anvil.info
+(ns gdl.info
   (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.utils :refer [index-of defsystem]]))

@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.temp-modifier
   (:require [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [cdq.context :refer [finished-ratio stopped?]]
             [clojure.utils :refer [defmethods readable-number]]
             [gdl.context :as c]))

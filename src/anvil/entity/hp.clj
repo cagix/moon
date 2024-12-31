@@ -1,6 +1,6 @@
 (ns anvil.entity.hp
   (:require [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [clojure.utils :refer [defmethods]]
             [gdl.context :as c]
             [gdl.val-max :as val-max]))

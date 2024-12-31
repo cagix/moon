@@ -1,6 +1,6 @@
 (ns anvil.info.impl
   (:require [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [clojure.utils :refer [readable-number]]))
 
 (defmethod info/segment :property/pretty-name [[_ v] _c] v)

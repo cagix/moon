@@ -1,5 +1,5 @@
 (ns anvil.widgets.action-bar
-  (:require [anvil.info :as info]
+  (:require [gdl.info :as info]
             [cdq.context :as world]
             [gdl.ui :refer [add-tooltip!] :as ui]
             [gdl.ui.group :refer [add-actor!]])

@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.entity.faction
-  (:require [anvil.info :as info]
+  (:require [gdl.info :as info]
             [clojure.utils :refer [defmethods]]))
 
 (defmethods :entity/faction

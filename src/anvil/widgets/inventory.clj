@@ -1,6 +1,6 @@
 (ns anvil.widgets.inventory
   (:require [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as w]
             [cdq.inventory :refer [empty-inventory] :as inventory]

@@ -1,7 +1,7 @@
 (ns cdq.context
   (:require [anvil.controls :as controls]
             [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
             [cdq.content-grid :as content-grid]

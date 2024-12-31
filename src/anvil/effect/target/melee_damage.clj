@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.effect.target.melee-damage
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.info :as info]
+            [gdl.info :as info]
             [cdq.context :as world]
             [clojure.utils :refer [defmethods]]))
 

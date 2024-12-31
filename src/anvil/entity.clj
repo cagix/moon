@@ -1,5 +1,5 @@
 (ns anvil.entity
-  (:require [anvil.info :as info]
+  (:require [gdl.info :as info]
             [anvil.operation :as op]
             [anvil.widgets :as widgets]
             [cdq.inventory :as inventory]
