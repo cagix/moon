@@ -122,7 +122,7 @@
 
 (defn act [^StageWithState stage context]
   (set! (.applicationState stage) context)
-  (.draw stage))
+  (.act stage))
 
 (defn add-tooltip!
   "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
