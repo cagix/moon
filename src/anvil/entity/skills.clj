@@ -3,7 +3,8 @@
   (:require [anvil.component :as component]
             [anvil.widgets.action-bar :refer [action-bar-add-skill
                                               action-bar-remove-skill]]
-            [cdq.context :refer [stopped?]]))
+            [cdq.context :refer [stopped?]]
+            [clojure.utils :refer [defmethods]]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]
   (clojure.core/contains? skills id))

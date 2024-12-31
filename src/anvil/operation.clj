@@ -3,7 +3,8 @@
   (:require [anvil.component :as component]
             [anvil.info :as info]
             [clojure.math :as math]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.utils :refer [defmethods]]))
 
 (defmethods :op/inc
   (component/value-text [[_ value]]

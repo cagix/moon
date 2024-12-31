@@ -4,6 +4,7 @@
             [cdq.context :as world]
             [cdq.inventory :as inventory]
             [clojure.gdx :refer [button-just-pressed? play]]
+            [clojure.utils :refer [safe-merge]]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
 

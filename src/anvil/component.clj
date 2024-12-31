@@ -1,4 +1,5 @@
 (ns anvil.component
+  (:require [clojure.utils :refer [defsystem]])
   (:refer-clojure :exclude [apply]))
 
 (defsystem info)

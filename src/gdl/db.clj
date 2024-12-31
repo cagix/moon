@@ -2,8 +2,37 @@
   (:refer-clojure :exclude [update])
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [clojure.pprint :refer [pprint]]
+            [clojure.utils :refer [safe-get]]
             [gdl.schema :as schema]
             [gdl.property :as property]))
+
+(defn- recur-sort-map [m]
+  (into (sorted-map)
+        (zipmap (keys m)
+                (map #(if (map? %)
+                        (recur-sort-map %)
+                        %)
+                     (vals m)))))
+
+; reduce-kv?
+(defn- apply-kvs
+  "Calls for every key in map (f k v) to calculate new value at k."
+  [m f]
+  (reduce (fn [m k]
+            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
+          m
+          (keys m)))
+
+(defn- async-pprint-spit! [file data]
+  (.start
+   (Thread.
+    (fn []
+      (binding [*print-level* nil]
+        (->> data
+             pprint
+             with-out-str
+             (spit file)))))))
 
 (defn create [{:keys [schema properties]}]
   (let [properties-file (io/resource properties)

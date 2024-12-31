@@ -1,9 +1,7 @@
-(in-ns 'clojure.core)
-
-(require '[clj-commons.pretty.repl :as pretty-repl]
-         '[clojure.edn :as edn]
-         '[clojure.java.io :as io]
-         '[clojure.pprint :refer [pprint]])
+(ns clojure.utils
+  (:require [clj-commons.pretty.repl :as pretty-repl]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]))
 
 (defmacro bind-root [sym value]
   `(alter-var-root (var ~sym) (constantly ~value)))
@@ -20,33 +18,6 @@
 (defn mapvals [f m]
   (into {} (for [[k v] m]
              [k (f v)])))
-
-(defn recur-sort-map [m]
-  (into (sorted-map)
-        (zipmap (keys m)
-                (map #(if (map? %)
-                        (recur-sort-map %)
-                        %)
-                     (vals m)))))
-
-; reduce-kv?
-(defn apply-kvs
-  "Calls for every key in map (f k v) to calculate new value at k."
-  [m f]
-  (reduce (fn [m k]
-            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
-          m
-          (keys m)))
-
-(defn async-pprint-spit! [file data]
-  (.start
-   (Thread.
-    (fn []
-      (binding [*print-level* nil]
-        (->> data
-             pprint
-             with-out-str
-             (spit file)))))))
 
 (defn pretty-pst [t]
   (binding [*print-level* 3]

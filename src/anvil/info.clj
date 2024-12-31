@@ -1,7 +1,8 @@
 (ns anvil.info
   (:require [anvil.component :as component]
             [clojure.gdx :as gdx]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.utils :refer [index-of]]))
 
 (gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
 

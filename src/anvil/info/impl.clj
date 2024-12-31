@@ -1,7 +1,8 @@
 (ns anvil.info.impl
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
-            [anvil.info :as info]))
+            [anvil.info :as info]
+            [clojure.utils :refer [readable-number]]))
 
 (defmethod component/info :property/pretty-name [[_ v] _c] v)
 (defmethod component/info :maxrange             [[_ v] _c] v)

@@ -6,6 +6,7 @@
             [cdq.context :as w]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [clojure.gdx :as gdx]
+            [clojure.utils :refer [defn-impl]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.ui :refer [set-drawable!

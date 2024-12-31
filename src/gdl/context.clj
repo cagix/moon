@@ -9,6 +9,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.interop :as interop]
             [clojure.string :as str]
+            [clojure.utils :refer [safe-get defmethods mapvals pretty-pst with-err-str]]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.db :as db]

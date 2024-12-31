@@ -2,6 +2,7 @@
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
             [cdq.context :refer [finished-ratio stopped?]]
+            [clojure.utils :refer [readable-number]]
             [gdl.context :as c]))
 
 (defmethods :entity/temp-modifier

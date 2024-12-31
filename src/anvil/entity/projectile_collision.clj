@@ -3,7 +3,8 @@
             [anvil.effect :as effect]
             [anvil.entity :as entity]
             [cdq.context :as world]
-            [cdq.grid :as grid]))
+            [cdq.grid :as grid]
+            [clojure.utils :refer [find-first]]))
 
 (defmethods :entity/projectile-collision
   (component/->v [[_ v] c]

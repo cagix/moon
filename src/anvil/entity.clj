@@ -5,6 +5,7 @@
             [anvil.widgets :as widgets]
             [cdq.inventory :as inventory]
             [clojure.string :as str]
+            [clojure.utils :refer [defmethods]]
             [gdl.context :refer [set-cursor]]
             [gdl.malli :as m]
             [gdl.math.vector :as v]

@@ -1,30 +1,18 @@
-; Inject here and not @ project.clj otherwise injecting into
-; dependent libraries !!!
-; injection then probably not good idea ...
-; ns+ better? ...
-; => common :refer's then from utils/etc. ///
-(load "clojure/utils"
+(in-ns 'clojure.core)
 
-      ;"clojure/gdx_inject"
+(def overwrite-warnings? false)
 
-      )
-
-; but the idea is generally good to inject everything
-; which the whole project depends on ?
-; makes the code more focused?
-; but then with ns+ its a better way ?!
-
-; but doesn;t work with codox ? in that case inject @ project.clj ?
-
-; and reloading/ ?
-
-; => use potemkin & define them all into clojure.core ?
-
-; => Find nsx stuff again
-
-; => (context-ns) ?
-
-; => first get rid of bin-root / defn-impl ...
+(defmacro defmethods [k & sys-impls]
+  `(do
+    ~@(for [[sys & fn-body] sys-impls
+            :let [sys-var (resolve sys)]]
+        `(do
+          (when (and overwrite-warnings?
+                     (get (methods @~sys-var) ~k))
+            (println "WARNING: Overwriting defmethod" ~k "on" ~sys-var))
+          (defmethod ~sys ~k ~(symbol (str (name (symbol sys-var)) "." (name k)))
+            ~@fn-body)))
+    ~k))
 
 (ns cdq.context
   (:require [anvil.component :as component]
@@ -38,6 +26,7 @@
             [cdq.potential-fields :as potential-fields]
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black]]
+            [clojure.utils :refer [defmethods tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst read-edn-resource]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
             [gdl.context :as c]
