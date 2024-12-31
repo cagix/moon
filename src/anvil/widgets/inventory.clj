@@ -19,8 +19,7 @@
             [gdl.val-max :as val-max]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [gdl.ui.utils :as scene2d.utils])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
+  (:import (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -45,13 +44,13 @@
 ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
 (defn- draw-rect-actor []
   (ui-widget
-   (fn [^Actor this {:keys [cdq.context/player-eid] :as c}]
+   (fn [this {:keys [cdq.context/player-eid] :as c}]
      (draw-cell-rect c
                      @player-eid
-                     (.getX this)
-                     (.getY this)
+                     (actor/x this)
+                     (actor/y this)
                      (actor/hit this (c/mouse-position c))
-                     (user-object (.getParent this))))))
+                     (user-object (actor/parent this))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -81,7 +80,7 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (gdx/color 1 1 1 0.4))))
 
-(defn- ->cell ^Actor [c slot & {:keys [position]}]
+(defn- ->cell ^com.badlogic.gdx.scenes.scene2d.Actor [c slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background c slot)
                                    {:id :image})

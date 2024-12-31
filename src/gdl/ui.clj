@@ -245,20 +245,20 @@
   "Returns true if the actor or its parent is a button."
   [^Actor actor]
   (or (button-class? actor)
-      (and (.getParent actor)
-           (button-class? (.getParent actor)))))
+      (and (actor/parent actor)
+           (button-class? (actor/parent actor)))))
 
 (defn window-title-bar?
   "Returns true if the actor is a window title bar."
   [^Actor actor]
   (when (instance? Label actor)
-    (when-let [p (.getParent actor)]
-      (when-let [p (.getParent p)]
+    (when-let [p (actor/parent actor)]
+      (when-let [p (actor/parent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
 
 (defn find-ancestor-window ^Window [^Actor actor]
-  (if-let [p (.getParent actor)]
+  (if-let [p (actor/parent actor)]
     (if (instance? Window p)
       p
       (find-ancestor-window p))

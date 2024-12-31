@@ -10,7 +10,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.tiled :as tiled]
             [gdl.ui :refer [ui-actor text-button] :as ui]
-            [gdl.ui.group :refer [add-actor!]]))
+            [clojure.gdx.scene2d.group :refer [add-actor!]]))
 
 (def state (atom nil))
 

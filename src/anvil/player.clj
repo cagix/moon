@@ -51,12 +51,11 @@
                                               (play-sound c "bfx_denied")
                                               (w/show-player-msg c "Too far away"))]))
 
-(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c}
-                                  ^com.badlogic.gdx.scenes.scene2d.Actor actor]
-  (and (.getParent actor)
-       (= "inventory-cell" (.getName (.getParent actor)))
+(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
+  (and (actor/parent actor)
+       (= "inventory-cell" (.getName (actor/parent actor)))
        (get-in (:entity/inventory @player-eid)
-               (actor/user-object (.getParent actor)))))
+               (actor/user-object (actor/parent actor)))))
 
 (defn- mouseover-actor->cursor [c]
   (let [actor (c/mouse-on-actor? c)]

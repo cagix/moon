@@ -2,6 +2,13 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.math Vector2)))
 
+(def x Actor/.getX)
+(def y Actor/.getY)
+
+(def parent Actor/.getParent)
+
+(def set-id Actor/.setUserObject)
+
 (def user-object Actor/.getUserObject)
 (def set-visible Actor/.setVisible)
 (def visible?    Actor/.isVisible)
