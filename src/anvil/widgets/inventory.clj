@@ -98,22 +98,31 @@
 
 (defn- inventory-table [c]
   (let [table (ui/table {:id ::table})]
-    (.clear table) ; no need as we create new table ... TODO
-    (doto table .add .add
+    (doto table
+      .add
+      .add
       (.add (->cell c :inventory.slot/helm))
-      (.add (->cell c :inventory.slot/necklace)) .row)
-    (doto table .add
+      (.add (->cell c :inventory.slot/necklace))
+      .row)
+    (doto table
+      .add
       (.add (->cell c :inventory.slot/weapon))
       (.add (->cell c :inventory.slot/chest))
       (.add (->cell c :inventory.slot/cloak))
-      (.add (->cell c :inventory.slot/shield)) .row)
-    (doto table .add .add
-      (.add (->cell c :inventory.slot/leg)) .row)
-    (doto table .add
+      (.add (->cell c :inventory.slot/shield))
+      .row)
+    (doto table
+      .add
+      .add
+      (.add (->cell c :inventory.slot/leg))
+      .row)
+    (doto table
+      .add
       (.add (->cell c :inventory.slot/glove))
       (.add (->cell c :inventory.slot/rings :position [0 0]))
       (.add (->cell c :inventory.slot/rings :position [1 0]))
-      (.add (->cell c :inventory.slot/boot)) .row)
+      (.add (->cell c :inventory.slot/boot))
+      .row)
     (doseq [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
       (doseq [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
         (.add table (->cell c :inventory.slot/bag :position [x y])))
