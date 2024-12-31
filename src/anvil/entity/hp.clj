@@ -42,7 +42,7 @@
                           (hpbar-color ratio)))))
 
 (defmethods :entity/hp
-  (component/info [_ _c]
+  (info/segment [_ _c]
     (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 
   (component/->v [[_ v] c]

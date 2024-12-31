@@ -1,6 +1,7 @@
 (ns ^:no-doc anvil.effect.target.melee-damage
   (:require [anvil.component :as component]
             [anvil.entity :as entity]
+            [anvil.info :as info]
             [cdq.context :as world]
             [clojure.utils :refer [defmethods]]))
 
@@ -14,7 +15,7 @@
 (defmethods :effects.target/melee-damage
   ; FIXME no source
   ; => to entity move
-  (component/info [_ _c]
+  (info/segment [_ _c]
     (str "Damage based on entity strength."
          #_(when source
              (str "\n" (damage-info (entity->melee-damage @source))))))

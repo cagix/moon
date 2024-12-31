@@ -1,8 +1,7 @@
 (ns anvil.info
-  (:require [anvil.component :as component]
-            [clojure.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [clojure.utils :refer [index-of]]))
+            [clojure.utils :refer [index-of defsystem]]))
 
 (gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
 
@@ -61,12 +60,15 @@
 
 (declare ^:dynamic *info-text-entity*)
 
+(defsystem segment)
+(defmethod segment :default [_ c])
+
 (defn text [c components]
   (->> components
        sort-k-order
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k (component/info component c)))
+                           (apply-color k (segment component c)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create

@@ -2,9 +2,6 @@
   (:require [clojure.utils :refer [defsystem]])
   (:refer-clojure :exclude [apply]))
 
-(defsystem info)
-(defmethod info :default [_ c])
-
 ;; Entity
 
 (defsystem ->v)

@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.fsm
   (:require [anvil.component :as component]
+            [anvil.info :as info]
             [clojure.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
 
@@ -59,7 +60,7 @@
   (assoc (fsm initial-state nil) :state initial-state))
 
 (defmethods :entity/fsm
-  (component/info [[_ fsm] _c]
+  (info/segment [[_ fsm] _c]
     (str "State: " (name (:state fsm))))
 
 

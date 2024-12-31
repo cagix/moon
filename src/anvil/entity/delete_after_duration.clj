@@ -1,5 +1,6 @@
 (ns ^:no-doc anvil.entity.delete-after-duration
   (:require [anvil.component :as component]
+            [anvil.info :as info]
             [cdq.context :refer [timer finished-ratio stopped?]]
             [clojure.utils :refer [defmethods readable-number]]))
 
@@ -7,7 +8,7 @@
   (component/->v [[_ duration] c]
     (timer c duration))
 
-  (component/info [counter c]
+  (info/segment [counter c]
     (str "Remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
   (component/tick [[_ counter] eid c]

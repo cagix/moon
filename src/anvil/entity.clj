@@ -67,7 +67,7 @@
    (send-event! c eid event params)))
 
 (defmethods :entity/modifiers
-  (component/info [[_ mods] _c]
+  (info/segment [[_ mods] _c]
     (when (seq mods)
       (str/join "\n" (keep (fn [[k ops]]
                              (op/info ops k)) mods)))))
@@ -187,7 +187,7 @@
     (assoc-in entity [:entity/mana 0] (- mana-val cost))))
 
 (defmethods :entity/mana
-  (component/info [_ _c]
+  (info/segment [_ _c]
     (str "Mana: " (mana info/*info-text-entity*)))
 
   (component/->v [[_ v] c]
