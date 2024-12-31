@@ -1,4 +1,6 @@
 (ns gdl.operation
+  "Namespace for operations in the game engine. Provides utilities for applying, combining,
+   and retrieving information about operations, such as incremental and multiplicative effects."
   (:refer-clojure :exclude [remove])
   (:require [clojure.math :as math]
             [clojure.string :as str]
@@ -28,14 +30,45 @@
   (-order [_]
     1))
 
-(defn apply [op value]
+(defn apply
+  "Applies a sequence of operations (`op`) to an initial `value`.
+  Operations are applied in a specific order determined by `-order`.
+
+  Args:
+  - `op`: A sequence of operations.
+  - `value`: The initial value to which the operations will be applied.
+
+  Returns:
+  The resulting value after all operations are applied."
+  [op value]
   (reduce (fn [value op]
             (-apply op value))
           value
           (sort-by -order op)))
 
-(defn add    [op other-op] (merge-with + op other-op))
-(defn remove [op other-op] (merge-with - op other-op))
+(defn add
+  "Combines two operations (`op` and `other-op`) by summing their effects.
+
+  Args:
+  - `op`: The first operation map.
+  - `other-op`: The second operation map.
+
+  Returns:
+  A new operation map with combined effects."
+  [op other-op]
+  (merge-with + op other-op))
+
+(defn remove
+  "Subtracts the effects of one operation (`other-op`) from another (`op`).
+
+  Args:
+  - `op`: The initial operation map.
+  - `other-op`: The operation map to subtract.
+
+  Returns:
+  A new operation map with subtracted effects."
+  [op other-op]
+  (merge-with - op other-op))
 
 (defn- +? [n]
   (case (math/signum n)
@@ -43,7 +76,16 @@
     1.0 "+"
     -1.0 ""))
 
-(defn info [op k]
+(defn info
+  "Generates a human-readable summary of an operation (`op`) for a specific key (`k`).
+
+  Args:
+  - `op`: A sequence of operation components.
+  - `k`: The key associated with the operation for pretty printing.
+
+  Returns:
+  A string with details of the operation components, their values, and a description."
+  [op k]
   (str/join "\n"
             (keep
              (fn [{v 1 :as component}]
