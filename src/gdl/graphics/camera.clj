@@ -53,7 +53,7 @@
   "Sets the zoom value and updates."
   [camera amount]
   (camera/set-zoom camera amount)
-  (.update camera))
+  (camera/update camera))
 
 (defn reset-zoom!
   "Sets the zoom value to 1."

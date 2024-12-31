@@ -879,9 +879,8 @@
   (clear-screen black)
   (render-world context)
   (let [stage (c/stage context)]
-    (set! (.applicationState stage) context)
-    (.draw stage)
-    (.act stage))
+    (ui/draw stage context)
+    (ui/act  stage context))
   (tick-context context pausing?))
 
 (defn -main []

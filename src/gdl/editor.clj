@@ -530,9 +530,8 @@
 
 (defn- render-stage [context]
   (let [stage (ctx/stage context)]
-    (set! (.applicationState stage) context)
-    (.act stage)
-    (.draw stage))
+    (ui/act  stage context)
+    (ui/draw stage context))
   context)
 
 (def ^:private components

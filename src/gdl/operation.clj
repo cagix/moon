@@ -1,7 +1,7 @@
 (ns gdl.operation
   "Namespace for operations in the game engine. Provides utilities for applying, combining,
    and retrieving information about operations, such as incremental and multiplicative effects."
-  (:refer-clojure :exclude [remove])
+  (:refer-clojure :exclude [apply remove])
   (:require [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [defsystem defmethods k->pretty-name]]))

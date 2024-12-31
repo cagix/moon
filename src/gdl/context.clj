@@ -20,8 +20,8 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [gdl.ui.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)
-           (forge OrthogonalTiledMapRenderer ColorSetter StageWithState)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)
+           (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
@@ -340,26 +340,15 @@
                                             (float world-unit-scale)
                                             batch)))))
 
-(defn- stage* [viewport batch actors] ; FIXME actors not necessary ?!
-  (let [stage (proxy [StageWithState clojure.lang.ILookup] [viewport batch]
-                (valAt
-                  ([id]
-                   (group/find-actor-with-id (.getRoot this) id))
-                  ([id not-found]
-                   (or (group/find-actor-with-id (.getRoot this) id)
-                       not-found))))]
-    (run! #(.addActor stage %) actors)
-    stage))
-
 (def stage ::stage)
 
 (defmethods stage
   (app/create [_ {::keys [viewport batch] :as c}]
-    (let [stage (stage* viewport batch nil)] ; TODO
+    (let [stage (ui/stage viewport batch nil)]
       (set-input-processor c stage)
       stage))
   (app/dispose [[_ stage]]
-    (.dispose stage)))
+    (dispose stage)))
 
 (defmethods ::ui
   (app/create [[_ config] _c]
@@ -374,15 +363,15 @@
   (db/build-all db property-type c))
 
 (defn add-actor [{::keys [stage]} actor]
-  (.addActor stage actor))
+  (Stage/.addActor stage actor))
 
 (defn reset-stage [{::keys [stage]} new-actors]
-  (.clear stage)
-  (run! #(.addActor stage %) new-actors))
+  (Stage/.clear stage)
+  (run! #(Stage/.addActor stage %) new-actors))
 
 (defn mouse-on-actor? [{::keys [stage] :as c}]
   (let [[x y] (mouse-position c)]
-    (.hit stage x y true)))
+    (Stage/.hit stage x y true)))
 
 (defn error-window [c throwable]
   (pretty-pst throwable)

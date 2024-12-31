@@ -12,7 +12,7 @@
     (Actor/.setUserObject button id)
     (add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (add-actor! horizontal-group button)
-    (ButtonGroup/.add button-group button)
+    (ButtonGroup/.add button-group ^Button button)
     nil))
 
 (defn action-bar-remove-skill [c {:keys [property/id]}]

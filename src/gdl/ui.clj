@@ -2,17 +2,19 @@
   (:refer-clojure :exclude [load])
   (:require [clojure.gdx :refer [dimensions]]
             [gdl.ui.actor :as actor]
-            [gdl.ui.group :refer [find-actor-with-id add-actor!]]
+            [gdl.ui.group :as group :refer [find-actor-with-id add-actor!]]
             [gdl.ui.table :as table]
             [gdl.ui.utils :as scene2d.utils])
-  (:import (com.badlogic.gdx.graphics Texture)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Separator VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
+           (com.kotcrab.vis.ui.widget Separator VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)
+           (forge StageWithState)))
 
 (defn setup [skin-scale]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
@@ -99,9 +101,28 @@
     (run! #(add-actor! group %) actors)
     group))
 
+(defn stage [viewport batch actors]
+  (let [stage (proxy [StageWithState ILookup] [viewport batch]
+                (valAt
+                  ([id]
+                   (group/find-actor-with-id (StageWithState/.getRoot this) id))
+                  ([id not-found]
+                   (or (group/find-actor-with-id (StageWithState/.getRoot this) id)
+                       not-found))))]
+    (run! #(.addActor stage %) actors)
+    stage))
+
 (defn application-state [actor]
-  (when-let [stage (.getStage actor)]
-    (.applicationState stage)))
+  (when-let [stage (Actor/.getStage actor)]
+    (.applicationState ^StageWithState stage)))
+
+(defn draw [^StageWithState stage context]
+  (set! (.applicationState stage) context)
+  (.draw stage))
+
+(defn act [^StageWithState stage context]
+  (set! (.applicationState stage) context)
+  (.draw stage))
 
 (defn add-tooltip!
   "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
@@ -264,7 +285,7 @@
    (image-button image on-clicked {}))
   ([{:keys [texture-region]} on-clicked {:keys [scale]}]
    (let [drawable (texture-region-drawable texture-region)
-         button (VisImageButton. drawable)]
+         button (VisImageButton. ^Drawable drawable)]
      (when scale
        (let [[w h] (dimensions texture-region)]
          (scene2d.utils/set-min-size! drawable (* scale w) (* scale h))))

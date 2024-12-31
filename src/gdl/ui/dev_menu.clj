@@ -3,7 +3,8 @@
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.group :refer [add-actor!]])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)))
+           (com.badlogic.gdx.scenes.scene2d.ui Label Table)
+           (com.kotcrab.vis.ui.widget PopupMenu)))
 
 (defn- menu-item [text on-clicked]
   (doto (ui/menu-item text)
@@ -11,7 +12,7 @@
 
 (defn- set-label-text-fn [label text-fn]
   (fn [context]
-    (.setText label (str (text-fn context)))))
+    (Label/.setText label (str (text-fn context)))))
 
 (defn- add-upd-label
   ([c table text-fn icon]
@@ -36,9 +37,9 @@
 (defn- add-menu [c menu-bar {:keys [label items]}]
   (let [app-menu (ui/menu label)]
     (doseq [{:keys [label on-click]} items]
-      (.addItem app-menu (menu-item label (if on-click
-                                            #(on-click c)
-                                            (fn [])))))
+      (PopupMenu/.addItem app-menu (menu-item label (if on-click
+                                                      #(on-click c)
+                                                      (fn [])))))
     (ui/add-menu menu-bar app-menu)))
 
 (defn- create-menu-bar [c menus]
