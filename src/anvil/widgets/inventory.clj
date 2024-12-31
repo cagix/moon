@@ -80,7 +80,7 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (gdx/color 1 1 1 0.4))))
 
-(defn- ->cell ^com.badlogic.gdx.scenes.scene2d.Actor [c slot & {:keys [position]}]
+(defn- ->cell [c slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background c slot)
                                    {:id :image})
@@ -97,37 +97,25 @@
     stack))
 
 (defn- inventory-table [c]
-  (let [table (ui/table {:id ::table})]
-    (doto table
-      .add
-      .add
-      (.add (->cell c :inventory.slot/helm))
-      (.add (->cell c :inventory.slot/necklace))
-      .row)
-    (doto table
-      .add
-      (.add (->cell c :inventory.slot/weapon))
-      (.add (->cell c :inventory.slot/chest))
-      (.add (->cell c :inventory.slot/cloak))
-      (.add (->cell c :inventory.slot/shield))
-      .row)
-    (doto table
-      .add
-      .add
-      (.add (->cell c :inventory.slot/leg))
-      .row)
-    (doto table
-      .add
-      (.add (->cell c :inventory.slot/glove))
-      (.add (->cell c :inventory.slot/rings :position [0 0]))
-      (.add (->cell c :inventory.slot/rings :position [1 0]))
-      (.add (->cell c :inventory.slot/boot))
-      .row)
-    (doseq [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
-      (doseq [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
-        (.add table (->cell c :inventory.slot/bag :position [x y])))
-      (.row table))
-    table))
+  (ui/table {:id ::table
+             :rows (concat [[nil nil
+                             (->cell c :inventory.slot/helm)
+                             (->cell c :inventory.slot/necklace)]
+                            [nil
+                             (->cell c :inventory.slot/weapon)
+                             (->cell c :inventory.slot/chest)
+                             (->cell c :inventory.slot/cloak)
+                             (->cell c :inventory.slot/shield)]
+                            [nil nil
+                             (->cell c :inventory.slot/leg)]
+                            [nil
+                             (->cell c :inventory.slot/glove)
+                             (->cell c :inventory.slot/rings :position [0 0])
+                             (->cell c :inventory.slot/rings :position [1 0])
+                             (->cell c :inventory.slot/boot)]]
+                           (for [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
+                             (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
+                               (->cell c :inventory.slot/bag :position [x y]))))}))
 
 (defn-impl widgets/inventory [{:keys [gdl.context/viewport] :as c}]
   (ui/window {:title "Inventory"
