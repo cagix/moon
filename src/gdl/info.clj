@@ -78,6 +78,3 @@
                       (str "\n" (text c v))))))
        (str/join "\n")
        remove-newlines))
-
-(defn k->pretty-name [k]
-  (str/capitalize (name k)))

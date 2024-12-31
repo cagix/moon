@@ -1,10 +1,9 @@
 (ns anvil.operation
   (:refer-clojure :exclude [remove])
   (:require [anvil.component :as component]
-            [gdl.info :as info]
             [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.utils :refer [defmethods k->pretty-name]]))
 
 (defmethods :op/inc
   (component/value-text [[_ value]]
@@ -46,5 +45,5 @@
             (keep
              (fn [{v 1 :as component}]
                (when-not (zero? v)
-                 (str (+? v) (component/value-text component) " " (info/k->pretty-name k))))
+                 (str (+? v) (component/value-text component) " " (k->pretty-name k))))
              (sort-by component/order op))))

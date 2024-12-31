@@ -170,3 +170,6 @@
 
 (defn read-edn-resource [file]
   (-> file io/resource slurp edn/read-string))
+
+(defn k->pretty-name [k]
+  (str/capitalize (name k)))

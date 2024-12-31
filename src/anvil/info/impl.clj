@@ -1,7 +1,7 @@
 (ns anvil.info.impl
   (:require [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.utils :refer [readable-number]]))
+            [clojure.utils :refer [readable-number k->pretty-name]]))
 
 (defmethod info/segment :property/pretty-name [[_ v] _c] v)
 (defmethod info/segment :maxrange             [[_ v] _c] v)
@@ -29,7 +29,7 @@
     (str "Cost: " v " Mana")))
 
 (defmethod info/segment ::stat [[k _] _c]
-  (str (info/k->pretty-name k) ": " (entity/stat info/*info-text-entity* k)))
+  (str (k->pretty-name k) ": " (entity/stat info/*info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)
