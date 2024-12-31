@@ -17,7 +17,7 @@
                             remove-tooltip!]
              :as ui]
             [gdl.val-max :as val-max]
-            [gdl.ui.actor :refer [user-object] :as actor]
+            [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [gdl.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.utils ClickListener)))

@@ -2,7 +2,7 @@
   (:require [clojure.gdx :as gdx]
             [gdl.context :as c]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.ui.group :as group])
+            [clojure.gdx.scene2d.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 

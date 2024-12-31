@@ -5,7 +5,7 @@
             [gdl.context :as c :refer [play-sound]]
             [gdl.math.vector :as v]
             [gdl.ui :refer [window-title-bar? button?]]
-            [gdl.ui.actor :as actor]))
+            [clojure.gdx.scene2d.actor :as actor]))
 
 (defmulti ^:private on-clicked
   (fn [eid c]

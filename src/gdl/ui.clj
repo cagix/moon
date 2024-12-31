@@ -1,8 +1,8 @@
 (ns gdl.ui
   (:refer-clojure :exclude [load])
   (:require [clojure.gdx :refer [dimensions]]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.group :as group :refer [find-actor-with-id add-actor!]]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
             [gdl.ui.table :as table]
             [gdl.ui.utils :as scene2d.utils])
   (:import (clojure.lang ILookup)

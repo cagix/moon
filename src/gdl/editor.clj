@@ -25,8 +25,8 @@
                             text-field
                             add-tooltip!]
              :as ui]
-            [gdl.ui.actor :refer [user-object]]
-            [gdl.ui.group :refer [children clear-children add-actor! find-actor]]
+            [clojure.gdx.scene2d.actor :refer [user-object]]
+            [clojure.gdx.scene2d.group :refer [children clear-children add-actor! find-actor]]
             [gdl.ui.table :refer [add-rows!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)

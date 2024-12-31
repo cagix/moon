@@ -19,9 +19,9 @@
             [gdl.math.vector :as v]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.ui.actor :as actor]
+            [clojure.gdx.scene2d.actor :as actor]
             [gdl.ui.dev-menu :as dev-menu]
-            [gdl.ui.group :as group]
+            [clojure.gdx.scene2d.group :as group]
             [gdl.val-max :as val-max])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))

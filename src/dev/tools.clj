@@ -7,7 +7,7 @@
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
-            [gdl.ui.group :refer [children]])
+            [clojure.gdx.scene2d.group :refer [children]])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (comment

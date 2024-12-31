@@ -19,7 +19,7 @@
             [gdl.schema :as schema]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
-            [gdl.ui.group :as group])
+            [clojure.gdx.scene2d.group :as group])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
