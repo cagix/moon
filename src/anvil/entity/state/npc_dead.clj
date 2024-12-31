@@ -1,10 +1,10 @@
 (ns ^:no-doc anvil.entity.state.npc-dead
-  (:require [anvil.component :as component]
+  (:require [anvil.entity :as entity]
             [clojure.utils :refer [defmethods]]))
 
 (defmethods :npc-dead
-  (component/->v [[_ eid] c]
+  (entity/->v [[_ eid] c]
     {:eid eid})
 
-  (component/enter [[_ {:keys [eid]}] c]
+  (entity/enter [[_ {:keys [eid]}] c]
     (swap! eid assoc :entity/destroyed? true)))

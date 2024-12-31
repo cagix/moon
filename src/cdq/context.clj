@@ -1,6 +1,5 @@
 (ns cdq.context
-  (:require [anvil.component :as component]
-            [anvil.controls :as controls]
+  (:require [anvil.controls :as controls]
             [anvil.entity :as entity]
             [anvil.info :as info]
             [anvil.level :refer [generate-level]]
@@ -179,8 +178,8 @@
                       (widgets/inventory c)]}))
 
 (defn- widgets-player-state-draw-component [_context]
-  (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(::player-eid %))
-                                             %)}))
+  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(::player-eid %))
+                                          %)}))
 
 (defn- dev-menu-config [c]
   {:menus [{:label "World"
@@ -436,7 +435,7 @@
 
 (defn- create-vs [components c]
   (reduce (fn [m [k v]]
-            (assoc m k (component/->v [k v] c)))
+            (assoc m k (entity/->v [k v] c)))
           {}
           components))
 
@@ -451,7 +450,7 @@
                                       (create-vs c)))))]
     (add-entity c eid)
     (doseq [component @eid]
-      (component/create component eid c))
+      (entity/create component eid c))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
@@ -551,7 +550,7 @@
                       (all-entities c))]
     (remove-entity c eid)
     (doseq [component @eid]
-      (component/destroy component eid c))))
+      (entity/destroy component eid c))))
 
 (defn creatures-in-los-of-player [{::keys [player-eid] :as c}]
   (->> (active-entities c)
@@ -702,10 +701,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [component/render-below
-                    component/render-default
-                    component/render-above
-                    component/render-info]
+            system [entity/render-below
+                    entity/render-default
+                    entity/render-above
+                    entity/render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? c player entity))]
@@ -727,20 +726,20 @@
                           (render-debug-after-entities c))))
 
 (defn- check-player-input [{::keys [player-eid] :as c}]
-  (component/manual-tick (entity/state-obj @player-eid)
-                         c))
+  (entity/manual-tick (entity/state-obj @player-eid)
+                      c))
 
-(defmethod component/pause-game? :active-skill          [_] false)
-(defmethod component/pause-game? :stunned               [_] false)
-(defmethod component/pause-game? :player-moving         [_] false)
-(defmethod component/pause-game? :player-item-on-cursor [_] true)
-(defmethod component/pause-game? :player-idle           [_] true)
-(defmethod component/pause-game? :player-dead           [_] true)
+(defmethod entity/pause-game? :active-skill          [_] false)
+(defmethod entity/pause-game? :stunned               [_] false)
+(defmethod entity/pause-game? :player-moving         [_] false)
+(defmethod entity/pause-game? :player-item-on-cursor [_] true)
+(defmethod entity/pause-game? :player-idle           [_] true)
+(defmethod entity/pause-game? :player-dead           [_] true)
 
 (defn- update-paused-state [{::keys [player-eid error] :as c} pausing?]
   (assoc c ::paused? (or error
                          (and pausing?
-                              (component/pause-game? (entity/state-obj @player-eid))
+                              (entity/pause-game? (entity/state-obj @player-eid))
                               (not (controls/unpaused? c))))))
 
 (defn- calculate-mouseover-eid [{::keys [player-eid] :as c}]
@@ -790,7 +789,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (component/tick [k v] eid c))
+            (entity/tick [k v] eid c))
           (catch Throwable t
             (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t

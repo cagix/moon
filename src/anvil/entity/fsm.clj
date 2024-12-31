@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.entity.fsm
-  (:require [anvil.component :as component]
+  (:require [anvil.entity :as entity]
             [anvil.info :as info]
             [clojure.utils :refer [defmethods]]
             [reduce-fsm :as fsm]))
@@ -64,10 +64,10 @@
     (str "State: " (name (:state fsm))))
 
 
-  (component/create [[k {:keys [fsm initial-state]}] eid c]
+  (entity/create [[k {:keys [fsm initial-state]}] eid c]
     (swap! eid assoc
            k (->init-fsm (case fsm
                            :fsms/player player-fsm
                            :fsms/npc npc-fsm)
                          initial-state)
-           initial-state (component/->v [initial-state eid] c))))
+           initial-state (entity/->v [initial-state eid] c))))

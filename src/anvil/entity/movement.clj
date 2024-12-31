@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.entity.movement
-  (:require [anvil.component :as component]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [cdq.context :as world]
             [cdq.grid :as grid]
             [clojure.utils :refer [defmethods]]
@@ -51,9 +50,9 @@
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (defmethods :entity/movement
-  (component/tick [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
-                   eid
-                   {:keys [cdq.context/delta-time] :as c}]
+  (entity/tick [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
+                eid
+                {:keys [cdq.context/delta-time] :as c}]
     (assert (m/validate speed-schema speed)
             (pr-str speed))
     (assert (or (zero? (v/length direction))

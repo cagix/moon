@@ -1,6 +1,6 @@
 (ns anvil.entity.skills
   (:refer-clojure :exclude [contains? remove])
-  (:require [anvil.component :as component]
+  (:require [anvil.entity :as entity]
             #_[anvil.info :as info]
             [anvil.widgets.action-bar :refer [action-bar-add-skill
                                               action-bar-remove-skill]]
@@ -28,12 +28,12 @@
       (str "Skills: " (str/join "," (map name (keys skills))))))
 
 (defmethods :entity/skills
-  (component/create [[k skills] eid c]
+  (entity/create [[k skills] eid c]
     (swap! eid assoc k nil)
     (doseq [skill skills]
       (add c eid skill)))
 
-  (component/tick [[k skills] eid c]
+  (entity/tick [[k skills] eid c]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
             :when (and cooling-down?
                        (stopped? c cooling-down?))]

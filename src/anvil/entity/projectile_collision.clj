@@ -1,16 +1,15 @@
 (ns ^:no-doc anvil.entity.projectile-collision
-  (:require [anvil.component :as component]
-            [anvil.effect :as effect]
+  (:require [anvil.effect :as effect]
             [anvil.entity :as entity]
             [cdq.context :as world]
             [cdq.grid :as grid]
             [clojure.utils :refer [defmethods find-first]]))
 
 (defmethods :entity/projectile-collision
-  (component/->v [[_ v] c]
+  (entity/->v [[_ v] c]
     (assoc v :already-hit-bodies #{}))
 
-  (component/tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
+  (entity/tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
     ; TODO this could be called from body on collision
     ; for non-solid
     ; means non colliding with other entities

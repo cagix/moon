@@ -1,6 +1,5 @@
 (ns anvil.widgets.inventory
-  (:require [anvil.component :as component]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [anvil.info :as info]
             [anvil.widgets :as widgets]
             [cdq.context :as w]
@@ -92,9 +91,9 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [event x y]
-                            (component/clicked-inventory-cell (entity/state-obj @player-eid)
-                                                              cell
-                                                              c))))
+                            (entity/clicked-inventory-cell (entity/state-obj @player-eid)
+                                                           cell
+                                                           c))))
     stack))
 
 (defn- inventory-table [c]

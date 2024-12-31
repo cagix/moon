@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.entity.temp-modifier
-  (:require [anvil.component :as component]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [anvil.info :as info]
             [cdq.context :refer [finished-ratio stopped?]]
             [clojure.utils :refer [defmethods readable-number]]
@@ -10,11 +9,11 @@
   (info/segment [[_ {:keys [counter]}] c]
     (str "Spiderweb - remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
-  (component/tick [[k {:keys [modifiers counter]}] eid c]
+  (entity/tick [[k {:keys [modifiers counter]}] eid c]
     (when (stopped? c counter)
       (swap! eid dissoc k)
       (swap! eid entity/mod-remove modifiers)))
 
   ; TODO draw opacity as of counter ratio?
-  (component/render-above [_ entity c]
+  (entity/render-above [_ entity c]
     (c/filled-circle c (:position entity) 0.5 [0.5 0.5 0.5 0.4])))

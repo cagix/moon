@@ -1,12 +1,12 @@
 (ns ^:no-doc anvil.entity.delete-after-animation-stopped?
-  (:require [anvil.component :as component]
+  (:require [anvil.entity :as entity]
             [clojure.utils :refer [defmethods]]
             [gdl.graphics.animation :as animation]))
 
 (defmethods :entity/delete-after-animation-stopped?
-  (component/create [_ eid c]
+  (entity/create [_ eid c]
     (-> @eid :entity/animation :looping? not assert))
 
-  (component/tick [_ eid c]
+  (entity/tick [_ eid c]
     (when (animation/stopped? (:entity/animation @eid))
       (swap! eid assoc :entity/destroyed? true))))

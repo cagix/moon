@@ -1,22 +1,21 @@
 (ns ^:no-doc anvil.entity.state.player-moving
-  (:require [anvil.component :as component]
-            [anvil.controls :as controls]
+  (:require [anvil.controls :as controls]
             [anvil.entity :as entity]
             [clojure.utils :refer [defmethods]]))
 
 (defmethods :player-moving
-  (component/->v [[_ eid movement-vector] c]
+  (entity/->v [[_ eid movement-vector] c]
     {:eid eid
      :movement-vector movement-vector})
 
-  (component/enter [[_ {:keys [eid movement-vector]}] c]
+  (entity/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)}))
 
-  (component/exit [[_ {:keys [eid]}] c]
+  (entity/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (component/tick [[_ {:keys [movement-vector]}] eid c]
+  (entity/tick [[_ {:keys [movement-vector]}] eid c]
     (if-let [movement-vector (controls/movement-vector c)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})

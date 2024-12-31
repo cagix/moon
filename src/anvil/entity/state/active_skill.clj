@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.entity.state.active-skill
-  (:require [anvil.component :as component]
-            [anvil.effect :as effect]
+  (:require [anvil.effect :as effect]
             [anvil.entity :as entity]
             [cdq.context :refer [timer finished-ratio stopped?]]
             [clojure.gdx :refer [play]]
@@ -28,7 +27,7 @@
          1)))
 
 (defmethods :active-skill
-  (component/->v [[_ eid [skill effect-ctx]] c]
+  (entity/->v [[_ eid [skill effect-ctx]] c]
     {:eid eid
      :skill skill
      :effect-ctx effect-ctx
@@ -37,7 +36,7 @@
                    (apply-action-speed-modifier @eid skill)
                    (timer c))})
 
-  (component/enter [[_ {:keys [eid skill]}] c]
+  (entity/enter [[_ {:keys [eid skill]}] c]
     (play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
@@ -47,7 +46,7 @@
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill))))
 
-  (component/tick [[_ {:keys [skill effect-ctx counter]}] eid c]
+  (entity/tick [[_ {:keys [skill effect-ctx counter]}] eid c]
     (cond
      (not (effect/some-applicable? (effect/check-update-ctx c effect-ctx)
                                    (:skill/effects skill)))
@@ -61,7 +60,7 @@
       (effect/do-all! c effect-ctx (:skill/effects skill))
       (entity/event c eid :action-done))))
 
-  (component/render-info [[_ {:keys [skill effect-ctx counter]}] entity c]
+  (entity/render-info [[_ {:keys [skill effect-ctx counter]}] entity c]
     (let [{:keys [entity/image skill/effects]} skill]
       (draw-skill-image c
                         image

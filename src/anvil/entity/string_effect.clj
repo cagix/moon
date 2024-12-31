@@ -1,15 +1,15 @@
 (ns ^:no-doc anvil.entity.string-effect
-  (:require [anvil.component :as component]
+  (:require [anvil.entity :as entity]
             [cdq.context :refer [stopped?]]
             [clojure.utils :refer [defmethods]]
             [gdl.context :as c]))
 
 (defmethods :entity/string-effect
-  (component/tick [[k {:keys [counter]}] eid c]
+  (entity/tick [[k {:keys [counter]}] eid c]
     (when (stopped? c counter)
       (swap! eid dissoc k)))
 
-  (component/render-above [[_ {:keys [text]}] entity c]
+  (entity/render-above [[_ {:keys [text]}] entity c]
     (let [[x y] (:position entity)]
       (c/draw-text c
                    {:text text

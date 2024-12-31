@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.entity.state.npc-idle
-  (:require [anvil.component :as component]
-            [anvil.effect :as effect]
+  (:require [anvil.effect :as effect]
             [anvil.entity :as entity]
             [anvil.skill :as skill]
             [cdq.context :as world]
@@ -29,10 +28,10 @@
        first))
 
 (defmethods :npc-idle
-  (component/->v [[_ eid] c]
+  (entity/->v [[_ eid] c]
     {:eid eid})
 
-  (component/tick [_ eid c]
+  (entity/tick [_ eid c]
     (let [effect-ctx (effect-context c eid)]
       (if-let [skill (npc-choose-skill c @eid effect-ctx)]
         (entity/event c eid :start-action [skill effect-ctx])
