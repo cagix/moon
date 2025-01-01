@@ -2,28 +2,28 @@
   (:require [anvil.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
             [cdq.grid :as grid]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.context :as c]))
 
 (defcomponent :npc-sleeping
-  (entity/->v [[_ eid] c]
+  (component/->v [[_ eid] c]
     {:eid eid})
 
-  (entity/exit [[_ {:keys [eid]}] c]
+  (component/exit [[_ {:keys [eid]}] c]
     (world/delayed-alert c
                          (:position       @eid)
                          (:entity/faction @eid)
                          0.2)
     (swap! eid add-text-effect c "[WHITE]!"))
 
-  (entity/tick [_ eid c]
+  (component/tick [_ eid c]
     (let [entity @eid
           cell (world/grid-cell c (entity/tile entity))] ; pattern!
       (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           (entity/event c eid :alert)))))
 
-  (entity/render-above [_ entity c]
+  (component/render-above [_ entity c]
     (let [[x y] (:position entity)]
       (c/draw-text c
                    {:text "zzz"

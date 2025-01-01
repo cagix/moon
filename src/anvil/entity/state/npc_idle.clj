@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [anvil.skill :as skill]
             [cdq.context :as world]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [anvil.world.potential-field :as potential-field]))
 
 (defn- effect-context [c eid]
@@ -28,10 +28,10 @@
        first))
 
 (defcomponent :npc-idle
-  (entity/->v [[_ eid] c]
+  (component/->v [[_ eid] c]
     {:eid eid})
 
-  (entity/tick [_ eid c]
+  (component/tick [_ eid c]
     (let [effect-ctx (effect-context c eid)]
       (if-let [skill (npc-choose-skill c @eid effect-ctx)]
         (entity/event c eid :start-action [skill effect-ctx])

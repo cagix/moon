@@ -1,21 +1,21 @@
 (ns ^:no-doc anvil.entity.state.npc-moving
   (:require [anvil.entity :as entity]
             [cdq.context :refer [timer stopped?]]
-            [clojure.component :refer [defcomponent]]))
+            [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :npc-moving
-  (entity/->v [[_ eid movement-vector] c]
+  (component/->v [[_ eid movement-vector] c]
     {:eid eid
      :movement-vector movement-vector
      :counter (timer c (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
-  (entity/enter [[_ {:keys [eid movement-vector]}] c]
+  (component/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
-  (entity/exit [[_ {:keys [eid]}] c]
+  (component/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (entity/tick [[_ {:keys [counter]}] eid c]
+  (component/tick [[_ {:keys [counter]}] eid c]
     (when (stopped? c counter)
       (entity/event c eid :timer-finished))))

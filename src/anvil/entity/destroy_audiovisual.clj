@@ -1,11 +1,10 @@
 (ns ^:no-doc anvil.entity.destroy-audiovisual
-  (:require [anvil.entity :as entity]
-            [gdl.context :as c]
+  (:require [gdl.context :as c]
             [cdq.context :as world]
-            [clojure.component :refer [defcomponent]]))
+            [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :entity/destroy-audiovisual
-  (entity/destroy [[_ audiovisuals-id] eid c]
+  (component/destroy [[_ audiovisuals-id] eid c]
     (world/audiovisual c
                        (:position @eid)
                        (c/build c audiovisuals-id))))

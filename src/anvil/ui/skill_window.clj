@@ -1,8 +1,8 @@
 (ns ^:no-doc anvil.ui.skill-window
-  (:require [anvil.entity :as entity]
+  #_(:require [anvil.entity :as entity]
             [anvil.entity.skills :as skills]))
 
-(defmethod entity/clicked-skillmenu-skill :player-idle [[_ {:keys [eid]}] skill c]
+#_(defmethod component/clicked-skillmenu-skill :player-idle [[_ {:keys [eid]}] skill c]
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
@@ -26,7 +26,7 @@
                                                         (:entity/image (db/build c id)) ; TODO here anyway taken
                                                         ; => should probably build this window @ game start
                                                         (fn []
-                                                          (entity/clicked-skillmenu-skill
+                                                          (component/clicked-skillmenu-skill
                                                            (entity/state-obj @player-eid)
                                                            (db/build c id)
                                                            c)))]]

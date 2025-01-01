@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.mouseover?
   (:require [anvil.entity :as entity]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.context :as c]))
 
 (def ^:private outline-alpha 0.4)
@@ -9,7 +9,7 @@
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
 (defcomponent :entity/mouseover?
-  (entity/render-below [_
+  (component/render-below [_
                         {:keys [entity/faction] :as entity}
                         {:keys [cdq.context/player-eid] :as c}]
     (let [player @player-eid]

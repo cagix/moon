@@ -12,7 +12,7 @@
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst read-edn-resource]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
@@ -180,8 +180,8 @@
                       (inventory/create c)]}))
 
 (defn- widgets-player-state-draw-component [_context]
-  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(::player-eid %))
-                                          %)}))
+  (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(::player-eid %))
+                                             %)}))
 
 (defn- dev-menu-config [c]
   {:menus [{:label "World"
@@ -437,7 +437,7 @@
 
 (defn- create-vs [components c]
   (reduce (fn [m [k v]]
-            (assoc m k (entity/->v [k v] c)))
+            (assoc m k (component/->v [k v] c)))
           {}
           components))
 
@@ -452,7 +452,7 @@
                                       (create-vs c)))))]
     (add-entity c eid)
     (doseq [component @eid]
-      (entity/create component eid c))
+      (component/create component eid c))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
@@ -552,7 +552,7 @@
                       (all-entities c))]
     (remove-entity c eid)
     (doseq [component @eid]
-      (entity/destroy component eid c))))
+      (component/destroy component eid c))))
 
 (defn creatures-in-los-of-player [{::keys [player-eid] :as c}]
   (->> (active-entities c)
@@ -703,10 +703,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [entity/render-below
-                    entity/render-default
-                    entity/render-above
-                    entity/render-info]
+            system [component/render-below
+                    component/render-default
+                    component/render-above
+                    component/render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? c player entity))]
@@ -728,20 +728,20 @@
                           (render-debug-after-entities c))))
 
 (defn- check-player-input [{::keys [player-eid] :as c}]
-  (entity/manual-tick (entity/state-obj @player-eid)
-                      c))
+  (component/manual-tick (entity/state-obj @player-eid)
+                         c))
 
-(defmethod entity/pause-game? :active-skill          [_] false)
-(defmethod entity/pause-game? :stunned               [_] false)
-(defmethod entity/pause-game? :player-moving         [_] false)
-(defmethod entity/pause-game? :player-item-on-cursor [_] true)
-(defmethod entity/pause-game? :player-idle           [_] true)
-(defmethod entity/pause-game? :player-dead           [_] true)
+(defmethod component/pause-game? :active-skill          [_] false)
+(defmethod component/pause-game? :stunned               [_] false)
+(defmethod component/pause-game? :player-moving         [_] false)
+(defmethod component/pause-game? :player-item-on-cursor [_] true)
+(defmethod component/pause-game? :player-idle           [_] true)
+(defmethod component/pause-game? :player-dead           [_] true)
 
 (defn- update-paused-state [{::keys [player-eid error] :as c} pausing?]
   (assoc c ::paused? (or error
                          (and pausing?
-                              (entity/pause-game? (entity/state-obj @player-eid))
+                              (component/pause-game? (entity/state-obj @player-eid))
                               (not (controls/unpaused? c))))))
 
 (defn- calculate-mouseover-eid [{::keys [player-eid] :as c}]
@@ -791,7 +791,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (entity/tick [k v] eid c))
+            (component/tick [k v] eid c))
           (catch Throwable t
             (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t

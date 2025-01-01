@@ -1,11 +1,10 @@
 (ns anvil.entity.skills
   (:refer-clojure :exclude [contains? remove])
-  (:require [anvil.entity :as entity]
-            #_[gdl.info :as info]
+  (:require #_[gdl.info :as info]
             [anvil.widgets.action-bar :refer [action-bar-add-skill
                                               action-bar-remove-skill]]
             [cdq.context :refer [stopped?]]
-            [clojure.component :refer [defcomponent]]))
+            [clojure.component :as component :refer [defcomponent]]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]
   (clojure.core/contains? skills id))
@@ -28,12 +27,12 @@
       (str "Skills: " (str/join "," (map name (keys skills))))))
 
 (defcomponent :entity/skills
-  (entity/create [[k skills] eid c]
+  (component/create [[k skills] eid c]
     (swap! eid assoc k nil)
     (doseq [skill skills]
       (add c eid skill)))
 
-  (entity/tick [[k skills] eid c]
+  (component/tick [[k skills] eid c]
     (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
             :when (and cooling-down?
                        (stopped? c cooling-down?))]

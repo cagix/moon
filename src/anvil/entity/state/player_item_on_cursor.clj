@@ -3,7 +3,7 @@
             [cdq.context :as world]
             [cdq.inventory :as inventory]
             [clojure.gdx :refer [button-just-pressed? play]]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [safe-merge]]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
@@ -65,15 +65,15 @@
       (entity/event c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
-  (entity/->v [[_ eid item] c]
+  (component/->v [[_ eid item] c]
     (safe-merge (c/build c :player-item-on-cursor/component)
                 {:eid eid
                  :item item}))
 
-  (entity/enter [[_ {:keys [eid item]}] c]
+  (component/enter [[_ {:keys [eid item]}] c]
     (swap! eid assoc :entity/item-on-cursor item))
 
-  (entity/exit [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
+  (component/exit [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
@@ -86,22 +86,22 @@
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (entity/manual-tick [[_ {:keys [eid]}] c]
+  (component/manual-tick [[_ {:keys [eid]}] c]
     (when (and (button-just-pressed? c :left)
                (world-item? c))
       (entity/event c eid :drop-item)))
 
-  (entity/render-below [[_ {:keys [item]}] entity c]
+  (component/render-below [[_ {:keys [item]}] entity c]
     (when (world-item? c)
       (c/draw-centered c
                        (:entity/image item)
                        (item-place-position c entity))))
 
-  (entity/draw-gui-view [[_ {:keys [eid]}] c]
+  (component/draw-gui-view [[_ {:keys [eid]}] c]
     (when (not (world-item? c))
       (c/draw-centered c
                        (:entity/image (:entity/item-on-cursor @eid))
                        (c/mouse-position c))))
 
-  (entity/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
+  (component/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
     (clicked-cell data eid cell c)))

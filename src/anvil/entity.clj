@@ -1,7 +1,7 @@
 (ns anvil.entity
   (:require [cdq.inventory :as inventory]
             [clojure.string :as str]
-            [clojure.component :refer [defsystem defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.context :refer [set-cursor]]
             [gdl.info :as info]
             [gdl.operation :as op]
@@ -9,55 +9,6 @@
             [gdl.math.vector :as v]
             [gdl.math.shapes :as shape]
             [reduce-fsm :as fsm]))
-
-(defsystem ->v)
-(defmethod ->v :default [[_ v] _c]
-  v)
-
-(defsystem create)
-(defmethod create :default [_ eid c])
-
-(defsystem destroy)
-(defmethod destroy :default [_ eid c])
-
-(defsystem tick)
-(defmethod tick :default [_ eid c])
-
-(defsystem render-below)
-(defmethod render-below :default [_ entity c])
-
-(defsystem render-default)
-(defmethod render-default :default [_ entity c])
-
-(defsystem render-above)
-(defmethod render-above :default [_ entity c])
-
-(defsystem render-info)
-(defmethod render-info :default [_ entity c])
-
-(defsystem enter)
-(defmethod enter :default [_ c])
-
-(defsystem exit)
-(defmethod exit :default [_ c])
-
-(defsystem cursor)
-(defmethod cursor :default [_])
-
-(defsystem clicked-inventory-cell)
-(defmethod clicked-inventory-cell :default [_ cell c])
-
-(defsystem clicked-skillmenu-skill)
-(defmethod clicked-skillmenu-skill :default [_ skill c])
-
-(defsystem draw-gui-view)
-(defmethod draw-gui-view :default [_ c])
-
-(defsystem manual-tick)
-(defmethod manual-tick :default [_ c])
-
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
@@ -80,11 +31,11 @@
   (let [k (state-k entity)]
     [k (k entity)]))
 
-(defmethod cursor :stunned               [_] :cursors/denied)
-(defmethod cursor :player-moving         [_] :cursors/walking)
-(defmethod cursor :player-item-on-cursor [_] :cursors/hand-grab)
-(defmethod cursor :player-dead           [_] :cursors/black-x)
-(defmethod cursor :active-skill          [_] :cursors/sandclock)
+(defmethod component/cursor :stunned               [_] :cursors/denied)
+(defmethod component/cursor :player-moving         [_] :cursors/walking)
+(defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
+(defmethod component/cursor :player-dead           [_] :cursors/black-x)
+(defmethod component/cursor :active-skill          [_] :cursors/sandclock)
 
 (defn- send-event! [c eid event params]
   (when-let [fsm (:entity/fsm @eid)]
@@ -93,19 +44,19 @@
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (->v (if params
-                                                [new-state-k eid params]
-                                                [new-state-k eid])
-                                              c)]]
+              new-state-obj [new-state-k (component/->v (if params
+                                                          [new-state-k eid params]
+                                                          [new-state-k eid])
+                                                        c)]]
           (when (:entity/player? @eid)
-            (when-let [cursor (cursor new-state-obj)]
+            (when-let [cursor (component/cursor new-state-obj)]
               (set-cursor c cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (exit  old-state-obj c)
-          (enter new-state-obj c))))))
+          (component/exit  old-state-obj c)
+          (component/enter new-state-obj c))))))
 
 (defn event
   ([c eid event]
@@ -206,7 +157,7 @@
       (set-item c eid cell item))))
 
 (defcomponent :entity/inventory
-  (create [[k items] eid c]
+  (component/create [[k items] eid c]
     (swap! eid assoc k inventory/empty-inventory)
     (doseq [item items]
       (pickup-item c eid item))))
@@ -239,7 +190,7 @@
   (info/segment [_ _c]
     (str "Mana: " (mana info/*info-text-entity*)))
 
-  (->v [[_ v] c]
+  (component/->v [[_ v] c]
     [v v]))
 
 (defn hitpoints

@@ -1,18 +1,18 @@
 (ns ^:no-doc anvil.entity.state.player-idle
   (:require [anvil.controls :as controls]
             [clojure.gdx :refer [button-just-pressed? play]]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [safe-merge]]
             [anvil.entity :as entity]
             [anvil.player :as player]
             [gdl.context :as c]))
 
 (defcomponent :player-idle
-  (entity/->v [[_ eid] c]
+  (component/->v [[_ eid] c]
     (safe-merge (c/build c :player-idle/clicked-inventory-cell)
                 {:eid eid}))
 
-  (entity/manual-tick [[_ {:keys [eid]}] c]
+  (component/manual-tick [[_ {:keys [eid]}] c]
     (if-let [movement-vector (controls/movement-vector c)]
       (entity/event c eid :movement-input movement-vector)
       (let [[cursor on-click] (player/interaction-state c eid)]
@@ -20,7 +20,7 @@
         (when (button-just-pressed? c :left)
           (on-click)))))
 
-  (entity/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
+  (component/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (play pickup-item-sound)

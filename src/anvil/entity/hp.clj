@@ -1,7 +1,7 @@
 (ns anvil.entity.hp
   (:require [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.context :as c]
             [gdl.val-max :as val-max]))
 
@@ -44,10 +44,10 @@
   (info/segment [_ _c]
     (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 
-  (entity/->v [[_ v] c]
+  (component/->v [[_ v] c]
     [v v])
 
-  (entity/render-info [_ entity c]
+  (component/render-info [_ entity c]
     (let [ratio (val-max/ratio (entity/hitpoints entity))]
       (when (or (< ratio 1) (:entity/mouseover? entity))
         (draw-hpbar c entity ratio)))))
