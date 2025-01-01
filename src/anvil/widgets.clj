@@ -28,8 +28,6 @@
              :cell-defaults {:pad 2}
              :fill-parent? true}))
 
-(defn inventory [c])
-
 (defn- draw-player-message [{:keys [gdl.context/viewport
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]

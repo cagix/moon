@@ -1,13 +1,12 @@
 (ns anvil.widgets.inventory
   (:require [anvil.entity :as entity]
-            [gdl.info :as info]
-            [anvil.widgets :as widgets]
-            [cdq.context :as w]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [clojure.gdx :as gdx]
+            [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.utils :refer [defn-impl]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
+            [gdl.info :as info]
             [gdl.ui :refer [set-drawable!
                             ui-widget
                             texture-region-drawable
@@ -17,7 +16,6 @@
                             remove-tooltip!]
              :as ui]
             [gdl.val-max :as val-max]
-            [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [gdl.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
@@ -116,7 +114,7 @@
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
                                (->cell c :inventory.slot/bag :position [x y]))))}))
 
-(defn-impl widgets/inventory [{:keys [gdl.context/viewport] :as c}]
+(defn create [{:keys [gdl.context/viewport] :as c}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
@@ -126,7 +124,7 @@
                        :pad 4}]]}))
 
 (defn- cell-widget [c cell]
-  (get (::table (w/get-inventory c)) cell))
+  (get (::table (get (:windows (c/stage c)) :inventory-window)) cell))
 
 (defn- set-item-image-in-widget [c cell item]
   (let [cell-widget (cell-widget c cell)

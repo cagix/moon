@@ -35,8 +35,7 @@
   [:gdl.context/tiled-map-renderer]
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
-  [:cdq.context/requires [anvil.widgets.inventory
-
+  [:cdq.context/requires [
                           anvil.info.impl
 
                           anvil.effect.target.audiovisual

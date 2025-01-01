@@ -4,6 +4,7 @@
             [gdl.info :as info]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
+            [anvil.widgets.inventory :as inventory]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [cdq.potential-fields :as potential-fields]
@@ -175,7 +176,7 @@
 (defn- widgets-windows [c]
   (ui/group {:id :windows
              :actors [(entity-info-window c)
-                      (widgets/inventory c)]}))
+                      (inventory/create c)]}))
 
 (defn- widgets-player-state-draw-component [_context]
   (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(::player-eid %))
