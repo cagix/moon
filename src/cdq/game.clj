@@ -1,4 +1,4 @@
-(ns cdq.game-loop
+(ns cdq.game
   (:require [anvil.controls :as controls]
             [anvil.entity :as entity]
             [cdq.context :refer [line-of-sight? render-z-order active-entities
@@ -14,7 +14,8 @@
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.component :as component]
             [clojure.gdx :refer [clear-screen black]]
-            [clojure.utils :refer [pretty-pst sort-by-order]]
+            [clojure.utils :refer [read-edn-resource pretty-pst sort-by-order]]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
@@ -55,12 +56,12 @@
   (component/manual-tick (entity/state-obj @player-eid)
                          c))
 
-(defn render [{:keys [gdl.context/world-viewport
-                      cdq.context/tiled-map
-                      cdq.context/player-eid
-                      cdq.context/raycaster
-                      cdq.context/explored-tile-corners]
-               :as c}]
+(defn- game-loop [{:keys [gdl.context/world-viewport
+                          cdq.context/tiled-map
+                          cdq.context/player-eid
+                          cdq.context/raycaster
+                          cdq.context/explored-tile-corners]
+                   :as c}]
   (clear-screen black)
   ; FIXME position DRY
   (cam/set-position! (:camera world-viewport)
@@ -97,3 +98,9 @@
                              :controls/window-hotkeys    controls/window-hotkeys}
                             (c/stage c))
     c))
+
+(defn -main []
+  (let [config (read-edn-resource "app.edn")]
+    (app/start (:app     config)
+               (:context config)
+               game-loop)))
