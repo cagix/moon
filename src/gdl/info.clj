@@ -40,12 +40,12 @@
               :maxrange
               :entity-effects])
 
-(defn- apply-color [k info-text]
+(defn- apply-color [k->colors k info-text]
   (if-let [color (k->colors k)]
     (str "[" color "]" info-text "[]")
     info-text))
 
-(defn- sort-k-order [components]
+(defn- sort-k-order [k-order components]
   (sort-by (fn [[k _]] (or (index-of k k-order) 99))
            components))
 
@@ -65,10 +65,10 @@
 
 (defn text [c components]
   (->> components
-       sort-k-order
+       (sort-k-order k-order)
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k (segment component c)))
+                           (apply-color k->colors k (segment component c)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create
