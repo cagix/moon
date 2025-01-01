@@ -608,19 +608,6 @@
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
 
-(defmethod component/pause-game? :active-skill          [_] false)
-(defmethod component/pause-game? :stunned               [_] false)
-(defmethod component/pause-game? :player-moving         [_] false)
-(defmethod component/pause-game? :player-item-on-cursor [_] true)
-(defmethod component/pause-game? :player-idle           [_] true)
-(defmethod component/pause-game? :player-dead           [_] true)
-
-(defn update-paused-state [{::keys [player-eid error] :as c} pausing?]
-  (assoc c ::paused? (or error
-                         (and pausing?
-                              (component/pause-game? (entity/state-obj @player-eid))
-                              (not (controls/unpaused? c))))))
-
 (defn update-time [c]
   (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
     (-> c

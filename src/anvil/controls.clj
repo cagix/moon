@@ -1,10 +1,6 @@
 (ns anvil.controls
-  (:require [clojure.gdx :refer [key-pressed? key-just-pressed?]]
+  (:require [clojure.gdx :refer [key-pressed?]]
             [gdl.math.vector :as v]))
-
-(defn unpaused? [c]
-  (or (key-just-pressed? c :p)
-      (key-pressed? c :space)))
 
 (defn- add-vs [vs]
   (v/normalise (reduce v/add [0 0] vs)))

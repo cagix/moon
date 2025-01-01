@@ -2,7 +2,6 @@
   (:require [anvil.entity :as entity]
             [cdq.context :refer [line-of-sight? render-z-order active-entities
                                  point->entities
-                                 update-paused-state
                                  update-time
                                  tick-potential-fields
                                  tick-entities
@@ -11,13 +10,30 @@
                                  check-ui-key-listeners]]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
-            [clojure.component :as component]
-            [clojure.gdx :refer [clear-screen black]]
+            [clojure.component :as component :refer [defsystem]]
+            [clojure.gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.utils :refer [read-edn-resource pretty-pst sort-by-order]]
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
+
+(defsystem pause-game?)
+(defmethod pause-game? :default [_])
+
+(defmethod pause-game? :active-skill          [_] false)
+(defmethod pause-game? :stunned               [_] false)
+(defmethod pause-game? :player-moving         [_] false)
+(defmethod pause-game? :player-item-on-cursor [_] true)
+(defmethod pause-game? :player-idle           [_] true)
+(defmethod pause-game? :player-dead           [_] true)
+
+(defn- update-paused-state [{:keys [cdq.context/player-eid error] :as c} pausing?]
+  (assoc c :cdq.context/paused? (or error
+                                    (and pausing?
+                                         (pause-game? (entity/state-obj @player-eid))
+                                         (not (or (key-just-pressed? c :p)
+                                                  (key-pressed? c :space)))))))
 
 (defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
   (let [player @player-eid

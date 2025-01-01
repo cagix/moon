@@ -84,9 +84,6 @@
 (defsystem manual-tick)
 (defmethod manual-tick :default [_ c])
 
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
-
 (defsystem applicable?)
 
 (defsystem handle)
