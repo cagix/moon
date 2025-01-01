@@ -43,5 +43,7 @@ Returns:
 (defn draw [stage]
   (Stage/.draw stage))
 
-(defn root [stage]
+(defn root
+  "Returns the root group which holds all actors in the stage."
+  [stage]
   (Stage/.getRoot stage))
