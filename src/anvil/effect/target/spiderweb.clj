@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.effect.target.spiderweb
   (:require [anvil.entity :as entity]
-            [gdl.info :as info]
             [cdq.context :refer [timer]]
             [clojure.component :as component :refer [defcomponent]]))
 
@@ -8,7 +7,7 @@
       duration 5]
 
   (defcomponent :effects.target/spiderweb
-    (info/segment [_ _c]
+    (component/segment [_ _c]
       "Spiderweb slows 50% for 5 seconds."
       ; modifiers same like item/modifiers has info-text
       ; counter ?

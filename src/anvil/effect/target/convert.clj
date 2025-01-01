@@ -1,10 +1,9 @@
 (ns ^:no-doc anvil.effect.target.convert
   (:require [anvil.entity :as entity]
-            [gdl.info :as info]
             [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :effects.target/convert
-  (info/segment [_ _c]
+  (component/segment [_ _c]
     "Converts target to your side.")
 
   (component/applicable? [_ {:keys [effect/source effect/target]}]

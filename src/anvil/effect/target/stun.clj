@@ -1,11 +1,10 @@
 (ns ^:no-doc anvil.effect.target.stun
   (:require [anvil.entity :as entity]
-            [gdl.info :as info]
             [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [readable-number]]))
 
 (defcomponent :effects.target/stun
-  (info/segment [duration _c]
+  (component/segment [duration _c]
     (str "Stuns for " (readable-number duration) " seconds"))
 
   (component/applicable? [_ {:keys [effect/target]}]

@@ -1,7 +1,6 @@
 (ns anvil.entity.skills
   (:refer-clojure :exclude [contains? remove])
-  (:require #_[gdl.info :as info]
-            [anvil.widgets.action-bar :refer [action-bar-add-skill
+  (:require [anvil.widgets.action-bar :refer [action-bar-add-skill
                                               action-bar-remove-skill]]
             [cdq.context :refer [stopped?]]
             [clojure.component :as component :refer [defcomponent]]))
@@ -21,7 +20,7 @@
     (action-bar-remove-skill c skill))
   (swap! eid update :entity/skills dissoc id))
 
-#_(defmethod info/segment [skills _c]
+#_(defmethod component/segment [skills _c]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))

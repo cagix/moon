@@ -1,5 +1,5 @@
 (ns gdl.info
-  (:require [clojure.component :refer [defsystem]]
+  (:require [clojure.component :as component]
             [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.utils :refer [sort-by-k-order]]))
@@ -57,15 +57,12 @@
 
 (declare ^:dynamic *info-text-entity*)
 
-(defsystem segment)
-(defmethod segment :default [_ c])
-
 (defn text [c components]
   (->> components
        (sort-by-k-order k-order)
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k->colors k (segment component c)))
+                           (apply-color k->colors k (component/info component c)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create!

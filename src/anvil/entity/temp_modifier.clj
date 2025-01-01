@@ -1,13 +1,12 @@
 (ns ^:no-doc anvil.entity.temp-modifier
   (:require [anvil.entity :as entity]
-            [gdl.info :as info]
             [cdq.context :refer [finished-ratio stopped?]]
             [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [readable-number]]
             [gdl.context :as c]))
 
 (defcomponent :entity/temp-modifier
-  (info/segment [[_ {:keys [counter]}] c]
+  (component/segment [[_ {:keys [counter]}] c]
     (str "Spiderweb - remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
   (component/tick [[k {:keys [modifiers counter]}] eid c]

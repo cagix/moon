@@ -1,6 +1,5 @@
 (ns ^:no-doc anvil.effect.target.damage
   (:require [anvil.entity :as entity]
-            [gdl.info :as info]
             [cdq.context :as world :refer [add-text-effect]]
             [clojure.component :as component :refer [defcomponent]]
             [gdl.context :as c]
@@ -25,7 +24,7 @@
   (< (rand) (effective-armor-save source* target*)))
 
 (defcomponent :effects.target/damage
-  (info/segment [[_ damage] _c]
+  (component/segment [[_ damage] _c]
     (damage-info damage)
     #_(if source
         (let [modified (entity/damage @source damage)]
