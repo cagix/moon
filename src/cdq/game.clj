@@ -1,6 +1,5 @@
 (ns cdq.game
-  (:require [anvil.controls :as controls]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [cdq.context :refer [line-of-sight? render-z-order active-entities
                                  update-mouseover-entity
                                  update-paused-state
@@ -56,6 +55,12 @@
   (component/manual-tick (entity/state-obj @player-eid)
                          c))
 
+(def close-windows-key :escape)
+
+(def window-hotkeys
+  {:inventory-window   :i
+   :entity-info-window :e})
+
 (defn- game-loop [{:keys [gdl.context/world-viewport
                           cdq.context/tiled-map
                           cdq.context/player-eid
@@ -94,8 +99,8 @@
     (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
     (check-camera-controls c (:camera world-viewport))
     (check-ui-key-listeners c
-                            {:controls/close-windows-key controls/close-windows-key
-                             :controls/window-hotkeys    controls/window-hotkeys}
+                            {:controls/close-windows-key close-windows-key
+                             :controls/window-hotkeys    window-hotkeys}
                             (c/stage c))
     c))
 

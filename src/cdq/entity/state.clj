@@ -1,11 +1,9 @@
 (ns cdq.entity.state
   (:require [anvil.entity :as entity]
-            [cdq.context :as world :refer [timer finished-ratio stopped? add-text-effect show-modal]]
-            [cdq.grid :as grid]
+            [cdq.context :as world]
             [cdq.inventory :as inventory]
             [clojure.component :as component :refer [defcomponent]]
             [clojure.gdx :refer [play]]
-            [clojure.utils :refer [safe-merge]]
             [gdl.context :as c]))
 
 (defcomponent :player-idle

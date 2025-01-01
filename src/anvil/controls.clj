@@ -6,12 +6,6 @@
   (or (key-just-pressed? c :p)
       (key-pressed? c :space)))
 
-(def close-windows-key :escape)
-
-(def window-hotkeys
-  {:inventory-window   :i
-   :entity-info-window :e})
-
 (defn- add-vs [vs]
   (v/normalise (reduce v/add [0 0] vs)))
 
