@@ -1,5 +1,6 @@
 (ns cdq.game-loop
   (:require [cdq.context :as context]
+            [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :refer [clear-screen black]]
             [gdl.context :as c]
@@ -26,10 +27,10 @@
                                               (cam/position (:camera world-viewport))))
   (c/draw-on-world-view c
                         (fn [c]
-                          (context/render-debug-before-entities c)
+                          (debug/render-before-entities c)
                           ; FIXME position DRY (from player)
                           (context/render-entities c (map deref (context/active-entities c)))
-                          (context/render-debug-after-entities c)))
+                          (debug/render-after-entities c)))
   (let [stage (c/stage c)]
     (ui/draw stage c)
     (ui/act  stage c))
