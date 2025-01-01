@@ -1,7 +1,7 @@
-(ns anvil.info.impl
+(ns cdq.info
   (:require [anvil.entity :as entity]
-            [gdl.info :as info]
-            [clojure.utils :refer [readable-number k->pretty-name]]))
+            [clojure.utils :refer [readable-number k->pretty-name]]
+            [gdl.info :as info]))
 
 (defmethod info/segment :property/pretty-name [[_ v] _c] v)
 (defmethod info/segment :maxrange             [[_ v] _c] v)
