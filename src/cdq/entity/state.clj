@@ -11,23 +11,7 @@
             [clojure.component :as component :refer [defcomponent]]
             [clojure.gdx :refer [button-just-pressed? play]]
             [clojure.utils :refer [safe-merge]]
-            [gdl.context :as c]
-            [gdl.math.vector :as v]))
-
-(defn- draw-skill-image [c image entity [x y] action-counter-ratio]
-  (let [[width height] (:world-unit-dimensions image)
-        _ (assert (= width height))
-        radius (/ (float width) 2)
-        y (+ (float y) (float (:half-height entity)) (float 0.15))
-        center [x (+ y radius)]]
-    (c/filled-circle c center radius [1 1 1 0.125])
-    (c/sector c
-              center
-              radius
-              90 ; start-angle
-              (* (float action-counter-ratio) 360) ; degree
-              [1 1 1 0.5])
-    (c/draw-image c image [(- (float x) radius) y])))
+            [gdl.context :as c]))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
   (/ action-time
@@ -66,18 +50,7 @@
      (stopped? c counter)
      (do
       (effect/do-all! c effect-ctx (:skill/effects skill))
-      (entity/event c eid :action-done))))
-
-  (component/render-info [[_ {:keys [skill effect-ctx counter]}] entity c]
-    (let [{:keys [entity/image skill/effects]} skill]
-      (draw-skill-image c
-                        image
-                        entity
-                        (:position entity)
-                        (finished-ratio c counter))
-      (effect/render-info c
-                          (effect/check-update-ctx c effect-ctx)
-                          effects))))
+      (entity/event c eid :action-done)))))
 
 (defcomponent :npc-dead
   (component/create [[_ eid] c]
@@ -150,15 +123,7 @@
           cell (world/grid-cell c (entity/tile entity))] ; pattern!
       (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
-          (entity/event c eid :alert)))))
-
-  (component/render-above [_ entity c]
-    (let [[x y] (:position entity)]
-      (c/draw-text c
-                   {:text "zzz"
-                    :x x
-                    :y (+ y (:half-height entity))
-                    :up? true}))))
+          (entity/event c eid :alert))))))
 
 (defcomponent :player-dead
   (component/create [[k] c]
@@ -194,25 +159,6 @@
       (play pickup-item-sound)
       (entity/event c eid :pickup-item item)
       (entity/remove-item c eid cell))))
-
-(defn- world-item? [c]
-  (not (c/mouse-on-actor? c)))
-
-; It is possible to put items out of sight, losing them.
-; Because line of sight checks center of entity only, not corners
-; this is okay, you have thrown the item over a hill, thats possible.
-
-(defn- placement-point [player target maxrange]
-  (v/add player
-         (v/scale (v/direction player target)
-                  (min maxrange
-                       (v/distance player target)))))
-
-(defn- item-place-position [c entity]
-  (placement-point (:position entity)
-                   (c/world-mouse-position c)
-                   ; so you cannot put it out of your own reach
-                   (- (:entity/click-distance-tiles entity) 0.1)))
 
 (defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
   (let [entity @eid
@@ -270,22 +216,16 @@
         (play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
         (world/item c
-                    (item-place-position c entity)
+                    (world/item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
   (component/manual-tick [[_ {:keys [eid]}] c]
     (when (and (button-just-pressed? c :left)
-               (world-item? c))
+               (world/world-item? c))
       (entity/event c eid :drop-item)))
 
-  (component/render-below [[_ {:keys [item]}] entity c]
-    (when (world-item? c)
-      (c/draw-centered c
-                       (:entity/image item)
-                       (item-place-position c entity))))
-
   (component/draw-gui-view [[_ {:keys [eid]}] c]
-    (when (not (world-item? c))
+    (when (not (world/world-item? c))
       (c/draw-centered c
                        (:entity/image (:entity/item-on-cursor @eid))
                        (c/mouse-position c))))
@@ -318,7 +258,4 @@
 
   (component/tick [[_ {:keys [counter]}] eid c]
     (when (stopped? c counter)
-      (entity/event c eid :effect-wears-off)))
-
-  (component/render-below [_ entity c]
-    (c/circle c (:position entity) 0.5 [1 1 1 0.6])))
+      (entity/event c eid :effect-wears-off))))

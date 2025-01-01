@@ -41,6 +41,8 @@
   ; where they are defined we use namespaced keywords with `::`
   ; => this way we know exactly where stuff is defined & components are truly impl detail
   [:cdq.context/requires [
+                          cdq.component.render
+
                           cdq.effect
                           cdq.effect.target
                           cdq.entity.state
@@ -48,16 +50,12 @@
 
                           anvil.entity.alert-friendlies-after-duration
                           anvil.entity.animation
-                          anvil.entity.clickable
                           anvil.entity.delete-after-animation-stopped?
                           anvil.entity.delete-after-duration
                           anvil.entity.destroy-audiovisual
                           anvil.entity.faction
                           anvil.entity.fsm
                           anvil.entity.hp
-                          anvil.entity.image
-                          anvil.entity.line-render
-                          anvil.entity.mouseover?
                           anvil.entity.movement
                           anvil.entity.projectile-collision
                           anvil.entity.skills
