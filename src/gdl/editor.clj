@@ -3,7 +3,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first index-of defmethods]]
+            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order defmethods]]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.context :as ctx :refer [play-sound]]
@@ -432,15 +432,13 @@
    :skill/cost
    :skill/cooldown])
 
-(defn- component-order [[k _v]]
-  (or (index-of k property-k-sort-order) 99))
-
 (defmethod schema->widget :s/map [schema m]
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
                           (map #(component-row % (malli-form schema) table)
-                               (sort-by component-order m)))
+                               (sort-by-k-order property-k-sort-order
+                                                m)))
         colspan component-row-cols
         opt? (m/optional-keys-left (malli-form schema) m)]
     (add-rows!

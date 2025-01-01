@@ -67,6 +67,11 @@
       nil
       idx)))
 
+(defn sort-by-k-order [k-order components]
+  (let [max-count (inc (count k-order))]
+    (sort-by (fn [[k _]] (or (index-of k k-order) max-count))
+             components)))
+
 (defn find-first
   "Returns the first item of coll for which (pred item) returns logical true.
   Consumes sequences up to the first match, will consume the entire sequence

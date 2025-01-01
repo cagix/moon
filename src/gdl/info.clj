@@ -1,7 +1,7 @@
 (ns gdl.info
   (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [clojure.utils :refer [index-of defsystem]]))
+            [clojure.utils :refer [sort-by-k-order defsystem]]))
 
 (gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
 
@@ -45,10 +45,6 @@
     (str "[" color "]" info-text "[]")
     info-text))
 
-(defn- sort-k-order [k-order components]
-  (sort-by (fn [[k _]] (or (index-of k k-order) 99))
-           components))
-
 (defn- remove-newlines [s]
   (let [new-s (-> s
                   (str/replace "\n\n" "\n")
@@ -65,7 +61,7 @@
 
 (defn text [c components]
   (->> components
-       (sort-k-order k-order)
+       (sort-by-k-order k-order)
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
                            (apply-color k->colors k (segment component c)))
