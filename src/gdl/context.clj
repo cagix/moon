@@ -20,7 +20,7 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [clojure.gdx.scene2d.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Stage)
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)
            (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn get-sound [{::keys [assets]} sound-name]
