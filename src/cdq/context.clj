@@ -372,7 +372,7 @@
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
-  (grid/remove-entity         eid))
+  (grid/remove-entity eid))
 
 (defn position-changed [{::keys [content-grid grid]} eid]
   (content-grid/entity-position-changed content-grid eid)
