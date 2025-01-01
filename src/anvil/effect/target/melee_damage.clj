@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [gdl.info :as info]
             [cdq.context :as world]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -12,7 +12,7 @@
 (defn- damage-effect [entity]
   [:effects.target/damage (entity->melee-damage entity)])
 
-(defmethods :effects.target/melee-damage
+(defcomponent :effects.target/melee-damage
   ; FIXME no source
   ; => to entity move
   (info/segment [_ _c]

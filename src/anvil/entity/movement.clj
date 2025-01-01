@@ -2,7 +2,7 @@
   (:require [anvil.entity :as entity]
             [cdq.context :as world]
             [cdq.grid :as grid]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.malli :as m]
             [gdl.math.vector :as v]))
 
@@ -49,7 +49,7 @@
 
 (def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
-(defmethods :entity/movement
+(defcomponent :entity/movement
   (entity/tick [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
                 eid
                 {:keys [cdq.context/delta-time] :as c}]

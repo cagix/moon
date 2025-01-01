@@ -3,7 +3,8 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order defmethods]]
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.context :as ctx :refer [play-sound]]
@@ -520,7 +521,7 @@
                     :scaling :fill
                     :align :center}))
 
-(defmethods ::stage-actors
+(defcomponent ::stage-actors
   (app/create [_ context]
     (doseq [actor [(background-image context "images/moon_background.png")
                    (tabs-table       context "custom label text here")]]

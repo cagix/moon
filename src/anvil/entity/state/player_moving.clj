@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.entity.state.player-moving
   (:require [anvil.controls :as controls]
             [anvil.entity :as entity]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
-(defmethods :player-moving
+(defcomponent :player-moving
   (entity/->v [[_ eid movement-vector] c]
     {:eid eid
      :movement-vector movement-vector})

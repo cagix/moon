@@ -3,9 +3,10 @@
             [anvil.entity :as entity]
             [cdq.context :as world]
             [cdq.grid :as grid]
-            [clojure.utils :refer [defmethods find-first]]))
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [find-first]]))
 
-(defmethods :entity/projectile-collision
+(defcomponent :entity/projectile-collision
   (entity/->v [[_ v] c]
     (assoc v :already-hit-bodies #{}))
 

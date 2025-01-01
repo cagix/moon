@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [anvil.skill :as skill]
             [cdq.context :as world]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [anvil.world.potential-field :as potential-field]))
 
 (defn- effect-context [c eid]
@@ -27,7 +27,7 @@
                      (effect/applicable-and-useful? c ctx (:skill/effects %))))
        first))
 
-(defmethods :npc-idle
+(defcomponent :npc-idle
   (entity/->v [[_ eid] c]
     {:eid eid})
 

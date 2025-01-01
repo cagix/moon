@@ -2,9 +2,9 @@
   (:require [anvil.entity :as entity]
             [gdl.context :as c]
             [cdq.context :as world]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
-(defmethods :entity/destroy-audiovisual
+(defcomponent :entity/destroy-audiovisual
   (entity/destroy [[_ audiovisuals-id] eid c]
     (world/audiovisual c
                        (:position @eid)

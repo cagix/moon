@@ -2,9 +2,10 @@
   (:require [gdl.effect.component :as component]
             [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.utils :refer [readable-number defmethods]]))
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [readable-number]]))
 
-(defmethods :effects.target/stun
+(defcomponent :effects.target/stun
   (info/segment [duration _c]
     (str "Stuns for " (readable-number duration) " seconds"))
 

@@ -5,7 +5,7 @@
             [anvil.widgets.action-bar :refer [action-bar-add-skill
                                               action-bar-remove-skill]]
             [cdq.context :refer [stopped?]]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]
   (clojure.core/contains? skills id))
@@ -27,7 +27,7 @@
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))
 
-(defmethods :entity/skills
+(defcomponent :entity/skills
   (entity/create [[k skills] eid c]
     (swap! eid assoc k nil)
     (doseq [skill skills]

@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.entity.line-render
   (:require [anvil.entity :as entity]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
-(defmethods :entity/line-render
+(defcomponent :entity/line-render
   (entity/render-default [[_ {:keys [thick? end color]}] entity c]
     (let [position (:position entity)]
       (if thick?

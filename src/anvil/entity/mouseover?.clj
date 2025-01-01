@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.entity.mouseover?
   (:require [anvil.entity :as entity]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
 (def ^:private outline-alpha 0.4)
@@ -8,7 +8,7 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defmethods :entity/mouseover?
+(defcomponent :entity/mouseover?
   (entity/render-below [_
                         {:keys [entity/faction] :as entity}
                         {:keys [cdq.context/player-eid] :as c}]

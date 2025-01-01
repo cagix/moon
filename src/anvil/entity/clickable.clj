@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.entity.clickable
   (:require [anvil.entity :as entity]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
-(defmethods :entity/clickable
+(defcomponent :entity/clickable
   (entity/render-default [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity} c]
     (when (and mouseover? text)
       (let [[x y] (:position entity)]

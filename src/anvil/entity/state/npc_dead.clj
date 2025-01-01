@@ -1,8 +1,8 @@
 (ns ^:no-doc anvil.entity.state.npc-dead
   (:require [anvil.entity :as entity]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
-(defmethods :npc-dead
+(defcomponent :npc-dead
   (entity/->v [[_ eid] c]
     {:eid eid})
 

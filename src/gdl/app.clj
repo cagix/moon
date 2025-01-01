@@ -1,7 +1,7 @@
 (ns gdl.app
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
-            [clojure.utils :refer [defsystem]]))
+            [clojure.component :refer [defsystem]]))
 
 (defsystem create)
 (defmethod create :default [[_ v] _context]

@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.entity.animation
   (:require [anvil.entity :as entity]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.graphics.animation :as animation]))
 
-(defmethods :entity/animation
+(defcomponent :entity/animation
   (entity/create [[_ animation] eid c]
     (swap! eid assoc :entity/image (animation/current-frame animation)))
 

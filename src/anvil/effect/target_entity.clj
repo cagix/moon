@@ -3,7 +3,7 @@
             [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
             [cdq.context :as world]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
 
@@ -25,7 +25,7 @@
          (v/scale (entity/direction entity target*)
                   maxrange)))
 
-(defmethods :effects/target-entity
+(defcomponent :effects/target-entity
   (component/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
     (and target
          (seq (filter-applicable? ctx entity-effects))))

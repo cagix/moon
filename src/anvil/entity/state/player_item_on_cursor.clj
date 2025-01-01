@@ -3,7 +3,8 @@
             [cdq.context :as world]
             [cdq.inventory :as inventory]
             [clojure.gdx :refer [button-just-pressed? play]]
-            [clojure.utils :refer [defmethods safe-merge]]
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [safe-merge]]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
 
@@ -63,7 +64,7 @@
       (entity/event c eid :dropped-item)
       (entity/event c eid :pickup-item item-in-cell)))))
 
-(defmethods :player-item-on-cursor
+(defcomponent :player-item-on-cursor
   (entity/->v [[_ eid item] c]
     (safe-merge (c/build c :player-item-on-cursor/component)
                 {:eid eid

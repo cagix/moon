@@ -2,9 +2,10 @@
   (:require [anvil.entity :as entity]
             [gdl.info :as info]
             [cdq.context :refer [timer finished-ratio stopped?]]
-            [clojure.utils :refer [defmethods readable-number]]))
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [readable-number]]))
 
-(defmethods :entity/delete-after-duration
+(defcomponent :entity/delete-after-duration
   (entity/->v [[_ duration] c]
     (timer c duration))
 

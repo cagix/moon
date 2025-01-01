@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.entity.alert-friendlies-after-duration
   (:require [anvil.entity :as entity]
             [cdq.context :refer [stopped? friendlies-in-radius]]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
-(defmethods :entity/alert-friendlies-after-duration
+(defcomponent :entity/alert-friendlies-after-duration
   (entity/tick [[_ {:keys [counter faction]}] eid c]
     (when (stopped? c counter)
       (swap! eid assoc :entity/destroyed? true)

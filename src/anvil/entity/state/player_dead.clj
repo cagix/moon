@@ -2,10 +2,10 @@
   (:require [anvil.entity :as entity]
             [cdq.context :refer [show-modal]]
             [clojure.gdx :refer [play]]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
-(defmethods :player-dead
+(defcomponent :player-dead
   (entity/->v [[k] c]
     (c/build c :player-dead/component.enter))
 

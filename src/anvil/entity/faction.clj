@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.faction
   (:require [gdl.info :as info]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
-(defmethods :entity/faction
+(defcomponent :entity/faction
   (info/segment [faction _c]
     (str "Faction: " (name faction))))

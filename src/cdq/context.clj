@@ -12,7 +12,8 @@
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [clojure.utils :refer [defmethods tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst read-edn-resource]]
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst read-edn-resource]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
             [gdl.context :as c]
@@ -27,17 +28,17 @@
             [clojure.gdx.scene2d.group :as group]
             [gdl.val-max :as val-max]))
 
-(defmethods ::tiled-map
+(defcomponent ::tiled-map
   (app/create [_ {::keys [level]}]
     (:tiled-map level))
   (app/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
     (tiled/dispose tiled-map)))
 
-(defmethods ::error
+(defcomponent ::error
   (app/create [_ _c]
     nil))
 
-(defmethods ::explored-tile-corners
+(defcomponent ::explored-tile-corners
   (app/create [_ {::keys [tiled-map]}]
     (atom (g2d/create-grid
            (tiled/tm-width  tiled-map)
@@ -82,7 +83,7 @@
     :entities #{}
     :occupied #{}}))
 
-(defmethods ::grid
+(defcomponent ::grid
   (app/create [_ {::keys [tiled-map]}]
     (g2d/create-grid
      (tiled/tm-width tiled-map)
@@ -94,17 +95,17 @@
                             "air"  :air
                             "all"  :all)))))))
 
-(defmethods ::content-grid
+(defcomponent ::content-grid
   (app/create [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
     (content-grid/create {:cell-size cell-size
                           :width  (tiled/tm-width  tiled-map)
                           :height (tiled/tm-height tiled-map)})))
 
-(defmethods ::entity-ids
+(defcomponent ::entity-ids
   (app/create [_ _c]
     (atom {})))
 
-(defmethods ::elapsed-time
+(defcomponent ::elapsed-time
   (app/create [_ _c]
     0))
 
@@ -124,7 +125,7 @@
 
 (declare creature)
 
-(defmethods ::player-eid
+(defcomponent ::player-eid
   (app/create [_ {::keys [level] :as c}]
     (assert (:start-position level))
     (creature c (player-entity-props (:start-position level)))))
@@ -133,7 +134,7 @@
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defmethods ::raycaster
+(defcomponent ::raycaster
   (app/create [_ {::keys [grid]}]
     (let [width  (g2d/width  grid)
           height (g2d/height grid)
@@ -583,7 +584,7 @@
   (when-let [skill-button (button-group/checked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
 
-(defmethods ::player-message
+(defcomponent ::player-message
   (app/create [[_ {:keys [duration-seconds]}] _context]
     (atom {:duration-seconds duration-seconds})))
 
@@ -853,19 +854,19 @@
                                 :entity/faction :evil}})]
     (creature c (update props :position tile->middle))))
 
-(defmethods ::level
+(defcomponent ::level
   (app/create [[_ world-id] c]
     (generate-level c (c/build c world-id))))
 
-(defmethods ::stage-actors
+(defcomponent ::stage-actors
   (app/create [_ c]
     (c/reset-stage c (widgets c))))
 
-(defmethods ::spawn-enemies
+(defcomponent ::spawn-enemies
   (app/create [_ c]
     (spawn-enemies c (::tiled-map c))))
 
-(defmethods ::requires
+(defcomponent ::requires
   (app/create [[_ namespaces] _context]
     (run! require namespaces)))
 

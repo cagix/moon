@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [cdq.context :refer [timer finished-ratio stopped?]]
             [clojure.gdx :refer [play]]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
 (defn- draw-skill-image [c image entity [x y] action-counter-ratio]
@@ -26,7 +26,7 @@
      (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
-(defmethods :active-skill
+(defcomponent :active-skill
   (entity/->v [[_ eid [skill effect-ctx]] c]
     {:eid eid
      :skill skill

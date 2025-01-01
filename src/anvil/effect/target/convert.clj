@@ -2,9 +2,9 @@
   (:require [gdl.effect.component :as component]
             [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
-(defmethods :effects.target/convert
+(defcomponent :effects.target/convert
   (info/segment [_ _c]
     "Converts target to your side.")
 

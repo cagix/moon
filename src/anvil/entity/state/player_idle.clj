@@ -1,12 +1,13 @@
 (ns ^:no-doc anvil.entity.state.player-idle
   (:require [anvil.controls :as controls]
             [clojure.gdx :refer [button-just-pressed? play]]
-            [clojure.utils :refer [defmethods safe-merge]]
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [safe-merge]]
             [anvil.entity :as entity]
             [anvil.player :as player]
             [gdl.context :as c]))
 
-(defmethods :player-idle
+(defcomponent :player-idle
   (entity/->v [[_ eid] c]
     (safe-merge (c/build c :player-idle/clicked-inventory-cell)
                 {:eid eid}))

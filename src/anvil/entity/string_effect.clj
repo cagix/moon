@@ -1,10 +1,10 @@
 (ns ^:no-doc anvil.entity.string-effect
   (:require [anvil.entity :as entity]
             [cdq.context :refer [stopped?]]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
-(defmethods :entity/string-effect
+(defcomponent :entity/string-effect
   (entity/tick [[k {:keys [counter]}] eid c]
     (when (stopped? c counter)
       (swap! eid dissoc k)))

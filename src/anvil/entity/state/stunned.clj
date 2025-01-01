@@ -1,10 +1,10 @@
 (ns ^:no-doc anvil.entity.state.stunned
   (:require [anvil.entity :as entity]
             [cdq.context :refer [timer stopped?]]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
-(defmethods :stunned
+(defcomponent :stunned
   (entity/->v [[_ eid duration] c]
     {:eid eid
      :counter (timer c duration)})

@@ -2,10 +2,10 @@
   (:require [anvil.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
             [cdq.grid :as grid]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
-(defmethods :npc-sleeping
+(defcomponent :npc-sleeping
   (entity/->v [[_ eid] c]
     {:eid eid})
 

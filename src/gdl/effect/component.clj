@@ -1,5 +1,5 @@
 (ns gdl.effect.component
-  (:require [clojure.utils :refer [defsystem]]))
+  (:require [clojure.component :refer [defsystem]]))
 
 (defsystem applicable?)
 

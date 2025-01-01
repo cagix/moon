@@ -1,9 +1,9 @@
 (ns ^:no-doc anvil.entity.image
   (:require [anvil.entity :as entity]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]))
 
-(defmethods :entity/image
+(defcomponent :entity/image
   (entity/render-default [[_ image] entity c]
     (c/draw-rotated-centered c
                              image

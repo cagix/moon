@@ -1,7 +1,7 @@
 (ns anvil.entity.hp
   (:require [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]
             [gdl.val-max :as val-max]))
 
@@ -40,7 +40,7 @@
                              (* 2 border))
                           (hpbar-color ratio)))))
 
-(defmethods :entity/hp
+(defcomponent :entity/hp
   (info/segment [_ _c]
     (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 

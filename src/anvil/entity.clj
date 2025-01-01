@@ -1,7 +1,7 @@
 (ns anvil.entity
   (:require [cdq.inventory :as inventory]
             [clojure.string :as str]
-            [clojure.utils :refer [defsystem defmethods]]
+            [clojure.component :refer [defsystem defcomponent]]
             [gdl.context :refer [set-cursor]]
             [gdl.info :as info]
             [gdl.operation :as op]
@@ -113,7 +113,7 @@
   ([c eid event params]
    (send-event! c eid event params)))
 
-(defmethods :entity/modifiers
+(defcomponent :entity/modifiers
   (info/segment [[_ mods] _c]
     (when (seq mods)
       (str/join "\n" (keep (fn [[k ops]]
@@ -205,7 +205,7 @@
       (stack-item c eid cell item)
       (set-item c eid cell item))))
 
-(defmethods :entity/inventory
+(defcomponent :entity/inventory
   (create [[k items] eid c]
     (swap! eid assoc k inventory/empty-inventory)
     (doseq [item items]
@@ -235,7 +235,7 @@
     (assert (<= cost mana-val))
     (assoc-in entity [:entity/mana 0] (- mana-val cost))))
 
-(defmethods :entity/mana
+(defcomponent :entity/mana
   (info/segment [_ _c]
     (str "Mana: " (mana info/*info-text-entity*)))
 

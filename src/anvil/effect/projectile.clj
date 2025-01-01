@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.effect.projectile
   (:require [gdl.effect.component :as component]
             [cdq.context :as world]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.math.vector :as v]))
 
 (defn- projectile-start-point [entity direction size]
@@ -9,7 +9,7 @@
          (v/scale direction
                   (+ (:radius entity) size 0.1))))
 
-(defmethods :effects/projectile
+(defcomponent :effects/projectile
   ; TODO for npcs need target -- anyway only with direction
   (component/applicable? [_ {:keys [effect/target-direction]}]
     target-direction) ; faction @ source also ?

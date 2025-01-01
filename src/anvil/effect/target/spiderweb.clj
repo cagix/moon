@@ -3,12 +3,12 @@
             [anvil.entity :as entity]
             [gdl.info :as info]
             [cdq.context :refer [timer]]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]
 
-  (defmethods :effects.target/spiderweb
+  (defcomponent :effects.target/spiderweb
     (info/segment [_ _c]
       "Spiderweb slows 50% for 5 seconds."
       ; modifiers same like item/modifiers has info-text

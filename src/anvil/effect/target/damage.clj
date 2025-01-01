@@ -3,7 +3,7 @@
             [anvil.entity :as entity]
             [gdl.info :as info]
             [cdq.context :as world :refer [add-text-effect]]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [gdl.context :as c]
             [gdl.rand :refer [rand-int-between]]))
 
@@ -25,7 +25,7 @@
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
 
-(defmethods :effects.target/damage
+(defcomponent :effects.target/damage
   (info/segment [[_ damage] _c]
     (damage-info damage)
     #_(if source

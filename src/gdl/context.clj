@@ -10,7 +10,8 @@
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
-            [clojure.utils :refer [safe-get defmethods mapvals pretty-pst with-err-str]]
+            [clojure.component :refer [defcomponent]]
+            [clojure.utils :refer [safe-get mapvals pretty-pst with-err-str]]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.db :as db]
@@ -268,7 +269,7 @@
     (dispose pixmap)
     texture))
 
-(defmethods ::shape-drawer
+(defcomponent ::shape-drawer
   (app/create [_ {::keys [batch]}]
     (assert batch)
     (sd/create batch (gdx/texture-region (sd-texture) 1 0 1 1)))
@@ -278,29 +279,29 @@
 ; => shape-drawer-texture as separate component?!
 ; that would work
 
-(defmethods ::assets
+(defcomponent ::assets
   (app/create [[_ folder] c]
     (assets/manager c folder))
   (app/dispose [[_ assets]]
     (assets/cleanup assets)))
 
-(defmethods ::batch
+(defcomponent ::batch
   (app/create [_ _c]
     (sprite-batch))
   (app/dispose [[_ batch]]
     (dispose batch)))
 
-(defmethods ::db
+(defcomponent ::db
   (app/create [[_ config] _c]
     (db/create config)))
 
-(defmethods ::default-font
+(defcomponent ::default-font
   (app/create [[_ config] c]
     (freetype/generate-font (update config :file #(internal-file c %))))
   (app/dispose [[_ font]]
     (dispose font)))
 
-(defmethods ::cursors
+(defcomponent ::cursors
   (app/create [[_ cursors] c]
     (mapvals (fn [[file [hotspot-x hotspot-y]]]
                (let [pixmap (pixmap (internal-file c (str "cursors/" file ".png")))
@@ -312,17 +313,17 @@
   (app/dispose [[_ cursors]]
     (run! dispose (vals cursors))))
 
-(defmethods ::viewport
+(defcomponent ::viewport
   (app/create [[_ {:keys [width height]}] _c]
     (fit-viewport width height (orthographic-camera)))
   (app/resize [[_ viewport] w h]
     (resize viewport w h :center-camera? true)))
 
-(defmethods ::world-unit-scale
+(defcomponent ::world-unit-scale
   (app/create [[_ tile-size] _c]
     (float (/ tile-size))))
 
-(defmethods ::world-viewport
+(defcomponent ::world-viewport
   (app/create [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
     (assert world-unit-scale)
     (let [camera (orthographic-camera)
@@ -333,7 +334,7 @@
   (app/resize [[_ viewport] w h]
     (resize viewport w h :center-camera? false)))
 
-(defmethods ::tiled-map-renderer
+(defcomponent ::tiled-map-renderer
   (app/create [_ {::keys [world-unit-scale batch]}]
     (memoize (fn [tiled-map]
                (OrthogonalTiledMapRenderer. tiled-map
@@ -342,7 +343,7 @@
 
 (def stage ::stage)
 
-(defmethods stage
+(defcomponent stage
   (app/create [_ {::keys [viewport batch] :as c}]
     (let [stage (ui/stage viewport batch nil)]
       (set-input-processor c stage)
@@ -350,7 +351,7 @@
   (app/dispose [[_ stage]]
     (dispose stage)))
 
-(defmethods ::ui
+(defcomponent ::ui
   (app/create [[_ config] _c]
     (ui/setup config))
   (app/dispose [_]
@@ -395,7 +396,7 @@
 (defmethod schema/malli-form :s/pos     [_ _schemas] m/pos-schema)
 (defmethod schema/malli-form :s/pos-int [_ _schemas] m/pos-int-schema)
 
-(defmethods :s/sound
+(defcomponent :s/sound
   (schema/malli-form [_ _schemas]
     m/string-schema)
 
@@ -412,14 +413,14 @@
                           (int (/ sprite-y tileh))]))
     (sprite c file)))
 
-(defmethods :s/image
+(defcomponent :s/image
   (schema/malli-form  [_ _schemas]
     m/image-schema)
 
   (db/edn->value [_ edn _db c]
     (edn->sprite c edn)))
 
-(defmethods :s/animation
+(defcomponent :s/animation
   (schema/malli-form [_ _schemas]
     m/animation-schema)
 
@@ -431,13 +432,13 @@
 (defn- type->id-namespace [property-type]
   (keyword (name property-type)))
 
-(defmethods :s/one-to-one
+(defcomponent :s/one-to-one
   (schema/malli-form [[_ property-type] _schemas]
     (m/qualified-keyword-schema (type->id-namespace property-type)))
   (db/edn->value [_ property-id db c]
     (build c property-id)))
 
-(defmethods :s/one-to-many
+(defcomponent :s/one-to-many
   (schema/malli-form [[_ property-type] _schemas]
     (m/set-schema (m/qualified-keyword-schema (type->id-namespace property-type))))
   (db/edn->value [_ property-ids db c]

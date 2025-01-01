@@ -1,10 +1,10 @@
 (ns ^:no-doc anvil.effect.creature
   (:require [gdl.effect.component :as component]
             [cdq.context :as world]
-            [clojure.utils :refer [defmethods]]))
+            [clojure.component :refer [defcomponent]]))
 
 ; "https://github.com/damn/core/issues/29"
-(defmethods :effects/spawn
+(defcomponent :effects/spawn
   (component/applicable? [_ {:keys [effect/source effect/target-position]}]
     (and (:entity/faction @source)
          target-position))

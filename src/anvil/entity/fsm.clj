@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.entity.fsm
   (:require [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.utils :refer [defmethods]]
+            [clojure.component :refer [defcomponent]]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -59,7 +59,7 @@
 (defn- ->init-fsm [fsm initial-state]
   (assoc (fsm initial-state nil) :state initial-state))
 
-(defmethods :entity/fsm
+(defcomponent :entity/fsm
   (info/segment [[_ fsm] _c]
     (str "State: " (name (:state fsm))))
 
