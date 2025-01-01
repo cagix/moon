@@ -2,33 +2,29 @@
   "Namespace for operations in the game engine. Provides utilities for applying, combining,
    and retrieving information about operations, such as incremental and multiplicative effects."
   (:refer-clojure :exclude [apply remove])
-  (:require [clojure.component :refer [defsystem defcomponent]]
+  (:require [clojure.component :as component :refer [defcomponent]]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [k->pretty-name]]))
 
-(defsystem ^:private -apply)
-(defsystem ^:private -order)
-(defsystem ^:private -value-text)
-
 (defcomponent :op/inc
-  (-value-text [[_ value]]
+  (component/value-text [[_ value]]
     (str value))
 
-  (-apply [[_ value] base-value]
+  (component/apply [[_ value] base-value]
     (+ base-value value))
 
-  (-order [_]
+  (component/order [_]
     0))
 
 (defcomponent :op/mult
-  (-value-text [[_ value]]
+  (component/value-text [[_ value]]
     (str value "%"))
 
-  (-apply [[_ value] base-value]
+  (component/apply [[_ value] base-value]
     (* base-value (inc (/ value 100))))
 
-  (-order [_]
+  (component/order [_]
     1))
 
 (defn apply
@@ -43,9 +39,9 @@
   The resulting value after all operations are applied."
   [op value]
   (reduce (fn [value op]
-            (-apply op value))
+            (component/apply op value))
           value
-          (sort-by -order op)))
+          (sort-by component/order op)))
 
 (defn add
   "Combines two operations (`op` and `other-op`) by summing their effects.
@@ -91,5 +87,5 @@
             (keep
              (fn [{v 1 :as component}]
                (when-not (zero? v)
-                 (str (+? v) (-value-text component) " " (k->pretty-name k))))
-             (sort-by -order op))))
+                 (str (+? v) (component/value-text component) " " (k->pretty-name k))))
+             (sort-by component/order op))))

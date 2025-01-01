@@ -1,4 +1,5 @@
-(ns clojure.component)
+(ns clojure.component
+  (:refer-clojure :exclude [apply]))
 
 (defmacro defsystem
   {:arglists '([name docstring?])}
@@ -95,3 +96,7 @@
 
 (defsystem render-effect)
 (defmethod render-effect :default [_ _effect-ctx context])
+
+(defsystem apply)
+(defsystem order)
+(defsystem value-text)
