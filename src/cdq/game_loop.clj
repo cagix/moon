@@ -1,5 +1,6 @@
 (ns cdq.game-loop
   (:require [anvil.controls :as controls]
+            [anvil.entity :as entity]
             [cdq.context :refer [line-of-sight? render-z-order active-entities
                                  update-mouseover-entity
                                  update-paused-state

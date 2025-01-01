@@ -35,16 +35,13 @@
   [:gdl.context/tiled-map-renderer]
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
+
+  ; TODO the main issue - too many namespaces -
+  ; where they are defined we use namespaced keywords with `::`
+  ; => this way we know exactly where stuff is defined & components are truly impl detail
   [:cdq.context/requires [
                           cdq.info
-
-                          anvil.effect.target.audiovisual
-                          anvil.effect.target.convert
-                          anvil.effect.target.damage
-                          anvil.effect.target.kill
-                          anvil.effect.target.melee-damage
-                          anvil.effect.target.spiderweb
-                          anvil.effect.target.stun
+                          cdq.effect.target
 
                           anvil.effect.audiovisual
                           anvil.effect.creature
