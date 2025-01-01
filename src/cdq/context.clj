@@ -9,7 +9,7 @@
             [cdq.grid :as grid]
             [cdq.potential-fields :as potential-fields]
             [cdq.tile-color-setter :as tile-color-setter]
-            [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black]]
+            [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.component :as component :refer [defcomponent]]
@@ -711,9 +711,9 @@
                       (line-of-sight? c player entity))]
       (render-entity! c system entity))))
 
-(defn- render-world [{:keys [gdl.context/world-viewport]
-                      ::keys [tiled-map player-eid]
-                      :as c}]
+(defn render [{:keys [gdl.context/world-viewport]
+               ::keys [tiled-map player-eid]
+               :as c}]
   ; FIXME position DRY
   (cam/set-position! (:camera world-viewport)
                      (:position @player-eid))
@@ -825,7 +825,7 @@
   (when (key-just-pressed? c close-windows-key)
     (close-all-windows stage)))
 
-(defn- tick-context [{:keys [gdl.context/world-viewport] :as c} pausing?]
+(defn tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
   (check-player-input c)
   (let [c (-> c
               update-mouseover-entity
@@ -873,13 +873,3 @@
 (defn- dispose-game-state [{::keys [tiled-map]}]
   (when tiled-map
     (tiled/dispose tiled-map)))
-
-(def ^:private ^:dbg-flag pausing? true)
-
-(defn render-game [context]
-  (clear-screen black)
-  (render-world context)
-  (let [stage (c/stage context)]
-    (ui/draw stage context)
-    (ui/act  stage context))
-  (tick-context context pausing?))
