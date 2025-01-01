@@ -2,7 +2,6 @@
   (:require [cdq.context :as context]
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :refer [clear-screen black]]
-            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))

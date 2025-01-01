@@ -615,8 +615,8 @@
 (def ^:private ^:dbg-flag cell-occupied? false)
 
 (defn render-debug-before-entities [{:keys [gdl.context/world-viewport]
-                                      ::keys [factions-iterations]
-                                      :as c}]
+                                     ::keys [factions-iterations]
+                                     :as c}]
   (let [cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
