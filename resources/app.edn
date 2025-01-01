@@ -40,15 +40,9 @@
   ; where they are defined we use namespaced keywords with `::`
   ; => this way we know exactly where stuff is defined & components are truly impl detail
   [:cdq.context/requires [
-                          cdq.info
+                          cdq.effect
                           cdq.effect.target
-
-                          anvil.effect.audiovisual
-                          anvil.effect.creature
-                          anvil.effect.projectile
-                          anvil.effect.sound
-                          anvil.effect.target-all
-                          anvil.effect.target-entity
+                          cdq.info
 
                           anvil.entity.state.active-skill
                           anvil.entity.state.npc-dead
