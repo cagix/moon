@@ -1,6 +1,5 @@
 (ns forge.entity.hp-test
   (:require [anvil.entity :as entity]
-            anvil.entity.hp
             [clojure.test :refer :all]))
 
 (def ->value entity/hitpoints)
