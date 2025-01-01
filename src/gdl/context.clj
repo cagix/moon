@@ -10,9 +10,8 @@
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [safe-get mapvals pretty-pst with-err-str]]
-            [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics.animation :as animation]
@@ -270,39 +269,39 @@
     texture))
 
 (defcomponent ::shape-drawer
-  (app/create [_ {::keys [batch]}]
+  (component/create [_ {::keys [batch]}]
     (assert batch)
     (sd/create batch (gdx/texture-region (sd-texture) 1 0 1 1)))
-  (app/dispose [[_ sd]]
+  (component/dispose [[_ sd]]
     #_(dispose sd)))
 ; TODO this will break ... proxy with extra-data -> get texture through sd ...
 ; => shape-drawer-texture as separate component?!
 ; that would work
 
 (defcomponent ::assets
-  (app/create [[_ folder] c]
+  (component/create [[_ folder] c]
     (assets/manager c folder))
-  (app/dispose [[_ assets]]
+  (component/dispose [[_ assets]]
     (assets/cleanup assets)))
 
 (defcomponent ::batch
-  (app/create [_ _c]
+  (component/create [_ _c]
     (sprite-batch))
-  (app/dispose [[_ batch]]
+  (component/dispose [[_ batch]]
     (dispose batch)))
 
 (defcomponent ::db
-  (app/create [[_ config] _c]
+  (component/create [[_ config] _c]
     (db/create config)))
 
 (defcomponent ::default-font
-  (app/create [[_ config] c]
+  (component/create [[_ config] c]
     (freetype/generate-font (update config :file #(internal-file c %))))
-  (app/dispose [[_ font]]
+  (component/dispose [[_ font]]
     (dispose font)))
 
 (defcomponent ::cursors
-  (app/create [[_ cursors] c]
+  (component/create [[_ cursors] c]
     (mapvals (fn [[file [hotspot-x hotspot-y]]]
                (let [pixmap (pixmap (internal-file c (str "cursors/" file ".png")))
                      cursor (gdx/cursor c pixmap hotspot-x hotspot-y)]
@@ -310,32 +309,32 @@
                  cursor))
              cursors))
 
-  (app/dispose [[_ cursors]]
+  (component/dispose [[_ cursors]]
     (run! dispose (vals cursors))))
 
 (defcomponent ::viewport
-  (app/create [[_ {:keys [width height]}] _c]
+  (component/create [[_ {:keys [width height]}] _c]
     (fit-viewport width height (orthographic-camera)))
-  (app/resize [[_ viewport] w h]
+  (component/resize [[_ viewport] w h]
     (resize viewport w h :center-camera? true)))
 
 (defcomponent ::world-unit-scale
-  (app/create [[_ tile-size] _c]
+  (component/create [[_ tile-size] _c]
     (float (/ tile-size))))
 
 (defcomponent ::world-viewport
-  (app/create [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
+  (component/create [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
     (assert world-unit-scale)
     (let [camera (orthographic-camera)
           world-width  (* width  world-unit-scale)
           world-height (* height world-unit-scale)]
       (camera/set-to-ortho camera world-width world-height :y-down? false)
       (fit-viewport world-width world-height camera)))
-  (app/resize [[_ viewport] w h]
+  (component/resize [[_ viewport] w h]
     (resize viewport w h :center-camera? false)))
 
 (defcomponent ::tiled-map-renderer
-  (app/create [_ {::keys [world-unit-scale batch]}]
+  (component/create [_ {::keys [world-unit-scale batch]}]
     (memoize (fn [tiled-map]
                (OrthogonalTiledMapRenderer. tiled-map
                                             (float world-unit-scale)
@@ -344,17 +343,17 @@
 (def stage ::stage)
 
 (defcomponent stage
-  (app/create [_ {::keys [viewport batch] :as c}]
+  (component/create [_ {::keys [viewport batch] :as c}]
     (let [stage (ui/stage viewport batch nil)]
       (set-input-processor c stage)
       stage))
-  (app/dispose [[_ stage]]
+  (component/dispose [[_ stage]]
     (dispose stage)))
 
 (defcomponent ::ui
-  (app/create [[_ config] _c]
+  (component/create [[_ config] _c]
     (ui/setup config))
-  (app/dispose [_]
+  (component/dispose [_]
     (ui/cleanup)))
 
 (defn build [{::keys [db] :as c} id]

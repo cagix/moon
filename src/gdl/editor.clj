@@ -3,7 +3,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [gdl.app :as app]
             [gdl.assets :as assets]
@@ -522,7 +522,7 @@
                     :align :center}))
 
 (defcomponent ::stage-actors
-  (app/create [_ context]
+  (component/create [_ context]
     (doseq [actor [(background-image context "images/moon_background.png")
                    (tabs-table       context "custom label text here")]]
       (ctx/add-actor context actor))))
