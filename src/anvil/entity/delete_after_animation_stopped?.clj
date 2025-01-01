@@ -4,8 +4,4 @@
 
 (defcomponent :entity/delete-after-animation-stopped?
   (component/create! [_ eid c]
-    (-> @eid :entity/animation :looping? not assert))
-
-  (component/tick [_ eid c]
-    (when (animation/stopped? (:entity/animation @eid))
-      (swap! eid assoc :entity/destroyed? true))))
+    (-> @eid :entity/animation :looping? not assert)))

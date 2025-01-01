@@ -42,13 +42,13 @@
   ; => this way we know exactly where stuff is defined & components are truly impl detail
   [:cdq.context/requires [
                           cdq.component.render
+                          cdq.component.tick
 
                           cdq.effect
                           cdq.effect.target
                           cdq.entity.state
                           cdq.info
 
-                          anvil.entity.alert-friendlies-after-duration
                           anvil.entity.animation
                           anvil.entity.delete-after-animation-stopped?
                           anvil.entity.delete-after-duration
@@ -56,11 +56,9 @@
                           anvil.entity.faction
                           anvil.entity.fsm
                           anvil.entity.hp
-                          anvil.entity.movement
                           anvil.entity.projectile-collision
                           anvil.entity.skills
                           anvil.entity.species
-                          anvil.entity.string-effect
                           anvil.entity.temp-modifier]]
   [:cdq.context/stage-actors]
   [:cdq.context/level :worlds/uf-caves]

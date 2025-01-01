@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [contains? remove])
   (:require [anvil.widgets.action-bar :refer [action-bar-add-skill
                                               action-bar-remove-skill]]
-            [cdq.context :refer [stopped?]]
             [clojure.component :as component :refer [defcomponent]]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]
@@ -29,10 +28,4 @@
   (component/create! [[k skills] eid c]
     (swap! eid assoc k nil)
     (doseq [skill skills]
-      (add c eid skill)))
-
-  (component/tick [[k skills] eid c]
-    (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
-            :when (and cooling-down?
-                       (stopped? c cooling-down?))]
-      (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false))))
+      (add c eid skill))))

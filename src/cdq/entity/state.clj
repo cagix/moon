@@ -2,9 +2,7 @@
   (:require [anvil.controls :as controls]
             [anvil.effect :as effect]
             [anvil.entity :as entity]
-            [anvil.skill :as skill]
             [anvil.player :as player]
-            [anvil.world.potential-field :as potential-field]
             [cdq.context :as world :refer [timer finished-ratio stopped? add-text-effect show-modal]]
             [cdq.grid :as grid]
             [cdq.inventory :as inventory]
@@ -36,21 +34,7 @@
              (timer c (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
-      (swap! eid entity/pay-mana-cost (:skill/cost skill))))
-
-  (component/tick [[_ {:keys [skill effect-ctx counter]}] eid c]
-    (cond
-     (not (effect/some-applicable? (effect/check-update-ctx c effect-ctx)
-                                   (:skill/effects skill)))
-     (do
-      (entity/event c eid :action-done)
-      ; TODO some sound ?
-      )
-
-     (stopped? c counter)
-     (do
-      (effect/do-all! c effect-ctx (:skill/effects skill))
-      (entity/event c eid :action-done)))))
+      (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
 
 (defcomponent :npc-dead
   (component/create [[_ eid] c]
@@ -59,36 +43,9 @@
   (component/enter [[_ {:keys [eid]}] c]
     (swap! eid assoc :entity/destroyed? true)))
 
-(defn- effect-context [c eid]
-  (let [entity @eid
-        target (world/nearest-enemy c entity)
-        target (when (and target
-                          (world/line-of-sight? c entity @target))
-                 target)]
-    {:effect/source eid
-     :effect/target target
-     :effect/target-direction (when target
-                                (entity/direction entity @target))}))
-
-(defn- npc-choose-skill [c entity ctx]
-  (->> entity
-       :entity/skills
-       vals
-       (sort-by #(or (:skill/cost %) 0))
-       reverse
-       (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect/applicable-and-useful? c ctx (:skill/effects %))))
-       first))
-
 (defcomponent :npc-idle
   (component/create [[_ eid] c]
-    {:eid eid})
-
-  (component/tick [_ eid c]
-    (let [effect-ctx (effect-context c eid)]
-      (if-let [skill (npc-choose-skill c @eid effect-ctx)]
-        (entity/event c eid :start-action [skill effect-ctx])
-        (entity/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0]))))))
+    {:eid eid}))
 
 (defcomponent :npc-moving
   (component/create [[_ eid movement-vector] c]
@@ -101,11 +58,7 @@
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
   (component/exit [[_ {:keys [eid]}] c]
-    (swap! eid dissoc :entity/movement))
-
-  (component/tick [[_ {:keys [counter]}] eid c]
-    (when (stopped? c counter)
-      (entity/event c eid :timer-finished))))
+    (swap! eid dissoc :entity/movement)))
 
 (defcomponent :npc-sleeping
   (component/create [[_ eid] c]
@@ -116,14 +69,7 @@
                          (:position       @eid)
                          (:entity/faction @eid)
                          0.2)
-    (swap! eid add-text-effect c "[WHITE]!"))
-
-  (component/tick [_ eid c]
-    (let [entity @eid
-          cell (world/grid-cell c (entity/tile entity))] ; pattern!
-      (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
-        (when (<= distance (entity/stat entity :entity/aggro-range))
-          (entity/event c eid :alert))))))
+    (swap! eid add-text-effect c "[WHITE]!")))
 
 (defcomponent :player-dead
   (component/create [[k] c]
@@ -243,19 +189,9 @@
                                        :speed (entity/stat @eid :entity/movement-speed)}))
 
   (component/exit [[_ {:keys [eid]}] c]
-    (swap! eid dissoc :entity/movement))
-
-  (component/tick [[_ {:keys [movement-vector]}] eid c]
-    (if-let [movement-vector (controls/movement-vector c)]
-      (swap! eid assoc :entity/movement {:direction movement-vector
-                                         :speed (entity/stat @eid :entity/movement-speed)})
-      (entity/event c eid :no-movement-input))))
+    (swap! eid dissoc :entity/movement)))
 
 (defcomponent :stunned
   (component/create [[_ eid duration] c]
     {:eid eid
-     :counter (timer c duration)})
-
-  (component/tick [[_ {:keys [counter]}] eid c]
-    (when (stopped? c counter)
-      (entity/event c eid :effect-wears-off))))
+     :counter (timer c duration)}))
