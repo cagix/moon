@@ -1,5 +1,5 @@
 (ns clojure.gdx.scene2d.ui.button-group
-  "Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button" functionality and more. A button may only be in one group at a time.
+  "Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables \"radio button\" functionality and more. A button may only be in one group at a time.
 
 The canCheck(Button, boolean) method can be overridden to control if a button check or uncheck is allowed."
   (:refer-clojure :exclude [remove])
