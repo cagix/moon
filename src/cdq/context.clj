@@ -610,9 +610,9 @@
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
 
-(defn- render-tiled-map [{::keys [raycaster explored-tile-corners] :as c}
-                         tiled-map
-                         light-position]
+(defn render-tiled-map [{::keys [raycaster explored-tile-corners] :as c}
+                        tiled-map
+                        light-position]
   (c/draw-tiled-map c
                     tiled-map
                     (tile-color-setter/create raycaster
@@ -625,7 +625,7 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn- render-debug-before-entities [{:keys [gdl.context/world-viewport]
+(defn render-debug-before-entities [{:keys [gdl.context/world-viewport]
                                       ::keys [factions-iterations]
                                       :as c}]
   (let [cam (:camera world-viewport)
@@ -678,7 +678,7 @@
                        :air  [1 1 0 0.5]
                        :none [1 0 0 0.5]))))))
 
-(defn- render-debug-after-entities [c]
+(defn render-debug-after-entities [c]
   #_(geom-test c)
   (highlight-mouseover-tile c))
 
@@ -697,7 +697,7 @@
      (draw-body-rect c entity :red)
      (pretty-pst t))))
 
-(defn- render-entities [{::keys [player-eid] :as c} entities]
+(defn render-entities [{::keys [player-eid] :as c} entities]
   (let [player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
@@ -710,21 +710,6 @@
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? c player entity))]
       (render-entity! c system entity))))
-
-(defn render [{:keys [gdl.context/world-viewport]
-               ::keys [tiled-map player-eid]
-               :as c}]
-  ; FIXME position DRY
-  (cam/set-position! (:camera world-viewport)
-                     (:position @player-eid))
-  ; FIXME position DRY
-  (render-tiled-map c tiled-map (cam/position (:camera world-viewport)))
-  (c/draw-on-world-view c
-                        (fn [c]
-                          (render-debug-before-entities c)
-                          ; FIXME position DRY (from player)
-                          (render-entities c (map deref (active-entities c)))
-                          (render-debug-after-entities c))))
 
 (defn- check-player-input [{::keys [player-eid] :as c}]
   (component/manual-tick (entity/state-obj @player-eid)
