@@ -1,21 +1,82 @@
 (ns cdq.game
   (:require [anvil.entity :as entity]
-            [cdq.context :refer [line-of-sight? render-z-order active-entities
-                                 point->entities
-                                 tick-potential-fields
-                                 tick-entities
-                                 remove-destroyed-entities
-                                 check-camera-controls
-                                 check-ui-key-listeners]]
+            [cdq.context :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
+            [cdq.potential-fields :as potential-fields]
             [clojure.component :as component :refer [defsystem]]
             [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.utils :refer [read-edn-resource pretty-pst sort-by-order]]
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
+
+(defn- check-window-hotkeys [c {:keys [controls/window-hotkeys]} stage]
+  (doseq [window-id [:inventory-window
+                     :entity-info-window]
+          :when (key-just-pressed? c (get window-hotkeys window-id))]
+    (actor/toggle-visible! (get (:windows stage) window-id))))
+
+(defn- close-all-windows [stage]
+  (let [windows (group/children (:windows stage))]
+    (when (some actor/visible? windows)
+      (run! #(actor/set-visible % false) windows))))
+
+(defn- check-ui-key-listeners [c {:keys [controls/close-windows-key] :as controls} stage]
+  (check-window-hotkeys c controls stage)
+  (when (key-just-pressed? c close-windows-key)
+    (close-all-windows stage)))
+
+(def ^:private zoom-speed 0.025)
+
+(defn- check-camera-controls [c camera]
+  (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed))) )
+
+(defn- remove-destroyed-entities [c]
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (all-entities c))]
+    (remove-entity c eid)
+    (doseq [component @eid]
+      (component/destroy component eid c))))
+
+; precaution in case a component gets removed by another component
+; the question is do we still want to update nil components ?
+; should be contains? check ?
+; but then the 'order' is important? in such case dependent components
+; should be moved together?
+(defn- tick-entity [c eid]
+  (try
+   (doseq [k (keys @eid)]
+     (try (when-let [v (k @eid)]
+            (component/tick [k v] eid c))
+          (catch Throwable t
+            (throw (ex-info "entity-tick" {:k k} t)))))
+   (catch Throwable t
+     (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+
+(defn- tick-entities [c]
+  (try (run! #(tick-entity c %) (active-entities c))
+       (catch Throwable t
+         (c/error-window c t)
+         #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
+  c)
+
+(def ^:private pf-cache (atom nil))
+
+(defn- tick-potential-fields [{:keys [cdq.context/factions-iterations
+                                      cdq.context/grid] :as c}]
+  (let [entities (active-entities c)]
+    (doseq [[faction max-iterations] factions-iterations]
+      (potential-fields/tick pf-cache
+                             grid
+                             faction
+                             entities
+                             max-iterations)))
+  c)
 
 (defn- update-time [c]
   (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
