@@ -63,7 +63,7 @@
     (str "State: " (name (:state fsm))))
 
 
-  (component/create [[k {:keys [fsm initial-state]}] eid c]
+  (component/create! [[k {:keys [fsm initial-state]}] eid c]
     (swap! eid assoc
            k (->init-fsm (case fsm
                            :fsms/player player-fsm

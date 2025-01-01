@@ -157,7 +157,7 @@
       (set-item c eid cell item))))
 
 (defcomponent :entity/inventory
-  (component/create [[k items] eid c]
+  (component/create! [[k items] eid c]
     (swap! eid assoc k inventory/empty-inventory)
     (doseq [item items]
       (pickup-item c eid item))))

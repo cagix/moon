@@ -27,7 +27,7 @@
       (str "Skills: " (str/join "," (map name (keys skills))))))
 
 (defcomponent :entity/skills
-  (component/create [[k skills] eid c]
+  (component/create! [[k skills] eid c]
     (swap! eid assoc k nil)
     (doseq [skill skills]
       (add c eid skill)))

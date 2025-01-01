@@ -3,7 +3,7 @@
             [gdl.graphics.animation :as animation]))
 
 (defcomponent :entity/animation
-  (component/create [[_ animation] eid c]
+  (component/create! [[_ animation] eid c]
     (swap! eid assoc :entity/image (animation/current-frame animation)))
 
   (component/tick [[k animation] eid {:keys [cdq.context/delta-time]}]

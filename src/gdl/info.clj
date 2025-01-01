@@ -68,7 +68,7 @@
                            (apply-color k->colors k (segment component c)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
-                           ; have a different data schema than after component/create
+                           ; have a different data schema than after component/create!
                            ; and info-text might break
                            (pr-str component)))
                     (when (map? v)

@@ -452,7 +452,7 @@
                                       (create-vs c)))))]
     (add-entity c eid)
     (doseq [component @eid]
-      (component/create component eid c))
+      (component/create! component eid c))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
