@@ -2,7 +2,6 @@
   (:require [anvil.entity :as entity]
             [cdq.context :refer [line-of-sight? render-z-order active-entities
                                  point->entities
-                                 update-time
                                  tick-potential-fields
                                  tick-entities
                                  remove-destroyed-entities
@@ -11,12 +10,18 @@
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.component :as component :refer [defsystem]]
-            [clojure.gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
+            [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.utils :refer [read-edn-resource pretty-pst sort-by-order]]
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
+
+(defn- update-time [c]
+  (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
+    (-> c
+        (update :cdq.context/elapsed-time + delta-ms)
+        (assoc :cdq.context/delta-time delta-ms))))
 
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])

@@ -608,12 +608,6 @@
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
 
-(defn update-time [c]
-  (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
-    (-> c
-        (update ::elapsed-time + delta-ms)
-        (assoc ::delta-time delta-ms))))
-
 (def ^:private pf-cache (atom nil))
 
 (defn tick-potential-fields [{::keys [factions-iterations grid] :as c}]
