@@ -13,9 +13,8 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.component :as component :refer [defcomponent]]
-            [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst read-edn-resource]]
+            [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst]]
             [data.grid2d :as g2d]
-            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
@@ -877,16 +876,10 @@
 
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn- render-game [context]
+(defn render-game [context]
   (clear-screen black)
   (render-world context)
   (let [stage (c/stage context)]
     (ui/draw stage context)
     (ui/act  stage context))
   (tick-context context pausing?))
-
-(defn -main []
-  (let [config (read-edn-resource "app.edn")]
-    (app/start (:app config)
-               (:context config)
-               render-game)))
