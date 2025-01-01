@@ -1,11 +1,43 @@
 (ns cdq.game-loop
-  (:require [cdq.context :as context]
+  (:require [cdq.context :refer [line-of-sight? render-z-order active-entities] :as context]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
+            [clojure.component :as component]
             [clojure.gdx :refer [clear-screen black]]
+            [clojure.utils :refer [pretty-pst sort-by-order]]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
+
+(def ^:private ^:dbg-flag show-body-bounds false)
+
+(defn- draw-body-rect [c entity color]
+  (let [[x y] (:left-bottom entity)]
+    (c/rectangle c x y (:width entity) (:height entity) color)))
+
+(defn- render-entity! [c system entity]
+  (try
+   (when show-body-bounds
+     (draw-body-rect c entity (if (:collides? entity) :white :gray)))
+   (run! #(system % entity c) entity)
+   (catch Throwable t
+     (draw-body-rect c entity :red)
+     (pretty-pst t))))
+
+(defn- render-entities [{:keys [cdq.context/player-eid] :as c}]
+  (let [entities (map deref (active-entities c))
+        player @player-eid]
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              render-z-order)
+            system [component/render-below
+                    component/render-default
+                    component/render-above
+                    component/render-info]
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (line-of-sight? c player entity))]
+      (render-entity! c system entity))))
 
 (def ^:private ^:dbg-flag pausing? true)
 
@@ -29,7 +61,7 @@
                         (fn [c]
                           (debug/render-before-entities c)
                           ; FIXME position DRY (from player)
-                          (context/render-entities c (map deref (context/active-entities c)))
+                          (render-entities c)
                           (debug/render-after-entities c)))
   (let [stage (c/stage c)]
     (ui/draw stage c)

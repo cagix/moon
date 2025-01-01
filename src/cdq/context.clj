@@ -12,7 +12,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.component :as component :refer [defcomponent]]
-            [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number! pretty-pst]]
+            [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number!]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
@@ -607,35 +607,6 @@
                            :center-position [(/ (:width viewport) 2)
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
-
-(def ^:private ^:dbg-flag show-body-bounds false)
-
-(defn- draw-body-rect [c entity color]
-  (let [[x y] (:left-bottom entity)]
-    (c/rectangle c x y (:width entity) (:height entity) color)))
-
-(defn- render-entity! [c system entity]
-  (try
-   (when show-body-bounds
-     (draw-body-rect c entity (if (:collides? entity) :white :gray)))
-   (run! #(system % entity c) entity)
-   (catch Throwable t
-     (draw-body-rect c entity :red)
-     (pretty-pst t))))
-
-(defn render-entities [{::keys [player-eid] :as c} entities]
-  (let [player @player-eid]
-    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
-                                              first
-                                              render-z-order)
-            system [component/render-below
-                    component/render-default
-                    component/render-above
-                    component/render-info]
-            entity entities
-            :when (or (= z-order :z-order/effect)
-                      (line-of-sight? c player entity))]
-      (render-entity! c system entity))))
 
 (defn- check-player-input [{::keys [player-eid] :as c}]
   (component/manual-tick (entity/state-obj @player-eid)
