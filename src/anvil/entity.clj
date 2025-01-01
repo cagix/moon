@@ -174,12 +174,6 @@
       (stack-item c eid cell item)
       (set-item c eid cell item))))
 
-(defcomponent :entity/inventory
-  (component/create! [[k items] eid c]
-    (swap! eid assoc k inventory/empty-inventory)
-    (doseq [item items]
-      (pickup-item c eid item))))
-
 (defn stat [entity k]
   (when-let [base-value (k entity)]
     (mod-value base-value
@@ -206,10 +200,7 @@
 
 (defcomponent :entity/mana
   (component/info [_ _c]
-    (str "Mana: " (mana info/*info-text-entity*)))
-
-  (component/create [[_ v] c]
-    [v v]))
+    (str "Mana: " (mana info/*info-text-entity*))))
 
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

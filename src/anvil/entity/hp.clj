@@ -5,7 +5,4 @@
 
 (defcomponent :entity/hp
   (component/info [_ _c]
-    (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
-
-  (component/create [[_ v] c]
-    [v v]))
+    (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*))))

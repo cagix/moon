@@ -1,8 +1,7 @@
 (ns anvil.entity.skills
   (:refer-clojure :exclude [contains? remove])
   (:require [anvil.widgets.action-bar :refer [action-bar-add-skill
-                                              action-bar-remove-skill]]
-            [clojure.component :as component :refer [defcomponent]]))
+                                              action-bar-remove-skill]]))
 
 (defn contains? [{:keys [entity/skills]} {:keys [property/id]}]
   (clojure.core/contains? skills id))
@@ -23,9 +22,3 @@
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))
-
-(defcomponent :entity/skills
-  (component/create! [[k skills] eid c]
-    (swap! eid assoc k nil)
-    (doseq [skill skills]
-      (add c eid skill))))

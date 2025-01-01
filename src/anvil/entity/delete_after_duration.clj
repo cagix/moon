@@ -4,8 +4,5 @@
             [clojure.utils :refer [readable-number]]))
 
 (defcomponent :entity/delete-after-duration
-  (component/create [[_ duration] c]
-    (timer c duration))
-
   (component/info [counter c]
     (str "Remaining: " (readable-number (finished-ratio c counter)) "/1")))

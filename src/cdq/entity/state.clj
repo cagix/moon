@@ -11,21 +11,7 @@
             [clojure.utils :refer [safe-merge]]
             [gdl.context :as c]))
 
-(defn- apply-action-speed-modifier [entity skill action-time]
-  (/ action-time
-     (or (entity/stat entity (:skill/action-time-modifier-key skill))
-         1)))
-
 (defcomponent :active-skill
-  (component/create [[_ eid [skill effect-ctx]] c]
-    {:eid eid
-     :skill skill
-     :effect-ctx effect-ctx
-     :counter (->> skill
-                   :skill/action-time
-                   (apply-action-speed-modifier @eid skill)
-                   (timer c))})
-
   (component/enter [[_ {:keys [eid skill]}] c]
     (play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
@@ -37,22 +23,10 @@
       (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
 
 (defcomponent :npc-dead
-  (component/create [[_ eid] c]
-    {:eid eid})
-
   (component/enter [[_ {:keys [eid]}] c]
     (swap! eid assoc :entity/destroyed? true)))
 
-(defcomponent :npc-idle
-  (component/create [[_ eid] c]
-    {:eid eid}))
-
 (defcomponent :npc-moving
-  (component/create [[_ eid movement-vector] c]
-    {:eid eid
-     :movement-vector movement-vector
-     :counter (timer c (* (entity/stat @eid :entity/reaction-time) 0.016))})
-
   (component/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
@@ -61,9 +35,6 @@
     (swap! eid dissoc :entity/movement)))
 
 (defcomponent :npc-sleeping
-  (component/create [[_ eid] c]
-    {:eid eid})
-
   (component/exit [[_ {:keys [eid]}] c]
     (world/delayed-alert c
                          (:position       @eid)
@@ -72,9 +43,6 @@
     (swap! eid add-text-effect c "[WHITE]!")))
 
 (defcomponent :player-dead
-  (component/create [[k] c]
-    (c/build c :player-dead/component.enter))
-
   (component/enter [[_ {:keys [tx/sound
                                modal/title
                                modal/text
@@ -87,10 +55,6 @@
                    :on-click (fn [])})))
 
 (defcomponent :player-idle
-  (component/create [[_ eid] c]
-    (safe-merge (c/build c :player-idle/clicked-inventory-cell)
-                {:eid eid}))
-
   (component/manual-tick [[_ {:keys [eid]}] c]
     (if-let [movement-vector (controls/movement-vector c)]
       (entity/event c eid :movement-input movement-vector)
@@ -144,11 +108,6 @@
       (entity/event c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
-  (component/create [[_ eid item] c]
-    (safe-merge (c/build c :player-item-on-cursor/component)
-                {:eid eid
-                 :item item}))
-
   (component/enter [[_ {:keys [eid item]}] c]
     (swap! eid assoc :entity/item-on-cursor item))
 
@@ -180,18 +139,9 @@
     (clicked-cell data eid cell c)))
 
 (defcomponent :player-moving
-  (component/create [[_ eid movement-vector] c]
-    {:eid eid
-     :movement-vector movement-vector})
-
   (component/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)}))
 
   (component/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement)))
-
-(defcomponent :stunned
-  (component/create [[_ eid duration] c]
-    {:eid eid
-     :counter (timer c duration)}))

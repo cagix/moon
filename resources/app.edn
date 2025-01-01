@@ -40,7 +40,14 @@
   ; TODO the main issue - too many namespaces -
   ; where they are defined we use namespaced keywords with `::`
   ; => this way we know exactly where stuff is defined & components are truly impl detail
+
+  ; - wait - then context components also like that separated w. systems !?
+
+
+  ; so in the middle is data - outside behaviour - ...
+
   [:cdq.context/requires [
+                          cdq.component.create
                           cdq.component.render
                           cdq.component.tick
 
@@ -49,14 +56,11 @@
                           cdq.entity.state
                           cdq.info
 
-                          anvil.entity.animation
-                          anvil.entity.delete-after-animation-stopped?
                           anvil.entity.delete-after-duration
                           anvil.entity.destroy-audiovisual
                           anvil.entity.faction
                           anvil.entity.fsm
                           anvil.entity.hp
-                          anvil.entity.projectile-collision
                           anvil.entity.skills
                           anvil.entity.species
                           anvil.entity.temp-modifier]]
