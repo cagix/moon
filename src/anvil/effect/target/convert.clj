@@ -3,7 +3,7 @@
             [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :effects.target/convert
-  (component/segment [_ _c]
+  (component/info [_ _c]
     "Converts target to your side.")
 
   (component/applicable? [_ {:keys [effect/source effect/target]}]

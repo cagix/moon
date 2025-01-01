@@ -7,7 +7,7 @@
       duration 5]
 
   (defcomponent :effects.target/spiderweb
-    (component/segment [_ _c]
+    (component/info [_ _c]
       "Spiderweb slows 50% for 5 seconds."
       ; modifiers same like item/modifiers has info-text
       ; counter ?

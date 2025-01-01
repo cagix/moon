@@ -6,7 +6,7 @@
             [gdl.context :as c]))
 
 (defcomponent :entity/temp-modifier
-  (component/segment [[_ {:keys [counter]}] c]
+  (component/info [[_ {:keys [counter]}] c]
     (str "Spiderweb - remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
   (component/tick [[k {:keys [modifiers counter]}] eid c]

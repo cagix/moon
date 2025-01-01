@@ -3,7 +3,7 @@
             [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :effects.target/kill
-  (component/segment [_ _c]
+  (component/info [_ _c]
     "Kills target")
 
   (component/applicable? [_ {:keys [effect/target]}]

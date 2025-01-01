@@ -7,7 +7,7 @@
   (component/create [[_ duration] c]
     (timer c duration))
 
-  (component/segment [counter c]
+  (component/info [counter c]
     (str "Remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
   (component/tick [[_ counter] eid c]

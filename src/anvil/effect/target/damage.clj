@@ -24,7 +24,7 @@
   (< (rand) (effective-armor-save source* target*)))
 
 (defcomponent :effects.target/damage
-  (component/segment [[_ damage] _c]
+  (component/info [[_ damage] _c]
     (damage-info damage)
     #_(if source
         (let [modified (entity/damage @source damage)]

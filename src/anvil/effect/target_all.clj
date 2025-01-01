@@ -7,7 +7,7 @@
 ; TODO targets projectiles with -50% hp !!
 
 (defcomponent :effects/target-all
-  (component/segment [_ _c]
+  (component/info [_ _c]
     "All visible targets")
 
   (component/applicable? [_ _]

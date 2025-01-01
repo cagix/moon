@@ -3,5 +3,5 @@
             [clojure.string :as str]))
 
 (defcomponent :entity/species
-  (component/segment [[_ species] _c]
+  (component/info [[_ species] _c]
     (str "Creature - " (str/capitalize (name species)))))

@@ -65,7 +65,7 @@
    (send-event! c eid event params)))
 
 (defcomponent :entity/modifiers
-  (component/segment [[_ mods] _c]
+  (component/info [[_ mods] _c]
     (when (seq mods)
       (str/join "\n" (keep (fn [[k ops]]
                              (op/info ops k)) mods)))))

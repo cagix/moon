@@ -20,7 +20,7 @@
     (action-bar-remove-skill c skill))
   (swap! eid update :entity/skills dissoc id))
 
-#_(defmethod component/segment [skills _c]
+#_(defmethod component/info [skills _c]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))

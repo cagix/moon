@@ -58,7 +58,7 @@
   (assoc (fsm initial-state nil) :state initial-state))
 
 (defcomponent :entity/fsm
-  (component/segment [[_ fsm] _c]
+  (component/info [[_ fsm] _c]
     (str "State: " (name (:state fsm))))
 
 

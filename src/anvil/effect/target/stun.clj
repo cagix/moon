@@ -4,7 +4,7 @@
             [clojure.utils :refer [readable-number]]))
 
 (defcomponent :effects.target/stun
-  (component/segment [duration _c]
+  (component/info [duration _c]
     (str "Stuns for " (readable-number duration) " seconds"))
 
   (component/applicable? [_ {:keys [effect/target]}]
