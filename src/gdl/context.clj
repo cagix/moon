@@ -8,6 +8,7 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.utils :refer [safe-get defmethods mapvals pretty-pst with-err-str]]
             [gdl.app :as app]
@@ -20,8 +21,7 @@
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
             [clojure.gdx.scene2d.group :as group])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)
-           (forge OrthogonalTiledMapRenderer ColorSetter)))
+  (:import (forge OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name
@@ -363,15 +363,15 @@
   (db/build-all db property-type c))
 
 (defn add-actor [{::keys [stage]} actor]
-  (Stage/.addActor stage actor))
+  (stage/add-actor stage actor))
 
 (defn reset-stage [{::keys [stage]} new-actors]
-  (Stage/.clear stage)
-  (run! #(Stage/.addActor stage %) new-actors))
+  (stage/clear stage)
+  (run! #(stage/add-actor stage %) new-actors))
 
 (defn mouse-on-actor? [{::keys [stage] :as c}]
   (let [[x y] (mouse-position c)]
-    (Stage/.hit stage x y true)))
+    (stage/hit stage x y true)))
 
 (defn error-window [c throwable]
   (pretty-pst throwable)

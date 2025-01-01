@@ -3,6 +3,7 @@
   (:require [clojure.gdx :refer [dimensions]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
+            [clojure.gdx.scene2d.stage :as stage]
             [gdl.ui.table :as table]
             [gdl.ui.utils :as scene2d.utils])
   (:import (clojure.lang ILookup)
@@ -118,11 +119,11 @@
 
 (defn draw [^StageWithState stage context]
   (set! (.applicationState stage) context)
-  (.draw stage))
+  (stage/draw stage))
 
 (defn act [^StageWithState stage context]
   (set! (.applicationState stage) context)
-  (.act stage))
+  (stage/act stage))
 
 (defn add-tooltip!
   "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.

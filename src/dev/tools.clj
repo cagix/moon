@@ -2,13 +2,13 @@
   (:require [anvil.entity.skills :as skills]
             [cdq.context :as world]
             [clojure.gdx :as gdx]
+            [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
-            [clojure.gdx.scene2d.group :refer [children]])
-  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
+            [clojure.gdx.scene2d.group :refer [children]]))
 
 (comment
 
@@ -131,8 +131,8 @@
   (when (coll? v)
     (add-elements! node v))
 
-  (when (instance? Stage v)
-    (add-map-nodes! node (children->str-map (children (Stage/.getRoot v))) level))
+  (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
+    (add-map-nodes! node (children->str-map (children (stage/root v))) level))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
     (add-map-nodes! node (children->str-map (children v)) level))
