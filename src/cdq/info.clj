@@ -1,6 +1,8 @@
 (ns cdq.info
   (:require [anvil.entity :as entity]
+            [cdq.context :refer [finished-ratio]]
             [clojure.component :as component]
+            [clojure.string :as str]
             [clojure.utils :refer [readable-number k->pretty-name]]
             [gdl.info :as info]))
 
@@ -39,3 +41,31 @@
 (derive :entity/attack-speed   ::stat)
 (derive :entity/armor-save     ::stat)
 (derive :entity/armor-pierce   ::stat)
+
+(defmethod component/info :entity/delete-after-duration [counter c]
+  (str "Remaining: " (readable-number (finished-ratio c counter)) "/1"))
+
+(defmethod component/info :entity/faction
+  [faction _c]
+  (str "Faction: " (name faction)))
+
+(defmethod component/info :entity/fsm
+  [[_ fsm] _c]
+  (str "State: " (name (:state fsm))))
+
+(defmethod component/info :entity/hp
+  [_ _c]
+  (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
+
+#_(defmethod component/info :entity/skills [skills _c]
+  ; => recursive info-text leads to endless text wall
+  #_(when (seq skills)
+      (str "Skills: " (str/join "," (map name (keys skills))))))
+
+(defmethod component/info :entity/species
+  [[_ species] _c]
+  (str "Creature - " (str/capitalize (name species))))
+
+(defmethod component/info :entity/temp-modifier
+  [[_ {:keys [counter]}] c]
+  (str "Spiderweb - remaining: " (readable-number (finished-ratio c counter)) "/1"))

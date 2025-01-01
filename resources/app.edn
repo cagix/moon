@@ -48,6 +48,7 @@
 
   [:cdq.context/requires [
                           cdq.component.create
+                          cdq.component.destroy
                           cdq.component.render
                           cdq.component.tick
 
@@ -55,15 +56,7 @@
                           cdq.effect.target
                           cdq.entity.state
                           cdq.info
-
-                          anvil.entity.delete-after-duration
-                          anvil.entity.destroy-audiovisual
-                          anvil.entity.faction
-                          anvil.entity.fsm
-                          anvil.entity.hp
-                          anvil.entity.skills
-                          anvil.entity.species
-                          anvil.entity.temp-modifier]]
+                          ]]
   [:cdq.context/stage-actors]
   [:cdq.context/level :worlds/uf-caves]
   [:cdq.context/tiled-map]
