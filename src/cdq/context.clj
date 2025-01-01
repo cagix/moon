@@ -608,10 +608,6 @@
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
 
-(defn check-player-input [{::keys [player-eid] :as c}]
-  (component/manual-tick (entity/state-obj @player-eid)
-                         c))
-
 (defmethod component/pause-game? :active-skill          [_] false)
 (defmethod component/pause-game? :stunned               [_] false)
 (defmethod component/pause-game? :player-moving         [_] false)

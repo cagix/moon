@@ -1,7 +1,6 @@
 (ns cdq.game-loop
   (:require [anvil.controls :as controls]
             [cdq.context :refer [line-of-sight? render-z-order active-entities
-                                 check-player-input
                                  update-mouseover-entity
                                  update-paused-state
                                  update-time
@@ -50,6 +49,10 @@
       (render-entity! c system entity))))
 
 (def ^:private ^:dbg-flag pausing? true)
+
+(defn- check-player-input [{:keys [cdq.context/player-eid] :as c}]
+  (component/manual-tick (entity/state-obj @player-eid)
+                         c))
 
 (defn render [{:keys [gdl.context/world-viewport
                       cdq.context/tiled-map
