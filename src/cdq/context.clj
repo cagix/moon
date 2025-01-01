@@ -8,7 +8,6 @@
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [cdq.potential-fields :as potential-fields]
-            [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
@@ -609,16 +608,6 @@
                            :center-position [(/ (:width viewport) 2)
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
-
-(defn render-tiled-map [{::keys [raycaster explored-tile-corners] :as c}
-                        tiled-map
-                        light-position]
-  (c/draw-tiled-map c
-                    tiled-map
-                    (tile-color-setter/create raycaster
-                                              explored-tile-corners
-                                              (atom {})
-                                              light-position)))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)

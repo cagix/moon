@@ -1,5 +1,6 @@
 (ns cdq.game-loop
   (:require [cdq.context :as context]
+            [cdq.tile-color-setter :as tile-color-setter]
             [clojure.gdx :refer [clear-screen black]]
             [gdl.app :as app]
             [gdl.context :as c]
@@ -10,14 +11,20 @@
 
 (defn render [{:keys [gdl.context/world-viewport
                       cdq.context/tiled-map
-                      cdq.context/player-eid]
+                      cdq.context/player-eid
+                      cdq.context/raycaster
+                      cdq.context/explored-tile-corners]
                :as c}]
   (clear-screen black)
   ; FIXME position DRY
   (cam/set-position! (:camera world-viewport)
                      (:position @player-eid))
   ; FIXME position DRY
-  (context/render-tiled-map c tiled-map (cam/position (:camera world-viewport)))
+  (c/draw-tiled-map c
+                    tiled-map
+                    (tile-color-setter/create raycaster
+                                              explored-tile-corners
+                                              (cam/position (:camera world-viewport))))
   (c/draw-on-world-view c
                         (fn [c]
                           (context/render-debug-before-entities c)

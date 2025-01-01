@@ -20,22 +20,23 @@
  2432
  )
 
-(defn create [raycaster explored-tile-corners light-cache light-position]
+(defn create [raycaster explored-tile-corners light-position]
   #_(reset! do-once false)
-  (fn tile-color-setter [_color x y]
-    (let [position [(int x) (int y)]
-          explored? (get @explored-tile-corners position) ; TODO needs int call ?
-          base-color (if explored? explored-tile-color black)
-          cache-entry (get @light-cache position :not-found)
-          blocked? (if (= cache-entry :not-found)
-                     (let [blocked? (raycaster/blocked? raycaster light-position position)]
-                       (swap! light-cache assoc position blocked?)
-                       blocked?)
-                     cache-entry)]
-      #_(when @do-once
-          (swap! ray-positions conj position))
-      (if blocked?
-        (if see-all-tiles? white base-color)
-        (do (when-not explored?
-              (swap! explored-tile-corners assoc (mapv int position) true))
-            white)))))
+  (let [light-cache (atom {})]
+    (fn tile-color-setter [_color x y]
+      (let [position [(int x) (int y)]
+            explored? (get @explored-tile-corners position) ; TODO needs int call ?
+            base-color (if explored? explored-tile-color black)
+            cache-entry (get @light-cache position :not-found)
+            blocked? (if (= cache-entry :not-found)
+                       (let [blocked? (raycaster/blocked? raycaster light-position position)]
+                         (swap! light-cache assoc position blocked?)
+                         blocked?)
+                       cache-entry)]
+        #_(when @do-once
+            (swap! ray-positions conj position))
+        (if blocked?
+          (if see-all-tiles? white base-color)
+          (do (when-not explored?
+                (swap! explored-tile-corners assoc (mapv int position) true))
+              white))))))
