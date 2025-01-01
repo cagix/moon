@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.sound
-  (:require [gdl.effect.component :as component]
-            [clojure.gdx :refer [play]]
-            [clojure.component :refer [defcomponent]]))
+  (:require [clojure.gdx :refer [play]]
+            [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :effects/sound
   (component/applicable? [_ _ctx]

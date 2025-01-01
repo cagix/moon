@@ -1,9 +1,8 @@
 (ns ^:no-doc anvil.effect.target-all
-  (:require [gdl.effect.component :as component]
-            [anvil.effect :refer [do-all!]]
+  (:require [anvil.effect :refer [do-all!]]
             [gdl.info :as info]
             [cdq.context :as world]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.context :as c]))
 
 ; TODO targets projectiles with -50% hp !!

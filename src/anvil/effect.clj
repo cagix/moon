@@ -1,6 +1,6 @@
 (ns anvil.effect
-  (:require [gdl.effect.component :as component]
-            [cdq.context :as world]))
+  (:require [cdq.context :as world]
+            [clojure.component :as component]))
 
 ; TODO the 'ctx' is actually 'effect' itself with position/target/etc. as part of ':effect/'
 

@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.creature
-  (:require [gdl.effect.component :as component]
-            [cdq.context :as world]
-            [clojure.component :refer [defcomponent]]))
+  (:require [cdq.context :as world]
+            [clojure.component :as component :refer [defcomponent]]))
 
 ; "https://github.com/damn/core/issues/29"
 (defcomponent :effects/spawn

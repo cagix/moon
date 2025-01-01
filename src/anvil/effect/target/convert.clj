@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.effect.target.convert
-  (:require [gdl.effect.component :as component]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.component :refer [defcomponent]]))
+            [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :effects.target/convert
   (info/segment [_ _c]

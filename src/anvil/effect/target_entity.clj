@@ -1,9 +1,8 @@
 (ns ^:no-doc anvil.effect.target-entity
-  (:require [gdl.effect.component :as component]
-            [anvil.effect :refer [do-all! filter-applicable?]]
+  (:require [anvil.effect :refer [do-all! filter-applicable?]]
             [anvil.entity :as entity]
             [cdq.context :as world]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
 

@@ -1,7 +1,6 @@
 (ns ^:no-doc anvil.effect.projectile
-  (:require [gdl.effect.component :as component]
-            [cdq.context :as world]
-            [clojure.component :refer [defcomponent]]
+  (:require [cdq.context :as world]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.math.vector :as v]))
 
 (defn- projectile-start-point [entity direction size]

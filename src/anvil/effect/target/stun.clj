@@ -1,8 +1,7 @@
 (ns ^:no-doc anvil.effect.target.stun
-  (:require [gdl.effect.component :as component]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [gdl.info :as info]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [readable-number]]))
 
 (defcomponent :effects.target/stun

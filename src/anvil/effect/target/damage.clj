@@ -1,9 +1,8 @@
 (ns ^:no-doc anvil.effect.target.damage
-  (:require [gdl.effect.component :as component]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [gdl.info :as info]
             [cdq.context :as world :refer [add-text-effect]]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :as component :refer [defcomponent]]
             [gdl.context :as c]
             [gdl.rand :refer [rand-int-between]]))
 
