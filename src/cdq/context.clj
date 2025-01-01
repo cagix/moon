@@ -544,7 +544,7 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(defn- remove-destroyed-entities [c]
+(defn remove-destroyed-entities [c]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (all-entities c))]
     (remove-entity c eid)
@@ -608,7 +608,7 @@
                                              (* (:height viewport) (/ 3 4))]
                            :pack? true})))
 
-(defn- check-player-input [{::keys [player-eid] :as c}]
+(defn check-player-input [{::keys [player-eid] :as c}]
   (component/manual-tick (entity/state-obj @player-eid)
                          c))
 
@@ -619,7 +619,7 @@
 (defmethod component/pause-game? :player-idle           [_] true)
 (defmethod component/pause-game? :player-dead           [_] true)
 
-(defn- update-paused-state [{::keys [player-eid error] :as c} pausing?]
+(defn update-paused-state [{::keys [player-eid error] :as c} pausing?]
   (assoc c ::paused? (or error
                          (and pausing?
                               (component/pause-game? (entity/state-obj @player-eid))
@@ -635,7 +635,7 @@
          (filter #(line-of-sight? c player @%))
          first)))
 
-(defn- update-mouseover-entity [{::keys [mouseover-eid] :as c}]
+(defn update-mouseover-entity [{::keys [mouseover-eid] :as c}]
   (let [new-eid (if (c/mouse-on-actor? c)
                   nil
                   (calculate-mouseover-eid c))]
@@ -645,7 +645,7 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (assoc c ::mouseover-eid new-eid)))
 
-(defn- update-time [c]
+(defn update-time [c]
   (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
     (-> c
         (update ::elapsed-time + delta-ms)
@@ -653,7 +653,7 @@
 
 (def ^:private pf-cache (atom nil))
 
-(defn- tick-potential-fields [{::keys [factions-iterations grid] :as c}]
+(defn tick-potential-fields [{::keys [factions-iterations grid] :as c}]
   (let [entities (active-entities c)]
     (doseq [[faction max-iterations] factions-iterations]
       (potential-fields/tick pf-cache
@@ -678,7 +678,7 @@
    (catch Throwable t
      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
 
-(defn- tick-entities [c]
+(defn tick-entities [c]
   (try (run! #(tick-entity c %) (active-entities c))
        (catch Throwable t
          (c/error-window c t)
@@ -687,7 +687,7 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn- check-camera-controls [c camera]
+(defn check-camera-controls [c camera]
   (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
   (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed))) )
 
@@ -702,29 +702,10 @@
     (when (some actor/visible? windows)
       (run! #(actor/set-visible % false) windows))))
 
-(defn- check-ui-key-listeners [c {:keys [controls/close-windows-key] :as controls} stage]
+(defn check-ui-key-listeners [c {:keys [controls/close-windows-key] :as controls} stage]
   (check-window-hotkeys c controls stage)
   (when (key-just-pressed? c close-windows-key)
     (close-all-windows stage)))
-
-(defn tick [{:keys [gdl.context/world-viewport] :as c} pausing?]
-  (check-player-input c)
-  (let [c (-> c
-              update-mouseover-entity
-              (update-paused-state pausing?))
-        c (if (::paused? c)
-            c
-            (-> c
-                update-time
-                tick-potential-fields
-                tick-entities))]
-    (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
-    (check-camera-controls c (:camera world-viewport))
-    (check-ui-key-listeners c
-                            {:controls/close-windows-key controls/close-windows-key
-                             :controls/window-hotkeys    controls/window-hotkeys}
-                            (c/stage c))
-    c))
 
 (defn- spawn-enemies [c tiled-map]
   (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]

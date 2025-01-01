@@ -1,5 +1,15 @@
 (ns cdq.game-loop
-  (:require [cdq.context :refer [line-of-sight? render-z-order active-entities] :as context]
+  (:require [anvil.controls :as controls]
+            [cdq.context :refer [line-of-sight? render-z-order active-entities
+                                 check-player-input
+                                 update-mouseover-entity
+                                 update-paused-state
+                                 update-time
+                                 tick-potential-fields
+                                 tick-entities
+                                 remove-destroyed-entities
+                                 check-camera-controls
+                                 check-ui-key-listeners]]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
             [clojure.component :as component]
@@ -66,4 +76,20 @@
   (let [stage (c/stage c)]
     (ui/draw stage c)
     (ui/act  stage c))
-  (context/tick c pausing?))
+  (check-player-input c)
+  (let [c (-> c
+              update-mouseover-entity
+              (update-paused-state pausing?))
+        c (if (:cdq.context/paused? c)
+            c
+            (-> c
+                update-time
+                tick-potential-fields
+                tick-entities))]
+    (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
+    (check-camera-controls c (:camera world-viewport))
+    (check-ui-key-listeners c
+                            {:controls/close-windows-key controls/close-windows-key
+                             :controls/window-hotkeys    controls/window-hotkeys}
+                            (c/stage c))
+    c))
