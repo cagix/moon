@@ -11,8 +11,6 @@ The Stage and its constituents (like Actors and Listeners) are not thread-safe a
 (defn add-actor
   "Adds an actor to the root of the stage.
 
-  Adds an actor to the root of the stage.
-
   See Also:
   Group.addActor(Actor)"
   [stage actor]
@@ -24,9 +22,7 @@ The Stage and its constituents (like Actors and Listeners) are not thread-safe a
   (Stage/.clear stage))
 
 (defn hit
-  "public Actor hit(float stageX, float stageY, boolean touchable)
-
-Returns the Actor at the specified location in stage coordinates. Hit testing is performed in the order the actors were inserted into the stage, last inserted actors being tested first. To get stage coordinates from screen coordinates, use screenToStageCoordinates(Vector2).
+  "Returns the Actor at the specified location in stage coordinates. Hit testing is performed in the order the actors were inserted into the stage, last inserted actors being tested first. To get stage coordinates from screen coordinates, use screenToStageCoordinates(Vector2).
 
 Parameters:
     touchable - If true, the hit detection will respect the touchability.
