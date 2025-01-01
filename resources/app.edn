@@ -1,3 +1,4 @@
+; => only game relevant code here & in 'cdq' folder  ! no details whatever else calculations
 {:app {:title "Forge"
        :fps 60
        :width 1440
@@ -42,18 +43,8 @@
   [:cdq.context/requires [
                           cdq.effect
                           cdq.effect.target
+                          cdq.entity.state
                           cdq.info
-
-                          anvil.entity.state.active-skill
-                          anvil.entity.state.npc-dead
-                          anvil.entity.state.npc-idle
-                          anvil.entity.state.npc-moving
-                          anvil.entity.state.npc-sleeping
-                          anvil.entity.state.player-dead
-                          anvil.entity.state.player-idle
-                          anvil.entity.state.player-item-on-cursor
-                          anvil.entity.state.player-moving
-                          anvil.entity.state.stunned
 
                           anvil.entity.alert-friendlies-after-duration
                           anvil.entity.animation
