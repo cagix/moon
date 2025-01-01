@@ -24,8 +24,8 @@
             ~@fn-body)))
     ~k))
 
-(defsystem ->v)
-(defmethod ->v :default [[_ v] _context]
+(defsystem create)
+(defmethod create :default [[_ v] _context]
   v)
 
 (defsystem create!)

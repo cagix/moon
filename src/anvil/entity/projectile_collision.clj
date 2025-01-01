@@ -7,7 +7,7 @@
             [clojure.utils :refer [find-first]]))
 
 (defcomponent :entity/projectile-collision
-  (component/->v [[_ v] c]
+  (component/create [[_ v] c]
     (assoc v :already-hit-bodies #{}))
 
   (component/tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]

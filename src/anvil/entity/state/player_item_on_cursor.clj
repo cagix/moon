@@ -65,7 +65,7 @@
       (entity/event c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
-  (component/->v [[_ eid item] c]
+  (component/create [[_ eid item] c]
     (safe-merge (c/build c :player-item-on-cursor/component)
                 {:eid eid
                  :item item}))

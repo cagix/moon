@@ -5,7 +5,7 @@
             [gdl.context :as c]))
 
 (defcomponent :player-dead
-  (component/->v [[k] c]
+  (component/create [[k] c]
     (c/build c :player-dead/component.enter))
 
   (component/enter [[_ {:keys [tx/sound

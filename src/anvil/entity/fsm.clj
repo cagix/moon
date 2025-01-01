@@ -69,4 +69,4 @@
                            :fsms/player player-fsm
                            :fsms/npc npc-fsm)
                          initial-state)
-           initial-state (component/->v [initial-state eid] c))))
+           initial-state (component/create [initial-state eid] c))))

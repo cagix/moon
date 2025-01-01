@@ -27,7 +27,7 @@
          1)))
 
 (defcomponent :active-skill
-  (component/->v [[_ eid [skill effect-ctx]] c]
+  (component/create [[_ eid [skill effect-ctx]] c]
     {:eid eid
      :skill skill
      :effect-ctx effect-ctx

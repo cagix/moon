@@ -5,7 +5,7 @@
             [clojure.utils :refer [readable-number]]))
 
 (defcomponent :entity/delete-after-duration
-  (component/->v [[_ duration] c]
+  (component/create [[_ duration] c]
     (timer c duration))
 
   (info/segment [counter c]

@@ -4,7 +4,7 @@
             [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :player-moving
-  (component/->v [[_ eid movement-vector] c]
+  (component/create [[_ eid movement-vector] c]
     {:eid eid
      :movement-vector movement-vector})
 

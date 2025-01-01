@@ -44,7 +44,7 @@
   (info/segment [_ _c]
     (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 
-  (component/->v [[_ v] c]
+  (component/create [[_ v] c]
     [v v])
 
   (component/render-info [_ entity c]

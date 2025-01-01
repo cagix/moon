@@ -8,7 +8,7 @@
             [gdl.context :as c]))
 
 (defcomponent :player-idle
-  (component/->v [[_ eid] c]
+  (component/create [[_ eid] c]
     (safe-merge (c/build c :player-idle/clicked-inventory-cell)
                 {:eid eid}))
 

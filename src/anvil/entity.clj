@@ -44,9 +44,9 @@
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (component/->v (if params
-                                                          [new-state-k eid params]
-                                                          [new-state-k eid])
+              new-state-obj [new-state-k (component/create (if params
+                                                             [new-state-k eid params]
+                                                             [new-state-k eid])
                                                         c)]]
           (when (:entity/player? @eid)
             (when-let [cursor (component/cursor new-state-obj)]
@@ -190,7 +190,7 @@
   (info/segment [_ _c]
     (str "Mana: " (mana info/*info-text-entity*)))
 
-  (component/->v [[_ v] c]
+  (component/create [[_ v] c]
     [v v]))
 
 (defn hitpoints

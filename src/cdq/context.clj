@@ -437,7 +437,7 @@
 
 (defn- create-vs [components c]
   (reduce (fn [m [k v]]
-            (assoc m k (component/->v [k v] c)))
+            (assoc m k (component/create [k v] c)))
           {}
           components))
 
