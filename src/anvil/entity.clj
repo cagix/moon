@@ -187,7 +187,7 @@
     (assoc-in entity [:entity/mana 0] (- mana-val cost))))
 
 (defcomponent :entity/mana
-  (info/segment [_ _c]
+  (component/info [_ _c]
     (str "Mana: " (mana info/*info-text-entity*)))
 
   (component/create [[_ v] c]

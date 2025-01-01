@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.entity.faction
-  (:require [clojure.component :refer [defcomponent]]))
+  (:require [clojure.component :as component :refer [defcomponent]]))
 
 (defcomponent :entity/faction
   (component/info [faction _c]

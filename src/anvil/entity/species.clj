@@ -1,5 +1,5 @@
 (ns ^:no-doc anvil.entity.species
-  (:require [clojure.component :refer [defcomponent]]
+  (:require [clojure.component :as component :refer [defcomponent]]
             [clojure.string :as str]))
 
 (defcomponent :entity/species
