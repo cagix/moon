@@ -12,27 +12,6 @@
             [gdl.malli :as m]
             [gdl.math.vector :as v]))
 
-(defn- npc-choose-skill [c entity ctx]
-  (->> entity
-       :entity/skills
-       vals
-       (sort-by #(or (:skill/cost %) 0))
-       reverse
-       (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect/applicable-and-useful? c ctx (:skill/effects %))))
-       first))
-
-(defn- effect-context [c eid]
-  (let [entity @eid
-        target (world/nearest-enemy c entity)
-        target (when (and target
-                          (world/line-of-sight? c entity @target))
-                 target)]
-    {:effect/source eid
-     :effect/target target
-     :effect/target-direction (when target
-                                (entity/direction entity @target))}))
-
 (defmethod component/tick :entity/alert-friendlies-after-duration
   [[_ {:keys [counter faction]}] eid c]
   (when (stopped? c counter)
@@ -166,35 +145,3 @@
   (when (stopped? c counter)
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))
-
-(defmethod component/tick :stunned
-  [[_ {:keys [counter]}] eid c]
-  (when (stopped? c counter)
-    (entity/event c eid :effect-wears-off)))
-
-(defmethod component/tick :player-moving
-  [[_ {:keys [movement-vector]}] eid c]
-  (if-let [movement-vector (controls/movement-vector c)]
-    (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (entity/stat @eid :entity/movement-speed)})
-    (entity/event c eid :no-movement-input)))
-
-(defmethod component/tick :npc-sleeping
-  [_ eid c]
-  (let [entity @eid
-        cell (world/grid-cell c (entity/tile entity))] ; pattern!
-    (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
-      (when (<= distance (entity/stat entity :entity/aggro-range))
-        (entity/event c eid :alert)))))
-
-(defmethod component/tick :npc-moving
-  [[_ {:keys [counter]}] eid c]
-  (when (stopped? c counter)
-    (entity/event c eid :timer-finished)))
-
-(defmethod component/tick :npc-idle
-  [_ eid c]
-  (let [effect-ctx (effect-context c eid)]
-    (if-let [skill (npc-choose-skill c @eid effect-ctx)]
-      (entity/event c eid :start-action [skill effect-ctx])
-      (entity/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0])))))

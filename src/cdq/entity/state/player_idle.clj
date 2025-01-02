@@ -1,11 +1,12 @@
-(ns cdq.component.manual-tick
+(ns cdq.entity.state.player-idle
   (:require [anvil.controls :as controls]
             [anvil.entity :as entity]
             [anvil.skill :as skill]
             [cdq.context :as world]
             [clojure.component :as component]
-            [clojure.gdx :refer [button-just-pressed?]]
+            [clojure.gdx :refer [play button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.utils :refer [safe-merge]]
             [gdl.context :as c :refer [play-sound]]
             [gdl.ui :refer [window-title-bar? button?]]
             [gdl.math.vector :as v]))
@@ -118,8 +119,14 @@
           (play-sound c "bfxr_denied")
           (world/show-player-msg c "No selected skill"))]))))
 
-(defmethod component/manual-tick :player-idle
-  [[_ {:keys [eid]}] c]
+(defn create [[_ eid] c]
+  (safe-merge (c/build c :player-idle/clicked-inventory-cell)
+              {:eid eid}))
+
+(defn pause-game? [_]
+  true)
+
+(defn manual-tick [[_ {:keys [eid]}] c]
   (if-let [movement-vector (controls/movement-vector c)]
     (entity/event c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
@@ -127,8 +134,9 @@
       (when (button-just-pressed? c :left)
         (on-click)))))
 
-(defmethod component/manual-tick :player-item-on-cursor
-  [[_ {:keys [eid]}] c]
-  (when (and (button-just-pressed? c :left)
-             (world/world-item? c))
-    (entity/event c eid :drop-item)))
+(defn clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
+  ; TODO no else case
+  (when-let [item (get-in (:entity/inventory @eid) cell)]
+    (play pickup-item-sound)
+    (entity/event c eid :pickup-item item)
+    (entity/remove-item c eid cell)))

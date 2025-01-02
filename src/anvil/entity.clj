@@ -49,11 +49,6 @@
   (let [k (state-k entity)]
     [k (k entity)]))
 
-(defmethod component/cursor :stunned               [_] :cursors/denied)
-(defmethod component/cursor :player-moving         [_] :cursors/walking)
-(defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
-(defmethod component/cursor :player-dead           [_] :cursors/black-x)
-
 (defn- send-event! [c eid event params]
   (when-let [fsm (:entity/fsm @eid)]
     (let [old-state-k (:state fsm)

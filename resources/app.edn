@@ -50,13 +50,10 @@
                           cdq.component.create
                           cdq.component.destroy
                           cdq.component.render
-                          cdq.component.state
                           cdq.component.tick
-                          cdq.component.manual-tick
 
                           cdq.effect
                           cdq.effect.target
-                          cdq.entity.state
                           cdq.info
                           ]]
   [:cdq.context/stage-actors]

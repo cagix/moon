@@ -87,12 +87,6 @@
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
-(defmethod pause-game? :stunned               [_] false)
-(defmethod pause-game? :player-moving         [_] false)
-(defmethod pause-game? :player-item-on-cursor [_] true)
-(defmethod pause-game? :player-idle           [_] true)
-(defmethod pause-game? :player-dead           [_] true)
-
 (defn- update-paused-state [{:keys [cdq.context/player-eid error] :as c} pausing?]
   (assoc c :cdq.context/paused? (or error
                                     (and pausing?
@@ -233,7 +227,16 @@
                           #'component/clicked-skillmenu-skill
                           #'component/draw-gui-view]}))
 
-(doseq [[ns-sym k] '[[cdq.entity.state.active-skill :active-skill]]]
+(doseq [[ns-sym k] '{cdq.entity.state.active-skill :active-skill
+                     cdq.entity.state.npc-dead :npc-dead
+                     cdq.entity.state.npc-idle :npc-idle
+                     cdq.entity.state.npc-moving :npc-moving
+                     cdq.entity.state.npc-sleeping :npc-sleeping
+                     cdq.entity.state.player-dead :player-dead
+                     cdq.entity.state.player-idle :player-idle
+                     cdq.entity.state.player-item-on-cursor :player-item-on-cursor
+                     cdq.entity.state.player-moving :player-moving
+                     cdq.entity.state.stunned :stunned}]
   (component/install entity-state
                      ns-sym
                      k))

@@ -111,10 +111,6 @@
   [_ entity c]
   (c/filled-circle c (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
-(defmethod component/render-below :stunned
-  [_ entity c]
-  (c/circle c (:position entity) 0.5 [1 1 1 0.6]))
-
 (defmethod component/render-effect :effects/target-all
   [_ {:keys [effect/source]} c]
   (let [source* @source]
@@ -144,10 +140,3 @@
                   :x x
                   :y (+ y (:half-height entity))
                   :up? true})))
-
-(defmethod component/render-below :player-item-on-cursor
-  [[_ {:keys [item]}] entity c]
-  (when (world/world-item? c)
-    (c/draw-centered c
-                     (:entity/image item)
-                     (world/item-place-position c entity))))
