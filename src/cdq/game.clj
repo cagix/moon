@@ -118,7 +118,7 @@
       (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (assoc c ::mouseover-eid new-eid)))
+    (assoc c :cdq.context/mouseover-eid new-eid)))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
