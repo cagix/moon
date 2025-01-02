@@ -9,7 +9,6 @@
             [clojure.string :as str]
             [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [safe-get mapvals pretty-pst with-err-str]]
-            [gdl.assets :as assets]
             [gdl.db :as db]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
@@ -256,12 +255,6 @@
 
 (defn draw-on-world-view [{::keys [world-viewport world-unit-scale] :as c} render-fn]
   (draw-with c world-viewport world-unit-scale render-fn))
-
-(defcomponent ::assets
-  (component/create [[_ folder] c]
-    (assets/manager c folder))
-  (component/dispose [[_ assets]]
-    (assets/cleanup assets)))
 
 (defcomponent ::batch
   (component/create [_ _c]
