@@ -1,10 +1,7 @@
 (ns gdl.context
-  (:require [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white
-                                         set-projection-matrix begin end set-color draw pixmap draw-pixel resize fit-viewport
-                                         unproject set-input-processor internal-file input-x input-y]]
+  (:require [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white set-projection-matrix begin end set-color draw pixmap resize fit-viewport unproject set-input-processor internal-file input-x input-y]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.interop :as interop]
@@ -259,24 +256,6 @@
 
 (defn draw-on-world-view [{::keys [world-viewport world-unit-scale] :as c} render-fn]
   (draw-with c world-viewport world-unit-scale render-fn))
-
-(defn- sd-texture []
-  (let [pixmap (doto (pixmap 1 1 pixmap/format-RGBA8888)
-                 (pixmap/set-color white)
-                 (draw-pixel 0 0))
-        texture (gdx/texture pixmap)]
-    (dispose pixmap)
-    texture))
-
-(defcomponent ::shape-drawer
-  (component/create [_ {::keys [batch]}]
-    (assert batch)
-    (sd/create batch (gdx/texture-region (sd-texture) 1 0 1 1)))
-  (component/dispose [[_ sd]]
-    #_(dispose sd)))
-; TODO this will break ... proxy with extra-data -> get texture through sd ...
-; => shape-drawer-texture as separate component?!
-; that would work
 
 (defcomponent ::assets
   (component/create [[_ folder] c]

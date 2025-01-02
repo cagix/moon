@@ -227,6 +227,10 @@
                           #'component/clicked-skillmenu-skill
                           #'component/draw-gui-view]}))
 
+; TODO tests ! - all implemented/wired correctly/etc?
+; TODO tests also interesting .... !
+; keep running , show green/etc
+
 (doseq [[ns-sym k] '{cdq.entity.state.active-skill :active-skill
                      cdq.entity.state.npc-dead :npc-dead
                      cdq.entity.state.npc-idle :npc-idle
@@ -238,5 +242,14 @@
                      cdq.entity.state.player-moving :player-moving
                      cdq.entity.state.stunned :stunned}]
   (component/install entity-state
+                     ns-sym
+                     k))
+
+(def gdl-context
+  {:required [#'component/create]
+   :optional [#'component/dispose]})
+
+(doseq [[ns-sym k] '{gdl.context.shape-drawer :gdl.context/shape-drawer}]
+  (component/install gdl-context
                      ns-sym
                      k))
