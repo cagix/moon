@@ -1,12 +1,12 @@
 (ns gdl.editor
-  (:require [clojure.edn :as edn]
+  (:require [clojure.component :as component :refer [defcomponent]]
+            [clojure.edn :as edn]
             [clojure.gdx :as gdx]
+            [clojure.gdx.assets :as assets]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [gdl.app :as app]
-            [gdl.assets :as assets]
             [gdl.context :as ctx :refer [play-sound]]
             [gdl.db :as db]
             [gdl.malli :as m]
@@ -158,8 +158,9 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (assets/all-of-type (:gdl.context/assets @app/state)
-                      asset-type))
+  (let [manager (:gdl.context/assets @app/state)]
+    (filter #(= (assets/type manager %) asset-type)
+            (assets/names manager))))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(play-sound @app/state sound-name)))
