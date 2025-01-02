@@ -136,33 +136,6 @@
                 [1 0 0 0.5]
                 [1 1 0 0.5])))))
 
-(defn- draw-skill-image [c image entity [x y] action-counter-ratio]
-  (let [[width height] (:world-unit-dimensions image)
-        _ (assert (= width height))
-        radius (/ (float width) 2)
-        y (+ (float y) (float (:half-height entity)) (float 0.15))
-        center [x (+ y radius)]]
-    (c/filled-circle c center radius [1 1 1 0.125])
-    (c/sector c
-              center
-              radius
-              90 ; start-angle
-              (* (float action-counter-ratio) 360) ; degree
-              [1 1 1 0.5])
-    (c/draw-image c image [(- (float x) radius) y])))
-
-(defmethod component/render-info :active-skill
-  [[_ {:keys [skill effect-ctx counter]}] entity c]
-  (let [{:keys [entity/image skill/effects]} skill]
-    (draw-skill-image c
-                      image
-                      entity
-                      (:position entity)
-                      (finished-ratio c counter))
-    (effect/render-info c
-                        (effect/check-update-ctx c effect-ctx)
-                        effects)))
-
 (defmethod component/render-above :npc-sleeping
   [_ entity c]
   (let [[x y] (:position entity)]

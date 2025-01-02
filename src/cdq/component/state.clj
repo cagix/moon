@@ -4,17 +4,6 @@
             [clojure.component :as component :refer [defcomponent]]
             [clojure.gdx :refer [play]]))
 
-(defcomponent :active-skill
-  (component/enter [[_ {:keys [eid skill]}] c]
-    (play (:skill/start-action-sound skill))
-    (when (:skill/cooldown skill)
-      (swap! eid assoc-in
-             [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (timer c (:skill/cooldown skill))))
-    (when (and (:skill/cost skill)
-               (not (zero? (:skill/cost skill))))
-      (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
-
 (defcomponent :npc-dead
   (component/enter [[_ {:keys [eid]}] c]
     (swap! eid assoc :entity/destroyed? true)))

@@ -53,7 +53,6 @@
 (defmethod component/cursor :player-moving         [_] :cursors/walking)
 (defmethod component/cursor :player-item-on-cursor [_] :cursors/hand-grab)
 (defmethod component/cursor :player-dead           [_] :cursors/black-x)
-(defmethod component/cursor :active-skill          [_] :cursors/sandclock)
 
 (defn- send-event! [c eid event params]
   (when-let [fsm (:entity/fsm @eid)]

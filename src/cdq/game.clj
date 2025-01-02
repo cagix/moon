@@ -87,7 +87,6 @@
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
-(defmethod pause-game? :active-skill          [_] false)
 (defmethod pause-game? :stunned               [_] false)
 (defmethod pause-game? :player-moving         [_] false)
 (defmethod pause-game? :player-item-on-cursor [_] true)
@@ -211,3 +210,30 @@
     (app/start (:app     config)
                (:context config)
                game-loop)))
+
+(def entity
+  {:optional [#'component/create
+              #'component/create!
+              #'component/destroy
+              #'component/tick
+              #'component/render-below
+              #'component/render-default
+              #'component/render-above
+              #'component/render-info]})
+
+(def entity-state
+  (merge-with concat
+              entity
+              {:optional [#'component/enter
+                          #'component/exit
+                          #'component/cursor
+                          #'pause-game?
+                          #'component/manual-tick
+                          #'component/clicked-inventory-cell
+                          #'component/clicked-skillmenu-skill
+                          #'component/draw-gui-view]}))
+
+(doseq [[ns-sym k] '[[cdq.entity.state.active-skill :active-skill]]]
+  (component/install entity-state
+                     ns-sym
+                     k))

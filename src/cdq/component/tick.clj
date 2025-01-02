@@ -198,18 +198,3 @@
     (if-let [skill (npc-choose-skill c @eid effect-ctx)]
       (entity/event c eid :start-action [skill effect-ctx])
       (entity/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0])))))
-
-(defmethod component/tick :active-skill
-  [[_ {:keys [skill effect-ctx counter]}] eid c]
-  (cond
-   (not (effect/some-applicable? (effect/check-update-ctx c effect-ctx)
-                                 (:skill/effects skill)))
-   (do
-    (entity/event c eid :action-done)
-    ; TODO some sound ?
-    )
-
-   (stopped? c counter)
-   (do
-    (effect/do-all! c effect-ctx (:skill/effects skill))
-    (entity/event c eid :action-done))))
