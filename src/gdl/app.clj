@@ -1,7 +1,24 @@
 (ns gdl.app
-  (:require [clojure.component :as component]
+  (:require [clojure.component :as component :refer [defsystem]]
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]))
+
+(defsystem create)
+(defmethod create :default [[_ v] _context]
+  v)
+
+(defn- safe-create-into [context components]
+  (reduce (fn [context [k v]]
+            (assert (not (contains? context k)))
+            (assoc context k (create [k v] context)))
+          context
+          components))
+
+(defsystem dispose)
+(defmethod dispose :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ width height])
 
 (def state (atom nil))
 
@@ -9,24 +26,34 @@
   (lwjgl/start app-config
                (reify lwjgl/Application
                  (create [_]
-                   (reset! state (component/safe-create-into (gdx/context) components)))
+                   (reset! state (safe-create-into (gdx/context) components)))
 
                  (dispose [_]
-                   (run! component/dispose @state))
+                   (run! dispose @state))
 
                  (render [_]
                    (swap! state render))
 
                  (resize [_ width height]
-                   (run! #(component/resize % width height) @state)))))
+                   (run! #(resize % width height) @state)))))
 
-(def gdl-context
-  {:required [#'component/create]
-   :optional [#'component/dispose]})
+(def systems
+  {:required [#'create]
+   :optional [#'dispose
+              #'resize]})
 
-(doseq [[ns-sym k] '{gdl.context.shape-drawer :gdl.context/shape-drawer
-                     gdl.context.assets       :gdl.context/assets
-                     }]
-  (component/install gdl-context
+(doseq [[ns-sym k] '{gdl.context.assets             :gdl.context/assets
+                     gdl.context.batch              :gdl.context/batch
+                     gdl.context.cursors            :gdl.context/cursors
+                     gdl.context.db                 :gdl.context/db
+                     gdl.context.default-font       :gdl.context/default-font
+                     gdl.context.shape-drawer       :gdl.context/shape-drawer
+                     gdl.context.stage              :gdl.context/stage
+                     gdl.context.tiled-map-renderer :gdl.context/tiled-map-renderer
+                     gdl.context.ui                 :gdl.context/ui
+                     gdl.context.viewport           :gdl.context/viewport
+                     gdl.context.world-unit-scale   :gdl.context/world-unit-scale
+                     gdl.context.world-viewport     :gdl.context/world-viewport}]
+  (component/install systems
                      ns-sym
                      k))

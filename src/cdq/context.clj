@@ -13,6 +13,7 @@
             [clojure.component :as component :refer [defcomponent]]
             [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number!]]
             [data.grid2d :as g2d]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
@@ -25,17 +26,17 @@
             [gdl.val-max :as val-max]))
 
 (defcomponent ::tiled-map
-  (component/create [_ {::keys [level]}]
+  (app/create [_ {::keys [level]}]
     (:tiled-map level))
-  (component/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
+  (app/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
     (tiled/dispose tiled-map)))
 
 (defcomponent ::error
-  (component/create [_ _c]
+  (app/create [_ _c]
     nil))
 
 (defcomponent ::explored-tile-corners
-  (component/create [_ {::keys [tiled-map]}]
+  (app/create [_ {::keys [tiled-map]}]
     (atom (g2d/create-grid
            (tiled/tm-width  tiled-map)
            (tiled/tm-height tiled-map)
@@ -80,7 +81,7 @@
     :occupied #{}}))
 
 (defcomponent ::grid
-  (component/create [_ {::keys [tiled-map]}]
+  (app/create [_ {::keys [tiled-map]}]
     (g2d/create-grid
      (tiled/tm-width tiled-map)
      (tiled/tm-height tiled-map)
@@ -92,17 +93,17 @@
                             "all"  :all)))))))
 
 (defcomponent ::content-grid
-  (component/create [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
+  (app/create [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
     (content-grid/create {:cell-size cell-size
                           :width  (tiled/tm-width  tiled-map)
                           :height (tiled/tm-height tiled-map)})))
 
 (defcomponent ::entity-ids
-  (component/create [_ _c]
+  (app/create [_ _c]
     (atom {})))
 
 (defcomponent ::elapsed-time
-  (component/create [_ _c]
+  (app/create [_ _c]
     0))
 
 ; TODO this passing w. world props ...
@@ -122,7 +123,7 @@
 (declare creature)
 
 (defcomponent ::player-eid
-  (component/create [_ {::keys [level] :as c}]
+  (app/create [_ {::keys [level] :as c}]
     (assert (:start-position level))
     (creature c (player-entity-props (:start-position level)))))
 
@@ -131,7 +132,7 @@
     (aset arr x y (boolean (cell->blocked? cell)))))
 
 (defcomponent ::raycaster
-  (component/create [_ {::keys [grid]}]
+  (app/create [_ {::keys [grid]}]
     (let [width  (g2d/width  grid)
           height (g2d/height grid)
           arr (make-array Boolean/TYPE width height)]
@@ -574,7 +575,7 @@
     (actor/user-object skill-button)))
 
 (defcomponent ::player-message
-  (component/create [[_ {:keys [duration-seconds]}] _context]
+  (app/create [[_ {:keys [duration-seconds]}] _context]
     (atom {:duration-seconds duration-seconds})))
 
 (defn show-player-msg [{::keys [player-message]} text]
@@ -610,19 +611,19 @@
     (creature c (update props :position tile->middle))))
 
 (defcomponent ::level
-  (component/create [[_ world-id] c]
+  (app/create [[_ world-id] c]
     (generate-level c (c/build c world-id))))
 
 (defcomponent ::stage-actors
-  (component/create [_ c]
+  (app/create [_ c]
     (c/reset-stage c (widgets c))))
 
 (defcomponent ::spawn-enemies
-  (component/create [_ c]
+  (app/create [_ c]
     (spawn-enemies c (::tiled-map c))))
 
 (defcomponent ::requires
-  (component/create [[_ namespaces] _context]
+  (app/create [[_ namespaces] _context]
     (run! require namespaces)))
 
 ; TODO unused

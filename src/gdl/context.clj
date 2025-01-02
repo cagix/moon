@@ -1,14 +1,13 @@
 (ns gdl.context
-  (:require [clojure.gdx :as gdx :refer [play sprite-batch dispose orthographic-camera clamp degree->radians white set-projection-matrix begin end set-color draw pixmap resize fit-viewport unproject set-input-processor internal-file input-x input-y]]
+  (:require [clojure.gdx :as gdx :refer [play clamp degree->radians white set-projection-matrix begin end set-color draw unproject input-x input-y]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.component :as component :refer [defcomponent]]
-            [clojure.utils :refer [safe-get mapvals pretty-pst with-err-str]]
+            [clojure.utils :refer [safe-get pretty-pst with-err-str]]
             [gdl.db :as db]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
@@ -256,77 +255,7 @@
 (defn draw-on-world-view [{::keys [world-viewport world-unit-scale] :as c} render-fn]
   (draw-with c world-viewport world-unit-scale render-fn))
 
-(defcomponent ::batch
-  (component/create [_ _c]
-    (sprite-batch))
-  (component/dispose [[_ batch]]
-    (dispose batch)))
-
-(defcomponent ::db
-  (component/create [[_ config] _c]
-    (db/create config)))
-
-(defcomponent ::default-font
-  (component/create [[_ config] c]
-    (freetype/generate-font (update config :file #(internal-file c %))))
-  (component/dispose [[_ font]]
-    (dispose font)))
-
-(defcomponent ::cursors
-  (component/create [[_ cursors] c]
-    (mapvals (fn [[file [hotspot-x hotspot-y]]]
-               (let [pixmap (pixmap (internal-file c (str "cursors/" file ".png")))
-                     cursor (gdx/cursor c pixmap hotspot-x hotspot-y)]
-                 (dispose pixmap)
-                 cursor))
-             cursors))
-
-  (component/dispose [[_ cursors]]
-    (run! dispose (vals cursors))))
-
-(defcomponent ::viewport
-  (component/create [[_ {:keys [width height]}] _c]
-    (fit-viewport width height (orthographic-camera)))
-  (component/resize [[_ viewport] w h]
-    (resize viewport w h :center-camera? true)))
-
-(defcomponent ::world-unit-scale
-  (component/create [[_ tile-size] _c]
-    (float (/ tile-size))))
-
-(defcomponent ::world-viewport
-  (component/create [[_ {:keys [width height]}] {::keys [world-unit-scale]}]
-    (assert world-unit-scale)
-    (let [camera (orthographic-camera)
-          world-width  (* width  world-unit-scale)
-          world-height (* height world-unit-scale)]
-      (camera/set-to-ortho camera world-width world-height :y-down? false)
-      (fit-viewport world-width world-height camera)))
-  (component/resize [[_ viewport] w h]
-    (resize viewport w h :center-camera? false)))
-
-(defcomponent ::tiled-map-renderer
-  (component/create [_ {::keys [world-unit-scale batch]}]
-    (memoize (fn [tiled-map]
-               (OrthogonalTiledMapRenderer. tiled-map
-                                            (float world-unit-scale)
-                                            batch)))))
-
 (def stage ::stage)
-
-(defcomponent stage
-  (component/create [_ {::keys [viewport batch] :as c}]
-    (let [stage (ui/stage viewport batch nil)]
-      (set-input-processor c stage)
-      stage))
-  (component/dispose [[_ stage]]
-    (dispose stage)))
-
-(defcomponent ::ui
-  (component/create [[_ config] _c]
-    (ui/setup config))
-  (component/dispose [_]
-    (ui/cleanup)))
 
 (defn build [{::keys [db] :as c} id]
   (db/build db id c))
