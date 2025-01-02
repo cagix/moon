@@ -244,17 +244,3 @@
   (component/install entity-state
                      ns-sym
                      k))
-
-(def gdl-context
-  {:required [#'component/create]
-   :optional [#'component/dispose]})
-
-; TODO but how 2 actually use this ? this should be installed @ gdl.app ??
-; like does every application has to install?
-
-(doseq [[ns-sym k] '{gdl.context.shape-drawer :gdl.context/shape-drawer
-                     gdl.context.assets       :gdl.context/assets
-                     }]
-  (component/install gdl-context
-                     ns-sym
-                     k))

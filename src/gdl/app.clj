@@ -19,3 +19,14 @@
 
                  (resize [_ width height]
                    (run! #(component/resize % width height) @state)))))
+
+(def gdl-context
+  {:required [#'component/create]
+   :optional [#'component/dispose]})
+
+(doseq [[ns-sym k] '{gdl.context.shape-drawer :gdl.context/shape-drawer
+                     gdl.context.assets       :gdl.context/assets
+                     }]
+  (component/install gdl-context
+                     ns-sym
+                     k))
