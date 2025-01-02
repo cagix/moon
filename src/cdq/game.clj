@@ -244,3 +244,9 @@
   (component/install entity-state
                      ns-sym
                      k))
+
+
+#_(def effect {:required [#'effect/applicable?
+                          #'effect/handle]
+               :optional [#'world.update/useful?
+                          #'active-skill/render]})
