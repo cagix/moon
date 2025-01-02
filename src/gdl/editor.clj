@@ -1,6 +1,5 @@
 (ns gdl.editor
-  (:require [clojure.component :as component :refer [defcomponent]]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.assets :as assets]
             [clojure.gdx.lwjgl :as lwjgl]
@@ -267,11 +266,11 @@
                             clicked-id-fn (fn [id]
                                             (Actor/.remove window)
                                             (redo-rows (conj property-ids id)))]
-                        (.add window (overview-table property-type clicked-id-fn))
+                        (.add window (overview-table @app/state property-type clicked-id-fn))
                         (.pack window)
                         (ctx/add-actor @app/state window))))]
       (for [property-id property-ids]
-        (let [property (db/build (get-db) property-id)
+        (let [property (db/build (get-db) property-id @app/state)
               image-widget (image->widget (property/->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget (fn [_context] (info-text property)))))
@@ -306,11 +305,11 @@
                               clicked-id-fn (fn [id]
                                               (Actor/.remove window)
                                               (redo-rows id))]
-                          (.add window (overview-table property-type clicked-id-fn))
+                          (.add window (overview-table @app/state property-type clicked-id-fn))
                           (.pack window)
                           (ctx/add-actor @app/state window)))))]
       [(when property-id
-         (let [property (db/build (get-db) property-id)
+         (let [property (db/build (get-db) property-id @app/state)
                image-widget (image->widget (property/->image property)
                                            {:id property-id})]
            (add-tooltip! image-widget (fn [_context] (info-text property)))
@@ -522,11 +521,11 @@
                     :scaling :fill
                     :align :center}))
 
-(defcomponent ::stage-actors
-  (component/create [_ context]
-    (doseq [actor [(background-image context "images/moon_background.png")
-                   (tabs-table       context "custom label text here")]]
-      (ctx/add-actor context actor))))
+(defmethod app/create ::stage-actors
+  [_ context]
+  (doseq [actor [(background-image context "images/moon_background.png")
+                 (tabs-table       context "custom label text here")]]
+    (ctx/add-actor context actor)))
 
 (defn- render-stage [context]
   (let [stage (ctx/stage context)]
