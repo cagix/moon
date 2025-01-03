@@ -7,18 +7,18 @@
 (defmethod create :default [[_ v] _context]
   v)
 
+(defsystem dispose)
+(defmethod dispose :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ width height])
+
 (defn- safe-create-into [context components]
   (reduce (fn [context [k v]]
             (assert (not (contains? context k)))
             (assoc context k (create [k v] context)))
           context
           components))
-
-(defsystem dispose)
-(defmethod dispose :default [_])
-
-(defsystem resize)
-(defmethod resize :default [_ width height])
 
 (def state (atom nil))
 
