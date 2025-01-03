@@ -1,7 +1,8 @@
 (ns gdl.info
   (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [gdl.utils :refer [defsystem sort-by-k-order remove-newlines]]))
+            [gdl.string :refer [remove-newlines]]
+            [gdl.utils :refer [defsystem sort-by-k-order]]))
 
 (gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
 
