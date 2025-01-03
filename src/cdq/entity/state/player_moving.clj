@@ -1,6 +1,5 @@
 (ns cdq.entity.state.player-moving
-  (:require [anvil.controls :as controls]
-            [cdq.context :as world]
+  (:require [cdq.context :as world :refer [player-movement-vector]]
             [cdq.entity :as entity]))
 
 (defn cursor [_]
@@ -21,7 +20,7 @@
   (swap! eid dissoc :entity/movement))
 
 (defn tick [[_ {:keys [movement-vector]}] eid c]
-  (if-let [movement-vector (controls/movement-vector c)]
+  (if-let [movement-vector (player-movement-vector c)]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)})
     (world/send-event! c eid :no-movement-input)))

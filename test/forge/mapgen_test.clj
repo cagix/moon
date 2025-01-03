@@ -1,6 +1,5 @@
 (ns forge.mapgen-test
-  (:require [anvil.controls :as controls]
-            [anvil.level :refer [generate-level]]
+  (:require [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
             [clojure.gdx :refer [white]]
             [clojure.pprint :refer [pprint]]
@@ -135,7 +134,7 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn adjust-zoom [camera]
+(defn adjust-zoom [camera] ; TODO this now in gdl.context available.
   (when (key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
   (when (key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
 

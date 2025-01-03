@@ -1,9 +1,8 @@
 (ns cdq.entity.state.player-idle
-  (:require [anvil.controls :as controls]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [anvil.entity.skills :as skills]
             [anvil.skill :as skill]
-            [cdq.context :as world :refer [pickup-item remove-item]]
+            [cdq.context :as world :refer [pickup-item remove-item player-movement-vector]]
             [clojure.gdx :refer [play button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [gdl.utils :refer [safe-merge]]
@@ -127,7 +126,7 @@
   true)
 
 (defn manual-tick [[_ {:keys [eid]}] c]
-  (if-let [movement-vector (controls/movement-vector c)]
+  (if-let [movement-vector (player-movement-vector c)]
     (world/send-event! c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
       (c/set-cursor c cursor)

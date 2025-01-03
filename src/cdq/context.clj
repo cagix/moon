@@ -1,6 +1,5 @@
 (ns cdq.context
-  (:require [anvil.controls :as controls]
-            [gdl.math.shapes :refer [circle->outer-rectangle]]
+  (:require [gdl.math.shapes :refer [circle->outer-rectangle]]
             [cdq.entity :as entity]
             [gdl.error :refer [pretty-pst]]
             [cdq.entity.state :as state]
@@ -184,6 +183,9 @@
   (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @(::player-eid %))
                                          %)}))
 
+(def help-text
+  "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
+
 (defn- dev-menu-config [c]
   {:menus [{:label "World"
             :items (for [world (c/build-all c :properties/worlds)]
@@ -197,7 +199,7 @@
            ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
            ; => also world-change should be supported, use component systems
            {:label "Help"
-            :items [{:label controls/help-text}]}]
+            :items [{:label help-text}]}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn [c]
                                  (when-let [entity (mouseover-entity c)]
@@ -973,3 +975,6 @@
     (c/check-camera-controls c)
     (check-ui-key-listeners c)
     c))
+
+(defn player-movement-vector [c]
+  (c/WASD-movement-vector c))

@@ -1,6 +1,5 @@
 (ns cdq.entity.state.player-item-on-cursor
-  (:require [anvil.controls :as controls]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [anvil.skill :as skill]
             [cdq.context :as world :refer [set-item stack-item remove-item]]
             [cdq.inventory :as inventory]
