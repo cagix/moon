@@ -1,7 +1,11 @@
 (ns cdq.entity.temp-modifier
   (:require [anvil.entity :as entity]
-            [cdq.context :refer [stopped?]]
+            [cdq.context :refer [stopped? finished-ratio]]
+            [clojure.utils :refer [readable-number]]
             [gdl.context :as c]))
+
+(defn info [[_ {:keys [counter]}] c]
+  (str "Spiderweb - remaining: " (readable-number (finished-ratio c counter)) "/1"))
 
 (defn tick [[k {:keys [modifiers counter]}] eid c]
   (when (stopped? c counter)

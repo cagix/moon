@@ -208,7 +208,8 @@
 ; TODO 'info' missing ?
 
 (def entity
-  {:optional [#'component/create
+  {:optional [#'component/info
+              #'component/create
               #'component/create!
               #'component/destroy
               #'component/tick
@@ -223,6 +224,7 @@
                      cdq.entity.delete-after-animation-stopped? :entity/delete-after-animation-stopped?
                      cdq.entity.delete-after-duration :entity/delete-after-duration
                      cdq.entity.destroy-audiovisual :entity/destroy-audiovisual
+                     cdq.entity.faction :entity/faction
                      cdq.entity.fsm :entity/fsm
                      cdq.entity.hp :entity/hp
                      cdq.entity.image :entity/image
@@ -234,6 +236,7 @@
                      cdq.entity.movement :entity/movement
                      cdq.entity.projectile-collision :entity/projectile-collision
                      cdq.entity.skills :entity/skills
+                     cdq.entity.species :entity/species
                      cdq.entity.string-effect :entity/string-effect
                      cdq.entity.temp-modifier :entity/temp-modifier}]
   (component/install entity
@@ -272,7 +275,8 @@
 
 (def effect {:required [#'component/applicable?
                         #'component/handle]
-             :optional [#'component/useful?
+             :optional [#'component/info
+                        #'component/useful?
                         #'component/render-effect]})
 
 (doseq [[ns-sym k] '{cdq.effect.target-all :effects/target-all

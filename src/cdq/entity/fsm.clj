@@ -2,6 +2,9 @@
   (:require [clojure.component :as component]
             [reduce-fsm :as fsm]))
 
+(defn info [[_ fsm] _c]
+  (str "State: " (name (:state fsm))))
+
 (def ^:private npc-fsm
   (fsm/fsm-inc
    [[:npc-sleeping

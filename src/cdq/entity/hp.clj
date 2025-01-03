@@ -1,7 +1,11 @@
 (ns cdq.entity.hp
   (:require [anvil.entity :as entity]
             [gdl.context :as c]
+            [gdl.info :as info]
             [gdl.val-max :as val-max]))
+
+(defn info [_ _c]
+  (str "Hitpoints: " (entity/hitpoints info/*info-text-entity*)))
 
 (defn create [[_ v] _c]
   [v v])
