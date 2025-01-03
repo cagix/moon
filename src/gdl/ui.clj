@@ -6,8 +6,7 @@
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.gdx.scene2d.ui.utils :as scene2d.utils])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics Texture)
+  (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
@@ -79,7 +78,7 @@
     group))
 
 (defn stage [viewport batch actors]
-  (let [stage (proxy [StageWithState ILookup] [viewport batch]
+  (let [stage (proxy [StageWithState clojure.lang.ILookup] [viewport batch]
                 (valAt
                   ([id]
                    (group/find-actor-with-id (StageWithState/.getRoot this) id))
