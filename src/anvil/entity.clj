@@ -1,9 +1,7 @@
 (ns anvil.entity
   (:require [cdq.inventory :as inventory]
-            [clojure.string :as str]
             [clojure.component :as component :refer [defcomponent]]
             [gdl.context :refer [set-cursor]]
-            [gdl.info :as info]
             [gdl.operation :as op]
             [gdl.malli :as m]
             [gdl.math.vector :as v]
@@ -75,12 +73,6 @@
    (send-event! c eid event nil))
   ([c eid event params]
    (send-event! c eid event params)))
-
-(defcomponent :entity/modifiers
-  (component/info [[_ mods] _c]
-    (when (seq mods)
-      (str/join "\n" (keep (fn [[k ops]]
-                             (op/info ops k)) mods)))))
 
 (defn- mods-add    [mods other-mods] (merge-with op/add    mods other-mods))
 (defn- mods-remove [mods other-mods] (merge-with op/remove mods other-mods))
@@ -191,10 +183,6 @@
   (let [mana-val ((mana entity) 0)]
     (assert (<= cost mana-val))
     (assoc-in entity [:entity/mana 0] (- mana-val cost))))
-
-(defcomponent :entity/mana
-  (component/info [_ _c]
-    (str "Mana: " (mana info/*info-text-entity*))))
 
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

@@ -227,6 +227,7 @@
                      cdq.entity.inventory :entity/inventory
                      cdq.entity.line-render :entity/line-render
                      cdq.entity.mana :entity/mana
+                     cdq.entity.modifiers :entity/modifiers
                      cdq.entity.mouseover? :entity/mouseover?
                      cdq.entity.movement :entity/movement
                      cdq.entity.projectile-collision :entity/projectile-collision
