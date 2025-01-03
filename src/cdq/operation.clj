@@ -2,8 +2,7 @@
   (:refer-clojure :exclude [apply remove])
   (:require [gdl.component :refer [defsystem defcomponent]]
             [clojure.math :as math]
-            [clojure.string :as str]
-            [gdl.utils :refer [k->pretty-name]]))
+            [clojure.string :as str]))
 
 (defsystem ^:private -apply)
 (defsystem ^:private -order)
