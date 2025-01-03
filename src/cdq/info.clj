@@ -1,6 +1,7 @@
 (ns cdq.info
   (:require [cdq.entity :as entity]
-            [gdl.utils :refer [readable-number k->pretty-name]]
+            [clojure.string :as str]
+            [gdl.utils :refer [readable-number]]
             [gdl.info :as info :refer [info]]))
 
 (defmethod info :property/pretty-name [[_ v] _c] v)
@@ -29,7 +30,7 @@
     (str "Cost: " v " Mana")))
 
 (defmethod info ::stat [[k _] _c]
-  (str (k->pretty-name k) ": " (entity/stat info/*info-text-entity* k)))
+  (str (str/capitalize (name k)) ": " (entity/stat info/*info-text-entity* k)))
 
 (derive :entity/reaction-time  ::stat)
 (derive :entity/movement-speed ::stat)

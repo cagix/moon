@@ -6,10 +6,12 @@
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.potential-fields :as potential-fields]
             [gdl.component :refer [defsystem install]]
+            [clojure.edn :as edn]
             [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [gdl.utils :refer [read-edn-resource sort-by-order]]
+            [clojure.java.io :as io]
+            [gdl.utils :refer [sort-by-order]]
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.error :refer [pretty-pst]]
@@ -217,7 +219,7 @@
     c))
 
 (defn -main []
-  (let [config (read-edn-resource "app.edn")]
+  (let [config (-> "app.edn" io/resource slurp edn/read-string)]
     (app/start (:app     config)
                (:context config)
                game-loop)))

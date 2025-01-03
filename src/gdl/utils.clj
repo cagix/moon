@@ -1,7 +1,4 @@
-(ns gdl.utils
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.string :as str]))
+(ns gdl.utils)
 
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
@@ -138,9 +135,3 @@
      (binding [*err* s#]
        ~@body
        (str s#))))
-
-(defn read-edn-resource [file]
-  (-> file io/resource slurp edn/read-string))
-
-(defn k->pretty-name [k]
-  (str/capitalize (name k)))

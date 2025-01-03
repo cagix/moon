@@ -52,5 +52,5 @@
             (keep
              (fn [{v 1 :as component}]
                (when-not (zero? v)
-                 (str (+? v) (-value-text component) " " (k->pretty-name k))))
+                 (str (+? v) (-value-text component) " " (str/capitalize (name k)))))
              (sort-by -order op))))
