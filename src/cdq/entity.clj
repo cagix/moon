@@ -13,24 +13,6 @@
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
 
-; TODO use at projectile & also adjust rotation
-(defn start-point [entity target*]
-  (v/add (:position entity)
-         (v/scale (direction entity target*)
-                  (:radius entity))))
-
-(defn end-point [entity target* maxrange]
-  (v/add (start-point entity target*)
-         (v/scale (direction entity target*)
-                  maxrange)))
-
-(defn in-range? [entity target* maxrange] ; == circle-collides?
-  (< (- (float (v/distance (:position entity)
-                           (:position target*)))
-        (float (:radius entity))
-        (float (:radius target*)))
-     (float maxrange)))
-
 (defn collides? [entity other-entity]
   (shape/overlaps? entity other-entity))
 
