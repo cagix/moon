@@ -2,7 +2,7 @@
   (:require [cdq.inventory :as inventory]
             [clojure.component :as component :refer [defcomponent]]
             [gdl.context :refer [set-cursor]]
-            [gdl.operation :as op]
+            [cdq.operation :as op]
             [gdl.malli :as m]
             [gdl.math.vector :as v]
             [gdl.math.shapes :as shape]

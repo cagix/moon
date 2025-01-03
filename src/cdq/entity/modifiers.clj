@@ -1,6 +1,6 @@
 (ns cdq.entity.modifiers
   (:require [clojure.string :as str]
-            [gdl.operation :as op]))
+            [cdq.operation :as op]))
 
 (defn info [[_ mods] _c]
   (when (seq mods)
