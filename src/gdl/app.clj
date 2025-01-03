@@ -7,11 +7,13 @@
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.lwjgl :as lwjgl]
+            [clojure.gdx.vis-ui :as vis-ui]
             [clojure.string :as str]
             [gdl.utils :refer [defsystem defcomponent mapvals]]
             [gdl.db :as db]
             [gdl.ui :as ui])
-  (:import (forge OrthogonalTiledMapRenderer)))
+  (:import (com.kotcrab.vis.ui.widget Tooltip)
+           (forge OrthogonalTiledMapRenderer)))
 
 (defn- load-all [manager assets]
   (doseq [[file asset-type] assets]
@@ -127,11 +129,25 @@
                                             batch)))))
 
 (defcomponent :gdl.context/ui
-  (create [[_ config] _c]
-    (ui/setup config))
+  (create [[_ skin-scale] _c]
+    ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
+    ; => actually there is a deeper issue at play
+    ; we need to dispose ALL resources which were loaded already ...
+    (when (vis-ui/loaded?)
+      (vis-ui/dispose))
+    (vis-ui/load skin-scale)
+    (-> (vis-ui/skin)
+        (.getFont "default-font")
+        .getData
+        .markupEnabled
+        (set! true))
+    ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+    ;Controls whether to fade out tooltip when mouse was moved. (default false)
+    ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+    (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
   (dispose [_]
-    (ui/cleanup)))
+    (vis-ui/dispose)))
 
 (defcomponent :gdl.context/viewport
   (create [[_ {:keys [width height]}] _c]
