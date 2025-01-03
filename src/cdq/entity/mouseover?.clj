@@ -1,5 +1,5 @@
 (ns cdq.entity.mouseover?
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [gdl.context :as c]))
 
 (def ^:private outline-alpha 0.4)

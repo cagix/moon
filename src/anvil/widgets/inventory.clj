@@ -1,5 +1,5 @@
 (ns anvil.widgets.inventory
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [clojure.component :as component]
             [clojure.gdx :as gdx]

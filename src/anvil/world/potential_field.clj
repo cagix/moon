@@ -1,5 +1,5 @@
 (ns anvil.world.potential-field
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.grid :refer [rectangle->cells
                               cached-adjacent-cells
                               blocked?

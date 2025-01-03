@@ -1,5 +1,5 @@
 (ns cdq.effect.target-entity
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :as world]
             [cdq.effect-context :refer [do-all! filter-applicable?]]
             [gdl.context :as c]))

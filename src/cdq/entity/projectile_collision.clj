@@ -1,5 +1,5 @@
 (ns cdq.entity.projectile-collision
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :as world]
             [cdq.effect-context :as effect-ctx]
             [cdq.grid :as grid]

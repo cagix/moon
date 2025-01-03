@@ -1,5 +1,5 @@
 (ns cdq.entity.hp
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [gdl.context :as c]
             [gdl.info :as info]
             [gdl.val-max :as val-max]))

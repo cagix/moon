@@ -1,5 +1,5 @@
 (ns cdq.entity.mana
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [gdl.info :as info]))
 
 (defn create [[_ v] _c]

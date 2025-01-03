@@ -1,5 +1,5 @@
 (ns cdq.effect.target.convert
-  (:require [anvil.entity :as entity]))
+  (:require [cdq.entity :as entity]))
 
 (defn info [_ _c]
   "Converts target to your side.")

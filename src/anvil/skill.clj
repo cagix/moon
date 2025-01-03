@@ -1,6 +1,6 @@
 (ns anvil.skill
   (:require [cdq.effect-context :as effect-ctx]
-            [anvil.entity :as entity]))
+            [cdq.entity :as entity]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))

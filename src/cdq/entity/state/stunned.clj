@@ -1,5 +1,5 @@
 (ns cdq.entity.state.stunned
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :refer [timer stopped?]]
             [gdl.context :as c]))
 

@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-moving
   (:require [anvil.controls :as controls]
-            [anvil.entity :as entity]))
+            [cdq.entity :as entity]))
 
 (defn cursor [_]
   :cursors/walking)

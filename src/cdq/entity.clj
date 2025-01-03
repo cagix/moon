@@ -1,4 +1,4 @@
-(ns anvil.entity
+(ns cdq.entity
   (:require [cdq.inventory :as inventory]
             [clojure.component :as component :refer [defcomponent]]
             [gdl.context :refer [set-cursor]]

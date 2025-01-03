@@ -1,5 +1,5 @@
 (ns cdq.effect.target.spiderweb
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :refer [timer]]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}

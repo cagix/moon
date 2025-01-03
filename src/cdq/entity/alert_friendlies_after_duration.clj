@@ -1,5 +1,5 @@
 (ns cdq.entity.alert-friendlies-after-duration
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :refer [stopped? friendlies-in-radius]]))
 
 (defn tick [[_ {:keys [counter faction]}] eid c]

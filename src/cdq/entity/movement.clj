@@ -1,5 +1,5 @@
 (ns cdq.entity.movement
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :as world]
             [cdq.grid :as grid]
             [gdl.malli :as m]

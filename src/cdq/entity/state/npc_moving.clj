@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-moving
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :refer [timer stopped?]]))
 
 (defn create [[_ eid movement-vector] c]

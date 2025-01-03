@@ -1,5 +1,5 @@
 (ns cdq.game
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]

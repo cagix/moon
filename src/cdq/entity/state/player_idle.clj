@@ -1,6 +1,6 @@
 (ns cdq.entity.state.player-idle
   (:require [anvil.controls :as controls]
-            [anvil.entity :as entity]
+            [cdq.entity :as entity]
             [anvil.entity.skills :as skills]
             [anvil.skill :as skill]
             [cdq.context :as world]

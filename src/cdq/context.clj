@@ -1,6 +1,6 @@
 (ns cdq.context
   (:require [anvil.controls :as controls]
-            [anvil.entity :as entity]
+            [cdq.entity :as entity]
             [gdl.info :as info]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]

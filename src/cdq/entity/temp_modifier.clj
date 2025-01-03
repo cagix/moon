@@ -1,5 +1,5 @@
 (ns cdq.entity.temp-modifier
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :refer [stopped? finished-ratio]]
             [clojure.utils :refer [readable-number]]
             [gdl.context :as c]))

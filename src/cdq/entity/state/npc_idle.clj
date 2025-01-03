@@ -1,6 +1,6 @@
 (ns cdq.entity.state.npc-idle
   (:require [cdq.effect-context :as effect-ctx]
-            [anvil.entity :as entity]
+            [cdq.entity :as entity]
             [anvil.skill :as skill]
             [anvil.world.potential-field :as potential-field]
             [cdq.context :as world]))

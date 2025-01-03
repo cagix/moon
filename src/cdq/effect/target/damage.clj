@@ -1,5 +1,5 @@
 (ns cdq.effect.target.damage
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
             [gdl.context :as c]
             [gdl.rand :refer [rand-int-between]]))

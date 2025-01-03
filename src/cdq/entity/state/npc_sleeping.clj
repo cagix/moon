@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-sleeping
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
             [cdq.grid :as grid]
             [gdl.context :as c]))

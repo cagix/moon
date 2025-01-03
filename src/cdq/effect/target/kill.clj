@@ -1,5 +1,5 @@
 (ns cdq.effect.target.kill
-  (:require [anvil.entity :as entity]))
+  (:require [cdq.entity :as entity]))
 
 (defn info [_ _c]
   "Kills target")

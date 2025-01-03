@@ -1,5 +1,5 @@
 (ns cdq.info
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [clojure.utils :refer [readable-number k->pretty-name]]
             [gdl.info :as info :refer [info]]))
 

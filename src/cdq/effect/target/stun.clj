@@ -1,5 +1,5 @@
 (ns cdq.effect.target.stun
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [clojure.utils :refer [readable-number]]))
 
 (defn info [duration _c]

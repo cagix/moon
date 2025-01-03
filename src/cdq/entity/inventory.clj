@@ -1,5 +1,5 @@
 (ns cdq.entity.inventory
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.inventory :as inventory]))
 
 (defn create! [[k items] eid c]

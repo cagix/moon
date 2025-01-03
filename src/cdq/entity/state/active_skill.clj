@@ -1,5 +1,5 @@
 (ns cdq.entity.state.active-skill
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.context :refer [line-of-sight? timer finished-ratio stopped?]]
             [cdq.effect-context :as effect-ctx]
             [clojure.gdx :refer [play]]

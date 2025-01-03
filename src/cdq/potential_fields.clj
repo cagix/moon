@@ -1,5 +1,5 @@
 (ns cdq.potential-fields
-  (:require [anvil.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.grid :as grid]
             [anvil.world.potential-field :refer [pf-cell-blocked?]]))
 
