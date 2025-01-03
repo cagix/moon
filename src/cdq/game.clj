@@ -208,7 +208,7 @@
 ; TODO 'info' missing ?
 
 (def entity
-  {:optional [#'gdl.info/segment
+  {:optional [#'gdl.info/info
               #'component/create
               #'component/create!
               #'component/destroy
@@ -275,7 +275,7 @@
 
 (def effect {:required [#'cdq.effect/applicable?
                         #'cdq.effect/handle]
-             :optional [#'gdl.info/segment
+             :optional [#'gdl.info/info
                         #'cdq.effect/useful?
                         #'cdq.effect/render-effect]})
 

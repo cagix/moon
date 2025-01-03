@@ -57,15 +57,15 @@
 
 (declare ^:dynamic *info-text-entity*)
 
-(defsystem segment)
-(defmethod segment :default [_ _context])
+(defsystem info)
+(defmethod info :default [_ _context])
 
 (defn text [c components]
   (->> components
        (sort-by-k-order k-order)
        (keep (fn [{k 0 v 1 :as component}]
                (str (try (binding [*info-text-entity* components]
-                           (apply-color k->colors k (segment component c)))
+                           (apply-color k->colors k (info component c)))
                          (catch Throwable t
                            ; calling from property-editor where entity components
                            ; have a different data schema than after component/create!
