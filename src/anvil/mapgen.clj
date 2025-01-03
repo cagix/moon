@@ -1,5 +1,5 @@
 (ns anvil.mapgen
-  (:require [clojure.utils :refer [assoc-ks]]
+  (:require [gdl.utils :refer [assoc-ks]]
             [data.grid2d :as g2d]
             [gdl.tiled :as tiled]
             [gdl.property :as property]

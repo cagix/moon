@@ -3,7 +3,7 @@
             [cdq.context :as world]
             [cdq.effect-context :as effect-ctx]
             [cdq.grid :as grid]
-            [clojure.utils :refer [find-first]]))
+            [gdl.utils :refer [find-first]]))
 
 (defn create [[_ v] c]
   (assoc v :already-hit-bodies #{}))

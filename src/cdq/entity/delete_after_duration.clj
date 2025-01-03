@@ -1,6 +1,6 @@
 (ns cdq.entity.delete-after-duration
   (:require [cdq.context :refer [timer stopped? finished-ratio]]
-            [clojure.utils :refer [readable-number]]))
+            [gdl.utils :refer [readable-number]]))
 
 (defn info [counter c]
   (str "Remaining: " (readable-number (finished-ratio c counter)) "/1"))

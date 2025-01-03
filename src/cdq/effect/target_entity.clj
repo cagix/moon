@@ -1,18 +1,19 @@
 (ns cdq.effect.target-entity
   (:require [cdq.context :as world]
             [cdq.effect-context :refer [do-all! filter-applicable?]]
+            [cdq.entity :as entity]
             [gdl.context :as c]
             [gdl.math.vector :as v]))
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]
   (v/add (:position entity)
-         (v/scale (direction entity target*)
+         (v/scale (entity/direction entity target*)
                   (:radius entity))))
 
 (defn- end-point [entity target* maxrange]
   (v/add (start-point entity target*)
-         (v/scale (direction entity target*)
+         (v/scale (entity/direction entity target*)
                   maxrange)))
 
 (defn- in-range? [entity target* maxrange] ; == circle-collides?

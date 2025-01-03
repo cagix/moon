@@ -1,6 +1,6 @@
 (ns cdq.effect.target.stun
   (:require [cdq.context :as world]
-            [clojure.utils :refer [readable-number]]))
+            [gdl.utils :refer [readable-number]]))
 
 (defn info [duration _c]
   (str "Stuns for " (readable-number duration) " seconds"))

@@ -1,4 +1,4 @@
-(ns clojure.utils
+(ns gdl.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]
             [clojure.edn :as edn]
             [clojure.java.io :as io]

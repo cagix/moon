@@ -1,8 +1,8 @@
 (ns gdl.info
-  (:require [clojure.component :refer [defsystem]]
+  (:require [gdl.component :refer [defsystem]]
             [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [clojure.utils :refer [sort-by-k-order]]))
+            [gdl.utils :refer [sort-by-k-order]]))
 
 (gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
 

@@ -1,4 +1,4 @@
-(ns clojure.component
+(ns gdl.component
   (:refer-clojure :exclude [apply])
   (:import (clojure.lang MultiFn)))
 

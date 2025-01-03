@@ -1,9 +1,9 @@
 (ns cdq.operation
   (:refer-clojure :exclude [apply remove])
-  (:require [clojure.component :refer [defsystem defcomponent]]
+  (:require [gdl.component :refer [defsystem defcomponent]]
             [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.utils :refer [k->pretty-name]]))
+            [gdl.utils :refer [k->pretty-name]]))
 
 (defsystem ^:private -apply)
 (defsystem ^:private -order)

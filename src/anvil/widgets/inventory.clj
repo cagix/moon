@@ -4,7 +4,7 @@
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
-            [clojure.utils :refer [defn-impl]]
+            [gdl.utils :refer [defn-impl]]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.info :as info]

@@ -1,6 +1,6 @@
 (ns cdq.info
   (:require [cdq.entity :as entity]
-            [clojure.utils :refer [readable-number k->pretty-name]]
+            [gdl.utils :refer [readable-number k->pretty-name]]
             [gdl.info :as info :refer [info]]))
 
 (defmethod info :property/pretty-name [[_ v] _c] v)

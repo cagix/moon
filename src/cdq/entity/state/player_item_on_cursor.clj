@@ -6,7 +6,7 @@
             [cdq.inventory :as inventory]
             [clojure.gdx :refer [play button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
-            [clojure.utils :refer [safe-merge]]
+            [gdl.utils :refer [safe-merge]]
             [gdl.context :as c :refer [play-sound]]
             [gdl.ui :refer [window-title-bar? button?]]
             [gdl.math.vector :as v]))
