@@ -5,13 +5,10 @@
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.potential-fields :as potential-fields]
-            [clojure.edn :as edn]
             [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [clojure.java.io :as io]
             [gdl.utils :refer [defsystem install sort-by-order]]
-            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.info :as info]
             [gdl.error :refer [pretty-pst]]
@@ -175,12 +172,12 @@
   {:inventory-window   :i
    :entity-info-window :e})
 
-(defn- game-loop [{:keys [gdl.context/world-viewport
-                          cdq.context/tiled-map
-                          cdq.context/player-eid
-                          cdq.context/raycaster
-                          cdq.context/explored-tile-corners]
-                   :as c}]
+(defn process-frame [{:keys [gdl.context/world-viewport
+                             cdq.context/tiled-map
+                             cdq.context/player-eid
+                             cdq.context/raycaster
+                             cdq.context/explored-tile-corners]
+                      :as c}]
   (clear-screen black)
   ; FIXME position DRY
   (cam/set-position! (:camera world-viewport)
@@ -218,11 +215,7 @@
                             (c/stage c))
     c))
 
-(defn -main []
-  (let [config (-> "app.edn" io/resource slurp edn/read-string)]
-    (app/start (:app     config)
-               (:context config)
-               game-loop)))
+
 
 ; TODO 'info' missing ?
 

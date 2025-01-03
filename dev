@@ -1,1 +1,1 @@
-DEV_MODE=true lein run -m clojure.gdx.dev-loop cdq.game
+DEV_MODE=true lein run -m clojure.gdx.dev-loop cdq.start
