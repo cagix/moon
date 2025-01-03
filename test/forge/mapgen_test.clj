@@ -8,7 +8,7 @@
             [gdl.context :as c :refer [draw-tiled-map]]
             [clojure.gdx :refer [key-pressed?]]
             [gdl.graphics.camera :as cam]
-            [gdl.tiled :as tiled]
+            [clojure.gdx.tiled :as tiled]
             [gdl.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.scene2d.group :refer [add-actor!]]))
 

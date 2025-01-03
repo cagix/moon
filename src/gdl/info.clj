@@ -1,7 +1,7 @@
 (ns gdl.info
   (:require [clojure.gdx :as gdx]
             [clojure.string :as str]
-            [gdl.utils :refer [defsystem sort-by-k-order]]))
+            [gdl.utils :refer [defsystem sort-by-k-order remove-newlines]]))
 
 (gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
 
@@ -44,15 +44,6 @@
   (if-let [color (k->colors k)]
     (str "[" color "]" info-text "[]")
     info-text))
-
-(defn- remove-newlines [s]
-  (let [new-s (-> s
-                  (str/replace "\n\n" "\n")
-                  (str/replace #"^\n" "")
-                  str/trim-newline)]
-    (if (= (count new-s) (count s))
-      s
-      (remove-newlines new-s))))
 
 (declare ^:dynamic *info-text-entity*)
 

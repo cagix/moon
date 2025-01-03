@@ -1,4 +1,5 @@
-(ns gdl.utils)
+(ns gdl.utils
+  (:require [clojure.string :as str]))
 
 (defn- component-k->namespace [prefix k]
   (symbol (str prefix "." (namespace k) "." (name k))))
@@ -271,3 +272,12 @@
 
 (defn high-weighted-rand-nth [coll]
   (nth coll (high-weighted-rand-int (count coll))))
+
+(defn remove-newlines [s]
+  (let [new-s (-> s
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
+    (if (= (count new-s) (count s))
+      s
+      (remove-newlines new-s))))
