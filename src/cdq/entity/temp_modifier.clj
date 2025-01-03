@@ -11,5 +11,3 @@
 ; TODO draw opacity as of counter ratio?
 (defn render-above [_ entity c]
   (c/filled-circle c (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
-
-
