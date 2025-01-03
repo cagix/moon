@@ -6,7 +6,7 @@
             [gdl.context :as ctx :refer [draw-tiled-map]]
             [gdl.graphics.camera :as camera]
             [gdl.stage :as stage]
-            [gdl.tiled :as tiled]
+            [clojure.gdx.tiled :as tiled]
             [gdl.ui :as ui]))
 
 #_(defn uf-dev-menu-table [c]

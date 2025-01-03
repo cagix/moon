@@ -14,7 +14,7 @@
             [gdl.graphics.sprite :as sprite]
             [gdl.malli :as m]
             [gdl.schema :as schema]
-            [gdl.tiled :as tiled]
+            [clojure.gdx.tiled :as tiled]
             [gdl.ui :as ui]
             [clojure.gdx.scene2d.group :as group])
   (:import (forge OrthogonalTiledMapRenderer ColorSetter)))

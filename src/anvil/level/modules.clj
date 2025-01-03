@@ -2,7 +2,7 @@
   (:require [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
             [data.grid2d :as g2d]
-            [gdl.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)

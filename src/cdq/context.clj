@@ -18,7 +18,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]
-            [gdl.tiled :as tiled]
+            [clojure.gdx.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
             [clojure.gdx.scene2d.actor :as actor]
             [gdl.ui.dev-menu :as dev-menu]

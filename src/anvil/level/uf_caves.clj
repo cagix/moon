@@ -3,7 +3,7 @@
             [clojure.gdx :as gdx]
             [gdl.utils :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
-            [gdl.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]))
 
 (def ^:private scaling 4)
 

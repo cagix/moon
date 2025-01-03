@@ -1,7 +1,7 @@
 (ns anvil.mapgen
   (:require [gdl.utils :refer [assoc-ks]]
             [data.grid2d :as g2d]
-            [gdl.tiled :as tiled]
+            [clojure.gdx.tiled :as tiled]
             [gdl.property :as property]
             [gdl.utils :refer [sshuffle srand srand-int]] ))
 
