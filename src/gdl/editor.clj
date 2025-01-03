@@ -27,7 +27,7 @@
              :as ui]
             [clojure.gdx.scene2d.actor :refer [user-object]]
             [clojure.gdx.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [gdl.ui.table :refer [add-rows!]])
+            [clojure.gdx.scene2d.ui.table :refer [add-rows!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
