@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [reduce-fsm :as fsm]))
 
-(defn info [[_ fsm] _entity _c]
+(defn text [[_ fsm] _entity _c]
   (str "State: " (name (:state fsm))))
 
 (def ^:private npc-fsm

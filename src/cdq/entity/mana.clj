@@ -4,5 +4,5 @@
 (defn create [[_ v] _c]
   [v v])
 
-(defn info [_ entity _c]
+(defn text [_ entity _c]
   (str "Mana: " (entity/mana entity)))

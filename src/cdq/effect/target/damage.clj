@@ -22,7 +22,7 @@
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
 
-(defn info [[_ damage] _entity _c]
+(defn text [[_ damage] _entity _c]
   (damage-info damage)
   #_(if source
       (let [modified (entity/damage @source damage)]

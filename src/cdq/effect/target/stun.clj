@@ -2,7 +2,7 @@
   (:require [cdq.context :as world]
             [gdl.utils :refer [readable-number]]))
 
-(defn info [[_ duration] _entity _c]
+(defn text [[_ duration] _entity _c]
   (str "Stuns for " (readable-number duration) " seconds"))
 
 (defn applicable? [_ {:keys [effect/target]}]

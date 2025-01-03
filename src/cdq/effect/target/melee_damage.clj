@@ -11,7 +11,7 @@
 
 ; FIXME no source
 ; => to entity move
-(defn info [_ _entity _c]
+(defn text [_ _entity _c]
   (str "Damage based on entity strength."
        #_(when source
            (str "\n" (damage-info (entity->melee-damage @source))))))

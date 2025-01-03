@@ -2,7 +2,6 @@
   (:require [anvil.controls :as controls]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [gdl.info :as info]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
             [anvil.widgets.inventory :as inventory]
@@ -14,7 +13,7 @@
             [gdl.utils :refer [defsystem defcomponent tile->middle readable-number dev-mode? define-order sort-by-order safe-merge]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
-            [gdl.context :as c]
+            [gdl.context :as c :refer [info-text]]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]
@@ -152,10 +151,10 @@
   ; items then have 2x pretty-name
   #_(.setText (.getTitleLabel window)
               (if-let [entity (mouseover-entity c)]
-                (info/text c [:property/pretty-name (:property/pretty-name entity)])
+                (info-text c [:property/pretty-name (:property/pretty-name entity)])
                 "Entity Info"))
   (when-let [entity (mouseover-entity c)]
-    (info/text c ; don't use select-keys as it loses Entity record type
+    (info-text c ; don't use select-keys as it loses Entity record type
                (apply dissoc entity disallowed-keys))))
 
 (defn entity-info-window [{:keys [gdl.context/viewport] :as c}]

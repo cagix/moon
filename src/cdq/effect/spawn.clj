@@ -1,7 +1,7 @@
 (ns cdq.effect.spawn
   (:require [cdq.context :as world]))
 
-(defn info [[_ {:keys [property/pretty-name]}] _entity _context]
+(defn text [[_ {:keys [property/pretty-name]}] _entity _context]
   (str "Spawns a " pretty-name))
 
 ; "https://github.com/damn/core/issues/29"

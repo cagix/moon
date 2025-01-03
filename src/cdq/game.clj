@@ -13,6 +13,7 @@
             [gdl.utils :refer [defsystem install sort-by-order]]
             [gdl.app :as app]
             [gdl.context :as c]
+            [gdl.info :as info]
             [gdl.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
@@ -226,7 +227,7 @@
 ; TODO 'info' missing ?
 
 (def entity
-  {:optional [#'gdl.info/info
+  {:optional [#'info/text
               #'entity/create
               #'world/create!
               #'destroy
@@ -289,7 +290,7 @@
 
 (def effect {:required [#'cdq.effect/applicable?
                         #'cdq.effect/handle]
-             :optional [#'gdl.info/info
+             :optional [#'info/text
                         #'cdq.effect/useful?
                         #'cdq.effect/render]})
 

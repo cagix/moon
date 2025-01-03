@@ -5,8 +5,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [data.grid2d :as g2d]
-            [gdl.context :as c]
-            [gdl.info :as info]
+            [gdl.context :as c :refer [info-text]]
             [gdl.ui :refer [set-drawable!
                             ui-widget
                             texture-region-drawable
@@ -132,7 +131,7 @@
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (scene2d.utils/set-min-size! drawable cell-size)
     (set-drawable! image-widget drawable)
-    (add-tooltip! cell-widget #(info/text % item))))
+    (add-tooltip! cell-widget #(info-text % item))))
 
 (defn remove-item-from-widget [c cell]
   (let [cell-widget (cell-widget c cell)

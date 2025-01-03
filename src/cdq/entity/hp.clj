@@ -3,7 +3,7 @@
             [gdl.context :as c]
             [gdl.val-max :as val-max]))
 
-(defn info [_ entity _c]
+(defn text [_ entity _c]
   (str "Hitpoints: " (entity/hitpoints entity)))
 
 (defn create [[_ v] _c]
