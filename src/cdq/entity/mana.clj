@@ -1,9 +1,8 @@
 (ns cdq.entity.mana
-  (:require [cdq.entity :as entity]
-            [gdl.info :as info]))
+  (:require [cdq.entity :as entity]))
 
 (defn create [[_ v] _c]
   [v v])
 
-(defn info [_ _c]
-  (str "Mana: " (entity/mana info/*info-text-entity*)))
+(defn info [_ entity _c]
+  (str "Mana: " (entity/mana entity)))

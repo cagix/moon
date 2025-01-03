@@ -5,7 +5,7 @@
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]
 
-  (defn info [_ _c]
+  (defn info [_ _entity _c]
     "Spiderweb slows 50% for 5 seconds."
     ; modifiers same like item/modifiers has info-text
     ; counter ?

@@ -1,4 +1,4 @@
 (ns cdq.entity.faction)
 
-(defn info [faction _c]
+(defn info [[_ faction] _entity _c]
   (str "Faction: " (name faction)))

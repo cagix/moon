@@ -32,6 +32,7 @@
                        (component-k->namespace prefix k)
                        k)))
 
+; TODO check params & pass & check @ defcomponent ( forgot 1 arg - can be checked statically)
 (defmacro defsystem
   {:arglists '([name docstring?])}
   [name-sym & args]

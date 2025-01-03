@@ -3,7 +3,7 @@
 #_(defn- stat-k [effect-k]
     (keyword "stats" (name effect-k)))
 
-#_(defn info [[k ops]]
+#_(defn info [[k ops] _entity _context]
     (ops/info ops k))
 
 #_(defn applicable? [[k _] {:keys [effect/source effect/target]}]
