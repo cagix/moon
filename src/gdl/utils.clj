@@ -43,10 +43,6 @@
   {:pre [(not-any? #(contains? m1 %) (keys m2))]}
   (merge m1 m2))
 
-(let [cnt (atom 0)]
-  (defn unique-number! []
-    (swap! cnt inc)))
-
 (defn index-of [k ^clojure.lang.PersistentVector v]
   (let [idx (.indexOf v k)]
     (if (= -1 idx)

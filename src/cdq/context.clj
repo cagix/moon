@@ -12,7 +12,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [gdl.component :refer [defsystem defcomponent]]
-            [gdl.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number!]]
+            [gdl.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
             [gdl.context :as c]
@@ -443,19 +443,20 @@
 (defsystem create!)
 (defmethod create! :default [_ eid c])
 
-(defn spawn-entity [c position body components]
-  (assert (and (not (contains? components :position))
-               (not (contains? components :entity/id))))
-  (let [eid (atom (-> body
-                      (assoc :position position)
-                      create-body
-                      (safe-merge (-> components
-                                      (assoc :entity/id (unique-number!))
-                                      (create-vs c)))))]
-    (add-entity c eid)
-    (doseq [component @eid]
-      (create! component eid c))
-    eid))
+(let [cnt (atom 0)]
+  (defn spawn-entity [c position body components]
+    (assert (and (not (contains? components :position))
+                 (not (contains? components :entity/id))))
+    (let [eid (atom (-> body
+                        (assoc :position position)
+                        create-body
+                        (safe-merge (-> components
+                                        (assoc :entity/id (swap! cnt inc))
+                                        (create-vs c)))))]
+      (add-entity c eid)
+      (doseq [component @eid]
+        (create! component eid c))
+      eid)))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
        :private true}
