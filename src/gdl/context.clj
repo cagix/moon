@@ -14,6 +14,7 @@
             [gdl.string :refer [remove-newlines]]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
+            [gdl.graphics.camera :as cam]
             [gdl.malli :as m]
             [gdl.schema :as schema]
             [clojure.gdx.tiled :as tiled]
@@ -439,3 +440,10 @@
                       (str "\n" (info-text context v))))))
        (str/join "\n")
        remove-newlines))
+
+(def ^:private zoom-speed 0.025)
+
+(defn check-camera-controls [{::keys [world-viewport] :as c}]
+  (let [camera (:camera world-viewport)]
+    (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
+    (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed)))))

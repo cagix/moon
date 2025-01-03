@@ -1,6 +1,7 @@
 (ns cdq.context
   (:require [anvil.controls :as controls]
             [cdq.entity :as entity]
+            [gdl.error :refer [pretty-pst]]
             [cdq.entity.state :as state]
             [cdq.tile-color-setter :as tile-color-setter]
             [anvil.level :refer [generate-level]]
@@ -798,3 +799,81 @@
                              entities
                              max-iterations)))
   c)
+
+(def ^:private ^:dbg-flag show-body-bounds false)
+
+(defn render-entities
+  "Draws all active entities, sorted by the `:z-order` and with the render systems `below`, `default`, `above`, `info` for each z-order if the entity is in line-of-sight? to the player entity or is an `:z-order/effect`.
+
+  Optionally for debug purposes body rectangles can be drown which show white for collidings and gray for non colliding entities.
+
+  If an error is thrown during rendering, the entity body drawn with a red rectangle and the error is pretty printed to the console."
+  [{:keys [cdq.context/player-eid] :as c}]
+  (let [entities (map deref (active-entities c))
+        player @player-eid]
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              render-z-order)
+            system [entity/render-below
+                    entity/render-default
+                    entity/render-above
+                    entity/render-info]
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (line-of-sight? c player entity))]
+      (try
+       (when show-body-bounds
+         (draw-body-rect c entity (if (:collides? entity) :white :gray)))
+       (run! #(system % entity c) entity)
+       (catch Throwable t
+         (draw-body-rect c entity :red)
+         (pretty-pst t))))))
+
+; precaution in case a component gets removed by another component
+; the question is do we still want to update nil components ?
+; should be contains? check ?
+; but then the 'order' is important? in such case dependent components
+; should be moved together?
+(defn tick-entities [c]
+  (try (doseq [eid (active-entities c)]
+         (try
+          (doseq [k (keys @eid)]
+            (try (when-let [v (k @eid)]
+                   (entity/tick [k v] eid c))
+                 (catch Throwable t
+                   (throw (ex-info "entity-tick" {:k k} t)))))
+          (catch Throwable t
+            (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+       (catch Throwable t
+         (c/error-window c t)
+         #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
+  c)
+
+(defn remove-destroyed-entities [c]
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (all-entities c))]
+    (remove-entity c eid)
+    (doseq [component @eid]
+      (entity/destroy component eid c))))
+
+(def window-hotkeys
+  {:inventory-window   :i
+   :entity-info-window :e})
+
+(defn- check-window-hotkeys [c]
+  (doseq [window-id [:inventory-window
+                     :entity-info-window]
+          :when (key-just-pressed? c (get window-hotkeys window-id))]
+    (actor/toggle-visible! (get (:windows (c/stage c)) window-id))))
+
+(defn- close-all-windows [stage]
+  (let [windows (group/children (:windows stage))]
+    (when (some actor/visible? windows)
+      (run! #(actor/set-visible % false) windows))))
+
+(def close-windows-key :escape)
+
+(defn check-ui-key-listeners [c]
+  (check-window-hotkeys c)
+  (when (key-just-pressed? c close-windows-key)
+    (close-all-windows (c/stage c))))
