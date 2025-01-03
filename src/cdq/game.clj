@@ -1,17 +1,16 @@
 (ns cdq.game
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.context :as world :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
+            [cdq.context :as world :refer [line-of-sight? render-z-order point->entities active-entities remove-entity all-entities max-delta-time check-player-input set-camera-on-player-position render-tiled-map]]
             [cdq.debug :as debug]
-            [cdq.tile-color-setter :as tile-color-setter]
             [cdq.potential-fields :as potential-fields]
+            [cdq.render :as render]
             [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [gdl.utils :refer [defsystem install sort-by-order]]
             [gdl.context :as c]
             [gdl.info :as info]
-            [gdl.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
 
@@ -20,18 +19,6 @@
 
 (defsystem tick)
 (defmethod tick :default [_ eid c])
-
-(defsystem render-below)
-(defmethod render-below :default [_ entity c])
-
-(defsystem render-default)
-(defmethod render-default :default [_ entity c])
-
-(defsystem render-above)
-(defmethod render-above :default [_ entity c])
-
-(defsystem render-info)
-(defmethod render-info :default [_ entity c])
 
 (defn- check-window-hotkeys [c {:keys [controls/window-hotkeys]} stage]
   (doseq [window-id [:inventory-window
@@ -51,9 +38,10 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn- check-camera-controls [c camera]
-  (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
-  (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed))) )
+(defn- check-camera-controls [{:keys [gdl.context/world-viewport] :as c}]
+  (let [camera (:camera world-viewport)]
+    (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
+    (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed)))))
 
 (defn- remove-destroyed-entities [c]
   (doseq [eid (filter (comp :entity/destroyed? deref)
@@ -130,41 +118,7 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (assoc c :cdq.context/mouseover-eid new-eid)))
 
-(def ^:private ^:dbg-flag show-body-bounds false)
-
-(defn- draw-body-rect [c entity color]
-  (let [[x y] (:left-bottom entity)]
-    (c/rectangle c x y (:width entity) (:height entity) color)))
-
-(defn- render-entity! [c system entity]
-  (try
-   (when show-body-bounds
-     (draw-body-rect c entity (if (:collides? entity) :white :gray)))
-   (run! #(system % entity c) entity)
-   (catch Throwable t
-     (draw-body-rect c entity :red)
-     (pretty-pst t))))
-
-(defn- render-entities [{:keys [cdq.context/player-eid] :as c}]
-  (let [entities (map deref (active-entities c))
-        player @player-eid]
-    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
-                                              first
-                                              render-z-order)
-            system [render-below
-                    render-default
-                    render-above
-                    render-info]
-            entity entities
-            :when (or (= z-order :z-order/effect)
-                      (line-of-sight? c player entity))]
-      (render-entity! c system entity))))
-
 (def ^:private ^:dbg-flag pausing? true)
-
-(defn- check-player-input [{:keys [cdq.context/player-eid] :as c}]
-  (state/manual-tick (entity/state-obj @player-eid)
-                     c))
 
 (def close-windows-key :escape)
 
@@ -172,27 +126,18 @@
   {:inventory-window   :i
    :entity-info-window :e})
 
-(defn process-frame [{:keys [gdl.context/world-viewport
-                             cdq.context/tiled-map
-                             cdq.context/player-eid
-                             cdq.context/raycaster
-                             cdq.context/explored-tile-corners]
-                      :as c}]
+(defn process-frame [c]
   (clear-screen black)
   ; FIXME position DRY
-  (cam/set-position! (:camera world-viewport)
-                     (:position @player-eid))
+  (set-camera-on-player-position c)
   ; FIXME position DRY
-  (c/draw-tiled-map c
-                    tiled-map
-                    (tile-color-setter/create raycaster
-                                              explored-tile-corners
-                                              (cam/position (:camera world-viewport))))
+  (render-tiled-map c)
+  ; render/entities
   (c/draw-on-world-view c
                         (fn [c]
                           (debug/render-before-entities c)
                           ; FIXME position DRY (from player)
-                          (render-entities c)
+                          (render/entities c)
                           (debug/render-after-entities c)))
   (let [stage (c/stage c)]
     (ui/draw stage c)
@@ -208,7 +153,7 @@
                 tick-potential-fields
                 tick-entities))]
     (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
-    (check-camera-controls c (:camera world-viewport))
+    (check-camera-controls c)
     (check-ui-key-listeners c
                             {:controls/close-windows-key close-windows-key
                              :controls/window-hotkeys    window-hotkeys}
@@ -225,10 +170,10 @@
               #'world/create!
               #'destroy
               #'tick
-              #'render-below
-              #'render-default
-              #'render-above
-              #'render-info]})
+              #'render/render-below
+              #'render/render-default
+              #'render/render-above
+              #'render/render-info]})
 
 (doseq [[ns-sym k] '{cdq.entity.alert-friendlies-after-duration :entity/alert-friendlies-after-duration
                      cdq.entity.animation :entity/animation

@@ -2,6 +2,7 @@
   (:require [anvil.controls :as controls]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
+            [cdq.tile-color-setter :as tile-color-setter]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
             [anvil.widgets.inventory :as inventory]
@@ -727,3 +728,26 @@
     (if (cdq.inventory/stackable? item cell-item)
       (stack-item c eid cell item)
       (set-item c eid cell item))))
+
+(defn draw-body-rect [c entity color]
+  (let [[x y] (:left-bottom entity)]
+    (c/rectangle c x y (:width entity) (:height entity) color)))
+
+(defn check-player-input [{:keys [cdq.context/player-eid] :as c}]
+  (state/manual-tick (entity/state-obj @player-eid)
+                     c))
+
+(defn set-camera-on-player-position [{:keys [gdl.context/world-viewport
+                                             cdq.context/player-eid]}]
+  (cam/set-position! (:camera world-viewport)
+                     (:position @player-eid)))
+
+(defn render-tiled-map [{:keys [gdl.context/world-viewport
+                                cdq.context/tiled-map
+                                cdq.context/raycaster
+                                cdq.context/explored-tile-corners] :as c}]
+  (c/draw-tiled-map c
+                    tiled-map
+                    (tile-color-setter/create raycaster
+                                              explored-tile-corners
+                                              (cam/position (:camera world-viewport)))))
