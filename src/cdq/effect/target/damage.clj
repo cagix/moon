@@ -2,7 +2,7 @@
   (:require [cdq.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
             [gdl.context :as c]
-            [gdl.rand :refer [rand-int-between]]))
+            [gdl.utils :refer [rand-int-between]]))
 
 (defn- damage-info [{[min max] :damage/min-max}]
   (str min "-" max " damage"))
