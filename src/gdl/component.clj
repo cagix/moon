@@ -1,6 +1,4 @@
-(ns gdl.component
-  (:refer-clojure :exclude [apply])
-  (:import (clojure.lang MultiFn)))
+(ns gdl.component)
 
 (defn- component-k->namespace [prefix k]
   (symbol (str prefix "." (namespace k) "." (name k))))
@@ -17,7 +15,7 @@
       (let [system @system-var]
         (when (k (methods system))
           (println "WARNING: Overwriting method" (:name (meta method-var)) "on" k))
-        (MultiFn/.addMethod system k method-var)))))
+        (clojure.lang.MultiFn/.addMethod system k method-var)))))
 
 (defn install [component-systems ns-sym k]
   (require ns-sym)
