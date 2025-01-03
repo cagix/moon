@@ -277,7 +277,7 @@
                         #'cdq.effect/handle]
              :optional [#'gdl.info/info
                         #'cdq.effect/useful?
-                        #'cdq.effect/render-effect]})
+                        #'cdq.effect/render]})
 
 (doseq [[ns-sym k] '{cdq.effect.target-all :effects/target-all
                      cdq.effect.target-entity :effects/target-entity

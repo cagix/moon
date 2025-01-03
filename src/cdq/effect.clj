@@ -8,5 +8,5 @@
 (defsystem useful?)
 (defmethod useful? :default [_ _effect-ctx context] true)
 
-(defsystem render-effect)
-(defmethod render-effect :default [_ _effect-ctx context])
+(defsystem render)
+(defmethod render :default [_ _effect-ctx context])

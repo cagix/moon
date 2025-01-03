@@ -27,7 +27,7 @@
                          (entity/end-point source* target* maxrange)
                          (c/build c :audiovisuals/hit-ground)))))
 
-(defn render-effect [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} c]
+(defn render [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} c]
   (when target
     (let [source* @source
           target* @target]

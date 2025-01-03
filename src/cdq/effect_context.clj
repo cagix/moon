@@ -17,4 +17,4 @@
         (filter-applicable? effect-ctx effect)))
 
 (defn render-info [context effect-ctx effect]
-  (run! #(effect/render-effect % effect-ctx context) effect))
+  (run! #(effect/render % effect-ctx context) effect))
