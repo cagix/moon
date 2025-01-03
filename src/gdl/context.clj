@@ -1,10 +1,11 @@
 (ns gdl.context
-  (:require [clojure.gdx :as gdx :refer [play clamp degree->radians white set-projection-matrix begin end set-color draw unproject input-x input-y]]
+  (:require [clojure.gdx :as gdx :refer [play clamp degree->radians white set-projection-matrix begin end set-color draw unproject input-x input-y key-pressed?]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.string :as str]
             [gdl.utils :refer [defcomponent safe-get with-err-str]]
             [gdl.db :as db]
@@ -365,3 +366,13 @@
 (defmethod schema/malli-form :s/components-ns [[_ ns-name-k] schemas]
   (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
                      schemas))
+
+(defn WASD-movement-vector [c]
+  (let [r (when (key-pressed? c :d) [1  0])
+        l (when (key-pressed? c :a) [-1 0])
+        u (when (key-pressed? c :w) [0  1])
+        d (when (key-pressed? c :s) [0 -1])]
+    (when (or r l u d)
+      (let [v (v/add-vs (remove nil? [r l u d]))]
+        (when (pos? (v/length v))
+          v)))))
