@@ -1,6 +1,5 @@
 (ns gdl.app
-  (:require [gdl.component :refer [defsystem defcomponent]]
-            [clojure.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [clojure.gdx.assets :as assets]
             [clojure.gdx.file-handle :as fh]
             [clojure.gdx.graphics.camera :as camera]
@@ -9,7 +8,7 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.string :as str]
-            [gdl.utils :refer [mapvals]]
+            [gdl.utils :refer [defsystem defcomponent mapvals]]
             [gdl.db :as db]
             [gdl.ui :as ui])
   (:import (forge OrthogonalTiledMapRenderer)))

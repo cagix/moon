@@ -1,5 +1,5 @@
 (ns cdq.entity.state
-  (:require [gdl.component :refer [defsystem]]))
+  (:require [gdl.utils :refer [defsystem]]))
 
 (defsystem enter)
 (defmethod enter :default [_ c])

@@ -1,5 +1,5 @@
 (ns cdq.entity
-  (:require [gdl.component :refer [defsystem]]
+  (:require [gdl.utils :refer [defsystem]]
             [cdq.inventory :as inventory]
             [cdq.operation :as op]
             [gdl.malli :as m]
