@@ -15,7 +15,7 @@
                             remove-tooltip!]
              :as ui]
             [gdl.val-max :as val-max]
-            [gdl.ui.utils :as scene2d.utils]))
+            [clojure.gdx.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...

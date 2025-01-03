@@ -5,7 +5,7 @@
             [clojure.gdx.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui.table :as table]
-            [gdl.ui.utils :as scene2d.utils])
+            [clojure.gdx.scene2d.ui.utils :as scene2d.utils])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
