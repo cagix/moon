@@ -273,11 +273,11 @@
                      ns-sym
                      k))
 
-(def effect {:required [#'component/applicable?
-                        #'component/handle]
+(def effect {:required [#'cdq.effect/applicable?
+                        #'cdq.effect/handle]
              :optional [#'component/info
-                        #'component/useful?
-                        #'component/render-effect]})
+                        #'cdq.effect/useful?
+                        #'cdq.effect/render-effect]})
 
 (doseq [[ns-sym k] '{cdq.effect.target-all :effects/target-all
                      cdq.effect.target-entity :effects/target-entity

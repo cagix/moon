@@ -1,7 +1,7 @@
 (ns cdq.entity.projectile-collision
-  (:require [anvil.effect :as effect]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [cdq.context :as world]
+            [cdq.effect-context :as effect-ctx]
             [cdq.grid :as grid]
             [clojure.utils :refer [find-first]]))
 
@@ -28,7 +28,7 @@
     (when hit-entity
       (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
-      (effect/do-all! c
-                      {:effect/source eid
-                       :effect/target hit-entity}
-                      entity-effects))))
+      (effect-ctx/do-all! c
+                          {:effect/source eid
+                           :effect/target hit-entity}
+                          entity-effects))))

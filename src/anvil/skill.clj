@@ -1,5 +1,5 @@
 (ns anvil.skill
-  (:require [anvil.effect :as effect]
+  (:require [cdq.effect-context :as effect-ctx]
             [anvil.entity :as entity]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
@@ -14,7 +14,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effect/some-applicable? effect-ctx effects))
+   (not (effect-ctx/some-applicable? effect-ctx effects))
    :invalid-params
 
    :else

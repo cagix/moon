@@ -1,6 +1,6 @@
 (ns cdq.effect.target-all
-  (:require [anvil.effect :refer [do-all!]]
-            [cdq.context :as world]
+  (:require [cdq.context :as world]
+            [cdq.effect-context :refer [do-all!]]
             [gdl.context :as c]))
 
 (comment

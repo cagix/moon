@@ -1,6 +1,6 @@
 (ns cdq.effect.target.melee-damage
-  (:require [anvil.entity :as entity]
-            [clojure.component :as component]))
+  (:require [cdq.effect :as effect]
+            [anvil.entity :as entity]))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -17,7 +17,7 @@
            (str "\n" (damage-info (entity->melee-damage @source))))))
 
 (defn applicable? [_ {:keys [effect/source] :as ctx}]
-  (component/applicable? (damage-effect @source) ctx))
+  (effect/applicable? (damage-effect @source) ctx))
 
 (defn handle [_ {:keys [effect/source] :as ctx} c]
-  (component/handle (damage-effect @source) ctx c))
+  (effect/handle (damage-effect @source) ctx c))

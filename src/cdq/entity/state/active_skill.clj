@@ -1,7 +1,7 @@
 (ns cdq.entity.state.active-skill
   (:require [anvil.entity :as entity]
-            [anvil.effect :as effect]
             [cdq.context :refer [line-of-sight? timer finished-ratio stopped?]]
+            [cdq.effect-context :as effect-ctx]
             [clojure.gdx :refer [play]]
             [gdl.context :as c]))
 
@@ -62,8 +62,8 @@
 
 (defn tick [[_ {:keys [skill effect-ctx counter]}] eid c]
   (cond
-   (not (effect/some-applicable? (check-update-ctx c effect-ctx)
-                                 (:skill/effects skill)))
+   (not (effect-ctx/some-applicable? (check-update-ctx c effect-ctx)
+                                     (:skill/effects skill)))
    (do
     (entity/event c eid :action-done)
     ; TODO some sound ?
@@ -71,7 +71,7 @@
 
    (stopped? c counter)
    (do
-    (effect/do-all! c effect-ctx (:skill/effects skill))
+    (effect-ctx/do-all! c effect-ctx (:skill/effects skill))
     (entity/event c eid :action-done))))
 
 (defn render-info [[_ {:keys [skill effect-ctx counter]}] entity c]
@@ -81,6 +81,6 @@
                       entity
                       (:position entity)
                       (finished-ratio c counter))
-    (effect/render-info c
-                        (check-update-ctx c effect-ctx)
-                        effects)))
+    (effect-ctx/render-info c
+                            (check-update-ctx c effect-ctx)
+                            effects)))

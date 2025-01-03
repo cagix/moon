@@ -1,7 +1,7 @@
 (ns cdq.effect.target-entity
-  (:require [anvil.effect :refer [do-all! filter-applicable?]]
-            [anvil.entity :as entity]
+  (:require [anvil.entity :as entity]
             [cdq.context :as world]
+            [cdq.effect-context :refer [do-all! filter-applicable?]]
             [gdl.context :as c]))
 
 (defn applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]

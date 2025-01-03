@@ -1,5 +1,5 @@
 (ns cdq.entity.state.npc-idle
-  (:require [anvil.effect :as effect]
+  (:require [cdq.effect-context :as effect-ctx]
             [anvil.entity :as entity]
             [anvil.skill :as skill]
             [anvil.world.potential-field :as potential-field]
@@ -12,7 +12,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect/applicable-and-useful? c ctx (:skill/effects %))))
+                     (effect-ctx/applicable-and-useful? c ctx (:skill/effects %))))
        first))
 
 (defn- effect-context [c eid]

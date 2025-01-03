@@ -103,16 +103,6 @@
 (defsystem manual-tick)
 (defmethod manual-tick :default [_ c])
 
-(defsystem applicable?)
-
-(defsystem handle)
-
-(defsystem useful?)
-(defmethod useful? :default [_ _effect-ctx context] true)
-
-(defsystem render-effect)
-(defmethod render-effect :default [_ _effect-ctx context])
-
 (defsystem apply)
 (defsystem order)
 (defsystem value-text)
