@@ -1,14 +1,4 @@
-(ns ^:no-doc anvil.ui.skill-window
-  #_(:require [anvil.entity :as entity]
-            [anvil.entity.skills :as skills]))
-
-#_(defmethod component/clicked-skillmenu-skill :player-idle [[_ {:keys [eid]}] skill c]
-  (let [free-skill-points (:entity/free-skill-points @eid)]
-    ; TODO no else case, no visible free-skill-points
-    (when (and (pos? free-skill-points)
-               (not (skills/contains? @eid skill)))
-      (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-      (skills/add c eid skill))))
+(ns ^:no-doc anvil.ui.skill-window)
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player-eid))
