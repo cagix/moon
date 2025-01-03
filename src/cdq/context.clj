@@ -1,6 +1,5 @@
 (ns cdq.context
   (:require [anvil.controls :as controls]
-            [cdq.component :as component]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [gdl.info :as info]

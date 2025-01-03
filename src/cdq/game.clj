@@ -1,6 +1,5 @@
 (ns cdq.game
-  (:require [cdq.component :as component]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.context :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
             [cdq.debug :as debug]

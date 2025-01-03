@@ -6,7 +6,7 @@
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
-            [clojure.component :as component :refer [defcomponent]]
+            [clojure.component :refer [defcomponent]]
             [clojure.utils :refer [safe-get pretty-pst with-err-str]]
             [gdl.db :as db]
             [gdl.graphics.animation :as animation]
