@@ -17,6 +17,7 @@
             [gdl.context :as c :refer [info-text]]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
+            [cdq.potential-fields :as potential-fields]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
@@ -751,3 +752,49 @@
                     (tile-color-setter/create raycaster
                                               explored-tile-corners
                                               (cam/position (:camera world-viewport)))))
+
+(defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
+  (let [player @player-eid
+        hits (remove #(= (:z-order @%) :z-order/effect)
+                     (point->entities c (c/world-mouse-position c)))]
+    (->> render-z-order
+         (sort-by-order hits #(:z-order @%))
+         reverse
+         (filter #(line-of-sight? c player @%))
+         first)))
+
+(defn update-mouseover-entity [{:keys [cdq.context/mouseover-eid] :as c}]
+  (let [new-eid (if (c/mouse-on-actor? c)
+                  nil
+                  (calculate-mouseover-eid c))]
+    (when mouseover-eid
+      (swap! mouseover-eid dissoc :entity/mouseover?))
+    (when new-eid
+      (swap! new-eid assoc :entity/mouseover? true))
+    (assoc c :cdq.context/mouseover-eid new-eid)))
+
+(defn update-paused-state [{:keys [cdq.context/player-eid error] :as c} pausing?]
+  (assoc c :cdq.context/paused? (or error
+                                    (and pausing?
+                                         (state/pause-game? (entity/state-obj @player-eid))
+                                         (not (or (key-just-pressed? c :p)
+                                                  (key-pressed? c :space)))))))
+
+(defn update-time [c]
+  (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
+    (-> c
+        (update :cdq.context/elapsed-time + delta-ms)
+        (assoc :cdq.context/delta-time delta-ms))))
+
+(def ^:private pf-cache (atom nil))
+
+(defn tick-potential-fields [{:keys [cdq.context/factions-iterations
+                                     cdq.context/grid] :as c}]
+  (let [entities (active-entities c)]
+    (doseq [[faction max-iterations] factions-iterations]
+      (potential-fields/tick pf-cache
+                             grid
+                             faction
+                             entities
+                             max-iterations)))
+  c)

@@ -1,14 +1,13 @@
 (ns cdq.game
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.context :as world :refer [line-of-sight? render-z-order point->entities active-entities remove-entity all-entities max-delta-time check-player-input set-camera-on-player-position render-tiled-map]]
+            [cdq.context :as world :refer [active-entities remove-entity all-entities max-delta-time check-player-input set-camera-on-player-position render-tiled-map update-mouseover-entity update-time tick-potential-fields update-paused-state]]
             [cdq.debug :as debug]
-            [cdq.potential-fields :as potential-fields]
             [cdq.render :as render]
-            [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
+            [clojure.gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [gdl.utils :refer [defsystem install sort-by-order]]
+            [gdl.utils :refer [defsystem install]]
             [gdl.context :as c]
             [gdl.info :as info]
             [gdl.graphics.camera :as cam]
@@ -72,52 +71,6 @@
          #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   c)
 
-(def ^:private pf-cache (atom nil))
-
-(defn- tick-potential-fields [{:keys [cdq.context/factions-iterations
-                                      cdq.context/grid] :as c}]
-  (let [entities (active-entities c)]
-    (doseq [[faction max-iterations] factions-iterations]
-      (potential-fields/tick pf-cache
-                             grid
-                             faction
-                             entities
-                             max-iterations)))
-  c)
-
-(defn- update-time [c]
-  (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
-    (-> c
-        (update :cdq.context/elapsed-time + delta-ms)
-        (assoc :cdq.context/delta-time delta-ms))))
-
-(defn- update-paused-state [{:keys [cdq.context/player-eid error] :as c} pausing?]
-  (assoc c :cdq.context/paused? (or error
-                                    (and pausing?
-                                         (state/pause-game? (entity/state-obj @player-eid))
-                                         (not (or (key-just-pressed? c :p)
-                                                  (key-pressed? c :space)))))))
-
-(defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
-  (let [player @player-eid
-        hits (remove #(= (:z-order @%) :z-order/effect)
-                     (point->entities c (c/world-mouse-position c)))]
-    (->> render-z-order
-         (sort-by-order hits #(:z-order @%))
-         reverse
-         (filter #(line-of-sight? c player @%))
-         first)))
-
-(defn- update-mouseover-entity [{:keys [cdq.context/mouseover-eid] :as c}]
-  (let [new-eid (if (c/mouse-on-actor? c)
-                  nil
-                  (calculate-mouseover-eid c))]
-    (when mouseover-eid
-      (swap! mouseover-eid dissoc :entity/mouseover?))
-    (when new-eid
-      (swap! new-eid assoc :entity/mouseover? true))
-    (assoc c :cdq.context/mouseover-eid new-eid)))
-
 (def ^:private ^:dbg-flag pausing? true)
 
 (def close-windows-key :escape)
@@ -159,8 +112,6 @@
                              :controls/window-hotkeys    window-hotkeys}
                             (c/stage c))
     c))
-
-
 
 ; TODO 'info' missing ?
 
