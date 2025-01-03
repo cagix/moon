@@ -106,6 +106,3 @@
 (defsystem apply)
 (defsystem order)
 (defsystem value-text)
-
-(defsystem info)
-(defmethod info :default [_ _context])
