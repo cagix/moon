@@ -38,8 +38,8 @@
                    (run! #(resize % width height) @state)))))
 
 (def systems
-  {:required [#'create]
-   :optional [#'dispose
+  {:optional [#'create
+              #'dispose
               #'resize]})
 
 (doseq [[ns-sym k] '{gdl.context.assets             :gdl.context/assets
