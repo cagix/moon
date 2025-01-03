@@ -1,6 +1,5 @@
 (ns gdl.utils
-  (:require [clj-commons.pretty.repl :as pretty-repl]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]))
 
@@ -13,10 +12,6 @@
 (defn mapvals [f m]
   (into {} (for [[k v] m]
              [k (f v)])))
-
-(defn pretty-pst [t]
-  (binding [*print-level* 3]
-    (pretty-repl/pretty-pst t 24)))
 
 (defn tile->middle [position]
   (mapv (partial + 0.5) position))

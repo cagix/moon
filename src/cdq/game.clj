@@ -9,9 +9,10 @@
             [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [gdl.utils :refer [read-edn-resource pretty-pst sort-by-order]]
+            [gdl.utils :refer [read-edn-resource sort-by-order]]
             [gdl.app :as app]
             [gdl.context :as c]
+            [gdl.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
 
