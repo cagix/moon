@@ -9,7 +9,7 @@
             [gdl.utils :refer [safe-merge]]
             [gdl.context :as c :refer [play-sound]]
             [gdl.ui :refer [window-title-bar? button?]]
-            [gdl.math.vector :as v]))
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn create [[_ eid item] c]
   (safe-merge (c/build c :player-item-on-cursor/component)

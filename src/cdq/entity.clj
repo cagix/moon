@@ -3,7 +3,7 @@
             [cdq.inventory :as inventory]
             [cdq.operation :as op]
             [gdl.malli :as m]
-            [gdl.math.vector :as v]
+            [clojure.gdx.math.vector2 :as v]
             [gdl.math.shapes :as shape]))
 
 (defsystem create)

@@ -1,5 +1,5 @@
 (ns gdl.math.raycaster
-  (:require [gdl.math.vector :as v])
+  (:require [clojure.gdx.math.vector2 :as v])
   (:import (forge RayCaster)))
 
 ; boolean array used because 10x faster than access to clojure grid data structure

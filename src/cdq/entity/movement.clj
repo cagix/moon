@@ -3,7 +3,7 @@
             [cdq.context :as world]
             [cdq.grid :as grid]
             [gdl.malli :as m]
-            [gdl.math.vector :as v]))
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))

@@ -1,6 +1,6 @@
 (ns cdq.effect.projectile
   (:require [cdq.context :as world]
-            [gdl.math.vector :as v]))
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)

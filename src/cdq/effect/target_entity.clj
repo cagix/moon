@@ -3,7 +3,7 @@
             [cdq.effect-context :refer [do-all! filter-applicable?]]
             [cdq.entity :as entity]
             [gdl.context :as c]
-            [gdl.math.vector :as v]))
+            [clojure.gdx.math.vector2 :as v]))
 
 ; TODO use at projectile & also adjust rotation
 (defn- start-point [entity target*]

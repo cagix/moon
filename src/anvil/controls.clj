@@ -1,9 +1,6 @@
 (ns anvil.controls
   (:require [clojure.gdx :refer [key-pressed?]]
-            [gdl.math.vector :as v]))
-
-(defn- add-vs [vs]
-  (v/normalise (reduce v/add [0 0] vs)))
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn- WASD-movement-vector [c]
   (let [r (when (key-pressed? c :d) [1  0])
@@ -11,7 +8,7 @@
         u (when (key-pressed? c :w) [0  1])
         d (when (key-pressed? c :s) [0 -1])]
     (when (or r l u d)
-      (let [v (add-vs (remove nil? [r l u d]))]
+      (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
           v)))))
 

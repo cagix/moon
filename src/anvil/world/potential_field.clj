@@ -8,7 +8,7 @@
                               nearest-entity-distance
                               get-8-neighbour-positions]]
             [gdl.utils :refer [utils-positions when-seq]]
-            [gdl.math.vector :as v]))
+            [clojure.gdx.math.vector2 :as v]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes
