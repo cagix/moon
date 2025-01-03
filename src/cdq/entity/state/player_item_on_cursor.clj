@@ -2,7 +2,7 @@
   (:require [anvil.controls :as controls]
             [cdq.entity :as entity]
             [anvil.skill :as skill]
-            [cdq.context :as world]
+            [cdq.context :as world :refer [set-item stack-item remove-item]]
             [cdq.inventory :as inventory]
             [clojure.gdx :refer [play button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
@@ -67,7 +67,7 @@
      (do
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/set-item c eid cell item-on-cursor)
+      (set-item c eid cell item-on-cursor)
       (world/send-event! c eid :dropped-item))
 
      ; STACK ITEMS
@@ -76,7 +76,7 @@
      (do
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/stack-item c eid cell item-on-cursor)
+      (stack-item c eid cell item-on-cursor)
       (world/send-event! c eid :dropped-item))
 
      ; SWAP ITEMS
@@ -87,8 +87,8 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/remove-item c eid cell)
-      (entity/set-item c eid cell item-on-cursor)
+      (remove-item c eid cell)
+      (set-item c eid cell item-on-cursor)
       (world/send-event! c eid :dropped-item)
       (world/send-event! c eid :pickup-item item-in-cell)))))
 

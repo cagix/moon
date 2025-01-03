@@ -4,12 +4,6 @@
             [clojure.java.io :as io]
             [clojure.string :as str]))
 
-(defmacro bind-root [sym value]
-  `(alter-var-root (var ~sym) (constantly ~value)))
-
-(defmacro defn-impl [sym & fn-body]
-  `(bind-root ~sym (fn ~@fn-body)))
-
 (defn safe-get [m k]
   (let [result (get m k ::not-found)]
     (if (= result ::not-found)

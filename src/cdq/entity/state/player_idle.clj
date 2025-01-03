@@ -3,7 +3,7 @@
             [cdq.entity :as entity]
             [anvil.entity.skills :as skills]
             [anvil.skill :as skill]
-            [cdq.context :as world]
+            [cdq.context :as world :refer [pickup-item remove-item]]
             [clojure.gdx :refer [play button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [gdl.utils :refer [safe-merge]]
@@ -28,7 +28,7 @@
      (do
       (play-sound c "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/pickup-item c player-eid item))
+      (pickup-item c player-eid item))
 
      :else
      (do
@@ -139,7 +139,7 @@
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play pickup-item-sound)
     (world/send-event! c eid :pickup-item item)
-    (entity/remove-item c eid cell)))
+    (remove-item c eid cell)))
 
 (defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill c]
   (let [free-skill-points (:entity/free-skill-points @eid)]
