@@ -2,6 +2,7 @@
   (:require [anvil.controls :as controls]
             [cdq.component :as component]
             [cdq.entity :as entity]
+            [cdq.entity.state :as state]
             [gdl.info :as info]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
@@ -178,8 +179,8 @@
                       (inventory/create c)]}))
 
 (defn- widgets-player-state-draw-component [_context]
-  (ui-actor {:draw #(component/draw-gui-view (entity/state-obj @(::player-eid %))
-                                             %)}))
+  (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @(::player-eid %))
+                                         %)}))
 
 (defn- dev-menu-config [c]
   {:menus [{:label "World"
@@ -435,7 +436,7 @@
 
 (defn- create-vs [components c]
   (reduce (fn [m [k v]]
-            (assoc m k (component/create [k v] c)))
+            (assoc m k (entity/create [k v] c)))
           {}
           components))
 
@@ -450,7 +451,7 @@
                                       (create-vs c)))))]
     (add-entity c eid)
     (doseq [component @eid]
-      (component/create! component eid c))
+      (entity/create! component eid c))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."

@@ -1,6 +1,7 @@
 (ns cdq.game
   (:require [cdq.component :as component]
             [cdq.entity :as entity]
+            [cdq.entity.state :as state]
             [cdq.context :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
@@ -42,7 +43,7 @@
                       (all-entities c))]
     (remove-entity c eid)
     (doseq [component @eid]
-      (component/destroy component eid c))))
+      (entity/destroy component eid c))))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
@@ -53,7 +54,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (component/tick [k v] eid c))
+            (entity/tick [k v] eid c))
           (catch Throwable t
             (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t
@@ -85,13 +86,10 @@
         (update :cdq.context/elapsed-time + delta-ms)
         (assoc :cdq.context/delta-time delta-ms))))
 
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
-
 (defn- update-paused-state [{:keys [cdq.context/player-eid error] :as c} pausing?]
   (assoc c :cdq.context/paused? (or error
                                     (and pausing?
-                                         (pause-game? (entity/state-obj @player-eid))
+                                         (state/pause-game? (entity/state-obj @player-eid))
                                          (not (or (key-just-pressed? c :p)
                                                   (key-pressed? c :space)))))))
 
@@ -136,10 +134,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [component/render-below
-                    component/render-default
-                    component/render-above
-                    component/render-info]
+            system [entity/render-below
+                    entity/render-default
+                    entity/render-above
+                    entity/render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? c player entity))]
@@ -148,8 +146,8 @@
 (def ^:private ^:dbg-flag pausing? true)
 
 (defn- check-player-input [{:keys [cdq.context/player-eid] :as c}]
-  (component/manual-tick (entity/state-obj @player-eid)
-                         c))
+  (state/manual-tick (entity/state-obj @player-eid)
+                     c))
 
 (def close-windows-key :escape)
 
@@ -210,14 +208,14 @@
 
 (def entity
   {:optional [#'gdl.info/info
-              #'component/create
-              #'component/create!
-              #'component/destroy
-              #'component/tick
-              #'component/render-below
-              #'component/render-default
-              #'component/render-above
-              #'component/render-info]})
+              #'entity/create
+              #'entity/create!
+              #'entity/destroy
+              #'entity/tick
+              #'entity/render-below
+              #'entity/render-default
+              #'entity/render-above
+              #'entity/render-info]})
 
 (doseq [[ns-sym k] '{cdq.entity.alert-friendlies-after-duration :entity/alert-friendlies-after-duration
                      cdq.entity.animation :entity/animation
@@ -245,14 +243,14 @@
 (def entity-state
   (merge-with concat
               entity
-              {:optional [#'component/enter
-                          #'component/exit
-                          #'component/cursor
-                          #'pause-game?
-                          #'component/manual-tick
-                          #'component/clicked-inventory-cell
-                          #'component/clicked-skillmenu-skill
-                          #'component/draw-gui-view]}))
+              {:optional [#'state/enter
+                          #'state/exit
+                          #'state/cursor
+                          #'state/pause-game?
+                          #'state/manual-tick
+                          #'state/clicked-inventory-cell
+                          #'state/clicked-skillmenu-skill
+                          #'state/draw-gui-view]}))
 
 ; TODO tests ! - all implemented/wired correctly/etc?
 ; TODO tests also interesting .... !

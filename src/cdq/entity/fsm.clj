@@ -1,5 +1,5 @@
 (ns cdq.entity.fsm
-  (:require [cdq.component :as component]
+  (:require [cdq.entity :as entity]
             [reduce-fsm :as fsm]))
 
 (defn info [[_ fsm] _c]
@@ -66,4 +66,4 @@
                          :fsms/player player-fsm
                          :fsms/npc npc-fsm)
                        initial-state)
-         initial-state (component/create [initial-state eid] c)))
+         initial-state (entity/create [initial-state eid] c)))

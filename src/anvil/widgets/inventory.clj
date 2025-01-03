@@ -1,6 +1,7 @@
 (ns anvil.widgets.inventory
   (:require [cdq.component :as component]
             [cdq.entity :as entity]
+            [cdq.entity.state :as state]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
@@ -89,9 +90,9 @@
     (.addListener stack (ui/click-listener
                          (fn [_click-context]
                            (let [{:keys [cdq.context/player-eid] :as context} (ui/application-state stack)]
-                             (component/clicked-inventory-cell (entity/state-obj @player-eid)
-                                                               cell
-                                                               context)))))
+                             (state/clicked-inventory-cell (entity/state-obj @player-eid)
+                                                           cell
+                                                           context)))))
     stack))
 
 (defn- inventory-table [c]

@@ -16,7 +16,7 @@
                                                         (:entity/image (db/build c id)) ; TODO here anyway taken
                                                         ; => should probably build this window @ game start
                                                         (fn []
-                                                          (component/clicked-skillmenu-skill
+                                                          (state/clicked-skillmenu-skill
                                                            (entity/state-obj @player-eid)
                                                            (db/build c id)
                                                            c)))]]

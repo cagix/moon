@@ -1,5 +1,6 @@
 (ns cdq.entity
-  (:require [cdq.component :as component]
+  (:require [clojure.component :refer [defsystem]]
+            [cdq.entity.state :as state]
             [cdq.inventory :as inventory]
             [gdl.context :refer [set-cursor]]
             [cdq.operation :as op]
@@ -7,6 +8,31 @@
             [gdl.math.vector :as v]
             [gdl.math.shapes :as shape]
             [reduce-fsm :as fsm]))
+
+(defsystem create)
+(defmethod create :default [[_ v] _context]
+  v)
+
+(defsystem create!)
+(defmethod create! :default [_ eid c])
+
+(defsystem destroy)
+(defmethod destroy :default [_ eid c])
+
+(defsystem tick)
+(defmethod tick :default [_ eid c])
+
+(defsystem render-below)
+(defmethod render-below :default [_ entity c])
+
+(defsystem render-default)
+(defmethod render-default :default [_ entity c])
+
+(defsystem render-above)
+(defmethod render-above :default [_ entity c])
+
+(defsystem render-info)
+(defmethod render-info :default [_ entity c])
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
@@ -54,19 +80,19 @@
           new-state-k (:state new-fsm)]
       (when-not (= old-state-k new-state-k)
         (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (component/create (if params
-                                                             [new-state-k eid params]
-                                                             [new-state-k eid])
-                                                        c)]]
+              new-state-obj [new-state-k (create (if params
+                                                   [new-state-k eid params]
+                                                   [new-state-k eid])
+                                                 c)]]
           (when (:entity/player? @eid)
-            (when-let [cursor (component/cursor new-state-obj)]
+            (when-let [cursor (state/cursor new-state-obj)]
               (set-cursor c cursor)))
           (swap! eid #(-> %
                           (assoc :entity/fsm new-fsm
                                  new-state-k (new-state-obj 1))
                           (dissoc old-state-k)))
-          (component/exit  old-state-obj c)
-          (component/enter new-state-obj c))))))
+          (state/exit  old-state-obj c)
+          (state/enter new-state-obj c))))))
 
 (defn event
   ([c eid event]
