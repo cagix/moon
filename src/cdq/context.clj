@@ -1,5 +1,6 @@
 (ns cdq.context
   (:require [anvil.controls :as controls]
+            [cdq.component :as component]
             [cdq.entity :as entity]
             [gdl.info :as info]
             [anvil.level :refer [generate-level]]
@@ -10,7 +11,7 @@
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [clojure.component :as component :refer [defcomponent]]
+            [clojure.component :refer [defcomponent]]
             [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number!]]
             [data.grid2d :as g2d]
             [gdl.app :as app]

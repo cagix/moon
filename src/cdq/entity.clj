@@ -1,6 +1,6 @@
 (ns cdq.entity
-  (:require [cdq.inventory :as inventory]
-            [clojure.component :as component :refer [defcomponent]]
+  (:require [cdq.component :as component]
+            [cdq.inventory :as inventory]
             [gdl.context :refer [set-cursor]]
             [cdq.operation :as op]
             [gdl.malli :as m]

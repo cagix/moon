@@ -1,5 +1,5 @@
 (ns cdq.entity.fsm
-  (:require [clojure.component :as component]
+  (:require [cdq.component :as component]
             [reduce-fsm :as fsm]))
 
 (defn info [[_ fsm] _c]

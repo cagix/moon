@@ -4,7 +4,6 @@
             [anvil.skill :as skill]
             [cdq.context :as world]
             [cdq.inventory :as inventory]
-            [clojure.component :as component]
             [clojure.gdx :refer [play button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.utils :refer [safe-merge]]

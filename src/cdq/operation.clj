@@ -2,7 +2,8 @@
   "Namespace for operations in the game engine. Provides utilities for applying, combining,
    and retrieving information about operations, such as incremental and multiplicative effects."
   (:refer-clojure :exclude [apply remove])
-  (:require [clojure.component :as component :refer [defcomponent]]
+  (:require [cdq.component :as component]
+            [clojure.component :refer [defcomponent]]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [k->pretty-name]]))

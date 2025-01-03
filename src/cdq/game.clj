@@ -1,10 +1,11 @@
 (ns cdq.game
-  (:require [cdq.entity :as entity]
+  (:require [cdq.component :as component]
+            [cdq.entity :as entity]
             [cdq.context :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.potential-fields :as potential-fields]
-            [clojure.component :as component :refer [defsystem]]
+            [clojure.component :refer [defsystem install]]
             [clojure.gdx :as gdx :refer [clear-screen black key-just-pressed? key-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
@@ -239,9 +240,7 @@
                      cdq.entity.species :entity/species
                      cdq.entity.string-effect :entity/string-effect
                      cdq.entity.temp-modifier :entity/temp-modifier}]
-  (component/install entity
-                     ns-sym
-                     k))
+  (install entity ns-sym k))
 
 (def entity-state
   (merge-with concat
@@ -269,9 +268,7 @@
                      cdq.entity.state.player-item-on-cursor :player-item-on-cursor
                      cdq.entity.state.player-moving :player-moving
                      cdq.entity.state.stunned :stunned}]
-  (component/install entity-state
-                     ns-sym
-                     k))
+  (install entity-state ns-sym k))
 
 (def effect {:required [#'cdq.effect/applicable?
                         #'cdq.effect/handle]
@@ -293,6 +290,4 @@
                      cdq.effect.target.melee-damage :effects.target/melee-damage
                      cdq.effect.target.spiderweb :effects.target/spiderweb
                      cdq.effect.target.stun :effects.target/stun}]
-  (component/install effect
-                     ns-sym
-                     k))
+  (install effect ns-sym k))

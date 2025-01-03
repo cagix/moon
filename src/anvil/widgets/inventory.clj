@@ -1,7 +1,7 @@
 (ns anvil.widgets.inventory
-  (:require [cdq.entity :as entity]
+  (:require [cdq.component :as component]
+            [cdq.entity :as entity]
             [cdq.inventory :refer [empty-inventory] :as inventory]
-            [clojure.component :as component]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [clojure.utils :refer [defn-impl]]

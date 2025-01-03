@@ -1,5 +1,5 @@
 (ns gdl.app
-  (:require [clojure.component :as component :refer [defsystem]]
+  (:require [clojure.component :refer [defsystem install]]
             [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]))
 
@@ -54,6 +54,4 @@
                      gdl.context.viewport           :gdl.context/viewport
                      gdl.context.world-unit-scale   :gdl.context/world-unit-scale
                      gdl.context.world-viewport     :gdl.context/world-viewport}]
-  (component/install systems
-                     ns-sym
-                     k))
+  (install systems ns-sym k))
