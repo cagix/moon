@@ -1,12 +1,5 @@
-(ns cdq.component.create
-  (:require [anvil.entity :as entity]
-            [anvil.entity.skills :as skills]
-            [cdq.context :refer [timer finished-ratio]]
-            [cdq.inventory :as inventory]
-            [clojure.component :as component]
-            [clojure.utils :refer [safe-merge]]
-            [gdl.context :as c]
-            [gdl.graphics.animation :as animation]
+(ns cdq.entity.fsm
+  (:require [clojure.component :as component]
             [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
@@ -64,47 +57,10 @@
 (defn- ->init-fsm [fsm initial-state]
   (assoc (fsm initial-state nil) :state initial-state))
 
-(defmethod component/create! :entity/animation
-  [[_ animation] eid c]
-  (swap! eid assoc :entity/image (animation/current-frame animation)))
-
-(defmethod component/create! :entity/delete-after-animation-stopped?
-  [_ eid c]
-  (-> @eid :entity/animation :looping? not assert))
-
-(defmethod component/create :entity/delete-after-duration
-  [[_ duration] c]
-  (timer c duration))
-
-(defmethod component/create! :entity/fsm
-  [[k {:keys [fsm initial-state]}] eid c]
+(defn create! [[k {:keys [fsm initial-state]}] eid c]
   (swap! eid assoc
          k (->init-fsm (case fsm
                          :fsms/player player-fsm
                          :fsms/npc npc-fsm)
                        initial-state)
          initial-state (component/create [initial-state eid] c)))
-
-(defmethod component/create :entity/hp
-  [[_ v] c]
-  [v v])
-
-(defmethod component/create :entity/mana
-  [[_ v] c]
-  [v v])
-
-(defmethod component/create :entity/projectile-collision
-  [[_ v] c]
-  (assoc v :already-hit-bodies #{}))
-
-(defmethod component/create! :entity/skills
-  [[k skills] eid c]
-  (swap! eid assoc k nil)
-  (doseq [skill skills]
-    (skills/add c eid skill)))
-
-(defmethod component/create! :entity/inventory
-  [[k items] eid c]
-  (swap! eid assoc k inventory/empty-inventory)
-  (doseq [item items]
-    (entity/pickup-item c eid item)))

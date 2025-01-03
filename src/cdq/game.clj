@@ -215,6 +215,28 @@
               #'component/render-above
               #'component/render-info]})
 
+(doseq [[ns-sym k] '{cdq.entity.alert-friendlies-after-duration :entity/alert-friendlies-after-duration
+                     cdq.entity.animation :entity/animation
+                     cdq.entity.clickable :entity/clickable
+                     cdq.entity.delete-after-animation-stopped? :entity/delete-after-animation-stopped?
+                     cdq.entity.delete-after-duration :entity/delete-after-duration
+                     cdq.entity.destroy-audiovisual :entity/destroy-audiovisual
+                     cdq.entity.fsm :entity/fsm
+                     cdq.entity.hp :entity/hp
+                     cdq.entity.image :entity/image
+                     cdq.entity.inventory :entity/inventory
+                     cdq.entity.line-render :entity/line-render
+                     cdq.entity.mana :entity/mana
+                     cdq.entity.mouseover? :entity/mouseover?
+                     cdq.entity.movement :entity/movement
+                     cdq.entity.projectile-collision :entity/projectile-collision
+                     cdq.entity.skills :entity/skills
+                     cdq.entity.string-effect :entity/string-effect
+                     cdq.entity.temp-modifier :entity/temp-modifier}]
+  (component/install entity
+                     ns-sym
+                     k))
+
 (def entity-state
   (merge-with concat
               entity

@@ -120,3 +120,45 @@
                          spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))
+
+; the problem is the implicit schema
+; and from that schema we can create an editor which exactly those properties only
+; so no tiled?
+; or fixed settings which get checked ?
+; or adapt tiled itself ???
+; or write in javafx a rpgmaker/tiled mix with start -> stats the actual game
+; or the editor is in the game itself
+; or the game itself is the editor
+
+; a series of expressions,executions on the grid/level
+; to transform it into the final form
+; with some schemas
+; and the different steps lay out
+; how does the world get created ?
+
+; you cannot make the world into a formular
+; you have to give the exact things which are available and make an editor
+; oryx rpg maker
+; not roguelike
+; actual RPGs with one time playing only
+; they are more interesting
+; where you doj;t know anything numbers or something
+; and only feeling is there
+; no widgets
+; nothing
+; no text
+; how you can control the character?
+; with keyboard/mouse thats the complicated part
+; => xbox controller make !
+; then just imaginw what should happen based on _context_
+
+; its a game like Half Life or Dark Souls
+; just a simple game with set of challenges
+
+
+
+; => data first <=
+; => level tileset oryx has what? -> make it into data <=
+; then can use
+; what is _is_ ....
+; door ?

@@ -36,26 +36,10 @@
   [:gdl.context/tiled-map-renderer]
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
-
-  ; TODO the main issue - too many namespaces -
-  ; where they are defined we use namespaced keywords with `::`
-  ; => this way we know exactly where stuff is defined & components are truly impl detail
-
-  ; - wait - then context components also like that separated w. systems !?
-
-
-  ; so in the middle is data - outside behaviour - ...
-
-  [:cdq.context/requires [
-                          cdq.component.create
-                          cdq.component.destroy
-                          cdq.component.render
-                          cdq.component.tick
-
+  [:cdq.context/requires [cdq.component.render
                           cdq.effect
                           cdq.effect.target
-                          cdq.info
-                          ]]
+                          cdq.info]]
   [:cdq.context/stage-actors]
   [:cdq.context/level :worlds/uf-caves]
   [:cdq.context/tiled-map]
