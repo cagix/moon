@@ -53,18 +53,15 @@
           {:steps steps
            :area-level-grid grid})))))
 
-(def ^:private spawn-creatures? true)
-
 (defn- place-creatures! [creature-properties spawn-rate tiled-map spawn-positions area-level-grid]
   (let [layer (tiled/add-layer! tiled-map :name "creatures" :visible false)]
-    (when spawn-creatures?
-      (doseq [position spawn-positions
-              :let [area-level (get area-level-grid position)]
-              :when (and (number? area-level)
-                         (<= (rand) spawn-rate))]
-        (let [creatures (creatures-with-level creature-properties area-level)]
-          (when (seq creatures)
-            (tiled/set-tile! layer position (creature-tile (rand-nth creatures)))))))))
+    (doseq [position spawn-positions
+            :let [area-level (get area-level-grid position)]
+            :when (and (number? area-level)
+                       (<= (rand) spawn-rate))]
+      (let [creatures (creatures-with-level creature-properties area-level)]
+        (when (seq creatures)
+          (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))))
 
 (defn generate-modules
   "The generated tiled-map needs to be disposed."
