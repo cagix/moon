@@ -1,13 +1,10 @@
 (ns cdq.entity
   (:require [clojure.component :refer [defsystem]]
-            [cdq.entity.state :as state]
             [cdq.inventory :as inventory]
-            [gdl.context :refer [set-cursor]]
             [cdq.operation :as op]
             [gdl.malli :as m]
             [gdl.math.vector :as v]
-            [gdl.math.shapes :as shape]
-            [reduce-fsm :as fsm]))
+            [gdl.math.shapes :as shape]))
 
 (defsystem create)
 (defmethod create :default [[_ v] _context]
@@ -51,33 +48,6 @@
 (defn state-obj [entity]
   (let [k (state-k entity)]
     [k (k entity)]))
-
-(defn- send-event! [c eid event params]
-  (when-let [fsm (:entity/fsm @eid)]
-    (let [old-state-k (:state fsm)
-          new-fsm (fsm/fsm-event fsm event)
-          new-state-k (:state new-fsm)]
-      (when-not (= old-state-k new-state-k)
-        (let [old-state-obj (state-obj @eid)
-              new-state-obj [new-state-k (create (if params
-                                                   [new-state-k eid params]
-                                                   [new-state-k eid])
-                                                 c)]]
-          (when (:entity/player? @eid)
-            (when-let [cursor (state/cursor new-state-obj)]
-              (set-cursor c cursor)))
-          (swap! eid #(-> %
-                          (assoc :entity/fsm new-fsm
-                                 new-state-k (new-state-obj 1))
-                          (dissoc old-state-k)))
-          (state/exit  old-state-obj c)
-          (state/enter new-state-obj c))))))
-
-(defn event
-  ([c eid event]
-   (send-event! c eid event nil))
-  ([c eid event params]
-   (send-event! c eid event params)))
 
 (defn- mods-add    [mods other-mods] (merge-with op/add    mods other-mods))
 (defn- mods-remove [mods other-mods] (merge-with op/remove mods other-mods))

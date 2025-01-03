@@ -55,5 +55,5 @@
        (world/audiovisual c
                           (:position target*)
                           (c/build c :audiovisuals/damage))
-       (entity/event c target (if (zero? new-hp-val) :kill :alert))
+       (world/send-event! c target (if (zero? new-hp-val) :kill :alert))
        (swap! target add-text-effect c (str "[RED]" dmg-amount "[]"))))))

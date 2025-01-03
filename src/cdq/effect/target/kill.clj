@@ -1,5 +1,5 @@
 (ns cdq.effect.target.kill
-  (:require [cdq.entity :as entity]))
+  (:require [cdq.context :as world]))
 
 (defn info [_ _c]
   "Kills target")
@@ -9,4 +9,4 @@
        (:entity/fsm @target)))
 
 (defn handle [_ {:keys [effect/target]} c]
-  (entity/event c target :kill))
+  (world/send-event! c target :kill))

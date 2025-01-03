@@ -24,7 +24,8 @@
             [clojure.gdx.scene2d.actor :as actor]
             [gdl.ui.dev-menu :as dev-menu]
             [clojure.gdx.scene2d.group :as group]
-            [gdl.val-max :as val-max]))
+            [gdl.val-max :as val-max]
+            [reduce-fsm :as fsm]))
 
 (defcomponent ::tiled-map
   (app/create [_ {::keys [level]}]
@@ -652,3 +653,27 @@
                    (c/world-mouse-position c)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
+
+(defn send-event!
+  ([c eid event]
+   (send-event! c eid event nil))
+  ([c eid event params]
+   (when-let [fsm (:entity/fsm @eid)]
+     (let [old-state-k (:state fsm)
+           new-fsm (fsm/fsm-event fsm event)
+           new-state-k (:state new-fsm)]
+       (when-not (= old-state-k new-state-k)
+         (let [old-state-obj (entity/state-obj @eid)
+               new-state-obj [new-state-k (entity/create (if params
+                                                           [new-state-k eid params]
+                                                           [new-state-k eid])
+                                                         c)]]
+           (when (:entity/player? @eid)
+             (when-let [cursor (state/cursor new-state-obj)]
+               (c/set-cursor c cursor)))
+           (swap! eid #(-> %
+                           (assoc :entity/fsm new-fsm
+                                  new-state-k (new-state-obj 1))
+                           (dissoc old-state-k)))
+           (state/exit  old-state-obj c)
+           (state/enter new-state-obj c)))))))

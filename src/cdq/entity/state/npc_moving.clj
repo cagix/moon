@@ -1,6 +1,6 @@
 (ns cdq.entity.state.npc-moving
   (:require [cdq.entity :as entity]
-            [cdq.context :refer [timer stopped?]]))
+            [cdq.context :as world :refer [timer stopped?]]))
 
 (defn create [[_ eid movement-vector] c]
   {:eid eid
@@ -16,4 +16,4 @@
 
 (defn tick [[_ {:keys [counter]}] eid c]
   (when (stopped? c counter)
-    (entity/event c eid :timer-finished)))
+    (world/send-event! c eid :timer-finished)))

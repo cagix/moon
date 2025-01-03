@@ -22,7 +22,7 @@
      (do
       (play-sound c "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (entity/event c player-eid :pickup-item item))
+      (world/send-event! c player-eid :pickup-item item))
 
      (entity/can-pickup-item? @player-eid item)
      (do
@@ -101,7 +101,7 @@
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
              (fn []
-               (entity/event c eid :start-action [skill effect-ctx]))])
+               (world/send-event! c eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -128,7 +128,7 @@
 
 (defn manual-tick [[_ {:keys [eid]}] c]
   (if-let [movement-vector (controls/movement-vector c)]
-    (entity/event c eid :movement-input movement-vector)
+    (world/send-event! c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
       (c/set-cursor c cursor)
       (when (button-just-pressed? c :left)
@@ -138,7 +138,7 @@
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (play pickup-item-sound)
-    (entity/event c eid :pickup-item item)
+    (world/send-event! c eid :pickup-item item)
     (entity/remove-item c eid cell)))
 
 (defn clicked-skillmenu-skill [[_ {:keys [eid]}] skill c]

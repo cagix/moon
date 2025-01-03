@@ -32,5 +32,5 @@
 (defn tick [_ eid c]
   (let [effect-ctx (effect-context c eid)]
     (if-let [skill (npc-choose-skill c @eid effect-ctx)]
-      (entity/event c eid :start-action [skill effect-ctx])
-      (entity/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0])))))
+      (world/send-event! c eid :start-action [skill effect-ctx])
+      (world/send-event! c eid :movement-direction (or (potential-field/find-direction c eid) [0 0])))))

@@ -1,5 +1,5 @@
 (ns cdq.effect.target.stun
-  (:require [cdq.entity :as entity]
+  (:require [cdq.context :as world]
             [clojure.utils :refer [readable-number]]))
 
 (defn info [duration _c]
@@ -10,4 +10,4 @@
        (:entity/fsm @target)))
 
 (defn handle [[_ duration] {:keys [effect/target]} c]
-  (entity/event c target :stun duration))
+  (world/send-event! c target :stun duration))

@@ -41,7 +41,7 @@
 (defn manual-tick [[_ {:keys [eid]}] c]
   (when (and (button-just-pressed? c :left)
              (world/world-item? c))
-    (entity/event c eid :drop-item)))
+    (world/send-event! c eid :drop-item)))
 
 (defn render-below [[_ {:keys [item]}] entity c]
   (when (world/world-item? c)
@@ -68,7 +68,7 @@
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/set-item c eid cell item-on-cursor)
-      (entity/event c eid :dropped-item))
+      (world/send-event! c eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -77,7 +77,7 @@
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/stack-item c eid cell item-on-cursor)
-      (entity/event c eid :dropped-item))
+      (world/send-event! c eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -89,8 +89,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (entity/remove-item c eid cell)
       (entity/set-item c eid cell item-on-cursor)
-      (entity/event c eid :dropped-item)
-      (entity/event c eid :pickup-item item-in-cell)))))
+      (world/send-event! c eid :dropped-item)
+      (world/send-event! c eid :pickup-item item-in-cell)))))
 
 (defn clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
   (clicked-cell data eid cell c))
