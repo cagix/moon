@@ -13,27 +13,6 @@
 (defmethod create :default [[_ v] _context]
   v)
 
-(defsystem create!)
-(defmethod create! :default [_ eid c])
-
-(defsystem destroy)
-(defmethod destroy :default [_ eid c])
-
-(defsystem tick)
-(defmethod tick :default [_ eid c])
-
-(defsystem render-below)
-(defmethod render-below :default [_ entity c])
-
-(defsystem render-default)
-(defmethod render-default :default [_ entity c])
-
-(defsystem render-above)
-(defmethod render-above :default [_ entity c])
-
-(defsystem render-info)
-(defmethod render-info :default [_ entity c])
-
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
 

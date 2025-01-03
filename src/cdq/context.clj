@@ -11,7 +11,7 @@
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [clojure.component :refer [defcomponent]]
+            [clojure.component :refer [defsystem defcomponent]]
             [clojure.utils :refer [tile->middle readable-number dev-mode? define-order sort-by-order safe-merge unique-number!]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
@@ -439,6 +439,9 @@
           {}
           components))
 
+(defsystem create!)
+(defmethod create! :default [_ eid c])
+
 (defn spawn-entity [c position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
@@ -450,7 +453,7 @@
                                       (create-vs c)))))]
     (add-entity c eid)
     (doseq [component @eid]
-      (entity/create! component eid c))
+      (create! component eid c))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."

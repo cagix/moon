@@ -1,7 +1,7 @@
 (ns cdq.game
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.context :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
+            [cdq.context :as world :refer [line-of-sight? render-z-order active-entities point->entities active-entities remove-entity all-entities max-delta-time]]
             [cdq.debug :as debug]
             [cdq.tile-color-setter :as tile-color-setter]
             [cdq.potential-fields :as potential-fields]
@@ -14,6 +14,24 @@
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]))
+
+(defsystem destroy)
+(defmethod destroy :default [_ eid c])
+
+(defsystem tick)
+(defmethod tick :default [_ eid c])
+
+(defsystem render-below)
+(defmethod render-below :default [_ entity c])
+
+(defsystem render-default)
+(defmethod render-default :default [_ entity c])
+
+(defsystem render-above)
+(defmethod render-above :default [_ entity c])
+
+(defsystem render-info)
+(defmethod render-info :default [_ entity c])
 
 (defn- check-window-hotkeys [c {:keys [controls/window-hotkeys]} stage]
   (doseq [window-id [:inventory-window
@@ -42,7 +60,7 @@
                       (all-entities c))]
     (remove-entity c eid)
     (doseq [component @eid]
-      (entity/destroy component eid c))))
+      (destroy component eid c))))
 
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
@@ -53,7 +71,7 @@
   (try
    (doseq [k (keys @eid)]
      (try (when-let [v (k @eid)]
-            (entity/tick [k v] eid c))
+            (tick [k v] eid c))
           (catch Throwable t
             (throw (ex-info "entity-tick" {:k k} t)))))
    (catch Throwable t
@@ -133,10 +151,10 @@
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [entity/render-below
-                    entity/render-default
-                    entity/render-above
-                    entity/render-info]
+            system [render-below
+                    render-default
+                    render-above
+                    render-info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? c player entity))]
@@ -208,13 +226,13 @@
 (def entity
   {:optional [#'gdl.info/info
               #'entity/create
-              #'entity/create!
-              #'entity/destroy
-              #'entity/tick
-              #'entity/render-below
-              #'entity/render-default
-              #'entity/render-above
-              #'entity/render-info]})
+              #'world/create!
+              #'destroy
+              #'tick
+              #'render-below
+              #'render-default
+              #'render-above
+              #'render-info]})
 
 (doseq [[ns-sym k] '{cdq.entity.alert-friendlies-after-duration :entity/alert-friendlies-after-duration
                      cdq.entity.animation :entity/animation

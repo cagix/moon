@@ -1,15 +1,39 @@
 (ns cdq.operation
   (:refer-clojure :exclude [apply remove])
-  (:require [cdq.op :as op]
+  (:require [clojure.component :refer [defsystem defcomponent]]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [k->pretty-name]]))
 
+(defsystem ^:private -apply)
+(defsystem ^:private -order)
+(defsystem ^:private -value-text)
+
+(defcomponent :op/inc
+  (-value-text [[_ value]]
+    (str value))
+
+  (-apply [[_ value] base-value]
+    (+ base-value value))
+
+  (-order [_]
+    0))
+
+(defcomponent :op/mult
+  (-value-text [[_ value]]
+    (str value "%"))
+
+  (-apply [[_ value] base-value]
+    (* base-value (inc (/ value 100))))
+
+  (-order [_]
+    1))
+
 (defn apply [op value]
   (reduce (fn [value op]
-            (op/apply op value))
+            (-apply op value))
           value
-          (sort-by op/order op)))
+          (sort-by -order op)))
 
 (defn add [op other-op]
   (merge-with + op other-op))
@@ -28,5 +52,5 @@
             (keep
              (fn [{v 1 :as component}]
                (when-not (zero? v)
-                 (str (+? v) (op/value-text component) " " (k->pretty-name k))))
-             (sort-by op/order op))))
+                 (str (+? v) (-value-text component) " " (k->pretty-name k))))
+             (sort-by -order op))))
