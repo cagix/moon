@@ -36,10 +36,7 @@
   [:gdl.context/tiled-map-renderer]
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
-  [:cdq.context/requires [cdq.component.render
-                          cdq.effect
-                          cdq.effect.target
-                          cdq.info]]
+  [:cdq.context/requires [cdq.info]]
   [:cdq.context/stage-actors]
   [:cdq.context/level :worlds/uf-caves]
   [:cdq.context/tiled-map]

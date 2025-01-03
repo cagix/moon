@@ -205,6 +205,8 @@
                (:context config)
                game-loop)))
 
+; TODO 'info' missing ?
+
 (def entity
   {:optional [#'component/create
               #'component/create!
@@ -268,8 +270,25 @@
                      ns-sym
                      k))
 
+(def effect {:required [#'component/applicable?
+                        #'component/handle]
+             :optional [#'component/useful?
+                        #'component/render-effect]})
 
-#_(def effect {:required [#'effect/applicable?
-                          #'effect/handle]
-               :optional [#'world.update/useful?
-                          #'active-skill/render]})
+(doseq [[ns-sym k] '{cdq.effect.target-all :effects/target-all
+                     cdq.effect.target-entity :effects/target-entity
+                     cdq.effect.audiovisual :effects/audiovisual
+                     cdq.effect.spawn :effects/spawn
+                     cdq.effect.projectile :effects/projectile
+                     cdq.effect.sound :effects/sound
+
+                     cdq.effect.target.audiovisual :effects.target/audiovisual
+                     cdq.effect.target.convert :effects.target/convert
+                     cdq.effect.target.damage :effects.target/damage
+                     cdq.effect.target.kill :effects.target/kill
+                     cdq.effect.target.melee-damage :effects.target/melee-damage
+                     cdq.effect.target.spiderweb :effects.target/spiderweb
+                     cdq.effect.target.stun :effects.target/stun}]
+  (component/install effect
+                     ns-sym
+                     k))
