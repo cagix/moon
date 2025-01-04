@@ -10,8 +10,6 @@
 
 (comment
 
- (print-vimrc-names-forge-core-publics 'forge.core "vimrc")
-
  (print-app-values-tree "app-values-tree.clj"
                         #{"anvil", "gdl", "uf"})
 
@@ -227,13 +225,3 @@
          (pprint
           (for [[ns-name vars] (ns-value-vars namespaces-set)]
             [ns-name (map #(:name (meta %)) vars)])))))
-
-(defn print-vimrc-names-forge-core-publics [ns-sym file]
-  (->> (find-ns ns-sym)
-       ns-publics
-       (remove (fn [[k v]]
-                 (or (:macro (meta v))
-                     (instance? java.lang.Class @v))))
-       (map (fn [s] (str "\"" (name (first s)) "\"")))
-       (str/join ", ")
-       (spit file)))
