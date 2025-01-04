@@ -1,4 +1,0 @@
-lein hiera
-:layout :horizontal
-:ignore
-"#{forge.tiled, forge.info, forge.graphics, forge.ui, forge.level, forge.world.raycaster, forge.world.grid, forge.world.content-grid, forge.screen, forge.operation, forge.entity.state, forge.world, forge.val-max, forge.entity.components, forge.item, forge.follow-ai}"

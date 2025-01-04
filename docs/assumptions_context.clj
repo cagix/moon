@@ -1,3 +1,0 @@
-* we have to require key-just-pressed? ... or utils ...
-* we can assume an environment (libgdx app, world even, context)
-* and load such functions into the environment (no implementation, just forward)

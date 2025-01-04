@@ -1,3 +1,0 @@
-
-; TODO negate this value also @ use (modifier damage receive)
-; so can make positiive modifeirs green , negative red....

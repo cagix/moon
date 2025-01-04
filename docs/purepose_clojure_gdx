@@ -1,3 +1,0 @@
-# Purpose Clojure GDX - only supply primitive operations - e.g. post-runnable macro in anvil/app.
-#
-# Probably pass app,input,etc too

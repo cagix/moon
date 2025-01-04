@@ -1,4 +1,0 @@
-* IF I have full API/control
-* I can return at the assetmanager a proxy/ilookup'ed Texture
-=> and just call :width / :height
-=> same with all other stuff, fonts, etc.

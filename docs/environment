@@ -1,9 +1,0 @@
-# in clojure we have println and vector
-# why not 'draw-text' & 'pixmap' blue ? / or 'play-sound' / or 'spawn-creature' ?
-or 'v-add' ...
-
-...!
-
-a 'language' for game development
-
-why in each namespace have to depend on gdx or time or ...
