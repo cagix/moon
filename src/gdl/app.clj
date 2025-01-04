@@ -15,6 +15,44 @@
   (:import (com.kotcrab.vis.ui.widget Tooltip)
            (forge OrthogonalTiledMapRenderer)))
 
+(defsystem create)
+(defmethod create :default [[_ v] _context]
+  v)
+
+(defsystem dispose)
+(defmethod dispose :default [_])
+
+(defsystem resize)
+(defmethod resize :default [_ width height])
+
+(defn- safe-create-into [context components]
+  (reduce (fn [context [k v]]
+            (assert (not (contains? context k)))
+            (assoc context k (create [k v] context)))
+          context
+          components))
+
+(def state (atom nil))
+
+(comment
+ (clojure.pprint/pprint (sort (keys @state)))
+ )
+
+(defn start [{:keys [config context]} render]
+  (lwjgl/start config
+               (reify lwjgl/Application
+                 (create [_]
+                   (reset! state (safe-create-into (gdx/context) context)))
+
+                 (dispose [_]
+                   (run! dispose @state))
+
+                 (render [_]
+                   (swap! state render))
+
+                 (resize [_ width height]
+                   (run! #(resize % width height) @state)))))
+
 (defn- load-all [manager assets]
   (doseq [[file asset-type] assets]
     (assets/load manager file asset-type))
@@ -42,16 +80,6 @@
         texture (gdx/texture pixmap)]
     (gdx/dispose pixmap)
     texture))
-
-(defsystem create)
-(defmethod create :default [[_ v] _context]
-  v)
-
-(defsystem dispose)
-(defmethod dispose :default [_])
-
-(defsystem resize)
-(defmethod resize :default [_ width height])
 
 (defcomponent :gdl.context/assets
   (create [[_ folder] context]
@@ -171,31 +199,3 @@
 
   (resize [[_ viewport] w h]
     (gdx/resize viewport w h :center-camera? false)))
-
-(defn- safe-create-into [context components]
-  (reduce (fn [context [k v]]
-            (assert (not (contains? context k)))
-            (assoc context k (create [k v] context)))
-          context
-          components))
-
-(def state (atom nil))
-
-(comment
- (clojure.pprint/pprint (sort (keys @state)))
- )
-
-(defn start [{:keys [config context]} render]
-  (lwjgl/start config
-               (reify lwjgl/Application
-                 (create [_]
-                   (reset! state (safe-create-into (gdx/context) context)))
-
-                 (dispose [_]
-                   (run! dispose @state))
-
-                 (render [_]
-                   (swap! state render))
-
-                 (resize [_ width height]
-                   (run! #(resize % width height) @state)))))
