@@ -55,7 +55,7 @@
  :transactions [gdl.context/clear-screen
                 cdq.context/set-camera-on-player-position
                 cdq.context/render-tiled-map
-                cdq.game/draw-world-view
+                cdq.graphics/draw-world-view
                 gdl.context/tx-stage-draw
                 gdl.context/tx-stage-act
                 cdq.context/check-player-input

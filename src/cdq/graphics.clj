@@ -1,9 +1,18 @@
-(ns cdq.entity.render
+(ns cdq.graphics
   (:require [gdl.context :as c]
             [gdl.context.timer :as timer]
-            [gdl.utils :refer [defsystem]]
+            [gdl.error :refer [pretty-pst]]
+            [gdl.utils :refer [defsystem sort-by-order]]
             [gdl.val-max :as val-max]
-            [cdq.context :refer [creatures-in-los-of-player world-item? item-place-position]]
+            [cdq.context :refer [active-entities
+                                 render-z-order
+                                 line-of-sight?
+                                 draw-body-rect
+                                 render-before-entities
+                                 render-after-entities
+                                 creatures-in-los-of-player
+                                 world-item?
+                                 item-place-position]]
             [cdq.entity :as entity]))
 
 (defn- draw-skill-image [c image entity [x y] action-counter-ratio]
@@ -205,3 +214,38 @@
               (if (entity/in-range? source* target* maxrange)
                 [1 0 0 0.5]
                 [1 1 0 0.5])))))
+
+(def ^:private ^:dbg-flag show-body-bounds false)
+
+(defn- render-entities
+  "Draws all active entities, sorted by the `:z-order` and with the render systems `below`, `default`, `above`, `info` for each z-order if the entity is in line-of-sight? to the player entity or is an `:z-order/effect`.
+
+  Optionally for debug purposes body rectangles can be drown which show white for collidings and gray for non colliding entities.
+
+  If an error is thrown during rendering, the entity body drawn with a red rectangle and the error is pretty printed to the console."
+  [{:keys [cdq.context/player-eid] :as c}]
+  (let [entities (map deref (active-entities c))
+        player @player-eid]
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              render-z-order)
+            system [below default above info]
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (line-of-sight? c player entity))]
+      (try
+       (when show-body-bounds
+         (draw-body-rect c entity (if (:collides? entity) :white :gray)))
+       (run! #(system % entity c) entity)
+       (catch Throwable t
+         (draw-body-rect c entity :red)
+         (pretty-pst t))))))
+
+(defn draw-world-view [c]
+  (c/draw-on-world-view c
+                        (fn [c]
+                          (render-before-entities c)
+                          ; FIXME position DRY (from player)
+                          (render-entities c)
+                          (render-after-entities c)))
+  c)
