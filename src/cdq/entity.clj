@@ -102,9 +102,6 @@
   {:eid eid
    :counter (timer/create c duration)})
 
-(defsystem destroy)
-(defmethod destroy :default [_ eid c])
-
 (defsystem tick)
 (defmethod tick :default [_ eid c])
 

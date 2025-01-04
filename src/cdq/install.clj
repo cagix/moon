@@ -6,8 +6,8 @@
 (def entity
   {:optional [; #'cdq.context.info/segment
               ; #'entity/create
-              ;#'world/create!
-              #'entity/destroy
+              ; #'world/create!
+              ; #'world/destroy!
               #'entity/tick
               ; cdq.entity.render/below/default/above/info
               ]})
@@ -16,7 +16,6 @@
                      cdq.entity.animation :entity/animation
                      cdq.entity.delete-after-animation-stopped? :entity/delete-after-animation-stopped?
                      cdq.entity.delete-after-duration :entity/delete-after-duration
-                     cdq.entity.destroy-audiovisual :entity/destroy-audiovisual
                      cdq.entity.movement :entity/movement
                      cdq.entity.projectile-collision :entity/projectile-collision
                      cdq.entity.skills :entity/skills

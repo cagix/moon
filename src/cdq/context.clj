@@ -821,12 +821,21 @@
          #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   c)
 
+(defsystem destroy!)
+(defmethod destroy! :default [_ eid c])
+
 (defn remove-destroyed-entities [c]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (all-entities c))]
     (remove-entity c eid)
     (doseq [component @eid]
-      (entity/destroy component eid c))))
+      (destroy! component eid c))))
+
+(defmethod destroy! :entity/destroy-audiovisual
+  [[_ audiovisuals-id] eid c]
+  (audiovisual c
+               (:position @eid)
+               (c/build c audiovisuals-id)))
 
 (def window-hotkeys
   {:inventory-window   :i
