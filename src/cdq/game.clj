@@ -2,21 +2,16 @@
   (:require [clojure.gdx :as gdx]
             [gdl.context :as c]
             [gdl.error :refer [pretty-pst]]
-            [gdl.ui :as ui]
             [gdl.utils :refer [sort-by-order]]
-            [cdq.context :refer [active-entities render-z-order line-of-sight? draw-body-rect
-                                 set-camera-on-player-position
-                                 render-tiled-map
+            [cdq.context :refer [active-entities
+                                 render-z-order
+                                 line-of-sight?
+                                 draw-body-rect
                                  render-before-entities
                                  render-after-entities
-                                 check-player-input
-                                 update-mouseover-entity
-                                 update-paused-state
                                  update-time
                                  tick-potential-fields
-                                 tick-entities
-                                 remove-destroyed-entities
-                                 check-ui-key-listeners]]
+                                 tick-entities]]
             [cdq.entity.render :as render]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
@@ -68,18 +63,3 @@
         update-time
         tick-potential-fields
         tick-entities)))
-
-(def process-frame
-  [clear-screen
-   set-camera-on-player-position
-   render-tiled-map
-   draw-world-view
-   c/tx-stage-draw
-   c/tx-stage-act
-   check-player-input
-   update-mouseover-entity
-   update-paused-state
-   progress-time-if-not-paused
-   remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
-   c/check-camera-controls
-   check-ui-key-listeners])

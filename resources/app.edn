@@ -52,4 +52,17 @@
            [:cdq.context/error nil]
            [:cdq.context/spawn-enemies]
            [:cdq.context/player-message {:duration-seconds 1.5}]]
+ :transactions [cdq.game/clear-screen
+                cdq.context/set-camera-on-player-position
+                cdq.context/render-tiled-map
+                cdq.game/draw-world-view
+                gdl.context/tx-stage-draw
+                gdl.context/tx-stage-act
+                cdq.context/check-player-input
+                cdq.context/update-mouseover-entity
+                cdq.context/update-paused-state
+                cdq.game/progress-time-if-not-paused
+                cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
+                gdl.context/check-camera-controls
+                cdq.context/check-ui-key-listeners]
  }

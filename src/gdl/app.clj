@@ -9,7 +9,7 @@
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.gdx.vis-ui :as vis-ui]
             [clojure.string :as str]
-            [gdl.utils :refer [defsystem defcomponent mapvals]]
+            [gdl.utils :refer [defsystem defcomponent mapvals read-edn-resource]]
             [gdl.db :as db]
             [gdl.ui :as ui])
   (:import (com.kotcrab.vis.ui.widget Tooltip)
@@ -32,11 +32,11 @@
           context
           components))
 
-(defn- reduce-transact [context transactions]
-  (reduce (fn [context f]
-            (f context))
-          context
-          transactions))
+(defn- reduce-transact [value fns]
+  (reduce (fn [value f]
+            (f value))
+          value
+          fns))
 
 (def state (atom nil))
 
@@ -44,22 +44,32 @@
  (clojure.pprint/pprint (sort (keys @state)))
  )
 
+(defn- load-tx [tx-sym]
+  (require (symbol (namespace tx-sym)))
+  (resolve tx-sym))
+
 (defn start
-  "A transaction is a `(fn [context] context)`, which can emit also side-effects or return a new context."
-  [{:keys [config context transactions]}]
-  (lwjgl/start config
-               (reify lwjgl/Application
-                 (create [_]
-                   (reset! state (safe-create-into (gdx/context) context)))
+  "A transaction is a `(fn [context] context)`, which can emit also side-effects or return a new context.
 
-                 (dispose [_]
-                   (run! dispose @state))
+  Given a string to a `java.io/resource` or a map of `{:keys [config context transactions]}`."
+  [app-config]
+  (let [{:keys [config context transactions]} (if (string? app-config)
+                                                (read-edn-resource app-config)
+                                                app-config)
+        txs (doall (map load-tx transactions))] ; TODO 'require' ?
+    (lwjgl/start config
+                 (reify lwjgl/Application
+                   (create [_]
+                     (reset! state (safe-create-into (gdx/context) context)))
 
-                 (render [_]
-                   (swap! state reduce-transact transactions))
+                   (dispose [_]
+                     (run! dispose @state))
 
-                 (resize [_ width height]
-                   (run! #(resize % width height) @state)))))
+                   (render [_]
+                     (swap! state reduce-transact txs))
+
+                   (resize [_ width height]
+                     (run! #(resize % width height) @state))))))
 
 (defn- load-all [manager assets]
   (doseq [[file asset-type] assets]

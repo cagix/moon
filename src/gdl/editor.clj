@@ -548,8 +548,8 @@
              [:gdl.context/ui :skin-scale/x1]
              [:gdl.context/stage]
              [::stage-actors]]
-   :transactions [ctx/tx-stage-act
-                  ctx/tx-stage-draw]})
+   :transactions '[gdl.context/tx-stage-act
+                   gdl.context/tx-stage-draw]})
 
 (defn -main []
   (app/start config))
