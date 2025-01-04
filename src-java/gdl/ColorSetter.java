@@ -1,4 +1,4 @@
-package forge;
+package gdl;
 
 import com.badlogic.gdx.graphics.Color;
 

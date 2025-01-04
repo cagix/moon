@@ -25,7 +25,7 @@
             [gdl.ui :as ui]
             [clojure.gdx.scene2d.group :as group])
   (:import (com.kotcrab.vis.ui.widget Tooltip)
-           (forge OrthogonalTiledMapRenderer ColorSetter)))
+           (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
 (defsystem create)
 (defmethod create :default [[_ v] _context]

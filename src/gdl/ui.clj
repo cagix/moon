@@ -14,7 +14,7 @@
            (com.badlogic.gdx.scenes.scene2d.utils Drawable ChangeListener ClickListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)
-           (forge StageWithState)))
+           (gdl StageWithState)))
 
 (defn horizontal-separator-cell [colspan]
   {:actor (separator/horizontal)
