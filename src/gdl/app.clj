@@ -185,11 +185,11 @@
  (clojure.pprint/pprint (sort (keys @state)))
  )
 
-(defn start [app-config components render]
-  (lwjgl/start app-config
+(defn start [{:keys [app context]} render]
+  (lwjgl/start app
                (reify lwjgl/Application
                  (create [_]
-                   (reset! state (safe-create-into (gdx/context) components)))
+                   (reset! state (safe-create-into (gdx/context) context)))
 
                  (dispose [_]
                    (run! dispose @state))

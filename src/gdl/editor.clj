@@ -533,28 +533,25 @@
     (ui/draw stage context))
   context)
 
-(def ^:private components
-  [[:gdl.context/unit-scale 1]
-   [:gdl.context/batch]
-   [:gdl.context/db {:schema "schema.edn"
-                     :properties "properties.edn"}]
-   [:gdl.context/assets "resources/"]
-   [:gdl.context/viewport {:width 1440 :height 900}]
-
-   ;; just because of sprite edn->value of db requires world-unit-scale
-   [:gdl.context/world-unit-scale 1]
-   [:gdl.context/world-viewport {:width 1440 :height 900}]
-   ;;
-
-   [:gdl.context/ui :skin-scale/x1]
-   [:gdl.context/stage]
-   [::stage-actors]])
-
 (defn -main []
-  (app/start {:title "Editor"
-              :fps 60
-              :width 1440
-              :height 900
-              :taskbar-icon "moon.png"}
-             components
+  (app/start {:app {:title "Editor"
+                    :fps 60
+                    :width 1440
+                    :height 900
+                    :taskbar-icon "moon.png"}
+              :context [[:gdl.context/unit-scale 1]
+                        [:gdl.context/batch]
+                        [:gdl.context/db {:schema "schema.edn"
+                                          :properties "properties.edn"}]
+                        [:gdl.context/assets "resources/"]
+                        [:gdl.context/viewport {:width 1440 :height 900}]
+
+                        ;; just because of sprite edn->value of db requires world-unit-scale
+                        [:gdl.context/world-unit-scale 1]
+                        [:gdl.context/world-viewport {:width 1440 :height 900}]
+                        ;;
+
+                        [:gdl.context/ui :skin-scale/x1]
+                        [:gdl.context/stage]
+                        [::stage-actors]]}
              render-stage))
