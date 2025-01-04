@@ -36,7 +36,6 @@
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
   [:gdl.context.timer/elapsed-time nil] ; game speed config!?
-  [:cdq.context/requires [cdq.install]]
   [:cdq.context/stage-actors]
   [:cdq.context/level :worlds/uf-caves]
   [:cdq.context/tiled-map]
