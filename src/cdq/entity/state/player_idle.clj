@@ -4,7 +4,6 @@
             [cdq.context :as world :refer [pickup-item remove-item player-movement-vector]]
             [clojure.gdx :refer [play button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
-            [gdl.utils :refer [safe-merge]]
             [gdl.context :as c :refer [play-sound]]
             [gdl.ui :refer [window-title-bar? button?]]
             [clojure.gdx.math.vector2 :as v]))
@@ -116,10 +115,6 @@
         (fn []
           (play-sound c "bfxr_denied")
           (world/show-player-msg c "No selected skill"))]))))
-
-(defn create [[_ eid] c]
-  (safe-merge (c/build c :player-idle/clicked-inventory-cell)
-              {:eid eid}))
 
 (defn pause-game? [_]
   true)

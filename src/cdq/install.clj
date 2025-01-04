@@ -4,8 +4,8 @@
             [cdq.entity.state :as state]))
 
 (def entity
-  {:optional [; cdq.context.info/segment
-              #'entity/create
+  {:optional [; #'cdq.context.info/segment
+              ; #'entity/create
               ;#'world/create!
               #'entity/destroy
               #'entity/tick
@@ -17,8 +17,6 @@
                      cdq.entity.delete-after-animation-stopped? :entity/delete-after-animation-stopped?
                      cdq.entity.delete-after-duration :entity/delete-after-duration
                      cdq.entity.destroy-audiovisual :entity/destroy-audiovisual
-                     cdq.entity.hp :entity/hp
-                     cdq.entity.mana :entity/mana
                      cdq.entity.movement :entity/movement
                      cdq.entity.projectile-collision :entity/projectile-collision
                      cdq.entity.skills :entity/skills

@@ -26,9 +26,6 @@
      :effect/target-direction (when target
                                 (entity/direction entity @target))}))
 
-(defn create [[_ eid] c]
-  {:eid eid})
-
 (defn tick [_ eid c]
   (let [effect-ctx (effect-context c eid)]
     (if-let [skill (npc-choose-skill c @eid effect-ctx)]

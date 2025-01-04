@@ -21,20 +21,6 @@
 (defn pause-game? [_]
   false)
 
-(defn- apply-action-speed-modifier [entity skill action-time]
-  (/ action-time
-     (or (entity/stat entity (:skill/action-time-modifier-key skill))
-         1)))
-
-(defn create [[_ eid [skill effect-ctx]] c]
-  {:eid eid
-   :skill skill
-   :effect-ctx effect-ctx
-   :counter (->> skill
-                 :skill/action-time
-                 (apply-action-speed-modifier @eid skill)
-                 (timer/create c))})
-
 (defn enter [[_ {:keys [eid skill]}] c]
   (play (:skill/start-action-sound skill))
   (when (:skill/cooldown skill)

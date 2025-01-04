@@ -1,10 +1,23 @@
 (ns cdq.entity
-  (:require [gdl.utils :refer [defsystem]]
-            [cdq.inventory :as inventory]
-            [cdq.operation :as op]
+  (:require [clojure.gdx.math.vector2 :as v]
+            [gdl.context :as c]
+            [gdl.context.timer :as timer]
             [gdl.malli :as m]
-            [clojure.gdx.math.vector2 :as v]
-            [gdl.math.shapes :as shape]))
+            [gdl.math.shapes :as shape]
+            [gdl.utils :refer [defsystem safe-merge]]
+            [cdq.inventory :as inventory]
+            [cdq.operation :as op]))
+
+(defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
+  {:pre [(= "modifier" (namespace modifier-k))]}
+  (op/apply (modifier-k modifiers)
+            base-value))
+
+(defn stat [entity k]
+  (when-let [base-value (k entity)]
+    (mod-value base-value
+               entity
+               (keyword "modifier" (name k)))))
 
 ; temporary here, move to entity.render
 ; widgets in cdq.context and circular dependencies
@@ -14,6 +27,80 @@
 (defsystem create)
 (defmethod create :default [[_ v] _context]
   v)
+
+(defmethod create :entity/delete-after-duration
+  [[_ duration] c]
+  (timer/create c duration))
+
+(defmethod create :entity/hp
+  [[_ v] _c]
+  [v v])
+
+(defmethod create :entity/mana
+  [[_ v] _c]
+  [v v])
+
+(defmethod create :entity/projectile-collision
+  [[_ v] c]
+  (assoc v :already-hit-bodies #{}))
+
+(defn- apply-action-speed-modifier [entity skill action-time]
+  (/ action-time
+     (or (stat entity (:skill/action-time-modifier-key skill))
+         1)))
+
+(defmethod create :active-skill
+  [[_ eid [skill effect-ctx]] c]
+  {:eid eid
+   :skill skill
+   :effect-ctx effect-ctx
+   :counter (->> skill
+                 :skill/action-time
+                 (apply-action-speed-modifier @eid skill)
+                 (timer/create c))})
+
+(defmethod create :npc-dead
+  [[_ eid] c]
+  {:eid eid})
+
+(defmethod create :npc-idle
+  [[_ eid] c]
+  {:eid eid})
+
+(defmethod create :npc-moving
+  [[_ eid movement-vector] c]
+  {:eid eid
+   :movement-vector movement-vector
+   :counter (timer/create c (* (stat @eid :entity/reaction-time) 0.016))})
+
+(defmethod create :npc-sleeping
+  [[_ eid] c]
+  {:eid eid})
+
+(defmethod create :player-dead
+  [[k] c]
+  (c/build c :player-dead/component.enter))
+
+(defmethod create :player-idle
+  [[_ eid] c]
+  (safe-merge (c/build c :player-idle/clicked-inventory-cell)
+              {:eid eid}))
+
+(defmethod create :player-item-on-cursor
+  [[_ eid item] c]
+  (safe-merge (c/build c :player-item-on-cursor/component)
+              {:eid eid
+               :item item}))
+
+(defmethod create :player-moving
+  [[_ eid movement-vector] c]
+  {:eid eid
+   :movement-vector movement-vector})
+
+(defmethod create :stunned
+  [[_ eid duration] c]
+  {:eid eid
+   :counter (timer/create c duration)})
 
 (defsystem destroy)
 (defmethod destroy :default [_ eid c])
@@ -48,11 +135,6 @@
 (defn mod-add    [entity mods] (update entity :entity/modifiers mods-add    mods))
 (defn mod-remove [entity mods] (update entity :entity/modifiers mods-remove mods))
 
-(defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
-  {:pre [(= "modifier" (namespace modifier-k))]}
-  (op/apply (modifier-k modifiers)
-            base-value))
-
 (defn- ->pos-int [val-max]
   (mapv #(-> % int (max 0)) val-max))
 
@@ -74,12 +156,6 @@
   (or
    (inventory/free-cell inventory (:item/slot item)   item)
    (inventory/free-cell inventory :inventory.slot/bag item)))
-
-(defn stat [entity k]
-  (when-let [base-value (k entity)]
-    (mod-value base-value
-               entity
-               (keyword "modifier" (name k)))))
 
 (defn mana
   "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

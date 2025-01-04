@@ -8,10 +8,6 @@
 (defn pause-game? [_]
   false)
 
-(defn create [[_ eid movement-vector] c]
-  {:eid eid
-   :movement-vector movement-vector})
-
 (defn enter [[_ {:keys [eid movement-vector]}] c]
   (swap! eid assoc :entity/movement {:direction movement-vector
                                      :speed (entity/stat @eid :entity/movement-speed)}))

@@ -5,9 +5,6 @@
             [cdq.grid :as grid]
             [gdl.utils :refer [find-first]]))
 
-(defn create [[_ v] c]
-  (assoc v :already-hit-bodies #{}))
-
 (defn tick [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
   ; TODO this could be called from body on collision
   ; for non-solid

@@ -10,11 +10,6 @@
             [gdl.ui :refer [window-title-bar? button?]]
             [clojure.gdx.math.vector2 :as v]))
 
-(defn create [[_ eid item] c]
-  (safe-merge (c/build c :player-item-on-cursor/component)
-              {:eid eid
-               :item item}))
-
 (defn cursor [_]
   :cursors/hand-grab)
 

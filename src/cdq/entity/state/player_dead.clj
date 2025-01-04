@@ -3,9 +3,6 @@
             [clojure.gdx :refer [play]]
             [gdl.context :as c]))
 
-(defn create [[k] c]
-  (c/build c :player-dead/component.enter))
-
 (defn cursor [_]
   :cursors/black-x)
 

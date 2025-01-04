@@ -3,11 +3,6 @@
             [gdl.context.timer :as timer]
             [cdq.context :as world]))
 
-(defn create [[_ eid movement-vector] c]
-  {:eid eid
-   :movement-vector movement-vector
-   :counter (timer/create c (* (entity/stat @eid :entity/reaction-time) 0.016))})
-
 (defn enter [[_ {:keys [eid movement-vector]}] c]
   (swap! eid assoc :entity/movement {:direction movement-vector
                                      :speed (or (entity/stat @eid :entity/movement-speed) 0)}))

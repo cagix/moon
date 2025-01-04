@@ -3,9 +3,6 @@
             [cdq.context :as world :refer [add-text-effect]]
             [cdq.grid :as grid]))
 
-(defn create [[_ eid] c]
-  {:eid eid})
-
 (defn exit [[_ {:keys [eid]}] c]
   (world/delayed-alert c
                        (:position       @eid)
