@@ -18,9 +18,7 @@
                      cdq.entity.delete-after-animation-stopped? :entity/delete-after-animation-stopped?
                      cdq.entity.delete-after-duration :entity/delete-after-duration
                      cdq.entity.destroy-audiovisual :entity/destroy-audiovisual
-                     cdq.entity.fsm :entity/fsm
                      cdq.entity.hp :entity/hp
-                     cdq.entity.inventory :entity/inventory
                      cdq.entity.mana :entity/mana
                      cdq.entity.movement :entity/movement
                      cdq.entity.projectile-collision :entity/projectile-collision

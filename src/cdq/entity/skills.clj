@@ -1,11 +1,5 @@
 (ns cdq.entity.skills
-  (:require [anvil.entity.skills :as skills]
-            [gdl.context.timer :as timer]))
-
-(defn create! [[k skills] eid c]
-  (swap! eid assoc k nil)
-  (doseq [skill skills]
-    (skills/add c eid skill)))
+  (:require [gdl.context.timer :as timer]))
 
 (defn tick [[k skills] eid c]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)

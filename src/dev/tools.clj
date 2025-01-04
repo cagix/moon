@@ -1,6 +1,5 @@
 (ns dev.tools
-  (:require [anvil.entity.skills :as skills]
-            [cdq.context :as world]
+  (:require [cdq.context :as world]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
@@ -72,9 +71,9 @@
     (gdx/post-runnable context (f context))))
 
 (defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
-  (skills/add c
-              player-eid
-              (c/build c skill-id)))
+  (world/add-skill c
+                   player-eid
+                   (c/build c skill-id)))
 
 (defn- create-item! [{:keys [cdq.context/player-eid] :as c} item-id]
   (world/item c

@@ -1,6 +1,8 @@
 (ns cdq.context
   (:require [gdl.math.shapes :refer [circle->outer-rectangle]]
             [gdl.context.timer :as timer]
+            [gdl.graphics.animation :as animation]
+            [cdq.fsm :as fsm]
             [cdq.entity :as entity]
             [gdl.error :refer [pretty-pst]]
             [cdq.entity.state :as state]
@@ -27,8 +29,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [gdl.ui.dev-menu :as dev-menu]
             [clojure.gdx.scene2d.group :as group]
-            [gdl.val-max :as val-max]
-            [reduce-fsm :as fsm]))
+            [gdl.val-max :as val-max]))
 
 (defcomponent ::tiled-map
   (app/create [_ {::keys [level]}]
@@ -419,9 +420,9 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
-(defn- create-vs [components c]
+(defn- create-vs [components context]
   (reduce (fn [m [k v]]
-            (assoc m k (entity/create [k v] c)))
+            (assoc m k (entity/create [k v] context)))
           {}
           components))
 
@@ -561,6 +562,22 @@
     {:horizontal-group group
      :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
 
+(defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+        button (ui/image-button image (fn []) {:scale 2})]
+    (actor/set-id button id)
+    (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (group/add-actor! horizontal-group button)
+    (button-group/add button-group button)
+    nil))
+
+(defn- action-bar-remove-skill [c {:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+        button (get horizontal-group id)]
+    (actor/remove button)
+    (button-group/remove button-group button)
+    nil))
+
 (defn selected-skill [c]
   (when-let [skill-button (button-group/checked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
@@ -646,7 +663,7 @@
   ([c eid event params]
    (when-let [fsm (:entity/fsm @eid)]
      (let [old-state-k (:state fsm)
-           new-fsm (fsm/fsm-event fsm event)
+           new-fsm (fsm/event fsm event)
            new-state-k (:state new-fsm)]
        (when-not (= old-state-k new-state-k)
          (let [old-state-obj (entity/state-obj @eid)
@@ -897,3 +914,41 @@
 
 (defn player-movement-vector [c]
   (c/WASD-movement-vector c))
+
+(defn add-skill [c eid {:keys [property/id] :as skill}]
+  {:pre [(not (entity/has-skill? @eid skill))]}
+  (when (:entity/player? @eid)
+    (action-bar-add-skill c skill))
+  (swap! eid assoc-in [:entity/skills id] skill))
+
+(defn remove-skill [c eid {:keys [property/id] :as skill}]
+  {:pre [(entity/has-skill? @eid skill)]}
+  (when (:entity/player? @eid)
+    (action-bar-remove-skill c skill))
+  (swap! eid update :entity/skills dissoc id))
+
+(defmethod create! :entity/inventory
+  [[k items] eid c]
+  (swap! eid assoc k cdq.inventory/empty-inventory)
+  (doseq [item items]
+    (pickup-item c eid item)))
+
+(defmethod create! :entity/skills
+  [[k skills] eid c]
+  (swap! eid assoc k nil)
+  (doseq [skill skills]
+    (add-skill c eid skill)))
+
+(defmethod create! :entity/animation
+  [[_ animation] eid c]
+  (swap! eid assoc :entity/image (animation/current-frame animation)))
+
+(defmethod create! :entity/delete-after-animation-stopped?
+  [_ eid c]
+  (-> @eid :entity/animation :looping? not assert))
+
+(defmethod create! :entity/fsm
+  [[k {:keys [fsm initial-state]}] eid c]
+  (swap! eid assoc
+         k (fsm/create fsm initial-state)
+         initial-state (entity/create [initial-state eid] c)))

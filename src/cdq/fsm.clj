@@ -1,6 +1,5 @@
-(ns cdq.entity.fsm
-  (:require [cdq.entity :as entity]
-            [reduce-fsm :as fsm]))
+(ns cdq.fsm
+  (:require [reduce-fsm :as fsm]))
 
 (def ^:private npc-fsm
   (fsm/fsm-inc
@@ -54,13 +53,10 @@
 
 ; fsm throws when initial-state is not part of states, so no need to assert initial-state
 ; initial state is nil, so associng it. make bug report at reduce-fsm?
-(defn- ->init-fsm [fsm initial-state]
-  (assoc (fsm initial-state nil) :state initial-state))
+(defn create [fsm initial-state]
+  (assoc ((case fsm
+            :fsms/player player-fsm
+            :fsms/npc npc-fsm) initial-state nil) :state initial-state))
 
-(defn create! [[k {:keys [fsm initial-state]}] eid c]
-  (swap! eid assoc
-         k (->init-fsm (case fsm
-                         :fsms/player player-fsm
-                         :fsms/npc npc-fsm)
-                       initial-state)
-         initial-state (entity/create [initial-state eid] c)))
+(defn event [fsm event]
+  (fsm/fsm-event fsm event))

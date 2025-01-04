@@ -1,6 +1,5 @@
 (ns cdq.entity.state.player-idle
   (:require [cdq.entity :as entity]
-            [anvil.entity.skills :as skills]
             [anvil.skill :as skill]
             [cdq.context :as world :refer [pickup-item remove-item player-movement-vector]]
             [clojure.gdx :refer [play button-just-pressed?]]
@@ -144,6 +143,6 @@
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
-               (not (skills/contains? @eid skill)))
+               (not (entity/has-skill? @eid skill)))
       (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-      (skills/add c eid skill))))
+      (world/add-skill c eid skill))))
