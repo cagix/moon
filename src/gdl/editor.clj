@@ -8,6 +8,7 @@
             [gdl.app :as app]
             [gdl.context :as ctx :refer [play-sound]]
             [gdl.db :as db]
+            [gdl.graphics :as graphics]
             [gdl.malli :as m]
             [gdl.schema :as schema]
             [gdl.property :as property]
@@ -549,7 +550,7 @@
              [:gdl.context/stage]
              [::stage-actors]]
    :transactions '[gdl.context/tx-stage-act
-                   gdl.context/tx-stage-draw]})
+                   graphics/draw-stage]})
 
 (defn -main []
   (app/start config))

@@ -389,11 +389,3 @@
 (defn tx-stage-act [context]
    (ui/act (stage context) context)
    context)
-
-(defn tx-stage-draw [context]
-   (ui/draw (stage context) context)
-   context)
-
-(defn clear-screen [context]
-  (gdx/clear-screen gdx/black)
-  context)

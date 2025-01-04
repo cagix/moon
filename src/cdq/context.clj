@@ -740,13 +740,6 @@
                      c)
   c)
 
-(defn set-camera-on-player-position [{:keys [gdl.context/world-viewport
-                                             cdq.context/player-eid]
-                                      :as context}]
-  (cam/set-position! (:camera world-viewport)
-                     (:position @player-eid))
-  context)
-
 (defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
   (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)
