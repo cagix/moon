@@ -801,6 +801,9 @@
                              max-iterations)))
   c)
 
+(defsystem tick!)
+(defmethod tick! :default [_ eid c])
+
 ; precaution in case a component gets removed by another component
 ; the question is do we still want to update nil components ?
 ; should be contains? check ?
@@ -811,7 +814,7 @@
          (try
           (doseq [k (keys @eid)]
             (try (when-let [v (k @eid)]
-                   (entity/tick [k v] eid c))
+                   (tick! [k v] eid c))
                  (catch Throwable t
                    (throw (ex-info "entity-tick" {:k k} t)))))
           (catch Throwable t
@@ -961,3 +964,137 @@
   (swap! eid assoc
          k (fsm/create fsm initial-state)
          initial-state (entity/create [initial-state eid] c)))
+
+(defmethod tick! :entity/alert-friendlies-after-duration
+  [[_ {:keys [counter faction]}] eid c]
+  (when (timer/stopped? c counter)
+    (swap! eid assoc :entity/destroyed? true)
+    (doseq [friendly-eid (friendlies-in-radius c (:position @eid) faction)]
+      (send-event! c friendly-eid :alert))))
+
+(defmethod tick! :entity/animation
+  [[k animation] eid {:keys [cdq.context/delta-time]}]
+  (swap! eid #(-> %
+                  (assoc :entity/image (animation/current-frame animation))
+                  (assoc k (animation/tick animation delta-time)))))
+
+(defmethod tick! :entity/delete-after-duration
+  [[_ counter] eid c]
+  (when (timer/stopped? c counter)
+    (swap! eid assoc :entity/destroyed? true)))
+
+(defn- move-position [position {:keys [direction speed delta-time]}]
+  (mapv #(+ %1 (* %2 speed delta-time)) position direction))
+
+(defn- move-body [body movement]
+  (-> body
+      (update :position    move-position movement)
+      (update :left-bottom move-position movement)))
+
+(defn- valid-position? [c {:keys [entity/id z-order] :as body}]
+  {:pre [(:collides? body)]}
+  (let [cells* (into [] (map deref) (rectangle->cells c body))]
+    (and (not-any? #(grid/blocked? % z-order) cells*)
+         (->> cells*
+              grid/cells->entities
+              (not-any? (fn [other-entity]
+                          (let [other-entity @other-entity]
+                            (and (not= (:entity/id other-entity) id)
+                                 (:collides? other-entity)
+                                 (entity/collides? other-entity body)))))))))
+
+(defn- try-move [c body movement]
+  (let [new-body (move-body body movement)]
+    (when (valid-position? c new-body)
+      new-body)))
+
+; TODO sliding threshold
+; TODO name - with-sliding? 'on'
+; TODO if direction was [-1 0] and invalid-position then this algorithm tried to move with
+; direection [0 0] which is a waste of processor power...
+(defn- try-move-solid-body [c body {[vx vy] :direction :as movement}]
+  (let [xdir (Math/signum (float vx))
+        ydir (Math/signum (float vy))]
+    (or (try-move c body movement)
+        (try-move c body (assoc movement :direction [xdir 0]))
+        (try-move c body (assoc movement :direction [0 ydir])))))
+
+; set max speed so small entities are not skipped by projectiles
+; could set faster than max-speed if I just do multiple smaller movement steps in one frame
+(def ^:private max-speed (/ minimum-size
+                            max-delta-time)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+
+(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
+
+(defmethod tick! :entity/movement
+  [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
+            eid
+            {:keys [cdq.context/delta-time] :as c}]
+  (assert (m/validate speed-schema speed)
+          (pr-str speed))
+  (assert (or (zero? (v/length direction))
+              (v/normalised? direction))
+          (str "cannot understand direction: " (pr-str direction)))
+  (when-not (or (zero? (v/length direction))
+                (nil? speed)
+                (zero? speed))
+    (let [movement (assoc movement :delta-time delta-time)
+          body @eid]
+      (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
+                        (try-move-solid-body c body movement)
+                        (move-body body movement))]
+        (position-changed c eid)
+        (swap! eid assoc
+               :position (:position body)
+               :left-bottom (:left-bottom body))
+        (when rotate-in-movement-direction?
+          (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
+
+(defmethod tick! :entity/projectile-collision
+  [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
+  ; TODO this could be called from body on collision
+  ; for non-solid
+  ; means non colliding with other entities
+  ; but still collding with other stuff here ? o.o
+  (let [entity @eid
+        cells* (map deref (world/rectangle->cells c entity)) ; just use cached-touched -cells
+        hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
+                                     (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
+                                           (:entity/faction @%))
+                                     (:collides? @%)
+                                     (entity/collides? entity @%))
+                               (grid/cells->entities cells*))
+        destroy? (or (and hit-entity (not piercing?))
+                     (some #(grid/blocked? % (:z-order entity)) cells*))]
+    (when destroy?
+      (swap! eid assoc :entity/destroyed? true))
+    (when hit-entity
+      (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
+    (when hit-entity
+      (effect-ctx/do-all! c
+                          {:effect/source eid
+                           :effect/target hit-entity}
+                          entity-effects))))
+
+(defmethod tick! :entity/delete-after-animation-stopped?
+  [_ eid c]
+  (when (animation/stopped? (:entity/animation @eid))
+    (swap! eid assoc :entity/destroyed? true)))
+
+(defmethod tick! :entity/skills
+  [[k skills] eid c]
+  (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
+          :when (and cooling-down?
+                     (timer/stopped? c cooling-down?))]
+    (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
+
+(defmethod tick! :entity/string-effect
+  [[k {:keys [counter]}] eid c]
+  (when (timer/stopped? c counter)
+    (swap! eid dissoc k)))
+
+(defmethod tick! :entity/temp-modifier
+  [[k {:keys [modifiers counter]}] eid c]
+  (when (timer/stopped? c counter)
+    (swap! eid dissoc k)
+    (swap! eid entity/mod-remove modifiers)))

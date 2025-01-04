@@ -102,9 +102,6 @@
   {:eid eid
    :counter (timer/create c duration)})
 
-(defsystem tick)
-(defmethod tick :default [_ eid c])
-
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
 
