@@ -1,11 +1,84 @@
 (ns cdq.info
-  (:require [cdq.context :refer [finished-ratio]]
-            [cdq.operation :as op]
-            [cdq.entity :as entity]
+  (:require [clojure.gdx :as gdx]
             [clojure.math :as math]
             [clojure.string :as str]
-            [gdl.utils :refer [defsystem readable-number]]
-            [gdl.info :as info]))
+            [gdl.context.timer :as timer]
+            [gdl.utils :refer [defsystem readable-number sort-by-k-order]]
+            [cdq.entity :as entity]
+            [cdq.operation :as op]))
+
+(defn- remove-newlines [s]
+  (let [new-s (-> s
+                  (str/replace "\n\n" "\n")
+                  (str/replace #"^\n" "")
+                  str/trim-newline)]
+    (if (= (count new-s) (count s))
+      s
+      (remove-newlines new-s))))
+
+(defsystem ^:private info-segment)
+(defmethod info-segment :default [_ _entity _context])
+
+(gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
+
+(def k->colors {:property/pretty-name "PRETTY_NAME"
+                :entity/modifiers "CYAN"
+                :maxrange "LIGHT_GRAY"
+                :creature/level "GRAY"
+                :projectile/piercing? "LIME"
+                :skill/action-time-modifier-key "VIOLET"
+                :skill/action-time "GOLD"
+                :skill/cooldown "SKY"
+                :skill/cost "CYAN"
+                :entity/delete-after-duration "LIGHT_GRAY"
+                :entity/faction "SLATE"
+                :entity/fsm "YELLOW"
+                :entity/species "LIGHT_GRAY"
+                :entity/temp-modifier "LIGHT_GRAY"})
+
+(def k-order [:property/pretty-name
+              :skill/action-time-modifier-key
+              :skill/action-time
+              :skill/cooldown
+              :skill/cost
+              :skill/effects
+              :entity/species
+              :creature/level
+              :entity/hp
+              :entity/mana
+              :entity/strength
+              :entity/cast-speed
+              :entity/attack-speed
+              :entity/armor-save
+              :entity/delete-after-duration
+              :projectile/piercing?
+              :entity/projectile-collision
+              :maxrange
+              :entity-effects])
+
+(defn info-text [context components]
+  (->> components
+       (sort-by-k-order k-order)
+       (keep (fn [{k 0 v 1 :as component}]
+               (str (let [entity components
+                          info-text (try (info-segment component entity context)
+                                         (catch Throwable t
+                                           ; fails for
+                                           ; effects/spawn
+                                           ; end entity/hp
+                                           ; as already 'built' yet 'hp' not
+                                           ; built from db yet ...
+                                           (pr-str component)
+                                           #_(throw (ex-info "info system failed"
+                                                             {:component component}
+                                                             t))))]
+                      (if-let [color (k->colors k)]
+                        (str "[" color "]" info-text "[]")
+                        info-text))
+                    (when (map? v)
+                      (str "\n" (info-text context v))))))
+       (str/join "\n")
+       remove-newlines))
 
 (defsystem op-value-text)
 
@@ -31,43 +104,43 @@
                  (str (+? v) (op-value-text component) " " (str/capitalize (name k)))))
              (sort-by op/-order op))))
 
-(defmethod info/text :property/pretty-name
+(defmethod info-segment :property/pretty-name
   [[_ v] _entity _c]
   v)
 
-(defmethod info/text :maxrange
+(defmethod info-segment :maxrange
   [[_ v] _entity _c]
   v)
 
-(defmethod info/text :creature/level
+(defmethod info-segment :creature/level
   [[_ v] _entity _c]
   (str "Level: " v))
 
-(defmethod info/text :projectile/piercing?
+(defmethod info-segment :projectile/piercing?
   [_ _entity _c] ; TODO also when false ?!
   "Piercing")
 
-(defmethod info/text :skill/action-time-modifier-key
+(defmethod info-segment :skill/action-time-modifier-key
   [[_ v] _entity _c]
   (case v
     :entity/cast-speed "Spell"
     :entity/attack-speed "Attack"))
 
-(defmethod info/text :skill/action-time
+(defmethod info-segment :skill/action-time
   [[_ v] _entity _c]
   (str "Action-Time: " (readable-number v) " seconds"))
 
-(defmethod info/text :skill/cooldown
+(defmethod info-segment :skill/cooldown
   [[_ v] _entity _c]
   (when-not (zero? v)
     (str "Cooldown: " (readable-number v) " seconds")))
 
-(defmethod info/text :skill/cost
+(defmethod info-segment :skill/cost
   [[_ v] _entity _c]
   (when-not (zero? v)
     (str "Cost: " v " Mana")))
 
-(defmethod info/text ::stat
+(defmethod info-segment ::stat
   [[k _] entity _c]
   (str (str/capitalize (name k)) ": " (entity/stat entity k)))
 
@@ -79,18 +152,18 @@
 (derive :entity/armor-save     ::stat)
 (derive :entity/armor-pierce   ::stat)
 
-(defmethod info/text :effects/spawn
+(defmethod info-segment :effects/spawn
   [[_ {:keys [property/pretty-name]}] _entity _context]
   (str "Spawns a " pretty-name))
 
-(defmethod info/text :effects.target/convert
+(defmethod info-segment :effects.target/convert
   [_ _entity _c]
   "Converts target to your side.")
 
 (defn- damage-info [{[min max] :damage/min-max}]
   (str min "-" max " damage"))
 
-(defmethod info/text :effects.target/damage
+(defmethod info-segment :effects.target/damage
   [[_ damage] _entity _c]
   (damage-info damage)
   #_(if source
@@ -101,67 +174,73 @@
       (damage-info damage)) ; property menu no source,modifiers
   )
 
-(defmethod info/text :effects.target/hp
+(defmethod info-segment :effects.target/hp
   [[k ops] _entity _context]
   (op-info ops k))
 
-(defmethod info/text :effects.target/kill
+(defmethod info-segment :effects.target/kill
   [_ _entity _c]
   "Kills target")
 
 ; FIXME no source
 ; => to entity move
-(defmethod info/text :effects.target/melee-damage
+(defmethod info-segment :effects.target/melee-damage
   [_ _entity _c]
   (str "Damage based on entity strength."
        #_(when source
            (str "\n" (damage-info (entity->melee-damage @source))))))
 
-(defmethod info/text :effects.target/spiderweb
+(defmethod info-segment :effects.target/spiderweb
   [_ _entity _c]
   "Spiderweb slows 50% for 5 seconds."
   ; modifiers same like item/modifiers has info-text
   ; counter ?
   )
 
-(defmethod info/text :effects.target/stun
+(defmethod info-segment :effects.target/stun
   [[_ duration] _entity _c]
   (str "Stuns for " (readable-number duration) " seconds"))
 
-(defmethod info/text :effects/target-all
+(defmethod info-segment :effects/target-all
   [_ _entity _c]
   "All visible targets")
 
-(defmethod info/text :entity/delete-after-duration
+(defmethod info-segment :entity/delete-after-duration
   [[_ counter] _entity c]
-  (str "Remaining: " (readable-number (finished-ratio c counter)) "/1"))
+  (str "Remaining: " (readable-number (timer/ratio c counter)) "/1"))
 
-(defmethod info/text :entity/faction
+(defmethod info-segment :entity/faction
   [[_ faction] _entity _c]
   (str "Faction: " (name faction)))
 
-(defmethod info/text :entity/fsm
+(defmethod info-segment :entity/fsm
   [[_ fsm] _entity _c]
   (str "State: " (name (:state fsm))))
 
-(defmethod info/text :entity/hp
+(defmethod info-segment :entity/hp
   [_ entity _c]
   (str "Hitpoints: " (entity/hitpoints entity)))
 
-(defmethod info/text :entity/mana
+(defmethod info-segment :entity/mana
   [_ entity _c]
   (str "Mana: " (entity/mana entity)))
 
-(defmethod info/text :entity/modifiers
+(defmethod info-segment :entity/modifiers
   [[_ mods] _entity _c]
   (when (seq mods)
     (str/join "\n" (keep (fn [[k ops]]
                            (op-info ops k)) mods))))
 
-(defmethod info/text :entity/species
+(defmethod info-segment :entity/species
   [[_ species] _entity _c]
   (str "Creature - " (str/capitalize (name species))))
 
-(defmethod info/text :entity/temp-modifier
+(defmethod info-segment :entity/temp-modifier
   [[_ {:keys [counter]}] _entity c]
-  (str "Spiderweb - remaining: " (readable-number (finished-ratio c counter)) "/1"))
+  (str "Spiderweb - remaining: " (readable-number (timer/ratio c counter)) "/1"))
+
+#_(defmethod info-segment :entity/skills
+    [skills _c]
+  ; => recursive info-text leads to endless text wall
+  #_(when (seq skills)
+      (str "Skills: " (str/join "," (map name (keys skills))))))

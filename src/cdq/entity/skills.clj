@@ -1,11 +1,6 @@
 (ns cdq.entity.skills
   (:require [anvil.entity.skills :as skills]
-            [cdq.context :refer [stopped?]]))
-
-#_(defmethod info/info :entity/skills [skills _c]
-  ; => recursive info-text leads to endless text wall
-  #_(when (seq skills)
-      (str "Skills: " (str/join "," (map name (keys skills))))))
+            [gdl.context.timer :as timer]))
 
 (defn create! [[k skills] eid c]
   (swap! eid assoc k nil)
@@ -15,5 +10,5 @@
 (defn tick [[k skills] eid c]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
-                     (stopped? c cooling-down?))]
+                     (timer/stopped? c cooling-down?))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))

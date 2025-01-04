@@ -1,5 +1,5 @@
 (ns anvil.widgets.action-bar
-  (:require [gdl.context :refer [info-text]]
+  (:require [cdq.info :refer [info-text]]
             [cdq.context :as world]
             [gdl.ui :refer [add-tooltip!] :as ui]
             [clojure.gdx.scene2d.actor :as actor]

@@ -5,7 +5,8 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [data.grid2d :as g2d]
-            [gdl.context :as c :refer [info-text]]
+            [gdl.context :as c]
+            [cdq.info :refer [info-text]]
             [gdl.ui :refer [set-drawable!
                             ui-widget
                             texture-region-drawable

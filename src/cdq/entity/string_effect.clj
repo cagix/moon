@@ -1,9 +1,9 @@
 (ns cdq.entity.string-effect
-  (:require [cdq.context :refer [stopped?]]
-            [gdl.context :as c]))
+  (:require [gdl.context :as c]
+            [gdl.context.timer :as timer]))
 
 (defn tick [[k {:keys [counter]}] eid c]
-  (when (stopped? c counter)
+  (when (timer/stopped? c counter)
     (swap! eid dissoc k)))
 
 (defn render-above [[_ {:keys [text]}] entity c]

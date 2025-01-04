@@ -1,6 +1,6 @@
 (ns cdq.effect.target.spiderweb
   (:require [cdq.entity :as entity]
-            [cdq.context :refer [timer]]))
+            [gdl.context.timer :as timer]))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]
@@ -12,5 +12,5 @@
   (defn handle [_ {:keys [effect/target]} c]
     (when-not (:entity/temp-modifier @target)
       (swap! target assoc :entity/temp-modifier {:modifiers modifiers
-                                                 :counter (timer c duration)})
+                                                 :counter (timer/create c duration)})
       (swap! target entity/mod-add modifiers))))

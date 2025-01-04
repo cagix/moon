@@ -1,5 +1,6 @@
 (ns cdq.context
   (:require [gdl.math.shapes :refer [circle->outer-rectangle]]
+            [gdl.context.timer :as timer]
             [cdq.entity :as entity]
             [gdl.error :refer [pretty-pst]]
             [cdq.entity.state :as state]
@@ -15,7 +16,8 @@
             [gdl.utils :refer [defsystem defcomponent tile->middle readable-number dev-mode? define-order sort-by-order safe-merge]]
             [data.grid2d :as g2d]
             [gdl.app :as app]
-            [gdl.context :as c :refer [info-text]]
+            [gdl.context :as c]
+            [cdq.info :refer [info-text]]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [cdq.potential-fields :as potential-fields]
@@ -105,7 +107,7 @@
   (app/create [_ _c]
     (atom {})))
 
-(defcomponent ::elapsed-time
+(defcomponent :gdl.context.timer/elapsed-time
   (app/create [_ _c]
     0))
 
@@ -206,7 +208,7 @@
                                    (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"
-                    :update-fn (fn [{::keys [elapsed-time]}]
+                    :update-fn (fn [{:keys [gdl.context.timer/elapsed-time]}]
                                  (str (readable-number elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
@@ -293,27 +295,6 @@
   [{::keys [raycaster]} start target path-w]
   (raycaster/path-blocked? raycaster start target path-w))
 
-(defn timer [{::keys [elapsed-time]} duration]
-  {:pre [(>= duration 0)]}
-  {:duration duration
-   :stop-time (+ elapsed-time duration)})
-
-(defn stopped? [{::keys [elapsed-time]}
-                {:keys [stop-time]}]
-  (>= elapsed-time stop-time))
-
-(defn reset-timer [{::keys [elapsed-time]}
-                   {:keys [duration] :as counter}]
-  (assoc counter :stop-time (+ elapsed-time duration)))
-
-(defn finished-ratio [{::keys [elapsed-time] :as c}
-                      {:keys [duration stop-time] :as counter}]
-  {:post [(<= 0 % 1)]}
-  (if (stopped? c counter)
-    0
-    ; min 1 because floating point math inaccuracies
-    (min 1 (/ (- stop-time elapsed-time) duration))))
-
 (defn mouseover-entity [{::keys [mouseover-eid]}]
   (and mouseover-eid
        @mouseover-eid))
@@ -358,9 +339,9 @@
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter #(reset-timer c %)))
+               (update :counter #(timer/reset c %)))
            {:text text
-            :counter (timer c 0.4)})))
+            :counter (timer/create c 0.4)})))
 
 (defn active-entities [{::keys [content-grid player-eid]}]
   (content-grid/active-entities content-grid @player-eid))
@@ -517,7 +498,7 @@
                 position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
-                 {:counter (timer c duration)
+                 {:counter (timer/create c duration)
                   :faction faction}}))
 
 (defn line-render [c {:keys [start end duration color thick?]}]
@@ -787,7 +768,7 @@
 (defn update-time [c]
   (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
     (-> c
-        (update :cdq.context/elapsed-time + delta-ms)
+        (update :gdl.context.timer/elapsed-time + delta-ms)
         (assoc :cdq.context/delta-time delta-ms))))
 
 (def ^:private pf-cache (atom nil))

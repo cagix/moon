@@ -1,6 +1,7 @@
 (ns cdq.entity.state.active-skill
   (:require [cdq.entity :as entity]
-            [cdq.context :as world :refer [line-of-sight? timer finished-ratio stopped?]]
+            [cdq.context :as world :refer [line-of-sight?]]
+            [gdl.context.timer :as timer]
             [cdq.effect-context :as effect-ctx]
             [clojure.gdx :refer [play]]
             [gdl.context :as c]))
@@ -48,14 +49,14 @@
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 (timer c))})
+                 (timer/create c))})
 
 (defn enter [[_ {:keys [eid skill]}] c]
   (play (:skill/start-action-sound skill))
   (when (:skill/cooldown skill)
     (swap! eid assoc-in
            [:entity/skills (:property/id skill) :skill/cooling-down?]
-           (timer c (:skill/cooldown skill))))
+           (timer/create c (:skill/cooldown skill))))
   (when (and (:skill/cost skill)
              (not (zero? (:skill/cost skill))))
     (swap! eid entity/pay-mana-cost (:skill/cost skill))))
@@ -69,7 +70,7 @@
     ; TODO some sound ?
     )
 
-   (stopped? c counter)
+   (timer/stopped? c counter)
    (do
     (effect-ctx/do-all! c effect-ctx (:skill/effects skill))
     (world/send-event! c eid :action-done))))
@@ -80,7 +81,7 @@
                       image
                       entity
                       (:position entity)
-                      (finished-ratio c counter))
+                      (timer/ratio c counter))
     (effect-ctx/render-info c
                             (check-update-ctx c effect-ctx)
                             effects)))

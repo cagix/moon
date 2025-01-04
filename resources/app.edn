@@ -35,6 +35,7 @@
   [:gdl.context/tiled-map-renderer]
   [:gdl.context/ui :skin-scale/x1]
   [:gdl.context/stage]
+  [:gdl.context.timer/elapsed-time nil] ; game speed config!?
   [:cdq.context/requires [cdq.install
                           cdq.info]]
   [:cdq.context/stage-actors]
@@ -47,7 +48,6 @@
   [:cdq.context/raycaster nil]
   [:cdq.context/factions-iterations {:good 15 :evil 5}]
   ; "The elapsed in-game-time in seconds (not counting when game is paused)."
-  [:cdq.context/elapsed-time nil] ; game speed config!?
   [:cdq.context/player-eid nil] ; pass props
   ;:mouseover-eid nil ; ?
   ;:delta-time "The game logic update delta-time in ms."

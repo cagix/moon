@@ -181,6 +181,10 @@
 
 (def state (atom nil))
 
+(comment
+ (clojure.pprint/pprint (sort (keys @state)))
+ )
+
 (defn start [app-config components render]
   (lwjgl/start app-config
                (reify lwjgl/Application
