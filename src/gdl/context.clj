@@ -393,3 +393,7 @@
 (defn tx-stage-draw [context]
    (ui/draw (stage context) context)
    context)
+
+(defn clear-screen [context]
+  (gdx/clear-screen gdx/black)
+  context)

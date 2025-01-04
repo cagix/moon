@@ -1,6 +1,5 @@
 (ns cdq.game
-  (:require [clojure.gdx :as gdx]
-            [gdl.context :as c]
+  (:require [gdl.context :as c]
             [gdl.error :refer [pretty-pst]]
             [gdl.utils :refer [sort-by-order]]
             [cdq.context :refer [active-entities
@@ -8,10 +7,7 @@
                                  line-of-sight?
                                  draw-body-rect
                                  render-before-entities
-                                 render-after-entities
-                                 update-time
-                                 tick-potential-fields
-                                 tick-entities]]
+                                 render-after-entities]]
             [cdq.entity.render :as render]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
@@ -43,10 +39,6 @@
          (draw-body-rect c entity :red)
          (pretty-pst t))))))
 
-(defn clear-screen [context]
-  (gdx/clear-screen gdx/black)
-  context)
-
 (defn draw-world-view [c]
   (c/draw-on-world-view c
                         (fn [c]
@@ -55,11 +47,3 @@
                           (render-entities c)
                           (render-after-entities c)))
   c)
-
-(defn progress-time-if-not-paused [c]
-  (if (:cdq.context/paused? c)
-    c
-    (-> c
-        update-time
-        tick-potential-fields
-        tick-entities)))

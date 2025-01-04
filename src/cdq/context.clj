@@ -790,7 +790,7 @@
                                          (not (or (key-just-pressed? c :p)
                                                   (key-pressed? c :space)))))))
 
-(defn update-time [c]
+(defn- update-time [c]
   (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
     (-> c
         (update :gdl.context.timer/elapsed-time + delta-ms)
@@ -798,8 +798,8 @@
 
 (def ^:private pf-cache (atom nil))
 
-(defn tick-potential-fields [{:keys [cdq.context/factions-iterations
-                                     cdq.context/grid] :as c}]
+(defn- tick-potential-fields [{:keys [cdq.context/factions-iterations
+                                      cdq.context/grid] :as c}]
   (let [entities (active-entities c)]
     (doseq [[faction max-iterations] factions-iterations]
       (potential-fields/tick pf-cache
@@ -817,7 +817,7 @@
 ; should be contains? check ?
 ; but then the 'order' is important? in such case dependent components
 ; should be moved together?
-(defn tick-entities [c]
+(defn- tick-entities [c]
   (try (doseq [eid (active-entities c)]
          (try
           (doseq [k (keys @eid)]
@@ -1717,3 +1717,11 @@
 
   (effect/handle [[_ duration] {:keys [effect/target]} c]
     (send-event! c target :stun duration)))
+
+(defn progress-time-if-not-paused [c]
+  (if (:cdq.context/paused? c)
+    c
+    (-> c
+        update-time
+        tick-potential-fields
+        tick-entities)))
