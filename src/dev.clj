@@ -1,12 +1,11 @@
 (ns dev
-  (:require [cdq.context :as world]
-            [clojure.gdx :as gdx]
+  (:require [clojure.gdx.scene2d.group :refer [children]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.context :as c]
+            [gdl.context :as c :refer [post-runnable]]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
-            [clojure.gdx.scene2d.group :refer [children]]))
+            [cdq.context :as world]))
 
 (comment
 
@@ -76,10 +75,6 @@
  ; => this is basically a test for 'forge.entity.active'
 
  )
-
-(defn post-runnable [f]
-  (let [context @c/state]
-    (gdx/post-runnable context #(f context))))
 
 (defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
   (world/add-skill c
