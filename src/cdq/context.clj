@@ -456,7 +456,7 @@
    :height 0.5
    :z-order :z-order/effect})
 
-(defn audiovisual [c position {:keys [tx/sound entity/animation]}]
+(defn spawn-audiovisual [c position {:keys [tx/sound entity/animation]}]
   (play sound)
   (spawn-entity c
                 position
@@ -837,9 +837,9 @@
 
 (defmethod destroy! :entity/destroy-audiovisual
   [[_ audiovisuals-id] eid c]
-  (audiovisual c
-               (:position @eid)
-               (c/build c audiovisuals-id)))
+  (spawn-audiovisual c
+                     (:position @eid)
+                     (c/build c audiovisuals-id)))
 
 (def window-hotkeys
   {:inventory-window   :i
@@ -1460,7 +1460,7 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target-position]} c]
-    (audiovisual c target-position audiovisual)))
+    (spawn-audiovisual c target-position audiovisual)))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)
@@ -1597,9 +1597,9 @@
                        :color [1 0 0 0.75]
                        :thick? true})
          (effect-ctx/do-all! c ctx entity-effects))
-        (audiovisual c
-                     (entity/end-point source* target* maxrange)
-                     (c/build c :audiovisuals/hit-ground))))))
+        (spawn-audiovisual c
+                           (entity/end-point source* target* maxrange)
+                           (c/build c :audiovisuals/hit-ground))))))
 
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]
@@ -1609,9 +1609,9 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target]} c]
-    (audiovisual c
-                 (:position @target)
-                 audiovisual)))
+    (spawn-audiovisual c
+                       (:position @target)
+                       audiovisual)))
 
 (defcomponent :effects.target/convert
   (effect/applicable? [_ {:keys [effect/source effect/target]}]
@@ -1659,9 +1659,9 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
-         (audiovisual c
-                      (:position target*)
-                      (c/build c :audiovisuals/damage))
+         (spawn-audiovisual c
+                            (:position target*)
+                            (c/build c :audiovisuals/damage))
          (send-event! c target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect c (str "[RED]" dmg-amount "[]")))))))
 
