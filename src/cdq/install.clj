@@ -5,28 +5,23 @@
             [cdq.entity.state :as state]))
 
 (def entity
-  {:optional [#'entity/create
+  {:optional [; cdq.context.info/segment
+              #'entity/create
               #'world/create!
               #'entity/destroy
               #'entity/tick
-              #'entity/render-below
-              #'entity/render-default
-              #'entity/render-above
-              #'entity/render-info]})
+              ; cdq.entity.render/below/default/above/info
+              ]})
 
 (doseq [[ns-sym k] '{cdq.entity.alert-friendlies-after-duration :entity/alert-friendlies-after-duration
                      cdq.entity.animation :entity/animation
-                     cdq.entity.clickable :entity/clickable
                      cdq.entity.delete-after-animation-stopped? :entity/delete-after-animation-stopped?
                      cdq.entity.delete-after-duration :entity/delete-after-duration
                      cdq.entity.destroy-audiovisual :entity/destroy-audiovisual
                      cdq.entity.fsm :entity/fsm
                      cdq.entity.hp :entity/hp
-                     cdq.entity.image :entity/image
                      cdq.entity.inventory :entity/inventory
-                     cdq.entity.line-render :entity/line-render
                      cdq.entity.mana :entity/mana
-                     cdq.entity.mouseover? :entity/mouseover?
                      cdq.entity.movement :entity/movement
                      cdq.entity.projectile-collision :entity/projectile-collision
                      cdq.entity.skills :entity/skills
@@ -44,7 +39,8 @@
                           #'state/manual-tick
                           #'state/clicked-inventory-cell
                           #'state/clicked-skillmenu-skill
-                          #'state/draw-gui-view]}))
+                          ;#'state/draw-gui-view
+                          ]}))
 
 ; TODO tests ! - all implemented/wired correctly/etc?
 ; TODO tests also interesting .... !
@@ -64,8 +60,10 @@
 
 (def effect {:required [#'cdq.effect/applicable?
                         #'cdq.effect/handle]
-             :optional [#'cdq.effect/useful?
-                        #'cdq.effect/render]})
+             :optional [;cdq.context.info/segment
+                        #'cdq.effect/useful?
+                        ;#'cdq.entity.render/render-effect
+                        ]})
 
 (doseq [[ns-sym k] '{cdq.effect.target-all :effects/target-all
                      cdq.effect.target-entity :effects/target-entity

@@ -1,7 +1,6 @@
 (ns cdq.entity.state.stunned
   (:require [cdq.context :as world]
-            [gdl.context.timer :as timer]
-            [gdl.context :as c]))
+            [gdl.context.timer :as timer]))
 
 (defn cursor [_]
   :cursors/denied)
@@ -16,6 +15,3 @@
 (defn tick [[_ {:keys [counter]}] eid c]
   (when (timer/stopped? c counter)
     (world/send-event! c eid :effect-wears-off)))
-
-(defn render-below [_ entity c]
-  (c/circle c (:position entity) 0.5 [1 1 1 0.6]))

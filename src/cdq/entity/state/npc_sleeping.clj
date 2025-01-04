@@ -1,8 +1,7 @@
 (ns cdq.entity.state.npc-sleeping
   (:require [cdq.entity :as entity]
             [cdq.context :as world :refer [add-text-effect]]
-            [cdq.grid :as grid]
-            [gdl.context :as c]))
+            [cdq.grid :as grid]))
 
 (defn create [[_ eid] c]
   {:eid eid})
@@ -20,11 +19,3 @@
     (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
         (world/send-event! c eid :alert)))))
-
-(defn render-above [_ entity c]
-  (let [[x y] (:position entity)]
-    (c/draw-text c
-                 {:text "zzz"
-                  :x x
-                  :y (+ y (:half-height entity))
-                  :up? true})))

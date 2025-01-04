@@ -42,18 +42,6 @@
              (world/world-item? c))
     (world/send-event! c eid :drop-item)))
 
-(defn render-below [[_ {:keys [item]}] entity c]
-  (when (world/world-item? c)
-    (c/draw-centered c
-                     (:entity/image item)
-                     (world/item-place-position c entity))))
-
-(defn draw-gui-view [[_ {:keys [eid]}] c]
-  (when (not (world/world-item? c))
-    (c/draw-centered c
-                     (:entity/image (:entity/item-on-cursor @eid))
-                     (c/mouse-position c))))
-
 (defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
   (let [entity @eid
         inventory (:entity/inventory entity)

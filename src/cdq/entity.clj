@@ -6,6 +6,11 @@
             [clojure.gdx.math.vector2 :as v]
             [gdl.math.shapes :as shape]))
 
+; temporary here, move to entity.render
+; widgets in cdq.context and circular dependencies
+(defsystem draw-gui-view)
+(defmethod draw-gui-view :default [_ c])
+
 (defsystem create)
 (defmethod create :default [[_ v] _context]
   v)
@@ -15,18 +20,6 @@
 
 (defsystem tick)
 (defmethod tick :default [_ eid c])
-
-(defsystem render-below)
-(defmethod render-below :default [_ entity c])
-
-(defsystem render-default)
-(defmethod render-default :default [_ entity c])
-
-(defsystem render-above)
-(defmethod render-above :default [_ entity c])
-
-(defsystem render-info)
-(defmethod render-info :default [_ entity c])
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))
@@ -128,3 +121,21 @@
            apply-max-modifier
            target
            :modifier/damage-receive-max)))
+
+; TODO use at projectile & also adjust rotation
+(defn start-point [entity target*]
+  (v/add (:position entity)
+         (v/scale (direction entity target*)
+                  (:radius entity))))
+
+(defn end-point [entity target* maxrange]
+  (v/add (start-point entity target*)
+         (v/scale (direction entity target*)
+                  maxrange)))
+
+(defn in-range? [entity target* maxrange] ; == circle-collides?
+  (< (- (float (v/distance (:position entity)
+                           (:position target*)))
+        (float (:radius entity))
+        (float (:radius target*)))
+     (float maxrange)))

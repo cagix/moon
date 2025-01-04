@@ -3,7 +3,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.app :as app]
-            [cdq.context :as context]))
+            [cdq.game :as game]))
 
 (defn -main
   "Reads the application config from `app.edn` in resources and starts the game."
@@ -11,4 +11,4 @@
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]
     (app/start (:app     config)
                (:context config)
-               context/process-frame)))
+               game/process-frame)))

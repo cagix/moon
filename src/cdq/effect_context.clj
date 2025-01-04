@@ -15,6 +15,3 @@
 (defn do-all! [context effect-ctx effect]
   (run! #(effect/handle % effect-ctx context)
         (filter-applicable? effect-ctx effect)))
-
-(defn render-info [context effect-ctx effect]
-  (run! #(effect/render % effect-ctx context) effect))

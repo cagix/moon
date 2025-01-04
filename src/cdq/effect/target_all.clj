@@ -1,7 +1,6 @@
 (ns cdq.effect.target-all
   (:require [cdq.context :as world]
-            [cdq.effect-context :refer [do-all!]]
-            [gdl.context :as c]))
+            [cdq.effect-context :refer [do-all!]]))
 
 (comment
  ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
@@ -42,11 +41,3 @@
       (do-all! c
                {:effect/source source :effect/target target}
                entity-effects))))
-
-(defn render [_ {:keys [effect/source]} c]
-  (let [source* @source]
-    (doseq [target* (map deref (world/creatures-in-los-of-player c))]
-      (c/line c
-              (:position source*) #_(start-point source* target*)
-              (:position target*)
-              [1 0 0 0.5]))))
