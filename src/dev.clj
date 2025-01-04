@@ -10,10 +10,24 @@
 
 (comment
 
- (print-app-values-tree "app-values-tree.clj"
-                        #{"anvil", "gdl", "uf"})
+ ; This 'app-values-tree'
+ ; could be outside of the application
+ ; together with clojure.gdx.dev-loop ?
+ ; 'clojure.dev' ?
+ ; javafx app
+ ; hooks into your application
+ ; and show a tree view there ...
 
- (post-runnable show-tree-view!)
+
+ (print-app-values-tree "app-values-tree.clj"
+                        #{"clojure.gdx", "gdl", "cdq", "anvil"})
+
+ ; use post-runnable to get proper error messages in console
+ (post-runnable (fn [_context]
+                  (show-tree-view! (select-keys @c/state [:clojure.gdx/app]))))
+
+ (post-runnable (fn [_x] (println "hi")))
+
  (show-tree-view! (world/mouseover-entity @c/state))
  (show-tree-view! (mouseover-grid-cell @c/state))
  (show-tree-view! (ns-value-vars #{"forge"}))
@@ -65,7 +79,7 @@
 
 (defn post-runnable [f]
   (let [context @c/state]
-    (gdx/post-runnable context (f context))))
+    (gdx/post-runnable context #(f context))))
 
 (defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
   (world/add-skill c
@@ -144,6 +158,10 @@
    )
  )
 
+; TODO lazy/only on click extend ...
+; * handle clicks
+; * add nodes then ...
+
 (defn- add-map-nodes! [parent-node m level]
   ;(println "Level: " level " - go deeper? " (< level 4))
   (when (< level 2)
@@ -173,18 +191,20 @@
      (- (:height viewport) 50)
      #_(min (- (:height viewport) 50) (height table))}))
 
+(defn- generate-tree [m]
+  (doto (ui/tree)
+    (add-map-nodes! (into (sorted-map) m)
+                    0)))
+
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}
-  (let [tree (ui/tree)]
-    (add-map-nodes! tree (into (sorted-map) m) 0)
-    (c/add-actor
-     (ui/window {:title "Tree View"
-                 :close-button? true
-                 :close-on-escape? true
-                 :center? true
-                 :rows [[(scroll-pane-cell [[tree]])]]
-                 :pack? true}))
-    nil))
+  (c/add-actor @c/state
+               (ui/window {:title "Tree View"
+                           :close-button? true
+                           :close-on-escape? true
+                           :center? true
+                           :rows [[(scroll-pane-cell [[(generate-tree m)]])]]
+                           :pack? true})))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
