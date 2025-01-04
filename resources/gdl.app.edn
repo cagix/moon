@@ -8,6 +8,10 @@
            [:gdl.context/assets "resources/"]
            [:gdl.context/db {:schema "schema.edn"
                              :properties "properties.edn"}]
+           ; TODO shape-drawer-texture separate ... ?
+           ; thats cool - whats the component / system / install API ?
+           ; both defcomponent and install possible ?
+           ; or just defmethods ?
            [:gdl.context/shape-drawer]
            [:gdl.context/default-font {:file "fonts/exocet/films.EXL_____.ttf"
                                        :size 16
@@ -34,10 +38,16 @@
            [:gdl.context/tiled-map-renderer]
            [:gdl.context/ui :skin-scale/x1]
            [:gdl.context/stage]
-           [:gdl.context.timer/elapsed-time nil] ; game speed config!?
+           [:gdl.context/elapsed-time nil] ; game speed config!?
            [:cdq.context/stage-actors]
            [:cdq.context/level :worlds/uf-caves]
-           [:cdq.context/tiled-map]
+           [:cdq.context/tiled-map] ; TODO missing cleanup on restart world ... !
+
+; TODO unused
+;#_(defn- dispose-game-state [{::keys [tiled-map]}]
+;  (when tiled-map
+;    (tiled/dispose tiled-map)))
+
            [:cdq.context/grid nil]
            [:cdq.context/explored-tile-corners nil]
            [:cdq.context/content-grid {:cell-size 16}]

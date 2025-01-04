@@ -3,7 +3,8 @@
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.context :as c :refer [post-runnable]]
+            [gdl.app :as app]
+            [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]))
 
@@ -22,13 +23,13 @@
                         #{"clojure.gdx", "gdl", "cdq", "anvil"})
 
  ; use post-runnable to get proper error messages in console
- (post-runnable (fn [_context]
-                  (show-tree-view! (select-keys @c/state [:clojure.gdx/app]))))
+ (app/post-runnable (fn [_context]
+                      (show-tree-view! (select-keys @app/state [:clojure.gdx/app]))))
 
- (post-runnable (fn [_x] (println "hi")))
+ (app/post-runnable (fn [_x] (println "hi")))
 
- (show-tree-view! (world/mouseover-entity @c/state))
- (show-tree-view! (mouseover-grid-cell @c/state))
+ (show-tree-view! (world/mouseover-entity @app/state))
+ (show-tree-view! (mouseover-grid-cell @app/state))
  (show-tree-view! (ns-value-vars #{"forge"}))
 
  ; Idea:
@@ -56,12 +57,12 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable #(world/creature %
-                                 {:position [35 73]
-                                  :creature-id :creatures/dragon-red
-                                  :components {:entity/fsm {:fsm :fsms/npc
-                                                            :initial-state :npc-sleeping}
-                                               :entity/faction :evil}}))
+ (app/post-runnable #(world/creature %
+                                     {:position [35 73]
+                                      :creature-id :creatures/dragon-red
+                                      :components {:entity/fsm {:fsm :fsms/npc
+                                                                :initial-state :npc-sleeping}
+                                                   :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
@@ -175,7 +176,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:gdl.context/viewport @c/state)
+  (let [viewport (:gdl.context/viewport @app/state)
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
@@ -193,7 +194,7 @@
 
 (defn- show-tree-view! [m]
   {:pre [(map? m)]}
-  (c/add-actor @c/state
+  (c/add-actor @app/state
                (ui/window {:title "Tree View"
                            :close-button? true
                            :close-on-escape? true
