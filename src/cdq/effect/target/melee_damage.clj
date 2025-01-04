@@ -9,13 +9,6 @@
 (defn- damage-effect [entity]
   [:effects.target/damage (entity->melee-damage entity)])
 
-; FIXME no source
-; => to entity move
-(defn text [_ _entity _c]
-  (str "Damage based on entity strength."
-       #_(when source
-           (str "\n" (damage-info (entity->melee-damage @source))))))
-
 (defn applicable? [_ {:keys [effect/source] :as ctx}]
   (effect/applicable? (damage-effect @source) ctx))
 

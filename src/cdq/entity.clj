@@ -6,7 +6,6 @@
             [clojure.gdx.math.vector2 :as v]
             [gdl.math.shapes :as shape]))
 
-
 (defsystem create)
 (defmethod create :default [[_ v] _context]
   v)

@@ -4,9 +4,6 @@
             [gdl.context :as c]
             [gdl.utils :refer [rand-int-between]]))
 
-(defn- damage-info [{[min max] :damage/min-max}]
-  (str min "-" max " damage"))
-
 (defn- effective-armor-save [source* target*]
   (max (- (or (entity/stat target* :entity/armor-save) 0)
           (or (entity/stat source* :entity/armor-pierce) 0))
@@ -21,16 +18,6 @@
 
 (defn- armor-saves? [source* target*]
   (< (rand) (effective-armor-save source* target*)))
-
-(defn text [[_ damage] _entity _c]
-  (damage-info damage)
-  #_(if source
-      (let [modified (entity/damage @source damage)]
-        (if (= damage modified)
-          (damage-info damage)
-          (str (damage-info damage) "\nModified: " (damage/info modified))))
-      (damage-info damage)) ; property menu no source,modifiers
-  )
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target

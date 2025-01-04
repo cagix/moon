@@ -17,9 +17,6 @@
  )
 
 ; TODO targets projectiles with -50% hp !!
-(defn text [_ _entity _c]
-  "All visible targets")
-
 (defn applicable? [_ _]
   true)
 

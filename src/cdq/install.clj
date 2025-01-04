@@ -1,13 +1,11 @@
 (ns cdq.install
-  (:require [gdl.info :as info]
-            [gdl.utils :refer [install]]
+  (:require [gdl.utils :refer [install]]
             [cdq.context :as world]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]))
 
 (def entity
-  {:optional [#'info/text
-              #'entity/create
+  {:optional [#'entity/create
               #'world/create!
               #'entity/destroy
               #'entity/tick
@@ -22,19 +20,16 @@
                      cdq.entity.delete-after-animation-stopped? :entity/delete-after-animation-stopped?
                      cdq.entity.delete-after-duration :entity/delete-after-duration
                      cdq.entity.destroy-audiovisual :entity/destroy-audiovisual
-                     cdq.entity.faction :entity/faction
                      cdq.entity.fsm :entity/fsm
                      cdq.entity.hp :entity/hp
                      cdq.entity.image :entity/image
                      cdq.entity.inventory :entity/inventory
                      cdq.entity.line-render :entity/line-render
                      cdq.entity.mana :entity/mana
-                     cdq.entity.modifiers :entity/modifiers
                      cdq.entity.mouseover? :entity/mouseover?
                      cdq.entity.movement :entity/movement
                      cdq.entity.projectile-collision :entity/projectile-collision
                      cdq.entity.skills :entity/skills
-                     cdq.entity.species :entity/species
                      cdq.entity.string-effect :entity/string-effect
                      cdq.entity.temp-modifier :entity/temp-modifier}]
   (install entity ns-sym k))
@@ -69,8 +64,7 @@
 
 (def effect {:required [#'cdq.effect/applicable?
                         #'cdq.effect/handle]
-             :optional [#'info/text
-                        #'cdq.effect/useful?
+             :optional [#'cdq.effect/useful?
                         #'cdq.effect/render]})
 
 (doseq [[ns-sym k] '{cdq.effect.target-all :effects/target-all

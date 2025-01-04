@@ -1,17 +1,11 @@
 (ns cdq.operation
   (:refer-clojure :exclude [apply remove])
-  (:require [gdl.utils :refer [defsystem defcomponent]]
-            [clojure.math :as math]
-            [clojure.string :as str]))
+  (:require [gdl.utils :refer [defsystem defcomponent]]))
 
-(defsystem ^:private -apply)
-(defsystem ^:private -order)
-(defsystem ^:private -value-text)
+(defsystem -apply)
+(defsystem -order)
 
 (defcomponent :op/inc
-  (-value-text [[_ value]]
-    (str value))
-
   (-apply [[_ value] base-value]
     (+ base-value value))
 
@@ -19,9 +13,6 @@
     0))
 
 (defcomponent :op/mult
-  (-value-text [[_ value]]
-    (str value "%"))
-
   (-apply [[_ value] base-value]
     (* base-value (inc (/ value 100))))
 
@@ -39,17 +30,3 @@
 
 (defn remove [op other-op]
   (merge-with - op other-op))
-
-(defn- +? [n]
-  (case (math/signum n)
-    0.0 ""
-    1.0 "+"
-    -1.0 ""))
-
-(defn info [op k]
-  (str/join "\n"
-            (keep
-             (fn [{v 1 :as component}]
-               (when-not (zero? v)
-                 (str (+? v) (-value-text component) " " (str/capitalize (name k)))))
-             (sort-by -order op))))

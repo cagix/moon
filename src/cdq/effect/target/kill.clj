@@ -1,9 +1,6 @@
 (ns cdq.effect.target.kill
   (:require [cdq.context :as world]))
 
-(defn text [_ _entity _c]
-  "Kills target")
-
 (defn applicable? [_ {:keys [effect/target]}]
   (and target
        (:entity/fsm @target)))

@@ -1,9 +1,6 @@
 (ns cdq.effect.target.convert
   (:require [cdq.entity :as entity]))
 
-(defn text [_ _entity _c]
-  "Converts target to your side.")
-
 (defn applicable? [_ {:keys [effect/source effect/target]}]
   (and target
        (= (:entity/faction @target)

@@ -1,9 +1,5 @@
 (ns cdq.effect.target.stun
-  (:require [cdq.context :as world]
-            [gdl.utils :refer [readable-number]]))
-
-(defn text [[_ duration] _entity _c]
-  (str "Stuns for " (readable-number duration) " seconds"))
+  (:require [cdq.context :as world]))
 
 (defn applicable? [_ {:keys [effect/target]}]
   (and target
