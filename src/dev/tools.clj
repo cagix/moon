@@ -4,7 +4,6 @@
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [clojure.gdx.scene2d.group :refer [children]]))
@@ -17,8 +16,8 @@
                         #{"anvil", "gdl", "uf"})
 
  (post-runnable show-tree-view!)
- (show-tree-view! (world/mouseover-entity @app/state))
- (show-tree-view! (mouseover-grid-cell @app/state))
+ (show-tree-view! (world/mouseover-entity @c/state))
+ (show-tree-view! (mouseover-grid-cell @c/state))
  (show-tree-view! (ns-value-vars #{"forge"}))
 
  ; Idea:
@@ -67,7 +66,7 @@
  )
 
 (defn post-runnable [f]
-  (let [context @app/state]
+  (let [context @c/state]
     (gdx/post-runnable context (f context))))
 
 (defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
@@ -165,7 +164,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:gdl.context/viewport @app/state)
+  (let [viewport (:gdl.context/viewport @c/state)
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})

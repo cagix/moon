@@ -20,7 +20,6 @@
             [cdq.effect-context :as effect-ctx]
             [anvil.skill :as skill]
             [data.grid2d :as g2d]
-            [gdl.app :as app]
             [gdl.context :as c :refer [play-sound]]
             [cdq.context.info :as info]
             [gdl.graphics.camera :as cam]
@@ -35,17 +34,17 @@
             [gdl.val-max :as val-max]))
 
 (defcomponent ::tiled-map
-  (app/create [_ {::keys [level]}]
+  (c/create [_ {::keys [level]}]
     (:tiled-map level))
-  (app/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
+  (c/dispose [[_ tiled-map]] ; <- this context cleanup, also separate world-cleanup when restarting ?!
     (tiled/dispose tiled-map)))
 
 (defcomponent ::error
-  (app/create [_ _c]
+  (c/create [_ _c]
     nil))
 
 (defcomponent ::explored-tile-corners
-  (app/create [_ {::keys [tiled-map]}]
+  (c/create [_ {::keys [tiled-map]}]
     (atom (g2d/create-grid
            (tiled/tm-width  tiled-map)
            (tiled/tm-height tiled-map)
@@ -90,7 +89,7 @@
     :occupied #{}}))
 
 (defcomponent ::grid
-  (app/create [_ {::keys [tiled-map]}]
+  (c/create [_ {::keys [tiled-map]}]
     (g2d/create-grid
      (tiled/tm-width tiled-map)
      (tiled/tm-height tiled-map)
@@ -102,17 +101,17 @@
                             "all"  :all)))))))
 
 (defcomponent ::content-grid
-  (app/create [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
+  (c/create [[_ {:keys [cell-size]}] {::keys [tiled-map]}]
     (content-grid/create {:cell-size cell-size
                           :width  (tiled/tm-width  tiled-map)
                           :height (tiled/tm-height tiled-map)})))
 
 (defcomponent ::entity-ids
-  (app/create [_ _c]
+  (c/create [_ _c]
     (atom {})))
 
 (defcomponent :gdl.context.timer/elapsed-time
-  (app/create [_ _c]
+  (c/create [_ _c]
     0))
 
 ; TODO this passing w. world props ...
@@ -132,7 +131,7 @@
 (declare spawn-creature)
 
 (defcomponent ::player-eid
-  (app/create [_ {::keys [level] :as c}]
+  (c/create [_ {::keys [level] :as c}]
     (assert (:start-position level))
     (spawn-creature c (player-entity-props (:start-position level)))))
 
@@ -141,7 +140,7 @@
     (aset arr x y (boolean (cell->blocked? cell)))))
 
 (defcomponent ::raycaster
-  (app/create [_ {::keys [grid]}]
+  (c/create [_ {::keys [grid]}]
     (let [width  (g2d/width  grid)
           height (g2d/height grid)
           arr (make-array Boolean/TYPE width height)]
@@ -586,7 +585,7 @@
     (actor/user-object skill-button)))
 
 (defcomponent ::player-message
-  (app/create [[_ {:keys [duration-seconds]}] _context]
+  (c/create [[_ {:keys [duration-seconds]}] _context]
     (atom {:duration-seconds duration-seconds})))
 
 (defn show-player-msg [{::keys [player-message]} text]
@@ -622,15 +621,15 @@
     (spawn-creature c (update props :position tile->middle))))
 
 (defcomponent ::level
-  (app/create [[_ world-id] c]
+  (c/create [[_ world-id] c]
     (generate-level c (c/build c world-id))))
 
 (defcomponent ::stage-actors
-  (app/create [_ c]
+  (c/create [_ c]
     (c/reset-stage c (widgets c))))
 
 (defcomponent ::spawn-enemies
-  (app/create [_ c]
+  (c/create [_ c]
     (spawn-enemies c (::tiled-map c))))
 
 ; TODO unused

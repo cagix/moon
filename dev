@@ -1,1 +1,1 @@
-DEV_MODE=true lein run -m clojure.gdx.dev-loop gdl.app
+DEV_MODE=true lein run -m clojure.gdx.dev-loop gdl.context
