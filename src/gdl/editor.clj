@@ -549,7 +549,7 @@
              [:gdl.context/ui :skin-scale/x1]
              [:gdl.context/stage]
              [::stage-actors]]
-   :transactions '[gdl.context/tx-stage-act
+   :transactions '[gdl.context/update-stage
                    graphics/draw-stage]})
 
 (defn -main []

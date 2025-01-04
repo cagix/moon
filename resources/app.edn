@@ -59,8 +59,8 @@
                 gdl.graphics/draw-stage
 
                 ; updates
-                gdl.context/tx-stage-act
-                cdq.context/check-player-input
+                gdl.context/update-stage
+                cdq.context/handle-player-input
                 cdq.context/update-mouseover-entity
                 cdq.context/update-paused-state
                 cdq.context/progress-time-if-not-paused

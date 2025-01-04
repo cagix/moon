@@ -386,6 +386,6 @@
     (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed))))
   c)
 
-(defn tx-stage-act [context]
+(defn update-stage [context]
    (ui/act (stage context) context)
    context)

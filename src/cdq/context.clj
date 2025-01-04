@@ -735,9 +735,8 @@
   (let [[x y] (:left-bottom entity)]
     (c/rectangle c x y (:width entity) (:height entity) color)))
 
-(defn check-player-input [{:keys [cdq.context/player-eid] :as c}]
-  (state/manual-tick (entity/state-obj @player-eid)
-                     c)
+(defn handle-player-input [{:keys [cdq.context/player-eid] :as c}]
+  (state/manual-tick (entity/state-obj @player-eid) c)
   c)
 
 (defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
