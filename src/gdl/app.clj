@@ -56,7 +56,7 @@
   (let [{:keys [config context transactions]} (if (string? app-config)
                                                 (read-edn-resource app-config)
                                                 app-config)
-        txs (doall (map load-tx transactions))] ; TODO 'require' ?
+        txs (doall (map load-tx transactions))]
     (lwjgl/start config
                  (reify lwjgl/Application
                    (create [_]
@@ -72,9 +72,9 @@
                      (run! #(resize % width height) @state))))))
 
 (defn -main
-  "Calls [start] with `\"app.edn\"`."
+  "Calls [start] with `\"gdl.app.edn\"`."
   []
-  (start "app.edn"))
+  (start "gdl.app.edn"))
 
 (defn- load-all [manager assets]
   (doseq [[file asset-type] assets]
