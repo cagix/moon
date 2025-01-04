@@ -17,7 +17,7 @@
             [data.grid2d :as g2d]
             [gdl.app :as app]
             [gdl.context :as c]
-            [cdq.info :refer [info-text]]
+            [cdq.context.info :as info]
             [gdl.graphics.camera :as cam]
             [gdl.math.raycaster :as raycaster]
             [cdq.potential-fields :as potential-fields]
@@ -156,10 +156,10 @@
   ; items then have 2x pretty-name
   #_(.setText (.getTitleLabel window)
               (if-let [entity (mouseover-entity c)]
-                (info-text c [:property/pretty-name (:property/pretty-name entity)])
+                (info/text c [:property/pretty-name (:property/pretty-name entity)])
                 "Entity Info"))
   (when-let [entity (mouseover-entity c)]
-    (info-text c ; don't use select-keys as it loses Entity record type
+    (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc entity disallowed-keys))))
 
 (defn entity-info-window [{:keys [gdl.context/viewport] :as c}]

@@ -1,6 +1,6 @@
 (ns anvil.widgets.action-bar
-  (:require [cdq.info :refer [info-text]]
-            [cdq.context :as world]
+  (:require [cdq.context :as world]
+            [cdq.context.info :as info]
             [gdl.ui :refer [add-tooltip!] :as ui]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :refer [add-actor!]]
@@ -10,7 +10,7 @@
   (let [{:keys [horizontal-group button-group]} (world/get-action-bar c)
         button (ui/image-button image (fn []) {:scale 2})]
     (actor/set-id button id)
-    (add-tooltip! button #(info-text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (add-actor! horizontal-group button)
     (button-group/add button-group button)
     nil))
