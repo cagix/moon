@@ -534,11 +534,11 @@
   context)
 
 (defn -main []
-  (app/start {:app {:title "Editor"
-                    :fps 60
-                    :width 1440
-                    :height 900
-                    :taskbar-icon "moon.png"}
+  (app/start {:config {:title "Editor"
+                       :fps 60
+                       :width 1440
+                       :height 900
+                       :taskbar-icon "moon.png"}
               :context [[:gdl.context/unit-scale 1]
                         [:gdl.context/batch]
                         [:gdl.context/db {:schema "schema.edn"
