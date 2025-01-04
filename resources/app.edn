@@ -57,7 +57,7 @@
 
                 ; graphics
                 gdl.context/clear-screen
-                cdq.graphics/render-tiled-map
+                cdq.graphics.tiled-map/render
                 cdq.graphics/draw-world-view
                 gdl.context/tx-stage-draw
 

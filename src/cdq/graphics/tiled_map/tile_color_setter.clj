@@ -1,4 +1,4 @@
-(ns cdq.tile-color-setter
+(ns cdq.graphics.tiled-map.tile-color-setter
   (:require [clojure.gdx :as gdx :refer [white black]]
             [gdl.math.raycaster :as raycaster]))
 
