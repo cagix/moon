@@ -9,7 +9,6 @@
             [cdq.entity :as entity]
             [gdl.error :refer [pretty-pst]]
             [cdq.entity.state :as state]
-            [cdq.tile-color-setter :as tile-color-setter]
             [anvil.level :refer [generate-level]]
             [anvil.widgets :as widgets]
             [anvil.widgets.inventory :as inventory]
@@ -747,18 +746,6 @@
                                       :as context}]
   (cam/set-position! (:camera world-viewport)
                      (:position @player-eid))
-  context)
-
-(defn render-tiled-map [{:keys [gdl.context/world-viewport
-                                cdq.context/tiled-map
-                                cdq.context/raycaster
-                                cdq.context/explored-tile-corners]
-                         :as context}]
-  (c/draw-tiled-map context
-                    tiled-map
-                    (tile-color-setter/create raycaster
-                                              explored-tile-corners
-                                              (cam/position (:camera world-viewport))))
   context)
 
 (defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]

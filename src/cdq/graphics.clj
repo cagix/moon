@@ -2,6 +2,7 @@
   (:require [gdl.context :as c]
             [gdl.context.timer :as timer]
             [gdl.error :refer [pretty-pst]]
+            [gdl.graphics.camera :as cam]
             [gdl.utils :refer [defsystem sort-by-order]]
             [gdl.val-max :as val-max]
             [cdq.context :refer [active-entities
@@ -13,7 +14,8 @@
                                  creatures-in-los-of-player
                                  world-item?
                                  item-place-position]]
-            [cdq.entity :as entity]))
+            [cdq.entity :as entity]
+            [cdq.tile-color-setter :as tile-color-setter]))
 
 (defn- draw-skill-image [c image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
@@ -249,3 +251,15 @@
                           (render-entities c)
                           (render-after-entities c)))
   c)
+
+(defn render-tiled-map [{:keys [gdl.context/world-viewport
+                                cdq.context/tiled-map
+                                cdq.context/raycaster
+                                cdq.context/explored-tile-corners]
+                         :as context}]
+  (c/draw-tiled-map context
+                    tiled-map
+                    (tile-color-setter/create raycaster
+                                              explored-tile-corners
+                                              (cam/position (:camera world-viewport))))
+  context)

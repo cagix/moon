@@ -52,11 +52,16 @@
            [:cdq.context/error nil]
            [:cdq.context/spawn-enemies]
            [:cdq.context/player-message {:duration-seconds 1.5}]]
- :transactions [gdl.context/clear-screen
+ :transactions [
                 cdq.context/set-camera-on-player-position
-                cdq.context/render-tiled-map
+
+                ; graphics
+                gdl.context/clear-screen
+                cdq.graphics/render-tiled-map
                 cdq.graphics/draw-world-view
                 gdl.context/tx-stage-draw
+
+                ; updates
                 gdl.context/tx-stage-act
                 cdq.context/check-player-input
                 cdq.context/update-mouseover-entity
