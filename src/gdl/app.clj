@@ -71,6 +71,11 @@
                    (resize [_ width height]
                      (run! #(resize % width height) @state))))))
 
+(defn -main
+  "Calls [start] with `\"app.edn\"`."
+  []
+  (start "app.edn"))
+
 (defn- load-all [manager assets]
   (doseq [[file asset-type] assets]
     (assets/load manager file asset-type))
