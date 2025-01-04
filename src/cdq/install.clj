@@ -1,13 +1,12 @@
 (ns cdq.install
   (:require [gdl.utils :refer [install]]
-            [cdq.context :as world]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]))
 
 (def entity
   {:optional [; cdq.context.info/segment
               #'entity/create
-              #'world/create!
+              ;#'world/create!
               #'entity/destroy
               #'entity/tick
               ; cdq.entity.render/below/default/above/info
