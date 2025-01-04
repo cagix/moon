@@ -76,9 +76,9 @@
                    (c/build c skill-id)))
 
 (defn- create-item! [{:keys [cdq.context/player-eid] :as c} item-id]
-  (world/item c
-              (:position @player-eid)
-              (c/build c item-id)))
+  (world/spawn-item c
+                    (:position @player-eid)
+                    (c/build c item-id)))
 
 (defn- mouseover-grid-cell [c]
   @(world/grid-cell c (mapv int (c/world-mouse-position c))))

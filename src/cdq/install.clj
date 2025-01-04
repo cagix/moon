@@ -1,18 +1,21 @@
 (ns cdq.install
-  (:require [gdl.utils :refer [install]]
-            [cdq.entity :as entity]
-            [cdq.entity.state :as state]))
+  (:require [gdl.utils :refer [install]])
 
-(def entity
+; TODO tests ! - all implemented/wired correctly/etc?
+; TODO tests also interesting .... !
+; keep running , show green/etc
+  )
+
+#_(def entity
   {:optional [; #'cdq.context.info/segment
               ; #'entity/create
               ; #'world/create!
               ; #'world/destroy!
-              ; #'entity/tick
+              #'entity/tick
               ; cdq.entity.render/below/default/above/info
               ]})
 
-(def entity-state
+#_(def entity-state
   (merge-with concat
               entity
               {:optional [#'state/enter
@@ -25,21 +28,6 @@
                           ;#'state/draw-gui-view
                           ]}))
 
-; TODO tests ! - all implemented/wired correctly/etc?
-; TODO tests also interesting .... !
-; keep running , show green/etc
-
-(doseq [[ns-sym k] '{cdq.entity.state.active-skill :active-skill
-                     cdq.entity.state.npc-dead :npc-dead
-                     cdq.entity.state.npc-idle :npc-idle
-                     cdq.entity.state.npc-moving :npc-moving
-                     cdq.entity.state.npc-sleeping :npc-sleeping
-                     cdq.entity.state.player-dead :player-dead
-                     cdq.entity.state.player-idle :player-idle
-                     cdq.entity.state.player-item-on-cursor :player-item-on-cursor
-                     cdq.entity.state.player-moving :player-moving
-                     cdq.entity.state.stunned :stunned}]
-  (install entity-state ns-sym k))
 
 (def effect {:required [#'cdq.effect/applicable?
                         #'cdq.effect/handle]
