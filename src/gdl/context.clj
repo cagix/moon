@@ -383,4 +383,13 @@
 (defn check-camera-controls [{::keys [world-viewport] :as c}]
   (let [camera (:camera world-viewport)]
     (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
-    (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed)))))
+    (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed))))
+  c)
+
+(defn tx-stage-act [context]
+   (ui/act (stage context) context)
+   context)
+
+(defn tx-stage-draw [context]
+   (ui/draw (stage context) context)
+   context)

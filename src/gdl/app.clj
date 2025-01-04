@@ -32,13 +32,21 @@
           context
           components))
 
+(defn- reduce-transact [context transactions]
+  (reduce (fn [context f]
+            (f context))
+          context
+          transactions))
+
 (def state (atom nil))
 
 (comment
  (clojure.pprint/pprint (sort (keys @state)))
  )
 
-(defn start [{:keys [config context]} render]
+(defn start
+  "A transaction is a `(fn [context] context)`, which can emit also side-effects or return a new context."
+  [{:keys [config context transactions]}]
   (lwjgl/start config
                (reify lwjgl/Application
                  (create [_]
@@ -48,7 +56,7 @@
                    (run! dispose @state))
 
                  (render [_]
-                   (swap! state render))
+                   (swap! state reduce-transact transactions))
 
                  (resize [_ width height]
                    (run! #(resize % width height) @state)))))

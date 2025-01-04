@@ -739,22 +739,27 @@
 
 (defn check-player-input [{:keys [cdq.context/player-eid] :as c}]
   (state/manual-tick (entity/state-obj @player-eid)
-                     c))
+                     c)
+  c)
 
 (defn set-camera-on-player-position [{:keys [gdl.context/world-viewport
-                                             cdq.context/player-eid]}]
+                                             cdq.context/player-eid]
+                                      :as context}]
   (cam/set-position! (:camera world-viewport)
-                     (:position @player-eid)))
+                     (:position @player-eid))
+  context)
 
 (defn render-tiled-map [{:keys [gdl.context/world-viewport
                                 cdq.context/tiled-map
                                 cdq.context/raycaster
-                                cdq.context/explored-tile-corners] :as c}]
-  (c/draw-tiled-map c
+                                cdq.context/explored-tile-corners]
+                         :as context}]
+  (c/draw-tiled-map context
                     tiled-map
                     (tile-color-setter/create raycaster
                                               explored-tile-corners
-                                              (cam/position (:camera world-viewport)))))
+                                              (cam/position (:camera world-viewport))))
+  context)
 
 (defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
   (let [player @player-eid
@@ -776,7 +781,9 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (assoc c :cdq.context/mouseover-eid new-eid)))
 
-(defn update-paused-state [{:keys [cdq.context/player-eid error] :as c} pausing?]
+(def ^:private ^:dbg-flag pausing? true)
+
+(defn update-paused-state [{:keys [cdq.context/player-eid error] :as c}]
   (assoc c :cdq.context/paused? (or error
                                     (and pausing?
                                          (state/pause-game? (entity/state-obj @player-eid))
@@ -833,7 +840,8 @@
                       (all-entities c))]
     (remove-entity c eid)
     (doseq [component @eid]
-      (destroy! component eid c))))
+      (destroy! component eid c)))
+  c)
 
 (defmethod destroy! :entity/destroy-audiovisual
   [[_ audiovisuals-id] eid c]
@@ -861,7 +869,8 @@
 (defn check-ui-key-listeners [c]
   (check-window-hotkeys c)
   (when (key-just-pressed? c close-windows-key)
-    (close-all-windows (c/stage c))))
+    (close-all-windows (c/stage c)))
+  c)
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)

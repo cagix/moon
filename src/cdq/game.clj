@@ -1,5 +1,5 @@
 (ns cdq.game
-  (:require [clojure.gdx :refer [clear-screen black]]
+  (:require [clojure.gdx :as gdx]
             [gdl.context :as c]
             [gdl.error :refer [pretty-pst]]
             [gdl.ui :as ui]
@@ -48,35 +48,38 @@
          (draw-body-rect c entity :red)
          (pretty-pst t))))))
 
-(def ^:private ^:dbg-flag pausing? true)
+(defn clear-screen [context]
+  (gdx/clear-screen gdx/black)
+  context)
 
-(defn process-frame [c]
-  (clear-screen black)
-  ; FIXME position DRY
-  (set-camera-on-player-position c)
-  ; FIXME position DRY
-  (render-tiled-map c)
-  ; render/entities
+(defn draw-world-view [c]
   (c/draw-on-world-view c
                         (fn [c]
                           (render-before-entities c)
                           ; FIXME position DRY (from player)
                           (render-entities c)
                           (render-after-entities c)))
-  (let [stage (c/stage c)]
-    (ui/draw stage c)
-    (ui/act  stage c))
-  (check-player-input c)
-  (let [c (-> c
-              update-mouseover-entity
-              (update-paused-state pausing?))
-        c (if (:cdq.context/paused? c)
-            c
-            (-> c
-                update-time
-                tick-potential-fields
-                tick-entities))]
-    (remove-destroyed-entities c) ; do not pause this as for example pickup item, should be destroyed.
-    (c/check-camera-controls c)
-    (check-ui-key-listeners c)
-    c))
+  c)
+
+(defn progress-time-if-not-paused [c]
+  (if (:cdq.context/paused? c)
+    c
+    (-> c
+        update-time
+        tick-potential-fields
+        tick-entities)))
+
+(def process-frame
+  [clear-screen
+   set-camera-on-player-position
+   render-tiled-map
+   draw-world-view
+   c/tx-stage-draw
+   c/tx-stage-act
+   check-player-input
+   update-mouseover-entity
+   update-paused-state
+   progress-time-if-not-paused
+   remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
+   c/check-camera-controls
+   check-ui-key-listeners])

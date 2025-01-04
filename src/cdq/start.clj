@@ -7,5 +7,4 @@
 (defn -main
   "Reads the application config from `app.edn` in resources and starts the game."
   []
-  (app/start (read-edn-resource "app.edn")
-             game/process-frame))
+  (app/start (assoc (read-edn-resource "app.edn") :transactions game/process-frame)))

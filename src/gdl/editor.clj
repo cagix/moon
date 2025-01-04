@@ -527,31 +527,29 @@
                  (tabs-table       context "custom label text here")]]
     (ctx/add-actor context actor)))
 
-(defn- render-stage [context]
-  (let [stage (ctx/stage context)]
-    (ui/act  stage context)
-    (ui/draw stage context))
-  context)
+(def ^:private config
+  {:config {:title "Editor"
+            :fps 60
+            :width 1440
+            :height 900
+            :taskbar-icon "moon.png"}
+   :context [[:gdl.context/unit-scale 1]
+             [:gdl.context/batch]
+             [:gdl.context/db {:schema "schema.edn"
+                               :properties "properties.edn"}]
+             [:gdl.context/assets "resources/"]
+             [:gdl.context/viewport {:width 1440 :height 900}]
+
+             ;; just because of sprite edn->value of db requires world-unit-scale
+             [:gdl.context/world-unit-scale 1]
+             [:gdl.context/world-viewport {:width 1440 :height 900}]
+             ;;
+
+             [:gdl.context/ui :skin-scale/x1]
+             [:gdl.context/stage]
+             [::stage-actors]]
+   :transactions [ctx/tx-stage-act
+                  ctx/tx-stage-draw]})
 
 (defn -main []
-  (app/start {:config {:title "Editor"
-                       :fps 60
-                       :width 1440
-                       :height 900
-                       :taskbar-icon "moon.png"}
-              :context [[:gdl.context/unit-scale 1]
-                        [:gdl.context/batch]
-                        [:gdl.context/db {:schema "schema.edn"
-                                          :properties "properties.edn"}]
-                        [:gdl.context/assets "resources/"]
-                        [:gdl.context/viewport {:width 1440 :height 900}]
-
-                        ;; just because of sprite edn->value of db requires world-unit-scale
-                        [:gdl.context/world-unit-scale 1]
-                        [:gdl.context/world-viewport {:width 1440 :height 900}]
-                        ;;
-
-                        [:gdl.context/ui :skin-scale/x1]
-                        [:gdl.context/stage]
-                        [::stage-actors]]}
-             render-stage))
+  (app/start config))
