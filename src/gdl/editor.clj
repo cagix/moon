@@ -6,20 +6,17 @@
             :fps 60
             :width 1440
             :height 900
-            :taskbar-icon "icon.png"} ; TODO and 'name' is still 'JAVA'
+            :taskbar-icon "icon.png"}
    :context [[:gdl.context/unit-scale 1]
              [:gdl.context/batch]
-
-             ; TODO need test DB
-             ;
              [:gdl.context/db {:schema "schema.edn"
                                :properties "properties.edn"}]
-             ;;
-
              [:gdl.context/assets "resources/"]
              [:gdl.context/viewport {:width 1440 :height 900}]
 
-             ;; just because of sprite edn->value of db requires world-unit-scale
+             ;; FIXME just because of sprite edn->value of db requires world-unit-scale
+             ; => editor should not use 'sprite'
+             ; => then it should not use 'build' or just build into textures?
              [:gdl.context/world-unit-scale 1]
              [:gdl.context/world-viewport {:width 1440 :height 900}]
              ;;
