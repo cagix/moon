@@ -23,14 +23,15 @@
                         #{"clojure.gdx", "gdl", "cdq", "anvil"})
 
  ; use post-runnable to get proper error messages in console
- (app/post-runnable (fn [_context]
-                      (show-tree-view! (select-keys @app/state [:clojure.gdx/app]))))
+
+ (app/post-runnable (fn [_] (show-tree-view! "Application Context" @app/state)))
+ (app/post-runnable (fn [_] (show-table-view "Application Context" @app/state)))
 
  (app/post-runnable (fn [_x] (println "hi")))
 
- (show-tree-view! (world/mouseover-entity @app/state))
- (show-tree-view! (mouseover-grid-cell @app/state))
- (show-tree-view! (ns-value-vars #{"forge"}))
+ (show-tree-view! "Mouseover Entity" (world/mouseover-entity @app/state))
+ (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
+ (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"forge"}))
 
  ; Idea:
  ; * Generate the tree as data-structure first
@@ -108,13 +109,18 @@
    (var? v) (str "[GOLD]" (:name (meta v)) "[] : " (->v-str @v))
    :else (str "[ORANGE]" (class->label-str v) "[]")))
 
+(defn- k->label-str [k]
+  (str "[LIGHT_GRAY]:"
+       (when-let [ns (namespace k)] (str ns "/"))
+       "[][WHITE]"
+       (name k)
+       "[]"))
+
 ; TODO truncate ...
 (defn- labelstr [k v]
-  (str
-   (if (keyword? k)
-     (str "[LIGHT_GRAY]:" (when-let [ns (namespace k)] (str ns "/")) " [] [WHITE]" (name k) "[]")
-     k)
-   ": [GOLD]" (str (->v-str v)) "[]"))
+  (str (if (keyword? k) (k->label-str k) k)
+       ": [GOLD]"
+       (str (->v-str v)) "[]"))
 
 (defn- add-elements! [node elements]
   (doseq [element elements]
@@ -166,9 +172,14 @@
       (try
        (let [node (t-node (ui/label (labelstr k v)))]
          (.add parent-node node) ; no t-node-add!: tree cannot be casted to tree-node ... , Tree itself different .add
+
          #_(when (instance? clojure.lang.Atom v) ; StackOverFLow
            (add-nodes node level @v))
-         (add-nodes node level v))
+
+         #_(add-nodes node level v)
+
+         )
+
        (catch Throwable t
          (throw (ex-info "" {:k k :v v} t))
          #_(.add parent-node (t-node (ui/label (str "[RED] "k " - " t))))
@@ -182,7 +193,7 @@
                          :pack? true})
         scroll-pane (scroll-pane table)]
     {:actor scroll-pane
-     :width (/ (:width viewport) 2)
+     :width (+ 100 (/ (:width viewport) 2))
      :height
      (- (:height viewport) 50)
      #_(min (- (:height viewport) 50) (height table))}))
@@ -192,10 +203,25 @@
     (add-map-nodes! (into (sorted-map) m)
                     0)))
 
-(defn- show-tree-view! [m]
+(defn- generate-table [m]
+  (ui/table {:rows (for [[k v] (sort-by key m)]
+                     [(ui/label (k->label-str k))
+                      (ui/label (str (class v)))])}))
+
+(defn- show-table-view [title m]
   {:pre [(map? m)]}
   (c/add-actor @app/state
-               (ui/window {:title "Tree View"
+               (ui/window {:title title
+                           :close-button? true
+                           :close-on-escape? true
+                           :center? true
+                           :rows [[(scroll-pane-cell [[(generate-table m)]])]]
+                           :pack? true})))
+
+(defn- show-tree-view! [title m]
+  {:pre [(map? m)]}
+  (c/add-actor @app/state
+               (ui/window {:title title
                            :close-button? true
                            :close-on-escape? true
                            :center? true
