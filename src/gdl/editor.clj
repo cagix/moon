@@ -7,8 +7,7 @@
             :width 1440
             :height 900
             :taskbar-icon "icon.png"}
-   :context [[:gdl.context/unit-scale 1]
-             [:gdl.context/batch]
+   :context [[:gdl.context/batch]
              [:gdl.context/db {:schema "schema.edn"
                                :properties "properties.edn"}]
              [:gdl.context/assets "resources/"]

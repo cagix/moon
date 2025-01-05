@@ -73,7 +73,7 @@
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [x y contentimage minmaxval name]
+        render-hpmana-bar (fn [c x y contentimage minmaxval name]
                             (c/draw-image c rahmen [x y])
                             (c/draw-image c
                                           (c/sub-sprite c
@@ -81,11 +81,11 @@
                                                         [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                           [x y])
                             (render-infostr-on-bar c (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid]}]
+    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid] :as c}]
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (entity/mana        player-entity) "MP")))})))
+                         (render-hpmana-bar c x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
+                         (render-hpmana-bar c x y-mana manacontent (entity/mana        player-entity) "MP")))})))
 
 (def ^:private help-text
   "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
