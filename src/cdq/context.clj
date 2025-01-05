@@ -1,14 +1,15 @@
 (ns cdq.context
   (:require [anvil.world.potential-field :as potential-field]
             [cdq.effect :as effect]
+            [cdq.inventory :as inventory]
             [gdl.context.timer :as timer]
             [gdl.graphics.animation :as animation]
             [gdl.malli :as m]
+            [cdq.widgets.inventory :as widgets.inventory]
             [cdq.fsm :as fsm]
             [cdq.entity :as entity]
             [gdl.error :refer [pretty-pst]]
             [cdq.entity.state :as state]
-            [anvil.widgets.inventory :as inventory]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black button-just-pressed?]]
@@ -411,11 +412,11 @@
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
-                 (cdq.inventory/valid-slot? cell item)))
+                 (inventory/valid-slot? cell item)))
     (when (:entity/player? entity)
-      (inventory/set-item-image-in-widget c cell item))
+      (widgets.inventory/set-item-image-in-widget c cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
-    (when (cdq.inventory/applies-modifiers? cell)
+    (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-add (:entity/modifiers item)))))
 
 (defn remove-item [c eid cell]
@@ -423,9 +424,9 @@
         item (get-in (:entity/inventory entity) cell)]
     (assert item)
     (when (:entity/player? entity)
-      (inventory/remove-item-from-widget c cell))
+      (widgets.inventory/remove-item-from-widget c cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
-    (when (cdq.inventory/applies-modifiers? cell)
+    (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-remove (:entity/modifiers item)))))
 
 ; TODO doesnt exist, stackable, usable items with action/skillbar thingy
@@ -443,7 +444,7 @@
 ; TODO no items which stack are available
 (defn stack-item [c eid cell item]
   (let [cell-item (get-in (:entity/inventory @eid) cell)]
-    (assert (cdq.inventory/stackable? item cell-item))
+    (assert (inventory/stackable? item cell-item))
     ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
     ; first remove and then place, just update directly  item ...
     (concat (remove-item c eid cell)
@@ -452,9 +453,9 @@
 (defn pickup-item [c eid item]
   (let [[cell cell-item] (entity/can-pickup-item? @eid item)]
     (assert cell)
-    (assert (or (cdq.inventory/stackable? item cell-item)
+    (assert (or (inventory/stackable? item cell-item)
                 (nil? cell-item)))
-    (if (cdq.inventory/stackable? item cell-item)
+    (if (inventory/stackable? item cell-item)
       (stack-item c eid cell item)
       (set-item c eid cell item))))
 
@@ -594,7 +595,7 @@
 
 (defmethod create! :entity/inventory
   [[k items] eid c]
-  (swap! eid assoc k cdq.inventory/empty-inventory)
+  (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
     (pickup-item c eid item)))
 
@@ -1013,7 +1014,7 @@
     (cond
      ; PUT ITEM IN EMPTY CELL
      (and (not item-in-cell)
-          (cdq.inventory/valid-slot? cell item-on-cursor))
+          (inventory/valid-slot? cell item-on-cursor))
      (do
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
@@ -1022,7 +1023,7 @@
 
      ; STACK ITEMS
      (and item-in-cell
-          (cdq.inventory/stackable? item-in-cell item-on-cursor))
+          (inventory/stackable? item-in-cell item-on-cursor))
      (do
       (play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
@@ -1031,7 +1032,7 @@
 
      ; SWAP ITEMS
      (and item-in-cell
-          (cdq.inventory/valid-slot? cell item-on-cursor))
+          (inventory/valid-slot? cell item-on-cursor))
      (do
       (play item-put-sound)
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again

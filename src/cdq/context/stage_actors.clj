@@ -14,7 +14,7 @@
             [cdq.context.info :as info]
             [cdq.entity :as entity]
             ;
-            [anvil.widgets.inventory :as inventory]))
+            [cdq.widgets.inventory :as inventory]))
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]

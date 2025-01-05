@@ -1,4 +1,4 @@
-(ns ^:no-doc anvil.ui.skill-window)
+(ns ^:no-doc cdq.widgets.skill-window)
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player-eid))

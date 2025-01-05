@@ -1,21 +1,20 @@
-(ns anvil.widgets.inventory
+(ns cdq.widgets.inventory
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.inventory :refer [empty-inventory] :as inventory]
+            [cdq.context.info :as info]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [data.grid2d :as g2d]
             [gdl.context :as c]
-            [cdq.context.info :as info]
-            [gdl.ui :refer [set-drawable!
-                            ui-widget
+            [gdl.ui :refer [ui-widget
                             texture-region-drawable
                             image-widget
                             ui-stack
+                            set-drawable!
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [gdl.val-max :as val-max]
             [clojure.gdx.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
@@ -123,11 +122,11 @@
               :rows [[{:actor (inventory-table c)
                        :pad 4}]]}))
 
-(defn- cell-widget [c cell]
+(defn- inventory-cell-widget [c cell]
   (get (::table (get (:windows (c/stage c)) :inventory-window)) cell))
 
 (defn set-item-image-in-widget [c cell item]
-  (let [cell-widget (cell-widget c cell)
+  (let [cell-widget (inventory-cell-widget c cell)
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (scene2d.utils/set-min-size! drawable cell-size)
@@ -135,7 +134,7 @@
     (add-tooltip! cell-widget #(info/text % item))))
 
 (defn remove-item-from-widget [c cell]
-  (let [cell-widget (cell-widget c cell)
+  (let [cell-widget (inventory-cell-widget c cell)
         image-widget (get cell-widget :image)]
     (set-drawable! image-widget (slot->background c (cell 0)))
     (remove-tooltip! cell-widget)))
