@@ -1,17 +1,62 @@
 (ns cdq.context.stage-actors
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
+            ;
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.dev-menu :as dev-menu]
             [gdl.utils :refer [readable-number dev-mode?]]
             [gdl.val-max :as val-max]
+            ;
             [cdq.context :refer [mouseover-entity]]
             [cdq.context.info :as info]
             [cdq.entity :as entity]
-            [anvil.widgets :as widgets]
+            ;
             [anvil.widgets.inventory :as inventory]))
+
+(defn- action-bar-button-group []
+  (let [actor (ui-actor {})]
+    (.setName actor "action-bar/button-group")
+    (actor/set-user-object actor (ui/button-group {:max-check-count 1
+                                                   :min-check-count 0}))
+    actor))
+
+(defn- action-bar []
+  (let [group (ui/horizontal-group {:pad 2 :space 2})]
+    (.setUserObject group :ui/action-bar)
+    (group/add-actor! group (action-bar-button-group))
+    group))
+
+(defn- action-bar-table [_context]
+  (ui/table {:rows [[{:actor (action-bar)
+                      :expand? true
+                      :bottom? true}]]
+             :id :action-bar-table
+             :cell-defaults {:pad 2}
+             :fill-parent? true}))
+
+(defn- draw-player-message [{:keys [gdl.context/viewport
+                                    cdq.context/player-message] :as c}]
+  (when-let [text (:text @player-message)]
+    (c/draw-text c
+                 {:x (/ (:width viewport) 2)
+                  :y (+ (/ (:height viewport) 2) 200)
+                  :text text
+                  :scale 2.5
+                  :up? true})))
+
+(defn- check-remove-message [{:keys [cdq.context/player-message] :as c}]
+  (when (:text @player-message)
+    (swap! player-message update :counter + (gdx/delta-time c))
+    (when (>= (:counter @player-message)
+              (:duration-seconds @player-message))
+      (swap! player-message dissoc :counter :text))))
+
+(defn- player-message []
+  (ui-actor {:draw draw-player-message
+             :act  check-remove-message}))
 
 (defn- render-infostr-on-bar [c infostr x y h]
   (c/draw-text c
@@ -42,7 +87,7 @@
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (entity/mana        player-entity) "MP")))})))
 
-(def help-text
+(def ^:private help-text
   "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
 
 (defn- dev-menu-config [c]
@@ -101,7 +146,7 @@
     (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc entity disallowed-keys))))
 
-(defn entity-info-window [{:keys [gdl.context/viewport] :as c}]
+(defn- entity-info-window [{:keys [gdl.context/viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window
@@ -126,8 +171,8 @@
 
 (defn create [_ c]
   (c/reset-stage c [(dev-menu c)
-                    (widgets/action-bar-table c)
+                    (action-bar-table c)
                     (hp-mana-bar c)
                     (widgets-windows c)
                     (widgets-player-state-draw-component c)
-                    (widgets/player-message)]))
+                    (player-message)]))
