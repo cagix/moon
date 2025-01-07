@@ -275,8 +275,13 @@
       (when draw
         (draw (application-state this))))
     (act [_delta]
-      (when act
-        (act (application-state this))))))
+      (when (Actor/.getStage this)
+        (let [context (application-state this)]
+          (assert context)
+          (assert (:clojure.gdx/input context)
+                  (str "(pr-str (sort (keys context))): " (pr-str (sort (keys context))))))
+        (when act
+          (act (application-state this)))))))
 
 (defn ui-widget [draw!]
   (proxy [Widget] []

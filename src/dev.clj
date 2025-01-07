@@ -195,8 +195,8 @@
                          :pack? true})
         scroll-pane (scroll-pane table)]
     {:actor scroll-pane
-     :width (- (:width viewport) 100) ; (+ 100 (/ (:width viewport) 2))
-     :height (- (:height viewport) 200) ; (- (:height viewport) 50) #_(min (- (:height viewport) 50) (height table))
+     :width  200 ; (- (:width viewport) 100) ; (+ 100 (/ (:width viewport) 2))
+     :height 200 ; (- (:height viewport) 200) ; (- (:height viewport) 50) #_(min (- (:height viewport) 50) (height table))
      }))
 
 (defn- generate-tree [m]
