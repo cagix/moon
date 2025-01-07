@@ -9,9 +9,8 @@
                  [clojure.gdx "1.13.0-0.1"]
                  ;[com.github.damn/clojure.gdx "42cc27bd53"]
 
-                 [clojure.gdx.lwjgl "1.13.0-0.1"]
-                 ;[com.github.damn/clojure.gdx.lwjgl "1.13.0-0.1"]
-
+                 [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
+                 [com.badlogicgames.gdx/gdx-backend-lwjgl3 "1.13.0"]
                  [com.github.damn/clojure.gdx.graphics.shape-drawer "f70150d4a1"]
 
                  ; TODO release lib with docs

@@ -1,6 +1,7 @@
 (ns gdl.app
-  (:require [clojure.gdx :refer [dispose resize]]
-            [clojure.gdx.lwjgl :as lwjgl]
+  (:require [clojure.java.io :as io]
+
+            [clojure.gdx :refer [dispose resize]]
             [clojure.gdx.vis-ui :as vis-ui]
             [gdl.app.create :as create]
             [gdl.utils :refer [read-edn-resource]]
@@ -11,11 +12,16 @@
             cdq.graphics
             cdq.graphics.camera
             cdq.graphics.tiled-map)
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration))
   (:gen-class))
 
 (def state (atom nil))
 
-(def txs
+(def ^:private txs
   [gdl.graphics/clear-screen
    cdq.graphics.camera/set-on-player-position
    cdq.graphics.tiled-map/render
@@ -38,31 +44,40 @@
           value
           fns))
 
-(defn start [{:keys [config context]}]
-  (lwjgl/start config
-               (reify lwjgl/Application
-                 (create [_]
-                   (reset! state (create/context context)))
+(defn start [config]
+  (.setIconImage (Taskbar/getTaskbar)
+                 (.getImage (Toolkit/getDefaultToolkit)
+                            (io/resource (:icon config))))
+  (when SharedLibraryLoader/isMac
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")
+    (.set Configuration/GLFW_CHECK_THREAD0 false))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create []
+                          (reset! state (create/context (:context config))))
 
-                 (dispose [_]
-                   (vis-ui/dispose)
-                   (let [context @state]
-                     ; TODO dispose :gdl.context/sd-texture
-                     (dispose (:gdl.context/assets context))
-                     (dispose (:gdl.context/batch  context))
-                     (run! dispose (vals (:gdl.context/cursors context)))
-                     (dispose (:gdl.context/default-font context))
-                     (dispose (:gdl.context/stage context))
-                     (dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
+                        (dispose []
+                          (vis-ui/dispose)
+                          (let [context @state]
+                            ; TODO dispose :gdl.context/sd-texture
+                            (dispose (:gdl.context/assets context))
+                            (dispose (:gdl.context/batch  context))
+                            (run! dispose (vals (:gdl.context/cursors context)))
+                            (dispose (:gdl.context/default-font context))
+                            (dispose (:gdl.context/stage context))
+                            (dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
 
-                 (render [_]
+                        (render []
+                          (swap! state reduce-transact txs))
 
-                   (swap! state reduce-transact txs))
-
-                 (resize [_ width height]
-                   (let [context @state]
-                     (resize (:gdl.context/viewport       context) width height :center-camera? true)
-                     (resize (:gdl.context/world-viewport context) width height :center-camera? false))))))
+                        (resize [width height]
+                          (let [context @state]
+                            (resize (:gdl.context/viewport       context) width height :center-camera? true)
+                            (resize (:gdl.context/world-viewport context) width height :center-camera? false))))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle (:title config))
+                        (.setWindowedMode (:window-width config)
+                                          (:window-height config))
+                        (.setForegroundFPS (:fps config)))))
 
 (defn -main
   "Calls [[start]] with `\"gdl.app.edn\"`."
