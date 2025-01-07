@@ -45,6 +45,7 @@
                    (reset! state (create/context context)))
 
                  (dispose [_]
+                   (vis-ui/dispose)
                    (let [context @state]
                      ; TODO dispose :gdl.context/sd-texture
                      (dispose (:gdl.context/assets context))
@@ -52,7 +53,6 @@
                      (run! dispose (vals (:gdl.context/cursors context)))
                      (dispose (:gdl.context/default-font context))
                      (dispose (:gdl.context/stage context))
-                     (vis-ui/dispose)
                      (dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
 
                  (render [_]
