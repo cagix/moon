@@ -133,10 +133,14 @@
                                 :entity/faction :evil}})]
     (spawn-creature c (update props :position tile->middle))))
 
-(defn create [config]
+; * application context independent of game/level restarts or changes
+; * application context dependent on game/level restarts
+; * => multimethod
+; * => GameContext -> dispose,resize, and later can add 'restart-level, restart-game'....
+
+(defn create [context config]
   (load-vis-ui! (:vis-ui config))
-  (let [context (gdx/context)
-        batch (gdx/sprite-batch)
+  (let [batch (gdx/sprite-batch)
         sd-texture (white-pixel-texture)
         ui-viewport (gdx/fit-viewport (:width  (:ui-viewport config))
                                       (:height (:ui-viewport config))
@@ -157,6 +161,7 @@
                              :gdl.context/world-viewport (world-viewport (:world-viewport config) world-unit-scale)
                              :gdl.context/world-unit-scale world-unit-scale
                              :gdl.context/tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
+                             ;; - before here - application context - does not change on level/game restart -
                              :gdl.context/elapsed-time 0
                              :cdq.context/player-message (atom (:player-message config))})]
     (gdl.context/reset-stage context
