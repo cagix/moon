@@ -1,18 +1,58 @@
 (ns clojure.gdx.backends.lwjgl3.application
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.application :as app]
+  "Provides an interface for creating and managing a LibGDX application using the LWJGL3 backend.
+   This namespace includes functionality for initializing the application with a listener and configuration,
+   as well as accessing the LibGDX global context."
+  (:require [clojure.gdx.application :as app]
             [clojure.java.io :as io])
   (:import (java.awt Taskbar Toolkit)
-           (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (org.lwjgl.system Configuration)))
 
+(defn- context
+  "Returns a map of the LibGDX global context.
+   Call this function after the application's `create` method is executed.
+   The returned map provides convenient access to key components of the LibGDX framework,
+   such as graphics, audio, input, and file handling."
+  []
+  {:clojure.gdx/app      Gdx/app
+   :clojure.gdx/audio    Gdx/audio
+   :clojure.gdx/files    Gdx/files
+   :clojure.gdx/gl       Gdx/gl
+   :clojure.gdx/gl20     Gdx/gl20
+   :clojure.gdx/gl30     Gdx/gl30
+   :clojure.gdx/gl31     Gdx/gl31
+   :clojure.gdx/gl32     Gdx/gl32
+   :clojure.gdx/graphics Gdx/graphics
+   :clojure.gdx/input    Gdx/input
+   :clojure.gdx/net      Gdx/net})
+
 ; TODO so what we want to achieve now is to not set 'Gdx'
 ; so we have a stateless libgdx
+; => or rather do not expose functions which use Gdx internally
+; => can make PR's to libgdx to over methods w/o global state
+; or just port it
+; 1. of all don't set! the Gdx and see what breaks
+; fix that only
 
-(defn create [listener config]
+(defn create
+  "Initializes and launches a LibGDX application using the LWJGL3 backend.
+
+   - `listener`: A record or object implementing the necessary application lifecycle methods
+     (`create`, `dispose`, `pause`, `render`, `resize`, and `resume`) to handle game logic.
+   - `config`: A map containing configuration options for the application, including:
+       - `:title` (string): The title of the application window.
+       - `:window-width` (int): The width of the application window.
+       - `:window-height` (int): The height of the application window.
+       - `:fps` (int): The desired frames per second for the application.
+       - `:icon` (string): Path to the icon image resource for the application.
+
+   This function sets up the LWJGL3 application with the specified configuration,
+   applies platform-specific settings (e.g., for macOS), and proxies lifecycle events
+   to the provided listener."
+  [listener config]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
                             (io/resource (:icon config))))
@@ -21,7 +61,7 @@
     (.set Configuration/GLFW_CHECK_THREAD0 false))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (app/create listener (gdx/context)))
+                          (app/create listener (context)))
                         (dispose []
                           (app/dispose listener))
                         (pause []
@@ -38,6 +78,7 @@
                                           (:window-height config))
                         (.setForegroundFPS (:fps config)))))
 
+
 ;  import java.util.Arrays;
 ;  import com.badlogic.gdx.Files.FileType;
 ;  import com.badlogic.gdx.Graphics;
@@ -47,13 +88,13 @@
 
 ; {:window-x -1
 ;  :window-y -1
-;  :window-width 640
-;  :window-height 480
+;  :window-width 640 ; width the width of the window (default 640)
+;  :window-height 480 ; height the height of the window (default 480)
 ;  :window-min-width -1
 ;  :windowMinHeight -1,
 ;  :windowMaxWidth = -1,
 ;  :windowMaxHeight = -1;
-;  :window-resizable? true
+;  :window-resizable? true ; whether the windowed mode window is resizable (default true)
 ;  :window-decorated? true
 ;  :window-maximized? false
 ;  :maximized-monitor
@@ -64,67 +105,10 @@
 ;  :fullscreen-mode
 ;  :title
 ;  :initial-background-color Color/BLACK
-;  :initial-visible? true
+;  :initial-visible? true ; visibility whether the window will be visible on creation. (default true)
 ;  :vsync-enabled? true
 ;  }
 
-;  	int windowX = -1;
-;  	int windowY = -1;
-;  	int windowWidth = 640;
-;  	int windowHeight = 480;
-;  	int windowMinWidth = -1, windowMinHeight = -1, windowMaxWidth = -1, windowMaxHeight = -1;
-;  	boolean windowResizable = true;
-;  	boolean windowDecorated = true;
-;  	boolean windowMaximized = false;
-;  	Lwjgl3Graphics.Lwjgl3Monitor maximizedMonitor;
-;  	boolean autoIconify = true;
-;  	FileType windowIconFileType;
-;  	String[] windowIconPaths;
-;  	Lwjgl3WindowListener windowListener;
-;  	Lwjgl3DisplayMode fullscreenMode;
-;  	String title;
-;  	Color initialBackgroundColor = Color.BLACK;
-;  	boolean initialVisible = true;
-;  	boolean vSyncEnabled = true;
-;
-;  	void setWindowConfiguration (Lwjgl3WindowConfiguration config) {
-;  		windowX = config.windowX;
-;  		windowY = config.windowY;
-;  		windowWidth = config.windowWidth;
-;  		windowHeight = config.windowHeight;
-;  		windowMinWidth = config.windowMinWidth;
-;  		windowMinHeight = config.windowMinHeight;
-;  		windowMaxWidth = config.windowMaxWidth;
-;  		windowMaxHeight = config.windowMaxHeight;
-;  		windowResizable = config.windowResizable;
-;  		windowDecorated = config.windowDecorated;
-;  		windowMaximized = config.windowMaximized;
-;  		maximizedMonitor = config.maximizedMonitor;
-;  		autoIconify = config.autoIconify;
-;  		windowIconFileType = config.windowIconFileType;
-;  		if (config.windowIconPaths != null) windowIconPaths = Arrays.copyOf(config.windowIconPaths, config.windowIconPaths.length);
-;  		windowListener = config.windowListener;
-;  		fullscreenMode = config.fullscreenMode;
-;  		title = config.title;
-;  		initialBackgroundColor = config.initialBackgroundColor;
-;  		initialVisible = config.initialVisible;
-;  		vSyncEnabled = config.vSyncEnabled;
-;  	}
-;
-;  	/** @param visibility whether the window will be visible on creation. (default true) */
-;  	public void setInitialVisible (boolean visibility) {
-;  		this.initialVisible = visibility;
-;  	}
-;
-;  	/** Sets the app to use windowed mode.
-;  	 *
-;  	 * @param width the width of the window (default 640)
-;  	 * @param height the height of the window (default 480) */
-;  	public void setWindowedMode (int width, int height) {
-;  		this.windowWidth = width;
-;  		this.windowHeight = height;
-;  	}
-;
 ;  	/** @param resizable whether the windowed mode window is resizable (default true) */
 ;  	public void setResizable (boolean resizable) {
 ;  		this.windowResizable = resizable;
