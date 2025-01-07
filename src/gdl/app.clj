@@ -1,6 +1,7 @@
 (ns gdl.app
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.lwjgl :as lwjgl]
+            [clojure.gdx.vis-ui :as vis-ui]
             [gdl.app.create :as create]
             [gdl.utils :refer [defsystem install read-edn-resource]])
   (:gen-class))
@@ -13,9 +14,6 @@
 (defsystem create)
 (defmethod create :default [[_ v] _context]
   v)
-
-(defsystem dispose)
-(defmethod dispose :default [_])
 
 (defn- safe-create-into [context components]
   (reduce (fn [context [k v]]
@@ -36,8 +34,7 @@
 
 (defn- install-context-components [context]
   (doseq [k (map first context)]
-    (install {:optional [#'create
-                         #'dispose]}
+    (install {:optional [#'create]}
              k)))
 
 (defn start
@@ -52,14 +49,15 @@
                                                      context)))
 
                    (dispose [_]
-                     ; TODO dispose :gdl.context/sd-texture
-                     ; => call 'dispose' on all context components (_VALUES_!)
-                     #_(defn dispose [[_ sd]]
-                         #_(gdx/dispose sd))
-                     ; TODO this will break ... proxy with extra-data -> get texture through sd ...
-                     ; => shape-drawer-texture as separate component?!
-                     ; that would work
-                     (run! dispose @state))
+                     (let [context @state]
+                       ; TODO dispose :gdl.context/sd-texture
+                       (gdx/dispose (:gdl.context/assets context))
+                       (gdx/dispose (:gdl.context/batch  context))
+                       (run! gdx/dispose (vals (:gdl.context/cursors context)))
+                       (gdx/dispose (:gdl.context/default-font context))
+                       (gdx/dispose (:gdl.context/stage context))
+                       (vis-ui/dispose)
+                       (gdx/dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
 
                    (render [_]
                      (swap! state reduce-transact txs))
