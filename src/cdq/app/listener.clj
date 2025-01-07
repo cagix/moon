@@ -1,4 +1,4 @@
-(ns gdl.app.create
+(ns cdq.app.listener
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.assets :as assets]
             [clojure.gdx.file-handle :as fh]
@@ -20,7 +20,13 @@
             [cdq.context.content-grid :as content-grid]
             [cdq.context.grid :as grid]
             [cdq.context.raycaster :as raycaster]
-            )
+
+            gdl.context
+            gdl.graphics
+            cdq.context
+            cdq.graphics
+            cdq.graphics.camera
+            cdq.graphics.tiled-map)
   (:import (com.kotcrab.vis.ui.widget Tooltip)
            (gdl OrthogonalTiledMapRenderer)))
 
@@ -127,7 +133,9 @@
                                 :entity/faction :evil}})]
     (spawn-creature c (update props :position tile->middle))))
 
-(defn context [config]
+; TODO this is just application-context & world/game context
+; or its one and we implement on game restart
+(defn create [config]
   (load-vis-ui! (:vis-ui config))
   (let [context (gdx/context)
         batch (gdx/sprite-batch)
@@ -173,3 +181,40 @@
           context (assoc context :cdq.context/player-eid (spawn-player-entity context (:start-position level)))]
       (spawn-enemies! context tiled-map)
       context)))
+
+(defn dispose [context]
+  (vis-ui/dispose)
+  ; TODO dispose :gdl.context/sd-texture
+  (gdx/dispose (:gdl.context/assets context))
+  (gdx/dispose (:gdl.context/batch  context))
+  (run! gdx/dispose (vals (:gdl.context/cursors context)))
+  (gdx/dispose (:gdl.context/default-font context))
+  (gdx/dispose (:gdl.context/stage context))
+  (gdx/dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
+  )
+
+(defn resize [context width height]
+  (gdx/resize (:gdl.context/viewport       context) width height :center-camera? true)
+  (gdx/resize (:gdl.context/world-viewport context) width height :center-camera? false))
+
+; TODO
+; just split in 'draw', and 'update' ? => 2 namespaces that's it !
+(defn render [context]
+  (reduce (fn [context f]
+            (f context))
+          context
+          [gdl.graphics/clear-screen
+           cdq.graphics.camera/set-on-player-position
+           cdq.graphics.tiled-map/render
+           cdq.graphics/draw-world-view
+           gdl.graphics/draw-stage
+
+           ; updates
+           gdl.context/update-stage
+           cdq.context/handle-player-input
+           cdq.context/update-mouseover-entity
+           cdq.context/update-paused-state
+           cdq.context/progress-time-if-not-paused
+           cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
+           gdl.context/check-camera-controls
+           cdq.context/check-ui-key-listeners]))
