@@ -1,24 +1,29 @@
 (ns cdq.start
   (:require [clojure.edn :as edn]
-            [clojure.gdx.backends.lwjgl3.application :as app]
+            [clojure.gdx.application :as application]
+            [clojure.gdx.backends.lwjgl3.application :as lwjgl3-app]
             [clojure.java.io :as io]
-            [cdq.app :as app])
+            [cdq.app :as game])
   (:gen-class))
 
 (def state (atom nil))
 
 (defn -main []
   (let [config (-> "app.edn" io/resource slurp edn/read-string)]
-    (app/create (reify app/Listener
-                  (create [_ context]
-                    (reset! state (app/create context (:context config))))
+    (lwjgl3-app/create (reify application/Listener
+                         (create [_ context]
+                           (reset! state (game/create context (:context config))))
 
-                  (dispose [_]
-                    (app/dispose @state))
+                         (dispose [_]
+                           (game/dispose @state))
 
-                  (render [_]
-                    (swap! state app/render))
+                         (pause [_])
 
-                  (resize [_ width height]
-                    (app/resize @state width height)))
-                (:app config))))
+                         (render [_]
+                           (swap! state game/render))
+
+                         (resize [_ width height]
+                           (game/resize @state width height))
+
+                         (resume [_]))
+                       (:app config))))
