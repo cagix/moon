@@ -275,13 +275,26 @@
       (when draw
         (draw (application-state this))))
     (act [_delta]
-      (when (Actor/.getStage this)
+      (if (Actor/.getStage this)
         (let [context (application-state this)]
           (assert context)
           (assert (:clojure.gdx/input context)
-                  (str "(pr-str (sort (keys context))): " (pr-str (sort (keys context))))))
-        (when act
-          (act (application-state this)))))))
+                  (str "(pr-str (sort (keys context))): " (pr-str (sort (keys context)))))
+          (when act
+            (act (application-state this))))
+        (do
+         ; called x1 time when editor window opened then closed.
+         ; is removed during stage actors iteration
+         ; so then is called
+         ; ... ... so no context !
+         ; for draw not possible...
+         ; so my assumption was:
+         ; * an actor always has a stage....
+         ; so it should be removed from iterating ...
+         ; or the actor should get the context from stage itself not in act ....
+         ; act should pass the context ! that's where its really coming from ...
+         ; so thread it through with stage ... libgdx
+         (println "actor act called but not part of stage."))))))
 
 (defn ui-widget [draw!]
   (proxy [Widget] []
