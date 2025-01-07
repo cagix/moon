@@ -1,5 +1,6 @@
 (ns dev
-  (:require [clojure.gdx.scene2d.group :refer [children]]
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.scene2d.group :refer [children]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -8,6 +9,10 @@
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]
             [gdl.editor.actors :as editor]))
+
+(defn post-runnable [f]
+  (gdx/post-runnable @app/state
+                     #(f @app/state)))
 
 (comment
 

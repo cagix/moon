@@ -8,9 +8,6 @@
 
 (def state (atom nil))
 
-(defn post-runnable [f]
-  (gdx/post-runnable @state #(f @state)))
-
 (defn- reduce-transact [value fns]
   (reduce (fn [value f]
             (f value))
