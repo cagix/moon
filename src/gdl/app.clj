@@ -1,5 +1,5 @@
 (ns gdl.app
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx :refer [dispose resize]]
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.gdx.vis-ui :as vis-ui]
             [gdl.app.create :as create]
@@ -47,13 +47,13 @@
                  (dispose [_]
                    (let [context @state]
                      ; TODO dispose :gdl.context/sd-texture
-                     (gdx/dispose (:gdl.context/assets context))
-                     (gdx/dispose (:gdl.context/batch  context))
-                     (run! gdx/dispose (vals (:gdl.context/cursors context)))
-                     (gdx/dispose (:gdl.context/default-font context))
-                     (gdx/dispose (:gdl.context/stage context))
+                     (dispose (:gdl.context/assets context))
+                     (dispose (:gdl.context/batch  context))
+                     (run! dispose (vals (:gdl.context/cursors context)))
+                     (dispose (:gdl.context/default-font context))
+                     (dispose (:gdl.context/stage context))
                      (vis-ui/dispose)
-                     (gdx/dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
+                     (dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
 
                  (render [_]
 
@@ -61,8 +61,8 @@
 
                  (resize [_ width height]
                    (let [context @state]
-                     (gdx/resize (:gdl.context/viewport       context) width height :center-camera? true)
-                     (gdx/resize (:gdl.context/world-viewport context) width height :center-camera? false))))))
+                     (resize (:gdl.context/viewport       context) width height :center-camera? true)
+                     (resize (:gdl.context/world-viewport context) width height :center-camera? false))))))
 
 (defn -main
   "Calls [[start]] with `\"gdl.app.edn\"`."
