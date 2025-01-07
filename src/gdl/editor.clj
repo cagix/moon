@@ -1,5 +1,5 @@
 (ns gdl.editor
-  (:require [gdl.app :as app]))
+  (:require [cdq.app :as app]))
 
 (def ^:private config
   {:config {:title "Editor"

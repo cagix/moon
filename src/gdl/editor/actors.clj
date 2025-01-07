@@ -4,7 +4,7 @@
             [clojure.gdx.assets :as assets]
             [clojure.string :as str]
             [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [gdl.app :as app]
+            [cdq.app :as app]
             [gdl.context :as c :refer [play-sound]]
             [gdl.db :as db]
             [gdl.graphics :as graphics]
