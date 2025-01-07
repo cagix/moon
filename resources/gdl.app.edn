@@ -39,20 +39,4 @@
            :world-id :worlds/uf-caves
            :content-grid {:cell-size 16}
            :factions-iterations {:good 15 :evil 5}
-           :player-message {:duration-seconds 1.5}}
- :transactions [gdl.graphics/clear-screen
-                cdq.graphics.camera/set-on-player-position
-                cdq.graphics.tiled-map/render
-                cdq.graphics/draw-world-view
-                gdl.graphics/draw-stage
-
-                ; updates
-                gdl.context/update-stage
-                cdq.context/handle-player-input
-                cdq.context/update-mouseover-entity
-                cdq.context/update-paused-state
-                cdq.context/progress-time-if-not-paused
-                cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
-                gdl.context/check-camera-controls
-                cdq.context/check-ui-key-listeners]
- }
+           :player-message {:duration-seconds 1.5}}}

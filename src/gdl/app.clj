@@ -3,10 +3,34 @@
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.gdx.vis-ui :as vis-ui]
             [gdl.app.create :as create]
-            [gdl.utils :refer [read-edn-resource]])
+            [gdl.utils :refer [read-edn-resource]]
+
+            gdl.context
+            gdl.graphics
+            cdq.context
+            cdq.graphics
+            cdq.graphics.camera
+            cdq.graphics.tiled-map)
   (:gen-class))
 
 (def state (atom nil))
+
+(def txs
+  [gdl.graphics/clear-screen
+   cdq.graphics.camera/set-on-player-position
+   cdq.graphics.tiled-map/render
+   cdq.graphics/draw-world-view
+   gdl.graphics/draw-stage
+
+   ; updates
+   gdl.context/update-stage
+   cdq.context/handle-player-input
+   cdq.context/update-mouseover-entity
+   cdq.context/update-paused-state
+   cdq.context/progress-time-if-not-paused
+   cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
+   gdl.context/check-camera-controls
+   cdq.context/check-ui-key-listeners])
 
 (defn- reduce-transact [value fns]
   (reduce (fn [value f]
@@ -14,37 +38,31 @@
           value
           fns))
 
-(defn- load-tx [tx-sym]
-  (require (symbol (namespace tx-sym)))
-  (resolve tx-sym))
+(defn start [{:keys [config context]}]
+  (lwjgl/start config
+               (reify lwjgl/Application
+                 (create [_]
+                   (reset! state (create/context context)))
 
-(defn start
-  "A transaction is a `(fn [context] context)`, which can emit also side-effects or return a new context."
-  [{:keys [config context transactions]}]
-  (let [txs (doall (map load-tx transactions))]
-    (lwjgl/start config
-                 (reify lwjgl/Application
-                   (create [_]
-                     (reset! state (create/context context)))
+                 (dispose [_]
+                   (let [context @state]
+                     ; TODO dispose :gdl.context/sd-texture
+                     (gdx/dispose (:gdl.context/assets context))
+                     (gdx/dispose (:gdl.context/batch  context))
+                     (run! gdx/dispose (vals (:gdl.context/cursors context)))
+                     (gdx/dispose (:gdl.context/default-font context))
+                     (gdx/dispose (:gdl.context/stage context))
+                     (vis-ui/dispose)
+                     (gdx/dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
 
-                   (dispose [_]
-                     (let [context @state]
-                       ; TODO dispose :gdl.context/sd-texture
-                       (gdx/dispose (:gdl.context/assets context))
-                       (gdx/dispose (:gdl.context/batch  context))
-                       (run! gdx/dispose (vals (:gdl.context/cursors context)))
-                       (gdx/dispose (:gdl.context/default-font context))
-                       (gdx/dispose (:gdl.context/stage context))
-                       (vis-ui/dispose)
-                       (gdx/dispose (:cdq.context/tiled-map context)))) ; TODO ! this also if world restarts !!
+                 (render [_]
 
-                   (render [_]
-                     (swap! state reduce-transact txs))
+                   (swap! state reduce-transact txs))
 
-                   (resize [_ width height]
-                     (let [context @state]
-                       (gdx/resize (:gdl.context/viewport       context) width height :center-camera? true)
-                       (gdx/resize (:gdl.context/world-viewport context) width height :center-camera? false)))))))
+                 (resize [_ width height]
+                   (let [context @state]
+                     (gdx/resize (:gdl.context/viewport       context) width height :center-camera? true)
+                     (gdx/resize (:gdl.context/world-viewport context) width height :center-camera? false))))))
 
 (defn -main
   "Calls [[start]] with `\"gdl.app.edn\"`."
