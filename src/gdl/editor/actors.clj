@@ -497,8 +497,9 @@
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn- tabs-table [context label-str]
-  (let [table (ui/table {:fill-parent? true})
+(defn tabs-table [context]
+  (let [label-str "foobar"
+        table (ui/table {:fill-parent? true})
         container (ui/table {})
         tabbed-pane (TabbedPane.)]
     (.addListener tabbed-pane

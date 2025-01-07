@@ -6,7 +6,8 @@
             [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
-            [cdq.context :as world]))
+            [cdq.context :as world]
+            [gdl.editor.actors :as editor]))
 
 (comment
 
@@ -19,6 +20,7 @@
  ; and show a tree view there ...
 
 
+ (app/post-runnable show-obj-editor!)
  (print-app-values-tree "app-values-tree.clj"
                         #{"clojure.gdx", "gdl", "cdq", "anvil"})
 
@@ -193,15 +195,22 @@
                          :pack? true})
         scroll-pane (scroll-pane table)]
     {:actor scroll-pane
-     :width (+ 100 (/ (:width viewport) 2))
-     :height
-     (- (:height viewport) 50)
-     #_(min (- (:height viewport) 50) (height table))}))
+     :width (- (:width viewport) 100) ; (+ 100 (/ (:width viewport) 2))
+     :height (- (:height viewport) 200) ; (- (:height viewport) 50) #_(min (- (:height viewport) 50) (height table))
+     }))
 
 (defn- generate-tree [m]
   (doto (ui/tree)
     (add-map-nodes! (into (sorted-map) m)
                     0)))
+
+(defn- scroll-pane-window [title content]
+  (ui/window {:title title
+              :close-button? true
+              :close-on-escape? true
+              :center? true
+              :rows [[(scroll-pane-cell [[content]])]]
+              :pack? true}))
 
 (defn- generate-table [m]
   (ui/table {:rows (for [[k v] (sort-by key m)]
@@ -211,22 +220,19 @@
 (defn- show-table-view [title m]
   {:pre [(map? m)]}
   (c/add-actor @app/state
-               (ui/window {:title title
-                           :close-button? true
-                           :close-on-escape? true
-                           :center? true
-                           :rows [[(scroll-pane-cell [[(generate-table m)]])]]
-                           :pack? true})))
+               (scroll-pane-window title
+                                   (generate-table m))))
 
 (defn- show-tree-view! [title m]
   {:pre [(map? m)]}
   (c/add-actor @app/state
-               (ui/window {:title title
-                           :close-button? true
-                           :close-on-escape? true
-                           :center? true
-                           :rows [[(scroll-pane-cell [[(generate-tree m)]])]]
-                           :pack? true})))
+               (scroll-pane-window title
+                                   (generate-tree m))))
+
+(defn- show-obj-editor! [context]
+  (c/add-actor context
+               (scroll-pane-window "Object DB"
+                                   (editor/tabs-table context))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
