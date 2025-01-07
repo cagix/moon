@@ -1,6 +1,5 @@
 (ns gdl.app
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.gdx :refer [dispose resize]]
             [clojure.gdx.vis-ui :as vis-ui]
             [gdl.app.create :as create]
@@ -42,7 +41,7 @@
           value
           fns))
 
-(defn- start [config]
+(defn start [config]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
                             (io/resource (:icon config))))
@@ -76,10 +75,3 @@
                         (.setWindowedMode (:window-width config)
                                           (:window-height config))
                         (.setForegroundFPS (:fps config)))))
-
-(defn -main []
-  (-> "gdl.app.edn"
-      io/resource
-      slurp
-      edn/read-string
-      start))
