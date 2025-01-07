@@ -2,7 +2,7 @@
   (:require [clojure.gdx.tiled :as tiled]
             [cdq.content-grid :as content-grid]))
 
-(defn create [[_ {:keys [cell-size]}] {:keys [cdq.context/tiled-map]}]
+(defn create [tiled-map {:keys [cell-size]}]
   (content-grid/create {:cell-size cell-size
                         :width  (tiled/tm-width  tiled-map)
                         :height (tiled/tm-height tiled-map)}))

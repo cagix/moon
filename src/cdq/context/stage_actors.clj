@@ -169,10 +169,10 @@
   (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
                                           %)}))
 
-(defn create [_ c]
-  (c/reset-stage c [(dev-menu c)
-                    (action-bar-table c)
-                    (hp-mana-bar c)
-                    (widgets-windows c)
-                    (widgets-player-state-draw-component c)
-                    (player-message)]))
+(defn create [c]
+  [(dev-menu c)
+   (action-bar-table c)
+   (hp-mana-bar c)
+   (widgets-windows c)
+   (widgets-player-state-draw-component c)
+   (player-message)])

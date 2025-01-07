@@ -3,24 +3,13 @@
             [clojure.gdx.lwjgl :as lwjgl]
             [clojure.gdx.vis-ui :as vis-ui]
             [gdl.app.create :as create]
-            [gdl.utils :refer [defsystem install read-edn-resource]])
+            [gdl.utils :refer [read-edn-resource]])
   (:gen-class))
 
 (def state (atom nil))
 
 (defn post-runnable [f]
   (gdx/post-runnable @state #(f @state)))
-
-(defsystem create)
-(defmethod create :default [[_ v] _context]
-  v)
-
-(defn- safe-create-into [context components]
-  (reduce (fn [context [k v]]
-            (assert (not (contains? context k)))
-            (assoc context k (create [k v] context)))
-          context
-          components))
 
 (defn- reduce-transact [value fns]
   (reduce (fn [value f]
@@ -32,21 +21,14 @@
   (require (symbol (namespace tx-sym)))
   (resolve tx-sym))
 
-(defn- install-context-components [context]
-  (doseq [k (map first context)]
-    (install {:optional [#'create]}
-             k)))
-
 (defn start
   "A transaction is a `(fn [context] context)`, which can emit also side-effects or return a new context."
-  [{:keys [config gdl-config context transactions]}]
-  (install-context-components context)
+  [{:keys [config context transactions]}]
   (let [txs (doall (map load-tx transactions))]
     (lwjgl/start config
                  (reify lwjgl/Application
                    (create [_]
-                     (reset! state (safe-create-into (create/context (gdx/context) gdl-config)
-                                                     context)))
+                     (reset! state (create/context context)))
 
                    (dispose [_]
                      (let [context @state]
