@@ -1,6 +1,4 @@
-(ns gdl.utils
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]))
+(ns gdl.utils)
 
 ; TODO check params & pass & check @ defcomponent ( forgot 1 arg - can be checked statically)
 (defmacro defsystem
@@ -243,6 +241,3 @@
 
 (defn high-weighted-rand-nth [coll]
   (nth coll (high-weighted-rand-int (count coll))))
-
-(defn read-edn-resource [resource]
-  (-> resource io/resource slurp edn/read-string))
