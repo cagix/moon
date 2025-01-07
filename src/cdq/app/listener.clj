@@ -135,7 +135,49 @@
 
 ; TODO this is just application-context & world/game context
 ; or its one and we implement on game restart
-(defn create [config]
+(defn create
+  "Creates the game context based on the `config` map.
+
+  It should look like this:
+  `{:assets \"resources/\"
+  :db {:schema \"schema.edn\"
+  :properties \"properties.edn\"}
+  :default-font {:file \"fonts/exocet/films.EXL_____.ttf\"
+  :size 16
+  :quality-scaling 2}
+  :cursors {:cursors/bag                   [\"bag001\"       [0   0]]
+  :cursors/black-x               [\"black_x\"      [0   0]]
+  :cursors/default               [\"default\"      [0   0]]
+  :cursors/denied                [\"denied\"       [16 16]]
+  :cursors/hand-before-grab      [\"hand004\"      [4  16]]
+  :cursors/hand-before-grab-gray [\"hand004_gray\" [4  16]]
+  :cursors/hand-grab             [\"hand003\"      [4  16]]
+  :cursors/move-window           [\"move002\"      [16 16]]
+  :cursors/no-skill-selected     [\"denied003\"    [0   0]]
+  :cursors/over-button           [\"hand002\"      [0   0]]
+  :cursors/sandclock             [\"sandclock\"    [16 16]]
+  :cursors/skill-not-usable      [\"x007\"         [0   0]]
+  :cursors/use-skill             [\"pointer004\"   [0   0]]
+  :cursors/walking               [\"walking\"      [16 16]]}
+  :ui-viewport    {:width 1440 :height 900}
+  :world-viewport {:width 1440 :height 900}
+  :tile-size 48
+  :vis-ui {:skin-scale :skin-scale/x1}
+  :world-id :worlds/uf-caves
+  :content-grid {:cell-size 16}
+  :factions-iterations {:good 15 :evil 5}
+  :player-message {:duration-seconds 1.5}}
+
+  As side effects, vis-ui is loaded.
+
+  The game accesses the global `com.badlogic.gdx.Gdx` context statics
+
+  * `:assets` - searches the given folder for sounds & textures.
+  * `:db` - the game object database used.
+  * `:default-font` - a truetype font to set as default.
+  * `:cursors` - the map has to contain the specific keys and expects `.png` files in `/resources/cursors/`
+  * ` ...`"
+  [config]
   (load-vis-ui! (:vis-ui config))
   (let [context (gdx/context)
         batch (gdx/sprite-batch)
@@ -182,7 +224,9 @@
       (spawn-enemies! context tiled-map)
       context)))
 
-(defn dispose [context]
+(defn dispose
+  "Disposes all resources."
+  [context]
   (vis-ui/dispose)
   ; TODO dispose :gdl.context/sd-texture
   (gdx/dispose (:gdl.context/assets context))
@@ -193,13 +237,19 @@
   (gdx/dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )
 
-(defn resize [context width height]
+(defn resize
+  "Updates the ui and world viewports."
+  [context width height]
   (gdx/resize (:gdl.context/viewport       context) width height :center-camera? true)
   (gdx/resize (:gdl.context/world-viewport context) width height :center-camera? false))
 
 ; TODO
 ; just split in 'draw', and 'update' ? => 2 namespaces that's it !
-(defn render [context]
+(defn render
+  "The game loop.
+
+  * Does x,y,z..."
+  [context]
   (reduce (fn [context f]
             (f context))
           context

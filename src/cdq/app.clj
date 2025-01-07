@@ -1,4 +1,5 @@
 (ns cdq.app
+  "Application starting point."
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [cdq.app.listener :as listener])
@@ -9,9 +10,22 @@
            (org.lwjgl.system Configuration))
   (:gen-class))
 
-(def state (atom nil))
+(def state
+ "Application state in an `atom`. Do not `swap!`, `reset!`, etc. this unless for debugging purposes."
+ (atom nil))
 
-(defn -main []
+(defn -main
+  "Reads `gdl.app.edn` configuration from resource path and starts the game.
+
+  It should contain:
+
+  * `:icon` - a string referencing a resource to set as the taskbar icon
+  * `:title` - window title
+  * `:window-width` - window width in pixel
+  * `:window-height` - window height in pixel
+  * `:fps` - the frames per second.
+  * `:context` - parameters for `cdq.app.listener/create` function."
+  []
   (let [config (-> "gdl.app.edn" io/resource slurp edn/read-string)]
     (.setIconImage (Taskbar/getTaskbar)
                    (.getImage (Toolkit/getDefaultToolkit)
