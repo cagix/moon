@@ -1,12 +1,5 @@
 (ns clojure.gdx.backends.lwjgl3.application
   (:require [clojure.application :as app]
-            [clojure.gdx.interop :refer [k->input-button k->input-key]]
-            [clojure.audio.sound]
-            [clojure.files]
-            [clojure.files.file-handle]
-            [clojure.utils.disposable]
-            [clojure.graphics]
-            [clojure.input]
             [clojure.java.io :as io])
   (:import (java.awt Taskbar Toolkit)
            (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -14,17 +7,6 @@
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (org.lwjgl.system Configuration)))
-
-; TODO thread-bound vars? (*graphics* is same as *out* for println ?)
-; audio/files/input/net is not thread-bound
-; => just 'declare' ?
-
-(comment
- (in-ns 'clojure.core)
- (declare gdx-input)
-
- ; its not 'clojure' its 'gdx'  -> naming ?
- )
 
 (defn- context []
   {:clojure.gdx/app      Gdx/app
@@ -39,7 +21,7 @@
    :clojure.gdx/input    Gdx/input
    :clojure.gdx/net      Gdx/net})
 
-; after passing - (set! (.app Gdx) nil) , etc.
+; after creating this  map (set! (.app Gdx) nil) ??  & others ?!
 
 (defn create [listener config]
   (.setIconImage (Taskbar/getTaskbar)
@@ -66,70 +48,3 @@
                         (.setWindowedMode (:window-width config)
                                           (:window-height config))
                         (.setForegroundFPS (:fps config)))))
-
-; oh now I know
-; this belongs to 'clojure.gdx' ...
-
-(extend-type com.badlogic.gdx.Files
-  clojure.files/Files
-  (internal [this path]
-    (.internal this path)))
-
-(extend-type com.badlogic.gdx.Graphics
-  clojure.graphics/Graphics
-  (delta-time [this]
-    (.getDeltaTime this))
-  (frames-per-second [this]
-    (.getFramesPerSecond this))
-  (new-cursor [this pixmap hotspot-x hotspot-y]
-    (.newCursor this pixmap hotspot-x hotspot-y))
-  (set-cursor [this cursor]
-    (.setCursor this cursor)))
-
-(extend-type com.badlogic.gdx.Application
-  clojure.application/Application
-  (exit [this]
-    (.exit this))
-  (post-runnable [this runnable]
-    (.postRunnable this runnable)))
-
-(extend-type com.badlogic.gdx.files.FileHandle
-  clojure.files.file-handle/FileHandle
-  (list [this]
-    (.list this))
-  (directory? [this]
-    (.isDirectory this))
-  (extension [this]
-    (.extension this))
-  (path [this]
-    (.path this)))
-
-(extend-type com.badlogic.gdx.Input
-  clojure.input/Input
-  (x [this]
-    (.getX this))
-
-  (y [this]
-    (.getY this))
-
-  (button-just-pressed? [this button]
-    (.isButtonJustPressed this (k->input-button button)))
-
-  (key-just-pressed? [this key]
-    (.isKeyJustPressed this (k->input-key key)))
-
-  (key-pressed? [this key]
-    (.isKeyPressed this (k->input-key key)))
-
-  (set-processor [this input-processor]
-    (.setInputProcessor this input-processor)))
-
-(extend-type com.badlogic.gdx.audio.Sound
-  clojure.audio.sound/Sound
-  (play [this]
-    (.play this)))
-
-(extend-type com.badlogic.gdx.utils.Disposable
-  clojure.utils.disposable/Disposable
-  (dispose [this]
-    (.dispose this)))
