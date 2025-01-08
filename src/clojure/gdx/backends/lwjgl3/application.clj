@@ -2,6 +2,7 @@
   (:require [clojure.application :as app]
             [clojure.graphics]
             [clojure.files]
+            [clojure.files.file-handle]
             [clojure.java.io :as io])
   (:import (java.awt Taskbar Toolkit)
            (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -74,3 +75,14 @@
     (.exit this))
   (post-runnable [this runnable]
     (.postRunnable this runnable)))
+
+(extend-type com.badlogic.gdx.files.FileHandle
+  clojure.files.file-handle/FileHandle
+  (list [this]
+    (.list this))
+  (directory? [this]
+    (.isDirectory this))
+  (extension [this]
+    (.extension this))
+  (path [this]
+    (.path this)))

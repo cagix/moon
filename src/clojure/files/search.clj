@@ -1,5 +1,5 @@
 (ns clojure.files.search
-  (:require [clojure.gdx.file-handle :as fh]))
+  (:require [clojure.files.file-handle :as fh]))
 
 (defn by-extensions [folder extensions]
   (loop [[file & remaining] (fh/list folder)
