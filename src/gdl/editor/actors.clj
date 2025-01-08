@@ -1,7 +1,7 @@
 (ns gdl.editor.actors
   (:require [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [clojure.gdx.assets.manager :as asset-manager]
+            [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.app :refer [state]]
@@ -116,8 +116,8 @@
                                              :center? true}
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn [context]
-                                         (when (gdx/key-just-pressed? context :enter)
+    (add-actor! window (ui-actor {:act (fn [{:keys [clojure.gdx/input]}]
+                                         (when (input/key-just-pressed? input :enter)
                                            (save!)))}))
     (.pack window)
     window))
@@ -158,8 +158,8 @@
 
 (defn- all-of-type [asset-type]
   (let [manager (:gdl.context/assets @state)]
-    (filter #(= (assets-manager/type manager %) asset-type)
-            (assets-manager/names manager))))
+    (filter #(= (asset-manager/type manager %) asset-type)
+            (asset-manager/names manager))))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(play-sound @state sound-name)))

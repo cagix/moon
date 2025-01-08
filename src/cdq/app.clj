@@ -14,6 +14,7 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.vis-ui :as vis-ui]
             [clojure.graphics :as graphics]
+            [clojure.input :as input]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [gdl.context :as gdl.context]
@@ -100,7 +101,9 @@
 ; * => multimethod
 ; * => GameContext -> dispose,resize, and later can add 'restart-level, restart-game'....
 
-(defn- create [{:keys [clojure.gdx/files] :as context} config]
+(defn- create [{:keys [clojure.gdx/files
+                       clojure.gdx/input]
+                :as context} config]
   (vis-ui/load (:vis-ui config))
   (let [batch (sprite-batch/create)
         ; => pixmap namespace
@@ -117,8 +120,8 @@
                                       ; => orthographic-camera namespace
                                       (gdx/orthographic-camera))
         world-unit-scale (float (/ (:tile-size config)))
-        stage (ui/stage ui-viewport batch nil) ; ?
-        _ (gdx/set-input-processor context stage) ; ? input ?
+        stage (ui/stage ui-viewport batch nil)
+        _ (input/set-processor input stage)
         context (safe-merge context
                             {:gdl.context/assets (asset-manager/create
                                                   (search-assets files (:assets config)))

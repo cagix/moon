@@ -14,7 +14,8 @@
             [cdq.entity.state :as state]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
-            [clojure.gdx :refer [play key-pressed? key-just-pressed? clear-screen black button-just-pressed?]]
+            [clojure.input :as input]
+            [clojure.gdx :refer [play clear-screen black]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
@@ -491,12 +492,15 @@
 
 (def ^:private ^:dbg-flag pausing? true)
 
-(defn update-paused-state [{:keys [cdq.context/player-eid error] :as c}]
+(defn update-paused-state [{:keys [cdq.context/player-eid
+                                   error ; FIXME ! not `::` keys so broken !
+                                   clojure.gdx/input
+                                   ] :as c}]
   (assoc c :cdq.context/paused? (or error
                                     (and pausing?
                                          (state/pause-game? (entity/state-obj @player-eid))
-                                         (not (or (key-just-pressed? c :p)
-                                                  (key-pressed? c :space)))))))
+                                         (not (or (input/key-just-pressed? input :p)
+                                                  (input/key-pressed? input :space)))))))
 
 (defn- update-time [{:keys [clojure.gdx/graphics] :as context}]
   (let [delta-ms (min (graphics/delta-time graphics) max-delta-time)]
@@ -561,10 +565,10 @@
   {:inventory-window   :i
    :entity-info-window :e})
 
-(defn- check-window-hotkeys [c]
+(defn- check-window-hotkeys [{:keys [clojure.gdx/input] :as c}]
   (doseq [window-id [:inventory-window
                      :entity-info-window]
-          :when (key-just-pressed? c (get window-hotkeys window-id))]
+          :when (input/key-just-pressed? input (get window-hotkeys window-id))]
     (actor/toggle-visible! (get (:windows (c/stage c)) window-id))))
 
 (defn- close-all-windows [stage]
@@ -574,14 +578,14 @@
 
 (def close-windows-key :escape)
 
-(defn check-ui-key-listeners [c]
+(defn check-ui-key-listeners [{:keys [clojure.gdx/input] :as c}]
   (check-window-hotkeys c)
-  (when (key-just-pressed? c close-windows-key)
+  (when (input/key-just-pressed? input close-windows-key)
     (close-all-windows (c/stage c)))
   c)
 
-(defn player-movement-vector [c]
-  (c/WASD-movement-vector c))
+(defn player-movement-vector [input]
+  (c/WASD-movement-vector input))
 
 (defn add-skill [c eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
@@ -985,12 +989,12 @@
   (state/pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}] c]
-    (if-let [movement-vector (player-movement-vector c)]
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure.gdx/input] :as c}]
+    (if-let [movement-vector (player-movement-vector input)]
       (send-event! c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
         (c/set-cursor c cursor)
-        (when (button-just-pressed? c :left)
+        (when (input/button-just-pressed? input :left)
           (on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
@@ -1068,8 +1072,8 @@
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (state/manual-tick [[_ {:keys [eid]}] c]
-    (when (and (button-just-pressed? c :left)
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure.gdx/input] :as c}]
+    (when (and (input/button-just-pressed? input :left)
                (world-item? c))
       (send-event! c eid :drop-item)))
 
@@ -1090,8 +1094,8 @@
   (state/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (tick! [[_ {:keys [movement-vector]}] eid c]
-    (if-let [movement-vector (player-movement-vector c)]
+  (tick! [[_ {:keys [movement-vector]}] eid {:keys [clojure.gdx/input] :as c}]
+    (if-let [movement-vector (player-movement-vector input)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
       (send-event! c eid :no-movement-input))))

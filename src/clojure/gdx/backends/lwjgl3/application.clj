@@ -1,8 +1,10 @@
 (ns clojure.gdx.backends.lwjgl3.application
   (:require [clojure.application :as app]
-            [clojure.graphics]
+            [clojure.gdx.interop :refer [k->input-button k->input-key]]
             [clojure.files]
             [clojure.files.file-handle]
+            [clojure.graphics]
+            [clojure.input]
             [clojure.java.io :as io])
   (:import (java.awt Taskbar Toolkit)
            (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -86,3 +88,23 @@
     (.extension this))
   (path [this]
     (.path this)))
+
+(extend-type com.badlogic.gdx.Input
+  clojure.input/Input
+  (x [this]
+    (.getX this))
+
+  (y [this]
+    (.getY this))
+
+  (button-just-pressed? [this button]
+    (.isButtonJustPressed this (k->input-button button)))
+
+  (key-just-pressed? [this key]
+    (.isKeyJustPressed this (k->input-key key)))
+
+  (key-pressed? [this key]
+    (.isKeyPressed this (k->input-key key)))
+
+  (set-processor [this input-processor]
+    (.setInputProcessor this input-processor)))

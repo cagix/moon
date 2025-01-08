@@ -5,7 +5,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]
-            [clojure.gdx :refer [key-pressed?]]
+            [clojure.input :as input]
             [gdl.graphics.camera :as cam]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
@@ -70,16 +70,16 @@
 
 ; TODO textfield takes control !
 ; PLUS symbol shift & = symbol on keyboard not registered
-(defn- camera-controls [camera]
+(defn- camera-controls [input camera]
   (let [apply-position (fn [idx f]
                          (cam/set-position! camera
                                             (update (cam/position camera)
                                                     idx
                                                     #(f % camera-movement-speed))))]
-    (if (key-pressed? :left)  (apply-position 0 -))
-    (if (key-pressed? :right) (apply-position 0 +))
-    (if (key-pressed? :up)    (apply-position 1 +))
-    (if (key-pressed? :down)  (apply-position 1 -))))
+    (if (input/key-pressed? input :left)  (apply-position 0 -))
+    (if (input/key-pressed? input :right) (apply-position 0 +))
+    (if (input/key-pressed? input :up)    (apply-position 1 +))
+    (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
 (defn- render-on-map [{:keys [gdl.context/world-viewport] :as c}]
   (let [{:keys [tiled-map
@@ -135,9 +135,9 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn adjust-zoom [camera] ; TODO this now in gdl.context available.
-  (when (key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
-  (when (key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
+(defn adjust-zoom [input camera] ; TODO this now in gdl.context available.
+  (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (defn enter [_]
   #_(show-whole-map! c/camera (:tiled-map @current-data)))
@@ -151,12 +151,12 @@
                     (constantly white))
   #_(c/draw-on-world-view @state
                           render-on-map)
-  #_(if (key-just-pressed? :l)
+  #_(if (input/key-just-pressed? input :l)
       (swap! current-data update :show-grid-lines not))
-  #_(if (key-just-pressed? :m)
+  #_(if (input/key-just-pressed? input :m)
       (swap! current-data update :show-movement-properties not))
-  #_(adjust-zoom c/camera)
-  #_(camera-controls c/camera))
+  #_(adjust-zoom input c/camera)
+  #_(camera-controls input c/camera))
 
 #_(defn dispose [_]
   #_(dispose (:tiled-map @current-data)))

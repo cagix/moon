@@ -1,5 +1,5 @@
 (ns gdl.context
-  (:require [clojure.gdx :as gdx :refer [play clamp degree->radians white set-projection-matrix begin end set-color draw unproject input-x input-y key-pressed?]]
+  (:require [clojure.gdx :as gdx :refer [play clamp degree->radians white set-projection-matrix begin end set-color draw unproject]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
@@ -7,6 +7,7 @@
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
             [clojure.graphics :as graphics]
+            [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
             [gdl.db :as db]
@@ -235,23 +236,24 @@
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
-  [c viewport]
-  (let [mouse-x (clamp (input-x c)
+  [input viewport]
+  (let [mouse-x (clamp (input/x input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input-y c)
+        mouse-y (clamp (input/y input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{::keys [viewport] :as c}]
+(defn mouse-position [{::keys [viewport] :keys [clojure.gdx/input]}]
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position c viewport)))
+  (mapv int (unproject-mouse-position input viewport)))
 
-(defn world-mouse-position [{::keys [world-viewport] :as c}]
+(defn world-mouse-position [{::keys [world-viewport]
+                             :keys [clojure.gdx/input]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position c world-viewport))
+  (unproject-mouse-position input world-viewport))
 
 (defn pixels->world-units [{::keys [world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
@@ -370,11 +372,11 @@
   (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
                      schemas))
 
-(defn WASD-movement-vector [c]
-  (let [r (when (key-pressed? c :d) [1  0])
-        l (when (key-pressed? c :a) [-1 0])
-        u (when (key-pressed? c :w) [0  1])
-        d (when (key-pressed? c :s) [0 -1])]
+(defn WASD-movement-vector [input]
+  (let [r (when (input/key-pressed? input :d) [1  0])
+        l (when (input/key-pressed? input :a) [-1 0])
+        u (when (input/key-pressed? input :w) [0  1])
+        d (when (input/key-pressed? input :s) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
@@ -382,11 +384,12 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn check-camera-controls [{::keys [world-viewport] :as c}]
+(defn check-camera-controls [{::keys [world-viewport]
+                              :keys [clojure.gdx/input] :as context}]
   (let [camera (:camera world-viewport)]
-    (when (key-pressed? c :minus)  (cam/inc-zoom camera    zoom-speed))
-    (when (key-pressed? c :equals) (cam/inc-zoom camera (- zoom-speed))))
-  c)
+    (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
+    (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
+  context)
 
 (defn update-stage [context]
    (ui/act (stage context) context)
