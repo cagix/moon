@@ -27,3 +27,8 @@
 
                          (resume [_]))
                        (:app config))))
+
+(extend-type com.badlogic.gdx.Files
+  clojure.files/Files
+  (internal [this path]
+    (.internal this path)))

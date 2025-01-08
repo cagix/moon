@@ -1,5 +1,6 @@
 (ns cdq.app
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.files :as files]
+            [clojure.gdx :as gdx]
             [clojure.gdx.assets :as assets]
             [clojure.gdx.file-handle :as fh]
             [clojure.gdx.graphics.camera :as camera]
@@ -12,7 +13,6 @@
             [clojure.string :as str]
             [gdl.context :as gdl.context]
             [gdl.db :as db]
-            [gdl.files :as files]
             [gdl.ui :as ui]
             [gdl.utils :refer [mapvals safe-merge tile->middle]]
             [anvil.level :refer [generate-level]]
