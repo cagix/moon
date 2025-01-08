@@ -1,4 +1,37 @@
 
+; Now I get it -
+; the 'language' of game development is
+; https://javadoc.io/static/com.badlogicgames.gdx/gdx/1.13.0/index.html
+; those amazing package names
+; starting more general getting more specific
+; thats the 'gdl'
+
+; now the 'scenes.scene2d' and 'maps.tiled' and 'assets.asset-manager' makes sense
+; if we want the perfect language for writing games we orient us at that
+; ...
+
+; a 'abstract' game engine.
+
+
+
+
+;;;;;
+
+; Okay: 'clojure.gdx' is just a helper wherever it can make things simpler, _not_ an API
+
+; for simple things like disposable or interfaces we define _new_ protocols in 'gdl' with same naming conventions
+
+; they will get extend-type'd
+
+; but also we want to create a language just for 'cdq' right /... only what we need ....
+
+; but all 'gdx'etc stuff can be extended in my own 'gdl' with same naming conventions as gdx
+; so it can be extended & good
+
+; so the 'clojure.gdx' is just a helper which is used _inside_ the extend statements?
+
+
+
 ; 1. fix reflections / move functions where used (gdl/actor/gdx?)
 ; 2. gdl separate project unifying the 'clojure.gdx' stuff
 ; => cdq does not use clojure.gdx directly then but new layer 'gdl' ?

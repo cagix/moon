@@ -12,6 +12,7 @@
             [clojure.string :as str]
             [gdl.context :as gdl.context]
             [gdl.db :as db]
+            [gdl.files :as files]
             [gdl.ui :as ui]
             [gdl.utils :refer [mapvals safe-merge tile->middle]]
             [anvil.level :refer [generate-level]]
@@ -52,18 +53,18 @@
 
 ; => it's not clojure.gdx but 'gdl' then ? ???
 
-(defn- load-assets [context folder]
+(defn- load-assets [{:keys [clojure.gdx/files]} folder]
   (doto (gdx/asset-manager) ; < - make my own asset-manager API with load-all included
     (load-all (for [[asset-type exts] {:sound   #{"wav"}
                                        :texture #{"png" "bmp"}}
                     file (map #(str/replace-first % folder "")
-                              (recursively-search (gdx/internal-file context folder)
+                              (recursively-search (files/internal files folder)
                                                   exts))]
                 [file asset-type]))))
 
-(defn- create-cursors [context cursors]
+(defn- create-cursors [{:keys [clojure.gdx/files] :as context} cursors]
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
-             (let [pixmap (gdx/pixmap (gdx/internal-file context (str "cursors/" file ".png")))
+             (let [pixmap (gdx/pixmap (files/internal files (str "cursors/" file ".png")))
                    cursor (gdx/cursor context pixmap hotspot-x hotspot-y)]
                (gdx/dispose pixmap)
                cursor))
@@ -118,7 +119,7 @@
 ; * => multimethod
 ; * => GameContext -> dispose,resize, and later can add 'restart-level, restart-game'....
 
-(defn create [context config]
+(defn create [{:keys [clojure.gdx/files] :as context} config]
   (vis-ui/load (:vis-ui config))
   (let [batch (sprite-batch/create)
         ; => pixmap namespace
@@ -142,7 +143,7 @@
                              :gdl.context/batch batch
                              :gdl.context/cursors (create-cursors context (:cursors config))
                              :gdl.context/db (db/create (:db config))
-                             :gdl.context/default-font (freetype/generate-font (update (:default-font config) :file #(gdx/internal-file context %)))
+                             :gdl.context/default-font (freetype/generate-font (update (:default-font config) :file #(files/internal files %)))
                              :gdl.context/shape-drawer (sd/create batch (gdx/texture-region sd-texture 1 0 1 1))
                              :gdl.context/sd-texture sd-texture
                              :gdl.context/stage stage
