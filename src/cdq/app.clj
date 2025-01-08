@@ -5,7 +5,7 @@
             [clojure.files.search :as file-search]
             [clojure.gdx.backends.lwjgl3.application :as lwjgl3]
             [clojure.gdx :as gdx]
-            [clojure.gdx.assets :as assets]
+            [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.shape-drawer :as sd]
@@ -37,14 +37,13 @@
   (:import (gdl OrthogonalTiledMapRenderer))
   (:gen-class))
 
-(defn- load-assets [{:keys [clojure.gdx/files]} folder]
-  (doto (gdx/asset-manager)
-    (assets/load-all (for [[asset-type exts] {:sound   #{"wav"}
-                                              :texture #{"png" "bmp"}}
-                           file (map #(str/replace-first % folder "")
-                                     (file-search/by-extensions (files/internal files folder)
-                                                                exts))]
-                       [file asset-type]))))
+(defn- search-assets [files folder]
+  (for [[asset-type exts] {:sound   #{"wav"}
+                           :texture #{"png" "bmp"}}
+        file (map #(str/replace-first % folder "")
+                  (file-search/by-extensions (files/internal files folder)
+                                             exts))]
+    [file asset-type]))
 
 (defn- create-cursors [{:keys [clojure.gdx/files
                                clojure.gdx/graphics]} cursors]
@@ -121,7 +120,8 @@
         stage (ui/stage ui-viewport batch nil) ; ?
         _ (gdx/set-input-processor context stage) ; ? input ?
         context (safe-merge context
-                            {:gdl.context/assets (load-assets context (:assets config))
+                            {:gdl.context/assets (asset-manager/create
+                                                  (search-assets files (:assets config)))
                              :gdl.context/batch batch
                              :gdl.context/cursors (create-cursors context (:cursors config))
                              :gdl.context/db (db/create (:db config))

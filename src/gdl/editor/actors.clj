@@ -1,7 +1,7 @@
 (ns gdl.editor.actors
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
-            [clojure.gdx.assets :as assets]
+            [clojure.gdx.assets.manager :as asset-manager]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.app :refer [state]]
@@ -158,8 +158,8 @@
 
 (defn- all-of-type [asset-type]
   (let [manager (:gdl.context/assets @state)]
-    (filter #(= (assets/type manager %) asset-type)
-            (assets/names manager))))
+    (filter #(= (assets-manager/type manager %) asset-type)
+            (assets-manager/names manager))))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(play-sound @state sound-name)))
