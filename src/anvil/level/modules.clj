@@ -2,7 +2,8 @@
   (:require [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [anvil.modules :as modules]
             [data.grid2d :as g2d]
-            [clojure.gdx.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)
@@ -82,7 +83,7 @@
                   (str "(set (g2d/cells grid)): " (set (g2d/cells grid))))
         scale modules/scale
         scaled-grid (scale-grid grid scale)
-        tiled-map (modules/place (tiled/load-tmx-map modules/file)
+        tiled-map (modules/place (tmx-map-loader/load modules/file)
                                  scaled-grid
                                  grid
                                  (filter #(= :ground     (get grid %)) (g2d/posis grid))

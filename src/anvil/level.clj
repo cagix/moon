@@ -2,7 +2,8 @@
   (:require [anvil.level.modules :refer [generate-modules]]
             [anvil.level.uf-caves :as uf-caves]
             [gdl.context :as c]
-            [clojure.gdx.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))
 
 (defmulti generate-level* (fn [world c] (:world/generator world)))
 
@@ -17,7 +18,7 @@
                    ((:gdl.context/assets c) "maps/uf_terrain.png"))) ; TODO use (def assets ::assets)
 
 (defmethod generate-level* :world.generator/tiled-map [world c]
-  {:tiled-map (tiled/load-tmx-map (:world/tiled-map world))
+  {:tiled-map (tmx-map-loader/load (:world/tiled-map world))
    :start-position [32 71]})
 
 (defmethod generate-level* :world.generator/modules [world c]

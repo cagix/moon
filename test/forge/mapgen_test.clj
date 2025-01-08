@@ -8,6 +8,7 @@
             [clojure.gdx :refer [key-pressed?]]
             [gdl.graphics.camera :as cam]
             [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
             [gdl.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.scene2d.group :refer [add-actor!]]))
 
@@ -161,7 +162,7 @@
   #_(dispose (:tiled-map @current-data)))
 
 (comment
- (atom {:tiled-map (tiled/load-tmx-map modules/file)
+ (atom {:tiled-map (tmx-map-loader/load modules/file)
         :show-movement-properties false
         :show-grid-lines false})
  )
