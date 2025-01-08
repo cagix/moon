@@ -1,5 +1,6 @@
 (ns cdq.context
-  (:require [anvil.world.potential-field :as potential-field]
+  (:require [clojure.graphics :as graphics]
+            [anvil.world.potential-field :as potential-field]
             [cdq.effect :as effect]
             [cdq.inventory :as inventory]
             [gdl.context.timer :as timer]
@@ -12,7 +13,7 @@
             [cdq.entity.state :as state]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
-            [clojure.gdx :as gdx :refer [play key-pressed? key-just-pressed? clear-screen black button-just-pressed?]]
+            [clojure.gdx :refer [play key-pressed? key-just-pressed? clear-screen black button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first rand-int-between]]
@@ -496,9 +497,9 @@
                                          (not (or (key-just-pressed? c :p)
                                                   (key-pressed? c :space)))))))
 
-(defn- update-time [c]
-  (let [delta-ms (min (gdx/delta-time c) max-delta-time)]
-    (-> c
+(defn- update-time [{:keys [clojure.gdx/graphics] :as context}]
+  (let [delta-ms (min (graphics/delta-time graphics) max-delta-time)]
+    (-> context
         (update :gdl.context/elapsed-time + delta-ms)
         (assoc :cdq.context/delta-time delta-ms))))
 

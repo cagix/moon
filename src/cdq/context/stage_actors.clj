@@ -1,7 +1,7 @@
 (ns cdq.context.stage-actors
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.scene2d.actor :as actor]
+  (:require [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
+            [clojure.graphics :as graphics]
             ;
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
@@ -47,9 +47,10 @@
                   :scale 2.5
                   :up? true})))
 
-(defn- check-remove-message [{:keys [cdq.context/player-message] :as c}]
+(defn- check-remove-message [{:keys [cdq.context/player-message
+                                     clojure.gdx/graphics]}]
   (when (:text @player-message)
-    (swap! player-message update :counter + (gdx/delta-time c))
+    (swap! player-message update :counter + (graphics/delta-time graphics))
     (when (>= (:counter @player-message)
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))
@@ -123,7 +124,8 @@
                     :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %))) ; TODO (def ::world-viewport)
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn gdx/frames-per-second
+                    :update-fn (fn [{:keys [clojure.gdx/graphics]}]
+                                 (graphics/frames-per-second graphics))
                     :icon "images/fps.png"}]})
 
 (defn- dev-menu [c]

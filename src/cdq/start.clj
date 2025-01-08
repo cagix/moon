@@ -32,3 +32,10 @@
   clojure.files/Files
   (internal [this path]
     (.internal this path)))
+
+(extend-type com.badlogic.gdx.Graphics
+  clojure.graphics/Graphics
+  (delta-time [this]
+    (.getDeltaTime this))
+  (frames-per-second [this]
+    (.getFramesPerSecond this)))
