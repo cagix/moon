@@ -2,6 +2,7 @@
   "https://javadoc.io/doc/com.badlogicgames.gdx/gdx-freetype/latest/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGenerator.html
 
   https://javadoc.io/static/com.badlogicgames.gdx/gdx-freetype/1.13.0/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGenerator.FreeTypeFontParameter.html"
+  (:require [clojure.utils.disposable :refer [dispose]])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
@@ -126,7 +127,7 @@
 (defn generate-font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. file)
         font (.generateFont generator (ttf-params size quality-scaling))]
-    (.dispose generator)
+    (dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible

@@ -1,5 +1,6 @@
 (ns cdq.context
-  (:require [clojure.graphics :as graphics]
+  (:require [clojure.audio.sound :as sound]
+            [clojure.graphics :as graphics]
             [clojure.rand :refer [rand-int-between]]
             [anvil.world.potential-field :as potential-field]
             [cdq.effect :as effect]
@@ -15,7 +16,7 @@
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.input :as input]
-            [clojure.gdx :refer [play clear-screen black]]
+            [clojure.gdx :refer [clear-screen black]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
@@ -216,7 +217,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [c position {:keys [tx/sound entity/animation]}]
-  (play sound)
+  (sound/play sound)
   (spawn-entity c
                 position
                 effect-body-props
@@ -777,7 +778,7 @@
     false)
 
   (state/enter [[_ {:keys [eid skill]}] c]
-    (play (:skill/start-action-sound skill))
+    (sound/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
@@ -871,7 +872,7 @@
                            modal/text
                            modal/button-text]}]
                 c]
-    (play sound)
+    (sound/play sound)
     (show-modal c {:title title
                    :text text
                    :button-text button-text
@@ -1000,7 +1001,7 @@
   (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
-      (play pickup-item-sound)
+      (sound/play pickup-item-sound)
       (send-event! c eid :pickup-item item)
       (remove-item c eid cell)))
 
@@ -1022,7 +1023,7 @@
      (and (not item-in-cell)
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (play item-put-sound)
+      (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item c eid cell item-on-cursor)
       (send-event! c eid :dropped-item))
@@ -1031,7 +1032,7 @@
      (and item-in-cell
           (inventory/stackable? item-in-cell item-on-cursor))
      (do
-      (play item-put-sound)
+      (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item c eid cell item-on-cursor)
       (send-event! c eid :dropped-item))
@@ -1040,7 +1041,7 @@
      (and item-in-cell
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (play item-put-sound)
+      (sound/play item-put-sound)
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -1066,7 +1067,7 @@
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (play place-world-item-sound)
+        (sound/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
         (spawn-item c
                     (item-place-position c entity)
@@ -1179,7 +1180,7 @@
     false)
 
   (effect/handle [[_ sound] _ctx c]
-    (play sound)))
+    (sound/play sound)))
 
 (defcomponent :effects/spawn
   (effect/applicable? [_ {:keys [effect/source effect/target-position]}]

@@ -17,10 +17,11 @@
             [clojure.input :as input]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [clojure.utils :refer [mapvals safe-merge tile->middle]]
+            [clojure.utils.disposable :refer [dispose]]
             [gdl.context :as gdl.context]
             [gdl.db :as db]
             [gdl.ui :as ui]
-            [clojure.utils :refer [mapvals safe-merge tile->middle]]
             [anvil.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
             [cdq.context.stage-actors :as stage-actors]
@@ -51,7 +52,7 @@
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
              (let [pixmap (gdx/pixmap (files/internal files (str "cursors/" file ".png")))
                    cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-               (gdx/dispose pixmap)
+               (dispose pixmap)
                cursor))
            cursors))
 
@@ -111,8 +112,7 @@
                                   (pixmap/set-color gdx/white)
                                   (gdx/draw-pixel 0 0))
                          texture (gdx/texture pixmap)]
-                     ; => dispose is a protocol ?
-                     (gdx/dispose pixmap)
+                     (dispose pixmap)
                      texture)
         ; => fit-viewport namespace
         ui-viewport (gdx/fit-viewport (:width  (:ui-viewport config))
@@ -160,15 +160,15 @@
       (spawn-enemies! context tiled-map)
       context)))
 
-(defn- dispose [context]
+(defn- dispose! [context]
   (vis-ui/dispose)
   ; TODO dispose :gdl.context/sd-texture
-  (gdx/dispose (:gdl.context/assets context))
-  (gdx/dispose (:gdl.context/batch  context))
-  (run! gdx/dispose (vals (:gdl.context/cursors context)))
-  (gdx/dispose (:gdl.context/default-font context))
-  (gdx/dispose (:gdl.context/stage context))
-  (gdx/dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
+  (dispose (:gdl.context/assets context))
+  (dispose (:gdl.context/batch  context))
+  (run! dispose (vals (:gdl.context/cursors context)))
+  (dispose (:gdl.context/default-font context))
+  (dispose (:gdl.context/stage context))
+  (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )
 
 (defn- resize [context width height]
@@ -205,7 +205,7 @@
                        (reset! state (create context (:context config))))
 
                      (dispose [_]
-                       (dispose @state))
+                       (dispose! @state))
 
                      (pause [_])
 

@@ -1,5 +1,6 @@
 (ns gdl.context
-  (:require [clojure.gdx :as gdx :refer [play clamp degree->radians white set-projection-matrix begin end set-color draw unproject]]
+  (:require [clojure.audio.sound :as sound]
+            [clojure.gdx :as gdx :refer [clamp degree->radians white set-projection-matrix begin end set-color draw unproject]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
@@ -28,7 +29,7 @@
        assets))
 
 (defn play-sound [c sound-name]
-  (play (get-sound c sound-name)))
+  (sound/play (get-sound c sound-name)))
 
 (defn- texture-region [{::keys [assets]} path]
   (gdx/texture-region (assets path)))

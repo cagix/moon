@@ -1,8 +1,10 @@
 (ns clojure.gdx.backends.lwjgl3.application
   (:require [clojure.application :as app]
             [clojure.gdx.interop :refer [k->input-button k->input-key]]
+            [clojure.audio.sound]
             [clojure.files]
             [clojure.files.file-handle]
+            [clojure.utils.disposable]
             [clojure.graphics]
             [clojure.input]
             [clojure.java.io :as io])
@@ -12,6 +14,17 @@
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (org.lwjgl.system Configuration)))
+
+; TODO thread-bound vars? (*graphics* is same as *out* for println ?)
+; audio/files/input/net is not thread-bound
+; => just 'declare' ?
+
+(comment
+ (in-ns 'clojure.core)
+ (declare gdx-input)
+
+ ; its not 'clojure' its 'gdx'  -> naming ?
+ )
 
 (defn- context []
   {:clojure.gdx/app      Gdx/app
@@ -25,6 +38,8 @@
    :clojure.gdx/graphics Gdx/graphics
    :clojure.gdx/input    Gdx/input
    :clojure.gdx/net      Gdx/net})
+
+; after passing - (set! (.app Gdx) nil) , etc.
 
 (defn create [listener config]
   (.setIconImage (Taskbar/getTaskbar)
@@ -108,3 +123,13 @@
 
   (set-processor [this input-processor]
     (.setInputProcessor this input-processor)))
+
+(extend-type com.badlogic.gdx.audio.Sound
+  clojure.audio.sound/Sound
+  (play [this]
+    (.play this)))
+
+(extend-type com.badlogic.gdx.utils.Disposable
+  clojure.utils.disposable/Disposable
+  (dispose [this]
+    (.dispose this)))
