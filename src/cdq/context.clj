@@ -1,5 +1,6 @@
 (ns cdq.context
   (:require [clojure.graphics :as graphics]
+            [clojure.rand :refer [rand-int-between]]
             [anvil.world.potential-field :as potential-field]
             [cdq.effect :as effect]
             [cdq.inventory :as inventory]
@@ -16,7 +17,7 @@
             [clojure.gdx :refer [play key-pressed? key-just-pressed? clear-screen black button-just-pressed?]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first rand-int-between]]
+            [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
             [cdq.effect-context :as effect-ctx]
             [anvil.skill :as skill]
             [gdl.context :as c :refer [play-sound]]

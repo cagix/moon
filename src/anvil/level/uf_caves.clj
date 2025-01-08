@@ -1,7 +1,7 @@
 (ns ^:no-doc anvil.level.uf-caves
   (:require [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx :as gdx]
-            [gdl.utils :refer [get-rand-weighted-item]]
+            [clojure.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]))
 
