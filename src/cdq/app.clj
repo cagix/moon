@@ -1,7 +1,9 @@
 (ns cdq.app
-  (:require [clojure.files :as files]
+  (:require [clojure.application :as application]
+            [clojure.edn :as edn]
+            [clojure.files :as files]
             [clojure.files.search :as file-search]
-            [clojure.graphics :as graphics]
+            [clojure.gdx.backends.lwjgl3.application :as lwjgl3]
             [clojure.gdx :as gdx]
             [clojure.gdx.assets :as assets]
             [clojure.gdx.graphics.camera :as camera]
@@ -11,6 +13,8 @@
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.vis-ui :as vis-ui]
+            [clojure.graphics :as graphics]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [gdl.context :as gdl.context]
             [gdl.db :as db]
@@ -30,7 +34,8 @@
             cdq.graphics
             cdq.graphics.camera
             cdq.graphics.tiled-map)
-  (:import (gdl OrthogonalTiledMapRenderer)))
+  (:import (gdl OrthogonalTiledMapRenderer))
+  (:gen-class))
 
 (defn- load-assets [{:keys [clojure.gdx/files]} folder]
   (doto (gdx/asset-manager)
@@ -96,7 +101,7 @@
 ; * => multimethod
 ; * => GameContext -> dispose,resize, and later can add 'restart-level, restart-game'....
 
-(defn create [{:keys [clojure.gdx/files] :as context} config]
+(defn- create [{:keys [clojure.gdx/files] :as context} config]
   (vis-ui/load (:vis-ui config))
   (let [batch (sprite-batch/create)
         ; => pixmap namespace
@@ -152,7 +157,7 @@
       (spawn-enemies! context tiled-map)
       context)))
 
-(defn dispose [context]
+(defn- dispose [context]
   (vis-ui/dispose)
   ; TODO dispose :gdl.context/sd-texture
   (gdx/dispose (:gdl.context/assets context))
@@ -163,11 +168,11 @@
   (gdx/dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )
 
-(defn resize [context width height]
+(defn- resize [context width height]
   (gdx/resize (:gdl.context/viewport       context) width height :center-camera? true)
   (gdx/resize (:gdl.context/world-viewport context) width height :center-camera? false))
 
-(defn render [context]
+(defn- render [context]
   (reduce (fn [context f]
             (f context))
           context
@@ -186,3 +191,26 @@
            cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
            gdl.context/check-camera-controls
            cdq.context/check-ui-key-listeners]))
+
+
+(def state (atom nil))
+
+(defn -main []
+  (let [config (-> "app.edn" io/resource slurp edn/read-string)]
+    (lwjgl3/create (reify application/Listener
+                     (create [_ context]
+                       (reset! state (create context (:context config))))
+
+                     (dispose [_]
+                       (dispose @state))
+
+                     (pause [_])
+
+                     (render [_]
+                       (swap! state render))
+
+                     (resize [_ width height]
+                       (resize @state width height))
+
+                     (resume [_]))
+                   (:app config))))

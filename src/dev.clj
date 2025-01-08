@@ -4,7 +4,7 @@
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [cdq.start :refer [state]]
+            [cdq.app :refer [state]]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]

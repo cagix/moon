@@ -1,5 +1,7 @@
 (ns clojure.gdx.backends.lwjgl3.application
   (:require [clojure.application :as app]
+            [clojure.graphics]
+            [clojure.files]
             [clojure.java.io :as io])
   (:import (java.awt Taskbar Toolkit)
            (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -46,6 +48,9 @@
                         (.setWindowedMode (:window-width config)
                                           (:window-height config))
                         (.setForegroundFPS (:fps config)))))
+
+; oh now I know
+; this belongs to 'clojure.gdx' ...
 
 (extend-type com.badlogic.gdx.Files
   clojure.files/Files
