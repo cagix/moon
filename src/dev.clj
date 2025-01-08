@@ -1,5 +1,5 @@
 (ns dev
-  (:require [clojure.gdx.application :as app]
+  (:require [clojure.application :as application]
             [clojure.gdx.scene2d.group :refer [children]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
@@ -11,7 +11,7 @@
             [gdl.editor.actors :as editor]))
 
 (defn post-runnable [f]
-  (app/post-runnable @state #(f @state)))
+  (application/post-runnable @state #(f @state)))
 
 (comment
 

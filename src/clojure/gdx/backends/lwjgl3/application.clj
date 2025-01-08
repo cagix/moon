@@ -2,7 +2,7 @@
   "Provides an interface for creating and managing a LibGDX application using the LWJGL3 backend.
    This namespace includes functionality for initializing the application with a listener and configuration,
    as well as accessing the LibGDX global context."
-  (:require [clojure.gdx.application :as app]
+  (:require [clojure.application :as app]
             [clojure.java.io :as io])
   (:import (java.awt Taskbar Toolkit)
            (com.badlogic.gdx ApplicationAdapter Gdx)

@@ -1,6 +1,6 @@
 (ns cdq.start
   (:require [clojure.edn :as edn]
-            [clojure.gdx.application :as application]
+            [clojure.application :as application]
             [clojure.gdx.backends.lwjgl3.application :as lwjgl3-app]
             [clojure.java.io :as io]
             [cdq.app :as game])
@@ -43,3 +43,10 @@
     (.newCursor this pixmap hotspot-x hotspot-y))
   (set-cursor [this cursor]
     (.setCursor this cursor)))
+
+(extend-type com.badlogic.gdx.Application
+  clojure.application/Application
+  (exit [this]
+    (.exit this))
+  (post-runnable [this runnable]
+    (.postRunnable this runnable)))
