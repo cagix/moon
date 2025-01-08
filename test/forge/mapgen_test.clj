@@ -1,7 +1,7 @@
 (ns forge.mapgen-test
   (:require [anvil.level :refer [generate-level]]
             [anvil.modules :as modules]
-            [clojure.gdx :refer [white]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]
@@ -148,7 +148,7 @@
 (defn render [_]
   #_(draw-tiled-map @state
                     (:tiled-map @current-data)
-                    (constantly white))
+                    (constantly color/white))
   #_(c/draw-on-world-view @state
                           render-on-map)
   #_(if (input/key-just-pressed? input :l)

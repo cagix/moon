@@ -1,13 +1,16 @@
 (ns gdl.context
   (:require [clojure.audio.sound :as sound]
-            [clojure.gdx :as gdx :refer [clamp degree->radians white set-projection-matrix begin end set-color draw unproject]]
+            [clojure.gdx :as gdx :refer [unproject]]
             [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
+            [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.graphics :as graphics]
+            [clojure.graphics.2d.batch :as batch]
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
@@ -87,7 +90,7 @@
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
         (keyword? c) (interop/k->color c)
-        (vector? c) (apply gdx/color c)
+        (vector? c) (apply color/create c)
         :else (throw (ex-info "Cannot understand color" c))))
 
 (defn- sd-color [shape-drawer color]
@@ -182,19 +185,19 @@
     (:world-unit-dimensions image)))
 
 (defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
-  (if color (set-color batch color))
-  (draw batch
-        texture-region
-        :x x
-        :y y
-        :origin-x (/ (float w) 2) ; rotation origin
-        :origin-y (/ (float h) 2)
-        :width w
-        :height h
-        :scale-x 1
-        :scale-y 1
-        :rotation rotation)
-  (if color (set-color batch white)))
+  (if color (batch/set-color batch color))
+  (batch/draw batch
+              texture-region
+              {:x x
+               :y y
+               :origin-x (/ (float w) 2) ; rotation origin
+               :origin-y (/ (float h) 2)
+               :width w
+               :height h
+               :scale-x 1
+               :scale-y 1
+               :rotation rotation})
+  (if color (batch/set-color batch color/white)))
 
 (defn draw-image
   [{::keys [batch unit-scale]} {:keys [texture-region color] :as image} position]
@@ -220,11 +223,11 @@
   (draw-rotated-centered c image 0 position))
 
 (defn- draw-on-viewport [batch viewport draw-fn]
-  (set-color batch white) ; fix scene2d.ui.tooltip flickering
-  (set-projection-matrix batch (camera/combined (:camera viewport)))
-  (begin batch)
+  (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
+  (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
+  (batch/begin batch)
   (draw-fn)
-  (end batch))
+  (batch/end batch))
 
 (defn draw-with [{::keys [batch] :as c} viewport unit-scale draw-fn]
   (draw-on-viewport batch

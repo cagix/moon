@@ -16,7 +16,7 @@
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.input :as input]
-            [clojure.gdx :refer [clear-screen black]]
+            [clojure.gdx :refer [clear-screen]]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
             [clojure.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]

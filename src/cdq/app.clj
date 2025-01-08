@@ -7,6 +7,8 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
@@ -29,10 +31,7 @@
             [cdq.context.content-grid :as content-grid]
             [cdq.context.grid :as grid]
             [cdq.context.raycaster :as raycaster]
-
-            gdl.context
             gdl.graphics
-            cdq.context
             cdq.graphics
             cdq.graphics.camera
             cdq.graphics.tiled-map)
@@ -65,7 +64,7 @@
 (defn- world-viewport [{:keys [width height]} world-unit-scale]
   (println "World-viewport: " width ", " height ", world-unit-scale " world-unit-scale)
   (assert world-unit-scale)
-  (let [camera (gdx/orthographic-camera)
+  (let [camera (orthographic-camera/create)
         world-width  (* width  world-unit-scale)
         world-height (* height world-unit-scale)]
     (camera/set-to-ortho camera world-width world-height :y-down? false)
@@ -109,7 +108,7 @@
   (let [batch (sprite-batch/create)
         ; => pixmap namespace
         sd-texture (let [pixmap (doto (gdx/pixmap 1 1 pixmap/format-RGBA8888)
-                                  (pixmap/set-color gdx/white)
+                                  (pixmap/set-color color/white)
                                   (gdx/draw-pixel 0 0))
                          texture (gdx/texture pixmap)]
                      (dispose pixmap)
@@ -117,8 +116,7 @@
         ; => fit-viewport namespace
         ui-viewport (gdx/fit-viewport (:width  (:ui-viewport config))
                                       (:height (:ui-viewport config))
-                                      ; => orthographic-camera namespace
-                                      (gdx/orthographic-camera))
+                                      (orthographic-camera/create))
         world-unit-scale (float (/ (:tile-size config)))
         stage (ui/stage ui-viewport batch nil)
         _ (input/set-processor input stage)

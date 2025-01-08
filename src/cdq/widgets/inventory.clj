@@ -3,7 +3,7 @@
             [cdq.entity.state :as state]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.context.info :as info]
-            [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [data.grid2d :as g2d]
             [gdl.context :as c]
@@ -74,7 +74,7 @@
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (gdx/color 1 1 1 0.4))))
+    (scene2d.utils/tint drawable (color/create 1 1 1 0.4))))
 
 (defn- ->cell [c slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]

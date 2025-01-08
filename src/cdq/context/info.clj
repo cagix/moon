@@ -1,5 +1,6 @@
 (ns cdq.context.info
-  (:require [clojure.gdx :as gdx]
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.colors :as colors]
             [clojure.math :as math]
             [clojure.string :as str]
             [gdl.context.timer :as timer]
@@ -19,7 +20,7 @@
 (defsystem ^:private info-segment)
 (defmethod info-segment :default [_ _entity _context])
 
-(gdx/def-color "PRETTY_NAME" (gdx/color 0.84 0.8 0.52))
+(colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
