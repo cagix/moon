@@ -1,6 +1,6 @@
 (ns gdl.math.shapes
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.math.circle :as circle]
+  (:require [clojure.gdx.math.circle :as circle]
+            [clojure.gdx.math.intersector :as intersector]
             [clojure.gdx.math.rectangle :as rectangle]))
 
 (defn- rectangle? [{[x y] :left-bottom :keys [width height]}]
@@ -22,8 +22,8 @@
    :else (throw (Error. (str m)))))
 
 (defn overlaps? [shape-a shape-b]
-  (gdx/overlaps? (m->shape shape-a)
-                 (m->shape shape-b)))
+  (intersector/overlaps? (m->shape shape-a)
+                         (m->shape shape-b)))
 
 (defn rect-contains? [rectangle [x y]]
   (rectangle/contains? (m->shape rectangle) x y))

@@ -4,16 +4,19 @@
             [clojure.files :as files]
             [clojure.files.search :as file-search]
             [clojure.gdx.backends.lwjgl3.application :as lwjgl3]
-            [clojure.gdx :as gdx]
             [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.shape-drawer :as sd]
+            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.utils.viewport :as viewport]
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.gdx.vis-ui :as vis-ui]
             [clojure.graphics :as graphics]
             [clojure.input :as input]
@@ -49,7 +52,7 @@
 (defn- create-cursors [{:keys [clojure.gdx/files
                                clojure.gdx/graphics]} cursors]
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
-             (let [pixmap (gdx/pixmap (files/internal files (str "cursors/" file ".png")))
+             (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
                    cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                (dispose pixmap)
                cursor))
@@ -68,7 +71,7 @@
         world-width  (* width  world-unit-scale)
         world-height (* height world-unit-scale)]
     (camera/set-to-ortho camera world-width world-height :y-down? false)
-    (gdx/fit-viewport world-width world-height camera)))
+    (fit-viewport/create world-width world-height camera)))
 
 ; TODO this passing w. world props ...
 ; player-creature needs mana & inventory
@@ -106,17 +109,15 @@
                 :as context} config]
   (vis-ui/load (:vis-ui config))
   (let [batch (sprite-batch/create)
-        ; => pixmap namespace
-        sd-texture (let [pixmap (doto (gdx/pixmap 1 1 pixmap/format-RGBA8888)
+        sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                   (pixmap/set-color color/white)
-                                  (gdx/draw-pixel 0 0))
-                         texture (gdx/texture pixmap)]
+                                  (pixmap/draw-pixel 0 0))
+                         texture (texture/create pixmap)]
                      (dispose pixmap)
                      texture)
-        ; => fit-viewport namespace
-        ui-viewport (gdx/fit-viewport (:width  (:ui-viewport config))
-                                      (:height (:ui-viewport config))
-                                      (orthographic-camera/create))
+        ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
+                                         (:height (:ui-viewport config))
+                                         (orthographic-camera/create))
         world-unit-scale (float (/ (:tile-size config)))
         stage (ui/stage ui-viewport batch nil)
         _ (input/set-processor input stage)
@@ -127,7 +128,7 @@
                              :gdl.context/cursors (create-cursors context (:cursors config))
                              :gdl.context/db (db/create (:db config))
                              :gdl.context/default-font (freetype/generate-font (update (:default-font config) :file #(files/internal files %)))
-                             :gdl.context/shape-drawer (sd/create batch (gdx/texture-region sd-texture 1 0 1 1))
+                             :gdl.context/shape-drawer (sd/create batch (texture-region/create sd-texture 1 0 1 1))
                              :gdl.context/sd-texture sd-texture
                              :gdl.context/stage stage
                              :gdl.context/viewport ui-viewport
@@ -170,8 +171,8 @@
   )
 
 (defn- resize [context width height]
-  (gdx/resize (:gdl.context/viewport       context) width height :center-camera? true)
-  (gdx/resize (:gdl.context/world-viewport context) width height :center-camera? false))
+  (viewport/resize (:gdl.context/viewport       context) width height :center-camera? true)
+  (viewport/resize (:gdl.context/world-viewport context) width height :center-camera? false))
 
 (defn- render [context]
   (reduce (fn [context f]

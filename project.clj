@@ -36,6 +36,13 @@
 ; 2. gdl separate project unifying the 'clojure.gdx' stuff
 ; => cdq does not use clojure.gdx directly then but new layer 'gdl' ?
 
+
+
+; => the _perfect_ cyber dungeon quest language
+; => move stuff closer to 'clojure.*'
+; => I don't think we need to fork clojure itself ?
+; or do we have so many imports???
+
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]

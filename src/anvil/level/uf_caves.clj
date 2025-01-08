@@ -1,6 +1,6 @@
 (ns ^:no-doc anvil.level.uf-caves
   (:require [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
-            [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]))
@@ -32,11 +32,11 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [texture & {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (gdx/texture-region texture
-                               (* sprite-x sprite-size)
-                               (* sprite-y sprite-size)
-                               sprite-size
-                               sprite-size)
+  (tm-tile (texture-region/create texture
+                                  (* sprite-x sprite-size)
+                                  (* sprite-y sprite-size)
+                                  sprite-size
+                                  sprite-size)
            movement))
 
 (def ^:private uf-grounds

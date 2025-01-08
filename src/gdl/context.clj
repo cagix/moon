@@ -1,14 +1,15 @@
 (ns gdl.context
   (:require [clojure.audio.sound :as sound]
-            [clojure.gdx :as gdx :refer [unproject]]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics :as graphics]
             [clojure.graphics.2d.batch :as batch]
             [clojure.input :as input]
@@ -35,7 +36,7 @@
   (sound/play (get-sound c sound-name)))
 
 (defn- texture-region [{::keys [assets]} path]
-  (gdx/texture-region (assets path)))
+  (texture-region/create (assets path)))
 
 (defn sprite [{::keys [world-unit-scale] :as c} path]
   (sprite/create world-unit-scale
@@ -247,7 +248,7 @@
         mouse-y (clamp (input/y input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
-    (unproject viewport mouse-x mouse-y)))
+    (viewport/unproject viewport mouse-x mouse-y)))
 
 (defn mouse-position [{::keys [viewport] :keys [clojure.gdx/input]}]
   ; TODO mapv int needed?

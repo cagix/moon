@@ -1,6 +1,6 @@
 (ns gdl.ui
   (:refer-clojure :exclude [load])
-  (:require [clojure.gdx :refer [dimensions]]
+  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
             [clojure.gdx.scene2d.stage :as stage]
@@ -264,7 +264,7 @@
    (let [drawable (texture-region-drawable texture-region)
          button (VisImageButton. ^Drawable drawable)]
      (when scale
-       (let [[w h] (dimensions texture-region)]
+       (let [[w h] (texture-region/dimensions texture-region)]
          (scene2d.utils/set-min-size! drawable (* scale w) (* scale h))))
      (.addListener button (change-listener on-clicked))
      button)))
