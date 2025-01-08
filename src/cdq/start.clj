@@ -38,4 +38,8 @@
   (delta-time [this]
     (.getDeltaTime this))
   (frames-per-second [this]
-    (.getFramesPerSecond this)))
+    (.getFramesPerSecond this))
+  (new-cursor [this pixmap hotspot-x hotspot-y]
+    (.newCursor this pixmap hotspot-x hotspot-y))
+  (set-cursor [this cursor]
+    (.setCursor this cursor)))

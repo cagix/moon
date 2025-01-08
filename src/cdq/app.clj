@@ -1,8 +1,9 @@
 (ns cdq.app
   (:require [clojure.files :as files]
+            [clojure.files.search :as file-search]
+            [clojure.graphics :as graphics]
             [clojure.gdx :as gdx]
             [clojure.gdx.assets :as assets]
-            [clojure.gdx.file-handle :as fh]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.shape-drawer :as sd]
@@ -31,47 +32,23 @@
             cdq.graphics.tiled-map)
   (:import (gdl OrthogonalTiledMapRenderer)))
 
-(defn- load-all [manager assets]
-  (doseq [[file asset-type] assets]
-    (assets/load manager file asset-type))
-  (assets/finish-loading manager))
-
-(defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (fh/list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (fh/directory? file)
-          (recur (concat remaining (fh/list file)) result)
-
-          (extensions (fh/extension file))
-          (recur remaining (conj result (fh/path file)))
-
-          :else
-          (recur remaining result))))
-
-; => it's not clojure.gdx but 'gdl' then ? ???
-
 (defn- load-assets [{:keys [clojure.gdx/files]} folder]
-  (doto (gdx/asset-manager) ; < - make my own asset-manager API with load-all included
-    (load-all (for [[asset-type exts] {:sound   #{"wav"}
-                                       :texture #{"png" "bmp"}}
-                    file (map #(str/replace-first % folder "")
-                              (recursively-search (files/internal files folder)
-                                                  exts))]
-                [file asset-type]))))
+  (doto (gdx/asset-manager)
+    (assets/load-all (for [[asset-type exts] {:sound   #{"wav"}
+                                              :texture #{"png" "bmp"}}
+                           file (map #(str/replace-first % folder "")
+                                     (file-search/by-extensions (files/internal files folder)
+                                                                exts))]
+                       [file asset-type]))))
 
-(defn- create-cursors [{:keys [clojure.gdx/files] :as context} cursors]
+(defn- create-cursors [{:keys [clojure.gdx/files
+                               clojure.gdx/graphics]} cursors]
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
              (let [pixmap (gdx/pixmap (files/internal files (str "cursors/" file ".png")))
-                   cursor (gdx/cursor context pixmap hotspot-x hotspot-y)]
+                   cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                (gdx/dispose pixmap)
                cursor))
            cursors))
-
-(defn- white-pixel-texture []
-  )
 
 (defn- cached-tiled-map-renderer [batch world-unit-scale]
   (memoize (fn [tiled-map]

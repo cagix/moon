@@ -6,6 +6,7 @@
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
+            [clojure.graphics :as graphics]
             [clojure.string :as str]
             [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
             [gdl.db :as db]
@@ -51,9 +52,9 @@
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{::keys [cursors] :as c}
+(defn set-cursor [{::keys [cursors] :keys [clojure.gdx/graphics]}
                   cursor-key]
-  (gdx/set-cursor c (safe-get cursors cursor-key)))
+  (graphics/set-cursor graphics (safe-get cursors cursor-key)))
 
 (defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
