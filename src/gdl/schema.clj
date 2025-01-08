@@ -1,6 +1,6 @@
 (ns gdl.schema
   (:refer-clojure :exclude [type])
-  (:require [gdl.utils :refer [safe-get]]
+  (:require [clojure.utils :refer [safe-get]]
             [gdl.property :as property]
             [gdl.malli :as m]))
 

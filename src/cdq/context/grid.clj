@@ -1,7 +1,7 @@
 (ns cdq.context.grid
   (:require [clojure.gdx.tiled :as tiled]
             [data.grid2d :as g2d]
-            [gdl.utils :refer [tile->middle]]
+            [clojure.utils :refer [tile->middle]]
             [cdq.grid :as grid]))
 
 (defrecord RCell [position

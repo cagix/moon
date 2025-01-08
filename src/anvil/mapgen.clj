@@ -1,6 +1,6 @@
 (ns anvil.mapgen
   (:require [clojure.rand :refer [sshuffle srand srand-int]]
-            [gdl.utils :refer [assoc-ks]]
+            [clojure.utils :refer [assoc-ks]]
             [data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
             [gdl.property :as property]))

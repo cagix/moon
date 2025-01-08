@@ -1,4 +1,4 @@
-(ns gdl.utils)
+(ns clojure.utils)
 
 ; TODO check params & pass & check @ defcomponent ( forgot 1 arg - can be checked statically)
 (defmacro defsystem

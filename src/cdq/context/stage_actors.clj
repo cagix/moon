@@ -7,7 +7,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.dev-menu :as dev-menu]
-            [gdl.utils :refer [readable-number dev-mode?]]
+            [clojure.utils :refer [readable-number dev-mode?]]
             [gdl.val-max :as val-max]
             ;
             [cdq.context :refer [mouseover-entity]]

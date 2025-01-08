@@ -3,7 +3,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
-            [gdl.utils :refer [safe-get]]
+            [clojure.utils :refer [safe-get]]
             [gdl.schema :as schema]
             [gdl.property :as property]))
 

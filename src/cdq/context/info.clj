@@ -3,7 +3,7 @@
             [clojure.math :as math]
             [clojure.string :as str]
             [gdl.context.timer :as timer]
-            [gdl.utils :refer [defsystem readable-number sort-by-k-order]]
+            [clojure.utils :refer [defsystem readable-number sort-by-k-order]]
             [cdq.entity :as entity]
             [cdq.operation :as op]))
 

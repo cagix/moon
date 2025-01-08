@@ -7,7 +7,7 @@
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
             [clojure.string :as str]
-            [gdl.utils :refer [defcomponent safe-get with-err-str mapvals]]
+            [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
             [gdl.db :as db]
             [gdl.error :refer [pretty-pst]]
             [gdl.graphics.animation :as animation]

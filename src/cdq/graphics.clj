@@ -4,7 +4,7 @@
             [gdl.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
             [gdl.math.shapes :refer [circle->outer-rectangle]]
-            [gdl.utils :refer [defsystem sort-by-order]]
+            [clojure.utils :refer [defsystem sort-by-order]]
             [gdl.val-max :as val-max]
             [cdq.context :refer [grid-cell
                                  active-entities

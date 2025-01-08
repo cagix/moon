@@ -14,7 +14,7 @@
             [gdl.context :as gdl.context]
             [gdl.db :as db]
             [gdl.ui :as ui]
-            [gdl.utils :refer [mapvals safe-merge tile->middle]]
+            [clojure.utils :refer [mapvals safe-merge tile->middle]]
             [anvil.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
             [cdq.context.stage-actors :as stage-actors]
