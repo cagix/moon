@@ -399,5 +399,3 @@
 (defn post-runnable [f]
   (app/post-runnable (:clojure.gdx/app @state)
                      #(f @state)))
-
-; tests - -graphics/on-resize - can make a game out of it /??
