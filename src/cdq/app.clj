@@ -1,6 +1,5 @@
 (ns cdq.app
   (:require [clojure.input :as input]
-            [clojure.gdx.utils.viewport :as viewport]
             [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.context :as c]
@@ -289,12 +288,6 @@
          (tiled/tm-height tiled-map)
          (constantly false))))
 
-; => config inside context put ! ?
-; graphics in :context/graphics !! its all a detail ...
-; * assets
-; * graphics
-; * scene2d.stage/ui
-; * world
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
         world-viewport (:world-viewport g)
@@ -410,8 +403,9 @@
                    (swap! state render))
 
                  (resize [_ width height]
-                   (viewport/resize (:gdl.context/viewport       @state) width height :center-camera? true)
-                   (viewport/resize (:gdl.context/world-viewport @state) width height :center-camera? false))))))
+                   (graphics/on-resize (:context/g @state) width height))))))
 
 (defn post-runnable [f]
   (app/post-runnable @state #(f @state)))
+
+; tests - -graphics/on-resize - can make a game out of it /??
