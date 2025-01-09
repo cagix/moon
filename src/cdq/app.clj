@@ -1,7 +1,6 @@
 (ns cdq.app
   (:require [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.input :as input]
             [clojure.utils :refer [safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
@@ -9,7 +8,6 @@
             [cdq.assets]
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]
-            [cdq.db :as db]
             [gdl.graphics]
             [gdl.ui :as ui]
             [cdq.level :refer [generate-level]]
@@ -49,50 +47,9 @@
                                 :entity/faction :evil}})]
     (spawn-creature c (update props :position tile->middle))))
 
-; * application context independent of game/level restarts or changes
-; * application context dependent on game/level restarts
-; * => multimethod
-; * => GameContext -> dispose,resize, and later can add 'restart-level, restart-game'....
-
-(defn- create [{:keys [clojure.gdx/files
-                       clojure.gdx/input]
-                :as context} config]
-  (let [
-        gdl-graphics (gdl.graphics/create context (:graphics config))
-        batch (:batch gdl-graphics)
-        shape-drawer (:sd gdl-graphics)
-        sd-texture (:sd-texture gdl-graphics)
-        cursors (:cursors gdl-graphics)
-        default-font (:default-font gdl-graphics)
-        tiled-map-renderer (:tiled-map-renderer gdl-graphics)
-        world-unit-scale (:world-unit-scale gdl-graphics)
-        world-viewport (:world-viewport gdl-graphics)
-        ui-viewport (:ui-viewport gdl-graphics)
-
-        _ (ui/load! (:ui config))
-        stage (ui/stage ui-viewport batch nil)
-        _ (input/set-processor input stage)
-
-        context (safe-merge context
+(defn- create [{:keys [clojure.gdx/files] :as context} config]
+  (let [context (safe-merge context
                             {:gdl.context/assets (assets/create (cdq.assets/search files (:assets config)))
-
-                             :gdl.context/batch batch
-                             :gdl.context/cursors cursors
-                             :gdl.context/default-font default-font
-                             :gdl.context/shape-drawer shape-drawer
-                             :gdl.context/sd-texture sd-texture
-
-                             :gdl.context/db (db/create (:db config))
-
-                             :gdl.context/stage stage
-
-                             :gdl.context/viewport ui-viewport
-
-                             :gdl.context/world-viewport world-viewport
-
-                             :gdl.context/world-unit-scale world-unit-scale
-
-                             :gdl.context/tiled-map-renderer tiled-map-renderer
 
                              ;; - before here - application context - does not change on level/game restart -
                              :gdl.context/elapsed-time 0
