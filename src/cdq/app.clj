@@ -288,25 +288,18 @@
          (tiled/tm-height tiled-map)
          (constantly false))))
 
-(defn- gdl-context [gdx config]
-  (let [g (graphics/create gdx (:graphics config))
-
+(defn- create [context config]
+  (let [g (graphics/create context (:graphics config))
         _ (ui/load! (:ui config))
         stage (ui/stage (:ui-viewport g)
                         (:batch g)
                         nil)
-        _ (input/set-processor (:clojure.gdx/input gdx) stage)
-
-        ]
-    (merge gdx
-           {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files gdx) (:assets config))
-            :context/g g
-            :gdl.context/db (db/create (:db config))
-            :gdl.context/stage stage
-            })))
-
-(defn- create [context config]
-  (let [context (gdl-context context config)
+        _ (input/set-processor (:clojure.gdx/input context) stage)
+        context (merge context
+                       {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files context) (:assets config))
+                        :context/g g
+                        :gdl.context/db (db/create (:db config))
+                        :gdl.context/stage stage})
         context (safe-merge context
                             {
                              ;; - before here - application context - does not change on level/game restart -
