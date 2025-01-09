@@ -1,8 +1,12 @@
-(ns gdl.utils)
+(ns gdl.utils
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]))
+
+(defn read-edn-resource [path]
+  (-> path io/resource slurp edn/read-string))
 
 (defprotocol Disposable
   (dispose [obj] "Release all resources of the object."))
-
 
 ; TODO check params & pass & check @ defcomponent ( forgot 1 arg - can be checked statically)
 (defmacro defsystem

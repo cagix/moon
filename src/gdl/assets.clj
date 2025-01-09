@@ -1,5 +1,8 @@
 (ns gdl.assets
   (:refer-clojure :exclude [load type])
+  (:require [clojure.files :as files]
+            [clojure.files.file-handle :as fh]
+            [clojure.string :as str])
   (:import (clojure.lang IFn)
            (com.badlogic.gdx.assets AssetManager)))
 
@@ -15,7 +18,7 @@
 (defn- class->asset-type [class]
   (some (fn [[k v]] (when (= v class) k)) asset-type-class-map))
 
-(defn create [assets]
+(defn- create-manager [assets]
   (let [manager (proxy [AssetManager IFn] []
                   (invoke [^String path]
                     (let [^AssetManager this this]
@@ -31,3 +34,29 @@
   (let [^AssetManager manager assets]
     (filter #(= (class->asset-type (.getAssetType manager %)) asset-type)
             (.getAssetNames manager))))
+
+(defn- search-by-extensions [folder extensions]
+  (loop [[file & remaining] (fh/list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (fh/directory? file)
+          (recur (concat remaining (fh/list file)) result)
+
+          (extensions (fh/extension file))
+          (recur remaining (conj result (fh/path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- search-assets [files folder]
+  (for [[asset-type exts] {:sound   #{"wav"}
+                           :texture #{"png" "bmp"}}
+        file (map #(str/replace-first % folder "")
+                  (search-by-extensions (files/internal files folder)
+                                        exts))]
+    [file asset-type]))
+
+(defn search-and-load [files folder]
+  (create-manager (search-assets files folder)))

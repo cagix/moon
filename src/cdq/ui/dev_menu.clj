@@ -2,7 +2,7 @@
   (:require [gdl.context :as c]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.scene2d.group :refer [add-actor!]])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable)
+  (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; gdl !!
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))
 

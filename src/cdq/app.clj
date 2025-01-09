@@ -1,5 +1,8 @@
 (ns cdq.app
-  (:require [gdl.app :as app]
+  (:require [clojure.input :as input]
+            [clojure.gdx.utils.viewport :as viewport]
+            [gdl.app :as app]
+            [gdl.assets :as assets]
             [gdl.context :as c]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as cam]
@@ -8,10 +11,11 @@
             [gdl.scene2d.group :as group]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
+            [gdl.utils :refer [read-edn-resource dispose safe-merge tile->middle readable-number dev-mode?]]
             [cdq.context :refer [spawn-creature mouseover-entity]]
             [cdq.context.info :as info]
             [cdq.content-grid :as content-grid]
+            [cdq.db :as db]
             [cdq.entity :as entity]
             cdq.graphics
             cdq.graphics.tiled-map
@@ -285,8 +289,46 @@
          (tiled/tm-height tiled-map)
          (constantly false))))
 
+; => config inside context put ! ?
+; graphics in :context/graphics !! its all a detail ...
+; * assets
+; * graphics
+; * scene2d.stage/ui
+; * world
+(defn- gdl-context [gdx config]
+  (let [g (graphics/create gdx (:graphics config))
+        batch (:batch g)
+        shape-drawer (:sd g)
+        sd-texture (:sd-texture g)
+        cursors (:cursors g)
+        default-font (:default-font g)
+        tiled-map-renderer (:tiled-map-renderer g)
+        world-unit-scale (:world-unit-scale g)
+        world-viewport (:world-viewport g)
+        ui-viewport (:ui-viewport g)
+
+        _ (ui/load! (:ui config))
+        stage (ui/stage ui-viewport batch nil)
+        _ (input/set-processor (:clojure.gdx/input gdx) stage)
+
+        ]
+    (merge gdx
+           {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files gdx) (:assets config))
+            :gdl.context/batch batch
+            :gdl.context/cursors cursors
+            :gdl.context/default-font default-font
+            :gdl.context/shape-drawer shape-drawer
+            :gdl.context/sd-texture sd-texture
+            :gdl.context/db (db/create (:db config))
+            :gdl.context/stage stage
+            :gdl.context/viewport ui-viewport
+            :gdl.context/world-viewport world-viewport
+            :gdl.context/world-unit-scale world-unit-scale
+            :gdl.context/tiled-map-renderer tiled-map-renderer})))
+
 (defn- create [context config]
-  (let [context (safe-merge context
+  (let [context (gdl-context context config)
+        context (safe-merge context
                             {
                              ;; - before here - application context - does not change on level/game restart -
                              :gdl.context/elapsed-time 0
@@ -353,8 +395,36 @@
            cdq.context/check-ui-key-listeners]))
 
 
+(def state (atom nil))
+
+; everything is here - complicated stuff on top !!!
+; => API is simple !
+; the game is a function
+; explain it via codox and links
+; for draw game with screenshots
+; video s or tests for other stuff?
+
+; TODO config schema !
+
 (defn -main []
-  (app/start "app.edn"
-             create
-             dispose!
-             render))
+  (let [config (read-edn-resource "app.edn")]
+    (app/set-icon! (:icon config))
+    (when app/mac-osx?
+      (app/set-glfw-to-async!))
+    (app/start (:window config)
+               (reify app/Listener
+                 (create [_ context]
+                   (reset! state (create context (:context config))))
+
+                 (dispose [_]
+                   (dispose @state))
+
+                 (render [_]
+                   (swap! state render))
+
+                 (resize [_ width height]
+                   (viewport/resize (:gdl.context/viewport       @state) width height :center-camera? true)
+                   (viewport/resize (:gdl.context/world-viewport @state) width height :center-camera? false))))))
+
+(defn post-runnable [f]
+  (app/post-runnable @state #(f @state)))

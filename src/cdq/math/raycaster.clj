@@ -1,4 +1,4 @@
-(ns cdq.math.raycaster
+(ns cdq.math.raycaster ; gdl
   (:require [clojure.gdx.math.vector2 :as v])
   (:import (gdl RayCaster)))
 
