@@ -1,5 +1,5 @@
 (ns cdq.app
-  (:require [clojure.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
+  (:require [clojure.utils :refer [safe-merge tile->middle readable-number dev-mode?]]
             ;
             [data.grid2d :as g2d]
             ;
@@ -9,6 +9,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
+            [gdl.utils :refer [dispose]]
             ;
             [cdq.context :refer [spawn-creature mouseover-entity]]
             [cdq.context.info :as info]

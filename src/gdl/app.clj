@@ -250,7 +250,7 @@
     (.play this)))
 
 (extend-type com.badlogic.gdx.utils.Disposable
-  clojure.utils/Disposable
+  gdl.utils/Disposable
   (dispose [this]
     (.dispose this)))
 
