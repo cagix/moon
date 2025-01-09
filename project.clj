@@ -63,6 +63,9 @@
 
                   ;= > even no dependencies on clojure.str ???
 
+                  ; So you just have to go through 'cdq' and see it only depends on 'cdq'/'gdl' ant nothing else !
+                  ; next step is the API's etc for private fns in gdl.....
+
                  [org.clojure/clojure "1.12.0"]
                  [com.badlogicgames.gdx/gdx "1.13.0"]
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]

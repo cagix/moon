@@ -1,8 +1,8 @@
 (ns cdq.context.info
   (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.math :as math]
             [clojure.string :as str]
+            [gdl.graphics :as graphics]
             [gdl.utils :refer [defsystem readable-number sort-by-k-order]]
             [cdq.context.timer :as timer]
             [cdq.entity :as entity]
@@ -20,7 +20,7 @@
 (defsystem ^:private info-segment)
 (defmethod info-segment :default [_ _entity _context])
 
-(colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52))
+(graphics/def-color "PRETTY_NAME" (color/create 0.84 0.8 0.52))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
