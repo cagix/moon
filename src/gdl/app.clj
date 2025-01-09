@@ -21,7 +21,8 @@
             [clojure.utils :refer [mapvals]]
             [gdl.assets :as assets]
             [cdq.db :as db]
-            [gdl.ui :as ui])
+            [gdl.ui :as ui]
+            [gdl.utils])
   (:import (com.badlogic.gdx ApplicationAdapter
                              Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
