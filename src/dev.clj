@@ -6,9 +6,9 @@
             [clojure.pprint :refer [pprint]]
             [cdq.app :refer [state]]
             [gdl.context :as c]
-            [gdl.ui :refer [t-node scroll-pane] :as ui]
+            [cdq.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]
-            [gdl.editor.actors :as editor]))
+            [cdq.editor.actors :as editor]))
 
 (defn post-runnable [f]
   (application/post-runnable @state #(f @state)))

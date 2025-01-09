@@ -2,7 +2,7 @@
   (:require [clojure.gdx.graphics.color :as color]
             [gdl.context :refer [draw-tiled-map]]
             [gdl.graphics.camera :as cam]
-            [gdl.math.raycaster :as raycaster]))
+            [cdq.math.raycaster :as raycaster]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 

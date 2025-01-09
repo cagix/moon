@@ -3,7 +3,7 @@
             [clojure.utils :refer [assoc-ks]]
             [data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
-            [gdl.property :as property]))
+            [cdq.property :as property]))
 
 (defn creatures-with-level [creature-properties level]
   (filter #(= level (:creature/level %)) creature-properties))

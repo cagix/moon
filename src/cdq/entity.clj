@@ -2,8 +2,8 @@
   (:require [clojure.gdx.math.vector2 :as v]
             [gdl.context :as c]
             [gdl.context.timer :as timer]
-            [gdl.malli :as m]
-            [gdl.math.shapes :as shape]
+            [cdq.malli :as m]
+            [cdq.math.shapes :as shape]
             [clojure.utils :refer [defsystem safe-merge]]
             [cdq.inventory :as inventory]
             [cdq.operation :as op]))

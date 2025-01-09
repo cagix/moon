@@ -1,4 +1,4 @@
-(ns gdl.editor.actors
+(ns cdq.editor.actors
   (:require [clojure.edn :as edn]
             [clojure.gdx.assets.manager :as asset-manager]
             [clojure.input :as input]
@@ -6,12 +6,12 @@
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.app :refer [state]]
             [gdl.context :as c :refer [play-sound]]
-            [gdl.db :as db]
+            [cdq.db :as db]
             [gdl.graphics :as graphics]
-            [gdl.malli :as m]
-            [gdl.schema :as schema]
-            [gdl.property :as property]
-            [gdl.ui :refer [horizontal-separator-cell
+            [cdq.malli :as m]
+            [cdq.schema :as schema]
+            [cdq.property :as property]
+            [cdq.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
                             ui-actor
                             image-button

@@ -15,17 +15,19 @@
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
-            [gdl.db :as db]
-            [gdl.error :refer [pretty-pst]]
+            [cdq.db :as db]
+            [cdq.error :refer [pretty-pst]]
             [gdl.graphics.animation :as animation]
             [gdl.graphics.sprite :as sprite]
             [gdl.graphics.camera :as cam]
-            [gdl.malli :as m]
-            [gdl.schema :as schema]
+            [cdq.malli :as m]
+            [cdq.schema :as schema]
             [clojure.gdx.tiled :as tiled]
-            [gdl.ui :as ui]
+            [cdq.ui :as ui]
             [clojure.gdx.scene2d.group :as group])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
+
+; cdq.db editor, error, malli, math, property, schema, timer, ui, val-max
 
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name

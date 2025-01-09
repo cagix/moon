@@ -1,8 +1,8 @@
-(ns gdl.schema
+(ns cdq.schema
   (:refer-clojure :exclude [type])
   (:require [clojure.utils :refer [safe-get]]
-            [gdl.property :as property]
-            [gdl.malli :as m]))
+            [cdq.property :as property]
+            [cdq.malli :as m]))
 
 (defn type [schema]
   (if (vector? schema)

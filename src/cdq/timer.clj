@@ -1,4 +1,4 @@
-(ns gdl.timer)
+(ns cdq.timer)
 
 (defn create [elapsed-time duration]
   {:pre [(>= duration 0)]}

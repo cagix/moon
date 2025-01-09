@@ -1,11 +1,11 @@
-(ns gdl.db
+(ns cdq.db
   (:refer-clojure :exclude [update])
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
             [clojure.utils :refer [safe-get]]
-            [gdl.schema :as schema]
-            [gdl.property :as property]))
+            [cdq.schema :as schema]
+            [cdq.property :as property]))
 
 (defn- recur-sort-map [m]
   (into (sorted-map)

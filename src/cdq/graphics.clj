@@ -1,11 +1,11 @@
 (ns cdq.graphics
   (:require [gdl.context :as c]
             [gdl.context.timer :as timer]
-            [gdl.error :refer [pretty-pst]]
+            [cdq.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
-            [gdl.math.shapes :refer [circle->outer-rectangle]]
+            [cdq.math.shapes :refer [circle->outer-rectangle]]
             [clojure.utils :refer [defsystem sort-by-order]]
-            [gdl.val-max :as val-max]
+            [cdq.val-max :as val-max]
             [cdq.context :refer [grid-cell
                                  active-entities
                                  render-z-order

@@ -5,10 +5,10 @@
             ;
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
-            [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.ui.dev-menu :as dev-menu]
+            [cdq.ui :as ui :refer [ui-actor]]
+            [cdq.ui.dev-menu :as dev-menu]
             [clojure.utils :refer [readable-number dev-mode?]]
-            [gdl.val-max :as val-max]
+            [cdq.val-max :as val-max]
             ;
             [cdq.context :refer [mouseover-entity]]
             [cdq.context.info :as info]

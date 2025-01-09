@@ -1,5 +1,5 @@
-(ns gdl.val-max
-  (:require [gdl.malli :as m]))
+(ns cdq.val-max
+  (:require [cdq.malli :as m]))
 
 (defn ratio
   "If mx and v is 0, returns 0, otherwise (/ v mx)"

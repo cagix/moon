@@ -7,7 +7,7 @@
             [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
             [data.grid2d :as g2d]
             [gdl.context :as c]
-            [gdl.ui :refer [ui-widget
+            [cdq.ui :refer [ui-widget
                             texture-region-drawable
                             image-widget
                             ui-stack

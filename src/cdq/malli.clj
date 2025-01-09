@@ -1,4 +1,4 @@
-(ns gdl.malli
+(ns cdq.malli
   (:require [clojure.set :as set]
             [malli.core :as m]
             [malli.error :as me]

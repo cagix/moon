@@ -1,4 +1,4 @@
-(ns gdl.ui
+(ns cdq.ui
   (:refer-clojure :exclude [load])
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.scene2d.actor :as actor]

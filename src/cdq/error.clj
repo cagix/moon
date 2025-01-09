@@ -1,4 +1,4 @@
-(ns gdl.error
+(ns cdq.error
   (:require [clj-commons.pretty.repl :as pretty-repl]))
 
 (defn pretty-pst [t]
