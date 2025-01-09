@@ -46,9 +46,7 @@
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
-                 [clojure.gdx "1.13.0-0.1"]
-                 ;[com.github.damn/clojure.gdx "42cc27bd53"]
-
+                 [com.badlogicgames.gdx/gdx "1.13.0"]
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
                  [com.badlogicgames.gdx/gdx-backend-lwjgl3 "1.13.0"]
                  [com.github.damn/clojure.gdx.graphics.shape-drawer "f70150d4a1"]
