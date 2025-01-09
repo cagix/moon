@@ -15,10 +15,6 @@
 
 (extend-type com.badlogic.gdx.Graphics
   clojure.graphics/Graphics
-  (delta-time [this]
-    (.getDeltaTime this))
-  (frames-per-second [this]
-    (.getFramesPerSecond this))
   (new-cursor [this pixmap hotspot-x hotspot-y]
     (.newCursor this pixmap hotspot-x hotspot-y))
   (set-cursor [this cursor]

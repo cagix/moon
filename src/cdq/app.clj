@@ -1,12 +1,11 @@
 (ns cdq.app
-  (:require [clojure.graphics :as graphics]
-            [clojure.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
+  (:require [clojure.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
             ;
             [data.grid2d :as g2d]
             ;
             [gdl.app :as app]
             [gdl.context :as c]
-            [gdl.graphics]
+            [gdl.graphics :as graphics]
             [gdl.graphics.camera :as cam]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]

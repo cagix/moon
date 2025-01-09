@@ -1,6 +1,6 @@
 (ns cdq.context
   (:require [clojure.audio.sound :as sound]
-            [clojure.graphics :as graphics]
+            [gdl.graphics :as graphics]
             [clojure.rand :refer [rand-int-between]]
             [cdq.world.potential-field :as potential-field]
             [cdq.effect :as effect]
