@@ -1,7 +1,6 @@
 (ns cdq.app
   (:require [clojure.files :as files]
             [clojure.files.search :as file-search]
-            [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
@@ -14,6 +13,7 @@
             [clojure.utils :refer [mapvals safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
+            [gdl.assets :as assets]
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]
             [cdq.db :as db]
@@ -106,8 +106,7 @@
         _ (input/set-processor input stage)
 
         context (safe-merge context
-                            {:gdl.context/assets (asset-manager/create
-                                                  (search-assets files (:assets config)))
+                            {:gdl.context/assets (assets/create (search-assets files (:assets config)))
                              :gdl.context/batch batch
                              :gdl.context/cursors cursors
                              :gdl.context/db (db/create (:db config))
