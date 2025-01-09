@@ -3,20 +3,6 @@
             [cdq.game :as game])
   (:gen-class))
 
-(defrecord Listener []
-  gdl.app/Listener
-  (create [this config]
-    (game/create! this config))
-
-  (dispose [this]
-    (game/dispose! this))
-
-  (render [this]
-    (game/render! this))
-
-  (resize [this width height]
-    (game/resize! this width height)))
-
 (def state (atom nil))
 
 (comment
@@ -30,4 +16,9 @@
   (app/post-runnable @state #(f @state)))
 
 (defn -main []
-  (app/start state (Listener.)))
+  (app/start state
+             (reify app/Listener
+               (create  [this config]       (game/create!  this config))
+               (dispose [this]              (game/dispose! this))
+               (render  [this]              (game/render!  this))
+               (resize  [this width height] (game/resize!  this width height)))))
