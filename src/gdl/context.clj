@@ -163,9 +163,10 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{::keys [default-font batch unit-scale]}
+  [{::keys [default-font unit-scale]
+    :keys [context/g]}
    {:keys [font x y text h-align up? scale]}]
-  {:pre [batch unit-scale]}
+  {:pre [unit-scale]}
   (let [font (or font default-font)
         data (font/data font)
         old-scale (float (font/scale-x data))]
@@ -173,7 +174,7 @@
                             (float unit-scale)
                             (float (or scale 1))))
     (font/draw :font font
-               :batch batch
+               :batch (:batch g)
                :text text
                :x x
                :y (+ y (if up? (text-height font text) 0))
@@ -201,8 +202,8 @@
   (if color (batch/set-color batch color/white)))
 
 (defn draw-image
-  [{::keys [batch unit-scale]} {:keys [texture-region color] :as image} position]
-  (draw-texture-region batch
+  [{::keys [unit-scale] :keys [context/g]} {:keys [texture-region color] :as image} position]
+  (draw-texture-region (:batch g)
                        texture-region
                        position
                        (unit-dimensions image unit-scale)
@@ -210,9 +211,9 @@
                        color))
 
 (defn draw-rotated-centered
-  [{::keys [batch unit-scale]} {:keys [texture-region color] :as image} rotation [x y]]
+  [{::keys [unit-scale] :keys [context/g]} {:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image unit-scale)]
-    (draw-texture-region batch
+    (draw-texture-region (:batch g)
                          texture-region
                          [(- (float x) (/ (float w) 2))
                           (- (float y) (/ (float h) 2))]
@@ -230,8 +231,8 @@
   (draw-fn)
   (batch/end batch))
 
-(defn draw-with [{::keys [batch] :as c} viewport unit-scale draw-fn]
-  (draw-on-viewport batch
+(defn draw-with [{:keys [context/g] :as c} viewport unit-scale draw-fn]
+  (draw-on-viewport (:batch g)
                     viewport
                     #(with-line-width c unit-scale
                        (fn []

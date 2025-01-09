@@ -314,7 +314,7 @@
         ]
     (merge gdx
            {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files gdx) (:assets config))
-            :gdl.context/batch batch
+            :context/g g
             :gdl.context/cursors cursors
             :gdl.context/default-font default-font
             :gdl.context/shape-drawer shape-drawer
@@ -357,7 +357,7 @@
   ;;
   ; TODO dispose :gdl.context/sd-texture
   (dispose (:gdl.context/assets context))
-  (dispose (:gdl.context/batch  context))
+  (dispose (:batch (:context/g context)))
   (run! dispose (vals (:gdl.context/cursors context)))
   (dispose (:gdl.context/default-font context))
   (ui/dispose!)
