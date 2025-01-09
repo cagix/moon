@@ -1,4 +1,4 @@
-(ns anvil.mapgen
+(ns cdq.mapgen
   (:require [clojure.rand :refer [sshuffle srand srand-int]]
             [clojure.utils :refer [assoc-ks]]
             [data.grid2d :as g2d]

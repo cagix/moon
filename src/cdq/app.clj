@@ -27,7 +27,7 @@
             [gdl.context :as gdl.context]
             [gdl.db :as db]
             [gdl.ui :as ui]
-            [anvil.level :refer [generate-level]]
+            [cdq.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
             [cdq.context.stage-actors :as stage-actors]
             [cdq.context.explored-tile-corners :as explored-tile-corners]

@@ -1,4 +1,4 @@
-(ns anvil.world.potential-field
+(ns cdq.world.potential-field
   (:require [cdq.entity :as entity]
             [cdq.grid :refer [rectangle->cells
                               cached-adjacent-cells

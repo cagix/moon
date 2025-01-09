@@ -1,4 +1,4 @@
-(ns anvil.skill
+(ns cdq.skill
   (:require [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity]))
 

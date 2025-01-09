@@ -1,5 +1,5 @@
-(ns ^:no-doc anvil.level.uf-caves
-  (:require [anvil.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
+(ns ^:no-doc cdq.level.uf-caves
+  (:require [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.rand :refer [get-rand-weighted-item]]
             [data.grid2d :as g2d]

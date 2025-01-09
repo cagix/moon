@@ -1,6 +1,6 @@
-(ns anvil.level
-  (:require [anvil.level.modules :refer [generate-modules]]
-            [anvil.level.uf-caves :as uf-caves]
+(ns cdq.level
+  (:require [cdq.level.modules :refer [generate-modules]]
+            [cdq.level.uf-caves :as uf-caves]
             [gdl.context :as c]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))

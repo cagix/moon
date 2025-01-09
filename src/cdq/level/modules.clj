@@ -1,6 +1,6 @@
-(ns ^:no-doc anvil.level.modules
-  (:require [anvil.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
-            [anvil.modules :as modules]
+(ns ^:no-doc cdq.level.modules
+  (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
+            [cdq.modules :as modules]
             [data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))
