@@ -14,7 +14,9 @@
 
 (defprotocol Listener
   (create  [_ config])
-  (dispose [_])
+  (dispose [_]) ; ! aaaahhhh 'dispose' ! same ... same name same foozoz -> _LANGUAGE_ is words verbs nouns
+  ; the nouns are there
+  ; the verbs need work ?
   (render  [_])
   (resize  [_ width height]))
 
@@ -31,7 +33,11 @@
                           (reset! state (create (utils/safe-merge listener (gdx/context))
                                                 config)))
                         (dispose []
-                          (swap! state dispose))
+                          (doseq [[k value] @state
+                                  :when (and (not= (namespace k) "clojure.gdx") ; don't dispose internal classes, that gets handled inside Lwjgl3Window/.dispose already, otherwise crashes in tools namespace reloading workflow on dispose
+                                             ; or make the gdx/context assoc as 'gdx' ?
+                                             (satisfies? utils/Disposable value))]
+                            (utils/dispose value)))
                         (render []
                           (swap! state render))
                         (resize [width height]
@@ -49,5 +55,5 @@
            listener
            (-> edn-config io/resource slurp edn/read-string))))
 
-(defn post-runnable [context runnable]
-  (Application/.postRunnable (:clojure.gdx/app context) runnable))
+(defn post-runnable [application runnable]
+  (Application/.postRunnable (:clojure.gdx/app application) runnable))

@@ -314,16 +314,24 @@
 (defn dispose! [context]
   ;;
   (dispose (:gdl.context/assets context))
+
+  ;
   (dispose (:batch (:context/g context)))
   (dispose (:sd-texture (:context/g context)))
   (run! dispose (vals (:cursors (:context/g context))))
   (dispose (:default-font (:context/g context)))
-  (ui/dispose!)
+  ;
+  (ui/dispose!) ; pass skin ?
+  ;
   (dispose (:gdl.context/stage context))
   ;;
 
   (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   context)
+
+;Disposing  :cdq.context/tiled-map
+;Disposing  :gdl.context/stage
+;Disposing  :gdl.context/assets
 
 (defn- set-camera-on-player! [{:keys [context/g
                                       cdq.context/player-eid]
