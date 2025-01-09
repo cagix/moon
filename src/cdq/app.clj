@@ -298,7 +298,6 @@
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
         batch (:batch g)
-        sd-texture (:sd-texture g)
         cursors (:cursors g)
         default-font (:default-font g)
         tiled-map-renderer (:tiled-map-renderer g)
@@ -316,7 +315,6 @@
             :context/g g
             :gdl.context/cursors cursors
             :gdl.context/default-font default-font
-            :gdl.context/sd-texture sd-texture
             :gdl.context/db (db/create (:db config))
             :gdl.context/stage stage
             :gdl.context/viewport ui-viewport
@@ -353,9 +351,9 @@
 
 (defn- dispose! [context]
   ;;
-  ; TODO dispose :gdl.context/sd-texture
   (dispose (:gdl.context/assets context))
   (dispose (:batch (:context/g context)))
+  (dispose (:sd-texture (:context/g context)))
   (run! dispose (vals (:gdl.context/cursors context)))
   (dispose (:gdl.context/default-font context))
   (ui/dispose!)
