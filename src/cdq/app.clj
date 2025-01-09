@@ -6,6 +6,9 @@
 
 (def state (atom nil))
 
+(defn post-runnable [f]
+  (app/post-runnable @state #(f @state)))
+
 (defn -main []
   (let [config (utils/read-edn-resource "cdq.app.edn")]
     (app/start (:app config)
@@ -21,7 +24,3 @@
 
                  (resize [_ width height]
                    (swap! state game/resize! width height))))))
-
-(defn post-runnable [f]
-  (app/post-runnable (:clojure.gdx/app @state)
-                     #(f @state)))

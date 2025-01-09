@@ -3,7 +3,7 @@
             [gdl.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [cdq.app :refer [state post-runnable]]
+            [cdq.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]
@@ -26,13 +26,13 @@
 
  ; use post-runnable to get proper error messages in console
 
- (app/post-runnable (fn [_] (show-tree-view! "Application Context" @state)))
- (app/post-runnable (fn [_] (show-table-view "Application Context" @state)))
+ (app/post-runnable (fn [_] (show-tree-view! "Application Context" @app/state)))
+ (app/post-runnable (fn [_] (show-table-view "Application Context" @app/state)))
 
  (app/post-runnable (fn [_x] (println "hi")))
 
- (show-tree-view! "Mouseover Entity" (world/mouseover-entity @state))
- (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @state))
+ (show-tree-view! "Mouseover Entity" (world/mouseover-entity @app/state))
+ (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"forge"}))
 
  ; Idea:
@@ -189,7 +189,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:ui-viewport (:context/g @state))
+  (let [viewport (:ui-viewport (:context/g @app/state))
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
@@ -219,13 +219,13 @@
 
 (defn- show-table-view [title m]
   {:pre [(map? m)]}
-  (c/add-actor @state
+  (c/add-actor @app/state
                (scroll-pane-window title
                                    (generate-table m))))
 
 (defn- show-tree-view! [title m]
   {:pre [(map? m)]}
-  (c/add-actor @state
+  (c/add-actor @app/state
                (scroll-pane-window title
                                    (generate-tree m))))
 

@@ -38,5 +38,5 @@
                         (.setWindowedMode (:width config) (:height config))
                         (.setForegroundFPS (:fps config)))))
 
-(defn post-runnable [app runnable]
-  (Application/.postRunnable app runnable))
+(defn post-runnable [context runnable]
+  (Application/.postRunnable (:clojure.gdx/app context) runnable))
