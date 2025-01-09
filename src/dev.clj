@@ -1,17 +1,13 @@
 (ns dev
-  (:require [clojure.application :as application]
-            [clojure.gdx.scene2d.group :refer [children]]
+  (:require [clojure.gdx.scene2d.group :refer [children]]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.app :refer [state]]
+            [gdl.app :refer [state post-runnable]]
             [gdl.context :as c]
             [cdq.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]
             [cdq.editor.actors :as editor]))
-
-(defn post-runnable [f]
-  (application/post-runnable @state #(f @state)))
 
 (comment
 
@@ -26,7 +22,7 @@
 
  (app/post-runnable show-obj-editor!)
  (print-app-values-tree "app-values-tree.clj"
-                        #{"clojure.gdx", "gdl", "cdq", "cdq"})
+                        #{"clojure.gdx", "gdl", "cdq"})
 
  ; use post-runnable to get proper error messages in console
 

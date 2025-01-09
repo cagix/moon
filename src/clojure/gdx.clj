@@ -1,7 +1,5 @@
 (ns clojure.gdx
   (:require [clojure.gdx.interop :refer [k->input-button k->input-key]]
-            ;
-            [clojure.application]
             [clojure.audio]
             [clojure.audio.sound]
             [clojure.files]
@@ -9,21 +7,7 @@
             [clojure.graphics]
             [clojure.graphics.2d.batch]
             [clojure.input]
-            [clojure.utils.disposable])
-  (:import (com.badlogic.gdx Gdx)))
-
-(defn context []
-  {::app      Gdx/app
-   ::audio    Gdx/audio
-   ::files    Gdx/files
-   ::gl       Gdx/gl
-   ::gl20     Gdx/gl20
-   ::gl30     Gdx/gl30
-   ::gl31     Gdx/gl31
-   ::gl32     Gdx/gl32
-   ::graphics Gdx/graphics
-   ::input    Gdx/input
-   ::net      Gdx/net})
+            [clojure.utils.disposable]))
 
 (extend-type com.badlogic.gdx.Files
   clojure.files/Files
@@ -40,13 +24,6 @@
     (.newCursor this pixmap hotspot-x hotspot-y))
   (set-cursor [this cursor]
     (.setCursor this cursor)))
-
-(extend-type com.badlogic.gdx.Application
-  clojure.application/Application
-  (exit [this]
-    (.exit this))
-  (post-runnable [this runnable]
-    (.postRunnable this runnable)))
 
 (extend-type com.badlogic.gdx.Audio
   clojure.audio/Audio

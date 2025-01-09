@@ -1,9 +1,6 @@
 (ns cdq.app
-  (:require [clojure.application :as application]
-            [clojure.edn :as edn]
-            [clojure.files :as files]
+  (:require [clojure.files :as files]
             [clojure.files.search :as file-search]
-            [clojure.gdx.backends.lwjgl3.application :as lwjgl3]
             [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
@@ -20,10 +17,10 @@
             [clojure.gdx.vis-ui :as vis-ui]
             [clojure.graphics :as graphics]
             [clojure.input :as input]
-            [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.utils :refer [mapvals safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
+            [gdl.app :as app]
             [gdl.context :as gdl.context]
             [cdq.db :as db]
             [cdq.ui :as ui]
@@ -195,24 +192,9 @@
            cdq.context/check-ui-key-listeners]))
 
 
-(def state (atom nil))
-
 (defn -main []
-  (let [config (-> "app.edn" io/resource slurp edn/read-string)]
-    (lwjgl3/create (reify application/Listener
-                     (create [_ context]
-                       (reset! state (create context (:context config))))
-
-                     (dispose [_]
-                       (dispose! @state))
-
-                     (pause [_])
-
-                     (render [_]
-                       (swap! state render))
-
-                     (resize [_ width height]
-                       (resize @state width height))
-
-                     (resume [_]))
-                   (:app config))))
+  (app/start "app.edn"
+             create
+             dispose!
+             render
+             resize))

@@ -7,11 +7,11 @@
 ; e.g. each cursor is required !!! -> schema !
 ; what can change is only the last values, not the keys !
 
-{:app {:title "Forge"
-       :fps 60
-       :window-width 1440
-       :window-height 900
-       :icon "moon.png"}
+{:icon "moon.png"
+ :title "Forge"
+ :fps 60
+ :window-width 1440
+ :window-height 900
  :context {:assets "resources/"
            :db {:schema "schema.edn"
                 :properties "properties.edn"}
