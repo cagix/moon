@@ -12,7 +12,6 @@
             [cdq.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
             [cdq.context.stage-actors :as stage-actors]
-            [cdq.context.explored-tile-corners :as explored-tile-corners]
             [cdq.context.content-grid :as content-grid]
             cdq.graphics
             cdq.graphics.tiled-map)
@@ -105,6 +104,12 @@
       (set-arr arr @cell grid/blocks-vision?))
     [arr width height]))
 
+(defn- explored-tile-corners [tiled-map]
+  (atom (g2d/create-grid
+         (tiled/tm-width  tiled-map)
+         (tiled/tm-height tiled-map)
+         (constantly false))))
+
 (defn- create [context config]
   (let [context (safe-merge context
                             {
@@ -123,7 +128,7 @@
                                :cdq.context/level level
                                :cdq.context/tiled-map tiled-map
                                :cdq.context/grid grid
-                               :cdq.context/explored-tile-corners (explored-tile-corners/create tiled-map)
+                               :cdq.context/explored-tile-corners (explored-tile-corners tiled-map)
                                :cdq.context/content-grid (content-grid/create tiled-map (:content-grid config))
                                :cdq.context/entity-ids (atom {})
                                :cdq.context/raycaster (create-raycaster grid)
