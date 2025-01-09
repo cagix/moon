@@ -323,7 +323,7 @@
   ;;
 
   (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
-  )
+  context)
 
 (defn- set-camera-on-player! [{:keys [context/g
                                       cdq.context/player-eid]
@@ -366,4 +366,5 @@
     (add-new-game-context context (:world config))))
 
 (defn resize! [context width height]
-  (graphics/on-resize (:context/g context) width height))
+  (graphics/on-resize (:context/g context) width height)
+  context)

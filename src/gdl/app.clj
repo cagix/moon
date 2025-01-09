@@ -17,6 +17,13 @@
   (resize [_ width height]))
 
 (defn start [config listener]
+  (when-let [icon (:icon config)]
+    (.setIconImage (Taskbar/getTaskbar)
+                   (.getImage (Toolkit/getDefaultToolkit)
+                              (io/resource icon))))
+  (when (and SharedLibraryLoader/isMac
+             (:glfw-async-on-mac-osx? config))
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (create listener (gdx/context)))
@@ -33,13 +40,3 @@
 
 (defn post-runnable [app runnable]
   (Application/.postRunnable app runnable))
-
-(defn set-icon! [icon-resource]
-  (.setIconImage (Taskbar/getTaskbar)
-                 (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource icon-resource))))
-
-(def mac-osx? SharedLibraryLoader/isMac)
-
-(defn set-glfw-to-async! []
-  (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))

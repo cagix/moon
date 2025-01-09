@@ -9,11 +9,12 @@
 
 ; TODO just 'config' and 'context'
 
-{:cdq.app/icon "moon.png"
- :cdq.app/window {:title "Forge"
-                  :fps 60
-                  :width 1440
-                  :height 900}
+{:app {:icon "moon.png"
+       :glfw-async-on-mac-osx? true
+       :title "Forge"
+       :fps 60
+       :width 1440
+       :height 900}
  :assets "resources/"
  :db {:schema "schema.edn"
       :properties "properties.edn"}
