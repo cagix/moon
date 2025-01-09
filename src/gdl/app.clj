@@ -17,7 +17,7 @@
             [clojure.input :as input]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.utils :refer [mapvals]]
+            [gdl.utils :refer [mapvals]]
             [gdl.assets :as assets]
             [gdl.audio]
             [cdq.db :as db]

@@ -18,7 +18,7 @@
             [clojure.input :as input]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui.button-group :as button-group]
-            [clojure.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
+            [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
             [cdq.effect-context :as effect-ctx]
             [cdq.skill :as skill]
             [gdl.context :as c :refer [play-sound]]

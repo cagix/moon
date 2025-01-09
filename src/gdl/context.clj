@@ -13,7 +13,7 @@
             [clojure.graphics.2d.batch :as batch]
             [clojure.input :as input]
             [clojure.string :as str]
-            [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
+            [gdl.utils :refer [defcomponent safe-get with-err-str mapvals]]
             [gdl.audio :as audio]
             [cdq.db :as db]
             [cdq.error :refer [pretty-pst]]

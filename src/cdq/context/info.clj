@@ -3,8 +3,8 @@
             [clojure.gdx.graphics.colors :as colors]
             [clojure.math :as math]
             [clojure.string :as str]
+            [gdl.utils :refer [defsystem readable-number sort-by-k-order]]
             [cdq.context.timer :as timer]
-            [clojure.utils :refer [defsystem readable-number sort-by-k-order]]
             [cdq.entity :as entity]
             [cdq.operation :as op]))
 

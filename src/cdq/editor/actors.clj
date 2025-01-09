@@ -3,7 +3,7 @@
             [gdl.assets :as assets]
             [clojure.input :as input]
             [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
+            [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [gdl.app :refer [state]]
             [gdl.context :as c :refer [play-sound]]
             [cdq.db :as db]

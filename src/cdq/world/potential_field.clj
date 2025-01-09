@@ -7,7 +7,7 @@
                               nearest-entity
                               nearest-entity-distance
                               get-8-neighbour-positions]]
-            [clojure.utils :refer [utils-positions when-seq]]
+            [gdl.utils :refer [utils-positions when-seq]]
             [clojure.gdx.math.vector2 :as v]))
 
 (let [order (get-8-neighbour-positions [0 0])]

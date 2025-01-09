@@ -4,7 +4,7 @@
             [cdq.context.timer :as timer]
             [cdq.malli :as m]
             [cdq.math.shapes :as shape]
-            [clojure.utils :refer [defsystem safe-merge]]
+            [gdl.utils :refer [defsystem safe-merge]]
             [cdq.inventory :as inventory]
             [cdq.operation :as op]))
 

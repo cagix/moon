@@ -1,7 +1,5 @@
 (ns cdq.app
-  (:require [clojure.utils :refer [safe-merge tile->middle readable-number dev-mode?]]
-            ;
-            [data.grid2d :as g2d]
+  (:require [data.grid2d :as g2d]
             ;
             [gdl.app :as app]
             [gdl.context :as c]
@@ -20,6 +18,7 @@
             [cdq.grid :as grid]
             [cdq.level :refer [generate-level]]
             [cdq.ui.dev-menu :as dev-menu]
+            [gdl.utils :refer [safe-merge tile->middle readable-number dev-mode?]]
             [cdq.val-max :as val-max]
             [cdq.widgets.inventory :as inventory]
             ;
