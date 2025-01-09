@@ -19,10 +19,17 @@
 
 (def state (atom nil))
 
+(comment
+
+ (clojure.pprint/pprint
+  (sort (keys @state)))
+
+ )
+
+(defn post-runnable [f]
+  (app/post-runnable @state #(f @state)))
+
 (defn -main []
   (app/start state
              (Listener.)
              "config.edn"))
-
-(defn post-runnable [f]
-  (app/post-runnable @state #(f @state)))
