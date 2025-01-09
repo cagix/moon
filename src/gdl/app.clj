@@ -1,8 +1,12 @@
 (ns gdl.app
   (:require [clojure.edn :as edn]
+            [clojure.files :as files]
+            [clojure.files.file-handle :as fh]
             [clojure.gdx]
             [clojure.input :as input]
             [clojure.java.io :as io]
+            [clojure.string :as str]
+            [gdl.assets :as assets]
             [cdq.db :as db]
             [gdl.graphics :as graphics]
             [gdl.ui :as ui])
@@ -12,6 +16,33 @@
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
+
+(defn- search-by-extensions [folder extensions]
+  (loop [[file & remaining] (fh/list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (fh/directory? file)
+          (recur (concat remaining (fh/list file)) result)
+
+          (extensions (fh/extension file))
+          (recur remaining (conj result (fh/path file)))
+
+          :else
+          (recur remaining result))))
+
+(defn- search-assets [files folder]
+  (for [[asset-type exts] {:sound   #{"wav"}
+                           :texture #{"png" "bmp"}}
+        file (map #(str/replace-first % folder "")
+                  (search-by-extensions (files/internal files folder)
+                                        exts))]
+    [file asset-type]))
+
+; :gdl.app/gdx and then non-ns keywords
+; :gdl.app/graphics and then also
+; :gdl.app/stage ...
 
 (defn gdl-context [config]
   (let [gdx {:clojure.gdx/app      Gdx/app
@@ -35,7 +66,9 @@
 
         ]
     (merge gdx
-           {:gdl.context/batch batch
+           {:gdl.context/assets (assets/create (search-assets (:clojure.gdx/files gdx)
+                                                              (:assets config)))
+            :gdl.context/batch batch
             :gdl.context/cursors cursors
             :gdl.context/default-font default-font
             :gdl.context/shape-drawer shape-drawer

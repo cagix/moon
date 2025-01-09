@@ -4,8 +4,6 @@
             [clojure.utils :refer [safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
-            [gdl.assets :as assets]
-            [cdq.assets]
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]
             [gdl.graphics]
@@ -47,10 +45,9 @@
                                 :entity/faction :evil}})]
     (spawn-creature c (update props :position tile->middle))))
 
-(defn- create [{:keys [clojure.gdx/files] :as context} config]
+(defn- create [context config]
   (let [context (safe-merge context
-                            {:gdl.context/assets (assets/create (cdq.assets/search files (:assets config)))
-
+                            {
                              ;; - before here - application context - does not change on level/game restart -
                              :gdl.context/elapsed-time 0
                              :cdq.context/player-message (atom (:player-message config))})]

@@ -12,7 +12,7 @@
  :fps 60
  :window-width 1440
  :window-height 900
-
+ :assets "resources/"
  :db {:schema "schema.edn"
       :properties "properties.edn"}
  :graphics {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
@@ -36,12 +36,7 @@
             :ui-viewport    {:width 1440 :height 900}
             :world-viewport {:width 1440 :height 900}}
  :ui {:skin-scale :x1}
-
- ;;
-
- :context {:assets "resources/"
-
-           :world-id :worlds/uf-caves
+ :context {:world-id :worlds/uf-caves
            :content-grid {:cell-size 16}
            :factions-iterations {:good 15 :evil 5}
            :player-message {:duration-seconds 1.5}}}
