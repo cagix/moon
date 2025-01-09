@@ -49,7 +49,7 @@
                  [com.badlogicgames.gdx/gdx "1.13.0"]
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
                  [com.badlogicgames.gdx/gdx-backend-lwjgl3 "1.13.0"]
-                 [com.github.damn/clojure.gdx.graphics.shape-drawer "f70150d4a1"]
+                 [space.earlygrey/shapedrawer "2.5.0"]
 
                  ; TODO release lib with docs
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
