@@ -14,7 +14,6 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.gdx.vis-ui :as vis-ui]
             [clojure.graphics :as graphics]
             [clojure.input :as input]
             [clojure.string :as str]
@@ -22,8 +21,9 @@
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
             [gdl.context :as gdl.context]
+            [gdl.ui :as ui]
             [cdq.db :as db]
-            [cdq.ui :as ui]
+            [gdl.ui :as ui]
             [cdq.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
             [cdq.context.stage-actors :as stage-actors]
@@ -104,7 +104,6 @@
 (defn- create [{:keys [clojure.gdx/files
                        clojure.gdx/input]
                 :as context} config]
-  (vis-ui/load (:vis-ui config))
   (let [batch (sprite-batch/create)
         sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                   (pixmap/set-color color/white)
@@ -116,8 +115,11 @@
                                          (:height (:ui-viewport config))
                                          (orthographic-camera/create))
         world-unit-scale (float (/ (:tile-size config)))
+
+        _ (ui/load! (:ui config))
         stage (ui/stage ui-viewport batch nil)
         _ (input/set-processor input stage)
+
         context (safe-merge context
                             {:gdl.context/assets (asset-manager/create
                                                   (search-assets files (:assets config)))
@@ -157,13 +159,15 @@
       context)))
 
 (defn- dispose! [context]
-  (vis-ui/dispose)
   ; TODO dispose :gdl.context/sd-texture
   (dispose (:gdl.context/assets context))
   (dispose (:gdl.context/batch  context))
   (run! dispose (vals (:gdl.context/cursors context)))
   (dispose (:gdl.context/default-font context))
+
+  (ui/dispose!)
   (dispose (:gdl.context/stage context))
+
   (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )
 

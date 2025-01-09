@@ -1,4 +1,11 @@
-(ns gdl.app
+(ns gdl.app ; TODO this is actually my clojure.gdx.backends.lwjgl3 API ! but in my specific way ... so actually it is cdq.app ? no its all the details of the dependencies
+  ; its the 'middle' part of the teee which comes out of the earth
+  ; there is no need for any of those classes to create a API for (yet)
+  ; or maybe there is
+  ; and we can just move them one by one ?
+  ; that we can do also buy 'cdq' is not allowed to see them
+  ; cdq sees gdl, gdl handles all the details for cdq dependencies
+  ; and hiera creates the tree structure
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -8,6 +15,7 @@
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
+; TODO and here we also don;t need all?
 (defn- context []
   {:clojure.gdx/app      Gdx/app
    :clojure.gdx/audio    Gdx/audio

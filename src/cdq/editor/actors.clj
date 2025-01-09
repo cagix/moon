@@ -11,7 +11,7 @@
             [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.property :as property]
-            [cdq.ui :refer [horizontal-separator-cell
+            [gdl.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
                             ui-actor
                             image-button

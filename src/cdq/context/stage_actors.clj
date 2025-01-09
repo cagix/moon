@@ -5,7 +5,7 @@
             ;
             [gdl.context :as c]
             [gdl.graphics.camera :as cam]
-            [cdq.ui :as ui :refer [ui-actor]]
+            [gdl.ui :as ui :refer [ui-actor]]
             [cdq.ui.dev-menu :as dev-menu]
             [clojure.utils :refer [readable-number dev-mode?]]
             [cdq.val-max :as val-max]

@@ -35,7 +35,7 @@
            :ui-viewport    {:width 1440 :height 900}
            :world-viewport {:width 1440 :height 900}
            :tile-size 48
-           :vis-ui {:skin-scale :skin-scale/x1}
+           :ui {:skin-scale :x1}
            :world-id :worlds/uf-caves
            :content-grid {:cell-size 16}
            :factions-iterations {:good 15 :evil 5}

@@ -23,7 +23,7 @@
             [cdq.malli :as m]
             [cdq.schema :as schema]
             [clojure.gdx.tiled :as tiled]
-            [cdq.ui :as ui]
+            [gdl.ui :as ui]
             [clojure.gdx.scene2d.group :as group])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 

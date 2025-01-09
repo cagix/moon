@@ -1,7 +1,7 @@
 (ns gdl.graphics
   (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils.screen :as screen]
-            [cdq.ui :as ui]))
+            [gdl.ui :as ui]))
 
 (defn clear-screen [context]
   (screen/clear color/black)

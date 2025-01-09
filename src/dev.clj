@@ -5,7 +5,7 @@
             [clojure.pprint :refer [pprint]]
             [gdl.app :refer [state post-runnable]]
             [gdl.context :as c]
-            [cdq.ui :refer [t-node scroll-pane] :as ui]
+            [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]
             [cdq.editor.actors :as editor]))
 
