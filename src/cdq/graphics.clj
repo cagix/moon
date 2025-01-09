@@ -1,6 +1,6 @@
 (ns cdq.graphics
   (:require [gdl.context :as c]
-            [gdl.context.timer :as timer]
+            [cdq.context.timer :as timer]
             [cdq.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
             [cdq.math.shapes :refer [circle->outer-rectangle]]

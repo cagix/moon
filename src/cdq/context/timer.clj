@@ -1,4 +1,4 @@
-(ns gdl.context.timer
+(ns cdq.context.timer
   (:require [cdq.timer :as timer]))
 
 (defn create   [{:keys [gdl.context/elapsed-time]} duration] (timer/create elapsed-time duration))

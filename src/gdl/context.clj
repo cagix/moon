@@ -17,8 +17,8 @@
             [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
             [cdq.db :as db]
             [cdq.error :refer [pretty-pst]]
-            [gdl.graphics.animation :as animation]
-            [gdl.graphics.sprite :as sprite]
+            [cdq.graphics.animation :as animation]
+            [cdq.graphics.sprite :as sprite]
             [gdl.graphics.camera :as cam]
             [cdq.malli :as m]
             [cdq.schema :as schema]
@@ -26,8 +26,6 @@
             [cdq.ui :as ui]
             [clojure.gdx.scene2d.group :as group])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
-
-; cdq.db editor, error, malli, math, property, schema, timer, ui, val-max
 
 (defn get-sound [{::keys [assets]} sound-name]
   (->> sound-name

@@ -1,4 +1,4 @@
-(ns gdl.graphics.animation)
+(ns cdq.graphics.animation)
 
 (defprotocol Animation
   (tick [_ delta])

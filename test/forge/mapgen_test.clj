@@ -9,7 +9,7 @@
             [gdl.graphics.camera :as cam]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
-            [gdl.ui :refer [ui-actor text-button] :as ui]
+            [cdq.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.scene2d.group :refer [add-actor!]]))
 
 (def state (atom nil))

@@ -1,4 +1,4 @@
-(ns gdl.graphics.sprite
+(ns cdq.graphics.sprite
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
 
 (defn- scale-dimensions [dimensions scale]
