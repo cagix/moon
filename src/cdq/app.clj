@@ -15,10 +15,12 @@
 (defn post-runnable [f]
   (app/post-runnable @state #(f @state)))
 
+(defrecord Listener []
+  app/Listener
+  (create  [this config]       (game/create!  this config))
+  (dispose [this]              (game/dispose! this))
+  (render  [this]              (game/render!  this))
+  (resize  [this width height] (game/resize!  this width height)))
+
 (defn -main []
-  (app/start state
-             (reify app/Listener
-               (create  [this config]       (game/create!  this config))
-               (dispose [this]              (game/dispose! this))
-               (render  [this]              (game/render!  this))
-               (resize  [this width height] (game/resize!  this width height)))))
+  (app/start state (Listener.)))
