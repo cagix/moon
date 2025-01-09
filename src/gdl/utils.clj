@@ -1,9 +1,4 @@
-(ns gdl.utils
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]))
-
-(defn read-edn-resource [path]
-  (-> path io/resource slurp edn/read-string))
+(ns gdl.utils)
 
 (defprotocol Disposable
   (dispose [obj] "Release all resources of the object."))
