@@ -6,7 +6,8 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
-           (java.awt Taskbar Toolkit)
+           (java.awt Taskbar
+                     Toolkit)
            (org.lwjgl.system Configuration)))
 
 (defprotocol Listener
