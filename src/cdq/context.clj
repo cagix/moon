@@ -1,5 +1,5 @@
 (ns cdq.context
-  (:require [clojure.audio.sound :as sound]
+  (:require [gdl.audio :as audio]
             [gdl.graphics :as graphics]
             [clojure.rand :refer [rand-int-between]]
             [cdq.world.potential-field :as potential-field]
@@ -216,7 +216,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [c position {:keys [tx/sound entity/animation]}]
-  (sound/play sound)
+  (audio/play sound)
   (spawn-entity c
                 position
                 effect-body-props
@@ -777,7 +777,7 @@
     false)
 
   (state/enter [[_ {:keys [eid skill]}] c]
-    (sound/play (:skill/start-action-sound skill))
+    (audio/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
@@ -871,7 +871,7 @@
                            modal/text
                            modal/button-text]}]
                 c]
-    (sound/play sound)
+    (audio/play sound)
     (show-modal c {:title title
                    :text text
                    :button-text button-text
@@ -1000,7 +1000,7 @@
   (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
-      (sound/play pickup-item-sound)
+      (audio/play pickup-item-sound)
       (send-event! c eid :pickup-item item)
       (remove-item c eid cell)))
 
@@ -1022,7 +1022,7 @@
      (and (not item-in-cell)
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (sound/play item-put-sound)
+      (audio/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item c eid cell item-on-cursor)
       (send-event! c eid :dropped-item))
@@ -1031,7 +1031,7 @@
      (and item-in-cell
           (inventory/stackable? item-in-cell item-on-cursor))
      (do
-      (sound/play item-put-sound)
+      (audio/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item c eid cell item-on-cursor)
       (send-event! c eid :dropped-item))
@@ -1040,7 +1040,7 @@
      (and item-in-cell
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (sound/play item-put-sound)
+      (audio/play item-put-sound)
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -1066,7 +1066,7 @@
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (sound/play place-world-item-sound)
+        (audio/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
         (spawn-item c
                     (item-place-position c entity)
@@ -1179,7 +1179,7 @@
     false)
 
   (effect/handle [[_ sound] _ctx c]
-    (sound/play sound)))
+    (audio/play sound)))
 
 (defcomponent :effects/spawn
   (effect/applicable? [_ {:keys [effect/source effect/target-position]}]

@@ -1,6 +1,5 @@
 (ns gdl.app
-  (:require [clojure.audio.sound]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
             [clojure.gdx.graphics.camera :as camera]
@@ -20,6 +19,7 @@
             [clojure.string :as str]
             [clojure.utils :refer [mapvals]]
             [gdl.assets :as assets]
+            [gdl.audio]
             [cdq.db :as db]
             [gdl.ui :as ui]
             [gdl.utils])
@@ -246,7 +246,7 @@
     (.setInputProcessor this input-processor)))
 
 (extend-type com.badlogic.gdx.audio.Sound
-  clojure.audio.sound/Sound
+  gdl.audio/Sound
   (play [this]
     (.play this)))
 

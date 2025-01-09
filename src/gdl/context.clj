@@ -1,6 +1,5 @@
 (ns gdl.context
-  (:require [clojure.audio.sound :as sound]
-            [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
@@ -15,6 +14,7 @@
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [defcomponent safe-get with-err-str mapvals]]
+            [gdl.audio :as audio]
             [cdq.db :as db]
             [cdq.error :refer [pretty-pst]]
             [cdq.graphics.animation :as animation]
@@ -33,7 +33,7 @@
        assets))
 
 (defn play-sound [c sound-name]
-  (sound/play (get-sound c sound-name)))
+  (audio/play (get-sound c sound-name)))
 
 (defn- texture-region [{::keys [assets]} path]
   (texture-region/create (assets path)))

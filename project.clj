@@ -52,6 +52,13 @@
                  ; => no, everything !
                  ; the language for 'cdq' to be dependency free .....
 
+                 ; _ the outside world _ the 'earth' _ is given through a 'trunk' whichs is gdl
+                 ; and the dependencies are the roots
+                 ; this project _cdq_ sees only the 'trunk' and not any other dependency than 'cdq' or 'gdl' !!!!!
+                 ; even grid2d let's see we redirect 'gdl.data.g2d'  ?
+
+                 ; clojure.utils -> gdl.utils or cdq.utils
+
                  [org.clojure/clojure "1.12.0"]
                  [com.badlogicgames.gdx/gdx "1.13.0"]
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
