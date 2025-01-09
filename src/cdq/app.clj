@@ -12,10 +12,17 @@
             [cdq.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
             [cdq.context.stage-actors :as stage-actors]
-            [cdq.context.content-grid :as content-grid]
+            [cdq.content-grid :as content-grid]
             cdq.graphics
             cdq.graphics.tiled-map)
   (:gen-class))
+
+; here impl
+; @ content-grid only protocols ! no create !
+(defn- content-grid [tiled-map {:keys [cell-size]}]
+  (content-grid/create {:cell-size cell-size
+                        :width  (tiled/tm-width  tiled-map)
+                        :height (tiled/tm-height tiled-map)}))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
