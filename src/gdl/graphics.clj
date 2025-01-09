@@ -21,7 +21,7 @@
                cursor))
            cursors))
 
-(defn create [context config]
+(defn create [{:keys [clojure.gdx/files] :as context} config]
   (let [batch (SpriteBatch.)
         sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                   (pixmap/set-color color/white)
