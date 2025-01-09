@@ -156,3 +156,6 @@
      (binding [*err* s#]
        ~@body
        (str s#))))
+
+(defprotocol Disposable
+  (dispose [_] "Releases all resources of this object."))

@@ -1,7 +1,6 @@
 (ns cdq.app
   (:require [gdl.tiled :as tiled]
-            [clojure.utils :refer [safe-merge tile->middle]]
-            [clojure.utils.disposable :refer [dispose]]
+            [clojure.utils :refer [dispose safe-merge tile->middle]]
             [gdl.app :as app]
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]

@@ -7,7 +7,7 @@
             [clojure.graphics]
             [clojure.graphics.2d.batch]
             [clojure.input]
-            [clojure.utils.disposable]))
+            [clojure.utils]))
 
 (extend-type com.badlogic.gdx.Files
   clojure.files/Files
@@ -98,7 +98,7 @@
     (.stop s)))
 
 (extend-type com.badlogic.gdx.utils.Disposable
-  clojure.utils.disposable/Disposable
+  clojure.utils/Disposable
   (dispose [this]
     (.dispose this)))
 
