@@ -58,13 +58,13 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window [{:keys [gdl.context/viewport] :as c}]
+(defn- ->info-window [{:keys [context/g] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos %))
                                          (.pack window))}))
-    (.setPosition window 0 (:height viewport)) window))
+    (.setPosition window 0 (:height (:ui-viewport g))) window))
 
 (def ^:private camera-movement-speed 1)
 

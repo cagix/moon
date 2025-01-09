@@ -189,7 +189,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:gdl.context/viewport @state)
+  (let [viewport (:ui-viewport (:context/g @state))
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})

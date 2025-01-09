@@ -249,9 +249,10 @@
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{::keys [viewport] :keys [clojure.gdx/input]}]
+(defn mouse-position [{:keys [context/g
+                              clojure.gdx/input]}]
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position input viewport)))
+  (mapv int (unproject-mouse-position input (:ui-viewport g))))
 
 (defn world-mouse-position [{:keys [context/g clojure.gdx/input]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true

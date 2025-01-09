@@ -46,12 +46,12 @@
              :cell-defaults {:pad 2}
              :fill-parent? true}))
 
-(defn- draw-player-message [{:keys [gdl.context/viewport
+(defn- draw-player-message [{:keys [context/g
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]
     (c/draw-text c
-                 {:x (/ (:width viewport) 2)
-                  :y (+ (/ (:height viewport) 2) 200)
+                 {:x (/ (:width (:ui-viewport g)) 2)
+                  :y (+ (/ (:height (:ui-viewport g)) 2) 200)
                   :text text
                   :scale 2.5
                   :up? true})))
@@ -75,11 +75,11 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn- hp-mana-bar [{:keys [gdl.context/viewport] :as c}]
+(defn- hp-mana-bar [{:keys [context/g] :as c}]
   (let [rahmen      (c/sprite c "images/rahmen.png")
         hpcontent   (c/sprite c "images/hp.png")
         manacontent (c/sprite c "images/mana.png")
-        x (/ (:width viewport) 2)
+        x (/ (:width (:ui-viewport g)) 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
@@ -157,12 +157,12 @@
     (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc entity disallowed-keys))))
 
-(defn- entity-info-window [{:keys [gdl.context/viewport] :as c}]
+(defn- entity-info-window [{:keys [context/g] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [(:width viewport) 0]
+                           :position [(:width (:ui-viewport g)) 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
@@ -290,10 +290,11 @@
 
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
-        ui-viewport (:ui-viewport g)
 
         _ (ui/load! (:ui config))
-        stage (ui/stage ui-viewport (:batch g) nil)
+        stage (ui/stage (:ui-viewport g)
+                        (:batch g)
+                        nil)
         _ (input/set-processor (:clojure.gdx/input gdx) stage)
 
         ]
@@ -302,7 +303,7 @@
             :context/g g
             :gdl.context/db (db/create (:db config))
             :gdl.context/stage stage
-            :gdl.context/viewport ui-viewport})))
+            })))
 
 (defn- create [context config]
   (let [context (gdl-context context config)

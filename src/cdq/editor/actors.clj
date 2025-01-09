@@ -62,7 +62,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (:height (:gdl.context/viewport @state)) 50)
+     :height (min (- (:height (:ui-viewport (:context/g @state))) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]

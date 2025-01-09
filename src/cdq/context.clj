@@ -353,7 +353,7 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [gdl.context/viewport] :as c}
+(defn show-modal [{:keys [context/g] :as c}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal (c/stage c))))
   (c/add-actor c
@@ -365,8 +365,8 @@
                                                      (on-click)))]]
                            :id ::modal
                            :modal? true
-                           :center-position [(/ (:width viewport) 2)
-                                             (* (:height viewport) (/ 3 4))]
+                           :center-position [(/ (:width (:ui-viewport g)) 2)
+                                             (* (:height (:ui-viewport g)) (/ 3 4))]
                            :pack? true})))
 
 (defn world-item? [c]
