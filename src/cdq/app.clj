@@ -1,6 +1,5 @@
 (ns cdq.app
-  (:require [clojure.input :as input]
-            [gdl.app :as app]
+  (:require [gdl.app :as app]
             [gdl.assets :as assets]
             [gdl.context :as c]
             [gdl.graphics :as graphics]
@@ -288,19 +287,8 @@
          (tiled/tm-height tiled-map)
          (constantly false))))
 
-(defn- create [context config]
-  (let [g (graphics/create context (:graphics config))
-        _ (ui/load! (:ui config))
-        stage (ui/stage (:ui-viewport g)
-                        (:batch g)
-                        nil)
-        _ (input/set-processor (:clojure.gdx/input context) stage)
-        context (merge context
-                       {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files context) (:assets config))
-                        :context/g g
-                        :gdl.context/db (db/create (:db config))
-                        :gdl.context/stage stage})
-        context (safe-merge context
+(defn- add-new-game-context [context config]
+  (let [context (safe-merge context
                             {
                              ;; - before here - application context - does not change on level/game restart -
                              :gdl.context/elapsed-time 0
@@ -385,7 +373,16 @@
     (app/start (:window config)
                (reify app/Listener
                  (create [_ context]
-                   (reset! state (create context (:context config))))
+                   (reset! state
+                           ; TODO explicit passings/dependencies ?
+                           (let [context (merge context
+                                                {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files context)
+                                                                                             (:assets config))
+                                                 :gdl.context/db (db/create (:db config))
+                                                 :context/g (graphics/create context (:graphics config))})
+                                 context (assoc context
+                                                :gdl.context/stage (ui/setup-stage! context (:ui config)))]
+                             (add-new-game-context context (:world config)))))
 
                  (dispose [_]
                    (dispose! @state))
