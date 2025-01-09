@@ -5,12 +5,10 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.graphics :as graphics]
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [mapvals safe-merge tile->middle]]
@@ -42,15 +40,6 @@
                   (file-search/by-extensions (files/internal files folder)
                                              exts))]
     [file asset-type]))
-
-(defn- create-cursors [{:keys [clojure.gdx/files
-                               clojure.gdx/graphics]} cursors]
-  (mapvals (fn [[file [hotspot-x hotspot-y]]]
-             (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
-                   cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-               (dispose pixmap)
-               cursor))
-           cursors))
 
 (defn- cached-tiled-map-renderer [batch world-unit-scale]
   (memoize (fn [tiled-map]
@@ -106,10 +95,11 @@
                                          (orthographic-camera/create))
         world-unit-scale (float (/ (:tile-size config)))
 
-        gdl-graphics (gdl.graphics/create)
+        gdl-graphics (gdl.graphics/create context (:graphics config))
         batch (:batch gdl-graphics)
         shape-drawer (:sd gdl-graphics)
         sd-texture (:sd-texture gdl-graphics)
+        cursors (:cursors gdl-graphics)
 
         _ (ui/load! (:ui config))
         stage (ui/stage ui-viewport batch nil)
@@ -119,7 +109,7 @@
                             {:gdl.context/assets (asset-manager/create
                                                   (search-assets files (:assets config)))
                              :gdl.context/batch batch
-                             :gdl.context/cursors (create-cursors context (:cursors config))
+                             :gdl.context/cursors cursors
                              :gdl.context/db (db/create (:db config))
                              :gdl.context/default-font (freetype/generate-font (update (:default-font config) :file #(files/internal files %)))
                              :gdl.context/shape-drawer shape-drawer
