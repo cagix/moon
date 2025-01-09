@@ -1,8 +1,8 @@
 (ns gdl.app
-  (:require [clojure.edn :as edn]
+  (:require [clojure.audio.sound]
+            [clojure.edn :as edn]
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
-            [clojure.gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as sd]
@@ -10,9 +10,11 @@
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [clojure.gdx.interop :refer [k->input-button k->input-key]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics :as graphics]
+            [clojure.graphics.2d.batch]
             [clojure.input :as input]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -198,3 +200,80 @@
                           (.setWindowedMode (:window-width config)
                                             (:window-height config))
                           (.setForegroundFPS (:fps config))))))
+
+(extend-type com.badlogic.gdx.Files
+  clojure.files/Files
+  (internal [this path]
+    (.internal this path)))
+
+(extend-type com.badlogic.gdx.Graphics
+  clojure.graphics/Graphics
+  (new-cursor [this pixmap hotspot-x hotspot-y]
+    (.newCursor this pixmap hotspot-x hotspot-y))
+  (set-cursor [this cursor]
+    (.setCursor this cursor)))
+
+(extend-type com.badlogic.gdx.files.FileHandle
+  clojure.files.file-handle/FileHandle
+  (list [this]
+    (.list this))
+  (directory? [this]
+    (.isDirectory this))
+  (extension [this]
+    (.extension this))
+  (path [this]
+    (.path this)))
+
+(extend-type com.badlogic.gdx.Input
+  clojure.input/Input
+  (x [this]
+    (.getX this))
+
+  (y [this]
+    (.getY this))
+
+  (button-just-pressed? [this button]
+    (.isButtonJustPressed this (k->input-button button)))
+
+  (key-just-pressed? [this key]
+    (.isKeyJustPressed this (k->input-key key)))
+
+  (key-pressed? [this key]
+    (.isKeyPressed this (k->input-key key)))
+
+  (set-processor [this input-processor]
+    (.setInputProcessor this input-processor)))
+
+(extend-type com.badlogic.gdx.audio.Sound
+  clojure.audio.sound/Sound
+  (play [this]
+    (.play this)))
+
+(extend-type com.badlogic.gdx.utils.Disposable
+  clojure.utils/Disposable
+  (dispose [this]
+    (.dispose this)))
+
+(extend-type com.badlogic.gdx.graphics.g2d.Batch
+  clojure.graphics.2d.batch/Batch
+  (set-projection-matrix [batch projection]
+    (.setProjectionMatrix batch projection))
+  (begin [batch]
+    (.begin batch))
+  (end
+    [batch]
+    (.end batch))
+  (set-color [batch color]
+    (.setColor batch color))
+  (draw [batch texture-region {:keys [x y origin-x origin-y width height scale-x scale-y rotation]}]
+    (.draw batch
+           texture-region
+           x
+           y
+           origin-x
+           origin-y
+           width
+           height
+           scale-x
+           scale-y
+           rotation)))
