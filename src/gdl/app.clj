@@ -3,6 +3,7 @@
             [clojure.files :as files]
             [clojure.files.file-handle :as fh]
             [clojure.gdx]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.input :as input]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -85,7 +86,7 @@
 (defn post-runnable [f]
   (.postRunnable (:clojure.gdx/app @state) #(f @state)))
 
-(defn start [config-path create dispose render resize]
+(defn start [config-path create dispose render]
   (let [config (-> config-path
                    io/resource
                    slurp
@@ -109,7 +110,8 @@
                             (swap! state render))
 
                           (resize [width height]
-                            (resize @state width height)))
+                            (viewport/resize (:gdl.context/viewport       @state) width height :center-camera? true)
+                            (viewport/resize (:gdl.context/world-viewport @state) width height :center-camera? false)))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle (:title config))
                           (.setWindowedMode (:window-width config)

@@ -1,6 +1,5 @@
 (ns cdq.app
   (:require [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.utils.viewport :as viewport]
             [clojure.utils :refer [safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
@@ -85,10 +84,6 @@
   (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )
 
-(defn- resize [context width height]
-  (viewport/resize (:gdl.context/viewport       context) width height :center-camera? true)
-  (viewport/resize (:gdl.context/world-viewport context) width height :center-camera? false))
-
 (defn- render [context]
   (reduce (fn [context f]
             (f context))
@@ -114,5 +109,4 @@
   (app/start "app.edn"
              create
              dispose!
-             render
-             resize))
+             render))
