@@ -58,7 +58,7 @@
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{:keys [context/g] :keys [clojure.gdx/graphics]}
+(defn set-cursor [{:keys [clojure.gdx/graphics context/g]}
                   cursor-key]
   (graphics/set-cursor graphics (safe-get (:cursors g) cursor-key)))
 
