@@ -12,20 +12,6 @@
                      Toolkit)
            (org.lwjgl.system Configuration)))
 
-; TODO or libgdx (which Gdx is only here)
-; is without keywords an a record ?
-; than inmy context just 'gdx' ?
-; but it should be flat because its the context
-; its like global vars
-; they are not verschachtelt !?
-
-; => So this takes from edn-config
-; so we can configure the whole Lwjgl3Application
-; and make with dev-mode where we can edit it
-; and start
-; and on stop it will still run
-; and we can inspect the context there , see FPS, etc, libgdx/gl-version,etc.
-
 (defprotocol Listener
   (create  [_ config])
   (dispose [_])
@@ -55,10 +41,13 @@
                         (.setWindowedMode (:width config) (:height config))
                         (.setForegroundFPS (:fps config)))))
 
-(defn start [state listener edn-config]
-  (start* state
-          listener
-          (-> edn-config io/resource slurp edn/read-string)))
+(defn start
+  ([state listener]
+   (start state listener "config.edn"))
+  ([state listener edn-config]
+   (start* state
+           listener
+           (-> edn-config io/resource slurp edn/read-string))))
 
 (defn post-runnable [context runnable]
   (Application/.postRunnable (:clojure.gdx/app context) runnable))

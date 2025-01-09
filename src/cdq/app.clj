@@ -30,6 +30,4 @@
   (app/post-runnable @state #(f @state)))
 
 (defn -main []
-  (app/start state
-             (Listener.)
-             "config.edn"))
+  (app/start state (Listener.)))
