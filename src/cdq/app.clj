@@ -6,10 +6,7 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.pixmap :as pixmap]
-            [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
@@ -104,19 +101,15 @@
 (defn- create [{:keys [clojure.gdx/files
                        clojure.gdx/input]
                 :as context} config]
-  (let [sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
-                                  (pixmap/set-color color/white)
-                                  (pixmap/draw-pixel 0 0))
-                         texture (texture/create pixmap)]
-                     (dispose pixmap)
-                     texture)
-        ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
+  (let [ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
                                          (:height (:ui-viewport config))
                                          (orthographic-camera/create))
         world-unit-scale (float (/ (:tile-size config)))
 
         gdl-graphics (gdl.graphics/create)
         batch (:batch gdl-graphics)
+        shape-drawer (:sd gdl-graphics)
+        sd-texture (:sd-texture gdl-graphics)
 
         _ (ui/load! (:ui config))
         stage (ui/stage ui-viewport batch nil)
@@ -129,8 +122,9 @@
                              :gdl.context/cursors (create-cursors context (:cursors config))
                              :gdl.context/db (db/create (:db config))
                              :gdl.context/default-font (freetype/generate-font (update (:default-font config) :file #(files/internal files %)))
-                             :gdl.context/shape-drawer (sd/create batch (texture-region/create sd-texture 1 0 1 1))
+                             :gdl.context/shape-drawer shape-drawer
                              :gdl.context/sd-texture sd-texture
+
                              :gdl.context/stage stage
                              :gdl.context/viewport ui-viewport
                              :gdl.context/world-viewport (world-viewport (:world-viewport config) world-unit-scale)
