@@ -1,6 +1,6 @@
 (ns forge.mapgen-test
-  (:require [anvil.level :refer [generate-level]]
-            [anvil.modules :as modules]
+  (:require [cdq.level :refer [generate-level]]
+            [cdq.modules :as modules]
             [clojure.gdx.graphics.color :as color]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
