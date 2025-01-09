@@ -5,6 +5,7 @@
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]
             [gdl.graphics]
+            [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]
             [gdl.tiled :as tiled]
             [cdq.grid :as grid]
@@ -14,7 +15,6 @@
             [cdq.context.explored-tile-corners :as explored-tile-corners]
             [cdq.context.content-grid :as content-grid]
             cdq.graphics
-            cdq.graphics.camera
             cdq.graphics.tiled-map)
   (:gen-class))
 
@@ -146,12 +146,19 @@
   (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )
 
+(defn- set-camera-on-player! [{:keys [gdl.context/world-viewport
+                                      cdq.context/player-eid]
+                               :as context}]
+  (cam/set-position! (:camera world-viewport)
+                     (:position @player-eid))
+  context)
+
 (defn- render [context]
+  (set-camera-on-player! context)
   (reduce (fn [context f]
             (f context))
           context
           [gdl.graphics/clear-screen
-           cdq.graphics.camera/set-on-player-position
            cdq.graphics.tiled-map/render
            cdq.graphics/draw-world-view
            gdl.graphics/draw-stage

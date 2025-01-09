@@ -45,17 +45,22 @@
 
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
-  :dependencies [[org.clojure/clojure "1.12.0"]
+  :dependencies [
+
+                 ; the question is what should 'gdl' wrap ?
+                 ; obviously all libgdx and vis-ui related stuff !?
+                 ; => no, everything !
+                 ; the language for 'cdq' to be dependency free .....
+
+                 [org.clojure/clojure "1.12.0"]
                  [com.badlogicgames.gdx/gdx "1.13.0"]
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
                  [com.badlogicgames.gdx/gdx-backend-lwjgl3 "1.13.0"]
                  [space.earlygrey/shapedrawer "2.5.0"]
-
                  ; TODO release lib with docs
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
                  ; TODO this manual ?
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.0" :classifier "natives-desktop"]
-
                  ; - no dep ? - gdl -
                  [com.kotcrab.vis/vis-ui "1.5.2"]
 
