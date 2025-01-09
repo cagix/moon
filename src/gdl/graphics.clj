@@ -1,5 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [gdl.graphics.color :as color]
             [clojure.gdx.utils.screen :as screen]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors)))

@@ -1,7 +1,7 @@
 (ns forge.mapgen-test
   (:require [cdq.level :refer [generate-level]]
             [cdq.modules :as modules]
-            [clojure.gdx.graphics.color :as color]
+            [gdl.graphics.color :as color]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]

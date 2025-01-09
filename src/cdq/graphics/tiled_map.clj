@@ -1,5 +1,5 @@
 (ns cdq.graphics.tiled-map
-  (:require [clojure.gdx.graphics.color :as color]
+  (:require [gdl.graphics.color :as color]
             [gdl.context :refer [draw-tiled-map]]
             [gdl.graphics.camera :as cam]
             [cdq.math.raycaster :as raycaster]))

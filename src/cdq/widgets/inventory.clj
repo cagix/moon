@@ -3,7 +3,7 @@
             [cdq.entity.state :as state]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.context.info :as info]
-            [clojure.gdx.graphics.color :as color]
+            [gdl.graphics.color :as color]
             [gdl.scene2d.actor :refer [user-object] :as actor]
             [gdl.grid2d :as g2d]
             [gdl.context :as c]
