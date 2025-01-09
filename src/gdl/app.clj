@@ -16,19 +16,11 @@
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
-; TODO and here we also don;t need all?
 (defn- context []
   {:clojure.gdx/app      Gdx/app
-   :clojure.gdx/audio    Gdx/audio
    :clojure.gdx/files    Gdx/files
-   :clojure.gdx/gl       Gdx/gl
-   :clojure.gdx/gl20     Gdx/gl20
-   :clojure.gdx/gl30     Gdx/gl30
-   :clojure.gdx/gl31     Gdx/gl31
-   :clojure.gdx/gl32     Gdx/gl32
    :clojure.gdx/graphics Gdx/graphics
-   :clojure.gdx/input    Gdx/input
-   :clojure.gdx/net      Gdx/net})
+   :clojure.gdx/input    Gdx/input})
 
 (def state (atom nil))
 
