@@ -297,7 +297,6 @@
 ; * world
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
-        world-unit-scale (:world-unit-scale g)
         world-viewport (:world-viewport g)
         ui-viewport (:ui-viewport g)
 
@@ -312,8 +311,7 @@
             :gdl.context/db (db/create (:db config))
             :gdl.context/stage stage
             :gdl.context/viewport ui-viewport
-            :gdl.context/world-viewport world-viewport
-            :gdl.context/world-unit-scale world-unit-scale})))
+            :gdl.context/world-viewport world-viewport})))
 
 (defn- create [context config]
   (let [context (gdl-context context config)

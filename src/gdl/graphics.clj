@@ -73,8 +73,7 @@
                          texture (texture/create pixmap)]
                      (.dispose pixmap)
                      texture)
-        world-unit-scale (float (/ (:tile-size config)))
-        ]
+        world-unit-scale (float (/ (:tile-size config)))]
     {:batch batch
      :sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
      :sd-texture sd-texture
