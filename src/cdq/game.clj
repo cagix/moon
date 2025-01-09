@@ -355,7 +355,7 @@
            cdq.context/check-ui-key-listeners]))
 
 ; TODO explicit passings/dependencies ?
-(defn create! [{:keys [cdq.app/config] :as context}]
+(defn create! [context config]
   (let [context (merge context
                        {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files context)
                                                                     (:assets config))

@@ -11,12 +11,12 @@
            (org.lwjgl.system Configuration)))
 
 (defprotocol Listener
-  (create [_ context])
+  (create  [_ context config])
   (dispose [_])
-  (render [_])
-  (resize [_ width height]))
+  (render  [_])
+  (resize  [_ width height]))
 
-(defn start [config listener]
+(defn start [state listener config]
   (when-let [icon (:icon config)]
     (.setIconImage (Taskbar/getTaskbar)
                    (.getImage (Toolkit/getDefaultToolkit)
@@ -26,13 +26,13 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (create listener (gdx/context)))
+                          (reset! state (create listener (gdx/context) config)))
                         (dispose []
-                          (dispose listener))
+                          (swap! state dispose))
                         (render []
-                          (render listener))
+                          (swap! state render))
                         (resize [width height]
-                          (resize listener width height)))
+                          (swap! state resize width height)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle (:title config))
                         (.setWindowedMode (:width config) (:height config))
