@@ -4,7 +4,7 @@
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [cdq.app :refer [state]]
+            [gdl.app :refer [state]]
             [gdl.context :as c :refer [play-sound]]
             [cdq.db :as db]
             [gdl.graphics :as graphics]
