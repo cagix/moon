@@ -82,11 +82,11 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [{::keys [world-viewport] :keys [context/g]} tiled-map color-setter]
+  [{:keys [context/g]} tiled-map color-setter]
   (draw-tiled-map* ((:tiled-map-renderer g) tiled-map)
                    tiled-map
                    color-setter
-                   (:camera world-viewport)))
+                   (:camera (:world-viewport g))))
 
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
@@ -253,17 +253,19 @@
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position input viewport)))
 
-(defn world-mouse-position [{::keys [world-viewport]
-                             :keys [clojure.gdx/input]}]
+(defn world-mouse-position [{:keys [context/g clojure.gdx/input]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position input world-viewport))
+  (unproject-mouse-position input (:world-viewport g)))
 
 (defn pixels->world-units [{:keys [context/g]} pixels]
   (* (int pixels) (:world-unit-scale g)))
 
-(defn draw-on-world-view [{::keys [world-viewport] :keys [context/g] :as c} render-fn]
-  (draw-with c world-viewport (:world-unit-scale g) render-fn))
+(defn draw-on-world-view [{:keys [context/g] :as c} render-fn]
+  (draw-with c
+             (:world-viewport g)
+             (:world-unit-scale g)
+             render-fn))
 
 (def stage ::stage)
 
@@ -388,9 +390,10 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn check-camera-controls [{::keys [world-viewport]
-                              :keys [clojure.gdx/input] :as context}]
-  (let [camera (:camera world-viewport)]
+(defn check-camera-controls [{:keys [context/g
+                                     clojure.gdx/input]
+                              :as context}]
+  (let [camera (:camera (:world-viewport g))]
     (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
     (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
   context)

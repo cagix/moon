@@ -87,9 +87,9 @@
      :world-viewport (world-viewport (:world-viewport config) world-unit-scale)
      }))
 
-(defn on-resize [{:keys [ui-viewport world-viewport]} width height]
-  (viewport/resize ui-viewport    width height :center-camera? true)
-  (viewport/resize world-viewport width height :center-camera? false))
+(defn on-resize [g width height]
+  (viewport/resize (:ui-viewport    g) width height :center-camera? true)
+  (viewport/resize (:world-viewport g) width height :center-camera? false))
 
 (defn clear-screen [context]
   (screen/clear color/black)

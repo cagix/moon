@@ -81,13 +81,13 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [gdl.context/world-viewport] :as c}]
+(defn- render-on-map [{:keys [context/g] :as c}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles (:camera world-viewport))
+        visible-tiles (cam/visible-tiles (:camera (:world-viewport g)))
         [x y] (mapv int (c/world-mouse-position c))]
     (c/rectangle c x y 1 1 :white)
     (when start-position
@@ -111,7 +111,7 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [{:keys [gdl.context/world-viewport] :as c} properties]
+(defn- generate-screen-ctx [{:keys [context/g] :as c} properties]
   (let [{:keys [tiled-map start-position]} (generate-level c
                                                            (c/build world-id))
         atom-data (current-data)]
@@ -120,7 +120,7 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! (:camera world-viewport) tiled-map)
+    (show-whole-map! (:camera (:world-viewport g)) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [c level-id]

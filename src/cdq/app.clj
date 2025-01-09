@@ -290,7 +290,6 @@
 
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
-        world-viewport (:world-viewport g)
         ui-viewport (:ui-viewport g)
 
         _ (ui/load! (:ui config))
@@ -303,8 +302,7 @@
             :context/g g
             :gdl.context/db (db/create (:db config))
             :gdl.context/stage stage
-            :gdl.context/viewport ui-viewport
-            :gdl.context/world-viewport world-viewport})))
+            :gdl.context/viewport ui-viewport})))
 
 (defn- create [context config]
   (let [context (gdl-context context config)

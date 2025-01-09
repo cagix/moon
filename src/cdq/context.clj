@@ -88,9 +88,9 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn line-of-sight? [{:keys [gdl.context/world-viewport] :as c} source target]
+(defn line-of-sight? [{:keys [context/g] :as c} source target]
   (and (or (not (:entity/player? source))
-           (on-screen? world-viewport target))
+           (on-screen? (:world-viewport g) target))
        (not (and los-checks?
                  (ray-blocked? c (:position source) (:position target))))))
 
