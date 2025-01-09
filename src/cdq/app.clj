@@ -417,7 +417,7 @@
                    (reset! state (create context (:context config))))
 
                  (dispose [_]
-                   (dispose @state))
+                   (dispose! @state))
 
                  (render [_]
                    (swap! state render))
