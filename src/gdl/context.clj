@@ -97,44 +97,44 @@
 (defn- sd-color [shape-drawer color]
   (sd/set-color shape-drawer (munge-color color)))
 
-(defn ellipse [{::keys [shape-drawer]} [x y] radius-x radius-y color]
-  (sd-color shape-drawer color)
-  (sd/ellipse shape-drawer x y radius-x radius-y))
+(defn ellipse [{:keys [context/g]} [x y] radius-x radius-y color]
+  (sd-color (:sd g) color)
+  (sd/ellipse (:sd g) x y radius-x radius-y))
 
-(defn filled-ellipse [{::keys [shape-drawer]} [x y] radius-x radius-y color]
-  (sd-color shape-drawer color)
-  (sd/filled-ellipse shape-drawer x y radius-x radius-y))
+(defn filled-ellipse [{:keys [context/g]} [x y] radius-x radius-y color]
+  (sd-color (:sd g) color)
+  (sd/filled-ellipse (:sd g) x y radius-x radius-y))
 
-(defn circle [{::keys [shape-drawer]} [x y] radius color]
-  (sd-color shape-drawer color)
-  (sd/circle shape-drawer x y radius))
+(defn circle [{:keys [context/g]} [x y] radius color]
+  (sd-color (:sd g) color)
+  (sd/circle (:sd g) x y radius))
 
-(defn filled-circle [{::keys [shape-drawer]} [x y] radius color]
-  (sd-color shape-drawer color)
-  (sd/filled-circle shape-drawer x y radius))
+(defn filled-circle [{:keys [context/g]} [x y] radius color]
+  (sd-color (:sd g) color)
+  (sd/filled-circle (:sd g) x y radius))
 
-(defn arc [{::keys [shape-drawer]} [center-x center-y] radius start-angle degree color]
-  (sd-color shape-drawer color)
-  (sd/arc shape-drawer center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
+(defn arc [{:keys [context/g]} [center-x center-y] radius start-angle degree color]
+  (sd-color (:sd g) color)
+  (sd/arc (:sd g) center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
 
-(defn sector [{::keys [shape-drawer]} [center-x center-y] radius start-angle degree color]
-  (sd-color shape-drawer color)
-  (sd/sector shape-drawer center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
+(defn sector [{:keys [context/g]} [center-x center-y] radius start-angle degree color]
+  (sd-color (:sd g) color)
+  (sd/sector (:sd g) center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
 
-(defn rectangle [{::keys [shape-drawer]} x y w h color]
-  (sd-color shape-drawer color)
-  (sd/rectangle shape-drawer x y w h))
+(defn rectangle [{:keys [context/g]} x y w h color]
+  (sd-color (:sd g) color)
+  (sd/rectangle (:sd g) x y w h))
 
-(defn filled-rectangle [{::keys [shape-drawer]} x y w h color]
-  (sd-color shape-drawer color)
-  (sd/filled-rectangle shape-drawer x y w h))
+(defn filled-rectangle [{:keys [context/g]} x y w h color]
+  (sd-color (:sd g) color)
+  (sd/filled-rectangle (:sd g) x y w h))
 
-(defn line [{::keys [shape-drawer]} [sx sy] [ex ey] color]
-  (sd-color shape-drawer color)
-  (sd/line shape-drawer sx sy ex ey))
+(defn line [{:keys [context/g]} [sx sy] [ex ey] color]
+  (sd-color (:sd g) color)
+  (sd/line (:sd g) sx sy ex ey))
 
-(defn grid [{::keys [shape-drawer]} leftx bottomy gridw gridh cellw cellh color]
-  (sd-color shape-drawer color)
+(defn grid [{:keys [context/g]} leftx bottomy gridw gridh cellw cellh color]
+  (sd-color (:sd g) color)
   (let [w (* (float gridw) (float cellw))
         h (* (float gridh) (float cellh))
         topy (+ (float bottomy) (float h))
@@ -146,11 +146,11 @@
             :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
       (line [leftx liney] [rightx liney]))))
 
-(defn with-line-width [{::keys [shape-drawer]} width draw-fn]
-  (let [old-line-width (sd/default-line-width shape-drawer)]
-    (sd/set-default-line-width shape-drawer (* width old-line-width))
+(defn with-line-width [{:keys [context/g]} width draw-fn]
+  (let [old-line-width (sd/default-line-width (:sd g))]
+    (sd/set-default-line-width (:sd g) (* width old-line-width))
     (draw-fn)
-    (sd/set-default-line-width shape-drawer old-line-width)))
+    (sd/set-default-line-width (:sd g) old-line-width)))
 
 (defn- text-height [font text]
   (-> text

@@ -298,7 +298,6 @@
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
         batch (:batch g)
-        shape-drawer (:sd g)
         sd-texture (:sd-texture g)
         cursors (:cursors g)
         default-font (:default-font g)
@@ -317,7 +316,6 @@
             :context/g g
             :gdl.context/cursors cursors
             :gdl.context/default-font default-font
-            :gdl.context/shape-drawer shape-drawer
             :gdl.context/sd-texture sd-texture
             :gdl.context/db (db/create (:db config))
             :gdl.context/stage stage
