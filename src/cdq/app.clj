@@ -13,11 +13,59 @@
             [cdq.context.stage-actors :as stage-actors]
             [cdq.context.explored-tile-corners :as explored-tile-corners]
             [cdq.context.content-grid :as content-grid]
-            [cdq.context.grid :as grid]
             cdq.graphics
             cdq.graphics.camera
             cdq.graphics.tiled-map)
   (:gen-class))
+
+(defrecord RCell [position
+                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
+                  adjacent-cells
+                  movement
+                  entities
+                  occupied
+                  good
+                  evil]
+  grid/Cell
+  (blocked? [_ z-order]
+    (case movement
+      :none true ; wall
+      :air (case z-order ; water/doodads
+             :z-order/flying false
+             :z-order/ground true)
+      :all false)) ; ground/floor
+
+  (blocks-vision? [_]
+    (= movement :none))
+
+  (occupied-by-other? [_ eid]
+    (some #(not= % eid) occupied)) ; contains? faster?
+
+  (nearest-entity [this faction]
+    (-> this faction :eid))
+
+  (nearest-entity-distance [this faction]
+    (-> this faction :distance)))
+
+(defn- ->grid-cell [position movement]
+  {:pre [(#{:none :air :all} movement)]}
+  (map->RCell
+   {:position position
+    :middle (tile->middle position)
+    :movement movement
+    :entities #{}
+    :occupied #{}}))
+
+(defn- create-grid [tiled-map]
+  (g2d/create-grid
+   (tiled/tm-width tiled-map)
+   (tiled/tm-height tiled-map)
+   (fn [position]
+     (atom (->grid-cell position
+                        (case (tiled/movement-property tiled-map position)
+                          "none" :none
+                          "air"  :air
+                          "all"  :all))))))
 
 ; TODO this passing w. world props ...
 ; player-creature needs mana & inventory
@@ -69,7 +117,7 @@
     (let [level (generate-level context
                                 (gdl.context/build context (:world-id config)))
           tiled-map (:tiled-map level)
-          grid (grid/create tiled-map)
+          grid (create-grid tiled-map)
           context (safe-merge context
                               {:cdq.context/error nil
                                :cdq.context/level level
