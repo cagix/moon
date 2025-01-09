@@ -397,6 +397,7 @@
                    (graphics/on-resize (:context/g @state) width height))))))
 
 (defn post-runnable [f]
-  (app/post-runnable @state #(f @state)))
+  (app/post-runnable (:clojure.gdx/app @state)
+                     #(f @state)))
 
 ; tests - -graphics/on-resize - can make a game out of it /??

@@ -43,7 +43,7 @@
                         (.setWindowedMode (:width config) (:height config))
                         (.setForegroundFPS (:fps config)))))
 
-(defn post-runnable [{:keys [clojure.gdx/app]} runnable]
+(defn post-runnable [app runnable]
   (.postRunnable app runnable))
 
 (defn set-icon! [icon-resource]
