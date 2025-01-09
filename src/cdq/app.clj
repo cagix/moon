@@ -96,24 +96,23 @@
         _ (input/set-processor input stage)
 
         context (safe-merge context
-                            ; inside gdl.app
-                            ; - assets
-                            ; - graphics ( w. viewports )
-                            ; - stage (ui?)
-                            ; - world ( ? )
                             {:gdl.context/assets (assets/create (cdq.assets/search files (:assets config)))
+
                              :gdl.context/batch batch
                              :gdl.context/cursors cursors
-                             :gdl.context/db (db/create (:db config))
                              :gdl.context/default-font default-font
                              :gdl.context/shape-drawer shape-drawer
                              :gdl.context/sd-texture sd-texture
 
+                             :gdl.context/db (db/create (:db config))
+
                              :gdl.context/stage stage
+
                              :gdl.context/viewport ui-viewport
                              :gdl.context/world-viewport (world-viewport (:world-viewport config) world-unit-scale)
                              :gdl.context/world-unit-scale world-unit-scale
                              :gdl.context/tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
+
                              ;; - before here - application context - does not change on level/game restart -
                              :gdl.context/elapsed-time 0
                              :cdq.context/player-message (atom (:player-message config))})]
