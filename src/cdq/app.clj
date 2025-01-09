@@ -130,7 +130,7 @@
                    {:label "World"
                     :update-fn #(mapv int (c/world-mouse-position %))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom (:camera (:gdl.context/world-viewport %))) ; TODO (def ::world-viewport)
+                    :update-fn #(cam/zoom (:context/g %))
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [{:keys [clojure.gdx/graphics]}]
@@ -347,11 +347,10 @@
   (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )
 
-(defn- set-camera-on-player! [{:keys [gdl.context/world-viewport
+(defn- set-camera-on-player! [{:keys [context/g
                                       cdq.context/player-eid]
                                :as context}]
-  (cam/set-position! (:camera world-viewport)
-                     (:position @player-eid))
+  (cam/set-position! g (:position @player-eid))
   context)
 
 (defn- render [context]
