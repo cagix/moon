@@ -1,9 +1,7 @@
 (ns cdq.app
-  (:require [clojure.files :as files]
-            [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
@@ -91,6 +89,7 @@
         shape-drawer (:sd gdl-graphics)
         sd-texture (:sd-texture gdl-graphics)
         cursors (:cursors gdl-graphics)
+        default-font (:default-font gdl-graphics)
 
         _ (ui/load! (:ui config))
         stage (ui/stage ui-viewport batch nil)
@@ -106,7 +105,7 @@
                              :gdl.context/batch batch
                              :gdl.context/cursors cursors
                              :gdl.context/db (db/create (:db config))
-                             :gdl.context/default-font (freetype/generate-font (update (:default-font config) :file #(files/internal files %)))
+                             :gdl.context/default-font default-font
                              :gdl.context/shape-drawer shape-drawer
                              :gdl.context/sd-texture sd-texture
 

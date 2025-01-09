@@ -5,6 +5,7 @@
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.utils.screen :as screen]
             [gdl.ui :as ui]
@@ -20,7 +21,7 @@
                cursor))
            cursors))
 
-(defn create [context {:keys [cursors]}]
+(defn create [context config]
   (let [batch (SpriteBatch.)
         sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                   (pixmap/set-color color/white)
@@ -31,7 +32,8 @@
     {:batch batch
      :sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
      :sd-texture sd-texture
-     :cursors (create-cursors context cursors)
+     :cursors (create-cursors context (:cursors config))
+     :default-font (freetype/generate-font (update (:default-font config) :file #(files/internal files %)))
      }))
 
 (defn clear-screen [context]
