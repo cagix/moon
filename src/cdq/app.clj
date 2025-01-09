@@ -297,7 +297,6 @@
 ; * world
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
-        tiled-map-renderer (:tiled-map-renderer g)
         world-unit-scale (:world-unit-scale g)
         world-viewport (:world-viewport g)
         ui-viewport (:ui-viewport g)
@@ -314,8 +313,7 @@
             :gdl.context/stage stage
             :gdl.context/viewport ui-viewport
             :gdl.context/world-viewport world-viewport
-            :gdl.context/world-unit-scale world-unit-scale
-            :gdl.context/tiled-map-renderer tiled-map-renderer})))
+            :gdl.context/world-unit-scale world-unit-scale})))
 
 (defn- create [context config]
   (let [context (gdl-context context config)

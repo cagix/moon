@@ -82,8 +82,8 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [{::keys [world-viewport tiled-map-renderer]} tiled-map color-setter]
-  (draw-tiled-map* (tiled-map-renderer tiled-map)
+  [{::keys [world-viewport] :keys [context/g]} tiled-map color-setter]
+  (draw-tiled-map* ((:tiled-map-renderer g) tiled-map)
                    tiled-map
                    color-setter
                    (:camera world-viewport)))
