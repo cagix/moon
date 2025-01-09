@@ -1,17 +1,19 @@
 (ns cdq.app
-  (:require [gdl.tiled :as tiled]
-            [clojure.utils :refer [dispose safe-merge tile->middle]]
+  (:require [clojure.utils :refer [dispose safe-merge tile->middle]]
+            [data.grid2d :as g2d]
             [gdl.app :as app]
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]
             [gdl.graphics]
             [gdl.ui :as ui]
+            [gdl.tiled :as tiled]
+            [cdq.grid :as grid]
             [cdq.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
             [cdq.context.stage-actors :as stage-actors]
             [cdq.context.explored-tile-corners :as explored-tile-corners]
             [cdq.context.content-grid :as content-grid]
-            [cdq.context.grid :as grid] [cdq.context.raycaster :as raycaster]
+            [cdq.context.grid :as grid]
             cdq.graphics
             cdq.graphics.camera
             cdq.graphics.tiled-map)
@@ -43,6 +45,18 @@
                                 :entity/faction :evil}})]
     (spawn-creature c (update props :position tile->middle))))
 
+(defn- set-arr [arr cell cell->blocked?]
+  (let [[x y] (:position cell)]
+    (aset arr x y (boolean (cell->blocked? cell)))))
+
+(defn- create-raycaster [grid]
+  (let [width  (g2d/width  grid)
+        height (g2d/height grid)
+        arr (make-array Boolean/TYPE width height)]
+    (doseq [cell (g2d/cells grid)]
+      (set-arr arr @cell grid/blocks-vision?))
+    [arr width height]))
+
 (defn- create [context config]
   (let [context (safe-merge context
                             {
@@ -64,7 +78,7 @@
                                :cdq.context/explored-tile-corners (explored-tile-corners/create tiled-map)
                                :cdq.context/content-grid (content-grid/create tiled-map (:content-grid config))
                                :cdq.context/entity-ids (atom {})
-                               :cdq.context/raycaster (raycaster/create grid)
+                               :cdq.context/raycaster (create-raycaster grid)
                                :cdq.context/factions-iterations (:factions-iterations config)})
           context (assoc context :cdq.context/player-eid (spawn-player-entity context (:start-position level)))]
       (spawn-enemies! context tiled-map)
