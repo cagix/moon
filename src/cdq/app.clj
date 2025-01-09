@@ -1,16 +1,14 @@
 (ns cdq.app
-  (:require [data.grid2d :as g2d]
-            ;
-            [gdl.app :as app]
+  (:require [gdl.app :as app]
             [gdl.context :as c]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as cam]
+            [gdl.grid2d :as g2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
-            ;
             [cdq.context :refer [spawn-creature mouseover-entity]]
             [cdq.context.info :as info]
             [cdq.content-grid :as content-grid]

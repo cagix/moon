@@ -59,6 +59,10 @@
 
                  ; clojure.utils -> gdl.utils or cdq.utils
 
+                 ; you can still create the libgdx API but it will only contain the elements you use ???
+
+                  ;= > even no dependencies on clojure.str ???
+
                  [org.clojure/clojure "1.12.0"]
                  [com.badlogicgames.gdx/gdx "1.13.0"]
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
@@ -75,7 +79,6 @@
                  [metosin/malli "0.13.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [clojure.gdx.dev-loop "-SNAPSHOT"]
-                 [com.github.damn/grid2d "1.0"]
                  [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
                  ]
   :java-source-paths ["src-java"]

@@ -2,7 +2,7 @@
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.rand :refer [get-rand-weighted-item]]
-            [data.grid2d :as g2d]
+            [gdl.grid2d :as g2d]
             [gdl.tiled :as tiled]))
 
 (def ^:private scaling 4)

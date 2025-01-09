@@ -1,5 +1,5 @@
 (ns cdq.content-grid
-  (:require [data.grid2d :as g2d]))
+  (:require [gdl.grid2d :as g2d]))
 
 (defn create [{:keys [cell-size width height]}]
   {:grid (g2d/create-grid
