@@ -2,7 +2,7 @@
   (:require [cdq.level.modules :refer [generate-modules]]
             [cdq.level.uf-caves :as uf-caves]
             [gdl.context :as c]
-            [clojure.gdx.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))
 
 (defmulti generate-level* (fn [world c] (:world/generator world)))

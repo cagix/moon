@@ -1,6 +1,6 @@
 (ns cdq.context.explored-tile-corners
   (:require [data.grid2d :as g2d]
-            [clojure.gdx.tiled :as tiled]))
+            [gdl.tiled :as tiled]))
 
 (defn create [tiled-map]
   (atom (g2d/create-grid

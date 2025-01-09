@@ -7,7 +7,7 @@
             [gdl.context :as c :refer [draw-tiled-map]]
             [clojure.input :as input]
             [gdl.graphics.camera :as cam]
-            [clojure.gdx.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
             [gdl.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.scene2d.group :refer [add-actor!]]))

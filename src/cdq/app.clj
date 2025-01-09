@@ -1,5 +1,5 @@
 (ns cdq.app
-  (:require [clojure.gdx.tiled :as tiled]
+  (:require [gdl.tiled :as tiled]
             [clojure.utils :refer [safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
@@ -72,14 +72,15 @@
       context)))
 
 (defn- dispose! [context]
+  ;;
   ; TODO dispose :gdl.context/sd-texture
   (dispose (:gdl.context/assets context))
   (dispose (:gdl.context/batch  context))
   (run! dispose (vals (:gdl.context/cursors context)))
   (dispose (:gdl.context/default-font context))
-
   (ui/dispose!)
   (dispose (:gdl.context/stage context))
+  ;;
 
   (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
   )

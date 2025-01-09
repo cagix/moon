@@ -1,5 +1,5 @@
 (ns cdq.context.grid
-  (:require [clojure.gdx.tiled :as tiled]
+  (:require [gdl.tiled :as tiled]
             [data.grid2d :as g2d]
             [clojure.utils :refer [tile->middle]]
             [cdq.grid :as grid]))

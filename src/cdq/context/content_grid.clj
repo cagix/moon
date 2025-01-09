@@ -1,5 +1,5 @@
 (ns cdq.context.content-grid
-  (:require [clojure.gdx.tiled :as tiled]
+  (:require [gdl.tiled :as tiled]
             [cdq.content-grid :as content-grid]))
 
 (defn create [tiled-map {:keys [cell-size]}]
