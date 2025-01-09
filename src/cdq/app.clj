@@ -297,7 +297,6 @@
 ; * world
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
-        batch (:batch g)
         default-font (:default-font g)
         tiled-map-renderer (:tiled-map-renderer g)
         world-unit-scale (:world-unit-scale g)
@@ -305,7 +304,7 @@
         ui-viewport (:ui-viewport g)
 
         _ (ui/load! (:ui config))
-        stage (ui/stage ui-viewport batch nil)
+        stage (ui/stage ui-viewport (:batch g) nil)
         _ (input/set-processor (:clojure.gdx/input gdx) stage)
 
         ]
