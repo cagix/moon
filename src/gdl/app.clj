@@ -7,6 +7,7 @@
   ; cdq sees gdl, gdl handles all the details for cdq dependencies
   ; and hiera creates the tree structure
   (:require [clojure.edn :as edn]
+            [clojure.gdx]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application

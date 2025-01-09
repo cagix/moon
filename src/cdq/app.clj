@@ -9,7 +9,6 @@
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.g2d.freetype :as freetype]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as viewport]
@@ -23,6 +22,7 @@
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]
             [cdq.db :as db]
+            [gdl.graphics]
             [gdl.ui :as ui]
             [cdq.level :refer [generate-level]]
             [cdq.context :refer [spawn-creature]]
@@ -104,8 +104,7 @@
 (defn- create [{:keys [clojure.gdx/files
                        clojure.gdx/input]
                 :as context} config]
-  (let [batch (sprite-batch/create)
-        sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
+  (let [sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                   (pixmap/set-color color/white)
                                   (pixmap/draw-pixel 0 0))
                          texture (texture/create pixmap)]
@@ -115,6 +114,9 @@
                                          (:height (:ui-viewport config))
                                          (orthographic-camera/create))
         world-unit-scale (float (/ (:tile-size config)))
+
+        gdl-graphics (gdl.graphics/create)
+        batch (:batch gdl-graphics)
 
         _ (ui/load! (:ui config))
         stage (ui/stage ui-viewport batch nil)
