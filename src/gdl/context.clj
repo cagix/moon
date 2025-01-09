@@ -58,9 +58,9 @@
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{::keys [cursors] :keys [clojure.gdx/graphics]}
+(defn set-cursor [{:keys [context/g] :keys [clojure.gdx/graphics]}
                   cursor-key]
-  (graphics/set-cursor graphics (safe-get cursors cursor-key)))
+  (graphics/set-cursor graphics (safe-get (:cursors g) cursor-key)))
 
 (defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter

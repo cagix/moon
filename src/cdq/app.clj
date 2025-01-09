@@ -298,7 +298,6 @@
 (defn- gdl-context [gdx config]
   (let [g (graphics/create gdx (:graphics config))
         batch (:batch g)
-        cursors (:cursors g)
         default-font (:default-font g)
         tiled-map-renderer (:tiled-map-renderer g)
         world-unit-scale (:world-unit-scale g)
@@ -313,7 +312,6 @@
     (merge gdx
            {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files gdx) (:assets config))
             :context/g g
-            :gdl.context/cursors cursors
             :gdl.context/default-font default-font
             :gdl.context/db (db/create (:db config))
             :gdl.context/stage stage
@@ -354,7 +352,7 @@
   (dispose (:gdl.context/assets context))
   (dispose (:batch (:context/g context)))
   (dispose (:sd-texture (:context/g context)))
-  (run! dispose (vals (:gdl.context/cursors context)))
+  (run! dispose (vals (:cursors (:context/g context))))
   (dispose (:gdl.context/default-font context))
   (ui/dispose!)
   (dispose (:gdl.context/stage context))
