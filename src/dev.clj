@@ -1,6 +1,6 @@
 (ns dev
-  (:require [clojure.gdx.scene2d.group :refer [children]]
-            [clojure.gdx.scene2d.stage :as stage]
+  (:require [gdl.scene2d.group :refer [children]]
+            [gdl.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.app :refer [state post-runnable]]

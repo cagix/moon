@@ -1,4 +1,4 @@
-(ns clojure.gdx.scene2d.stage
+(ns gdl.scene2d.stage
   "A 2D scene graph containing hierarchies of actors. Stage handles the viewport and distributes input events.
 
 setViewport(Viewport) controls the coordinates used within the stage and sets up the camera used to convert between stage coordinates and screen coordinates.

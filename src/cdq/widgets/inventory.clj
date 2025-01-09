@@ -4,7 +4,7 @@
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.context.info :as info]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.scene2d.actor :refer [user-object] :as actor]
+            [gdl.scene2d.actor :refer [user-object] :as actor]
             [data.grid2d :as g2d]
             [gdl.context :as c]
             [gdl.ui :refer [ui-widget
@@ -15,7 +15,7 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [clojure.gdx.scene2d.ui.utils :as scene2d.utils]))
+            [gdl.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...

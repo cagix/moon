@@ -5,7 +5,7 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.scene2d.stage :as stage]
+            [gdl.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.math.utils :refer [clamp degree->radians]]
             [clojure.gdx.utils.viewport :as viewport]
@@ -24,7 +24,7 @@
             [cdq.schema :as schema]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui]
-            [clojure.gdx.scene2d.group :as group])
+            [gdl.scene2d.group :as group])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn get-sound [{::keys [assets]} sound-name]

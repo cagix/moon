@@ -16,8 +16,8 @@
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.input :as input]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.ui.button-group :as button-group]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.ui.button-group :as button-group]
             [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
             [cdq.effect-context :as effect-ctx]
             [cdq.skill :as skill]
@@ -28,8 +28,8 @@
             [cdq.potential-fields :as potential-fields]
             [clojure.gdx.math.vector2 :as v]
             [gdl.ui :as ui :refer [ui-actor]]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]))
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)

@@ -5,9 +5,11 @@
             [gdl.context :as c]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as cam]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group]
             [gdl.tiled :as tiled]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.utils :refer [dispose]]
+            [gdl.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
             ;
             [cdq.context :refer [spawn-creature mouseover-entity]]
             [cdq.context.info :as info]
@@ -18,12 +20,8 @@
             [cdq.grid :as grid]
             [cdq.level :refer [generate-level]]
             [cdq.ui.dev-menu :as dev-menu]
-            [gdl.utils :refer [safe-merge tile->middle readable-number dev-mode?]]
             [cdq.val-max :as val-max]
-            [cdq.widgets.inventory :as inventory]
-            ;
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group])
+            [cdq.widgets.inventory :as inventory])
   (:gen-class))
 
 (defn- action-bar-button-group []

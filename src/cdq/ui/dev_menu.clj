@@ -1,7 +1,7 @@
 (ns cdq.ui.dev-menu
   (:require [gdl.context :as c]
             [gdl.ui :as ui :refer [ui-actor]]
-            [clojure.gdx.scene2d.group :refer [add-actor!]])
+            [gdl.scene2d.group :refer [add-actor!]])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))

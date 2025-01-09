@@ -1,10 +1,10 @@
 (ns gdl.ui
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
-            [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui.table :as table]
-            [clojure.gdx.scene2d.ui.utils :as scene2d.utils]
+            [gdl.scene2d.actor :as actor]
+            [gdl.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
+            [gdl.scene2d.stage :as stage]
+            [gdl.scene2d.ui.table :as table]
+            [gdl.scene2d.ui.utils :as scene2d.utils]
             [clojure.gdx.vis-ui.widgets.separator :as separator])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
