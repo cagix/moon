@@ -1,6 +1,5 @@
 (ns cdq.app
   (:require [clojure.files :as files]
-            [clojure.files.search :as file-search]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
@@ -9,11 +8,11 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.input :as input]
-            [clojure.string :as str]
             [clojure.utils :refer [mapvals safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
             [gdl.assets :as assets]
+            [cdq.assets]
             [gdl.context :as gdl.context]
             [gdl.ui :as ui]
             [cdq.db :as db]
@@ -32,14 +31,6 @@
             cdq.graphics.tiled-map)
   (:import (gdl OrthogonalTiledMapRenderer))
   (:gen-class))
-
-(defn- search-assets [files folder]
-  (for [[asset-type exts] {:sound   #{"wav"}
-                           :texture #{"png" "bmp"}}
-        file (map #(str/replace-first % folder "")
-                  (file-search/by-extensions (files/internal files folder)
-                                             exts))]
-    [file asset-type]))
 
 (defn- cached-tiled-map-renderer [batch world-unit-scale]
   (memoize (fn [tiled-map]
@@ -106,7 +97,12 @@
         _ (input/set-processor input stage)
 
         context (safe-merge context
-                            {:gdl.context/assets (assets/create (search-assets files (:assets config)))
+                            ; inside gdl.app
+                            ; - assets
+                            ; - graphics ( w. viewports )
+                            ; - stage (ui?)
+                            ; - world ( ? )
+                            {:gdl.context/assets (assets/create (cdq.assets/search files (:assets config)))
                              :gdl.context/batch batch
                              :gdl.context/cursors cursors
                              :gdl.context/db (db/create (:db config))

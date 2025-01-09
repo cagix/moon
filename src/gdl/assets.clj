@@ -3,6 +3,8 @@
   (:import (clojure.lang IFn)
            (com.badlogic.gdx.assets AssetManager)))
 
+; TODO extend for all supported & document ?
+; music, tiled-maps,etc. also possible ...
 (def ^:private asset-type-class-map
   {:sound   com.badlogic.gdx.audio.Sound
    :texture com.badlogic.gdx.graphics.Texture})
