@@ -31,10 +31,11 @@
                                 :cursors/sandclock             ["sandclock"    [16 16]]
                                 :cursors/skill-not-usable      ["x007"         [0   0]]
                                 :cursors/use-skill             ["pointer004"   [0   0]]
-                                :cursors/walking               ["walking"      [16 16]]}}
-           :ui-viewport    {:width 1440 :height 900}
-           :world-viewport {:width 1440 :height 900}
-           :tile-size 48
+                                :cursors/walking               ["walking"      [16 16]]}
+                      :tile-size 48
+                      :ui-viewport    {:width 1440 :height 900}
+                      :world-viewport {:width 1440 :height 900}
+                      }
            :ui {:skin-scale :x1}
            :world-id :worlds/uf-caves
            :content-grid {:cell-size 16}

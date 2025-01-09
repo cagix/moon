@@ -1,12 +1,8 @@
 (ns cdq.app
-  (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.tiled :as tiled]
+  (:require [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.input :as input]
-            [clojure.utils :refer [mapvals safe-merge tile->middle]]
+            [clojure.utils :refer [safe-merge tile->middle]]
             [clojure.utils.disposable :refer [dispose]]
             [gdl.app :as app]
             [gdl.assets :as assets]
@@ -21,29 +17,11 @@
             [cdq.context.stage-actors :as stage-actors]
             [cdq.context.explored-tile-corners :as explored-tile-corners]
             [cdq.context.content-grid :as content-grid]
-            [cdq.context.grid :as grid]
-            [cdq.context.raycaster :as raycaster]
-            gdl.graphics
+            [cdq.context.grid :as grid] [cdq.context.raycaster :as raycaster]
             cdq.graphics
             cdq.graphics.camera
             cdq.graphics.tiled-map)
-  (:import (gdl OrthogonalTiledMapRenderer))
   (:gen-class))
-
-(defn- cached-tiled-map-renderer [batch world-unit-scale]
-  (memoize (fn [tiled-map]
-             (OrthogonalTiledMapRenderer. tiled-map
-                                          (float world-unit-scale)
-                                          batch))))
-
-(defn- world-viewport [{:keys [width height]} world-unit-scale]
-  (println "World-viewport: " width ", " height ", world-unit-scale " world-unit-scale)
-  (assert world-unit-scale)
-  (let [camera (orthographic-camera/create)
-        world-width  (* width  world-unit-scale)
-        world-height (* height world-unit-scale)]
-    (camera/set-to-ortho camera world-width world-height :y-down? false)
-    (fit-viewport/create world-width world-height camera)))
 
 ; TODO this passing w. world props ...
 ; player-creature needs mana & inventory
@@ -79,17 +57,17 @@
 (defn- create [{:keys [clojure.gdx/files
                        clojure.gdx/input]
                 :as context} config]
-  (let [ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
-                                         (:height (:ui-viewport config))
-                                         (orthographic-camera/create))
-        world-unit-scale (float (/ (:tile-size config)))
-
+  (let [
         gdl-graphics (gdl.graphics/create context (:graphics config))
         batch (:batch gdl-graphics)
         shape-drawer (:sd gdl-graphics)
         sd-texture (:sd-texture gdl-graphics)
         cursors (:cursors gdl-graphics)
         default-font (:default-font gdl-graphics)
+        tiled-map-renderer (:tiled-map-renderer gdl-graphics)
+        world-unit-scale (:world-unit-scale gdl-graphics)
+        world-viewport (:world-viewport gdl-graphics)
+        ui-viewport (:ui-viewport gdl-graphics)
 
         _ (ui/load! (:ui config))
         stage (ui/stage ui-viewport batch nil)
@@ -109,9 +87,12 @@
                              :gdl.context/stage stage
 
                              :gdl.context/viewport ui-viewport
-                             :gdl.context/world-viewport (world-viewport (:world-viewport config) world-unit-scale)
+
+                             :gdl.context/world-viewport world-viewport
+
                              :gdl.context/world-unit-scale world-unit-scale
-                             :gdl.context/tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
+
+                             :gdl.context/tiled-map-renderer tiled-map-renderer
 
                              ;; - before here - application context - does not change on level/game restart -
                              :gdl.context/elapsed-time 0
