@@ -111,17 +111,17 @@
 
 (extend-type com.badlogic.gdx.graphics.g2d.Batch
   clojure.graphics.2d.batch/Batch
-  (set-projection-matrix [batch projection]
-    (.setProjectionMatrix batch projection))
-  (begin [batch]
-    (.begin batch))
+  (set-projection-matrix [this projection]
+    (.setProjectionMatrix this projection))
+  (begin [this]
+    (.begin this))
   (end
-    [batch]
-    (.end batch))
-  (set-color [batch color]
-    (.setColor batch color))
-  (draw [batch texture-region {:keys [x y origin-x origin-y width height scale-x scale-y rotation]}]
-    (.draw batch
+    [this]
+    (.end this))
+  (set-color [this color]
+    (.setColor this color))
+  (draw [this texture-region {:keys [x y origin-x origin-y width height scale-x scale-y rotation]}]
+    (.draw this
            texture-region
            x
            y
