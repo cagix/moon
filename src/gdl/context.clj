@@ -163,11 +163,9 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{::keys [default-font unit-scale]
-    :keys [context/g]}
-   {:keys [font x y text h-align up? scale]}]
+  [{::keys [unit-scale] :keys [context/g]} {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
-  (let [font (or font default-font)
+  (let [font (or font (:default-font g))
         data (font/data font)
         old-scale (float (font/scale-x data))]
     (font/set-scale data (* old-scale
