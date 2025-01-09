@@ -5,12 +5,33 @@
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
-            [clojure.gdx.graphics.g2d.freetype :as freetype]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.utils.screen :as screen]
             [gdl.ui :as ui]
             [clojure.utils :refer [mapvals]])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
+  (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)))
+
+(defn- ttf-params [size quality-scaling]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) (* size quality-scaling))
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
+    (set! (.magFilter params) Texture$TextureFilter/Linear)
+    params))
+
+(defn- generate-font [{:keys [file size quality-scaling]}]
+  (let [generator (FreeTypeFontGenerator. file)
+        font (.generateFont generator (ttf-params size quality-scaling))]
+    (.dispose generator)
+    (.setScale (.getData font) (float (/ quality-scaling)))
+    (set! (.markupEnabled (.getData font)) true)
+    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
+    font))
 
 (defn- create-cursors [{:keys [clojure.gdx/files
                                clojure.gdx/graphics]} cursors]
@@ -33,7 +54,7 @@
      :sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
      :sd-texture sd-texture
      :cursors (create-cursors context (:cursors config))
-     :default-font (freetype/generate-font (update (:default-font config) :file #(files/internal files %)))
+     :default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
      }))
 
 (defn clear-screen [context]
