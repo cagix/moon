@@ -86,7 +86,9 @@
                  [org.clj-commons/pretty "3.2.0"]
                  [clojure.gdx.dev-loop "-SNAPSHOT"]
                  [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
-                 ]
+
+                 ; clojure.platform
+                 [com.thoughtworks.qdox/qdox "2.2.0"]]
   :java-source-paths ["src-java"]
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
