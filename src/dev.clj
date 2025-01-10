@@ -3,9 +3,9 @@
             [gdl.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
+            [cdq.application :as app]
             [cdq.context :as world]
             [cdq.editor.actors :as editor]))
 

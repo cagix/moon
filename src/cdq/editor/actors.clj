@@ -6,8 +6,8 @@
 
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [gdl.app :refer [state]]
             [gdl.context :as c :refer [play-sound]]
+            [cdq.application :refer [state]]
             [cdq.db :as db]
             [gdl.graphics :as graphics]
             [cdq.malli :as m]

@@ -11,7 +11,6 @@
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics :as graphics]
             [clojure.utils :refer [dispose mapvals]]
-            [gdl.app :as app]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors Texture$TextureFilter)
