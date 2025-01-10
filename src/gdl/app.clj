@@ -1,7 +1,7 @@
 (ns gdl.app
-  (:require [clojure.awt :as awt]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
+            [clojure.java.awt :as awt]
             [clojure.java.io :as io]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx Application
