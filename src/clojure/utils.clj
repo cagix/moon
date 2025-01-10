@@ -3,6 +3,23 @@
 (defprotocol Disposable
   (dispose [obj] "Release all resources of the object."))
 
+(defprotocol Resizable
+  (resize [_ width height]))
+
+(defn dispose-disposables [context & {:keys [log?]}]
+  (doseq [[k value] context
+          :when (satisfies? utils/Disposable value)]
+    (when log?
+      (println "Disposing " k " - " value))
+    (utils/dispose value)))
+
+(defn resize-resizables [context width height & {:keys [log?]}]
+  (doseq [[k value] context
+          :when (satisfies? Resizable value)]
+    (when log?
+      (println "Resizing " k " - " value))
+    (resize value width height)))
+
 ; TODO check params & pass & check @ defcomponent ( forgot 1 arg - can be checked statically)
 (defmacro defsystem
   {:arglists '([name docstring?])}

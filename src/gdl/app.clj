@@ -12,27 +12,7 @@
            (com.badlogic.gdx.utils SharedLibraryLoader)
            (org.lwjgl.system Configuration)))
 
-(defprotocol Resizable
-  (resize [_ width height]))
-
 (def state (atom nil))
-
-(comment
- (clojure.pprint/pprint (sort (keys @state)))
- )
-
-(defn- dispose-disposables! [context]
-  (doseq [[k value] context
-          :when (and (not= (namespace k) "clojure.gdx") ; don't dispose internal classes
-                     (satisfies? utils/Disposable value))]
-    ;(println "Disposing " k " - " value)
-    (utils/dispose value)))
-
-(defn- resize-resizables!  [context width height]
-  (doseq [[k value] context
-          :when (satisfies? Resizable value)]
-    ;(println "Resizing " k " - " value)
-    (resize value width height)))
 
 (defn start* [create render config]
   (when-let [icon (:icon config)]
@@ -45,13 +25,16 @@
                           (reset! state (create (gdx/context) config)))
 
                         (dispose []
-                          (dispose-disposables! @state))
+                          (utils/dispose-disposables!
+                           (remove (fn [[k _]] ; don't dispose internal classes (graphics,etc. ) which Lwjgl3Application will handle
+                                     (= (namespace k) "clojure.gdx")
+                                     @state))))
 
                         (render []
                           (swap! state render))
 
                         (resize [width height]
-                          (resize-resizables! @state width height)))
+                          (utils/resize-resizables! @state width height)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle (:title config))
                         (.setWindowedMode (:width config) (:height config))
