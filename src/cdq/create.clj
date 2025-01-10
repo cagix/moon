@@ -324,3 +324,10 @@
         context (assoc context
                        :gdl.context/stage (ui/setup-stage! context (:ui config)))]
     (add-new-game-context context (:world config))))
+
+; context:
+#_[assets ; no dependencies
+   db ; no dependencies
+   graphics ; no dependencies
+   stage ; requires graphics batch & ui-viewport.
+   world] ; requires everything

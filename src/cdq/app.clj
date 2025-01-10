@@ -19,3 +19,8 @@
 ; separate concerns - create -> all the instances - rest of code w. protocols (also tiledmap drawer etc.)
 ; * draw
 ; * update
+
+; TODO move to config
+; pass only order of [create], [render]
+; save in context too
+; so can change rendering or updates during the game
