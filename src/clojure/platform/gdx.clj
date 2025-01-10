@@ -6,7 +6,6 @@
             [clojure.graphics]
             [clojure.graphics.2d.batch]
             [clojure.input]
-            [clojure.java.io :as io]
             [clojure.utils]
             [gdl.audio]))
 

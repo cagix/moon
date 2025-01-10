@@ -16,8 +16,7 @@
 ; save in context too
 ; so can change rendering or updates during the game
 (ns cdq.application
-  (:require [clojure.application :as application]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :refer [mac-osx?]]
@@ -65,7 +64,3 @@
                                (println "Resizing " k " - " value))
                              (resize value width height))))
                        config)))
-
-(defn post-runnable [f]
-  (application/post-runnable (:clojure.gdx/app @state)
-                             #(f @state)))

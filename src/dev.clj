@@ -1,5 +1,6 @@
 (ns dev
-  (:require [gdl.scene2d.group :refer [children]]
+  (:require [clojure.application :as application]
+            [gdl.scene2d.group :refer [children]]
             [gdl.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -79,6 +80,10 @@
  ; => this is basically a test for 'forge.entity.active'
 
  )
+
+(defn post-runnable [f]
+  (application/post-runnable (:clojure.gdx/app @state)
+                             #(f @state)))
 
 (defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
   (world/add-skill c
