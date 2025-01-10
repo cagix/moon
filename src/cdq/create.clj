@@ -1,4 +1,4 @@
-(ns cdq.game
+(ns cdq.create
   (:require [gdl.assets :as assets]
             [gdl.context :as c]
             [gdl.graphics :as graphics]
@@ -14,8 +14,6 @@
             [cdq.content-grid :as content-grid]
             [cdq.db :as db]
             [cdq.entity :as entity]
-            cdq.graphics
-            cdq.graphics.tiled-map
             [cdq.grid :as grid]
             [cdq.level :refer [generate-level]]
             [cdq.ui.dev-menu :as dev-menu]
@@ -311,38 +309,14 @@
       (spawn-enemies! context tiled-map)
       context)))
 
-(defn- set-camera-on-player! [{:keys [context/g
-                                      cdq.context/player-eid]
-                               :as context}]
-  (cam/set-position! g (:position @player-eid))
-  context)
-
-; TODO select-keys use for each sub-system
-; TODO handle-input! gets clojure.gdx/input, others not
-; here no graphics,etc. ?
-(defn render! [context]
-  (set-camera-on-player! context)
-  (reduce (fn [context f]
-            (f context))
-          context
-          [gdl.graphics/clear-screen
-           cdq.graphics.tiled-map/render
-           cdq.graphics/draw-world-view
-           gdl.graphics/draw-stage
-
-           ; updates
-           c/update-stage
-           cdq.context/handle-player-input
-           cdq.context/update-mouseover-entity
-           cdq.context/update-paused-state
-           cdq.context/progress-time-if-not-paused
-           cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
-           c/check-camera-controls
-           cdq.context/check-ui-key-listeners]))
-
-; TODO explicit passings/dependencies ?
-(defn create! [context config]
+; graphics create only here ...
+; rest is just foozaboo
+; can world be a separate record?
+; would simplify a lot ..
+; => pass stuff directly not through ctx and upfactor?
+(defn game [context config]
   (let [context (merge context
+                       ; even the assets implementation can be in here ?????
                        {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files context)
                                                                     (:assets config))
                         :gdl.context/db (db/create (:db config))

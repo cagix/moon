@@ -1,6 +1,7 @@
 (ns cdq.app
   (:require [gdl.app :as app]
-            [cdq.game :as game])
+            [cdq.create :as create]
+            [cdq.render :as render])
   (:gen-class))
 
 ; => TODO ui is not disposed - this is the VisUI skin and is global state there - so just define it in my context ?
@@ -13,5 +14,8 @@
 ; => the comments are the problem!
 
 (defn -main []
-  (app/start game/create!
-             game/render!))
+  (app/start create/game render/game))
+
+; separate concerns - create -> all the instances - rest of code w. protocols (also tiledmap drawer etc.)
+; * draw
+; * update
