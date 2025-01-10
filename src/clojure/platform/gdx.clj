@@ -1,3 +1,4 @@
+; ah ohk this works on all platfforms and has to be called once
 (ns clojure.platform.gdx
   (:require [clojure.application]
             [clojure.files]

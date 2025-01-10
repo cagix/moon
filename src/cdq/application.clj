@@ -25,14 +25,16 @@
             [clojure.lwjgl.system :as lwjgl-system]
             [clojure.platform.gdx]
             [clojure.utils :refer [dispose disposable? resize resizable?]]
-            [cdq.create :as create]
-            [cdq.render :as render])
+            [cdq.create :as create])
   (:gen-class))
 
 (def state (atom nil))
 
 (defn -main []
-  (let [config (-> "config.edn" io/resource slurp edn/read-string)]
+  (let [config (-> "config.edn" io/resource slurp edn/read-string)
+        render-fns (map (fn [sym]
+                          (require (symbol (namespace sym)))
+                          (resolve sym)) (:render-fns config))]
     (when-let [icon (:icon config)]
       (awt/set-taskbar-icon icon))
     (when (and mac-osx? (:glfw-async-on-mac-osx? config))
@@ -55,7 +57,11 @@
                              (dispose value)))
 
                          (render []
-                           (swap! state render/game))
+                           (swap! state (fn [context]
+                                          (reduce (fn [context f]
+                                                    (f context))
+                                                  context
+                                                  render-fns))))
 
                          (resize [width height]
                            (doseq [[k value] @state
