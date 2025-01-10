@@ -3,7 +3,7 @@
             [gdl.scene2d.stage :as stage]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [cdq.app :as app]
+            [gdl.app :as app]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]

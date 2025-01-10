@@ -20,7 +20,13 @@
   (render  [_])
   (resize  [_ width height]))
 
-(defn start* [state listener config]
+(def state (atom nil))
+
+(comment
+ (clojure.pprint/pprint (sort (keys @state)))
+ )
+
+(defn start* [listener config]
   (when-let [icon (:icon config)]
     (.setIconImage (Taskbar/getTaskbar)
                    (.getImage (Toolkit/getDefaultToolkit)
@@ -48,12 +54,12 @@
                         (.setForegroundFPS (:fps config)))))
 
 (defn start
-  ([state listener]
-   (start state listener "config.edn"))
-  ([state listener edn-config]
-   (start* state
-           listener
+  ([listener]
+   (start listener "config.edn"))
+  ([listener edn-config]
+   (start* listener
            (-> edn-config io/resource slurp edn/read-string))))
 
-(defn post-runnable [application runnable]
-  (Application/.postRunnable (:clojure.gdx/app application) runnable))
+(defn post-runnable [f]
+  (Application/.postRunnable (:clojure.gdx/app @state)
+                             #(f @state)))

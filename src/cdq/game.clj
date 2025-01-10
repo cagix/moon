@@ -332,6 +332,7 @@
 ;Disposing  :cdq.context/tiled-map
 ;Disposing  :gdl.context/stage
 ;Disposing  :gdl.context/assets
+; => TODO ui/graphics....
 
 (defn- set-camera-on-player! [{:keys [context/g
                                       cdq.context/player-eid]
