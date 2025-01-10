@@ -1,5 +1,6 @@
 (ns gdl.app
-  (:require [clojure.edn :as edn]
+  (:require [clojure.awt :as awt]
+            [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.java.io :as io]
             [gdl.utils :as utils])
@@ -8,8 +9,6 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
-           (java.awt Taskbar
-                     Toolkit)
            (org.lwjgl.system Configuration)))
 
 (defprotocol Resizable
@@ -36,9 +35,7 @@
 
 (defn start* [create render config]
   (when-let [icon (:icon config)]
-    (.setIconImage (Taskbar/getTaskbar)
-                   (.getImage (Toolkit/getDefaultToolkit)
-                              (io/resource icon))))
+    (awt/set-taskbar-icon icon))
   (when (and SharedLibraryLoader/isMac
              (:glfw-async-on-mac-osx? config))
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
