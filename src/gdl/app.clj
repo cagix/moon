@@ -1,6 +1,7 @@
 (ns gdl.app
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
+            [clojure.gdx.extend]
             [clojure.java.awt :as awt]
             [clojure.java.io :as io]
             [clojure.utils :as utils])
