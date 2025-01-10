@@ -126,7 +126,13 @@
       (println target-file"\n"))))
 
 (comment
- (generate-namespaces "gdx/" ; copy from libgdx directory core gdx sources
+ ; 1. copy from libgdx directory core gdx sources
+ ; cp -r ~/projects/libgdx/gdx/src/ gdx-src/
+ ; => it needs to be the source directory itself otherwise params are broken
+
+ ; 2. create target dir
+ ; `mkdir generate/`
+ (generate-namespaces "gdx-src/" ;
                       "generate/") ; make dir to put results
 
  ; TODO p0 as args instead of real names, idk why
