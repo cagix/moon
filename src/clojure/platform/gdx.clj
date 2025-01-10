@@ -1,4 +1,4 @@
-(ns clojure.gdx.extend
+(ns clojure.platform.gdx
   (:require [clojure.application]
             [clojure.files]
             [clojure.files.file-handle]

@@ -20,11 +20,11 @@
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.extend]
             [clojure.gdx.utils.shared-library-loader :refer [mac-osx?]]
             [clojure.java.awt :as awt]
             [clojure.java.io :as io]
             [clojure.lwjgl.system :as lwjgl-system]
+            [clojure.platform.gdx]
             [clojure.utils :refer [dispose disposable? resize resizable?]]
             [cdq.create :as create]
             [cdq.render :as render])
