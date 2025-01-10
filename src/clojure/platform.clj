@@ -64,34 +64,43 @@
 
 ; TODO why distinct?!?!
 (defn- ->parameters-str [parameters]
-  (str/join " " (distinct (map (comp clojurize-name :name) parameters))))
+  (str "[_" (str/join " " (map (comp clojurize-name :name) parameters)) "]"))
 
 (defn ->protocol-function-string [{:keys [name parameters javadoc]}]
-  (str "  (" (clojurize-name name) " [_ " (->parameters-str parameters) "]\n    \"" javadoc "\")"))
+  (str "  (" (clojurize-name name) " " (->parameters-str parameters) "\n    \"" javadoc "\")"))
 
 ; :arglists '([xform* coll])
 (defn ->declare-form [{:keys [name parameters javadoc]}]
   (str
    "(def ^{:doc \"" javadoc "\" "
-   ":arglists '([_ " (->parameters-str parameters) "])} "
+   ":arglists '(" (->parameters-str parameters) ")} "
    (clojurize-name name)
    ")"))
 
-(defn generate-namespace [ns-name interface-data file class-str]
+(defn- protocol-str [name content]
+  (str "(defprotocol " name "\n" content ")"))
+
+(defn- namespace-line-string [name]
+  (str "(ns " ns-name ")\n\n"))
+
+(defn generate-namespace [output ns-name interface-data file class-str]
   (let [duplicates (find-duplicates (map :name (get interface-data class-str)))]
+    ;;
+
     ; FIXME handle duplicates
     (when (seq duplicates)
       (println "duplicates at " class-str ": " duplicates ", filtering those."))
-    (spit file
-          (str "(ns clojure." ns-name ")\n\n"
-               ;"(defprotocol " (str/capitalize ns-name) "\n"
-               (str/join "\n\n" #_(map ->protocol-function-string (get interface-data class-str))
-                         (map ->declare-form (get interface-data class-str))
-                         )
-               ;"\n)"
-               ))))
+    ;;
 
-(defn generate-namespaces [src-folder folder]
+    (spit file
+          (str (namespace-line-string ns-name)
+               (case output
+                 :protocol (protocol-str (str/capitalize ns-name)
+                                         (str/join "\n\n"
+                                                   (map ->protocol-function-string (get interface-data class-str))))
+                 :declares (map ->declare-form (get interface-data class-str)))))))
+
+(defn generate-namespaces [src-folder folder output]
   {:pre [(.exists (java.io.File. folder))]}
   (let [interfaces ["com.badlogic.gdx.Application"
                     "com.badlogic.gdx.Audio"
@@ -119,7 +128,8 @@
                           "input"       "com.badlogic.gdx.Input"
                           "net"         "com.badlogic.gdx.Net"}
             :let [target-file (str folder file ".clj")]]
-      (generate-namespace file
+      (generate-namespace output
+                          (str "clojure." file)
                           interface-data
                           target-file
                           class)
@@ -128,15 +138,35 @@
 (comment
  ; 1. copy from libgdx directory core gdx sources
  ; cp -r ~/projects/libgdx/gdx/src/ gdx-src/
- ; => it needs to be the source directory itself otherwise params are broken
+ ; It needs to be the source directory itself
+ ; and not a super-directory otherwise params are broken (p0, p1, ..)
 
  ; 2. create target dir
  ; `mkdir generate/`
  (generate-namespaces "gdx-src/" ;
-                      "generate/") ; make dir to put results
+                      "generate/"
+                      :protocol
+                      ) ; make dir to put results
 
- ; TODO p0 as args instead of real names, idk why
- ; ... gdx/ folder solved that
+ ; or just declare them - they are not thread-bound !?
+
+ (declare ^:dynamic *application*
+          ^:dynamic *audio ; not using
+          ^:dynamic *files* ; using 3 times
+          ^:dynamic *graphics* ; using 1 time
+
+          ; those are in graphics
+          ^:dynamic *gl20*
+          ^:dynamic *gl30*
+          ^:dynamic *gl31*
+          ^:dynamic *gl32*
+
+          ^:dynamic *input*
+          ^:dynamic *net*)
+
+ ; TODO - implementations -
+
+ ; (.bindRoot #'clojure.application/type (fn [] (Application/.getType *application*)))
 
 
  ; TODO also Sound/Music/etc. ? other interfaces?
@@ -147,4 +177,15 @@
 
  ; ## Find all uses of 'Gdx.' global state:
  ; :vimgrep/Gdx\./g gdx/**/*.java
+
+ ; => add them all to 'clojure.core' fork -
+ ; so can call directly key-pressed? or exit ?
+ ; - that would be the next step -
+ ; or with prefix
+ ; app-exit
+ ; app-post-runnable
+ ; input-x
+ ; input-y
+ ; gl-foobar
+ ; new-sound
  )
