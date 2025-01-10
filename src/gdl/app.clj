@@ -4,7 +4,7 @@
             [clojure.gdx.extend]
             [clojure.java.awt :as awt]
             [clojure.java.io :as io]
-            [clojure.utils :as utils])
+            [clojure.utils :refer [dispose disposable? resize resizable?]])
   (:import (com.badlogic.gdx Application
                              ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
@@ -25,16 +25,27 @@
                           (reset! state (create (gdx/context) config)))
 
                         (dispose []
-                          (utils/dispose-disposables!
-                           (remove (fn [[k _]] ; don't dispose internal classes (graphics,etc. ) which Lwjgl3Application will handle
-                                     (= (namespace k) "clojure.gdx")
-                                     @state))))
+                          ; don't dispose internal classes (:clojure.gdx/graphics,etc. )
+                          ; which Lwjgl3Application will handle
+                          ; otherwise app crashed w. asset-manager
+                          ; which was disposed after graphics
+                          ; -> so there is a certain order to cleanup...
+                          (doseq [[k value] @state
+                                  :when (and (not (= (namespace k) "clojure.gdx"))
+                                             (disposable? value))]
+                            (when (:log-dispose-lifecycle? config)
+                              (println "Disposing " k " - " value))
+                            (dispose value)))
 
                         (render []
                           (swap! state render))
 
                         (resize [width height]
-                          (utils/resize-resizables! @state width height)))
+                          (doseq [[k value] @state
+                                  :when (resizable? value)]
+                            (when (:log-resize-lifecycle? config)
+                              (println "Resizing " k " - " value))
+                            (resize value width height))))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle (:title config))
                         (.setWindowedMode (:width config) (:height config))

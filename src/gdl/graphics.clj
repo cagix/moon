@@ -77,7 +77,7 @@
     (run! dispose (vals (:cursors this)))
     ;(println "Disposing default-font")
     (dispose (:default-font this)))
-  app/Resizable
+  clojure.utils/Resizable
   (resize [this width height]
     ;(println "Resizing ui-viewport.")
     (viewport/resize (:ui-viewport    this) width height :center-camera? true)
