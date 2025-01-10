@@ -91,11 +91,10 @@
                ;"\n)"
                ))))
 
-(defn generate-namespaces [folder]
+(defn generate-namespaces [src-folder folder]
   {:pre [(.exists (java.io.File. folder))]}
   (let [interfaces ["com.badlogic.gdx.Application"
                     "com.badlogic.gdx.Audio"
-                    ; TODO also Sound/Music/etc. ? other interfaces?
                     "com.badlogic.gdx.Files"
                     "com.badlogic.gdx.graphics.GL20"
                     "com.badlogic.gdx.graphics.GL30"
@@ -127,5 +126,19 @@
       (println target-file"\n"))))
 
 (comment
- (generate-namespaces "generate/")
+ (generate-namespaces "gdx/" ; copy from libgdx directory core gdx sources
+                      "generate/") ; make dir to put results
+
+ ; TODO p0 as args instead of real names, idk why
+ ; ... gdx/ folder solved that
+
+
+ ; TODO also Sound/Music/etc. ? other interfaces?
+ ; normal classes wrap too ? could make a full wrapper?
+ ; but why ?
+
+ ; # Tools
+
+ ; ## Find all uses of 'Gdx.' global state:
+ ; :vimgrep/Gdx\./g gdx/**/*.java
  )
