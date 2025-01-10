@@ -311,29 +311,6 @@
       (spawn-enemies! context tiled-map)
       context)))
 
-(defn dispose! [context]
-  ;;
-  (dispose (:gdl.context/assets context))
-
-  ;
-  (dispose (:batch (:context/g context)))
-  (dispose (:sd-texture (:context/g context)))
-  (run! dispose (vals (:cursors (:context/g context))))
-  (dispose (:default-font (:context/g context)))
-  ;
-  (ui/dispose!) ; pass skin ?
-  ;
-  (dispose (:gdl.context/stage context))
-  ;;
-
-  (dispose (:cdq.context/tiled-map context))  ; TODO ! this also if world restarts !!
-  context)
-
-;Disposing  :cdq.context/tiled-map
-;Disposing  :gdl.context/stage
-;Disposing  :gdl.context/assets
-; => TODO ui/graphics....
-
 (defn- set-camera-on-player! [{:keys [context/g
                                       cdq.context/player-eid]
                                :as context}]
@@ -373,7 +350,3 @@
         context (assoc context
                        :gdl.context/stage (ui/setup-stage! context (:ui config)))]
     (add-new-game-context context (:world config))))
-
-(defn resize! [context width height]
-  (graphics/on-resize (:context/g context) width height)
-  context)

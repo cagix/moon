@@ -3,12 +3,12 @@
             [cdq.game :as game])
   (:gen-class))
 
-(defrecord Listener []
-  app/Listener
-  (create  [this config]       (game/create!  this config))
-  (dispose [this]              (game/dispose! this))
-  (render  [this]              (game/render!  this))
-  (resize  [this width height] (game/resize!  this width height)))
+; => TODO ui is not disposed - this is the VisUI skin and is global state there - so just define it in my context ?
+; TODO tiled-map also dispose if new game state add
+; this also if world restarts !!
+
+; => the comments are the problem!
 
 (defn -main []
-  (app/start (Listener.)))
+  (app/start game/create!
+             game/render!))

@@ -10,9 +10,10 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics :as graphics]
+            [gdl.app :as app]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui]
-            [gdl.utils :refer [mapvals]])
+            [gdl.utils :refer [dispose mapvals]])
   (:import (com.badlogic.gdx.graphics Colors Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
@@ -50,7 +51,7 @@
 (defn- generate-font [{:keys [file size quality-scaling]}]
   (let [generator (FreeTypeFontGenerator. file)
         font (.generateFont generator (ttf-params size quality-scaling))]
-    (.dispose generator)
+    (dispose generator)
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
@@ -61,9 +62,27 @@
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
              (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
                    cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-               (.dispose pixmap)
+               (dispose pixmap)
                cursor))
            cursors))
+
+(defrecord Graphics []
+  gdl.utils/Disposable
+  (dispose [this]
+    ;(println "Disposing batch")
+    (dispose (:batch this))
+    ;(println "Disposing sd-texture")
+    (dispose (:sd-texture this))
+    ;(println "Disposing cursors")
+    (run! dispose (vals (:cursors this)))
+    ;(println "Disposing default-font")
+    (dispose (:default-font this)))
+  app/Resizable
+  (resize [this width height]
+    ;(println "Resizing ui-viewport.")
+    (viewport/resize (:ui-viewport    this) width height :center-camera? true)
+    ;(println "Resizing world-viewport.")
+    (viewport/resize (:world-viewport this) width height :center-camera? false)))
 
 (defn create [{:keys [clojure.gdx/files] :as context} config]
   (let [batch (SpriteBatch.)
@@ -71,25 +90,22 @@
                                   (pixmap/set-color color/white)
                                   (pixmap/draw-pixel 0 0))
                          texture (texture/create pixmap)]
-                     (.dispose pixmap)
+                     (dispose pixmap)
                      texture)
         world-unit-scale (float (/ (:tile-size config)))]
-    {:batch batch
-     :sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
-     :sd-texture sd-texture
-     :cursors (create-cursors context (:cursors config))
-     :default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
-     :world-unit-scale world-unit-scale
-     :tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
-     :ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
-                                       (:height (:ui-viewport config))
-                                       (orthographic-camera/create))
-     :world-viewport (world-viewport (:world-viewport config) world-unit-scale)
-     }))
-
-(defn on-resize [g width height]
-  (viewport/resize (:ui-viewport    g) width height :center-camera? true)
-  (viewport/resize (:world-viewport g) width height :center-camera? false))
+    (map->Graphics
+     {:batch batch
+      :sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
+      :sd-texture sd-texture
+      :cursors (create-cursors context (:cursors config))
+      :default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
+      :world-unit-scale world-unit-scale
+      :tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
+      :ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
+                                        (:height (:ui-viewport config))
+                                        (orthographic-camera/create))
+      :world-viewport (world-viewport (:world-viewport config) world-unit-scale)
+      })))
 
 (defn clear-screen [context]
   (screen/clear color/black)

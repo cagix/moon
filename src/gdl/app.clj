@@ -12,13 +12,8 @@
                      Toolkit)
            (org.lwjgl.system Configuration)))
 
-(defprotocol Listener
-  (create  [_ config])
-  (dispose [_]) ; ! aaaahhhh 'dispose' ! same ... same name same foozoz -> _LANGUAGE_ is words verbs nouns
-  ; the nouns are there
-  ; the verbs need work ?
-  (render  [_])
-  (resize  [_ width height]))
+(defprotocol Resizable
+  (resize [_ width height]))
 
 (def state (atom nil))
 
@@ -26,7 +21,20 @@
  (clojure.pprint/pprint (sort (keys @state)))
  )
 
-(defn start* [listener config]
+(defn- dispose-disposables! [context]
+  (doseq [[k value] context
+          :when (and (not= (namespace k) "clojure.gdx") ; don't dispose internal classes
+                     (satisfies? utils/Disposable value))]
+    ;(println "Disposing " k " - " value)
+    (utils/dispose value)))
+
+(defn- resize-resizables!  [context width height]
+  (doseq [[k value] context
+          :when (satisfies? Resizable value)]
+    ;(println "Resizing " k " - " value)
+    (resize value width height)))
+
+(defn start* [create render config]
   (when-let [icon (:icon config)]
     (.setIconImage (Taskbar/getTaskbar)
                    (.getImage (Toolkit/getDefaultToolkit)
@@ -36,28 +44,27 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (reset! state (create (utils/safe-merge listener (gdx/context))
-                                                config)))
+                          (reset! state (create (gdx/context) config)))
+
                         (dispose []
-                          (doseq [[k value] @state
-                                  :when (and (not= (namespace k) "clojure.gdx") ; don't dispose internal classes, that gets handled inside Lwjgl3Window/.dispose already, otherwise crashes in tools namespace reloading workflow on dispose
-                                             ; or make the gdx/context assoc as 'gdx' ?
-                                             (satisfies? utils/Disposable value))]
-                            (utils/dispose value)))
+                          (dispose-disposables! @state))
+
                         (render []
                           (swap! state render))
+
                         (resize [width height]
-                          (swap! state resize width height)))
+                          (resize-resizables! @state width height)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle (:title config))
                         (.setWindowedMode (:width config) (:height config))
                         (.setForegroundFPS (:fps config)))))
 
 (defn start
-  ([listener]
-   (start listener "config.edn"))
-  ([listener edn-config]
-   (start* listener
+  ([create render]
+   (start create render "config.edn"))
+  ([create render edn-config]
+   (start* create
+           render
            (-> edn-config io/resource slurp edn/read-string))))
 
 (defn post-runnable [f]
