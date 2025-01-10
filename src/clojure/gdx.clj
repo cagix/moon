@@ -6,8 +6,8 @@
             [clojure.graphics.2d.batch]
             [clojure.input]
             [clojure.java.io :as io]
-            [gdl.audio]
-            [gdl.utils])
+            [clojure.utils]
+            [gdl.audio])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn context []
@@ -72,7 +72,7 @@
     (.play this)))
 
 (extend-type com.badlogic.gdx.utils.Disposable
-  gdl.utils/Disposable
+  clojure.utils/Disposable
   (dispose [this]
     (.dispose this)))
 

@@ -5,7 +5,7 @@
             [clojure.input :as input] ; -> gdl
 
             [clojure.string :as str]
-            [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
+            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [gdl.app :refer [state]]
             [gdl.context :as c :refer [play-sound]]
             [cdq.db :as db]

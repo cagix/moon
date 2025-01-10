@@ -10,10 +10,10 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics :as graphics]
+            [clojure.utils :refer [dispose mapvals]]
             [gdl.app :as app]
             [gdl.graphics.color :as color]
-            [gdl.ui :as ui]
-            [gdl.utils :refer [dispose mapvals]])
+            [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
@@ -67,7 +67,7 @@
            cursors))
 
 (defrecord Graphics []
-  gdl.utils/Disposable
+  clojure.utils/Disposable
   (dispose [this]
     ;(println "Disposing batch")
     (dispose (:batch this))

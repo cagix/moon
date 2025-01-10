@@ -1,14 +1,14 @@
 (ns cdq.world.potential-field
-  (:require [cdq.entity :as entity]
+  (:require [clojure.gdx.math.vector2 :as v]
+            [clojure.utils :refer [utils-positions when-seq]]
+            [cdq.entity :as entity]
             [cdq.grid :refer [rectangle->cells
                               cached-adjacent-cells
                               blocked?
                               occupied-by-other?
                               nearest-entity
                               nearest-entity-distance
-                              get-8-neighbour-positions]]
-            [gdl.utils :refer [utils-positions when-seq]]
-            [clojure.gdx.math.vector2 :as v]))
+                              get-8-neighbour-positions]]))
 
 (let [order (get-8-neighbour-positions [0 0])]
   (def ^:private diagonal-check-indizes

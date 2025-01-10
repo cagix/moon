@@ -5,4 +5,4 @@
 (defn set-taskbar-icon [icon-resource]
   (.setIconImage (Taskbar/getTaskbar)
                    (.getImage (Toolkit/getDefaultToolkit)
-                              (io/resource icon))))
+                              (io/resource icon-resource))))

@@ -3,7 +3,7 @@
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.java.io :as io]
-            [gdl.utils :as utils])
+            [clojure.utils :as utils])
   (:import (com.badlogic.gdx Application
                              ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application

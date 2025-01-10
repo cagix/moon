@@ -1,6 +1,6 @@
 (ns cdq.schema
   (:refer-clojure :exclude [type])
-  (:require [gdl.utils :refer [safe-get]]
+  (:require [clojure.utils :refer [safe-get]]
             [cdq.property :as property]
             [cdq.malli :as m]))
 

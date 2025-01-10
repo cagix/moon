@@ -1,5 +1,5 @@
 (ns cdq.effect
-  (:require [gdl.utils :refer [defsystem]]))
+  (:require [clojure.utils :refer [defsystem]]))
 
 (defsystem applicable?)
 
