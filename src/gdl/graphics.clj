@@ -1,37 +1,8 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.utils.screen :as screen]
-            [clojure.gdx.utils.viewport :as viewport]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
+  (:require [clojure.gdx.utils.screen :as screen]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors)))
-
-(defn- world-viewport [{:keys [width height]} world-unit-scale]
-  (assert world-unit-scale)
-  (let [camera (orthographic-camera/create)
-        world-width  (* width  world-unit-scale)
-        world-height (* height world-unit-scale)]
-    (camera/set-to-ortho camera world-width world-height :y-down? false)
-    (fit-viewport/create world-width world-height camera)))
-
-(defrecord Graphics []
-  gdl.utils/Resizable
-  (resize [this width height]
-    ;(println "Resizing ui-viewport.")
-    (viewport/resize (:ui-viewport    this) width height :center-camera? true)
-    ;(println "Resizing world-viewport.")
-    (viewport/resize (:world-viewport this) width height :center-camera? false)))
-
-(defn create [{:keys [gdl.graphics/shape-drawer-texture
-                      gdl.graphics/world-unit-scale]}
-              config]
-  (map->Graphics
-   {:ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
-                                      (:height (:ui-viewport config))
-                                      (orthographic-camera/create))
-    :world-viewport (world-viewport (:world-viewport config) world-unit-scale)}))
 
 (defn clear-screen [context]
   (screen/clear color/black)

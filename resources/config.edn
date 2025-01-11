@@ -45,9 +45,11 @@
  :height 900
 
  :log-dispose-lifecycle? true
- :log-resize-lifecycle? false
+ :log-resize-lifecycle? true
 
  ; always assoc :gdl/foo (cdq.foo/create ...) ... !
+
+ ; TODO dispose/resize also manually ?
 
  :create-fns [cdq.assets/create
               cdq.db/create
@@ -58,6 +60,8 @@
               cdq.graphics.default-font/create
               cdq.graphics.world-unit-scale/create
               cdq.graphics.tiled-map-renderer/create
+              cdq.graphics.ui-viewport/create
+              cdq.graphics.world-viewport/create
               cdq.create/game
               cdq.create/add-new-game-context]
 
@@ -86,9 +90,13 @@
 
  :cdq.graphics.world-unit-scale/tile-size 48
 
+ :cdq.graphics.ui-viewport/width 1440
+ :cdq.graphics.ui-viewport/height  900
+
+ :cdq.graphics.world-viewport/width 1440
+ :cdq.graphics.world-viewport/height  900
+
  :ui {:skin-scale :x1}
- :graphics {:ui-viewport    {:width 1440 :height 900}
-            :world-viewport {:width 1440 :height 900}}
  :world-id :worlds/uf-caves
  :content-grid {:cell-size 16}
  :factions-iterations {:good 15 :evil 5}

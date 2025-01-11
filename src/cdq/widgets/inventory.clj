@@ -115,13 +115,13 @@
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
                                (->cell c :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [context/g] :as c}]
+(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [(:width  (:ui-viewport g))
-                         (:height (:ui-viewport g))]
+              :position [(:width  ui-viewport)
+                         (:height ui-viewport)]
               :rows [[{:actor (inventory-table c)
                        :pad 4}]]}))
 

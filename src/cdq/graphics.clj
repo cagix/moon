@@ -49,12 +49,11 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn- render-before-entities [{:keys [context/g
+(defn- render-before-entities [{:keys [gdl.graphics/world-viewport
                                        gdl.graphics/shape-drawer
                                        cdq.context/factions-iterations]
                                 :as c}]
   (let [sd shape-drawer
-        world-viewport (:world-viewport g)
         cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 

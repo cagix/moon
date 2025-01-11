@@ -59,13 +59,13 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window [{:keys [context/g] :as c}]
+(defn- ->info-window [{:keys [gdl.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
                                          (.setText label (map-infos %))
                                          (.pack window))}))
-    (.setPosition window 0 (:height (:ui-viewport g))) window))
+    (.setPosition window 0 (:height ui-viewport)) window))
 
 (def ^:private camera-movement-speed 1)
 
@@ -82,14 +82,14 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [context/g
+(defn- render-on-map [{:keys [gdl.graphics/world-viewport
                               gdl.graphics/shape-drawer] :as c}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles (:camera (:world-viewport g)))
+        visible-tiles (cam/visible-tiles (:camera world-viewport))
         [x y] (mapv int (c/world-mouse-position c))
         sd shape-drawer]
     (sd/rectangle sd x y 1 1 :white)
@@ -114,7 +114,7 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [{:keys [context/g] :as c} properties]
+(defn- generate-screen-ctx [{:keys [gdl.graphics/world-viewport] :as c} properties]
   (let [{:keys [tiled-map start-position]} (generate-level c
                                                            (c/build world-id))
         atom-data (current-data)]
@@ -123,7 +123,7 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! (:camera (:world-viewport g)) tiled-map)
+    (show-whole-map! (:camera world-viewport) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [c level-id]

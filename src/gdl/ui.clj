@@ -335,8 +335,7 @@
 
 (defn setup-stage! [{:keys [gdl.graphics/batch
                             gdl/input
-                            context/g
-                            ]}
+                            gdl.graphics/ui-viewport]}
                     {:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
@@ -355,9 +354,7 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  (let [stage (create-stage (:ui-viewport g)
-                            batch
-                            nil)]
+  (let [stage (create-stage ui-viewport batch nil)]
     (input/set-processor input stage)
     stage))
 

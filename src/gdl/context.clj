@@ -71,13 +71,13 @@
 
   Renders only visible layers."
   [{:keys [gdl.graphics/tiled-map-renderer
-           context/g]}
+           gdl.graphics/world-viewport]}
    tiled-map
    color-setter]
   (tiled-map-renderer/draw (tiled-map-renderer tiled-map)
                            tiled-map
                            color-setter
-                           (:camera (:world-viewport g))))
+                           (:camera world-viewport)))
 
 (defn- text-height [font text]
   (-> text
@@ -187,23 +187,24 @@
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{:keys [context/g
+(defn mouse-position [{:keys [gdl.graphics/ui-viewport
                               gdl/input]}]
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position input (:ui-viewport g))))
+  (mapv int (unproject-mouse-position input ui-viewport)))
 
-(defn world-mouse-position [{:keys [context/g gdl/input]}]
+(defn world-mouse-position [{:keys [gdl.graphics/world-viewport
+                                    gdl/input]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position input (:world-viewport g)))
+  (unproject-mouse-position input world-viewport))
 
 (defn pixels->world-units [{:keys [gdl.graphics/world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
 
 (defn draw-on-world-view [{:keys [gdl.graphics/world-unit-scale
-                                  context/g] :as c} render-fn]
+                                  gdl.graphics/world-viewport] :as c} render-fn]
   (draw-with c
-             (:world-viewport g)
+             world-viewport
              world-unit-scale
              render-fn))
 
@@ -330,10 +331,10 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn check-camera-controls [{:keys [context/g
+(defn check-camera-controls [{:keys [gdl.graphics/world-viewport
                                      gdl/input]
                               :as context}]
-  (let [camera (:camera (:world-viewport g))]
+  (let [camera (:camera world-viewport)]
     (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
     (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
   context)

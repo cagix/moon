@@ -43,7 +43,7 @@
                 (swap! explored-tile-corners assoc (mapv int position) true))
               color/white))))))
 
-(defn render [{:keys [context/g
+(defn render [{:keys [gdl.graphics/world-viewport
                       cdq.context/tiled-map
                       cdq.context/raycaster
                       cdq.context/explored-tile-corners]
@@ -52,5 +52,5 @@
                   tiled-map
                   (tile-color-setter raycaster
                                      explored-tile-corners
-                                     (cam/position (:camera (:world-viewport g)))))
+                                     (cam/position (:camera world-viewport))))
   context)

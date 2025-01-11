@@ -39,12 +39,12 @@
              :cell-defaults {:pad 2}
              :fill-parent? true}))
 
-(defn- draw-player-message [{:keys [context/g
+(defn- draw-player-message [{:keys [gdl.graphics/ui-viewport
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]
     (c/draw-text c
-                 {:x (/ (:width (:ui-viewport g)) 2)
-                  :y (+ (/ (:height (:ui-viewport g)) 2) 200)
+                 {:x (/ (:width ui-viewport) 2)
+                  :y (+ (/ (:height ui-viewport) 2) 200)
                   :text text
                   :scale 2.5
                   :up? true})))
@@ -68,11 +68,11 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn- hp-mana-bar [{:keys [context/g] :as c}]
+(defn- hp-mana-bar [{:keys [gdl.graphics/ui-viewport] :as c}]
   (let [rahmen      (c/sprite c "images/rahmen.png")
         hpcontent   (c/sprite c "images/hp.png")
         manacontent (c/sprite c "images/mana.png")
-        x (/ (:width (:ui-viewport g)) 2)
+        x (/ (:width ui-viewport) 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
@@ -123,7 +123,7 @@
                    {:label "World"
                     :update-fn #(mapv int (c/world-mouse-position %))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom (:context/g %))
+                    :update-fn #(cam/zoom (:camera (:gdl.graphics/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [{:keys [gdl/graphics]}]
@@ -150,12 +150,12 @@
     (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc entity disallowed-keys))))
 
-(defn- entity-info-window [{:keys [context/g] :as c}]
+(defn- entity-info-window [{:keys [gdl.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [(:width (:ui-viewport g)) 0]
+                           :position [(:width ui-viewport) 0]
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
@@ -300,8 +300,4 @@
       context)))
 
 (defn game [context config]
-  (let [context (merge context
-                       {:context/g (graphics/create context (:graphics config))})
-        context (assoc context
-                       :gdl.context/stage (ui/setup-stage! context (:ui config)))]
-    context))
+  (assoc context :gdl.context/stage (ui/setup-stage! context (:ui config))))

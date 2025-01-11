@@ -89,9 +89,9 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn line-of-sight? [{:keys [context/g] :as c} source target]
+(defn line-of-sight? [{:keys [gdl.graphics/world-viewport] :as c} source target]
   (and (or (not (:entity/player? source))
-           (on-screen? (:world-viewport g) target))
+           (on-screen? world-viewport target))
        (not (and los-checks?
                  (ray-blocked? c (:position source) (:position target))))))
 
@@ -354,7 +354,7 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [context/g] :as c}
+(defn show-modal [{:keys [gdl.graphics/ui-viewport] :as c}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal (c/stage c))))
   (c/add-actor c
@@ -366,8 +366,8 @@
                                                      (on-click)))]]
                            :id ::modal
                            :modal? true
-                           :center-position [(/ (:width (:ui-viewport g)) 2)
-                                             (* (:height (:ui-viewport g)) (/ 3 4))]
+                           :center-position [(/ (:width  ui-viewport) 2)
+                                             (* (:height ui-viewport) (/ 3 4))]
                            :pack? true})))
 
 (defn world-item? [c]

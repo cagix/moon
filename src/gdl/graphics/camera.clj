@@ -9,10 +9,9 @@
 
 (defn set-position!
   "Sets x and y and calls update on the camera."
-  [{:keys [world-viewport]} position]
-  (let [camera (:camera world-viewport)]
-    (camera/set-position camera position)
-    (camera/update camera)))
+  [camera position]
+  (camera/set-position camera position)
+  (camera/update camera))
 
 (defn frustum [camera]
   (let [frustum-points (take 4 (frustum/plane-points (camera/frustum camera)))
@@ -47,8 +46,8 @@
         new-zoom (max vp-ratio-w vp-ratio-h)]
     new-zoom))
 
-(defn zoom [g]
-  (camera/zoom (:camera (:world-viewport g))))
+(defn zoom [camera]
+  (camera/zoom camera))
 
 (defn set-zoom!
   "Sets the zoom value and updates."
