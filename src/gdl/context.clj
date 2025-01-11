@@ -276,10 +276,10 @@
 
 (def stage :gdl.context/stage)
 
-(defn build [{:keys [gdl.context/db] :as c} id]
+(defn build [{:keys [gdl/db] :as c} id]
   (db/build db id c))
 
-(defn build-all [{:keys [gdl.context/db] :as c} property-type]
+(defn build-all [{:keys [gdl/db] :as c} property-type]
   (db/build-all db property-type c))
 
 (defn add-actor [{:keys [gdl.context/stage]} actor]

@@ -302,7 +302,7 @@
 
 (defn game [context config]
   (let [context (merge context
-                       {:gdl.context/db (db/create (:db config))
+                       {:gdl/db (db/create (:db config))
                         :context/g (graphics/create context (:graphics config))})
         context (assoc context
                        :gdl.context/stage (ui/setup-stage! context (:ui config)))]

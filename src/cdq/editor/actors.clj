@@ -76,22 +76,22 @@
         (catch Throwable t
           (c/error-window @state t))))
 
-(defn- async-write-to-file! [{:keys [gdl.context/db]}]
+(defn- async-write-to-file! [{:keys [gdl/db]}]
   (db/async-write-to-file! db))
 
 (defn update! [property]
-  (swap! state update :gdl.context/db db/update property)
+  (swap! state update :gdl/db db/update property)
   (async-write-to-file! @state))
 
 (defn delete! [property-id]
-  (swap! state update :gdl.context/db db/delete property-id)
+  (swap! state update :gdl/db db/delete property-id)
   (async-write-to-file! @state))
 
 (defn- get-db
   ([]
    (get-db @state))
   ([context]
-   (:gdl.context/db context)))
+   (:gdl/db context)))
 
 (defn- malli-form [schema]
   (schema/malli-form schema (:db/schemas (get-db))))
