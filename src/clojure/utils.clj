@@ -168,3 +168,7 @@
      (binding [*err* s#]
        ~@body
        (str s#))))
+
+(defn require-ns-resolve [sym]
+  (require (symbol (namespace sym)))
+  (resolve sym))

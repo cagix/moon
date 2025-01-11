@@ -1,20 +1,3 @@
-; => TODO ui is not disposed - this is the VisUI skin and is global state there - so just define it in my context ?
-; then it doesn't know its disposed ? omg ...
-;:gdl.context/ui-skin (com.kotcrab.vis.ui.VisUI/getSkin)
-
-; TODO tiled-map also dispose if new game state add
-; this also if world restarts !!
-
-; => the comments are the problem!
-
-; separate concerns - create -> all the instances - rest of code w. protocols (also tiledmap drawer etc.)
-; * draw
-; * update
-
-; TODO move to config
-; pass only order of [create], [render]
-; save in context too
-; so can change rendering or updates during the game
 (ns cdq.application
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
@@ -31,14 +14,8 @@
 
 (defn -main []
   (let [config (-> "config.edn" io/resource slurp edn/read-string)
-        render-fns (map (fn [sym]
-                          (require (symbol (namespace sym)))
-                          (resolve sym))
-                        (:render-fns config))
-        create-fns (map (fn [sym]
-                          (require (symbol (namespace sym)))
-                          (resolve sym))
-                        (:create-fns config))]
+        render-fns (map require-ns-resolve (:render-fns config))
+        create-fns (map require-ns-resolve (:create-fns config))]
     (when-let [icon (:icon config)]
       (awt/set-taskbar-icon icon))
     (when (and mac-osx? (:glfw-async-on-mac-osx? config))
