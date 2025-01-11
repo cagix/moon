@@ -298,6 +298,3 @@
           context (assoc context :cdq.context/player-eid (spawn-player-entity context (:start-position level)))]
       (spawn-enemies! context tiled-map)
       context)))
-
-(defn game [context config]
-  (assoc context :gdl.context/stage (ui/setup-stage! context (:ui config))))

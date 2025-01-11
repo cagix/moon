@@ -62,7 +62,7 @@
               cdq.graphics.tiled-map-renderer/create
               cdq.graphics.ui-viewport/create
               cdq.graphics.world-viewport/create
-              cdq.create/game
+              gdl.ui/setup-stage!
               cdq.create/add-new-game-context]
 
  :cdq.assets/folder "resources/"
@@ -96,7 +96,8 @@
  :cdq.graphics.world-viewport/width 1440
  :cdq.graphics.world-viewport/height  900
 
- :ui {:skin-scale :x1}
+ :gdl.ui/skin-scale :x1
+
  :world-id :worlds/uf-caves
  :content-grid {:cell-size 16}
  :factions-iterations {:good 15 :evil 5}
