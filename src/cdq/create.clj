@@ -278,9 +278,10 @@
 
 (defn add-new-game-context [context config]
   (let [context (safe-merge context
-                            {:gdl.context/elapsed-time 0
-                             :cdq.context/player-message (atom (:player-message config))})]
+                            {:cdq.context/player-message (atom (:player-message config))})]
+
     (c/reset-stage context (stage-actors context))
+
     (let [level (generate-level context
                                 (c/build context (:world-id config)))
           tiled-map (:tiled-map level)

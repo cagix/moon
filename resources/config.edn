@@ -63,6 +63,7 @@
               cdq.graphics.ui-viewport/create
               cdq.graphics.world-viewport/create
               gdl.ui/setup-stage!
+              cdq.time/create
               cdq.create/add-new-game-context]
 
  :cdq.assets/folder "resources/"
