@@ -115,6 +115,7 @@
                 }
   :profiles {:uberjar {:aot [cdq.context]}}
   #_:main #_cdq.context
+  :aot [gdl.assets]
   )
 
 ; * Notes
