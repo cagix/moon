@@ -159,7 +159,7 @@
                            :visible? false
                            :position [(:width (:ui-viewport g)) 0]
                            :rows [[{:actor label :expand? true}]]})]
-    ; TODO do not change window size ... -> no need to invalidate layout, set the whole stage up again
+    ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
     (group/add-actor! window (ui-actor {:act (fn [context]
                                                (.setText label (str (->label-text context)))
@@ -183,8 +183,6 @@
    (widgets-player-state-draw-component c)
    (player-message)])
 
-; here impl
-; @ content-grid only protocols ! no create !
 (defn- create-content-grid [tiled-map {:keys [cell-size]}]
   (content-grid/create {:cell-size cell-size
                         :width  (tiled/tm-width  tiled-map)
@@ -211,7 +209,7 @@
     (= movement :none))
 
   (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied)) ; contains? faster?
+    (some #(not= % eid) occupied))
 
   (nearest-entity [this faction]
     (-> this faction :eid))
@@ -239,9 +237,6 @@
                           "air"  :air
                           "all"  :all))))))
 
-; TODO this passing w. world props ...
-; player-creature needs mana & inventory
-; till then hardcode :creatures/vampire
 (defn- player-entity-props [start-position]
   {:position (tile->middle start-position)
    :creature-id :creatures/vampire
@@ -285,12 +280,9 @@
 
 (defn- add-new-game-context [context config]
   (let [context (safe-merge context
-                            {
-                             ;; - before here - application context - does not change on level/game restart -
-                             :gdl.context/elapsed-time 0
+                            {:gdl.context/elapsed-time 0
                              :cdq.context/player-message (atom (:player-message config))})]
-    (c/reset-stage context (stage-actors context)) ; TODO this is not part of context keys anymore, can't be dispatched ... on actors
-    ; so it should be part of stage/ui then? for resett-ing later ?
+    (c/reset-stage context (stage-actors context))
     (let [level (generate-level context
                                 (c/build context (:world-id config)))
           tiled-map (:tiled-map level)
@@ -309,14 +301,8 @@
       (spawn-enemies! context tiled-map)
       context)))
 
-; graphics create only here ...
-; rest is just foozaboo
-; can world be a separate record?
-; would simplify a lot ..
-; => pass stuff directly not through ctx and upfactor?
 (defn game [context config]
   (let [context (merge context
-                       ; even the assets implementation can be in here ?????
                        {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files context)
                                                                     (:assets config))
                         :gdl.context/db (db/create (:db config))
@@ -324,10 +310,3 @@
         context (assoc context
                        :gdl.context/stage (ui/setup-stage! context (:ui config)))]
     (add-new-game-context context (:world config))))
-
-; context:
-#_[assets ; no dependencies
-   db ; no dependencies
-   graphics ; no dependencies
-   stage ; requires graphics batch & ui-viewport.
-   world] ; requires everything

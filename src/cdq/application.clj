@@ -41,6 +41,7 @@
       (lwjgl-system/set-glfw-library-name "glfw_async"))
     (lwjgl/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
                          (create []
+                           ; 1. fix create - world as one ? gdx as one ? .... ?
                            (reset! state (create/game (gdx/context) config)))
 
                          (dispose []

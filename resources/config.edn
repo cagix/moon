@@ -63,3 +63,11 @@
               gdl.context/check-camera-controls
               cdq.context/check-ui-key-listeners]
  }
+
+
+; context:
+#_[assets ; no dependencies
+   db ; no dependencies
+   graphics ; no dependencies
+   stage ; requires graphics batch & ui-viewport.
+   world] ; requires everything
