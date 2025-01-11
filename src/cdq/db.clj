@@ -34,16 +34,17 @@
              with-out-str
              (spit file)))))))
 
-(defn create [{:keys [schema properties]}]
-  (let [properties-file (io/resource properties)
-        schemas (-> schema io/resource slurp edn/read-string)
-        properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! (partial schema/validate! schemas) properties)
-    {:db/data (zipmap (map :property/id properties) properties)
-     :db/properties-file properties-file
-     :db/schemas schemas}))
+(defn create [context config]
+  (assoc context :gdl/db
+         (let [properties-file (io/resource (::properties config))
+               schemas (-> (::schema config) io/resource slurp edn/read-string)
+               properties (-> properties-file slurp edn/read-string)]
+           (assert (or (empty? properties)
+                       (apply distinct? (map :property/id properties))))
+           (run! (partial schema/validate! schemas) properties)
+           {:db/data (zipmap (map :property/id properties) properties)
+            :db/properties-file properties-file
+            :db/schemas schemas})))
 
 (defn schema-of [{:keys [db/schemas]} k]
   (schema/schema-of schemas k))

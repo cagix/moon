@@ -11,7 +11,6 @@
             [cdq.context :refer [spawn-creature mouseover-entity]]
             [cdq.context.info :as info]
             [cdq.content-grid :as content-grid]
-            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [cdq.level :refer [generate-level]]
@@ -302,8 +301,7 @@
 
 (defn game [context config]
   (let [context (merge context
-                       {:gdl/db (db/create (:db config))
-                        :context/g (graphics/create context (:graphics config))})
+                       {:context/g (graphics/create context (:graphics config))})
         context (assoc context
                        :gdl.context/stage (ui/setup-stage! context (:ui config)))]
     context))
