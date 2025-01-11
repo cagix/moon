@@ -24,8 +24,7 @@
             [clojure.java.io :as io]
             [clojure.lwjgl.system :as lwjgl-system]
             [clojure.platform.gdx]
-            [clojure.utils :refer [dispose disposable? resize resizable?]]
-            [cdq.create :as create])
+            [clojure.utils :refer [dispose disposable? resize resizable?]])
   (:gen-class))
 
 (def state (atom nil))
@@ -34,15 +33,22 @@
   (let [config (-> "config.edn" io/resource slurp edn/read-string)
         render-fns (map (fn [sym]
                           (require (symbol (namespace sym)))
-                          (resolve sym)) (:render-fns config))]
+                          (resolve sym))
+                        (:render-fns config))
+        create-fns (map (fn [sym]
+                          (require (symbol (namespace sym)))
+                          (resolve sym))
+                        (:create-fns config))]
     (when-let [icon (:icon config)]
       (awt/set-taskbar-icon icon))
     (when (and mac-osx? (:glfw-async-on-mac-osx? config))
       (lwjgl-system/set-glfw-library-name "glfw_async"))
     (lwjgl/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
                          (create []
-                           ; 1. fix create - world as one ? gdx as one ? .... ?
-                           (reset! state (create/game (gdx/context) config)))
+                           (reset! state (reduce (fn [context f]
+                                                   (f context config))
+                                                 (gdx/context)
+                                                 create-fns)))
 
                          (dispose []
                            ; don't dispose internal classes (:clojure.gdx/graphics,etc. )

@@ -278,7 +278,7 @@
          (tiled/tm-height tiled-map)
          (constantly false))))
 
-(defn- add-new-game-context [context config]
+(defn add-new-game-context [context config]
   (let [context (safe-merge context
                             {:gdl.context/elapsed-time 0
                              :cdq.context/player-message (atom (:player-message config))})]
@@ -309,4 +309,4 @@
                         :context/g (graphics/create context (:graphics config))})
         context (assoc context
                        :gdl.context/stage (ui/setup-stage! context (:ui config)))]
-    (add-new-game-context context (:world config))))
+    context))

@@ -82,8 +82,8 @@
  )
 
 (defn post-runnable [f]
-  (application/post-runnable (:clojure.gdx/app @state)
-                             #(f @state)))
+  (application/post-runnable (:clojure.gdx/app @app/state)
+                             #(f @app/state)))
 
 (defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
   (world/add-skill c
