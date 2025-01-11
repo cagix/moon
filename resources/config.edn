@@ -55,6 +55,7 @@
               cdq.graphics.shape-drawer-texture/create
               cdq.graphics.shape-drawer/create
               cdq.graphics.cursors/create
+              cdq.graphics.default-font/create
               cdq.create/game
               cdq.create/add-new-game-context]
 
@@ -77,11 +78,12 @@
                              :cursors/use-skill             ["pointer004"   [0   0]]
                              :cursors/walking               ["walking"      [16 16]]}
 
+ :cdq.graphics.default-font/data {:file "fonts/exocet/films.EXL_____.ttf"
+                                  :size 16
+                                  :quality-scaling 2}
+
  :ui {:skin-scale :x1}
- :graphics {:default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                           :size 16
-                           :quality-scaling 2}
-            :tile-size 48
+ :graphics {:tile-size 48
             :ui-viewport    {:width 1440 :height 900}
             :world-viewport {:width 1440 :height 900}}
  :world-id :worlds/uf-caves

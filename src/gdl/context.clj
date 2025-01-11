@@ -102,10 +102,10 @@
   scale will multiply the drawn text size with the scale."
   [{:keys [gdl.context/unit-scale
            gdl.graphics/batch
-           context/g]}
+           gdl.graphics/default-font]}
    {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
-  (let [font (or font (:default-font g))
+  (let [font (or font default-font)
         data (font/data font)
         old-scale (float (font/scale-x data))]
     (font/set-scale data (* old-scale

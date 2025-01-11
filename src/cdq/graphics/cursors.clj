@@ -7,7 +7,6 @@
 (defrecord Cursors []
   gdl.utils/Disposable
   (dispose [this]
-    (println "Disposing cursors")
     (run! dispose (vals this))))
 
 (defn create [{:keys [gdl/files
