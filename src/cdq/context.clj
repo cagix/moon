@@ -3,6 +3,7 @@
             [gdl.graphics :as graphics]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
+            [gdl.graphics.shape-drawer :as sd]
             [cdq.world.potential-field :as potential-field]
             [cdq.effect :as effect]
             [cdq.inventory :as inventory]
@@ -462,9 +463,9 @@
       (stack-item c eid cell item)
       (set-item c eid cell item))))
 
-(defn draw-body-rect [c entity color]
+(defn draw-body-rect [sd entity color]
   (let [[x y] (:left-bottom entity)]
-    (c/rectangle c x y (:width entity) (:height entity) color)))
+    (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
 (defn handle-player-input [{:keys [cdq.context/player-eid] :as c}]
   (state/manual-tick (entity/state-obj @player-eid) c)

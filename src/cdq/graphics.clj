@@ -3,6 +3,7 @@
             [cdq.context.timer :as timer]
             [cdq.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
+            [gdl.graphics.shape-drawer :as sd]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [gdl.utils :refer [defsystem sort-by-order]]
             [cdq.val-max :as val-max]
@@ -17,27 +18,27 @@
                                  circle->cells]]
             [cdq.entity :as entity]))
 
-(defn- geom-test [c]
+(defn- geom-test [{:keys [gdl.graphics/shape-drawer] :as c}]
   (let [position (c/world-mouse-position c)
         radius 0.8
         circle {:position position :radius radius}]
-    (c/circle c position radius [1 0 0 0.5])
+    (sd/circle shape-drawer position radius [1 0 0 0.5])
     (doseq [[x y] (map #(:position @%) (circle->cells c circle))]
-      (c/rectangle c x y 1 1 [1 0 0 0.5]))
+      (sd/rectangle shape-drawer x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
-      (c/rectangle c x y width height [0 0 1 1]))))
+      (sd/rectangle shape-drawer x y width height [0 0 1 1]))))
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [c]
+(defn- highlight-mouseover-tile [{:keys [gdl.graphics/shape-drawer] :as c}]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (c/world-mouse-position c))
           cell (grid-cell c [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
-        (c/rectangle c x y 1 1
-                     (case (:movement @cell)
-                       :air  [1 1 0 0.5]
-                       :none [1 0 0 0.5]))))))
+        (sd/rectangle shape-drawer x y 1 1
+                      (case (:movement @cell)
+                        :air  [1 1 0 0.5]
+                        :none [1 0 0 0.5]))))))
 
 (defn render-after-entities [c]
   #_(geom-test c)
@@ -49,14 +50,16 @@
 (def ^:private ^:dbg-flag cell-occupied? false)
 
 (defn- render-before-entities [{:keys [context/g
+                                       gdl.graphics/shape-drawer
                                        cdq.context/factions-iterations]
                                 :as c}]
-  (let [world-viewport (:world-viewport g)
+  (let [sd shape-drawer
+        world-viewport (:world-viewport g)
         cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
-      (c/grid c
+      (sd/grid sd
               (int left-x) (int bottom-y)
               (inc (int (:width  world-viewport)))
               (+ 2 (int (:height world-viewport)))
@@ -68,31 +71,31 @@
             :let [cell* @cell]]
 
       (when (and cell-entities? (seq (:entities cell*)))
-        (c/filled-rectangle c x y 1 1 [1 0 0 0.6]))
+        (sd/filled-rectangle sd x y 1 1 [1 0 0 0.6]))
 
       (when (and cell-occupied? (seq (:occupied cell*)))
-        (c/filled-rectangle c x y 1 1 [0 0 1 0.6]))
+        (sd/filled-rectangle sd x y 1 1 [0 0 1 0.6]))
 
       (when potential-field-colors?
         (let [faction :good
               {:keys [distance]} (faction cell*)]
           (when distance
             (let [ratio (/ distance (factions-iterations faction))]
-              (c/filled-rectangle c x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
+              (sd/filled-rectangle sd x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-(defn- draw-skill-image [c image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [{:keys [gdl.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (c/filled-circle c center radius [1 1 1 0.125])
-    (c/sector c
-              center
-              radius
-              90 ; start-angle
-              (* (float action-counter-ratio) 360) ; degree
-              [1 1 1 0.5])
+    (sd/filled-circle shape-drawer center radius [1 1 1 0.125])
+    (sd/sector shape-drawer
+               center
+               radius
+               90 ; start-angle
+               (* (float action-counter-ratio) 360) ; degree
+               [1 1 1 0.5])
     (c/draw-image c image [(- (float x) radius) y])))
 
 (def ^:private hpbar-colors
@@ -112,7 +115,7 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [c
+(defn- draw-hpbar [{:keys [gdl.graphics/shape-drawer] :as c}
                    {:keys [position width half-width half-height]}
                    ratio]
   (let [[x y] position]
@@ -120,13 +123,13 @@
           y (+ y half-height)
           height (c/pixels->world-units c 5)
           border (c/pixels->world-units c borders-px)]
-      (c/filled-rectangle c x y width height :black)
-      (c/filled-rectangle c
-                          (+ x border)
-                          (+ y border)
-                          (- (* width ratio) (* 2 border))
-                          (- height          (* 2 border))
-                          (hpbar-color ratio)))))
+      (sd/filled-rectangle shape-drawer x y width height :black)
+      (sd/filled-rectangle shape-drawer
+                           (+ x border)
+                           (+ y border)
+                           (- (* width ratio) (* 2 border))
+                           (- height          (* 2 border))
+                           (hpbar-color ratio)))))
 
 (defsystem below)
 (defmethod below :default [_ entity c])
@@ -164,12 +167,12 @@
                            (:position entity)))
 
 (defmethod default :entity/line-render
-  [[_ {:keys [thick? end color]}] entity c]
+  [[_ {:keys [thick? end color]}] entity {:keys [gdl.graphics/shape-drawer]}]
   (let [position (:position entity)]
     (if thick?
-      (c/with-line-width c 4
-        #(c/line c position end color))
-      (c/line c position end color))))
+      (sd/with-line-width shape-drawer 4
+        #(sd/line shape-drawer position end color))
+      (sd/line shape-drawer position end color))))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -179,19 +182,20 @@
 (defmethod below :entity/mouseover?
   [_
    {:keys [entity/faction] :as entity}
-   {:keys [cdq.context/player-eid] :as c}]
+   {:keys [cdq.context/player-eid
+           gdl.graphics/shape-drawer] :as c}]
   (let [player @player-eid]
-    (c/with-line-width c 3
-      #(c/ellipse c
-                  (:position entity)
-                  (:half-width entity)
-                  (:half-height entity)
-                  (cond (= faction (entity/enemy player))
-                        enemy-color
-                        (= faction (:entity/faction player))
-                        friendly-color
-                        :else
-                        neutral-color)))))
+    (sd/with-line-width shape-drawer 3
+      #(sd/ellipse shape-drawer
+                   (:position entity)
+                   (:half-width entity)
+                   (:half-height entity)
+                   (cond (= faction (entity/enemy player))
+                         enemy-color
+                         (= faction (:entity/faction player))
+                         friendly-color
+                         :else
+                         neutral-color)))))
 
 (defsystem render-effect)
 (defmethod render-effect :default [_ _effect-ctx context])
@@ -239,8 +243,8 @@
                      (c/mouse-position c))))
 
 (defmethod below :stunned
-  [_ entity c]
-  (c/circle c (:position entity) 0.5 [1 1 1 0.6]))
+  [_ entity {:keys [gdl.graphics/shape-drawer]}]
+  (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
 
 (defmethod above :entity/string-effect
   [[_ {:keys [text]}] entity c]
@@ -256,29 +260,31 @@
 
 ; TODO draw opacity as of counter ratio?
 (defmethod above :entity/temp-modifier
-  [_ entity c]
-  (c/filled-circle c (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
+  [_ entity {:keys [gdl.graphics/shape-drawer]}]
+  (sd/filled-circle shape-drawer (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
 (defmethod render-effect :effects/target-all
-  [_ {:keys [effect/source]} c]
+  [_ {:keys [effect/source]} {:keys [gdl.graphics/shape-drawer] :as c}]
   (let [source* @source]
     (doseq [target* (map deref (creatures-in-los-of-player c))]
-      (c/line c
-              (:position source*) #_(start-point source* target*)
-              (:position target*)
-              [1 0 0 0.5]))))
+      (sd/line shape-drawer
+               (:position source*) #_(start-point source* target*)
+               (:position target*)
+               [1 0 0 0.5]))))
 
 (defmethod render-effect :effects/target-entity
-  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} c]
+  [[_ {:keys [maxrange]}]
+   {:keys [effect/source effect/target]}
+   {:keys [gdl.graphics/shape-drawer]}]
   (when target
     (let [source* @source
           target* @target]
-      (c/line c
-              (entity/start-point source* target*)
-              (entity/end-point source* target* maxrange)
-              (if (entity/in-range? source* target* maxrange)
-                [1 0 0 0.5]
-                [1 1 0 0.5])))))
+      (sd/line shape-drawer
+               (entity/start-point source* target*)
+               (entity/end-point source* target* maxrange)
+               (if (entity/in-range? source* target* maxrange)
+                 [1 0 0 0.5]
+                 [1 1 0 0.5])))))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
@@ -288,7 +294,8 @@
   Optionally for debug purposes body rectangles can be drown which show white for collidings and gray for non colliding entities.
 
   If an error is thrown during rendering, the entity body drawn with a red rectangle and the error is pretty printed to the console."
-  [{:keys [cdq.context/player-eid] :as c}]
+  [{:keys [cdq.context/player-eid
+           gdl.graphics/shape-drawer] :as c}]
   (let [entities (map deref (active-entities c))
         player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
@@ -300,10 +307,10 @@
                       (line-of-sight? c player entity))]
       (try
        (when show-body-bounds
-         (draw-body-rect c entity (if (:collides? entity) :white :gray)))
+         (draw-body-rect shape-drawer entity (if (:collides? entity) :white :gray)))
        (run! #(system % entity c) entity)
        (catch Throwable t
-         (draw-body-rect c entity :red)
+         (draw-body-rect shape-drawer entity :red)
          (pretty-pst t))))))
 
 (defn draw-world-view [context]

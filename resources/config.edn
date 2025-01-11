@@ -53,6 +53,7 @@
               cdq.db/create
               cdq.graphics.batch/create
               cdq.graphics.shape-drawer-texture/create
+              cdq.graphics.shape-drawer/create
               cdq.create/game
               cdq.create/add-new-game-context]
 

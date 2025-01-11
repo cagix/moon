@@ -1,13 +1,13 @@
 (ns gdl.context
   (:require [clojure.gdx.graphics.camera :as camera]
             [gdl.graphics.color :as color]
-            [clojure.gdx.graphics.shape-drawer :as sd]
+            [gdl.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
             [gdl.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.gdx.math.utils :refer [clamp degree->radians]]
+            [clojure.gdx.math.utils :refer [clamp]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics :as graphics]
             [clojure.graphics.2d.batch :as batch]
@@ -87,70 +87,6 @@
                    tiled-map
                    color-setter
                    (:camera (:world-viewport g))))
-
-(defn- munge-color [c]
-  (cond (= com.badlogic.gdx.graphics.Color (class c)) c
-        (keyword? c) (interop/k->color c)
-        (vector? c) (apply color/create c)
-        :else (throw (ex-info "Cannot understand color" c))))
-
-(defn- sd-color [shape-drawer color]
-  (sd/set-color shape-drawer (munge-color color)))
-
-(defn ellipse [{:keys [context/g]} [x y] radius-x radius-y color]
-  (sd-color (:sd g) color)
-  (sd/ellipse (:sd g) x y radius-x radius-y))
-
-(defn filled-ellipse [{:keys [context/g]} [x y] radius-x radius-y color]
-  (sd-color (:sd g) color)
-  (sd/filled-ellipse (:sd g) x y radius-x radius-y))
-
-(defn circle [{:keys [context/g]} [x y] radius color]
-  (sd-color (:sd g) color)
-  (sd/circle (:sd g) x y radius))
-
-(defn filled-circle [{:keys [context/g]} [x y] radius color]
-  (sd-color (:sd g) color)
-  (sd/filled-circle (:sd g) x y radius))
-
-(defn arc [{:keys [context/g]} [center-x center-y] radius start-angle degree color]
-  (sd-color (:sd g) color)
-  (sd/arc (:sd g) center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
-
-(defn sector [{:keys [context/g]} [center-x center-y] radius start-angle degree color]
-  (sd-color (:sd g) color)
-  (sd/sector (:sd g) center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
-
-(defn rectangle [{:keys [context/g]} x y w h color]
-  (sd-color (:sd g) color)
-  (sd/rectangle (:sd g) x y w h))
-
-(defn filled-rectangle [{:keys [context/g]} x y w h color]
-  (sd-color (:sd g) color)
-  (sd/filled-rectangle (:sd g) x y w h))
-
-(defn line [{:keys [context/g]} [sx sy] [ex ey] color]
-  (sd-color (:sd g) color)
-  (sd/line (:sd g) sx sy ex ey))
-
-(defn grid [{:keys [context/g]} leftx bottomy gridw gridh cellw cellh color]
-  (sd-color (:sd g) color)
-  (let [w (* (float gridw) (float cellw))
-        h (* (float gridh) (float cellh))
-        topy (+ (float bottomy) (float h))
-        rightx (+ (float leftx) (float w))]
-    (doseq [idx (range (inc (float gridw)))
-            :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-      (line [linex topy] [linex bottomy]))
-    (doseq [idx (range (inc (float gridh)))
-            :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-      (line [leftx liney] [rightx liney]))))
-
-(defn with-line-width [{:keys [context/g]} width draw-fn]
-  (let [old-line-width (sd/default-line-width (:sd g))]
-    (sd/set-default-line-width (:sd g) (* width old-line-width))
-    (draw-fn)
-    (sd/set-default-line-width (:sd g) old-line-width)))
 
 (defn- text-height [font text]
   (-> text
@@ -236,13 +172,14 @@
   (draw-fn)
   (batch/end batch))
 
-(defn draw-with [{:keys [gdl.graphics/batch] :as c}
+(defn draw-with [{:keys [gdl.graphics/batch
+                         gdl.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]
   (draw-on-viewport batch
                     viewport
-                    #(with-line-width c unit-scale
+                    #(sd/with-line-width shape-drawer unit-scale
                        (fn []
                          (draw-fn (assoc c :gdl.context/unit-scale unit-scale))))))
 

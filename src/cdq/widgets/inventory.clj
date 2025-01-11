@@ -4,6 +4,7 @@
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.context.info :as info]
             [gdl.graphics.color :as color]
+            [gdl.graphics.shape-drawer :as sd]
             [gdl.scene2d.actor :refer [user-object] :as actor]
             [gdl.grid2d :as g2d]
             [gdl.context :as c]
@@ -25,23 +26,24 @@
 (def ^:private droppable-color    [0   0.6 0 0.8])
 (def ^:private not-allowed-color  [0.6 0   0 0.8])
 
-(defn- draw-cell-rect [c player-entity x y mouseover? cell]
-  (c/rectangle c x y cell-size cell-size :gray)
+(defn- draw-cell-rect [sd player-entity x y mouseover? cell]
+  (sd/rectangle sd x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (c/filled-rectangle c (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (sd/filled-rectangle sd (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??
 ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
 (defn- draw-rect-actor []
   (ui-widget
-   (fn [this {:keys [cdq.context/player-eid] :as c}]
-     (draw-cell-rect c
+   (fn [this {:keys [cdq.context/player-eid
+                     gdl.graphics/shape-drawer] :as c}]
+     (draw-cell-rect shape-drawer
                      @player-eid
                      (actor/x this)
                      (actor/y this)

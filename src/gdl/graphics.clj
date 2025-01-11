@@ -1,10 +1,8 @@
 (ns gdl.graphics
   (:require [gdl.files :as files]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.utils.screen :as screen]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
@@ -84,8 +82,7 @@
               config]
   (let [world-unit-scale (float (/ (:tile-size config)))]
     (map->Graphics
-     {:sd (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
-      :cursors (create-cursors context (:cursors config))
+     {:cursors (create-cursors context (:cursors config))
       :default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
       :world-unit-scale world-unit-scale
       :tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
