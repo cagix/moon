@@ -9,10 +9,8 @@
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn create [{:keys [gdl.graphics/batch
-                      gdl.graphics/shape-drawer-texture]
-               :as context}]
-  (assoc context :gdl.graphics/shape-drawer
-         (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1))))
+                      gdl.graphics/shape-drawer-texture]} _config]
+  (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1)))
 
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c

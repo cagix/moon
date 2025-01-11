@@ -23,7 +23,5 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create [{:keys [gdl/config
-                      gdl/files] :as context}]
-  (assoc context :gdl.graphics/default-font
-         (generate-font (update (::data config) :file #(files/internal files %)))))
+(defn create [{:keys [gdl/files]} config]
+  (generate-font (update config :file #(files/internal files %))))

@@ -334,17 +334,16 @@
     (clicked [event x y]
       (clicked-fn {:event event :x x :y y}))))
 
-(defn setup-stage! [{:keys [gdl/config
-                            gdl.graphics/batch
+(defn setup-stage! [{:keys [gdl.graphics/batch
                             gdl.graphics/ui-viewport
                             gdl/input]
-                     :as context}]
+                     :as context} config]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
   (when (VisUI/isLoaded)
     (VisUI/dispose))
-  (VisUI/load (case (::skin-scale config)
+  (VisUI/load (case (:skin-scale config)
                 :x1 VisUI$SkinScale/X1
                 :x2 VisUI$SkinScale/X2))
   (-> (VisUI/getSkin)
@@ -358,10 +357,10 @@
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
   (let [actors (map (fn [create]
                       ((utils/require-ns-resolve create) context))
-                    (::actors config))
+                    (:actors config))
         stage (create-stage ui-viewport batch actors)]
     (input/set-processor input stage)
-    (assoc context :gdl.context/stage stage)))
+    stage))
 
 (defn dispose! []
   (VisUI/dispose))

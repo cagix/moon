@@ -1,4 +1,4 @@
 (ns cdq.time)
 
-(defn create [context]
-  (assoc context :gdl.context/elapsed-time 0))
+(defn create [_context _config]
+  0)

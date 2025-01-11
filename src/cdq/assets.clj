@@ -33,14 +33,9 @@
     (.finishLoading manager)
     manager))
 
-(defn create [{:keys [gdl/config
-                      gdl/files] :as context}]
-  (assoc context
-         :gdl/assets
-         (blocking-load-all
-          (let [folder (::folder config)]
-            (for [[asset-type exts] {:sound   #{"wav"}
-                                     :texture #{"png" "bmp"}}
-                  file (map #(str/replace-first % folder "")
-                            (files/search-by-extensions files folder exts))]
-              [file asset-type])))))
+(defn create [{:keys [gdl/files]} {:keys [folder type-exts]}]
+  (blocking-load-all
+   (for [[asset-type exts] type-exts
+         file (map #(str/replace-first % folder "")
+                   (files/search-by-extensions files folder exts))]
+     [file asset-type])))

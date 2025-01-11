@@ -4,12 +4,11 @@
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn create [{:keys [gdl.graphics/batch
-                      gdl.graphics/world-unit-scale] :as context}]
-  (assoc context :gdl.graphics/tiled-map-renderer
-         (memoize (fn [tiled-map]
-                    (OrthogonalTiledMapRenderer. tiled-map
-                                                 (float world-unit-scale)
-                                                 batch)))))
+                      gdl.graphics/world-unit-scale]} _config]
+  (memoize (fn [tiled-map]
+             (OrthogonalTiledMapRenderer. tiled-map
+                                          (float world-unit-scale)
+                                          batch))))
 
 (extend-type OrthogonalTiledMapRenderer
   gdl.graphics.tiled-map-renderer/TiledMapRenderer

@@ -21,7 +21,7 @@
                 height]
          :as config} (-> "config.edn" io/resource slurp edn/read-string)
         render-fns (map require-ns-resolve (:render-fns config))
-        create-fns (map require-ns-resolve (:create-fns config))]
+        create-fns (:create-fns config)]
     (when-let [icon (:icon config)]
       (.setIconImage (Taskbar/getTaskbar)
                      (.getImage (Toolkit/getDefaultToolkit)
@@ -30,8 +30,10 @@
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [com.badlogic.gdx.ApplicationAdapter] []
                          (create []
-                           (reset! state (reduce (fn [context f]
-                                                   (f context))
+                           (reset! state (reduce (fn [context [k [var params]]]
+                                                   (let [f (require-ns-resolve var)]
+                                                     (assert f (str var))
+                                                     (assoc context k (f context params))))
                                                  {:gdl/app           Gdx/app
                                                   :gdl/audio         Gdx/audio
                                                   :gdl/config        config
