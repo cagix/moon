@@ -51,6 +51,7 @@
 
  :create-fns [cdq.assets/create
               cdq.db/create
+              cdq.graphics.batch/create
               cdq.create/game
               cdq.create/add-new-game-context]
 

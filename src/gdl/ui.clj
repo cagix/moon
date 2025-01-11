@@ -333,8 +333,10 @@
     (clicked [event x y]
       (clicked-fn {:event event :x x :y y}))))
 
-(defn setup-stage! [{:keys [context/g
-                            gdl/input]}
+(defn setup-stage! [{:keys [gdl.graphics/batch
+                            gdl/input
+                            context/g
+                            ]}
                     {:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
@@ -354,7 +356,7 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
   (let [stage (create-stage (:ui-viewport g)
-                            (:batch g)
+                            batch
                             nil)]
     (input/set-processor input stage)
     stage))

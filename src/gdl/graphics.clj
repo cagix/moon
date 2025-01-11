@@ -14,7 +14,6 @@
             [gdl.graphics.color :as color]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
 
@@ -68,8 +67,6 @@
 (defrecord Graphics []
   gdl.utils/Disposable
   (dispose [this]
-    ;(println "Disposing batch")
-    (dispose (:batch this))
     ;(println "Disposing sd-texture")
     (dispose (:sd-texture this))
     ;(println "Disposing cursors")
@@ -83,9 +80,11 @@
     ;(println "Resizing world-viewport.")
     (viewport/resize (:world-viewport this) width height :center-camera? false)))
 
-(defn create [{:keys [gdl/files] :as context} config]
-  (let [batch (SpriteBatch.)
-        sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
+(defn create [{:keys [gdl/files
+                      gdl.graphics/batch]
+               :as context}
+              config]
+  (let [sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                   (pixmap/set-color color/white)
                                   (pixmap/draw-pixel 0 0))
                          texture (texture/create pixmap)]
@@ -93,8 +92,7 @@
                      texture)
         world-unit-scale (float (/ (:tile-size config)))]
     (map->Graphics
-     {:batch batch
-      :sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
+     {:sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
       :sd-texture sd-texture
       :cursors (create-cursors context (:cursors config))
       :default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
