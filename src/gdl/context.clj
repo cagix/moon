@@ -27,7 +27,7 @@
             [gdl.scene2d.group :as group])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
-(defn get-sound [{::keys [assets]} sound-name]
+(defn get-sound [{:keys [gdl.context/assets]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
        assets))
@@ -35,7 +35,7 @@
 (defn play-sound [c sound-name]
   (audio/play (get-sound c sound-name)))
 
-(defn- texture-region [{::keys [assets]} path]
+(defn- texture-region [{:keys [gdl.context/assets]} path]
   (texture-region/create (assets path)))
 
 (defn sprite [{:keys [context/g] :as c} path]
@@ -163,7 +163,9 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{::keys [unit-scale] :keys [context/g]} {:keys [font x y text h-align up? scale]}]
+  [{:keys [gdl.context/unit-scale
+           context/g]}
+   {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
   (let [font (or font (:default-font g))
         data (font/data font)
@@ -200,7 +202,9 @@
   (if color (batch/set-color batch color/white)))
 
 (defn draw-image
-  [{::keys [unit-scale] :keys [context/g]} {:keys [texture-region color] :as image} position]
+  [{:keys [gdl.context/unit-scale
+           context/g]}
+   {:keys [texture-region color] :as image} position]
   (draw-texture-region (:batch g)
                        texture-region
                        position
@@ -209,7 +213,9 @@
                        color))
 
 (defn draw-rotated-centered
-  [{::keys [unit-scale] :keys [context/g]} {:keys [texture-region color] :as image} rotation [x y]]
+  [{:keys [gdl.context/unit-scale
+           context/g]}
+   {:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image unit-scale)]
     (draw-texture-region (:batch g)
                          texture-region
@@ -234,7 +240,7 @@
                     viewport
                     #(with-line-width c unit-scale
                        (fn []
-                         (draw-fn (assoc c ::unit-scale unit-scale))))))
+                         (draw-fn (assoc c :gdl.context/unit-scale unit-scale))))))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -268,22 +274,22 @@
              (:world-unit-scale g)
              render-fn))
 
-(def stage ::stage)
+(def stage :gdl.context/stage)
 
-(defn build [{::keys [db] :as c} id]
+(defn build [{:keys [gdl.context/db] :as c} id]
   (db/build db id c))
 
-(defn build-all [{::keys [db] :as c} property-type]
+(defn build-all [{:keys [gdl.context/db] :as c} property-type]
   (db/build-all db property-type c))
 
-(defn add-actor [{::keys [stage]} actor]
+(defn add-actor [{:keys [gdl.context/stage]} actor]
   (stage/add-actor stage actor))
 
-(defn reset-stage [{::keys [stage]} new-actors]
+(defn reset-stage [{:keys [gdl.context/stage]} new-actors]
   (stage/clear stage)
   (run! #(stage/add-actor stage %) new-actors))
 
-(defn mouse-on-actor? [{::keys [stage] :as c}]
+(defn mouse-on-actor? [{:keys [gdl.context/stage] :as c}]
   (let [[x y] (mouse-position c)]
     (stage/hit stage x y true)))
 
