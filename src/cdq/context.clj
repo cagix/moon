@@ -1,7 +1,7 @@
 (ns cdq.context
   (:require [gdl.audio :as audio]
             [gdl.graphics :as graphics]
-            [clojure.rand :refer [rand-int-between]]
+            [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
             [cdq.world.potential-field :as potential-field]
             [cdq.effect :as effect]
