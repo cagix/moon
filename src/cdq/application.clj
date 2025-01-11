@@ -7,7 +7,7 @@
             [clojure.java.io :as io]
             [clojure.lwjgl.system :as lwjgl-system]
             [clojure.platform.gdx]
-            [clojure.utils :refer [dispose disposable? resize resizable?]])
+            [clojure.utils :refer [dispose disposable? resize resizable? require-ns-resolve]])
   (:gen-class))
 
 (def state (atom nil))
