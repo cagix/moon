@@ -11,7 +11,7 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics :as graphics]
             [clojure.graphics.2d.batch :as batch]
-            [clojure.input :as input]
+            [gdl.input :as input]
             [clojure.string :as str]
             [gdl.utils :refer [defcomponent safe-get with-err-str mapvals]]
             [gdl.audio :as audio]

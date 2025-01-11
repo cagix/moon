@@ -16,7 +16,7 @@
             [cdq.entity.state :as state]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
-            [clojure.input :as input]
+            [gdl.input :as input]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.ui.button-group :as button-group]
             [cdq.effect-context :as effect-ctx]

@@ -1,6 +1,6 @@
 (ns gdl.ui
-  (:require [clojure.input :as input]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+            [gdl.input :as input]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
             [gdl.scene2d.stage :as stage]

@@ -1,4 +1,4 @@
-(ns clojure.input
+(ns gdl.input
   "Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on all backends.
 
   Instead of polling for events, one can process all input events with an InputProcessor. You can set the InputProcessor via the setInputProcessor(InputProcessor) method. It will be called before the ApplicationListener.render() method in each frame.

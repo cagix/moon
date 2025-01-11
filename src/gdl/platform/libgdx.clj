@@ -2,11 +2,11 @@
   (:require [clojure.gdx.interop :refer [k->input-button k->input-key]]
             [clojure.graphics]
             [clojure.graphics.2d.batch]
-            [clojure.input]
             [gdl.app]
             [gdl.audio]
             [gdl.files]
             [gdl.files.file-handle]
+            [gdl.input]
             [gdl.utils]))
 
 (extend-type com.badlogic.gdx.Application
@@ -38,7 +38,7 @@
     (.path this)))
 
 (extend-type com.badlogic.gdx.Input
-  clojure.input/Input
+  gdl.input/Input
   (x [this]
     (.getX this))
 

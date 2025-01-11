@@ -1,7 +1,7 @@
 (ns cdq.editor.actors
   (:require [gdl.app.desktop :refer [state]]
             [clojure.edn :as edn]
-            [clojure.input :as input]
+            [gdl.input :as input]
             [clojure.string :as str]
             [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [gdl.assets :as assets]
