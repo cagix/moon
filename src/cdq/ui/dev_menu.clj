@@ -1,7 +1,11 @@
 (ns cdq.ui.dev-menu
   (:require [gdl.context :as c]
+            [gdl.graphics :as graphics]
+            [gdl.graphics.camera :as cam]
+            [gdl.scene2d.group :refer [add-actor!]]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.scene2d.group :refer [add-actor!]])
+            [gdl.utils :refer [readable-number dev-mode?]]
+            [cdq.context :as world])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; gdl !!
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))
@@ -68,3 +72,48 @@
                       :fill-x? true
                       :fill-y? true}]]
              :fill-parent? true}))
+
+(def ^:private help-text
+  "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
+
+(defn- dev-menu-config [c]
+  {:menus [{:label "World"
+            :items (for [world (c/build-all c :properties/worlds)]
+                     {:label (str "Start " (:property/id world))
+                      :on-click
+                      (fn [_context])
+                      ;#(world/create % (:property/id world))
+
+                      })}
+           ; TODO fixme does not work because create world uses create-into which checks key is not preseent
+           ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
+           ; => also world-change should be supported, use component systems
+           {:label "Help"
+            :items [{:label help-text}]}]
+   :update-labels [{:label "Mouseover-entity id"
+                    :update-fn (fn [c]
+                                 (when-let [entity (world/mouseover-entity c)]
+                                   (:entity/id entity)))
+                    :icon "images/mouseover.png"}
+                   {:label "elapsed-time"
+                    :update-fn (fn [{:keys [gdl.context/elapsed-time]}]
+                                 (str (readable-number elapsed-time) " seconds"))
+                    :icon "images/clock.png"}
+                   {:label "paused?"
+                    :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
+                   {:label "GUI"
+                    :update-fn c/mouse-position}
+                   {:label "World"
+                    :update-fn #(mapv int (c/world-mouse-position %))}
+                   {:label "Zoom"
+                    :update-fn #(cam/zoom (:camera (:gdl.graphics/world-viewport %)))
+                    :icon "images/zoom.png"}
+                   {:label "FPS"
+                    :update-fn (fn [{:keys [gdl/graphics]}]
+                                 (graphics/frames-per-second graphics))
+                    :icon "images/fps.png"}]})
+
+(defn create [c]
+  (if dev-mode?
+    (table c (dev-menu-config c))
+    (ui-actor {})))

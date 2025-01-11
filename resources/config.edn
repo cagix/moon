@@ -50,6 +50,7 @@
  ; always assoc :gdl/foo (cdq.foo/create ...) ... !
 
  ; TODO dispose/resize also manually ?
+ ; -=> lwjgl3 is only pipelining
 
  :create-fns [cdq.assets/create
               cdq.db/create
@@ -98,7 +99,7 @@
  :cdq.graphics.world-viewport/height  900
 
  :gdl.ui/skin-scale :x1
- :gdl.ui/actors [cdq.create/dev-menu
+ :gdl.ui/actors [cdq.ui.dev-menu/create
                  cdq.create/action-bar-table
                  cdq.create/hp-mana-bar
                  cdq.create/widgets-windows
