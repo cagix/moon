@@ -334,11 +334,11 @@
     (clicked [event x y]
       (clicked-fn {:event event :x x :y y}))))
 
-(defn setup-stage! [{:keys [gdl.graphics/batch
-                            gdl/input
-                            gdl.graphics/ui-viewport]
-                     :as context}
-                    config]
+(defn setup-stage! [{:keys [gdl/config
+                            gdl.graphics/batch
+                            gdl.graphics/ui-viewport
+                            gdl/input]
+                     :as context}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...

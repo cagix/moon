@@ -4,7 +4,7 @@
             [gdl.graphics.color :as color]
             [gdl.utils :refer [dispose]]))
 
-(defn create [context _config]
+(defn create [context]
   (assoc context :gdl.graphics/shape-drawer-texture
          (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                         (pixmap/set-color color/white)

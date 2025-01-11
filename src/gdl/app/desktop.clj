@@ -31,9 +31,10 @@
     (Lwjgl3Application. (proxy [com.badlogic.gdx.ApplicationAdapter] []
                          (create []
                            (reset! state (reduce (fn [context f]
-                                                   (f context config))
+                                                   (f context))
                                                  {:gdl/app           Gdx/app
                                                   :gdl/audio         Gdx/audio
+                                                  :gdl/config        config
                                                   :gdl/files         Gdx/files
                                                   :gdl/graphics      Gdx/graphics
                                                   :gdl/input         Gdx/input

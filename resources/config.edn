@@ -106,6 +106,8 @@
                  cdq.ui.player-state/create
                  cdq.ui.player-message/create]
 
+ :cdq.ui.windows/actors [cdq.ui.entity-info-window/create
+                         cdq.widgets.inventory/create]
 
  :world-id :worlds/uf-caves
  :content-grid {:cell-size 16}

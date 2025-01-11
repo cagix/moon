@@ -1,9 +1,9 @@
 (ns cdq.ui.windows
   (:require [gdl.ui :as ui]
-            [cdq.ui.entity-info-window :as entity-info-window]
-            [cdq.widgets.inventory :as inventory]))
+            [gdl.utils :as utils]))
 
-(defn create [c]
+(defn create [{:keys [gdl/config] :as context}]
   (ui/group {:id :windows
-             :actors [(entity-info-window/create c)
-                      (inventory/create c)]}))
+             :actors (map (fn [create]
+                            ((utils/require-ns-resolve create) context))
+                          (::actors config))}))

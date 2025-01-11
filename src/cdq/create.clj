@@ -105,7 +105,7 @@
          (tiled/tm-height tiled-map)
          (constantly false))))
 
-(defn add-new-game-context [context config]
+(defn add-new-game-context [{:keys [gdl/config] :as context}]
   (let [context (safe-merge context
                             {:cdq.context/player-message (atom (:player-message config))})]
     (let [level (generate-level context

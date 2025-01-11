@@ -34,7 +34,7 @@
              with-out-str
              (spit file)))))))
 
-(defn create [context config]
+(defn create [{:keys [gdl/config] :as context}]
   (assoc context :gdl/db
          (let [properties-file (io/resource (::properties config))
                schemas (-> (::schema config) io/resource slurp edn/read-string)

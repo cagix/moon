@@ -10,8 +10,7 @@
 
 (defn create [{:keys [gdl.graphics/batch
                       gdl.graphics/shape-drawer-texture]
-               :as context}
-              _config]
+               :as context}]
   (assoc context :gdl.graphics/shape-drawer
          (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1))))
 

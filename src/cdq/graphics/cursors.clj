@@ -9,10 +9,10 @@
   (dispose [this]
     (run! dispose (vals this))))
 
-(defn create [{:keys [gdl/files
+(defn create [{:keys [gdl/config
+                      gdl/files
                       gdl/graphics]
-               :as context}
-              config]
+               :as context}]
   (assoc context :gdl.graphics/cursors
          (map->Cursors
           (mapvals (fn [[file [hotspot-x hotspot-y]]]

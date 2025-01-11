@@ -33,7 +33,8 @@
     (.finishLoading manager)
     manager))
 
-(defn create [{:keys [gdl/files] :as context} config]
+(defn create [{:keys [gdl/config
+                      gdl/files] :as context}]
   (assoc context
          :gdl/assets
          (blocking-load-all

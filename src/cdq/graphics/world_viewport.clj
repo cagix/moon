@@ -3,7 +3,8 @@
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
-(defn create [{:keys [gdl.graphics/world-unit-scale] :as context} config]
+(defn create [{:keys [gdl/config
+                      gdl.graphics/world-unit-scale] :as context}]
   {:pre [world-unit-scale
          (::width  config)
          (::height config)]}
