@@ -5,7 +5,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]
-            [clojure.input :as input]
+            [gdl.input :as input]
             [gdl.graphics.camera :as cam]
             [gdl.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]

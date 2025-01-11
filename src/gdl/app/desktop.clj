@@ -32,28 +32,22 @@
                          (create []
                            (reset! state (reduce (fn [context f]
                                                    (f context config))
-                                                 ; TODO rename all 'gdl'
-                                                 {:clojure/app           Gdx/app
-                                                  :clojure/audio         Gdx/audio
-                                                  :clojure/files         Gdx/files
-                                                  :clojure/graphics      Gdx/graphics
-                                                  :clojure.graphics/gl   Gdx/gl
-                                                  :clojure.graphics/gl20 Gdx/gl20
-                                                  :clojure.graphics/gl30 Gdx/gl30
-                                                  :clojure.graphics/gl31 Gdx/gl31
-                                                  :clojure.graphics/gl32 Gdx/gl32
-                                                  :clojure/input         Gdx/input
-                                                  :clojure/net           Gdx/net}
+                                                 {:gdl/app           Gdx/app
+                                                  :gdl/audio         Gdx/audio
+                                                  :gdl/files         Gdx/files
+                                                  :gdl/graphics      Gdx/graphics
+                                                  :gdl/input         Gdx/input
+                                                  :gdl/net           Gdx/net}
                                                  create-fns)))
 
                          (dispose []
-                           ; don't dispose internal classes (:clojure/graphics,etc. )
+                           ; don't dispose internal classes (:gdl/graphics,etc. )
                            ; which Lwjgl3Application will handle
                            ; otherwise app crashed w. asset-manager
                            ; which was disposed after graphics
                            ; -> so there is a certain order to cleanup...
                            (doseq [[k value] @state
-                                   :when (and (not (= (namespace k) "clojure.gdx")) ; TODO FIXME (test?)
+                                   :when (and (not (= (namespace k) "gdl"))
                                               (disposable? value))]
                              (when (:log-dispose-lifecycle? config)
                                (println "Disposing " k " - " value))
@@ -78,5 +72,5 @@
                           (.setForegroundFPS fps)))))
 
 (defn post-runnable [f]
-  (app/post-runnable (:clojure/app @state)
+  (app/post-runnable (:gdl/app @state)
                      #(f @state)))

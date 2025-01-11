@@ -51,7 +51,7 @@
                   :up? true})))
 
 (defn- check-remove-message [{:keys [cdq.context/player-message
-                                     clojure/graphics]}]
+                                     gdl/graphics]}]
   (when (:text @player-message)
     (swap! player-message update :counter + (graphics/delta-time graphics))
     (when (>= (:counter @player-message)
@@ -127,7 +127,7 @@
                     :update-fn #(cam/zoom (:context/g %))
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn (fn [{:keys [clojure/graphics]}]
+                    :update-fn (fn [{:keys [gdl/graphics]}]
                                  (graphics/frames-per-second graphics))
                     :icon "images/fps.png"}]})
 

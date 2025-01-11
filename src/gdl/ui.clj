@@ -279,7 +279,7 @@
       (if (Actor/.getStage this)
         (let [context (application-state this)]
           (assert context)
-          (assert (:clojure/input context)
+          (assert (:gdl/input context)
                   (str "(pr-str (sort (keys context))): " (pr-str (sort (keys context)))))
           (when act
             (act (application-state this))))
@@ -334,7 +334,7 @@
       (clicked-fn {:event event :x x :y y}))))
 
 (defn setup-stage! [{:keys [context/g
-                            clojure/input]}
+                            gdl/input]}
                     {:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play

@@ -494,7 +494,7 @@
 
 (defn update-paused-state [{:keys [cdq.context/player-eid
                                    error ; FIXME ! not `::` keys so broken !
-                                   clojure/input
+                                   gdl/input
                                    ] :as c}]
   (assoc c :cdq.context/paused? (or error
                                     (and pausing?
@@ -502,7 +502,7 @@
                                          (not (or (input/key-just-pressed? input :p)
                                                   (input/key-pressed? input :space)))))))
 
-(defn- update-time [{:keys [clojure/graphics] :as context}]
+(defn- update-time [{:keys [gdl/graphics] :as context}]
   (let [delta-ms (min (graphics/delta-time graphics) max-delta-time)]
     (-> context
         (update :gdl.context/elapsed-time + delta-ms)
@@ -565,7 +565,7 @@
   {:inventory-window   :i
    :entity-info-window :e})
 
-(defn- check-window-hotkeys [{:keys [clojure/input] :as c}]
+(defn- check-window-hotkeys [{:keys [gdl/input] :as c}]
   (doseq [window-id [:inventory-window
                      :entity-info-window]
           :when (input/key-just-pressed? input (get window-hotkeys window-id))]
@@ -578,7 +578,7 @@
 
 (def close-windows-key :escape)
 
-(defn check-ui-key-listeners [{:keys [clojure/input] :as c}]
+(defn check-ui-key-listeners [{:keys [gdl/input] :as c}]
   (check-window-hotkeys c)
   (when (input/key-just-pressed? input close-windows-key)
     (close-all-windows (c/stage c)))
@@ -989,7 +989,7 @@
   (state/pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure/input] :as c}]
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [gdl/input] :as c}]
     (if-let [movement-vector (player-movement-vector input)]
       (send-event! c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
@@ -1072,7 +1072,7 @@
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure/input] :as c}]
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [gdl/input] :as c}]
     (when (and (input/button-just-pressed? input :left)
                (world-item? c))
       (send-event! c eid :drop-item)))
@@ -1094,7 +1094,7 @@
   (state/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (tick! [[_ {:keys [movement-vector]}] eid {:keys [clojure/input] :as c}]
+  (tick! [[_ {:keys [movement-vector]}] eid {:keys [gdl/input] :as c}]
     (if-let [movement-vector (player-movement-vector input)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})

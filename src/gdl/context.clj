@@ -58,7 +58,7 @@
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{:keys [clojure/graphics context/g]}
+(defn set-cursor [{:keys [gdl/graphics context/g]}
                   cursor-key]
   (graphics/set-cursor graphics (safe-get (:cursors g) cursor-key)))
 
@@ -256,11 +256,11 @@
     (viewport/unproject viewport mouse-x mouse-y)))
 
 (defn mouse-position [{:keys [context/g
-                              clojure/input]}]
+                              gdl/input]}]
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position input (:ui-viewport g))))
 
-(defn world-mouse-position [{:keys [context/g clojure/input]}]
+(defn world-mouse-position [{:keys [context/g gdl/input]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position input (:world-viewport g)))
@@ -398,7 +398,7 @@
 (def ^:private zoom-speed 0.025)
 
 (defn check-camera-controls [{:keys [context/g
-                                     clojure/input]
+                                     gdl/input]
                               :as context}]
   (let [camera (:camera (:world-viewport g))]
     (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))

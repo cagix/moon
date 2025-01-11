@@ -3,7 +3,7 @@
             [clojure.string :as str]
             [gdl.utils.files :as files]))
 
-(defn create [{:keys [clojure/files] :as context} config]
+(defn create [{:keys [gdl/files] :as context} config]
   (assoc context
          :gdl/assets
          (assets/blocking-load-all
