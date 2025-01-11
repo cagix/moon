@@ -1,5 +1,5 @@
 (ns cdq.editor.actors
-  (:require [clojure.app.lwjgl :refer [state]]
+  (:require [gdl.app.desktop :refer [state]]
             [clojure.edn :as edn]
             [clojure.input :as input]
             [clojure.string :as str]

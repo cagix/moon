@@ -1,27 +1,34 @@
-(ns gdl.backends.lwjgl
+(ns gdl.app.desktop
   (:require [clojure.app :as app]
             [clojure.edn :as edn]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.utils.shared-library-loader :refer [mac-osx?]]
-            [clojure.java.awt :as awt]
             [clojure.java.io :as io]
-            [clojure.lwjgl.system :as lwjgl-system]
             [clojure.platform.gdx]
             [clojure.utils :refer [dispose disposable? resize resizable? require-ns-resolve]])
-  (:import (com.badlogic.gdx Gdx))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
+                                             Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.utils SharedLibraryLoader)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration))
   (:gen-class))
 
 (def state (atom nil))
 
 (defn -main []
-  (let [config (-> "config.edn" io/resource slurp edn/read-string)
+  (let [{:keys [title
+                fps
+                width
+                height]
+         :as config} (-> "config.edn" io/resource slurp edn/read-string)
         render-fns (map require-ns-resolve (:render-fns config))
         create-fns (map require-ns-resolve (:create-fns config))]
     (when-let [icon (:icon config)]
-      (awt/set-taskbar-icon icon))
-    (when (and mac-osx?)
-      (lwjgl-system/set-glfw-library-name "glfw_async"))
-    (lwjgl/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
+      (.setIconImage (Taskbar/getTaskbar)
+                     (.getImage (Toolkit/getDefaultToolkit)
+                                (io/resource icon))))
+    (when SharedLibraryLoader/isMac
+      (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+    (Lwjgl3Application. (proxy [com.badlogic.gdx.ApplicationAdapter] []
                          (create []
                            (reset! state (reduce (fn [context f]
                                                    (f context config))
@@ -64,7 +71,10 @@
                              (when (:log-resize-lifecycle? config)
                                (println "Resizing " k " - " value))
                              (resize value width height))))
-                       config)))
+                        (doto (Lwjgl3ApplicationConfiguration.)
+                          (.setTitle title)
+                          (.setWindowedMode width height)
+                          (.setForegroundFPS fps)))))
 
 (defn post-runnable [f]
   (app/post-runnable (:clojure/app @state)
