@@ -1,7 +1,7 @@
 (ns gdl.app.desktop
-  (:require [clojure.app :as app]
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [gdl.app :as app]
             [clojure.platform.gdx]
             [clojure.utils :refer [dispose disposable? resize resizable? require-ns-resolve]])
   (:import (com.badlogic.gdx Gdx)

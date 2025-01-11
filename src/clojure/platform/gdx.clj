@@ -1,16 +1,16 @@
 (ns clojure.platform.gdx
-  (:require [clojure.app]
-            [clojure.files]
+  (:require [clojure.files]
             [clojure.files.file-handle]
             [clojure.gdx.interop :refer [k->input-button k->input-key]]
             [clojure.graphics]
             [clojure.graphics.2d.batch]
             [clojure.input]
             [clojure.utils]
+            [gdl.app]
             [gdl.audio]))
 
 (extend-type com.badlogic.gdx.Application
-  clojure.app/Application
+  gdl.app/Application
   (post-runnable [this runnable]
     (.postRunnable this runnable)))
 
