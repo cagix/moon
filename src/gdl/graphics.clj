@@ -6,9 +6,7 @@
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui])
-  (:import (com.badlogic.gdx.graphics Colors)
-           ; TODO gdl.graphics.!
-           (gdl OrthogonalTiledMapRenderer)))
+  (:import (com.badlogic.gdx.graphics Colors)))
 
 (defn- world-viewport [{:keys [width height]} world-unit-scale]
   (assert world-unit-scale)
@@ -18,12 +16,6 @@
     (camera/set-to-ortho camera world-width world-height :y-down? false)
     (fit-viewport/create world-width world-height camera)))
 
-(defn- cached-tiled-map-renderer [batch world-unit-scale]
-  (memoize (fn [tiled-map]
-             (OrthogonalTiledMapRenderer. tiled-map
-                                          (float world-unit-scale)
-                                          batch))))
-
 (defrecord Graphics []
   gdl.utils/Resizable
   (resize [this width height]
@@ -32,14 +24,11 @@
     ;(println "Resizing world-viewport.")
     (viewport/resize (:world-viewport this) width height :center-camera? false)))
 
-(defn create [{:keys [gdl.graphics/batch
-                      gdl.graphics/shape-drawer-texture
-                      gdl.graphics/world-unit-scale]
-               :as context}
+(defn create [{:keys [gdl.graphics/shape-drawer-texture
+                      gdl.graphics/world-unit-scale]}
               config]
   (map->Graphics
-   {:tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
-    :ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
+   {:ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
                                       (:height (:ui-viewport config))
                                       (orthographic-camera/create))
     :world-viewport (world-viewport (:world-viewport config) world-unit-scale)}))

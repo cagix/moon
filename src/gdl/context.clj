@@ -5,6 +5,7 @@
             [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.interop :as interop]
+            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.scene2d.stage :as stage]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.math.utils :refer [clamp]]
@@ -22,10 +23,8 @@
             [gdl.graphics.camera :as cam]
             [cdq.malli :as m]
             [cdq.schema :as schema]
-            [gdl.tiled :as tiled]
             [gdl.ui :as ui]
-            [gdl.scene2d.group :as group])
-  (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
+            [gdl.scene2d.group :as group]))
 
 (defn get-sound [{:keys [gdl/assets]} sound-name]
   (->> sound-name
@@ -63,18 +62,6 @@
                   cursor-key]
   (graphics/set-cursor graphics (safe-get cursors cursor-key)))
 
-(defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
-  (.setColorSetter this (reify ColorSetter
-                          (apply [_ color x y]
-                            (color-setter color x y))))
-  (.setView this camera)
-  (->> tiled-map
-       tiled/layers
-       (filter tiled/visible?)
-       (map (partial tiled/layer-index tiled-map))
-       int-array
-       (.render this)))
-
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
 
@@ -83,11 +70,14 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [{:keys [context/g]} tiled-map color-setter]
-  (draw-tiled-map* ((:tiled-map-renderer g) tiled-map)
-                   tiled-map
-                   color-setter
-                   (:camera (:world-viewport g))))
+  [{:keys [gdl.graphics/tiled-map-renderer
+           context/g]}
+   tiled-map
+   color-setter]
+  (tiled-map-renderer/draw (tiled-map-renderer tiled-map)
+                           tiled-map
+                           color-setter
+                           (:camera (:world-viewport g))))
 
 (defn- text-height [font text]
   (-> text

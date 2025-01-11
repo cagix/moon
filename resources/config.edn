@@ -57,6 +57,7 @@
               cdq.graphics.cursors/create
               cdq.graphics.default-font/create
               cdq.graphics.world-unit-scale/create
+              cdq.graphics.tiled-map-renderer/create
               cdq.create/game
               cdq.create/add-new-game-context]
 
