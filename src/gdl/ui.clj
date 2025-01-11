@@ -6,6 +6,7 @@
             [gdl.scene2d.stage :as stage]
             [gdl.scene2d.ui.table :as table]
             [gdl.scene2d.ui.utils :as scene2d.utils]
+            [gdl.utils :as utils]
             [clojure.gdx.vis-ui.widgets.separator :as separator])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -355,7 +356,10 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  (let [stage (create-stage ui-viewport batch nil)]
+  (let [actors (map (fn [create]
+                      ((utils/require-ns-resolve create) context))
+                    (::actors config))
+        stage (create-stage ui-viewport batch actors)]
     (input/set-processor input stage)
     (assoc context :gdl.context/stage stage)))
 

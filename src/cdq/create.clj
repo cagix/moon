@@ -57,7 +57,7 @@
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))
 
-(defn- player-message []
+(defn- player-message [_context]
   (ui-actor {:draw draw-player-message
              :act  check-remove-message}))
 
@@ -173,14 +173,6 @@
   (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
                                           %)}))
 
-(defn- stage-actors [c]
-  [(dev-menu c)
-   (action-bar-table c)
-   (hp-mana-bar c)
-   (widgets-windows c)
-   (widgets-player-state-draw-component c)
-   (player-message)])
-
 (defn- create-content-grid [tiled-map {:keys [cell-size]}]
   (content-grid/create {:cell-size cell-size
                         :width  (tiled/tm-width  tiled-map)
@@ -279,9 +271,6 @@
 (defn add-new-game-context [context config]
   (let [context (safe-merge context
                             {:cdq.context/player-message (atom (:player-message config))})]
-
-    (c/reset-stage context (stage-actors context))
-
     (let [level (generate-level context
                                 (c/build context (:world-id config)))
           tiled-map (:tiled-map level)
