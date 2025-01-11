@@ -1,13 +1,11 @@
 (ns gdl.graphics
   (:require [gdl.files :as files]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.utils.screen :as screen]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
-            [clojure.graphics :as graphics]
-            [gdl.utils :refer [dispose mapvals]]
+            [gdl.utils :refer [dispose]]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors Texture$TextureFilter)
@@ -52,20 +50,9 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn- create-cursors [{:keys [gdl/files
-                               gdl/graphics]} cursors]
-  (mapvals (fn [[file [hotspot-x hotspot-y]]]
-             (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
-                   cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-               (dispose pixmap)
-               cursor))
-           cursors))
-
 (defrecord Graphics []
   gdl.utils/Disposable
   (dispose [this]
-    ;(println "Disposing cursors")
-    (run! dispose (vals (:cursors this)))
     ;(println "Disposing default-font")
     (dispose (:default-font this)))
   gdl.utils/Resizable
@@ -82,8 +69,7 @@
               config]
   (let [world-unit-scale (float (/ (:tile-size config)))]
     (map->Graphics
-     {:cursors (create-cursors context (:cursors config))
-      :default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
+     {:default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
       :world-unit-scale world-unit-scale
       :tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
       :ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
