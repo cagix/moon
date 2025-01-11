@@ -1,13 +1,13 @@
 (ns gdl.platform.libgdx
-  (:require [clojure.files]
-            [clojure.files.file-handle]
-            [clojure.gdx.interop :refer [k->input-button k->input-key]]
+  (:require [clojure.gdx.interop :refer [k->input-button k->input-key]]
             [clojure.graphics]
             [clojure.graphics.2d.batch]
             [clojure.input]
-            [gdl.utils]
             [gdl.app]
-            [gdl.audio]))
+            [gdl.audio]
+            [gdl.files]
+            [gdl.files.file-handle]
+            [gdl.utils]))
 
 (extend-type com.badlogic.gdx.Application
   gdl.app/Application
@@ -15,7 +15,7 @@
     (.postRunnable this runnable)))
 
 (extend-type com.badlogic.gdx.Files
-  clojure.files/Files
+  gdl.files/Files
   (internal [this path]
     (.internal this path)))
 
@@ -27,7 +27,7 @@
     (.setCursor this cursor)))
 
 (extend-type com.badlogic.gdx.files.FileHandle
-  clojure.files.file-handle/FileHandle
+  gdl.files.file-handle/FileHandle
   (list [this]
     (.list this))
   (directory? [this]

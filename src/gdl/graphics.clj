@@ -1,5 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.files :as files]
+  (:require [gdl.files :as files]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.texture :as texture]

@@ -1,6 +1,6 @@
 (ns gdl.utils.files
-  (:require [clojure.files :as files]
-            [clojure.files.file-handle :as fh]))
+  (:require [gdl.files :as files]
+            [gdl.files.file-handle :as fh]))
 
 (defn search-by-extensions [files folder extensions]
   (loop [[file & remaining] (fh/list (files/internal files folder))

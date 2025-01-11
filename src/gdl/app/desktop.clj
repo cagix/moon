@@ -32,6 +32,7 @@
                          (create []
                            (reset! state (reduce (fn [context f]
                                                    (f context config))
+                                                 ; TODO rename all 'gdl'
                                                  {:clojure/app           Gdx/app
                                                   :clojure/audio         Gdx/audio
                                                   :clojure/files         Gdx/files
