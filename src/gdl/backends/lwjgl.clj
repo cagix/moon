@@ -1,7 +1,6 @@
 (ns gdl.backends.lwjgl
   (:require [clojure.app :as app]
             [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :refer [mac-osx?]]
             [clojure.java.awt :as awt]
@@ -9,6 +8,7 @@
             [clojure.lwjgl.system :as lwjgl-system]
             [clojure.platform.gdx]
             [clojure.utils :refer [dispose disposable? resize resizable? require-ns-resolve]])
+  (:import (com.badlogic.gdx Gdx))
   (:gen-class))
 
 (def state (atom nil))
@@ -25,7 +25,17 @@
                          (create []
                            (reset! state (reduce (fn [context f]
                                                    (f context config))
-                                                 (gdx/context)
+                                                 {:clojure/app           Gdx/app
+                                                  :clojure/audio         Gdx/audio
+                                                  :clojure/files         Gdx/files
+                                                  :clojure/graphics      Gdx/graphics
+                                                  :clojure.graphics/gl   Gdx/gl
+                                                  :clojure.graphics/gl20 Gdx/gl20
+                                                  :clojure.graphics/gl30 Gdx/gl30
+                                                  :clojure.graphics/gl31 Gdx/gl31
+                                                  :clojure.graphics/gl32 Gdx/gl32
+                                                  :clojure/input         Gdx/input
+                                                  :clojure/net           Gdx/net}
                                                  create-fns)))
 
                          (dispose []
@@ -35,7 +45,7 @@
                            ; which was disposed after graphics
                            ; -> so there is a certain order to cleanup...
                            (doseq [[k value] @state
-                                   :when (and (not (= (namespace k) "clojure.gdx")) ; TODO FIXME
+                                   :when (and (not (= (namespace k) "clojure.gdx")) ; TODO FIXME (test?)
                                               (disposable? value))]
                              (when (:log-dispose-lifecycle? config)
                                (println "Disposing " k " - " value))
