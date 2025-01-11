@@ -56,6 +56,7 @@
               cdq.graphics.shape-drawer/create
               cdq.graphics.cursors/create
               cdq.graphics.default-font/create
+              cdq.graphics.world-unit-scale/create
               cdq.create/game
               cdq.create/add-new-game-context]
 
@@ -82,9 +83,10 @@
                                   :size 16
                                   :quality-scaling 2}
 
+ :cdq.graphics.world-unit-scale/tile-size 48
+
  :ui {:skin-scale :x1}
- :graphics {:tile-size 48
-            :ui-viewport    {:width 1440 :height 900}
+ :graphics {:ui-viewport    {:width 1440 :height 900}
             :world-viewport {:width 1440 :height 900}}
  :world-id :worlds/uf-caves
  :content-grid {:cell-size 16}

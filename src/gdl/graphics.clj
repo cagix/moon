@@ -33,18 +33,16 @@
     (viewport/resize (:world-viewport this) width height :center-camera? false)))
 
 (defn create [{:keys [gdl.graphics/batch
-                      gdl.graphics/shape-drawer-texture]
+                      gdl.graphics/shape-drawer-texture
+                      gdl.graphics/world-unit-scale]
                :as context}
               config]
-  (let [world-unit-scale (float (/ (:tile-size config)))]
-    (map->Graphics
-     {:world-unit-scale world-unit-scale
-      :tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
-      :ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
-                                        (:height (:ui-viewport config))
-                                        (orthographic-camera/create))
-      :world-viewport (world-viewport (:world-viewport config) world-unit-scale)
-      })))
+  (map->Graphics
+   {:tiled-map-renderer (cached-tiled-map-renderer batch world-unit-scale)
+    :ui-viewport (fit-viewport/create (:width  (:ui-viewport config))
+                                      (:height (:ui-viewport config))
+                                      (orthographic-camera/create))
+    :world-viewport (world-viewport (:world-viewport config) world-unit-scale)}))
 
 (defn clear-screen [context]
   (screen/clear color/black)

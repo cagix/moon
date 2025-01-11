@@ -38,23 +38,23 @@
 (defn- texture-region [{:keys [gdl/assets]} path]
   (texture-region/create (assets path)))
 
-(defn sprite [{:keys [context/g] :as c} path]
-  (sprite/create (:world-unit-scale g)
+(defn sprite [{:keys [gdl.graphics/world-unit-scale] :as c} path]
+  (sprite/create world-unit-scale
                  (texture-region c path)))
 
-(defn sub-sprite [{:keys [context/g]} sprite xywh]
-  (sprite/sub (:world-unit-scale g)
+(defn sub-sprite [{:keys [gdl.graphics/world-unit-scale]} sprite xywh]
+  (sprite/sub world-unit-scale
               sprite
               xywh))
 
-(defn sprite-sheet [{:keys [context/g] :as c} path tilew tileh]
-  (sprite/sheet (:world-unit-scale g)
+(defn sprite-sheet [{:keys [gdl.graphics/world-unit-scale] :as c} path tilew tileh]
+  (sprite/sheet world-unit-scale
                 (texture-region c path)
                 tilew
                 tileh))
 
-(defn from-sprite-sheet [{:keys [context/g]} sprite-sheet xy]
-  (sprite/from-sheet (:world-unit-scale g)
+(defn from-sprite-sheet [{:keys [gdl.graphics/world-unit-scale]} sprite-sheet xy]
+  (sprite/from-sheet world-unit-scale
                      sprite-sheet
                      xy))
 
@@ -207,13 +207,14 @@
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position input (:world-viewport g)))
 
-(defn pixels->world-units [{:keys [context/g]} pixels]
-  (* (int pixels) (:world-unit-scale g)))
+(defn pixels->world-units [{:keys [gdl.graphics/world-unit-scale]} pixels]
+  (* (int pixels) world-unit-scale))
 
-(defn draw-on-world-view [{:keys [context/g] :as c} render-fn]
+(defn draw-on-world-view [{:keys [gdl.graphics/world-unit-scale
+                                  context/g] :as c} render-fn]
   (draw-with c
              (:world-viewport g)
-             (:world-unit-scale g)
+             world-unit-scale
              render-fn))
 
 (def stage :gdl.context/stage)
