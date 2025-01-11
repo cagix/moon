@@ -4,7 +4,7 @@
             [gdl.graphics.camera :as cam]
             [gdl.scene2d.group :refer [add-actor!]]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.utils :refer [readable-number dev-mode?]]
+            [gdl.utils :refer [readable-number]]
             [cdq.context :as world])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; gdl !!
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
@@ -114,6 +114,4 @@
                     :icon "images/fps.png"}]})
 
 (defn create [c]
-  (if dev-mode?
-    (table c (dev-menu-config c))
-    (ui-actor {})))
+  (table c (dev-menu-config c)))

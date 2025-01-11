@@ -157,8 +157,6 @@
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
 
-(def dev-mode? (= (System/getenv "DEV_MODE") "true"))
-
 (defmacro with-err-str
   "Evaluates exprs in a context in which *err* is bound to a fresh
   StringWriter.  Returns the string created by any nested printing

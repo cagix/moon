@@ -2,7 +2,7 @@
   (:require [gdl.audio :as audio]
             [gdl.graphics :as graphics]
             [gdl.rand :refer [rand-int-between]]
-            [gdl.utils :refer [defsystem defcomponent readable-number dev-mode? define-order sort-by-order safe-merge find-first]]
+            [gdl.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
             [gdl.graphics.shape-drawer :as sd]
             [cdq.world.potential-field :as potential-field]
             [cdq.effect :as effect]
