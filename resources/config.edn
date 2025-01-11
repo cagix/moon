@@ -101,10 +101,11 @@
  :gdl.ui/skin-scale :x1
  :gdl.ui/actors [cdq.ui.dev-menu/create
                  cdq.ui.actionbar/create
-                 cdq.create/hp-mana-bar
-                 cdq.create/widgets-windows
-                 cdq.create/widgets-player-state-draw-component
-                 cdq.create/player-message]
+                 cdq.ui.hp-mana-bar/create
+                 cdq.ui.windows/create
+                 cdq.ui.player-state/create
+                 cdq.ui.player-message/create]
+
 
  :world-id :worlds/uf-caves
  :content-grid {:cell-size 16}
@@ -134,3 +135,9 @@
    graphics ; no dependencies
    stage ; requires graphics batch & ui-viewport.
    world] ; requires everything
+
+; A simple game - a test for the world -
+; just add verbs to it
+; exploration
+; e.g. 1. level open invnetory
+; 2. level swap item -> success? -> next lvl !

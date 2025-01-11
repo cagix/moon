@@ -1,109 +1,14 @@
 (ns cdq.create
   (:require [gdl.utils :refer [dispose safe-merge tile->middle readable-number]]
             [gdl.context :as c]
-            [gdl.graphics :as graphics]
             [gdl.grid2d :as g2d]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]
             [gdl.tiled :as tiled]
-            [gdl.ui :as ui :refer [ui-actor]]
             [cdq.context :refer [spawn-creature mouseover-entity]]
-            [cdq.context.info :as info]
             [cdq.content-grid :as content-grid]
-            [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [cdq.level :refer [generate-level]]
-            [cdq.val-max :as val-max]
-            [cdq.widgets.inventory :as inventory]))
-
-(defn- draw-player-message [{:keys [gdl.graphics/ui-viewport
-                                    cdq.context/player-message] :as c}]
-  (when-let [text (:text @player-message)]
-    (c/draw-text c
-                 {:x (/ (:width ui-viewport) 2)
-                  :y (+ (/ (:height ui-viewport) 2) 200)
-                  :text text
-                  :scale 2.5
-                  :up? true})))
-
-(defn- check-remove-message [{:keys [cdq.context/player-message
-                                     gdl/graphics]}]
-  (when (:text @player-message)
-    (swap! player-message update :counter + (graphics/delta-time graphics))
-    (when (>= (:counter @player-message)
-              (:duration-seconds @player-message))
-      (swap! player-message dissoc :counter :text))))
-
-(defn- player-message [_context]
-  (ui-actor {:draw draw-player-message
-             :act  check-remove-message}))
-
-(defn- render-infostr-on-bar [c infostr x y h]
-  (c/draw-text c
-               {:text infostr
-                :x (+ x 75)
-                :y (+ y 2)
-                :up? true}))
-
-(defn- hp-mana-bar [{:keys [gdl.graphics/ui-viewport] :as c}]
-  (let [rahmen      (c/sprite c "images/rahmen.png")
-        hpcontent   (c/sprite c "images/hp.png")
-        manacontent (c/sprite c "images/mana.png")
-        x (/ (:width ui-viewport) 2)
-        [rahmenw rahmenh] (:pixel-dimensions rahmen)
-        y-mana 80 ; action-bar-icon-size
-        y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [c x y contentimage minmaxval name]
-                            (c/draw-image c rahmen [x y])
-                            (c/draw-image c
-                                          (c/sub-sprite c
-                                                        contentimage
-                                                        [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
-                                          [x y])
-                            (render-infostr-on-bar c (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid] :as c}]
-                       (let [player-entity @player-eid
-                             x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar c x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
-                         (render-hpmana-bar c x y-mana manacontent (entity/mana        player-entity) "MP")))})))
-
-(def ^:private disallowed-keys [:entity/skills
-                                #_:entity/fsm
-                                :entity/faction
-                                :active-skill])
-
-(defn- ->label-text [c]
-  ; items then have 2x pretty-name
-  #_(.setText (.getTitleLabel window)
-              (if-let [entity (mouseover-entity c)]
-                (info/text c [:property/pretty-name (:property/pretty-name entity)])
-                "Entity Info"))
-  (when-let [entity (mouseover-entity c)]
-    (info/text c ; don't use select-keys as it loses Entity record type
-               (apply dissoc entity disallowed-keys))))
-
-(defn- entity-info-window [{:keys [gdl.graphics/ui-viewport] :as c}]
-  (let [label (ui/label "")
-        window (ui/window {:title "Info"
-                           :id :entity-info-window
-                           :visible? false
-                           :position [(:width ui-viewport) 0]
-                           :rows [[{:actor label :expand? true}]]})]
-    ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
-    ; => fix size somehow.
-    (group/add-actor! window (ui-actor {:act (fn [context]
-                                               (.setText label (str (->label-text context)))
-                                               (.pack window))}))
-    window))
-
-(defn- widgets-windows [c]
-  (ui/group {:id :windows
-             :actors [(entity-info-window c)
-                      (inventory/create c)]}))
-
-(defn- widgets-player-state-draw-component [_context]
-  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
-                                          %)}))
+            [cdq.level :refer [generate-level]]))
 
 (defn- create-content-grid [tiled-map {:keys [cell-size]}]
   (content-grid/create {:cell-size cell-size

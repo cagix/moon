@@ -16,4 +16,5 @@
       ([key _not-found]
        (k->viewport-field this key)))
     (resize [width height]
+      ; TODO just pipeline the operations
       (viewport/resize this width height :center-camera? center-camera?))))
