@@ -1,7 +1,7 @@
 (ns cdq.context.info
   (:require [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.utils :refer [defsystem readable-number sort-by-k-order]]
+            [gdl.utils :refer [defsystem readable-number sort-by-k-order]]
             [gdl.graphics :as graphics]
             [gdl.graphics.color :as color]
             [cdq.context.timer :as timer]

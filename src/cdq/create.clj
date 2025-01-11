@@ -1,5 +1,5 @@
 (ns cdq.create
-  (:require [clojure.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
+  (:require [gdl.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
             [gdl.context :as c]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as cam]

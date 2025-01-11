@@ -5,7 +5,7 @@
             [clojure.graphics]
             [clojure.graphics.2d.batch]
             [clojure.input]
-            [clojure.utils]
+            [gdl.utils]
             [gdl.app]
             [gdl.audio]))
 
@@ -63,7 +63,7 @@
     (.play this)))
 
 (extend-type com.badlogic.gdx.utils.Disposable
-  clojure.utils/Disposable
+  gdl.utils/Disposable
   (dispose [this]
     (.dispose this)))
 

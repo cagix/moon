@@ -1,6 +1,6 @@
 (ns cdq.mapgen
   (:require [clojure.rand :refer [sshuffle srand srand-int]]
-            [clojure.utils :refer [assoc-ks]]
+            [gdl.utils :refer [assoc-ks]]
             [gdl.grid2d :as g2d]
             [gdl.tiled :as tiled]
             [cdq.property :as property]))

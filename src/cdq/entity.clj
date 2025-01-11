@@ -1,6 +1,6 @@
 (ns cdq.entity
   (:require [clojure.gdx.math.vector2 :as v]
-            [clojure.utils :refer [defsystem safe-merge]]
+            [gdl.utils :refer [defsystem safe-merge]]
             [gdl.context :as c]
             [cdq.context.timer :as timer]
             [cdq.malli :as m]

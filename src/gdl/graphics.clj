@@ -10,7 +10,7 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.graphics :as graphics]
-            [clojure.utils :refer [dispose mapvals]]
+            [gdl.utils :refer [dispose mapvals]]
             [gdl.graphics.color :as color]
             [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors Texture$TextureFilter)
@@ -66,7 +66,7 @@
            cursors))
 
 (defrecord Graphics []
-  clojure.utils/Disposable
+  gdl.utils/Disposable
   (dispose [this]
     ;(println "Disposing batch")
     (dispose (:batch this))
@@ -76,7 +76,7 @@
     (run! dispose (vals (:cursors this)))
     ;(println "Disposing default-font")
     (dispose (:default-font this)))
-  clojure.utils/Resizable
+  gdl.utils/Resizable
   (resize [this width height]
     ;(println "Resizing ui-viewport.")
     (viewport/resize (:ui-viewport    this) width height :center-camera? true)

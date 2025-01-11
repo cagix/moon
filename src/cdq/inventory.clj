@@ -1,5 +1,5 @@
 (ns cdq.inventory
-  (:require [clojure.utils :refer [find-first]]
+  (:require [gdl.utils :refer [find-first]]
             [gdl.grid2d :as g2d]))
 
 (def empty-inventory

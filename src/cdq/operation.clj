@@ -1,6 +1,6 @@
 (ns cdq.operation
   (:refer-clojure :exclude [apply remove])
-  (:require [clojure.utils :refer [defsystem defcomponent]]))
+  (:require [gdl.utils :refer [defsystem defcomponent]]))
 
 (defsystem -apply)
 (defsystem -order)

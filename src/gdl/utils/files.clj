@@ -1,4 +1,4 @@
-(ns clojure.utils.files
+(ns gdl.utils.files
   (:require [clojure.files :as files]
             [clojure.files.file-handle :as fh]))
 
