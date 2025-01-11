@@ -2,6 +2,7 @@
   (:require [cdq.level :refer [generate-level]]
             [cdq.modules :as modules]
             [gdl.graphics.color :as color]
+            [gdl.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]
@@ -81,29 +82,31 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [context/g] :as c}]
+(defn- render-on-map [{:keys [context/g
+                              gdl.graphics/shape-drawer] :as c}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (:camera (:world-viewport g)))
-        [x y] (mapv int (c/world-mouse-position c))]
-    (c/rectangle c x y 1 1 :white)
+        [x y] (mapv int (c/world-mouse-position c))
+        sd shape-drawer]
+    (sd/rectangle sd x y 1 1 :white)
     (when start-position
-      (c/filled-rectangle c (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (sd/filled-rectangle sd (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (c/filled-circle c [(+ x 0.5) (+ y 0.5)] 0.08 :black)
-        (c/filled-circle c [(+ x 0.5) (+ y 0.5)]
+        (sd/filled-circle sd [(+ x 0.5) (+ y 0.5)] 0.08 :black)
+        (sd/filled-circle sd [(+ x 0.5) (+ y 0.5)]
                          0.05
                          (case prop
                            "all"   :green
                            "air"   :orange
                            "none"  :red))))
     (when show-grid-lines
-      (c/grid c
+      (sd/grid sd
               0
               0
               (tiled/tm-width  tiled-map)
