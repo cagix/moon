@@ -27,7 +27,7 @@
             [gdl.scene2d.group :as group])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
-(defn get-sound [{:keys [gdl.context/assets]} sound-name]
+(defn get-sound [{:keys [gdl/assets]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
        assets))
@@ -35,7 +35,7 @@
 (defn play-sound [c sound-name]
   (audio/play (get-sound c sound-name)))
 
-(defn- texture-region [{:keys [gdl.context/assets]} path]
+(defn- texture-region [{:keys [gdl/assets]} path]
   (texture-region/create (assets path)))
 
 (defn sprite [{:keys [context/g] :as c} path]

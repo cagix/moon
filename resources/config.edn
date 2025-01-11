@@ -1,3 +1,12 @@
+
+; -> libgdx & clojure => not clojure.gdx (thats the API only)
+; => but for 'cdq' we create new abstractions (with only what we need) called 'gdl'
+
+; => the context contains `:gdl/assets` which implements IFn passing a path to get an assets
+; or gdl.assets/all-of-type with either :sound or :texture
+
+
+
 ; => TODO ui is not disposed - this is the VisUI skin and is global state there - so just define it in my context ?
 ; then it doesn't know its disposed ? omg ...
 ;:gdl.context/ui-skin (com.kotcrab.vis.ui.VisUI/getSkin)
@@ -43,6 +52,7 @@
               cdq.create/add-new-game-context]
 
  :cdq.assets/folder "resources/"
+ ; => [cdq.assets {:folder "resources/"}] ; => calls 'create' automagically
 
  :db {:schema "schema.edn"
       :properties "properties.edn"}

@@ -5,7 +5,7 @@
 
 (defn create [{:keys [clojure/files] :as context} config]
   (assoc context
-         :gdl.context/assets
+         :gdl/assets
          (assets/blocking-load-all
           (let [folder (::folder config)]
             (for [[asset-type exts] {:sound   #{"wav"}

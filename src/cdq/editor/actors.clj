@@ -157,7 +157,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (assets/all-of-type (:gdl.context/assets @state)
+  (assets/all-of-type (:gdl/assets @state)
                       asset-type))
 
 (defn- play-button [sound-name]
@@ -515,7 +515,7 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn- background-image [{:keys [gdl.context/assets]} path]
+(defn- background-image [{:keys [gdl/assets]} path]
   (ui/image-widget (assets path)
                    {:fill-parent? true
                     :scaling :fill
