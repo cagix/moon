@@ -3,7 +3,7 @@
             [clojure.utils.files :as files]
             [gdl.assets :as assets]))
 
-(defn create [{:keys [clojure.gdx/files] :as context} config]
+(defn create [{:keys [clojure/files] :as context} config]
   (assoc context
          :gdl.context/assets
          (assets/create

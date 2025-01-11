@@ -2,14 +2,14 @@
   (:import (com.badlogic.gdx Gdx)))
 
 (defn context []
-  {::app      Gdx/app
-   ::audio    Gdx/audio
-   ::files    Gdx/files
-   ::gl       Gdx/gl
-   ::gl20     Gdx/gl20
-   ::gl30     Gdx/gl30
-   ::gl31     Gdx/gl31
-   ::gl32     Gdx/gl32
-   ::graphics Gdx/graphics
-   ::input    Gdx/input
-   ::net      Gdx/net})
+  {:clojure/app      Gdx/app
+   :clojure/audio    Gdx/audio
+   :clojure/files    Gdx/files
+   :clojure/gl       Gdx/gl
+   :clojure/gl20     Gdx/gl20
+   :clojure/gl30     Gdx/gl30
+   :clojure/gl31     Gdx/gl31
+   :clojure/gl32     Gdx/gl32
+   :clojure/graphics Gdx/graphics
+   :clojure/input    Gdx/input
+   :clojure/net      Gdx/net})

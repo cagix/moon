@@ -1,4 +1,4 @@
-(ns clojure.application)
+(ns clojure.app)
 
 (defprotocol Application
   (post-runnable [_ runnable]))

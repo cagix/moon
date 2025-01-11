@@ -56,8 +56,8 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn- create-cursors [{:keys [clojure.gdx/files
-                               clojure.gdx/graphics]} cursors]
+(defn- create-cursors [{:keys [clojure/files
+                               clojure/graphics]} cursors]
   (mapvals (fn [[file [hotspot-x hotspot-y]]]
              (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
                    cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
@@ -83,7 +83,7 @@
     ;(println "Resizing world-viewport.")
     (viewport/resize (:world-viewport this) width height :center-camera? false)))
 
-(defn create [{:keys [clojure.gdx/files] :as context} config]
+(defn create [{:keys [clojure/files] :as context} config]
   (let [batch (SpriteBatch.)
         sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                                   (pixmap/set-color color/white)

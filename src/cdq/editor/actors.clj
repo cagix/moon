@@ -1,5 +1,5 @@
 (ns cdq.editor.actors
-  (:require [clojure.application.lwjgl :refer [state]]
+  (:require [clojure.app.lwjgl :refer [state]]
             [clojure.edn :as edn]
             [clojure.input :as input]
             [clojure.string :as str]
@@ -116,7 +116,7 @@
                                              :center? true}
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn [{:keys [clojure.gdx/input]}]
+    (add-actor! window (ui-actor {:act (fn [{:keys [clojure/input]}]
                                          (when (input/key-just-pressed? input :enter)
                                            (save!)))}))
     (.pack window)

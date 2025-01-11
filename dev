@@ -1,1 +1,1 @@
-DEV_MODE=true lein run -m clojure.gdx.dev-loop clojure.application.lwjgl
+DEV_MODE=true lein run -m clojure.gdx.dev-loop clojure.app.lwjgl

@@ -1,5 +1,5 @@
-(ns clojure.application.lwjgl
-  (:require [clojure.application :as application]
+(ns clojure.app.lwjgl
+  (:require [clojure.app :as app]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
@@ -29,7 +29,7 @@
                                                  create-fns)))
 
                          (dispose []
-                           ; don't dispose internal classes (:clojure.gdx/graphics,etc. )
+                           ; don't dispose internal classes (:clojure/graphics,etc. )
                            ; which Lwjgl3Application will handle
                            ; otherwise app crashed w. asset-manager
                            ; which was disposed after graphics
@@ -57,5 +57,5 @@
                        config)))
 
 (defn post-runnable [f]
-  (application/post-runnable (:clojure.gdx/app @state)
-                             #(f @state)))
+  (app/post-runnable (:clojure/app @state)
+                     #(f @state)))
