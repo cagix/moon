@@ -1,4 +1,4 @@
-(ns clojure.platform.gdx
+(ns gdl.platform.libgdx
   (:require [clojure.files]
             [clojure.files.file-handle]
             [clojure.gdx.interop :refer [k->input-button k->input-key]]

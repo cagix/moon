@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [gdl.app :as app]
-            [clojure.platform.gdx]
+            [gdl.platform.libgdx]
             [clojure.utils :refer [dispose disposable? resize resizable? require-ns-resolve]])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
