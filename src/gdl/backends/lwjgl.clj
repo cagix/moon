@@ -1,4 +1,4 @@
-(ns clojure.app.lwjgl
+(ns gdl.backends.lwjgl
   (:require [clojure.app :as app]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
@@ -35,7 +35,7 @@
                            ; which was disposed after graphics
                            ; -> so there is a certain order to cleanup...
                            (doseq [[k value] @state
-                                   :when (and (not (= (namespace k) "clojure.gdx"))
+                                   :when (and (not (= (namespace k) "clojure.gdx")) ; TODO FIXME
                                               (disposable? value))]
                              (when (:log-dispose-lifecycle? config)
                                (println "Disposing " k " - " value))
