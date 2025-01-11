@@ -1,8 +1,15 @@
 (ns cdq.context.assets
-  (:require [gdl.assets :as assets]))
+  (:require [clojure.string :as str]
+            [clojure.utils.files :as files]
+            [gdl.assets :as assets]))
 
-(defn create [context config]
+(defn create [{:keys [clojure.gdx/files] :as context} config]
   (assoc context
          :gdl.context/assets
-         (assets/search-and-load (:clojure.gdx/files context)
-                                 (:assets config))))
+         (assets/create
+          (let [folder (::folder config)]
+            (for [[asset-type exts] {:sound   #{"wav"}
+                                     :texture #{"png" "bmp"}}
+                  file (map #(str/replace-first % folder "")
+                            (files/search-by-extensions files folder exts))]
+              [file asset-type])))))

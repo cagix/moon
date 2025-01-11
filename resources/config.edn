@@ -42,7 +42,8 @@
               cdq.create/game
               cdq.create/add-new-game-context]
 
- :assets "resources/"
+ :cdq.context.assets/folder "resources/"
+
  :db {:schema "schema.edn"
       :properties "properties.edn"}
  :ui {:skin-scale :x1}
