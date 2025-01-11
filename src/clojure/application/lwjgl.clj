@@ -1,5 +1,6 @@
 (ns clojure.application.lwjgl
-  (:require [clojure.edn :as edn]
+  (:require [clojure.application :as application]
+            [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils.shared-library-loader :refer [mac-osx?]]
@@ -18,7 +19,7 @@
         create-fns (map require-ns-resolve (:create-fns config))]
     (when-let [icon (:icon config)]
       (awt/set-taskbar-icon icon))
-    (when (and mac-osx? (:glfw-async-on-mac-osx? config))
+    (when (and mac-osx?)
       (lwjgl-system/set-glfw-library-name "glfw_async"))
     (lwjgl/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
                          (create []
@@ -54,3 +55,7 @@
                                (println "Resizing " k " - " value))
                              (resize value width height))))
                        config)))
+
+(defn post-runnable [f]
+  (application/post-runnable (:clojure.gdx/app @state)
+                             #(f @state)))

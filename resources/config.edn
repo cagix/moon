@@ -29,15 +29,18 @@
 ; => this has to become _exactly_ the context like that
 
 {:icon "moon.png"
- :glfw-async-on-mac-osx? true
+
  :title "Forge"
  :fps 60
  :width 1440
  :height 900
+
  :log-dispose-lifecycle? false
  :log-resize-lifecycle? false
+
  :create-fns [cdq.create/game
               cdq.create/add-new-game-context]
+
  :assets "resources/"
  :db {:schema "schema.edn"
       :properties "properties.edn"}

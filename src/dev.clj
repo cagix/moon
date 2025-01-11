@@ -1,12 +1,11 @@
 (ns dev
-  (:require [clojure.application :as application]
-            [gdl.scene2d.group :refer [children]]
-            [gdl.scene2d.stage :as stage]
+  (:require [clojure.application.lwjgl :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
+            [gdl.scene2d.group :refer [children]]
+            [gdl.scene2d.stage :as stage]
             [gdl.context :as c]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
-            [cdq.application :as app]
             [cdq.context :as world]
             [cdq.editor.actors :as editor]))
 
@@ -81,9 +80,6 @@
 
  )
 
-(defn post-runnable [f]
-  (application/post-runnable (:clojure.gdx/app @app/state)
-                             #(f @app/state)))
 
 (defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
   (world/add-skill c

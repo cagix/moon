@@ -1,13 +1,11 @@
 (ns cdq.editor.actors
-  (:require [clojure.edn :as edn]
-            [gdl.assets :as assets]
-
-            [clojure.input :as input] ; -> gdl
-
+  (:require [clojure.application.lwjgl :refer [state]]
+            [clojure.edn :as edn]
+            [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
+            [gdl.assets :as assets]
             [gdl.context :as c :refer [play-sound]]
-            [cdq.application :refer [state]]
             [cdq.db :as db]
             [gdl.graphics :as graphics]
             [cdq.malli :as m]
@@ -30,8 +28,6 @@
             [gdl.scene2d.actor :refer [user-object]]
             [gdl.scene2d.group :refer [children clear-children add-actor! find-actor]]
             [gdl.scene2d.ui.table :refer [add-rows!]])
-
-  ; => gdl
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
