@@ -24,3 +24,7 @@
 (defn create [_context]
   (ui-actor {:draw draw-player-message
              :act  check-remove-message}))
+
+(defn create* [{:keys [gdl/config] :as context}]
+  (assoc context :cdq.context/player-message
+         (atom {:duration-seconds (::duration-seconds config)})))

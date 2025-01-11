@@ -24,3 +24,7 @@
 (defmethod generate-level* :world.generator/modules [world c]
   (generate-modules world
                     (c/build-all c :properties/creatures)))
+
+(defn create [{:keys [gdl/config] :as context}]
+  (assoc context :cdq.context/level
+         (generate-level context (c/build context (::id config)))))

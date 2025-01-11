@@ -1,14 +1,10 @@
 (ns cdq.create
-  (:require [gdl.utils :refer [dispose safe-merge tile->middle readable-number]]
-            [gdl.context :as c]
+  (:require [gdl.utils :refer [safe-merge tile->middle]]
             [gdl.grid2d :as g2d]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.group :as group]
             [gdl.tiled :as tiled]
             [cdq.context :refer [spawn-creature mouseover-entity]]
             [cdq.content-grid :as content-grid]
-            [cdq.grid :as grid]
-            [cdq.level :refer [generate-level]]))
+            [cdq.grid :as grid]))
 
 (defn- create-content-grid [tiled-map {:keys [cell-size]}]
   (content-grid/create {:cell-size cell-size
@@ -78,50 +74,54 @@
 (defn- spawn-player-entity [context start-position]
   (spawn-creature context (player-entity-props start-position)))
 
-(defn- spawn-enemies! [c tiled-map]
+(defn- spawn-enemies! [{:keys [cdq.context/tiled-map] :as c}]
   (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
                   {:position position
                    :creature-id (keyword creature-id)
                    :components {:entity/fsm {:fsm :fsms/npc
                                              :initial-state :npc-sleeping}
                                 :entity/faction :evil}})]
-    (spawn-creature c (update props :position tile->middle))))
+    (spawn-creature c (update props :position tile->middle)))
+  c)
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn- create-raycaster [grid]
+(defn- create-raycaster [{:keys [cdq.context/grid] :as context}]
   (let [width  (g2d/width  grid)
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]
     (doseq [cell (g2d/cells grid)]
       (set-arr arr @cell grid/blocks-vision?))
-    [arr width height]))
+    (assoc context :cdq.context/raycaster [arr width height])))
 
-(defn- explored-tile-corners [tiled-map]
-  (atom (g2d/create-grid
-         (tiled/tm-width  tiled-map)
-         (tiled/tm-height tiled-map)
-         (constantly false))))
+(defn- explored-tile-corners* [{:keys [cdq.context/tiled-map] :as context}]
+  (assoc context :cdq.context/explored-tile-corners
+         (atom (g2d/create-grid
+                (tiled/tm-width  tiled-map)
+                (tiled/tm-height tiled-map)
+                (constantly false)))))
 
-(defn add-new-game-context [{:keys [gdl/config] :as context}]
-  (let [context (safe-merge context
-                            {:cdq.context/player-message (atom (:player-message config))})]
-    (let [level (generate-level context
-                                (c/build context (:world-id config)))
-          tiled-map (:tiled-map level)
-          grid (create-grid tiled-map)
-          context (safe-merge context
-                              {:cdq.context/error nil
-                               :cdq.context/level level
-                               :cdq.context/tiled-map tiled-map
-                               :cdq.context/grid grid
-                               :cdq.context/explored-tile-corners (explored-tile-corners tiled-map)
-                               :cdq.context/content-grid (create-content-grid tiled-map (:content-grid config))
-                               :cdq.context/entity-ids (atom {})
-                               :cdq.context/raycaster (create-raycaster grid)
-                               :cdq.context/factions-iterations (:factions-iterations config)})
-          context (assoc context :cdq.context/player-eid (spawn-player-entity context (:start-position level)))]
-      (spawn-enemies! context tiled-map)
-      context)))
+(defn error* [context]
+  (assoc context :cdq.context/error nil))
+
+(defn tiled-map* [context]
+  (assoc context :cdq.context/tiled-map (:tiled-map (:cdq.context/level context))))
+
+(defn grid* [context]
+  (assoc context :cdq.context/grid (create-grid (:cdq.context/tiled-map context))))
+
+(defn content-grid* [context]
+  (assoc context :cdq.context/content-grid
+         (create-content-grid (:cdq.context/tiled-map context)
+                              (:content-grid (:gdl/config context)))))
+
+(defn entity-ids* [context]
+  (assoc context :cdq.context/entity-ids (atom {})))
+
+(defn factions-iterations* [{:keys [gdl/config] :as context}]
+  (assoc context :cdq.context/factions-iterations (:factions-iterations config)))
+
+(defn player-eid* [context]
+  (assoc context :cdq.context/player-eid (spawn-player-entity context (:start-position (:cdq.context/level context)))))
