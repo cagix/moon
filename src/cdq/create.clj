@@ -1,6 +1,5 @@
 (ns cdq.create
   (:require [clojure.utils :refer [dispose safe-merge tile->middle readable-number dev-mode?]]
-            [gdl.assets :as assets]
             [gdl.context :as c]
             [gdl.graphics :as graphics]
             [gdl.graphics.camera :as cam]
@@ -303,9 +302,7 @@
 
 (defn game [context config]
   (let [context (merge context
-                       {:gdl.context/assets (assets/search-and-load (:clojure.gdx/files context)
-                                                                    (:assets config))
-                        :gdl.context/db (db/create (:db config))
+                       {:gdl.context/db (db/create (:db config))
                         :context/g (graphics/create context (:graphics config))})
         context (assoc context
                        :gdl.context/stage (ui/setup-stage! context (:ui config)))]

@@ -38,7 +38,8 @@
  :log-dispose-lifecycle? false
  :log-resize-lifecycle? false
 
- :create-fns [cdq.create/game
+ :create-fns [cdq.context.assets/create
+              cdq.create/game
               cdq.create/add-new-game-context]
 
  :assets "resources/"
