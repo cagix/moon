@@ -1,6 +1,6 @@
 (ns gdl.app.desktop
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
+            [clojure.java.awt :as awt]
             [gdl.app :as app]
             [gdl.platform.libgdx]
             [gdl.utils :refer [dispose disposable? resize resizable? require-ns-resolve]])
@@ -8,7 +8,6 @@
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils SharedLibraryLoader)
-           (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration))
   (:gen-class))
 
@@ -23,9 +22,7 @@
         render-fns (map require-ns-resolve (:render-fns config))
         create-fns (:create-fns config)]
     (when-let [icon (:icon config)]
-      (.setIconImage (Taskbar/getTaskbar)
-                     (.getImage (Toolkit/getDefaultToolkit)
-                                (io/resource icon))))
+      (awt/set-taskbar-icon icon))
     (when SharedLibraryLoader/isMac
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [com.badlogic.gdx.ApplicationAdapter] []
