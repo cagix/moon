@@ -44,7 +44,7 @@
  :width 1440
  :height 900
 
- :log-dispose-lifecycle? false
+ :log-dispose-lifecycle? true
  :log-resize-lifecycle? false
 
  ; always assoc :gdl/foo (cdq.foo/create ...) ... !
@@ -52,6 +52,7 @@
  :create-fns [cdq.assets/create
               cdq.db/create
               cdq.graphics.batch/create
+              cdq.graphics.shape-drawer-texture/create
               cdq.create/game
               cdq.create/add-new-game-context]
 

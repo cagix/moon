@@ -2,7 +2,6 @@
   (:require [gdl.files :as files]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as sd]
-            [clojure.gdx.graphics.texture :as texture]
             [clojure.gdx.graphics.pixmap :as pixmap]
             [clojure.gdx.graphics.orthographic-camera :as orthographic-camera]
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
@@ -67,8 +66,6 @@
 (defrecord Graphics []
   gdl.utils/Disposable
   (dispose [this]
-    ;(println "Disposing sd-texture")
-    (dispose (:sd-texture this))
     ;(println "Disposing cursors")
     (run! dispose (vals (:cursors this)))
     ;(println "Disposing default-font")
@@ -81,19 +78,13 @@
     (viewport/resize (:world-viewport this) width height :center-camera? false)))
 
 (defn create [{:keys [gdl/files
-                      gdl.graphics/batch]
+                      gdl.graphics/batch
+                      gdl.graphics/shape-drawer-texture]
                :as context}
               config]
-  (let [sd-texture (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
-                                  (pixmap/set-color color/white)
-                                  (pixmap/draw-pixel 0 0))
-                         texture (texture/create pixmap)]
-                     (dispose pixmap)
-                     texture)
-        world-unit-scale (float (/ (:tile-size config)))]
+  (let [world-unit-scale (float (/ (:tile-size config)))]
     (map->Graphics
-     {:sd (sd/create batch (texture-region/create sd-texture 1 0 1 1))
-      :sd-texture sd-texture
+     {:sd (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1))
       :cursors (create-cursors context (:cursors config))
       :default-font (generate-font (update (:default-font config) :file #(files/internal files %)))
       :world-unit-scale world-unit-scale
