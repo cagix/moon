@@ -100,7 +100,7 @@
 
  :gdl.ui/skin-scale :x1
  :gdl.ui/actors [cdq.ui.dev-menu/create
-                 cdq.create/action-bar-table
+                 cdq.ui.actionbar/create
                  cdq.create/hp-mana-bar
                  cdq.create/widgets-windows
                  cdq.create/widgets-player-state-draw-component
