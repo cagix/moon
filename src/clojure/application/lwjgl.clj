@@ -1,4 +1,4 @@
-(ns cdq.application
+(ns clojure.application.lwjgl
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
