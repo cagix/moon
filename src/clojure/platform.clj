@@ -64,7 +64,12 @@
 
 ; TODO why distinct?!?!
 (defn- ->parameters-str [parameters]
-  (str "[_" (str/join " " (map (comp clojurize-name :name) parameters)) "]"))
+  (str "[" (str/join " " (map (comp clojurize-name :name) parameters)) "]"))
+
+(defn- ->parameters [parameters]
+  (if (empty? parameters)
+    ""
+    (str/join " " (map (comp clojurize-name :name) parameters))))
 
 (defn ->protocol-function-string [{:keys [name parameters javadoc]}]
   (str "  (" (clojurize-name name) " " (->parameters-str parameters) "\n    \"" javadoc "\")"))
@@ -77,11 +82,18 @@
    (clojurize-name name)
    ")"))
 
+(defn ->function [{:keys [name parameters javadoc]}]
+  (str
+   "(defn " (clojurize-name name) "\n"
+   "  \"" javadoc "\"\n"
+   "  " (->parameters-str parameters) "\n"
+   "  (." name  " Gdx/foo" (if (seq parameters) " ") (->parameters parameters) "))"))
+
 (defn- protocol-str [name content]
   (str "(defprotocol " name "\n" content ")"))
 
 (defn- namespace-line-string [name]
-  (str "(ns " ns-name ")\n\n"))
+  (str "(ns " ns-name ")\n\n")) ; TODO we pass lines,?
 
 (defn generate-namespace [output ns-name interface-data file class-str]
   (let [duplicates (find-duplicates (map :name (get interface-data class-str)))]
@@ -98,7 +110,9 @@
                  :protocol (protocol-str (str/capitalize ns-name)
                                          (str/join "\n\n"
                                                    (map ->protocol-function-string (get interface-data class-str))))
-                 :declares (map ->declare-form (get interface-data class-str)))))))
+                 :declares (str/join "\n\n" (map ->declare-form (get interface-data class-str)))
+                 :functions (str/join "\n\n" (map ->function (get interface-data class-str)))
+                 )))))
 
 (defn generate-namespaces [src-folder folder output]
   {:pre [(.exists (java.io.File. folder))]}
@@ -113,6 +127,7 @@
                     "com.badlogic.gdx.Input"
                     "com.badlogic.gdx.Net"]
         interface-data (java-src-folder->parse-methods src-folder interfaces)]
+    (def last-interface-data interface-data)
     (println "Parsed src folder, result: ")
     (doseq [[n mths] interface-data]
       (println n ":" (count mths) " methods."))
@@ -135,6 +150,12 @@
                           class)
       (println target-file"\n"))))
 
+(defn generate-core-namespace [ns-name]
+  [(namespace-line-string ns-name)]
+  )
+
+(generate-core-namespace "clojure.gdx")
+
 (comment
  ; 1. copy from libgdx directory core gdx sources
  ; cp -r ~/projects/libgdx/gdx/src/ gdx-src/
@@ -145,8 +166,20 @@
  ; `mkdir generate/`
  (generate-namespaces "gdx-src/" ;
                       "generate/"
-                      :protocol
+                      :functions ;:declares ; :protocol
                       ) ; make dir to put results
+
+
+ ; TODO comments have to escape '\"'
+ ; TODO missing javadoc :
+ ; /** @return the average number of frames per second */
+
+ ; interface-data = coll of methods
+ ; =. tests
+ (clojure.pprint/pprint
+  (first (get last-interface-data "com.badlogic.gdx.Application")))
+ (->function (first (get last-interface-data "com.badlogic.gdx.Application")))
+ (->parameters (:parameters (first (get last-interface-data "com.badlogic.gdx.Application"))))
 
  ; or just declare them - they are not thread-bound !?
 
