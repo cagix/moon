@@ -10,11 +10,7 @@
 (def state (atom nil))
 
 (defn -main []
-  (let [{:keys [title
-                fps
-                width
-                height]
-         :as config} (-> "config.edn" io/resource slurp edn/read-string)
+  (let [config (-> "config.edn" io/resource slurp edn/read-string)
         render-fns (map require-ns-resolve (:render-fns config))
         create-fns (:create-fns config)]
     (.setIconImage (java.awt.Taskbar/getTaskbar)
