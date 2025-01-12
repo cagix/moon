@@ -467,10 +467,6 @@
   (let [[x y] (:left-bottom entity)]
     (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
-(defn handle-player-input [{:keys [cdq.context/player-eid] :as c}]
-  (state/manual-tick (entity/state-obj @player-eid) c)
-  c)
-
 (defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
   (let [player @player-eid
         hits (remove #(= (:z-order @%) :z-order/effect)

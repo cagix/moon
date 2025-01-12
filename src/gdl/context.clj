@@ -251,7 +251,3 @@
     (when (input/key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
     (when (input/key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
   context)
-
-(defn update-stage [context]
-   (ui/act (stage context) context)
-   context)

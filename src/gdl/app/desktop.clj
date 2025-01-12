@@ -5,8 +5,11 @@
             [gdl.context]
             [gdl.graphics.camera]
             [gdl.platform.libgdx]
+            [gdl.ui]
             [gdl.utils]
             [cdq.db]
+            [cdq.entity]
+            [cdq.entity.state]
             [cdq.graphics]
             [cdq.graphics.animation]
             [cdq.graphics.tiled-map]
@@ -121,9 +124,15 @@
                                                                (doseq [f render-fns]
                                                                  (f context)))))
                            context)
-                         'gdl.graphics/draw-stage
-                         'gdl.context/update-stage
-                         'cdq.context/handle-player-input
+                         (fn [{:keys [gdl.context/stage] :as context}]
+                           (gdl.ui/draw stage (assoc context :gdl.context/unit-scale 1))
+                           context)
+                         (fn [context]
+                           (gdl.ui/act (:gdl.context/stage context) context)
+                           context)
+                         (fn [{:keys [cdq.context/player-eid] :as c}]
+                           (cdq.entity.state/manual-tick (cdq.entity/state-obj @player-eid) c)
+                           c)
                          'cdq.context/update-mouseover-entity
                          'cdq.context/update-paused-state
                          'cdq.context/progress-time-if-not-paused

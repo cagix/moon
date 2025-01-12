@@ -1,10 +1,5 @@
 (ns gdl.graphics
-  (:require [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors)))
-
-(defn draw-stage [{:keys [gdl.context/stage] :as context}]
-  (ui/draw stage (assoc context :gdl.context/unit-scale 1))
-  context)
 
 (defn delta-time
   "The time span between the current frame and the last frame in seconds."
