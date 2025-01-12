@@ -1,16 +1,11 @@
 (ns cdq.graphics.shape-drawer
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.graphics.shape-drawer :as sd]
+  (:require [clojure.gdx.graphics.shape-drawer :as sd]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math.utils :refer [degree->radians]]
             [gdl.graphics.color :as color]
             [gdl.graphics.shape-drawer])
   (:import (com.badlogic.gdx.graphics Color)
            (space.earlygrey.shapedrawer ShapeDrawer)))
-
-(defn create [{:keys [gdl.graphics/batch
-                      gdl.graphics/shape-drawer-texture]} _config]
-  (sd/create batch (texture-region/create shape-drawer-texture 1 0 1 1)))
 
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
