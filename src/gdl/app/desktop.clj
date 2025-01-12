@@ -1,10 +1,9 @@
 (ns gdl.app.desktop
   (:require [clojure.java.io]
-            [gdl.app] ; post-runnable
-            [gdl.platform.libgdx] ; interop extend types
-            [gdl.utils])) ; utils/... required
-
-(def state (atom nil))
+            [gdl.app]
+            [gdl.platform.libgdx] ; interop extend types -> we write a game not want to do APi's
+            [gdl.utils])) ; utils/... required -> same ->
+; => all non game relevant code move into a clojure fork which is the _perfect_ language for 'Cyber Dungeon Quest'
 
 (defn -main []
   (let [render-fns (map gdl.utils/require-ns-resolve
@@ -84,7 +83,7 @@
     (com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.
      (proxy [com.badlogic.gdx.ApplicationAdapter] []
        (create []
-         (reset! state
+         (reset! gdl.app/state
                  (reduce (fn [context [k [var params]]]
                            (let [f (gdl.utils/require-ns-resolve var)]
                              (assert f (str var))
@@ -93,20 +92,20 @@
                          create-fns)))
 
        (dispose []
-         (doseq [[k value] @state
+         (doseq [[k value] @gdl.app/state
                  :when (gdl.utils/disposable? value)]
            ;(println "Disposing " k " - " value)
            (gdl.utils/dispose value)))
 
        (render []
-         (swap! state (fn [context]
-                        (reduce (fn [context f]
-                                  (f context))
-                                context
-                                render-fns))))
+         (swap! gdl.app/state (fn [context]
+                                (reduce (fn [context f]
+                                          (f context))
+                                        context
+                                        render-fns))))
 
        (resize [width height]
-         (doseq [[k value] @state
+         (doseq [[k value] @gdl.app/state
                  :when (gdl.utils/resizable? value)]
            ;(println "Resizing " k " - " value)
            (gdl.utils/resize value width height))))
@@ -114,6 +113,3 @@
        (.setTitle "Cyber Dungeon Quest")
        (.setWindowedMode 1440 900)
        (.setForegroundFPS 60)))))
-
-(defn post-runnable [f]
-  (gdl.app/post-runnable #(f @state)))

@@ -1,5 +1,5 @@
 (ns dev
-  (:require [gdl.app.desktop :as app]
+  (:require [gdl.app :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.scene2d.group :refer [children]]
