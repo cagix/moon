@@ -1,6 +1,5 @@
 (ns cdq.assets
-  (:require [clojure.string :as str]
-            [gdl.utils.files :as files])
+  (:require [clojure.string :as str])
   (:import (clojure.lang IFn)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
@@ -35,7 +34,19 @@
 
 (defn create [_context {:keys [folder type-exts]}]
   (blocking-load-all
-   (for [[asset-type exts] type-exts
+   (for [[asset-type extensions] type-exts
          file (map #(str/replace-first % folder "")
-                   (files/search-by-extensions folder exts))]
+                   (loop [[file & remaining] (.list (.internal com.badlogic.gdx.Gdx/files folder))
+                          result []]
+                     (cond (nil? file)
+                           result
+
+                           (.isDirectory file)
+                           (recur (concat remaining (.list file)) result)
+
+                           (extensions (.extension file))
+                           (recur remaining (conj result (.path file)))
+
+                           :else
+                           (recur remaining result))))]
      [file asset-type])))

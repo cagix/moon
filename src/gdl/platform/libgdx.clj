@@ -1,19 +1,7 @@
 (ns gdl.platform.libgdx
   (:require [clojure.graphics.2d.batch]
             [gdl.audio]
-            [gdl.files.file-handle]
             [gdl.utils]))
-
-(extend-type com.badlogic.gdx.files.FileHandle
-  gdl.files.file-handle/FileHandle
-  (list [this]
-    (.list this))
-  (directory? [this]
-    (.isDirectory this))
-  (extension [this]
-    (.extension this))
-  (path [this]
-    (.path this)))
 
 (extend-type com.badlogic.gdx.audio.Sound
   gdl.audio/Sound
