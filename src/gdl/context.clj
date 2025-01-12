@@ -14,15 +14,12 @@
             [clojure.graphics.2d.batch :as batch]
             [gdl.input :as input]
             [clojure.string :as str]
-            [gdl.utils :refer [defcomponent safe-get with-err-str mapvals]]
+            [gdl.utils :refer [safe-get with-err-str mapvals]]
             [gdl.audio :as audio]
             [cdq.db :as db]
             [cdq.error :refer [pretty-pst]]
-            [cdq.graphics.animation :as animation]
             [cdq.graphics.sprite :as sprite]
             [gdl.graphics.camera :as cam]
-            [cdq.malli :as m]
-            [cdq.schema :as schema]
             [gdl.ui :as ui]
             [gdl.scene2d.group :as group]))
 
@@ -235,83 +232,6 @@
                :close-on-escape? true
                :center? true
                :pack? true})))
-
-; TODO do we care in here about malli-form ?! - where used? - hide inside 'schemas' ? or schemas/validation
-
-(defmethod schema/malli-form :s/val-max [_ _schemas] m/val-max-schema)
-(defmethod schema/malli-form :s/number  [_ _schemas] m/number-schema)
-(defmethod schema/malli-form :s/nat-int [_ _schemas] m/nat-int-schema)
-(defmethod schema/malli-form :s/int     [_ _schemas] m/int-schema)
-(defmethod schema/malli-form :s/pos     [_ _schemas] m/pos-schema)
-(defmethod schema/malli-form :s/pos-int [_ _schemas] m/pos-int-schema)
-
-(defcomponent :s/sound
-  (schema/malli-form [_ _schemas]
-    m/string-schema)
-
-  (db/edn->value [_ sound-name _db c]
-    (get-sound c sound-name)))
-
-(defn- edn->sprite [c {:keys [file sub-image-bounds]}]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (from-sprite-sheet c
-                         (sprite-sheet c file tilew tileh)
-                         [(int (/ sprite-x tilew))
-                          (int (/ sprite-y tileh))]))
-    (sprite c file)))
-
-(defcomponent :s/image
-  (schema/malli-form  [_ _schemas]
-    m/image-schema)
-
-  (db/edn->value [_ edn _db c]
-    (edn->sprite c edn)))
-
-(defcomponent :s/animation
-  (schema/malli-form [_ _schemas]
-    m/animation-schema)
-
-  (db/edn->value [_ {:keys [frames frame-duration looping?]} _db c]
-    (animation/create (map #(edn->sprite c %) frames)
-                      :frame-duration frame-duration
-                      :looping? looping?)))
-
-(defn- type->id-namespace [property-type]
-  (keyword (name property-type)))
-
-(defcomponent :s/one-to-one
-  (schema/malli-form [[_ property-type] _schemas]
-    (m/qualified-keyword-schema (type->id-namespace property-type)))
-  (db/edn->value [_ property-id db c]
-    (build c property-id)))
-
-(defcomponent :s/one-to-many
-  (schema/malli-form [[_ property-type] _schemas]
-    (m/set-schema (m/qualified-keyword-schema (type->id-namespace property-type))))
-  (db/edn->value [_ property-ids db c]
-    (set (map #(build c %) property-ids))))
-
-(defn- map-form [ks schemas]
-  (m/map-schema ks (fn [k]
-                     (schema/malli-form (schema/schema-of schemas k)
-                                        schemas))))
-
-(defmethod schema/malli-form :s/map [[_ ks] schemas]
-  (map-form ks schemas))
-
-(defmethod schema/malli-form :s/map-optional [[_ ks] schemas]
-  (map-form (map (fn [k] [k {:optional true}]) ks)
-            schemas))
-
-(defn- namespaced-ks [schemas ns-name-k]
-  (filter #(= (name ns-name-k) (namespace %))
-          (keys schemas)))
-
-(defmethod schema/malli-form :s/components-ns [[_ ns-name-k] schemas]
-  (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
-                     schemas))
 
 (defn WASD-movement-vector []
   (let [r (when (input/key-pressed? :d) [1  0])

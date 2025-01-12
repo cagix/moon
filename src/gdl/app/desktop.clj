@@ -2,11 +2,88 @@
   (:require [clojure.edn]
             [clojure.java.io]
             [gdl.app]
-            [gdl.context] ; schema needs to be loaded before db cdq.schema/validate!
-            [gdl.platform.libgdx] ; interop extend types -> we write a game not want to do APi's
+            [gdl.context]
+            [gdl.platform.libgdx]
             [gdl.utils]
-            [cdq.schema])) ; utils/... required -> same ->
-; => all non game relevant code move into a clojure fork which is the _perfect_ language for 'Cyber Dungeon Quest'
+            [cdq.db]
+            [cdq.graphics.animation]
+            [cdq.schema]
+            [cdq.malli]))
+
+(defmethod cdq.schema/malli-form :s/val-max [_ _schemas] cdq.malli/val-max-schema)
+(defmethod cdq.schema/malli-form :s/number  [_ _schemas] cdq.malli/number-schema)
+(defmethod cdq.schema/malli-form :s/nat-int [_ _schemas] cdq.malli/nat-int-schema)
+(defmethod cdq.schema/malli-form :s/int     [_ _schemas] cdq.malli/int-schema)
+(defmethod cdq.schema/malli-form :s/pos     [_ _schemas] cdq.malli/pos-schema)
+(defmethod cdq.schema/malli-form :s/pos-int [_ _schemas] cdq.malli/pos-int-schema)
+
+(gdl.utils/defcomponent :s/sound
+  (cdq.schema/malli-form [_ _schemas]
+    cdq.malli/string-schema)
+
+  (cdq.db/edn->value [_ sound-name _db c]
+    (gdl.context/get-sound c sound-name)))
+
+(defn- edn->sprite [c {:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (gdl.context/from-sprite-sheet c
+                                     (gdl.context/sprite-sheet c file tilew tileh)
+                                     [(int (/ sprite-x tilew))
+                                      (int (/ sprite-y tileh))]))
+    (gdl.context/sprite c file)))
+
+(gdl.utils/defcomponent :s/image
+  (cdq.schema/malli-form  [_ _schemas]
+    cdq.malli/image-schema)
+
+  (cdq.db/edn->value [_ edn _db c]
+    (edn->sprite c edn)))
+
+(gdl.utils/defcomponent :s/animation
+  (cdq.schema/malli-form [_ _schemas]
+    cdq.malli/animation-schema)
+
+  (cdq.db/edn->value [_ {:keys [frames frame-duration looping?]} _db c]
+    (cdq.graphics.animation/create (map #(edn->sprite c %) frames)
+                                   :frame-duration frame-duration
+                                   :looping? looping?)))
+
+(defn- type->id-namespace [property-type]
+  (keyword (name property-type)))
+
+(gdl.utils/defcomponent :s/one-to-one
+  (cdq.schema/malli-form [[_ property-type] _schemas]
+    (cdq.malli/qualified-keyword-schema (type->id-namespace property-type)))
+  (cdq.db/edn->value [_ property-id db c]
+    (gdl.context/build c property-id)))
+
+(gdl.utils/defcomponent :s/one-to-many
+  (cdq.schema/malli-form [[_ property-type] _schemas]
+    (cdq.malli/set-schema (cdq.malli/qualified-keyword-schema (type->id-namespace property-type))))
+  (cdq.db/edn->value [_ property-ids db c]
+    (set (map #(gdl.context/build c %) property-ids))))
+
+(defn- map-form [ks schemas]
+  (cdq.malli/map-schema ks (fn [k]
+                             (cdq.schema/malli-form (cdq.schema/schema-of schemas k)
+                                                    schemas))))
+
+(defmethod cdq.schema/malli-form :s/map [[_ ks] schemas]
+  (map-form ks schemas))
+
+(defmethod cdq.schema/malli-form :s/map-optional [[_ ks] schemas]
+  (map-form (map (fn [k] [k {:optional true}]) ks)
+            schemas))
+
+(defn- namespaced-ks [schemas ns-name-k]
+  (filter #(= (name ns-name-k) (namespace %))
+          (keys schemas)))
+
+(defmethod cdq.schema/malli-form :s/components-ns [[_ ns-name-k] schemas]
+  (cdq.schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
+                         schemas))
 
 (defn -main []
   (let [render-fns (map gdl.utils/require-ns-resolve
