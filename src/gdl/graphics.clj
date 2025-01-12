@@ -1,12 +1,6 @@
 (ns gdl.graphics
-  (:require [clojure.gdx.utils.screen :as screen]
-            [gdl.graphics.color :as color]
-            [gdl.ui :as ui])
+  (:require [gdl.ui :as ui])
   (:import (com.badlogic.gdx.graphics Colors)))
-
-(defn clear-screen [context]
-  (screen/clear color/black)
-  context)
 
 (defn draw-stage [{:keys [gdl.context/stage] :as context}]
   (ui/draw stage (assoc context :gdl.context/unit-scale 1))

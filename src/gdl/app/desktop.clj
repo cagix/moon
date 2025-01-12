@@ -3,6 +3,7 @@
             [clojure.java.io]
             [gdl.app]
             [gdl.context]
+            [gdl.graphics.camera]
             [gdl.platform.libgdx]
             [gdl.utils]
             [cdq.db]
@@ -86,20 +87,29 @@
                          schemas))
 
 (defn -main []
-  (let [render-fns (map gdl.utils/require-ns-resolve
-                        '[cdq.render/set-camera-on-player!
-                          gdl.graphics/clear-screen
-                          cdq.graphics.tiled-map/render
-                          cdq.graphics/draw-world-view
-                          gdl.graphics/draw-stage
-                          gdl.context/update-stage
-                          cdq.context/handle-player-input
-                          cdq.context/update-mouseover-entity
-                          cdq.context/update-paused-state
-                          cdq.context/progress-time-if-not-paused
-                          cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                          gdl.context/check-camera-controls
-                          cdq.context/check-ui-key-listeners])
+  (let [render-fns (map #(if (symbol? %) (gdl.utils/require-ns-resolve %) %)
+                        [(fn [{:keys [gdl.graphics/world-viewport
+                                      cdq.context/player-eid]
+                               :as context}]
+                           {:pre [world-viewport
+                                  player-eid]}
+                           (gdl.graphics.camera/set-position! (:camera world-viewport)
+                                                              (:position @player-eid))
+                           context)
+                         (fn [context]
+                           (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
+                           context)
+                         'cdq.graphics.tiled-map/render
+                         'cdq.graphics/draw-world-view
+                         'gdl.graphics/draw-stage
+                         'gdl.context/update-stage
+                         'cdq.context/handle-player-input
+                         'cdq.context/update-mouseover-entity
+                         'cdq.context/update-paused-state
+                         'cdq.context/progress-time-if-not-paused
+                         'cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                         'gdl.context/check-camera-controls
+                         'cdq.context/check-ui-key-listeners])
         create-fns [[:gdl/db (fn [_context _config]
                                (let [properties-file (clojure.java.io/resource "properties.edn")
                                      schemas (-> "schema.edn" clojure.java.io/resource slurp clojure.edn/read-string)
