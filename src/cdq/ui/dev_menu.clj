@@ -109,8 +109,7 @@
                     :update-fn #(cam/zoom (:camera (:gdl.graphics/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn (fn [{:keys [gdl/graphics]}]
-                                 (graphics/frames-per-second graphics))
+                    :update-fn (fn [_] (graphics/frames-per-second))
                     :icon "images/fps.png"}]})
 
 (defn create [c _config]

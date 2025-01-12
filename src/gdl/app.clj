@@ -1,4 +1,4 @@
 (ns gdl.app)
 
-(defprotocol Application
-  (post-runnable [_ runnable]))
+(defn post-runnable [runnable]
+  (.postRunnable com.badlogic.gdx.Gdx/app runnable))

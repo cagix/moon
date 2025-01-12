@@ -13,10 +13,9 @@
                   :scale 2.5
                   :up? true})))
 
-(defn- check-remove-message [{:keys [cdq.context/player-message
-                                     gdl/graphics]}]
+(defn- check-remove-message [{:keys [cdq.context/player-message]}]
   (when (:text @player-message)
-    (swap! player-message update :counter + (graphics/delta-time graphics))
+    (swap! player-message update :counter + (graphics/delta-time))
     (when (>= (:counter @player-message)
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))

@@ -1,9 +1,8 @@
 (ns gdl.app.desktop
-  (:require [clojure.gdx]
-            [clojure.java.io]
-            [gdl.app]
-            [gdl.platform.libgdx]
-            [gdl.utils]))
+  (:require [clojure.java.io]
+            [gdl.app] ; post-runnable
+            [gdl.platform.libgdx] ; interop extend types
+            [gdl.utils])) ; utils/... required
 
 (def state (atom nil))
 
@@ -87,24 +86,15 @@
        (create []
          (reset! state
                  (reduce (fn [context [k [var params]]]
-                           (println (keys context))
                            (let [f (gdl.utils/require-ns-resolve var)]
                              (assert f (str var))
                              (assoc context k (f context params))))
-                         (into {}
-                               (for [[k v] (clojure.gdx/context)]
-                                 [(keyword (str "gdl/" (name k))) v]))
+                         {}
                          create-fns)))
 
        (dispose []
-         ; don't dispose internal classes (:gdl/graphics,etc. )
-         ; which Lwjgl3Application will handle
-         ; otherwise app crashed w. asset-manager
-         ; which was disposed after graphics
-         ; -> so there is a certain order to cleanup...
          (doseq [[k value] @state
-                 :when (and (not (= (namespace k) "gdl"))
-                            (gdl.utils/disposable? value))]
+                 :when (gdl.utils/disposable? value)]
            ;(println "Disposing " k " - " value)
            (gdl.utils/dispose value)))
 
@@ -126,5 +116,4 @@
        (.setForegroundFPS 60)))))
 
 (defn post-runnable [f]
-  (gdl.app/post-runnable (:gdl/app @state)
-                         #(f @state)))
+  (gdl.app/post-runnable #(f @state)))

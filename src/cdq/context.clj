@@ -502,8 +502,8 @@
                                          (not (or (input/key-just-pressed? :p)
                                                   (input/key-pressed? :space)))))))
 
-(defn- update-time [{:keys [gdl/graphics] :as context}]
-  (let [delta-ms (min (graphics/delta-time graphics) max-delta-time)]
+(defn- update-time [context]
+  (let [delta-ms (min (graphics/delta-time) max-delta-time)]
     (-> context
         (update :gdl.context/elapsed-time + delta-ms)
         (assoc :cdq.context/delta-time delta-ms))))

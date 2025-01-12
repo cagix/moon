@@ -14,13 +14,13 @@
 
 (defn delta-time
   "The time span between the current frame and the last frame in seconds."
-  [graphics]
-  (com.badlogic.gdx.Graphics/.getDeltaTime graphics))
+  []
+  (.getDeltaTime com.badlogic.gdx.Gdx/graphics))
 
 (defn frames-per-second
   "The average number of frames per second."
-  [graphics]
-  (com.badlogic.gdx.Graphics/.getFramesPerSecond graphics))
+  []
+  (.getFramesPerSecond com.badlogic.gdx.Gdx/graphics))
 
 (defn def-color
   "A general purpose class containing named colors that can be changed at will. For example, the markup language defined by the BitmapFontCache class uses this class to retrieve colors and the user can define his own colors.

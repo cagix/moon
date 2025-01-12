@@ -1,22 +1,8 @@
 (ns gdl.platform.libgdx
-  (:require [clojure.graphics]
-            [clojure.graphics.2d.batch]
-            [gdl.app]
+  (:require [clojure.graphics.2d.batch]
             [gdl.audio]
             [gdl.files.file-handle]
             [gdl.utils]))
-
-(extend-type com.badlogic.gdx.Application
-  gdl.app/Application
-  (post-runnable [this runnable]
-    (.postRunnable this runnable)))
-
-(extend-type com.badlogic.gdx.Graphics
-  clojure.graphics/Graphics
-  (new-cursor [this pixmap hotspot-x hotspot-y]
-    (.newCursor this pixmap hotspot-x hotspot-y))
-  (set-cursor [this cursor]
-    (.setCursor this cursor)))
 
 (extend-type com.badlogic.gdx.files.FileHandle
   gdl.files.file-handle/FileHandle
