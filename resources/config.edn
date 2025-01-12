@@ -38,11 +38,10 @@
 ; => this has to become _exactly_ the context like that
 
 {:icon "moon.png"
-
- :title "Forge"
- :fps 60
- :width 1440
- :height 900
+ :lwjgl3 {:title "Forge"
+          :window-width 1440
+          :window-height 900
+          :foreground-fps 60}
 
  :log-dispose-lifecycle? true
  :log-resize-lifecycle? true

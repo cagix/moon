@@ -1,8 +1,8 @@
 (ns clojure.java.awt
   (:require [clojure.java.io :as io])
-  (:require (java.awt Taskbar Toolkit)))
+  (:import (java.awt Taskbar Toolkit)))
 
-(defn set-taskbar-icon [resource]
+(defn set-taskbar-icon [io-resource]
   (.setIconImage (Taskbar/getTaskbar)
                  (.getImage (Toolkit/getDefaultToolkit)
-                            (io/resource icon))))
+                            (io/resource io-resource))))
