@@ -37,8 +37,7 @@
 
 ; => this has to become _exactly_ the context like that
 
-{:icon "moon.png"
- :lwjgl3 {:title "Forge"
+{:lwjgl3 {:title "Forge"
           :window-width 1440
           :window-height 900
           :foreground-fps 60}

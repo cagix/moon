@@ -2,7 +2,6 @@
   (:require [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl3 :as lwjgl3]
-            [clojure.java.awt :as awt]
             [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.platform.libgdx]
@@ -21,8 +20,9 @@
          :as config} (-> "config.edn" io/resource slurp edn/read-string)
         render-fns (map require-ns-resolve (:render-fns config))
         create-fns (:create-fns config)]
-    (when-let [icon (:icon config)]
-      (awt/set-taskbar-icon icon))
+    (.setIconImage (java.awt.Taskbar/getTaskbar)
+                   (.getImage (java.awt.Toolkit/getDefaultToolkit)
+                              (io/resource "moon.png")))
     (when SharedLibraryLoader/isMac
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (lwjgl3/application (proxy [com.badlogic.gdx.ApplicationAdapter] []
