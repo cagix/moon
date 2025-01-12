@@ -6,7 +6,7 @@
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]))
 
-(defn- create-content-grid [tiled-map {:keys [cell-size]}]
+(defn create-content-grid [tiled-map {:keys [cell-size]}]
   (content-grid/create {:cell-size cell-size
                         :width  (tiled/tm-width  tiled-map)
                         :height (tiled/tm-height tiled-map)}))
@@ -40,7 +40,7 @@
   (nearest-entity-distance [this faction]
     (-> this faction :distance)))
 
-(defn- ->grid-cell [position movement]
+(defn ->grid-cell [position movement]
   {:pre [(#{:none :air :all} movement)]}
   (map->RCell
    {:position position
@@ -49,7 +49,7 @@
     :entities #{}
     :occupied #{}}))
 
-(defn- create-grid [tiled-map]
+(defn create-grid [tiled-map]
   (g2d/create-grid
    (tiled/tm-width tiled-map)
    (tiled/tm-height tiled-map)
@@ -60,7 +60,7 @@
                           "air"  :air
                           "all"  :all))))))
 
-(defn- player-entity-props [start-position]
+(defn player-entity-props [start-position]
   {:position (tile->middle start-position)
    :creature-id :creatures/vampire
    :components {:entity/fsm {:fsm :fsms/player
@@ -71,10 +71,10 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
-(defn- spawn-player-entity [context start-position]
+(defn spawn-player-entity [context start-position]
   (spawn-creature context (player-entity-props start-position)))
 
-(defn- spawn-enemies! [{:keys [cdq.context/tiled-map] :as c} _config]
+(defn spawn-enemies! [{:keys [cdq.context/tiled-map] :as c} _config]
   (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
                   {:position position
                    :creature-id (keyword creature-id)
@@ -84,11 +84,11 @@
     (spawn-creature c (update props :position tile->middle)))
   :ok)
 
-(defn- set-arr [arr cell cell->blocked?]
+(defn set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn- create-raycaster [{:keys [cdq.context/grid]} _]
+(defn create-raycaster [{:keys [cdq.context/grid]} _]
   (let [width  (g2d/width  grid)
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]
@@ -96,7 +96,7 @@
       (set-arr arr @cell grid/blocks-vision?))
     [arr width height]))
 
-(defn- explored-tile-corners* [{:keys [cdq.context/tiled-map]} _config]
+(defn explored-tile-corners* [{:keys [cdq.context/tiled-map]} _config]
   (atom (g2d/create-grid
          (tiled/tm-width  tiled-map)
          (tiled/tm-height tiled-map)

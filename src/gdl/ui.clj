@@ -352,9 +352,8 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  (let [actors (map (fn [[var params]]
-                      (let [f (utils/require-ns-resolve var)]
-                        (f context params)))
+  (let [actors (map (fn [[f params]]
+                      (f context params))
                     (:actors config))
         stage (create-stage ui-viewport batch actors)]
     (input/set-processor stage)

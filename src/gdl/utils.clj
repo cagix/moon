@@ -160,12 +160,3 @@
      (binding [*err* s#]
        ~@body
        (str s#))))
-
-(defn require-ns-resolve [sym]
-  {:pre [(namespace sym)]}
-  (try (require (symbol (namespace sym)))
-       (catch IllegalArgumentException e
-         (throw (ex-info "Cannot require namespace"
-                         {:sym sym}
-                         e))))
-  (resolve sym))

@@ -4,6 +4,4 @@
 
 (defn create [context actors]
   (ui/group {:id :windows
-             :actors (map (fn [create]
-                            ((utils/require-ns-resolve create) context))
-                          actors)}))
+             :actors (map (fn [create] (create context)) actors)}))
