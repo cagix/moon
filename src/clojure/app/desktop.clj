@@ -41,6 +41,9 @@
             cdq.time
             cdq.malli))
 
+(defn sprite-batch [_context _config]
+  (com.badlogic.gdx.graphics.g2d.SpriteBatch.))
+
 (defrecord Cursors []
   clojure.utils/Disposable
   (dispose [this]
@@ -261,15 +264,14 @@
                                            (.load manager ^String file asset-type))
                                          (.finishLoading manager)
                                          manager))]
-                    [:clojure.graphics/batch (fn [_context _config]
-                                           (com.badlogic.gdx.graphics.g2d.SpriteBatch.))]
+                    [:clojure.graphics/batch sprite-batch]
                     [:clojure.graphics/shape-drawer-texture (fn [_context _config]
-                                                          (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
-                                                                         (clojure.graphics.pixmap/set-color clojure.graphics.color/white)
-                                                                         (clojure.graphics.pixmap/draw-pixel 0 0))
-                                                                texture (clojure.graphics.texture/create pixmap)]
-                                                            (clojure.utils/dispose pixmap)
-                                                            texture))]
+                                                              (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
+                                                                             (clojure.graphics.pixmap/set-color clojure.graphics.color/white)
+                                                                             (clojure.graphics.pixmap/draw-pixel 0 0))
+                                                                    texture (clojure.graphics.texture/create pixmap)]
+                                                                (clojure.utils/dispose pixmap)
+                                                                texture))]
                     [:clojure.graphics/shape-drawer (fn [{:keys [clojure.graphics/batch
                                                              clojure.graphics/shape-drawer-texture]} _config]
                                                   (space.earlygrey.shapedrawer.ShapeDrawer. batch
