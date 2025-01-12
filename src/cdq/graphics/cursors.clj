@@ -1,7 +1,6 @@
 (ns cdq.graphics.cursors
   (:require [clojure.graphics :as graphics]
             [clojure.gdx.graphics.pixmap :as pixmap]
-            [gdl.files :as files]
             [gdl.utils :refer [dispose mapvals]]))
 
 (defrecord Cursors []
@@ -9,11 +8,10 @@
   (dispose [this]
     (run! dispose (vals this))))
 
-(defn create [{:keys [gdl/files
-                      gdl/graphics]} config]
+(defn create [{:keys [gdl/graphics]} config]
   (map->Cursors
    (mapvals (fn [[file [hotspot-x hotspot-y]]]
-              (let [pixmap (pixmap/create (files/internal files (str "cursors/" file ".png")))
+              (let [pixmap (pixmap/create (.internal com.badlogic.gdx.Gdx/files (str "cursors/" file ".png")))
                     cursor (graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
                 (dispose pixmap)
                 cursor))

@@ -33,9 +33,9 @@
     (.finishLoading manager)
     manager))
 
-(defn create [{:keys [gdl/files]} {:keys [folder type-exts]}]
+(defn create [_context {:keys [folder type-exts]}]
   (blocking-load-all
    (for [[asset-type exts] type-exts
          file (map #(str/replace-first % folder "")
-                   (files/search-by-extensions files folder exts))]
+                   (files/search-by-extensions folder exts))]
      [file asset-type])))

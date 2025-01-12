@@ -1,5 +1,4 @@
 (ns cdq.graphics.default-font
-  (:require [gdl.files :as files])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
@@ -23,5 +22,5 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create [{:keys [gdl/files]} config]
-  (generate-font (update config :file #(files/internal files %))))
+(defn create [_context config]
+  (generate-font (update config :file #(.internal com.badlogic.gdx.Gdx/files %))))

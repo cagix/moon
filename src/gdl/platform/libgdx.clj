@@ -4,7 +4,6 @@
             [clojure.graphics.2d.batch]
             [gdl.app]
             [gdl.audio]
-            [gdl.files]
             [gdl.files.file-handle]
             [gdl.input]
             [gdl.utils]))
@@ -13,11 +12,6 @@
   gdl.app/Application
   (post-runnable [this runnable]
     (.postRunnable this runnable)))
-
-(extend-type com.badlogic.gdx.Files
-  gdl.files/Files
-  (internal [this path]
-    (.internal this path)))
 
 (extend-type com.badlogic.gdx.Graphics
   clojure.graphics/Graphics

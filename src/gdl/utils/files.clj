@@ -1,9 +1,8 @@
 (ns gdl.utils.files
-  (:require [gdl.files :as files]
-            [gdl.files.file-handle :as fh]))
+  (:require [gdl.files.file-handle :as fh]))
 
-(defn search-by-extensions [files folder extensions]
-  (loop [[file & remaining] (fh/list (files/internal files folder))
+(defn search-by-extensions [folder extensions]
+  (loop [[file & remaining] (fh/list (.internal com.badlogic.gdx.Gdx/files folder))
          result []]
     (cond (nil? file)
           result

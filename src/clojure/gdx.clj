@@ -4,7 +4,6 @@
 (defn context []
   {:app      Gdx/app
    :audio    Gdx/audio
-   :files    Gdx/files
    :gl       Gdx/gl20
    :gl20     Gdx/gl20
    :gl30     Gdx/gl30
