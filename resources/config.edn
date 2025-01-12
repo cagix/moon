@@ -37,8 +37,7 @@
 
 ; => this has to become _exactly_ the context like that
 
-{:log-dispose-lifecycle? true
- :log-resize-lifecycle? true
+{
 
  ; always assoc :gdl/foo (cdq.foo/create ...) ... !
 

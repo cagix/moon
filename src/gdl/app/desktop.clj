@@ -107,8 +107,7 @@
          (doseq [[k value] @state
                  :when (and (not (= (namespace k) "gdl"))
                             (disposable? value))]
-           (when (:log-dispose-lifecycle? config)
-             (println "Disposing " k " - " value))
+           ;(println "Disposing " k " - " value)
            (dispose value)))
 
        (render []
@@ -121,8 +120,7 @@
        (resize [width height]
          (doseq [[k value] @state
                  :when (resizable? value)]
-           (when (:log-resize-lifecycle? config)
-             (println "Resizing " k " - " value))
+           ;(println "Resizing " k " - " value)
            (resize value width height))))
      (doto (com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.)
        (.setTitle "Cyber Dungeon Quest")
