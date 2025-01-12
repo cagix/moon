@@ -27,7 +27,7 @@
             [gdl.graphics.camera :as cam]
             [cdq.math.raycaster :as raycaster]
             [cdq.potential-fields :as potential-fields]
-            [clojure.gdx.math.vector2 :as v]
+            [clojure.math.vector2 :as v]
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group]))

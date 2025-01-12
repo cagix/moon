@@ -1,4 +1,4 @@
-(ns clojure.gdx.utils.viewport
+(ns clojure.utils.viewport
   (:import (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport Viewport)))
 

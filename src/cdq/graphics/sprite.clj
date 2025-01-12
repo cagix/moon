@@ -1,5 +1,5 @@
 (ns cdq.graphics.sprite ;-> gdl
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
+  (:require [clojure.graphics.2d.texture-region :as texture-region]))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))

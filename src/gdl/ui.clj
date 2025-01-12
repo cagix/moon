@@ -1,5 +1,5 @@
 (ns gdl.ui
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
+  (:require [clojure.graphics.2d.texture-region :as texture-region]
             [gdl.input :as input]
             [gdl.scene2d.actor :as actor]
             [gdl.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
@@ -7,7 +7,7 @@
             [gdl.scene2d.ui.table :as table]
             [gdl.scene2d.ui.utils :as scene2d.utils]
             [gdl.utils :as utils]
-            [clojure.gdx.vis-ui.widgets.separator :as separator])
+            [clojure.vis-ui.widgets.separator :as separator])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)

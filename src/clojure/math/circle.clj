@@ -1,4 +1,4 @@
-(ns clojure.gdx.math.circle
+(ns clojure.math.circle
   (:import (com.badlogic.gdx.math Circle)))
 
 (defn create [x y radius]

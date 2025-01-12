@@ -1,4 +1,4 @@
-(ns clojure.gdx.math.frustum
+(ns clojure.math.frustum
   (:import (com.badlogic.gdx.math Frustum Vector3)))
 
 (defn- vector3->clj-vec [^Vector3 v3]

@@ -1,4 +1,4 @@
-(ns clojure.gdx.math.intersector
+(ns clojure.math.intersector
   (:import (com.badlogic.gdx.math Circle Intersector Rectangle)))
 
 (defmulti

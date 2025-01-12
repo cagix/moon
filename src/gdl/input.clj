@@ -1,5 +1,5 @@
 (ns gdl.input
-  (:require [clojure.gdx.interop :refer [k->input-button k->input-key]]))
+  (:require [clojure.interop :refer [k->input-button k->input-key]]))
 
 (defn x []
   (.getX com.badlogic.gdx.Gdx/input))

@@ -9,7 +9,7 @@
             [gdl.input :as input]
             [gdl.graphics.camera :as cam]
             [gdl.tiled :as tiled]
-            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
+            [clojure.maps.tiled.tmx-map-loader :as tmx-map-loader]
             [gdl.ui :refer [ui-actor text-button] :as ui]
             [gdl.scene2d.group :refer [add-actor!]]))
 

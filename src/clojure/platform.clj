@@ -154,7 +154,7 @@
   [(namespace-line-string ns-name)]
   )
 
-(generate-core-namespace "clojure.gdx")
+(generate-core-namespace "clojure")
 
 (comment
  ; 1. copy from libgdx directory core gdx sources

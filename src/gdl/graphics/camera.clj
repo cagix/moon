@@ -1,6 +1,6 @@
 (ns gdl.graphics.camera
   (:require [clojure.graphics.camera :as camera]
-            [clojure.gdx.math.frustum :as frustum]))
+            [clojure.math.frustum :as frustum]))
 
 (defn position
   "Returns camera position as [x y] vector."

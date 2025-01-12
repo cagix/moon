@@ -1,5 +1,5 @@
 (ns cdq.graphics.ui-viewport
-  (:require [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport])
+  (:require [clojure.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
 (defn create [_context config]

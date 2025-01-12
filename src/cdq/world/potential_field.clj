@@ -1,5 +1,5 @@
 (ns cdq.world.potential-field
-  (:require [clojure.gdx.math.vector2 :as v]
+  (:require [clojure.math.vector2 :as v]
             [gdl.utils :refer [utils-positions when-seq]]
             [cdq.entity :as entity]
             [cdq.grid :refer [rectangle->cells

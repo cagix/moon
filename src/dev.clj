@@ -13,7 +13,7 @@
 
  ; This 'app-values-tree'
  ; could be outside of the application
- ; together with clojure.gdx.dev-loop ?
+ ; together with clojure.dev-loop ?
  ; 'clojure.dev' ?
  ; javafx app
  ; hooks into your application
@@ -22,7 +22,7 @@
 
  (app/post-runnable show-obj-editor!)
  (print-app-values-tree "app-values-tree.clj"
-                        #{"clojure.gdx", "gdl", "cdq"})
+                        #{"clojure", "gdl", "cdq"})
 
  ; use post-runnable to get proper error messages in console
 

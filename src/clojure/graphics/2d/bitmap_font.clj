@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.g2d.bitmap-font
+(ns clojure.graphics.2d.bitmap-font
   "Renders bitmap fonts. The font consists of 2 files: an image file or TextureRegion containing the glyphs and a file in the AngleCode BMFont text format that describes where each glyph is on the image.
 
   Text is drawn using a Batch. Text can be cached in a BitmapFontCache for faster rendering of static text, which saves needing to compute the location of each glyph each frame.

@@ -1,10 +1,10 @@
 (ns gdl.app.desktop
   (:require clojure.edn
             clojure.graphics.camera
-            clojure.gdx.graphics.pixmap
-            clojure.gdx.graphics.shape-drawer
-            clojure.gdx.graphics.texture
-            clojure.gdx.graphics.g2d.texture-region
+            clojure.graphics.pixmap
+            clojure.graphics.shape-drawer
+            clojure.graphics.texture
+            clojure.graphics.2d.texture-region
             clojure.java.io
             gdl.app
             gdl.context
@@ -236,16 +236,16 @@
                     [:gdl.graphics/batch (fn [_context _config]
                                            (com.badlogic.gdx.graphics.g2d.SpriteBatch.))]
                     [:gdl.graphics/shape-drawer-texture (fn [_context _config]
-                                                          (let [pixmap (doto (clojure.gdx.graphics.pixmap/create 1 1 clojure.gdx.graphics.pixmap/format-RGBA8888)
-                                                                         (clojure.gdx.graphics.pixmap/set-color gdl.graphics.color/white)
-                                                                         (clojure.gdx.graphics.pixmap/draw-pixel 0 0))
-                                                                texture (clojure.gdx.graphics.texture/create pixmap)]
+                                                          (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
+                                                                         (clojure.graphics.pixmap/set-color gdl.graphics.color/white)
+                                                                         (clojure.graphics.pixmap/draw-pixel 0 0))
+                                                                texture (clojure.graphics.texture/create pixmap)]
                                                             (gdl.utils/dispose pixmap)
                                                             texture))]
                     [:gdl.graphics/shape-drawer (fn [{:keys [gdl.graphics/batch
                                                              gdl.graphics/shape-drawer-texture]} _config]
-                                                  (clojure.gdx.graphics.shape-drawer/create batch
-                                                                                            (clojure.gdx.graphics.g2d.texture-region/create shape-drawer-texture 1 0 1 1)))]
+                                                  (clojure.graphics.shape-drawer/create batch
+                                                                                            (clojure.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))]
                     [:gdl.graphics/cursors [cdq.graphics.cursors/create {:cursors/bag                   ["bag001"       [0   0]]
                                                                          :cursors/black-x               ["black_x"      [0   0]]
                                                                          :cursors/default               ["default"      [0   0]]

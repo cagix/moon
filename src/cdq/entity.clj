@@ -1,5 +1,5 @@
 (ns cdq.entity
-  (:require [clojure.gdx.math.vector2 :as v]
+  (:require [clojure.math.vector2 :as v]
             [gdl.utils :refer [defsystem safe-merge]]
             [gdl.context :as c]
             [cdq.context.timer :as timer]

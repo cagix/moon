@@ -1,4 +1,4 @@
-(ns clojure.gdx.maps.tiled.tmx-map-loader
+(ns clojure.maps.tiled.tmx-map-loader
   (:refer-clojure :exclude [load])
   (:import (com.badlogic.gdx.maps.tiled TmxMapLoader)))
 

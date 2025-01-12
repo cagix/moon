@@ -1,7 +1,7 @@
 (ns cdq.math.shapes ; gdl !!
-  (:require [clojure.gdx.math.circle :as circle]
-            [clojure.gdx.math.intersector :as intersector]
-            [clojure.gdx.math.rectangle :as rectangle]))
+  (:require [clojure.math.circle :as circle]
+            [clojure.math.intersector :as intersector]
+            [clojure.math.rectangle :as rectangle]))
 
 (defn- rectangle? [{[x y] :left-bottom :keys [width height]}]
   (and x y width height))

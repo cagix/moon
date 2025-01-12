@@ -1,6 +1,6 @@
 (ns cdq.graphics.cursors
   (:require [clojure.graphics :as graphics]
-            [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.graphics.pixmap :as pixmap]
             [gdl.utils :refer [dispose mapvals]]))
 
 (defrecord Cursors []

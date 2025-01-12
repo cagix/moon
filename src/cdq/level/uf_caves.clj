@@ -1,6 +1,6 @@
 (ns ^:no-doc cdq.level.uf-caves
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region] ; gdl
+            [clojure.graphics.2d.texture-region :as texture-region] ; gdl
             [gdl.rand :refer [get-rand-weighted-item]] ; gdl
             [gdl.grid2d :as g2d]
             [gdl.tiled :as tiled]))

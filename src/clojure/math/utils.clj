@@ -1,4 +1,4 @@
-(ns clojure.gdx.math.utils
+(ns clojure.math.utils
   (:import (com.badlogic.gdx.math MathUtils)))
 
 (defn equal?
