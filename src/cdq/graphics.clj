@@ -49,20 +49,20 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn- render-before-entities [{:keys [gdl.graphics/world-viewport
-                                       gdl.graphics/shape-drawer
-                                       cdq.context/factions-iterations]
-                                :as c}]
+(defn render-before-entities [{:keys [gdl.graphics/world-viewport
+                                      gdl.graphics/shape-drawer
+                                      cdq.context/factions-iterations]
+                               :as c}]
   (let [sd shape-drawer
         cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
 
     (when tile-grid?
       (sd/grid sd
-              (int left-x) (int bottom-y)
-              (inc (int (:width  world-viewport)))
-              (+ 2 (int (:height world-viewport)))
-              1 1 [1 1 1 0.8]))
+               (int left-x) (int bottom-y)
+               (inc (int (:width  world-viewport)))
+               (+ 2 (int (:height world-viewport)))
+               1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
             :let [cell (grid-cell c [x y])]
@@ -287,7 +287,7 @@
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
-(defn- render-entities
+(defn render-entities
   "Draws all active entities, sorted by the `:z-order` and with the render systems `below`, `default`, `above`, `info` for each z-order if the entity is in line-of-sight? to the player entity or is an `:z-order/effect`.
 
   Optionally for debug purposes body rectangles can be drown which show white for collidings and gray for non colliding entities.
@@ -311,13 +311,3 @@
        (catch Throwable t
          (draw-body-rect shape-drawer entity :red)
          (pretty-pst t))))))
-
-(defn draw-world-view [context]
-  (let [render-fns [render-before-entities
-                    render-entities
-                    render-after-entities]]
-    (c/draw-on-world-view context
-                          (fn [context]
-                            (doseq [f render-fns]
-                              (f context)))))
-  context)

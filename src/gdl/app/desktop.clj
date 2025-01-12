@@ -4,11 +4,12 @@
             [gdl.app]
             [gdl.context]
             [gdl.graphics.camera]
-            [cdq.graphics.tiled-map]
             [gdl.platform.libgdx]
             [gdl.utils]
             [cdq.db]
+            [cdq.graphics]
             [cdq.graphics.animation]
+            [cdq.graphics.tiled-map]
             [cdq.schema]
             [cdq.malli]))
 
@@ -111,7 +112,15 @@
                                                                                                  explored-tile-corners
                                                                                                  (gdl.graphics.camera/position (:camera world-viewport))))
                            context)
-                         'cdq.graphics/draw-world-view
+                         (fn [context]
+                           (let [render-fns [cdq.graphics/render-before-entities
+                                             cdq.graphics/render-entities
+                                             cdq.graphics/render-after-entities]]
+                             (gdl.context/draw-on-world-view context
+                                                             (fn [context]
+                                                               (doseq [f render-fns]
+                                                                 (f context)))))
+                           context)
                          'gdl.graphics/draw-stage
                          'gdl.context/update-stage
                          'cdq.context/handle-player-input
