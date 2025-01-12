@@ -71,16 +71,16 @@
 
 ; TODO textfield takes control !
 ; PLUS symbol shift & = symbol on keyboard not registered
-(defn- camera-controls [input camera]
+(defn- camera-controls [camera]
   (let [apply-position (fn [idx f]
                          (cam/set-position! camera
                                             (update (cam/position camera)
                                                     idx
                                                     #(f % camera-movement-speed))))]
-    (if (input/key-pressed? input :left)  (apply-position 0 -))
-    (if (input/key-pressed? input :right) (apply-position 0 +))
-    (if (input/key-pressed? input :up)    (apply-position 1 +))
-    (if (input/key-pressed? input :down)  (apply-position 1 -))))
+    (if (input/key-pressed? :left)  (apply-position 0 -))
+    (if (input/key-pressed? :right) (apply-position 0 +))
+    (if (input/key-pressed? :up)    (apply-position 1 +))
+    (if (input/key-pressed? :down)  (apply-position 1 -))))
 
 (defn- render-on-map [{:keys [gdl.graphics/world-viewport
                               gdl.graphics/shape-drawer] :as c}]
@@ -138,9 +138,9 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn adjust-zoom [input camera] ; TODO this now in gdl.context available.
-  (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
-  (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
+(defn adjust-zoom [camera] ; TODO this now in gdl.context available.
+  (when (input/key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
+  (when (input/key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
 
 (defn enter [_]
   #_(show-whole-map! c/camera (:tiled-map @current-data)))
@@ -154,12 +154,12 @@
                     (constantly color/white))
   #_(c/draw-on-world-view @state
                           render-on-map)
-  #_(if (input/key-just-pressed? input :l)
+  #_(if (input/key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
-  #_(if (input/key-just-pressed? input :m)
+  #_(if (input/key-just-pressed? :m)
       (swap! current-data update :show-movement-properties not))
-  #_(adjust-zoom input c/camera)
-  #_(camera-controls input c/camera))
+  #_(adjust-zoom c/camera)
+  #_(camera-controls c/camera))
 
 #_(defn dispose [_]
   #_(dispose (:tiled-map @current-data)))

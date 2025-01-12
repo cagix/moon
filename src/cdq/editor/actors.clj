@@ -116,8 +116,8 @@
                                              :center? true}
                                             {:actor (text-button "Delete" delete!)
                                              :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn [{:keys [gdl/input]}]
-                                         (when (input/key-just-pressed? input :enter)
+    (add-actor! window (ui-actor {:act (fn [_context]
+                                         (when (input/key-just-pressed? :enter)
                                            (save!)))}))
     (.pack window)
     window))

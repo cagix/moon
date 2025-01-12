@@ -10,5 +10,4 @@
    :gl31     Gdx/gl31
    :gl32     Gdx/gl32
    :graphics Gdx/graphics
-   :input    Gdx/input
    :net      Gdx/net})

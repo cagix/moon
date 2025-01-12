@@ -1,11 +1,9 @@
 (ns gdl.platform.libgdx
-  (:require [clojure.gdx.interop :refer [k->input-button k->input-key]]
-            [clojure.graphics]
+  (:require [clojure.graphics]
             [clojure.graphics.2d.batch]
             [gdl.app]
             [gdl.audio]
             [gdl.files.file-handle]
-            [gdl.input]
             [gdl.utils]))
 
 (extend-type com.badlogic.gdx.Application
@@ -30,26 +28,6 @@
     (.extension this))
   (path [this]
     (.path this)))
-
-(extend-type com.badlogic.gdx.Input
-  gdl.input/Input
-  (x [this]
-    (.getX this))
-
-  (y [this]
-    (.getY this))
-
-  (button-just-pressed? [this button]
-    (.isButtonJustPressed this (k->input-button button)))
-
-  (key-just-pressed? [this key]
-    (.isKeyJustPressed this (k->input-key key)))
-
-  (key-pressed? [this key]
-    (.isKeyPressed this (k->input-key key)))
-
-  (set-processor [this input-processor]
-    (.setInputProcessor this input-processor)))
 
 (extend-type com.badlogic.gdx.audio.Sound
   gdl.audio/Sound

@@ -495,13 +495,12 @@
 
 (defn update-paused-state [{:keys [cdq.context/player-eid
                                    error ; FIXME ! not `::` keys so broken !
-                                   gdl/input
                                    ] :as c}]
   (assoc c :cdq.context/paused? (or error
                                     (and pausing?
                                          (state/pause-game? (entity/state-obj @player-eid))
-                                         (not (or (input/key-just-pressed? input :p)
-                                                  (input/key-pressed? input :space)))))))
+                                         (not (or (input/key-just-pressed? :p)
+                                                  (input/key-pressed? :space)))))))
 
 (defn- update-time [{:keys [gdl/graphics] :as context}]
   (let [delta-ms (min (graphics/delta-time graphics) max-delta-time)]
@@ -566,10 +565,10 @@
   {:inventory-window   :i
    :entity-info-window :e})
 
-(defn- check-window-hotkeys [{:keys [gdl/input] :as c}]
+(defn- check-window-hotkeys [c]
   (doseq [window-id [:inventory-window
                      :entity-info-window]
-          :when (input/key-just-pressed? input (get window-hotkeys window-id))]
+          :when (input/key-just-pressed? (get window-hotkeys window-id))]
     (actor/toggle-visible! (get (:windows (c/stage c)) window-id))))
 
 (defn- close-all-windows [stage]
@@ -579,14 +578,14 @@
 
 (def close-windows-key :escape)
 
-(defn check-ui-key-listeners [{:keys [gdl/input] :as c}]
+(defn check-ui-key-listeners [c]
   (check-window-hotkeys c)
-  (when (input/key-just-pressed? input close-windows-key)
+  (when (input/key-just-pressed? close-windows-key)
     (close-all-windows (c/stage c)))
   c)
 
-(defn player-movement-vector [input]
-  (c/WASD-movement-vector input))
+(defn player-movement-vector []
+  (c/WASD-movement-vector))
 
 (defn add-skill [c eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
@@ -990,12 +989,12 @@
   (state/pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [gdl/input] :as c}]
-    (if-let [movement-vector (player-movement-vector input)]
+  (state/manual-tick [[_ {:keys [eid]}] c]
+    (if-let [movement-vector (player-movement-vector)]
       (send-event! c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
         (c/set-cursor c cursor)
-        (when (input/button-just-pressed? input :left)
+        (when (input/button-just-pressed? :left)
           (on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
@@ -1073,8 +1072,8 @@
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [gdl/input] :as c}]
-    (when (and (input/button-just-pressed? input :left)
+  (state/manual-tick [[_ {:keys [eid]}] c]
+    (when (and (input/button-just-pressed? :left)
                (world-item? c))
       (send-event! c eid :drop-item)))
 
@@ -1095,8 +1094,8 @@
   (state/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (tick! [[_ {:keys [movement-vector]}] eid {:keys [gdl/input] :as c}]
-    (if-let [movement-vector (player-movement-vector input)]
+  (tick! [[_ {:keys [movement-vector]}] eid c]
+    (if-let [movement-vector (player-movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
       (send-event! c eid :no-movement-input))))

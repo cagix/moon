@@ -178,25 +178,23 @@
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
-  [input viewport]
-  (let [mouse-x (clamp (input/x input)
+  [viewport]
+  (let [mouse-x (clamp (input/x)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y input)
+        mouse-y (clamp (input/y)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{:keys [gdl.graphics/ui-viewport
-                              gdl/input]}]
+(defn mouse-position [{:keys [gdl.graphics/ui-viewport]}]
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position input ui-viewport)))
+  (mapv int (unproject-mouse-position ui-viewport)))
 
-(defn world-mouse-position [{:keys [gdl.graphics/world-viewport
-                                    gdl/input]}]
+(defn world-mouse-position [{:keys [gdl.graphics/world-viewport]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position input world-viewport))
+  (unproject-mouse-position world-viewport))
 
 (defn pixels->world-units [{:keys [gdl.graphics/world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
@@ -322,11 +320,11 @@
   (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
                      schemas))
 
-(defn WASD-movement-vector [input]
-  (let [r (when (input/key-pressed? input :d) [1  0])
-        l (when (input/key-pressed? input :a) [-1 0])
-        u (when (input/key-pressed? input :w) [0  1])
-        d (when (input/key-pressed? input :s) [0 -1])]
+(defn WASD-movement-vector []
+  (let [r (when (input/key-pressed? :d) [1  0])
+        l (when (input/key-pressed? :a) [-1 0])
+        u (when (input/key-pressed? :w) [0  1])
+        d (when (input/key-pressed? :s) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
@@ -334,12 +332,11 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn check-camera-controls [{:keys [gdl.graphics/world-viewport
-                                     gdl/input]
+(defn check-camera-controls [{:keys [gdl.graphics/world-viewport]
                               :as context}]
   (let [camera (:camera world-viewport)]
-    (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
-    (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
+    (when (input/key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
+    (when (input/key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
   context)
 
 (defn update-stage [context]

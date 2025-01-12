@@ -280,8 +280,6 @@
       (if (Actor/.getStage this)
         (let [context (application-state this)]
           (assert context)
-          (assert (:gdl/input context)
-                  (str "(pr-str (sort (keys context))): " (pr-str (sort (keys context)))))
           (when act
             (act (application-state this))))
         (do
@@ -335,8 +333,7 @@
       (clicked-fn {:event event :x x :y y}))))
 
 (defn setup-stage! [{:keys [gdl.graphics/batch
-                            gdl.graphics/ui-viewport
-                            gdl/input]
+                            gdl.graphics/ui-viewport]
                      :as context} config]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
@@ -360,7 +357,7 @@
                         (f context params)))
                     (:actors config))
         stage (create-stage ui-viewport batch actors)]
-    (input/set-processor input stage)
+    (input/set-processor stage)
     stage))
 
 (defn dispose! []

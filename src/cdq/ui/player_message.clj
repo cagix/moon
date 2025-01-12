@@ -26,4 +26,4 @@
              :act  check-remove-message}))
 
 (defn create* [_context config]
-  (atom {:duration-seconds config}))
+  (atom {:duration-seconds (:duration-seconds config)}))
