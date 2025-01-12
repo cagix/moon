@@ -248,7 +248,7 @@
                                                             texture))]
                     [:gdl.graphics/shape-drawer (fn [{:keys [gdl.graphics/batch
                                                              gdl.graphics/shape-drawer-texture]} _config]
-                                                  (clojure.graphics.shape-drawer/create batch
+                                                  (space.earlygrey.shapedrawer.ShapeDrawer. batch
                                                                                             (clojure.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))]
                     [:gdl.graphics/cursors (fn [_context _config]
                                              (map->Cursors

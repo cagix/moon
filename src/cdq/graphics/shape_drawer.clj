@@ -1,9 +1,7 @@
 (ns cdq.graphics.shape-drawer
-  (:require [clojure.graphics.shape-drawer :as sd]
-            [clojure.interop :as interop]
+  (:require [clojure.interop :as interop]
             [clojure.math.utils :refer [degree->radians]]
-            [gdl.graphics.color :as color]
-            [gdl.graphics.shape-drawer])
+            [gdl.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics Color)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
@@ -13,49 +11,85 @@
         (vector? c) (apply color/create c)
         :else (throw (ex-info "Cannot understand color" c))))
 
-(defn- sd-color [shape-drawer color]
-  (sd/set-color shape-drawer (munge-color color)))
+(defn- set-color [shape-drawer color]
+  (ShapeDrawer/.setColor shape-drawer ^Color (munge-color color)))
 
 (extend-type space.earlygrey.shapedrawer.ShapeDrawer
-  gdl.graphics.shape-drawer/ShapeDrawer
+  clojure.graphics.shape-drawer/ShapeDrawer
   (ellipse [this [x y] radius-x radius-y color]
-    (sd-color this color)
-    (sd/ellipse this x y radius-x radius-y))
+    (set-color this color)
+    (.ellipse this
+              (float x)
+              (float y)
+              (float radius-x)
+              (float radius-y)))
 
   (filled-ellipse [this [x y] radius-x radius-y color]
-    (sd-color this color)
-    (sd/filled-ellipse this x y radius-x radius-y))
+    (set-color this color)
+    (.filledEllipse this
+                    (float x)
+                    (float y)
+                    (float radius-x)
+                    (float radius-y)))
 
   (circle [this [x y] radius color]
-    (sd-color this color)
-    (sd/circle this x y radius))
+    (set-color this color)
+    (.circle this
+             (float x)
+             (float y)
+             (float radius)))
 
   (filled-circle [this [x y] radius color]
-    (sd-color this color)
-    (sd/filled-circle this x y radius))
+    (set-color this color)
+    (.filledCircle this
+                   (float x)
+                   (float y)
+                   (float radius)))
 
   (arc [this [center-x center-y] radius start-angle degree color]
-    (sd-color this color)
-    (sd/arc this center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
+    (set-color this color)
+    (.arc this
+          (float center-x)
+          (float center-y)
+          (float radius)
+          (float (degree->radians start-angle))
+          (float (degree->radians degree))))
 
   (sector [this [center-x center-y] radius start-angle degree color]
-    (sd-color this color)
-    (sd/sector this center-x center-y radius (degree->radians start-angle) (degree->radians degree)))
+    (set-color this color)
+    (.sector this
+             (float center-x)
+             (float center-y)
+             (float radius)
+             (float (degree->radians start-angle))
+             (float (degree->radians degree))))
 
   (rectangle [this x y w h color]
-    (sd-color this color)
-    (sd/rectangle this x y w h))
+    (set-color this color)
+    (.rectangle this
+                (float x)
+                (float y)
+                (float w)
+                (float h)))
 
   (filled-rectangle [this x y w h color]
-    (sd-color this color)
-    (sd/filled-rectangle this x y w h))
+    (set-color this color)
+    (.filledRectangle this
+                      (float x)
+                      (float y)
+                      (float w)
+                      (float h)))
 
   (line [this [sx sy] [ex ey] color]
-    (sd-color this color)
-    (sd/line this sx sy ex ey))
+    (set-color this color)
+    (.line this
+           (float sx)
+           (float sy)
+           (float ex)
+           (float ey)))
 
   (with-line-width [this width draw-fn]
-    (let [old-line-width (sd/default-line-width this)]
-      (sd/set-default-line-width this (* width old-line-width))
+    (let [old-line-width (.getDefaultLineWidth this)]
+      (.setDefaultLineWidth this (float (* width old-line-width)))
       (draw-fn)
-      (sd/set-default-line-width this old-line-width))))
+      (.setDefaultLineWidth this (float old-line-width)))))

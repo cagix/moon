@@ -3,7 +3,7 @@
             [cdq.context.timer :as timer]
             [cdq.error :refer [pretty-pst]]
             [gdl.graphics.camera :as cam]
-            [gdl.graphics.shape-drawer :as sd]
+            [clojure.graphics.shape-drawer :as sd]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [gdl.utils :refer [defsystem sort-by-order]]
             [cdq.val-max :as val-max]

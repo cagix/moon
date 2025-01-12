@@ -2,7 +2,7 @@
   (:require [cdq.level :refer [generate-level]]
             [cdq.modules :as modules]
             [gdl.graphics.color :as color]
-            [gdl.graphics.shape-drawer :as sd]
+            [clojure.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]

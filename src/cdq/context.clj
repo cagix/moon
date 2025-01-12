@@ -3,7 +3,7 @@
             [clojure.graphics :as graphics]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
-            [gdl.graphics.shape-drawer :as sd]
+            [clojure.graphics.shape-drawer :as sd]
             [cdq.world.potential-field :as potential-field]
             [cdq.effect :as effect]
             [cdq.inventory :as inventory]
