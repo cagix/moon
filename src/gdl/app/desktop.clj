@@ -133,7 +133,23 @@
                          (fn [{:keys [cdq.context/player-eid] :as c}]
                            (cdq.entity.state/manual-tick (cdq.entity/state-obj @player-eid) c)
                            c)
-                         'cdq.context/update-mouseover-entity
+                         (fn [{:keys [cdq.context/mouseover-eid
+                                      cdq.context/player-eid] :as c}]
+                           (let [new-eid (if (gdl.context/mouse-on-actor? c)
+                                           nil
+                                           (let [player @player-eid
+                                                 hits (remove #(= (:z-order @%) :z-order/effect)
+                                                              (cdq.context/point->entities c (gdl.context/world-mouse-position c)))]
+                                             (->> cdq.context/render-z-order
+                                                  (gdl.utils/sort-by-order hits #(:z-order @%))
+                                                  reverse
+                                                  (filter #(cdq.context/line-of-sight? c player @%))
+                                                  first)))]
+                             (when mouseover-eid
+                               (swap! mouseover-eid dissoc :entity/mouseover?))
+                             (when new-eid
+                               (swap! new-eid assoc :entity/mouseover? true))
+                             (assoc c :cdq.context/mouseover-eid new-eid)))
                          'cdq.context/update-paused-state
                          'cdq.context/progress-time-if-not-paused
                          'cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.

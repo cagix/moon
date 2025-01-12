@@ -467,26 +467,6 @@
   (let [[x y] (:left-bottom entity)]
     (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
-(defn- calculate-mouseover-eid [{:keys [cdq.context/player-eid] :as c}]
-  (let [player @player-eid
-        hits (remove #(= (:z-order @%) :z-order/effect)
-                     (point->entities c (c/world-mouse-position c)))]
-    (->> render-z-order
-         (sort-by-order hits #(:z-order @%))
-         reverse
-         (filter #(line-of-sight? c player @%))
-         first)))
-
-(defn update-mouseover-entity [{:keys [cdq.context/mouseover-eid] :as c}]
-  (let [new-eid (if (c/mouse-on-actor? c)
-                  nil
-                  (calculate-mouseover-eid c))]
-    (when mouseover-eid
-      (swap! mouseover-eid dissoc :entity/mouseover?))
-    (when new-eid
-      (swap! new-eid assoc :entity/mouseover? true))
-    (assoc c :cdq.context/mouseover-eid new-eid)))
-
 (def ^:private ^:dbg-flag pausing? true)
 
 (defn update-paused-state [{:keys [cdq.context/player-eid
