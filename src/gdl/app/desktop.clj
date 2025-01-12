@@ -4,6 +4,7 @@
             [gdl.app]
             [gdl.context]
             [gdl.graphics.camera]
+            [cdq.graphics.tiled-map]
             [gdl.platform.libgdx]
             [gdl.utils]
             [cdq.db]
@@ -99,7 +100,17 @@
                          (fn [context]
                            (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
                            context)
-                         'cdq.graphics.tiled-map/render
+                         (fn [{:keys [gdl.graphics/world-viewport
+                                      cdq.context/tiled-map
+                                      cdq.context/raycaster
+                                      cdq.context/explored-tile-corners]
+                               :as context}]
+                           (gdl.context/draw-tiled-map context
+                                                       tiled-map
+                                                       (cdq.graphics.tiled-map/tile-color-setter raycaster
+                                                                                                 explored-tile-corners
+                                                                                                 (gdl.graphics.camera/position (:camera world-viewport))))
+                           context)
                          'cdq.graphics/draw-world-view
                          'gdl.graphics/draw-stage
                          'gdl.context/update-stage

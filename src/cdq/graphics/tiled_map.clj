@@ -1,7 +1,5 @@
 (ns cdq.graphics.tiled-map
   (:require [gdl.graphics.color :as color]
-            [gdl.context :refer [draw-tiled-map]]
-            [gdl.graphics.camera :as cam]
             [cdq.math.raycaster :as raycaster]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
@@ -22,7 +20,7 @@
  2432
  )
 
-(defn- tile-color-setter [raycaster explored-tile-corners light-position]
+(defn tile-color-setter [raycaster explored-tile-corners light-position]
   #_(reset! do-once false)
   (let [light-cache (atom {})]
     (fn tile-color-setter [_color x y]
@@ -42,15 +40,3 @@
           (do (when-not explored?
                 (swap! explored-tile-corners assoc (mapv int position) true))
               color/white))))))
-
-(defn render [{:keys [gdl.graphics/world-viewport
-                      cdq.context/tiled-map
-                      cdq.context/raycaster
-                      cdq.context/explored-tile-corners]
-               :as context}]
-  (draw-tiled-map context
-                  tiled-map
-                  (tile-color-setter raycaster
-                                     explored-tile-corners
-                                     (cam/position (:camera world-viewport))))
-  context)
