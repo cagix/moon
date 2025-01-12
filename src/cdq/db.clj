@@ -1,8 +1,6 @@
 (ns cdq.db
   (:refer-clojure :exclude [update])
-  (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.pprint :refer [pprint]]
+  (:require [clojure.pprint :refer [pprint]]
             [gdl.utils :refer [safe-get]]
             [cdq.schema :as schema]
             [cdq.property :as property]))
@@ -33,19 +31,6 @@
              pprint
              with-out-str
              (spit file)))))))
-
-(defn create [_context config]
-  {:pre [(:properties config)
-         (:schema config)]}
-  (let [properties-file (io/resource (:properties config))
-        schemas (-> (:schema config) io/resource slurp edn/read-string)
-        properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! (partial schema/validate! schemas) properties)
-    {:db/data (zipmap (map :property/id properties) properties)
-     :db/properties-file properties-file
-     :db/schemas schemas}))
 
 (defn schema-of [{:keys [db/schemas]} k]
   (schema/schema-of schemas k))
