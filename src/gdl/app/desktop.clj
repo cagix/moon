@@ -1,10 +1,14 @@
 (ns gdl.app.desktop
   (:require [clojure.edn]
+            [clojure.gdx.graphics.camera]
             [clojure.java.io]
             [gdl.app]
             [gdl.context]
+            [gdl.input]
             [gdl.graphics.camera]
             [gdl.platform.libgdx]
+            [gdl.scene2d.actor]
+            [gdl.scene2d.group]
             [gdl.ui]
             [gdl.utils]
             [cdq.db]
@@ -92,69 +96,106 @@
                          schemas))
 
 (defn -main []
-  (let [render-fns (map #(if (symbol? %) (gdl.utils/require-ns-resolve %) %)
-                        [(fn [{:keys [gdl.graphics/world-viewport
-                                      cdq.context/player-eid]
-                               :as context}]
-                           {:pre [world-viewport
-                                  player-eid]}
-                           (gdl.graphics.camera/set-position! (:camera world-viewport)
-                                                              (:position @player-eid))
-                           context)
-                         (fn [context]
-                           (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
-                           context)
-                         (fn [{:keys [gdl.graphics/world-viewport
-                                      cdq.context/tiled-map
-                                      cdq.context/raycaster
-                                      cdq.context/explored-tile-corners]
-                               :as context}]
-                           (gdl.context/draw-tiled-map context
-                                                       tiled-map
-                                                       (cdq.graphics.tiled-map/tile-color-setter raycaster
-                                                                                                 explored-tile-corners
-                                                                                                 (gdl.graphics.camera/position (:camera world-viewport))))
-                           context)
-                         (fn [context]
-                           (let [render-fns [cdq.graphics/render-before-entities
-                                             cdq.graphics/render-entities
-                                             cdq.graphics/render-after-entities]]
-                             (gdl.context/draw-on-world-view context
-                                                             (fn [context]
-                                                               (doseq [f render-fns]
-                                                                 (f context)))))
-                           context)
-                         (fn [{:keys [gdl.context/stage] :as context}]
-                           (gdl.ui/draw stage (assoc context :gdl.context/unit-scale 1))
-                           context)
-                         (fn [context]
-                           (gdl.ui/act (:gdl.context/stage context) context)
-                           context)
-                         (fn [{:keys [cdq.context/player-eid] :as c}]
-                           (cdq.entity.state/manual-tick (cdq.entity/state-obj @player-eid) c)
-                           c)
-                         (fn [{:keys [cdq.context/mouseover-eid
-                                      cdq.context/player-eid] :as c}]
-                           (let [new-eid (if (gdl.context/mouse-on-actor? c)
-                                           nil
-                                           (let [player @player-eid
-                                                 hits (remove #(= (:z-order @%) :z-order/effect)
-                                                              (cdq.context/point->entities c (gdl.context/world-mouse-position c)))]
-                                             (->> cdq.context/render-z-order
-                                                  (gdl.utils/sort-by-order hits #(:z-order @%))
-                                                  reverse
-                                                  (filter #(cdq.context/line-of-sight? c player @%))
-                                                  first)))]
-                             (when mouseover-eid
-                               (swap! mouseover-eid dissoc :entity/mouseover?))
-                             (when new-eid
-                               (swap! new-eid assoc :entity/mouseover? true))
-                             (assoc c :cdq.context/mouseover-eid new-eid)))
-                         'cdq.context/update-paused-state
-                         'cdq.context/progress-time-if-not-paused
-                         'cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                         'gdl.context/check-camera-controls
-                         'cdq.context/check-ui-key-listeners])
+  (let [render-fns [(fn [{:keys [gdl.graphics/world-viewport
+                                 cdq.context/player-eid]
+                          :as context}]
+                      {:pre [world-viewport
+                             player-eid]}
+                      (gdl.graphics.camera/set-position! (:camera world-viewport)
+                                                         (:position @player-eid))
+                      context)
+                    (fn [context]
+                      (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
+                      context)
+                    (fn [{:keys [gdl.graphics/world-viewport
+                                 cdq.context/tiled-map
+                                 cdq.context/raycaster
+                                 cdq.context/explored-tile-corners]
+                          :as context}]
+                      (gdl.context/draw-tiled-map context
+                                                  tiled-map
+                                                  (cdq.graphics.tiled-map/tile-color-setter raycaster
+                                                                                            explored-tile-corners
+                                                                                            (gdl.graphics.camera/position (:camera world-viewport))))
+                      context)
+                    (fn [context]
+                      (let [render-fns [cdq.graphics/render-before-entities
+                                        cdq.graphics/render-entities
+                                        cdq.graphics/render-after-entities]]
+                        (gdl.context/draw-on-world-view context
+                                                        (fn [context]
+                                                          (doseq [f render-fns]
+                                                            (f context)))))
+                      context)
+                    (fn [{:keys [gdl.context/stage] :as context}]
+                      (gdl.ui/draw stage (assoc context :gdl.context/unit-scale 1))
+                      context)
+                    (fn [context]
+                      (gdl.ui/act (:gdl.context/stage context) context)
+                      context)
+                    (fn [{:keys [cdq.context/player-eid] :as c}]
+                      (cdq.entity.state/manual-tick (cdq.entity/state-obj @player-eid) c)
+                      c)
+                    (fn [{:keys [cdq.context/mouseover-eid
+                                 cdq.context/player-eid] :as c}]
+                      (let [new-eid (if (gdl.context/mouse-on-actor? c)
+                                      nil
+                                      (let [player @player-eid
+                                            hits (remove #(= (:z-order @%) :z-order/effect)
+                                                         (cdq.context/point->entities c (gdl.context/world-mouse-position c)))]
+                                        (->> cdq.context/render-z-order
+                                             (gdl.utils/sort-by-order hits #(:z-order @%))
+                                             reverse
+                                             (filter #(cdq.context/line-of-sight? c player @%))
+                                             first)))]
+                        (when mouseover-eid
+                          (swap! mouseover-eid dissoc :entity/mouseover?))
+                        (when new-eid
+                          (swap! new-eid assoc :entity/mouseover? true))
+                        (assoc c :cdq.context/mouseover-eid new-eid)))
+                    (fn [{:keys [cdq.context/player-eid
+                                 error ; FIXME ! not `::` keys so broken !
+                                 ] :as c}]
+                      (let [pausing? true]
+                        (assoc c :cdq.context/paused? (or error
+                                                          (and pausing?
+                                                               (cdq.entity.state/pause-game? (cdq.entity/state-obj @player-eid))
+                                                               (not (or (gdl.input/key-just-pressed? :p)
+                                                                        (gdl.input/key-pressed? :space))))))))
+                    (fn [c]
+                      (if (:cdq.context/paused? c)
+                        c
+                        (-> c
+                            cdq.context/update-time
+                            cdq.context/tick-potential-fields
+                            cdq.context/tick-entities)))
+                    (fn [c]
+                      ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                      (doseq [eid (filter (comp :entity/destroyed? deref)
+                                          (cdq.context/all-entities c))]
+                        (cdq.context/remove-entity c eid)
+                        (doseq [component @eid]
+                          (cdq.context/destroy! component eid c)))
+                      c)
+                    (fn [{:keys [gdl.graphics/world-viewport]
+                          :as context}]
+                      (let [camera (:camera world-viewport)
+                            zoom-speed 0.025]
+                        (when (gdl.input/key-pressed? :minus)  (gdl.graphics.camera/inc-zoom camera    zoom-speed))
+                        (when (gdl.input/key-pressed? :equals) (gdl.graphics.camera/inc-zoom camera (- zoom-speed))))
+                      context)
+                    (fn [c]
+                      (let [window-hotkeys {:inventory-window   :i
+                                            :entity-info-window :e}]
+                        (doseq [window-id [:inventory-window
+                                           :entity-info-window]
+                                :when (gdl.input/key-just-pressed? (get window-hotkeys window-id))]
+                          (gdl.scene2d.actor/toggle-visible! (get (:windows (:gdl.context/stage c)) window-id))))
+                      (when (gdl.input/key-just-pressed? :escape)
+                        (let [windows (gdl.scene2d.group/children (:windows (:gdl.context/stage c)))]
+                          (when (some gdl.scene2d.actor/visible? windows)
+                            (run! #(gdl.scene2d.actor/set-visible % false) windows))))
+                      c)]
         create-fns [[:gdl/db (fn [_context _config]
                                (let [properties-file (clojure.java.io/resource "properties.edn")
                                      schemas (-> "schema.edn" clojure.java.io/resource slurp clojure.edn/read-string)

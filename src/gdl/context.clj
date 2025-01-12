@@ -242,12 +242,3 @@
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
           v)))))
-
-(def ^:private zoom-speed 0.025)
-
-(defn check-camera-controls [{:keys [gdl.graphics/world-viewport]
-                              :as context}]
-  (let [camera (:camera world-viewport)]
-    (when (input/key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
-    (when (input/key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
-  context)

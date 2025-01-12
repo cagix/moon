@@ -467,18 +467,7 @@
   (let [[x y] (:left-bottom entity)]
     (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
-(def ^:private ^:dbg-flag pausing? true)
-
-(defn update-paused-state [{:keys [cdq.context/player-eid
-                                   error ; FIXME ! not `::` keys so broken !
-                                   ] :as c}]
-  (assoc c :cdq.context/paused? (or error
-                                    (and pausing?
-                                         (state/pause-game? (entity/state-obj @player-eid))
-                                         (not (or (input/key-just-pressed? :p)
-                                                  (input/key-pressed? :space)))))))
-
-(defn- update-time [context]
+(defn update-time [context]
   (let [delta-ms (min (graphics/delta-time) max-delta-time)]
     (-> context
         (update :gdl.context/elapsed-time + delta-ms)
@@ -486,8 +475,8 @@
 
 (def ^:private pf-cache (atom nil))
 
-(defn- tick-potential-fields [{:keys [cdq.context/factions-iterations
-                                      cdq.context/grid] :as c}]
+(defn tick-potential-fields [{:keys [cdq.context/factions-iterations
+                                     cdq.context/grid] :as c}]
   (let [entities (active-entities c)]
     (doseq [[faction max-iterations] factions-iterations]
       (potential-fields/tick pf-cache
@@ -505,7 +494,7 @@
 ; should be contains? check ?
 ; but then the 'order' is important? in such case dependent components
 ; should be moved together?
-(defn- tick-entities [c]
+(defn tick-entities [c]
   (try (doseq [eid (active-entities c)]
          (try
           (doseq [k (keys @eid)]
@@ -523,42 +512,11 @@
 (defsystem destroy!)
 (defmethod destroy! :default [_ eid c])
 
-(defn remove-destroyed-entities [c]
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (all-entities c))]
-    (remove-entity c eid)
-    (doseq [component @eid]
-      (destroy! component eid c)))
-  c)
-
 (defmethod destroy! :entity/destroy-audiovisual
   [[_ audiovisuals-id] eid c]
   (spawn-audiovisual c
                      (:position @eid)
                      (c/build c audiovisuals-id)))
-
-(def window-hotkeys
-  {:inventory-window   :i
-   :entity-info-window :e})
-
-(defn- check-window-hotkeys [c]
-  (doseq [window-id [:inventory-window
-                     :entity-info-window]
-          :when (input/key-just-pressed? (get window-hotkeys window-id))]
-    (actor/toggle-visible! (get (:windows (c/stage c)) window-id))))
-
-(defn- close-all-windows [stage]
-  (let [windows (group/children (:windows stage))]
-    (when (some actor/visible? windows)
-      (run! #(actor/set-visible % false) windows))))
-
-(def close-windows-key :escape)
-
-(defn check-ui-key-listeners [c]
-  (check-window-hotkeys c)
-  (when (input/key-just-pressed? close-windows-key)
-    (close-all-windows (c/stage c)))
-  c)
 
 (defn player-movement-vector []
   (c/WASD-movement-vector))
@@ -1343,11 +1301,3 @@
 
   (effect/handle [[_ duration] {:keys [effect/target]} c]
     (send-event! c target :stun duration)))
-
-(defn progress-time-if-not-paused [c]
-  (if (:cdq.context/paused? c)
-    c
-    (-> c
-        update-time
-        tick-potential-fields
-        tick-entities)))
