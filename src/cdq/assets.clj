@@ -16,8 +16,24 @@
 (defn- class->asset-type [class]
   (some (fn [[k v]] (when (= v class) k)) asset-type-class-map))
 
-(defn- blocking-load-all [assets]
-  (let [manager (proxy [AssetManager IFn Assets] []
+(defn create [_context {:keys [folder type-exts]}]
+  (let [assets (for [[asset-type extensions] type-exts
+                     file (map #(str/replace-first % folder "")
+                               (loop [[file & remaining] (.list (.internal com.badlogic.gdx.Gdx/files folder))
+                                      result []]
+                                 (cond (nil? file)
+                                       result
+
+                                       (.isDirectory file)
+                                       (recur (concat remaining (.list file)) result)
+
+                                       (extensions (.extension file))
+                                       (recur remaining (conj result (.path file)))
+
+                                       :else
+                                       (recur remaining result))))]
+                 [file asset-type])
+        manager (proxy [AssetManager IFn Assets] []
                   (invoke [^String path]
                     (let [^AssetManager this this]
                       (if (.contains this path)
@@ -31,22 +47,3 @@
       (.load manager ^String file (asset-type->class asset-type)))
     (.finishLoading manager)
     manager))
-
-(defn create [_context {:keys [folder type-exts]}]
-  (blocking-load-all
-   (for [[asset-type extensions] type-exts
-         file (map #(str/replace-first % folder "")
-                   (loop [[file & remaining] (.list (.internal com.badlogic.gdx.Gdx/files folder))
-                          result []]
-                     (cond (nil? file)
-                           result
-
-                           (.isDirectory file)
-                           (recur (concat remaining (.list file)) result)
-
-                           (extensions (.extension file))
-                           (recur remaining (conj result (.path file)))
-
-                           :else
-                           (recur remaining result))))]
-     [file asset-type])))
