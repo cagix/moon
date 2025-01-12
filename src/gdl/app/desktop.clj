@@ -2,6 +2,7 @@
   (:require [clojure.edn]
             [clojure.java.io]
             [gdl.app]
+            [gdl.context] ; schema needs to be loaded before db cdq.schema/validate!
             [gdl.platform.libgdx] ; interop extend types -> we write a game not want to do APi's
             [gdl.utils]
             [cdq.schema])) ; utils/... required -> same ->
@@ -22,8 +23,7 @@
                           cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
                           gdl.context/check-camera-controls
                           cdq.context/check-ui-key-listeners])
-        create-fns [[:gdl.db/schemas '[gdl.context/load-schemas]]
-                    [:gdl/db (fn [_context _config]
+        create-fns [[:gdl/db (fn [_context _config]
                                (let [properties-file (clojure.java.io/resource "properties.edn")
                                      schemas (-> "schema.edn" clojure.java.io/resource slurp clojure.edn/read-string)
                                      properties (-> properties-file slurp clojure.edn/read-string)]

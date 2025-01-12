@@ -301,11 +301,6 @@
 (defmethod schema/malli-form :s/map [[_ ks] schemas]
   (map-form ks schemas))
 
-; TODO schema/validate comes to this...
-; but db-data is not yet existing?
-(defn load-schemas [_context _config]
-  nil)
-
 (defmethod schema/malli-form :s/map-optional [[_ ks] schemas]
   (map-form (map (fn [k] [k {:optional true}]) ks)
             schemas))
