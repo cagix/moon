@@ -1,5 +1,5 @@
 (ns gdl.context
-  (:require [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.graphics.camera :as camera]
             [gdl.graphics.color :as color]
             [gdl.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.g2d.bitmap-font :as font]

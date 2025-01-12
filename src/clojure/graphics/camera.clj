@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.camera
+(ns clojure.graphics.camera
   (:refer-clojure :exclude [update])
   (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)))
 

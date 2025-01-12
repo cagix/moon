@@ -1,6 +1,6 @@
 (ns gdl.app.desktop
   (:require clojure.edn
-            clojure.gdx.graphics.camera
+            clojure.graphics.camera
             clojure.gdx.graphics.pixmap
             clojure.gdx.graphics.shape-drawer
             clojure.gdx.graphics.texture

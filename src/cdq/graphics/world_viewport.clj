@@ -1,5 +1,5 @@
 (ns cdq.graphics.world-viewport
-  (:require [clojure.gdx.graphics.camera :as camera]
+  (:require [clojure.graphics.camera :as camera]
             [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
