@@ -1,7 +1,7 @@
 (ns cdq.entity
   (:require [clojure.math.vector2 :as v]
-            [gdl.utils :refer [defsystem safe-merge]]
-            [gdl.context :as c]
+            [clojure.utils :refer [defsystem safe-merge]]
+            [clojure.context :as c]
             [cdq.context.timer :as timer]
             [cdq.malli :as m]
             [cdq.math.shapes :as shape]

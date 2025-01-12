@@ -1,4 +1,4 @@
-(ns gdl.tiled
+(ns clojure.tiled
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
            (com.badlogic.gdx.maps.tiled TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)

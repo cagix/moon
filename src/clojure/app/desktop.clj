@@ -1,4 +1,4 @@
-(ns gdl.app.desktop
+(ns clojure.app.desktop
   (:require clojure.edn
             clojure.graphics.camera
             clojure.graphics.pixmap
@@ -6,15 +6,15 @@
             clojure.graphics.texture
             clojure.graphics.2d.texture-region
             clojure.java.io
-            gdl.app
-            gdl.context
-            gdl.input
-            gdl.graphics.color
-            gdl.platform.libgdx
-            gdl.scene2d.actor
-            gdl.scene2d.group
-            gdl.ui
-            gdl.utils
+            clojure.app
+            clojure.context
+            clojure.input
+            clojure.graphics.color
+            clojure.platform.libgdx
+            clojure.scene2d.actor
+            clojure.scene2d.group
+            clojure.ui
+            clojure.utils
             cdq.assets
             cdq.create
             cdq.db
@@ -43,9 +43,9 @@
             cdq.malli))
 
 (defrecord Cursors []
-  gdl.utils/Disposable
+  clojure.utils/Disposable
   (dispose [this]
-    (run! gdl.utils/dispose (vals this))))
+    (run! clojure.utils/dispose (vals this))))
 
 (defmethod cdq.schema/malli-form :s/val-max [_ _schemas] cdq.malli/val-max-schema)
 (defmethod cdq.schema/malli-form :s/number  [_ _schemas] cdq.malli/number-schema)
@@ -54,31 +54,31 @@
 (defmethod cdq.schema/malli-form :s/pos     [_ _schemas] cdq.malli/pos-schema)
 (defmethod cdq.schema/malli-form :s/pos-int [_ _schemas] cdq.malli/pos-int-schema)
 
-(gdl.utils/defcomponent :s/sound
+(clojure.utils/defcomponent :s/sound
   (cdq.schema/malli-form [_ _schemas]
     cdq.malli/string-schema)
 
   (cdq.db/edn->value [_ sound-name _db c]
-    (gdl.context/get-sound c sound-name)))
+    (clojure.context/get-sound c sound-name)))
 
 (defn- edn->sprite [c {:keys [file sub-image-bounds]}]
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (gdl.context/from-sprite-sheet c
-                                     (gdl.context/sprite-sheet c file tilew tileh)
+      (clojure.context/from-sprite-sheet c
+                                     (clojure.context/sprite-sheet c file tilew tileh)
                                      [(int (/ sprite-x tilew))
                                       (int (/ sprite-y tileh))]))
-    (gdl.context/sprite c file)))
+    (clojure.context/sprite c file)))
 
-(gdl.utils/defcomponent :s/image
+(clojure.utils/defcomponent :s/image
   (cdq.schema/malli-form  [_ _schemas]
     cdq.malli/image-schema)
 
   (cdq.db/edn->value [_ edn _db c]
     (edn->sprite c edn)))
 
-(gdl.utils/defcomponent :s/animation
+(clojure.utils/defcomponent :s/animation
   (cdq.schema/malli-form [_ _schemas]
     cdq.malli/animation-schema)
 
@@ -90,17 +90,17 @@
 (defn- type->id-namespace [property-type]
   (keyword (name property-type)))
 
-(gdl.utils/defcomponent :s/one-to-one
+(clojure.utils/defcomponent :s/one-to-one
   (cdq.schema/malli-form [[_ property-type] _schemas]
     (cdq.malli/qualified-keyword-schema (type->id-namespace property-type)))
   (cdq.db/edn->value [_ property-id db c]
-    (gdl.context/build c property-id)))
+    (clojure.context/build c property-id)))
 
-(gdl.utils/defcomponent :s/one-to-many
+(clojure.utils/defcomponent :s/one-to-many
   (cdq.schema/malli-form [[_ property-type] _schemas]
     (cdq.malli/set-schema (cdq.malli/qualified-keyword-schema (type->id-namespace property-type))))
   (cdq.db/edn->value [_ property-ids db c]
-    (set (map #(gdl.context/build c %) property-ids))))
+    (set (map #(clojure.context/build c %) property-ids))))
 
 (defn- map-form [ks schemas]
   (cdq.malli/map-schema ks (fn [k]
@@ -123,7 +123,7 @@
                          schemas))
 
 (defn -main []
-  (let [render-fns [(fn [{:keys [gdl.graphics/world-viewport
+  (let [render-fns [(fn [{:keys [clojure.graphics/world-viewport
                                  cdq.context/player-eid]
                           :as context}]
                       {:pre [world-viewport
@@ -134,12 +134,12 @@
                     (fn [context]
                       (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
                       context)
-                    (fn [{:keys [gdl.graphics/world-viewport
+                    (fn [{:keys [clojure.graphics/world-viewport
                                  cdq.context/tiled-map
                                  cdq.context/raycaster
                                  cdq.context/explored-tile-corners]
                           :as context}]
-                      (gdl.context/draw-tiled-map context
+                      (clojure.context/draw-tiled-map context
                                                   tiled-map
                                                   (cdq.graphics.tiled-map/tile-color-setter raycaster
                                                                                             explored-tile-corners
@@ -149,29 +149,29 @@
                       (let [render-fns [cdq.graphics/render-before-entities
                                         cdq.graphics/render-entities
                                         cdq.graphics/render-after-entities]]
-                        (gdl.context/draw-on-world-view context
+                        (clojure.context/draw-on-world-view context
                                                         (fn [context]
                                                           (doseq [f render-fns]
                                                             (f context)))))
                       context)
-                    (fn [{:keys [gdl.context/stage] :as context}]
-                      (gdl.ui/draw stage (assoc context :gdl.context/unit-scale 1))
+                    (fn [{:keys [clojure.context/stage] :as context}]
+                      (clojure.ui/draw stage (assoc context :clojure.context/unit-scale 1))
                       context)
                     (fn [context]
-                      (gdl.ui/act (:gdl.context/stage context) context)
+                      (clojure.ui/act (:clojure.context/stage context) context)
                       context)
                     (fn [{:keys [cdq.context/player-eid] :as c}]
                       (cdq.entity.state/manual-tick (cdq.entity/state-obj @player-eid) c)
                       c)
                     (fn [{:keys [cdq.context/mouseover-eid
                                  cdq.context/player-eid] :as c}]
-                      (let [new-eid (if (gdl.context/mouse-on-actor? c)
+                      (let [new-eid (if (clojure.context/mouse-on-actor? c)
                                       nil
                                       (let [player @player-eid
                                             hits (remove #(= (:z-order @%) :z-order/effect)
-                                                         (cdq.context/point->entities c (gdl.context/world-mouse-position c)))]
+                                                         (cdq.context/point->entities c (clojure.context/world-mouse-position c)))]
                                         (->> cdq.context/render-z-order
-                                             (gdl.utils/sort-by-order hits #(:z-order @%))
+                                             (clojure.utils/sort-by-order hits #(:z-order @%))
                                              reverse
                                              (filter #(cdq.context/line-of-sight? c player @%))
                                              first)))]
@@ -187,8 +187,8 @@
                         (assoc c :cdq.context/paused? (or error
                                                           (and pausing?
                                                                (cdq.entity.state/pause-game? (cdq.entity/state-obj @player-eid))
-                                                               (not (or (gdl.input/key-just-pressed? :p)
-                                                                        (gdl.input/key-pressed? :space))))))))
+                                                               (not (or (clojure.input/key-just-pressed? :p)
+                                                                        (clojure.input/key-pressed? :space))))))))
                     (fn [c]
                       (if (:cdq.context/paused? c)
                         c
@@ -204,26 +204,26 @@
                         (doseq [component @eid]
                           (cdq.context/destroy! component eid c)))
                       c)
-                    (fn [{:keys [gdl.graphics/world-viewport]
+                    (fn [{:keys [clojure.graphics/world-viewport]
                           :as context}]
                       (let [camera (:camera world-viewport)
                             zoom-speed 0.025]
-                        (when (gdl.input/key-pressed? :minus)  (clojure.graphics.camera/inc-zoom camera    zoom-speed))
-                        (when (gdl.input/key-pressed? :equals) (clojure.graphics.camera/inc-zoom camera (- zoom-speed))))
+                        (when (clojure.input/key-pressed? :minus)  (clojure.graphics.camera/inc-zoom camera    zoom-speed))
+                        (when (clojure.input/key-pressed? :equals) (clojure.graphics.camera/inc-zoom camera (- zoom-speed))))
                       context)
                     (fn [c]
                       (let [window-hotkeys {:inventory-window   :i
                                             :entity-info-window :e}]
                         (doseq [window-id [:inventory-window
                                            :entity-info-window]
-                                :when (gdl.input/key-just-pressed? (get window-hotkeys window-id))]
-                          (gdl.scene2d.actor/toggle-visible! (get (:windows (:gdl.context/stage c)) window-id))))
-                      (when (gdl.input/key-just-pressed? :escape)
-                        (let [windows (gdl.scene2d.group/children (:windows (:gdl.context/stage c)))]
-                          (when (some gdl.scene2d.actor/visible? windows)
-                            (run! #(gdl.scene2d.actor/set-visible % false) windows))))
+                                :when (clojure.input/key-just-pressed? (get window-hotkeys window-id))]
+                          (clojure.scene2d.actor/toggle-visible! (get (:windows (:clojure.context/stage c)) window-id))))
+                      (when (clojure.input/key-just-pressed? :escape)
+                        (let [windows (clojure.scene2d.group/children (:windows (:clojure.context/stage c)))]
+                          (when (some clojure.scene2d.actor/visible? windows)
+                            (run! #(clojure.scene2d.actor/set-visible % false) windows))))
                       c)]
-        create-fns [[:gdl/db (fn [_context _config]
+        create-fns [[:clojure/db (fn [_context _config]
                                (let [properties-file (clojure.java.io/resource "properties.edn")
                                      schemas (-> "schema.edn" clojure.java.io/resource slurp clojure.edn/read-string)
                                      properties (-> properties-file slurp clojure.edn/read-string)]
@@ -233,29 +233,29 @@
                                  {:db/data (zipmap (map :property/id properties) properties)
                                   :db/properties-file properties-file
                                   :db/schemas schemas}))]
-                    [:gdl/assets [cdq.assets/create {:folder "resources/"
+                    [:clojure/assets [cdq.assets/create {:folder "resources/"
                                                      :type-exts {:sound   #{"wav"}
                                                                  :texture #{"png" "bmp"}}}]]
-                    [:gdl.graphics/batch (fn [_context _config]
+                    [:clojure.graphics/batch (fn [_context _config]
                                            (com.badlogic.gdx.graphics.g2d.SpriteBatch.))]
-                    [:gdl.graphics/shape-drawer-texture (fn [_context _config]
+                    [:clojure.graphics/shape-drawer-texture (fn [_context _config]
                                                           (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
-                                                                         (clojure.graphics.pixmap/set-color gdl.graphics.color/white)
+                                                                         (clojure.graphics.pixmap/set-color clojure.graphics.color/white)
                                                                          (clojure.graphics.pixmap/draw-pixel 0 0))
                                                                 texture (clojure.graphics.texture/create pixmap)]
-                                                            (gdl.utils/dispose pixmap)
+                                                            (clojure.utils/dispose pixmap)
                                                             texture))]
-                    [:gdl.graphics/shape-drawer (fn [{:keys [gdl.graphics/batch
-                                                             gdl.graphics/shape-drawer-texture]} _config]
+                    [:clojure.graphics/shape-drawer (fn [{:keys [clojure.graphics/batch
+                                                             clojure.graphics/shape-drawer-texture]} _config]
                                                   (space.earlygrey.shapedrawer.ShapeDrawer. batch
                                                                                             (clojure.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))]
-                    [:gdl.graphics/cursors (fn [_context _config]
+                    [:clojure.graphics/cursors (fn [_context _config]
                                              (map->Cursors
-                                              (gdl.utils/mapvals
+                                              (clojure.utils/mapvals
                                                (fn [[file [hotspot-x hotspot-y]]]
                                                  (let [pixmap (clojure.graphics.pixmap/create (.internal com.badlogic.gdx.Gdx/files (str "cursors/" file ".png")))
                                                        cursor (clojure.graphics/new-cursor pixmap hotspot-x hotspot-y)]
-                                                   (gdl.utils/dispose pixmap)
+                                                   (clojure.utils/dispose pixmap)
                                                    cursor))
                                                {:cursors/bag                   ["bag001"       [0   0]]
                                                 :cursors/black-x               ["black_x"      [0   0]]
@@ -271,14 +271,14 @@
                                                 :cursors/skill-not-usable      ["x007"         [0   0]]
                                                 :cursors/use-skill             ["pointer004"   [0   0]]
                                                 :cursors/walking               ["walking"      [16 16]]})))]
-                    [:gdl.graphics/default-font [cdq.graphics.default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
+                    [:clojure.graphics/default-font [cdq.graphics.default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
                                                                                    :size 16
                                                                                    :quality-scaling 2}]]
-                    [:gdl.graphics/world-unit-scale [cdq.graphics.world-unit-scale/create 48]]
-                    [:gdl.graphics/tiled-map-renderer [cdq.graphics.tiled-map-renderer/create]]
-                    [:gdl.graphics/ui-viewport [cdq.graphics.ui-viewport/create {:width 1440 :height 900}]]
-                    [:gdl.graphics/world-viewport [cdq.graphics.world-viewport/create {:width 1440 :height 900}]]
-                    [:gdl.context/stage [gdl.ui/setup-stage! {:skin-scale :x1
+                    [:clojure.graphics/world-unit-scale [cdq.graphics.world-unit-scale/create 48]]
+                    [:clojure.graphics/tiled-map-renderer [cdq.graphics.tiled-map-renderer/create]]
+                    [:clojure.graphics/ui-viewport [cdq.graphics.ui-viewport/create {:width 1440 :height 900}]]
+                    [:clojure.graphics/world-viewport [cdq.graphics.world-viewport/create {:width 1440 :height 900}]]
+                    [:clojure.context/stage [clojure.ui/setup-stage! {:skin-scale :x1
                                                               :actors [[cdq.ui.dev-menu/create]
                                                                        [cdq.ui.actionbar/create]
                                                                        [cdq.ui.hp-mana-bar/create]
@@ -286,7 +286,7 @@
                                                                                                cdq.widgets.inventory/create]]
                                                                        [cdq.ui.player-state/create]
                                                                        [cdq.ui.player-message/actor]]}]]
-                    [:gdl.context/elapsed-time [cdq.time/create]]
+                    [:clojure.context/elapsed-time [cdq.time/create]]
                     [:cdq.context/player-message [cdq.ui.player-message/create* {:duration-seconds 1.5}]]
                     [:cdq.context/level [cdq.level/create :worlds/uf-caves]]
                     [:cdq.context/error [cdq.create/error*]]
@@ -307,7 +307,7 @@
     (com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.
      (proxy [com.badlogic.gdx.ApplicationAdapter] []
        (create []
-         (reset! gdl.app/state
+         (reset! clojure.app/state
                  (reduce (fn [context [k component]]
                            (let [f (if (vector? component)
                                      (component 0)
@@ -320,22 +320,22 @@
                          create-fns)))
 
        (dispose []
-         (doseq [[k value] @gdl.app/state
-                 :when (gdl.utils/disposable? value)]
+         (doseq [[k value] @clojure.app/state
+                 :when (clojure.utils/disposable? value)]
            ;(println "Disposing " k " - " value)
-           (gdl.utils/dispose value)))
+           (clojure.utils/dispose value)))
 
        (render []
-         (swap! gdl.app/state (fn [context]
+         (swap! clojure.app/state (fn [context]
                                 (reduce (fn [context f]
                                           (f context))
                                         context
                                         render-fns))))
 
        (resize [width height]
-         (let [context @gdl.app/state]
-           (com.badlogic.gdx.utils.viewport.Viewport/.update (:gdl.graphics/ui-viewport    context) width height true)
-           (com.badlogic.gdx.utils.viewport.Viewport/.update (:gdl.graphics/world-viewport context) width height false))))
+         (let [context @clojure.app/state]
+           (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/ui-viewport    context) width height true)
+           (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/world-viewport context) width height false))))
      (doto (com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.)
        (.setTitle "Cyber Dungeon Quest")
        (.setWindowedMode 1440 900)

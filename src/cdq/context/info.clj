@@ -1,9 +1,9 @@
 (ns cdq.context.info
   (:require [clojure.math :as math]
             [clojure.string :as str]
-            [gdl.utils :refer [defsystem readable-number sort-by-k-order]]
+            [clojure.utils :refer [defsystem readable-number sort-by-k-order]]
             [clojure.graphics :as graphics]
-            [gdl.graphics.color :as color]
+            [clojure.graphics.color :as color]
             [cdq.context.timer :as timer]
             [cdq.entity :as entity]
             [cdq.operation :as op]))

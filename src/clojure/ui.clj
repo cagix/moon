@@ -1,12 +1,12 @@
-(ns gdl.ui
+(ns clojure.ui
   (:require [clojure.graphics.2d.texture-region :as texture-region]
-            [gdl.input :as input]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
-            [gdl.scene2d.stage :as stage]
-            [gdl.scene2d.ui.table :as table]
-            [gdl.scene2d.ui.utils :as scene2d.utils]
-            [gdl.utils :as utils]
+            [clojure.input :as input]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
+            [clojure.scene2d.stage :as stage]
+            [clojure.scene2d.ui.table :as table]
+            [clojure.scene2d.ui.utils :as scene2d.utils]
+            [clojure.utils :as utils]
             [clojure.vis-ui.widgets.separator :as separator])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -332,8 +332,8 @@
     (clicked [event x y]
       (clicked-fn {:event event :x x :y y}))))
 
-(defn setup-stage! [{:keys [gdl.graphics/batch
-                            gdl.graphics/ui-viewport]
+(defn setup-stage! [{:keys [clojure.graphics/batch
+                            clojure.graphics/ui-viewport]
                      :as context} config]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play

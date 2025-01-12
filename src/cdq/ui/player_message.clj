@@ -1,9 +1,9 @@
 (ns cdq.ui.player-message
-  (:require [gdl.context :as c]
+  (:require [clojure.context :as c]
             [clojure.graphics :as graphics]
-            [gdl.ui :refer [ui-actor]]))
+            [clojure.ui :refer [ui-actor]]))
 
-(defn- draw-player-message [{:keys [gdl.graphics/ui-viewport
+(defn- draw-player-message [{:keys [clojure.graphics/ui-viewport
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]
     (c/draw-text c

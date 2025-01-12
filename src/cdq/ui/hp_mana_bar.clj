@@ -1,7 +1,7 @@
 (ns cdq.ui.hp-mana-bar
-  (:require [gdl.context :as c]
-            [gdl.ui :refer [ui-actor]]
-            [gdl.utils :refer [readable-number]]
+  (:require [clojure.context :as c]
+            [clojure.ui :refer [ui-actor]]
+            [clojure.utils :refer [readable-number]]
             [cdq.entity :as entity]
             [cdq.val-max :as val-max]))
 
@@ -12,7 +12,7 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn create [{:keys [gdl.graphics/ui-viewport] :as c} _config]
+(defn create [{:keys [clojure.graphics/ui-viewport] :as c} _config]
   (let [rahmen      (c/sprite c "images/rahmen.png")
         hpcontent   (c/sprite c "images/hp.png")
         manacontent (c/sprite c "images/mana.png")

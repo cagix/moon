@@ -1,7 +1,7 @@
 (ns cdq.create
-  (:require [gdl.utils :refer [safe-merge tile->middle]]
-            [gdl.grid2d :as g2d]
-            [gdl.tiled :as tiled]
+  (:require [clojure.utils :refer [safe-merge tile->middle]]
+            [clojure.grid2d :as g2d]
+            [clojure.tiled :as tiled]
             [cdq.context :refer [spawn-creature mouseover-entity]]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]))

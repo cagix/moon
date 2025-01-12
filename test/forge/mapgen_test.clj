@@ -1,17 +1,17 @@
 (ns forge.mapgen-test
   (:require [cdq.level :refer [generate-level]]
             [cdq.modules :as modules]
-            [gdl.graphics.color :as color]
+            [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [gdl.context :as c :refer [draw-tiled-map]]
-            [gdl.input :as input]
+            [clojure.context :as c :refer [draw-tiled-map]]
+            [clojure.input :as input]
             [clojure.graphics.camera :as cam]
-            [gdl.tiled :as tiled]
+            [clojure.tiled :as tiled]
             [clojure.maps.tiled.tmx-map-loader :as tmx-map-loader]
-            [gdl.ui :refer [ui-actor text-button] :as ui]
-            [gdl.scene2d.group :refer [add-actor!]]))
+            [clojure.ui :refer [ui-actor text-button] :as ui]
+            [clojure.scene2d.group :refer [add-actor!]]))
 
 (def state (atom nil))
 
@@ -59,7 +59,7 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn- ->info-window [{:keys [clojure.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
@@ -82,8 +82,8 @@
     (if (input/key-pressed? :up)    (apply-position 1 +))
     (if (input/key-pressed? :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [gdl.graphics/world-viewport
-                              gdl.graphics/shape-drawer] :as c}]
+(defn- render-on-map [{:keys [clojure.graphics/world-viewport
+                              clojure.graphics/shape-drawer] :as c}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
@@ -114,7 +114,7 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [{:keys [gdl.graphics/world-viewport] :as c} properties]
+(defn- generate-screen-ctx [{:keys [clojure.graphics/world-viewport] :as c} properties]
   (let [{:keys [tiled-map start-position]} (generate-level c
                                                            (c/build world-id))
         atom-data (current-data)]
@@ -138,7 +138,7 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn adjust-zoom [camera] ; TODO this now in gdl.context available.
+(defn adjust-zoom [camera] ; TODO this now in clojure.context available.
   (when (input/key-pressed? :minus)  (cam/inc-zoom camera    zoom-speed))
   (when (input/key-pressed? :equals) (cam/inc-zoom camera (- zoom-speed))))
 

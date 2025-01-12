@@ -1,7 +1,7 @@
 (ns cdq.db
   (:refer-clojure :exclude [update])
   (:require [clojure.pprint :refer [pprint]]
-            [gdl.utils :refer [safe-get]]
+            [clojure.utils :refer [safe-get]]
             [cdq.schema :as schema]
             [cdq.property :as property]))
 

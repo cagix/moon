@@ -1,4 +1,4 @@
-(ns cdq.math.shapes ; gdl !!
+(ns cdq.math.shapes ; clojure !!
   (:require [clojure.math.circle :as circle]
             [clojure.math.intersector :as intersector]
             [clojure.math.rectangle :as rectangle]))

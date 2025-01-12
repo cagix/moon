@@ -1,8 +1,8 @@
 (ns cdq.mapgen
-  (:require [gdl.rand :refer [sshuffle srand srand-int]]
-            [gdl.utils :refer [assoc-ks]]
-            [gdl.grid2d :as g2d]
-            [gdl.tiled :as tiled]
+  (:require [clojure.rand :refer [sshuffle srand srand-int]]
+            [clojure.utils :refer [assoc-ks]]
+            [clojure.grid2d :as g2d]
+            [clojure.tiled :as tiled]
             [cdq.property :as property]))
 
 (defn creatures-with-level [creature-properties level]

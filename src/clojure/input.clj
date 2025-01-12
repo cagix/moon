@@ -1,4 +1,4 @@
-(ns gdl.input
+(ns clojure.input
   (:require [clojure.interop :refer [k->input-button k->input-key]]))
 
 (defn x []

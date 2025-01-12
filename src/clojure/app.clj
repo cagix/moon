@@ -1,4 +1,4 @@
-(ns gdl.app)
+(ns clojure.app)
 
 (def state (atom nil))
 

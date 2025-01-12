@@ -1,6 +1,6 @@
 (ns cdq.ui.windows
-  (:require [gdl.ui :as ui]
-            [gdl.utils :as utils]))
+  (:require [clojure.ui :as ui]
+            [clojure.utils :as utils]))
 
 (defn create [context actors]
   (ui/group {:id :windows

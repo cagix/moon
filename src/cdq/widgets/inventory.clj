@@ -3,12 +3,12 @@
             [cdq.entity.state :as state]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.context.info :as info]
-            [gdl.graphics.color :as color]
+            [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
-            [gdl.scene2d.actor :refer [user-object] :as actor]
-            [gdl.grid2d :as g2d]
-            [gdl.context :as c]
-            [gdl.ui :refer [ui-widget
+            [clojure.scene2d.actor :refer [user-object] :as actor]
+            [clojure.grid2d :as g2d]
+            [clojure.context :as c]
+            [clojure.ui :refer [ui-widget
                             texture-region-drawable
                             image-widget
                             ui-stack
@@ -16,7 +16,7 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [gdl.scene2d.ui.utils :as scene2d.utils]))
+            [clojure.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -42,7 +42,7 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [this {:keys [cdq.context/player-eid
-                     gdl.graphics/shape-drawer] :as c}]
+                     clojure.graphics/shape-drawer] :as c}]
      (draw-cell-rect shape-drawer
                      @player-eid
                      (actor/x this)
@@ -115,7 +115,7 @@
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
                                (->cell c :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn create [{:keys [clojure.graphics/ui-viewport] :as c}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false

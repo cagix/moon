@@ -1,8 +1,8 @@
 (ns cdq.context
-  (:require [gdl.audio :as audio]
+  (:require [clojure.audio :as audio]
             [clojure.graphics :as graphics]
-            [gdl.rand :refer [rand-int-between]]
-            [gdl.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
+            [clojure.rand :refer [rand-int-between]]
+            [clojure.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
             [clojure.graphics.shape-drawer :as sd]
             [cdq.world.potential-field :as potential-field]
             [cdq.effect :as effect]
@@ -17,20 +17,20 @@
             [cdq.entity.state :as state]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
-            [gdl.input :as input]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.ui.button-group :as button-group]
+            [clojure.input :as input]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.ui.button-group :as button-group]
             [cdq.effect-context :as effect-ctx]
             [cdq.skill :as skill]
-            [gdl.context :as c :refer [play-sound]]
+            [clojure.context :as c :refer [play-sound]]
             [cdq.context.info :as info]
             [clojure.graphics.camera :as cam]
             [cdq.math.raycaster :as raycaster]
             [cdq.potential-fields :as potential-fields]
             [clojure.math.vector2 :as v]
-            [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.scene2d.actor :as actor]
-            [gdl.scene2d.group :as group]))
+            [clojure.ui :as ui :refer [ui-actor]]
+            [clojure.scene2d.actor :as actor]
+            [clojure.scene2d.group :as group]))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
@@ -89,7 +89,7 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn line-of-sight? [{:keys [gdl.graphics/world-viewport] :as c} source target]
+(defn line-of-sight? [{:keys [clojure.graphics/world-viewport] :as c} source target]
   (and (or (not (:entity/player? source))
            (on-screen? world-viewport target))
        (not (and los-checks?
@@ -354,7 +354,7 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [gdl.graphics/ui-viewport] :as c}
+(defn show-modal [{:keys [clojure.graphics/ui-viewport] :as c}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal (c/stage c))))
   (c/add-actor c
@@ -470,7 +470,7 @@
 (defn update-time [context]
   (let [delta-ms (min (graphics/delta-time) max-delta-time)]
     (-> context
-        (update :gdl.context/elapsed-time + delta-ms)
+        (update :clojure.context/elapsed-time + delta-ms)
         (assoc :cdq.context/delta-time delta-ms))))
 
 (def ^:private pf-cache (atom nil))

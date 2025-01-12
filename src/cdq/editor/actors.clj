@@ -1,17 +1,17 @@
 (ns cdq.editor.actors
-  (:require [gdl.app :refer [state]]
+  (:require [clojure.app :refer [state]]
             [clojure.edn :as edn]
-            [gdl.input :as input]
+            [clojure.input :as input]
             [clojure.string :as str]
-            [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
+            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.assets :as assets]
-            [gdl.context :as c :refer [play-sound]]
+            [clojure.context :as c :refer [play-sound]]
             [cdq.db :as db]
             [clojure.graphics :as graphics]
             [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.property :as property]
-            [gdl.ui :refer [horizontal-separator-cell
+            [clojure.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
                             ui-actor
                             image-button
@@ -25,9 +25,9 @@
                             text-field
                             add-tooltip!]
              :as ui]
-            [gdl.scene2d.actor :refer [user-object]]
-            [gdl.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [gdl.scene2d.ui.table :refer [add-rows!]])
+            [clojure.scene2d.actor :refer [user-object]]
+            [clojure.scene2d.group :refer [children clear-children add-actor! find-actor]]
+            [clojure.scene2d.ui.table :refer [add-rows!]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
@@ -58,7 +58,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (:height (:gdl.graphics/ui-viewport @state)) 50)
+     :height (min (- (:height (:clojure.graphics/ui-viewport @state)) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -76,22 +76,22 @@
         (catch Throwable t
           (c/error-window @state t))))
 
-(defn- async-write-to-file! [{:keys [gdl/db]}]
+(defn- async-write-to-file! [{:keys [clojure/db]}]
   (db/async-write-to-file! db))
 
 (defn update! [property]
-  (swap! state update :gdl/db db/update property)
+  (swap! state update :clojure/db db/update property)
   (async-write-to-file! @state))
 
 (defn delete! [property-id]
-  (swap! state update :gdl/db db/delete property-id)
+  (swap! state update :clojure/db db/delete property-id)
   (async-write-to-file! @state))
 
 (defn- get-db
   ([]
    (get-db @state))
   ([context]
-   (:gdl/db context)))
+   (:clojure/db context)))
 
 (defn- malli-form [schema]
   (schema/malli-form schema (:db/schemas (get-db))))
@@ -157,7 +157,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (let [^com.badlogic.gdx.assets.AssetManager manager (:gdl/assets @state)]
+  (let [^com.badlogic.gdx.assets.AssetManager manager (:clojure/assets @state)]
     (filter #(= (cdq.assets/class->asset-type (.getAssetType manager %)) asset-type)
             (.getAssetNames manager))))
 
@@ -516,7 +516,7 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn- background-image [{:keys [gdl/assets]} path]
+(defn- background-image [{:keys [clojure/assets]} path]
   (ui/image-widget (assets path)
                    {:fill-parent? true
                     :scaling :fill

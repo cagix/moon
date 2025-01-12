@@ -1,11 +1,11 @@
 (ns cdq.graphics
-  (:require [gdl.context :as c]
+  (:require [clojure.context :as c]
             [cdq.context.timer :as timer]
             [cdq.error :refer [pretty-pst]]
             [clojure.graphics.camera :as cam]
             [clojure.graphics.shape-drawer :as sd]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
-            [gdl.utils :refer [defsystem sort-by-order]]
+            [clojure.utils :refer [defsystem sort-by-order]]
             [cdq.val-max :as val-max]
             [cdq.context :refer [grid-cell
                                  active-entities
@@ -18,7 +18,7 @@
                                  circle->cells]]
             [cdq.entity :as entity]))
 
-(defn- geom-test [{:keys [gdl.graphics/shape-drawer] :as c}]
+(defn- geom-test [{:keys [clojure.graphics/shape-drawer] :as c}]
   (let [position (c/world-mouse-position c)
         radius 0.8
         circle {:position position :radius radius}]
@@ -30,7 +30,7 @@
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [{:keys [gdl.graphics/shape-drawer] :as c}]
+(defn- highlight-mouseover-tile [{:keys [clojure.graphics/shape-drawer] :as c}]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (c/world-mouse-position c))
           cell (grid-cell c [x y])]
@@ -49,8 +49,8 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn render-before-entities [{:keys [gdl.graphics/world-viewport
-                                      gdl.graphics/shape-drawer
+(defn render-before-entities [{:keys [clojure.graphics/world-viewport
+                                      clojure.graphics/shape-drawer
                                       cdq.context/factions-iterations]
                                :as c}]
   (let [sd shape-drawer
@@ -82,7 +82,7 @@
             (let [ratio (/ distance (factions-iterations faction))]
               (sd/filled-rectangle sd x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-(defn- draw-skill-image [{:keys [gdl.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [{:keys [clojure.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
@@ -114,7 +114,7 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [{:keys [gdl.graphics/shape-drawer] :as c}
+(defn- draw-hpbar [{:keys [clojure.graphics/shape-drawer] :as c}
                    {:keys [position width half-width half-height]}
                    ratio]
   (let [[x y] position]
@@ -166,7 +166,7 @@
                            (:position entity)))
 
 (defmethod default :entity/line-render
-  [[_ {:keys [thick? end color]}] entity {:keys [gdl.graphics/shape-drawer]}]
+  [[_ {:keys [thick? end color]}] entity {:keys [clojure.graphics/shape-drawer]}]
   (let [position (:position entity)]
     (if thick?
       (sd/with-line-width shape-drawer 4
@@ -182,7 +182,7 @@
   [_
    {:keys [entity/faction] :as entity}
    {:keys [cdq.context/player-eid
-           gdl.graphics/shape-drawer] :as c}]
+           clojure.graphics/shape-drawer] :as c}]
   (let [player @player-eid]
     (sd/with-line-width shape-drawer 3
       #(sd/ellipse shape-drawer
@@ -242,7 +242,7 @@
                      (c/mouse-position c))))
 
 (defmethod below :stunned
-  [_ entity {:keys [gdl.graphics/shape-drawer]}]
+  [_ entity {:keys [clojure.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
 
 (defmethod above :entity/string-effect
@@ -259,11 +259,11 @@
 
 ; TODO draw opacity as of counter ratio?
 (defmethod above :entity/temp-modifier
-  [_ entity {:keys [gdl.graphics/shape-drawer]}]
+  [_ entity {:keys [clojure.graphics/shape-drawer]}]
   (sd/filled-circle shape-drawer (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
 (defmethod render-effect :effects/target-all
-  [_ {:keys [effect/source]} {:keys [gdl.graphics/shape-drawer] :as c}]
+  [_ {:keys [effect/source]} {:keys [clojure.graphics/shape-drawer] :as c}]
   (let [source* @source]
     (doseq [target* (map deref (creatures-in-los-of-player c))]
       (sd/line shape-drawer
@@ -274,7 +274,7 @@
 (defmethod render-effect :effects/target-entity
   [[_ {:keys [maxrange]}]
    {:keys [effect/source effect/target]}
-   {:keys [gdl.graphics/shape-drawer]}]
+   {:keys [clojure.graphics/shape-drawer]}]
   (when target
     (let [source* @source
           target* @target]
@@ -294,7 +294,7 @@
 
   If an error is thrown during rendering, the entity body drawn with a red rectangle and the error is pretty printed to the console."
   [{:keys [cdq.context/player-eid
-           gdl.graphics/shape-drawer] :as c}]
+           clojure.graphics/shape-drawer] :as c}]
   (let [entities (map deref (active-entities c))
         player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)

@@ -1,12 +1,12 @@
 (ns cdq.ui.dev-menu
-  (:require [gdl.context :as c]
+  (:require [clojure.context :as c]
             [clojure.graphics :as graphics]
             [clojure.graphics.camera :as cam]
-            [gdl.scene2d.group :refer [add-actor!]]
-            [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.utils :refer [readable-number]]
+            [clojure.scene2d.group :refer [add-actor!]]
+            [clojure.ui :as ui :refer [ui-actor]]
+            [clojure.utils :refer [readable-number]]
             [cdq.context :as world])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; gdl !!
+  (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; clojure !!
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))
 
@@ -96,7 +96,7 @@
                                    (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"
-                    :update-fn (fn [{:keys [gdl.context/elapsed-time]}]
+                    :update-fn (fn [{:keys [clojure.context/elapsed-time]}]
                                  (str (readable-number elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
@@ -106,7 +106,7 @@
                    {:label "World"
                     :update-fn #(mapv int (c/world-mouse-position %))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom (:camera (:gdl.graphics/world-viewport %)))
+                    :update-fn #(cam/zoom (:camera (:clojure.graphics/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [_] (graphics/frames-per-second))

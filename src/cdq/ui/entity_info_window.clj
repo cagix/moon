@@ -1,8 +1,8 @@
 (ns cdq.ui.entity-info-window
   (:require [cdq.context :as world]
             [cdq.context.info :as info]
-            [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.scene2d.group :as group]))
+            [clojure.ui :as ui :refer [ui-actor]]
+            [clojure.scene2d.group :as group]))
 
 (def ^:private disallowed-keys [:entity/skills
                                 #_:entity/fsm
@@ -19,7 +19,7 @@
     (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc entity disallowed-keys))))
 
-(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn create [{:keys [clojure.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window

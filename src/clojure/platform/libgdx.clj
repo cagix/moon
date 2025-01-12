@@ -1,15 +1,15 @@
-(ns gdl.platform.libgdx
+(ns clojure.platform.libgdx
   (:require [clojure.graphics.2d.batch]
-            [gdl.audio]
-            [gdl.utils]))
+            [clojure.audio]
+            [clojure.utils]))
 
 (extend-type com.badlogic.gdx.audio.Sound
-  gdl.audio/Sound
+  clojure.audio/Sound
   (play [this]
     (.play this)))
 
 (extend-type com.badlogic.gdx.utils.Disposable
-  gdl.utils/Disposable
+  clojure.utils/Disposable
   (dispose [this]
     (.dispose this)))
 

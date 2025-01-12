@@ -1,11 +1,11 @@
 (ns dev
-  (:require [gdl.app :as app]
+  (:require [clojure.app :as app]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.scene2d.group :refer [children]]
-            [gdl.scene2d.stage :as stage]
-            [gdl.context :as c]
-            [gdl.ui :refer [t-node scroll-pane] :as ui]
+            [clojure.scene2d.group :refer [children]]
+            [clojure.scene2d.stage :as stage]
+            [clojure.context :as c]
+            [clojure.ui :refer [t-node scroll-pane] :as ui]
             [cdq.context :as world]
             [cdq.editor.actors :as editor]))
 
@@ -22,7 +22,7 @@
 
  (app/post-runnable show-obj-editor!)
  (print-app-values-tree "app-values-tree.clj"
-                        #{"clojure", "gdl", "cdq"})
+                        #{"clojure", "clojure", "cdq"})
 
  ; use post-runnable to get proper error messages in console
 
@@ -190,7 +190,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:gdl.graphics/ui-viewport @app/state)
+  (let [viewport (:clojure.graphics/ui-viewport @app/state)
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})

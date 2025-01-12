@@ -1,4 +1,4 @@
-(ns gdl.graphics.color
+(ns clojure.graphics.color
   (:import (com.badlogic.gdx.graphics Color)))
 
 (def ^Color ^{:doc "The color black."} black Color/BLACK)

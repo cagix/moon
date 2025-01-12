@@ -1,28 +1,28 @@
-(ns gdl.context
+(ns clojure.context
   (:require [clojure.graphics.camera :as camera]
-            [gdl.graphics.color :as color]
+            [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.2d.bitmap-font :as font]
             [clojure.graphics.2d.texture-region :as texture-region]
             [clojure.interop :as interop]
-            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.scene2d.stage :as stage]
+            [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [clojure.scene2d.stage :as stage]
             [clojure.math.vector2 :as v]
             [clojure.math.utils :refer [clamp]]
             [clojure.utils.viewport :as viewport]
             [clojure.graphics :as graphics]
             [clojure.graphics.2d.batch :as batch]
-            [gdl.input :as input]
+            [clojure.input :as input]
             [clojure.string :as str]
-            [gdl.utils :refer [safe-get with-err-str mapvals]]
-            [gdl.audio :as audio]
+            [clojure.utils :refer [safe-get with-err-str mapvals]]
+            [clojure.audio :as audio]
             [cdq.db :as db]
             [cdq.error :refer [pretty-pst]]
             [cdq.graphics.sprite :as sprite]
-            [gdl.ui :as ui]
-            [gdl.scene2d.group :as group]))
+            [clojure.ui :as ui]
+            [clojure.scene2d.group :as group]))
 
-(defn get-sound [{:keys [gdl/assets]} sound-name]
+(defn get-sound [{:keys [clojure/assets]} sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
        assets))
@@ -30,30 +30,30 @@
 (defn play-sound [c sound-name]
   (audio/play (get-sound c sound-name)))
 
-(defn- texture-region [{:keys [gdl/assets]} path]
+(defn- texture-region [{:keys [clojure/assets]} path]
   (texture-region/create (assets path)))
 
-(defn sprite [{:keys [gdl.graphics/world-unit-scale] :as c} path]
+(defn sprite [{:keys [clojure.graphics/world-unit-scale] :as c} path]
   (sprite/create world-unit-scale
                  (texture-region c path)))
 
-(defn sub-sprite [{:keys [gdl.graphics/world-unit-scale]} sprite xywh]
+(defn sub-sprite [{:keys [clojure.graphics/world-unit-scale]} sprite xywh]
   (sprite/sub world-unit-scale
               sprite
               xywh))
 
-(defn sprite-sheet [{:keys [gdl.graphics/world-unit-scale] :as c} path tilew tileh]
+(defn sprite-sheet [{:keys [clojure.graphics/world-unit-scale] :as c} path tilew tileh]
   (sprite/sheet world-unit-scale
                 (texture-region c path)
                 tilew
                 tileh))
 
-(defn from-sprite-sheet [{:keys [gdl.graphics/world-unit-scale]} sprite-sheet xy]
+(defn from-sprite-sheet [{:keys [clojure.graphics/world-unit-scale]} sprite-sheet xy]
   (sprite/from-sheet world-unit-scale
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{:keys [gdl.graphics/cursors]} cursor-key]
+(defn set-cursor [{:keys [clojure.graphics/cursors]} cursor-key]
   (graphics/set-cursor (safe-get cursors cursor-key)))
 
 (defn draw-tiled-map
@@ -64,8 +64,8 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [{:keys [gdl.graphics/tiled-map-renderer
-           gdl.graphics/world-viewport]}
+  [{:keys [clojure.graphics/tiled-map-renderer
+           clojure.graphics/world-viewport]}
    tiled-map
    color-setter]
   (tiled-map-renderer/draw (tiled-map-renderer tiled-map)
@@ -84,9 +84,9 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{:keys [gdl.context/unit-scale
-           gdl.graphics/batch
-           gdl.graphics/default-font]}
+  [{:keys [clojure.context/unit-scale
+           clojure.graphics/batch
+           clojure.graphics/default-font]}
    {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
   (let [font (or font default-font)
@@ -124,8 +124,8 @@
   (if color (batch/set-color batch color/white)))
 
 (defn draw-image
-  [{:keys [gdl.context/unit-scale
-           gdl.graphics/batch]}
+  [{:keys [clojure.context/unit-scale
+           clojure.graphics/batch]}
    {:keys [texture-region color] :as image} position]
   (draw-texture-region batch
                        texture-region
@@ -135,8 +135,8 @@
                        color))
 
 (defn draw-rotated-centered
-  [{:keys [gdl.context/unit-scale
-           gdl.graphics/batch]}
+  [{:keys [clojure.context/unit-scale
+           clojure.graphics/batch]}
    {:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image unit-scale)]
     (draw-texture-region batch
@@ -157,8 +157,8 @@
   (draw-fn)
   (batch/end batch))
 
-(defn draw-with [{:keys [gdl.graphics/batch
-                         gdl.graphics/shape-drawer] :as c}
+(defn draw-with [{:keys [clojure.graphics/batch
+                         clojure.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]
@@ -166,7 +166,7 @@
                     viewport
                     #(sd/with-line-width shape-drawer unit-scale
                        (fn []
-                         (draw-fn (assoc c :gdl.context/unit-scale unit-scale))))))
+                         (draw-fn (assoc c :clojure.context/unit-scale unit-scale))))))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -181,41 +181,41 @@
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{:keys [gdl.graphics/ui-viewport]}]
+(defn mouse-position [{:keys [clojure.graphics/ui-viewport]}]
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position ui-viewport)))
 
-(defn world-mouse-position [{:keys [gdl.graphics/world-viewport]}]
+(defn world-mouse-position [{:keys [clojure.graphics/world-viewport]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position world-viewport))
 
-(defn pixels->world-units [{:keys [gdl.graphics/world-unit-scale]} pixels]
+(defn pixels->world-units [{:keys [clojure.graphics/world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
 
-(defn draw-on-world-view [{:keys [gdl.graphics/world-unit-scale
-                                  gdl.graphics/world-viewport] :as c} render-fn]
+(defn draw-on-world-view [{:keys [clojure.graphics/world-unit-scale
+                                  clojure.graphics/world-viewport] :as c} render-fn]
   (draw-with c
              world-viewport
              world-unit-scale
              render-fn))
 
-(def stage :gdl.context/stage)
+(def stage :clojure.context/stage)
 
-(defn build [{:keys [gdl/db] :as c} id]
+(defn build [{:keys [clojure/db] :as c} id]
   (db/build db id c))
 
-(defn build-all [{:keys [gdl/db] :as c} property-type]
+(defn build-all [{:keys [clojure/db] :as c} property-type]
   (db/build-all db property-type c))
 
-(defn add-actor [{:keys [gdl.context/stage]} actor]
+(defn add-actor [{:keys [clojure.context/stage]} actor]
   (stage/add-actor stage actor))
 
-(defn reset-stage [{:keys [gdl.context/stage]} new-actors]
+(defn reset-stage [{:keys [clojure.context/stage]} new-actors]
   (stage/clear stage)
   (run! #(stage/add-actor stage %) new-actors))
 
-(defn mouse-on-actor? [{:keys [gdl.context/stage] :as c}]
+(defn mouse-on-actor? [{:keys [clojure.context/stage] :as c}]
   (let [[x y] (mouse-position c)]
     (stage/hit stage x y true)))
 

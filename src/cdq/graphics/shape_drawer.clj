@@ -1,7 +1,7 @@
 (ns cdq.graphics.shape-drawer
   (:require [clojure.interop :as interop]
             [clojure.math.utils :refer [degree->radians]]
-            [gdl.graphics.color :as color])
+            [clojure.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics Color)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
