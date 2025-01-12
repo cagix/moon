@@ -21,8 +21,7 @@
 
 
  (app/post-runnable show-obj-editor!)
- (print-app-values-tree "app-values-tree.clj"
-                        #{"clojure", "clojure", "cdq"})
+ (print-app-values-tree "app-values-tree.clj" #{"clojure", "cdq"})
 
  ; use post-runnable to get proper error messages in console
 

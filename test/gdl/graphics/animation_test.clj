@@ -1,4 +1,4 @@
-(ns clojure.graphics.animation-test
+(ns gdl.graphics.animation-test
   )
 
 ; how do I just draw a texture/sprite first?!

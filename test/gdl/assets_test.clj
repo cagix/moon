@@ -1,4 +1,4 @@
-(ns clojure.assets-test
+(ns gdl.assets-test
   (:require [clojure.context :as ctx]))
 
 ; why do I need to load all assets & do that searching thing?
