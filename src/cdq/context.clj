@@ -1,6 +1,6 @@
 (ns cdq.context
   (:require [gdl.audio :as audio]
-            [gdl.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [gdl.rand :refer [rand-int-between]]
             [gdl.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
             [gdl.graphics.shape-drawer :as sd]

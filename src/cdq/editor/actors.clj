@@ -7,7 +7,7 @@
             [gdl.assets :as assets]
             [gdl.context :as c :refer [play-sound]]
             [cdq.db :as db]
-            [gdl.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [cdq.malli :as m]
             [cdq.schema :as schema]
             [cdq.property :as property]

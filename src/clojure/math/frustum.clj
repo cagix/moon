@@ -12,6 +12,6 @@
 
 (comment
  ; TODO tests?!
- (require '[gdl.graphics :as g])
+ (require '[clojure.graphics :as g])
 
  (map vector3->clj-vec (plane-points (.frustum g/camera))))

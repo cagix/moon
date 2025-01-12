@@ -1,6 +1,6 @@
 (ns cdq.ui.dev-menu
   (:require [gdl.context :as c]
-            [gdl.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [gdl.graphics.camera :as cam]
             [gdl.scene2d.group :refer [add-actor!]]
             [gdl.ui :as ui :refer [ui-actor]]

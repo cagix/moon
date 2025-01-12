@@ -1,6 +1,6 @@
 (ns cdq.ui.player-message
   (:require [gdl.context :as c]
-            [gdl.graphics :as graphics]
+            [clojure.graphics :as graphics]
             [gdl.ui :refer [ui-actor]]))
 
 (defn- draw-player-message [{:keys [gdl.graphics/ui-viewport
