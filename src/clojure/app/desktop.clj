@@ -259,15 +259,15 @@
                             (run! #(clojure.scene2d.actor/set-visible % false) windows))))
                       c)]
         create-fns [[:clojure/db (fn [_context _config]
-                               (let [properties-file (clojure.java.io/resource "properties.edn")
-                                     schemas (-> "schema.edn" clojure.java.io/resource slurp clojure.edn/read-string)
-                                     properties (-> properties-file slurp clojure.edn/read-string)]
-                                 (assert (or (empty? properties)
-                                             (apply distinct? (map :property/id properties))))
-                                 (run! (partial cdq.schema/validate! schemas) properties)
-                                 {:db/data (zipmap (map :property/id properties) properties)
-                                  :db/properties-file properties-file
-                                  :db/schemas schemas}))]
+                                   (let [properties-file (clojure.java.io/resource "properties.edn")
+                                         schemas (-> "schema.edn" clojure.java.io/resource slurp clojure.edn/read-string)
+                                         properties (-> properties-file slurp clojure.edn/read-string)]
+                                     (assert (or (empty? properties)
+                                                 (apply distinct? (map :property/id properties))))
+                                     (run! (partial cdq.schema/validate! schemas) properties)
+                                     {:db/data (zipmap (map :property/id properties) properties)
+                                      :db/properties-file properties-file
+                                      :db/schemas schemas}))]
                     [:clojure/assets asset-manager]
                     [:clojure.graphics/batch sprite-batch]
                     [:clojure.graphics/shape-drawer-texture (fn [_context _config]
@@ -278,46 +278,46 @@
                                                                 (clojure.utils/dispose pixmap)
                                                                 texture))]
                     [:clojure.graphics/shape-drawer (fn [{:keys [clojure.graphics/batch
-                                                             clojure.graphics/shape-drawer-texture]} _config]
-                                                  (space.earlygrey.shapedrawer.ShapeDrawer. batch
-                                                                                            (clojure.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))]
+                                                                 clojure.graphics/shape-drawer-texture]} _config]
+                                                      (space.earlygrey.shapedrawer.ShapeDrawer. batch
+                                                                                                (clojure.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))]
                     [:clojure.graphics/cursors (fn [_context _config]
-                                             (map->Cursors
-                                              (clojure.utils/mapvals
-                                               (fn [[file [hotspot-x hotspot-y]]]
-                                                 (let [pixmap (clojure.graphics.pixmap/create (.internal com.badlogic.gdx.Gdx/files (str "cursors/" file ".png")))
-                                                       cursor (clojure.graphics/new-cursor pixmap hotspot-x hotspot-y)]
-                                                   (clojure.utils/dispose pixmap)
-                                                   cursor))
-                                               {:cursors/bag                   ["bag001"       [0   0]]
-                                                :cursors/black-x               ["black_x"      [0   0]]
-                                                :cursors/default               ["default"      [0   0]]
-                                                :cursors/denied                ["denied"       [16 16]]
-                                                :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                :cursors/hand-grab             ["hand003"      [4  16]]
-                                                :cursors/move-window           ["move002"      [16 16]]
-                                                :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                :cursors/over-button           ["hand002"      [0   0]]
-                                                :cursors/sandclock             ["sandclock"    [16 16]]
-                                                :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                :cursors/use-skill             ["pointer004"   [0   0]]
-                                                :cursors/walking               ["walking"      [16 16]]})))]
+                                                 (map->Cursors
+                                                  (clojure.utils/mapvals
+                                                   (fn [[file [hotspot-x hotspot-y]]]
+                                                     (let [pixmap (clojure.graphics.pixmap/create (.internal com.badlogic.gdx.Gdx/files (str "cursors/" file ".png")))
+                                                           cursor (clojure.graphics/new-cursor pixmap hotspot-x hotspot-y)]
+                                                       (clojure.utils/dispose pixmap)
+                                                       cursor))
+                                                   {:cursors/bag                   ["bag001"       [0   0]]
+                                                    :cursors/black-x               ["black_x"      [0   0]]
+                                                    :cursors/default               ["default"      [0   0]]
+                                                    :cursors/denied                ["denied"       [16 16]]
+                                                    :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                    :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                    :cursors/hand-grab             ["hand003"      [4  16]]
+                                                    :cursors/move-window           ["move002"      [16 16]]
+                                                    :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                    :cursors/over-button           ["hand002"      [0   0]]
+                                                    :cursors/sandclock             ["sandclock"    [16 16]]
+                                                    :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                    :cursors/use-skill             ["pointer004"   [0   0]]
+                                                    :cursors/walking               ["walking"      [16 16]]})))]
                     [:clojure.graphics/default-font [cdq.graphics.default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
-                                                                                   :size 16
-                                                                                   :quality-scaling 2}]]
+                                                                                       :size 16
+                                                                                       :quality-scaling 2}]]
                     [:clojure.graphics/world-unit-scale [cdq.graphics.world-unit-scale/create 48]]
                     [:clojure.graphics/tiled-map-renderer [cdq.graphics.tiled-map-renderer/create]]
                     [:clojure.graphics/ui-viewport [cdq.graphics.ui-viewport/create {:width 1440 :height 900}]]
                     [:clojure.graphics/world-viewport [cdq.graphics.world-viewport/create {:width 1440 :height 900}]]
                     [:clojure.context/stage [clojure.ui/setup-stage! {:skin-scale :x1
-                                                              :actors [[cdq.ui.dev-menu/create]
-                                                                       [cdq.ui.actionbar/create]
-                                                                       [cdq.ui.hp-mana-bar/create]
-                                                                       [cdq.ui.windows/create [cdq.ui.entity-info-window/create
-                                                                                               cdq.widgets.inventory/create]]
-                                                                       [cdq.ui.player-state/create]
-                                                                       [cdq.ui.player-message/actor]]}]]
+                                                                      :actors [[cdq.ui.dev-menu/create]
+                                                                               [cdq.ui.actionbar/create]
+                                                                               [cdq.ui.hp-mana-bar/create]
+                                                                               [cdq.ui.windows/create [cdq.ui.entity-info-window/create
+                                                                                                       cdq.widgets.inventory/create]]
+                                                                               [cdq.ui.player-state/create]
+                                                                               [cdq.ui.player-message/actor]]}]]
                     [:clojure.context/elapsed-time [cdq.time/create]]
                     [:cdq.context/player-message [cdq.ui.player-message/create* {:duration-seconds 1.5}]]
                     [:cdq.context/level [cdq.level/create :worlds/uf-caves]]
