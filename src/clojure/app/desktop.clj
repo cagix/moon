@@ -15,7 +15,6 @@
             clojure.scene2d.group
             clojure.ui
             clojure.utils
-            cdq.assets
             cdq.create
             cdq.db
             cdq.entity
@@ -233,9 +232,35 @@
                                  {:db/data (zipmap (map :property/id properties) properties)
                                   :db/properties-file properties-file
                                   :db/schemas schemas}))]
-                    [:clojure/assets [cdq.assets/create {:folder "resources/"
-                                                     :type-exts {:sound   #{"wav"}
-                                                                 :texture #{"png" "bmp"}}}]]
+                    [:clojure/assets (fn [_context _config]
+                                       (let [folder "resources/"
+                                             assets (for [[asset-type extensions] {com.badlogic.gdx.audio.Sound      #{"wav"}
+                                                                                   com.badlogic.gdx.graphics.Texture #{"png" "bmp"}}
+                                                          file (map #(clojure.string/replace-first % folder "")
+                                                                    (loop [[file & remaining] (.list (.internal com.badlogic.gdx.Gdx/files folder))
+                                                                           result []]
+                                                                      (cond (nil? file)
+                                                                            result
+
+                                                                            (.isDirectory file)
+                                                                            (recur (concat remaining (.list file)) result)
+
+                                                                            (extensions (.extension file))
+                                                                            (recur remaining (conj result (.path file)))
+
+                                                                            :else
+                                                                            (recur remaining result))))]
+                                                      [file asset-type])
+                                             manager (proxy [com.badlogic.gdx.assets.AssetManager clojure.lang.IFn] []
+                                                       (invoke [^String path]
+                                                         (let [^com.badlogic.gdx.assets.AssetManager this this]
+                                                           (if (.contains this path)
+                                                             (.get this path)
+                                                             (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))]
+                                         (doseq [[file asset-type] assets]
+                                           (.load manager ^String file asset-type))
+                                         (.finishLoading manager)
+                                         manager))]
                     [:clojure.graphics/batch (fn [_context _config]
                                            (com.badlogic.gdx.graphics.g2d.SpriteBatch.))]
                     [:clojure.graphics/shape-drawer-texture (fn [_context _config]

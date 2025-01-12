@@ -4,7 +4,6 @@
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [cdq.assets :as assets]
             [clojure.context :as c :refer [play-sound]]
             [cdq.db :as db]
             [clojure.graphics :as graphics]
@@ -158,7 +157,7 @@
 
 (defn- all-of-type [asset-type]
   (let [^com.badlogic.gdx.assets.AssetManager manager (:clojure/assets @state)]
-    (filter #(= (cdq.assets/class->asset-type (.getAssetType manager %)) asset-type)
+    (filter #(= (.getAssetType manager %) asset-type)
             (.getAssetNames manager))))
 
 (defn- play-button [sound-name]
@@ -172,7 +171,7 @@
       (str/replace ".wav" "")))
 
 (defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name (all-of-type :sound))]
+  (let [rows (for [sound-name (map sound-file->sound-name (all-of-type com.badlogic.gdx.audio.Sound))]
                [(text-button sound-name
                              (fn []
                                (clear-children table)
@@ -461,7 +460,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (all-of-type :texture))]
+  (for [file (sort (all-of-type com.badlogic.gdx.graphics.Texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
