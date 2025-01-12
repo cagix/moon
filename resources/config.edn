@@ -49,8 +49,6 @@
  ; so every level could be a completely different game ?!
  ; 16 bit fantasy ... 16 bit scifi ... etc. .....
 
- :cdq.ui.windows/actors [cdq.ui.entity-info-window/create
-                         cdq.widgets.inventory/create]
  }
 
 

@@ -1,6 +1,5 @@
 (ns gdl.app.desktop
-  (:require [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
+  (:require [clojure.gdx :as gdx]
             [clojure.java.io :as io]
             [gdl.app :as app]
             [gdl.platform.libgdx]
@@ -10,8 +9,7 @@
 (def state (atom nil))
 
 (defn -main []
-  (let [config (-> "config.edn" io/resource slurp edn/read-string)
-        render-fns (map require-ns-resolve '[cdq.render/set-camera-on-player!
+  (let [render-fns (map require-ns-resolve '[cdq.render/set-camera-on-player!
                                              gdl.graphics/clear-screen
                                              cdq.graphics.tiled-map/render
                                              cdq.graphics/draw-world-view
@@ -59,12 +57,13 @@
                      [:gdl.graphics/world-viewport [cdq.graphics.world-viewport/create {:width 1440
                                                                                         :height 900}]]
                      [:gdl.context/stage [gdl.ui/setup-stage! {:skin-scale :x1
-                                                               :actors [cdq.ui.dev-menu/create
-                                                                        cdq.ui.actionbar/create
-                                                                        cdq.ui.hp-mana-bar/create
-                                                                        cdq.ui.windows/create
-                                                                        cdq.ui.player-state/create
-                                                                        cdq.ui.player-message/create]}]]
+                                                               :actors [[cdq.ui.dev-menu/create]
+                                                                        [cdq.ui.actionbar/create]
+                                                                        [cdq.ui.hp-mana-bar/create]
+                                                                        [cdq.ui.windows/create [cdq.ui.entity-info-window/create
+                                                                                                cdq.widgets.inventory/create]]
+                                                                        [cdq.ui.player-state/create]
+                                                                        [cdq.ui.player-message/actor]]}]]
                      [:gdl.context/elapsed-time [cdq.time/create]]
                      [:cdq.context/player-message [cdq.ui.player-message/create* {:duration-seconds 1.5}]]
                      [:cdq.context/level [cdq.level/create :worlds/uf-caves]]
@@ -92,10 +91,9 @@
                            (let [f (require-ns-resolve var)]
                              (assert f (str var))
                              (assoc context k (f context params))))
-                         (assoc (into {}
-                                      (for [[k v] (gdx/context)]
-                                        [(keyword (str "gdl/" (name k))) v]))
-                                :gdl/config config)
+                         (into {}
+                               (for [[k v] (gdx/context)]
+                                 [(keyword (str "gdl/" (name k))) v]))
                          create-fns)))
 
        (dispose []

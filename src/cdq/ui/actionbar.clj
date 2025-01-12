@@ -16,7 +16,7 @@
     (group/add-actor! group (action-bar-button-group))
     group))
 
-(defn create [_context]
+(defn create [_context _config]
   (ui/table {:rows [[{:actor (action-bar)
                       :expand? true
                       :bottom? true}]]

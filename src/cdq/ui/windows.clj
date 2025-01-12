@@ -2,8 +2,8 @@
   (:require [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
-(defn create [{:keys [gdl/config] :as context}]
+(defn create [context actors]
   (ui/group {:id :windows
              :actors (map (fn [create]
                             ((utils/require-ns-resolve create) context))
-                          (::actors config))}))
+                          actors)}))

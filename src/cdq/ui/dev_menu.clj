@@ -113,5 +113,5 @@
                                  (graphics/frames-per-second graphics))
                     :icon "images/fps.png"}]})
 
-(defn create [c]
+(defn create [c _config]
   (table c (dev-menu-config c)))

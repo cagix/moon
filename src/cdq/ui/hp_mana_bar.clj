@@ -12,7 +12,7 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn create [{:keys [gdl.graphics/ui-viewport] :as c} _config]
   (let [rahmen      (c/sprite c "images/rahmen.png")
         hpcontent   (c/sprite c "images/hp.png")
         manacontent (c/sprite c "images/mana.png")
