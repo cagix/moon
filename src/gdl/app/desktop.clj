@@ -1,24 +1,27 @@
 (ns gdl.app.desktop
-  (:require [clojure.edn]
-            [clojure.gdx.graphics.camera]
-            [clojure.java.io]
-            [gdl.app]
-            [gdl.context]
-            [gdl.input]
-            [gdl.graphics.camera]
-            [gdl.platform.libgdx]
-            [gdl.scene2d.actor]
-            [gdl.scene2d.group]
-            [gdl.ui]
-            [gdl.utils]
-            [cdq.db]
-            [cdq.entity]
-            [cdq.entity.state]
-            [cdq.graphics]
-            [cdq.graphics.animation]
-            [cdq.graphics.tiled-map]
-            [cdq.schema]
-            [cdq.malli]))
+  (:require clojure.edn
+            clojure.gdx.graphics.camera
+            clojure.gdx.graphics.pixmap
+            clojure.gdx.graphics.texture
+            clojure.java.io
+            gdl.app
+            gdl.context
+            gdl.input
+            gdl.graphics.camera
+            gdl.graphics.color
+            gdl.platform.libgdx
+            gdl.scene2d.actor
+            gdl.scene2d.group
+            gdl.ui
+            gdl.utils
+            cdq.db
+            cdq.entity
+            cdq.entity.state
+            cdq.graphics
+            cdq.graphics.animation
+            cdq.graphics.tiled-map
+            cdq.schema
+            cdq.malli))
 
 (defmethod cdq.schema/malli-form :s/val-max [_ _schemas] cdq.malli/val-max-schema)
 (defmethod cdq.schema/malli-form :s/number  [_ _schemas] cdq.malli/number-schema)
@@ -209,8 +212,15 @@
                     [:gdl/assets '[cdq.assets/create {:folder "resources/"
                                                       :type-exts {:sound   #{"wav"}
                                                                   :texture #{"png" "bmp"}}}]]
-                    [:gdl.graphics/batch '[cdq.graphics.batch/create]]
-                    [:gdl.graphics/shape-drawer-texture '[cdq.graphics.shape-drawer-texture/create]]
+                    [:gdl.graphics/batch (fn [_context _config]
+                                           (com.badlogic.gdx.graphics.g2d.SpriteBatch.))]
+                    [:gdl.graphics/shape-drawer-texture (fn [_context _config]
+                                                          (let [pixmap (doto (clojure.gdx.graphics.pixmap/create 1 1 clojure.gdx.graphics.pixmap/format-RGBA8888)
+                                                                         (clojure.gdx.graphics.pixmap/set-color gdl.graphics.color/white)
+                                                                         (clojure.gdx.graphics.pixmap/draw-pixel 0 0))
+                                                                texture (clojure.gdx.graphics.texture/create pixmap)]
+                                                            (gdl.utils/dispose pixmap)
+                                                            texture))]
                     [:gdl.graphics/shape-drawer '[cdq.graphics.shape-drawer/create]]
                     [:gdl.graphics/cursors '[cdq.graphics.cursors/create {:cursors/bag                   ["bag001"       [0   0]]
                                                                           :cursors/black-x               ["black_x"      [0   0]]
