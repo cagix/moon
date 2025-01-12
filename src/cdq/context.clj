@@ -24,7 +24,7 @@
             [cdq.skill :as skill]
             [gdl.context :as c :refer [play-sound]]
             [cdq.context.info :as info]
-            [gdl.graphics.camera :as cam]
+            [clojure.graphics.camera :as cam]
             [cdq.math.raycaster :as raycaster]
             [cdq.potential-fields :as potential-fields]
             [clojure.math.vector2 :as v]

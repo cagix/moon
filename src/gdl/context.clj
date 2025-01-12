@@ -19,7 +19,6 @@
             [cdq.db :as db]
             [cdq.error :refer [pretty-pst]]
             [cdq.graphics.sprite :as sprite]
-            [gdl.graphics.camera :as cam]
             [gdl.ui :as ui]
             [gdl.scene2d.group :as group]))
 

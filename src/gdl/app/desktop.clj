@@ -9,7 +9,6 @@
             gdl.app
             gdl.context
             gdl.input
-            gdl.graphics.camera
             gdl.graphics.color
             gdl.platform.libgdx
             gdl.scene2d.actor
@@ -129,8 +128,8 @@
                           :as context}]
                       {:pre [world-viewport
                              player-eid]}
-                      (gdl.graphics.camera/set-position! (:camera world-viewport)
-                                                         (:position @player-eid))
+                      (clojure.graphics.camera/set-position (:camera world-viewport)
+                                                            (:position @player-eid))
                       context)
                     (fn [context]
                       (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
@@ -144,7 +143,7 @@
                                                   tiled-map
                                                   (cdq.graphics.tiled-map/tile-color-setter raycaster
                                                                                             explored-tile-corners
-                                                                                            (gdl.graphics.camera/position (:camera world-viewport))))
+                                                                                            (clojure.graphics.camera/position (:camera world-viewport))))
                       context)
                     (fn [context]
                       (let [render-fns [cdq.graphics/render-before-entities
@@ -209,8 +208,8 @@
                           :as context}]
                       (let [camera (:camera world-viewport)
                             zoom-speed 0.025]
-                        (when (gdl.input/key-pressed? :minus)  (gdl.graphics.camera/inc-zoom camera    zoom-speed))
-                        (when (gdl.input/key-pressed? :equals) (gdl.graphics.camera/inc-zoom camera (- zoom-speed))))
+                        (when (gdl.input/key-pressed? :minus)  (clojure.graphics.camera/inc-zoom camera    zoom-speed))
+                        (when (gdl.input/key-pressed? :equals) (clojure.graphics.camera/inc-zoom camera (- zoom-speed))))
                       context)
                     (fn [c]
                       (let [window-hotkeys {:inventory-window   :i

@@ -7,7 +7,7 @@
             [clojure.string :as str]
             [gdl.context :as c :refer [draw-tiled-map]]
             [gdl.input :as input]
-            [gdl.graphics.camera :as cam]
+            [clojure.graphics.camera :as cam]
             [gdl.tiled :as tiled]
             [clojure.maps.tiled.tmx-map-loader :as tmx-map-loader]
             [gdl.ui :refer [ui-actor text-button] :as ui]
@@ -16,9 +16,9 @@
 (def state (atom nil))
 
 (defn- show-whole-map! [camera tiled-map]
-  (cam/set-position! camera
-                     [(/ (tiled/tm-width  tiled-map) 2)
-                      (/ (tiled/tm-height tiled-map) 2)])
+  (cam/set-position camera
+                    [(/ (tiled/tm-width  tiled-map) 2)
+                     (/ (tiled/tm-height tiled-map) 2)])
   (cam/set-zoom! camera
                  (cam/calculate-zoom camera
                                      :left [0 0]
@@ -73,10 +73,10 @@
 ; PLUS symbol shift & = symbol on keyboard not registered
 (defn- camera-controls [camera]
   (let [apply-position (fn [idx f]
-                         (cam/set-position! camera
-                                            (update (cam/position camera)
-                                                    idx
-                                                    #(f % camera-movement-speed))))]
+                         (cam/set-position camera
+                                           (update (cam/position camera)
+                                                   idx
+                                                   #(f % camera-movement-speed))))]
     (if (input/key-pressed? :left)  (apply-position 0 -))
     (if (input/key-pressed? :right) (apply-position 0 +))
     (if (input/key-pressed? :up)    (apply-position 1 +))
