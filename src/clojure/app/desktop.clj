@@ -1,6 +1,9 @@
 (ns clojure.app.desktop
-  (:require clojure.edn
+  (:require clojure.assets
+            clojure.edn
+            clojure.graphics
             clojure.graphics.camera
+            clojure.graphics.color
             clojure.graphics.pixmap
             clojure.graphics.shape-drawer
             clojure.graphics.texture
@@ -9,7 +12,6 @@
             clojure.app
             clojure.context
             clojure.input
-            clojure.graphics.color
             clojure.platform.libgdx
             clojure.scene2d.actor
             clojure.scene2d.group
@@ -232,8 +234,8 @@
                                      {:db/data (zipmap (map :property/id properties) properties)
                                       :db/properties-file properties-file
                                       :db/schemas schemas}))]
-                    [:clojure/assets asset-manager]
-                    [:clojure.graphics/batch sprite-batch]
+                    [:clojure/assets clojure.assets/manager]
+                    [:clojure.graphics/batch clojure.graphics/sprite-batch]
                     [:clojure.graphics/shape-drawer-texture (fn [_context _config]
                                                               (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
                                                                              (clojure.graphics.pixmap/set-color clojure.graphics.color/white)

@@ -1,5 +1,8 @@
 (ns clojure.graphics)
 
+(defn sprite-batch [_context _config]
+  (com.badlogic.gdx.graphics.g2d.SpriteBatch.))
+
 (defn new-cursor [pixmap hotspot-x hotspot-y]
   (.newCursor com.badlogic.gdx.Gdx/graphics pixmap hotspot-x hotspot-y))
 

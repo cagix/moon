@@ -114,11 +114,7 @@
                 ;*print-level* 3
                 }
   :profiles {:uberjar {:aot [cdq.context]}}
-  #_:main #_cdq.context
-  :injections [(load
-                "clojure/cdq"
-                )]
-  )
+  #_:main #_cdq.context)
 
 ; * Notes
 

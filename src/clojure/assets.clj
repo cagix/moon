@@ -1,11 +1,8 @@
-(in-ns 'clojure.core)
+(ns clojure.assets)
 
-(defn sprite-batch [_context _config]
-  (com.badlogic.gdx.graphics.g2d.SpriteBatch.))
-
-(defn asset-manager
+(defn manager
   ([_context _config]
-   (asset-manager
+   (manager
     (let [folder "resources/"]
       (for [[asset-type extensions] {com.badlogic.gdx.audio.Sound      #{"wav"}
                                      com.badlogic.gdx.graphics.Texture #{"png" "bmp"}}
