@@ -192,10 +192,9 @@
                                         render-fns))))
 
        (resize [width height]
-         (doseq [[k value] @gdl.app/state
-                 :when (gdl.utils/resizable? value)]
-           ;(println "Resizing " k " - " value)
-           (gdl.utils/resize value width height))))
+         (let [context @gdl.app/state]
+           (com.badlogic.gdx.utils.viewport.Viewport/.update (:gdl.graphics/ui-viewport    context) width height true)
+           (com.badlogic.gdx.utils.viewport.Viewport/.update (:gdl.graphics/world-viewport context) width height false))))
      (doto (com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.)
        (.setTitle "Cyber Dungeon Quest")
        (.setWindowedMode 1440 900)

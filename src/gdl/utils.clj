@@ -6,12 +6,6 @@
 (defn disposable? [object]
   (satisfies? Disposable object))
 
-(defprotocol Resizable
-  (resize [_ width height]))
-
-(defn resizable? [object]
-  (satisfies? Resizable object))
-
 ; TODO check params & pass & check @ defcomponent ( forgot 1 arg - can be checked statically)
 (defmacro defsystem
   {:arglists '([name docstring?])}

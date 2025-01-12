@@ -11,5 +11,4 @@
         world-width  (* (:width  config) world-unit-scale)
         world-height (* (:height config) world-unit-scale)]
     (camera/set-to-ortho camera world-width world-height :y-down? false)
-    (fit-viewport/create world-width world-height camera
-                         :center-camera? false)))
+    (fit-viewport/create world-width world-height camera)))

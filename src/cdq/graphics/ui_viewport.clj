@@ -7,5 +7,4 @@
          (:height config)]}
   (fit-viewport/create (:width  config)
                        (:height config)
-                       (OrthographicCamera.)
-                       :center-camera? true))
+                       (OrthographicCamera.)))
