@@ -4,7 +4,7 @@
             [gdl.input :as input]
             [clojure.string :as str]
             [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [gdl.assets :as assets]
+            [cdq.assets :as assets]
             [gdl.context :as c :refer [play-sound]]
             [cdq.db :as db]
             [clojure.graphics :as graphics]
@@ -157,8 +157,9 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (assets/all-of-type (:gdl/assets @state)
-                      asset-type))
+  (let [^com.badlogic.gdx.assets.AssetManager manager (:gdl/assets @state)]
+    (filter #(= (cdq.assets/class->asset-type (.getAssetType manager %)) asset-type)
+            (.getAssetNames manager))))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(play-sound @state sound-name)))

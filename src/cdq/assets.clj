@@ -8,7 +8,7 @@
 (defn- asset-type->class [k]
   (get asset-type-class-map k))
 
-(defn- class->asset-type [class]
+(defn class->asset-type [class]
   (some (fn [[k v]] (when (= v class) k)) asset-type-class-map))
 
 (defn create [_context {:keys [folder type-exts]}]
@@ -28,16 +28,12 @@
                                        :else
                                        (recur remaining result))))]
                  [file asset-type])
-        manager (proxy [com.badlogic.gdx.assets.AssetManager clojure.lang.IFn gdl.assets.Assets] []
+        manager (proxy [com.badlogic.gdx.assets.AssetManager clojure.lang.IFn] []
                   (invoke [^String path]
                     (let [^com.badlogic.gdx.assets.AssetManager this this]
                       (if (.contains this path)
                         (.get this path)
-                        (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))
-                  (all_of_type [asset-type]
-                    (let [^com.badlogic.gdx.assets.AssetManager manager this]
-                      (filter #(= (class->asset-type (.getAssetType manager %)) asset-type)
-                              (.getAssetNames manager)))))]
+                        (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))]
     (doseq [[file asset-type] assets]
       (.load manager ^String file (asset-type->class asset-type)))
     (.finishLoading manager)
