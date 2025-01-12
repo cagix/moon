@@ -1,27 +1,27 @@
 (ns gdl.app.desktop
-  (:require [clojure.gdx :as gdx]
-            [clojure.java.io :as io]
-            [gdl.app :as app]
+  (:require [clojure.gdx]
+            [clojure.java.io]
+            [gdl.app]
             [gdl.platform.libgdx]
-            [gdl.utils :refer [dispose disposable? resize resizable? require-ns-resolve]])
-  (:gen-class))
+            [gdl.utils]))
 
 (def state (atom nil))
 
 (defn -main []
-  (let [render-fns (map require-ns-resolve '[cdq.render/set-camera-on-player!
-                                             gdl.graphics/clear-screen
-                                             cdq.graphics.tiled-map/render
-                                             cdq.graphics/draw-world-view
-                                             gdl.graphics/draw-stage
-                                             gdl.context/update-stage
-                                             cdq.context/handle-player-input
-                                             cdq.context/update-mouseover-entity
-                                             cdq.context/update-paused-state
-                                             cdq.context/progress-time-if-not-paused
-                                             cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
-                                             gdl.context/check-camera-controls
-                                             cdq.context/check-ui-key-listeners])
+  (let [render-fns (map gdl.utils/require-ns-resolve
+                        '[cdq.render/set-camera-on-player!
+                          gdl.graphics/clear-screen
+                          cdq.graphics.tiled-map/render
+                          cdq.graphics/draw-world-view
+                          gdl.graphics/draw-stage
+                          gdl.context/update-stage
+                          cdq.context/handle-player-input
+                          cdq.context/update-mouseover-entity
+                          cdq.context/update-paused-state
+                          cdq.context/progress-time-if-not-paused
+                          cdq.context/remove-destroyed-entities  ; do not pause this as for example pickup item, should be destroyed.
+                          gdl.context/check-camera-controls
+                          cdq.context/check-ui-key-listeners])
         create-fns '[[:gdl.db/schemas [gdl.context/load-schemas]]
                      [:gdl/db [cdq.db/create {:schema "schema.edn"
                                               :properties "properties.edn"}]]
@@ -79,7 +79,7 @@
                      [:cdq.context/enemies [cdq.create/spawn-enemies!]]]]
     (.setIconImage (java.awt.Taskbar/getTaskbar)
                    (.getImage (java.awt.Toolkit/getDefaultToolkit)
-                              (io/resource "moon.png")))
+                              (clojure.java.io/resource "moon.png")))
     (when com.badlogic.gdx.utils.SharedLibraryLoader/isMac
       (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.
@@ -88,11 +88,11 @@
          (reset! state
                  (reduce (fn [context [k [var params]]]
                            (println (keys context))
-                           (let [f (require-ns-resolve var)]
+                           (let [f (gdl.utils/require-ns-resolve var)]
                              (assert f (str var))
                              (assoc context k (f context params))))
                          (into {}
-                               (for [[k v] (gdx/context)]
+                               (for [[k v] (clojure.gdx/context)]
                                  [(keyword (str "gdl/" (name k))) v]))
                          create-fns)))
 
@@ -104,9 +104,9 @@
          ; -> so there is a certain order to cleanup...
          (doseq [[k value] @state
                  :when (and (not (= (namespace k) "gdl"))
-                            (disposable? value))]
+                            (gdl.utils/disposable? value))]
            ;(println "Disposing " k " - " value)
-           (dispose value)))
+           (gdl.utils/dispose value)))
 
        (render []
          (swap! state (fn [context]
@@ -117,14 +117,14 @@
 
        (resize [width height]
          (doseq [[k value] @state
-                 :when (resizable? value)]
+                 :when (gdl.utils/resizable? value)]
            ;(println "Resizing " k " - " value)
-           (resize value width height))))
+           (gdl.utils/resize value width height))))
      (doto (com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.)
        (.setTitle "Cyber Dungeon Quest")
        (.setWindowedMode 1440 900)
        (.setForegroundFPS 60)))))
 
 (defn post-runnable [f]
-  (app/post-runnable (:gdl/app @state)
-                     #(f @state)))
+  (gdl.app/post-runnable (:gdl/app @state)
+                         #(f @state)))
