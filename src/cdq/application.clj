@@ -1,6 +1,14 @@
 ; you should not depend on implementation details ....
+
+
+; TODO = only know about general components here, no mix anonymous fns with non-anonymous
+
+; => every 'form' in its most minimal depednent place !!!
+
+
 (ns cdq.application
-  (:require clojure.app ; clean
+  (:require cdq.graphics.shape-drawer
+            clojure.app ; clean
             clojure.assets ; clean
             clojure.context ; lots of requires
             clojure.create ; different things
@@ -21,9 +29,7 @@
             clojure.graphics.ui-viewport
             clojure.graphics.world-unit-scale
             clojure.graphics.world-viewport
-            clojure.graphics.2d.texture-region
             clojure.input
-            clojure.interop
             clojure.java.io
             clojure.level
             clojure.malli
@@ -84,94 +90,6 @@
      (clojure.context/error-window c t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   c)
-
-(defn- munge-color [c]
-  (cond (= com.badlogic.gdx.graphics.Color (class c)) c
-        (keyword? c) (clojure.interop/k->color c)
-        (vector? c) (apply clojure.graphics.color/create c)
-        :else (throw (ex-info "Cannot understand color" c))))
-
-(let [set-color (fn [shape-drawer color]
-                  (space.earlygrey.shapedrawer.ShapeDrawer/.setColor shape-drawer ^com.badlogic.gdx.graphics.Color (munge-color color)))]
-  (extend-type space.earlygrey.shapedrawer.ShapeDrawer
-    clojure.graphics.shape-drawer/ShapeDrawer
-    (ellipse [this [x y] radius-x radius-y color]
-      (set-color this color)
-      (.ellipse this
-                (float x)
-                (float y)
-                (float radius-x)
-                (float radius-y)))
-
-    (filled-ellipse [this [x y] radius-x radius-y color]
-      (set-color this color)
-      (.filledEllipse this
-                      (float x)
-                      (float y)
-                      (float radius-x)
-                      (float radius-y)))
-
-    (circle [this [x y] radius color]
-      (set-color this color)
-      (.circle this
-               (float x)
-               (float y)
-               (float radius)))
-
-    (filled-circle [this [x y] radius color]
-      (set-color this color)
-      (.filledCircle this
-                     (float x)
-                     (float y)
-                     (float radius)))
-
-    (arc [this [center-x center-y] radius start-angle degree color]
-      (set-color this color)
-      (.arc this
-            (float center-x)
-            (float center-y)
-            (float radius)
-            (float (clojure.math.utils/degree->radians start-angle))
-            (float (clojure.math.utils/degree->radians degree))))
-
-    (sector [this [center-x center-y] radius start-angle degree color]
-      (set-color this color)
-      (.sector this
-               (float center-x)
-               (float center-y)
-               (float radius)
-               (float (clojure.math.utils/degree->radians start-angle))
-               (float (clojure.math.utils/degree->radians degree))))
-
-    (rectangle [this x y w h color]
-      (set-color this color)
-      (.rectangle this
-                  (float x)
-                  (float y)
-                  (float w)
-                  (float h)))
-
-    (filled-rectangle [this x y w h color]
-      (set-color this color)
-      (.filledRectangle this
-                        (float x)
-                        (float y)
-                        (float w)
-                        (float h)))
-
-    (line [this [sx sy] [ex ey] color]
-      (set-color this color)
-      (.line this
-             (float sx)
-             (float sy)
-             (float ex)
-             (float ey)))
-
-    (with-line-width [this width draw-fn]
-      (let [old-line-width (.getDefaultLineWidth this)]
-        (.setDefaultLineWidth this (float (* width old-line-width)))
-        (draw-fn)
-        (.setDefaultLineWidth this (float old-line-width))))))
 
 (defrecord Cursors []
   clojure.utils/Disposable
@@ -373,10 +291,7 @@
                                                                     texture (clojure.graphics.texture/create pixmap)]
                                                                 (clojure.utils/dispose pixmap)
                                                                 texture))]
-                    [:clojure.graphics/shape-drawer (fn [{:keys [clojure.graphics/batch
-                                                                 clojure.graphics/shape-drawer-texture]} _config]
-                                                      (space.earlygrey.shapedrawer.ShapeDrawer. batch
-                                                                                                (clojure.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))]
+                    [:clojure.graphics/shape-drawer cdq.graphics.shape-drawer/create]
                     [:clojure.graphics/cursors (fn [_context _config]
                                                  (map->Cursors
                                                   (clojure.utils/mapvals
