@@ -6,6 +6,8 @@
   (doseq [[qualified-symbol params] (-> "clojure.application.edn"
                                         io/resource
                                         slurp
-                                        edn/read-string)]
-    (require (symbol (namespace qualified-symbol)))
-    ((resolve qualified-symbol) params)))
+                                        edn/read-string)
+          :let [ns (symbol (namespace qualified-symbol))
+                f (resolve qualified-symbol)]]
+    (require ns)
+    (if params (f params) (f))))

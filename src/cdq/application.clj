@@ -127,7 +127,7 @@
                     (fn [context]
                       (if (:clojure.context/paused? context)
                         context
-                        (reduce (fn [f context] (f context))
+                        (reduce (fn [context f] (f context))
                                 context
                                 [(fn [context]
                                    (let [delta-ms (min (clojure.graphics/delta-time) clojure.world/max-delta-time)]
@@ -265,8 +265,7 @@
                     [:clojure.context/player-eid [clojure.create/player-eid*]]
                     [:clojure.context/enemies [clojure.create/spawn-enemies!]]]]
     (clojure.gdx.backends.lwjgl/application
-     {:icon "moon.png"
-      :title "Cyber Dungeon Quest"
+     {:title "Cyber Dungeon Quest"
       :window-width 1440
       :window-height 900
       :foreground-fps 60

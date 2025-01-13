@@ -1,1 +1,6 @@
-[[clojure.core/println "Hello World"]]
+[
+ [clojure.java.awt/set-taskbar-icon "moon.png"]
+ [clojure.gdx.backends.lwjgl/configure-glfw-for-mac-os]
+ [cdq.application/-main]
+
+ ]
