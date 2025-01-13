@@ -4,6 +4,7 @@
 (ns cdq.application
   (:require cdq.assets
             cdq.db
+            cdq.graphics
             cdq.schemas
             clojure.context
             clojure.create
@@ -13,11 +14,9 @@
             clojure.gdx.graphics.shape-drawer
             clojure.graphics
             clojure.graphics.camera
-            clojure.graphics.color
             clojure.graphics.default-font
             clojure.graphics.pixmap
             clojure.graphics.shape-drawer
-            clojure.graphics.texture
             clojure.graphics.tiled-map
             clojure.graphics.tiled-map-renderer
             clojure.graphics.ui-viewport
@@ -189,13 +188,7 @@
   [[:clojure/db cdq.db/create]
    [:clojure/assets cdq.assets/manager]
    [:clojure.graphics/batch clojure.graphics/sprite-batch]
-   [:clojure.graphics/shape-drawer-texture (fn [_context _config]
-                                             (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
-                                                            (clojure.graphics.pixmap/set-color clojure.graphics.color/white)
-                                                            (clojure.graphics.pixmap/draw-pixel 0 0))
-                                                   texture (clojure.graphics.texture/create pixmap)]
-                                               (clojure.utils/dispose pixmap)
-                                               texture))]
+   [:clojure.graphics/shape-drawer-texture cdq.graphics/white-pixel-texture]
    [:clojure.graphics/shape-drawer clojure.gdx.graphics.shape-drawer/create]
    [:clojure.graphics/cursors (fn [_context _config]
                                 (map->Cursors
