@@ -1,5 +1,5 @@
 (ns cdq.ui.entity-info-window
-  (:require [cdq.context :as world]
+  (:require [clojure.world :as world]
             [cdq.context.info :as info]
             [clojure.ui :as ui :refer [ui-actor]]
             [clojure.scene2d.group :as group]))

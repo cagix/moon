@@ -5,7 +5,7 @@
             [clojure.scene2d.group :refer [add-actor!]]
             [clojure.ui :as ui :refer [ui-actor]]
             [clojure.utils :refer [readable-number]]
-            [cdq.context :as world])
+            [clojure.world :as world])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; clojure !!
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))

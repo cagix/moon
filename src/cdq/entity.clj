@@ -20,7 +20,7 @@
                (keyword "modifier" (name k)))))
 
 ; temporary here, move to entity.render
-; widgets in cdq.context and circular dependencies
+; widgets in clojure.world and circular dependencies
 (defsystem draw-gui-view)
 (defmethod draw-gui-view :default [_ c])
 

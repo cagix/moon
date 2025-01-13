@@ -1,4 +1,4 @@
-(ns cdq.context
+(ns clojure.world
   (:require [clojure.audio :as audio]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
@@ -33,37 +33,37 @@
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
 
-(defn grid-cell [{::keys [grid]} position]
+(defn grid-cell [{:keys [cdq.context/grid]} position]
   (grid position))
 
-(defn rectangle->cells [{::keys [grid]} rectangle]
+(defn rectangle->cells [{:keys [cdq.context/grid]} rectangle]
   (grid/rectangle->cells grid rectangle))
 
-(defn circle->cells [{::keys [grid]} circle]
+(defn circle->cells [{:keys [cdq.context/grid]} circle]
   (grid/circle->cells grid circle))
 
-(defn circle->entities [{::keys [grid]} circle]
+(defn circle->entities [{:keys [cdq.context/grid]} circle]
   (grid/circle->entities grid circle))
 
-(defn cached-adjacent-cells [{::keys [grid]} cell]
+(defn cached-adjacent-cells [{:keys [cdq.context/grid]} cell]
   (grid/cached-adjacent-cells grid cell))
 
-(defn point->entities [{::keys [grid]} position]
+(defn point->entities [{:keys [cdq.context/grid]} position]
   (grid/point->entities grid position))
 
-(defn ray-blocked? [{::keys [raycaster]} start target]
+(defn ray-blocked? [{:keys [cdq.context/raycaster]} start target]
   (raycaster/blocked? raycaster start target))
 
 (defn path-blocked?
   "path-w in tiles. casts two rays."
-  [{::keys [raycaster]} start target path-w]
+  [{:keys [cdq.context/raycaster]} start target path-w]
   (raycaster/path-blocked? raycaster start target path-w))
 
-(defn mouseover-entity [{::keys [mouseover-eid]}]
+(defn mouseover-entity [{:keys [cdq.context/mouseover-eid]}]
   (and mouseover-eid
        @mouseover-eid))
 
-(defn all-entities [{::keys [entity-ids]}]
+(defn all-entities [{:keys [cdq.context/entity-ids]}]
   (vals @entity-ids))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -107,10 +107,12 @@
            {:text text
             :counter (timer/create c 0.4)})))
 
-(defn active-entities [{::keys [content-grid player-eid]}]
+(defn active-entities [{:keys [cdq.context/content-grid cdq.context/player-eid]}]
   (content-grid/active-entities content-grid @player-eid))
 
-(defn- add-entity [{::keys [content-grid grid entity-ids]} eid]
+(defn- add-entity [{:keys [cdq.context/content-grid
+                           cdq.context/grid
+                           cdq.context/entity-ids]} eid]
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (content-grid/add-entity content-grid eid)
@@ -119,14 +121,16 @@
     (swap! entity-ids assoc id eid))
   (grid/add-entity grid eid))
 
-(defn remove-entity [{::keys [entity-ids]} eid]
+(defn remove-entity [{:keys [cdq.context/entity-ids]} eid]
   (content-grid/remove-entity eid)
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
   (grid/remove-entity eid))
 
-(defn position-changed [{::keys [content-grid grid]} eid]
+(defn position-changed [{:keys [cdq.context/content-grid
+                                cdq.context/grid]}
+                        eid]
   (content-grid/entity-position-changed content-grid eid)
   (grid/entity-position-changed grid eid))
 
@@ -299,7 +303,7 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(defn creatures-in-los-of-player [{::keys [player-eid] :as c}]
+(defn creatures-in-los-of-player [{:keys [cdq.context/player-eid] :as c}]
   (->> (active-entities c)
        (filter #(:entity/species @%))
        (filter #(line-of-sight? c @player-eid @%))
@@ -313,7 +317,7 @@
        (circle->entities c)
        (filter #(= (:entity/faction @%) faction))))
 
-(defn nearest-enemy [{::keys [grid]} entity]
+(defn nearest-enemy [{:keys [cdq.context/grid]} entity]
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
 
@@ -345,7 +349,7 @@
   (when-let [skill-button (button-group/checked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
 
-(defn show-player-msg [{::keys [player-message]} text]
+(defn show-player-msg [{:keys [cdq.context/player-message]} text]
   (swap! player-message assoc :text text :counter 0))
 
 ; no window movable type cursor appears here like in player idle

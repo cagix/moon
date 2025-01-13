@@ -6,7 +6,7 @@
             [clojure.scene2d.stage :as stage]
             [clojure.context :as c]
             [clojure.ui :refer [t-node scroll-pane] :as ui]
-            [cdq.context :as world]
+            [clojure.world :as world]
             [cdq.editor.actors :as editor]))
 
 (comment

@@ -7,15 +7,15 @@
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [clojure.utils :refer [defsystem sort-by-order]]
             [cdq.val-max :as val-max]
-            [cdq.context :refer [grid-cell
-                                 active-entities
-                                 render-z-order
-                                 line-of-sight?
-                                 draw-body-rect
-                                 creatures-in-los-of-player
-                                 world-item?
-                                 item-place-position
-                                 circle->cells]]
+            [clojure.world :refer [grid-cell
+                                   active-entities
+                                   render-z-order
+                                   line-of-sight?
+                                   draw-body-rect
+                                   creatures-in-los-of-player
+                                   world-item?
+                                   item-place-position
+                                   circle->cells]]
             [cdq.entity :as entity]))
 
 (defn- geom-test [{:keys [clojure.graphics/shape-drawer] :as c}]

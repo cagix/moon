@@ -2,7 +2,7 @@
   (:require [clojure.utils :refer [safe-merge tile->middle]]
             [clojure.grid2d :as g2d]
             [clojure.tiled :as tiled]
-            [cdq.context :refer [spawn-creature mouseover-entity]]
+            [clojure.world :refer [spawn-creature mouseover-entity]]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]))
 
