@@ -25,5 +25,5 @@
   (generate-modules world
                     (c/build-all c :properties/creatures)))
 
-(defn create [context world-id]
+(defn create [world-id context]
   (generate-level context (c/build context world-id)))

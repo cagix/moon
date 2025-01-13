@@ -23,5 +23,5 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create [_context config]
+(defn create [config _context]
   (generate-font (update config :file files/internal)))

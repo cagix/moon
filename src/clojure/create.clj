@@ -71,10 +71,10 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
-(defn spawn-player-entity [context start-position]
+(defn- spawn-player-entity [context start-position]
   (spawn-creature context (player-entity-props start-position)))
 
-(defn spawn-enemies! [{:keys [clojure.context/tiled-map] :as c} _config]
+(defn spawn-enemies! [{:keys [clojure.context/tiled-map] :as c}]
   (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
                   {:position position
                    :creature-id (keyword creature-id)
@@ -88,7 +88,7 @@
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn create-raycaster [{:keys [clojure.context/grid]} _]
+(defn create-raycaster [{:keys [clojure.context/grid]}]
   (let [width  (g2d/width  grid)
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]
@@ -96,30 +96,30 @@
       (set-arr arr @cell grid/blocks-vision?))
     [arr width height]))
 
-(defn explored-tile-corners* [{:keys [clojure.context/tiled-map]} _config]
+(defn explored-tile-corners* [{:keys [clojure.context/tiled-map]}]
   (atom (g2d/create-grid
          (tiled/tm-width  tiled-map)
          (tiled/tm-height tiled-map)
          (constantly false))))
 
-(defn error* [_context _]
+(defn error* [_context]
   nil)
 
-(defn tiled-map* [context _]
+(defn tiled-map* [context]
   (:tiled-map (:clojure.context/level context)))
 
-(defn grid* [context _]
+(defn grid* [context]
   (create-grid (:clojure.context/tiled-map context)))
 
-(defn content-grid* [context config]
+(defn content-grid* [config context]
   (create-content-grid (:clojure.context/tiled-map context)
                        config))
 
-(defn entity-ids* [context _]
+(defn entity-ids* [_context]
   (atom {}))
 
-(defn factions-iterations* [_context config]
+(defn factions-iterations* [config _context]
   config)
 
-(defn player-eid* [context _]
+(defn player-eid* [context]
   (spawn-player-entity context (:start-position (:clojure.context/level context))))

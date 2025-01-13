@@ -20,9 +20,9 @@
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))
 
-(defn actor [_context _config]
+(defn actor [_context]
   (ui-actor {:draw draw-player-message
              :act  check-remove-message}))
 
-(defn create* [_context config]
+(defn create* [config _context]
   (atom {:duration-seconds (:duration-seconds config)}))

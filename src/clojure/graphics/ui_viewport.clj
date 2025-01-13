@@ -2,7 +2,7 @@
   (:require [clojure.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
-(defn create [_context config]
+(defn create [config _context]
   {:pre [(:width  config)
          (:height config)]}
   (fit-viewport/create (:width  config)

@@ -3,18 +3,12 @@
 
 (def state (atom nil))
 
-(defn create [create-fns]
+(defn create [create-components]
   (reset! state
-          (reduce (fn [context [k component]]
-                    (let [f (if (vector? component)
-                              (component 0)
-                              component)
-                          params (if (and (vector? component) (= (count component) 2))
-                                   (component 1)
-                                   nil)]
-                      (assoc context k (f context params))))
+          (reduce (fn [context [k fn-invoc]]
+                    (assoc context k (utils/req-resolve-call fn-invoc context)))
                   {}
-                  @(utils/req-resolve create-fns))))
+                  create-components)))
 
 (defn dispose []
   (doseq [[k value] @state

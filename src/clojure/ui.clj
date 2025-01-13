@@ -332,9 +332,10 @@
     (clicked [event x y]
       (clicked-fn {:event event :x x :y y}))))
 
-(defn setup-stage! [{:keys [clojure.graphics/batch
+(defn setup-stage! [config
+                    {:keys [clojure.graphics/batch
                             clojure.graphics/ui-viewport]
-                     :as context} config]
+                     :as context}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
@@ -352,8 +353,8 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  (let [actors (map (fn [[f params]]
-                      (f context params))
+  (let [actors (map (fn [fn-invoc]
+                      (utils/req-resolve-call fn-invoc context))
                     (:actors config))
         stage (create-stage ui-viewport batch actors)]
     (input/set-processor stage)

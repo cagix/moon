@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [clojure.schema :as schema]))
 
-(defn create [_context _config]
+(defn create [_context]
   (let [properties-file (io/resource "properties.edn")
         schemas (-> "schema.edn" io/resource slurp edn/read-string)
         properties (-> properties-file slurp edn/read-string)]

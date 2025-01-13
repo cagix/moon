@@ -3,7 +3,7 @@
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn create [{:keys [clojure.graphics/batch
-                      clojure.graphics/world-unit-scale]} _config]
+                      clojure.graphics/world-unit-scale]}]
   (memoize (fn [tiled-map]
              (OrthogonalTiledMapRenderer. tiled-map
                                           (float world-unit-scale)

@@ -1,4 +1,4 @@
 (ns clojure.graphics.world-unit-scale)
 
-(defn create [_context tile-size]
+(defn create [tile-size _context]
   (float (/ tile-size)))

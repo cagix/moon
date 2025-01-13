@@ -12,7 +12,7 @@
                 :y (+ y 2)
                 :up? true}))
 
-(defn create [{:keys [clojure.graphics/ui-viewport] :as c} _config]
+(defn create [{:keys [clojure.graphics/ui-viewport] :as c}]
   (let [rahmen      (c/sprite c "images/rahmen.png")
         hpcontent   (c/sprite c "images/hp.png")
         manacontent (c/sprite c "images/mana.png")

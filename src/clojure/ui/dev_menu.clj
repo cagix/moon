@@ -112,5 +112,5 @@
                     :update-fn (fn [_] (graphics/frames-per-second))
                     :icon "images/fps.png"}]})
 
-(defn create [c _config]
+(defn create [c]
   (table c (dev-menu-config c)))

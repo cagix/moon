@@ -135,5 +135,5 @@
                                              tiles->entities
                                              max-iterations)))))
 
-(defn create-cache [_context _config]
+(defn create-cache [_context]
   (atom nil))

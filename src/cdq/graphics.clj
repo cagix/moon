@@ -6,7 +6,7 @@
             clojure.graphics.texture
             clojure.utils))
 
-(defn white-pixel-texture [_context _config]
+(defn white-pixel-texture [_context]
   (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
                  (clojure.graphics.pixmap/set-color clojure.graphics.color/white)
                  (clojure.graphics.pixmap/draw-pixel 0 0))
@@ -23,7 +23,7 @@
   (dispose [this]
     (run! clojure.utils/dispose (vals this))))
 
-(defn cursors [_context config]
+(defn cursors [config _context]
   (map->Cursors
    (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]

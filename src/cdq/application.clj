@@ -2,39 +2,21 @@
 ; each code has to be placed in its minimal context !!!
 ; whatever it is
 (ns cdq.application
-  (:require cdq.assets
-            cdq.db
-            cdq.graphics
-            cdq.schemas
+  (:require cdq.schemas ; not req anywhere but need
+
             clojure.context
-            clojure.create
             clojure.entity
             clojure.entity.state
-            clojure.gdx.graphics.shape-drawer
             clojure.graphics
             clojure.graphics.camera
-            clojure.graphics.default-font
             clojure.graphics.shape-drawer
             clojure.graphics.tiled-map
-            clojure.graphics.tiled-map-renderer
-            clojure.graphics.ui-viewport
-            clojure.graphics.world-unit-scale
-            clojure.graphics.world-viewport
             clojure.input
-            clojure.level
             clojure.potential-fields
             clojure.platform.libgdx
             clojure.scene2d.actor
             clojure.scene2d.group
             clojure.ui
-            clojure.ui.player-message
-            clojure.ui.actionbar
-            clojure.ui.dev-menu
-            clojure.ui.hp-mana-bar
-            clojure.ui.windows
-            clojure.ui.entity-info-window
-            clojure.ui.player-state
-            clojure.ui.player-message
             clojure.utils
             clojure.world
             clojure.world.graphics)
@@ -176,53 +158,3 @@
          (when (some clojure.scene2d.actor/visible? windows)
            (run! #(clojure.scene2d.actor/set-visible % false) windows))))
      c)])
-
-(def create-fns
-  [[:clojure/db cdq.db/create]
-   [:clojure/assets cdq.assets/manager]
-   [:clojure.graphics/batch clojure.graphics/sprite-batch]
-   [:clojure.graphics/shape-drawer-texture cdq.graphics/white-pixel-texture]
-   [:clojure.graphics/shape-drawer clojure.gdx.graphics.shape-drawer/create]
-   [:clojure.graphics/cursors [cdq.graphics/cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                                     :cursors/black-x               ["black_x"      [0   0]]
-                                                     :cursors/default               ["default"      [0   0]]
-                                                     :cursors/denied                ["denied"       [16 16]]
-                                                     :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                     :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                     :cursors/hand-grab             ["hand003"      [4  16]]
-                                                     :cursors/move-window           ["move002"      [16 16]]
-                                                     :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                     :cursors/over-button           ["hand002"      [0   0]]
-                                                     :cursors/sandclock             ["sandclock"    [16 16]]
-                                                     :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                     :cursors/use-skill             ["pointer004"   [0   0]]
-                                                     :cursors/walking               ["walking"      [16 16]]}]]
-   [:clojure.graphics/default-font [clojure.graphics.default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
-                                                                          :size 16
-                                                                          :quality-scaling 2}]]
-   [:clojure.graphics/world-unit-scale [clojure.graphics.world-unit-scale/create 48]]
-   [:clojure.graphics/tiled-map-renderer [clojure.graphics.tiled-map-renderer/create]]
-   [:clojure.graphics/ui-viewport [clojure.graphics.ui-viewport/create {:width 1440 :height 900}]]
-   [:clojure.graphics/world-viewport [clojure.graphics.world-viewport/create {:width 1440 :height 900}]]
-   [:clojure.context/stage [clojure.ui/setup-stage! {:skin-scale :x1
-                                                     :actors [[clojure.ui.dev-menu/create]
-                                                              [clojure.ui.actionbar/create]
-                                                              [clojure.ui.hp-mana-bar/create]
-                                                              [clojure.ui.windows/create [clojure.ui.entity-info-window/create
-                                                                                          clojure.widgets.inventory/create]]
-                                                              [clojure.ui.player-state/create]
-                                                              [clojure.ui.player-message/actor]]}]]
-   [:clojure.context/elapsed-time (fn [_context _config] 0)]
-   [:clojure.context/player-message [clojure.ui.player-message/create* {:duration-seconds 1.5}]]
-   [:clojure.context/level [clojure.level/create :worlds/uf-caves]]
-   [:clojure.context/error [clojure.create/error*]]
-   [:clojure.context/tiled-map [clojure.create/tiled-map*]]
-   [:clojure.context/explored-tile-corners [clojure.create/explored-tile-corners*]]
-   [:clojure.context/grid [clojure.create/grid*]]
-   [:clojure.context/raycaster [clojure.create/create-raycaster]]
-   [:clojure.context/content-grid [clojure.create/content-grid* {:cell-size 16}]]
-   [:clojure.context/entity-ids [clojure.create/entity-ids*]]
-   [:clojure.context/factions-iterations [clojure.create/factions-iterations* {:good 15 :evil 5}]]
-   [:world/potential-field-cache clojure.potential-fields/create-cache]
-   [:clojure.context/player-eid [clojure.create/player-eid*]]
-   [:clojure.context/enemies [clojure.create/spawn-enemies!]]])
