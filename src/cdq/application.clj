@@ -1,3 +1,6 @@
+; The problem is context ! files like this
+; each code has to be placed in its minimal context !!!
+; whatever it is
 (ns cdq.application
   (:require cdq.assets
             cdq.schemas
@@ -43,46 +46,6 @@
             clojure.world
             clojure.world.graphics)
   (:import (com.badlogic.gdx.utils ScreenUtils)))
-
-(defn update-time [context]
-  (let [delta-ms (min (clojure.graphics/delta-time) clojure.world/max-delta-time)]
-    (-> context
-        (update :clojure.context/elapsed-time + delta-ms)
-        (assoc :clojure.context/delta-time delta-ms))))
-
-(defn update-potential-fields [{:keys [clojure.context/factions-iterations
-                                       clojure.context/grid
-                                       world/potential-field-cache]
-                                :as c}]
-  (let [entities (clojure.world/active-entities c)]
-    (doseq [[faction max-iterations] factions-iterations]
-      (clojure.potential-fields/tick potential-field-cache
-                                     grid
-                                     faction
-                                     entities
-                                     max-iterations)))
-  c)
-
-; precaution in case a component gets removed by another component
-; the question is do we still want to update nil components ?
-; should be contains? check ?
-; but then the 'order' is important? in such case dependent components
-; should be moved together?
-(defn update-entities [c]
-  (try
-   (doseq [eid (clojure.world/active-entities c)]
-     (try
-      (doseq [k (keys @eid)]
-        (try (when-let [v (k @eid)]
-               (clojure.world/tick! [k v] eid c))
-             (catch Throwable t
-               (throw (ex-info "entity-tick" {:k k} t)))))
-      (catch Throwable t
-        (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
-   (catch Throwable t
-     (clojure.context/error-window c t)
-     #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
-  c)
 
 (defrecord Cursors []
   clojure.utils/Disposable
@@ -157,17 +120,52 @@
                                  ] :as c}]
                       (let [pausing? true]
                         (assoc c :clojure.context/paused? (or error
-                                                          (and pausing?
-                                                               (clojure.entity.state/pause-game? (clojure.entity/state-obj @player-eid))
-                                                               (not (or (clojure.input/key-just-pressed? :p)
-                                                                        (clojure.input/key-pressed? :space))))))))
-                    (fn [c]
-                      (if (:clojure.context/paused? c)
-                        c
-                        (-> c
-                            update-time
-                            update-potential-fields
-                            update-entities)))
+                                                              (and pausing?
+                                                                   (clojure.entity.state/pause-game? (clojure.entity/state-obj @player-eid))
+                                                                   (not (or (clojure.input/key-just-pressed? :p)
+                                                                            (clojure.input/key-pressed? :space))))))))
+                    (fn [context]
+                      (if (:clojure.context/paused? context)
+                        context
+                        (reduce (fn [f context] (f context))
+                                context
+                                [(fn [context]
+                                   (let [delta-ms (min (clojure.graphics/delta-time) clojure.world/max-delta-time)]
+                                     (-> context
+                                         (update :clojure.context/elapsed-time + delta-ms)
+                                         (assoc :clojure.context/delta-time delta-ms))))
+                                 (fn [{:keys [clojure.context/factions-iterations
+                                              clojure.context/grid
+                                              world/potential-field-cache]
+                                       :as c}]
+                                   (let [entities (clojure.world/active-entities c)]
+                                     (doseq [[faction max-iterations] factions-iterations]
+                                       (clojure.potential-fields/tick potential-field-cache
+                                                                      grid
+                                                                      faction
+                                                                      entities
+                                                                      max-iterations)))
+                                   c)
+                                 (fn [c]
+                                   ; precaution in case a component gets removed by another component
+                                   ; the question is do we still want to update nil components ?
+                                   ; should be contains? check ?
+                                   ; but then the 'order' is important? in such case dependent components
+                                   ; should be moved together?
+                                   (try
+                                    (doseq [eid (clojure.world/active-entities c)]
+                                      (try
+                                       (doseq [k (keys @eid)]
+                                         (try (when-let [v (k @eid)]
+                                                (clojure.world/tick! [k v] eid c))
+                                              (catch Throwable t
+                                                (throw (ex-info "entity-tick" {:k k} t)))))
+                                       (catch Throwable t
+                                         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+                                    (catch Throwable t
+                                      (clojure.context/error-window c t)
+                                      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
+                                   c)])))
                     (fn [c]
                       ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
                       (doseq [eid (filter (comp :entity/destroyed? deref)
