@@ -4,53 +4,13 @@
             clojure.entity.state
             clojure.graphics
             clojure.graphics.camera
-            clojure.graphics.shape-drawer
-            clojure.graphics.tiled-map
             clojure.input
             clojure.potential-fields
             clojure.scene2d.actor
             clojure.scene2d.group
             clojure.ui
             clojure.utils
-            clojure.world
-            clojure.world.graphics)
-  (:import (com.badlogic.gdx.utils ScreenUtils)))
-
-(defn set-camera-on-player
-  [{:keys [clojure.graphics/world-viewport
-           clojure.context/player-eid]
-    :as context}]
-  {:pre [world-viewport
-         player-eid]}
-  (clojure.graphics.camera/set-position (:camera world-viewport)
-                                        (:position @player-eid))
-  context)
-
-(defn clear-screen [context]
-  (ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
-  context)
-
-(defn draw-tiled-map [{:keys [clojure.graphics/world-viewport
-                              clojure.context/tiled-map
-                              clojure.context/raycaster
-                              clojure.context/explored-tile-corners]
-                       :as context}]
-  (clojure.context/draw-tiled-map context
-                                  tiled-map
-                                  (clojure.graphics.tiled-map/tile-color-setter raycaster
-                                                                                explored-tile-corners
-                                                                                (clojure.graphics.camera/position (:camera world-viewport))))
-  context)
-
-(defn draw-on-world-view [context]
-  (let [render-fns [clojure.world.graphics/render-before-entities
-                    clojure.world.graphics/render-entities
-                    clojure.world.graphics/render-after-entities]]
-    (clojure.context/draw-on-world-view context
-                                        (fn [context]
-                                          (doseq [f render-fns]
-                                            (f context)))))
-  context)
+            clojure.world))
 
 (defn draw-stage [{:keys [clojure.context/stage] :as context}]
   (clojure.ui/draw stage (assoc context :clojure.context/unit-scale 1))

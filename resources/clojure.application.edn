@@ -57,10 +57,10 @@
                                                    [:clojure.context/player-eid (clojure.create/player-eid*)]
                                                    [:clojure.context/enemies (clojure.create/spawn-enemies!)]])
               :dispose (clojure.application/dispose)
-              :render  (clojure.application/render [cdq.application/set-camera-on-player
-                                                    cdq.application/clear-screen
-                                                    cdq.application/draw-tiled-map
-                                                    cdq.application/draw-on-world-view
+              :render  (clojure.application/render [cdq.graphics.camera/set-on-player
+                                                    clojure.graphics/clear-screen
+                                                    cdq.graphics.tiled-map/draw
+                                                    cdq.graphics/draw-on-world-view
                                                     cdq.application/draw-stage
                                                     cdq.application/player-state-input
                                                     cdq.application/update-mouseover-entity

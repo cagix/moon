@@ -1,10 +1,12 @@
 (ns cdq.graphics
-  (:require [clojure.gdx.files :as files]
+  (:require clojure.context
+            [clojure.gdx.files :as files]
             clojure.graphics
             clojure.graphics.color
             clojure.graphics.pixmap
             clojure.graphics.texture
-            clojure.utils))
+            clojure.utils
+            clojure.world.graphics))
 
 (defn white-pixel-texture [_context]
   (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
@@ -32,3 +34,13 @@
         (clojure.utils/dispose pixmap)
         cursor))
     config)))
+
+(defn draw-on-world-view [context]
+  (let [render-fns [clojure.world.graphics/render-before-entities
+                    clojure.world.graphics/render-entities
+                    clojure.world.graphics/render-after-entities]]
+    (clojure.context/draw-on-world-view context
+                                        (fn [context]
+                                          (doseq [f render-fns]
+                                            (f context)))))
+  context)
