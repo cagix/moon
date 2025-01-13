@@ -1,12 +1,12 @@
 (ns clojure.world.graphics
   (:require [clojure.context :as c]
-            [cdq.context.timer :as timer]
-            [cdq.error :refer [pretty-pst]]
+            [clojure.context.timer :as timer]
+            [clojure.error :refer [pretty-pst]]
             [clojure.graphics.camera :as cam]
             [clojure.graphics.shape-drawer :as sd]
-            [cdq.math.shapes :refer [circle->outer-rectangle]]
+            [clojure.math.shapes :refer [circle->outer-rectangle]]
             [clojure.utils :refer [defsystem sort-by-order]]
-            [cdq.val-max :as val-max]
+            [clojure.val-max :as val-max]
             [clojure.world :refer [grid-cell
                                    active-entities
                                    render-z-order
@@ -16,7 +16,7 @@
                                    world-item?
                                    item-place-position
                                    circle->cells]]
-            [cdq.entity :as entity]))
+            [clojure.entity :as entity]))
 
 (defn- geom-test [{:keys [clojure.graphics/shape-drawer] :as c}]
   (let [position (c/world-mouse-position c)
@@ -51,7 +51,7 @@
 
 (defn render-before-entities [{:keys [clojure.graphics/world-viewport
                                       clojure.graphics/shape-drawer
-                                      cdq.context/factions-iterations]
+                                      clojure.context/factions-iterations]
                                :as c}]
   (let [sd shape-drawer
         cam (:camera world-viewport)
@@ -181,7 +181,7 @@
 (defmethod below :entity/mouseover?
   [_
    {:keys [entity/faction] :as entity}
-   {:keys [cdq.context/player-eid
+   {:keys [clojure.context/player-eid
            clojure.graphics/shape-drawer] :as c}]
   (let [player @player-eid]
     (sd/with-line-width shape-drawer 3
@@ -293,7 +293,7 @@
   Optionally for debug purposes body rectangles can be drown which show white for collidings and gray for non colliding entities.
 
   If an error is thrown during rendering, the entity body drawn with a red rectangle and the error is pretty printed to the console."
-  [{:keys [cdq.context/player-eid
+  [{:keys [clojure.context/player-eid
            clojure.graphics/shape-drawer] :as c}]
   (let [entities (map deref (active-entities c))
         player @player-eid]

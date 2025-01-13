@@ -1,5 +1,5 @@
 (ns forge.entity.hp-test
-  (:require [cdq.entity :as entity]
+  (:require [clojure.entity :as entity]
             [clojure.test :refer :all]))
 
 (def ->value entity/hitpoints)

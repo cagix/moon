@@ -16,9 +16,9 @@
             [clojure.string :as str]
             [clojure.utils :refer [safe-get with-err-str mapvals]]
             [clojure.audio :as audio]
-            [cdq.db :as db]
-            [cdq.error :refer [pretty-pst]]
-            [cdq.graphics.sprite :as sprite]
+            [clojure.db :as db]
+            [clojure.error :refer [pretty-pst]]
+            [clojure.graphics.sprite :as sprite]
             [clojure.ui :as ui]
             [clojure.scene2d.group :as group]))
 

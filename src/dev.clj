@@ -7,7 +7,7 @@
             [clojure.context :as c]
             [clojure.ui :refer [t-node scroll-pane] :as ui]
             [clojure.world :as world]
-            [cdq.editor.actors :as editor]))
+            [clojure.editor.actors :as editor]))
 
 (comment
 
@@ -21,7 +21,7 @@
 
 
  (app/post-runnable show-obj-editor!)
- (print-app-values-tree "app-values-tree.clj" #{"clojure", "cdq"})
+ (print-app-values-tree "app-values-tree.clj" #{"clojure", "clojure"})
 
  ; use post-runnable to get proper error messages in console
 
@@ -80,12 +80,12 @@
  )
 
 
-(defn- learn-skill! [{:keys [cdq.context/player-eid] :as c} skill-id]
+(defn- learn-skill! [{:keys [clojure.context/player-eid] :as c} skill-id]
   (world/add-skill c
                    player-eid
                    (c/build c skill-id)))
 
-(defn- create-item! [{:keys [cdq.context/player-eid] :as c} item-id]
+(defn- create-item! [{:keys [clojure.context/player-eid] :as c} item-id]
   (world/spawn-item c
                     (:position @player-eid)
                     (c/build c item-id)))

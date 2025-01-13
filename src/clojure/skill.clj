@@ -1,0 +1,21 @@
+(ns clojure.skill
+  (:require [clojure.effect-context :as effect-ctx]
+            [clojure.entity :as entity]))
+
+(defn- not-enough-mana? [entity {:keys [skill/cost]}]
+  (and cost (> cost (entity/mana-val entity))))
+
+(defn usable-state
+  [entity {:keys [skill/cooling-down? skill/effects] :as skill} effect-ctx]
+  (cond
+   cooling-down?
+   :cooldown
+
+   (not-enough-mana? entity skill)
+   :not-enough-mana
+
+   (not (effect-ctx/some-applicable? effect-ctx effects))
+   :invalid-params
+
+   :else
+   :usable))

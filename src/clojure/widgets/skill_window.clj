@@ -1,0 +1,27 @@
+(ns ^:no-doc clojure.widgets.skill-window)
+
+; TODO render text label free-skill-points
+; (str "Free points: " (:entity/free-skill-points @world/player-eid))
+#_(defn ->skill-window [{:keys [clojure.context/player-eid] :as c}]
+    (ui/window {:title "Skills"
+                :id :skill-window
+                :visible? false
+                :cell-defaults {:pad 10}
+                :rows [(for [id [:skills/projectile
+                                 :skills/meditation
+                                 :skills/spawn
+                                 :skills/melee-attack]
+                             :let [; get-property in callbacks if they get changed, this is part of context permanently
+                                   button (image-button ; TODO reuse actionbar button scale?
+                                                        (:entity/image (db/build c id)) ; TODO here anyway taken
+                                                        ; => should probably build this window @ game start
+                                                        (fn []
+                                                          (state/clicked-skillmenu-skill
+                                                           (entity/state-obj @player-eid)
+                                                           (db/build c id)
+                                                           c)))]]
+                         (do
+                          (add-tooltip! button #(info/text %
+                                                           (db/build % id))) ; TODO no player modifiers applied (see actionbar)
+                          button))]
+                :pack? true}))

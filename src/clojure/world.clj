@@ -3,28 +3,28 @@
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
             [clojure.graphics.shape-drawer :as sd]
-            [cdq.world.potential-field :as potential-field]
-            [cdq.effect :as effect]
-            [cdq.inventory :as inventory]
-            [cdq.context.timer :as timer]
-            [cdq.graphics.animation :as animation]
-            [cdq.malli :as m]
-            [cdq.widgets.inventory :as widgets.inventory]
-            [cdq.fsm :as fsm]
-            [cdq.entity :as entity]
-            [cdq.error :refer [pretty-pst]]
-            [cdq.entity.state :as state]
-            [cdq.content-grid :as content-grid]
-            [cdq.grid :as grid]
+            [clojure.world.potential-field :as potential-field]
+            [clojure.effect :as effect]
+            [clojure.inventory :as inventory]
+            [clojure.context.timer :as timer]
+            [clojure.graphics.animation :as animation]
+            [clojure.malli :as m]
+            [clojure.widgets.inventory :as widgets.inventory]
+            [clojure.fsm :as fsm]
+            [clojure.entity :as entity]
+            [clojure.error :refer [pretty-pst]]
+            [clojure.entity.state :as state]
+            [clojure.content-grid :as content-grid]
+            [clojure.grid :as grid]
             [clojure.input :as input]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.ui.button-group :as button-group]
-            [cdq.effect-context :as effect-ctx]
-            [cdq.skill :as skill]
+            [clojure.effect-context :as effect-ctx]
+            [clojure.skill :as skill]
             [clojure.context :as c :refer [play-sound]]
-            [cdq.context.info :as info]
+            [clojure.context.info :as info]
             [clojure.graphics.camera :as cam]
-            [cdq.math.raycaster :as raycaster]
+            [clojure.math.raycaster :as raycaster]
             [clojure.math.vector2 :as v]
             [clojure.ui :as ui :refer [ui-actor]]
             [clojure.scene2d.actor :as actor]
@@ -33,37 +33,37 @@
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta-time 0.04)
 
-(defn grid-cell [{:keys [cdq.context/grid]} position]
+(defn grid-cell [{:keys [clojure.context/grid]} position]
   (grid position))
 
-(defn rectangle->cells [{:keys [cdq.context/grid]} rectangle]
+(defn rectangle->cells [{:keys [clojure.context/grid]} rectangle]
   (grid/rectangle->cells grid rectangle))
 
-(defn circle->cells [{:keys [cdq.context/grid]} circle]
+(defn circle->cells [{:keys [clojure.context/grid]} circle]
   (grid/circle->cells grid circle))
 
-(defn circle->entities [{:keys [cdq.context/grid]} circle]
+(defn circle->entities [{:keys [clojure.context/grid]} circle]
   (grid/circle->entities grid circle))
 
-(defn cached-adjacent-cells [{:keys [cdq.context/grid]} cell]
+(defn cached-adjacent-cells [{:keys [clojure.context/grid]} cell]
   (grid/cached-adjacent-cells grid cell))
 
-(defn point->entities [{:keys [cdq.context/grid]} position]
+(defn point->entities [{:keys [clojure.context/grid]} position]
   (grid/point->entities grid position))
 
-(defn ray-blocked? [{:keys [cdq.context/raycaster]} start target]
+(defn ray-blocked? [{:keys [clojure.context/raycaster]} start target]
   (raycaster/blocked? raycaster start target))
 
 (defn path-blocked?
   "path-w in tiles. casts two rays."
-  [{:keys [cdq.context/raycaster]} start target path-w]
+  [{:keys [clojure.context/raycaster]} start target path-w]
   (raycaster/path-blocked? raycaster start target path-w))
 
-(defn mouseover-entity [{:keys [cdq.context/mouseover-eid]}]
+(defn mouseover-entity [{:keys [clojure.context/mouseover-eid]}]
   (and mouseover-eid
        @mouseover-eid))
 
-(defn all-entities [{:keys [cdq.context/entity-ids]}]
+(defn all-entities [{:keys [clojure.context/entity-ids]}]
   (vals @entity-ids))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -107,12 +107,12 @@
            {:text text
             :counter (timer/create c 0.4)})))
 
-(defn active-entities [{:keys [cdq.context/content-grid cdq.context/player-eid]}]
+(defn active-entities [{:keys [clojure.context/content-grid clojure.context/player-eid]}]
   (content-grid/active-entities content-grid @player-eid))
 
-(defn- add-entity [{:keys [cdq.context/content-grid
-                           cdq.context/grid
-                           cdq.context/entity-ids]} eid]
+(defn- add-entity [{:keys [clojure.context/content-grid
+                           clojure.context/grid
+                           clojure.context/entity-ids]} eid]
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
   (content-grid/add-entity content-grid eid)
@@ -121,15 +121,15 @@
     (swap! entity-ids assoc id eid))
   (grid/add-entity grid eid))
 
-(defn remove-entity [{:keys [cdq.context/entity-ids]} eid]
+(defn remove-entity [{:keys [clojure.context/entity-ids]} eid]
   (content-grid/remove-entity eid)
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
   (grid/remove-entity eid))
 
-(defn position-changed [{:keys [cdq.context/content-grid
-                                cdq.context/grid]}
+(defn position-changed [{:keys [clojure.context/content-grid
+                                clojure.context/grid]}
                         eid]
   (content-grid/entity-position-changed content-grid eid)
   (grid/entity-position-changed grid eid))
@@ -303,7 +303,7 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(defn creatures-in-los-of-player [{:keys [cdq.context/player-eid] :as c}]
+(defn creatures-in-los-of-player [{:keys [clojure.context/player-eid] :as c}]
   (->> (active-entities c)
        (filter #(:entity/species @%))
        (filter #(line-of-sight? c @player-eid @%))
@@ -317,7 +317,7 @@
        (circle->entities c)
        (filter #(= (:entity/faction @%) faction))))
 
-(defn nearest-enemy [{:keys [cdq.context/grid]} entity]
+(defn nearest-enemy [{:keys [clojure.context/grid]} entity]
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
 
@@ -349,7 +349,7 @@
   (when-let [skill-button (button-group/checked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
 
-(defn show-player-msg [{:keys [cdq.context/player-message]} text]
+(defn show-player-msg [{:keys [clojure.context/player-message]} text]
   (swap! player-message assoc :text text :counter 0))
 
 ; no window movable type cursor appears here like in player idle
@@ -531,7 +531,7 @@
       (send-event! c friendly-eid :alert))))
 
 (defmethod tick! :entity/animation
-  [[k animation] eid {:keys [cdq.context/delta-time]}]
+  [[k animation] eid {:keys [clojure.context/delta-time]}]
   (swap! eid #(-> %
                   (assoc :entity/image (animation/current-frame animation))
                   (assoc k (animation/tick animation delta-time)))))
@@ -587,7 +587,7 @@
 (defmethod tick! :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
             eid
-            {:keys [cdq.context/delta-time] :as c}]
+            {:keys [clojure.context/delta-time] :as c}]
   (assert (m/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
@@ -779,7 +779,7 @@
   (fn [eid c]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid {:keys [cdq.context/player-eid] :as c}]
+(defmethod on-clicked :clickable/item [eid {:keys [clojure.context/player-eid] :as c}]
   (let [item (:entity/item @eid)]
     (cond
      (actor/visible? (get-inventory c))
@@ -819,7 +819,7 @@
                                               (play-sound c "bfx_denied")
                                               (show-player-msg c "Too far away"))]))
 
-(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
+(defn- inventory-cell-with-item? [{:keys [clojure.context/player-eid] :as c} actor]
   (and (actor/parent actor)
        (= "inventory-cell" (.getName (actor/parent actor)))
        (get-in (:entity/inventory @player-eid)
@@ -833,7 +833,7 @@
      (ui/button? actor)                     :cursors/over-button
      :else                               :cursors/default)))
 
-(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid] :as c} eid]
+(defn- player-effect-ctx [{:keys [clojure.context/mouseover-eid] :as c} eid]
   (let [target-position (or (and mouseover-eid
                                  (:position @mouseover-eid))
                             (c/world-mouse-position c))]
@@ -842,7 +842,7 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [{:keys [cdq.context/mouseover-eid] :as c} eid]
+(defn- interaction-state [{:keys [clojure.context/mouseover-eid] :as c} eid]
   (let [entity @eid]
     (cond
      (c/mouse-on-actor? c)

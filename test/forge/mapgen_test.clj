@@ -1,6 +1,6 @@
 (ns forge.mapgen-test
-  (:require [cdq.level :refer [generate-level]]
-            [cdq.modules :as modules]
+  (:require [clojure.level :refer [generate-level]]
+            [clojure.modules :as modules]
             [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
