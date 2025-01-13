@@ -1,14 +1,14 @@
 (ns cdq.application
-  (:require cdq.assets
-            cdq.graphics.shape-drawer
-            cdq.schemas
+  (:require cdq.schemas
             clojure.context
             clojure.create
             clojure.db
             clojure.edn
             clojure.entity
             clojure.entity.state
+            clojure.gdx.assets
             clojure.gdx.backends.lwjgl
+            clojure.gdx.graphics.shape-drawer
             clojure.graphics
             clojure.graphics.camera
             clojure.graphics.color
@@ -204,7 +204,7 @@
                                      {:db/data (zipmap (map :property/id properties) properties)
                                       :db/properties-file properties-file
                                       :db/schemas schemas}))]
-                    [:clojure/assets cdq.assets/manager]
+                    [:clojure/assets clojure.gdx.assets/manager]
                     [:clojure.graphics/batch clojure.graphics/sprite-batch]
                     [:clojure.graphics/shape-drawer-texture (fn [_context _config]
                                                               (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
@@ -213,7 +213,7 @@
                                                                     texture (clojure.graphics.texture/create pixmap)]
                                                                 (clojure.utils/dispose pixmap)
                                                                 texture))]
-                    [:clojure.graphics/shape-drawer cdq.graphics.shape-drawer/create]
+                    [:clojure.graphics/shape-drawer clojure.gdx.graphics.shape-drawer/create]
                     [:clojure.graphics/cursors (fn [_context _config]
                                                  (map->Cursors
                                                   (clojure.utils/mapvals

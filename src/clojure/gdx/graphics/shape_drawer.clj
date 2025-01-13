@@ -1,4 +1,4 @@
-(ns cdq.graphics.shape-drawer
+(ns clojure.gdx.graphics.shape-drawer
   (:require clojure.graphics.color
             clojure.graphics.shape-drawer
             clojure.graphics.2d.texture-region
