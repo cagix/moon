@@ -1,39 +1,37 @@
 (ns clojure.app.desktop
-  (:require clojure.assets
+  (:require clojure.app
+            clojure.assets
+            clojure.context
+            clojure.create
+            clojure.db
             clojure.edn
+            clojure.entity
+            clojure.entity.state
             clojure.graphics
+            clojure.graphics.animation
             clojure.graphics.camera
             clojure.graphics.color
+            clojure.graphics.default-font
             clojure.graphics.pixmap
             clojure.graphics.shape-drawer
             clojure.graphics.texture
-            clojure.graphics.tiled-map-renderer
-            clojure.graphics.2d.texture-region
-            clojure.java.io
-            clojure.app
-            clojure.context
-            clojure.input
-            clojure.interop
-            clojure.platform.libgdx
-            clojure.scene2d.actor
-            clojure.scene2d.group
-            clojure.ui
-            clojure.utils
-            clojure.world
-            clojure.world.graphics
-            clojure.create
-            clojure.db
-            clojure.entity
-            clojure.entity.state
-            clojure.graphics.animation
-            clojure.graphics.default-font
             clojure.graphics.tiled-map
+            clojure.graphics.tiled-map-renderer
             clojure.graphics.ui-viewport
             clojure.graphics.world-unit-scale
             clojure.graphics.world-viewport
+            clojure.graphics.2d.texture-region
+            clojure.input
+            clojure.interop
+            clojure.java.io
             clojure.level
-            clojure.schema
+            clojure.malli
             clojure.potential-fields
+            clojure.platform.libgdx
+            clojure.schema
+            clojure.scene2d.actor
+            clojure.scene2d.group
+            clojure.ui
             clojure.ui.player-message
             clojure.ui.actionbar
             clojure.ui.dev-menu
@@ -42,8 +40,9 @@
             clojure.ui.entity-info-window
             clojure.ui.player-state
             clojure.ui.player-message
-            clojure.time
-            clojure.malli))
+            clojure.utils
+            clojure.world
+            clojure.world.graphics))
 
 (def ^:private pf-cache (atom nil))
 
@@ -414,7 +413,7 @@
                                                                                                        clojure.widgets.inventory/create]]
                                                                                [clojure.ui.player-state/create]
                                                                                [clojure.ui.player-message/actor]]}]]
-                    [:clojure.context/elapsed-time [clojure.time/create]]
+                    [:clojure.context/elapsed-time (fn [_context _config] 0)]
                     [:clojure.context/player-message [clojure.ui.player-message/create* {:duration-seconds 1.5}]]
                     [:clojure.context/level [clojure.level/create :worlds/uf-caves]]
                     [:clojure.context/error [clojure.create/error*]]
