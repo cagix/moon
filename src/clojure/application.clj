@@ -23,9 +23,10 @@
 
 (defn render [render-fns]
   (swap! state (fn [context]
-                 (reduce (fn [context f] (f context))
+                 (reduce (fn [context fn-sym]
+                           (@(utils/req-resolve fn-sym) context))
                          context
-                         @(utils/req-resolve render-fns)))))
+                         render-fns))))
 
 (defn resize [resize-fn-invocation-form width height]
   (utils/req-resolve-call resize-fn-invocation-form @state width height))

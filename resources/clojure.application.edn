@@ -57,5 +57,16 @@
                                                    [:clojure.context/player-eid (clojure.create/player-eid*)]
                                                    [:clojure.context/enemies (clojure.create/spawn-enemies!)]])
               :dispose (clojure.application/dispose)
-              :render  (clojure.application/render cdq.application/render-fns)
+              :render  (clojure.application/render [cdq.application/set-camera-on-player
+                                                    cdq.application/clear-screen
+                                                    cdq.application/draw-tiled-map
+                                                    cdq.application/draw-on-world-view
+                                                    cdq.application/draw-stage
+                                                    cdq.application/player-state-input
+                                                    cdq.application/update-mouseover-entity
+                                                    cdq.application/update-paused
+                                                    cdq.application/when-not-paused
+                                                    cdq.application/remove-destroyed-entities
+                                                    cdq.application/camera-controls
+                                                    cdq.application/window-controls])
               :resize  (clojure.application/resize (cdq.graphics/resize-viewports))}})]
