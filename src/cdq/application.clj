@@ -287,10 +287,10 @@
 
        (render []
          (swap! clojure.app/state (fn [context]
-                                (reduce (fn [context f]
-                                          (f context))
-                                        context
-                                        render-fns))))
+                                    (reduce (fn [context f]
+                                              (f context))
+                                            context
+                                            render-fns))))
 
        (resize [width height]
          (let [context @clojure.app/state]
