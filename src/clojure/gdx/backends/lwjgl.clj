@@ -1,9 +1,7 @@
 (ns clojure.gdx.backends.lwjgl
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
-                                             Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils SharedLibraryLoader)
-           (org.lwjgl.system Configuration)))
+                                             Lwjgl3ApplicationConfiguration)))
 
 (defn application [{:keys [title
                            window-width
@@ -13,8 +11,6 @@
                            dispose
                            render
                            resize]}]
-  (when SharedLibraryLoader/isMac
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (create))

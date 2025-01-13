@@ -1,6 +1,15 @@
+
+; => documentation/code/configuration together
+; ?
+; I can even make named functions?
+
 [
  [clojure.java.awt/set-taskbar-icon "moon.png"]
- [clojure.gdx.backends.lwjgl/configure-glfw-for-mac-os]
- [cdq.application/-main]
 
+ [clojure.application/dispatch-on-os
+  {:mac-osx
+   [[clojure.lwjgl.system.configuration/GLFW_LIBRARY_NAME "glfw_async"]]}]
+
+
+ [cdq.application/-main]
  ]
