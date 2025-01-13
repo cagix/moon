@@ -6,13 +6,7 @@
    :window-width 1440
    :window-height 900
    :foreground-fps 60
-   :listener {:create  (cdq.application/create
-                        #_[
-                         ; all named components
-                         ]
-                        )
-              :dispose (cdq.application/dispose)
-              :render  (cdq.application/render
-                        ; all components
-                        )
-              :resize  (cdq.application/resize (cdq.graphics/resize-viewports))}})]
+   :listener {:create  (clojure.application/create cdq.application/create-fns)
+              :dispose (clojure.application/dispose)
+              :render  (clojure.application/render cdq.application/render-fns)
+              :resize  (clojure.application/resize (cdq.graphics/resize-viewports))}})]

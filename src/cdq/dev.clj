@@ -1,5 +1,5 @@
 (ns cdq.dev
-  (:require [cdq.application :as app]
+  (:require [clojure.application :as app]
             [cdq.editor :as editor]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]

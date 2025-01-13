@@ -1,1 +1,1 @@
-lein run -m clojure.gdx.dev-loop clojure.application
+lein run -m clojure.gdx.dev-loop clojure.application.edn
