@@ -9,6 +9,7 @@
             clojure.edn
             clojure.entity
             clojure.entity.state
+            clojure.gdx.backends.lwjgl3
             clojure.graphics
             clojure.graphics.camera
             clojure.graphics.color
@@ -259,44 +260,35 @@
                     [:clojure.context/factions-iterations [clojure.create/factions-iterations* {:good 15 :evil 5}]]
                     [:clojure.context/player-eid [clojure.create/player-eid*]]
                     [:clojure.context/enemies [clojure.create/spawn-enemies!]]]]
-    (.setIconImage (java.awt.Taskbar/getTaskbar)
-                   (.getImage (java.awt.Toolkit/getDefaultToolkit)
-                              (clojure.java.io/resource "moon.png")))
-    (when com.badlogic.gdx.utils.SharedLibraryLoader/isMac
-      (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-    (com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.
-     (proxy [com.badlogic.gdx.ApplicationAdapter] []
-       (create []
-         (reset! clojure.app/state
-                 (reduce (fn [context [k component]]
-                           (let [f (if (vector? component)
-                                     (component 0)
-                                     component)
-                                 params (if (and (vector? component) (= (count component) 2))
-                                          (component 1)
-                                          nil)]
-                             (assoc context k (f context params))))
-                         {}
-                         create-fns)))
-
-       (dispose []
-         (doseq [[k value] @clojure.app/state
-                 :when (clojure.utils/disposable? value)]
-           ;(println "Disposing " k " - " value)
-           (clojure.utils/dispose value)))
-
-       (render []
-         (swap! clojure.app/state (fn [context]
-                                    (reduce (fn [context f]
-                                              (f context))
-                                            context
-                                            render-fns))))
-
-       (resize [width height]
-         (let [context @clojure.app/state]
-           (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/ui-viewport    context) width height true)
-           (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/world-viewport context) width height false))))
-     (doto (com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.)
-       (.setTitle "Clojure")
-       (.setWindowedMode 1440 900)
-       (.setForegroundFPS 60)))))
+    (clojure.gdx.backends.lwjgl3/application
+     {:icon "moon.png"
+      :title "Cyber Dungeon Quest"
+      :window-width 1440
+      :window-height 900
+      :foreground-fps 60
+      :create (fn []
+                (reset! clojure.app/state
+                        (reduce (fn [context [k component]]
+                                  (let [f (if (vector? component)
+                                            (component 0)
+                                            component)
+                                        params (if (and (vector? component) (= (count component) 2))
+                                                 (component 1)
+                                                 nil)]
+                                    (assoc context k (f context params))))
+                                {}
+                                create-fns)))
+      :dispose (fn []
+                 (doseq [[k value] @clojure.app/state
+                         :when (clojure.utils/disposable? value)]
+                   ;(println "Disposing " k " - " value)
+                   (clojure.utils/dispose value)))
+      :render (fn []
+                (swap! clojure.app/state (fn [context]
+                                           (reduce (fn [context f] (f context))
+                                                   context
+                                                   render-fns))))
+      :resize (fn [width height]
+                (let [context @clojure.app/state]
+                  (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/ui-viewport    context) width height true)
+                  (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/world-viewport context) width height false)))})))
