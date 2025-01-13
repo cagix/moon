@@ -1,7 +1,7 @@
 (ns clojure.gdx.assets
-  (:require [clojure.string :as str])
+  (:require [clojure.gdx.files :as files]
+            [clojure.string :as str])
   (:import (clojure.lang IFn)
-           (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)))
@@ -13,7 +13,7 @@
       (for [[asset-type extensions] {Sound   #{"wav"}
                                      Texture #{"png" "bmp"}}
             file (map #(str/replace-first % folder "")
-                      (loop [[file & remaining] (.list (.internal Gdx/files folder))
+                      (loop [[file & remaining] (.list (files/internal folder))
                              result []]
                         (cond (nil? file)
                               result
