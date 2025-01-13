@@ -57,17 +57,19 @@
                                                    [:clojure.context/player-eid (clojure.create/player-eid*)]
                                                    [:clojure.context/enemies (clojure.create/spawn-enemies!)]])
               :dispose (clojure.application/dispose)
-              :render  (clojure.application/render [cdq.graphics.camera/set-on-player
-                                                    clojure.graphics/clear-screen
-                                                    cdq.graphics.tiled-map/draw
-                                                    cdq.graphics/draw-on-world-view
-                                                    cdq.application/draw-stage
-                                                    cdq.application/update-stage
-                                                    cdq.application/player-state-input
-                                                    cdq.application/update-mouseover-entity
-                                                    cdq.application/update-paused
-                                                    cdq.application/when-not-paused
-                                                    cdq.application/remove-destroyed-entities
-                                                    cdq.application/camera-controls
-                                                    cdq.application/window-controls])
+              :render  (clojure.application/render [(cdq.graphics.camera/set-on-player)
+                                                    (clojure.graphics/clear-screen)
+                                                    (cdq.graphics.tiled-map/draw)
+                                                    (cdq.graphics/draw-on-world-view [(clojure.world.graphics/render-before-entities)
+                                                                                      (clojure.world.graphics/render-entities)
+                                                                                      (clojure.world.graphics/render-after-entities)])
+                                                    (cdq.application/draw-stage)
+                                                    (cdq.application/update-stage)
+                                                    (cdq.application/player-state-input)
+                                                    (cdq.application/update-mouseover-entity)
+                                                    (cdq.application/update-paused)
+                                                    (cdq.application/when-not-paused)
+                                                    (cdq.application/remove-destroyed-entities)
+                                                    (cdq.application/camera-controls)
+                                                    (cdq.application/window-controls)])
               :resize  (clojure.application/resize (cdq.graphics/resize-viewports))}})]

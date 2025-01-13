@@ -23,8 +23,8 @@
 
 (defn render [render-fns]
   (swap! state (fn [context]
-                 (reduce (fn [context fn-sym]
-                           (@(utils/req-resolve fn-sym) context))
+                 (reduce (fn [context fn-invoc]
+                           (utils/req-resolve-call fn-invoc context))
                          context
                          render-fns))))
 

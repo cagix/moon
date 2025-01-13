@@ -5,8 +5,7 @@
             clojure.graphics.color
             clojure.graphics.pixmap
             clojure.graphics.texture
-            clojure.utils
-            clojure.world.graphics))
+            [clojure.utils :as utils]))
 
 (defn white-pixel-texture [_context]
   (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
@@ -35,12 +34,9 @@
         cursor))
     config)))
 
-(defn draw-on-world-view [context]
-  (let [render-fns [clojure.world.graphics/render-before-entities
-                    clojure.world.graphics/render-entities
-                    clojure.world.graphics/render-after-entities]]
-    (clojure.context/draw-on-world-view context
-                                        (fn [context]
-                                          (doseq [f render-fns]
-                                            (f context)))))
+(defn draw-on-world-view [render-fns context]
+  (clojure.context/draw-on-world-view context
+                                      (fn [context]
+                                        (doseq [f render-fns]
+                                          (utils/req-resolve-call f context))))
   context)
