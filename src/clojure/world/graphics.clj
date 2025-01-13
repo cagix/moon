@@ -1,4 +1,4 @@
-(ns cdq.graphics
+(ns clojure.world.graphics
   (:require [clojure.context :as c]
             [cdq.context.timer :as timer]
             [cdq.error :refer [pretty-pst]]

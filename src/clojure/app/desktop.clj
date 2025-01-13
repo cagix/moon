@@ -19,11 +19,12 @@
             clojure.scene2d.group
             clojure.ui
             clojure.utils
+            clojure.world
+            clojure.world.graphics
             cdq.create
             cdq.db
             cdq.entity
             cdq.entity.state
-            cdq.graphics
             cdq.graphics.animation
             cdq.graphics.default-font
             cdq.graphics.tiled-map
@@ -47,14 +48,14 @@
 (def ^:private pf-cache (atom nil))
 
 (defn update-time [context]
-  (let [delta-ms (min (clojure.graphics/delta-time) cdq.context/max-delta-time)]
+  (let [delta-ms (min (clojure.graphics/delta-time) clojure.world/max-delta-time)]
     (-> context
         (update :clojure.context/elapsed-time + delta-ms)
         (assoc :cdq.context/delta-time delta-ms))))
 
 (defn update-potential-fields [{:keys [cdq.context/factions-iterations
                                        cdq.context/grid] :as c}]
-  (let [entities (cdq.context/active-entities c)]
+  (let [entities (clojure.world/active-entities c)]
     (doseq [[faction max-iterations] factions-iterations]
       (cdq.potential-fields/tick pf-cache
                                  grid
@@ -70,11 +71,11 @@
 ; should be moved together?
 (defn update-entities [c]
   (try
-   (doseq [eid (cdq.context/active-entities c)]
+   (doseq [eid (clojure.world/active-entities c)]
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (cdq.context/tick! [k v] eid c))
+               (clojure.world/tick! [k v] eid c))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t
@@ -276,9 +277,9 @@
                                                                                             (clojure.graphics.camera/position (:camera world-viewport))))
                       context)
                     (fn [context]
-                      (let [render-fns [cdq.graphics/render-before-entities
-                                        cdq.graphics/render-entities
-                                        cdq.graphics/render-after-entities]]
+                      (let [render-fns [clojure.world.graphics/render-before-entities
+                                        clojure.world.graphics/render-entities
+                                        clojure.world.graphics/render-after-entities]]
                         (clojure.context/draw-on-world-view context
                                                         (fn [context]
                                                           (doseq [f render-fns]
@@ -299,11 +300,11 @@
                                       nil
                                       (let [player @player-eid
                                             hits (remove #(= (:z-order @%) :z-order/effect)
-                                                         (cdq.context/point->entities c (clojure.context/world-mouse-position c)))]
-                                        (->> cdq.context/render-z-order
+                                                         (clojure.world/point->entities c (clojure.context/world-mouse-position c)))]
+                                        (->> clojure.world/render-z-order
                                              (clojure.utils/sort-by-order hits #(:z-order @%))
                                              reverse
-                                             (filter #(cdq.context/line-of-sight? c player @%))
+                                             (filter #(clojure.world/line-of-sight? c player @%))
                                              first)))]
                         (when mouseover-eid
                           (swap! mouseover-eid dissoc :entity/mouseover?))
@@ -329,10 +330,10 @@
                     (fn [c]
                       ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
                       (doseq [eid (filter (comp :entity/destroyed? deref)
-                                          (cdq.context/all-entities c))]
-                        (cdq.context/remove-entity c eid)
+                                          (clojure.world/all-entities c))]
+                        (clojure.world/remove-entity c eid)
                         (doseq [component @eid]
-                          (cdq.context/destroy! component eid c)))
+                          (clojure.world/destroy! component eid c)))
                       c)
                     (fn [{:keys [clojure.graphics/world-viewport]
                           :as context}]
