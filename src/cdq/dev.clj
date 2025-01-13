@@ -1,4 +1,4 @@
-(ns dev
+(ns cdq.dev
   (:require [cdq.application :as app]
             [cdq.editor :as editor]
             [clojure.string :as str]
