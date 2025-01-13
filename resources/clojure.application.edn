@@ -6,10 +6,18 @@
 [
  [clojure.java.awt/set-taskbar-icon "moon.png"]
 
- [clojure.application/dispatch-on-os
+ [clojure.utils/dispatch-on
+  clojure.gdx.utils.shared-library-loader/os
   {:mac-osx
    [[clojure.lwjgl.system.configuration/GLFW_LIBRARY_NAME "glfw_async"]]}]
 
-
  [cdq.application/-main]
- ]
+ #_[clojure.gdx.backends.lwjgl/application
+  {:title "Cyber Dungeon Quest"
+   :window-width 1440
+   :window-height 900
+   :foreground-fps 60
+   :create
+   :dispose
+   :render
+   :resize }]]

@@ -1,7 +1,6 @@
 (ns clojure.application
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io])
-  (:import (com.badlogic.gdx.utils SharedLibraryLoader)))
+            [clojure.java.io :as io]))
 
 (defn execute! [pipeline]
   (println "execute! " (count pipeline))
@@ -20,9 +19,3 @@
       slurp
       edn/read-string
       execute!))
-
-(defn dispatch-on-os [mapping]
-  (execute!
-   (get mapping (cond
-                 (= SharedLibraryLoader/os com.badlogic.gdx.utils.Os/MacOsX)
-                 :mac-osx))))

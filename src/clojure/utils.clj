@@ -1,5 +1,24 @@
 (ns clojure.utils)
 
+(defn- req-resolve [qualified-symbol]
+  (require (symbol (namespace qualified-symbol)))
+  (let [result (resolve qualified-symbol)]
+    (when-not result
+      (throw (ex-info "cannot resolve " {:sym qualified-symbol})))
+    result))
+
+(defn execute! [pipeline]
+  (doseq [[qualified-symbol & params] pipeline]
+    (apply (req-resolve qualified-symbol) params)))
+
+(defn dispatch-on [fn-var mapping]
+  (println ">dispatch-on " fn-var)
+  (let [f (req-resolve fn-var)
+        _ (println "  req-resolve: " f)
+        result (f)
+        _ (println "result: " result)]
+    (execute! (get mapping result))))
+
 (defprotocol Disposable
   (dispose [obj]))
 
