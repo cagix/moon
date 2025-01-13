@@ -1,5 +1,5 @@
 (ns cdq.assets
-  (:require [clojure.gdx.assets.manager :as :as asset-manager]
+  (:require [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.files :as files]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.audio Sound)
