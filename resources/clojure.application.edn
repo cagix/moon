@@ -62,6 +62,7 @@
                                                     cdq.graphics.tiled-map/draw
                                                     cdq.graphics/draw-on-world-view
                                                     cdq.application/draw-stage
+                                                    cdq.application/update-stage
                                                     cdq.application/player-state-input
                                                     cdq.application/update-mouseover-entity
                                                     cdq.application/update-paused
