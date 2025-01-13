@@ -3,11 +3,10 @@
 ; whatever it is
 (ns cdq.application
   (:require cdq.assets
+            cdq.db
             cdq.schemas
             clojure.context
             clojure.create
-            clojure.db
-            clojure.edn
             clojure.entity
             clojure.entity.state
             [clojure.gdx.files :as files]
@@ -25,11 +24,9 @@
             clojure.graphics.world-unit-scale
             clojure.graphics.world-viewport
             clojure.input
-            clojure.java.io
             clojure.level
             clojure.potential-fields
             clojure.platform.libgdx
-            clojure.schema
             clojure.scene2d.actor
             clojure.scene2d.group
             clojure.ui
@@ -189,16 +186,7 @@
      c)])
 
 (def create-fns
-  [[:clojure/db (fn [_context _config]
-                  (let [properties-file (clojure.java.io/resource "properties.edn")
-                        schemas (-> "schema.edn" clojure.java.io/resource slurp clojure.edn/read-string)
-                        properties (-> properties-file slurp clojure.edn/read-string)]
-                    (assert (or (empty? properties)
-                                (apply distinct? (map :property/id properties))))
-                    (run! (partial clojure.schema/validate! schemas) properties)
-                    {:db/data (zipmap (map :property/id properties) properties)
-                     :db/properties-file properties-file
-                     :db/schemas schemas}))]
+  [[:clojure/db cdq.db/create]
    [:clojure/assets cdq.assets/manager]
    [:clojure.graphics/batch clojure.graphics/sprite-batch]
    [:clojure.graphics/shape-drawer-texture (fn [_context _config]
