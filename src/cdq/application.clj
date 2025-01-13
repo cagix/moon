@@ -44,8 +44,6 @@
             clojure.world.graphics)
   (:import (com.badlogic.gdx.utils ScreenUtils)))
 
-(def ^:private pf-cache (atom nil))
-
 (defn update-time [context]
   (let [delta-ms (min (clojure.graphics/delta-time) clojure.world/max-delta-time)]
     (-> context
@@ -53,14 +51,16 @@
         (assoc :clojure.context/delta-time delta-ms))))
 
 (defn update-potential-fields [{:keys [clojure.context/factions-iterations
-                                       clojure.context/grid] :as c}]
+                                       clojure.context/grid
+                                       world/potential-field-cache]
+                                :as c}]
   (let [entities (clojure.world/active-entities c)]
     (doseq [[faction max-iterations] factions-iterations]
-      (clojure.potential-fields/tick pf-cache
-                                 grid
-                                 faction
-                                 entities
-                                 max-iterations)))
+      (clojure.potential-fields/tick potential-field-cache
+                                     grid
+                                     faction
+                                     entities
+                                     max-iterations)))
   c)
 
 ; precaution in case a component gets removed by another component
@@ -263,6 +263,7 @@
                     [:clojure.context/content-grid [clojure.create/content-grid* {:cell-size 16}]]
                     [:clojure.context/entity-ids [clojure.create/entity-ids*]]
                     [:clojure.context/factions-iterations [clojure.create/factions-iterations* {:good 15 :evil 5}]]
+                    [:world/potential-field-cache (fn [_ _] (atom nil))]
                     [:clojure.context/player-eid [clojure.create/player-eid*]]
                     [:clojure.context/enemies [clojure.create/spawn-enemies!]]]]
     (clojure.gdx.backends.lwjgl/application
