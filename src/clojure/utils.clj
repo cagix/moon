@@ -1,11 +1,11 @@
 (ns clojure.utils)
 
-(defn- req-resolve-call [[qualified-symbol & params]]
+(defn req-resolve-call [[qualified-symbol & params] & more-params]
   (require (symbol (namespace qualified-symbol)))
   (let [f (resolve qualified-symbol)]
     (when-not f
       (throw (ex-info "cannot resolve " {:sym qualified-symbol})))
-    (apply f params)))
+    (apply f (concat params more-params))))
 
 (defn execute! [function-invocation-forms]
   (run! req-resolve-call function-invocation-forms))
