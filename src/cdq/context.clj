@@ -1,6 +1,5 @@
 (ns cdq.context
   (:require [clojure.audio :as audio]
-            [clojure.graphics :as graphics]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
             [clojure.graphics.shape-drawer :as sd]
@@ -26,7 +25,6 @@
             [cdq.context.info :as info]
             [clojure.graphics.camera :as cam]
             [cdq.math.raycaster :as raycaster]
-            [cdq.potential-fields :as potential-fields]
             [clojure.math.vector2 :as v]
             [clojure.ui :as ui :refer [ui-actor]]
             [clojure.scene2d.actor :as actor]
@@ -467,47 +465,9 @@
   (let [[x y] (:left-bottom entity)]
     (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
-(defn update-time [context]
-  (let [delta-ms (min (graphics/delta-time) max-delta-time)]
-    (-> context
-        (update :clojure.context/elapsed-time + delta-ms)
-        (assoc :cdq.context/delta-time delta-ms))))
-
-(def ^:private pf-cache (atom nil))
-
-(defn tick-potential-fields [{:keys [cdq.context/factions-iterations
-                                     cdq.context/grid] :as c}]
-  (let [entities (active-entities c)]
-    (doseq [[faction max-iterations] factions-iterations]
-      (potential-fields/tick pf-cache
-                             grid
-                             faction
-                             entities
-                             max-iterations)))
-  c)
 
 (defsystem tick!)
 (defmethod tick! :default [_ eid c])
-
-; precaution in case a component gets removed by another component
-; the question is do we still want to update nil components ?
-; should be contains? check ?
-; but then the 'order' is important? in such case dependent components
-; should be moved together?
-(defn tick-entities [c]
-  (try (doseq [eid (active-entities c)]
-         (try
-          (doseq [k (keys @eid)]
-            (try (when-let [v (k @eid)]
-                   (tick! [k v] eid c))
-                 (catch Throwable t
-                   (throw (ex-info "entity-tick" {:k k} t)))))
-          (catch Throwable t
-            (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
-       (catch Throwable t
-         (c/error-window c t)
-         #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
-  c)
 
 (defsystem destroy!)
 (defmethod destroy! :default [_ eid c])

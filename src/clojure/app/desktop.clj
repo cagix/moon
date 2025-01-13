@@ -32,6 +32,7 @@
             cdq.graphics.world-viewport
             cdq.level
             cdq.schema
+            cdq.potential-fields
             cdq.ui.player-message
             cdq.ui.actionbar
             cdq.ui.dev-menu
@@ -42,6 +43,46 @@
             cdq.ui.player-message
             cdq.time
             cdq.malli))
+
+(def ^:private pf-cache (atom nil))
+
+(defn update-time [context]
+  (let [delta-ms (min (clojure.graphics/delta-time) cdq.context/max-delta-time)]
+    (-> context
+        (update :clojure.context/elapsed-time + delta-ms)
+        (assoc :cdq.context/delta-time delta-ms))))
+
+(defn update-potential-fields [{:keys [cdq.context/factions-iterations
+                                       cdq.context/grid] :as c}]
+  (let [entities (cdq.context/active-entities c)]
+    (doseq [[faction max-iterations] factions-iterations]
+      (cdq.potential-fields/tick pf-cache
+                                 grid
+                                 faction
+                                 entities
+                                 max-iterations)))
+  c)
+
+; precaution in case a component gets removed by another component
+; the question is do we still want to update nil components ?
+; should be contains? check ?
+; but then the 'order' is important? in such case dependent components
+; should be moved together?
+(defn update-entities [c]
+  (try
+   (doseq [eid (cdq.context/active-entities c)]
+     (try
+      (doseq [k (keys @eid)]
+        (try (when-let [v (k @eid)]
+               (cdq.context/tick! [k v] eid c))
+             (catch Throwable t
+               (throw (ex-info "entity-tick" {:k k} t)))))
+      (catch Throwable t
+        (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
+   (catch Throwable t
+     (clojure.context/error-window c t)
+     #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
+  c)
 
 (defn- munge-color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
@@ -282,9 +323,9 @@
                       (if (:cdq.context/paused? c)
                         c
                         (-> c
-                            cdq.context/update-time
-                            cdq.context/tick-potential-fields
-                            cdq.context/tick-entities)))
+                            update-time
+                            update-potential-fields
+                            update-entities)))
                     (fn [c]
                       ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
                       (doseq [eid (filter (comp :entity/destroyed? deref)
