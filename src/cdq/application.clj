@@ -289,7 +289,5 @@
                            context
                            render-fns))))
 
-  (defn resize [width height]
-    (let [context @state]
-      (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/ui-viewport    context) width height true)
-      (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/world-viewport context) width height false))))
+  (defn resize [resize-fn-invocation-form width height]
+    (clojure.utils/req-resolve-call resize-fn-invocation-form @state width height)))

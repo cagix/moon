@@ -6,7 +6,13 @@
    :window-width 1440
    :window-height 900
    :foreground-fps 60
-   :listener {:create  (cdq.application/create)
+   :listener {:create  (cdq.application/create
+                        #_[
+                         ; all named components
+                         ]
+                        )
               :dispose (cdq.application/dispose)
-              :render  (cdq.application/render)
-              :resize  (cdq.application/resize)}})]
+              :render  (cdq.application/render
+                        ; all components
+                        )
+              :resize  (cdq.application/resize (cdq.graphics/resize-viewports))}})]
