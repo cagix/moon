@@ -1,8 +1,8 @@
 (ns cdq.application
-  (:require cdq.graphics.shape-drawer
+  (:require cdq.assets
+            cdq.graphics.shape-drawer
             cdq.schemas
             clojure.app
-            clojure.assets
             clojure.context
             clojure.create
             clojure.db
@@ -10,7 +10,6 @@
             clojure.entity
             clojure.entity.state
             clojure.graphics
-            clojure.graphics.animation
             clojure.graphics.camera
             clojure.graphics.color
             clojure.graphics.default-font
@@ -200,7 +199,7 @@
                                      {:db/data (zipmap (map :property/id properties) properties)
                                       :db/properties-file properties-file
                                       :db/schemas schemas}))]
-                    [:clojure/assets clojure.assets/manager]
+                    [:clojure/assets cdq.assets/manager]
                     [:clojure.graphics/batch clojure.graphics/sprite-batch]
                     [:clojure.graphics/shape-drawer-texture (fn [_context _config]
                                                               (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)

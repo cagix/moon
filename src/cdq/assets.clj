@@ -1,4 +1,4 @@
-(ns clojure.assets)
+(ns cdq.assets)
 
 (defn manager
   ([_context _config]

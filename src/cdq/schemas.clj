@@ -1,6 +1,7 @@
 (ns cdq.schemas
  (:require clojure.context
            clojure.db
+           clojure.graphics.animation
            clojure.malli
            clojure.schema
            clojure.utils))
