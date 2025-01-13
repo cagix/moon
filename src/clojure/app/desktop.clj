@@ -7,6 +7,7 @@
             clojure.graphics.pixmap
             clojure.graphics.shape-drawer
             clojure.graphics.texture
+            clojure.graphics.tiled-map-renderer
             clojure.graphics.2d.texture-region
             clojure.java.io
             clojure.app
@@ -26,7 +27,6 @@
             cdq.graphics.animation
             cdq.graphics.default-font
             cdq.graphics.tiled-map
-            cdq.graphics.tiled-map-renderer
             cdq.graphics.ui-viewport
             cdq.graphics.world-unit-scale
             cdq.graphics.world-viewport
@@ -402,7 +402,7 @@
                                                                                        :size 16
                                                                                        :quality-scaling 2}]]
                     [:clojure.graphics/world-unit-scale [cdq.graphics.world-unit-scale/create 48]]
-                    [:clojure.graphics/tiled-map-renderer [cdq.graphics.tiled-map-renderer/create]]
+                    [:clojure.graphics/tiled-map-renderer [clojure.graphics.tiled-map-renderer/create]]
                     [:clojure.graphics/ui-viewport [cdq.graphics.ui-viewport/create {:width 1440 :height 900}]]
                     [:clojure.graphics/world-viewport [cdq.graphics.world-viewport/create {:width 1440 :height 900}]]
                     [:clojure.context/stage [clojure.ui/setup-stage! {:skin-scale :x1
@@ -464,6 +464,6 @@
            (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/ui-viewport    context) width height true)
            (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/world-viewport context) width height false))))
      (doto (com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.)
-       (.setTitle "Cyber Dungeon Quest")
+       (.setTitle "Clojure")
        (.setWindowedMode 1440 900)
        (.setForegroundFPS 60)))))
