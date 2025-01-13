@@ -10,12 +10,10 @@
             clojure.create
             clojure.entity
             clojure.entity.state
-            [clojure.gdx.files :as files]
             clojure.gdx.graphics.shape-drawer
             clojure.graphics
             clojure.graphics.camera
             clojure.graphics.default-font
-            clojure.graphics.pixmap
             clojure.graphics.shape-drawer
             clojure.graphics.tiled-map
             clojure.graphics.tiled-map-renderer
@@ -41,11 +39,6 @@
             clojure.world
             clojure.world.graphics)
   (:import (com.badlogic.gdx.utils ScreenUtils)))
-
-(defrecord Cursors []
-  clojure.utils/Disposable
-  (dispose [this]
-    (run! clojure.utils/dispose (vals this))))
 
 (def render-fns
   [(fn [{:keys [clojure.graphics/world-viewport
@@ -190,28 +183,20 @@
    [:clojure.graphics/batch clojure.graphics/sprite-batch]
    [:clojure.graphics/shape-drawer-texture cdq.graphics/white-pixel-texture]
    [:clojure.graphics/shape-drawer clojure.gdx.graphics.shape-drawer/create]
-   [:clojure.graphics/cursors (fn [_context _config]
-                                (map->Cursors
-                                 (clojure.utils/mapvals
-                                  (fn [[file [hotspot-x hotspot-y]]]
-                                    (let [pixmap (clojure.graphics.pixmap/create (files/internal (str "cursors/" file ".png")))
-                                          cursor (clojure.graphics/new-cursor pixmap hotspot-x hotspot-y)]
-                                      (clojure.utils/dispose pixmap)
-                                      cursor))
-                                  {:cursors/bag                   ["bag001"       [0   0]]
-                                   :cursors/black-x               ["black_x"      [0   0]]
-                                   :cursors/default               ["default"      [0   0]]
-                                   :cursors/denied                ["denied"       [16 16]]
-                                   :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                   :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                   :cursors/hand-grab             ["hand003"      [4  16]]
-                                   :cursors/move-window           ["move002"      [16 16]]
-                                   :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                   :cursors/over-button           ["hand002"      [0   0]]
-                                   :cursors/sandclock             ["sandclock"    [16 16]]
-                                   :cursors/skill-not-usable      ["x007"         [0   0]]
-                                   :cursors/use-skill             ["pointer004"   [0   0]]
-                                   :cursors/walking               ["walking"      [16 16]]})))]
+   [:clojure.graphics/cursors [cdq.graphics/cursors {:cursors/bag                   ["bag001"       [0   0]]
+                                                     :cursors/black-x               ["black_x"      [0   0]]
+                                                     :cursors/default               ["default"      [0   0]]
+                                                     :cursors/denied                ["denied"       [16 16]]
+                                                     :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                     :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                     :cursors/hand-grab             ["hand003"      [4  16]]
+                                                     :cursors/move-window           ["move002"      [16 16]]
+                                                     :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                     :cursors/over-button           ["hand002"      [0   0]]
+                                                     :cursors/sandclock             ["sandclock"    [16 16]]
+                                                     :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                     :cursors/use-skill             ["pointer004"   [0   0]]
+                                                     :cursors/walking               ["walking"      [16 16]]}]]
    [:clojure.graphics/default-font [clojure.graphics.default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
                                                                           :size 16
                                                                           :quality-scaling 2}]]
