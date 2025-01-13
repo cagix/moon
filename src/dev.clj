@@ -1,13 +1,13 @@
 (ns dev
-  (:require [clojure.app :as app]
+  (:require [cdq.application :as app]
+            [cdq.editor :as editor]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.scene2d.group :refer [children]]
             [clojure.scene2d.stage :as stage]
             [clojure.context :as c]
             [clojure.ui :refer [t-node scroll-pane] :as ui]
-            [clojure.world :as world]
-            [clojure.editor.actors :as editor]))
+            [clojure.world :as world]))
 
 (comment
 

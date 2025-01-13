@@ -2,7 +2,6 @@
   (:require cdq.assets
             cdq.graphics.shape-drawer
             cdq.schemas
-            clojure.app
             clojure.context
             clojure.create
             clojure.db
@@ -88,6 +87,11 @@
   clojure.utils/Disposable
   (dispose [this]
     (run! clojure.utils/dispose (vals this))))
+
+(def state (atom nil))
+
+(defn post-runnable [f]
+  (.postRunnable com.badlogic.gdx.Gdx/app #(f @state)))
 
 (defn -main []
   (let [render-fns [(fn [{:keys [clojure.graphics/world-viewport
@@ -267,7 +271,7 @@
       :window-height 900
       :foreground-fps 60
       :create (fn []
-                (reset! clojure.app/state
+                (reset! state
                         (reduce (fn [context [k component]]
                                   (let [f (if (vector? component)
                                             (component 0)
@@ -279,16 +283,16 @@
                                 {}
                                 create-fns)))
       :dispose (fn []
-                 (doseq [[k value] @clojure.app/state
+                 (doseq [[k value] @state
                          :when (clojure.utils/disposable? value)]
                    ;(println "Disposing " k " - " value)
                    (clojure.utils/dispose value)))
       :render (fn []
-                (swap! clojure.app/state (fn [context]
-                                           (reduce (fn [context f] (f context))
-                                                   context
-                                                   render-fns))))
+                (swap! state (fn [context]
+                               (reduce (fn [context f] (f context))
+                                       context
+                                       render-fns))))
       :resize (fn [width height]
-                (let [context @clojure.app/state]
+                (let [context @state]
                   (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/ui-viewport    context) width height true)
                   (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/world-viewport context) width height false)))})))

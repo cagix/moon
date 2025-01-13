@@ -1,5 +1,5 @@
-(ns clojure.editor.actors
-  (:require [clojure.app :refer [state]]
+(ns cdq.editor
+  (:require [cdq.application :refer [state]]
             [clojure.edn :as edn]
             [clojure.input :as input]
             [clojure.string :as str]
