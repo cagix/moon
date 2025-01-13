@@ -31,9 +31,6 @@
             [clojure.scene2d.group :as group]
             cdq.time))
 
-(defn grid-cell [{:keys [clojure.context/grid]} position]
-  (grid position))
-
 (defn rectangle->cells [{:keys [clojure.context/grid]} rectangle]
   (grid/rectangle->cells grid rectangle))
 
@@ -755,9 +752,9 @@
                    0.2)
     (swap! eid add-text-effect c "[WHITE]!"))
 
-  (tick! [_ eid c]
+  (tick! [_ eid {:keys [clojure.context/grid] :as c}]
     (let [entity @eid
-          cell (grid-cell c (entity/tile entity))] ; pattern!
+          cell (grid (entity/tile entity))]
       (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
           (send-event! c eid :alert))))))

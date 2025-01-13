@@ -7,8 +7,7 @@
             [clojure.math.shapes :refer [circle->outer-rectangle]]
             [clojure.utils :refer [defsystem sort-by-order]]
             [clojure.val-max :as val-max]
-            [clojure.world :refer [grid-cell
-                                   active-entities
+            [clojure.world :refer [active-entities
                                    render-z-order
                                    line-of-sight?
                                    draw-body-rect
@@ -30,10 +29,11 @@
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [{:keys [clojure.graphics/shape-drawer] :as c}]
+(defn- highlight-mouseover-tile [{:keys [clojure.graphics/shape-drawer
+                                         clojure.context/grid] :as c}]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (c/world-mouse-position c))
-          cell (grid-cell c [x y])]
+          cell (grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (sd/rectangle shape-drawer x y 1 1
                       (case (:movement @cell)
@@ -51,8 +51,8 @@
 
 (defn render-before-entities [{:keys [clojure.graphics/world-viewport
                                       clojure.graphics/shape-drawer
-                                      clojure.context/factions-iterations]
-                               :as c}]
+                                      clojure.context/factions-iterations
+                                      clojure.context/grid]}]
   (let [sd shape-drawer
         cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]
@@ -65,7 +65,7 @@
                1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (cam/visible-tiles cam)
-            :let [cell (grid-cell c [x y])]
+            :let [cell (grid [x y])]
             :when cell
             :let [cell* @cell]]
 

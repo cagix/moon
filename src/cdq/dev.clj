@@ -90,8 +90,8 @@
                     (:position @player-eid)
                     (c/build c item-id)))
 
-(defn- mouseover-grid-cell [c]
-  @(world/grid-cell c (mapv int (c/world-mouse-position c))))
+(defn- mouseover-grid-cell [{:keys [clojure.context/grid] :as c}]
+  @(grid (mapv int (c/world-mouse-position c))))
 
 (defn- class->label-str [class]
   (case class
