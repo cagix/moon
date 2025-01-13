@@ -223,6 +223,6 @@
    [:clojure.context/content-grid [clojure.create/content-grid* {:cell-size 16}]]
    [:clojure.context/entity-ids [clojure.create/entity-ids*]]
    [:clojure.context/factions-iterations [clojure.create/factions-iterations* {:good 15 :evil 5}]]
-   [:world/potential-field-cache (fn [_ _] (atom nil))]
+   [:world/potential-field-cache clojure.potential-fields/create-cache]
    [:clojure.context/player-eid [clojure.create/player-eid*]]
    [:clojure.context/enemies [clojure.create/spawn-enemies!]]])
