@@ -1,8 +1,9 @@
-(ns clojure.app.desktop
-  (:require clojure.app
-            clojure.assets
-            clojure.context
-            clojure.create
+; you should not depend on implementation details ....
+(ns cdq.application
+  (:require clojure.app ; clean
+            clojure.assets ; clean
+            clojure.context ; lots of requires
+            clojure.create ; different things
             clojure.db
             clojure.edn
             clojure.entity
@@ -410,7 +411,7 @@
                                                                                [clojure.ui.actionbar/create]
                                                                                [clojure.ui.hp-mana-bar/create]
                                                                                [clojure.ui.windows/create [clojure.ui.entity-info-window/create
-                                                                                                       clojure.widgets.inventory/create]]
+                                                                                                           clojure.widgets.inventory/create]]
                                                                                [clojure.ui.player-state/create]
                                                                                [clojure.ui.player-message/actor]]}]]
                     [:clojure.context/elapsed-time (fn [_context _config] 0)]
