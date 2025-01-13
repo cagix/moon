@@ -9,7 +9,7 @@
             clojure.edn
             clojure.entity
             clojure.entity.state
-            clojure.gdx.backends.lwjgl3
+            clojure.gdx.backends.lwjgl
             clojure.graphics
             clojure.graphics.camera
             clojure.graphics.color
@@ -260,7 +260,7 @@
                     [:clojure.context/factions-iterations [clojure.create/factions-iterations* {:good 15 :evil 5}]]
                     [:clojure.context/player-eid [clojure.create/player-eid*]]
                     [:clojure.context/enemies [clojure.create/spawn-enemies!]]]]
-    (clojure.gdx.backends.lwjgl3/application
+    (clojure.gdx.backends.lwjgl/application
      {:icon "moon.png"
       :title "Cyber Dungeon Quest"
       :window-width 1440
