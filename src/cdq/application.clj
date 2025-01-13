@@ -1,10 +1,5 @@
-; The problem is context ! files like this
-; each code has to be placed in its minimal context !!!
-; whatever it is
 (ns cdq.application
-  (:require cdq.schemas ; not req anywhere but need
-
-            clojure.context
+  (:require clojure.context
             clojure.entity
             clojure.entity.state
             clojure.graphics
@@ -13,7 +8,6 @@
             clojure.graphics.tiled-map
             clojure.input
             clojure.potential-fields
-            clojure.platform.libgdx
             clojure.scene2d.actor
             clojure.scene2d.group
             clojure.ui

@@ -1,4 +1,6 @@
-[(clojure.java.awt/set-taskbar-icon "moon.png")
+[(clojure.core/require cdq.schemas)
+ (clojure.core/require clojure.platform.libgdx)
+ (clojure.java.awt/set-taskbar-icon "moon.png")
  (clojure.utils/dispatch-on (clojure.gdx.utils.shared-library-loader/os)
                             {:mac-osx [(clojure.lwjgl.system.configuration/glfw-library-name "glfw_async")]})
  (clojure.gdx.backends.lwjgl/application
