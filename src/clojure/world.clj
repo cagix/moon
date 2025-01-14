@@ -31,9 +31,6 @@
             [clojure.scene2d.group :as group]
             cdq.time))
 
-(defn circle->cells [{:keys [clojure.context/grid]} circle]
-  (grid/circle->cells grid circle))
-
 (defn circle->entities [{:keys [clojure.context/grid]} circle]
   (grid/circle->entities grid circle))
 
