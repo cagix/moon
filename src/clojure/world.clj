@@ -31,15 +31,6 @@
             [clojure.scene2d.group :as group]
             cdq.time))
 
-(defn circle->entities [{:keys [clojure.context/grid]} circle]
-  (grid/circle->entities grid circle))
-
-(defn cached-adjacent-cells [{:keys [clojure.context/grid]} cell]
-  (grid/cached-adjacent-cells grid cell))
-
-(defn point->entities [{:keys [clojure.context/grid]} position]
-  (grid/point->entities grid position))
-
 (defn ray-blocked? [{:keys [clojure.context/raycaster]} start target]
   (raycaster/blocked? raycaster start target))
 
@@ -300,10 +291,10 @@
 
 (def ^:private shout-radius 4)
 
-(defn friendlies-in-radius [c position faction]
+(defn friendlies-in-radius [grid position faction]
   (->> {:position position
         :radius shout-radius}
-       (circle->entities c)
+       (grid/circle->entities grid)
        (filter #(= (:entity/faction @%) faction))))
 
 (defn nearest-enemy [{:keys [clojure.context/grid]} entity]
@@ -520,10 +511,10 @@
          initial-state (entity/create [initial-state eid] c)))
 
 (defmethod tick! :entity/alert-friendlies-after-duration
-  [[_ {:keys [counter faction]}] eid c]
+  [[_ {:keys [counter faction]}] eid {:keys [clojure.context/grid] :as c}]
   (when (timer/stopped? c counter)
     (swap! eid assoc :entity/destroyed? true)
-    (doseq [friendly-eid (friendlies-in-radius c (:position @eid) faction)]
+    (doseq [friendly-eid (friendlies-in-radius grid (:position @eid) faction)]
       (send-event! c friendly-eid :alert))))
 
 (defmethod tick! :entity/animation

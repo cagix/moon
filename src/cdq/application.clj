@@ -3,6 +3,7 @@
             clojure.context
             clojure.entity
             clojure.entity.state
+            clojure.grid
             clojure.graphics
             clojure.graphics.camera
             clojure.input
@@ -25,13 +26,14 @@
   (clojure.entity.state/manual-tick (clojure.entity/state-obj @player-eid) c)
   c)
 
-(defn update-mouseover-entity [{:keys [clojure.context/mouseover-eid
+(defn update-mouseover-entity [{:keys [clojure.context/grid
+                                       clojure.context/mouseover-eid
                                        clojure.context/player-eid] :as c}]
   (let [new-eid (if (clojure.context/mouse-on-actor? c)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (clojure.world/point->entities c (clojure.context/world-mouse-position c)))]
+                                     (clojure.grid/point->entities grid (clojure.context/world-mouse-position c)))]
                     (->> clojure.world/render-z-order
                          (clojure.utils/sort-by-order hits #(:z-order @%))
                          reverse
