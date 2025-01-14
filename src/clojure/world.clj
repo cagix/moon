@@ -31,9 +31,6 @@
             [clojure.scene2d.group :as group]
             cdq.time))
 
-(defn rectangle->cells [{:keys [clojure.context/grid]} rectangle]
-  (grid/rectangle->cells grid rectangle))
-
 (defn circle->cells [{:keys [clojure.context/grid]} circle]
   (grid/circle->cells grid circle))
 
@@ -551,9 +548,9 @@
       (update :position    move-position movement)
       (update :left-bottom move-position movement)))
 
-(defn- valid-position? [c {:keys [entity/id z-order] :as body}]
+(defn- valid-position? [grid {:keys [entity/id z-order] :as body}]
   {:pre [(:collides? body)]}
-  (let [cells* (into [] (map deref) (rectangle->cells c body))]
+  (let [cells* (into [] (map deref) (grid/rectangle->cells grid body))]
     (and (not-any? #(grid/blocked? % z-order) cells*)
          (->> cells*
               grid/cells->entities
@@ -563,21 +560,21 @@
                                  (:collides? other-entity)
                                  (entity/collides? other-entity body)))))))))
 
-(defn- try-move [c body movement]
+(defn- try-move [grid body movement]
   (let [new-body (move-body body movement)]
-    (when (valid-position? c new-body)
+    (when (valid-position? grid new-body)
       new-body)))
 
 ; TODO sliding threshold
 ; TODO name - with-sliding? 'on'
 ; TODO if direction was [-1 0] and invalid-position then this algorithm tried to move with
 ; direection [0 0] which is a waste of processor power...
-(defn- try-move-solid-body [c body {[vx vy] :direction :as movement}]
+(defn- try-move-solid-body [grid body {[vx vy] :direction :as movement}]
   (let [xdir (Math/signum (float vx))
         ydir (Math/signum (float vy))]
-    (or (try-move c body movement)
-        (try-move c body (assoc movement :direction [xdir 0]))
-        (try-move c body (assoc movement :direction [0 ydir])))))
+    (or (try-move grid body movement)
+        (try-move grid body (assoc movement :direction [xdir 0]))
+        (try-move grid body (assoc movement :direction [0 ydir])))))
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
@@ -589,7 +586,8 @@
 (defmethod tick! :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
             eid
-            {:keys [clojure.context/delta-time] :as c}]
+            {:keys [clojure.context/delta-time
+                    clojure.context/grid] :as c}]
   (assert (m/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
@@ -601,7 +599,7 @@
     (let [movement (assoc movement :delta-time delta-time)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
-                        (try-move-solid-body c body movement)
+                        (try-move-solid-body grid body movement)
                         (move-body body movement))]
         (position-changed c eid)
         (swap! eid assoc
@@ -611,13 +609,15 @@
           (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
 
 (defmethod tick! :entity/projectile-collision
-  [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
+  [[k {:keys [entity-effects already-hit-bodies piercing?]}]
+   eid
+   {:keys [clojure.context/grid] :as c}]
   ; TODO this could be called from body on collision
   ; for non-solid
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (rectangle->cells c entity)) ; just use cached-touched -cells
+        cells* (map deref (grid/rectangle->cells grid entity)) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
