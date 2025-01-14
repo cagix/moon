@@ -31,14 +31,6 @@
             [clojure.scene2d.group :as group]
             cdq.time))
 
-(defn ray-blocked? [{:keys [clojure.context/raycaster]} start target]
-  (raycaster/blocked? raycaster start target))
-
-(defn path-blocked?
-  "path-w in tiles. casts two rays."
-  [{:keys [clojure.context/raycaster]} start target path-w]
-  (raycaster/path-blocked? raycaster start target path-w))
-
 (defn mouseover-entity [{:keys [clojure.context/mouseover-eid]}]
   (and mouseover-eid
        @mouseover-eid))
@@ -67,11 +59,12 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn line-of-sight? [{:keys [clojure.graphics/world-viewport] :as c} source target]
+(defn line-of-sight? [{:keys [clojure.context/raycaster
+                              clojure.graphics/world-viewport]} source target]
   (and (or (not (:entity/player? source))
            (on-screen? world-viewport target))
        (not (and los-checks?
-                 (ray-blocked? c (:position source) (:position target))))))
+                 (raycaster/blocked? raycaster (:position source) (:position target))))))
 
 ; this as protocols & impl implements it? same with send-event ?
 ; so we could add those protocols to 'entity'?
@@ -1022,14 +1015,14 @@
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (effect/useful? [[_ {:keys [projectile/max-range] :as projectile}]
                    {:keys [effect/source effect/target]}
-                   c]
+                   {:keys [clojure.context/raycaster]}]
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-      (and (not (path-blocked? c ; TODO test
-                               source-p
-                               target-p
-                               (projectile-size projectile)))
+      (and (not (raycaster/path-blocked? raycaster ; TODO test
+                                         source-p
+                                         target-p
+                                         (projectile-size projectile)))
            ; TODO not taking into account body sizes
            (< (v/distance source-p ; entity/distance function protocol EntityPosition
                           target-p)
