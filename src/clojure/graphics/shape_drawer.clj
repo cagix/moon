@@ -10,7 +10,6 @@
   (rectangle [_ x y w h color])
   (filled-rectangle [_ x y w h color])
   (line [_ [sx sy] [ex ey] color])
-  (grid [_ leftx bottomy gridw gridh cellw cellh color])
   (with-line-width [_ width draw-fn]))
 
 (defn grid [shape-drawer leftx bottomy gridw gridh cellw cellh color]

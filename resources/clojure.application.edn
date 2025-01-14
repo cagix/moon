@@ -60,7 +60,7 @@
               :render  (clojure.application/render [(cdq.graphics.camera/set-on-player)
                                                     (clojure.graphics/clear-screen)
                                                     (cdq.graphics.tiled-map/draw)
-                                                    (cdq.graphics/draw-on-world-view [(clojure.world.graphics/render-before-entities)
+                                                    (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)
                                                                                       (clojure.world.graphics/render-entities)
                                                                                       (clojure.world.graphics/render-after-entities)])
                                                     (cdq.application/draw-stage)
