@@ -62,7 +62,7 @@
                                                     (cdq.graphics.tiled-map/draw)
                                                     (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)
                                                                                       (clojure.world.graphics/render-entities)
-                                                                                      (clojure.world.graphics/render-after-entities)])
+                                                                                      (cdq.render.after-entities/render)])
                                                     (cdq.application/draw-stage)
                                                     (cdq.application/update-stage)
                                                     (cdq.application/player-state-input)
