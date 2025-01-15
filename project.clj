@@ -84,7 +84,8 @@
                  ; this only gdl.db ?
                  [metosin/malli "0.13.0"]
                  [org.clj-commons/pretty "3.2.0"]
-                 [clojure.gdx.dev-loop "-SNAPSHOT"]
+                 [nrepl "0.9.0"]
+                 [org.clojure/tools.namespace "1.3.0"]
                  [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
 
                  ; clojure.platform
