@@ -35,11 +35,6 @@
   (sprite/create world-unit-scale
                  (texture-region/create (assets path))))
 
-(defn sub-sprite [{:keys [clojure.graphics/world-unit-scale]} sprite xywh]
-  (sprite/sub world-unit-scale
-              sprite
-              xywh))
-
 (defn set-cursor [{:keys [clojure/graphics
                           clojure.graphics/cursors]} cursor-key]
   (graphics/set-cursor graphics (safe-get cursors cursor-key)))

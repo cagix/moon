@@ -28,7 +28,7 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(defn sub [world-unit-scale sprite bounds]
+(defn sub [sprite bounds {:keys [clojure.graphics/world-unit-scale]}]
   (create world-unit-scale
           (apply texture-region/->create (:texture-region sprite) bounds)))
 

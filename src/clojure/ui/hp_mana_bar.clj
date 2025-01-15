@@ -1,5 +1,6 @@
 (ns clojure.ui.hp-mana-bar
   (:require [clojure.context :as c]
+            [clojure.graphics.sprite :as sprite]
             [clojure.ui :refer [ui-actor]]
             [clojure.utils :refer [readable-number]]
             [clojure.entity :as entity]
@@ -23,9 +24,9 @@
         render-hpmana-bar (fn [c x y contentimage minmaxval name]
                             (c/draw-image c rahmen [x y])
                             (c/draw-image c
-                                          (c/sub-sprite c
-                                                        contentimage
-                                                        [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                                          (sprite/sub contentimage
+                                                      [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]
+                                                      c)
                                           [x y])
                             (render-infostr-on-bar c (str (readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn [{:keys [clojure.context/player-eid] :as c}]
