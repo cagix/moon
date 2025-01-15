@@ -16,12 +16,19 @@
     ;(println "Disposing " k " - " value)
     (utils/dispose value)))
 
-; TODO runnables here ?!?!
-; can make another atom
+(def ^:private runnables (atom []))
+
 (defn post-runnable [f]
-  (.postRunnable com.badlogic.gdx.Gdx/app #(f @state)))
+  (swap! runnables conj f))
 
 (defn render [render-fns]
+  (when (seq @runnables)
+    (println "Execute " (count @runnables) "runnables.")
+    (swap! state (fn [context]
+                   (reduce (fn [context f] (f context))
+                           context
+                           @runnables)))
+    (reset! runnables []))
   (swap! state (fn [context]
                  (reduce (fn [context fn-invoc]
                            (utils/req-resolve-call fn-invoc context))

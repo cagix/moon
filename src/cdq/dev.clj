@@ -20,15 +20,23 @@
  ; and show a tree view there ...
 
 
- (app/post-runnable show-obj-editor!)
+ (app/post-runnable (fn [context]
+                      (show-obj-editor! context)
+                      context))
  (print-app-values-tree "app-values-tree.clj" #{"clojure"})
 
  ; use post-runnable to get proper error messages in console
 
- (app/post-runnable (fn [_] (show-tree-view! "Application Context" @app/state)))
- (app/post-runnable (fn [_] (show-table-view "Application Context" @app/state)))
+ (app/post-runnable (fn [context]
+                      (show-tree-view! "Application Context" context)
+                      context))
+ (app/post-runnable (fn [context]
+                      (show-table-view "Application Context" context)
+                      context))
 
- (app/post-runnable (fn [_x] (println "hi")))
+ (app/post-runnable (fn [context]
+                      (println "hi")
+                      context))
 
  (show-tree-view! "Mouseover Entity" (world/mouseover-entity @app/state))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
