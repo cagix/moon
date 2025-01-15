@@ -1,6 +1,6 @@
 (ns cdq.graphics
   (:require clojure.context
-            [clojure.gdx.files :as files]
+            [clojure.files :as files]
             [clojure.gdx.utils.viewport :as viewport]
             clojure.graphics
             clojure.graphics.color
@@ -25,11 +25,11 @@
   (dispose [this]
     (run! clojure.utils/dispose (vals this))))
 
-(defn cursors [config _context]
+(defn cursors [config {:keys [clojure/files]}]
   (map->Cursors
    (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
-      (let [pixmap (clojure.graphics.pixmap/create (files/internal (str "cursors/" file ".png")))
+      (let [pixmap (clojure.graphics.pixmap/create (files/internal files (str "cursors/" file ".png")))
             cursor (clojure.graphics/new-cursor pixmap hotspot-x hotspot-y)]
         (clojure.utils/dispose pixmap)
         cursor))

@@ -1,16 +1,16 @@
 (ns cdq.assets
-  (:require [clojure.gdx.assets.manager :as asset-manager]
-            [clojure.gdx.files :as files]
+  (:require [clojure.files :as files]
+            [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str]))
 
-(defn manager [_context]
+(defn manager [{:keys [clojure/files]}]
   (asset-manager/create
    (let [folder "resources/"]
      (for [[asset-type extensions] {:sound   #{"wav"}
                                     :texture #{"png" "bmp"}}
            file (map #(str/replace-first % folder "")
-                     (loop [[file & remaining] (fh/list (files/internal folder))
+                     (loop [[file & remaining] (fh/list (files/internal files folder))
                             result []]
                        (cond (nil? file)
                              result

@@ -1,5 +1,5 @@
 (ns clojure.graphics.default-font
-  (:require [clojure.gdx.files :as files])
+  (:require [clojure.files :as files])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
@@ -23,5 +23,5 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create [config _context]
-  (generate-font (update config :file files/internal)))
+(defn create [config {:keys [clojure/files]}]
+  (generate-font (update config :file #(files/internal files %))))
