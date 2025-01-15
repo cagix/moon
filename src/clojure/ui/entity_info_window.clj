@@ -1,6 +1,5 @@
 (ns clojure.ui.entity-info-window
-  (:require [clojure.world :as world]
-            [clojure.context.info :as info]
+  (:require [clojure.context.info :as info]
             [clojure.ui :as ui :refer [ui-actor]]
             [clojure.scene2d.group :as group]))
 
@@ -9,15 +8,15 @@
                                 :entity/faction
                                 :active-skill])
 
-(defn- ->label-text [c]
+(defn- ->label-text [{:keys [clojure.context/mouseover-eid] :as c}]
   ; items then have 2x pretty-name
   #_(.setText (.getTitleLabel window)
-              (if-let [entity (world/mouseover-entity c)]
-                (info/text c [:property/pretty-name (:property/pretty-name entity)])
+              (if-let [eid mouseover-eid]
+                (info/text c [:property/pretty-name (:property/pretty-name @eid)])
                 "Entity Info"))
-  (when-let [entity (world/mouseover-entity c)]
+  (when-let [eid mouseover-eid]
     (info/text c ; don't use select-keys as it loses Entity record type
-               (apply dissoc entity disallowed-keys))))
+               (apply dissoc @eid disallowed-keys))))
 
 (defn create [{:keys [clojure.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")

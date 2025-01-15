@@ -31,10 +31,6 @@
             [clojure.scene2d.group :as group]
             cdq.time))
 
-(defn mouseover-entity [{:keys [clojure.context/mouseover-eid]}]
-  (and mouseover-eid
-       @mouseover-eid))
-
 (defn all-entities [{:keys [clojure.context/entity-ids]}]
   (vals @entity-ids))
 

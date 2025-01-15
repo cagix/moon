@@ -91,8 +91,8 @@
            {:label "Help"
             :items [{:label help-text}]}]
    :update-labels [{:label "Mouseover-entity id"
-                    :update-fn (fn [c]
-                                 (when-let [entity (world/mouseover-entity c)]
+                    :update-fn (fn [{:keys [clojure.context/mouseover-eid]}]
+                                 (when-let [entity (and mouseover-eid @mouseover-eid)]
                                    (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"

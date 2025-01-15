@@ -38,7 +38,7 @@
                       (println "hi")
                       context))
 
- (show-tree-view! "Mouseover Entity" (world/mouseover-entity @app/state))
+ (show-tree-view! "Mouseover Entity" @(:clojure.context/mouseover-eid @app/state))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"forge"}))
 
