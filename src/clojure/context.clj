@@ -12,23 +12,18 @@
             [clojure.error :refer [pretty-pst]]
             [clojure.ui :as ui]))
 
-(defn- draw-on-viewport [batch viewport draw-fn]
-  (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
-  (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
-  (batch/begin batch)
-  (draw-fn)
-  (batch/end batch))
-
 (defn draw-with [{:keys [clojure.graphics/batch
                          clojure.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]
-  (draw-on-viewport batch
-                    viewport
-                    #(sd/with-line-width shape-drawer unit-scale
-                       (fn []
-                         (draw-fn (assoc c :clojure.context/unit-scale unit-scale))))))
+  (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
+  (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
+  (batch/begin batch)
+  (sd/with-line-width shape-drawer unit-scale
+    (fn []
+      (draw-fn (assoc c :clojure.context/unit-scale unit-scale))))
+  (batch/end batch))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
