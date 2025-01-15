@@ -22,9 +22,6 @@
             [clojure.ui :as ui]
             [clojure.scene2d.group :as group]))
 
-(defn play-sound [{:keys [clojure/assets]} sound-name]
-  (audio/play (clojure.assets/sound assets sound-name)))
-
 (defn sprite [{:keys [clojure.graphics/world-unit-scale
                       clojure/assets]}
               path]

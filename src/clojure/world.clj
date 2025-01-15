@@ -1,5 +1,6 @@
 (ns clojure.world
-  (:require [clojure.audio :as audio]
+  (:require [clojure.assets :refer [play-sound]]
+            [clojure.audio :as audio]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
             [clojure.graphics.shape-drawer :as sd]
@@ -21,7 +22,7 @@
             [clojure.scene2d.ui.button-group :as button-group]
             [clojure.effect-context :as effect-ctx]
             [clojure.skill :as skill]
-            [clojure.context :as c :refer [play-sound]]
+            [clojure.context :as c]
             [clojure.context.info :as info]
             [clojure.graphics.camera :as cam]
             [clojure.math.raycaster :as raycaster]

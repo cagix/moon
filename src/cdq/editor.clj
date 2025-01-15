@@ -1,11 +1,12 @@
 (ns cdq.editor
   (:require [clojure.application :refer [state]]
+            [clojure.assets :refer [play-sound]]
             [clojure.edn :as edn]
             [clojure.gdx.assets.manager :as asset-manager]
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [clojure.context :as c :refer [play-sound]]
+            [clojure.context :as c]
             [clojure.db :as db]
             [clojure.malli :as m]
             [clojure.schema :as schema]
