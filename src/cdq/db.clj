@@ -1,7 +1,8 @@
 (ns cdq.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.schema :as schema]))
+            [clojure.schema :as schema]
+            [clojure.property :as property]))
 
 (defn create [_context]
   (let [properties-file (io/resource "properties.edn")
@@ -9,7 +10,7 @@
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! (partial schema/validate! schemas) properties)
+    (run! #(schema/validate! schemas (property/type %) %) properties)
     {:db/data (zipmap (map :property/id properties) properties)
      :db/properties-file properties-file
      :db/schemas schemas}))

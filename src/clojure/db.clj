@@ -51,7 +51,7 @@
               {:keys [property/id] :as property}]
   {:pre [(contains? property :property/id)
          (contains? data id)]}
-  (schema/validate! schemas property)
+  (schema/validate! schemas (property/type property) property)
   (clojure.core/update db :db/data assoc id property)) ; assoc-in ?
 
 (defn delete [{:keys [db/data] :as db} property-id]

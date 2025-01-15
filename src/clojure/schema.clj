@@ -1,7 +1,6 @@
 (ns clojure.schema
   (:refer-clojure :exclude [type])
   (:require [clojure.utils :refer [safe-get]]
-            [clojure.property :as property]
             [clojure.malli :as m]))
 
 (defn type [schema]
@@ -27,7 +26,7 @@
           (pr-str k))
   (safe-get schemas k))
 
-(defn validate! [schemas property]
-  (m/validate! (malli-form (schema-of schemas (property/type property))
+(defn validate! [schemas schema-k value]
+  (m/validate! (malli-form (schema-of schemas schema-k)
                            schemas)
-               property))
+               value))
