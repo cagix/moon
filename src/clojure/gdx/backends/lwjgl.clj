@@ -14,7 +14,7 @@
            (com.badlogic.gdx.backends.lwjgl3.audio.mock MockAudio)
            (com.badlogic.gdx.utils GdxRuntimeException)))
 
-(defn create [listener config]
+#_(defn create [listener config]
   ; config.glEmulation private field !
   ; copy whole backend folder& move deps with deps tree in my dir??
   #_(when (= (.glEmulation config) Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
@@ -51,7 +51,7 @@
                            window-height
                            foreground-fps
                            listener]}]
-  (create             (proxy [ApplicationAdapter] []
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (utils/req-resolve-call (:create listener)))
 

@@ -18,15 +18,9 @@
     (.finishLoading this)
     this))
 
-(defn- asset-type [manager asset]
-  (AssetManager/.getAssetType manager asset))
-
-(defn- asset-names [manager]
-  (AssetManager/.getAssetNames manager))
-
 (defn all-of-type [manager asset-type]
   (let [asset-type (case asset-type
                      :sound   Sound
                      :texture Texture)]
-    (filter #(= (asset-type manager %) asset-type)
-            (asset-names manager))))
+    (filter #(= (AssetManager/.getAssetType manager %) asset-type)
+            (AssetManager/.getAssetNames manager))))
