@@ -44,10 +44,10 @@
 
 (defn from-sheet [{:keys [image tilew tileh]}
                   [x y]
-                  {:keys [clojure.graphics/world-unit-scale]}]
-  (sub world-unit-scale
-       image
+                  context]
+  (sub image
        [(* x tilew)
         (* y tileh)
         tilew
-        tileh]))
+        tileh]
+       context))
