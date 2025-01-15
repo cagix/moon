@@ -26,9 +26,8 @@
              :as ui]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [clojure.scene2d.ui.table :refer [add-rows!]])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Table)
-           (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
+            [clojure.scene2d.ui.table :as table])
+  (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- info-text [property]
   (binding [*print-level* 3]
@@ -109,11 +108,11 @@
         widget (schema->widget schema props)
         save!   (apply-context-fn window #(update! (->value schema widget)))
         delete! (apply-context-fn window #(delete! (:property/id props)))]
-    (add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
-                                           [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
-                                             :center? true}
-                                            {:actor (text-button "Delete" delete!)
-                                             :center? true}]])]])
+    (table/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
+                                                 [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
+                                                   :center? true}
+                                                  {:actor (text-button "Delete" delete!)
+                                                   :center? true}]])]])
     (add-actor! window (ui-actor {:act (fn [_context]
                                          (when (input/key-just-pressed? :enter)
                                            (save!)))}))
@@ -174,7 +173,7 @@
                [(text-button sound-name
                              (fn []
                                (clear-children table)
-                               (add-rows! table [(columns table sound-name)])
+                               (table/add-rows! table [(columns table sound-name)])
                                (actor/remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
                                (let [[k _] (actor/user-object table)]
@@ -189,9 +188,9 @@
 
 (defmethod schema->widget :s/sound [_ sound-name]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
-    (add-rows! table [(if sound-name
-                        (columns table sound-name)
-                        [(text-button "No sound" #(choose-window table))])])
+    (table/add-rows! table [(if sound-name
+                              (columns table sound-name)
+                              [(text-button "No sound" #(choose-window table))])])
     table))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
@@ -252,7 +251,7 @@
                     (clear-children table)
                     (add-one-to-many-rows table property-type property-ids)
                     (pack-ancestor-window! table))]
-    (add-rows!
+    (table/add-rows!
      table
      [[(text-button "+"
                     (fn []
@@ -290,7 +289,7 @@
                     (clear-children table)
                     (add-one-to-one-rows table property-type id)
                     (pack-ancestor-window! table))]
-    (add-rows!
+    (table/add-rows!
      table
      [[(when-not property-id
          (text-button "+"
@@ -331,7 +330,7 @@
 (defn- window->property-value []
  (let [window (get-editor-window)
        scroll-pane-table (find-actor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
+       m-widget-cell (first (seq (table/cells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (->value [:s/map] table)))
 
@@ -396,16 +395,16 @@
         malli-form (malli-form schema)
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
                                    (m/map-keys malli-form)))]
-    (add-rows!
+    (table/add-rows!
      window
      (for [k remaining-ks]
        [(text-button (name k)
                      (fn []
                        (actor/remove window)
-                       (add-rows! map-widget-table [(component-row
-                                                     [k (k->default-value k)]
-                                                     malli-form
-                                                     map-widget-table)])
+                       (table/add-rows! map-widget-table [(component-row
+                                                           [k (k->default-value k)]
+                                                           malli-form
+                                                           map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
     (c/add-actor @state window)))
@@ -440,7 +439,7 @@
                                                 m)))
         colspan component-row-cols
         opt? (m/optional-keys-left (malli-form schema) m)]
-    (add-rows!
+    (table/add-rows!
      table
      (concat [(when opt?
                 [{:actor (text-button "Add component" #(choose-component-window schema table))
