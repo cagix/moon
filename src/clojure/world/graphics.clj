@@ -3,6 +3,7 @@
             [clojure.context.timer :as timer]
             [clojure.error :refer [pretty-pst]]
             [clojure.graphics.shape-drawer :as sd]
+            [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]
             [clojure.utils :refer [defsystem sort-by-order]]
             [clojure.val-max :as val-max]
@@ -27,7 +28,7 @@
                90 ; start-angle
                (* (float action-counter-ratio) 360) ; degree
                [1 1 1 0.5])
-    (c/draw-image c image [(- (float x) radius) y])))
+    (batch/draw-image c image [(- (float x) radius) y])))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
@@ -80,10 +81,10 @@
       (draw-hpbar c entity ratio))))
 
 (defn draw-image-as-of-body [image entity c]
-  (c/draw-rotated-centered c
-                           image
-                           (or (:rotation-angle entity) 0)
-                           (:position entity)))
+  (batch/draw-rotated-centered c
+                               image
+                               (or (:rotation-angle entity) 0)
+                               (:position entity)))
 
 (defn draw-line
   [{:keys [thick? end color]}
@@ -149,17 +150,17 @@
 
 (defn draw-world-item-if-exists [{:keys [item]} entity c]
   (when (world-item? c)
-    (c/draw-centered c
-                     (:entity/image item)
-                     (item-place-position c entity))))
+    (batch/draw-centered c
+                         (:entity/image item)
+                         (item-place-position c entity))))
 
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
   [[_ {:keys [eid]}] c]
   (when (not (world-item? c))
-    (c/draw-centered c
-                     (:entity/image (:entity/item-on-cursor @eid))
-                     (c/mouse-position c))))
+    (batch/draw-centered c
+                         (:entity/image (:entity/item-on-cursor @eid))
+                         (c/mouse-position c))))
 
 (defn draw-stunned-circle [_ entity {:keys [clojure.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
