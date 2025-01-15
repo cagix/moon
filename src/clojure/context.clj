@@ -1,5 +1,6 @@
 (ns clojure.context
-  (:require [clojure.graphics.camera :as camera]
+  (:require clojure.assets
+            [clojure.graphics.camera :as camera]
             [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.2d.bitmap-font :as font]
@@ -21,13 +22,8 @@
             [clojure.ui :as ui]
             [clojure.scene2d.group :as group]))
 
-(defn get-sound [{:keys [clojure/assets]} sound-name]
-  (->> sound-name
-       (format "sounds/%s.wav")
-       assets))
-
-(defn play-sound [c sound-name]
-  (audio/play (get-sound c sound-name)))
+(defn play-sound [{:keys [clojure/assets]} sound-name]
+  (audio/play (clojure.assets/sound assets sound-name)))
 
 (defn sprite [{:keys [clojure.graphics/world-unit-scale
                       clojure/assets]}

@@ -1,5 +1,6 @@
 (ns cdq.schemas
- (:require clojure.context
+ (:require clojure.assets
+           clojure.context
            clojure.db
            clojure.graphics.animation
            clojure.graphics.sprite
@@ -18,8 +19,8 @@
   (clojure.schema/malli-form [_ _schemas]
     clojure.malli/string-schema)
 
-  (clojure.db/edn->value [_ sound-name _db c]
-    (clojure.context/get-sound c sound-name)))
+  (clojure.db/edn->value [_ sound-name _db {:keys [clojure/assets]}]
+    (clojure.assets/sound assets sound-name)))
 
 (defn- edn->sprite [c {:keys [file sub-image-bounds]}]
   (if sub-image-bounds
