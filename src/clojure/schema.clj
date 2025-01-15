@@ -5,9 +5,10 @@
             [clojure.malli :as m]))
 
 (defn type [schema]
-  (if (vector? schema)
-    (schema 0)
-    schema))
+  (cond
+   (vector? schema) (schema 0)
+   (keyword? schema) schema
+   :else (throw (IllegalArgumentException. (str "Unkown schema type: " (class schema))))))
 
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
