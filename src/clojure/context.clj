@@ -48,11 +48,6 @@
                 tilew
                 tileh))
 
-(defn from-sprite-sheet [{:keys [clojure.graphics/world-unit-scale]} sprite-sheet xy]
-  (sprite/from-sheet world-unit-scale
-                     sprite-sheet
-                     xy))
-
 (defn set-cursor [{:keys [clojure/graphics
                           clojure.graphics/cursors]} cursor-key]
   (graphics/set-cursor graphics (safe-get cursors cursor-key)))

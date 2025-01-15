@@ -1,4 +1,4 @@
-(ns clojure.graphics.sprite ;-> clojure
+(ns clojure.graphics.sprite
   (:require [clojure.graphics.2d.texture-region :as texture-region]))
 
 (defn- scale-dimensions [dimensions scale]
@@ -37,7 +37,9 @@
    :tilew tilew
    :tileh tileh})
 
-(defn from-sheet [world-unit-scale {:keys [image tilew tileh]} [x y]]
+(defn from-sheet [{:keys [image tilew tileh]}
+                  [x y]
+                  {:keys [clojure.graphics/world-unit-scale]}]
   (sub world-unit-scale
        image
        [(* x tilew)

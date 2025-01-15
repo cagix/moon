@@ -67,9 +67,9 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [c slot]
-  (c/from-sprite-sheet c
-                       (c/sprite-sheet c "images/items.png" 48 48)
-                       (slot->sprite-idx slot)))
+  (clojure.graphics.sprite/from-sheet (c/sprite-sheet c "images/items.png" 48 48)
+                                      (slot->sprite-idx slot)
+                                      c))
 
 (defn- slot->background [c slot]
   (let [drawable (-> (slot->sprite c slot)

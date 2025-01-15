@@ -2,6 +2,7 @@
  (:require clojure.context
            clojure.db
            clojure.graphics.animation
+           clojure.graphics.sprite
            clojure.malli
            clojure.schema
            clojure.utils))
@@ -24,10 +25,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (clojure.context/from-sprite-sheet c
-                                     (clojure.context/sprite-sheet c file tilew tileh)
-                                     [(int (/ sprite-x tilew))
-                                      (int (/ sprite-y tileh))]))
+      (clojure.graphics.sprite/from-sheet (clojure.context/sprite-sheet c file tilew tileh)
+                                          [(int (/ sprite-x tilew))
+                                           (int (/ sprite-y tileh))]
+                                          c))
     (clojure.context/sprite c file)))
 
 (clojure.utils/defcomponent :s/image
