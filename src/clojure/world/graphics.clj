@@ -242,7 +242,8 @@
       (try
        (when show-body-bounds
          (draw-body-rect shape-drawer entity (if (:collides? entity) :white :gray)))
-       (run! #(system % entity c) entity)
+       (doseq [[k v] entity]
+         (system [k v] entity c))
        (catch Throwable t
          (draw-body-rect shape-drawer entity :red)
          (pretty-pst t))))))
