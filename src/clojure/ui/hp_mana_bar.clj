@@ -14,9 +14,9 @@
                 :up? true}))
 
 (defn create [{:keys [clojure.graphics/ui-viewport] :as c}]
-  (let [rahmen      (c/sprite c "images/rahmen.png")
-        hpcontent   (c/sprite c "images/hp.png")
-        manacontent (c/sprite c "images/mana.png")
+  (let [rahmen      (sprite/create c "images/rahmen.png")
+        hpcontent   (sprite/create c "images/hp.png")
+        manacontent (sprite/create c "images/mana.png")
         x (/ (:width ui-viewport) 2)
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-mana 80 ; action-bar-icon-size

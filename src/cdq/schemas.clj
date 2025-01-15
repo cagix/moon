@@ -33,7 +33,7 @@
                                           [(int (/ sprite-x tilew))
                                            (int (/ sprite-y tileh))]
                                           c))
-    (clojure.context/sprite c file)))
+    (clojure.graphics.sprite/create c file)))
 
 (clojure.utils/defcomponent :s/image
   (clojure.schema/malli-form  [_ _schemas]

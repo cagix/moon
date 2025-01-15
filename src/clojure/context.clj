@@ -4,7 +4,6 @@
             [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.2d.bitmap-font :as font]
-            [clojure.graphics.2d.texture-region :as texture-region]
             [clojure.interop :as interop]
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.scene2d.stage :as stage]
@@ -18,15 +17,8 @@
             [clojure.audio :as audio]
             [clojure.db :as db]
             [clojure.error :refer [pretty-pst]]
-            [clojure.graphics.sprite :as sprite]
             [clojure.ui :as ui]
             [clojure.scene2d.group :as group]))
-
-(defn sprite [{:keys [clojure.graphics/world-unit-scale
-                      clojure/assets]}
-              path]
-  (sprite/create world-unit-scale
-                 (texture-region/create (assets path))))
 
 (defn set-cursor [{:keys [clojure/graphics
                           clojure.graphics/cursors]} cursor-key]

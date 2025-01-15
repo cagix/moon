@@ -2,6 +2,7 @@
   (:require [clojure.context :as c]
             [clojure.graphics :as graphics]
             [clojure.graphics.camera :as cam]
+            clojure.graphics.sprite
             [clojure.scene2d.group :refer [add-actor!]]
             [clojure.ui :as ui :refer [ui-actor]]
             [clojure.utils :refer [readable-number]]
@@ -20,7 +21,7 @@
 
 (defn- add-upd-label
   ([c table text-fn icon]
-   (let [icon (ui/image->widget (c/sprite c icon) {})
+   (let [icon (ui/image->widget (clojure.graphics.sprite/create c icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act (set-label-text-fn label text-fn)}))

@@ -23,22 +23,22 @@
                    world-unit-dimensions
                    color]) ; optional
 
-(defn create [world-unit-scale texture-region]
+(defn- create* [world-unit-scale texture-region]
   (-> {:texture-region texture-region}
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
 (defn sub [sprite bounds {:keys [clojure.graphics/world-unit-scale]}]
-  (create world-unit-scale
-          (apply texture-region/->create (:texture-region sprite) bounds)))
+  (create* world-unit-scale
+           (apply texture-region/->create (:texture-region sprite) bounds)))
 
 (defn sheet [{:keys [clojure.graphics/world-unit-scale
                      clojure/assets]}
              path
              tilew
              tileh]
-  {:image (create world-unit-scale
-                  (texture-region/create (assets path)))
+  {:image (create* world-unit-scale
+                   (texture-region/create (assets path)))
    :tilew tilew
    :tileh tileh})
 
@@ -51,3 +51,9 @@
         tilew
         tileh]
        context))
+
+(defn create [{:keys [clojure.graphics/world-unit-scale
+                      clojure/assets]}
+              path]
+  (create* world-unit-scale
+           (texture-region/create (assets path))))
