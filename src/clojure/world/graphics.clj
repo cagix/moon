@@ -61,20 +61,10 @@
                            (- height          (* 2 border))
                            (hpbar-color ratio)))))
 
-(defsystem below)
-(defmethod below :default [_ entity c])
-
-(defsystem default)
-(defmethod default :default [_ entity c])
-
-(defsystem above)
-(defmethod above :default [_ entity c])
-
-(defsystem info)
-(defmethod info :default [_ entity c])
-
-(defmethod default :entity/clickable
-  [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity} c]
+(defn draw-text-when-mouseover-and-text
+  [{:keys [text]}
+   {:keys [entity/mouseover?] :as entity}
+   c]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
       (c/draw-text c
@@ -83,21 +73,21 @@
                     :y (+ y (:half-height entity))
                     :up? true}))))
 
-(defmethod info :entity/hp
-  [ _ entity c]
+(defn draw-hpbar-when-mouseover-and-not-full[ _ entity c]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar c entity ratio))))
 
-(defmethod default :entity/image
-  [[_ image] entity c]
+(defn draw-image-as-of-body [image entity c]
   (c/draw-rotated-centered c
                            image
                            (or (:rotation-angle entity) 0)
                            (:position entity)))
 
-(defmethod default :entity/line-render
-  [[_ {:keys [thick? end color]}] entity {:keys [clojure.graphics/shape-drawer]}]
+(defn draw-line
+  [{:keys [thick? end color]}
+   entity
+   {:keys [clojure.graphics/shape-drawer]}]
   (let [position (:position entity)]
     (if thick?
       (sd/with-line-width shape-drawer 4
@@ -109,7 +99,7 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defmethod below :entity/mouseover?
+(defn draw-faction-ellipse
   [_
    {:keys [entity/faction] :as entity}
    {:keys [clojure.context/player-eid
@@ -133,8 +123,8 @@
 (defn- render-active-effect [context effect-ctx effect]
   (run! #(render-effect % effect-ctx context) effect))
 
-(defmethod info :active-skill
-  [[_ {:keys [skill effect-ctx counter]}] entity c]
+(defn draw-skill-image-and-active-effect
+  [{:keys [skill effect-ctx counter]} entity c]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image c
                       image
@@ -148,8 +138,7 @@
                           ; - render does not need to update .. update inside active-skill
                           effects)))
 
-(defmethod above :npc-sleeping
-  [_ entity c]
+(defn draw-zzzz [_ entity c]
   (let [[x y] (:position entity)]
     (c/draw-text c
                  {:text "zzz"
@@ -157,8 +146,7 @@
                   :y (+ y (:half-height entity))
                   :up? true})))
 
-(defmethod below :player-item-on-cursor
-  [[_ {:keys [item]}] entity c]
+(defn draw-world-item-if-exists [{:keys [item]} entity c]
   (when (world-item? c)
     (c/draw-centered c
                      (:entity/image item)
@@ -172,12 +160,10 @@
                      (:entity/image (:entity/item-on-cursor @eid))
                      (c/mouse-position c))))
 
-(defmethod below :stunned
-  [_ entity {:keys [clojure.graphics/shape-drawer]}]
+(defn draw-stunned-circle [_ entity {:keys [clojure.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
 
-(defmethod above :entity/string-effect
-  [[_ {:keys [text]}] entity c]
+(defn draw-text [{:keys [text]} entity c]
   (let [[x y] (:position entity)]
     (c/draw-text c
                  {:text text
@@ -189,8 +175,7 @@
                   :up? true})))
 
 ; TODO draw opacity as of counter ratio?
-(defmethod above :entity/temp-modifier
-  [_ entity {:keys [clojure.graphics/shape-drawer]}]
+(defn draw-filled-circle-grey [_ entity {:keys [clojure.graphics/shape-drawer]}]
   (sd/filled-circle shape-drawer (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
 (defmethod render-effect :effects/target-all
@@ -219,12 +204,11 @@
 (def ^:private ^:dbg-flag show-body-bounds false)
 
 (defn render-entities
-  "Draws all active entities, sorted by the `:z-order` and with the render systems `below`, `default`, `above`, `info` for each z-order if the entity is in line-of-sight? to the player entity or is an `:z-order/effect`.
-
-  Optionally for debug purposes body rectangles can be drown which show white for collidings and gray for non colliding entities.
-
-  If an error is thrown during rendering, the entity body drawn with a red rectangle and the error is pretty printed to the console."
-  [{:keys [clojure.context/player-eid
+  [{:keys [below
+           default
+           above
+           info]}
+   {:keys [clojure.context/player-eid
            clojure.graphics/shape-drawer
            cdq.game/active-entities] :as c}]
   (let [entities (map deref active-entities)
@@ -242,8 +226,11 @@
       (try
        (when show-body-bounds
          (draw-body-rect shape-drawer entity (if (:collides? entity) :white :gray)))
-       (doseq [[k v] entity]
-         (system [k v] entity c))
+       (doseq [[k v] entity
+               :let [f (get system k)]
+               :when f]
+         (assert (resolve f) (str "k: " k, ", f: " f))
+         (@(resolve f) v entity c))
        (catch Throwable t
          (draw-body-rect shape-drawer entity :red)
          (pretty-pst t))))))

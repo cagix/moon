@@ -65,7 +65,18 @@
                                                     (clojure.graphics/clear-screen)
                                                     (cdq.graphics.tiled-map/draw)
                                                     (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)
-                                                                                      (clojure.world.graphics/render-entities)
+                                                                                      (clojure.world.graphics/render-entities
+                                                                                       {:below {:entity/mouseover? clojure.world.graphics/draw-faction-ellipse
+                                                                                                :player-item-on-cursor clojure.world.graphics/draw-world-item-if-exists
+                                                                                                :stunned clojure.world.graphics/draw-stunned-circle}
+                                                                                        :default {:entity/image clojure.world.graphics/draw-image-as-of-body
+                                                                                                  :entity/clickable clojure.world.graphics/draw-text-when-mouseover-and-text
+                                                                                                  :entity/line-render clojure.world.graphics/draw-line}
+                                                                                        :above {:npc-sleeping clojure.world.graphics/draw-zzzz
+                                                                                                :entity/string-effect clojure.world.graphics/draw-text
+                                                                                                :entity/temp-modifier clojure.world.graphics/draw-filled-circle-grey}
+                                                                                        :info {:entity/hp clojure.world.graphics/draw-hpbar-when-mouseover-and-not-full
+                                                                                               :active-skill clojure.world.graphics/draw-skill-image-and-active-effect}})
                                                                                       (cdq.render.after-entities/render)])
                                                     (cdq.application/draw-stage)
                                                     (cdq.application/update-stage)
