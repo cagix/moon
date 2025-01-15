@@ -3,8 +3,8 @@
             [clojure.java.io :as io]
             [clojure.utils :as utils]))
 
-(defn -main []
-  (-> "clojure.application.edn"
+(defn -main [app-edn]
+  (-> app-edn
       io/resource
       slurp
       edn/read-string

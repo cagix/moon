@@ -2,16 +2,10 @@
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [clojure.java.io :as io]
             [clojure.tools.namespace.repl :refer [disable-reload! refresh]]
+            [clojure.utils :as utils]
             [nrepl.server :as nrepl]))
 
 (disable-reload!) ; keep same connection/nrepl-server up throughout refreshs
-
-(declare ^:no-doc app-ns-sym)
-
-(defn- eval-require-call-main! []
-  (eval `(do ; old namespace/var bindings are unloaded with refresh-all so always evaluate them fresh
-          (require app-ns-sym)
-          (eval (read-string (str "(" (name app-ns-sym) "/-main)"))))))
 
 (def ^:private ^Object obj (Object.))
 
@@ -41,8 +35,10 @@
 
 (declare ^:private refresh-error)
 
+(declare ^:no-doc start-function-invocation)
+
 (defn ^:no-doc start-dev-loop! []
-  (try (eval-require-call-main!)
+  (try (utils/req-resolve-call start-function-invocation)
        (catch Throwable t
          (handle-throwable! t)))
   (loop []
@@ -68,8 +64,8 @@
 
 (declare ^:private nrepl-server)
 
-(defn -main [& [app-ns]]
-  (.bindRoot #'app-ns-sym (symbol app-ns))
+(defn -main [start-fn-invoc]
+  (.bindRoot #'start-function-invocation (read-string start-fn-invoc))
   (.bindRoot #'nrepl-server (nrepl/start-server))
   (save-port-file! nrepl-server)
   ;(println "Started nrepl server on port" (:port nrepl-server))
