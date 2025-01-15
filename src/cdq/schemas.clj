@@ -25,7 +25,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (clojure.graphics.sprite/from-sheet (clojure.context/sprite-sheet c file tilew tileh)
+      (clojure.graphics.sprite/from-sheet (clojure.graphics.sprite/sheet c
+                                                                         file
+                                                                         tilew
+                                                                         tileh)
                                           [(int (/ sprite-x tilew))
                                            (int (/ sprite-y tileh))]
                                           c))

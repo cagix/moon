@@ -32,8 +32,13 @@
   (create world-unit-scale
           (apply texture-region/->create (:texture-region sprite) bounds)))
 
-(defn sheet [world-unit-scale texture-region tilew tileh]
-  {:image (create world-unit-scale texture-region)
+(defn sheet [{:keys [clojure.graphics/world-unit-scale
+                     clojure/assets]}
+             path
+             tilew
+             tileh]
+  {:image (create world-unit-scale
+                  (texture-region/create (assets path)))
    :tilew tilew
    :tileh tileh})
 

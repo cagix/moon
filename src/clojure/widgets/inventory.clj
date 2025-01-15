@@ -5,6 +5,7 @@
             [clojure.context.info :as info]
             [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
+            clojure.graphics.sprite
             [clojure.scene2d.actor :refer [user-object] :as actor]
             [clojure.grid2d :as g2d]
             [clojure.context :as c]
@@ -67,7 +68,10 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [c slot]
-  (clojure.graphics.sprite/from-sheet (c/sprite-sheet c "images/items.png" 48 48)
+  (clojure.graphics.sprite/from-sheet (clojure.graphics.sprite/sheet c
+                                                                     "images/items.png"
+                                                                     48
+                                                                     48)
                                       (slot->sprite-idx slot)
                                       c))
 

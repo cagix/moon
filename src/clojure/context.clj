@@ -40,14 +40,6 @@
               sprite
               xywh))
 
-(defn sprite-sheet [{:keys [clojure.graphics/world-unit-scale
-                            clojure/assets]}
-                    path tilew tileh]
-  (sprite/sheet world-unit-scale
-                (texture-region/create (assets path))
-                tilew
-                tileh))
-
 (defn set-cursor [{:keys [clojure/graphics
                           clojure.graphics/cursors]} cursor-key]
   (graphics/set-cursor graphics (safe-get cursors cursor-key)))
