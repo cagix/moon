@@ -1,6 +1,7 @@
 (ns cdq.graphics
   (:require clojure.context
             [clojure.gdx.files :as files]
+            [clojure.gdx.utils.viewport :as viewport]
             clojure.graphics
             clojure.graphics.color
             clojure.graphics.pixmap
@@ -16,8 +17,8 @@
     texture))
 
 (defn resize-viewports [context width height]
-  (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/ui-viewport    context) width height true)
-  (com.badlogic.gdx.utils.viewport.Viewport/.update (:clojure.graphics/world-viewport context) width height false))
+  (viewport/update (:clojure.graphics/ui-viewport    context) width height :center-camera? true)
+  (viewport/update (:clojure.graphics/world-viewport context) width height))
 
 (defrecord Cursors []
   clojure.utils/Disposable

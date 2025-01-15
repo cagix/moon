@@ -8,7 +8,7 @@
             [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.scene2d.stage :as stage]
             [clojure.math.utils :refer [clamp]]
-            [clojure.utils.viewport :as viewport]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics :as graphics]
             [clojure.graphics.2d.batch :as batch]
             [clojure.input :as input]

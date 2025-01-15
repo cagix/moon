@@ -28,5 +28,5 @@
   (let [asset-type (case asset-type
                      :sound   Sound
                      :texture Texture)]
-    (filter #(= (asset-manager/asset-type manager %) asset-type)
-            (asset-manager/asset-names manager))))
+    (filter #(= (asset-type manager %) asset-type)
+            (asset-names manager))))
