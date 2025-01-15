@@ -1,17 +1,18 @@
 (ns clojure.ui.hp-mana-bar
   (:require [clojure.context :as c]
             [clojure.graphics.sprite :as sprite]
+            [cdq.graphics.text :as text]
             [clojure.ui :refer [ui-actor]]
             [clojure.utils :refer [readable-number]]
             [clojure.entity :as entity]
             [clojure.val-max :as val-max]))
 
 (defn- render-infostr-on-bar [c infostr x y h]
-  (c/draw-text c
-               {:text infostr
-                :x (+ x 75)
-                :y (+ y 2)
-                :up? true}))
+  (text/draw c
+             {:text infostr
+              :x (+ x 75)
+              :y (+ y 2)
+              :up? true}))
 
 (defn create [{:keys [clojure.graphics/ui-viewport] :as c}]
   (let [rahmen      (sprite/create c "images/rahmen.png")

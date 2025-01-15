@@ -3,6 +3,7 @@
             [clojure.context.timer :as timer]
             [clojure.error :refer [pretty-pst]]
             [clojure.graphics.shape-drawer :as sd]
+            [cdq.graphics.text :as text]
             [clojure.utils :refer [defsystem sort-by-order]]
             [clojure.val-max :as val-max]
             [clojure.world :refer [render-z-order
@@ -67,11 +68,11 @@
    c]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
-      (c/draw-text c
-                   {:text text
-                    :x x
-                    :y (+ y (:half-height entity))
-                    :up? true}))))
+      (text/draw c
+                 {:text text
+                  :x x
+                  :y (+ y (:half-height entity))
+                  :up? true}))))
 
 (defn draw-hpbar-when-mouseover-and-not-full[ _ entity c]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
@@ -140,11 +141,11 @@
 
 (defn draw-zzzz [_ entity c]
   (let [[x y] (:position entity)]
-    (c/draw-text c
-                 {:text "zzz"
-                  :x x
-                  :y (+ y (:half-height entity))
-                  :up? true})))
+    (text/draw c
+               {:text "zzz"
+                :x x
+                :y (+ y (:half-height entity))
+                :up? true})))
 
 (defn draw-world-item-if-exists [{:keys [item]} entity c]
   (when (world-item? c)
@@ -165,14 +166,14 @@
 
 (defn draw-text [{:keys [text]} entity c]
   (let [[x y] (:position entity)]
-    (c/draw-text c
-                 {:text text
-                  :x x
-                  :y (+ y
-                        (:half-height entity)
-                        (c/pixels->world-units c 5))
-                  :scale 2
-                  :up? true})))
+    (text/draw c
+               {:text text
+                :x x
+                :y (+ y
+                      (:half-height entity)
+                      (c/pixels->world-units c 5))
+                :scale 2
+                :up? true})))
 
 ; TODO draw opacity as of counter ratio?
 (defn draw-filled-circle-grey [_ entity {:keys [clojure.graphics/shape-drawer]}]

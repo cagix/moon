@@ -1,52 +1,16 @@
 (ns clojure.context
-  (:require clojure.assets
-            [clojure.graphics.camera :as camera]
+  (:require [clojure.graphics.camera :as camera]
             [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
-            [clojure.graphics.2d.bitmap-font :as font]
-            [clojure.interop :as interop]
             [clojure.scene2d.stage :as stage]
             [clojure.math.utils :refer [clamp]]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.graphics.2d.batch :as batch]
             [clojure.input :as input]
-            [clojure.string :as str]
-            [clojure.utils :refer [with-err-str mapvals]]
-            [clojure.audio :as audio]
+            [clojure.utils :refer [with-err-str]]
             [clojure.db :as db]
             [clojure.error :refer [pretty-pst]]
-            [clojure.ui :as ui]
-            [clojure.scene2d.group :as group]))
-
-(defn- text-height [font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (font/line-height font))))
-
-(defn draw-text
-  "font, h-align, up? and scale are optional.
-  h-align one of: :center, :left, :right. Default :center.
-  up? renders the font over y, otherwise under.
-  scale will multiply the drawn text size with the scale."
-  [{:keys [clojure.context/unit-scale
-           clojure.graphics/batch
-           clojure.graphics/default-font]}
-   {:keys [font x y text h-align up? scale]}]
-  {:pre [unit-scale]}
-  (let [font (or font default-font)
-        data (font/data font)
-        old-scale (float (font/scale-x data))]
-    (font/set-scale data (* old-scale
-                            (float unit-scale)
-                            (float (or scale 1))))
-    (font/draw :font font
-               :batch batch
-               :text text
-               :x x
-               :y (+ y (if up? (text-height font text) 0))
-               :align (interop/k->align (or h-align :center)))
-    (font/set-scale data old-scale)))
+            [clojure.ui :as ui]))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)

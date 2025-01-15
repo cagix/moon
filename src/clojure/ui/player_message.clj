@@ -1,17 +1,17 @@
 (ns clojure.ui.player-message
-  (:require [clojure.context :as c]
-            [clojure.graphics :as graphics]
+  (:require [clojure.graphics :as graphics]
+            [cdq.graphics.text :as text]
             [clojure.ui :refer [ui-actor]]))
 
 (defn- draw-player-message [{:keys [clojure.graphics/ui-viewport
                                     clojure.context/player-message] :as c}]
   (when-let [text (:text @player-message)]
-    (c/draw-text c
-                 {:x (/ (:width ui-viewport) 2)
-                  :y (+ (/ (:height ui-viewport) 2) 200)
-                  :text text
-                  :scale 2.5
-                  :up? true})))
+    (text/draw c
+               {:x (/ (:width ui-viewport) 2)
+                :y (+ (/ (:height ui-viewport) 2) 200)
+                :text text
+                :scale 2.5
+                :up? true})))
 
 (defn- check-remove-message [{:keys [clojure/graphics
                                      clojure.context/player-message]}]
