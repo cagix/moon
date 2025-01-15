@@ -1,5 +1,5 @@
 (ns clojure.world.graphics
-  (:require [clojure.context :as c]
+  (:require cdq.graphics
             [clojure.context.timer :as timer]
             [clojure.error :refer [pretty-pst]]
             [clojure.graphics.shape-drawer :as sd]
@@ -53,8 +53,8 @@
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (c/pixels->world-units c 5)
-          border (c/pixels->world-units c borders-px)]
+          height (cdq.graphics/pixels->world-units c 5)
+          border (cdq.graphics/pixels->world-units c borders-px)]
       (sd/filled-rectangle shape-drawer x y width height :black)
       (sd/filled-rectangle shape-drawer
                            (+ x border)
@@ -160,7 +160,7 @@
   (when (not (world-item? c))
     (batch/draw-centered c
                          (:entity/image (:entity/item-on-cursor @eid))
-                         (c/mouse-position c))))
+                         (cdq.graphics/mouse-position c))))
 
 (defn draw-stunned-circle [_ entity {:keys [clojure.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
@@ -172,7 +172,7 @@
                 :x x
                 :y (+ y
                       (:half-height entity)
-                      (c/pixels->world-units c 5))
+                      (cdq.graphics/pixels->world-units c 5))
                 :scale 2
                 :up? true})))
 

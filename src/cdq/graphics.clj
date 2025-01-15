@@ -1,8 +1,14 @@
 (ns cdq.graphics
-  (:require clojure.context
-            [clojure.files :as files]
+  (:require [clojure.files :as files]
             [clojure.gdx.utils.viewport :as viewport]
             clojure.graphics
+            [clojure.graphics.2d.batch :as batch]
+            [clojure.graphics.shape-drawer :as sd]
+            [clojure.graphics.camera :as camera]
+            [clojure.math.utils :refer [clamp]]
+            [clojure.input :as input]
+            [clojure.gdx.utils.viewport :as viewport]
+            [clojure.graphics.color :as color]
             clojure.graphics.color
             clojure.graphics.pixmap
             clojure.graphics.texture
@@ -36,14 +42,61 @@
         cursor))
     config)))
 
-(defn draw-on-world-view [render-fns context]
-  (clojure.context/draw-on-world-view context
-                                      (fn [context]
-                                        (doseq [f render-fns]
-                                          (utils/req-resolve-call f context))))
-  context)
-
 (defn set-cursor [{:keys [clojure/graphics
                           clojure.graphics/cursors]} cursor-key]
   (clojure.graphics/set-cursor graphics
                                (utils/safe-get cursors cursor-key)))
+
+(defn- draw-with [{:keys [clojure.graphics/batch
+                         clojure.graphics/shape-drawer] :as c}
+                 viewport
+                 unit-scale
+                 draw-fn]
+  (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
+  (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
+  (batch/begin batch)
+  (sd/with-line-width shape-drawer unit-scale
+    (fn []
+      (draw-fn (assoc c :clojure.context/unit-scale unit-scale))))
+  (batch/end batch))
+
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+(defn- unproject-mouse-position
+  "Returns vector of [x y]."
+  [input viewport]
+  (let [mouse-x (clamp (input/x input)
+                       (:left-gutter-width viewport)
+                       (:right-gutter-x    viewport))
+        mouse-y (clamp (input/y input)
+                       (:top-gutter-height viewport)
+                       (:top-gutter-y      viewport))]
+    (viewport/unproject viewport mouse-x mouse-y)))
+
+(defn mouse-position [{:keys [clojure.graphics/ui-viewport
+                              clojure/input]}]
+  ; TODO mapv int needed?
+  (mapv int (unproject-mouse-position input ui-viewport)))
+
+(defn world-mouse-position [{:keys [clojure.graphics/world-viewport
+                                    clojure/input]}]
+  ; TODO clamping only works for gui-viewport ? check. comment if true
+  ; TODO ? "Can be negative coordinates, undefined cells."
+  (unproject-mouse-position input world-viewport))
+
+(defn pixels->world-units [{:keys [clojure.graphics/world-unit-scale]} pixels]
+  (* (int pixels) world-unit-scale))
+
+(defn- draw-on-world-view* [{:keys [clojure.graphics/world-unit-scale
+                                    clojure.graphics/world-viewport] :as c} render-fn]
+  (draw-with c
+             world-viewport
+             world-unit-scale
+             render-fn))
+
+(defn draw-on-world-view [render-fns context]
+  (draw-on-world-view* context
+                       (fn [context]
+                         (doseq [f render-fns]
+                           (utils/req-resolve-call f context))))
+  context)

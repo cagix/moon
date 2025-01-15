@@ -1,5 +1,6 @@
 (ns clojure.world
   (:require [clojure.assets :refer [play-sound]]
+            cdq.graphics
             [clojure.audio :as audio]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
@@ -355,7 +356,7 @@
 
 (defn item-place-position [c entity]
   (placement-point (:position entity)
-                   (c/world-mouse-position c)
+                   (cdq.graphics/world-mouse-position c)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -815,7 +816,7 @@
 (defn- player-effect-ctx [{:keys [clojure.context/mouseover-eid] :as c} eid]
   (let [target-position (or (and mouseover-eid
                                  (:position @mouseover-eid))
-                            (c/world-mouse-position c))]
+                            (cdq.graphics/world-mouse-position c))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position

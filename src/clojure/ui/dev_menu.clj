@@ -1,6 +1,7 @@
 (ns clojure.ui.dev-menu
   (:require [clojure.context :as c]
             [clojure.graphics :as graphics]
+            cdq.graphics
             [clojure.graphics.camera :as cam]
             clojure.graphics.sprite
             [clojure.scene2d.group :refer [add-actor!]]
@@ -103,9 +104,9 @@
                    {:label "paused?"
                     :update-fn :clojure.context/paused?} ; TODO (def paused ::paused) @ clojure.context
                    {:label "GUI"
-                    :update-fn c/mouse-position}
+                    :update-fn cdq.graphics/mouse-position}
                    {:label "World"
-                    :update-fn #(mapv int (c/world-mouse-position %))}
+                    :update-fn #(mapv int (cdq.graphics/world-mouse-position %))}
                    {:label "Zoom"
                     :update-fn #(cam/zoom (:camera (:clojure.graphics/world-viewport %)))
                     :icon "images/zoom.png"}

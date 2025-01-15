@@ -1,5 +1,6 @@
 (ns forge.mapgen-test
   (:require [clojure.level :refer [generate-level]]
+            cdq.graphics
             [clojure.modules :as modules]
             [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
@@ -39,14 +40,14 @@
   direction keys: move")
 
 (defn- map-infos ^String [c]
-  (let [tile (mapv int (c/world-mouse-position c))
+  (let [tile (mapv int (cdq.graphics/world-mouse-position c))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (c/world-mouse-position c)
+                                 (cdq.graphics/world-mouse-position c)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
@@ -90,7 +91,7 @@
                 show-movement-properties
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (:camera world-viewport))
-        [x y] (mapv int (c/world-mouse-position c))
+        [x y] (mapv int (cdq.graphics/world-mouse-position c))
         sd shape-drawer]
     (sd/rectangle sd x y 1 1 :white)
     (when start-position
@@ -152,8 +153,7 @@
   #_(clojure.graphics.tiled-map-renderer/draw @state
                                               (:tiled-map @current-data)
                                               (constantly color/white))
-  #_(c/draw-on-world-view @state
-                          render-on-map)
+  #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (input/key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
   #_(if (input/key-just-pressed? :m)

@@ -1,6 +1,7 @@
 (ns clojure.widgets.inventory
   (:require [clojure.entity :as entity]
             [clojure.entity.state :as state]
+            cdq.graphics
             [clojure.inventory :refer [empty-inventory] :as inventory]
             [clojure.context.info :as info]
             [clojure.graphics.color :as color]
@@ -48,7 +49,7 @@
                      @player-eid
                      (actor/x this)
                      (actor/y this)
-                     (actor/hit this (c/mouse-position c))
+                     (actor/hit this (cdq.graphics/mouse-position c))
                      (user-object (actor/parent this))))))
 
 (def ^:private slot->y-sprite-idx

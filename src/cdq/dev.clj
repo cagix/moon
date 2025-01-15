@@ -1,6 +1,7 @@
 (ns cdq.dev
   (:require [clojure.application :as app]
             [cdq.editor :as editor]
+            cdq.graphics
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.scene2d.group :refer [children]]
@@ -99,7 +100,7 @@
                     (c/build c item-id)))
 
 (defn- mouseover-grid-cell [{:keys [clojure.context/grid] :as c}]
-  @(grid (mapv int (c/world-mouse-position c))))
+  @(grid (mapv int (cdq.graphics/world-mouse-position c))))
 
 (defn- class->label-str [class]
   (case class

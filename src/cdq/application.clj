@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require cdq.time
+            cdq.graphics
             clojure.context
             clojure.entity
             clojure.entity.state
@@ -33,7 +34,7 @@
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (clojure.grid/point->entities grid (clojure.context/world-mouse-position c)))]
+                                     (clojure.grid/point->entities grid (cdq.graphics/world-mouse-position c)))]
                     (->> clojure.world/render-z-order
                          (clojure.utils/sort-by-order hits #(:z-order @%))
                          reverse
