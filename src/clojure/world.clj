@@ -453,11 +453,11 @@
                      (:position @eid)
                      (c/build c audiovisuals-id)))
 
-(defn player-movement-vector []
-  (let [r (when (input/key-pressed? :d) [1  0])
-        l (when (input/key-pressed? :a) [-1 0])
-        u (when (input/key-pressed? :w) [0  1])
-        d (when (input/key-pressed? :s) [0 -1])]
+(defn player-movement-vector [input]
+  (let [r (when (input/key-pressed? input :d) [1  0])
+        l (when (input/key-pressed? input :a) [-1 0])
+        u (when (input/key-pressed? input :w) [0  1])
+        d (when (input/key-pressed? input :s) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))
@@ -868,12 +868,12 @@
   (state/pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}] c]
-    (if-let [movement-vector (player-movement-vector)]
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure/input] :as c}]
+    (if-let [movement-vector (player-movement-vector input)]
       (send-event! c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
         (c/set-cursor c cursor)
-        (when (input/button-just-pressed? :left)
+        (when (input/button-just-pressed? input :left)
           (on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
@@ -951,8 +951,8 @@
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (state/manual-tick [[_ {:keys [eid]}] c]
-    (when (and (input/button-just-pressed? :left)
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure/input] :as c}]
+    (when (and (input/button-just-pressed? input :left)
                (world-item? c))
       (send-event! c eid :drop-item)))
 
@@ -973,8 +973,8 @@
   (state/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (tick! [[_ {:keys [movement-vector]}] eid c]
-    (if-let [movement-vector (player-movement-vector)]
+  (tick! [[_ {:keys [movement-vector]}] eid {:keys [clojure/input] :as c}]
+    (if-let [movement-vector (player-movement-vector input)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
       (send-event! c eid :no-movement-input))))

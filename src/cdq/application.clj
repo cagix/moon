@@ -47,13 +47,16 @@
 
 (defn update-paused [{:keys [clojure.context/player-eid
                              error ; FIXME ! not `::` keys so broken !
+                             clojure/input
                              ] :as c}]
   (let [pausing? true]
     (assoc c :clojure.context/paused? (or error
                                           (and pausing?
                                                (clojure.entity.state/pause-game? (clojure.entity/state-obj @player-eid))
-                                               (not (or (clojure.input/key-just-pressed? :p)
-                                                        (clojure.input/key-pressed? :space))))))))
+                                               (not (or (clojure.input/key-just-pressed? input :p)
+                                                        (clojure.input/key-pressed?      input :space))))))))
+
+; TODO how can I write a test for 'space' -> not paused?
 
 (defn when-not-paused [context]
   (if (:clojure.context/paused? context)
@@ -108,22 +111,23 @@
       (clojure.world/destroy! component eid c)))
   c)
 
-(defn camera-controls [{:keys [clojure.graphics/world-viewport]
+(defn camera-controls [{:keys [clojure.graphics/world-viewport
+                               clojure/input]
                         :as context}]
   (let [camera (:camera world-viewport)
         zoom-speed 0.025]
-    (when (clojure.input/key-pressed? :minus)  (clojure.graphics.camera/inc-zoom camera    zoom-speed))
-    (when (clojure.input/key-pressed? :equals) (clojure.graphics.camera/inc-zoom camera (- zoom-speed))))
+    (when (clojure.input/key-pressed? input :minus)  (clojure.graphics.camera/inc-zoom camera    zoom-speed))
+    (when (clojure.input/key-pressed? input :equals) (clojure.graphics.camera/inc-zoom camera (- zoom-speed))))
   context)
 
-(defn window-controls [c]
+(defn window-controls [{:keys [clojure/input] :as c}]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
-            :when (clojure.input/key-just-pressed? (get window-hotkeys window-id))]
+            :when (clojure.input/key-just-pressed? input (get window-hotkeys window-id))]
       (clojure.scene2d.actor/toggle-visible! (get (:windows (:clojure.context/stage c)) window-id))))
-  (when (clojure.input/key-just-pressed? :escape)
+  (when (clojure.input/key-just-pressed? input :escape)
     (let [windows (clojure.scene2d.group/children (:windows (:clojure.context/stage c)))]
       (when (some clojure.scene2d.actor/visible? windows)
         (run! #(clojure.scene2d.actor/set-visible % false) windows))))

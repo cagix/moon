@@ -172,23 +172,25 @@
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
-  [viewport]
-  (let [mouse-x (clamp (input/x)
+  [input viewport]
+  (let [mouse-x (clamp (input/x input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y)
+        mouse-y (clamp (input/y input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{:keys [clojure.graphics/ui-viewport]}]
+(defn mouse-position [{:keys [clojure.graphics/ui-viewport
+                              clojure/input]}]
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position ui-viewport)))
+  (mapv int (unproject-mouse-position input ui-viewport)))
 
-(defn world-mouse-position [{:keys [clojure.graphics/world-viewport]}]
+(defn world-mouse-position [{:keys [clojure.graphics/world-viewport
+                                    clojure/input]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position world-viewport))
+  (unproject-mouse-position input world-viewport))
 
 (defn pixels->world-units [{:keys [clojure.graphics/world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))

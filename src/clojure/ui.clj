@@ -334,7 +334,8 @@
 
 (defn setup-stage! [config
                     {:keys [clojure.graphics/batch
-                            clojure.graphics/ui-viewport]
+                            clojure.graphics/ui-viewport
+                            clojure/input]
                      :as context}]
   ; app crashes during startup before VisUI/dispose and we do clojure.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
@@ -357,7 +358,7 @@
                       (utils/req-resolve-call fn-invoc context))
                     (:actors config))
         stage (create-stage ui-viewport batch actors)]
-    (input/set-processor stage)
+    (input/set-processor input stage)
     stage))
 
 (defn dispose! []

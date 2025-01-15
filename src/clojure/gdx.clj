@@ -1,6 +1,8 @@
 (ns clojure.gdx
   (:require [clojure.files]
-            [clojure.graphics])
+            [clojure.graphics]
+            [clojure.input]
+            [clojure.interop :refer [k->input-button k->input-key]])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn files [_context]
@@ -23,3 +25,24 @@
 
       (frames-per-second [_]
         (.getFramesPerSecond this)))))
+
+(defn input [_context]
+  (let [this Gdx/input]
+    (reify clojure.input/Input
+      (x [_]
+        (.getX this))
+
+      (y [_]
+        (.getY this))
+
+      (button-just-pressed? [_ button]
+        (.isButtonJustPressed this (k->input-button button)))
+
+      (key-just-pressed? [_ key]
+        (.isKeyJustPressed this (k->input-key key)))
+
+      (key-pressed? [_ key]
+        (.isKeyPressed this (k->input-key key)))
+
+      (set-processor [_ input-processor]
+        (.setInputProcessor this input-processor)))))

@@ -113,8 +113,8 @@
                                                    :center? true}
                                                   {:actor (text-button "Delete" delete!)
                                                    :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn [_context]
-                                         (when (input/key-just-pressed? :enter)
+    (add-actor! window (ui-actor {:act (fn [{:keys [clojure/input]}]
+                                         (when (input/key-just-pressed? input :enter)
                                            (save!)))}))
     (.pack window)
     window))
