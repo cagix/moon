@@ -80,9 +80,6 @@
            {:text text
             :counter (timer/create c 0.4)})))
 
-(defn active-entities [{:keys [clojure.context/content-grid clojure.context/player-eid]}]
-  (content-grid/active-entities content-grid @player-eid))
-
 (defn- add-entity [{:keys [clojure.context/content-grid
                            clojure.context/grid
                            clojure.context/entity-ids]} eid]
@@ -276,8 +273,9 @@
                    :entity/projectile-collision {:entity-effects entity-effects
                                                  :piercing? piercing?}})))
 
-(defn creatures-in-los-of-player [{:keys [clojure.context/player-eid] :as c}]
-  (->> (active-entities c)
+(defn creatures-in-los-of-player [{:keys [clojure.context/player-eid
+                                          cdq.game/active-entities] :as c}]
+  (->> active-entities
        (filter #(:entity/species @%))
        (filter #(line-of-sight? c @player-eid @%))
        (remove #(:entity/player? @%))))

@@ -11,7 +11,7 @@
    :cell-w cell-size
    :cell-h cell-size})
 
-(defn active-entities [{:keys [grid]} center-entity]
+(defn- active-entities [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
                      ::content-cell
                      deref
@@ -19,6 +19,11 @@
          (cons idx (g2d/get-8-neighbour-positions idx)))
        (keep grid)
        (mapcat (comp :entities deref))))
+
+(defn assoc-active-entities [{:keys [clojure.context/content-grid
+                                     clojure.context/player-eid]
+                              :as context}]
+  (assoc context :cdq.game/active-entities (active-entities content-grid @player-eid)))
 
 (defn add-entity [{:keys [grid cell-w cell-h]} eid]
   (let [{::keys [content-cell] :as entity} @eid

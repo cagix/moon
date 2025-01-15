@@ -5,8 +5,7 @@
             [clojure.graphics.shape-drawer :as sd]
             [clojure.utils :refer [defsystem sort-by-order]]
             [clojure.val-max :as val-max]
-            [clojure.world :refer [active-entities
-                                   render-z-order
+            [clojure.world :refer [render-z-order
                                    line-of-sight?
                                    draw-body-rect
                                    creatures-in-los-of-player
@@ -226,13 +225,17 @@
 
   If an error is thrown during rendering, the entity body drawn with a red rectangle and the error is pretty printed to the console."
   [{:keys [clojure.context/player-eid
-           clojure.graphics/shape-drawer] :as c}]
-  (let [entities (map deref (active-entities c))
+           clojure.graphics/shape-drawer
+           cdq.game/active-entities] :as c}]
+  (let [entities (map deref active-entities)
         player @player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [below default above info]
+            system [below
+                    default
+                    above
+                    info]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (line-of-sight? c player entity))]

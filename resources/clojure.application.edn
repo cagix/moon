@@ -57,7 +57,8 @@
                                                    [:clojure.context/player-eid (clojure.create/player-eid*)]
                                                    [:clojure.context/enemies (clojure.create/spawn-enemies!)]])
               :dispose (clojure.application/dispose)
-              :render  (clojure.application/render [(cdq.graphics.camera/set-on-player)
+              :render  (clojure.application/render [(clojure.content-grid/assoc-active-entities)
+                                                    (cdq.graphics.camera/set-on-player)
                                                     (clojure.graphics/clear-screen)
                                                     (cdq.graphics.tiled-map/draw)
                                                     (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)

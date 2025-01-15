@@ -67,36 +67,36 @@
                      (assoc :clojure.context/delta-time delta-ms))))
              (fn [{:keys [clojure.context/factions-iterations
                           clojure.context/grid
-                          world/potential-field-cache]
-                   :as c}]
-               (let [entities (clojure.world/active-entities c)]
-                 (doseq [[faction max-iterations] factions-iterations]
-                   (clojure.potential-fields/tick potential-field-cache
-                                                  grid
-                                                  faction
-                                                  entities
-                                                  max-iterations)))
-               c)
-             (fn [c]
+                          world/potential-field-cache
+                          cdq.game/active-entities]
+                   :as context}]
+               (doseq [[faction max-iterations] factions-iterations]
+                 (clojure.potential-fields/tick potential-field-cache
+                                                grid
+                                                faction
+                                                active-entities
+                                                max-iterations))
+               context)
+             (fn [{:keys [cdq.game/active-entities] :as context}]
                ; precaution in case a component gets removed by another component
                ; the question is do we still want to update nil components ?
                ; should be contains? check ?
                ; but then the 'order' is important? in such case dependent components
                ; should be moved together?
                (try
-                (doseq [eid (clojure.world/active-entities c)]
+                (doseq [eid active-entities]
                   (try
                    (doseq [k (keys @eid)]
                      (try (when-let [v (k @eid)]
-                            (clojure.world/tick! [k v] eid c))
+                            (clojure.world/tick! [k v] eid context))
                           (catch Throwable t
                             (throw (ex-info "entity-tick" {:k k} t)))))
                    (catch Throwable t
                      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
                 (catch Throwable t
-                  (clojure.context/error-window c t)
+                  (clojure.context/error-window context t)
                   #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
-               c)])))
+               context)])))
 
 (defn remove-destroyed-entities [c]
   ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
