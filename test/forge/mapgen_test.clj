@@ -5,7 +5,7 @@
             [clojure.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [clojure.context :as c :refer [draw-tiled-map]]
+            [clojure.context :as c]
             [clojure.input :as input]
             [clojure.graphics.camera :as cam]
             [clojure.tiled :as tiled]
@@ -149,9 +149,9 @@
   #_(cam/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(draw-tiled-map @state
-                    (:tiled-map @current-data)
-                    (constantly color/white))
+  #_(clojure.graphics.tiled-map-renderer/draw @state
+                                              (:tiled-map @current-data)
+                                              (constantly color/white))
   #_(c/draw-on-world-view @state
                           render-on-map)
   #_(if (input/key-just-pressed? :l)

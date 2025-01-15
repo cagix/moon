@@ -9,7 +9,7 @@
                                           (float world-unit-scale)
                                           batch))))
 
-(defn draw [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
+(defn- draw* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
                           (apply [_ color x y]
                             (color-setter color x y))))
@@ -20,3 +20,20 @@
        (map (partial tiled/layer-index tiled-map))
        int-array
        (.render this)))
+
+(defn draw
+  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
+
+  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
+
+  Can be used for lights & shadows.
+
+  Renders only visible layers."
+  [{:keys [clojure.graphics/tiled-map-renderer
+           clojure.graphics/world-viewport]}
+   tiled-map
+   color-setter]
+  (draw* (tiled-map-renderer tiled-map)
+         tiled-map
+         color-setter
+         (:camera world-viewport)))

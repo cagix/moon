@@ -5,7 +5,6 @@
             [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.2d.bitmap-font :as font]
             [clojure.interop :as interop]
-            [clojure.graphics.tiled-map-renderer :as tiled-map-renderer]
             [clojure.scene2d.stage :as stage]
             [clojure.math.utils :refer [clamp]]
             [clojure.gdx.utils.viewport :as viewport]
@@ -18,23 +17,6 @@
             [clojure.error :refer [pretty-pst]]
             [clojure.ui :as ui]
             [clojure.scene2d.group :as group]))
-
-(defn draw-tiled-map
-  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
-
-  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
-
-  Can be used for lights & shadows.
-
-  Renders only visible layers."
-  [{:keys [clojure.graphics/tiled-map-renderer
-           clojure.graphics/world-viewport]}
-   tiled-map
-   color-setter]
-  (tiled-map-renderer/draw (tiled-map-renderer tiled-map)
-                           tiled-map
-                           color-setter
-                           (:camera world-viewport)))
 
 (defn- text-height [font text]
   (-> text
