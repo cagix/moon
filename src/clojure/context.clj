@@ -9,20 +9,15 @@
             [clojure.scene2d.stage :as stage]
             [clojure.math.utils :refer [clamp]]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.graphics :as graphics]
             [clojure.graphics.2d.batch :as batch]
             [clojure.input :as input]
             [clojure.string :as str]
-            [clojure.utils :refer [safe-get with-err-str mapvals]]
+            [clojure.utils :refer [with-err-str mapvals]]
             [clojure.audio :as audio]
             [clojure.db :as db]
             [clojure.error :refer [pretty-pst]]
             [clojure.ui :as ui]
             [clojure.scene2d.group :as group]))
-
-(defn set-cursor [{:keys [clojure/graphics
-                          clojure.graphics/cursors]} cursor-key]
-  (graphics/set-cursor graphics (safe-get cursors cursor-key)))
 
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.

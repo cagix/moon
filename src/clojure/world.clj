@@ -30,7 +30,8 @@
             [clojure.ui :as ui :refer [ui-actor]]
             [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :as group]
-            cdq.time))
+            cdq.time
+            cdq.graphics))
 
 (defn all-entities [{:keys [clojure.context/entity-ids]}]
   (vals @entity-ids))
@@ -374,7 +375,7 @@
                                                          c)]]
            (when (:entity/player? @eid)
              (when-let [cursor (state/cursor new-state-obj)]
-               (c/set-cursor c cursor)))
+               (cdq.graphics/set-cursor c cursor)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
@@ -869,7 +870,7 @@
     (if-let [movement-vector (player-movement-vector input)]
       (send-event! c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
-        (c/set-cursor c cursor)
+        (cdq.graphics/set-cursor c cursor)
         (when (input/button-just-pressed? input :left)
           (on-click)))))
 

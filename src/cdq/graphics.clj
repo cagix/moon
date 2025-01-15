@@ -42,3 +42,8 @@
                                         (doseq [f render-fns]
                                           (utils/req-resolve-call f context))))
   context)
+
+(defn set-cursor [{:keys [clojure/graphics
+                          clojure.graphics/cursors]} cursor-key]
+  (clojure.graphics/set-cursor graphics
+                               (utils/safe-get cursors cursor-key)))
