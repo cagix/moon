@@ -25,12 +25,13 @@
   (dispose [this]
     (run! clojure.utils/dispose (vals this))))
 
-(defn cursors [config {:keys [clojure/files]}]
+(defn cursors [config {:keys [clojure/files
+                              clojure/graphics]}]
   (map->Cursors
    (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
       (let [pixmap (clojure.graphics.pixmap/create (files/internal files (str "cursors/" file ".png")))
-            cursor (clojure.graphics/new-cursor pixmap hotspot-x hotspot-y)]
+            cursor (clojure.graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
         (clojure.utils/dispose pixmap)
         cursor))
     config)))

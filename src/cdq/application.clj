@@ -60,8 +60,9 @@
     context
     (reduce (fn [context f] (f context))
             context
-            [(fn [context]
-               (let [delta-ms (min (clojure.graphics/delta-time) cdq.time/max-delta)]
+            [(fn [{:keys [clojure/graphics] :as context}]
+               (let [delta-ms (min (clojure.graphics/delta-time graphics)
+                                   cdq.time/max-delta)]
                  (-> context
                      (update :clojure.context/elapsed-time + delta-ms)
                      (assoc :clojure.context/delta-time delta-ms))))

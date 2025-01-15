@@ -52,8 +52,9 @@
                      sprite-sheet
                      xy))
 
-(defn set-cursor [{:keys [clojure.graphics/cursors]} cursor-key]
-  (graphics/set-cursor (safe-get cursors cursor-key)))
+(defn set-cursor [{:keys [clojure/graphics
+                          clojure.graphics/cursors]} cursor-key]
+  (graphics/set-cursor graphics (safe-get cursors cursor-key)))
 
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.

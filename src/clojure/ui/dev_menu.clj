@@ -109,7 +109,8 @@
                     :update-fn #(cam/zoom (:camera (:clojure.graphics/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn (fn [_] (graphics/frames-per-second))
+                    :update-fn (fn [{:keys [clojure/graphics]}]
+                                 (graphics/frames-per-second graphics))
                     :icon "images/fps.png"}]})
 
 (defn create [c]

@@ -13,9 +13,10 @@
                   :scale 2.5
                   :up? true})))
 
-(defn- check-remove-message [{:keys [clojure.context/player-message]}]
+(defn- check-remove-message [{:keys [clojure/graphics
+                                     clojure.context/player-message]}]
   (when (:text @player-message)
-    (swap! player-message update :counter + (graphics/delta-time))
+    (swap! player-message update :counter + (graphics/delta-time graphics))
     (when (>= (:counter @player-message)
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))
