@@ -10,14 +10,14 @@
   (space.earlygrey.shapedrawer.ShapeDrawer. batch
                                             (clojure.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))
 
-(defn- munge-color [c]
+(defn- munge-color ^com.badlogic.gdx.graphics.Color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
         (keyword? c) (clojure.interop/k->color c)
         (vector? c) (apply clojure.graphics.color/create c)
         :else (throw (ex-info "Cannot understand color" c))))
 
 (defn- set-color [shape-drawer color]
-  (space.earlygrey.shapedrawer.ShapeDrawer/.setColor shape-drawer ^com.badlogic.gdx.graphics.Color (munge-color color)))
+  (space.earlygrey.shapedrawer.ShapeDrawer/.setColor shape-drawer (munge-color color)))
 
 (extend-type space.earlygrey.shapedrawer.ShapeDrawer
   clojure.graphics.shape-drawer/ShapeDrawer
