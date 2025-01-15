@@ -24,11 +24,10 @@
                             text-field
                             add-tooltip!]
              :as ui]
-            [clojure.scene2d.actor :refer [user-object]]
+            [clojure.scene2d.actor :as actor]
             [clojure.scene2d.group :refer [children clear-children add-actor! find-actor]]
             [clojure.scene2d.ui.table :refer [add-rows!]])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Table)
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- info-text [property]
@@ -71,7 +70,7 @@
 
 (defn- apply-context-fn [window f]
   #(try (f)
-        (Actor/.remove window)
+        (actor/remove window)
         (catch Throwable t
           (c/error-window @state t))))
 
@@ -125,7 +124,7 @@
   (ui/label (truncate (->edn-str v) 60)))
 
 (defmethod ->value :default [_ widget]
-  ((user-object widget) 1))
+  ((actor/user-object widget) 1))
 
 (defmethod schema->widget :widget/edn [schema v]
   (add-tooltip! (text-field (->edn-str v) {})
@@ -176,10 +175,10 @@
                              (fn []
                                (clear-children table)
                                (add-rows! table [(columns table sound-name)])
-                               (Actor/.remove (find-ancestor-window *on-clicked-actor*))
+                               (actor/remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
-                               (let [[k _] (user-object table)]
-                                 (Actor/.setUserObject table [k sound-name]))))
+                               (let [[k _] (actor/user-object table)]
+                                 (actor/set-user-object table [k sound-name]))))
                 (play-button sound-name)])]
     (c/add-actor @state (scrollable-choose-window rows))))
 
@@ -203,7 +202,7 @@
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui-stack [button top-widget])]
     (add-tooltip! button (fn [_context] (info-text props)))
-    (Actor/.setTouchable top-widget Touchable/disabled)
+    (actor/set-touchable top-widget :disabled)
     stack))
 
 (def ^:private overview {:properties/audiovisuals {:columns 10
@@ -229,7 +228,7 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
-(defn- overview-table ^Actor [context property-type clicked-id-fn]
+(defn- overview-table [context property-type clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
@@ -263,7 +262,7 @@
                                                :center? true
                                                :close-on-escape? true})
                             clicked-id-fn (fn [id]
-                                            (Actor/.remove window)
+                                            (actor/remove window)
                                             (redo-rows (conj property-ids id)))]
                         (.add window (overview-table @state property-type clicked-id-fn))
                         (.pack window)
@@ -283,7 +282,7 @@
 
 (defmethod ->value :s/one-to-many [_ widget]
   (->> (children widget)
-       (keep user-object)
+       (keep actor/user-object)
        set))
 
 (defn- add-one-to-one-rows [table property-type property-id]
@@ -302,7 +301,7 @@
                                                  :center? true
                                                  :close-on-escape? true})
                               clicked-id-fn (fn [id]
-                                              (Actor/.remove window)
+                                              (actor/remove window)
                                               (redo-rows id))]
                           (.add window (overview-table @state property-type clicked-id-fn))
                           (.pack window)
@@ -323,7 +322,7 @@
 
 (defmethod ->value :s/one-to-one [_ widget]
   (->> (children widget)
-       (keep user-object)
+       (keep actor/user-object)
        first))
 
 (defn- get-editor-window []
@@ -338,20 +337,20 @@
 
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
-    (Actor/.remove (get-editor-window))
+    (actor/remove (get-editor-window))
     (c/add-actor @state (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (db/schema-of (get-db) k) v)]
-    (Actor/.setUserObject widget [k v])
+    (actor/set-user-object widget [k v])
     widget))
 
-(def ^:private value-widget? (comp vector? user-object))
+(def ^:private value-widget? (comp vector? actor/user-object))
 
 (defn- find-kv-widget [table k]
   (find-first (fn [actor]
-                (and (user-object actor)
-                     (= k ((user-object actor) 0))))
+                (and (actor/user-object actor)
+                     (= k ((actor/user-object actor) 0))))
               (children table)))
 
 (defn- attribute-label [k m-schema table]
@@ -360,7 +359,7 @@
         delete-button (when (m/optional? k m-schema)
                         (text-button "-"
                                      (fn []
-                                       (Actor/.remove (find-kv-widget table k))
+                                       (actor/remove (find-kv-widget table k))
                                        (rebuild-editor-window))))]
     (ui/table {:cell-defaults {:pad 2}
                :rows [[{:actor delete-button :left? true}
@@ -402,7 +401,7 @@
      (for [k remaining-ks]
        [(text-button (name k)
                      (fn []
-                       (Actor/.remove window)
+                       (actor/remove window)
                        (add-rows! map-widget-table [(component-row
                                                      [k (k->default-value k)]
                                                      malli-form
@@ -454,7 +453,7 @@
 (defmethod ->value :s/map [_ table]
   (into {}
         (for [widget (filter value-widget? (children table))
-              :let [[k _] (user-object widget)]]
+              :let [[k _] (actor/user-object widget)]]
           [k (->value (db/schema-of (get-db) k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?

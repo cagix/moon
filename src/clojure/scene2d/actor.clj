@@ -27,14 +27,17 @@
   (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
     (.hit actor (.x v) (.y v) true)))
 
+(defn set-touchable [^Actor a touchable]
+  (.setTouchable a (case touchable
+                     :children-only Touchable/childrenOnly
+                     :disabled      Touchable/disabled
+                     :enabled       Touchable/enabled)))
+
 (defn set-opts [^Actor a {:keys [id name visible? touchable center-position position] :as opts}]
   (when id                          (.setUserObject        a id))
   (when name                        (.setName      a name))
   (when (contains? opts :visible?)  (.setVisible   a (boolean visible?)))
-  (when touchable                   (.setTouchable a (case touchable
-                                                       :children-only Touchable/childrenOnly
-                                                       :disabled      Touchable/disabled
-                                                       :enabled       Touchable/enabled)))
+  (when touchable                   (set-touchable a touchable))
   (when-let [[x y] center-position] (set-center    a x y))
   (when-let [[x y] position]        (.setPosition  a x y))
   a)
