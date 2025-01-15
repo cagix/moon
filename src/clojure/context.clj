@@ -29,21 +29,22 @@
 (defn play-sound [c sound-name]
   (audio/play (get-sound c sound-name)))
 
-(defn- texture-region [{:keys [clojure/assets]} path]
-  (texture-region/create (assets path)))
-
-(defn sprite [{:keys [clojure.graphics/world-unit-scale] :as c} path]
+(defn sprite [{:keys [clojure.graphics/world-unit-scale
+                      clojure/assets]}
+              path]
   (sprite/create world-unit-scale
-                 (texture-region c path)))
+                 (texture-region/create (assets path))))
 
 (defn sub-sprite [{:keys [clojure.graphics/world-unit-scale]} sprite xywh]
   (sprite/sub world-unit-scale
               sprite
               xywh))
 
-(defn sprite-sheet [{:keys [clojure.graphics/world-unit-scale] :as c} path tilew tileh]
+(defn sprite-sheet [{:keys [clojure.graphics/world-unit-scale
+                            clojure/assets]}
+                    path tilew tileh]
   (sprite/sheet world-unit-scale
-                (texture-region c path)
+                (texture-region/create (assets path))
                 tilew
                 tileh))
 
