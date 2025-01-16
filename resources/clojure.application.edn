@@ -54,7 +54,7 @@
                                                    [:clojure.context/explored-tile-corners (clojure.create/explored-tile-corners*)]
                                                    [:clojure.context/grid (clojure.create/grid*)]
                                                    [:clojure.context/raycaster (clojure.create/create-raycaster)]
-                                                   [:clojure.context/content-grid (clojure.create/content-grid* {:cell-size 16})]
+                                                   [:clojure.context/content-grid (cdq.world.content-grid/create {:cell-size 16})]
                                                    [:clojure.context/entity-ids (clojure.create/entity-ids*)]
                                                    [:clojure.context/factions-iterations (clojure.create/factions-iterations* {:good 15 :evil 5})]
                                                    [:world/potential-field-cache (clojure.potential-fields/create-cache)]

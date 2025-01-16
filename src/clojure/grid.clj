@@ -1,8 +1,8 @@
 (ns clojure.grid
   (:require [clojure.math.shapes :refer [rectangle->tiles
-                                     circle->outer-rectangle
-                                     overlaps?
-                                     rect-contains?]]))
+                                         circle->outer-rectangle
+                                         overlaps?
+                                         rect-contains?]]))
 
 (defn rectangle->cells [grid rectangle]
   (into [] (keep grid) (rectangle->tiles rectangle)))

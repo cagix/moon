@@ -3,13 +3,7 @@
             [clojure.grid2d :as g2d]
             [clojure.tiled :as tiled]
             [clojure.world :refer [spawn-creature]]
-            [clojure.content-grid :as content-grid]
             [clojure.grid :as grid]))
-
-(defn create-content-grid [tiled-map {:keys [cell-size]}]
-  (content-grid/create {:cell-size cell-size
-                        :width  (tiled/tm-width  tiled-map)
-                        :height (tiled/tm-height tiled-map)}))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -110,10 +104,6 @@
 
 (defn grid* [context]
   (create-grid (:clojure.context/tiled-map context)))
-
-(defn content-grid* [config context]
-  (create-content-grid (:clojure.context/tiled-map context)
-                       config))
 
 (defn entity-ids* [_context]
   (atom {}))
