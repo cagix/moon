@@ -9,7 +9,6 @@
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.stage :as stage]
             [clojure.db :as db]
-            [clojure.malli :as m]
             [clojure.schema :as schema]
             [clojure.property :as property]
             [clojure.ui :refer [horizontal-separator-cell
@@ -91,9 +90,6 @@
    (get-db @state))
   ([context]
    (:clojure/db context)))
-
-(defn- malli-form [schema]
-  (schema/malli-form schema (:cdq/schemas @state)))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -354,10 +350,10 @@
                      (= k ((actor/user-object actor) 0))))
               (children table)))
 
-(defn- attribute-label [k m-schema table]
+(defn- attribute-label [k schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                         (name k))
-        delete-button (when (m/optional? k m-schema)
+        delete-button (when (schema/optional-k? k schema (:cdq/schemas @state))
                         (text-button "-"
                                      (fn []
                                        (actor/remove (find-kv-widget table k))
@@ -368,8 +364,8 @@
 
 (def ^:private component-row-cols 3)
 
-(defn- component-row [[k v] m-schema table]
-  [{:actor (attribute-label k m-schema table)
+(defn- component-row [[k v] schema table]
+  [{:actor (attribute-label k schema table)
     :right? true}
    (vertical-separator-cell)
    {:actor (value-widget [k v])
@@ -385,7 +381,7 @@
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (m/generate (malli-form schema) {:size 3}))))
+     :else (schema/generate schema {:size 3} (:cdq/schemas @state)))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
@@ -394,9 +390,9 @@
                            :center? true
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
-        malli-form (malli-form schema)
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
-                                   (m/map-keys malli-form)))]
+                                   (schema/map-keys schema
+                                                    (:cdq/schemas @state))))]
     (table/add-rows!
      window
      (for [k remaining-ks]
@@ -405,7 +401,7 @@
                        (actor/remove window)
                        (table/add-rows! map-widget-table [(component-row
                                                            [k (k->default-value k)]
-                                                           malli-form
+                                                           schema
                                                            map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
@@ -436,11 +432,11 @@
   (let [table (ui/table {:cell-defaults {:pad 5}
                          :id :map-widget})
         component-rows (interpose-f horiz-sep
-                          (map #(component-row % (malli-form schema) table)
+                          (map #(component-row % schema table)
                                (sort-by-k-order property-k-sort-order
                                                 m)))
         colspan component-row-cols
-        opt? (m/optional-keys-left (malli-form schema) m)]
+        opt? (schema/optional-keys-left schema m (:cdq/schemas @state))]
     (table/add-rows!
      table
      (concat [(when opt?

@@ -20,3 +20,15 @@
   (m/validate! (malli-form (schema-of schemas schema-k)
                            schemas)
                value))
+
+(defn optional-k? [k schema schemas]
+  (m/optional? k (malli-form schema schemas)))
+
+(defn generate [schema size schemas]
+  (m/generate (malli-form schema schemas) {:size 3}))
+
+(defn map-keys [schema schemas]
+  (m/map-keys (malli-form schema schemas)))
+
+(defn optional-keys-left [schema m schemas]
+  (m/optional-keys-left (malli-form schema schemas) m))
