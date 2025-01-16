@@ -32,3 +32,24 @@
 
 (defn optional-keys-left [schema m schemas]
   (m/optional-keys-left (malli-form schema schemas) m))
+
+(comment
+ (require '[clojure.spec.alpha :as s])
+
+ (s/def ::val-max
+   (s/and
+    (s/coll-of (s/int-in 0 Integer/MAX_VALUE) :kind vector? :count 2)
+    (fn [[v mx]] (<= v mx))))
+
+ (defn explain-str [spec value]
+   (with-out-str (s/explain spec value)))
+
+ (defn validate! [spec data]
+   (when-not (s/valid? spec data)
+     (throw (ex-info (str "Validation failed: " (explain-str spec data))
+                     {:value data
+                      :spec spec}))))
+
+ (validate! ::val-max [0.5 1])
+
+ )
