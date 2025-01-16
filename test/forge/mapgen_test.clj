@@ -1,6 +1,7 @@
 (ns forge.mapgen-test
   (:require [clojure.level :refer [generate-level]]
             cdq.graphics
+            cdq.error
             [clojure.db :as db]
             [clojure.modules :as modules]
             [clojure.graphics.color :as color]
@@ -137,7 +138,7 @@
               :rows [[(ui/label (with-out-str (pprint (db/build db level-id c))))]
                      [(text-button "Generate" #(try (generate-screen-ctx c (db/build db level-id c))
                                                     (catch Throwable t
-                                                      (c/error-window @state t)
+                                                      (cdq.error/error-window @state t)
                                                       (println t))))]]
               :pack? true}))
 

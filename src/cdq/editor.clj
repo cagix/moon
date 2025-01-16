@@ -1,5 +1,6 @@
 (ns cdq.editor
-  (:require [clojure.application :refer [state]]
+  (:require cdq.error
+            [clojure.application :refer [state]]
             [clojure.assets :refer [play-sound]]
             [clojure.edn :as edn]
             [clojure.gdx.assets.manager :as asset-manager]
@@ -72,7 +73,7 @@
   #(try (f)
         (actor/remove window)
         (catch Throwable t
-          (c/error-window @state t))))
+          (cdq.error/error-window @state t))))
 
 (defn- async-write-to-file! [{:keys [clojure/db]}]
   (db/async-write-to-file! db))

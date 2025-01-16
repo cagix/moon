@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require cdq.time
+  (:require cdq.error
+            cdq.time
             cdq.graphics
             clojure.context
             clojure.entity
@@ -99,7 +100,7 @@
                    (catch Throwable t
                      (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
                 (catch Throwable t
-                  (clojure.context/error-window context t)
+                  (cdq.error/error-window context t)
                   #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
                context)])))
 
