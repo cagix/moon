@@ -79,7 +79,7 @@
   (db/async-write-to-file! db))
 
 (defn update! [property]
-  (swap! state update :clojure/db db/update property)
+  (swap! state update :clojure/db db/update property (:cdq/schemas @state))
   (async-write-to-file! @state))
 
 (defn delete! [property-id]
@@ -93,13 +93,14 @@
    (:clojure/db context)))
 
 (defn- malli-form [schema]
-  (schema/malli-form schema (:db/schemas (get-db))))
+  (schema/malli-form schema (:cdq/schemas @state)))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schema (db/schema-of (get-db) (property/type props))
+  (let [schemas (:cdq/schemas @state)
+        schema (schema/schema-of schemas (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
                            :modal? true
@@ -340,7 +341,8 @@
     (stage/add-actor @state (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (schema->widget (db/schema-of (get-db) k) v)]
+  (let [widget (schema->widget (schema/schema-of (:cdq/schemas @state) k)
+                               v)]
     (actor/set-user-object widget [k v])
     widget))
 
@@ -377,7 +379,7 @@
   [(horizontal-separator-cell component-row-cols)])
 
 (defn- k->default-value [k]
-  (let [schema (db/schema-of (get-db) k)]
+  (let [schema (schema/schema-of (:cdq/schemas @state) k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
@@ -453,7 +455,7 @@
   (into {}
         (for [widget (filter value-widget? (children table))
               :let [[k _] (actor/user-object widget)]]
-          [k (->value (db/schema-of (get-db) k) widget)])))
+          [k (->value (schema/schema-of (:cdq/schemas @state) k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
@@ -486,8 +488,8 @@
   (filter #(= "properties" (namespace %))
           (keys schemas)))
 
-(defn- property-type-tabs [context]
-  (for [property-type (sort (property-types (:db/schemas (get-db context))))]
+(defn- property-type-tabs [{:keys [cdq/schemas] :as context}]
+  (for [property-type (sort (property-types schemas))]
     {:title (str/capitalize (name property-type))
      :content (overview-table context
                               property-type

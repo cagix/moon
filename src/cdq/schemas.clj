@@ -1,11 +1,19 @@
 (ns cdq.schemas
- (:require clojure.assets
+ (:require [clojure.edn :as edn]
+           [clojure.java.io :as io]
+           clojure.assets
            [clojure.db :as db]
            clojure.graphics.animation
            clojure.graphics.sprite
            clojure.malli
            clojure.schema
            clojure.utils))
+
+(defn create [schema-edn-file _context]
+  (-> schema-edn-file
+      io/resource
+      slurp
+      edn/read-string))
 
 (defmethod clojure.schema/malli-form :s/val-max [_ _schemas] clojure.malli/val-max-schema)
 (defmethod clojure.schema/malli-form :s/number  [_ _schemas] clojure.malli/number-schema)

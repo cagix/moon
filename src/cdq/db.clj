@@ -4,13 +4,14 @@
             [clojure.schema :as schema]
             [clojure.property :as property]))
 
-(defn create [_context]
-  (let [properties-file (io/resource "properties.edn")
-        schemas (-> "schema.edn" io/resource slurp edn/read-string)
+(defn- validate-properties! [properties schemas]
+  (assert (or (empty? properties)
+              (apply distinct? (map :property/id properties))))
+  (run! #(schema/validate! schemas (property/type %) %) properties))
+
+(defn create [properties-path {:keys [cdq/schemas]}]
+  (let [properties-file (io/resource properties-path)
         properties (-> properties-file slurp edn/read-string)]
-    (assert (or (empty? properties)
-                (apply distinct? (map :property/id properties))))
-    (run! #(schema/validate! schemas (property/type %) %) properties)
+    (validate-properties! properties schemas)
     {:db/data (zipmap (map :property/id properties) properties)
-     :db/properties-file properties-file
-     :db/schemas schemas}))
+     :db/properties-file properties-file}))

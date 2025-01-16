@@ -32,9 +32,6 @@
              with-out-str
              (spit file)))))))
 
-(defn schema-of [{:keys [db/schemas]} k]
-  (schema/schema-of schemas k))
-
 (defn async-write-to-file! [{:keys [db/data db/properties-file]}]
   ; TODO validate them again!?
   (->> data
@@ -44,8 +41,9 @@
        doall
        (async-pprint-spit! properties-file)))
 
-(defn update [{:keys [db/data db/schemas] :as db}
-              {:keys [property/id] :as property}]
+(defn update [{:keys [db/data] :as db}
+              {:keys [property/id] :as property}
+              schemas]
   {:pre [(contains? property :property/id)
          (contains? data id)]}
   (schema/validate! schemas (property/type property) property)
@@ -78,10 +76,10 @@
    :file ; => this is texture ... convert that key itself only?!
    :sub-image-bounds})
 
-(defn build* [c db property]
+(defn build* [{:keys [cdq/schemas] :as c} db property]
   (apply-kvs property
              (fn [k v]
-               (let [schema (try (schema-of db k)
+               (let [schema (try (schema/schema-of schemas k)
                                  (catch Throwable _t
                                    #_(swap! undefined-data-ks conj k)
                                    nil))
