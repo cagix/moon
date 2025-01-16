@@ -102,9 +102,14 @@
  ; strange the thing is not properly searching
  )
 
+(def first-parameter? true)
+
 ; TODO why distinct?!?!
 (defn- ->parameters-str [parameters]
-  (str "[" (str/join " " (map (comp clojurize-name :name) parameters)) "]"))
+  (str "["
+       (str/join " " (cons (if first-parameter?  "_" "")
+                           (map (comp clojurize-name :name) parameters)))
+       "]"))
 
 (defn- ->parameters [parameters]
   (if (empty? parameters)
@@ -206,7 +211,7 @@
  ; `mkdir generate/`
  (generate-namespaces "gdx-src/" ;
                       "generate/"
-                      :functions ;:declares ; :protocol
+                      :protocol ;:declares ; :protocol
                       ) ; make dir to put results
 
 
