@@ -2,8 +2,7 @@
   (:require [clojure.utils :refer [safe-merge tile->middle]]
             [clojure.grid2d :as g2d]
             [clojure.tiled :as tiled]
-            [clojure.world :refer [spawn-creature]]
-            [clojure.grid :as grid]))
+            [clojure.world :refer [spawn-creature]]))
 
 (defn player-entity-props [start-position]
   {:position (tile->middle start-position)
@@ -28,18 +27,6 @@
                                 :entity/faction :evil}})]
     (spawn-creature c (update props :position tile->middle)))
   :ok)
-
-(defn set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn create-raycaster [{:keys [clojure.context/grid]}]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
-      (set-arr arr @cell grid/blocks-vision?))
-    [arr width height]))
 
 (defn explored-tile-corners* [{:keys [clojure.context/tiled-map]}]
   (atom (g2d/create-grid
