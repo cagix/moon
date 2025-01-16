@@ -2,7 +2,7 @@
   (:require [clojure.math.vector2 :as v]
             [clojure.utils :refer [defsystem safe-merge]]
             [clojure.db :as db]
-            [clojure.context.timer :as timer]
+            [clojure.timer :as timer]
             [clojure.schema :as s]
             [clojure.math.shapes :as shape]
             [clojure.inventory :as inventory]
@@ -29,8 +29,9 @@
   v)
 
 (defmethod create :entity/delete-after-duration
-  [[_ duration] c]
-  (timer/create c duration))
+  [[_ duration]
+   {:keys [clojure.context/elapsed-time] :as c}]
+  (timer/create elapsed-time duration))
 
 (defmethod create :entity/hp
   [[_ v] _c]
@@ -50,14 +51,15 @@
          1)))
 
 (defmethod create :active-skill
-  [[_ eid [skill effect-ctx]] c]
+  [[_ eid [skill effect-ctx]]
+   {:keys [clojure.context/elapsed-time]}]
   {:eid eid
    :skill skill
    :effect-ctx effect-ctx
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 (timer/create c))})
+                 (timer/create elapsed-time))})
 
 (defmethod create :npc-dead
   [[_ eid] c]
@@ -68,10 +70,11 @@
   {:eid eid})
 
 (defmethod create :npc-moving
-  [[_ eid movement-vector] c]
+  [[_ eid movement-vector]
+   {:keys [clojure.context/elapsed-time]}]
   {:eid eid
    :movement-vector movement-vector
-   :counter (timer/create c (* (stat @eid :entity/reaction-time) 0.016))})
+   :counter (timer/create elapsed-time (* (stat @eid :entity/reaction-time) 0.016))})
 
 (defmethod create :npc-sleeping
   [[_ eid] c]
@@ -98,9 +101,10 @@
    :movement-vector movement-vector})
 
 (defmethod create :stunned
-  [[_ eid duration] c]
+  [[_ eid duration]
+   {:keys [clojure.context/elapsed-time]}]
   {:eid eid
-   :counter (timer/create c duration)})
+   :counter (timer/create elapsed-time duration)})
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))

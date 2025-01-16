@@ -4,7 +4,7 @@
             [clojure.utils :refer [defsystem readable-number sort-by-k-order]]
             [clojure.graphics :as graphics]
             [clojure.graphics.color :as color]
-            [clojure.context.timer :as timer]
+            [clojure.timer :as timer]
             [clojure.entity :as entity]
             [clojure.operation :as op]))
 
@@ -209,8 +209,10 @@
   "All visible targets")
 
 (defmethod info-segment :entity/delete-after-duration
-  [[_ counter] _entity c]
-  (str "Remaining: " (readable-number (timer/ratio c counter)) "/1"))
+  [[_ counter]
+   _entity
+   {:keys [clojure.context/elapsed-time] :as c}]
+  (str "Remaining: " (readable-number (timer/ratio counter elapsed-time)) "/1"))
 
 (defmethod info-segment :entity/faction
   [[_ faction] _entity _c]
@@ -239,8 +241,10 @@
   (str "Creature - " (str/capitalize (name species))))
 
 (defmethod info-segment :entity/temp-modifier
-  [[_ {:keys [counter]}] _entity c]
-  (str "Spiderweb - remaining: " (readable-number (timer/ratio c counter)) "/1"))
+  [[_ {:keys [counter]}]
+   _entity
+   {:keys [clojure.context/elapsed-time] :as c}]
+  (str "Spiderweb - remaining: " (readable-number (timer/ratio counter elapsed-time)) "/1"))
 
 #_(defmethod info-segment :entity/skills
     [skills _c]

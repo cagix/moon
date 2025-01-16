@@ -5,7 +5,7 @@
             [clojure.utils :refer [defcomponent]]
             [clojure.world.potential-field :as potential-field]
             [clojure.inventory :as inventory]
-            [clojure.context.timer :as timer]
+            [clojure.timer :as timer]
             [clojure.entity :as entity]
             [clojure.entity.state :as state]
             [clojure.grid :as grid]
@@ -53,17 +53,20 @@
   (state/pause-game? [_]
     false)
 
-  (state/enter [[_ {:keys [eid skill]}] c]
+  (state/enter [[_ {:keys [eid skill]}]
+                {:keys [clojure.context/elapsed-time] :as c}]
     (audio/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (timer/create c (:skill/cooldown skill))))
+             (timer/create elapsed-time (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill))))
 
-  (tick! [[_ {:keys [skill effect-ctx counter]}] eid c]
+  (tick! [[_ {:keys [skill effect-ctx counter]}]
+          eid
+          {:keys [clojure.context/elapsed-time] :as c}]
     (cond
      (not (effect-ctx/some-applicable? (update-effect-ctx c effect-ctx)
                                        (:skill/effects skill)))
@@ -72,7 +75,7 @@
       ; TODO some sound ?
       )
 
-     (timer/stopped? c counter)
+     (timer/stopped? counter elapsed-time)
      (do
       (effect-ctx/do-all! c effect-ctx (:skill/effects skill))
       (send-event! c eid :action-done)))))
@@ -117,8 +120,10 @@
   (state/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (tick! [[_ {:keys [counter]}] eid c]
-    (when (timer/stopped? c counter)
+  (tick! [[_ {:keys [counter]}]
+          eid
+          {:keys [clojure.context/elapsed-time] :as c}]
+    (when (timer/stopped? counter elapsed-time)
       (send-event! c eid :timer-finished))))
 
 (defcomponent :npc-sleeping
@@ -384,6 +389,8 @@
   (state/pause-game? [_]
     false)
 
-  (tick! [[_ {:keys [counter]}] eid c]
-    (when (timer/stopped? c counter)
+  (tick! [[_ {:keys [counter]}]
+          eid
+          {:keys [clojure.context/elapsed-time] :as c}]
+    (when (timer/stopped? counter elapsed-time)
       (send-event! c eid :effect-wears-off))))

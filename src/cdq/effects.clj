@@ -1,7 +1,7 @@
 (ns cdq.effects
   (:require [clojure.audio :as audio]
-            [clojure.context.timer :as timer]
             [clojure.db :as db]
+            [clojure.timer :as timer]
             [clojure.effect :as effect]
             [clojure.effect-context :as effect-ctx]
             [clojure.entity :as entity]
@@ -266,10 +266,12 @@
       true)
 
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-    (effect/handle [_ {:keys [effect/target]} c]
+    (effect/handle [_
+                    {:keys [effect/target]}
+                    {:keys [clojure.context/elapsed-time] :as c}]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
-                                                   :counter (timer/create c duration)})
+                                                   :counter (timer/create elapsed-time duration)})
         (swap! target entity/mod-add modifiers)))))
 
 (defcomponent :effects.target/stun

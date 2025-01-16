@@ -5,7 +5,7 @@
             [clojure.utils :refer [defsystem define-order safe-merge find-first]]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.inventory :as inventory]
-            [clojure.context.timer :as timer]
+            [clojure.timer :as timer]
             [clojure.graphics.animation :as animation]
             [clojure.schema :as s]
             [clojure.widgets.inventory :as widgets.inventory]
@@ -59,15 +59,15 @@
 ; so we could add those protocols to 'entity'?
 ; => also add render stuff
 ; so each component is together all stuff (but question is if we have open data)
-(defn add-text-effect [entity c text]
+(defn add-text-effect [entity {:keys [clojure.context/elapsed-time]} text]
   (assoc entity
          :entity/string-effect
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter #(timer/reset c %)))
+               (update :counter #(timer/reset % elapsed-time)))
            {:text text
-            :counter (timer/create c 0.4)})))
+            :counter (timer/create elapsed-time 0.4)})))
 
 (defn- add-entity [{:keys [clojure.context/content-grid
                            clojure.context/grid
@@ -221,12 +221,15 @@
                  :entity/clickable {:type :clickable/item
                                     :text (:property/pretty-name item)}}))
 
-(defn delayed-alert [c position faction duration]
+(defn delayed-alert [{:keys [clojure.context/elapsed-time] :as c}
+                     position
+                     faction
+                     duration]
   (spawn-entity c
                 position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
-                 {:counter (timer/create c duration)
+                 {:counter (timer/create elapsed-time duration)
                   :faction faction}}))
 
 (defn line-render [c {:keys [start end duration color thick?]}]
@@ -491,8 +494,12 @@
          initial-state (entity/create [initial-state eid] c)))
 
 (defmethod tick! :entity/alert-friendlies-after-duration
-  [[_ {:keys [counter faction]}] eid {:keys [clojure.context/grid] :as c}]
-  (when (timer/stopped? c counter)
+  [[_ {:keys [counter faction]}]
+   eid
+   {:keys [clojure.context/grid
+           clojure.context/elapsed-time]
+    :as c}]
+  (when (timer/stopped? counter elapsed-time)
     (swap! eid assoc :entity/destroyed? true)
     (doseq [friendly-eid (friendlies-in-radius grid (:position @eid) faction)]
       (send-event! c friendly-eid :alert))))
@@ -504,8 +511,10 @@
                   (assoc k (animation/tick animation delta-time)))))
 
 (defmethod tick! :entity/delete-after-duration
-  [[_ counter] eid c]
-  (when (timer/stopped? c counter)
+  [[_ counter]
+   eid
+   {:keys [clojure.context/elapsed-time]}]
+  (when (timer/stopped? counter elapsed-time)
     (swap! eid assoc :entity/destroyed? true)))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
@@ -610,19 +619,25 @@
     (swap! eid assoc :entity/destroyed? true)))
 
 (defmethod tick! :entity/skills
-  [[k skills] eid c]
+  [[k skills]
+   eid
+   {:keys [clojure.context/elapsed-time]}]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
-                     (timer/stopped? c cooling-down?))]
+                     (timer/stopped? cooling-down? elapsed-time))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
 
 (defmethod tick! :entity/string-effect
-  [[k {:keys [counter]}] eid c]
-  (when (timer/stopped? c counter)
+  [[k {:keys [counter]}]
+   eid
+   {:keys [clojure.context/elapsed-time]}]
+  (when (timer/stopped? counter elapsed-time)
     (swap! eid dissoc k)))
 
 (defmethod tick! :entity/temp-modifier
-  [[k {:keys [modifiers counter]}] eid c]
-  (when (timer/stopped? c counter)
+  [[k {:keys [modifiers counter]}]
+   eid
+   {:keys [clojure.context/elapsed-time]}]
+  (when (timer/stopped? counter elapsed-time)
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))

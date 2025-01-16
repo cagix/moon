@@ -1,6 +1,6 @@
 (ns clojure.world.graphics
   (:require cdq.graphics
-            [clojure.context.timer :as timer]
+            [clojure.timer :as timer]
             [clojure.error :refer [pretty-pst]]
             [clojure.graphics.shape-drawer :as sd]
             [cdq.graphics.batch :as batch]
@@ -126,13 +126,15 @@
   (run! #(render-effect % effect-ctx context) effect))
 
 (defn draw-skill-image-and-active-effect
-  [{:keys [skill effect-ctx counter]} entity c]
+  [{:keys [skill effect-ctx counter]}
+   entity
+   {:keys [clojure.context/elapsed-time] :as c}]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image c
                       image
                       entity
                       (:position entity)
-                      (timer/ratio c counter))
+                      (timer/ratio counter elapsed-time))
     (render-active-effect c
                           effect-ctx
                           ; !! FIXME !!
