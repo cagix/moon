@@ -24,7 +24,7 @@
             [clojure.scene2d.ui.button-group :as button-group]
             [clojure.effect-context :as effect-ctx]
             [clojure.skill :as skill]
-            [clojure.context :as c]
+            [cdq.stage :as stage]
             [clojure.context.info :as info]
             [clojure.graphics.camera :as cam]
             [clojure.math.raycaster :as raycaster]
@@ -331,21 +331,21 @@
 (defn show-modal [{:keys [clojure.graphics/ui-viewport] :as c}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal (:clojure.context/stage c))))
-  (c/add-actor c
-               (ui/window {:title title
-                           :rows [[(ui/label text)]
-                                  [(ui/text-button button-text
-                                                   (fn []
-                                                     (actor/remove (::modal (:clojure.context/stage c)))
-                                                     (on-click)))]]
-                           :id ::modal
-                           :modal? true
-                           :center-position [(/ (:width  ui-viewport) 2)
-                                             (* (:height ui-viewport) (/ 3 4))]
-                           :pack? true})))
+  (stage/add-actor c
+                   (ui/window {:title title
+                               :rows [[(ui/label text)]
+                                      [(ui/text-button button-text
+                                                       (fn []
+                                                         (actor/remove (::modal (:clojure.context/stage c)))
+                                                         (on-click)))]]
+                               :id ::modal
+                               :modal? true
+                               :center-position [(/ (:width  ui-viewport) 2)
+                                                 (* (:height ui-viewport) (/ 3 4))]
+                               :pack? true})))
 
 (defn world-item? [c]
-  (not (c/mouse-on-actor? c)))
+  (not (stage/mouse-on-actor? c)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -808,7 +808,7 @@
                (actor/user-object (actor/parent actor)))))
 
 (defn- mouseover-actor->cursor [c]
-  (let [actor (c/mouse-on-actor? c)]
+  (let [actor (stage/mouse-on-actor? c)]
     (cond
      (inventory-cell-with-item? c actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)           :cursors/move-window
@@ -827,7 +827,7 @@
 (defn- interaction-state [{:keys [clojure.context/mouseover-eid] :as c} eid]
   (let [entity @eid]
     (cond
-     (c/mouse-on-actor? c)
+     (stage/mouse-on-actor? c)
      [(mouseover-actor->cursor c)
       (fn [] nil)] ; handled by actors themself, they check player state
 

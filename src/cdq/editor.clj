@@ -7,7 +7,7 @@
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [clojure.context :as c]
+            [cdq.stage :as stage]
             [clojure.db :as db]
             [clojure.malli :as m]
             [clojure.schema :as schema]
@@ -179,7 +179,7 @@
                                (let [[k _] (actor/user-object table)]
                                  (actor/set-user-object table [k sound-name]))))
                 (play-button sound-name)])]
-    (c/add-actor @state (scrollable-choose-window rows))))
+    (stage/add-actor @state (scrollable-choose-window rows))))
 
 (defn- columns [table sound-name]
   [(text-button sound-name
@@ -265,7 +265,7 @@
                                             (redo-rows (conj property-ids id)))]
                         (.add window (overview-table @state property-type clicked-id-fn))
                         (.pack window)
-                        (c/add-actor @state window))))]
+                        (stage/add-actor @state window))))]
       (for [property-id property-ids]
         (let [property (db/build (get-db) property-id @state)
               image-widget (image->widget (property/->image property)
@@ -304,7 +304,7 @@
                                               (redo-rows id))]
                           (.add window (overview-table @state property-type clicked-id-fn))
                           (.pack window)
-                          (c/add-actor @state window)))))]
+                          (stage/add-actor @state window)))))]
       [(when property-id
          (let [property (db/build (get-db) property-id @state)
                image-widget (image->widget (property/->image property)
@@ -337,7 +337,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (actor/remove (get-editor-window))
-    (c/add-actor @state (editor-window prop-value))))
+    (stage/add-actor @state (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (db/schema-of (get-db) k) v)]
@@ -407,7 +407,7 @@
                                                            map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
-    (c/add-actor @state window)))
+    (stage/add-actor @state window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -467,7 +467,7 @@
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
-                  #(c/add-actor @state (scrollable-choose-window (texture-rows)))
+                  #(stage/add-actor @state (scrollable-choose-window (texture-rows)))
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
@@ -480,7 +480,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (c/add-actor @state (editor-window (db/get-raw (get-db) id))))
+  (stage/add-actor @state (editor-window (db/get-raw (get-db) id))))
 
 (defn- property-type-tabs [context]
   (for [property-type (sort (db/property-types (get-db context)))]
@@ -524,4 +524,4 @@
   ; because assets are searhed and loaded differently ...
   (doseq [actor [(background-image context "images/moon_background.png")
                  (tabs-table       context "custom label text here")]]
-    (c/add-actor context actor)))
+    (stage/add-actor context actor)))

@@ -9,7 +9,6 @@
             clojure.graphics.sprite
             [clojure.scene2d.actor :refer [user-object] :as actor]
             [clojure.grid2d :as g2d]
-            [clojure.context :as c]
             [clojure.ui :refer [ui-widget
                             texture-region-drawable
                             image-widget

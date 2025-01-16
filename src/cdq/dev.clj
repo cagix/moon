@@ -7,7 +7,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.scene2d.group :refer [children]]
             [clojure.scene2d.stage :as stage]
-            [clojure.context :as c]
+            [cdq.stage]
             [clojure.ui :refer [t-node scroll-pane] :as ui]
             [clojure.world :as world]))
 
@@ -233,20 +233,20 @@
 
 (defn- show-table-view [title m]
   {:pre [(map? m)]}
-  (c/add-actor @app/state
-               (scroll-pane-window title
-                                   (generate-table m))))
+  (cdq.stage/add-actor @app/state
+                       (scroll-pane-window title
+                                           (generate-table m))))
 
 (defn- show-tree-view! [title m]
   {:pre [(map? m)]}
-  (c/add-actor @app/state
-               (scroll-pane-window title
-                                   (generate-tree m))))
+  (cdq.stage/add-actor @app/state
+                       (scroll-pane-window title
+                                           (generate-tree m))))
 
 (defn- show-obj-editor! [context]
-  (c/add-actor context
-               (scroll-pane-window "Object DB"
-                                   (editor/tabs-table context))))
+  (cdq.stage/add-actor context
+                       (scroll-pane-window "Object DB"
+                                           (editor/tabs-table context))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

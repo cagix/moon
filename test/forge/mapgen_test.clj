@@ -8,7 +8,6 @@
             [clojure.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [clojure.context :as c]
             [clojure.input :as input]
             [clojure.graphics.camera :as cam]
             [clojure.tiled :as tiled]

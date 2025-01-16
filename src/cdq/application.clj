@@ -1,8 +1,8 @@
 (ns cdq.application
   (:require cdq.error
             cdq.time
+            cdq.stage
             cdq.graphics
-            clojure.context
             clojure.entity
             clojure.entity.state
             clojure.grid
@@ -31,7 +31,7 @@
 (defn update-mouseover-entity [{:keys [clojure.context/grid
                                        clojure.context/mouseover-eid
                                        clojure.context/player-eid] :as c}]
-  (let [new-eid (if (clojure.context/mouse-on-actor? c)
+  (let [new-eid (if (cdq.stage/mouse-on-actor? c)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
