@@ -62,6 +62,46 @@
           (for [interface interfaces]
             [interface (parse-class-methods builder interface)]))))
 
+(comment
+
+ (def jpbuilder (doto (JavaProjectBuilder.)
+                  (.addSourceTree (java.io.File. "gdx-src/"))))
+
+ (count (.getClasses jpbuilder))
+ ; 942
+
+ (count (mapcat #(.getMethods %) (.getClasses jpbuilder)))
+ ; 10540
+
+ (count (distinct (map #(.getName %) (mapcat #(.getMethods %) (.getClasses jpbuilder)))))
+ ; 3534
+
+(find-duplicates (map #(.getName %) (mapcat #(.getMethods %) (.getClasses jpbuilder))))
+
+
+ )
+
+(comment
+
+ ; its in the names - what are all unique names
+ ; just make them as functions in 1 namespace
+ ; clojure.x ?
+ ; Count distinct
+
+ (def jpbuilder (doto (JavaProjectBuilder.)
+                  (.addSourceTree (java.io.File. "gdx-src/"))))
+
+ (clojure.pprint/pprint
+  (sort (map #(.getName %) (.getPackages jpbuilder))))
+
+ (map #(.getName %) (.getMethods (first (.getClasses jpbuilder))))
+
+(clojure.pprint/pprint
+  (sort (map #(.getName %) (.getPackages jpbuilder))))
+ (first (.getMethods (.getClassByName jpbuilder "com.badlogic.gdx.Gdx")))
+ ; strange the thing is not properly searching
+ )
+
 ; TODO why distinct?!?!
 (defn- ->parameters-str [parameters]
   (str "[" (str/join " " (map (comp clojurize-name :name) parameters)) "]"))
