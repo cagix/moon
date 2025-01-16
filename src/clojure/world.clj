@@ -35,9 +35,6 @@
             cdq.time
             cdq.graphics))
 
-(defn all-entities [{:keys [clojure.context/entity-ids]}]
-  (vals @entity-ids))
-
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
 (defn- on-screen? [viewport entity]

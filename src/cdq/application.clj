@@ -104,10 +104,10 @@
                   #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
                context)])))
 
-(defn remove-destroyed-entities [c]
+(defn remove-destroyed-entities [{:keys [clojure.context/entity-ids] :as c}]
   ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
   (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (clojure.world/all-entities c))]
+                      (vals @entity-ids))]
     (clojure.world/remove-entity c eid)
     (doseq [component @eid]
       (clojure.world/destroy! component eid c)))
