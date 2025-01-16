@@ -122,10 +122,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	}
 
 	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
-		if (SharedLibraryLoader.isMac) {
-			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
-		}
-
 		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
 		initializeGlfw();
 		setApplicationLogger(new Lwjgl3ApplicationLogger());
