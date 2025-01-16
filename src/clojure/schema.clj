@@ -12,15 +12,10 @@
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
 
-; TODO here only namespace 'schema', not knowing about 'schemas' ??
-; or namespace 'schemas' ?!
-; abstraction over whole 'schemas' ?!
 (defn property-types [schemas]
   (filter #(= "properties" (namespace %))
           (keys schemas)))
 
-; TODO ... malli is internal to 'schema' ns ?!
-; (m/generate (db/malli-form schema) {:size 3})
 (defn schema-of [schemas k]
   (assert (contains? schemas k)
           (pr-str k))
