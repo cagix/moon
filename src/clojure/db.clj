@@ -35,9 +35,6 @@
 (defn schema-of [{:keys [db/schemas]} k]
   (schema/schema-of schemas k))
 
-(defn property-types [{:keys [db/schemas]}]
-  (schema/property-types schemas))
-
 (defn async-write-to-file! [{:keys [db/data db/properties-file]}]
   ; TODO validate them again!?
   (->> data

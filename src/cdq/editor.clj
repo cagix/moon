@@ -482,8 +482,12 @@
 (defn- edit-property [id]
   (stage/add-actor @state (editor-window (db/get-raw (get-db) id))))
 
+(defn- property-types [schemas]
+  (filter #(= "properties" (namespace %))
+          (keys schemas)))
+
 (defn- property-type-tabs [context]
-  (for [property-type (sort (db/property-types (get-db context)))]
+  (for [property-type (sort (property-types (:db/schemas (get-db context))))]
     {:title (str/capitalize (name property-type))
      :content (overview-table context
                               property-type

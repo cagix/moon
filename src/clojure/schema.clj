@@ -12,13 +12,8 @@
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
 
-(defn property-types [schemas]
-  (filter #(= "properties" (namespace %))
-          (keys schemas)))
-
 (defn schema-of [schemas k]
-  (assert (contains? schemas k)
-          (pr-str k))
+  (assert (contains? schemas k) (pr-str k))
   (safe-get schemas k))
 
 (defn validate! [schemas schema-k value]
