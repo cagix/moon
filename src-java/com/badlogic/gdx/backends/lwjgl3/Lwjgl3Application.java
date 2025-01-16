@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl3;
 
 import java.io.File;
@@ -43,27 +59,27 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.system.Configuration;
 
-public class CljLwjgl3Application implements Lwjgl3ApplicationBase {
-	public Lwjgl3ApplicationConfiguration config;
-	public Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
-	public volatile Lwjgl3Window currentWindow;
-	public Lwjgl3Audio audio;
-	public Files files;
-	public Net net;
-	public ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
-	public Lwjgl3Clipboard clipboard;
-	public int logLevel = LOG_INFO;
-	public ApplicationLogger applicationLogger;
-	public volatile boolean running = true;
-	public Array<Runnable> runnables = new Array<Runnable>();
-	public Array<Runnable> executedRunnables = new Array<Runnable>();
-	public Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	public static GLFWErrorCallback errorCallback;
-	public static GLVersion glVersion;
-	public static Callback glDebugCallback;
-	public Mync sync;
+public class Lwjgl3Application implements Lwjgl3ApplicationBase {
+	private final Lwjgl3ApplicationConfiguration config;
+	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
+	private volatile Lwjgl3Window currentWindow;
+	private Lwjgl3Audio audio;
+	private final Files files;
+	private final Net net;
+	private final ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
+	private final Lwjgl3Clipboard clipboard;
+	private int logLevel = LOG_INFO;
+	private ApplicationLogger applicationLogger;
+	private volatile boolean running = true;
+	private final Array<Runnable> runnables = new Array<Runnable>();
+	private final Array<Runnable> executedRunnables = new Array<Runnable>();
+	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	private static GLFWErrorCallback errorCallback;
+	private static GLVersion glVersion;
+	private static Callback glDebugCallback;
+	private final Sync sync;
 
-	public static void initializeGlfw () {
+	static void initializeGlfw () {
 		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
@@ -77,7 +93,7 @@ public class CljLwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-	public static void loadANGLE () {
+	static void loadANGLE () {
 		try {
 			Class angleLoader = Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader");
 			Method load = angleLoader.getMethod("load");
@@ -89,7 +105,7 @@ public class CljLwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-	public static void postLoadANGLE () {
+	static void postLoadANGLE () {
 		try {
 			Class angleLoader = Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader");
 			Method load = angleLoader.getMethod("postGlfwInit");
@@ -101,54 +117,55 @@ public class CljLwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-  public CljLwjgl3Application(){
-  }
+	public Lwjgl3Application (ApplicationListener listener) {
+		this(listener, new Lwjgl3ApplicationConfiguration());
+	}
 
-//	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
-//		if (SharedLibraryLoader.isMac) {
-//			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
-//		}
-//
-//		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
-//		initializeGlfw();
-//		setApplicationLogger(new Lwjgl3ApplicationLogger());
-//
-//		this.config = config = Lwjgl3ApplicationConfiguration.copy(config);
-//		if (config.title == null) config.title = listener.getClass().getSimpleName();
-//
-//		Gdx.app = this;
-//		if (config.disableAudio) {
-//			this.audio = new MockAudio();
-//		} else {
-//			try {
-//				this.audio = createAudio(config);
-//			} catch (Throwable t) {
-//				log("Lwjgl3Application", "Couldn't initialize audio, disabling audio", t);
-//				this.audio = new MockAudio();
-//			}
-//		}
-//		Gdx.audio = audio;
-//		this.files = Gdx.files = createFiles();
-//		this.net = Gdx.net = new Lwjgl3Net(config);
-//		this.clipboard = new Lwjgl3Clipboard();
-//
-//		this.sync = new Sync();
-//
-//		Lwjgl3Window window = createWindow(config, listener, 0);
-//		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) postLoadANGLE();
-//		windows.add(window);
-//		try {
-//			loop();
-//			cleanupWindows();
-//		} catch (Throwable t) {
-//			if (t instanceof RuntimeException)
-//				throw (RuntimeException)t;
-//			else
-//				throw new GdxRuntimeException(t);
-//		} finally {
-//			cleanup();
-//		}
-//	}
+	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
+		if (SharedLibraryLoader.isMac) {
+			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
+		}
+
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
+		initializeGlfw();
+		setApplicationLogger(new Lwjgl3ApplicationLogger());
+
+		this.config = config = Lwjgl3ApplicationConfiguration.copy(config);
+		if (config.title == null) config.title = listener.getClass().getSimpleName();
+
+		Gdx.app = this;
+		if (config.disableAudio) {
+			this.audio = new MockAudio();
+		} else {
+			try {
+				this.audio = createAudio(config);
+			} catch (Throwable t) {
+				log("Lwjgl3Application", "Couldn't initialize audio, disabling audio", t);
+				this.audio = new MockAudio();
+			}
+		}
+		Gdx.audio = audio;
+		this.files = Gdx.files = createFiles();
+		this.net = Gdx.net = new Lwjgl3Net(config);
+		this.clipboard = new Lwjgl3Clipboard();
+
+		this.sync = new Sync();
+
+		Lwjgl3Window window = createWindow(config, listener, 0);
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) postLoadANGLE();
+		windows.add(window);
+		try {
+			loop();
+			cleanupWindows();
+		} catch (Throwable t) {
+			if (t instanceof RuntimeException)
+				throw (RuntimeException)t;
+			else
+				throw new GdxRuntimeException(t);
+		} finally {
+			cleanup();
+		}
+	}
 
 	protected void loop () {
 		Array<Lwjgl3Window> closedWindows = new Array<Lwjgl3Window>();
@@ -417,7 +434,7 @@ public class CljLwjgl3Application implements Lwjgl3ApplicationBase {
 		return createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 	}
 
-	public Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
+	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
 		final long sharedContext) {
 		final Lwjgl3Window window = new Lwjgl3Window(listener, lifecycleListeners, config, this);
 		if (sharedContext == 0) {
