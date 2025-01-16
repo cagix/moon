@@ -60,26 +60,26 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
-	private final Lwjgl3ApplicationConfiguration config;
-	final Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
-	private volatile Lwjgl3Window currentWindow;
-	private Lwjgl3Audio audio;
-	private final Files files;
-	private final Net net;
-	private final ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
-	private final Lwjgl3Clipboard clipboard;
-	private int logLevel = LOG_INFO;
-	private ApplicationLogger applicationLogger;
-	private volatile boolean running = true;
-	private final Array<Runnable> runnables = new Array<Runnable>();
-	private final Array<Runnable> executedRunnables = new Array<Runnable>();
-	private final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	private static GLFWErrorCallback errorCallback;
-	private static GLVersion glVersion;
-	private static Callback glDebugCallback;
-	private final Sync sync;
+	public Lwjgl3ApplicationConfiguration config;
+	public Array<Lwjgl3Window> windows = new Array<Lwjgl3Window>();
+	public volatile Lwjgl3Window currentWindow;
+	public Lwjgl3Audio audio;
+	public Files files;
+	public Net net;
+	public ObjectMap<String, Preferences> preferences = new ObjectMap<String, Preferences>();
+	public Lwjgl3Clipboard clipboard;
+	public int logLevel = LOG_INFO;
+	public ApplicationLogger applicationLogger;
+	public volatile boolean running = true;
+	public Array<Runnable> runnables = new Array<Runnable>();
+	public Array<Runnable> executedRunnables = new Array<Runnable>();
+	public Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+	public static GLFWErrorCallback errorCallback;
+	public static GLVersion glVersion;
+	public static Callback glDebugCallback;
+	public Sync sync;
 
-	static void initializeGlfw () {
+	public static void initializeGlfw () {
 		if (errorCallback == null) {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
@@ -93,7 +93,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-	static void loadANGLE () {
+	public static void loadANGLE () {
 		try {
 			Class angleLoader = Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader");
 			Method load = angleLoader.getMethod("load");
@@ -105,7 +105,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-	static void postLoadANGLE () {
+	public static void postLoadANGLE () {
 		try {
 			Class angleLoader = Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.ANGLELoader");
 			Method load = angleLoader.getMethod("postGlfwInit");
@@ -116,6 +116,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			throw new GdxRuntimeException("Couldn't load ANGLE.", t);
 		}
 	}
+
+  public Lwjgl3Application () {
+
+  }
 
 	public Lwjgl3Application (ApplicationListener listener) {
 		this(listener, new Lwjgl3ApplicationConfiguration());
@@ -415,7 +419,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		return new DefaultLwjgl3Input(window);
 	}
 
-	protected Files createFiles () {
+	public Files createFiles () {
 		return new Lwjgl3Files();
 	}
 
@@ -430,7 +434,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		return createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 	}
 
-	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
+	public Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
 		final long sharedContext) {
 		final Lwjgl3Window window = new Lwjgl3Window(listener, lifecycleListeners, config, this);
 		if (sharedContext == 0) {

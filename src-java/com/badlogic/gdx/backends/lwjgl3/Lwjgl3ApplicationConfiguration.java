@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,43 +43,43 @@ import com.badlogic.gdx.math.GridPoint2;
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	public static PrintStream errorStream = System.err;
 
-	boolean disableAudio = false;
+	public boolean disableAudio = false;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
-	int maxNetThreads = Integer.MAX_VALUE;
+	public int maxNetThreads = Integer.MAX_VALUE;
 
-	int audioDeviceSimultaneousSources = 16;
-	int audioDeviceBufferSize = 512;
-	int audioDeviceBufferCount = 9;
+	public int audioDeviceSimultaneousSources = 16;
+	public int audioDeviceBufferSize = 512;
+	public int audioDeviceBufferCount = 9;
 
 	public enum GLEmulation {
 		ANGLE_GLES20, GL20, GL30, GL31, GL32
 	}
 
-	GLEmulation glEmulation = GLEmulation.GL20;
-	int gles30ContextMajorVersion = 3;
-	int gles30ContextMinorVersion = 2;
+	public GLEmulation glEmulation = GLEmulation.GL20;
+	public int gles30ContextMajorVersion = 3;
+	public int gles30ContextMinorVersion = 2;
 
-	int r = 8, g = 8, b = 8, a = 8;
-	int depth = 16, stencil = 0;
-	int samples = 0;
-	boolean transparentFramebuffer;
+	public int r = 8, g = 8, b = 8, a = 8;
+	public int depth = 16, stencil = 0;
+	public int samples = 0;
+	public boolean transparentFramebuffer;
 
-	int idleFPS = 60;
-	int foregroundFPS = 0;
+	public int idleFPS = 60;
+	public int foregroundFPS = 0;
 
-	boolean pauseWhenMinimized = true;
-	boolean pauseWhenLostFocus = false;
+	public boolean pauseWhenMinimized = true;
+	public boolean pauseWhenLostFocus = false;
 
-	String preferencesDirectory = ".prefs/";
-	Files.FileType preferencesFileType = FileType.External;
+	public String preferencesDirectory = ".prefs/";
+	public Files.FileType preferencesFileType = FileType.External;
 
-	HdpiMode hdpiMode = HdpiMode.Logical;
+	public HdpiMode hdpiMode = HdpiMode.Logical;
 
-	boolean debug = false;
-	PrintStream debugStream = System.err;
+	public boolean debug = false;
+	public PrintStream debugStream = System.err;
 
-	static Lwjgl3ApplicationConfiguration copy (Lwjgl3ApplicationConfiguration config) {
+	public static Lwjgl3ApplicationConfiguration copy (Lwjgl3ApplicationConfiguration config) {
 		Lwjgl3ApplicationConfiguration copy = new Lwjgl3ApplicationConfiguration();
 		copy.set(config);
 		return copy;
@@ -130,7 +130,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	}
 
 	/** Sets the audio device configuration.
-	 * 
+	 *
 	 * @param simultaneousSources the maximum number of sources that can be played simultaniously (default 16)
 	 * @param bufferSize the audio device buffer size in samples (default 512)
 	 * @param bufferCount the audio device buffer count (default 9) */
@@ -144,9 +144,9 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	 * back to OpenGL ES 2.0 emulation through OpenGL 2.0. The default parameters for major and minor should be 3 and 2
 	 * respectively to be compatible with Mac OS X. Specifying major version 4 and minor version 2 will ensure that all OpenGL ES
 	 * 3.0 features are supported. Note however that Mac OS X does only support 3.2.
-	 * 
+	 *
 	 * @see <a href= "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html"> LWJGL OSX ContextAttribs note</a>
-	 * 
+	 *
 	 * @param glVersion which OpenGL ES emulation version to use
 	 * @param gles3MajorVersion OpenGL ES major version, use 3 as default
 	 * @param gles3MinorVersion OpenGL ES minor version, use 2 as default */
@@ -157,7 +157,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	}
 
 	/** Sets the bit depth of the color, depth and stencil buffer as well as multi-sampling.
-	 * 
+	 *
 	 * @param r red bits (default 8)
 	 * @param g green bits (default 8)
 	 * @param b blue bits (default 8)
