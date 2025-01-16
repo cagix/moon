@@ -5,7 +5,6 @@
            [clojure.db :as db]
            clojure.graphics.animation
            clojure.graphics.sprite
-           clojure.malli
            clojure.schema
            clojure.utils))
 
@@ -15,16 +14,16 @@
       slurp
       edn/read-string))
 
-(defmethod clojure.schema/malli-form :s/val-max [_ _schemas] clojure.malli/val-max-schema)
-(defmethod clojure.schema/malli-form :s/number  [_ _schemas] clojure.malli/number-schema)
-(defmethod clojure.schema/malli-form :s/nat-int [_ _schemas] clojure.malli/nat-int-schema)
-(defmethod clojure.schema/malli-form :s/int     [_ _schemas] clojure.malli/int-schema)
-(defmethod clojure.schema/malli-form :s/pos     [_ _schemas] clojure.malli/pos-schema)
-(defmethod clojure.schema/malli-form :s/pos-int [_ _schemas] clojure.malli/pos-int-schema)
+(defmethod clojure.schema/malli-form :s/val-max [_ _schemas] clojure.schema/val-max-schema)
+(defmethod clojure.schema/malli-form :s/number  [_ _schemas] clojure.schema/number-schema)
+(defmethod clojure.schema/malli-form :s/nat-int [_ _schemas] clojure.schema/nat-int-schema)
+(defmethod clojure.schema/malli-form :s/int     [_ _schemas] clojure.schema/int-schema)
+(defmethod clojure.schema/malli-form :s/pos     [_ _schemas] clojure.schema/pos-schema)
+(defmethod clojure.schema/malli-form :s/pos-int [_ _schemas] clojure.schema/pos-int-schema)
 
 (clojure.utils/defcomponent :s/sound
   (clojure.schema/malli-form [_ _schemas]
-    clojure.malli/string-schema)
+    clojure.schema/string-schema)
 
   (clojure.db/edn->value [_ sound-name _db {:keys [clojure/assets]}]
     (clojure.assets/sound assets sound-name)))
@@ -44,14 +43,14 @@
 
 (clojure.utils/defcomponent :s/image
   (clojure.schema/malli-form  [_ _schemas]
-    clojure.malli/image-schema)
+    clojure.schema/image-schema)
 
   (clojure.db/edn->value [_ edn _db c]
     (edn->sprite c edn)))
 
 (clojure.utils/defcomponent :s/animation
   (clojure.schema/malli-form [_ _schemas]
-    clojure.malli/animation-schema)
+    clojure.schema/animation-schema)
 
   (clojure.db/edn->value [_ {:keys [frames frame-duration looping?]} _db c]
     (clojure.graphics.animation/create (map #(edn->sprite c %) frames)
@@ -63,20 +62,20 @@
 
 (clojure.utils/defcomponent :s/one-to-one
   (clojure.schema/malli-form [[_ property-type] _schemas]
-    (clojure.malli/qualified-keyword-schema (type->id-namespace property-type)))
+    (clojure.schema/qualified-keyword-schema (type->id-namespace property-type)))
   (clojure.db/edn->value [_ property-id db {:keys [clojure/db] :as context}]
     (db/build db property-id context)))
 
 (clojure.utils/defcomponent :s/one-to-many
   (clojure.schema/malli-form [[_ property-type] _schemas]
-    (clojure.malli/set-schema (clojure.malli/qualified-keyword-schema (type->id-namespace property-type))))
+    (clojure.schema/set-schema (clojure.schema/qualified-keyword-schema (type->id-namespace property-type))))
   (clojure.db/edn->value [_ property-ids db {:keys [clojure/db] :as context}]
     (set (map #(db/build db % context) property-ids))))
 
 (defn- map-form [ks schemas]
-  (clojure.malli/map-schema ks (fn [k]
-                             (clojure.schema/malli-form (clojure.schema/schema-of schemas k)
-                                                    schemas))))
+  (clojure.schema/map-schema ks (fn [k]
+                                  (clojure.schema/malli-form (clojure.schema/schema-of schemas k)
+                                                             schemas))))
 
 (defmethod clojure.schema/malli-form :s/map [[_ ks] schemas]
   (map-form ks schemas))

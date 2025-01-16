@@ -3,7 +3,7 @@
             [clojure.utils :refer [defsystem safe-merge]]
             [clojure.db :as db]
             [clojure.context.timer :as timer]
-            [clojure.malli :as m]
+            [clojure.schema :as s]
             [clojure.math.shapes :as shape]
             [clojure.inventory :as inventory]
             [clojure.operation :as op]))
@@ -133,15 +133,15 @@
   (mapv #(-> % int (max 0)) val-max))
 
 (defn apply-max-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate m/val-max-schema val-max)]
-   :post [(m/validate m/val-max-schema val-max)]}
+  {:pre  [(s/validate s/val-max-schema val-max)]
+   :post [(s/validate s/val-max-schema val-max)]}
   (let [val-max (update val-max 1 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn apply-min-modifier [val-max entity modifier-k]
-  {:pre  [(m/validate m/val-max-schema val-max)]
-   :post [(m/validate m/val-max-schema val-max)]}
+  {:pre  [(s/validate s/val-max-schema val-max)]
+   :post [(s/validate s/val-max-schema val-max)]}
   (let [val-max (update val-max 0 mod-value entity modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))

@@ -11,7 +11,7 @@
             [clojure.inventory :as inventory]
             [clojure.context.timer :as timer]
             [clojure.graphics.animation :as animation]
-            [clojure.malli :as m]
+            [clojure.schema :as s]
             [clojure.widgets.inventory :as widgets.inventory]
             [clojure.fsm :as fsm]
             [clojure.entity :as entity]
@@ -556,16 +556,16 @@
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
 (def ^:private max-speed (/ minimum-size
-                            cdq.time/max-delta)) ; need to make var because m/schema would fail later if divide / is inside the schema-form
+                            cdq.time/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
-(def speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
+(def speed-schema (s/m-schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (defmethod tick! :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
             eid
             {:keys [clojure.context/delta-time
                     clojure.context/grid] :as c}]
-  (assert (m/validate speed-schema speed)
+  (assert (s/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
               (v/normalised? direction))
