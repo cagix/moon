@@ -23,10 +23,12 @@
     (.setApplicationLogger this (Lwjgl3ApplicationLogger.))
     (set! (.config this) config)
     (set! Gdx/app this)
-
-    ; FIXMe
-    (set! (.audio this) (MockAudio.))
-
+    (set! (.audio this) (if (.disableAudio config)
+                          (MockAudio.)
+                          (try (.createAudio this config)
+                               (catch Throwable t
+                                 (.log this "Lwjgl3Application", "Couldn't initialize audio, disabling audio", t)
+                                 (MockAudio.)))))
     (set! Gdx/audio (.audio this))
     (set! (.files this) (.createFiles this))
     (set! Gdx/files (.files this))
