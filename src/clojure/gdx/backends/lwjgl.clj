@@ -1,8 +1,7 @@
 (ns clojure.gdx.backends.lwjgl
   (:require [clojure.utils :as utils])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 CljLwjgl3Application
-                                             Lwjgl3Application
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
                                              Lwjgl3ApplicationConfiguration$GLEmulation
                                              Lwjgl3ApplicationLogger
@@ -15,13 +14,11 @@
            (com.badlogic.gdx.utils GdxRuntimeException)))
 
 #_(defn create [listener config]
-  ; config.glEmulation private field !
-  ; copy whole backend folder& move deps with deps tree in my dir??
-  #_(when (= (.glEmulation config) Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-      (println "Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20; " Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-      (CljLwjgl3Application/loadANGLE))
-  (CljLwjgl3Application/initializeGlfw)
-  (let [this (proxy [CljLwjgl3Application] [])
+  (when (= (.glEmulation config) Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
+    (println "Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20; " Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
+    (Lwjgl3Application/loadANGLE))
+  (Lwjgl3Application/initializeGlfw)
+  (let [this (proxy [Lwjgl3Application] [])
         config config #_(Lwjgl3ApplicationConfiguration/copy config)]
     (.setApplicationLogger this (Lwjgl3ApplicationLogger.))
     (set! (.config this) config)
@@ -34,7 +31,7 @@
     (set! (.sync this) (Mync.))
     (let [window (.createWindow this config listener 0)]
       #_(when (= (.glEmulation config) Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20)
-          (CljLwjgl3Application/postLoadANGLE))
+          (Lwjgl3Application/postLoadANGLE))
       (.add (.windows this) window))
     (try
      (.loop this)
