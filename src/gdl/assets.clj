@@ -1,11 +1,11 @@
-(ns clojure.gdx.assets.manager
+(ns gdl.assets
   (:import (clojure.lang IFn)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Texture)))
 
 (defn create [assets]
-  (let [this (proxy [AssetManager IFn] []
+  (let [this (proxy [AssetManager IFn] [] ; not proxy but only reify/protocol!
                (invoke [^String path]
                  (let [^AssetManager this this]
                    (if (.contains this path)

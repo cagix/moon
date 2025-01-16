@@ -1,11 +1,11 @@
 (ns cdq.assets
   (:require [clojure.files :as files]
-            [clojure.gdx.assets.manager :as asset-manager]
             [clojure.gdx.files.file-handle :as fh]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [gdl.assets :as assets]))
 
 (defn manager [{:keys [clojure/files]}]
-  (asset-manager/create
+  (assets/create
    (let [folder "resources/"]
      (for [[asset-type extensions] {:sound   #{"wav"}
                                     :texture #{"png" "bmp"}}

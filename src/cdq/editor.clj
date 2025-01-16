@@ -3,7 +3,7 @@
             [clojure.application :refer [state]]
             [clojure.assets :refer [play-sound]]
             [clojure.edn :as edn]
-            [clojure.gdx.assets.manager :as asset-manager]
+            [gdl.assets :as assets]
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
@@ -153,7 +153,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (asset-manager/all-of-type (:clojure/assets @state) asset-type))
+  (assets/all-of-type (:clojure/assets @state) asset-type))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(play-sound @state sound-name)))

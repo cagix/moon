@@ -70,6 +70,18 @@
                   ; so the thing is not doing so much right now!?
 
 
+                  ; => 'gdl' is the layer between the world/application and your program
+                  ; => no malli/db/etc/
+                  ; its just for talking with the 'hardware' - in this case the java libraries
+
+                  ; ! this is the foundation !
+                  ; and _very_ cool and easy to test
+                  ; !!
+
+                  ; !!
+                  ; all what depends on these gdx/ui/freetype/visui
+                  ; becomes gdl and gets testsd & documented.
+
                  [com.badlogicgames.gdx/gdx "1.13.0"]
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
 
