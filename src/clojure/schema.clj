@@ -83,29 +83,34 @@
                                  (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
               (fn [[^int a ^int b]] (<= a b))]]))
 
-(def number-schema  number?)
-(def nat-int-schema nat-int?)
-(def int-schema     int?)
-(def pos-schema     pos?)
-(def pos-int-schema pos-int?)
-(def string-schema  :string)
+(defmethod malli-form :s/val-max [_ _schemas] val-max-schema)
+(defmethod malli-form :s/number  [_ _schemas] number?)
+(defmethod malli-form :s/nat-int [_ _schemas] nat-int?)
+(defmethod malli-form :s/int     [_ _schemas] int?)
+(defmethod malli-form :s/pos     [_ _schemas] pos?)
+(defmethod malli-form :s/pos-int [_ _schemas] pos-int?)
 
-(def image-schema
+(defmethod malli-form :s/sound [_ _schemas] :string)
+
+(defmethod malli-form :s/image [_ _schemas]
   [:map {:closed true}
    [:file :string]
    [:sub-image-bounds {:optional true} [:vector {:size 4} nat-int?]]])
 
-(def animation-schema
+(defmethod malli-form :s/animation [_ _schemas]
   [:map {:closed true}
    [:frames :some] ; FIXME actually images
    [:frame-duration pos?]
    [:looping? :boolean]])
 
-(defn qualified-keyword-schema [namespace]
-  [:qualified-keyword {:namespace namespace}])
+(defn- type->id-namespace [property-type]
+  (keyword (name property-type)))
 
-(defn set-schema [item-schema]
-  [:set item-schema])
+(defmethod malli-form :s/one-to-one [[_ property-type] _schemas]
+  [:qualified-keyword {:namespace (type->id-namespace property-type)}])
+
+(defmethod malli-form :s/one-to-many [[_ property-type] _schemas]
+  [:set [:qualified-keyword {:namespace (type->id-namespace property-type)}]])
 
 (defn map-schema
   "Can define keys as just keywords or with schema-props like [:foo {:optional true}]."
@@ -119,3 +124,24 @@
             (assert (keyword? k))
             (assert (or (nil? schema-props) (map? schema-props)) (pr-str ks))
             [k schema-props (k->malli-schema-form k)]))))
+
+(defn- map-form [ks schemas]
+  (map-schema ks (fn [k]
+                   (malli-form (schema-of schemas k)
+                               schemas))))
+
+(defmethod malli-form :s/map [[_ ks] schemas]
+  (map-form ks schemas))
+
+(defmethod malli-form :s/map-optional [[_ ks] schemas]
+  (map-form (map (fn [k] [k {:optional true}]) ks)
+            schemas))
+
+(defn- namespaced-ks [schemas ns-name-k]
+  (filter #(= (name ns-name-k) (namespace %))
+          (keys schemas)))
+
+(defmethod malli-form :s/components-ns [[_ ns-name-k] schemas]
+  (malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
+              schemas))
+
