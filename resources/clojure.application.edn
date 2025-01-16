@@ -52,7 +52,7 @@
                                                    [:clojure.context/error (clojure.create/error*)]
                                                    [:clojure.context/tiled-map (clojure.create/tiled-map*)]
                                                    [:clojure.context/explored-tile-corners (clojure.create/explored-tile-corners*)]
-                                                   [:clojure.context/grid (clojure.create/grid*)]
+                                                   [:clojure.context/grid (cdq.world.grid/create)]
                                                    [:clojure.context/raycaster (clojure.create/create-raycaster)]
                                                    [:clojure.context/content-grid (cdq.world.content-grid/create {:cell-size 16})]
                                                    [:clojure.context/entity-ids (clojure.create/entity-ids*)]
