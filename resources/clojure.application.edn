@@ -58,8 +58,7 @@
                                                    [:clojure.context/entity-ids (clojure.create/entity-ids*)]
                                                    [:clojure.context/factions-iterations (clojure.create/factions-iterations* {:good 15 :evil 5})]
                                                    [:world/potential-field-cache (clojure.potential-fields/create-cache)]
-                                                   [:clojure.context/player-eid (clojure.create/player-eid*)]
-                                                   [:clojure.context/enemies (clojure.create/spawn-enemies!)]])
+                                                   [:clojure.context/player-eid (cdq.world.entities/spawn)]])
               :dispose (clojure.application/dispose)
               :render  (clojure.application/render [(clojure.content-grid/assoc-active-entities)
                                                     (cdq.graphics.camera/set-on-player)
