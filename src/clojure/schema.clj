@@ -1,7 +1,6 @@
 (ns clojure.schema
   (:refer-clojure :exclude [type])
-  (:require [clojure.utils :refer [safe-get]]
-            [clojure.malli :as m]))
+  (:require [clojure.malli :as m]))
 
 (defn type [schema]
   (cond
@@ -14,7 +13,7 @@
 
 (defn schema-of [schemas k]
   (assert (contains? schemas k) (pr-str k))
-  (safe-get schemas k))
+  (get schemas k))
 
 (defn validate! [schemas schema-k value]
   (m/validate! (malli-form (schema-of schemas schema-k)
