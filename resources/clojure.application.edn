@@ -11,7 +11,7 @@
    :listener {:create (clojure.application/create [[:clojure/files    (clojure.gdx/files)]
                                                    [:clojure/graphics (clojure.gdx/graphics)]
                                                    [:clojure/input    (clojure.gdx/input)]
-                                                   [:cdq/schemas      (cdq.schemas/create "schema.edn")]
+                                                   [:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
                                                    [:clojure/db       (cdq.db/create "properties.edn")]
                                                    [:clojure/assets (cdq.assets/manager)]
                                                    [:clojure.graphics/batch (clojure.graphics/sprite-batch)]

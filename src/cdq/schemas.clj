@@ -9,7 +9,7 @@
            clojure.schema
            clojure.utils))
 
-(defn create [schema-edn-file _context]
+(defn load-from-edn [schema-edn-file _context]
   (-> schema-edn-file
       io/resource
       slurp
