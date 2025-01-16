@@ -131,7 +131,7 @@
                        :pad 4}]]}))
 
 (defn- inventory-cell-widget [c cell]
-  (get (::table (get (:windows (c/stage c)) :inventory-window)) cell))
+  (get (::table (get (:windows (:clojure.context/stage c)) :inventory-window)) cell))
 
 (defn set-item-image-in-widget [c cell item]
   (let [cell-widget (inventory-cell-widget c cell)

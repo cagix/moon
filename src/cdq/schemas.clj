@@ -1,7 +1,6 @@
 (ns cdq.schemas
  (:require clojure.assets
-           clojure.context
-           clojure.db
+           [clojure.db :as db]
            clojure.graphics.animation
            clojure.graphics.sprite
            clojure.malli
@@ -57,14 +56,14 @@
 (clojure.utils/defcomponent :s/one-to-one
   (clojure.schema/malli-form [[_ property-type] _schemas]
     (clojure.malli/qualified-keyword-schema (type->id-namespace property-type)))
-  (clojure.db/edn->value [_ property-id db c]
-    (clojure.context/build c property-id)))
+  (clojure.db/edn->value [_ property-id db {:keys [clojure/db] :as context}]
+    (db/build db property-id context)))
 
 (clojure.utils/defcomponent :s/one-to-many
   (clojure.schema/malli-form [[_ property-type] _schemas]
     (clojure.malli/set-schema (clojure.malli/qualified-keyword-schema (type->id-namespace property-type))))
-  (clojure.db/edn->value [_ property-ids db c]
-    (set (map #(clojure.context/build c %) property-ids))))
+  (clojure.db/edn->value [_ property-ids db {:keys [clojure/db] :as context}]
+    (set (map #(db/build db % context) property-ids))))
 
 (defn- map-form [ks schemas]
   (clojure.malli/map-schema ks (fn [k]

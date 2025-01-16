@@ -2,6 +2,7 @@
   (:require [clojure.application :as app]
             [cdq.editor :as editor]
             cdq.graphics
+            [clojure.db :as db]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [clojure.scene2d.group :refer [children]]
@@ -89,15 +90,19 @@
  )
 
 
-(defn- learn-skill! [{:keys [clojure.context/player-eid] :as c} skill-id]
+(defn- learn-skill! [{:keys [clojure.context/player-eid
+                             clojure/db] :as c}
+                     skill-id]
   (world/add-skill c
                    player-eid
-                   (c/build c skill-id)))
+                   (db/build db skill-id c)))
 
-(defn- create-item! [{:keys [clojure.context/player-eid] :as c} item-id]
+(defn- create-item! [{:keys [clojure.context/player-eid
+                             clojure/db] :as c}
+                     item-id]
   (world/spawn-item c
                     (:position @player-eid)
-                    (c/build c item-id)))
+                    (db/build db item-id c)))
 
 (defn- mouseover-grid-cell [{:keys [clojure.context/grid] :as c}]
   @(grid (mapv int (cdq.graphics/world-mouse-position c))))

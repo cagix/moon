@@ -1,6 +1,7 @@
 (ns forge.mapgen-test
   (:require [clojure.level :refer [generate-level]]
             cdq.graphics
+            [clojure.db :as db]
             [clojure.modules :as modules]
             [clojure.graphics.color :as color]
             [clojure.graphics.shape-drawer :as sd]
@@ -115,9 +116,12 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [{:keys [clojure.graphics/world-viewport] :as c} properties]
+(defn- generate-screen-ctx [{:keys [clojure.graphics/world-viewport
+                                    clojure/db]
+                             :as c}
+                            properties]
   (let [{:keys [tiled-map start-position]} (generate-level c
-                                                           (c/build world-id))
+                                                           (db/build db world-id c))
         atom-data (current-data)]
     (tiled/dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
@@ -127,11 +131,11 @@
     (show-whole-map! (:camera world-viewport) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
-(defn ->generate-map-window [c level-id]
+(defn ->generate-map-window [{:keys [clojure/db] :as c} level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (pprint (c/build c level-id))))]
-                     [(text-button "Generate" #(try (generate-screen-ctx c (c/build c level-id))
+              :rows [[(ui/label (with-out-str (pprint (db/build db level-id c))))]
+                     [(text-button "Generate" #(try (generate-screen-ctx c (db/build db level-id c))
                                                     (catch Throwable t
                                                       (c/error-window @state t)
                                                       (println t))))]]

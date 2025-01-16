@@ -2,17 +2,9 @@
   (:require cdq.graphics
             [clojure.scene2d.stage :as stage]
             [clojure.utils :refer [with-err-str]]
-            [clojure.db :as db]
             [clojure.error :refer [pretty-pst]]
+            [clojure.scene2d.stage :as stage]
             [clojure.ui :as ui]))
-
-(def stage :clojure.context/stage)
-
-(defn build [{:keys [clojure/db] :as c} id]
-  (db/build db id c))
-
-(defn build-all [{:keys [clojure/db] :as c} property-type]
-  (db/build-all db property-type c))
 
 (defn add-actor [{:keys [clojure.context/stage]} actor]
   (stage/add-actor stage actor))

@@ -1,6 +1,7 @@
 (ns clojure.world
   (:require [clojure.assets :refer [play-sound]]
             cdq.graphics
+            [clojure.db :as db]
             [clojure.audio :as audio]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defsystem defcomponent readable-number define-order sort-by-order safe-merge find-first]]
@@ -209,8 +210,9 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn spawn-creature [c {:keys [position creature-id components]}]
-  (let [props (c/build c creature-id)]
+(defn spawn-creature [{:keys [clojure/db] :as c}
+                      {:keys [position creature-id components]}]
+  (let [props (db/build db creature-id c)]
     (spawn-entity c
                   position
                   (->body (:entity/body props))
@@ -292,10 +294,10 @@
                        (entity/enemy entity)))
 
 (defn get-inventory [c]
-  (get (:windows (c/stage c)) :inventory-window))
+  (get (:windows (:clojure.context/stage c)) :inventory-window))
 
 (defn get-action-bar [c]
-  (let [group (:ui/action-bar (:action-bar-table (c/stage c)))]
+  (let [group (:ui/action-bar (:action-bar-table (:clojure.context/stage c)))]
     {:horizontal-group group
      :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
 
@@ -328,13 +330,13 @@
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal [{:keys [clojure.graphics/ui-viewport] :as c}
                   {:keys [title text button-text on-click]}]
-  (assert (not (::modal (c/stage c))))
+  (assert (not (::modal (:clojure.context/stage c))))
   (c/add-actor c
                (ui/window {:title title
                            :rows [[(ui/label text)]
                                   [(ui/text-button button-text
                                                    (fn []
-                                                     (actor/remove (::modal (c/stage c)))
+                                                     (actor/remove (::modal (:clojure.context/stage c)))
                                                      (on-click)))]]
                            :id ::modal
                            :modal? true
@@ -447,10 +449,10 @@
 (defmethod destroy! :default [_ eid c])
 
 (defmethod destroy! :entity/destroy-audiovisual
-  [[_ audiovisuals-id] eid c]
+  [[_ audiovisuals-id] eid {:keys [clojure/db] :as c}]
   (spawn-audiovisual c
                      (:position @eid)
-                     (c/build c audiovisuals-id)))
+                     (db/build db audiovisuals-id c)))
 
 (defn player-movement-vector [input]
   (let [r (when (input/key-pressed? input :d) [1  0])
@@ -1122,7 +1124,9 @@
   (effect/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _c]
     (entity/in-range? @source @target maxrange))
 
-  (effect/handle [[_ {:keys [maxrange entity-effects]}] {:keys [effect/source effect/target] :as ctx} c]
+  (effect/handle [[_ {:keys [maxrange entity-effects]}]
+                  {:keys [effect/source effect/target] :as ctx}
+                  {:keys [clojure/db] :as c}]
     (let [source* @source
           target* @target]
       (if (entity/in-range? source* target* maxrange)
@@ -1136,7 +1140,7 @@
          (effect-ctx/do-all! c ctx entity-effects))
         (spawn-audiovisual c
                            (entity/end-point source* target* maxrange)
-                           (c/build c :audiovisuals/hit-ground))))))
+                           (db/build db :audiovisuals/hit-ground c))))))
 
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]
@@ -1180,7 +1184,9 @@
     (and target
          (:entity/hp @target)))
 
-  (effect/handle [[_ damage] {:keys [effect/source effect/target]} c]
+  (effect/handle [[_ damage]
+                  {:keys [effect/source effect/target]}
+                  {:keys [clojure/db] :as c}]
     (let [source* @source
           target* @target
           hp (entity/hitpoints target*)]
@@ -1198,7 +1204,7 @@
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (spawn-audiovisual c
                             (:position target*)
-                            (c/build c :audiovisuals/damage))
+                            (db/build db :audiovisuals/damage c))
          (send-event! c target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect c (str "[RED]" dmg-amount "[]")))))))
 

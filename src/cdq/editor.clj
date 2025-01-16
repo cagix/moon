@@ -324,7 +324,7 @@
        first))
 
 (defn- get-editor-window []
-  (:property-editor-window (c/stage @state)))
+  (:property-editor-window (:clojure.context/stage @state)))
 
 (defn- window->property-value []
  (let [window (get-editor-window)

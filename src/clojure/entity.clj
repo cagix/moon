@@ -1,7 +1,7 @@
 (ns clojure.entity
   (:require [clojure.math.vector2 :as v]
             [clojure.utils :refer [defsystem safe-merge]]
-            [clojure.context :as c]
+            [clojure.db :as db]
             [clojure.context.timer :as timer]
             [clojure.malli :as m]
             [clojure.math.shapes :as shape]
@@ -78,17 +78,17 @@
   {:eid eid})
 
 (defmethod create :player-dead
-  [[k] c]
-  (c/build c :player-dead/component.enter))
+  [[k] {:keys [clojure/db] :as c}]
+  (db/build db :player-dead/component.enter c))
 
 (defmethod create :player-idle
-  [[_ eid] c]
-  (safe-merge (c/build c :player-idle/clicked-inventory-cell)
+  [[_ eid] {:keys [clojure/db] :as c}]
+  (safe-merge (db/build db :player-idle/clicked-inventory-cell c)
               {:eid eid}))
 
 (defmethod create :player-item-on-cursor
-  [[_ eid item] c]
-  (safe-merge (c/build c :player-item-on-cursor/component)
+  [[_ eid item] {:keys [clojure/db] :as c}]
+  (safe-merge (db/build db :player-item-on-cursor/component c)
               {:eid eid
                :item item}))
 

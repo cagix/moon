@@ -1,6 +1,6 @@
 (ns clojure.ui.dev-menu
-  (:require [clojure.context :as c]
-            [clojure.graphics :as graphics]
+  (:require [clojure.graphics :as graphics]
+            [clojure.db :as db]
             cdq.graphics
             [clojure.graphics.camera :as cam]
             clojure.graphics.sprite
@@ -78,9 +78,9 @@
 (def ^:private help-text
   "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
 
-(defn- dev-menu-config [c]
+(defn- dev-menu-config [{:keys [clojure/db] :as c}]
   {:menus [{:label "World"
-            :items (for [world (c/build-all c :properties/worlds)]
+            :items (for [world (db/build-all db :properties/worlds c)]
                      {:label (str "Start " (:property/id world))
                       :on-click
                       (fn [_context])
