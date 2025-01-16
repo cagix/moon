@@ -6,10 +6,10 @@
  (clojure.utils/dispatch-on (clojure.gdx.utils.shared-library-loader/os)
                             {:mac-osx [(clojure.lwjgl.system.configuration/glfw-library-name "glfw_async")]})
  (clojure.gdx.backends.lwjgl/application
-  {:title "Cyber Dungeon Quest"
-   :window-width 1440
-   :window-height 900
-   :foreground-fps 60
+  {:config {:title "Cyber Dungeon Quest"
+            :windowed-mode {:width 1440
+                            :height 900}
+            :foreground-fps 60}
    :listener {:create (clojure.application/create [[:clojure/files    (clojure.gdx/files)]
                                                    [:clojure/graphics (clojure.gdx/graphics)]
                                                    [:clojure/input    (clojure.gdx/input)]

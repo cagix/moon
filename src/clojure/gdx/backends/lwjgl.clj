@@ -1,5 +1,6 @@
 (ns clojure.gdx.backends.lwjgl
-  (:require [clojure.utils :as utils])
+  (:require [clojure.gdx.backends.lwjgl-config :as config]
+            [clojure.utils :as utils])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application
                                              Lwjgl3ApplicationConfiguration
@@ -48,12 +49,9 @@
      (finally
       (.cleanup this)))))
 
-(defn application [{:keys [title
-                           window-width
-                           window-height
-                           foreground-fps
+(defn application [{:keys [config
                            listener]}]
-  (create             (proxy [ApplicationAdapter] []
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
                           (utils/req-resolve-call (:create listener)))
 
@@ -65,8 +63,4 @@
 
                         (resize [width height]
                           (utils/req-resolve-call (:resize listener) width height)))
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setWindowedMode window-width
-                                          window-height)
-                        (.setForegroundFPS foreground-fps))))
+                      (config/create config)))
