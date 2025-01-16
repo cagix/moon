@@ -1,12 +1,4 @@
-(ns clojure.create
-  (:require [clojure.grid2d :as g2d]
-            [clojure.tiled :as tiled]))
-
-(defn explored-tile-corners* [{:keys [clojure.context/tiled-map]}]
-  (atom (g2d/create-grid
-         (tiled/tm-width  tiled-map)
-         (tiled/tm-height tiled-map)
-         (constantly false))))
+(ns clojure.create)
 
 (defn error* [_context]
   nil)

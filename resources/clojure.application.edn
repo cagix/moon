@@ -51,7 +51,7 @@
                                                    [:clojure.context/level (clojure.level/create :worlds/uf-caves)]
                                                    [:clojure.context/error (clojure.create/error*)]
                                                    [:clojure.context/tiled-map (clojure.create/tiled-map*)]
-                                                   [:clojure.context/explored-tile-corners (clojure.create/explored-tile-corners*)]
+                                                   [:clojure.context/explored-tile-corners (cdq.world.explored-tile-corners/create)]
                                                    [:clojure.context/grid (cdq.world.grid/create)]
                                                    [:clojure.context/raycaster (cdq.world.raycaster/create)]
                                                    [:clojure.context/content-grid (cdq.world.content-grid/create {:cell-size 16})]
