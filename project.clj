@@ -1,115 +1,16 @@
-
-; Now I get it -
-; the 'language' of game development is
-; https://javadoc.io/static/com.badlogicgames.gdx/gdx/1.13.0/index.html
-; those amazing package names
-; starting more general getting more specific
-; thats the 'gdl'
-
-; now the 'scenes.scene2d' and 'maps.tiled' and 'assets.asset-manager' makes sense
-; if we want the perfect language for writing games we orient us at that
-; ...
-
-; a 'abstract' game engine.
-
-
-
-
-;;;;;
-
-; Okay: 'clojure.gdx' is just a helper wherever it can make things simpler, _not_ an API
-
-; for simple things like disposable or interfaces we define _new_ protocols in 'gdl' with same naming conventions
-
-; they will get extend-type'd
-
-; but also we want to create a language just for 'cdq' right /... only what we need ....
-
-; but all 'gdx'etc stuff can be extended in my own 'gdl' with same naming conventions as gdx
-; so it can be extended & good
-
-; so the 'clojure.gdx' is just a helper which is used _inside_ the extend statements?
-
-
-
-; 1. fix reflections / move functions where used (gdl/actor/gdx?)
-; 2. gdl separate project unifying the 'clojure.gdx' stuff
-; => cdq does not use clojure.gdx directly then but new layer 'gdl' ?
-
-
-
-; => the _perfect_ cyber dungeon quest language
-; => move stuff closer to 'clojure.*'
-; => I don't think we need to fork clojure itself ?
-; or do we have so many imports???
-
 (defproject moon "-SNAPSHOT"
   :repositories [["jitpack" "https://jitpack.io"]]
   :dependencies [[org.clojure/clojure "1.12.0"]
-
-                 ; the question is what should 'gdl' wrap ?
-                 ; obviously all libgdx and vis-ui related stuff !?
-                 ; => no, everything !
-                 ; the language for 'cdq' to be dependency free .....
-
-                 ; _ the outside world _ the 'earth' _ is given through a 'trunk' whichs is gdl
-                 ; and the dependencies are the roots
-                 ; this project _cdq_ sees only the 'trunk' and not any other dependency than 'cdq' or 'gdl' !!!!!
-                 ; even grid2d let's see we redirect 'gdl.data.g2d'  ?
-
-                 ; clojure.utils -> gdl.utils or cdq.utils
-
-                 ; you can still create the libgdx API but it will only contain the elements you use ???
-
-                  ;= > even no dependencies on clojure.str ???
-
-                  ; So you just have to go through 'cdq' and see it only depends on 'cdq'/'gdl' ant nothing else !
-                  ; next step is the API's etc for private fns in gdl.....
-
-                  ; => so in cdq is everything thats _not_  depending on libgdx, etc. ??
-                  ; so the thing is not doing so much right now!?
-
-
-                  ; => 'gdl' is the layer between the world/application and your program
-                  ; => no malli/db/etc/
-                  ; its just for talking with the 'hardware' - in this case the java libraries
-
-                  ; ! this is the foundation !
-                  ; and _very_ cool and easy to test
-                  ; !!
-
-                  ; !!
-                  ; all what depends on these gdx/ui/freetype/visui
-                  ; becomes gdl and gets testsd & documented.
-
-                  ; and this also dependency of backend -
-                 [com.badlogicgames.gdx/gdx "1.13.0"]
-
-                 ; this is also dependency of backend
-                 [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
-                 ; gdx.dll
-                 ; gdx64.dll
-                 ; libgdx64.so
-                 ; libgdxarm.so
-                 ; libgdxarm64.so
-                 ; libgdxriscv64.so
-                 ; libgdx64.dylib
-                 ; libgdxarm64.dylib
-
-                 [com.badlogicgames.gdx/gdx-backend-lwjgl3 "1.13.0"]
+                 [clojure.gdx.backends.lwjgl "1.13.0-0.2"]
                  [space.earlygrey/shapedrawer "2.5.0"]
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.0" :classifier "natives-desktop"]
                  [com.kotcrab.vis/vis-ui "1.5.2"]
-
-                 ; this only gdl.db ?
                  [metosin/malli "0.13.0"]
                  [org.clj-commons/pretty "3.2.0"]
                  [nrepl "0.9.0"]
                  [org.clojure/tools.namespace "1.3.0"]
                  [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
-
-                 ; clojure.platform
                  [com.thoughtworks.qdox/qdox "2.2.0"]]
   :java-source-paths ["src-java"]
   :plugins [[lein-hiera "2.0.0"]
