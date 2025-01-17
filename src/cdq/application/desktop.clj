@@ -1,25 +1,29 @@
 (ns cdq.application.desktop
-  (:require [clojure.application]
-            [clojure.gdx.backends.lwjgl]))
+  (:require [clojure.app :as app]
+            [clojure.application]
+            [clojure.gdx.backends.lwjgl :as lwjgl]))
 
 (defn start [{:keys [config
                      create
                      render
                      resize]}]
-  (clojure.gdx.backends.lwjgl/application
-   (proxy [com.badlogic.gdx.ApplicationAdapter] []
-     (create []
-       (clojure.application/create create))
+  (lwjgl/application (reify app/Listener
+                       (create [_]
+                         (clojure.application/create create))
 
-     (dispose []
-       (clojure.application/dispose))
+                       (dispose [_]
+                         (clojure.application/dispose))
 
-     (render []
-       (clojure.application/render render))
+                       (pause [_])
 
-     (resize [width height]
-       (clojure.application/resize resize width height)))
-   config))
+                       (render [_]
+                         (clojure.application/render render))
+
+                       (resize [_ width height]
+                         (clojure.application/resize resize width height))
+
+                       (resume [_]))
+                     config))
 
 
 ; Badlogic => 'move to 'clojure.gdx' or whatever name it will be...
