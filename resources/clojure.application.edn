@@ -13,83 +13,82 @@
             :opengl-emulation {:gl-version :gl20 ; works !
                                :gles-3-major-version 3
                                :gles-3-minor-version 2}}
-   :listener {:create (clojure.application/create [[:clojure/files    (clojure.gdx/files)]
-                                                   [:clojure/graphics (clojure.gdx/graphics)]
-                                                   [:clojure/input    (clojure.gdx/input)]
-                                                   [:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
-                                                   [:clojure/db       (cdq.db/create "properties.edn")]
-                                                   [:clojure/assets (cdq.assets/manager)]
-                                                   [:clojure.graphics/batch (clojure.graphics/sprite-batch)]
-                                                   [:clojure.graphics/shape-drawer-texture (cdq.graphics/white-pixel-texture)]
-                                                   [:clojure.graphics/shape-drawer (clojure.gdx.graphics.shape-drawer/create)]
-                                                   [:clojure.graphics/cursors (cdq.graphics/cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                                                                                     :cursors/black-x               ["black_x"      [0   0]]
-                                                                                                     :cursors/default               ["default"      [0   0]]
-                                                                                                     :cursors/denied                ["denied"       [16 16]]
-                                                                                                     :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                                                                     :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                                                                     :cursors/hand-grab             ["hand003"      [4  16]]
-                                                                                                     :cursors/move-window           ["move002"      [16 16]]
-                                                                                                     :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                                                                     :cursors/over-button           ["hand002"      [0   0]]
-                                                                                                     :cursors/sandclock             ["sandclock"    [16 16]]
-                                                                                                     :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                                                                     :cursors/use-skill             ["pointer004"   [0   0]]
-                                                                                                     :cursors/walking               ["walking"      [16 16]]})]
-                                                   [:clojure.graphics/default-font (clojure.graphics.default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
-                                                                                                                          :size 16
-                                                                                                                          :quality-scaling 2})]
-                                                   [:clojure.graphics/world-unit-scale (clojure.graphics.world-unit-scale/create 48)]
-                                                   [:clojure.graphics/tiled-map-renderer (clojure.graphics.tiled-map-renderer/create)]
-                                                   [:clojure.graphics/ui-viewport (clojure.graphics.ui-viewport/create {:width 1440 :height 900})]
-                                                   [:clojure.graphics/world-viewport (clojure.graphics.world-viewport/create {:width 1440 :height 900})]
-                                                   [:clojure.context/stage (clojure.ui/setup-stage! {:skin-scale :x1
-                                                                                                     :actors [(clojure.ui.dev-menu/create)
-                                                                                                              (clojure.ui.actionbar/create)
-                                                                                                              (clojure.ui.hp-mana-bar/create)
-                                                                                                              (clojure.ui.windows/create [(clojure.ui.entity-info-window/create)
-                                                                                                                                          (clojure.widgets.inventory/create)])
-                                                                                                              (clojure.ui.player-state/create)
-                                                                                                              (clojure.ui.player-message/actor)]})]
-                                                   [:clojure.context/elapsed-time (clojure.timer/create-ctx)]
-                                                   [:clojure.context/player-message (clojure.ui.player-message/create* {:duration-seconds 1.5})]
-                                                   [:clojure.context/level (clojure.level/create :worlds/uf-caves)]
-                                                   [:clojure.context/error (clojure.create/error*)]
-                                                   [:clojure.context/tiled-map (clojure.create/tiled-map*)]
-                                                   [:clojure.context/explored-tile-corners (cdq.world.explored-tile-corners/create)]
-                                                   [:clojure.context/grid (cdq.world.grid/create)]
-                                                   [:clojure.context/raycaster (cdq.world.raycaster/create)]
-                                                   [:clojure.context/content-grid (cdq.world.content-grid/create {:cell-size 16})]
-                                                   [:clojure.context/entity-ids (clojure.create/entity-ids*)]
-                                                   [:clojure.context/factions-iterations (clojure.create/factions-iterations* {:good 15 :evil 5})]
-                                                   [:world/potential-field-cache (clojure.potential-fields/create-cache)]
-                                                   [:clojure.context/player-eid (cdq.world.entities/spawn)]])
-              :dispose (clojure.application/dispose)
-              :render  (clojure.application/render [(clojure.content-grid/assoc-active-entities)
-                                                    (cdq.graphics.camera/set-on-player)
-                                                    (clojure.graphics/clear-screen)
-                                                    (cdq.graphics.tiled-map/draw)
-                                                    (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)
-                                                                                      (clojure.world.graphics/render-entities
-                                                                                       {:below {:entity/mouseover? clojure.world.graphics/draw-faction-ellipse
-                                                                                                :player-item-on-cursor clojure.world.graphics/draw-world-item-if-exists
-                                                                                                :stunned clojure.world.graphics/draw-stunned-circle}
-                                                                                        :default {:entity/image clojure.world.graphics/draw-image-as-of-body
-                                                                                                  :entity/clickable clojure.world.graphics/draw-text-when-mouseover-and-text
-                                                                                                  :entity/line-render clojure.world.graphics/draw-line}
-                                                                                        :above {:npc-sleeping clojure.world.graphics/draw-zzzz
-                                                                                                :entity/string-effect clojure.world.graphics/draw-text
-                                                                                                :entity/temp-modifier clojure.world.graphics/draw-filled-circle-grey}
-                                                                                        :info {:entity/hp clojure.world.graphics/draw-hpbar-when-mouseover-and-not-full
-                                                                                               :active-skill clojure.world.graphics/draw-skill-image-and-active-effect}})
-                                                                                      (cdq.render.after-entities/render)])
-                                                    (cdq.application/draw-stage)
-                                                    (cdq.application/update-stage)
-                                                    (cdq.application/player-state-input)
-                                                    (cdq.application/update-mouseover-entity)
-                                                    (cdq.application/update-paused)
-                                                    (cdq.application/when-not-paused)
-                                                    (cdq.application/remove-destroyed-entities)
-                                                    (cdq.application/camera-controls)
-                                                    (cdq.application/window-controls)])
-              :resize  (clojure.application/resize (cdq.graphics/resize-viewports))}})]
+   :create [[:clojure/files    (clojure.gdx/files)]
+            [:clojure/graphics (clojure.gdx/graphics)]
+            [:clojure/input    (clojure.gdx/input)]
+            [:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
+            [:clojure/db       (cdq.db/create "properties.edn")]
+            [:clojure/assets (cdq.assets/manager)]
+            [:clojure.graphics/batch (clojure.graphics/sprite-batch)]
+            [:clojure.graphics/shape-drawer-texture (cdq.graphics/white-pixel-texture)]
+            [:clojure.graphics/shape-drawer (clojure.gdx.graphics.shape-drawer/create)]
+            [:clojure.graphics/cursors (cdq.graphics/cursors {:cursors/bag                   ["bag001"       [0   0]]
+                                                              :cursors/black-x               ["black_x"      [0   0]]
+                                                              :cursors/default               ["default"      [0   0]]
+                                                              :cursors/denied                ["denied"       [16 16]]
+                                                              :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                              :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                              :cursors/hand-grab             ["hand003"      [4  16]]
+                                                              :cursors/move-window           ["move002"      [16 16]]
+                                                              :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                              :cursors/over-button           ["hand002"      [0   0]]
+                                                              :cursors/sandclock             ["sandclock"    [16 16]]
+                                                              :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                              :cursors/use-skill             ["pointer004"   [0   0]]
+                                                              :cursors/walking               ["walking"      [16 16]]})]
+            [:clojure.graphics/default-font (clojure.graphics.default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
+                                                                                   :size 16
+                                                                                   :quality-scaling 2})]
+            [:clojure.graphics/world-unit-scale (clojure.graphics.world-unit-scale/create 48)]
+            [:clojure.graphics/tiled-map-renderer (clojure.graphics.tiled-map-renderer/create)]
+            [:clojure.graphics/ui-viewport (clojure.graphics.ui-viewport/create {:width 1440 :height 900})]
+            [:clojure.graphics/world-viewport (clojure.graphics.world-viewport/create {:width 1440 :height 900})]
+            [:clojure.context/stage (clojure.ui/setup-stage! {:skin-scale :x1
+                                                              :actors [(clojure.ui.dev-menu/create)
+                                                                       (clojure.ui.actionbar/create)
+                                                                       (clojure.ui.hp-mana-bar/create)
+                                                                       (clojure.ui.windows/create [(clojure.ui.entity-info-window/create)
+                                                                                                   (clojure.widgets.inventory/create)])
+                                                                       (clojure.ui.player-state/create)
+                                                                       (clojure.ui.player-message/actor)]})]
+            [:clojure.context/elapsed-time (clojure.timer/create-ctx)]
+            [:clojure.context/player-message (clojure.ui.player-message/create* {:duration-seconds 1.5})]
+            [:clojure.context/level (clojure.level/create :worlds/uf-caves)]
+            [:clojure.context/error (clojure.create/error*)]
+            [:clojure.context/tiled-map (clojure.create/tiled-map*)]
+            [:clojure.context/explored-tile-corners (cdq.world.explored-tile-corners/create)]
+            [:clojure.context/grid (cdq.world.grid/create)]
+            [:clojure.context/raycaster (cdq.world.raycaster/create)]
+            [:clojure.context/content-grid (cdq.world.content-grid/create {:cell-size 16})]
+            [:clojure.context/entity-ids (clojure.create/entity-ids*)]
+            [:clojure.context/factions-iterations (clojure.create/factions-iterations* {:good 15 :evil 5})]
+            [:world/potential-field-cache (clojure.potential-fields/create-cache)]
+            [:clojure.context/player-eid (cdq.world.entities/spawn)]]
+   :render  [(clojure.content-grid/assoc-active-entities)
+             (cdq.graphics.camera/set-on-player)
+             (clojure.graphics/clear-screen)
+             (cdq.graphics.tiled-map/draw)
+             (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)
+                                               (clojure.world.graphics/render-entities
+                                                {:below {:entity/mouseover? clojure.world.graphics/draw-faction-ellipse
+                                                         :player-item-on-cursor clojure.world.graphics/draw-world-item-if-exists
+                                                         :stunned clojure.world.graphics/draw-stunned-circle}
+                                                 :default {:entity/image clojure.world.graphics/draw-image-as-of-body
+                                                           :entity/clickable clojure.world.graphics/draw-text-when-mouseover-and-text
+                                                           :entity/line-render clojure.world.graphics/draw-line}
+                                                 :above {:npc-sleeping clojure.world.graphics/draw-zzzz
+                                                         :entity/string-effect clojure.world.graphics/draw-text
+                                                         :entity/temp-modifier clojure.world.graphics/draw-filled-circle-grey}
+                                                 :info {:entity/hp clojure.world.graphics/draw-hpbar-when-mouseover-and-not-full
+                                                        :active-skill clojure.world.graphics/draw-skill-image-and-active-effect}})
+                                               (cdq.render.after-entities/render)])
+             (cdq.application/draw-stage)
+             (cdq.application/update-stage)
+             (cdq.application/player-state-input)
+             (cdq.application/update-mouseover-entity)
+             (cdq.application/update-paused)
+             (cdq.application/when-not-paused)
+             (cdq.application/remove-destroyed-entities)
+             (cdq.application/camera-controls)
+             (cdq.application/window-controls)]
+   :resize  (cdq.graphics/resize-viewports)})]
