@@ -82,16 +82,24 @@
                   ; all what depends on these gdx/ui/freetype/visui
                   ; becomes gdl and gets testsd & documented.
 
+                  ; and this also dependency of backend -
                  [com.badlogicgames.gdx/gdx "1.13.0"]
+
+                 ; this is also dependency of backend
                  [com.badlogicgames.gdx/gdx-platform       "1.13.0" :classifier "natives-desktop"]
+                 ; gdx.dll
+                 ; gdx64.dll
+                 ; libgdx64.so
+                 ; libgdxarm.so
+                 ; libgdxarm64.so
+                 ; libgdxriscv64.so
+                 ; libgdx64.dylib
+                 ; libgdxarm64.dylib
 
                  [com.badlogicgames.gdx/gdx-backend-lwjgl3 "1.13.0"]
                  [space.earlygrey/shapedrawer "2.5.0"]
-                 ; TODO release lib with docs
                  [com.badlogicgames.gdx/gdx-freetype          "1.13.0"]
-                 ; TODO this manual ?
                  [com.badlogicgames.gdx/gdx-freetype-platform "1.13.0" :classifier "natives-desktop"]
-                 ; - no dep ? - gdl -
                  [com.kotcrab.vis/vis-ui "1.5.2"]
 
                  ; this only gdl.db ?

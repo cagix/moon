@@ -6,32 +6,21 @@
   | Key                | Description | Default value |
   | --------           | -------     | -------       |
   | `:audio`    | Sets the audio device configuration.  <br> Parameters: <br> simultaneousSources - the maximum number of sources that can be played simultaniously (default 16) <br> bufferSize - the audio device buffer size in samples (default 512) <br> bufferCount - the audio device buffer count (default 9)     | |
-
   | `:disable-audio?`  | Whether to disable audio or not. If set to true, the returned audio class instances like Audio or Music will be mock implementations.    | `false` |
-
   | `:max-net-threads` | Sets the maximum number of threads to use for network requests.     | `Integer/MAX_VALUE` |
-
   | `:opengl-emulation`    |  Sets which OpenGL version to use to emulate OpenGL ES. If the given major/minor version is not supported, the backend falls back to OpenGL ES 2.0 emulation through OpenGL 2.0. The default parameters for major and minor should be 3 and 2 respectively to be compatible with Mac OS X. Specifying major version 4 and minor version 2 will ensure that all OpenGL ES 3.0 features are supported. Note however that Mac OS X does only support 3.2. <br> <br> Parameters: <br> glVersion - which OpenGL ES emulation version to use <br> gles3MajorVersion - OpenGL ES major version, use 3 as default <br> gles3MinorVersion - OpenGL ES minor version, use 2 as default <br> See Also: <br> LWJGL OSX ContextAttribs note   |
-
   | `:backbuffer`    | Sets the bit depth of the color, depth and stencil buffer as well as multi-sampling. <br> <br> Parameters: <br> r - red bits (default 8) <br> g - green bits (default 8) <br> b - blue bits (default 8) <br> a - alpha bits (default 8) <br> depth - depth bits (default 16) <br> stencil - stencil bits (default 0) <br> samples - MSAA samples (default 0)   |
-
   | `:transparent-framebuffer`    | Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.    |
-
   | `:idle-fps`    | Sets the polling rate during idle time in non-continuous rendering mode. Must be positive. Default is 60.    |
-
   | `:foreground-fps`    | Sets the target framerate for the application. The CPU sleeps as needed. Must be positive. Use 0 to never sleep. Default is 0.    |
-
   | `:pause-when-minimized?`    | Sets whether to pause the application ApplicationListener.pause() and fire LifecycleListener.pause()/LifecycleListener.resume() events on when window is minimized/restored.    |
-
   | `:pause-when-lost-focus?`    | Sets whether to pause the application ApplicationListener.pause() and fire LifecycleListener.pause()/LifecycleListener.resume() events on when window loses/gains focus.    |
-
   | `:preferences`    | Sets the directory where Preferences will be stored, as well as the file type to be used to store them. Defaults to \"$USER_HOME/.prefs/\" and Files.FileType.External.    |
-
   | `:hdpi-mode`    | Defines how HDPI monitors are handled. Operating systems may have a per-monitor HDPI scale setting. The operating system may report window width/height and mouse coordinates in a logical coordinate system at a lower resolution than the actual physical resolution. This setting allows you to specify whether you want to work in logical or raw pixel units. See HdpiMode for more information. Note that some OpenGL functions like GL20.glViewport(int, int, int, int) and GL20.glScissor(int, int, int, int) require raw pixel units. Use HdpiUtils to help with the conversion if HdpiMode is set to HdpiMode.Logical. Defaults to HdpiMode.Logical.    |
-
   | `:gl-debug-output?`    | Enables use of OpenGL debug message callbacks. If not supported by the core GL driver (since GL 4.3), this uses the KHR_debug, ARB_debug_output or AMD_debug_output extension if available. By default, debug messages with NOTIFICATION severity are disabled to avoid log spam. You can call with System.err to output to the \"standard\" error output stream. Use Lwjgl3Application.setGLDebugMessageControl(Lwjgl3Application.GLDebugMessageSeverity, boolean) to enable or disable other severity debug levels.    |
-
   | `:hdpi-mode`    | $420    |
+  | window config | | |
+  | `:vsync?` | Sets whether to use vsync. This setting can be changed anytime at runtime via {@link Graphics#setVSync(boolean)}. <br> For multi-window applications, only one (the main) window should enable vsync. Otherwise, every window will wait for the vertical blank on swap individually, effectively cutting the frame rate to (refreshRate / numberOfWindows) | `true`
 
   # Window Configuration
 
@@ -183,6 +172,7 @@
                         (boolean (:enable? v))
                         (->PrintStream (:debug-output-stream v))))
 
+; TODO duplicated below
 (defmethod set-option! :title [_ v config]
   (.setTitle config (str v)))
 
@@ -200,32 +190,42 @@
 (defmethod set-option! :maximized? [_ v config]
   (.setMaximized config (boolean v)))
 
+; Graphics.Monitor
 #_(defmethod set-option! :maximized-monitor [_ v config]
   (.setMaximizedMonitor config ()))
 
-#_(defmethod set-option! :auto-iconify? [_ v config]
-  (.setAutoIconify config ()))
+(defmethod set-option! :auto-iconify? [_ v config]
+  (.setAutoIconify config (boolean v)))
 
+; (int x, int y)
 #_(defmethod set-option! :window-position [_ v config]
   (.setWindowPosition config ()))
 
+;(int minWidth, int minHeight, int maxWidth, int maxHeight)
 #_(defmethod set-option! :window-size-limits? [_ v config]
   (.setWindowSizeLimits config ()))
 
+; (String... filePaths)
+; (FileType fileType, String... filePaths)
 #_(defmethod set-option! :window-icon [_ v config]
   (.setWindowIcon config ())) ; TODO multiple options
 
+; Lwjgl3WindowListener
 #_(defmethod set-option! :window-listener [_ v config]
   (.setWindowListener config ()))
 
-#_(defmethod set-option! :fullscreen-mode [_ v config]
-  (.setFullscreenMode config ()))
+; com.badlogic.gdx.Graphics$DisplayMode (the one you got ...)
+; or convert ?!
+(defmethod set-option! :fullscreen-mode [_ display-mode config]
+  (.setFullscreenMode config display-mode))
 
-#_(defmethod set-option! :title [_ v config]
+(defmethod set-option! :title [_ v config]
   (.setTitle config (str v)))
 
-#_(defmethod set-option! :initial-background-color [_ v config]
-  (.setInitialBackgroundColorer config (->munge-color v)))
+(defmethod set-option! :initial-background-color [_ color config]
+  (.setInitialBackgroundColorer config color
+                                #_(->munge-color v)
+                                ))
 
-#_(defmethod set-option! :vsync? [_ v config]
+(defmethod set-option! :vsync? [_ v config]
   (.useVsync config (boolean v)))
