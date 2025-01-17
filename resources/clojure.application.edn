@@ -9,7 +9,10 @@
   {:config {:title "Cyber Dungeon Quest"
             :windowed-mode {:width 1440
                             :height 900}
-            :foreground-fps 60}
+            :foreground-fps 60
+            :opengl-emulation {:gl-version :gl20 ; works !
+                               :gles-3-major-version 3
+                               :gles-3-minor-version 2}}
    :listener {:create (clojure.application/create [[:clojure/files    (clojure.gdx/files)]
                                                    [:clojure/graphics (clojure.gdx/graphics)]
                                                    [:clojure/input    (clojure.gdx/input)]

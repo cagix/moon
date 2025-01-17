@@ -1,3 +1,4 @@
+; TODO and what with thests??
 (ns clojure.gdx.backends.lwjgl
   ; * `Audio` / `Music` Have to become links !
   ; * TODO what about 'type' of the required input?, boolean,e tc.
@@ -71,7 +72,13 @@
 (defn window
   "Creates a new Lwjgl3Window using the provided listener and Lwjgl3WindowConfiguration. This function only just instantiates a Lwjgl3Window and returns immediately. The actual window creation is postponed with Application.postRunnable(Runnable) until after all existing windows are updated."
   [application listener window-config]
-  (Lwjgl3Application/.newWindow application listener window-config))
+  (Lwjgl3Application/.newWindow application
+                                listener
+
+                                ; TODO build window config!
+                                ; => no application config settings !
+                                ; so 2 calls?
+                                window-config))
 
 (defn set-gl-debug-message-control
   "Enables or disables GL debug messages for the specified severity level. Returns false if the severity level could not be set (e.g. the NOTIFICATION level is not supported by the ARB and AMD extensions). See Lwjgl3ApplicationConfiguration.enableGLDebugOutput(boolean, PrintStream)"
@@ -93,6 +100,10 @@
   ([]
    (Lwjgl3ApplicationConfiguration/getDisplayModes)))
 
+(comment
+ (first (display-modes))
+ )
+
 (defn primary-monitor
   "the primary Graphics.Monitor"
   []
@@ -105,10 +116,15 @@
 
 (defn- k->glversion [gl-version]
   (case gl-version
+    ; TODO in the first case need to draw in the library (error cant find lib)
     :angle-gles20 Lwjgl3ApplicationConfiguration$GLEmulation/ANGLE_GLES20
     :gl20         Lwjgl3ApplicationConfiguration$GLEmulation/GL20
     :gl30         Lwjgl3ApplicationConfiguration$GLEmulation/GL30
+
+    ; java.lang.IllegalArgumentException: Error compiling shader: Vertex shader
     :gl31         Lwjgl3ApplicationConfiguration$GLEmulation/GL31
+
+    ; shader compile error ...
     :gl32         Lwjgl3ApplicationConfiguration$GLEmulation/GL32))
 
 (defmethod set-option! :initial-visible? [_ v config]
