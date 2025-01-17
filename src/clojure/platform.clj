@@ -52,6 +52,7 @@
                :javadoc      (some-> method .getComment)
                :annotations  (->> (.getAnnotations method)
                                   (map #(.getTypeName %)))
+               :code-block   (.getCodeBlock method)
                :is-static    (.isStatic method)
                :is-abstract  (.isAbstract method)}))))
 
@@ -66,6 +67,11 @@
 
  (def jpbuilder (doto (JavaProjectBuilder.)
                   (.addSourceTree (java.io.File. "gdx-src/"))))
+
+ (:code-block (first (parse-class-methods jpbuilder "com.badlogic.gdx.Application")))
+
+ (.getAnnotations (clojure.pprint/pprint
+                   (bean (first (.getMethods (.getClassByName jpbuilder "com.badlogic.gdx.Application"))))))
 
  (count (.getClasses jpbuilder))
  ; 942
@@ -116,8 +122,8 @@
     ""
     (str/join " " (map (comp clojurize-name :name) parameters))))
 
-(defn ->protocol-function-string [{:keys [name parameters javadoc]}]
-  (str "  (" (clojurize-name name) " " (->parameters-str parameters) "\n    \"" javadoc "\")"))
+(defn ->protocol-function-string [{:keys [name parameters javadoc code-block]}]
+  (str "  (" (clojurize-name name) " " (->parameters-str parameters) "\n    \"" javadoc "\n\n" code-block "\")"))
 
 ; :arglists '([xform* coll])
 (defn ->declare-form [{:keys [name parameters javadoc]}]
