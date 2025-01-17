@@ -49,6 +49,7 @@
      (finally
       (.cleanup this)))))
 
+; TODO option w/o config also possible -> taking default then
 (defn application [{:keys [config
                            listener]}]
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
