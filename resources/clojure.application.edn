@@ -82,13 +82,13 @@
                                                  :info {:entity/hp clojure.world.graphics/draw-hpbar-when-mouseover-and-not-full
                                                         :active-skill clojure.world.graphics/draw-skill-image-and-active-effect}})
                                                (cdq.render.after-entities/render)])
-             (cdq.application/draw-stage)
-             (cdq.application/update-stage)
-             (cdq.application/player-state-input)
-             (cdq.application/update-mouseover-entity)
-             (cdq.application/update-paused)
-             (cdq.application/when-not-paused)
-             (cdq.application/remove-destroyed-entities)
-             (cdq.application/camera-controls)
-             (cdq.application/window-controls)]
+             (cdq.render/draw-stage)
+             (cdq.render/update-stage)
+             (cdq.render/player-state-input)
+             (cdq.render/update-mouseover-entity)
+             (cdq.render/update-paused)
+             (cdq.render/when-not-paused)
+             (cdq.render/remove-destroyed-entities)
+             (cdq.render/camera-controls)
+             (cdq.render/window-controls)]
    :resize  (cdq.graphics/resize-viewports)})]
