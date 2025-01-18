@@ -8,12 +8,6 @@
 
 (def ^:private ^Object obj (Object.))
 
-(defn- wait! []
-  (locking obj
-    (Thread/sleep 10)
-    (println "\n\n>>> WAITING FOR RESTART <<<")
-    (.wait obj)))
-
 (def ^:private thrown (atom false))
 
 (defn- handle-throwable! [t]
@@ -45,7 +39,10 @@
       (do
        (.bindRoot #'refresh-error (refresh :after 'cdq.dev-loop/start-dev-loop!))
        (handle-throwable! refresh-error)))
-    (wait!)
+    (locking obj
+      (Thread/sleep 10)
+      (println "\n\n>>> WAITING FOR RESTART <<<")
+      (.wait obj))
     (recur)))
 
 ; ( I dont know why nrepl start-server does not have this included ... )
