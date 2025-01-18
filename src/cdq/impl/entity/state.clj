@@ -1,4 +1,4 @@
-(ns cdq.entity.state
+(ns cdq.impl.entity.state
   (:require [clojure.assets :refer [play-sound]]
             cdq.graphics
             [clojure.audio :as audio]
