@@ -1,8 +1,8 @@
 (ns cdq.impl.assets
   (:require [clojure.files :as files]
+            [clojure.gdx.assets :as assets]
             [clojure.gdx.files.file-handle :as fh]
-            [clojure.string :as str]
-            [gdl.assets :as assets]))
+            [clojure.string :as str]))
 
 (defn manager [{:keys [clojure/files]}]
   (assets/create

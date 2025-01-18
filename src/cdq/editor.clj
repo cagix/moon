@@ -3,7 +3,7 @@
             [clojure.application :refer [state]]
             [clojure.assets :refer [play-sound]]
             [clojure.edn :as edn]
-            [gdl.assets :as assets]
+            [clojure.gdx.assets :as assets]
             [clojure.input :as input]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
