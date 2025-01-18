@@ -2,7 +2,7 @@
   (:require [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [defsystem readable-number sort-by-k-order]]
-            [clojure.graphics :as graphics]
+            [clojure.gdx.graphics :as graphics]
             [clojure.graphics.color :as color]
             [clojure.timer :as timer]
             [clojure.entity :as entity]

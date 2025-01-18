@@ -1,7 +1,7 @@
 (ns cdq.graphics
   (:require [clojure.files :as files]
             [clojure.gdx.utils.viewport :as viewport]
-            clojure.graphics
+            clojure.gdx.graphics
             [clojure.graphics.2d.batch :as batch]
             [clojure.graphics.shape-drawer :as sd]
             [clojure.graphics.camera :as camera]
@@ -37,18 +37,18 @@
    (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
       (let [pixmap (clojure.graphics.pixmap/create (files/internal files (str "cursors/" file ".png")))
-            cursor (clojure.graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+            cursor (clojure.gdx.graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
         (clojure.utils/dispose pixmap)
         cursor))
     config)))
 
 (defn set-cursor [{:keys [clojure/graphics
                           clojure.graphics/cursors]} cursor-key]
-  (clojure.graphics/set-cursor graphics
-                               (utils/safe-get cursors cursor-key)))
+  (clojure.gdx.graphics/set-cursor graphics
+                                   (utils/safe-get cursors cursor-key)))
 
 (defn- draw-with [{:keys [clojure.graphics/batch
-                         clojure.graphics/shape-drawer] :as c}
+                          clojure.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]

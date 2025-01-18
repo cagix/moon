@@ -19,7 +19,7 @@
             [:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
             [:clojure/db       (cdq.impl.db/create "properties.edn")]
             [:clojure/assets   (cdq.impl.assets/manager)]
-            [:clojure.graphics/batch (clojure.graphics/sprite-batch)]
+            [:clojure.graphics/batch (clojure.gdx.graphics/sprite-batch)]
             [:clojure.graphics/shape-drawer-texture (cdq.graphics/white-pixel-texture)]
             [:clojure.graphics/shape-drawer (clojure.gdx.graphics.shape-drawer/create)]
             [:clojure.graphics/cursors (cdq.graphics/cursors {:cursors/bag                   ["bag001"       [0   0]]
@@ -66,7 +66,7 @@
             [:clojure.context/player-eid (cdq.world.entities/spawn)]]
    :render  [(clojure.content-grid/assoc-active-entities)
              (cdq.graphics.camera/set-on-player)
-             (clojure.graphics/clear-screen)
+             (clojure.gdx.graphics/clear-screen)
              (cdq.graphics.tiled-map/draw)
              (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)
                                                (clojure.world.graphics/render-entities

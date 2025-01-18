@@ -1,5 +1,5 @@
 (ns clojure.ui.player-message
-  (:require [clojure.graphics :as graphics]
+  (:require [clojure.gdx.graphics :as graphics]
             [cdq.graphics.text :as text]
             [clojure.ui :refer [ui-actor]]))
 

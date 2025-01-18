@@ -1,5 +1,5 @@
 (ns clojure.ui.dev-menu
-  (:require [clojure.graphics :as graphics]
+  (:require [clojure.gdx.graphics :as graphics]
             [clojure.db :as db]
             cdq.graphics
             [clojure.graphics.camera :as cam]

@@ -6,7 +6,7 @@
             clojure.entity
             clojure.entity.state
             clojure.grid
-            clojure.graphics
+            clojure.gdx.graphics
             clojure.graphics.camera
             clojure.input
             clojure.potential-fields
@@ -66,7 +66,7 @@
     (reduce (fn [context f] (f context))
             context
             [(fn [{:keys [clojure/graphics] :as context}]
-               (let [delta-ms (min (clojure.graphics/delta-time graphics)
+               (let [delta-ms (min (clojure.gdx.graphics/delta-time graphics)
                                    cdq.time/max-delta)]
                  (-> context
                      (update :clojure.context/elapsed-time + delta-ms)

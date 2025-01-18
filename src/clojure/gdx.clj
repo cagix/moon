@@ -1,6 +1,6 @@
 (ns clojure.gdx
   (:require [clojure.files]
-            [clojure.graphics]
+            [clojure.gdx.graphics]
             [clojure.input]
             [clojure.interop :refer [k->input-button k->input-key]])
   (:import (com.badlogic.gdx Gdx)))
@@ -13,7 +13,7 @@
 
 (defn graphics [_context]
   (let [this Gdx/graphics]
-    (reify clojure.graphics/Graphics
+    (reify clojure.gdx.graphics/Graphics
       (new-cursor [_ pixmap hotspot-x hotspot-y]
         (.newCursor this pixmap hotspot-x hotspot-y))
 

@@ -1,4 +1,4 @@
-(ns clojure.graphics)
+(ns clojure.gdx.graphics)
 
 (defprotocol Graphics
   (new-cursor [_ pixmap hotspot-x hotspot-y])
