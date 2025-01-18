@@ -1,4 +1,4 @@
-(ns ^:no-doc cdq.level.modules
+(ns cdq.level.modules
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]
             [cdq.grid2d :as g2d]
