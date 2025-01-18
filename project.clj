@@ -10,8 +10,7 @@
                  [org.clj-commons/pretty "3.2.0"]
                  [nrepl "0.9.0"]
                  [org.clojure/tools.namespace "1.3.0"]
-                 [com.github.damn/reduce-fsm "eb1a2c1ff0"] ; TODO use updated main version
-                 [com.thoughtworks.qdox/qdox "2.2.0"]]
+                 [com.github.damn/reduce-fsm "eb1a2c1ff0"]] ; TODO use updated main version
   :java-source-paths ["src-java"]
   :plugins [[lein-hiera "2.0.0"]
             [lein-codox "0.10.8"]]
