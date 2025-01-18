@@ -17,7 +17,7 @@
             [:clojure/graphics (clojure.gdx/graphics)]
             [:clojure/input    (clojure.gdx/input)]
             [:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
-            [:clojure/db       (cdq.db/create "properties.edn")]
+            [:clojure/db       (cdq.impl.db/create "properties.edn")]
             [:clojure/assets   (cdq.impl.assets/manager)]
             [:clojure.graphics/batch (clojure.graphics/sprite-batch)]
             [:clojure.graphics/shape-drawer-texture (cdq.graphics/white-pixel-texture)]
