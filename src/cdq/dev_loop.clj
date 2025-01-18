@@ -2,7 +2,6 @@
   (:require [clj-commons.pretty.repl :refer [pretty-pst]]
             [clojure.java.io :as io]
             [clojure.tools.namespace.repl :refer [disable-reload! refresh]]
-            [cdq.utils :as utils]
             [nrepl.server :as nrepl]))
 
 (disable-reload!) ; keep same connection/nrepl-server up throughout refreshs
@@ -35,10 +34,10 @@
 
 (declare ^:private refresh-error)
 
-(declare ^:no-doc start-function-invocation)
+(declare ^:no-doc start-app-expression)
 
 (defn ^:no-doc start-dev-loop! []
-  (try (utils/req-resolve-call start-function-invocation)
+  (try (eval start-app-expression)
        (catch Throwable t
          (handle-throwable! t)))
   (loop []
@@ -65,8 +64,8 @@
 (declare ^:private nrepl-server)
 
 (defn -main [start-fn-invoc]
-  (.bindRoot #'start-function-invocation (read-string start-fn-invoc))
+  (.bindRoot #'start-app-expression (read-string start-fn-invoc))
   (.bindRoot #'nrepl-server (nrepl/start-server))
   (save-port-file! nrepl-server)
-  ;(println "Started nrepl server on port" (:port nrepl-server))
+  (println "Started nrepl server on port" (:port nrepl-server))
   (start-dev-loop!))
