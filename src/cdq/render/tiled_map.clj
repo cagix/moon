@@ -1,4 +1,4 @@
-(ns cdq.graphics.tiled-map
+(ns cdq.render.tiled-map
   (:require clojure.graphics.tiled-map-renderer
             clojure.graphics.camera
             clojure.graphics.tiled-map))

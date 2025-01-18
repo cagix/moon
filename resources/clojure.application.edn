@@ -65,9 +65,9 @@
             [:world/potential-field-cache (clojure.potential-fields/create-cache)]
             [:clojure.context/player-eid (cdq.world.entities/spawn)]]
    :render  [(clojure.content-grid/assoc-active-entities)
-             (cdq.graphics.camera/set-on-player)
+             (cdq.render.camera/set-on-player)
              (clojure.gdx.graphics/clear-screen)
-             (cdq.graphics.tiled-map/draw)
+             (cdq.render.tiled-map/draw)
              (cdq.graphics/draw-on-world-view [(cdq.render.before-entities/render)
                                                (clojure.world.graphics/render-entities
                                                 {:below {:entity/mouseover? clojure.world.graphics/draw-faction-ellipse

@@ -1,4 +1,4 @@
-(ns cdq.graphics.camera
+(ns cdq.render.camera
   (:require [clojure.graphics.camera :as camera]))
 
 (defn set-on-player
