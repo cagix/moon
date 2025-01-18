@@ -1,6 +1,6 @@
 (ns cdq.graphics.text
-  (:require [clojure.graphics.2d.bitmap-font :as font]
-            [clojure.interop :as interop]
+  (:require [cdq.graphics.2d.bitmap-font :as font]
+            [cdq.interop :as interop]
             [clojure.string :as str]))
 
 (defn- text-height [font text]
@@ -14,9 +14,9 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{:keys [clojure.context/unit-scale
-           clojure.graphics/batch
-           clojure.graphics/default-font]}
+  [{:keys [cdq.context/unit-scale
+           cdq.graphics/batch
+           cdq.graphics/default-font]}
    {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
   (let [font (or font default-font)

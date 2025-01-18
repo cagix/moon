@@ -1,19 +1,19 @@
 (ns forge.mapgen-test
-  (:require [clojure.level :refer [generate-level]]
+  (:require [cdq.level :refer [generate-level]]
             cdq.graphics
             cdq.error
-            [clojure.db :as db]
-            [clojure.modules :as modules]
-            [clojure.graphics.color :as color]
-            [clojure.graphics.shape-drawer :as sd]
+            [cdq.db :as db]
+            [cdq.modules :as modules]
+            [cdq.graphics.color :as color]
+            [cdq.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [clojure.input :as input]
-            [clojure.graphics.camera :as cam]
-            [clojure.tiled :as tiled]
-            [clojure.maps.tiled.tmx-map-loader :as tmx-map-loader]
-            [clojure.ui :refer [ui-actor text-button] :as ui]
-            [clojure.scene2d.group :refer [add-actor!]]))
+            [cdq.input :as input]
+            [cdq.graphics.camera :as cam]
+            [cdq.tiled :as tiled]
+            [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader]
+            [cdq.ui :refer [ui-actor text-button] :as ui]
+            [cdq.scene2d.group :refer [add-actor!]]))
 
 (def state (atom nil))
 
@@ -61,7 +61,7 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window [{:keys [clojure.graphics/ui-viewport] :as c}]
+(defn- ->info-window [{:keys [cdq.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
@@ -84,8 +84,8 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [clojure.graphics/world-viewport
-                              clojure.graphics/shape-drawer] :as c}]
+(defn- render-on-map [{:keys [cdq.graphics/world-viewport
+                              cdq.graphics/shape-drawer] :as c}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
@@ -116,8 +116,8 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [{:keys [clojure.graphics/world-viewport
-                                    clojure/db]
+(defn- generate-screen-ctx [{:keys [cdq.graphics/world-viewport
+                                    cdq/db]
                              :as c}
                             properties]
   (let [{:keys [tiled-map start-position]} (generate-level c
@@ -131,7 +131,7 @@
     (show-whole-map! (:camera world-viewport) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
-(defn ->generate-map-window [{:keys [clojure/db] :as c} level-id]
+(defn ->generate-map-window [{:keys [cdq/db] :as c} level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
               :rows [[(ui/label (with-out-str (pprint (db/build db level-id c))))]
@@ -143,7 +143,7 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn adjust-zoom [input camera] ; TODO this now in clojure.context available.
+(defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
   (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
   (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
 
@@ -154,7 +154,7 @@
   #_(cam/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(clojure.graphics.tiled-map-renderer/draw @state
+  #_(cdq.graphics.tiled-map-renderer/draw @state
                                               (:tiled-map @current-data)
                                               (constantly color/white))
   #_(cdq.graphics/draw-on-world-view @state render-on-map)

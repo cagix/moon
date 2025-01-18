@@ -1,7 +1,7 @@
 (ns cdq.application.desktop
   (:require [clojure.app :as app]
-            [clojure.application]
-            [clojure.gdx.backends.lwjgl :as lwjgl]))
+            [clojure.gdx.backends.lwjgl :as lwjgl]
+            [cdq.application]))
 
 (defn start [{:keys [config
                      create
@@ -9,18 +9,18 @@
                      resize]}]
   (lwjgl/application (reify app/Listener
                        (create [_]
-                         (clojure.application/create create))
+                         (cdq.application/create create))
 
                        (dispose [_]
-                         (clojure.application/dispose))
+                         (cdq.application/dispose))
 
                        (pause [_])
 
                        (render [_]
-                         (clojure.application/render render))
+                         (cdq.application/render render))
 
                        (resize [_ width height]
-                         (clojure.application/resize resize width height))
+                         (cdq.application/resize resize width height))
 
                        (resume [_]))
                      config))

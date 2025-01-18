@@ -1,10 +1,9 @@
 (ns cdq.error
-  (:require [clojure.error :refer [pretty-pst]]
-            [clojure.scene2d.stage :as stage]
-            [clojure.ui :as ui]
-            [clojure.utils :refer [with-err-str]]))
+  (:require [cdq.scene2d.stage :as stage]
+            [cdq.ui :as ui]
+            [cdq.utils :refer [pretty-pst with-err-str]]))
 
-(defn error-window [{:keys [clojure.context/stage]} throwable]
+(defn error-window [{:keys [cdq.context/stage]} throwable]
   (pretty-pst throwable)
   (stage/add-actor stage
                    (ui/window {:title "Error"

@@ -1,16 +1,16 @@
 (ns cdq.render.before-entities
-  (:require [clojure.graphics.camera :as cam]
-            [clojure.graphics.shape-drawer :as sd]))
+  (:require [cdq.graphics.camera :as cam]
+            [cdq.graphics.shape-drawer :as sd]))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn render [{:keys [clojure.graphics/world-viewport
-                      clojure.graphics/shape-drawer
-                      clojure.context/factions-iterations
-                      clojure.context/grid]}]
+(defn render [{:keys [cdq.graphics/world-viewport
+                      cdq.graphics/shape-drawer
+                      cdq.context/factions-iterations
+                      cdq.context/grid]}]
   (let [sd shape-drawer
         cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (cam/frustum cam)]

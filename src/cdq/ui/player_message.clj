@@ -1,0 +1,29 @@
+(ns cdq.ui.player-message
+  (:require [cdq.gdx.graphics :as graphics]
+            [cdq.graphics.text :as text]
+            [cdq.ui :refer [ui-actor]]))
+
+(defn- draw-player-message [{:keys [cdq.graphics/ui-viewport
+                                    cdq.context/player-message] :as c}]
+  (when-let [text (:text @player-message)]
+    (text/draw c
+               {:x (/ (:width ui-viewport) 2)
+                :y (+ (/ (:height ui-viewport) 2) 200)
+                :text text
+                :scale 2.5
+                :up? true})))
+
+(defn- check-remove-message [{:keys [cdq/graphics
+                                     cdq.context/player-message]}]
+  (when (:text @player-message)
+    (swap! player-message update :counter + (graphics/delta-time graphics))
+    (when (>= (:counter @player-message)
+              (:duration-seconds @player-message))
+      (swap! player-message dissoc :counter :text))))
+
+(defn actor [_context]
+  (ui-actor {:draw draw-player-message
+             :act  check-remove-message}))
+
+(defn create* [config _context]
+  (atom {:duration-seconds (:duration-seconds config)}))

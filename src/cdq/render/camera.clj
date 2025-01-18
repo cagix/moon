@@ -1,9 +1,9 @@
 (ns cdq.render.camera
-  (:require [clojure.graphics.camera :as camera]))
+  (:require [cdq.graphics.camera :as camera]))
 
 (defn set-on-player
-  [{:keys [clojure.graphics/world-viewport
-           clojure.context/player-eid]
+  [{:keys [cdq.graphics/world-viewport
+           cdq.context/player-eid]
     :as context}]
   {:pre [world-viewport
          player-eid]}

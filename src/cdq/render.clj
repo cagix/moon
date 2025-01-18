@@ -3,81 +3,81 @@
             cdq.time
             cdq.stage
             cdq.graphics
-            clojure.entity
-            clojure.entity.state
-            clojure.grid
-            clojure.gdx.graphics
-            clojure.graphics.camera
-            clojure.input
-            clojure.potential-fields
-            clojure.scene2d.actor
-            clojure.scene2d.group
-            clojure.ui
-            clojure.utils
-            clojure.world))
+            cdq.entity
+            cdq.entity.state
+            cdq.grid
+            cdq.gdx.graphics
+            cdq.graphics.camera
+            cdq.input
+            cdq.potential-fields
+            cdq.scene2d.actor
+            cdq.scene2d.group
+            cdq.ui
+            cdq.utils
+            cdq.world))
 
-(defn draw-stage [{:keys [clojure.context/stage] :as context}]
-  (clojure.ui/draw stage (assoc context :clojure.context/unit-scale 1))
+(defn draw-stage [{:keys [cdq.context/stage] :as context}]
+  (cdq.ui/draw stage (assoc context :cdq.context/unit-scale 1))
   context)
 
 (defn update-stage [context]
-  (clojure.ui/act (:clojure.context/stage context) context)
+  (cdq.ui/act (:cdq.context/stage context) context)
   context)
 
-(defn player-state-input [{:keys [clojure.context/player-eid] :as c}]
-  (clojure.entity.state/manual-tick (clojure.entity/state-obj @player-eid) c)
+(defn player-state-input [{:keys [cdq.context/player-eid] :as c}]
+  (cdq.entity.state/manual-tick (cdq.entity/state-obj @player-eid) c)
   c)
 
-(defn update-mouseover-entity [{:keys [clojure.context/grid
-                                       clojure.context/mouseover-eid
-                                       clojure.context/player-eid] :as c}]
+(defn update-mouseover-entity [{:keys [cdq.context/grid
+                                       cdq.context/mouseover-eid
+                                       cdq.context/player-eid] :as c}]
   (let [new-eid (if (cdq.stage/mouse-on-actor? c)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (clojure.grid/point->entities grid (cdq.graphics/world-mouse-position c)))]
-                    (->> clojure.world/render-z-order
-                         (clojure.utils/sort-by-order hits #(:z-order @%))
+                                     (cdq.grid/point->entities grid (cdq.graphics/world-mouse-position c)))]
+                    (->> cdq.world/render-z-order
+                         (cdq.utils/sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(clojure.world/line-of-sight? c player @%))
+                         (filter #(cdq.world/line-of-sight? c player @%))
                          first)))]
     (when mouseover-eid
       (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (assoc c :clojure.context/mouseover-eid new-eid)))
+    (assoc c :cdq.context/mouseover-eid new-eid)))
 
-(defn update-paused [{:keys [clojure.context/player-eid
+(defn update-paused [{:keys [cdq.context/player-eid
                              error ; FIXME ! not `::` keys so broken !
-                             clojure/input
+                             cdq/input
                              ] :as c}]
   (let [pausing? true]
-    (assoc c :clojure.context/paused? (or error
+    (assoc c :cdq.context/paused? (or error
                                           (and pausing?
-                                               (clojure.entity.state/pause-game? (clojure.entity/state-obj @player-eid))
-                                               (not (or (clojure.input/key-just-pressed? input :p)
-                                                        (clojure.input/key-pressed?      input :space))))))))
+                                               (cdq.entity.state/pause-game? (cdq.entity/state-obj @player-eid))
+                                               (not (or (cdq.input/key-just-pressed? input :p)
+                                                        (cdq.input/key-pressed?      input :space))))))))
 
 ; TODO how can I write a test for 'space' -> not paused?
 
 (defn when-not-paused [context]
-  (if (:clojure.context/paused? context)
+  (if (:cdq.context/paused? context)
     context
     (reduce (fn [context f] (f context))
             context
-            [(fn [{:keys [clojure/graphics] :as context}]
-               (let [delta-ms (min (clojure.gdx.graphics/delta-time graphics)
+            [(fn [{:keys [cdq/graphics] :as context}]
+               (let [delta-ms (min (cdq.gdx.graphics/delta-time graphics)
                                    cdq.time/max-delta)]
                  (-> context
-                     (update :clojure.context/elapsed-time + delta-ms)
-                     (assoc :clojure.context/delta-time delta-ms))))
-             (fn [{:keys [clojure.context/factions-iterations
-                          clojure.context/grid
+                     (update :cdq.context/elapsed-time + delta-ms)
+                     (assoc :cdq.context/delta-time delta-ms))))
+             (fn [{:keys [cdq.context/factions-iterations
+                          cdq.context/grid
                           world/potential-field-cache
                           cdq.game/active-entities]
                    :as context}]
                (doseq [[faction max-iterations] factions-iterations]
-                 (clojure.potential-fields/tick potential-field-cache
+                 (cdq.potential-fields/tick potential-field-cache
                                                 grid
                                                 faction
                                                 active-entities
@@ -94,7 +94,7 @@
                   (try
                    (doseq [k (keys @eid)]
                      (try (when-let [v (k @eid)]
-                            (clojure.world/tick! [k v] eid context))
+                            (cdq.world/tick! [k v] eid context))
                           (catch Throwable t
                             (throw (ex-info "entity-tick" {:k k} t)))))
                    (catch Throwable t
@@ -104,33 +104,33 @@
                   #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
                context)])))
 
-(defn remove-destroyed-entities [{:keys [clojure.context/entity-ids] :as c}]
+(defn remove-destroyed-entities [{:keys [cdq.context/entity-ids] :as c}]
   ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
-    (clojure.world/remove-entity c eid)
+    (cdq.world/remove-entity c eid)
     (doseq [component @eid]
-      (clojure.world/destroy! component eid c)))
+      (cdq.world/destroy! component eid c)))
   c)
 
-(defn camera-controls [{:keys [clojure.graphics/world-viewport
-                               clojure/input]
+(defn camera-controls [{:keys [cdq.graphics/world-viewport
+                               cdq/input]
                         :as context}]
   (let [camera (:camera world-viewport)
         zoom-speed 0.025]
-    (when (clojure.input/key-pressed? input :minus)  (clojure.graphics.camera/inc-zoom camera    zoom-speed))
-    (when (clojure.input/key-pressed? input :equals) (clojure.graphics.camera/inc-zoom camera (- zoom-speed))))
+    (when (cdq.input/key-pressed? input :minus)  (cdq.graphics.camera/inc-zoom camera    zoom-speed))
+    (when (cdq.input/key-pressed? input :equals) (cdq.graphics.camera/inc-zoom camera (- zoom-speed))))
   context)
 
-(defn window-controls [{:keys [clojure/input] :as c}]
+(defn window-controls [{:keys [cdq/input] :as c}]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
-            :when (clojure.input/key-just-pressed? input (get window-hotkeys window-id))]
-      (clojure.scene2d.actor/toggle-visible! (get (:windows (:clojure.context/stage c)) window-id))))
-  (when (clojure.input/key-just-pressed? input :escape)
-    (let [windows (clojure.scene2d.group/children (:windows (:clojure.context/stage c)))]
-      (when (some clojure.scene2d.actor/visible? windows)
-        (run! #(clojure.scene2d.actor/set-visible % false) windows))))
+            :when (cdq.input/key-just-pressed? input (get window-hotkeys window-id))]
+      (cdq.scene2d.actor/toggle-visible! (get (:windows (:cdq.context/stage c)) window-id))))
+  (when (cdq.input/key-just-pressed? input :escape)
+    (let [windows (cdq.scene2d.group/children (:windows (:cdq.context/stage c)))]
+      (when (some cdq.scene2d.actor/visible? windows)
+        (run! #(cdq.scene2d.actor/set-visible % false) windows))))
   c)

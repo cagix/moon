@@ -1,8 +1,8 @@
 (ns cdq.world.grid
-  (:require [clojure.grid :as grid]
-            [clojure.grid2d :as g2d]
-            [clojure.tiled :as tiled]
-            [clojure.utils :refer [tile->middle]]))
+  (:require [cdq.grid :as grid]
+            [cdq.grid2d :as g2d]
+            [cdq.tiled :as tiled]
+            [cdq.utils :refer [tile->middle]]))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -42,7 +42,7 @@
     :entities #{}
     :occupied #{}}))
 
-(defn create [{:keys [clojure.context/tiled-map]}]
+(defn create [{:keys [cdq.context/tiled-map]}]
   (g2d/create-grid
    (tiled/tm-width tiled-map)
    (tiled/tm-height tiled-map)

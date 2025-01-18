@@ -1,6 +1,6 @@
 (ns cdq.graphics.batch
-  (:require [clojure.graphics.color :as color]
-            [clojure.graphics.2d.batch :as batch]))
+  (:require [cdq.graphics.color :as color]
+            [cdq.graphics.2d.batch :as batch]))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
@@ -23,8 +23,8 @@
   (if color (batch/set-color batch color/white)))
 
 (defn draw-image
-  [{:keys [clojure.context/unit-scale
-           clojure.graphics/batch]}
+  [{:keys [cdq.context/unit-scale
+           cdq.graphics/batch]}
    {:keys [texture-region color] :as image} position]
   (draw-texture-region batch
                        texture-region
@@ -34,8 +34,8 @@
                        color))
 
 (defn draw-rotated-centered
-  [{:keys [clojure.context/unit-scale
-           clojure.graphics/batch]}
+  [{:keys [cdq.context/unit-scale
+           cdq.graphics/batch]}
    {:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image unit-scale)]
     (draw-texture-region batch

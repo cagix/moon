@@ -1,15 +1,15 @@
 (ns cdq.effects
-  (:require [clojure.audio :as audio]
-            [clojure.db :as db]
-            [clojure.timer :as timer]
-            [clojure.effect :as effect]
-            [clojure.effect-context :as effect-ctx]
-            [clojure.entity :as entity]
-            [clojure.math.raycaster :as raycaster]
-            [clojure.math.vector2 :as v]
-            [clojure.rand :refer [rand-int-between]]
-            [clojure.utils :refer [defcomponent]]
-            [clojure.world :refer [add-text-effect
+  (:require [cdq.audio :as audio]
+            [cdq.db :as db]
+            [cdq.timer :as timer]
+            [cdq.effect :as effect]
+            [cdq.effect-context :as effect-ctx]
+            [cdq.entity :as entity]
+            [cdq.math.raycaster :as raycaster]
+            [cdq.math.vector2 :as v]
+            [cdq.rand :refer [rand-int-between]]
+            [cdq.utils :refer [defcomponent]]
+            [cdq.world :refer [add-text-effect
                                    spawn-audiovisual
                                    spawn-creature
                                    spawn-projectile
@@ -41,7 +41,7 @@
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (effect/useful? [[_ {:keys [projectile/max-range] :as projectile}]
                    {:keys [effect/source effect/target]}
-                   {:keys [clojure.context/raycaster]}]
+                   {:keys [cdq.context/raycaster]}]
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
@@ -154,7 +154,7 @@
 
   (effect/handle [[_ {:keys [maxrange entity-effects]}]
                   {:keys [effect/source effect/target] :as ctx}
-                  {:keys [clojure/db] :as c}]
+                  {:keys [cdq/db] :as c}]
     (let [source* @source
           target* @target]
       (if (entity/in-range? source* target* maxrange)
@@ -214,7 +214,7 @@
 
   (effect/handle [[_ damage]
                   {:keys [effect/source effect/target]}
-                  {:keys [clojure/db] :as c}]
+                  {:keys [cdq/db] :as c}]
     (let [source* @source
           target* @target
           hp (entity/hitpoints target*)]
@@ -268,7 +268,7 @@
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
     (effect/handle [_
                     {:keys [effect/target]}
-                    {:keys [clojure.context/elapsed-time] :as c}]
+                    {:keys [cdq.context/elapsed-time] :as c}]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                    :counter (timer/create elapsed-time duration)})

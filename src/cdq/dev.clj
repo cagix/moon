@@ -1,22 +1,22 @@
 (ns cdq.dev
-  (:require [clojure.application :as app]
+  (:require [cdq.application :as app]
             [cdq.editor :as editor]
             cdq.graphics
-            [clojure.db :as db]
+            [cdq.db :as db]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [clojure.scene2d.group :refer [children]]
-            [clojure.scene2d.stage :as stage]
+            [cdq.scene2d.group :refer [children]]
+            [cdq.scene2d.stage :as stage]
             [cdq.stage]
-            [clojure.ui :refer [t-node scroll-pane] :as ui]
-            [clojure.world :as world]))
+            [cdq.ui :refer [t-node scroll-pane] :as ui]
+            [cdq.world :as world]))
 
 (comment
 
  ; This 'app-values-tree'
  ; could be outside of the application
- ; together with clojure.dev-loop ?
- ; 'clojure.dev' ?
+ ; together with cdq.dev-loop ?
+ ; 'cdq.dev' ?
  ; javafx app
  ; hooks into your application
  ; and show a tree view there ...
@@ -25,7 +25,7 @@
  (app/post-runnable (fn [context]
                       (show-obj-editor! context)
                       context))
- (print-app-values-tree "app-values-tree.clj" #{"clojure"})
+ (print-app-values-tree "app-values-tree.clj" #{"cdq"})
 
  ; use post-runnable to get proper error messages in console
 
@@ -40,7 +40,7 @@
                       (println "hi")
                       context))
 
- (show-tree-view! "Mouseover Entity" @(:clojure.context/mouseover-eid @app/state))
+ (show-tree-view! "Mouseover Entity" @(:cdq.context/mouseover-eid @app/state))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"forge"}))
 
@@ -90,21 +90,21 @@
  )
 
 
-(defn- learn-skill! [{:keys [clojure.context/player-eid
-                             clojure/db] :as c}
+(defn- learn-skill! [{:keys [cdq.context/player-eid
+                             cdq/db] :as c}
                      skill-id]
   (world/add-skill c
                    player-eid
                    (db/build db skill-id c)))
 
-(defn- create-item! [{:keys [clojure.context/player-eid
-                             clojure/db] :as c}
+(defn- create-item! [{:keys [cdq.context/player-eid
+                             cdq/db] :as c}
                      item-id]
   (world/spawn-item c
                     (:position @player-eid)
                     (db/build db item-id c)))
 
-(defn- mouseover-grid-cell [{:keys [clojure.context/grid] :as c}]
+(defn- mouseover-grid-cell [{:keys [cdq.context/grid] :as c}]
   @(grid (mapv int (cdq.graphics/world-mouse-position c))))
 
 (defn- class->label-str [class]
@@ -203,7 +203,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:clojure.graphics/ui-viewport @app/state)
+  (let [viewport (:cdq.graphics/ui-viewport @app/state)
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})

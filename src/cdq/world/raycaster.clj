@@ -1,12 +1,12 @@
 (ns cdq.world.raycaster
-  (:require [clojure.grid :as grid]
-            [clojure.grid2d :as g2d]))
+  (:require [cdq.grid :as grid]
+            [cdq.grid2d :as g2d]))
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
 
-(defn create [{:keys [clojure.context/grid]}]
+(defn create [{:keys [cdq.context/grid]}]
   (let [width  (g2d/width  grid)
         height (g2d/height grid)
         arr (make-array Boolean/TYPE width height)]

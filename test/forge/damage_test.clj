@@ -1,5 +1,5 @@
 (ns forge.damage-test
-  (:require [clojure.entity :as entity]
+  (:require [cdq.entity :as entity]
             [clojure.test :refer :all]))
 
 (deftest modify-source-damage

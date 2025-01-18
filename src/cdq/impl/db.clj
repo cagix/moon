@@ -1,8 +1,8 @@
 (ns cdq.impl.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.schema :as schema]
-            [clojure.property :as property]))
+            [cdq.schema :as schema]
+            [cdq.property :as property]))
 
 (defn- validate-properties! [properties schemas]
   (assert (or (empty? properties)

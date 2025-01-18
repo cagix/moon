@@ -1,54 +1,54 @@
 (ns cdq.graphics
-  (:require [clojure.files :as files]
-            [clojure.gdx.utils.viewport :as viewport]
-            clojure.gdx.graphics
-            [clojure.graphics.2d.batch :as batch]
-            [clojure.graphics.shape-drawer :as sd]
-            [clojure.graphics.camera :as camera]
-            [clojure.math.utils :refer [clamp]]
-            [clojure.input :as input]
-            [clojure.gdx.utils.viewport :as viewport]
-            [clojure.graphics.color :as color]
-            clojure.graphics.color
-            clojure.graphics.pixmap
-            clojure.graphics.texture
-            [clojure.utils :as utils]))
+  (:require [cdq.files :as files]
+            [cdq.gdx.utils.viewport :as viewport]
+            cdq.gdx.graphics
+            [cdq.graphics.2d.batch :as batch]
+            [cdq.graphics.shape-drawer :as sd]
+            [cdq.graphics.camera :as camera]
+            [cdq.math.utils :refer [clamp]]
+            [cdq.input :as input]
+            [cdq.gdx.utils.viewport :as viewport]
+            [cdq.graphics.color :as color]
+            cdq.graphics.color
+            cdq.graphics.pixmap
+            cdq.graphics.texture
+            [cdq.utils :as utils]))
 
 (defn white-pixel-texture [_context]
-  (let [pixmap (doto (clojure.graphics.pixmap/create 1 1 clojure.graphics.pixmap/format-RGBA8888)
-                 (clojure.graphics.pixmap/set-color clojure.graphics.color/white)
-                 (clojure.graphics.pixmap/draw-pixel 0 0))
-        texture (clojure.graphics.texture/create pixmap)]
-    (clojure.utils/dispose pixmap)
+  (let [pixmap (doto (cdq.graphics.pixmap/create 1 1 cdq.graphics.pixmap/format-RGBA8888)
+                 (cdq.graphics.pixmap/set-color cdq.graphics.color/white)
+                 (cdq.graphics.pixmap/draw-pixel 0 0))
+        texture (cdq.graphics.texture/create pixmap)]
+    (cdq.utils/dispose pixmap)
     texture))
 
 (defn resize-viewports [context width height]
-  (viewport/update (:clojure.graphics/ui-viewport    context) width height :center-camera? true)
-  (viewport/update (:clojure.graphics/world-viewport context) width height))
+  (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
+  (viewport/update (:cdq.graphics/world-viewport context) width height))
 
 (defrecord Cursors []
-  clojure.utils/Disposable
+  cdq.utils/Disposable
   (dispose [this]
-    (run! clojure.utils/dispose (vals this))))
+    (run! cdq.utils/dispose (vals this))))
 
-(defn cursors [config {:keys [clojure/files
-                              clojure/graphics]}]
+(defn cursors [config {:keys [cdq/files
+                              cdq/graphics]}]
   (map->Cursors
-   (clojure.utils/mapvals
+   (cdq.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
-      (let [pixmap (clojure.graphics.pixmap/create (files/internal files (str "cursors/" file ".png")))
-            cursor (clojure.gdx.graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
-        (clojure.utils/dispose pixmap)
+      (let [pixmap (cdq.graphics.pixmap/create (files/internal files (str "cursors/" file ".png")))
+            cursor (cdq.gdx.graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+        (cdq.utils/dispose pixmap)
         cursor))
     config)))
 
-(defn set-cursor [{:keys [clojure/graphics
-                          clojure.graphics/cursors]} cursor-key]
-  (clojure.gdx.graphics/set-cursor graphics
+(defn set-cursor [{:keys [cdq/graphics
+                          cdq.graphics/cursors]} cursor-key]
+  (cdq.gdx.graphics/set-cursor graphics
                                    (utils/safe-get cursors cursor-key)))
 
-(defn- draw-with [{:keys [clojure.graphics/batch
-                          clojure.graphics/shape-drawer] :as c}
+(defn- draw-with [{:keys [cdq.graphics/batch
+                          cdq.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]
@@ -57,7 +57,7 @@
   (batch/begin batch)
   (sd/with-line-width shape-drawer unit-scale
     (fn []
-      (draw-fn (assoc c :clojure.context/unit-scale unit-scale))))
+      (draw-fn (assoc c :cdq.context/unit-scale unit-scale))))
   (batch/end batch))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
@@ -73,22 +73,22 @@
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{:keys [clojure.graphics/ui-viewport
-                              clojure/input]}]
+(defn mouse-position [{:keys [cdq.graphics/ui-viewport
+                              cdq/input]}]
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position input ui-viewport)))
 
-(defn world-mouse-position [{:keys [clojure.graphics/world-viewport
-                                    clojure/input]}]
+(defn world-mouse-position [{:keys [cdq.graphics/world-viewport
+                                    cdq/input]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position input world-viewport))
 
-(defn pixels->world-units [{:keys [clojure.graphics/world-unit-scale]} pixels]
+(defn pixels->world-units [{:keys [cdq.graphics/world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))
 
-(defn- draw-on-world-view* [{:keys [clojure.graphics/world-unit-scale
-                                    clojure.graphics/world-viewport] :as c} render-fn]
+(defn- draw-on-world-view* [{:keys [cdq.graphics/world-unit-scale
+                                    cdq.graphics/world-viewport] :as c} render-fn]
   (draw-with c
              world-viewport
              world-unit-scale

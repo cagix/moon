@@ -1,16 +1,16 @@
 (ns cdq.render.tiled-map
-  (:require clojure.graphics.tiled-map-renderer
-            clojure.graphics.camera
-            clojure.graphics.tiled-map))
+  (:require cdq.graphics.tiled-map-renderer
+            cdq.graphics.camera
+            cdq.graphics.tiled-map))
 
-(defn draw [{:keys [clojure.graphics/world-viewport
-                    clojure.context/tiled-map
-                    clojure.context/raycaster
-                    clojure.context/explored-tile-corners]
+(defn draw [{:keys [cdq.graphics/world-viewport
+                    cdq.context/tiled-map
+                    cdq.context/raycaster
+                    cdq.context/explored-tile-corners]
              :as context}]
-  (clojure.graphics.tiled-map-renderer/draw context
+  (cdq.graphics.tiled-map-renderer/draw context
                                             tiled-map
-                                            (clojure.graphics.tiled-map/tile-color-setter raycaster
+                                            (cdq.graphics.tiled-map/tile-color-setter raycaster
                                                                                           explored-tile-corners
-                                                                                          (clojure.graphics.camera/position (:camera world-viewport))))
+                                                                                          (cdq.graphics.camera/position (:camera world-viewport))))
   context)

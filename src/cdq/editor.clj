@@ -1,17 +1,17 @@
 (ns cdq.editor
   (:require cdq.error
-            [clojure.application :refer [state]]
-            [clojure.assets :refer [play-sound]]
+            [cdq.application :refer [state]]
+            [cdq.assets :refer [play-sound]]
             [clojure.edn :as edn]
-            [clojure.gdx.assets :as assets]
-            [clojure.input :as input]
+            [cdq.gdx.assets :as assets]
+            [cdq.input :as input]
             [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
+            [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.stage :as stage]
-            [clojure.db :as db]
-            [clojure.schema :as schema]
-            [clojure.property :as property]
-            [clojure.ui :refer [horizontal-separator-cell
+            [cdq.db :as db]
+            [cdq.schema :as schema]
+            [cdq.property :as property]
+            [cdq.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
                             ui-actor
                             image-button
@@ -25,9 +25,9 @@
                             text-field
                             add-tooltip!]
              :as ui]
-            [clojure.scene2d.actor :as actor]
-            [clojure.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [clojure.scene2d.ui.table :as table])
+            [cdq.scene2d.actor :as actor]
+            [cdq.scene2d.group :refer [children clear-children add-actor! find-actor]]
+            [cdq.scene2d.ui.table :as table])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- info-text [property]
@@ -56,7 +56,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (:height (:clojure.graphics/ui-viewport @state)) 50)
+     :height (min (- (:height (:cdq.graphics/ui-viewport @state)) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
@@ -74,22 +74,22 @@
         (catch Throwable t
           (cdq.error/error-window @state t))))
 
-(defn- async-write-to-file! [{:keys [clojure/db]}]
+(defn- async-write-to-file! [{:keys [cdq/db]}]
   (db/async-write-to-file! db))
 
 (defn update! [property]
-  (swap! state update :clojure/db db/update property (:cdq/schemas @state))
+  (swap! state update :cdq/db db/update property (:cdq/schemas @state))
   (async-write-to-file! @state))
 
 (defn delete! [property-id]
-  (swap! state update :clojure/db db/delete property-id)
+  (swap! state update :cdq/db db/delete property-id)
   (async-write-to-file! @state))
 
 (defn- get-db
   ([]
    (get-db @state))
   ([context]
-   (:clojure/db context)))
+   (:cdq/db context)))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -112,7 +112,7 @@
                                                    :center? true}
                                                   {:actor (text-button "Delete" delete!)
                                                    :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn [{:keys [clojure/input]}]
+    (add-actor! window (ui-actor {:act (fn [{:keys [cdq/input]}]
                                          (when (input/key-just-pressed? input :enter)
                                            (save!)))}))
     (.pack window)
@@ -153,7 +153,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- all-of-type [asset-type]
-  (assets/all-of-type (:clojure/assets @state) asset-type))
+  (assets/all-of-type (:cdq/assets @state) asset-type))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(play-sound @state sound-name)))
@@ -322,7 +322,7 @@
        first))
 
 (defn- get-editor-window []
-  (:property-editor-window (:clojure.context/stage @state)))
+  (:property-editor-window (:cdq.context/stage @state)))
 
 (defn- window->property-value []
  (let [window (get-editor-window)
@@ -515,7 +515,7 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn- background-image [{:keys [clojure/assets]} path]
+(defn- background-image [{:keys [cdq/assets]} path]
   (ui/image-widget (assets path)
                    {:fill-parent? true
                     :scaling :fill

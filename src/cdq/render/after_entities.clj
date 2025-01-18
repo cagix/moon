@@ -1,11 +1,11 @@
 (ns cdq.render.after-entities
   (:require cdq.graphics
-            [clojure.graphics.shape-drawer :as sd]
-            [clojure.grid :as grid]
-            [clojure.math.shapes :refer [circle->outer-rectangle]]))
+            [cdq.graphics.shape-drawer :as sd]
+            [cdq.grid :as grid]
+            [cdq.math.shapes :refer [circle->outer-rectangle]]))
 
-(defn- geom-test [{:keys [clojure.graphics/shape-drawer
-                          clojure.context/grid]
+(defn- geom-test [{:keys [cdq.graphics/shape-drawer
+                          cdq.context/grid]
                    :as c}]
   (let [position (cdq.graphics/world-mouse-position c)
         radius 0.8
@@ -18,8 +18,8 @@
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [{:keys [clojure.graphics/shape-drawer
-                                         clojure.context/grid] :as c}]
+(defn- highlight-mouseover-tile [{:keys [cdq.graphics/shape-drawer
+                                         cdq.context/grid] :as c}]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (cdq.graphics/world-mouse-position c))
           cell (grid [x y])]

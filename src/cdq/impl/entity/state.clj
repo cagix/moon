@@ -1,22 +1,22 @@
 (ns cdq.impl.entity.state
-  (:require [clojure.assets :refer [play-sound]]
+  (:require [cdq.assets :refer [play-sound]]
             cdq.graphics
-            [clojure.audio :as audio]
-            [clojure.utils :refer [defcomponent]]
-            [clojure.world.potential-field :as potential-field]
-            [clojure.inventory :as inventory]
-            [clojure.timer :as timer]
-            [clojure.entity :as entity]
-            [clojure.entity.state :as state]
-            [clojure.grid :as grid]
-            [clojure.input :as input]
-            [clojure.effect-context :as effect-ctx]
-            [clojure.skill :as skill]
+            [cdq.audio :as audio]
+            [cdq.utils :refer [defcomponent]]
+            [cdq.world.potential-field :as potential-field]
+            [cdq.inventory :as inventory]
+            [cdq.timer :as timer]
+            [cdq.entity :as entity]
+            [cdq.entity.state :as state]
+            [cdq.grid :as grid]
+            [cdq.input :as input]
+            [cdq.effect-context :as effect-ctx]
+            [cdq.skill :as skill]
             [cdq.stage :as stage]
-            [clojure.math.vector2 :as v]
-            [clojure.ui :as ui]
-            [clojure.scene2d.actor :as actor]
-            [clojure.world :refer [tick!
+            [cdq.math.vector2 :as v]
+            [cdq.ui :as ui]
+            [cdq.scene2d.actor :as actor]
+            [cdq.world :refer [tick!
                                    nearest-enemy
                                    delayed-alert
                                    add-text-effect
@@ -54,7 +54,7 @@
     false)
 
   (state/enter [[_ {:keys [eid skill]}]
-                {:keys [clojure.context/elapsed-time] :as c}]
+                {:keys [cdq.context/elapsed-time] :as c}]
     (audio/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
@@ -66,7 +66,7 @@
 
   (tick! [[_ {:keys [skill effect-ctx counter]}]
           eid
-          {:keys [clojure.context/elapsed-time] :as c}]
+          {:keys [cdq.context/elapsed-time] :as c}]
     (cond
      (not (effect-ctx/some-applicable? (update-effect-ctx c effect-ctx)
                                        (:skill/effects skill)))
@@ -122,7 +122,7 @@
 
   (tick! [[_ {:keys [counter]}]
           eid
-          {:keys [clojure.context/elapsed-time] :as c}]
+          {:keys [cdq.context/elapsed-time] :as c}]
     (when (timer/stopped? counter elapsed-time)
       (send-event! c eid :timer-finished))))
 
@@ -134,7 +134,7 @@
                    0.2)
     (swap! eid add-text-effect c "[WHITE]!"))
 
-  (tick! [_ eid {:keys [clojure.context/grid] :as c}]
+  (tick! [_ eid {:keys [cdq.context/grid] :as c}]
     (let [entity @eid
           cell (grid (entity/tile entity))]
       (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
@@ -163,7 +163,7 @@
   (fn [eid c]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid {:keys [clojure.context/player-eid] :as c}]
+(defmethod on-clicked :clickable/item [eid {:keys [cdq.context/player-eid] :as c}]
   (let [item (:entity/item @eid)]
     (cond
      (actor/visible? (get-inventory c))
@@ -203,7 +203,7 @@
                                               (play-sound c "bfx_denied")
                                               (show-player-msg c "Too far away"))]))
 
-(defn- inventory-cell-with-item? [{:keys [clojure.context/player-eid] :as c} actor]
+(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
   (and (actor/parent actor)
        (= "inventory-cell" (.getName (actor/parent actor)))
        (get-in (:entity/inventory @player-eid)
@@ -217,7 +217,7 @@
      (ui/button? actor)                     :cursors/over-button
      :else                               :cursors/default)))
 
-(defn- player-effect-ctx [{:keys [clojure.context/mouseover-eid] :as c} eid]
+(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid] :as c} eid]
   (let [target-position (or (and mouseover-eid
                                  (:position @mouseover-eid))
                             (cdq.graphics/world-mouse-position c))]
@@ -226,7 +226,7 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [{:keys [clojure.context/mouseover-eid] :as c} eid]
+(defn- interaction-state [{:keys [cdq.context/mouseover-eid] :as c} eid]
   (let [entity @eid]
     (cond
      (stage/mouse-on-actor? c)
@@ -271,7 +271,7 @@
   (state/pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure/input] :as c}]
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [cdq/input] :as c}]
     (if-let [movement-vector (player-movement-vector input)]
       (send-event! c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
@@ -354,7 +354,7 @@
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [clojure/input] :as c}]
+  (state/manual-tick [[_ {:keys [eid]}] {:keys [cdq/input] :as c}]
     (when (and (input/button-just-pressed? input :left)
                (world-item? c))
       (send-event! c eid :drop-item)))
@@ -376,7 +376,7 @@
   (state/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (tick! [[_ {:keys [movement-vector]}] eid {:keys [clojure/input] :as c}]
+  (tick! [[_ {:keys [movement-vector]}] eid {:keys [cdq/input] :as c}]
     (if-let [movement-vector (player-movement-vector input)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
@@ -391,6 +391,6 @@
 
   (tick! [[_ {:keys [counter]}]
           eid
-          {:keys [clojure.context/elapsed-time] :as c}]
+          {:keys [cdq.context/elapsed-time] :as c}]
     (when (timer/stopped? counter elapsed-time)
       (send-event! c eid :effect-wears-off))))
