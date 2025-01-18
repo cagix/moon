@@ -1,4 +1,4 @@
-(ns cdq.assets
+(ns cdq.impl.assets
   (:require [clojure.files :as files]
             [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str]
