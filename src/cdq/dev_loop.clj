@@ -1,10 +1,10 @@
 (ns cdq.dev-loop
-  (:require [clj-commons.pretty.repl :refer [pretty-pst]]
-            [clojure.java.io :as io]
-            [clojure.tools.namespace.repl :refer [disable-reload! refresh]]
-            [nrepl.server :as nrepl]))
+  (:require clj-commons.pretty.repl
+            clojure.java.io
+            clojure.tools.namespace.repl
+            nrepl.server))
 
-(disable-reload!) ; keep same connection/nrepl-server up throughout refreshs
+(clojure.tools.namespace.repl/disable-reload!) ; keep same connection/nrepl-server up throughout refreshs
 
 (def ^:private ^Object obj (Object.))
 
@@ -12,7 +12,7 @@
 
 (defn- handle-throwable! [t]
   (binding [*print-level* 3]
-    (pretty-pst t))
+    (clj-commons.pretty.repl/pretty-pst t))
   (reset! thrown t))
 
 (defn restart!
@@ -37,7 +37,7 @@
   (loop []
     (when-not @thrown
       (do
-       (.bindRoot #'refresh-error (refresh :after 'cdq.dev-loop/start-dev-loop!))
+       (.bindRoot #'refresh-error (clojure.tools.namespace.repl/refresh :after 'cdq.dev-loop/start-dev-loop!))
        (handle-throwable! refresh-error)))
     (locking obj
       (Thread/sleep 10)
@@ -54,15 +54,15 @@
   [server]
   ;; Many clients look for this file to infer the port to connect to
   (let [port (:port server)
-        port-file (io/file ".nrepl-port")]
+        port-file (clojure.java.io/file ".nrepl-port")]
     (.deleteOnExit ^java.io.File port-file)
     (spit port-file port)))
 
 (declare ^:private nrepl-server)
 
-(defn -main [start-fn-invoc]
-  (.bindRoot #'start-app-expression (read-string start-fn-invoc))
-  (.bindRoot #'nrepl-server (nrepl/start-server))
+(defn -main [start-expression]
+  (.bindRoot #'start-app-expression (read-string start-expression))
+  (.bindRoot #'nrepl-server (nrepl.server/start-server))
   (save-port-file! nrepl-server)
   (println "Started nrepl server on port" (:port nrepl-server))
   (start-dev-loop!))
