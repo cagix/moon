@@ -2,7 +2,6 @@
   (:require cdq.application.create.effects
             cdq.application.create.entity.state
             cdq.platform.libgdx
-            cdq.schemas
             cdq.utils
             clojure.edn
             clojure.java.io))
