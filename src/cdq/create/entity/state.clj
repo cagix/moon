@@ -220,10 +220,11 @@
      (ui/button? actor)                     :cursors/over-button
      :else                               :cursors/default)))
 
-(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid] :as c} eid]
+(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid
+                                  cdq.graphics/world-viewport]} eid]
   (let [target-position (or (and mouseover-eid
                                  (:position @mouseover-eid))
-                            (cdq.graphics/world-mouse-position c))]
+                            (cdq.graphics/world-mouse-position world-viewport))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position

@@ -348,9 +348,9 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn item-place-position [c entity]
+(defn item-place-position [{:keys [cdq.graphics/world-viewport] :as c} entity]
   (placement-point (:position entity)
-                   (cdq.graphics/world-mouse-position c)
+                   (cdq.graphics/world-mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 

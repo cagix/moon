@@ -22,11 +22,11 @@
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{:keys [cdq.graphics/ui-viewport]}]
+(defn mouse-position [ui-viewport]
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position ui-viewport)))
 
-(defn world-mouse-position [{:keys [cdq.graphics/world-viewport]}]
+(defn world-mouse-position [world-viewport]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position world-viewport))

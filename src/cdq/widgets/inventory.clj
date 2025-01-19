@@ -43,12 +43,13 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [this {:keys [cdq.context/player-eid
-                     cdq.graphics/shape-drawer] :as c}]
+                     cdq.graphics/shape-drawer
+                     cdq.graphics/ui-viewport]}]
      (draw-cell-rect shape-drawer
                      @player-eid
                      (actor/x this)
                      (actor/y this)
-                     (actor/hit this (cdq.graphics/mouse-position c))
+                     (actor/hit this (cdq.graphics/mouse-position ui-viewport))
                      (user-object (actor/parent this))))))
 
 (def ^:private slot->y-sprite-idx

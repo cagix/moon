@@ -104,9 +104,10 @@
                    {:label "paused?"
                     :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
                    {:label "GUI"
-                    :update-fn cdq.graphics/mouse-position}
+                    :update-fn (comp cdq.graphics/mouse-position
+                                     :cdq.graphics/ui-viewport)}
                    {:label "World"
-                    :update-fn #(mapv int (cdq.graphics/world-mouse-position %))}
+                    :update-fn #(mapv int (cdq.graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
                    {:label "Zoom"
                     :update-fn #(cam/zoom (:camera (:cdq.graphics/world-viewport %)))
                     :icon "images/zoom.png"}

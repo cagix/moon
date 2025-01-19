@@ -6,12 +6,13 @@
 
 (defn render [{:keys [cdq.context/grid
                       cdq.context/mouseover-eid
-                      cdq.context/player-eid] :as c}]
+                      cdq.context/player-eid
+                      cdq.graphics/world-viewport] :as c}]
   (let [new-eid (if (cdq.stage/mouse-on-actor? c)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (cdq.grid/point->entities grid (cdq.graphics/world-mouse-position c)))]
+                                     (cdq.grid/point->entities grid (cdq.graphics/world-mouse-position world-viewport)))]
                     (->> cdq.world/render-z-order
                          (cdq.utils/sort-by-order hits #(:z-order @%))
                          reverse

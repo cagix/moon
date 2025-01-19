@@ -157,11 +157,11 @@
 
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
-  [[_ {:keys [eid]}] c]
+  [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]
   (when (not (world-item? c))
     (batch/draw-centered c
                          (:entity/image (:entity/item-on-cursor @eid))
-                         (cdq.graphics/mouse-position c))))
+                         (cdq.graphics/mouse-position ui-viewport))))
 
 (defn draw-stunned-circle [_ entity {:keys [cdq.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))

@@ -40,15 +40,15 @@
   ESCAPE: leave
   direction keys: move")
 
-(defn- map-infos ^String [c]
-  (let [tile (mapv int (cdq.graphics/world-mouse-position c))
+(defn- map-infos ^String [{:keys [cdq.graphics/world-viewport] :as c}]
+  (let [tile (mapv int (cdq.graphics/world-mouse-position world-viewport))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (cdq.graphics/world-mouse-position c)
+                                 (cdq.graphics/world-mouse-position world-viewport)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
@@ -85,14 +85,14 @@
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
 (defn- render-on-map [{:keys [cdq.graphics/world-viewport
-                              cdq.graphics/shape-drawer] :as c}]
+                              cdq.graphics/shape-drawer]}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (:camera world-viewport))
-        [x y] (mapv int (cdq.graphics/world-mouse-position c))
+        [x y] (mapv int (cdq.graphics/world-mouse-position world-viewport))
         sd shape-drawer]
     (sd/rectangle sd x y 1 1 :white)
     (when start-position

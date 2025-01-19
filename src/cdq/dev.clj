@@ -97,8 +97,9 @@
                     (:position @player-eid)
                     (db/build db item-id c)))
 
-(defn- mouseover-grid-cell [{:keys [cdq.context/grid] :as c}]
-  @(grid (mapv int (cdq.graphics/world-mouse-position c))))
+(defn- mouseover-grid-cell [{:keys [cdq.context/grid
+                                    cdq.graphics/world-viewport]}]
+  @(grid (mapv int (cdq.graphics/world-mouse-position world-viewport))))
 
 (defn- class->label-str [class]
   (case class
