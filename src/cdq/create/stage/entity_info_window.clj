@@ -1,4 +1,4 @@
-(ns cdq.ui.entity-info-window
+(ns cdq.create.stage.entity-info-window
   (:require [cdq.context.info :as info]
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.scene2d.group :as group]))

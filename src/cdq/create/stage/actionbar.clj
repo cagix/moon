@@ -1,4 +1,4 @@
-(ns cdq.ui.actionbar
+(ns cdq.create.stage.actionbar
   (:require [cdq.scene2d.actor :as actor]
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.scene2d.group :as group]))

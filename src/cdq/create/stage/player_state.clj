@@ -1,4 +1,4 @@
-(ns cdq.ui.player-state
+(ns cdq.create.stage.player-state
   (:require [cdq.entity :as entity]
             [cdq.ui :refer [ui-actor]]))
 

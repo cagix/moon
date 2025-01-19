@@ -1,4 +1,4 @@
-(ns cdq.ui.hp-mana-bar
+(ns cdq.create.stage.hp-mana-bar
   (:require [cdq.graphics.sprite :as sprite]
             [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]

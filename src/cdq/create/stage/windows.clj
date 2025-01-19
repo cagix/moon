@@ -1,4 +1,4 @@
-(ns cdq.ui.windows
+(ns cdq.create.stage.windows
   (:require [cdq.ui :as ui]
             [cdq.utils :as utils]))
 

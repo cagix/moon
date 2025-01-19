@@ -1,4 +1,4 @@
-(ns cdq.ui.dev-menu
+(ns cdq.create.stage.dev-menu
   (:require [clojure.gdx.graphics :as graphics]
             [cdq.db :as db]
             cdq.graphics

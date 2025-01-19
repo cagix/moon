@@ -8,13 +8,13 @@
 
 (def config
   '{:skin-scale :x1
-    :actors [(cdq.ui.dev-menu/create)
-             (cdq.ui.actionbar/create)
-             (cdq.ui.hp-mana-bar/create)
-             (cdq.ui.windows/create [(cdq.ui.entity-info-window/create)
+    :actors [(cdq.create.stage.dev-menu/create)
+             (cdq.create.stage.actionbar/create)
+             (cdq.create.stage.hp-mana-bar/create)
+             (cdq.create.stage.windows/create [(cdq.create.stage.entity-info-window/create)
                                      (cdq.widgets.inventory/create)])
-             (cdq.ui.player-state/create)
-             (cdq.ui.player-message/actor)]})
+             (cdq.create.stage.player-state/create)
+             (cdq.create.stage.player-message/actor)]})
 
 (defn- create-stage [viewport batch actors]
   (let [stage (proxy [StageWithState clojure.lang.ILookup] [viewport batch]

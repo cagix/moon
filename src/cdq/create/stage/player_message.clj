@@ -1,4 +1,4 @@
-(ns cdq.ui.player-message
+(ns cdq.create.stage.player-message
   (:require [clojure.gdx.graphics :as graphics]
             [cdq.graphics.text :as text]
             [cdq.ui :refer [ui-actor]]))
