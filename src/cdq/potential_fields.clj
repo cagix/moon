@@ -134,6 +134,3 @@
                                              faction
                                              tiles->entities
                                              max-iterations)))))
-
-(defn create-cache [_context]
-  (atom nil))

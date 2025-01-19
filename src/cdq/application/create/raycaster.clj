@@ -1,4 +1,4 @@
-(ns cdq.world.raycaster
+(ns cdq.application.create.raycaster
   (:require [cdq.grid :as grid]
             [cdq.grid2d :as g2d]))
 

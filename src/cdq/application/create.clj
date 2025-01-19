@@ -5,6 +5,7 @@
             clojure.edn
             clojure.java.io))
 
+; TODO side-effects like load visui,set input processor, spawn-enemies not berucksichtigt
 (def create-components
   '[[:cdq/schemas                       (cdq.application.create.schemas/create)]
     [:cdq/db                            (cdq.application.create.db/create)]
@@ -22,16 +23,16 @@
     [:cdq.context/elapsed-time          (cdq.application.create.elapsed-time/create)]
     [:cdq.context/player-message        (cdq.application.create.player-message/create)]
     [:cdq.context/level                 (cdq.application.create.level/create)]
-    [:cdq.context/error (cdq.create/error*)]
-    [:cdq.context/tiled-map (cdq.create/tiled-map*)]
-    [:cdq.context/explored-tile-corners (cdq.world.explored-tile-corners/create)]
-    [:cdq.context/grid (cdq.world.grid/create)]
-    [:cdq.context/raycaster (cdq.world.raycaster/create)]
-    [:cdq.context/content-grid (cdq.world.content-grid/create {:cell-size 16})]
-    [:cdq.context/entity-ids (cdq.create/entity-ids*)]
-    [:cdq.context/factions-iterations (cdq.create/factions-iterations* {:good 15 :evil 5})]
-    [:world/potential-field-cache (cdq.potential-fields/create-cache)]
-    [:cdq.context/player-eid (cdq.world.entities/spawn)]])
+    [:cdq.context/error                 (cdq.application.create.error/create)]
+    [:cdq.context/tiled-map             (cdq.application.create.tiled-map/create)]
+    [:cdq.context/explored-tile-corners (cdq.application.create.explored-tile-corners/create)]
+    [:cdq.context/grid                  (cdq.application.create.grid/create)]
+    [:cdq.context/raycaster             (cdq.application.create.raycaster/create)]
+    [:cdq.context/content-grid          (cdq.application.create.content-grid/create)]
+    [:cdq.context/entity-ids            (cdq.application.create.entity-ids/create)]
+    [:cdq.context/factions-iterations   (cdq.application.create.factions-iterations/create)]
+    [:world/potential-field-cache       (cdq.application.create.potential-fields/create)]
+    [:cdq.context/player-eid            (cdq.application.create.player-eid/create)]])
 
 (defn context []
   (reduce (fn [context [k fn-invoc]]

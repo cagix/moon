@@ -1,4 +1,4 @@
-(ns cdq.world.grid
+(ns cdq.application.create.grid
   (:require [cdq.grid :as grid]
             [cdq.grid2d :as g2d]
             [cdq.tiled :as tiled]

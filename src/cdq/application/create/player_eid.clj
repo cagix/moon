@@ -1,4 +1,4 @@
-(ns cdq.world.entities
+(ns cdq.application.create.player-eid
   (:require [cdq.tiled :as tiled]
             [cdq.utils :refer [tile->middle]]
             [cdq.world :refer [spawn-creature]]))
@@ -24,9 +24,9 @@
     (spawn-creature c (update props :position tile->middle)))
   :ok)
 
-(defn spawn [{:keys [cdq.context/level
-                     cdq.context/tiled-map]
-              :as context}]
+(defn create [{:keys [cdq.context/level
+                      cdq.context/tiled-map]
+               :as context}]
   (spawn-enemies! context)
   (spawn-creature context
                   (player-entity-props (:start-position level))))
