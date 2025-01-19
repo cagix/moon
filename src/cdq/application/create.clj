@@ -1,21 +1,15 @@
 (ns cdq.application.create
   (:require cdq.effects
             cdq.impl.entity.state
-            cdq.schemas
             cdq.platform.libgdx
+            cdq.schemas
             cdq.utils
             clojure.edn
             clojure.java.io))
 
-(defn- load-from-edn [schema-edn-file _context]
-  (-> schema-edn-file
-      clojure.java.io/resource
-      slurp
-      clojure.edn/read-string))
-
 (def create-components
-  '[[:cdq/schemas      (cdq.application.create/load-from-edn "schema.edn")]
-    [:cdq/db       (cdq.impl.db/create "properties.edn")]
+  '[[:cdq/schemas (cdq.application.create.schemas/create)]
+    [:cdq/db      (cdq.application.create.db/create)]
     [:cdq/assets   (cdq.impl.assets/manager)]
     [:cdq.graphics/batch (cdq.gdx.graphics/sprite-batch)]
     [:cdq.graphics/shape-drawer-texture (cdq.graphics/white-pixel-texture)]

@@ -1,4 +1,4 @@
-(ns cdq.impl.db
+(ns cdq.application.create.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [cdq.schema :as schema]
@@ -9,8 +9,8 @@
               (apply distinct? (map :property/id properties))))
   (run! #(schema/validate! schemas (property/type %) %) properties))
 
-(defn create [properties-path {:keys [cdq/schemas]}]
-  (let [properties-file (io/resource properties-path)
+(defn create [{:keys [cdq/schemas]}]
+  (let [properties-file (io/resource "properties.edn")
         properties (-> properties-file slurp edn/read-string)]
     (validate-properties! properties schemas)
     {:db/data (zipmap (map :property/id properties) properties)
