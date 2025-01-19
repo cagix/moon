@@ -1,4 +1,4 @@
-(ns cdq.render.after-entities
+(ns cdq.render.draw-on-world-view.after-entities
   (:require cdq.graphics
             [cdq.graphics.shape-drawer :as sd]
             [cdq.grid :as grid]

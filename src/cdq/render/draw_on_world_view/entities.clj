@@ -1,4 +1,4 @@
-(ns cdq.world.graphics
+(ns cdq.render.draw-on-world-view.entities
   (:require cdq.graphics
             [cdq.timer :as timer]
             [cdq.graphics.shape-drawer :as sd]

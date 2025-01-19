@@ -1,4 +1,4 @@
-(ns cdq.render.before-entities
+(ns cdq.render.draw-on-world-view.before-entities
   (:require [cdq.graphics.camera :as cam]
             [cdq.graphics.shape-drawer :as sd]))
 
