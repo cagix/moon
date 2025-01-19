@@ -22,10 +22,6 @@
     (cdq.utils/dispose pixmap)
     texture))
 
-(defn resize-viewports [context width height]
-  (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
-  (viewport/update (:cdq.graphics/world-viewport context) width height))
-
 (defrecord Cursors []
   cdq.utils/Disposable
   (dispose [this]
