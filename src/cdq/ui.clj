@@ -2,7 +2,6 @@
   (:require [cdq.graphics.2d.texture-region :as texture-region]
             [cdq.scene2d.actor :as actor]
             [cdq.scene2d.group :refer [find-actor-with-id add-actor!]]
-            [cdq.stage :as stage]
             [cdq.scene2d.ui.table :as table]
             [cdq.scene2d.ui.utils :as scene2d.utils]
             [cdq.vis-ui.widgets.separator :as separator])
@@ -80,14 +79,6 @@
 (defn application-state [actor]
   (when-let [stage (Actor/.getStage actor)]
     (.applicationState ^StageWithState stage)))
-
-(defn draw [^StageWithState stage context]
-  (set! (.applicationState stage) context)
-  (stage/draw stage))
-
-(defn act [^StageWithState stage context]
-  (set! (.applicationState stage) context)
-  (stage/act stage))
 
 (defn add-tooltip!
   "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.

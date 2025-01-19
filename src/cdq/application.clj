@@ -6,7 +6,7 @@
             clojure.java.io))
 
 #_(defn reset-stage [{:keys [cdq.context/stage]} new-actors]
-  (stage/clear stage)
+  (Stage/.clear stage)
   (run! #(stage/add-actor stage %) new-actors))
 
 (def create-components
@@ -45,8 +45,7 @@
                  cdq.render.clear-screen
                  cdq.render.tiled-map
                  cdq.render.draw-on-world-view
-                 cdq.render.draw-stage
-                 cdq.render.update-stage
+                 cdq.render.stage
                  cdq.render.player-state-input
                  cdq.render.update-mouseover-entity
                  cdq.render.update-paused
