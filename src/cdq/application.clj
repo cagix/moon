@@ -1,10 +1,6 @@
 (ns cdq.application
-  (:require cdq.effects
-            cdq.application.context
+  (:require cdq.application.context
             cdq.graphics
-            cdq.impl.entity.state
-            cdq.schemas
-            cdq.platform.libgdx
             cdq.utils
             clojure.gdx.application
             clojure.gdx.backends.lwjgl
@@ -46,6 +42,11 @@
 (defn post-runnable [f]
   (swap! runnables conj f))
 
+; TODO move everything inside here in local functions
+; and build a code browser
+; or put it under cdq/application/create/context
+; cdq/application/render/foo/bar/baz
+; cdq/application/resize/viewports
 (defn -main []
   (.setIconImage (java.awt.Taskbar/getTaskbar)
                  (.getImage (java.awt.Toolkit/getDefaultToolkit)

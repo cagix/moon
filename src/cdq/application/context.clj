@@ -1,12 +1,12 @@
-; _only_ impl knows about the instances - everything else depends on !!! protocols !!!
-; and its a record and 'cdq.game' has all the game functions
-; => defrecord with namespaced keys rqeuired urgently
 (ns cdq.application.context
-  (:require cdq.utils))
+  (:require cdq.effects
+            cdq.impl.entity.state
+            cdq.schemas
+            cdq.platform.libgdx
+            cdq.utils))
 
 (def create-components
-  '[;; one time initialize (make one function (?!))
-    [:cdq/files    (cdq.gdx/files)]
+  '[[:cdq/files    (cdq.gdx/files)]
     [:cdq/graphics (cdq.gdx/graphics)]
     [:cdq/input    (cdq.gdx/input)]
     [:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
@@ -44,8 +44,6 @@
                                                                                (cdq.widgets.inventory/create)])
                                                        (cdq.ui.player-state/create)
                                                        (cdq.ui.player-message/actor)]})]
-    ;; this can be changed! we can restart or change levels !
-    ;; just one function too
     [:cdq.context/elapsed-time (cdq.timer/create-ctx)]
     [:cdq.context/player-message (cdq.ui.player-message/create* {:duration-seconds 1.5})]
     [:cdq.context/level (cdq.level/create :worlds/uf-caves)]
