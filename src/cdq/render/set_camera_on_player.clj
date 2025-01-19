@@ -1,7 +1,7 @@
-(ns cdq.render.camera
+(ns cdq.render.set-camera-on-player
   (:require [cdq.graphics.camera :as camera]))
 
-(defn set-on-player
+(defn render
   [{:keys [cdq.graphics/world-viewport
            cdq.context/player-eid]
     :as context}]
