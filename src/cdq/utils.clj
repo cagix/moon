@@ -29,7 +29,12 @@
   (run! req-resolve-call function-invocation-forms))
 
 (defprotocol Disposable
-  (dispose [obj]))
+  (dispose [_]))
+
+(extend-type com.badlogic.gdx.utils.Disposable
+  cdq.utils/Disposable
+  (dispose [this]
+    (.dispose this)))
 
 (defn disposable? [object]
   (satisfies? Disposable object))

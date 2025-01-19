@@ -1,4 +1,4 @@
 (ns cdq.audio)
 
-(defprotocol Sound
-  (play [_]))
+(defn play [this]
+  (.play this))
