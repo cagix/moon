@@ -1,4 +1,4 @@
-(ns cdq.application.create.level
+(ns cdq.create.level
   (:require [cdq.level.modules :refer [generate-modules]]
             [cdq.level.uf-caves :as uf-caves]
             [cdq.db :as db]

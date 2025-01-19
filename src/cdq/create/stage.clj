@@ -1,4 +1,4 @@
-(ns cdq.application.create.stage
+(ns cdq.create.stage
   (:require [cdq.scene2d.group :as group]
             [cdq.utils :as utils]
             [clojure.gdx.input :as input])

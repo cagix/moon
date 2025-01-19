@@ -1,4 +1,4 @@
-(ns cdq.application.create.db
+(ns cdq.create.db
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [cdq.schema :as schema]

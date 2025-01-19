@@ -1,4 +1,4 @@
-(ns cdq.application.create.ui-viewport
+(ns cdq.create.ui-viewport
   (:require [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 

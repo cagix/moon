@@ -1,13 +1,48 @@
 (ns cdq.application
-  (:require cdq.application.create
-            cdq.application.dispose
+  (:require cdq.application.dispose
             cdq.application.render
             cdq.application.resize
             clojure.gdx.application
             clojure.gdx.backends.lwjgl
             clojure.java.io))
 
+(def create-components
+  '[[:cdq/entity-states                 cdq.create.entity.state]
+    [:cdq/effects                       cdq.create.effects]
+    [:cdq/schemas                       cdq.create.schemas]
+    [:cdq/db                            cdq.create.db]
+    [:cdq/assets                        cdq.create.assets]
+    [:cdq.graphics/batch                cdq.create.batch]
+    [:cdq.graphics/shape-drawer-texture cdq.create.shape-drawer-texture]
+    [:cdq.graphics/shape-drawer         cdq.create.shape-drawer]
+    [:cdq.graphics/cursors              cdq.create.cursors]
+    [:cdq.graphics/default-font         cdq.create.default-font]
+    [:cdq.graphics/world-unit-scale     cdq.create.world-unit-scale]
+    [:cdq.graphics/tiled-map-renderer   cdq.create.tiled-map-renderer]
+    [:cdq.graphics/ui-viewport          cdq.create.ui-viewport]
+    [:cdq.graphics/world-viewport       cdq.create.world-viewport]
+    [:cdq.context/stage                 cdq.create.stage]
+    [:cdq.context/elapsed-time          cdq.create.elapsed-time]
+    [:cdq.context/player-message        cdq.create.player-message]
+    [:cdq.context/level                 cdq.create.level]
+    [:cdq.context/error                 cdq.create.error]
+    [:cdq.context/tiled-map             cdq.create.tiled-map]
+    [:cdq.context/explored-tile-corners cdq.create.explored-tile-corners]
+    [:cdq.context/grid                  cdq.create.grid]
+    [:cdq.context/raycaster             cdq.create.raycaster]
+    [:cdq.context/content-grid          cdq.create.content-grid]
+    [:cdq.context/entity-ids            cdq.create.entity-ids]
+    [:cdq.context/factions-iterations   cdq.create.factions-iterations]
+    [:world/potential-field-cache       cdq.create.potential-fields]
+    [:cdq.context/player-eid            cdq.create.player-eid]])
+
 (def state (atom nil))
+
+; oh ok ! or configure a libgdx application on the fly with clojure.core/fetch-deps or fetch-libs
+; and restart it
+; and see the context @ state
+; or errors
+; fps etc
 
 (defn -main []
   (.setIconImage (java.awt.Taskbar/getTaskbar)
@@ -18,7 +53,12 @@
     (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
                                             (create [_]
-                                              (reset! state (cdq.application.create/context)))
+                                              (reset! state (reduce (fn [context [k ns-sym]]
+                                                                      (require ns-sym)
+                                                                      (let [f (resolve (symbol (str ns-sym "/create")))]
+                                                                        (assoc context k (f context))))
+                                                                    {}
+                                                                    create-components)))
 
                                             (dispose [_]
                                               (cdq.application.dispose/context @state))

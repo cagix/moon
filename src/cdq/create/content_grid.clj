@@ -1,4 +1,4 @@
-(ns cdq.application.create.content-grid
+(ns cdq.create.content-grid
   (:require [cdq.grid2d :as g2d]
             [cdq.tiled :as tiled]))
 

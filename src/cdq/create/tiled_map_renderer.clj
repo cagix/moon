@@ -1,4 +1,4 @@
-(ns cdq.application.create.tiled-map-renderer
+(ns cdq.create.tiled-map-renderer
   (:import (gdl OrthogonalTiledMapRenderer)))
 
 (defn create [{:keys [cdq.graphics/batch

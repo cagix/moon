@@ -1,4 +1,4 @@
-(ns cdq.application.create.world-viewport
+(ns cdq.create.world-viewport
   (:require [cdq.graphics.camera :as camera]
             [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))

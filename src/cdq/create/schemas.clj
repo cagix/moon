@@ -1,4 +1,4 @@
-(ns cdq.application.create.schemas
+(ns cdq.create.schemas
   (:require cdq.assets
             [cdq.db :as db]
             cdq.graphics.animation

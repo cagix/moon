@@ -1,4 +1,4 @@
-(ns cdq.application.create.player-eid
+(ns cdq.create.player-eid
   (:require [cdq.tiled :as tiled]
             [cdq.utils :refer [tile->middle]]
             [cdq.world :refer [spawn-creature]]))

@@ -1,4 +1,4 @@
-(ns cdq.application.create.shape-drawer
+(ns cdq.create.shape-drawer
   (:require cdq.graphics.color
             cdq.graphics.shape-drawer
             cdq.graphics.2d.texture-region

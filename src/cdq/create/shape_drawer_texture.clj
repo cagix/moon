@@ -1,4 +1,4 @@
-(ns cdq.application.create.shape-drawer-texture
+(ns cdq.create.shape-drawer-texture
   (:require cdq.graphics.color
             cdq.graphics.pixmap
             cdq.graphics.texture

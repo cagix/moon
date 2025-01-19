@@ -1,4 +1,4 @@
-(ns cdq.application.create.cursors
+(ns cdq.create.cursors
   (:require cdq.graphics.pixmap
             cdq.utils
             [clojure.gdx.files :as files]
