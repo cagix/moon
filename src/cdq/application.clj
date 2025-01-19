@@ -1,4 +1,4 @@
-(ns cdq.application.edn
+(ns cdq.application
   (:require cdq.effects
             cdq.graphics
             cdq.impl.entity.state
