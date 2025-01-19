@@ -39,25 +39,19 @@
   '[(cdq.render.assoc-active-entities/render)
     (cdq.render.set-camera-on-player/render)
     (cdq.render.clear-screen/render)
-    (cdq.render.tiled-map/draw)
+    (cdq.render.tiled-map/render)
     (cdq.render.draw-on-world-view/render)
-    (cdq.render/draw-stage)
-    (cdq.render/update-stage)
-    (cdq.render/player-state-input)
-    (cdq.render/update-mouseover-entity)
-    (cdq.render/update-paused)
-    (cdq.render/when-not-paused)
-    (cdq.render/remove-destroyed-entities)
-    (cdq.render/camera-controls)
-    (cdq.render/window-controls)])
+    (cdq.render.draw-stage/render)
+    (cdq.render.update-stage/render)
+    (cdq.render.player-state-input/render)
+    (cdq.render.update-mouseover-entity/render)
+    (cdq.render.update-paused/render)
+    (cdq.render.when-not-paused/render)
+    (cdq.render.remove-destroyed-entities/render)
+    (cdq.render.camera-controls/render)
+    (cdq.render.window-controls/render)])
 
 (def state (atom nil))
-
-; oh ok ! or configure a libgdx application on the fly with clojure.core/fetch-deps or fetch-libs
-; and restart it
-; and see the context @ state
-; or errors
-; fps etc
 
 (defn -main []
   (.setIconImage (java.awt.Taskbar/getTaskbar)
