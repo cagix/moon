@@ -17,24 +17,23 @@
             [cdq.ui :as ui]
             [cdq.scene2d.actor :as actor]
             [cdq.world :refer [tick!
-                                   nearest-enemy
-                                   delayed-alert
-                                   add-text-effect
-                                   get-inventory
-                                   pickup-item
-                                   show-player-msg
-                                   selected-skill
-                                   player-movement-vector
-                                   remove-item
-                                   add-skill
-                                   set-item
-                                   stack-item
-                                   spawn-item
-                                   item-place-position
-                                   world-item?
-                                   show-modal
-                                   send-event!
-                                   line-of-sight?]]))
+                               nearest-enemy
+                               delayed-alert
+                               add-text-effect
+                               get-inventory
+                               pickup-item
+                               show-player-msg
+                               selected-skill
+                               player-movement-vector
+                               remove-item
+                               add-skill
+                               set-item
+                               stack-item
+                               spawn-item
+                               item-place-position
+                               world-item?
+                               show-modal
+                               send-event!]]))
 
 (defn create [_context]
   :loaded)

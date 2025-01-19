@@ -7,11 +7,9 @@
             [cdq.utils :refer [pretty-pst defsystem sort-by-order]]
             [cdq.val-max :as val-max]
             [cdq.world :refer [render-z-order
-                                   line-of-sight?
-                                   draw-body-rect
-                                   creatures-in-los-of-player
-                                   world-item?
-                                   item-place-position]]
+                               draw-body-rect
+                               world-item?
+                               item-place-position]]
             [cdq.entity :as entity]))
 
 (defn- draw-skill-image [{:keys [cdq.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]

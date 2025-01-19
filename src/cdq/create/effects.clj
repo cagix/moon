@@ -10,13 +10,12 @@
             [cdq.rand :refer [rand-int-between]]
             [cdq.utils :refer [defcomponent]]
             [cdq.world :refer [add-text-effect
-                                   spawn-audiovisual
-                                   spawn-creature
-                                   spawn-projectile
-                                   creatures-in-los-of-player
-                                   line-render
-                                   projectile-size
-                                   send-event!]]))
+                               spawn-audiovisual
+                               spawn-creature
+                               spawn-projectile
+                               line-render
+                               projectile-size
+                               send-event!]]))
 
 (defn create [_context]
   :loaded)
