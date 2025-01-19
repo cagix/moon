@@ -2,7 +2,7 @@
   (:require cdq.utils))
 
 (def render-fns
-  '[(cdq.content-grid/assoc-active-entities)
+  '[(cdq.application.render.assoc-active-entities/render)
     (cdq.render.camera/set-on-player)
     (cdq.gdx.graphics/clear-screen)
     (cdq.render.tiled-map/draw)
