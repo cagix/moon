@@ -9,11 +9,6 @@
 
 (def state (atom nil))
 
-(def ^:private runnables (atom []))
-
-(defn post-runnable [f]
-  (swap! runnables conj f))
-
 (defn -main []
   (.setIconImage (java.awt.Taskbar/getTaskbar)
                  (.getImage (java.awt.Toolkit/getDefaultToolkit)
@@ -31,13 +26,6 @@
                                             (pause [_])
 
                                             (render [_]
-                                              (when (seq @runnables)
-                                                (println "Execute " (count @runnables) "runnables.")
-                                                (swap! state (fn [context]
-                                                               (reduce (fn [context f] (f context))
-                                                                       context
-                                                                       @runnables)))
-                                                (reset! runnables []))
                                               (swap! state cdq.application.render/context))
 
                                             (resize [_ width height]

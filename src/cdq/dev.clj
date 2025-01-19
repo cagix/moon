@@ -1,5 +1,5 @@
 (ns cdq.dev
-  (:require [cdq.application :as app]
+  (:require cdq.application
             [cdq.editor :as editor]
             cdq.graphics
             [cdq.db :as db]
@@ -10,6 +10,9 @@
             [cdq.stage]
             [cdq.ui :refer [t-node scroll-pane] :as ui]
             [cdq.world :as world]))
+
+(defn post-runnable [f]
+  (.postRunnable com.badlogic.gdx.Gdx/app (fn [] (f @cdq.application/state))))
 
 (comment
 
@@ -22,23 +25,13 @@
  ; and show a tree view there ...
 
 
- (app/post-runnable (fn [context]
-                      (show-obj-editor! context)
-                      context))
+ (post-runnable show-obj-editor!)
  (print-app-values-tree "app-values-tree.clj" #{"cdq"})
 
  ; use post-runnable to get proper error messages in console
 
- (app/post-runnable (fn [context]
-                      (show-tree-view! "Application Context" context)
-                      context))
- (app/post-runnable (fn [context]
-                      (show-table-view "Application Context" context)
-                      context))
-
- (app/post-runnable (fn [context]
-                      (println "hi")
-                      context))
+ (post-runnable (fn [context] (show-tree-view! "Application Context" context)))
+ (post-runnable (fn [context] (show-table-view "Application Context" context)))
 
  (show-tree-view! "Mouseover Entity" @(:cdq.context/mouseover-eid @app/state))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
@@ -69,7 +62,7 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (app/post-runnable #(world/creature %
+ (post-runnable #(world/creature %
                                      {:position [35 73]
                                       :creature-id :creatures/dragon-red
                                       :components {:entity/fsm {:fsm :fsms/npc
