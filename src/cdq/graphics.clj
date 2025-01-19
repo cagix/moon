@@ -1,6 +1,5 @@
 (ns cdq.graphics
   (:require [cdq.gdx.utils.viewport :as viewport]
-            [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
             [cdq.graphics.2d.batch :as batch]
             [cdq.graphics.shape-drawer :as sd]
@@ -9,33 +8,7 @@
             [clojure.gdx.input :as input]
             [cdq.gdx.utils.viewport :as viewport]
             [cdq.graphics.color :as color]
-            cdq.graphics.color
-            cdq.graphics.pixmap
-            cdq.graphics.texture
             [cdq.utils :as utils]))
-
-(defn white-pixel-texture [_context]
-  (let [pixmap (doto (cdq.graphics.pixmap/create 1 1 cdq.graphics.pixmap/format-RGBA8888)
-                 (cdq.graphics.pixmap/set-color cdq.graphics.color/white)
-                 (cdq.graphics.pixmap/draw-pixel 0 0))
-        texture (cdq.graphics.texture/create pixmap)]
-    (cdq.utils/dispose pixmap)
-    texture))
-
-(defrecord Cursors []
-  cdq.utils/Disposable
-  (dispose [this]
-    (run! cdq.utils/dispose (vals this))))
-
-(defn cursors [config _context]
-  (map->Cursors
-   (cdq.utils/mapvals
-    (fn [[file [hotspot-x hotspot-y]]]
-      (let [pixmap (cdq.graphics.pixmap/create (files/internal (str "cursors/" file ".png")))
-            cursor (graphics/new-cursor pixmap hotspot-x hotspot-y)]
-        (cdq.utils/dispose pixmap)
-        cursor))
-    config)))
 
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
   (clojure.gdx.graphics/set-cursor (utils/safe-get cursors cursor-key)))

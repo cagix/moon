@@ -1,8 +1,13 @@
-(ns cdq.graphics.default-font
+(ns cdq.application.create.default-font
   (:require [clojure.gdx.files :as files])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
+
+(def config
+  {:file "fonts/exocet/films.EXL_____.ttf"
+   :size 16
+   :quality-scaling 2})
 
 (defn- ttf-params [size quality-scaling]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -23,5 +28,5 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create [config _context]
+(defn create [_context]
   (generate-font (update config :file #(files/internal %))))
