@@ -19,17 +19,10 @@
     [:cdq.graphics/cursors              (cdq.application.create.cursors/create)]
     [:cdq.graphics/default-font         (cdq.application.create.default-font/create)]
     [:cdq.graphics/world-unit-scale     (cdq.application.create.world-unit-scale/create)]
-    [:cdq.graphics/tiled-map-renderer (cdq.graphics.tiled-map-renderer/create)]
-    [:cdq.graphics/ui-viewport (cdq.graphics.ui-viewport/create {:width 1440 :height 900})]
-    [:cdq.graphics/world-viewport (cdq.graphics.world-viewport/create {:width 1440 :height 900})]
-    [:cdq.context/stage (cdq.ui/setup-stage! {:skin-scale :x1
-                                              :actors [(cdq.ui.dev-menu/create)
-                                                       (cdq.ui.actionbar/create)
-                                                       (cdq.ui.hp-mana-bar/create)
-                                                       (cdq.ui.windows/create [(cdq.ui.entity-info-window/create)
-                                                                               (cdq.widgets.inventory/create)])
-                                                       (cdq.ui.player-state/create)
-                                                       (cdq.ui.player-message/actor)]})]
+    [:cdq.graphics/tiled-map-renderer   (cdq.application.create.tiled-map-renderer/create)]
+    [:cdq.graphics/ui-viewport          (cdq.application.create.ui-viewport/create)]
+    [:cdq.graphics/world-viewport       (cdq.application.create.world-viewport/create)]
+    [:cdq.context/stage                 (cdq.application.create.stage/create)]
     [:cdq.context/elapsed-time (cdq.timer/create-ctx)]
     [:cdq.context/player-message (cdq.ui.player-message/create* {:duration-seconds 1.5})]
     [:cdq.context/level (cdq.level/create :worlds/uf-caves)]

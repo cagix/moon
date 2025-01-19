@@ -2,13 +2,6 @@
   (:require [cdq.tiled :as tiled])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
-(defn create [{:keys [cdq.graphics/batch
-                      cdq.graphics/world-unit-scale]}]
-  (memoize (fn [tiled-map]
-             (OrthogonalTiledMapRenderer. tiled-map
-                                          (float world-unit-scale)
-                                          batch))))
-
 (defn- draw* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
   (.setColorSetter this (reify ColorSetter
                           (apply [_ color x y]

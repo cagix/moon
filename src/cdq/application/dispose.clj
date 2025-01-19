@@ -6,3 +6,9 @@
           :when (cdq.utils/disposable? value)]
     ;(println "Disposing " k " - " value)
     (cdq.utils/dispose value)))
+
+; TODO VisUI is not disposed ?!
+
+; ?
+#_(defn dispose! []
+  (VisUI/dispose))

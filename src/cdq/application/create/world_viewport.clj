@@ -1,12 +1,12 @@
-(ns cdq.graphics.world-viewport
+(ns cdq.application.create.world-viewport
   (:require [cdq.graphics.camera :as camera]
             [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
-(defn create [config {:keys [cdq.graphics/world-unit-scale]}]
-  {:pre [world-unit-scale
-         (:width  config)
-         (:height config)]}
+(def config {:width 1440 :height 900})
+
+(defn create [{:keys [cdq.graphics/world-unit-scale]}]
+  {:pre [world-unit-scale]}
   (let [camera (OrthographicCamera.)
         world-width  (* (:width  config) world-unit-scale)
         world-height (* (:height config) world-unit-scale)]
