@@ -1,5 +1,5 @@
 (ns forge.mapgen-test
-  (:require [cdq.level :refer [generate-level]]
+  (:require [cdq.application.create.level :refer [generate-level]]
             cdq.graphics
             cdq.error
             [cdq.db :as db]

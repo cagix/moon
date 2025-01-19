@@ -5,10 +5,6 @@
             clojure.edn
             clojure.java.io))
 
-; schemas (this) is a map
-; which supports certain operations (get, validate, etc.) ...
-; so it all definition should be here probably , with malli and primitives etc
-
 (def create-components
   '[[:cdq/schemas                       (cdq.application.create.schemas/create)]
     [:cdq/db                            (cdq.application.create.db/create)]
@@ -23,9 +19,9 @@
     [:cdq.graphics/ui-viewport          (cdq.application.create.ui-viewport/create)]
     [:cdq.graphics/world-viewport       (cdq.application.create.world-viewport/create)]
     [:cdq.context/stage                 (cdq.application.create.stage/create)]
-    [:cdq.context/elapsed-time (cdq.timer/create-ctx)]
-    [:cdq.context/player-message (cdq.ui.player-message/create* {:duration-seconds 1.5})]
-    [:cdq.context/level (cdq.level/create :worlds/uf-caves)]
+    [:cdq.context/elapsed-time          (cdq.application.create.elapsed-time/create)]
+    [:cdq.context/player-message        (cdq.application.create.player-message/create)]
+    [:cdq.context/level                 (cdq.application.create.level/create)]
     [:cdq.context/error (cdq.create/error*)]
     [:cdq.context/tiled-map (cdq.create/tiled-map*)]
     [:cdq.context/explored-tile-corners (cdq.world.explored-tile-corners/create)]

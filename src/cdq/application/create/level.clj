@@ -1,4 +1,4 @@
-(ns cdq.level
+(ns cdq.application.create.level
   (:require [cdq.level.modules :refer [generate-modules]]
             [cdq.level.uf-caves :as uf-caves]
             [cdq.db :as db]
@@ -25,5 +25,5 @@
   (generate-modules world
                     (db/build-all db :properties/creatures c)))
 
-(defn create [world-id {:keys [cdq/db] :as context}]
-  (generate-level context (db/build db world-id context)))
+(defn create [{:keys [cdq/db] :as context}]
+  (generate-level context (db/build db :worlds/uf-caves context)))

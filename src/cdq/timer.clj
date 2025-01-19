@@ -17,6 +17,3 @@
     0
     ; min 1 because floating point math inaccuracies
     (min 1 (/ (- stop-time elapsed-time) duration))))
-
-(defn create-ctx [_context]
-  0)

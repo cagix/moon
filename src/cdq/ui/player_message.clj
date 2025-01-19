@@ -23,6 +23,3 @@
 (defn actor [_context]
   (ui-actor {:draw draw-player-message
              :act  check-remove-message}))
-
-(defn create* [config _context]
-  (atom {:duration-seconds (:duration-seconds config)}))
