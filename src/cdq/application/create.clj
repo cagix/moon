@@ -3,10 +3,18 @@
             cdq.impl.entity.state
             cdq.schemas
             cdq.platform.libgdx
-            cdq.utils))
+            cdq.utils
+            clojure.edn
+            clojure.java.io))
+
+(defn- load-from-edn [schema-edn-file _context]
+  (-> schema-edn-file
+      clojure.java.io/resource
+      slurp
+      clojure.edn/read-string))
 
 (def create-components
-  '[[:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
+  '[[:cdq/schemas      (cdq.application.create/load-from-edn "schema.edn")]
     [:cdq/db       (cdq.impl.db/create "properties.edn")]
     [:cdq/assets   (cdq.impl.assets/manager)]
     [:cdq.graphics/batch (cdq.gdx.graphics/sprite-batch)]

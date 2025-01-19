@@ -1,16 +1,8 @@
 (ns cdq.schemas
- (:require [clojure.edn :as edn]
-           [clojure.java.io :as io]
-           cdq.assets
+ (:require cdq.assets
            [cdq.db :as db]
            cdq.graphics.animation
            cdq.graphics.sprite))
-
-(defn load-from-edn [schema-edn-file _context]
-  (-> schema-edn-file
-      io/resource
-      slurp
-      edn/read-string))
 
 (defmethod cdq.db/edn->value :s/sound [_ sound-name _db {:keys [cdq/assets]}]
   (cdq.assets/sound assets sound-name))
