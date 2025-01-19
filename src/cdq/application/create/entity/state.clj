@@ -1,4 +1,4 @@
-(ns cdq.impl.entity.state
+(ns cdq.application.create.entity.state
   (:require [cdq.assets :refer [play-sound]]
             cdq.graphics
             [cdq.audio :as audio]

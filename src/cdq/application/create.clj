@@ -1,6 +1,6 @@
 (ns cdq.application.create
   (:require cdq.application.create.effects
-            cdq.impl.entity.state
+            cdq.application.create.entity.state
             cdq.platform.libgdx
             cdq.schemas
             cdq.utils
