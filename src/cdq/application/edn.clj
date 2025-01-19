@@ -4,7 +4,7 @@
             cdq.impl.entity.state
             cdq.schemas
             cdq.platform.libgdx
-            [clojure.java.io :as io]))
+            clojure.java.io))
 
 (defn -main []
   (.setIconImage (java.awt.Taskbar/getTaskbar)
