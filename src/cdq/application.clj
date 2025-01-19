@@ -36,20 +36,24 @@
     [:cdq.context/player-eid            cdq.create.player-eid]])
 
 (def render-fns
-  '[(cdq.render.assoc-active-entities/render)
-    (cdq.render.set-camera-on-player/render)
-    (cdq.render.clear-screen/render)
-    (cdq.render.tiled-map/render)
-    (cdq.render.draw-on-world-view/render)
-    (cdq.render.draw-stage/render)
-    (cdq.render.update-stage/render)
-    (cdq.render.player-state-input/render)
-    (cdq.render.update-mouseover-entity/render)
-    (cdq.render.update-paused/render)
-    (cdq.render.when-not-paused/render)
-    (cdq.render.remove-destroyed-entities/render)
-    (cdq.render.camera-controls/render)
-    (cdq.render.window-controls/render)])
+  (for [ns-sym '[cdq.render.assoc-active-entities
+                 cdq.render.set-camera-on-player
+                 cdq.render.clear-screen
+                 cdq.render.tiled-map
+                 cdq.render.draw-on-world-view
+                 cdq.render.draw-stage
+                 cdq.render.update-stage
+                 cdq.render.player-state-input
+                 cdq.render.update-mouseover-entity
+                 cdq.render.update-paused
+                 cdq.render.when-not-paused
+                 cdq.render.remove-destroyed-entities
+                 cdq.render.camera-controls
+                 cdq.render.window-controls]]
+    (do
+     ;(println "(require " ns-sym ")")
+     (require ns-sym)
+     (resolve (symbol (str ns-sym "/render"))))))
 
 (def state (atom nil))
 
@@ -63,6 +67,7 @@
   (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
                                             (create [_]
                                               (reset! state (reduce (fn [context [k ns-sym]]
+                                                                      ;(println "(require " ns-sym ")")
                                                                       (require ns-sym)
                                                                       (let [f (resolve (symbol (str ns-sym "/create")))]
                                                                         (assoc context k (f context))))
@@ -79,8 +84,8 @@
 
                                             (render [_]
                                               (swap! state (fn [context]
-                                                             (reduce (fn [context fn-invoc]
-                                                                       (cdq.utils/req-resolve-call fn-invoc context))
+                                                             (reduce (fn [context f]
+                                                                       (f context))
                                                                      context
                                                                      render-fns))))
 
