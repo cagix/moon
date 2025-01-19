@@ -28,9 +28,6 @@
 (defn execute! [function-invocation-forms]
   (run! req-resolve-call function-invocation-forms))
 
-(defn dispatch-on [function-invocation-form mapping]
-  (execute! (get mapping (req-resolve-call function-invocation-form))))
-
 (defprotocol Disposable
   (dispose [obj]))
 
