@@ -1,23 +1,24 @@
 (ns cdq.application.edn
   (:require cdq.application.desktop
             cdq.effects
-            cdq.gdx.utils.shared-library-loader
             cdq.impl.entity.state
-            cdq.java.awt
             cdq.schemas
-            cdq.platform.libgdx))
+            cdq.platform.libgdx
+            [clojure.java.io :as io]))
 
 (defn -main []
-  (cdq.java.awt/set-taskbar-icon "moon.png")
-  (when (= (cdq.gdx.utils.shared-library-loader/os)
-           :mac-osx)
+  (.setIconImage (java.awt.Taskbar/getTaskbar)
+                 (.getImage (java.awt.Toolkit/getDefaultToolkit)
+                            (clojure.java.io/resource "moon.png")))
+  (when (= com.badlogic.gdx.utils.SharedLibraryLoader/os
+           com.badlogic.gdx.utils.Os/MacOsX)
     (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (cdq.application.desktop/start
    {:config {:title "Cyber Dungeon Quest"
              :windowed-mode {:width 1440
                              :height 900}
              :foreground-fps 60
-             :opengl-emulation {:gl-version :gl20 ; works !
+             :opengl-emulation {:gl-version :gl20
                                 :gles-3-major-version 3
                                 :gles-3-minor-version 2}}
     :create '[[:cdq/files    (cdq.gdx/files)]
