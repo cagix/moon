@@ -36,6 +36,9 @@
                                    send-event!
                                    line-of-sight?]]))
 
+(defn create [_context]
+  :loaded)
+
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
   "Call this on effect-context if the time of using the context is not the time when context was built."

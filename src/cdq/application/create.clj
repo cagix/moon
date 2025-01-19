@@ -1,11 +1,9 @@
-(ns cdq.application.create
-  (:require cdq.application.create.effects
-            cdq.application.create.entity.state))
+(ns cdq.application.create)
 
-; TODO side-effects like load visui,set input processor, spawn-enemies not berucksichtigt
-; this would include the plain 'requires'
 (def create-components
-  '[[:cdq/schemas                       cdq.application.create.schemas]
+  '[[:cdq/entity-states                 cdq.application.create.entity.state]
+    [:cdq/effects                       cdq.application.create.effects]
+    [:cdq/schemas                       cdq.application.create.schemas]
     [:cdq/db                            cdq.application.create.db]
     [:cdq/assets                        cdq.application.create.assets]
     [:cdq.graphics/batch                cdq.application.create.batch]
@@ -39,3 +37,23 @@
               (assoc context k (f context))))
           {}
           create-components))
+
+; if you see the game as one with the application
+; you can change the application during game moves so they can affect the outside 'world'
+; that means you can load assets, set up properties, set cursors, configure the font,
+; setup the world unti scale,
+; the ui/world viewport
+; set up stage actors
+; and edit the level (which needs to be somehow one data structure?) or just a bunch of callbacks
+; and spawn/delete entities
+
+; The game you are playing god
+; and the creatures fight good vs evil
+; and you can support them etc
+
+; or set the dock icon ... window title etc .... change the window inside the window ... or outside ?
+; dev-mode can see the context if we integrate with libgd x backend and atom state
+; as a javafx application ?
+; which can see also stacktraces/memory/etc.
+; 'dev-menu' for all games made in this style
+; with database editor

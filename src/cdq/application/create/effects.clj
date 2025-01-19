@@ -18,6 +18,9 @@
                                    projectile-size
                                    send-event!]]))
 
+(defn create [_context]
+  :loaded)
+
 (defcomponent :effects/audiovisual
   (effect/applicable? [_ {:keys [effect/target-position]}]
     target-position)
