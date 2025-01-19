@@ -1,4 +1,4 @@
-(ns cdq.application.context
+(ns cdq.application.create
   (:require cdq.effects
             cdq.impl.entity.state
             cdq.schemas
@@ -58,7 +58,7 @@
     [:world/potential-field-cache (cdq.potential-fields/create-cache)]
     [:cdq.context/player-eid (cdq.world.entities/spawn)]])
 
-(defn create []
+(defn context []
   (reduce (fn [context [k fn-invoc]]
             (assoc context k (cdq.utils/req-resolve-call fn-invoc context)))
           {}

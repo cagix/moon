@@ -1,5 +1,5 @@
 (ns cdq.application
-  (:require cdq.application.context
+  (:require cdq.application.create
             cdq.graphics
             cdq.utils
             clojure.gdx.application
@@ -56,7 +56,7 @@
     (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
                                             (create [_]
-                                              (reset! state (cdq.application.context/create)))
+                                              (reset! state (cdq.application.create/context)))
 
                                             (dispose [_]
                                               ;(game/dispose @state)
