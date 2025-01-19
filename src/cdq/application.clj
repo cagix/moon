@@ -5,6 +5,10 @@
             [cdq.gdx.utils.viewport :as viewport]
             clojure.java.io))
 
+#_(defn reset-stage [{:keys [cdq.context/stage]} new-actors]
+  (stage/clear stage)
+  (run! #(stage/add-actor stage %) new-actors))
+
 (def create-components
   '[[:cdq/entity-states                 cdq.create.entity.state]
     [:cdq/effects                       cdq.create.effects]

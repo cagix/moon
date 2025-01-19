@@ -323,21 +323,21 @@
 (defn show-modal [{:keys [cdq.graphics/ui-viewport] :as c}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal (:cdq.context/stage c))))
-  (stage/add-actor c
-                   (ui/window {:title title
-                               :rows [[(ui/label text)]
-                                      [(ui/text-button button-text
-                                                       (fn []
-                                                         (actor/remove (::modal (:cdq.context/stage c)))
-                                                         (on-click)))]]
-                               :id ::modal
-                               :modal? true
-                               :center-position [(/ (:width  ui-viewport) 2)
-                                                 (* (:height ui-viewport) (/ 3 4))]
-                               :pack? true})))
+  (cdq.scene2d.stage/add-actor (:cdq.context/stage c)
+                               (ui/window {:title title
+                                           :rows [[(ui/label text)]
+                                                  [(ui/text-button button-text
+                                                                   (fn []
+                                                                     (actor/remove (::modal (:cdq.context/stage c)))
+                                                                     (on-click)))]]
+                                           :id ::modal
+                                           :modal? true
+                                           :center-position [(/ (:width  ui-viewport) 2)
+                                                             (* (:height ui-viewport) (/ 3 4))]
+                                           :pack? true})))
 
 (defn world-item? [c]
-  (not (stage/mouse-on-actor? c)))
+  (not (cdq.stage/mouse-on-actor? (:cdq.context/stage c))))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners

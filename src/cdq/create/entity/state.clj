@@ -212,8 +212,8 @@
        (get-in (:entity/inventory @player-eid)
                (actor/user-object (actor/parent actor)))))
 
-(defn- mouseover-actor->cursor [c]
-  (let [actor (stage/mouse-on-actor? c)]
+(defn- mouseover-actor->cursor [{:keys [cdq.context/stage] :as c}]
+  (let [actor (stage/mouse-on-actor? stage)]
     (cond
      (inventory-cell-with-item? c actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)           :cursors/move-window
@@ -230,10 +230,11 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [{:keys [cdq.context/mouseover-eid] :as c} eid]
+(defn- interaction-state [{:keys [cdq.context/mouseover-eid
+                                  cdq.context/stage] :as c} eid]
   (let [entity @eid]
     (cond
-     (stage/mouse-on-actor? c)
+     (stage/mouse-on-actor? stage)
      [(mouseover-actor->cursor c)
       (fn [] nil)] ; handled by actors themself, they check player state
 

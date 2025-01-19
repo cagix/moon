@@ -7,7 +7,6 @@
             [clojure.gdx.input :as input]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
-            [cdq.stage :as stage]
             [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.property :as property]
@@ -27,8 +26,12 @@
              :as ui]
             [cdq.scene2d.actor :as actor]
             [cdq.scene2d.group :refer [children clear-children add-actor! find-actor]]
+            [cdq.scene2d.stage :as stage]
             [cdq.scene2d.ui.table :as table])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
+
+(defn- stage-add! [actor]
+  (stage/add-actor (:cdq.context/stage @state) actor))
 
 (defn- info-text [property]
   (binding [*print-level* 3]
@@ -176,7 +179,7 @@
                                (let [[k _] (actor/user-object table)]
                                  (actor/set-user-object table [k sound-name]))))
                 (play-button sound-name)])]
-    (stage/add-actor @state (scrollable-choose-window rows))))
+    (stage-add! (scrollable-choose-window rows))))
 
 (defn- columns [table sound-name]
   [(text-button sound-name
@@ -262,7 +265,7 @@
                                             (redo-rows (conj property-ids id)))]
                         (.add window (overview-table @state property-type clicked-id-fn))
                         (.pack window)
-                        (stage/add-actor @state window))))]
+                        (stage-add! window))))]
       (for [property-id property-ids]
         (let [property (db/build (get-db) property-id @state)
               image-widget (image->widget (property/->image property)
@@ -301,7 +304,7 @@
                                               (redo-rows id))]
                           (.add window (overview-table @state property-type clicked-id-fn))
                           (.pack window)
-                          (stage/add-actor @state window)))))]
+                          (stage-add! window)))))]
       [(when property-id
          (let [property (db/build (get-db) property-id @state)
                image-widget (image->widget (property/->image property)
@@ -334,7 +337,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (actor/remove (get-editor-window))
-    (stage/add-actor @state (editor-window prop-value))))
+    (stage-add! (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (schema/schema-of (:cdq/schemas @state) k)
@@ -405,7 +408,7 @@
                                                            map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
-    (stage/add-actor @state window)))
+    (stage-add! window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -465,7 +468,7 @@
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
-                  #(stage/add-actor @state (scrollable-choose-window (texture-rows)))
+                  #(stage-add! (scrollable-choose-window (texture-rows)))
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
@@ -478,7 +481,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn- edit-property [id]
-  (stage/add-actor @state (editor-window (db/get-raw (get-db) id))))
+  (stage-add! (editor-window (db/get-raw (get-db) id))))
 
 (defn- property-types [schemas]
   (filter #(= "properties" (namespace %))
