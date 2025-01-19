@@ -4,7 +4,7 @@
  (clojure.core/require cdq.impl.entity.state)
  (cdq.java.awt/set-taskbar-icon "moon.png")
  (cdq.utils/dispatch-on (cdq.gdx.utils.shared-library-loader/os)
-                            {:mac-osx [(cdq.lwjgl.system.configuration/glfw-library-name "glfw_async")]})
+                        {:mac-osx [(cdq.lwjgl.system.configuration/glfw-library-name "glfw_async")]})
  (cdq.application.desktop/start
   {:config {:title "Cyber Dungeon Quest"
             :windowed-mode {:width 1440
