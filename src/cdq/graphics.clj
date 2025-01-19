@@ -1,12 +1,12 @@
 (ns cdq.graphics
-  (:require [cdq.files :as files]
-            [cdq.gdx.utils.viewport :as viewport]
-            cdq.gdx.graphics
+  (:require [cdq.gdx.utils.viewport :as viewport]
+            [clojure.gdx.files :as files]
+            [clojure.gdx.graphics :as graphics]
             [cdq.graphics.2d.batch :as batch]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.graphics.camera :as camera]
             [cdq.math.utils :refer [clamp]]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.gdx.utils.viewport :as viewport]
             [cdq.graphics.color :as color]
             cdq.graphics.color
@@ -27,21 +27,18 @@
   (dispose [this]
     (run! cdq.utils/dispose (vals this))))
 
-(defn cursors [config {:keys [cdq/files
-                              cdq/graphics]}]
+(defn cursors [config _context]
   (map->Cursors
    (cdq.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
-      (let [pixmap (cdq.graphics.pixmap/create (files/internal files (str "cursors/" file ".png")))
-            cursor (cdq.gdx.graphics/new-cursor graphics pixmap hotspot-x hotspot-y)]
+      (let [pixmap (cdq.graphics.pixmap/create (files/internal (str "cursors/" file ".png")))
+            cursor (graphics/new-cursor pixmap hotspot-x hotspot-y)]
         (cdq.utils/dispose pixmap)
         cursor))
     config)))
 
-(defn set-cursor [{:keys [cdq/graphics
-                          cdq.graphics/cursors]} cursor-key]
-  (cdq.gdx.graphics/set-cursor graphics
-                                   (utils/safe-get cursors cursor-key)))
+(defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
+  (clojure.gdx.graphics/set-cursor (utils/safe-get cursors cursor-key)))
 
 (defn- draw-with [{:keys [cdq.graphics/batch
                           cdq.graphics/shape-drawer] :as c}
@@ -60,25 +57,23 @@
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
-  [input viewport]
-  (let [mouse-x (clamp (input/x input)
+  [viewport]
+  (let [mouse-x (clamp (input/x)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y input)
+        mouse-y (clamp (input/y)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))
 
-(defn mouse-position [{:keys [cdq.graphics/ui-viewport
-                              cdq/input]}]
+(defn mouse-position [{:keys [cdq.graphics/ui-viewport]}]
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position input ui-viewport)))
+  (mapv int (unproject-mouse-position ui-viewport)))
 
-(defn world-mouse-position [{:keys [cdq.graphics/world-viewport
-                                    cdq/input]}]
+(defn world-mouse-position [{:keys [cdq.graphics/world-viewport]}]
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position input world-viewport))
+  (unproject-mouse-position world-viewport))
 
 (defn pixels->world-units [{:keys [cdq.graphics/world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))

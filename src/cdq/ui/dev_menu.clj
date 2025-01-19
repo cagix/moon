@@ -1,5 +1,5 @@
 (ns cdq.ui.dev-menu
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [clojure.gdx.graphics :as graphics]
             [cdq.db :as db]
             cdq.graphics
             [cdq.graphics.camera :as cam]
@@ -111,8 +111,8 @@
                     :update-fn #(cam/zoom (:camera (:cdq.graphics/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn (fn [{:keys [cdq/graphics]}]
-                                 (graphics/frames-per-second graphics))
+                    :update-fn (fn [_]
+                                 (graphics/frames-per-second))
                     :icon "images/fps.png"}]})
 
 (defn create [c]

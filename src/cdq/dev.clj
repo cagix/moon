@@ -1,5 +1,5 @@
 (ns cdq.dev
-  (:require cdq.application
+  (:require [cdq.application :as app]
             [cdq.editor :as editor]
             cdq.graphics
             [cdq.db :as db]

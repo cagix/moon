@@ -1,11 +1,5 @@
 (ns cdq.gdx.graphics)
 
-(defprotocol Graphics
-  (new-cursor [_ pixmap hotspot-x hotspot-y])
-  (set-cursor [_ cursor])
-  (delta-time [_])
-  (frames-per-second [_]))
-
 (defn clear-screen [context]
   (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
   context)

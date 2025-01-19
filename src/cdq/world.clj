@@ -14,7 +14,7 @@
             [cdq.entity.state :as state]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.scene2d.ui.button-group :as button-group]
             [cdq.effect-context :as effect-ctx]
             [cdq.stage :as stage]
@@ -445,11 +445,11 @@
                      (:position @eid)
                      (db/build db audiovisuals-id c)))
 
-(defn player-movement-vector [input]
-  (let [r (when (input/key-pressed? input :d) [1  0])
-        l (when (input/key-pressed? input :a) [-1 0])
-        u (when (input/key-pressed? input :w) [0  1])
-        d (when (input/key-pressed? input :s) [0 -1])]
+(defn player-movement-vector []
+  (let [r (when (input/key-pressed? :d) [1  0])
+        l (when (input/key-pressed? :a) [-1 0])
+        u (when (input/key-pressed? :w) [0  1])
+        d (when (input/key-pressed? :s) [0 -1])]
     (when (or r l u d)
       (let [v (v/add-vs (remove nil? [r l u d]))]
         (when (pos? (v/length v))

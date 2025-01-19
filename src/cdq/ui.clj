@@ -1,6 +1,6 @@
 (ns cdq.ui
   (:require [cdq.graphics.2d.texture-region :as texture-region]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.scene2d.actor :as actor]
             [cdq.scene2d.group :as group :refer [find-actor-with-id add-actor!]]
             [cdq.scene2d.stage :as stage]
@@ -334,8 +334,7 @@
 
 (defn setup-stage! [config
                     {:keys [cdq.graphics/batch
-                            cdq.graphics/ui-viewport
-                            cdq/input]
+                            cdq.graphics/ui-viewport]
                      :as context}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
@@ -358,7 +357,7 @@
                       (utils/req-resolve-call fn-invoc context))
                     (:actors config))
         stage (create-stage ui-viewport batch actors)]
-    (input/set-processor input stage)
+    (input/set-processor stage)
     stage))
 
 (defn dispose! []

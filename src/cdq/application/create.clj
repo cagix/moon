@@ -6,10 +6,7 @@
             cdq.utils))
 
 (def create-components
-  '[[:cdq/files    (cdq.gdx/files)]
-    [:cdq/graphics (cdq.gdx/graphics)]
-    [:cdq/input    (cdq.gdx/input)]
-    [:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
+  '[[:cdq/schemas      (cdq.schemas/load-from-edn "schema.edn")]
     [:cdq/db       (cdq.impl.db/create "properties.edn")]
     [:cdq/assets   (cdq.impl.assets/manager)]
     [:cdq.graphics/batch (cdq.gdx.graphics/sprite-batch)]

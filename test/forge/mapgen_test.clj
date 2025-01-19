@@ -8,7 +8,7 @@
             [cdq.graphics.shape-drawer :as sd]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.graphics.camera :as cam]
             [cdq.tiled :as tiled]
             [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader]

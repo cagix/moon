@@ -6,9 +6,9 @@
             cdq.entity
             cdq.entity.state
             cdq.grid
-            cdq.gdx.graphics
+            clojure.gdx.graphics
             cdq.graphics.camera
-            cdq.input
+            [clojure.gdx.input :as input]
             cdq.potential-fields
             cdq.scene2d.actor
             cdq.scene2d.group
@@ -49,14 +49,13 @@
 
 (defn update-paused [{:keys [cdq.context/player-eid
                              error ; FIXME ! not `::` keys so broken !
-                             cdq/input
                              ] :as c}]
   (let [pausing? true]
     (assoc c :cdq.context/paused? (or error
                                           (and pausing?
                                                (cdq.entity.state/pause-game? (cdq.entity/state-obj @player-eid))
-                                               (not (or (cdq.input/key-just-pressed? input :p)
-                                                        (cdq.input/key-pressed?      input :space))))))))
+                                               (not (or (clojure.gdx.input/key-just-pressed? :p)
+                                                        (clojure.gdx.input/key-pressed?      :space))))))))
 
 ; TODO how can I write a test for 'space' -> not paused?
 
@@ -65,8 +64,8 @@
     context
     (reduce (fn [context f] (f context))
             context
-            [(fn [{:keys [cdq/graphics] :as context}]
-               (let [delta-ms (min (cdq.gdx.graphics/delta-time graphics)
+            [(fn [context]
+               (let [delta-ms (min (clojure.gdx.graphics/delta-time)
                                    cdq.time/max-delta)]
                  (-> context
                      (update :cdq.context/elapsed-time + delta-ms)
@@ -113,23 +112,22 @@
       (cdq.world/destroy! component eid c)))
   c)
 
-(defn camera-controls [{:keys [cdq.graphics/world-viewport
-                               cdq/input]
+(defn camera-controls [{:keys [cdq.graphics/world-viewport]
                         :as context}]
   (let [camera (:camera world-viewport)
         zoom-speed 0.025]
-    (when (cdq.input/key-pressed? input :minus)  (cdq.graphics.camera/inc-zoom camera    zoom-speed))
-    (when (cdq.input/key-pressed? input :equals) (cdq.graphics.camera/inc-zoom camera (- zoom-speed))))
+    (when (input/key-pressed? :minus)  (cdq.graphics.camera/inc-zoom camera    zoom-speed))
+    (when (input/key-pressed? :equals) (cdq.graphics.camera/inc-zoom camera (- zoom-speed))))
   context)
 
-(defn window-controls [{:keys [cdq/input] :as c}]
+(defn window-controls [c]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
-            :when (cdq.input/key-just-pressed? input (get window-hotkeys window-id))]
+            :when (input/key-just-pressed? (get window-hotkeys window-id))]
       (cdq.scene2d.actor/toggle-visible! (get (:windows (:cdq.context/stage c)) window-id))))
-  (when (cdq.input/key-just-pressed? input :escape)
+  (when (input/key-just-pressed? :escape)
     (let [windows (cdq.scene2d.group/children (:windows (:cdq.context/stage c)))]
       (when (some cdq.scene2d.actor/visible? windows)
         (run! #(cdq.scene2d.actor/set-visible % false) windows))))

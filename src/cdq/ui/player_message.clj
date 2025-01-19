@@ -1,5 +1,5 @@
 (ns cdq.ui.player-message
-  (:require [cdq.gdx.graphics :as graphics]
+  (:require [clojure.gdx.graphics :as graphics]
             [cdq.graphics.text :as text]
             [cdq.ui :refer [ui-actor]]))
 
@@ -13,10 +13,9 @@
                 :scale 2.5
                 :up? true})))
 
-(defn- check-remove-message [{:keys [cdq/graphics
-                                     cdq.context/player-message]}]
+(defn- check-remove-message [{:keys [cdq.context/player-message]}]
   (when (:text @player-message)
-    (swap! player-message update :counter + (graphics/delta-time graphics))
+    (swap! player-message update :counter + (graphics/delta-time))
     (when (>= (:counter @player-message)
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))

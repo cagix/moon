@@ -1,5 +1,5 @@
 (ns cdq.graphics.default-font
-  (:require [cdq.files :as files])
+  (:require [clojure.gdx.files :as files])
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)))
@@ -23,5 +23,5 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create [config {:keys [cdq/files]}]
-  (generate-font (update config :file #(files/internal files %))))
+(defn create [config _context]
+  (generate-font (update config :file #(files/internal %))))

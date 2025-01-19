@@ -9,7 +9,7 @@
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.grid :as grid]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [cdq.effect-context :as effect-ctx]
             [cdq.skill :as skill]
             [cdq.stage :as stage]
@@ -271,12 +271,12 @@
   (state/pause-game? [_]
     true)
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [cdq/input] :as c}]
-    (if-let [movement-vector (player-movement-vector input)]
+  (state/manual-tick [[_ {:keys [eid]}] c]
+    (if-let [movement-vector (player-movement-vector)]
       (send-event! c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
         (cdq.graphics/set-cursor c cursor)
-        (when (input/button-just-pressed? input :left)
+        (when (input/button-just-pressed? :left)
           (on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
@@ -354,8 +354,8 @@
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
 
-  (state/manual-tick [[_ {:keys [eid]}] {:keys [cdq/input] :as c}]
-    (when (and (input/button-just-pressed? input :left)
+  (state/manual-tick [[_ {:keys [eid]}] c]
+    (when (and (input/button-just-pressed? :left)
                (world-item? c))
       (send-event! c eid :drop-item)))
 
@@ -376,8 +376,8 @@
   (state/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
-  (tick! [[_ {:keys [movement-vector]}] eid {:keys [cdq/input] :as c}]
-    (if-let [movement-vector (player-movement-vector input)]
+  (tick! [[_ {:keys [movement-vector]}] eid c]
+    (if-let [movement-vector (player-movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
       (send-event! c eid :no-movement-input))))

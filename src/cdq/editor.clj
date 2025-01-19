@@ -4,7 +4,7 @@
             [cdq.assets :refer [play-sound]]
             [clojure.edn :as edn]
             [cdq.gdx.assets :as assets]
-            [cdq.input :as input]
+            [clojure.gdx.input :as input]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.stage :as stage]
@@ -112,8 +112,8 @@
                                                    :center? true}
                                                   {:actor (text-button "Delete" delete!)
                                                    :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn [{:keys [cdq/input]}]
-                                         (when (input/key-just-pressed? input :enter)
+    (add-actor! window (ui-actor {:act (fn [_]
+                                         (when (input/key-just-pressed? :enter)
                                            (save!)))}))
     (.pack window)
     window))
