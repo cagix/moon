@@ -1,4 +1,4 @@
-(ns cdq.effects
+(ns cdq.application.create.effects
   (:require [cdq.audio :as audio]
             [cdq.db :as db]
             [cdq.timer :as timer]

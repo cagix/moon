@@ -1,11 +1,15 @@
 (ns cdq.application.create
-  (:require cdq.effects
+  (:require cdq.application.create.effects
             cdq.impl.entity.state
             cdq.platform.libgdx
             cdq.schemas
             cdq.utils
             clojure.edn
             clojure.java.io))
+
+; schemas (this) is a map
+; which supports certain operations (get, validate, etc.) ...
+; so it all definition should be here probably , with malli and primitives etc
 
 (def create-components
   '[[:cdq/schemas (cdq.application.create.schemas/create)]
