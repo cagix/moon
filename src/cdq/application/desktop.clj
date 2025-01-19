@@ -1,5 +1,5 @@
 (ns cdq.application.desktop
-  (:require [clojure.app :as app]
+  (:require [clojure.gdx.application :as application]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [cdq.application]))
 
@@ -7,7 +7,7 @@
                      create
                      render
                      resize]}]
-  (lwjgl/application (reify app/Listener
+  (lwjgl/application (reify application/Listener
                        (create [_]
                          (cdq.application/create create))
 
