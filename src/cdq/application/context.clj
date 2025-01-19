@@ -1,7 +1,7 @@
 ; _only_ impl knows about the instances - everything else depends on !!! protocols !!!
 ; and its a record and 'cdq.game' has all the game functions
 ; => defrecord with namespaced keys rqeuired urgently
-(ns cdq.game.impl
+(ns cdq.application.context
   (:require cdq.utils))
 
 (def create-components
