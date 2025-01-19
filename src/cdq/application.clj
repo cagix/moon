@@ -36,7 +36,7 @@
     [:cdq.context/player-eid            cdq.create.player-eid]])
 
 (def render-fns
-  '[(cdq.application.render.assoc-active-entities/render)
+  '[(cdq.render.assoc-active-entities/render)
     (cdq.render.camera/set-on-player)
     (cdq.gdx.graphics/clear-screen)
     (cdq.render.tiled-map/draw)
