@@ -26,7 +26,7 @@
              :as ui]
             [cdq.scene2d.actor :as actor]
             [cdq.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [cdq.scene2d.stage :as stage]
+            [cdq.stage :as stage]
             [cdq.scene2d.ui.table :as table])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 

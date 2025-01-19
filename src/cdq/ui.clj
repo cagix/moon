@@ -2,7 +2,7 @@
   (:require [cdq.graphics.2d.texture-region :as texture-region]
             [cdq.scene2d.actor :as actor]
             [cdq.scene2d.group :refer [find-actor-with-id add-actor!]]
-            [cdq.scene2d.stage :as stage]
+            [cdq.stage :as stage]
             [cdq.scene2d.ui.table :as table]
             [cdq.scene2d.ui.utils :as scene2d.utils]
             [cdq.vis-ui.widgets.separator :as separator])

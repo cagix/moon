@@ -1,5 +1,5 @@
 (ns cdq.error
-  (:require [cdq.scene2d.stage :as stage]
+  (:require [cdq.stage :as stage]
             [cdq.ui :as ui]
             [cdq.utils :refer [pretty-pst with-err-str]]))
 
