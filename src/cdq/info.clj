@@ -1,4 +1,4 @@
-(ns cdq.context.info
+(ns cdq.info
   (:require [clojure.math :as math]
             [clojure.string :as str]
             [cdq.utils :refer [defsystem readable-number sort-by-k-order]]

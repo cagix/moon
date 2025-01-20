@@ -3,7 +3,7 @@
             [cdq.entity.state :as state]
             cdq.graphics
             [cdq.inventory :refer [empty-inventory] :as inventory]
-            [cdq.context.info :as info]
+            [cdq.info :as info]
             [cdq.graphics.color :as color]
             [cdq.graphics.shape-drawer :as sd]
             cdq.graphics.sprite

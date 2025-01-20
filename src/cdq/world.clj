@@ -18,7 +18,7 @@
             [cdq.scene2d.ui.button-group :as button-group]
             [cdq.effect-context :as effect-ctx]
             [cdq.stage :as stage]
-            [cdq.context.info :as info]
+            [cdq.info :as info]
             [cdq.math.vector2 :as v]
             [cdq.ui :as ui]
             [cdq.scene2d.actor :as actor]
