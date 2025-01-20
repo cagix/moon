@@ -238,8 +238,7 @@
 
 (defn- show-obj-editor! [context]
   (stage/add-actor (:cdq.context/stage context)
-                   (scroll-pane-window "Object DB"
-                                       (editor/tabs-table context))))
+                   (editor/tabs-table context)))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
