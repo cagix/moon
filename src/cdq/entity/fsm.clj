@@ -1,8 +1,14 @@
 (ns cdq.entity.fsm
   (:require [cdq.entity :as entity]
-            [cdq.entity.state :as state]
             [cdq.fsm :as fsm]
-            cdq.graphics))
+            cdq.graphics
+            [cdq.utils :refer [defsystem]]))
+
+(defsystem enter)
+(defmethod enter :default [_ c])
+
+(defsystem exit)
+(defmethod exit :default [_ c])
 
 (def state->cursor
   {:active-skill          :cursors/sandclock
@@ -32,5 +38,5 @@
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
-           (state/exit  old-state-obj c)
-           (state/enter new-state-obj c)))))))
+           (exit  old-state-obj c)
+           (enter new-state-obj c)))))))

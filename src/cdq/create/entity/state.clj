@@ -50,8 +50,8 @@
     (dissoc effect-ctx :effect/target)))
 
 (defcomponent :active-skill
-  (state/enter [[_ {:keys [eid skill]}]
-                {:keys [cdq.context/elapsed-time] :as c}]
+  (fsm/enter [[_ {:keys [eid skill]}]
+              {:keys [cdq.context/elapsed-time] :as c}]
     (audio/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
@@ -78,7 +78,7 @@
       (fsm/event c eid :action-done)))))
 
 (defcomponent :npc-dead
-  (state/enter [[_ {:keys [eid]}] c]
+  (fsm/enter [[_ {:keys [eid]}] c]
     (swap! eid assoc :entity/destroyed? true)))
 
 (defn- npc-choose-skill [c entity ctx]
@@ -110,11 +110,11 @@
         (fsm/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0]))))))
 
 (defcomponent :npc-moving
-  (state/enter [[_ {:keys [eid movement-vector]}] c]
+  (fsm/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
-  (state/exit [[_ {:keys [eid]}] c]
+  (fsm/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
   (tick! [[_ {:keys [counter]}]
@@ -124,7 +124,7 @@
       (fsm/event c eid :timer-finished))))
 
 (defcomponent :npc-sleeping
-  (state/exit [[_ {:keys [eid]}] c]
+  (fsm/exit [[_ {:keys [eid]}] c]
     (delayed-alert c
                    (:position       @eid)
                    (:entity/faction @eid)
@@ -139,11 +139,11 @@
           (fsm/event c eid :alert))))))
 
 (defcomponent :player-dead
-  (state/enter [[_ {:keys [tx/sound
-                           modal/title
-                           modal/text
-                           modal/button-text]}]
-                c]
+  (fsm/enter [[_ {:keys [tx/sound
+                         modal/title
+                         modal/text
+                         modal/button-text]}]
+              c]
     (audio/play sound)
     (show-modal c {:title title
                    :text text
@@ -322,10 +322,10 @@
       (fsm/event c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
-  (state/enter [[_ {:keys [eid item]}] c]
+  (fsm/enter [[_ {:keys [eid item]}] c]
     (swap! eid assoc :entity/item-on-cursor item))
 
-  (state/exit [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
+  (fsm/exit [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
@@ -347,11 +347,11 @@
     (clicked-cell data eid cell c)))
 
 (defcomponent :player-moving
-  (state/enter [[_ {:keys [eid movement-vector]}] c]
+  (fsm/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)}))
 
-  (state/exit [[_ {:keys [eid]}] c]
+  (fsm/exit [[_ {:keys [eid]}] c]
     (swap! eid dissoc :entity/movement))
 
   (tick! [[_ {:keys [movement-vector]}] eid c]
