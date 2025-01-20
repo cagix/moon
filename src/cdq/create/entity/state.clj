@@ -1,17 +1,13 @@
 (ns cdq.create.entity.state
   (:require [cdq.audio :as audio]
             [cdq.utils :refer [defcomponent]]
-            [cdq.inventory :as inventory]
             [cdq.timer :as timer]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             [cdq.entity.state :as state]
             [cdq.world :refer [delayed-alert
                                add-text-effect
-                               remove-item
                                add-skill
-                               set-item
-                               stack-item
                                spawn-item
                                item-place-position
                                show-modal]]))
@@ -64,13 +60,6 @@
                    :on-click (fn [])})))
 
 (defcomponent :player-idle
-  (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
-    ; TODO no else case
-    (when-let [item (get-in (:entity/inventory @eid) cell)]
-      (audio/play pickup-item-sound)
-      (fsm/event c eid :pickup-item item)
-      (remove-item c eid cell)))
-
   (state/clicked-skillmenu-skill [[_ {:keys [eid]}] skill c]
     (let [free-skill-points (:entity/free-skill-points @eid)]
       ; TODO no else case, no visible free-skill-points
@@ -78,43 +67,6 @@
                  (not (entity/has-skill? @eid skill)))
         (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
         (add-skill c eid skill)))))
-
-(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
-  (let [entity @eid
-        inventory (:entity/inventory entity)
-        item-in-cell (get-in inventory cell)
-        item-on-cursor (:entity/item-on-cursor entity)]
-    (cond
-     ; PUT ITEM IN EMPTY CELL
-     (and (not item-in-cell)
-          (inventory/valid-slot? cell item-on-cursor))
-     (do
-      (audio/play item-put-sound)
-      (swap! eid dissoc :entity/item-on-cursor)
-      (set-item c eid cell item-on-cursor)
-      (fsm/event c eid :dropped-item))
-
-     ; STACK ITEMS
-     (and item-in-cell
-          (inventory/stackable? item-in-cell item-on-cursor))
-     (do
-      (audio/play item-put-sound)
-      (swap! eid dissoc :entity/item-on-cursor)
-      (stack-item c eid cell item-on-cursor)
-      (fsm/event c eid :dropped-item))
-
-     ; SWAP ITEMS
-     (and item-in-cell
-          (inventory/valid-slot? cell item-on-cursor))
-     (do
-      (audio/play item-put-sound)
-      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
-      ; TODO? coud handle pickup-item from item-on-cursor state also
-      (swap! eid dissoc :entity/item-on-cursor)
-      (remove-item c eid cell)
-      (set-item c eid cell item-on-cursor)
-      (fsm/event c eid :dropped-item)
-      (fsm/event c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
   (fsm/enter [[_ {:keys [eid item]}] c]
@@ -131,10 +83,7 @@
         (swap! eid dissoc :entity/item-on-cursor)
         (spawn-item c
                     (item-place-position c entity)
-                    (:entity/item-on-cursor entity)))))
-
-  (state/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
-    (clicked-cell data eid cell c)))
+                    (:entity/item-on-cursor entity))))))
 
 (defcomponent :player-moving
   (fsm/enter [[_ {:keys [eid movement-vector]}] c]

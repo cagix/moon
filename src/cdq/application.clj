@@ -1,8 +1,8 @@
 (ns cdq.application
-  (:require cdq.utils
+  (:require cdq.utils ; -> clojure.gdx.utils.disposable/dispose
             clojure.gdx.application
             clojure.gdx.backends.lwjgl
-            [cdq.gdx.utils.viewport :as viewport]
+            [cdq.gdx.utils.viewport :as viewport] ; ->
             clojure.java.io))
 
 #_(defn reset-stage [{:keys [cdq.context/stage]} new-actors]
@@ -10,11 +10,14 @@
   (run! #(stage/add-actor stage %) new-actors))
 
 (def create-components
+  ; remove components !
   '[[:cdq/entity-states                 cdq.create.entity.state]
     [:cdq/effects                       cdq.create.effects]
+
     [:cdq/schemas                       cdq.create.schemas]
     [:cdq/db                            cdq.create.db]
     [:cdq/assets                        cdq.create.assets]
+    ; naming?
     [:cdq.graphics/batch                cdq.create.batch]
     [:cdq.graphics/shape-drawer-texture cdq.create.shape-drawer-texture]
     [:cdq.graphics/shape-drawer         cdq.create.shape-drawer]
@@ -61,6 +64,7 @@
 (def state (atom nil))
 
 (defn -main []
+  ; Test on mac/linux ?
   (.setIconImage (java.awt.Taskbar/getTaskbar)
                  (.getImage (java.awt.Toolkit/getDefaultToolkit)
                             (clojure.java.io/resource "moon.png")))

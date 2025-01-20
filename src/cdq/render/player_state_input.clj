@@ -11,10 +11,10 @@
             [cdq.world :refer [world-item?
                                player-movement-vector
                                get-inventory
-                               pickup-item
                                show-player-msg
                                selected-skill]]
             [clojure.gdx.input :as input]
+            [cdq.widgets.inventory :as widgets.inventory]
             [cdq.scene2d.actor :as actor]))
 
 (defsystem manual-tick)
@@ -51,7 +51,7 @@
      (do
       (play-sound c "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
-      (pickup-item c player-eid item))
+      (widgets.inventory/pickup-item c player-eid item))
 
      :else
      (do

@@ -315,57 +315,6 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn set-item [c eid cell item]
-  (let [entity @eid
-        inventory (:entity/inventory entity)]
-    (assert (and (nil? (get-in inventory cell))
-                 (inventory/valid-slot? cell item)))
-    (when (:entity/player? entity)
-      (widgets.inventory/set-item-image-in-widget c cell item))
-    (swap! eid assoc-in (cons :entity/inventory cell) item)
-    (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-add (:entity/modifiers item)))))
-
-(defn remove-item [c eid cell]
-  (let [entity @eid
-        item (get-in (:entity/inventory entity) cell)]
-    (assert item)
-    (when (:entity/player? entity)
-      (widgets.inventory/remove-item-from-widget c cell))
-    (swap! eid assoc-in (cons :entity/inventory cell) nil)
-    (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-remove (:entity/modifiers item)))))
-
-; TODO doesnt exist, stackable, usable items with action/skillbar thingy
-#_(defn remove-one-item [eid cell]
-  (let [item (get-in (:entity/inventory @eid) cell)]
-    (if (and (:count item)
-             (> (:count item) 1))
-      (do
-       ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
-       ; first remove and then place, just update directly  item ...
-       (remove-item! eid cell)
-       (set-item! eid cell (update item :count dec)))
-      (remove-item! eid cell))))
-
-; TODO no items which stack are available
-(defn stack-item [c eid cell item]
-  (let [cell-item (get-in (:entity/inventory @eid) cell)]
-    (assert (inventory/stackable? item cell-item))
-    ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
-    ; first remove and then place, just update directly  item ...
-    (concat (remove-item c eid cell)
-            (set-item c eid cell (update cell-item :count + (:count item))))))
-
-(defn pickup-item [c eid item]
-  (let [[cell cell-item] (entity/can-pickup-item? @eid item)]
-    (assert cell)
-    (assert (or (inventory/stackable? item cell-item)
-                (nil? cell-item)))
-    (if (inventory/stackable? item cell-item)
-      (stack-item c eid cell item)
-      (set-item c eid cell item))))
-
 (defn draw-body-rect [sd entity color]
   (let [[x y] (:left-bottom entity)]
     (sd/rectangle sd x y (:width entity) (:height entity) color)))
@@ -405,7 +354,7 @@
   [[k items] eid c]
   (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
-    (pickup-item c eid item)))
+    (widgets.inventory/pickup-item c eid item)))
 
 (defmethod create! :entity/skills
   [[k skills] eid c]
