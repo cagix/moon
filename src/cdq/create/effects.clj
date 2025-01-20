@@ -5,6 +5,7 @@
             [cdq.effect :as effect]
             [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity]
+            [cdq.entity.fsm :as fsm]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.rand :refer [rand-int-between]]
@@ -15,8 +16,7 @@
                                spawn-creature
                                spawn-projectile
                                line-render
-                               projectile-size
-                               send-event!]]))
+                               projectile-size]]))
 
 (defn create [_context]
   :loaded)
@@ -236,7 +236,7 @@
          (spawn-audiovisual c
                             (:position target*)
                             (db/build db :audiovisuals/damage c))
-         (send-event! c target (if (zero? new-hp-val) :kill :alert))
+         (fsm/event c target (if (zero? new-hp-val) :kill :alert))
          (swap! target add-text-effect c (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
@@ -245,7 +245,7 @@
          (:entity/fsm @target)))
 
   (effect/handle [_ {:keys [effect/target]} c]
-    (send-event! c target :kill)))
+    (fsm/event c target :kill)))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -283,4 +283,4 @@
          (:entity/fsm @target)))
 
   (effect/handle [[_ duration] {:keys [effect/target]} c]
-    (send-event! c target :stun duration)))
+    (fsm/event c target :stun duration)))

@@ -7,6 +7,7 @@
             [cdq.inventory :as inventory]
             [cdq.timer :as timer]
             [cdq.entity :as entity]
+            [cdq.entity.fsm :as fsm]
             [cdq.entity.state :as state]
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
@@ -33,8 +34,7 @@
                                spawn-item
                                item-place-position
                                world-item?
-                               show-modal
-                               send-event!]]))
+                               show-modal]]))
 
 (defn create [_context]
   :loaded)
@@ -68,14 +68,14 @@
      (not (effect-ctx/some-applicable? (update-effect-ctx c effect-ctx)
                                        (:skill/effects skill)))
      (do
-      (send-event! c eid :action-done)
+      (fsm/event c eid :action-done)
       ; TODO some sound ?
       )
 
      (timer/stopped? counter elapsed-time)
      (do
       (effect-ctx/do-all! c effect-ctx (:skill/effects skill))
-      (send-event! c eid :action-done)))))
+      (fsm/event c eid :action-done)))))
 
 (defcomponent :npc-dead
   (state/enter [[_ {:keys [eid]}] c]
@@ -106,8 +106,8 @@
   (tick! [_ eid c]
     (let [effect-ctx (npc-effect-context c eid)]
       (if-let [skill (npc-choose-skill c @eid effect-ctx)]
-        (send-event! c eid :start-action [skill effect-ctx])
-        (send-event! c eid :movement-direction (or (potential-field/find-direction c eid) [0 0]))))))
+        (fsm/event c eid :start-action [skill effect-ctx])
+        (fsm/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0]))))))
 
 (defcomponent :npc-moving
   (state/enter [[_ {:keys [eid movement-vector]}] c]
@@ -121,7 +121,7 @@
           eid
           {:keys [cdq.context/elapsed-time] :as c}]
     (when (timer/stopped? counter elapsed-time)
-      (send-event! c eid :timer-finished))))
+      (fsm/event c eid :timer-finished))))
 
 (defcomponent :npc-sleeping
   (state/exit [[_ {:keys [eid]}] c]
@@ -136,7 +136,7 @@
           cell (grid (entity/tile entity))]
       (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
         (when (<= distance (entity/stat entity :entity/aggro-range))
-          (send-event! c eid :alert))))))
+          (fsm/event c eid :alert))))))
 
 (defcomponent :player-dead
   (state/enter [[_ {:keys [tx/sound
@@ -161,7 +161,7 @@
      (do
       (play-sound c "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
-      (send-event! c player-eid :pickup-item item))
+      (fsm/event c player-eid :pickup-item item))
 
      (entity/can-pickup-item? @player-eid item)
      (do
@@ -242,7 +242,7 @@
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
              (fn []
-               (send-event! c eid :start-action [skill effect-ctx]))])
+               (fsm/event c eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -263,7 +263,7 @@
 (defcomponent :player-idle
   (state/manual-tick [[_ {:keys [eid]}] c]
     (if-let [movement-vector (player-movement-vector)]
-      (send-event! c eid :movement-input movement-vector)
+      (fsm/event c eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state c eid)]
         (cdq.graphics/set-cursor c cursor)
         (when (input/button-just-pressed? :left)
@@ -273,7 +273,7 @@
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (audio/play pickup-item-sound)
-      (send-event! c eid :pickup-item item)
+      (fsm/event c eid :pickup-item item)
       (remove-item c eid cell)))
 
   (state/clicked-skillmenu-skill [[_ {:keys [eid]}] skill c]
@@ -297,7 +297,7 @@
       (audio/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item c eid cell item-on-cursor)
-      (send-event! c eid :dropped-item))
+      (fsm/event c eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -306,7 +306,7 @@
       (audio/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item c eid cell item-on-cursor)
-      (send-event! c eid :dropped-item))
+      (fsm/event c eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -318,8 +318,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (remove-item c eid cell)
       (set-item c eid cell item-on-cursor)
-      (send-event! c eid :dropped-item)
-      (send-event! c eid :pickup-item item-in-cell)))))
+      (fsm/event c eid :dropped-item)
+      (fsm/event c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
   (state/enter [[_ {:keys [eid item]}] c]
@@ -341,7 +341,7 @@
   (state/manual-tick [[_ {:keys [eid]}] c]
     (when (and (input/button-just-pressed? :left)
                (world-item? c))
-      (send-event! c eid :drop-item)))
+      (fsm/event c eid :drop-item)))
 
   (state/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
     (clicked-cell data eid cell c)))
@@ -358,11 +358,11 @@
     (if-let [movement-vector (player-movement-vector)]
       (swap! eid assoc :entity/movement {:direction movement-vector
                                          :speed (entity/stat @eid :entity/movement-speed)})
-      (send-event! c eid :no-movement-input))))
+      (fsm/event c eid :no-movement-input))))
 
 (defcomponent :stunned
   (tick! [[_ {:keys [counter]}]
           eid
           {:keys [cdq.context/elapsed-time] :as c}]
     (when (timer/stopped? counter elapsed-time)
-      (send-event! c eid :effect-wears-off))))
+      (fsm/event c eid :effect-wears-off))))
