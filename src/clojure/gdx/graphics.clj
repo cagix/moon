@@ -12,4 +12,3 @@
 
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
-
