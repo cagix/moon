@@ -10,7 +10,6 @@
             [cdq.widgets.inventory :as widgets.inventory]
             [cdq.fsm :as fsm]
             [cdq.entity :as entity]
-            [cdq.entity.fsm]
             [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
