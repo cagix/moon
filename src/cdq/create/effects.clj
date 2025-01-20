@@ -9,6 +9,7 @@
             [cdq.math.vector2 :as v]
             [cdq.rand :refer [rand-int-between]]
             [cdq.utils :refer [defcomponent]]
+            [cdq.line-of-sight :as los]
             [cdq.world :refer [add-text-effect
                                spawn-audiovisual
                                spawn-creature
@@ -111,7 +112,7 @@
  ; TODO showing one a bit further up
  ; maybe world view port is cut
  ; not quite showing correctly.
- (let [targets (creatures-in-los-of-player)]
+ (let [targets (los/creatures-in-los-of-player)]
    (count targets)
    #_(sort-by #(% 1) (map #(vector (:entity.creature/name @%)
                                    (:position @%)) targets)))
@@ -129,7 +130,7 @@
 
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} c]
     (let [source* @source]
-      (doseq [target (creatures-in-los-of-player c)]
+      (doseq [target (los/creatures-in-los-of-player c)]
         (line-render c
                      {:start (:position source*) #_(start-point source* target*)
                       :end (:position @target)

@@ -4200,7 +4200,8 @@
   :skill/action-time-modifier-key :entity/cast-speed,
   :skill/cooldown 0,
   :skill/cost 1,
-  :skill/effects {},
+  :skill/effects
+  {:effects/target-all {:entity-effects {:effects.target/convert {}}}},
   :skill/start-action-sound "bfxr_healmonsters"}
  {:entity/image
   {:file "images/skills.png", :sub-image-bounds [96 64 32 32]},

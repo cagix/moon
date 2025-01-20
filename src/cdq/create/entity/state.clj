@@ -11,6 +11,7 @@
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
             [cdq.effect-context :as effect-ctx]
+            [cdq.line-of-sight :as los]
             [cdq.skill :as skill]
             [cdq.stage :as stage]
             [cdq.math.vector2 :as v]
@@ -44,7 +45,7 @@
   [context {:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (line-of-sight? context @source @target))
+           (los/exists? context @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
@@ -100,7 +101,7 @@
   (let [entity @eid
         target (nearest-enemy c entity)
         target (when (and target
-                          (line-of-sight? c entity @target))
+                          (los/exists? c entity @target))
                  target)]
     {:effect/source eid
      :effect/target target

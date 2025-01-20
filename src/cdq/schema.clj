@@ -57,8 +57,9 @@
 (defn optional-k? [k schema schemas]
   (optional? k (malli-form schema schemas)))
 
-(defn- optional-keyset [m-schema]
-  (set (filter #(optional? % m-schema) (map-keys m-schema))))
+(defn- optional-keyset [m-schema schemas]
+  (set (filter #(optional? % m-schema) (map-keys m-schema
+                                                 schemas))))
 
 (comment
  (= (optional-keyset
@@ -72,7 +73,8 @@
  )
 
 (defn optional-keys-left [schema m schemas]
-  (seq (set/difference (optional-keyset (malli-form schema schemas))
+  (seq (set/difference (optional-keyset (malli-form schema schemas)
+                                        schemas)
                        (set (keys m)))))
 
 (def val-max-schema

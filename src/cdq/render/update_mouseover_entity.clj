@@ -1,5 +1,6 @@
 (ns cdq.render.update-mouseover-entity
   (:require cdq.grid
+            [cdq.line-of-sight :as los]
             [cdq.stage :as stage]
             cdq.utils
             cdq.world))
@@ -17,7 +18,7 @@
                     (->> cdq.world/render-z-order
                          (cdq.utils/sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(cdq.world/line-of-sight? c player @%))
+                         (filter #(los/exists? c player @%))
                          first)))]
     (when mouseover-eid
       (swap! mouseover-eid dissoc :entity/mouseover?))

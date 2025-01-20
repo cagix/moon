@@ -4,6 +4,7 @@
             [cdq.graphics.shape-drawer :as sd]
             [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]
+            [cdq.line-of-sight :as los]
             [cdq.utils :refer [pretty-pst defsystem sort-by-order]]
             [cdq.val-max :as val-max]
             [cdq.world :refer [render-z-order
@@ -182,7 +183,7 @@
 (defmethod render-effect :effects/target-all
   [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
   (let [source* @source]
-    (doseq [target* (map deref (creatures-in-los-of-player c))]
+    (doseq [target* (map deref (los/creatures-in-los-of-player c))]
       (sd/line shape-drawer
                (:position source*) #_(start-point source* target*)
                (:position target*)
@@ -223,7 +224,7 @@
                     info]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (line-of-sight? c player entity))]
+                      (los/exists? c player entity))]
       (try
        (when show-body-bounds
          (draw-body-rect shape-drawer entity (if (:collides? entity) :white :gray)))
