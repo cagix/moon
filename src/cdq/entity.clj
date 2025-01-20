@@ -136,17 +136,17 @@
 (defn- ->pos-int [val-max]
   (mapv #(-> % int (max 0)) val-max))
 
-(defn apply-max-modifier [val-max entity modifier-k]
+(defn apply-max-modifier [val-max modifiers modifier-k]
   {:pre  [(s/validate s/val-max-schema val-max)]
    :post [(s/validate s/val-max-schema val-max)]}
-  (let [val-max (update val-max 1 mod-value (:entity/modifiers entity) modifier-k)
+  (let [val-max (update val-max 1 mod-value modifiers modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
-(defn apply-min-modifier [val-max entity modifier-k]
+(defn apply-min-modifier [val-max modifiers modifier-k]
   {:pre  [(s/validate s/val-max-schema val-max)]
    :post [(s/validate s/val-max-schema val-max)]}
-  (let [val-max (update val-max 0 mod-value (:entity/modifiers entity) modifier-k)
+  (let [val-max (update val-max 0 mod-value modifiers modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
 
@@ -158,10 +158,9 @@
 (defn mana
   "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
   Current-mana is capped by max-mana."
-  [entity]
-  (-> entity
-      :entity/mana
-      (apply-max-modifier entity :modifier/mana-max)))
+  [{:keys [entity/mana
+           entity/modifiers]}]
+  (apply-max-modifier mana modifiers :modifier/mana-max))
 
 (defn mana-val [entity]
   (if (:entity/mana entity)
@@ -176,24 +175,23 @@
 (defn hitpoints
   "Returns the hitpoints val-max vector `[current-value maximum]` of entity after applying max-hp modifier.
   Current-hp is capped by max-hp."
-  [entity]
-  (-> entity
-      :entity/hp
-      (apply-max-modifier entity :modifier/hp-max)))
+  [{:keys [entity/hp
+           entity/modifiers]}]
+  (apply-max-modifier hp modifiers :modifier/hp-max))
 
 (defn damage
   ([source damage]
    (update damage
            :damage/min-max
            #(-> %
-                (apply-min-modifier source :modifier/damage-deal-min)
-                (apply-max-modifier source :modifier/damage-deal-max))))
+                (apply-min-modifier (:entity/modifiers source) :modifier/damage-deal-min)
+                (apply-max-modifier (:entity/modifiers source) :modifier/damage-deal-max))))
 
   ([source target damage]
    (update (damage source damage)
            :damage/min-max
            apply-max-modifier
-           target
+           (:entity/modifiers target)
            :modifier/damage-receive-max)))
 
 ; TODO use at projectile & also adjust rotation
