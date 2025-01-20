@@ -7,9 +7,6 @@
 (defsystem exit)
 (defmethod exit :default [_ c])
 
-(defsystem pause-game?)
-(defmethod pause-game? :default [_])
-
 (defsystem clicked-inventory-cell)
 (defmethod clicked-inventory-cell :default [_ cell c])
 

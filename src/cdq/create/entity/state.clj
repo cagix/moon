@@ -50,9 +50,6 @@
     (dissoc effect-ctx :effect/target)))
 
 (defcomponent :active-skill
-  (state/pause-game? [_]
-    false)
-
   (state/enter [[_ {:keys [eid skill]}]
                 {:keys [cdq.context/elapsed-time] :as c}]
     (audio/play (:skill/start-action-sound skill))
@@ -142,9 +139,6 @@
           (send-event! c eid :alert))))))
 
 (defcomponent :player-dead
-  (state/pause-game? [_]
-    true)
-
   (state/enter [[_ {:keys [tx/sound
                            modal/title
                            modal/text
@@ -267,9 +261,6 @@
           (show-player-msg c "No selected skill"))]))))
 
 (defcomponent :player-idle
-  (state/pause-game? [_]
-    true)
-
   (state/manual-tick [[_ {:keys [eid]}] c]
     (if-let [movement-vector (player-movement-vector)]
       (send-event! c eid :movement-input movement-vector)
@@ -331,9 +322,6 @@
       (send-event! c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
-  (state/pause-game? [_]
-    true)
-
   (state/enter [[_ {:keys [eid item]}] c]
     (swap! eid assoc :entity/item-on-cursor item))
 
@@ -359,9 +347,6 @@
     (clicked-cell data eid cell c)))
 
 (defcomponent :player-moving
-  (state/pause-game? [_]
-    false)
-
   (state/enter [[_ {:keys [eid movement-vector]}] c]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)}))
@@ -376,9 +361,6 @@
       (send-event! c eid :no-movement-input))))
 
 (defcomponent :stunned
-  (state/pause-game? [_]
-    false)
-
   (tick! [[_ {:keys [counter]}]
           eid
           {:keys [cdq.context/elapsed-time] :as c}]
