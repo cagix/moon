@@ -4,7 +4,6 @@
             [cdq.timer :as timer]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
-            [cdq.entity.state :as state]
             [cdq.world :refer [delayed-alert
                                add-text-effect
                                add-skill
@@ -58,15 +57,6 @@
                    :text text
                    :button-text button-text
                    :on-click (fn [])})))
-
-(defcomponent :player-idle
-  (state/clicked-skillmenu-skill [[_ {:keys [eid]}] skill c]
-    (let [free-skill-points (:entity/free-skill-points @eid)]
-      ; TODO no else case, no visible free-skill-points
-      (when (and (pos? free-skill-points)
-                 (not (entity/has-skill? @eid skill)))
-        (swap! eid assoc :entity/free-skill-points (dec free-skill-points))
-        (add-skill c eid skill)))))
 
 (defcomponent :player-item-on-cursor
   (fsm/enter [[_ {:keys [eid item]}] c]

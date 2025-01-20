@@ -2,7 +2,6 @@
   (:require [cdq.audio :as audio]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
-            [cdq.entity.state :as state]
             cdq.graphics
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
