@@ -13,11 +13,9 @@
                                get-inventory
                                pickup-item
                                show-player-msg
-                               selected-skill
-                               ]]
+                               selected-skill]]
             [clojure.gdx.input :as input]
-            [cdq.scene2d.actor :as actor]
-            ))
+            [cdq.scene2d.actor :as actor]))
 
 (defsystem manual-tick)
 (defmethod manual-tick :default [_ c])
