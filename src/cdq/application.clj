@@ -104,4 +104,8 @@
                                            :foreground-fps 60
                                            :opengl-emulation {:gl-version :gl20
                                                               :gles-3-major-version 3
-                                                              :gles-3-minor-version 2}}))
+                                                              :gles-3-minor-version 2}
+                                          ; :taskbar-icon "moon.png"
+                                          ; :mac-osx {:glfw-async? true}
+
+                                           }))
