@@ -50,9 +50,6 @@
     (dissoc effect-ctx :effect/target)))
 
 (defcomponent :active-skill
-  (state/cursor [_]
-    :cursors/sandclock)
-
   (state/pause-game? [_]
     false)
 
@@ -145,9 +142,6 @@
           (send-event! c eid :alert))))))
 
 (defcomponent :player-dead
-  (state/cursor [_]
-    :cursors/black-x)
-
   (state/pause-game? [_]
     true)
 
@@ -337,9 +331,6 @@
       (send-event! c eid :pickup-item item-in-cell)))))
 
 (defcomponent :player-item-on-cursor
-  (state/cursor [_]
-    :cursors/hand-grab)
-
   (state/pause-game? [_]
     true)
 
@@ -368,9 +359,6 @@
     (clicked-cell data eid cell c)))
 
 (defcomponent :player-moving
-  (state/cursor [_]
-    :cursors/walking)
-
   (state/pause-game? [_]
     false)
 
@@ -388,9 +376,6 @@
       (send-event! c eid :no-movement-input))))
 
 (defcomponent :stunned
-  (state/cursor [_]
-    :cursors/denied)
-
   (state/pause-game? [_]
     false)
 

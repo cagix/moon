@@ -10,9 +10,6 @@
 (defsystem pause-game?)
 (defmethod pause-game? :default [_])
 
-(defsystem cursor)
-(defmethod cursor :default [_])
-
 (defsystem clicked-inventory-cell)
 (defmethod clicked-inventory-cell :default [_ cell c])
 

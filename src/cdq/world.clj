@@ -317,6 +317,13 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
+(def state->cursor
+  {:active-skill          :cursors/sandclock
+   :player-dead           :cursors/black-x
+   :player-item-on-cursor :cursors/hand-grab
+   :player-moving         :cursors/walking
+   :stunned               :cursors/denied})
+
 (defn send-event!
   ([c eid event]
    (send-event! c eid event nil))
@@ -332,7 +339,7 @@
                                                            [new-state-k eid])
                                                          c)]]
            (when (:entity/player? @eid)
-             (when-let [cursor (state/cursor new-state-obj)]
+             (when-let [cursor (state->cursor new-state-k)]
                (cdq.graphics/set-cursor c cursor)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
