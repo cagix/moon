@@ -1,21 +1,13 @@
 (ns cdq.create.entity.state
   (:require [cdq.audio :as audio]
             [cdq.utils :refer [defcomponent]]
-            [cdq.world.potential-field :as potential-field]
             [cdq.inventory :as inventory]
             [cdq.timer :as timer]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             [cdq.entity.state :as state]
-            [cdq.grid :as grid]
-            [cdq.effect-context :as effect-ctx]
-            [cdq.line-of-sight :as los]
-            [cdq.skill :as skill]
-            [cdq.world :refer [tick!
-                               nearest-enemy
-                               delayed-alert
+            [cdq.world :refer [delayed-alert
                                add-text-effect
-                               player-movement-vector
                                remove-item
                                add-skill
                                set-item
@@ -27,16 +19,6 @@
 (defn create [_context]
   :loaded)
 
-; this is not necessary if effect does not need target, but so far not other solution came up.
-(defn- update-effect-ctx
-  "Call this on effect-context if the time of using the context is not the time when context was built."
-  [context {:keys [effect/source effect/target] :as effect-ctx}]
-  (if (and target
-           (not (:entity/destroyed? @target))
-           (los/exists? context @source @target))
-    effect-ctx
-    (dissoc effect-ctx :effect/target)))
-
 (defcomponent :active-skill
   (fsm/enter [[_ {:keys [eid skill]}]
               {:keys [cdq.context/elapsed-time] :as c}]
@@ -47,55 +29,11 @@
              (timer/create elapsed-time (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
-      (swap! eid entity/pay-mana-cost (:skill/cost skill))))
-
-  (tick! [[_ {:keys [skill effect-ctx counter]}]
-          eid
-          {:keys [cdq.context/elapsed-time] :as c}]
-    (cond
-     (not (effect-ctx/some-applicable? (update-effect-ctx c effect-ctx)
-                                       (:skill/effects skill)))
-     (do
-      (fsm/event c eid :action-done)
-      ; TODO some sound ?
-      )
-
-     (timer/stopped? counter elapsed-time)
-     (do
-      (effect-ctx/do-all! c effect-ctx (:skill/effects skill))
-      (fsm/event c eid :action-done)))))
+      (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
 
 (defcomponent :npc-dead
   (fsm/enter [[_ {:keys [eid]}] c]
     (swap! eid assoc :entity/destroyed? true)))
-
-(defn- npc-choose-skill [c entity ctx]
-  (->> entity
-       :entity/skills
-       vals
-       (sort-by #(or (:skill/cost %) 0))
-       reverse
-       (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect-ctx/applicable-and-useful? c ctx (:skill/effects %))))
-       first))
-
-(defn- npc-effect-context [c eid]
-  (let [entity @eid
-        target (nearest-enemy c entity)
-        target (when (and target
-                          (los/exists? c entity @target))
-                 target)]
-    {:effect/source eid
-     :effect/target target
-     :effect/target-direction (when target
-                                (entity/direction entity @target))}))
-
-(defcomponent :npc-idle
-  (tick! [_ eid c]
-    (let [effect-ctx (npc-effect-context c eid)]
-      (if-let [skill (npc-choose-skill c @eid effect-ctx)]
-        (fsm/event c eid :start-action [skill effect-ctx])
-        (fsm/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0]))))))
 
 (defcomponent :npc-moving
   (fsm/enter [[_ {:keys [eid movement-vector]}] c]
@@ -103,13 +41,7 @@
                                        :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
 
   (fsm/exit [[_ {:keys [eid]}] c]
-    (swap! eid dissoc :entity/movement))
-
-  (tick! [[_ {:keys [counter]}]
-          eid
-          {:keys [cdq.context/elapsed-time] :as c}]
-    (when (timer/stopped? counter elapsed-time)
-      (fsm/event c eid :timer-finished))))
+    (swap! eid dissoc :entity/movement)))
 
 (defcomponent :npc-sleeping
   (fsm/exit [[_ {:keys [eid]}] c]
@@ -117,14 +49,7 @@
                    (:position       @eid)
                    (:entity/faction @eid)
                    0.2)
-    (swap! eid add-text-effect c "[WHITE]!"))
-
-  (tick! [_ eid {:keys [cdq.context/grid] :as c}]
-    (let [entity @eid
-          cell (grid (entity/tile entity))]
-      (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
-        (when (<= distance (entity/stat entity :entity/aggro-range))
-          (fsm/event c eid :alert))))))
+    (swap! eid add-text-effect c "[WHITE]!")))
 
 (defcomponent :player-dead
   (fsm/enter [[_ {:keys [tx/sound
@@ -217,17 +142,4 @@
                                        :speed (entity/stat @eid :entity/movement-speed)}))
 
   (fsm/exit [[_ {:keys [eid]}] c]
-    (swap! eid dissoc :entity/movement))
-
-  (tick! [[_ {:keys [movement-vector]}] eid c]
-    (if-let [movement-vector (player-movement-vector)]
-      (swap! eid assoc :entity/movement {:direction movement-vector
-                                         :speed (entity/stat @eid :entity/movement-speed)})
-      (fsm/event c eid :no-movement-input))))
-
-(defcomponent :stunned
-  (tick! [[_ {:keys [counter]}]
-          eid
-          {:keys [cdq.context/elapsed-time] :as c}]
-    (when (timer/stopped? counter elapsed-time)
-      (fsm/event c eid :effect-wears-off))))
+    (swap! eid dissoc :entity/movement)))
