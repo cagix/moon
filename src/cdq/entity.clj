@@ -8,7 +8,7 @@
             [cdq.inventory :as inventory]
             [cdq.operation :as op]))
 
-(defn mod-value [base-value {:keys [entity/modifiers]} modifier-k]
+(defn mod-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
   (op/apply (modifier-k modifiers)
             base-value))
@@ -16,7 +16,7 @@
 (defn stat [entity k]
   (when-let [base-value (k entity)]
     (mod-value base-value
-               entity
+               (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
 
 ; temporary here, move to entity.render
@@ -139,14 +139,14 @@
 (defn apply-max-modifier [val-max entity modifier-k]
   {:pre  [(s/validate s/val-max-schema val-max)]
    :post [(s/validate s/val-max-schema val-max)]}
-  (let [val-max (update val-max 1 mod-value entity modifier-k)
+  (let [val-max (update val-max 1 mod-value (:entity/modifiers entity) modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn apply-min-modifier [val-max entity modifier-k]
   {:pre  [(s/validate s/val-max-schema val-max)]
    :post [(s/validate s/val-max-schema val-max)]}
-  (let [val-max (update val-max 0 mod-value entity modifier-k)
+  (let [val-max (update val-max 0 mod-value (:entity/modifiers entity) modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
 
