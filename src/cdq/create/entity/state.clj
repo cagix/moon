@@ -1,7 +1,5 @@
 (ns cdq.create.entity.state
-  (:require [cdq.assets :refer [play-sound]]
-            cdq.graphics
-            [cdq.audio :as audio]
+  (:require [cdq.audio :as audio]
             [cdq.utils :refer [defcomponent]]
             [cdq.world.potential-field :as potential-field]
             [cdq.inventory :as inventory]
@@ -10,22 +8,13 @@
             [cdq.entity.fsm :as fsm]
             [cdq.entity.state :as state]
             [cdq.grid :as grid]
-            [clojure.gdx.input :as input]
             [cdq.effect-context :as effect-ctx]
             [cdq.line-of-sight :as los]
             [cdq.skill :as skill]
-            [cdq.stage :as stage]
-            [cdq.math.vector2 :as v]
-            [cdq.ui :as ui]
-            [cdq.scene2d.actor :as actor]
             [cdq.world :refer [tick!
                                nearest-enemy
                                delayed-alert
                                add-text-effect
-                               get-inventory
-                               pickup-item
-                               show-player-msg
-                               selected-skill
                                player-movement-vector
                                remove-item
                                add-skill
@@ -33,7 +22,6 @@
                                stack-item
                                spawn-item
                                item-place-position
-                               world-item?
                                show-modal]]))
 
 (defn create [_context]
@@ -150,125 +138,7 @@
                    :button-text button-text
                    :on-click (fn [])})))
 
-(defmulti ^:private on-clicked
-  (fn [eid c]
-    (:type (:entity/clickable @eid))))
-
-(defmethod on-clicked :clickable/item [eid {:keys [cdq.context/player-eid] :as c}]
-  (let [item (:entity/item @eid)]
-    (cond
-     (actor/visible? (get-inventory c))
-     (do
-      (play-sound c "bfxr_takeit")
-      (swap! eid assoc :entity/destroyed? true)
-      (fsm/event c player-eid :pickup-item item))
-
-     (entity/can-pickup-item? @player-eid item)
-     (do
-      (play-sound c "bfxr_pickup")
-      (swap! eid assoc :entity/destroyed? true)
-      (pickup-item c player-eid item))
-
-     :else
-     (do
-      (play-sound c "bfxr_denied")
-      (show-player-msg c "Your Inventory is full")))))
-
-(defmethod on-clicked :clickable/player [_ c]
-  (actor/toggle-visible! (get-inventory c)))
-
-(defn- clickable->cursor [entity too-far-away?]
-  (case (:type (:entity/clickable entity))
-    :clickable/item (if too-far-away?
-                      :cursors/hand-before-grab-gray
-                      :cursors/hand-before-grab)
-    :clickable/player :cursors/bag))
-
-(defn- clickable-entity-interaction [c player-entity clicked-eid]
-  (if (< (v/distance (:position player-entity)
-                     (:position @clicked-eid))
-         (:entity/click-distance-tiles player-entity))
-    [(clickable->cursor @clicked-eid false) (fn []
-                                              (on-clicked clicked-eid c))]
-    [(clickable->cursor @clicked-eid true)  (fn []
-                                              (play-sound c "bfx_denied")
-                                              (show-player-msg c "Too far away"))]))
-
-(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
-  (and (actor/parent actor)
-       (= "inventory-cell" (.getName (actor/parent actor)))
-       (get-in (:entity/inventory @player-eid)
-               (actor/user-object (actor/parent actor)))))
-
-(defn- mouseover-actor->cursor [{:keys [cdq.context/stage] :as c}]
-  (let [actor (stage/mouse-on-actor? stage)]
-    (cond
-     (inventory-cell-with-item? c actor) :cursors/hand-before-grab
-     (ui/window-title-bar? actor)           :cursors/move-window
-     (ui/button? actor)                     :cursors/over-button
-     :else                               :cursors/default)))
-
-(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid
-                                  cdq.graphics/world-viewport]} eid]
-  (let [target-position (or (and mouseover-eid
-                                 (:position @mouseover-eid))
-                            (cdq.graphics/world-mouse-position world-viewport))]
-    {:effect/source eid
-     :effect/target mouseover-eid
-     :effect/target-position target-position
-     :effect/target-direction (v/direction (:position @eid) target-position)}))
-
-(defn- interaction-state [{:keys [cdq.context/mouseover-eid
-                                  cdq.context/stage] :as c} eid]
-  (let [entity @eid]
-    (cond
-     (stage/mouse-on-actor? stage)
-     [(mouseover-actor->cursor c)
-      (fn [] nil)] ; handled by actors themself, they check player state
-
-     (and mouseover-eid
-          (:entity/clickable @mouseover-eid))
-     (clickable-entity-interaction c entity mouseover-eid)
-
-     :else
-     (if-let [skill-id (selected-skill c)]
-       (let [skill (skill-id (:entity/skills entity))
-             effect-ctx (player-effect-ctx c eid)
-             state (skill/usable-state entity skill effect-ctx)]
-         (if (= state :usable)
-           (do
-            ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
-            ; different color ?
-            ; => e.g. meditation no TARGET .. etc.
-            [:cursors/use-skill
-             (fn []
-               (fsm/event c eid :start-action [skill effect-ctx]))])
-           (do
-            ; TODO cursor as of usable state
-            ; cooldown -> sanduhr kleine
-            ; not-enough-mana x mit kreis?
-            ; invalid-params -> depends on params ...
-            [:cursors/skill-not-usable
-             (fn []
-               (play-sound c "bfxr_denied")
-               (show-player-msg c (case state
-                                          :cooldown "Skill is still on cooldown"
-                                          :not-enough-mana "Not enough mana"
-                                          :invalid-params "Cannot use this here")))])))
-       [:cursors/no-skill-selected
-        (fn []
-          (play-sound c "bfxr_denied")
-          (show-player-msg c "No selected skill"))]))))
-
 (defcomponent :player-idle
-  (state/manual-tick [[_ {:keys [eid]}] c]
-    (if-let [movement-vector (player-movement-vector)]
-      (fsm/event c eid :movement-input movement-vector)
-      (let [[cursor on-click] (interaction-state c eid)]
-        (cdq.graphics/set-cursor c cursor)
-        (when (input/button-just-pressed? :left)
-          (on-click)))))
-
   (state/clicked-inventory-cell [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
@@ -337,11 +207,6 @@
         (spawn-item c
                     (item-place-position c entity)
                     (:entity/item-on-cursor entity)))))
-
-  (state/manual-tick [[_ {:keys [eid]}] c]
-    (when (and (input/button-just-pressed? :left)
-               (world-item? c))
-      (fsm/event c eid :drop-item)))
 
   (state/clicked-inventory-cell [[_ {:keys [eid] :as data}] cell c]
     (clicked-cell data eid cell c)))
