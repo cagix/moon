@@ -189,9 +189,9 @@
 
 (defmethod tick! :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
-            eid
-            {:keys [cdq.context/delta-time
-                    cdq.context/grid] :as c}]
+   eid
+   {:keys [cdq.context/delta-time
+           cdq.context/grid] :as c}]
   (assert (s/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))

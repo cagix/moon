@@ -39,4 +39,3 @@
           (when distance
             (let [ratio (/ distance (factions-iterations faction))]
               (sd/filled-rectangle sd x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
-
