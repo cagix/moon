@@ -11,14 +11,15 @@
             [cdq.timer :as timer]
             [cdq.math.vector2 :as v]
             [cdq.world.potential-field :as potential-field]
-            [cdq.utils :refer [defsystem find-first]]
+            [cdq.utils :refer [find-first]]
             [cdq.world :refer [nearest-enemy
                                player-movement-vector
                                friendlies-in-radius
                                position-changed
                                minimum-size]]))
 
-(defsystem tick!)
+(defmulti tick! (fn [[k] eid c]
+                  k))
 (defmethod tick! :default [_ eid c])
 
 (defn render [{:keys [cdq.game/active-entities] :as context}]

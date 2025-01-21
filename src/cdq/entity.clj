@@ -1,6 +1,6 @@
 (ns cdq.entity
   (:require [cdq.math.vector2 :as v]
-            [cdq.utils :refer [defsystem safe-merge]]
+            [cdq.utils :refer [safe-merge]]
             [cdq.db :as db]
             [cdq.timer :as timer]
             [cdq.schema :as s]
@@ -21,10 +21,12 @@
 
 ; temporary here, move to entity.render
 ; widgets in cdq.world and circular dependencies
-(defsystem draw-gui-view)
+(defmulti draw-gui-view (fn [[k] context]
+                          k))
 (defmethod draw-gui-view :default [_ c])
 
-(defsystem create)
+(defmulti create (fn [[k] context]
+                   k))
 (defmethod create :default [[_ v] _context]
   v)
 

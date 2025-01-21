@@ -2,7 +2,7 @@
   (:require cdq.graphics
             [cdq.db :as db]
             [cdq.audio :as audio]
-            [cdq.utils :refer [defsystem define-order safe-merge]]
+            [cdq.utils :refer [define-order safe-merge]]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.inventory :as inventory]
             [cdq.timer :as timer]
@@ -120,7 +120,8 @@
           {}
           components))
 
-(defsystem create!)
+(defmulti create! (fn [[k] eid c]
+                    k))
 (defmethod create! :default [_ eid c])
 
 (let [cnt (atom 0)]
@@ -319,7 +320,8 @@
   (let [[x y] (:left-bottom entity)]
     (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
-(defsystem destroy!)
+(defmulti destroy! (fn [[k] eid c]
+                     k))
 (defmethod destroy! :default [_ eid c])
 
 (defmethod destroy! :entity/destroy-audiovisual

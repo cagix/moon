@@ -1,23 +1,23 @@
 (ns cdq.operation
-  (:refer-clojure :exclude [apply remove])
-  (:require [cdq.utils :refer [defsystem defcomponent]]))
+  (:refer-clojure :exclude [apply remove]))
 
-(defsystem -apply)
-(defsystem -order)
+(defmulti -apply (fn [[k] base-value]
+                   k))
+(defmulti -order (fn [[k]]
+                   k))
 
-(defcomponent :op/inc
-  (-apply [[_ value] base-value]
-    (+ base-value value))
+(defmethod -apply :op/inc
+  [[_ value] base-value]
+  (+ base-value value))
 
-  (-order [_]
-    0))
+(defmethod -order :op/inc [_]
+  0)
 
-(defcomponent :op/mult
-  (-apply [[_ value] base-value]
-    (* base-value (inc (/ value 100))))
+(defmethod -apply :op/mult [[_ value] base-value]
+  (* base-value (inc (/ value 100))))
 
-  (-order [_]
-    1))
+(defmethod -order :op/mult [_]
+  1)
 
 (defn apply [op value]
   (reduce (fn [value op]

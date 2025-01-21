@@ -7,7 +7,6 @@
             [cdq.stage :as stage]
             [cdq.skill :as skill]
             [cdq.ui :as ui]
-            [cdq.utils :refer [defsystem]]
             [cdq.world :refer [world-item?
                                player-movement-vector
                                get-inventory
@@ -17,7 +16,8 @@
             [cdq.widgets.inventory :as widgets.inventory]
             [cdq.scene2d.actor :as actor]))
 
-(defsystem manual-tick)
+(defmulti manual-tick (fn [[k] context]
+                        k))
 (defmethod manual-tick :default [_ c])
 
 (defn render [{:keys [cdq.context/player-eid] :as c}]

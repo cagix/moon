@@ -1,7 +1,7 @@
-(ns cdq.widgets.skill-window
-  (:require [cdq.utils :refer [defsystem]]))
+(ns cdq.widgets.skill-window)
 
-(defsystem clicked-skillmenu-skill)
+(defmulti clicked-skillmenu-skill (fn [[k] skill c]
+                                    k))
 (defmethod clicked-skillmenu-skill :default [_ skill c])
 
 #_(defmethod state/clicked-skillmenu-skill :player-idle

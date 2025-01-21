@@ -18,7 +18,6 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [cdq.utils :refer [defsystem]]
             [cdq.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
@@ -85,7 +84,8 @@
     (scene2d.utils/set-min-size! drawable cell-size)
     (scene2d.utils/tint drawable (color/create 1 1 1 0.4))))
 
-(defsystem clicked-inventory-cell)
+(defmulti clicked-inventory-cell (fn [[k] cell c]
+                                   k))
 (defmethod clicked-inventory-cell :default [_ cell c])
 
 (defn- ->cell [c slot & {:keys [position]}]

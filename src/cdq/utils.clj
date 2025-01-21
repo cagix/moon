@@ -39,17 +39,6 @@
 (defn disposable? [object]
   (satisfies? Disposable object))
 
-; TODO check params & pass & check @ defcomponent ( forgot 1 arg - can be checked statically)
-(defmacro defsystem
-  {:arglists '([name docstring?])}
-  [name-sym & args]
-  (let [docstring (if (string? (first args))
-                    (first args))]
-    `(defmulti ~name-sym
-       ~(str "[[defsystem]]" (when docstring (str "\n\n" docstring)))
-       (fn [[k#] & args#]
-         k#))))
-
 (def overwrite-warnings? false)
 
 (defmacro defcomponent [k & sys-impls]

@@ -1,7 +1,7 @@
 (ns cdq.info
   (:require [clojure.math :as math]
             [clojure.string :as str]
-            [cdq.utils :refer [defsystem readable-number sort-by-k-order]]
+            [cdq.utils :refer [readable-number sort-by-k-order]]
             [cdq.gdx.graphics :as graphics]
             [cdq.graphics.color :as color]
             [cdq.timer :as timer]
@@ -17,7 +17,8 @@
       s
       (remove-newlines new-s))))
 
-(defsystem ^:private info-segment)
+(defmulti ^:private info-segment (fn [[k] _entity _context]
+                                   k))
 (defmethod info-segment :default [_ _entity _context])
 
 (graphics/def-color "PRETTY_NAME" (color/create 0.84 0.8 0.52))
@@ -83,7 +84,8 @@
        (str/join "\n")
        remove-newlines))
 
-(defsystem ^:private op-value-text)
+(defmulti ^:private op-value-text (fn [[k]]
+                                    k))
 
 (defmethod op-value-text :op/inc
   [[_ value]]

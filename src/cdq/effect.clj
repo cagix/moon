@@ -1,9 +1,11 @@
-(ns cdq.effect
-  (:require [cdq.utils :refer [defsystem]]))
+(ns cdq.effect)
 
-(defsystem applicable?)
+(defmulti applicable? (fn [[k] effect-ctx]
+                        k))
 
-(defsystem handle)
+(defmulti handle (fn [[k] effect-ctx context]
+                   k))
 
-(defsystem useful?)
+(defmulti useful? (fn [[k] effect-ctx context]
+                    k))
 (defmethod useful? :default [_ _effect-ctx context] true)

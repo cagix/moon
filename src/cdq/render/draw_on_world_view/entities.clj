@@ -5,7 +5,7 @@
             [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]
             [cdq.line-of-sight :as los]
-            [cdq.utils :refer [pretty-pst defsystem sort-by-order]]
+            [cdq.utils :refer [pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
             [cdq.world :refer [render-z-order
                                draw-body-rect
@@ -117,7 +117,8 @@
                          :else
                          neutral-color)))))
 
-(defsystem render-effect)
+(defmulti render-effect (fn [[k] _effect-ctx context]
+                          k))
 (defmethod render-effect :default [_ _effect-ctx context])
 
 (defn- render-active-effect [context effect-ctx effect]
