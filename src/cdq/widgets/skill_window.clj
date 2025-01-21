@@ -28,7 +28,7 @@
                                    button (image-button ; TODO reuse actionbar button scale?
                                                         (:entity/image (db/build c id)) ; TODO here anyway taken
                                                         ; => should probably build this window @ game start
-                                                        (fn []
+                                                        (fn [context]
                                                           (state/clicked-skillmenu-skill
                                                            (entity/state-obj @player-eid)
                                                            (db/build c id)

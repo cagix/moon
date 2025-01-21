@@ -17,7 +17,7 @@
                                                            [new-state-k eid params]
                                                            [new-state-k eid])
                                                          c)]
-               entity-states (:context/entity-states c)]
+               entity-states (:context/entity-components c)]
            (when (:entity/player? @eid)
              (when-let [cursor (get-in entity-states [new-state-k :cursor])]
                (cdq.graphics/set-cursor c cursor)))

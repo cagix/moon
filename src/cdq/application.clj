@@ -10,7 +10,7 @@
   (run! #(stage/add-actor stage %) new-actors))
 
 (def create-components
-  '[[:context/entity-states             cdq.create.entity-states]
+  '[[:context/entity-components         cdq.create.entity-components]
     [:cdq/effects                       cdq.create.effects]
     [:cdq/schemas                       cdq.create.schemas]
     [:cdq/db                            cdq.create.db]

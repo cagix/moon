@@ -1,4 +1,4 @@
-(ns cdq.create.entity-states
+(ns cdq.create.entity-components
   (:require [cdq.audio :as audio]
             [cdq.utils :refer [defcomponent]]
             [cdq.timer :as timer]
