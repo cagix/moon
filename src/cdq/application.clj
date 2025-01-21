@@ -12,6 +12,7 @@
 (def create-components
   ; remove components !
   '[[:cdq/entity-states                 cdq.create.entity.state]
+    [:context/entity-states             cdq.create.entity-states]
     [:cdq/effects                       cdq.create.effects]
 
     [:cdq/schemas                       cdq.create.schemas]

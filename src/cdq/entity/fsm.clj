@@ -10,13 +10,6 @@
 (defsystem exit)
 (defmethod exit :default [_ c])
 
-(def state->cursor
-  {:active-skill          :cursors/sandclock
-   :player-dead           :cursors/black-x
-   :player-item-on-cursor :cursors/hand-grab
-   :player-moving         :cursors/walking
-   :stunned               :cursors/denied})
-
 (defn event
   ([c eid event*]
    (event c eid event* nil))
@@ -32,7 +25,7 @@
                                                            [new-state-k eid])
                                                          c)]]
            (when (:entity/player? @eid)
-             (when-let [cursor (state->cursor new-state-k)]
+             (when-let [cursor (get-in c [:context/entity-states new-state-k :cursor])]
                (cdq.graphics/set-cursor c cursor)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
