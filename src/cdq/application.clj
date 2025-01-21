@@ -10,15 +10,11 @@
   (run! #(stage/add-actor stage %) new-actors))
 
 (def create-components
-  ; remove components !
-  '[[:cdq/entity-states                 cdq.create.entity.state]
-    [:context/entity-states             cdq.create.entity-states]
+  '[[:context/entity-states             cdq.create.entity-states]
     [:cdq/effects                       cdq.create.effects]
-
     [:cdq/schemas                       cdq.create.schemas]
     [:cdq/db                            cdq.create.db]
     [:cdq/assets                        cdq.create.assets]
-    ; naming?
     [:cdq.graphics/batch                cdq.create.batch]
     [:cdq.graphics/shape-drawer-texture cdq.create.shape-drawer-texture]
     [:cdq.graphics/shape-drawer         cdq.create.shape-drawer]
