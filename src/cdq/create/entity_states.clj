@@ -12,7 +12,9 @@
                                show-modal]]))
 
 (defn create [_context]
-  {:active-skill          {:cursor :cursors/sandclock
+  {:player-idle           {:pause-game? true}
+   :active-skill          {:pause-game? false
+                           :cursor :cursors/sandclock
                            :enter (fn [[_ {:keys [eid skill]}]
                                        {:keys [cdq.context/elapsed-time] :as c}]
                                     (audio/play (:skill/start-action-sound skill))
@@ -23,7 +25,8 @@
                                     (when (and (:skill/cost skill)
                                                (not (zero? (:skill/cost skill))))
                                       (swap! eid entity/pay-mana-cost (:skill/cost skill))))}
-   :player-dead           {:cursor :cursors/black-x
+   :player-dead           {:pause-game? true
+                           :cursor :cursors/black-x
                            :enter (fn [[_ {:keys [tx/sound
                                                   modal/title
                                                   modal/text
@@ -34,7 +37,8 @@
                                                    :text text
                                                    :button-text button-text
                                                    :on-click (fn [])}))}
-   :player-item-on-cursor {:cursor :cursors/hand-grab
+   :player-item-on-cursor {:pause-game? true
+                           :cursor :cursors/hand-grab
                            :enter (fn [[_ {:keys [eid item]}] c]
                                     (swap! eid assoc :entity/item-on-cursor item))
                            :exit (fn [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
@@ -49,13 +53,15 @@
                                        (spawn-item c
                                                    (item-place-position c entity)
                                                    (:entity/item-on-cursor entity)))))}
-   :player-moving         {:cursor :cursors/walking
+   :player-moving         {:pause-game? false
+                           :cursor :cursors/walking
                            :enter (fn [[_ {:keys [eid movement-vector]}] c]
                                     (swap! eid assoc :entity/movement {:direction movement-vector
                                                                        :speed (entity/stat @eid :entity/movement-speed)}))
                            :exit (fn [[_ {:keys [eid]}] c]
                                    (swap! eid dissoc :entity/movement))}
-   :stunned               {:cursor :cursors/denied}
+   :stunned               {:pause-game? false
+                           :cursor :cursors/denied}
    :npc-dead              {:enter (fn [[_ {:keys [eid]}] c]
                                     (swap! eid assoc :entity/destroyed? true))}
    :npc-moving            {:enter (fn [[_ {:keys [eid movement-vector]}] c]
