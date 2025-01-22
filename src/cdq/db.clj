@@ -1,7 +1,6 @@
 (ns cdq.db
   (:refer-clojure :exclude [update])
   (:require [clojure.pprint :refer [pprint]]
-            [cdq.utils :refer [safe-get]]
             [cdq.schema :as schema]
             [cdq.property :as property]))
 
@@ -12,15 +11,6 @@
                         (recur-sort-map %)
                         %)
                      (vals m)))))
-
-; reduce-kv?
-(defn- apply-kvs
-  "Calls for every key in map (f k v) to calculate new value at k."
-  [m f]
-  (reduce (fn [m k]
-            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
-          m
-          (keys m)))
 
 (defn- async-pprint-spit! [file data]
   (.start
@@ -53,49 +43,8 @@
   {:pre [(contains? data property-id)]}
   (clojure.core/update db dissoc :db/data property-id)) ; dissoc-in ?
 
-(defn get-raw [{:keys [db/data]} id]
-  (safe-get data id))
-
-(defn all-raw [{:keys [db/data]} type]
-  (->> (vals data)
-       (filter #(= type (property/type %)))))
-
-(defmulti edn->value (fn [schema v db _c]
-                       (when schema  ; undefined-data-ks
-                         (schema/type schema))))
-
-(defmethod edn->value :default [_schema v db _c]
-  v)
-
-#_(def ^:private undefined-data-ks (atom #{}))
-
-(comment
- #{:frames
-   :looping?
-   :frame-duration
-   :file ; => this is texture ... convert that key itself only?!
-   :sub-image-bounds})
-
-(defn build* [{:keys [cdq/schemas] :as c} db property]
-  (apply-kvs property
-             (fn [k v]
-               (let [schema (try (schema/schema-of schemas k)
-                                 (catch Throwable _t
-                                   #_(swap! undefined-data-ks conj k)
-                                   nil))
-                     v (if (map? v)
-                         (build* c db v)
-                         v)]
-                 (try (edn->value schema v db c)
-                      (catch Throwable t
-                        (throw (ex-info " " {:k k :v v} t))))))))
-
-; <- fetch ... ? & fetch-raw ? or fetch&build?!
-; or just 'get' ... actually ....
-; that textures/relationships get cnverted is normal
-(defn build [db id c]
-  (build* c db (get-raw db id)))
-
-(defn build-all [db property-type c]
-  (map (partial build* c db)
-       (all-raw db property-type)))
+(defprotocol DB
+  (get-raw [_ id])
+  (all-raw [_ property-type])
+  (build [_ id context])
+  (build-all [_ property-type context]))
