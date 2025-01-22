@@ -1,9 +1,12 @@
 (ns cdq.create.effects
-  (:require [cdq.audio :as audio]
+  ; EACH DEPENDENCY SHOULD ONLY DEPEND ON WHAT IS USED
+  ; e.g. audio -> nothing else behind
+  ; db/build -> depending on so much shit !!!!
+  (:require [cdq.audio :as audio] ; ok
             [cdq.db :as db]
-            [cdq.timer :as timer]
-            [cdq.effect :as effect]
-            [cdq.effect-context :as effect-ctx]
+            [cdq.timer :as timer] ; ok
+            [cdq.effect :as effect] ; ok
+            [cdq.effect-context :as effect-ctx] ; -> effect ?
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             [cdq.math.raycaster :as raycaster]
