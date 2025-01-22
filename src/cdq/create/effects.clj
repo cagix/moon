@@ -148,15 +148,15 @@
                             entity-effects)))))
 
 (defcomponent :effects/target-entity
-  (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as ctx}]
+  (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
     (and target
-         (seq (effect-ctx/filter-applicable? ctx entity-effects))))
+         (seq (effect-ctx/filter-applicable? effect-ctx entity-effects))))
 
   (effect/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _c]
     (entity/in-range? @source @target maxrange))
 
   (effect/handle [[_ {:keys [maxrange entity-effects]}]
-                  {:keys [effect/source effect/target] :as ctx}
+                  {:keys [effect/source effect/target] :as effect-ctx}
                   {:keys [cdq/db] :as c}]
     (let [source* @source
           target* @target]
@@ -168,7 +168,7 @@
                        :duration 0.05
                        :color [1 0 0 0.75]
                        :thick? true})
-         (effect-ctx/do-all! c ctx entity-effects))
+         (effect-ctx/do-all! c effect-ctx entity-effects))
         (spawn-audiovisual c
                            (entity/end-point source* target* maxrange)
                            (db/build db :audiovisuals/hit-ground c))))))
