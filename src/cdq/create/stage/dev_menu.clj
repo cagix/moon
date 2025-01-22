@@ -7,7 +7,11 @@
             [cdq.scene2d.group :refer [add-actor!]]
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.utils :refer [readable-number]]
-            [cdq.world :as world])
+            [cdq.world :as world]
+
+            cdq.editor
+            [cdq.stage :as stage]
+            [clojure.string :as str])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; cdq !!
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))
@@ -44,7 +48,7 @@
   (let [app-menu (ui/menu label)]
     (doseq [{:keys [label on-click]} items]
       (PopupMenu/.addItem app-menu (menu-item label (if on-click
-                                                      #(on-click c)
+                                                      #(on-click @cdq.application/state) ;=> change-listener get .application-state @ ui but not sure if it has that or go through actor
                                                       (fn [])))))
     (ui/add-menu menu-bar app-menu)))
 
@@ -91,7 +95,23 @@
            ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
            ; => also world-change should be supported, use component systems
            {:label "Help"
-            :items [{:label help-text}]}]
+            :items [{:label help-text}]}
+           {:label "Objects"
+            :items (for [property-type (sort (filter #(= "properties" (namespace %))
+                                                     (keys (:cdq/schemas c))))]
+                     {:label (str/capitalize (name property-type))
+                      :on-click (fn [context]
+                                  (let [window (ui/window {:title "Edit"
+                                                           :modal? true
+                                                           :close-button? true
+                                                           :center? true
+                                                           :close-on-escape? true})]
+                                    (.add window (cdq.editor/overview-table context
+                                                                            property-type
+                                                                            cdq.editor/edit-property))
+                                    (.pack window)
+                                    (stage/add-actor (:cdq.context/stage context)
+                                                     window)))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn [{:keys [cdq.context/mouseover-eid]}]
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]

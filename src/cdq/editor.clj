@@ -227,7 +227,7 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
-(defn- overview-table [context property-type clicked-id-fn]
+(defn overview-table [context property-type clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
@@ -480,7 +480,7 @@
 
 ; FIXME overview table not refreshed after changes in properties
 
-(defn- edit-property [id]
+(defn edit-property [id]
   (stage-add! (editor-window (db/get-raw (get-db) id))))
 
 (defn- property-types [schemas]
