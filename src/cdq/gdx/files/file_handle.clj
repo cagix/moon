@@ -1,14 +1,15 @@
 (ns cdq.gdx.files.file-handle
-  (:refer-clojure :exclude [list]))
+  (:refer-clojure :exclude [list])
+  (:import com.badlogic.gdx.files.FileHandle))
 
 (defn directory? [fh]
-  (.isDirectory fh))
+  (FileHandle/.isDirectory fh))
 
 (defn list [fh]
-  (.list fh))
+  (FileHandle/.list fh))
 
 (defn extension [fh]
-  (.extension fh))
+  (FileHandle/.extension fh))
 
 (defn path [fh]
-  (.path fh))
+  (FileHandle/.path fh))

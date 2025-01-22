@@ -20,7 +20,7 @@
   (.combined camera))
 
 (defn frustum [camera]
-  (let [frustum-points (take 4 (frustum/plane-points (.frustum camera)))
+  (let [frustum-points (take 4 (frustum/plane-points (.frustum ^Camera camera)))
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))
         bottom-y (apply min (map second frustum-points))
@@ -80,4 +80,4 @@
   (set-zoom camera 1))
 
 (defn inc-zoom [camera by]
-  (set-zoom camera (max 0.1 (+ (.zoom camera) by))))
+  (set-zoom camera (max 0.1 (+ (.zoom ^OrthographicCamera camera) by))))

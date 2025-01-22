@@ -1,4 +1,4 @@
 (ns cdq.audio)
 
 (defn play [this]
-  (.play this))
+  (com.badlogic.gdx.audio.Sound/.play this))
