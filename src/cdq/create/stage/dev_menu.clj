@@ -1,18 +1,8 @@
 (ns cdq.create.stage.dev-menu
-  (:require [clojure.gdx.graphics :as graphics]
-            [cdq.db :as db]
-            cdq.graphics
-            [cdq.graphics.camera :as cam]
-            cdq.graphics.sprite
+  (:require cdq.graphics.sprite
             [cdq.scene2d.group :refer [add-actor!]]
-            [cdq.ui :as ui :refer [ui-actor]]
-            [cdq.utils :refer [readable-number]]
-            [cdq.world :as world]
-
-            cdq.editor
-            [cdq.stage :as stage]
-            [clojure.string :as str])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable) ; cdq !!
+            [cdq.ui :as ui :refer [ui-actor]])
+  (:import (com.badlogic.gdx.scenes.scene2d Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))
 
@@ -62,11 +52,6 @@
     (add-update-labels c menu-bar update-labels)
     menu-bar))
 
-;"Mouseover-Actor: "
-#_(when-let [actor (stage/mouse-on-actor? context)]
-    (str "TRUE - name:" (.getName actor)
-         "id: " (user-object actor)))
-
 (defn table [c config]
   (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu* c config))
                       :expand-x? true
@@ -79,62 +64,5 @@
                       :fill-y? true}]]
              :fill-parent? true}))
 
-(def ^:private help-text
-  "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause")
-
-(defn- dev-menu-config [{:keys [cdq/db] :as c}]
-  {:menus [{:label "World"
-            :items (for [world (db/build-all db :properties/worlds c)]
-                     {:label (str "Start " (:property/id world))
-                      :on-click
-                      (fn [_context])
-                      ;#(world/create % (:property/id world))
-
-                      })}
-           ; TODO fixme does not work because create world uses create-into which checks key is not preseent
-           ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
-           ; => also world-change should be supported, use component systems
-           {:label "Help"
-            :items [{:label help-text}]}
-           {:label "Objects"
-            :items (for [property-type (sort (filter #(= "properties" (namespace %))
-                                                     (keys (:cdq/schemas c))))]
-                     {:label (str/capitalize (name property-type))
-                      :on-click (fn [context]
-                                  (let [window (ui/window {:title "Edit"
-                                                           :modal? true
-                                                           :close-button? true
-                                                           :center? true
-                                                           :close-on-escape? true})]
-                                    (.add window (cdq.editor/overview-table context
-                                                                            property-type
-                                                                            cdq.editor/edit-property))
-                                    (.pack window)
-                                    (stage/add-actor (:cdq.context/stage context)
-                                                     window)))})}]
-   :update-labels [{:label "Mouseover-entity id"
-                    :update-fn (fn [{:keys [cdq.context/mouseover-eid]}]
-                                 (when-let [entity (and mouseover-eid @mouseover-eid)]
-                                   (:entity/id entity)))
-                    :icon "images/mouseover.png"}
-                   {:label "elapsed-time"
-                    :update-fn (fn [{:keys [cdq.context/elapsed-time]}]
-                                 (str (readable-number elapsed-time) " seconds"))
-                    :icon "images/clock.png"}
-                   {:label "paused?"
-                    :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
-                   {:label "GUI"
-                    :update-fn (comp cdq.graphics/mouse-position
-                                     :cdq.graphics/ui-viewport)}
-                   {:label "World"
-                    :update-fn #(mapv int (cdq.graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
-                   {:label "Zoom"
-                    :update-fn #(cam/zoom (:camera (:cdq.graphics/world-viewport %)))
-                    :icon "images/zoom.png"}
-                   {:label "FPS"
-                    :update-fn (fn [_]
-                                 (graphics/frames-per-second))
-                    :icon "images/fps.png"}]})
-
-(defn create [c]
-  (table c (dev-menu-config c)))
+(defn create [dev-menu-config context]
+  (table context (cdq.utils/req-resolve-call dev-menu-config context)))

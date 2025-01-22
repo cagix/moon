@@ -8,7 +8,7 @@
 
 (def config
   '{:skin-scale :x1
-    :actors [(cdq.create.stage.dev-menu/create)
+    :actors [(cdq.create.stage.dev-menu/create (cdq.create.stage.dev-menu.config/create))
              (cdq.create.stage.actionbar/create)
              (cdq.create.stage.hp-mana-bar/create)
              (cdq.create.stage.windows/create [(cdq.create.stage.entity-info-window/create)
