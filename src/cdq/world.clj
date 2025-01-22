@@ -37,6 +37,9 @@
            {:text text
             :counter (timer/create elapsed-time 0.4)})))
 
+; okay we add entity to _the world_
+; so make it 1 data structure with a specific API! !!!
+
 (defn- add-entity [{:keys [cdq.context/content-grid
                            cdq.context/grid
                            cdq.context/entity-ids]} eid]
@@ -134,9 +137,14 @@
                         (safe-merge (-> components
                                         (assoc :entity/id (swap! cnt inc))
                                         (create-vs c)))))]
-      (add-entity c eid)
+      (add-entity c eid) ; no ! we are actually going through the 'context' itself
+      ; context component method -> add entity
+      ; the whole context can react to everything
+      ; thats so cool
+      ; thats also the UI problem itself
+      ; we notify the whole context about something or certain components
       (doseq [component @eid]
-        (create! component eid c))
+        (create! component eid c)) ; world as a component ??
       eid)))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
