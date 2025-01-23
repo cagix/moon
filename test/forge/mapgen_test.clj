@@ -10,8 +10,8 @@
             [clojure.string :as str]
             [clojure.gdx.input :as input]
             [cdq.graphics.camera :as cam]
-            [cdq.tiled :as tiled]
-            [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader]
+            [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
             [cdq.ui :refer [ui-actor text-button] :as ui]
             [cdq.scene2d.group :refer [add-actor!]]))
 
