@@ -1,6 +1,5 @@
 (ns cdq.create.effects
-  (:require [cdq.audio :as audio]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.timer :as timer]
             [cdq.effect :as effect]
             [cdq.effect-context :as effect-ctx]
@@ -16,7 +15,8 @@
                                spawn-creature
                                spawn-projectile
                                line-render
-                               projectile-size]]))
+                               projectile-size]]
+            [clojure.gdx.audio.sound :as sound]))
 
 (defn create [_context]
   :loaded)
@@ -89,7 +89,7 @@
     false)
 
   (effect/handle [[_ sound] _ctx c]
-    (audio/play sound)))
+    (sound/play sound)))
 
 (defcomponent :effects/spawn
   (effect/applicable? [_ {:keys [effect/source effect/target-position]}]

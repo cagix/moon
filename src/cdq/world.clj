@@ -1,7 +1,6 @@
 (ns cdq.world
   (:require cdq.graphics
             [cdq.db :as db]
-            [cdq.audio :as audio]
             [cdq.utils :refer [define-order safe-merge]]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.inventory :as inventory]
@@ -21,7 +20,8 @@
             [cdq.ui :as ui]
             [cdq.scene2d.actor :as actor]
             [cdq.scene2d.group :as group]
-            cdq.time))
+            cdq.time
+            [clojure.gdx.audio.sound :as sound]))
 
 ; this as protocols & impl implements it? same with send-event ?
 ; so we could add those protocols to 'entity'?
@@ -155,7 +155,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [c position {:keys [tx/sound entity/animation]}]
-  (audio/play sound)
+  (sound/play sound)
   (spawn-entity c
                 position
                 effect-body-props

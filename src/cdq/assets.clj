@@ -1,5 +1,5 @@
 (ns cdq.assets
-  (:require [cdq.audio :as audio]))
+  (:require [clojure.gdx.audio.sound :as sound]))
 
 (defn sound [assets sound-name]
   (->> sound-name
@@ -7,4 +7,4 @@
        assets))
 
 (defn play-sound [{:keys [cdq/assets]} sound-name]
-  (audio/play (sound assets sound-name)))
+  (sound/play (sound assets sound-name)))

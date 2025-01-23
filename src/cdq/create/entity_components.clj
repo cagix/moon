@@ -1,6 +1,5 @@
 (ns cdq.create.entity-components
-  (:require [cdq.audio :as audio]
-            [cdq.timer :as timer]
+  (:require [cdq.timer :as timer]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             [cdq.world :refer [delayed-alert
@@ -8,7 +7,8 @@
                                add-skill
                                spawn-item
                                item-place-position
-                               show-modal]]))
+                               show-modal]]
+            [clojure.gdx.audio.sound :as sound]))
 
 (defn create [_context]
   {:player-idle           {:pause-game? true}
@@ -16,7 +16,7 @@
                            :cursor :cursors/sandclock
                            :enter (fn [[_ {:keys [eid skill]}]
                                        {:keys [cdq.context/elapsed-time] :as c}]
-                                    (audio/play (:skill/start-action-sound skill))
+                                    (sound/play (:skill/start-action-sound skill))
                                     (when (:skill/cooldown skill)
                                       (swap! eid assoc-in
                                              [:entity/skills (:property/id skill) :skill/cooling-down?]
@@ -31,7 +31,7 @@
                                                   modal/text
                                                   modal/button-text]}]
                                        c]
-                                    (audio/play sound)
+                                    (sound/play sound)
                                     (show-modal c {:title title
                                                    :text text
                                                    :button-text button-text
@@ -47,7 +47,7 @@
                                    ; on the ground
                                    (let [entity @eid]
                                      (when (:entity/item-on-cursor entity)
-                                       (audio/play place-world-item-sound)
+                                       (sound/play place-world-item-sound)
                                        (swap! eid dissoc :entity/item-on-cursor)
                                        (spawn-item c
                                                    (item-place-position c entity)

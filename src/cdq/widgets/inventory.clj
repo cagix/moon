@@ -1,6 +1,5 @@
 (ns cdq.widgets.inventory
-  (:require [cdq.audio :as audio]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             cdq.graphics
             [cdq.inventory :refer [empty-inventory] :as inventory]
@@ -18,6 +17,7 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
+            [clojure.gdx.audio.sound :as sound]
             [cdq.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
@@ -213,7 +213,7 @@
      (and (not item-in-cell)
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (audio/play item-put-sound)
+      (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item c eid cell item-on-cursor)
       (fsm/event c eid :dropped-item))
@@ -222,7 +222,7 @@
      (and item-in-cell
           (inventory/stackable? item-in-cell item-on-cursor))
      (do
-      (audio/play item-put-sound)
+      (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item c eid cell item-on-cursor)
       (fsm/event c eid :dropped-item))
@@ -231,7 +231,7 @@
      (and item-in-cell
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (audio/play item-put-sound)
+      (sound/play item-put-sound)
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -248,6 +248,6 @@
   [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
-    (audio/play pickup-item-sound)
+    (sound/play pickup-item-sound)
     (fsm/event c eid :pickup-item item)
     (remove-item c eid cell)))
