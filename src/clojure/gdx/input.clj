@@ -1,5 +1,5 @@
 (ns clojure.gdx.input
-  (:require [cdq.interop :refer [k->input-button k->input-key]])
+  (:require [clojure.gdx.interop :refer [k->input-button k->input-key]])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn x []

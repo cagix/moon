@@ -2,7 +2,7 @@
   (:require cdq.graphics.color
             cdq.graphics.shape-drawer
             cdq.graphics.2d.texture-region
-            cdq.interop
+            clojure.gdx.interop
             cdq.math.utils))
 
 (defn create [{:keys [cdq.graphics/batch
@@ -12,7 +12,7 @@
 
 (defn- munge-color ^com.badlogic.gdx.graphics.Color [c]
   (cond (= com.badlogic.gdx.graphics.Color (class c)) c
-        (keyword? c) (cdq.interop/k->color c)
+        (keyword? c) (clojure.gdx.interop/k->color c)
         (vector? c) (apply cdq.graphics.color/create c)
         :else (throw (ex-info "Cannot understand color" c))))
 

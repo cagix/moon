@@ -1,6 +1,6 @@
 (ns cdq.graphics.text
   (:require [cdq.graphics.2d.bitmap-font :as font]
-            [cdq.interop :as interop]
+            [clojure.gdx.interop :as interop]
             [clojure.string :as str]))
 
 (defn- text-height [font text]

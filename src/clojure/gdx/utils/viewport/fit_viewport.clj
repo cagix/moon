@@ -1,5 +1,5 @@
 (ns clojure.gdx.utils.viewport.fit-viewport
-  (:require [cdq.interop :refer [k->viewport-field]])
+  (:require [clojure.gdx.interop :refer [k->viewport-field]])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.utils.viewport FitViewport)))
 

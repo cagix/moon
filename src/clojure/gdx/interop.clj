@@ -1,4 +1,4 @@
-(ns cdq.interop
+(ns clojure.gdx.interop
   (:import (com.badlogic.gdx Input$Buttons
                              Input$Keys)
            (com.badlogic.gdx.graphics Color)
