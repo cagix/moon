@@ -3,7 +3,7 @@
             cdq.graphics.shape-drawer
             cdq.graphics.2d.texture-region
             clojure.gdx.interop
-            cdq.math.utils))
+            [clojure.gdx.math.utils :refer [degree->radians]]))
 
 (defn create [{:keys [cdq.graphics/batch
                       cdq.graphics/shape-drawer-texture]}]
@@ -57,8 +57,8 @@
           (float center-x)
           (float center-y)
           (float radius)
-          (float (cdq.math.utils/degree->radians start-angle))
-          (float (cdq.math.utils/degree->radians degree))))
+          (float (degree->radians start-angle))
+          (float (degree->radians degree))))
 
   (sector [this [center-x center-y] radius start-angle degree color]
     (set-color this color)
@@ -66,8 +66,8 @@
              (float center-x)
              (float center-y)
              (float radius)
-             (float (cdq.math.utils/degree->radians start-angle))
-             (float (cdq.math.utils/degree->radians degree))))
+             (float (degree->radians start-angle))
+             (float (degree->radians degree))))
 
   (rectangle [this x y w h color]
     (set-color this color)

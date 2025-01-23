@@ -1,5 +1,5 @@
 (ns cdq.create.player-eid
-  (:require [cdq.tiled :as tiled]
+  (:require [clojure.gdx.tiled :as tiled]
             [cdq.utils :refer [tile->middle]]
             [cdq.world :refer [spawn-creature]]))
 

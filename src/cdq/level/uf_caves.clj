@@ -3,7 +3,7 @@
             [cdq.graphics.2d.texture-region :as texture-region] ; cdq
             [cdq.rand :refer [get-rand-weighted-item]] ; cdq
             [clojure.data.grid2d :as g2d]
-            [cdq.tiled :as tiled]))
+            [clojure.gdx.tiled :as tiled]))
 
 (def ^:private scaling 4)
 

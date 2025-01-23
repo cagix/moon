@@ -2,7 +2,7 @@
   (:require [cdq.rand :refer [sshuffle srand srand-int]]
             [cdq.utils :refer [assoc-ks]]
             [clojure.data.grid2d :as g2d]
-            [cdq.tiled :as tiled]
+            [clojure.gdx.tiled :as tiled]
             [cdq.property :as property]))
 
 (defn creatures-with-level [creature-properties level]

@@ -2,8 +2,8 @@
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]
             [clojure.data.grid2d :as g2d]
-            [cdq.tiled :as tiled]
-            [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader])) ; cdq.tiled
+            [clojure.gdx.tiled :as tiled]
+            [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)

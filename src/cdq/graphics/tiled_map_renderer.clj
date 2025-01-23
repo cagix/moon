@@ -1,5 +1,5 @@
 (ns cdq.graphics.tiled-map-renderer
-  (:require [cdq.tiled :as tiled])
+  (:require [clojure.gdx.tiled :as tiled])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn- draw* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
