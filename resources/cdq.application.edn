@@ -1,5 +1,5 @@
-[(cdq.application/start {:taskbar-icon "moon.png"
-                         :lwjgl-app{:title "Cyber Dungeon Quest"
+[(clojure.java.awt.taskbar/set-icon "moon.png")
+ (cdq.application/start {:lwjgl-app{:title "Cyber Dungeon Quest"
                                     :windowed-mode {:width 1440
                                                     :height 900}
                                     :foreground-fps 60}

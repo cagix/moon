@@ -3,13 +3,11 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils :as utils]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.java.awt.taskbar :as taskbar]
             [clojure.lwjgl.system.configuration :as configuration]))
 
 (def state (atom nil))
 
 (defn start [config]
-  (taskbar/set-icon (:taskbar-icon config))
   (when (= (utils/operating-system) :mac)
     (configuration/set-glfw-library-name "glfw_async"))
   (lwjgl/application (reify application/Listener
