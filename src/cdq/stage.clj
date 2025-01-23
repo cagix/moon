@@ -11,3 +11,7 @@
 
 (defn root [stage]
   (Stage/.getRoot stage))
+
+#_(defn reset-stage [{:keys [cdq.context/stage]} new-actors]
+  (Stage/.clear stage)
+  (run! #(stage/add-actor stage %) new-actors))

@@ -28,17 +28,6 @@
 (defn execute! [function-invocation-forms]
   (run! req-resolve-call function-invocation-forms))
 
-(defprotocol Disposable
-  (dispose [_]))
-
-(extend-type com.badlogic.gdx.utils.Disposable
-  cdq.utils/Disposable
-  (dispose [this]
-    (.dispose this)))
-
-(defn disposable? [object]
-  (satisfies? Disposable object))
-
 (def overwrite-warnings? false)
 
 (defmacro defcomponent [k & sys-impls]

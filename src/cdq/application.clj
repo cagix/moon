@@ -1,14 +1,10 @@
 (ns cdq.application
-  (:require cdq.utils ; -> clojure.gdx.utils.disposable/dispose
-            clojure.gdx.application
-            clojure.gdx.backends.lwjgl
-            [cdq.gdx.utils.viewport :as viewport] ; ->
-            [clojure.gdx.utils :as gdx.utils]
-            clojure.java.io))
-
-#_(defn reset-stage [{:keys [cdq.context/stage]} new-actors]
-  (Stage/.clear stage)
-  (run! #(stage/add-actor stage %) new-actors))
+  (:require [cdq.gdx.utils.viewport :as viewport]
+            [clojure.gdx.application :as application]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.utils :as utils]
+            [clojure.java.awt.taskbar :as taskbar]
+            [clojure.lwjgl.system.configuration :as configuration]))
 
 (def create-components
   '[[:context/entity-components         cdq.create.entity-components]
@@ -55,58 +51,45 @@
                  cdq.render.camera-controls
                  cdq.render.window-controls]]
     (do
-     ;(println "(require " ns-sym ")")
      (require ns-sym)
      (resolve (symbol (str ns-sym "/render"))))))
 
 (def state (atom nil))
 
 (defn -main []
-  ; Test on mac/linux ?
-  (.setIconImage (java.awt.Taskbar/getTaskbar)
-                 (.getImage (java.awt.Toolkit/getDefaultToolkit)
-                            (clojure.java.io/resource "moon.png")))
-  (when (= (clojure.gdx.utils/operating-system) :mac)
-    (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
-                                            (create [_]
-                                              (reset! state (reduce (fn [context [k ns-sym]]
-                                                                      ;(println "(require " ns-sym ")")
-                                                                      (require ns-sym)
-                                                                      (let [f (resolve (symbol (str ns-sym "/create")))]
-                                                                        (assoc context k (f context))))
-                                                                    {}
-                                                                    create-components)))
+  (taskbar/set-icon "moon.png")
+  (when (= (utils/operating-system) :mac)
+    (configuration/set-glfw-library-name "glfw_async"))
+  (lwjgl/application (reify application/Listener
+                       (create [_]
+                         (reset! state (reduce (fn [context [k ns-sym]]
+                                                 (require ns-sym)
+                                                 (let [f (resolve (symbol (str ns-sym "/create")))]
+                                                   (assoc context k (f context))))
+                                               {}
+                                               create-components)))
 
-                                            (dispose [_]
-                                              (doseq [[k value] @state
-                                                      :when (cdq.utils/disposable? value)]
-                                                ;(println "Disposing " k " - " value)
-                                                (cdq.utils/dispose value)))
+                       (dispose [_]
+                         (doseq [[k value] @state
+                                 :when (utils/disposable? value)]
+                           (utils/dispose value)))
 
-                                            (pause [_])
+                       (pause [_])
 
-                                            (render [_]
-                                              (swap! state (fn [context]
-                                                             (reduce (fn [context f]
-                                                                       (f context))
-                                                                     context
-                                                                     render-fns))))
+                       (render [_]
+                         (swap! state (fn [context]
+                                        (reduce (fn [context f]
+                                                  (f context))
+                                                context
+                                                render-fns))))
 
-                                            (resize [_ width height]
-                                              (let [context @state]
-                                                (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
-                                                (viewport/update (:cdq.graphics/world-viewport context) width height)))
+                       (resize [_ width height]
+                         (let [context @state]
+                           (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
+                           (viewport/update (:cdq.graphics/world-viewport context) width height)))
 
-                                            (resume [_]))
-                                          {:title "Cyber Dungeon Quest"
-                                           :windowed-mode {:width 1440
-                                                           :height 900}
-                                           :foreground-fps 60
-                                           :opengl-emulation {:gl-version :gl20
-                                                              :gles-3-major-version 3
-                                                              :gles-3-minor-version 2}
-                                          ; :taskbar-icon "moon.png"
-                                          ; :mac-osx {:glfw-async? true}
-
-                                           }))
+                       (resume [_]))
+                     {:title "Cyber Dungeon Quest"
+                      :windowed-mode {:width 1440
+                                      :height 900}
+                      :foreground-fps 60}))

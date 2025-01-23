@@ -2,7 +2,8 @@
   (:require cdq.graphics.pixmap
             cdq.utils
             [clojure.gdx.files :as files]
-            [clojure.gdx.graphics :as graphics]))
+            [clojure.gdx.graphics :as graphics]
+            clojure.gdx.utils))
 
 (def config
   {:cursors/bag                   ["bag001"       [0   0]]
@@ -21,9 +22,9 @@
    :cursors/walking               ["walking"      [16 16]]})
 
 (defrecord Cursors []
-  cdq.utils/Disposable
+  clojure.gdx.utils/Disposable
   (dispose [this]
-    (run! cdq.utils/dispose (vals this))))
+    (run! clojure.gdx.utils/dispose (vals this))))
 
 (defn create [_context]
   (map->Cursors
@@ -31,6 +32,6 @@
     (fn [[file [hotspot-x hotspot-y]]]
       (let [pixmap (cdq.graphics.pixmap/create (files/internal (str "cursors/" file ".png")))
             cursor (graphics/new-cursor pixmap hotspot-x hotspot-y)]
-        (cdq.utils/dispose pixmap)
+        (clojure.gdx.utils/dispose pixmap)
         cursor))
     config)))
