@@ -1,12 +1,12 @@
 (ns cdq.info
-  (:require [clojure.math :as math]
-            [clojure.string :as str]
-            [cdq.utils :refer [readable-number sort-by-k-order]]
-            [cdq.gdx.graphics :as graphics]
+  (:require [cdq.entity :as entity]
             [cdq.graphics.color :as color]
             [cdq.timer :as timer]
-            [cdq.entity :as entity]
-            [cdq.operation :as op]))
+            [cdq.operation :as op]
+            [cdq.utils :refer [readable-number sort-by-k-order]]
+            [clojure.gdx.graphics.colors :as colors]
+            [clojure.math :as math]
+            [clojure.string :as str]))
 
 (defn- remove-newlines [s]
   (let [new-s (-> s
@@ -21,7 +21,7 @@
                                    k))
 (defmethod info-segment :default [_ _entity _context])
 
-(graphics/def-color "PRETTY_NAME" (color/create 0.84 0.8 0.52))
+(colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"

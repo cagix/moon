@@ -1,6 +1,6 @@
 (ns cdq.create.world-viewport
   (:require [cdq.graphics.camera :as camera]
-            [cdq.gdx.utils.viewport.fit-viewport :as fit-viewport])
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport])
   (:import (com.badlogic.gdx.graphics OrthographicCamera)))
 
 (def config {:width 1440 :height 900})

@@ -1,9 +1,9 @@
 (ns cdq.graphics
-  (:require [cdq.gdx.utils.viewport :as viewport]
+  (:require [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.graphics :as graphics]
             [cdq.math.utils :refer [clamp]]
             [clojure.gdx.input :as input]
-            [cdq.gdx.utils.viewport :as viewport]
+            [clojure.gdx.utils.viewport :as viewport]
             [cdq.utils :as utils]))
 
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]

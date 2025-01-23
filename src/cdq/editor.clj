@@ -3,7 +3,7 @@
             [cdq.application :refer [state]]
             [cdq.assets :refer [play-sound]]
             [clojure.edn :as edn]
-            [cdq.gdx.assets :as assets]
+            [clojure.gdx.assets :as assets]
             [clojure.gdx.input :as input]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]]

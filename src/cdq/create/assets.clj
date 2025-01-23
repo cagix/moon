@@ -1,7 +1,7 @@
 (ns cdq.create.assets
   (:require [clojure.gdx.files :as files]
-            [cdq.gdx.assets :as assets]
-            [cdq.gdx.files.file-handle :as fh]
+            [clojure.gdx.assets :as assets]
+            [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str]))
 
 (defn create [_context]

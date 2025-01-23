@@ -1,8 +1,8 @@
 (ns cdq.application
-  (:require [cdq.gdx.utils.viewport :as viewport]
-            [clojure.gdx.application :as application]
+  (:require [clojure.gdx.application :as application]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils :as utils]
+            [clojure.gdx.utils.viewport :as viewport]
             [clojure.java.awt.taskbar :as taskbar]
             [clojure.lwjgl.system.configuration :as configuration]))
 
