@@ -14,11 +14,11 @@
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
 
-(defmulti edn->value (fn [schema v db _c]
+(defmulti edn->value (fn [schema v _context]
                        (when schema  ; undefined-data-ks
                          (type schema))))
 
-(defmethod edn->value :default [_schema v db _c]
+(defmethod edn->value :default [_schema v _context]
   v)
 
 (defn schema-of [schemas k]

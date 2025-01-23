@@ -13,7 +13,7 @@
       slurp
       clojure.edn/read-string))
 
-(defmethod schema/edn->value :s/sound [_ sound-name _db {:keys [cdq/assets]}]
+(defmethod schema/edn->value :s/sound [_ sound-name {:keys [cdq/assets]}]
   (cdq.assets/sound assets sound-name))
 
 (defn- edn->sprite [c {:keys [file sub-image-bounds]}]
@@ -29,16 +29,16 @@
                                           c))
     (cdq.graphics.sprite/create c file)))
 
-(defmethod schema/edn->value :s/image [_ edn _db c]
+(defmethod schema/edn->value :s/image [_ edn c]
   (edn->sprite c edn))
 
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} _db c]
+(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} c]
   (cdq.graphics.animation/create (map #(edn->sprite c %) frames)
                                      :frame-duration frame-duration
                                      :looping? looping?))
 
-(defmethod schema/edn->value :s/one-to-one [_ property-id db {:keys [cdq/db] :as context}]
+(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [cdq/db] :as context}]
   (db/build db property-id context))
 
-(defmethod schema/edn->value :s/one-to-many [_ property-ids db {:keys [cdq/db] :as context}]
+(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [cdq/db] :as context}]
   (set (map #(db/build db % context) property-ids)))

@@ -30,7 +30,7 @@
    :file ; => this is texture ... convert that key itself only?!
    :sub-image-bounds})
 
-(defn build* [{:keys [cdq/schemas] :as c} db property]
+(defn build* [{:keys [cdq/schemas] :as c} property]
   (apply-kvs property
              (fn [k v]
                (let [schema (try (schema/schema-of schemas k)
@@ -38,9 +38,9 @@
                                    #_(swap! undefined-data-ks conj k)
                                    nil))
                      v (if (map? v)
-                         (build* c db v)
+                         (build* c v)
                          v)]
-                 (try (schema/edn->value schema v db c)
+                 (try (schema/edn->value schema v c)
                       (catch Throwable t
                         (throw (ex-info " " {:k k :v v} t))))))))
 
@@ -94,10 +94,10 @@
          (filter #(= property-type (property/type %)))))
 
   (build [this id context]
-    (build* context this (db/get-raw this id)))
+    (build* context (db/get-raw this id)))
 
   (build-all [this property-type context]
-    (map (partial build* context this)
+    (map (partial build* context)
          (db/all-raw this property-type))))
 
 (defn create [{:keys [cdq/schemas]}]
