@@ -5,7 +5,7 @@
             [cdq.graphics.camera :as cam]
             [cdq.stage :as stage]
             [cdq.ui :as ui]
-            [cdq.utils :refer [readable-number]]
+            [clojure.utils :refer [readable-number]]
             [clojure.gdx.graphics :as graphics]
             [clojure.string :as str]))
 

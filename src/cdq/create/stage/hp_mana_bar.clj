@@ -3,7 +3,7 @@
             [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]
             [cdq.ui :refer [ui-actor]]
-            [cdq.utils :refer [readable-number]]
+            [clojure.utils :refer [readable-number]]
             [cdq.entity :as entity]
             [cdq.val-max :as val-max]))
 

@@ -3,7 +3,7 @@
             [cdq.graphics.color :as color]
             [cdq.timer :as timer]
             [cdq.operation :as op]
-            [cdq.utils :refer [readable-number sort-by-k-order]]
+            [clojure.utils :refer [readable-number sort-by-k-order]]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.math :as math]
             [clojure.string :as str]))

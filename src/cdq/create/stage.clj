@@ -1,6 +1,6 @@
 (ns cdq.create.stage
   (:require [cdq.scene2d.group :as group]
-            [cdq.utils :as utils]
+            [clojure.utils :as utils]
             [clojure.gdx.input :as input])
   (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)

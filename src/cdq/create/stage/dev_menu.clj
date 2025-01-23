@@ -65,4 +65,4 @@
              :fill-parent? true}))
 
 (defn create [dev-menu-config context]
-  (table context (cdq.utils/req-resolve-call dev-menu-config context)))
+  (table context (clojure.utils/req-resolve-call dev-menu-config context)))

@@ -1,7 +1,7 @@
 (ns cdq.error
   (:require [cdq.stage :as stage]
             [cdq.ui :as ui]
-            [cdq.utils :refer [pretty-pst with-err-str]]))
+            [clojure.utils :refer [pretty-pst with-err-str]]))
 
 (defn error-window [{:keys [cdq.context/stage]} throwable]
   (pretty-pst throwable)

@@ -1,6 +1,6 @@
 (ns cdq.create.cursors
   (:require cdq.graphics.pixmap
-            cdq.utils
+            clojure.utils
             [clojure.gdx.files :as files]
             [clojure.gdx.graphics :as graphics]
             clojure.gdx.utils))
@@ -28,7 +28,7 @@
 
 (defn create [_context]
   (map->Cursors
-   (cdq.utils/mapvals
+   (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
       (let [pixmap (cdq.graphics.pixmap/create (files/internal (str "cursors/" file ".png")))
             cursor (graphics/new-cursor pixmap hotspot-x hotspot-y)]

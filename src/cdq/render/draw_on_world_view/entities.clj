@@ -5,7 +5,7 @@
             [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]
             [cdq.line-of-sight :as los]
-            [cdq.utils :refer [pretty-pst sort-by-order]]
+            [clojure.utils :refer [pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
             [cdq.world :refer [render-z-order
                                draw-body-rect

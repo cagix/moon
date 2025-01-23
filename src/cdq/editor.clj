@@ -6,7 +6,7 @@
             [clojure.gdx.assets :as assets]
             [clojure.gdx.input :as input]
             [clojure.string :as str]
-            [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
+            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.property :as property]

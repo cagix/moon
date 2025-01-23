@@ -3,7 +3,7 @@
             [cdq.graphics.color :as color]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.graphics.2d.batch :as batch]
-            [cdq.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (def render-fns
   '[(cdq.render.draw-on-world-view.before-entities/render)

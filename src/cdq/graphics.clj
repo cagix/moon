@@ -4,7 +4,7 @@
             [clojure.gdx.math.utils :refer [clamp]]
             [clojure.gdx.input :as input]
             [clojure.gdx.utils.viewport :as viewport]
-            [cdq.utils :as utils]))
+            [clojure.utils :as utils]))
 
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
   (clojure.gdx.graphics/set-cursor (utils/safe-get cursors cursor-key)))

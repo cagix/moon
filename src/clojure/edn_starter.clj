@@ -1,7 +1,7 @@
 (ns clojure.edn-starter
-  (:require [cdq.utils :as utils]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]))
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.utils :as utils]))
 
 (defn -main [edn-file]
   (-> edn-file

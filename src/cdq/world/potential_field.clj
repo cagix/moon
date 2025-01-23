@@ -1,6 +1,6 @@
 (ns cdq.world.potential-field
   (:require [cdq.math.vector2 :as v]
-            [cdq.utils :refer [utils-positions when-seq]]
+            [clojure.utils :refer [utils-positions when-seq]]
             [cdq.entity :as entity]
             [cdq.grid :refer [rectangle->cells
                               cached-adjacent-cells

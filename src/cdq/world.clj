@@ -1,7 +1,7 @@
 (ns cdq.world
   (:require cdq.graphics
             [cdq.db :as db]
-            [cdq.utils :refer [define-order safe-merge]]
+            [clojure.utils :refer [define-order safe-merge]]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.inventory :as inventory]
             [cdq.timer :as timer]

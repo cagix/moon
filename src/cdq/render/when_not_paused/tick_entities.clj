@@ -11,7 +11,7 @@
             [cdq.timer :as timer]
             [cdq.math.vector2 :as v]
             [cdq.world.potential-field :as potential-field]
-            [cdq.utils :refer [find-first]]
+            [clojure.utils :refer [find-first]]
             [cdq.world :refer [nearest-enemy
                                player-movement-vector
                                friendlies-in-radius

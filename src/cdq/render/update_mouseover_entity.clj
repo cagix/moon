@@ -2,7 +2,7 @@
   (:require cdq.grid
             [cdq.line-of-sight :as los]
             [cdq.stage :as stage]
-            cdq.utils
+            clojure.utils
             cdq.world))
 
 (defn render [{:keys [cdq.context/grid
@@ -16,7 +16,7 @@
                         hits (remove #(= (:z-order @%) :z-order/effect)
                                      (cdq.grid/point->entities grid (cdq.graphics/world-mouse-position world-viewport)))]
                     (->> cdq.world/render-z-order
-                         (cdq.utils/sort-by-order hits #(:z-order @%))
+                         (clojure.utils/sort-by-order hits #(:z-order @%))
                          reverse
                          (filter #(los/exists? c player @%))
                          first)))]

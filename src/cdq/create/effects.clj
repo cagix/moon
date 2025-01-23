@@ -8,7 +8,7 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]]
-            [cdq.utils :refer [defcomponent]]
+            [clojure.utils :refer [defcomponent]]
             [cdq.line-of-sight :as los]
             [cdq.world :refer [add-text-effect
                                spawn-audiovisual

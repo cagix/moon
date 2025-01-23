@@ -2,7 +2,7 @@
   (:require [cdq.grid :as grid]
             [clojure.data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
-            [cdq.utils :refer [tile->middle]]))
+            [clojure.utils :refer [tile->middle]]))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
