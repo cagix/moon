@@ -7,7 +7,7 @@
             [cdq.entity.fsm :as fsm]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
-            [cdq.rand :refer [rand-int-between]]
+            [clojure.rand :refer [rand-int-between]]
             [cdq.utils :refer [defcomponent]]
             [cdq.line-of-sight :as los]
             [cdq.world :refer [add-text-effect

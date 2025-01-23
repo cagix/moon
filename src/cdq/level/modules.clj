@@ -3,7 +3,7 @@
             [cdq.modules :as modules]
             [clojure.data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
-            [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader]))
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)

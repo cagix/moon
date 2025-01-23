@@ -3,7 +3,7 @@
             [cdq.level.uf-caves :as uf-caves]
             [cdq.db :as db]
             [clojure.gdx.tiled :as tiled]
-            [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader]))
+            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))
 
 (defmulti generate-level* (fn [world c] (:world/generator world)))
 
