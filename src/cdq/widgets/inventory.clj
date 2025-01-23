@@ -8,7 +8,7 @@
             [cdq.graphics.shape-drawer :as sd]
             cdq.graphics.sprite
             [cdq.scene2d.actor :refer [user-object] :as actor]
-            [cdq.grid2d :as g2d]
+            [clojure.data.grid2d :as g2d]
             [cdq.ui :refer [ui-widget
                             texture-region-drawable
                             image-widget

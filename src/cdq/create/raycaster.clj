@@ -1,6 +1,6 @@
 (ns cdq.create.raycaster
   (:require [cdq.grid :as grid]
-            [cdq.grid2d :as g2d]))
+            [clojure.data.grid2d :as g2d]))
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]

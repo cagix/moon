@@ -1,5 +1,5 @@
 (ns cdq.create.explored-tile-corners
-  (:require [cdq.grid2d :as g2d]
+  (:require [clojure.data.grid2d :as g2d]
             [cdq.tiled :as tiled]))
 
 (defn create [{:keys [cdq.context/tiled-map]}]

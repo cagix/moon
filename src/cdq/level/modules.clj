@@ -1,7 +1,7 @@
 (ns cdq.level.modules
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]
-            [cdq.grid2d :as g2d]
+            [clojure.data.grid2d :as g2d]
             [cdq.tiled :as tiled]
             [cdq.maps.tiled.tmx-map-loader :as tmx-map-loader])) ; cdq.tiled
 

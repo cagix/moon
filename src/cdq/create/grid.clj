@@ -1,6 +1,6 @@
 (ns cdq.create.grid
   (:require [cdq.grid :as grid]
-            [cdq.grid2d :as g2d]
+            [clojure.data.grid2d :as g2d]
             [cdq.tiled :as tiled]
             [cdq.utils :refer [tile->middle]]))
 

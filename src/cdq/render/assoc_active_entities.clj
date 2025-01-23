@@ -1,5 +1,5 @@
 (ns cdq.render.assoc-active-entities
-  (:require [cdq.grid2d :as g2d]))
+  (:require [clojure.data.grid2d :as g2d]))
 
 (defn- active-entities [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
