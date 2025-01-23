@@ -3,6 +3,7 @@
             clojure.gdx.application
             clojure.gdx.backends.lwjgl
             [cdq.gdx.utils.viewport :as viewport] ; ->
+            [clojure.gdx.utils :as gdx.utils]
             clojure.java.io))
 
 #_(defn reset-stage [{:keys [cdq.context/stage]} new-actors]
@@ -65,8 +66,7 @@
   (.setIconImage (java.awt.Taskbar/getTaskbar)
                  (.getImage (java.awt.Toolkit/getDefaultToolkit)
                             (clojure.java.io/resource "moon.png")))
-  (when (= com.badlogic.gdx.utils.SharedLibraryLoader/os
-           com.badlogic.gdx.utils.Os/MacOsX)
+  (when (= (clojure.gdx.utils/operating-system) :mac)
     (.set org.lwjgl.system.Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
                                             (create [_]
