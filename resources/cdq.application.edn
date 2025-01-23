@@ -1,4 +1,6 @@
 [(clojure.java.awt.taskbar/set-icon "moon.png")
+ (clojure.utils/dispatch (clojure.gdx.utils/operating-system)
+                         {:mac [(clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]})
  (cdq.application/start {:lwjgl-app{:title "Cyber Dungeon Quest"
                                     :windowed-mode {:width 1440
                                                     :height 900}

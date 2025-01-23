@@ -2,14 +2,11 @@
   (:require [clojure.gdx.application :as application]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils :as utils]
-            [clojure.gdx.utils.viewport :as viewport]
-            [clojure.lwjgl.system.configuration :as configuration]))
+            [clojure.gdx.utils.viewport :as viewport]))
 
 (def state (atom nil))
 
 (defn start [config]
-  (when (= (utils/operating-system) :mac)
-    (configuration/set-glfw-library-name "glfw_async"))
   (lwjgl/application (reify application/Listener
                        (create [_]
                          (reset! state (reduce (fn [context [k ns-sym]]
