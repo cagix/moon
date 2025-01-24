@@ -1,5 +1,6 @@
 (ns cdq.world
-  (:require cdq.graphics
+  (:require [cdq.context :as context]
+            cdq.graphics
             [cdq.db :as db]
             [clojure.utils :refer [define-order safe-merge]]
             [cdq.graphics.shape-drawer :as sd]
@@ -9,7 +10,6 @@
             [cdq.widgets.inventory :as widgets.inventory]
             [cdq.fsm :as fsm]
             [cdq.entity :as entity]
-            [cdq.content-grid :as content-grid]
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
             [cdq.scene2d.ui.button-group :as button-group]
@@ -22,30 +22,6 @@
             [cdq.scene2d.group :as group]
             cdq.time
             [clojure.gdx.audio.sound :as sound]))
-
-(defn- add-entity [{:keys [cdq.context/content-grid
-                           cdq.context/grid
-                           cdq.context/entity-ids]} eid]
-  ; https://github.com/damn/core/issues/58
-  ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-  (content-grid/add-entity content-grid eid)
-  (let [id (:entity/id @eid)]
-    (assert (number? id))
-    (swap! entity-ids assoc id eid))
-  (grid/add-entity grid eid))
-
-(defn remove-entity [{:keys [cdq.context/entity-ids]} eid]
-  (content-grid/remove-entity eid)
-  (let [id (:entity/id @eid)]
-    (assert (contains? @entity-ids id))
-    (swap! entity-ids dissoc id))
-  (grid/remove-entity eid))
-
-(defn position-changed [{:keys [cdq.context/content-grid
-                                cdq.context/grid]}
-                        eid]
-  (content-grid/entity-position-changed content-grid eid)
-  (grid/entity-position-changed grid eid))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
@@ -111,7 +87,7 @@
 (defmethod create! :default [_ eid c])
 
 (let [cnt (atom 0)]
-  (defn spawn-entity [c position body components]
+  (defn spawn-entity [context position body components]
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))
     (let [eid (atom (-> body
@@ -119,10 +95,11 @@
                         create-body
                         (safe-merge (-> components
                                         (assoc :entity/id (swap! cnt inc))
-                                        (create-vs c)))))]
-      (add-entity c eid)
+                                        (create-vs context)))))]
+      (doseq [component context]
+        (context/add-entity component eid))
       (doseq [component @eid]
-        (create! component eid c)) ; world as a component ??
+        (create! component eid context))
       eid)))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."

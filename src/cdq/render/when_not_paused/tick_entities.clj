@@ -1,5 +1,6 @@
 (ns cdq.render.when-not-paused.tick-entities
-  (:require [cdq.effect-context :as effect-ctx]
+  (:require [cdq.context :as context]
+            [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             cdq.error
@@ -15,7 +16,6 @@
             [cdq.world :refer [nearest-enemy
                                player-movement-vector
                                friendlies-in-radius
-                               position-changed
                                minimum-size]]))
 
 (defmulti tick! (fn [[k] eid c]
@@ -192,7 +192,7 @@
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
    eid
    {:keys [cdq.context/delta-time
-           cdq.context/grid] :as c}]
+           cdq.context/grid] :as context}]
   (assert (s/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
@@ -206,7 +206,8 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body grid body movement)
                         (move-body body movement))]
-        (position-changed c eid)
+        (doseq [component context]
+          (context/position-changed component eid))
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))
