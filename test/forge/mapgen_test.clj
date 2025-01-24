@@ -11,7 +11,7 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
-            [cdq.scene2d.group :refer [add-actor!]]
+            [clojure.gdx.scenes.scene2d.group :refer [add-actor!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
