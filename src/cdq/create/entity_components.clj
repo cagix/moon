@@ -1,16 +1,22 @@
 (ns cdq.create.entity-components
-  (:require [cdq.timer :as timer]
+  (:require [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
+            [cdq.timer :as timer]
             [cdq.world :refer [delayed-alert
                                add-skill
                                spawn-item
                                item-place-position
-                               show-modal]]
+                               show-modal
+                               spawn-audiovisual]]
             [clojure.gdx.audio.sound :as sound]))
 
 (defn create [_context]
-  {:player-idle           {:pause-game? true}
+  {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]
+                                            (spawn-audiovisual c
+                                                               (:position @eid)
+                                                               (db/build db audiovisuals-id c)))}
+   :player-idle           {:pause-game? true}
    :active-skill          {:pause-game? false
                            :cursor :cursors/sandclock
                            :enter (fn [[_ {:keys [eid skill]}]

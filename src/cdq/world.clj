@@ -306,16 +306,6 @@
   (let [[x y] (:left-bottom entity)]
     (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
-(defmulti destroy! (fn [[k] eid c]
-                     k))
-(defmethod destroy! :default [_ eid c])
-
-(defmethod destroy! :entity/destroy-audiovisual
-  [[_ audiovisuals-id] eid {:keys [cdq/db] :as c}]
-  (spawn-audiovisual c
-                     (:position @eid)
-                     (db/build db audiovisuals-id c)))
-
 (defn player-movement-vector []
   (let [r (when (input/key-pressed? :d) [1  0])
         l (when (input/key-pressed? :a) [-1 0])
