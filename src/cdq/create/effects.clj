@@ -10,8 +10,7 @@
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defcomponent]]
             [cdq.line-of-sight :as los]
-            [cdq.world :refer [add-text-effect
-                               spawn-audiovisual
+            [cdq.world :refer [spawn-audiovisual
                                spawn-creature
                                spawn-projectile
                                line-render
@@ -226,7 +225,7 @@
        nil
 
        (armor-saves? source* target*)
-       (swap! target add-text-effect c "[WHITE]ARMOR")
+       (swap! target entity/add-text-effect c "[WHITE]ARMOR")
 
        :else
        (let [min-max (:damage/min-max (entity/damage source* target* damage))
@@ -237,7 +236,7 @@
                             (:position target*)
                             (db/build db :audiovisuals/damage c))
          (fsm/event c target (if (zero? new-hp-val) :kill :alert))
-         (swap! target add-text-effect c (str "[RED]" dmg-amount "[]")))))))
+         (swap! target entity/add-text-effect c (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
   (effect/applicable? [_ {:keys [effect/target]}]

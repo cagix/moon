@@ -3,7 +3,6 @@
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             [cdq.world :refer [delayed-alert
-                               add-text-effect
                                add-skill
                                spawn-item
                                item-place-position
@@ -73,4 +72,4 @@
                                                   (:position       @eid)
                                                   (:entity/faction @eid)
                                                   0.2)
-                                   (swap! eid add-text-effect c "[WHITE]!"))}})
+                                   (swap! eid entity/add-text-effect c "[WHITE]!"))}})

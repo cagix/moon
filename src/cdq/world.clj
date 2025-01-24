@@ -23,16 +23,6 @@
             cdq.time
             [clojure.gdx.audio.sound :as sound]))
 
-(defn add-text-effect [entity {:keys [cdq.context/elapsed-time]} text]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (:entity/string-effect entity)]
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter #(timer/reset % elapsed-time)))
-           {:text text
-            :counter (timer/create elapsed-time 0.4)})))
-
 (defn- add-entity [{:keys [cdq.context/content-grid
                            cdq.context/grid
                            cdq.context/entity-ids]} eid]
