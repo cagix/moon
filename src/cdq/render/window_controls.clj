@@ -1,7 +1,7 @@
 (ns cdq.render.window-controls
   (:require [clojure.gdx.input :as input]
-            [cdq.scene2d.actor :as actor]
-            [cdq.scene2d.group :as group]))
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]))
 
 (defn render [c]
   (let [window-hotkeys {:inventory-window   :i

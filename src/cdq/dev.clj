@@ -5,7 +5,7 @@
             [cdq.db :as db]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [cdq.scene2d.group :refer [children]]
+            [clojure.gdx.scenes.scene2d.group :refer [children]]
             [cdq.stage :as stage]
             [cdq.ui :refer [t-node scroll-pane] :as ui]
             [cdq.world :as world]))

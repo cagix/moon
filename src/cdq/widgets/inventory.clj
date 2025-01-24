@@ -6,7 +6,7 @@
             [cdq.info :as info]
             [cdq.graphics.shape-drawer :as sd]
             cdq.graphics.sprite
-            [cdq.scene2d.actor :refer [user-object] :as actor]
+            [clojure.gdx.scenes.scene2d.actor :refer [user-object] :as actor]
             [clojure.data.grid2d :as g2d]
             [cdq.ui :refer [ui-widget
                             texture-region-drawable
@@ -18,7 +18,7 @@
              :as ui]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.graphics.color :as color]
-            [cdq.scene2d.ui.utils :as scene2d.utils]))
+            [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...

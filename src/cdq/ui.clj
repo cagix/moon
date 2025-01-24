@@ -1,9 +1,9 @@
 (ns cdq.ui
   (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [cdq.scene2d.actor :as actor]
-            [cdq.scene2d.group :refer [find-actor-with-id add-actor!]]
-            [cdq.scene2d.ui.table :as table]
-            [cdq.scene2d.ui.utils :as scene2d.utils]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :refer [find-actor-with-id add-actor!]]
+            [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils]
             [cdq.vis-ui.widgets.separator :as separator])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)

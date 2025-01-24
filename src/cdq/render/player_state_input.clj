@@ -14,7 +14,7 @@
                                selected-skill]]
             [clojure.gdx.input :as input]
             [cdq.widgets.inventory :as widgets.inventory]
-            [cdq.scene2d.actor :as actor]))
+            [clojure.gdx.scenes.scene2d.actor :as actor]))
 
 (defmulti manual-tick (fn [[k] context]
                         k))

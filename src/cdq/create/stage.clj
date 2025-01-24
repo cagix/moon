@@ -1,5 +1,5 @@
 (ns cdq.create.stage
-  (:require [cdq.scene2d.group :as group]
+  (:require [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.utils :as utils]
             [clojure.gdx.input :as input])
   (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)

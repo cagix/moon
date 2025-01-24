@@ -1,4 +1,4 @@
-(ns cdq.scene2d.actor
+(ns clojure.gdx.scenes.scene2d.actor
   (:refer-clojure :exclude [remove])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.math Vector2)))

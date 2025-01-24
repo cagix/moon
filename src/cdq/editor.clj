@@ -24,10 +24,10 @@
                             text-field
                             add-tooltip!]
              :as ui]
-            [cdq.scene2d.actor :as actor]
-            [cdq.scene2d.group :refer [children clear-children add-actor! find-actor]]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
             [cdq.stage :as stage]
-            [cdq.scene2d.ui.table :as table])
+            [clojure.gdx.scenes.scene2d.ui.table :as table])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- stage-add! [actor]

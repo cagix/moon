@@ -12,14 +12,14 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
-            [cdq.scene2d.ui.button-group :as button-group]
+            [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]
             [cdq.effect-context :as effect-ctx]
             [cdq.stage :as stage]
             [cdq.info :as info]
             [cdq.math.vector2 :as v]
             [cdq.ui :as ui]
-            [cdq.scene2d.actor :as actor]
-            [cdq.scene2d.group :as group]
+            [clojure.gdx.scenes.scene2d.actor :as actor]
+            [clojure.gdx.scenes.scene2d.group :as group]
             cdq.time
             [clojure.gdx.audio.sound :as sound]))
 
