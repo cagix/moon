@@ -23,10 +23,6 @@
             cdq.time
             [clojure.gdx.audio.sound :as sound]))
 
-; this as protocols & impl implements it? same with send-event ?
-; so we could add those protocols to 'entity'?
-; => also add render stuff
-; so each component is together all stuff (but question is if we have open data)
 (defn add-text-effect [entity {:keys [cdq.context/elapsed-time]} text]
   (assoc entity
          :entity/string-effect
@@ -36,9 +32,6 @@
                (update :counter #(timer/reset % elapsed-time)))
            {:text text
             :counter (timer/create elapsed-time 0.4)})))
-
-; okay we add entity to _the world_
-; so make it 1 data structure with a specific API! !!!
 
 (defn- add-entity [{:keys [cdq.context/content-grid
                            cdq.context/grid
@@ -137,12 +130,7 @@
                         (safe-merge (-> components
                                         (assoc :entity/id (swap! cnt inc))
                                         (create-vs c)))))]
-      (add-entity c eid) ; no ! we are actually going through the 'context' itself
-      ; context component method -> add entity
-      ; the whole context can react to everything
-      ; thats so cool
-      ; thats also the UI problem itself
-      ; we notify the whole context about something or certain components
+      (add-entity c eid)
       (doseq [component @eid]
         (create! component eid c)) ; world as a component ??
       eid)))
