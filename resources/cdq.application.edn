@@ -43,6 +43,9 @@
                                       cdq.render.update-mouseover-entity
                                       cdq.render.update-paused
                                       cdq.render.when-not-paused
+
+                                      ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
                                       cdq.render.remove-destroyed-entities
+
                                       cdq.render.camera-controls
                                       cdq.render.window-controls]})]
