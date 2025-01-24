@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [clojure.gdx.application :as application]
+  (:require [cdq.context :as context]
+            [clojure.gdx.application :as application]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils :as utils]
             [clojure.gdx.utils.viewport :as viewport]))
@@ -13,7 +14,7 @@
                                                  (require ns-sym)
                                                  (let [f (resolve (symbol (str ns-sym "/create")))]
                                                    (assoc context k (f context))))
-                                               {}
+                                               (context/->Context)
                                                (:create-components config))))
 
                        (dispose [_]

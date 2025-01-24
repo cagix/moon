@@ -1,5 +1,7 @@
 (ns cdq.context)
 
+(defrecord Context [])
+
 (defmulti add-entity (fn [[k] _eid]
                        k))
 (defmethod add-entity :default [_ _])
