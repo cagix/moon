@@ -1,32 +1,17 @@
 (ns cdq.create.default-font
-  (:require [clojure.gdx.files :as files])
-  (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
-                                                   FreeTypeFontGenerator$FreeTypeFontParameter)))
+  (:require [clojure.gdx.files :as files]
+            [clojure.gdx.graphics.g2d.freetype :as freetype]))
 
 (def config
   {:file "fonts/exocet/films.EXL_____.ttf"
    :size 16
    :quality-scaling 2})
 
-(defn- ttf-params [size quality-scaling]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) (* size quality-scaling))
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- generate-font [{:keys [file size quality-scaling]}]
-  (let [generator (FreeTypeFontGenerator. file)
-        font (.generateFont generator (ttf-params size quality-scaling))]
-    (.dispose generator)
+(defn create [_context]
+  (let [{:keys [file size quality-scaling]} config
+        font (freetype/generate-font (files/internal file)
+                                     {:size (* size quality-scaling)})]
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
-
-(defn create [_context]
-  (generate-font (update config :file #(files/internal %))))
