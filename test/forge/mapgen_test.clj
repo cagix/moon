@@ -4,16 +4,16 @@
             cdq.error
             [cdq.db :as db]
             [cdq.modules :as modules]
-            [cdq.graphics.color :as color]
             [cdq.graphics.shape-drawer :as sd]
-            [clojure.pprint :refer [pprint]]
-            [clojure.string :as str]
-            [clojure.gdx.input :as input]
             [cdq.graphics.camera :as cam]
+            [cdq.ui :refer [ui-actor text-button] :as ui]
+            [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.input :as input]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
-            [cdq.ui :refer [ui-actor text-button] :as ui]
-            [cdq.scene2d.group :refer [add-actor!]]))
+            [cdq.scene2d.group :refer [add-actor!]]
+            [clojure.string :as str]
+            [clojure.pprint :refer [pprint]]))
 
 (def state (atom nil))
 

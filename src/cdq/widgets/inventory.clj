@@ -4,7 +4,6 @@
             cdq.graphics
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
-            [cdq.graphics.color :as color]
             [cdq.graphics.shape-drawer :as sd]
             cdq.graphics.sprite
             [cdq.scene2d.actor :refer [user-object] :as actor]
@@ -18,6 +17,7 @@
                             remove-tooltip!]
              :as ui]
             [clojure.gdx.audio.sound :as sound]
+            [clojure.gdx.graphics.color :as color]
             [cdq.scene2d.ui.utils :as scene2d.utils]))
 
 ; Items are also smaller than 48x48 all of them

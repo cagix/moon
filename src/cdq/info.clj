@@ -1,12 +1,12 @@
 (ns cdq.info
   (:require [cdq.entity :as entity]
-            [cdq.graphics.color :as color]
             [cdq.timer :as timer]
             [cdq.operation :as op]
-            [clojure.utils :refer [readable-number sort-by-k-order]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.colors :as colors]
             [clojure.math :as math]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.utils :refer [readable-number sort-by-k-order]]))
 
 (defn- remove-newlines [s]
   (let [new-s (-> s

@@ -1,8 +1,7 @@
 (ns cdq.create.shape-drawer
-  (:require cdq.graphics.color
-            cdq.graphics.shape-drawer
+  (:require cdq.graphics.shape-drawer
             cdq.graphics.2d.texture-region
-            clojure.gdx.interop
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.math.utils :refer [degree->radians]]))
 
 (defn create [{:keys [cdq.graphics/batch
@@ -10,14 +9,8 @@
   (space.earlygrey.shapedrawer.ShapeDrawer. batch
                                             (cdq.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))
 
-(defn- munge-color ^com.badlogic.gdx.graphics.Color [c]
-  (cond (= com.badlogic.gdx.graphics.Color (class c)) c
-        (keyword? c) (clojure.gdx.interop/k->color c)
-        (vector? c) (apply cdq.graphics.color/create c)
-        :else (throw (ex-info "Cannot understand color" c))))
-
 (defn- set-color [shape-drawer color]
-  (space.earlygrey.shapedrawer.ShapeDrawer/.setColor shape-drawer (munge-color color)))
+  (space.earlygrey.shapedrawer.ShapeDrawer/.setColor shape-drawer (color/munge color)))
 
 (extend-type space.earlygrey.shapedrawer.ShapeDrawer
   cdq.graphics.shape-drawer/ShapeDrawer

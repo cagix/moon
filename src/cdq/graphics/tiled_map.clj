@@ -1,6 +1,6 @@
 (ns cdq.graphics.tiled-map
-  (:require [cdq.graphics.color :as color]
-            [cdq.math.raycaster :as raycaster]))
+  (:require [cdq.math.raycaster :as raycaster]
+            [clojure.gdx.graphics.color :as color]))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 

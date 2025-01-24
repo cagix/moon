@@ -1,5 +1,5 @@
 (ns cdq.graphics.batch
-  (:require [cdq.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
             [cdq.graphics.2d.batch :as batch]))
 
 (defn- unit-dimensions [image unit-scale]

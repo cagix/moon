@@ -1,8 +1,8 @@
 (ns cdq.render.draw-on-world-view
   (:require [cdq.graphics.camera :as camera]
-            [cdq.graphics.color :as color]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.graphics.2d.batch :as batch]
+            [clojure.gdx.graphics.color :as color]
             [clojure.utils :as utils]))
 
 (def render-fns
