@@ -1,13 +1,13 @@
 (ns cdq.create.shape-drawer-texture
-  (:require cdq.graphics.pixmap
-            cdq.graphics.texture
-            [clojure.gdx.graphics.color :as color]
+  (:require [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.pixmap :as pixmap]
+            [clojure.gdx.graphics.texture :as texture]
             clojure.gdx.utils))
 
 (defn create [_context]
-  (let [pixmap (doto (cdq.graphics.pixmap/create 1 1 cdq.graphics.pixmap/format-RGBA8888)
-                 (cdq.graphics.pixmap/set-color color/white)
-                 (cdq.graphics.pixmap/draw-pixel 0 0))
-        texture (cdq.graphics.texture/create pixmap)]
+  (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
+                 (pixmap/set-color color/white)
+                 (pixmap/draw-pixel 0 0))
+        texture (texture/create pixmap)]
     (clojure.gdx.utils/dispose pixmap)
     texture))
