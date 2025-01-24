@@ -1,13 +1,13 @@
 (ns cdq.create.shape-drawer
   (:require cdq.graphics.shape-drawer
-            cdq.graphics.2d.texture-region
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.math.utils :refer [degree->radians]]))
 
 (defn create [{:keys [cdq.graphics/batch
                       cdq.graphics/shape-drawer-texture]}]
   (space.earlygrey.shapedrawer.ShapeDrawer. batch
-                                            (cdq.graphics.2d.texture-region/create shape-drawer-texture 1 0 1 1)))
+                                            (texture-region/create shape-drawer-texture 1 0 1 1)))
 
 (defn- set-color [shape-drawer color]
   (space.earlygrey.shapedrawer.ShapeDrawer/.setColor shape-drawer (color/munge color)))

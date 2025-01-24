@@ -1,5 +1,5 @@
 (ns cdq.graphics.text
-  (:require [cdq.graphics.2d.bitmap-font :as font]
+  (:require [clojure.gdx.graphics.g2d.bitmap-font :as font]
             [clojure.gdx.interop :as interop]
             [clojure.string :as str]))
 

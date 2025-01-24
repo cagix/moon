@@ -1,6 +1,6 @@
 (ns cdq.graphics.batch
   (:require [clojure.gdx.graphics.color :as color]
-            [cdq.graphics.2d.batch :as batch]))
+            [clojure.gdx.graphics.g2d.batch :as batch]))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)

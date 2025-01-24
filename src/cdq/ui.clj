@@ -1,5 +1,5 @@
 (ns cdq.ui
-  (:require [cdq.graphics.2d.texture-region :as texture-region]
+  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [cdq.scene2d.actor :as actor]
             [cdq.scene2d.group :refer [find-actor-with-id add-actor!]]
             [cdq.scene2d.ui.table :as table]
