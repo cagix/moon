@@ -1,6 +1,5 @@
 (ns cdq.dev
   (:require [cdq.application :as app]
-            [cdq.editor :as editor]
             cdq.graphics
             [cdq.db :as db]
             [clojure.string :as str]
@@ -15,16 +14,6 @@
 
 (comment
 
- ; This 'app-values-tree'
- ; could be outside of the application
- ; together with cdq.dev-loop ?
- ; 'cdq.dev' ?
- ; javafx app
- ; hooks into your application
- ; and show a tree view there ...
-
-
- (post-runnable show-obj-editor!)
  (print-app-values-tree "app-values-tree.clj" #{"cdq"})
 
  ; use post-runnable to get proper error messages in console
@@ -235,10 +224,6 @@
   (stage/add-actor (:cdq.context/stage @app/state)
                    (scroll-pane-window title
                                        (generate-tree m))))
-
-(defn- show-obj-editor! [context]
-  (stage/add-actor (:cdq.context/stage context)
-                   (editor/tabs-table context)))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))
