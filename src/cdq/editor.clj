@@ -2,13 +2,9 @@
   (:require cdq.error
             [cdq.application :refer [state]]
             [cdq.assets :refer [play-sound]]
-            [clojure.edn :as edn]
-            [clojure.gdx.assets :as assets]
-            [clojure.gdx.input :as input]
-            [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [cdq.db :as db]
             [cdq.schema :as schema]
+            [cdq.stage :as stage]
             [cdq.property :as property]
             [cdq.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
@@ -24,10 +20,14 @@
                             text-field
                             add-tooltip!]
              :as ui]
+            [clojure.edn :as edn]
+            [clojure.gdx.assets :as assets]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [cdq.stage :as stage]
-            [clojure.gdx.scenes.scene2d.ui.table :as table])
+            [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.string :as str]
+            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- stage-add! [actor]
