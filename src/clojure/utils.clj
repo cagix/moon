@@ -5,6 +5,11 @@
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
 
+(comment
+ requiring-resolve
+
+ )
+
 (defn req-resolve [qualified-symbol]
   ;(println "req-resolve" qualified-symbol)
   (require (symbol (namespace qualified-symbol)))
