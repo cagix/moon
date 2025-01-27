@@ -2,10 +2,10 @@
  (clojure.utils/dispatch (clojure.gdx.utils/operating-system)
                          {:mac [(clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]})
  (clojure.core/require cdq.impl.world.spawn-entity)
- (cdq.application/start {:lwjgl-app{:title "Cyber Dungeon Quest"
-                                    :windowed-mode {:width 1440
-                                                    :height 900}
-                                    :foreground-fps 60}
+ (cdq.application/start {:lwjgl-app {:title "Cyber Dungeon Quest"
+                                     :windowed-mode {:width 1440
+                                                     :height 900}
+                                     :foreground-fps 60}
                          :create-components [[:context/entity-components         cdq.create.entity-components]
                                              [:cdq/effects                       cdq.create.effects]
                                              [:cdq/schemas                       cdq.create.schemas]
