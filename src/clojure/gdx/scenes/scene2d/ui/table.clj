@@ -23,3 +23,6 @@
 
 (defn cells [table]
   (Table/.getCells table))
+
+(defn add! [table ^Actor actor]
+  (Table/.add table actor))

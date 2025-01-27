@@ -1,5 +1,5 @@
 (ns clojure.gdx.scenes.scene2d.actor
-  (:refer-clojure :exclude [remove])
+  (:refer-clojure :exclude [remove name])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
            (com.badlogic.gdx.math Vector2)))
 
@@ -46,3 +46,6 @@
   "Removes this actor from its parent, if it has a parent."
   [actor]
   (Actor/.remove actor))
+
+(defn name [actor]
+  (Actor/.getName actor))

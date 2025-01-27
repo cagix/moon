@@ -11,29 +11,30 @@
 
   A Batch works with OpenGL ES 2.0. It will use its own custom shader to draw all provided sprites. You can set your own custom shader via setShader(ShaderProgram).
 
-  A Batch has to be disposed if it is no longer used.")
+  A Batch has to be disposed if it is no longer used."
+  (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
 (defn set-projection-matrix [this projection]
-  (.setProjectionMatrix this projection))
+  (Batch/.setProjectionMatrix this projection))
 
 (defn begin [this]
-  (.begin this))
+  (Batch/.begin this))
 
 (defn end [this]
-  (.end this))
+  (Batch/.end this))
 
 (defn set-color [this color]
-  (.setColor this color))
+  (Batch/.setColor this color))
 
 (defn draw [this texture-region {:keys [x y origin-x origin-y width height scale-x scale-y rotation]}]
-  (.draw this
-         texture-region
-         x
-         y
-         origin-x
-         origin-y
-         width
-         height
-         scale-x
-         scale-y
-         rotation))
+  (Batch/.draw this
+               texture-region
+               x
+               y
+               origin-x
+               origin-y
+               width
+               height
+               scale-x
+               scale-y
+               rotation))

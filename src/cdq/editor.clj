@@ -25,6 +25,7 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
@@ -117,7 +118,7 @@
     (add-actor! window (ui-actor {:act (fn [_]
                                          (when (input/key-just-pressed? :enter)
                                            (save!)))}))
-    (.pack window)
+    (widget-group/pack! window)
     window))
 
 (defmethod schema->widget :default [_ v]
@@ -262,8 +263,8 @@
                             clicked-id-fn (fn [id]
                                             (actor/remove window)
                                             (redo-rows (conj property-ids id)))]
-                        (.add window (overview-table @state property-type clicked-id-fn))
-                        (.pack window)
+                        (table/add! window (overview-table @state property-type clicked-id-fn))
+                        (widget-group/pack! window)
                         (stage-add! window))))]
       (for [property-id property-ids]
         (let [property (db/build (get-db) property-id @state)
@@ -301,8 +302,8 @@
                               clicked-id-fn (fn [id]
                                               (actor/remove window)
                                               (redo-rows id))]
-                          (.add window (overview-table @state property-type clicked-id-fn))
-                          (.pack window)
+                          (table/add! window (overview-table @state property-type clicked-id-fn))
+                          (widget-group/pack! window)
                           (stage-add! window)))))]
       [(when property-id
          (let [property (db/build (get-db) property-id @state)
@@ -406,7 +407,7 @@
                                                            schema
                                                            map-widget-table)])
                        (rebuild-editor-window)))]))
-    (.pack window)
+    (widget-group/pack! window)
     (stage-add! window)))
 
 (defn- interpose-f [f coll]

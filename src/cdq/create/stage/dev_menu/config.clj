@@ -5,15 +5,16 @@
             [cdq.graphics.camera :as cam]
             [cdq.stage :as stage]
             [cdq.ui :as ui]
-            [clojure.utils :refer [readable-number]]
             [clojure.gdx.graphics :as graphics]
-            [clojure.string :as str]))
+            [clojure.gdx.scenes.scene2d.ui.table :as table]
+            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [clojure.string :as str]
+            [clojure.utils :refer [readable-number]]))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (stage/mouse-on-actor? context)]
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
-
 
 (defn create [{:keys [cdq/db] :as c}]
   {:menus [{:label "World"
@@ -39,10 +40,10 @@
                                                            :close-button? true
                                                            :center? true
                                                            :close-on-escape? true})]
-                                    (.add window (cdq.editor/overview-table context
-                                                                            property-type
-                                                                            cdq.editor/edit-property))
-                                    (.pack window)
+                                    (table/add! window (cdq.editor/overview-table context
+                                                                                  property-type
+                                                                                  cdq.editor/edit-property))
+                                    (widget-group/pack! window)
                                     (stage/add-actor (:cdq.context/stage context)
                                                      window)))})}]
    :update-labels [{:label "Mouseover-entity id"

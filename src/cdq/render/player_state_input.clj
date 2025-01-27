@@ -80,7 +80,7 @@
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
   (and (actor/parent actor)
-       (= "inventory-cell" (.getName (actor/parent actor)))
+       (= "inventory-cell" (actor/name (actor/parent actor)))
        (get-in (:entity/inventory @player-eid)
                (actor/user-object (actor/parent actor)))))
 
