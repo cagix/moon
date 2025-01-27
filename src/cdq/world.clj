@@ -8,7 +8,6 @@
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
             [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]
-            [cdq.effect-context :as effect-ctx]
             [cdq.stage :as stage]
             [cdq.info :as info]
             [cdq.math.vector2 :as v]

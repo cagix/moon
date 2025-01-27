@@ -1,10 +1,8 @@
 (ns cdq.create.entity-components
   (:require [cdq.db :as db]
             [cdq.entity :as entity]
-            [cdq.entity.fsm :as fsm]
             [cdq.timer :as timer]
             [cdq.world :refer [delayed-alert
-                               add-skill
                                spawn-item
                                item-place-position
                                show-modal

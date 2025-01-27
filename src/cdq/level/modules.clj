@@ -1,5 +1,5 @@
 (ns cdq.level.modules
-  (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid printgrid cave-grid adjacent-wall-positions flood-fill]]
+  (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]
             [clojure.data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]

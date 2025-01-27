@@ -14,7 +14,6 @@
                             *on-clicked-actor*
                             find-ancestor-window
                             pack-ancestor-window!
-                            scroll-pane
                             image->widget
                             ui-stack
                             text-field

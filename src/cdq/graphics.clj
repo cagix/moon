@@ -1,6 +1,6 @@
 (ns cdq.graphics
   (:require [clojure.gdx.utils.viewport :as viewport]
-            [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.graphics]
             [clojure.gdx.math.utils :refer [clamp]]
             [clojure.gdx.input :as input]
             [clojure.gdx.utils.viewport :as viewport]
