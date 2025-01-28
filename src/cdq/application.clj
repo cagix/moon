@@ -1,33 +1,33 @@
 (ns cdq.application
-  (:require cdq.application.context
-            clojure.gdx.application
-            clojure.gdx.backends.lwjgl
-            clojure.gdx.utils
-            clojure.utils))
+  (:require [cdq.application.context :as context]
+            [clojure.gdx.application :as application]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.utils :refer [operating-system]]
+            [clojure.utils :refer [execute!]]))
 
 (def state (atom nil))
 
 (defn -main []
-  (clojure.utils/execute! (get {:mac '[(clojure.java.awt.taskbar/set-icon "moon.png")
-                                       (clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]}
-                               (clojure.gdx.utils/operating-system)))
-  (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
-                                            (create [_]
-                                              (reset! state (cdq.application.context/create)))
+  (execute! (get {:mac '[(clojure.java.awt.taskbar/set-icon "moon.png")
+                         (clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]}
+                 (operating-system)))
+  (lwjgl/application (reify application/Listener
+                       (create [_]
+                         (reset! state (context/create)))
 
-                                            (dispose [_]
-                                              (cdq.application.context/dispose @state))
+                       (dispose [_]
+                         (context/dispose @state))
 
-                                            (pause [_])
+                       (pause [_])
 
-                                            (render [_]
-                                              (swap! state cdq.application.context/render))
+                       (render [_]
+                         (swap! state context/render))
 
-                                            (resize [_ width height]
-                                              (cdq.application.context/resize @state width height))
+                       (resize [_ width height]
+                         (context/resize @state width height))
 
-                                            (resume [_]))
-                                          {:title "Cyber Dungeon Quest"
-                                           :windowed-mode {:width 1440
-                                                           :height 900}
-                                           :foreground-fps 60}))
+                       (resume [_]))
+                     {:title "Cyber Dungeon Quest"
+                      :windowed-mode {:width 1440
+                                      :height 900}
+                      :foreground-fps 60}))
