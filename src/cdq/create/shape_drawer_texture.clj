@@ -4,7 +4,7 @@
             [clojure.gdx.graphics.texture :as texture]
             clojure.gdx.utils))
 
-(defn create [_context]
+(defn create []
   (let [pixmap (doto (pixmap/create 1 1 pixmap/format-RGBA8888)
                  (pixmap/set-color color/white)
                  (pixmap/draw-pixel 0 0))

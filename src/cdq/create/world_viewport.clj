@@ -5,7 +5,7 @@
 
 (def config {:width 1440 :height 900})
 
-(defn create [{:keys [cdq.graphics/world-unit-scale]}]
+(defn create [world-unit-scale]
   {:pre [world-unit-scale]}
   (let [camera (OrthographicCamera.)
         world-width  (* (:width  config) world-unit-scale)

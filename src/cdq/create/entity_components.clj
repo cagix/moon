@@ -9,7 +9,7 @@
                                spawn-audiovisual]]
             [clojure.gdx.audio.sound :as sound]))
 
-(defn create [_context]
+(defn create []
   {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]
                                             (spawn-audiovisual c
                                                                (:position @eid)

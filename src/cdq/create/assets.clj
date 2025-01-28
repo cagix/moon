@@ -4,7 +4,7 @@
             [clojure.gdx.files.file-handle :as fh]
             [clojure.string :as str]))
 
-(defn create [_context]
+(defn create []
   (assets/create
    (let [folder "resources/"]
      (for [[asset-type extensions] {:sound   #{"wav"}

@@ -7,7 +7,7 @@
             clojure.edn
             clojure.java.io))
 
-(defn create [_context]
+(defn create []
   (-> "schema.edn"
       clojure.java.io/resource
       slurp

@@ -2,7 +2,7 @@
   (:require [cdq.context :as context]
             [clojure.utils :refer [defcomponent]]))
 
-(defn create [_context]
+(defn create []
   (atom {}))
 
 (defcomponent :cdq.context/entity-ids

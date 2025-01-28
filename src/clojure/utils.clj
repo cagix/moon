@@ -33,9 +33,6 @@
 (defn execute! [function-invocation-forms]
   (run! req-resolve-call function-invocation-forms))
 
-(defn dispatch [fn-invoc paths]
-  (execute! (get paths (req-resolve-call fn-invoc))))
-
 (def overwrite-warnings? false)
 
 (defmacro defcomponent [k & sys-impls]

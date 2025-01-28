@@ -4,7 +4,7 @@
 
 (def config {:width 1440 :height 900})
 
-(defn create [_context]
+(defn create []
   (fit-viewport/create (:width  config)
                        (:height config)
                        (OrthographicCamera.)))

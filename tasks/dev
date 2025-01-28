@@ -1,1 +1,1 @@
-lein run -m clojure.dev-loop "(do (require 'clojure.edn-starter) (clojure.edn-starter/-main \"cdq.application.edn\"))"
+lein run -m clojure.dev-loop "(do (require 'cdq.application) (cdq.application/-main))"

@@ -8,7 +8,7 @@
    :size 16
    :quality-scaling 2})
 
-(defn create [_context]
+(defn create []
   (let [{:keys [file size quality-scaling]} config
         ^BitmapFont font (freetype/generate-font (files/internal file)
                                                  {:size (* size quality-scaling)})]

@@ -1,4 +1,4 @@
 (ns cdq.create.player-message)
 
-(defn create [_context]
+(defn create []
   (atom {:duration-seconds 1.5}))

@@ -100,7 +100,7 @@
     (map (partial build* context)
          (db/all-raw this property-type))))
 
-(defn create [{:keys [cdq/schemas]}]
+(defn create [schemas]
   (let [properties-file (io/resource "properties.edn")
         properties (-> properties-file slurp edn/read-string)]
     (validate-properties! properties schemas)

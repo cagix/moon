@@ -24,9 +24,5 @@
   (generate-modules world
                     (db/build-all db :properties/creatures c)))
 
-(defn create [{:keys [cdq/db] :as context}]
-  (generate-level context (db/build db
-                                    :worlds/vampire
-                                    ;:worlds/modules
-                                    ;:worlds/uf-caves
-                                    context)))
+(defn create [{:keys [cdq/db] :as context} world-id]
+  (generate-level context (db/build db world-id context)))

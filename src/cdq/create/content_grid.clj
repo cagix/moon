@@ -14,7 +14,7 @@
    :cell-w cell-size
    :cell-h cell-size})
 
-(defn create [{:keys [cdq.context/tiled-map]}]
+(defn create [tiled-map]
   (create* {:cell-size 16
             :width  (tiled/tm-width  tiled-map)
             :height (tiled/tm-height tiled-map)}))

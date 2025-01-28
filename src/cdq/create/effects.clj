@@ -17,8 +17,18 @@
                                projectile-size]]
             [clojure.gdx.audio.sound :as sound]))
 
-(defn create [_context]
-  :loaded)
+(comment
+ (ns cdq.components.effects.audiovisual)
+
+ (defn applicable? [_ {:keys [effect/target-position]}]
+   target-position)
+
+ (defn useful? [_ _ _c]
+   false)
+
+ (defn handle [[_ audiovisual] {:keys [effect/target-position]} c]
+   (spawn-audiovisual c target-position audiovisual))
+ )
 
 (defcomponent :effects/audiovisual
   (effect/applicable? [_ {:keys [effect/target-position]}]

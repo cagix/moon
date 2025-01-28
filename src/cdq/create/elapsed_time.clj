@@ -1,4 +1,4 @@
 (ns cdq.create.elapsed-time)
 
-(defn create [_context]
+(defn create []
   0)

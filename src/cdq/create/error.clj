@@ -1,4 +1,4 @@
 (ns cdq.create.error)
 
-(defn create [_context]
+(defn create []
   nil)

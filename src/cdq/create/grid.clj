@@ -43,7 +43,7 @@
     :entities #{}
     :occupied #{}}))
 
-(defn create [{:keys [cdq.context/tiled-map]}]
+(defn create [tiled-map]
   (g2d/create-grid
    (tiled/tm-width tiled-map)
    (tiled/tm-height tiled-map)

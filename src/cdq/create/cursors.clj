@@ -26,7 +26,7 @@
   (dispose [this]
     (run! clojure.gdx.utils/dispose (vals this))))
 
-(defn create [_context]
+(defn create []
   (map->Cursors
    (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]

@@ -1,10 +1,12 @@
 (ns cdq.create.stage.dev-menu.config
-  (:require [cdq.db :as db]
+  (:require cdq.application
+            [cdq.db :as db]
             cdq.editor
             cdq.graphics
             [cdq.graphics.camera :as cam]
             [cdq.stage :as stage]
             [cdq.ui :as ui]
+            cdq.world.context
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
@@ -18,13 +20,13 @@
 
 (defn create [{:keys [cdq/db] :as c}]
   {:menus [{:label "World"
-            :items (for [world (db/build-all db :properties/worlds c)]
+            :items (for [world (map (fn [id] (db/build db id c))
+                                    [:worlds/vampire
+                                     :worlds/modules
+                                     :worlds/uf-caves])]
                      {:label (str "Start " (:property/id world))
-                      :on-click
-                      (fn [_context])
-                      ;#(world/create % (:property/id world))
-
-                      })}
+                      :on-click (fn [_context]
+                                  (swap! cdq.application/state cdq.world.context/reset (:property/id world)))})}
            ; TODO fixme does not work because create world uses create-into which checks key is not preseent
            ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
            ; => also world-change should be supported, use component systems

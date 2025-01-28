@@ -1,4 +1,4 @@
 (ns cdq.create.factions-iterations)
 
-(defn create [_context]
+(defn create []
   {:good 15 :evil 5})

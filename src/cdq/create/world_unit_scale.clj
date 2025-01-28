@@ -1,4 +1,4 @@
 (ns cdq.create.world-unit-scale)
 
-(defn create [_context]
+(defn create []
   (float (/ 48)))

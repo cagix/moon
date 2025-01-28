@@ -1,4 +1,4 @@
 (ns cdq.create.potential-fields)
 
-(defn create [_context]
+(defn create []
   (atom nil))
