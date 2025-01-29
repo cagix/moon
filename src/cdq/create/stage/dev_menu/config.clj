@@ -27,9 +27,6 @@
                      {:label (str "Start " (:property/id world))
                       :on-click (fn [_context]
                                   (swap! cdq.application/state cdq.world.context/reset (:property/id world)))})}
-           ; TODO fixme does not work because create world uses create-into which checks key is not preseent
-           ; => look at cleanup-world/reset-state/ (camera not reset - mutable state be careful ! -> create new cameras?!)
-           ; => also world-change should be supported, use component systems
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
