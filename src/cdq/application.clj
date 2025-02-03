@@ -1,30 +1,35 @@
 (ns cdq.application
-  (:require [cdq.application.context :as context]
-            [clojure.gdx.application :as application]
+  (:require [clojure.gdx.application :as application]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.utils :refer [operating-system]]
             [clojure.utils :refer [execute!]]))
 
 (def state (atom nil))
 
-(defn -main []
+(defprotocol Game
+  (create [_])
+  (dispose [_])
+  (render [_])
+  (resize [_ width height]))
+
+(defn start [game]
   (execute! (get {:mac '[(clojure.java.awt.taskbar/set-icon "moon.png")
                          (clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]}
                  (operating-system)))
   (lwjgl/application (reify application/Listener
                        (create [_]
-                         (reset! state (context/create)))
+                         (reset! state (create game)))
 
                        (dispose [_]
-                         (context/dispose @state))
+                         (dispose @state))
 
                        (pause [_])
 
                        (render [_]
-                         (swap! state context/render))
+                         (swap! state render))
 
                        (resize [_ width height]
-                         (context/resize @state width height))
+                         (resize @state width height))
 
                        (resume [_]))
                      {:title "Cyber Dungeon Quest"
