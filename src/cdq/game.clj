@@ -1,15 +1,4 @@
-; what are the 'docking APIs' ?
-; - schema
-; - effects
-; - entity/states
-; - world generation
-; - what is the API for something?
-; -> schemas part of db
-; -> db part of world?
-; schemas comes from 'propertyies' ...
-
-
-(ns cdq.game ; game = context = application ?
+(ns cdq.game
   (:require cdq.application
             [cdq.create.assets :as assets]
             [cdq.create.batch :as batch]
@@ -39,11 +28,12 @@
             [clojure.utils :refer [safe-merge]]))
 
 (def context-keyset
-  ; also :unit-scale added for rendering ..
-  #{:cdq/assets                                             ; all sounds and textures in resources/
-    :cdq/db                                                 ; different properties (item, creature, projectile, world, skill, ? )
-    :cdq/effects                                            ; the effects implementations (skill contains effects )
-    :cdq/schemas                                            ; the schemas of the stuff
+  ; TODO make schema
+  ; missing: :unit-scale added for rendering, :delta-time get added each frame.
+  #{:cdq/assets
+    :cdq/db
+    :cdq/effects
+    :cdq/schemas
     :cdq.context/content-grid
 
     ; delta-time gets added after first frame
@@ -95,7 +85,6 @@
           ui-viewport (ui-viewport/create)
           context (map->Game
                    {:cdq/assets (assets/create)
-                    ;; graphics
                     :cdq.graphics/batch batch
                     :cdq.graphics/cursors (cursors/create)
                     :cdq.graphics/default-font (default-font/create)
@@ -105,12 +94,10 @@
                     :cdq.graphics/ui-viewport ui-viewport
                     :cdq.graphics/world-unit-scale world-unit-scale
                     :cdq.graphics/world-viewport (world-viewport/create world-unit-scale)
-                    ;;
                     :cdq/db (db/create schemas)
                     :context/entity-components (cdq.create.entity-components/create)
                     :cdq/schemas schemas                    ; part of db?
                     :cdq.context/stage (stage/create batch ui-viewport)}) ]
-      ; TODO here need to create itself !
       (cdq.world.context/reset context :worlds/vampire)))
 
   (dispose [context]
@@ -144,13 +131,10 @@
 
   (resize [context width height]
     (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
-    (viewport/update (:cdq.graphics/world-viewport context) width height))
-  )
+    (viewport/update (:cdq.graphics/world-viewport context) width height)))
 
 (defn -main []
   (cdq.application/start (->Game)))
-
-; so the body is part of the game/context/application/world
 
 (defrecord Body [position
                  left-bottom
@@ -247,4 +231,3 @@
   (swap! eid assoc
          k (fsm/create fsm initial-state)
          initial-state (entity/create [initial-state eid] c)))
-
