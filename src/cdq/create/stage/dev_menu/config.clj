@@ -26,6 +26,12 @@
                                      :worlds/uf-caves])]
                      {:label (str "Start " (:property/id world))
                       :on-click (fn [_context]
+                                  ; FIXME SEVERE
+                                  ; passing outdated context!
+                                  ; do not use cdq.application/state in ui contexts -> grep!
+                                  ; (stage .act is called via passing context in the main 'swap!' of the application loop)
+                                  ; (swap! state render)
+                                  ; cdq.render.stage pass .applicationState and return
                                   (swap! cdq.application/state cdq.world.context/reset (:property/id world)))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
