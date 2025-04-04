@@ -78,6 +78,13 @@
 (defrecord Game []
   cdq.application/Game
   (create [_]
+    ; == cdq.game.impl ? - only there all constructoes
+    ; pass just namespace == create-fn ? resolve-require .. doesn't need to know what here
+    ; also cdq.application here inside
+    ; state fix
+    ; & protocols
+    ; & side effect data (article)
+    ; & tests for _all_ namespace everything?
     (let [schemas (schemas/create)
           batch (batch/create)
           shape-drawer-texture (shape-drawer-texture/create)
