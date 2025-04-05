@@ -1,3 +1,5 @@
+; ns should be only in project with its dependencies ... from project.clj ...
+; -> minimal dependencies .... `clojure.gdx` & freetype
 (ns clojure.gdx.graphics.g2d.freetype
   (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator

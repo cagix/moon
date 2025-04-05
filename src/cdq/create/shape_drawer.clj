@@ -4,6 +4,8 @@
             [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.math.utils :refer [degree->radians]]))
 
+; TODO earlygrey only here ... separate project ... no other dependneices?
+
 (defn create [batch shape-drawer-texture]
   (space.earlygrey.shapedrawer.ShapeDrawer. batch
                                             (texture-region/create shape-drawer-texture 1 0 1 1)))

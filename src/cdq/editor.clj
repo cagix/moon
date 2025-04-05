@@ -1,3 +1,6 @@
+; TODO - javafx - ?
+; not needed on deploy stuff ?
+; => parts = editor, modifier, effect, creature, projectile, ... ?
 (ns cdq.editor
   (:require cdq.error
             [cdq.application :refer [state]]
