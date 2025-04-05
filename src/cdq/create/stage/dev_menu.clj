@@ -1,5 +1,6 @@
 (ns cdq.create.stage.dev-menu
-  (:require cdq.graphics.sprite
+  (:require cdq.game
+            cdq.graphics.sprite
             [clojure.gdx.scenes.scene2d.group :refer [add-actor!]]
             [cdq.ui :as ui :refer [ui-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)
@@ -38,7 +39,7 @@
   (let [app-menu (ui/menu label)]
     (doseq [{:keys [label on-click]} items]
       (PopupMenu/.addItem app-menu (menu-item label (if on-click
-                                                      #(on-click @cdq.application/state) ;=> change-listener get .application-state @ ui but not sure if it has that or go through actor
+                                                      #(on-click @cdq.game/state) ;=> change-listener get .application-state @ ui but not sure if it has that or go through actor
                                                       (fn [])))))
     (ui/add-menu menu-bar app-menu)))
 

@@ -1,6 +1,10 @@
+; == cdq.game.impl ? - only there all constructoes
+; state fix (dependencies to cdq.game/state)
+; & protocols @ render
+; & side effect data (article)
+; & tests for different namespaces//read-only/docs/.... ?
 (ns cdq.game
-  (:require cdq.application
-            [cdq.create.assets :as assets]
+  (:require [cdq.create.assets :as assets]
             [cdq.create.batch :as batch]
             [cdq.create.cursors :as cursors]
             [cdq.create.default-font :as default-font]
@@ -23,77 +27,96 @@
             [cdq.widgets.inventory :as widgets.inventory]
             [cdq.world :as world]
             cdq.world.context
+            clojure.gdx.application
+            clojure.gdx.backends.lwjgl
             [clojure.gdx.utils :as utils]
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.utils :refer [safe-merge]]))
 
-(defrecord Game []
-  cdq.application/Game
-  (create [_]
-    ; == cdq.game.impl ? - only there all constructoes
-    ; pass just namespace == create-fn ? resolve-require .. doesn't need to know what here
-    ; also cdq.application here inside
-    ; state fix
-    ; & protocols
-    ; & side effect data (article)
-    ; & tests for _all_ namespace everything?
-    (let [schemas (schemas/create)
-          batch (batch/create)
-          shape-drawer-texture (shape-drawer-texture/create)
-          world-unit-scale (world-unit-scale/create)
-          ui-viewport (ui-viewport/create)
-          context (map->Game
-                   {:cdq/assets (assets/create)
-                    :cdq.graphics/batch batch
-                    :cdq.graphics/cursors (cursors/create)
-                    :cdq.graphics/default-font (default-font/create)
-                    :cdq.graphics/shape-drawer (shape-drawer/create batch shape-drawer-texture)
-                    :cdq.graphics/shape-drawer-texture shape-drawer-texture
-                    :cdq.graphics/tiled-map-renderer (tiled-map-renderer/create batch world-unit-scale)
-                    :cdq.graphics/ui-viewport ui-viewport
-                    :cdq.graphics/world-unit-scale world-unit-scale
-                    :cdq.graphics/world-viewport (world-viewport/create world-unit-scale)
-                    :cdq/db (db/create schemas)
-                    :context/entity-components (cdq.create.entity-components/create)
-                    :cdq/schemas schemas                    ; part of db?
-                    :cdq.context/stage (stage/create batch ui-viewport)}) ]
-      (cdq.world.context/reset context :worlds/vampire)))
+(defrecord Game [])
 
-  (dispose [context]
-    (doseq [[_k value] context
-            :when (utils/disposable? value)]
-      (utils/dispose value)))
+(defn- create-game []
+  (let [schemas (schemas/create)
+        batch (batch/create)
+        shape-drawer-texture (shape-drawer-texture/create)
+        world-unit-scale (world-unit-scale/create)
+        ui-viewport (ui-viewport/create)
+        context (map->Game
+                 {:cdq/assets (assets/create)
+                  :cdq.graphics/batch batch
+                  :cdq.graphics/cursors (cursors/create)
+                  :cdq.graphics/default-font (default-font/create)
+                  :cdq.graphics/shape-drawer (shape-drawer/create batch shape-drawer-texture)
+                  :cdq.graphics/shape-drawer-texture shape-drawer-texture
+                  :cdq.graphics/tiled-map-renderer (tiled-map-renderer/create batch world-unit-scale)
+                  :cdq.graphics/ui-viewport ui-viewport
+                  :cdq.graphics/world-unit-scale world-unit-scale
+                  :cdq.graphics/world-viewport (world-viewport/create world-unit-scale)
+                  :cdq/db (db/create schemas)
+                  :context/entity-components (cdq.create.entity-components/create)
+                  :cdq/schemas schemas                    ; part of db?
+                  :cdq.context/stage (stage/create batch ui-viewport)}) ]
+    (cdq.world.context/reset context :worlds/vampire)))
 
-  (render [context]
-    (reduce (fn [context f]
-              (f context))
-            context
-            (for [ns-sym '[cdq.render.assoc-active-entities
-                           cdq.render.set-camera-on-player
-                           cdq.render.clear-screen
-                           cdq.render.tiled-map
-                           cdq.render.draw-on-world-view
-                           cdq.render.stage
-                           cdq.render.player-state-input
-                           cdq.render.update-mouseover-entity
-                           cdq.render.update-paused
-                           cdq.render.when-not-paused
+(defn- dispose-game [context]
+  (doseq [[_k value] context
+          :when (utils/disposable? value)]
+    (utils/dispose value)))
 
-                           ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                           cdq.render.remove-destroyed-entities
+(defn- render-game [context]
+  (reduce (fn [context f]
+            (f context))
+          context
+          (for [ns-sym '[cdq.render.assoc-active-entities
+                         cdq.render.set-camera-on-player
+                         cdq.render.clear-screen
+                         cdq.render.tiled-map
+                         cdq.render.draw-on-world-view
+                         cdq.render.stage
+                         cdq.render.player-state-input
+                         cdq.render.update-mouseover-entity
+                         cdq.render.update-paused
+                         cdq.render.when-not-paused
 
-                           cdq.render.camera-controls
-                           cdq.render.window-controls]]
-              (do
-               (require ns-sym)
-               (resolve (symbol (str ns-sym "/render")))))))
+                         ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                         cdq.render.remove-destroyed-entities
 
-  (resize [context width height]
-    (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
-    (viewport/update (:cdq.graphics/world-viewport context) width height)))
+                         cdq.render.camera-controls
+                         cdq.render.window-controls]]
+            (do
+             (require ns-sym)
+             (resolve (symbol (str ns-sym "/render")))))))
+
+(defn- resize-game [context width height]
+  (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
+  (viewport/update (:cdq.graphics/world-viewport context) width height))
+
+(def state (atom nil))
 
 (defn -main []
-  (cdq.application/start (->Game)))
+  (clojure.utils/execute! (get {:mac '[(clojure.java.awt.taskbar/set-icon "moon.png")
+                                       (clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]}
+                               (clojure.gdx.utils/operating-system)))
+  (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
+                                            (create [_]
+                                              (reset! state (create-game)))
+
+                                            (dispose [_]
+                                              (dispose-game @state))
+
+                                            (pause [_])
+
+                                            (render [_]
+                                              (swap! state render-game))
+
+                                            (resize [_ width height]
+                                              (resize-game @state width height))
+
+                                            (resume [_]))
+                                          {:title "Cyber Dungeon Quest"
+                                           :windowed-mode {:width 1440
+                                                           :height 900}
+                                           :foreground-fps 60}))
 
 (defrecord Body [position
                  left-bottom

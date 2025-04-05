@@ -1,5 +1,5 @@
 (ns cdq.dev
-  (:require [cdq.application :as app]
+  (:require [cdq.game :as app]
             cdq.graphics
             [cdq.db :as db]
             [clojure.string :as str]
@@ -10,7 +10,7 @@
             [cdq.world :as world]))
 
 (defn post-runnable [f]
-  (.postRunnable com.badlogic.gdx.Gdx/app (fn [] (f @cdq.application/state))))
+  (.postRunnable com.badlogic.gdx.Gdx/app (fn [] (f @app/state))))
 
 (comment
 
