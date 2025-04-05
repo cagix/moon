@@ -1,8 +1,3 @@
-; == cdq.game.impl ? - only there all constructoes
-; state fix (dependencies to cdq.game/state)
-; & protocols @ render
-; & side effect data (article)
-; & tests for different namespaces//read-only/docs/.... ?
 (ns cdq.game
   (:require [cdq.create.assets :as assets]
             [cdq.create.batch :as batch]
