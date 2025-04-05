@@ -27,54 +27,6 @@
             [clojure.gdx.utils.viewport :as viewport]
             [clojure.utils :refer [safe-merge]]))
 
-(def context-keyset
-  ; TODO make schema
-  ; missing: :unit-scale added for rendering, :delta-time get added each frame.
-  #{:cdq/assets
-    :cdq/db
-    :cdq/effects
-    :cdq/schemas
-    :cdq.context/content-grid
-
-    ; delta-time gets added after first frame
-    :cdq.context/delta-time
-
-    :cdq.context/elapsed-time
-    :cdq.context/entity-ids
-    :cdq.context/error
-    :cdq.context/explored-tile-corners
-    :cdq.context/factions-iterations
-    :cdq.context/grid
-    :cdq.context/level
-    :cdq.context/mouseover-eid
-    :cdq.context/paused?
-    :cdq.context/player-eid
-    :cdq.context/player-message
-    :cdq.context/raycaster
-    :cdq.context/stage
-    :cdq.context/tiled-map
-    :cdq.game/active-entities
-    :cdq.graphics/batch
-    :cdq.graphics/cursors
-    :cdq.graphics/default-font
-    :cdq.graphics/shape-drawer
-    :cdq.graphics/shape-drawer-texture
-    :cdq.graphics/tiled-map-renderer
-    :cdq.graphics/ui-viewport
-    :cdq.graphics/world-unit-scale
-    :cdq.graphics/world-viewport
-    :context/entity-components
-    :world/potential-field-cache}
-  )
-
-(comment
- (clojure.pprint/pprint (sort (keys @state)))
-
- (= context-keyset (set (keys @state)))
- ; => validate each frame !
- ; => after each render/effect ?
- )
-
 (defrecord Game []
   cdq.application/Game
   (create [_]
