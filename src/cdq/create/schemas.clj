@@ -20,13 +20,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (cdq.graphics.sprite/from-sheet (cdq.graphics.sprite/sheet c
-                                                                         file
-                                                                         tilew
-                                                                         tileh)
-                                          [(int (/ sprite-x tilew))
-                                           (int (/ sprite-y tileh))]
-                                          c))
+      (cdq.graphics.sprite/from-sheet (cdq.graphics.sprite/sheet c file tilew tileh)
+                                      [(int (/ sprite-x tilew))
+                                       (int (/ sprite-y tileh))]
+                                      c))
     (cdq.graphics.sprite/create c file)))
 
 (defmethod schema/edn->value :s/image [_ edn c]
