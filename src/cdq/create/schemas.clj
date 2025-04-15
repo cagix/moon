@@ -12,6 +12,7 @@
       clojure.java.io/resource
       slurp
       clojure.edn/read-string))
+; TODO validate - data based - game object editor - ODB?
 
 (defmethod schema/edn->value :s/sound [_ sound-name {:keys [cdq/assets]}]
   (cdq.assets/sound assets sound-name))
