@@ -2,8 +2,8 @@
   (:require [cdq.graphics.camera :as camera]
             [cdq.graphics.shape-drawer :as sd]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.g2d.batch :as batch]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils])
+  (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
 (def render-fns
   '[(cdq.render.draw-on-world-view.before-entities/render)
@@ -21,18 +21,18 @@
              :active-skill cdq.render.draw-on-world-view.entities/draw-skill-image-and-active-effect}})
     (cdq.render.draw-on-world-view.after-entities/render)])
 
-(defn- draw-with [{:keys [cdq.graphics/batch
+(defn- draw-with [{:keys [^Batch cdq.graphics/batch
                           cdq.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]
-  (batch/set-color batch color/white) ; fix scene2d.ui.tooltip flickering
-  (batch/set-projection-matrix batch (camera/combined (:camera viewport)))
-  (batch/begin batch)
+  (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
+  (.setProjectionMatrix batch (camera/combined (:camera viewport)))
+  (.begin batch)
   (sd/with-line-width shape-drawer unit-scale
     (fn []
       (draw-fn (assoc c :cdq.context/unit-scale unit-scale))))
-  (batch/end batch))
+  (.end batch))
 
 (defn- draw-on-world-view* [{:keys [cdq.graphics/world-unit-scale
                                     cdq.graphics/world-viewport] :as c} render-fn]

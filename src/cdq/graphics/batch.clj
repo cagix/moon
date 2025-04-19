@@ -1,26 +1,26 @@
 (ns cdq.graphics.batch
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.g2d.batch :as batch]))
+  (:require [clojure.gdx.graphics.color :as color])
+  (:import (com.badlogic.gdx.graphics.g2d Batch)))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
     (:pixel-dimensions image)
     (:world-unit-dimensions image)))
 
-(defn- draw-texture-region [batch texture-region [x y] [w h] rotation color]
-  (if color (batch/set-color batch color))
-  (batch/draw batch
-              texture-region
-              {:x x
-               :y y
-               :origin-x (/ (float w) 2) ; rotation origin
-               :origin-y (/ (float h) 2)
-               :width w
-               :height h
-               :scale-x 1
-               :scale-y 1
-               :rotation rotation})
-  (if color (batch/set-color batch color/white)))
+(defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
+  (if color (.setColor batch color))
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; rotation origin
+         (/ (float h) 2)
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation)
+  (if color (.setColor batch color/white)))
 
 (defn draw-image
   [{:keys [cdq.context/unit-scale
