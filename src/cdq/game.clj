@@ -3,7 +3,6 @@
             cdq.create.effects
             cdq.create.entity-components
             cdq.create.schemas
-            [cdq.create.tiled-map-renderer :as tiled-map-renderer]
             [cdq.create.ui-viewport :as ui-viewport]
             [cdq.create.world-viewport :as world-viewport]
             cdq.graphics.shape-drawer
@@ -30,7 +29,7 @@
            (com.badlogic.gdx.utils.viewport Viewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
-           (gdl StageWithState)
+           (gdl StageWithState OrthogonalTiledMapRenderer)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
@@ -216,6 +215,12 @@
     (.setInputProcessor Gdx/input stage)
     stage))
 
+(defn- tiled-map-renderer [batch world-unit-scale]
+  (memoize (fn [tiled-map]
+             (OrthogonalTiledMapRenderer. tiled-map
+                                          (float world-unit-scale)
+                                          batch))))
+
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
@@ -246,7 +251,7 @@
                  :cdq.graphics/shape-drawer (ShapeDrawer. batch
                                                           (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
                  :cdq.graphics/shape-drawer-texture shape-drawer-texture
-                 :cdq.graphics/tiled-map-renderer (tiled-map-renderer/create batch world-unit-scale)
+                 :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
                  :cdq.graphics/ui-viewport ui-viewport
                  :cdq.graphics/world-unit-scale world-unit-scale
                  :cdq.graphics/world-viewport (world-viewport/create world-unit-scale)
