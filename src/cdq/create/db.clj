@@ -30,7 +30,7 @@
    :file ; => this is texture ... convert that key itself only?!
    :sub-image-bounds})
 
-(defn build* [{:keys [cdq/schemas] :as c} property]
+(defn- build* [{:keys [cdq/schemas] :as c} property]
   (apply-kvs property
              (fn [k v]
                (let [schema (try (schema/schema-of schemas k)

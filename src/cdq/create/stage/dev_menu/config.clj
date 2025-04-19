@@ -3,7 +3,7 @@
             [cdq.db :as db]
             cdq.editor
             [gdl.graphics.camera :as cam]
-            [cdq.stage :as stage]
+            [gdl.ui.stage :as stage]
             [gdl.ui :as ui]
             cdq.world.context
             [gdl.graphics :as graphics]

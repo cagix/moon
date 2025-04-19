@@ -6,7 +6,7 @@
             cdq.grid
             [cdq.line-of-sight :as los]
             cdq.render.player-state-input
-            [cdq.stage :as stage]
+            [gdl.ui.stage :as stage]
             [gdl.math.raycaster :as raycaster]
             cdq.world
             [gdl.data.grid2d :as g2d]

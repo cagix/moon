@@ -4,7 +4,7 @@
             [cdq.entity.fsm :as fsm]
             gdl.graphics
             [gdl.math.vector2 :as v]
-            [cdq.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.skill :as skill]
             [gdl.ui :as ui]
             [cdq.world :refer [world-item?

@@ -3,7 +3,7 @@
             [cdq.create.level :as level]
             cdq.create.grid
             [cdq.grid :as grid]
-            [cdq.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.world :refer [spawn-creature]]
             [gdl.data.grid2d :as g2d]
             [gdl.tiled :as tiled]

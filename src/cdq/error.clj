@@ -1,5 +1,5 @@
 (ns cdq.error
-  (:require [cdq.stage :as stage]
+  (:require [gdl.ui.stage :as stage]
             [gdl.ui :as ui]
             [gdl.utils :refer [pretty-pst with-err-str]]))
 

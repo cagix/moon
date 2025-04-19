@@ -7,7 +7,7 @@
             [cdq.assets :refer [play-sound]]
             [cdq.db :as db]
             [cdq.schema :as schema]
-            [cdq.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.property :as property]
             [gdl.ui :refer [horizontal-separator-cell
                             vertical-separator-cell

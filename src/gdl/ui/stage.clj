@@ -1,4 +1,4 @@
-(ns cdq.stage
+(ns gdl.ui.stage
   (:require [gdl.graphics :as graphics])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 

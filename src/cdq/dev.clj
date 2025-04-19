@@ -5,7 +5,7 @@
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [gdl.ui.group :refer [children]]
-            [cdq.stage :as stage]
+            [gdl.ui.stage :as stage]
             [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.world :as world]))
 

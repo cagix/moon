@@ -12,7 +12,7 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [gdl.input :as input]
-            [cdq.stage :as stage]
+            [gdl.ui.stage :as stage]
             [cdq.info :as info]
             [gdl.math.vector2 :as v]
             [gdl.ui :as ui]
