@@ -4,16 +4,17 @@
             cdq.create.effects
             cdq.create.entity-components
             cdq.create.schemas
-            [cdq.create.shape-drawer :as shape-drawer]
             [cdq.create.shape-drawer-texture :as shape-drawer-texture]
             [cdq.create.stage :as stage]
             [cdq.create.tiled-map-renderer :as tiled-map-renderer]
             [cdq.create.ui-viewport :as ui-viewport]
             [cdq.create.world-unit-scale :as world-unit-scale]
             [cdq.create.world-viewport :as world-viewport]
+            cdq.graphics.shape-drawer
             cdq.world.context
             [clojure.gdx.assets :as assets]
             [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -22,14 +23,16 @@
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch)
+           (com.badlogic.gdx.graphics Pixmap Texture Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.math MathUtils)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
            (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)))
+           (org.lwjgl.system Configuration)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- load-assets [{:keys [folder
                             asset-type->extensions]}]
@@ -90,6 +93,92 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
+(defn- degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
+
+(defn- sd-set-color [shape-drawer color]
+  (ShapeDrawer/.setColor shape-drawer (color/munge color)))
+
+(extend-type ShapeDrawer
+  cdq.graphics.shape-drawer/ShapeDrawer
+  (ellipse [this [x y] radius-x radius-y color]
+    (sd-set-color this color)
+    (.ellipse this
+              (float x)
+              (float y)
+              (float radius-x)
+              (float radius-y)))
+
+  (filled-ellipse [this [x y] radius-x radius-y color]
+    (sd-set-color this color)
+    (.filledEllipse this
+                    (float x)
+                    (float y)
+                    (float radius-x)
+                    (float radius-y)))
+
+  (circle [this [x y] radius color]
+    (sd-set-color this color)
+    (.circle this
+             (float x)
+             (float y)
+             (float radius)))
+
+  (filled-circle [this [x y] radius color]
+    (sd-set-color this color)
+    (.filledCircle this
+                   (float x)
+                   (float y)
+                   (float radius)))
+
+  (arc [this [center-x center-y] radius start-angle degree color]
+    (sd-set-color this color)
+    (.arc this
+          (float center-x)
+          (float center-y)
+          (float radius)
+          (float (degree->radians start-angle))
+          (float (degree->radians degree))))
+
+  (sector [this [center-x center-y] radius start-angle degree color]
+    (sd-set-color this color)
+    (.sector this
+             (float center-x)
+             (float center-y)
+             (float radius)
+             (float (degree->radians start-angle))
+             (float (degree->radians degree))))
+
+  (rectangle [this x y w h color]
+    (sd-set-color this color)
+    (.rectangle this
+                (float x)
+                (float y)
+                (float w)
+                (float h)))
+
+  (filled-rectangle [this x y w h color]
+    (sd-set-color this color)
+    (.filledRectangle this
+                      (float x)
+                      (float y)
+                      (float w)
+                      (float h)))
+
+  (line [this [sx sy] [ex ey] color]
+    (sd-set-color this color)
+    (.line this
+           (float sx)
+           (float sy)
+           (float ex)
+           (float ey)))
+
+  (with-line-width [this width draw-fn]
+    (let [old-line-width (.getDefaultLineWidth this)]
+      (.setDefaultLineWidth this (float (* width old-line-width)))
+      (draw-fn)
+      (.setDefaultLineWidth this (float old-line-width)))))
+
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
@@ -117,7 +206,8 @@
                  :cdq.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
                                                         :size 16
                                                         :quality-scaling 2})
-                 :cdq.graphics/shape-drawer (shape-drawer/create batch shape-drawer-texture)
+                 :cdq.graphics/shape-drawer (ShapeDrawer. batch
+                                                          (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
                  :cdq.graphics/shape-drawer-texture shape-drawer-texture
                  :cdq.graphics/tiled-map-renderer (tiled-map-renderer/create batch world-unit-scale)
                  :cdq.graphics/ui-viewport ui-viewport
