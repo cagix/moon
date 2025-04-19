@@ -56,8 +56,15 @@
                  :cdq/db (db/create schemas)
                  :context/entity-components (cdq.create.entity-components/create)
                  :cdq/schemas schemas
-                 :cdq.context/stage (stage/create batch ui-viewport)} ]
+                 :cdq.context/stage (stage/create batch ui-viewport)}]
     (cdq.world.context/reset context :worlds/vampire)))
+
+; actually the 'application' can contain all application specific stuff
+; -> batch, cursors, font, shapes, tiledmap, 2 viewports, stage
+; all db/entity-components/game-specific stuff move somewhere else ... !
+; do I need vis-ui there ?
+; => clojure.rpg game maker application ???
+; for tile based realtime games ....
 
 (defn- dispose-game [context]
   (doseq [[_k value] context

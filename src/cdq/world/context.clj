@@ -1,16 +1,14 @@
 (ns cdq.world.context
-  (:require [cdq.create.level :as level]
+  (:require [cdq.context :as context]
+            [cdq.create.level :as level]
             cdq.create.grid
-            cdq.create.explored-tile-corners
-            cdq.create.entity-ids
-            cdq.create.potential-fields
             cdq.create.content-grid
             [cdq.grid :as grid]
             [cdq.stage :as stage]
             [cdq.world :refer [spawn-creature]]
             [clojure.data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils :refer [defcomponent]]))
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
@@ -75,14 +73,27 @@
         context (merge context
                        {:cdq.context/content-grid (cdq.create.content-grid/create tiled-map)
                         :cdq.context/elapsed-time 0
-                        :cdq.context/entity-ids (cdq.create.entity-ids/create)
+                        :cdq.context/entity-ids (atom {})
                         :cdq.context/player-message (atom {:duration-seconds 1.5})
                         :cdq.context/level level
                         :cdq.context/error nil
-                        :cdq.context/explored-tile-corners (cdq.create.explored-tile-corners/create tiled-map)
+                        :cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
+                                                                                  (tiled/tm-height tiled-map)
+                                                                                  (constantly false)))
                         :cdq.context/grid grid
                         :cdq.context/tiled-map tiled-map
                         :cdq.context/raycaster (raycaster grid)
                         :cdq.context/factions-iterations {:good 15 :evil 5}
-                        :world/potential-field-cache (cdq.create.potential-fields/create)})]
+                        :world/potential-field-cache (atom nil)})]
     (assoc context :cdq.context/player-eid (spawn-creatures! context))))
+
+(defcomponent :cdq.context/entity-ids
+  (context/add-entity [[_ entity-ids] eid]
+    (let [id (:entity/id @eid)]
+      (assert (number? id))
+      (swap! entity-ids assoc id eid)))
+
+  (context/remove-entity [[_ entity-ids] eid]
+    (let [id (:entity/id @eid)]
+      (assert (contains? @entity-ids id))
+      (swap! entity-ids dissoc id))))
