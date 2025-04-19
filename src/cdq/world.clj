@@ -12,7 +12,6 @@
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.ui.button-group :as button-group]
             [cdq.stage :as stage]
             [cdq.info :as info]
             [cdq.math.vector2 :as v]
@@ -20,7 +19,8 @@
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
             cdq.time
-            [clojure.gdx.audio.sound :as sound]))
+            [clojure.gdx.audio.sound :as sound])
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
@@ -224,18 +224,18 @@
     (actor/set-id button id)
     (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (group/add-actor! horizontal-group button)
-    (button-group/add button-group button)
+    (ButtonGroup/.add button-group ^Button button)
     nil))
 
 (defn- action-bar-remove-skill [c {:keys [property/id]}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar c)
         button (get horizontal-group id)]
     (actor/remove button)
-    (button-group/remove button-group button)
+    (ButtonGroup/.remove button-group ^Button button)
     nil))
 
 (defn selected-skill [c]
-  (when-let [skill-button (button-group/checked (:button-group (get-action-bar c)))]
+  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
 
 (defn show-player-msg [{:keys [cdq.context/player-message]} text]
