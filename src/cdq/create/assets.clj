@@ -4,23 +4,22 @@
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.files FileHandle)))
 
-(defn create []
+(defn create [{:keys [folder
+                      asset-type->extensions]}]
   (assets/create
-   (let [folder "resources/"]
-     (for [[asset-type extensions] {:sound   #{"wav"}
-                                    :texture #{"png" "bmp"}}
-           file (map #(str/replace-first % folder "")
-                     (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
-                            result []]
-                       (cond (nil? file)
-                             result
+   (for [[asset-type extensions] asset-type->extensions
+         file (map #(str/replace-first % folder "")
+                   (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+                          result []]
+                     (cond (nil? file)
+                           result
 
-                             (.isDirectory file)
-                             (recur (concat remaining (.list file)) result)
+                           (.isDirectory file)
+                           (recur (concat remaining (.list file)) result)
 
-                             (extensions (.extension file))
-                             (recur remaining (conj result (.path file)))
+                           (extensions (.extension file))
+                           (recur remaining (conj result (.path file)))
 
-                             :else
-                             (recur remaining result))))]
-       [file asset-type]))))
+                           :else
+                           (recur remaining result))))]
+     [file asset-type])))

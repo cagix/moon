@@ -39,7 +39,9 @@
         shape-drawer-texture (shape-drawer-texture/create)
         world-unit-scale (world-unit-scale/create)
         ui-viewport (ui-viewport/create)
-        context {:cdq/assets (assets/create)
+        context {:cdq/assets (assets/create {:folder "resources/"
+                                             :asset-type->extensions {:sound   #{"wav"}
+                                                                      :texture #{"png" "bmp"}}})
                  :cdq.graphics/batch batch
                  :cdq.graphics/cursors (cursors/create)
                  :cdq.graphics/default-font (default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
