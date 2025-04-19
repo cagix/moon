@@ -12,7 +12,7 @@
                                get-inventory
                                show-player-msg
                                selected-skill]]
-            [gdl.gdx.input :as input]
+            [gdl.input :as input]
             [cdq.widgets.inventory :as widgets.inventory]
             [gdl.gdx.scenes.scene2d.actor :as actor]))
 

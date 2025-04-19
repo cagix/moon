@@ -1,4 +1,4 @@
-(ns gdl.gdx.input
+(ns gdl.input
   (:require [gdl.gdx.interop :refer [k->input-button k->input-key]])
   (:import (com.badlogic.gdx Gdx)))
 

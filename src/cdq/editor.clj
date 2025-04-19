@@ -24,7 +24,7 @@
              :as ui]
             [clojure.edn :as edn]
             [gdl.gdx.assets :as assets]
-            [gdl.gdx.input :as input]
+            [gdl.input :as input]
             [gdl.gdx.scenes.scene2d.actor :as actor]
             [gdl.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
             [gdl.gdx.scenes.scene2d.ui.table :as table]

@@ -10,7 +10,7 @@
             [gdl.math.raycaster :as raycaster]
             cdq.world
             [gdl.data.grid2d :as g2d]
-            [gdl.gdx.input :as input]
+            [gdl.input :as input]
             [gdl.gdx.scenes.scene2d.actor :as actor]
             [gdl.gdx.scenes.scene2d.group :as group]
             [gdl.utils :as utils])
