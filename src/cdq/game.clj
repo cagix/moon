@@ -1,6 +1,5 @@
 (ns cdq.game
   (:require cdq.application
-            [cdq.create.default-font :as default-font]
             [cdq.create.db :as db]
             cdq.create.effects
             cdq.create.entity-components
@@ -23,8 +22,10 @@
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap)
-           (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.graphics Pixmap Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
            (java.awt Taskbar Toolkit)
@@ -65,6 +66,30 @@
         cursor))
     config)))
 
+(defn- font-params [{:keys [size]}]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) size)
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
+    (set! (.magFilter params) Texture$TextureFilter/Linear)
+    params))
+
+(defn- generate-font [file-handle params]
+  (let [generator (FreeTypeFontGenerator. file-handle)
+        font (.generateFont generator (font-params params))]
+    (.dispose generator)
+    font))
+
+(defn- load-font [{:keys [file size quality-scaling]}]
+  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
+                                        {:size (* size quality-scaling)})]
+    (.setScale (.getData font) (float (/ quality-scaling)))
+    (set! (.markupEnabled (.getData font)) true)
+    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
+    font))
+
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
@@ -89,9 +114,9 @@
                                                       :cursors/skill-not-usable      ["x007"         [0   0]]
                                                       :cursors/use-skill             ["pointer004"   [0   0]]
                                                       :cursors/walking               ["walking"      [16 16]]})
-                 :cdq.graphics/default-font (default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
-                                                                  :size 16
-                                                                  :quality-scaling 2})
+                 :cdq.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
+                                                        :size 16
+                                                        :quality-scaling 2})
                  :cdq.graphics/shape-drawer (shape-drawer/create batch shape-drawer-texture)
                  :cdq.graphics/shape-drawer-texture shape-drawer-texture
                  :cdq.graphics/tiled-map-renderer (tiled-map-renderer/create batch world-unit-scale)
