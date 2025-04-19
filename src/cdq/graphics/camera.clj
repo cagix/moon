@@ -1,7 +1,7 @@
 (ns cdq.graphics.camera
-  (:require [cdq.math.frustum :as frustum])
   (:refer-clojure :exclude [update])
-  (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)))
+  (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)
+           (com.badlogic.gdx.math Frustum Vector3)))
 
 (defn set-to-ortho
   "Sets this camera to an orthographic projection, centered at (viewport-width/2, viewport-height/2), with the y-axis pointing up or down."
@@ -19,8 +19,16 @@
   [^Camera camera]
   (.combined camera))
 
+(defn- vector3->clj-vec [^Vector3 v3]
+  [(.x v3)
+   (.y v3)
+   (.z v3)])
+
+(defn- frustum-plane-points [^Frustum frustum]
+  (map vector3->clj-vec (.planePoints frustum)))
+
 (defn frustum [camera]
-  (let [frustum-points (take 4 (frustum/plane-points (.frustum ^Camera camera)))
+  (let [frustum-points (take 4 (frustum-plane-points (.frustum ^Camera camera)))
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))
         bottom-y (apply min (map second frustum-points))
