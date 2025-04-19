@@ -2,9 +2,9 @@
   (:require [clojure.gdx.utils.viewport :as viewport]
             [clojure.gdx.graphics]
             [clojure.gdx.math.utils :refer [clamp]]
-            [clojure.gdx.input :as input]
             [clojure.gdx.utils.viewport :as viewport]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
   (clojure.gdx.graphics/set-cursor (utils/safe-get cursors cursor-key)))
@@ -14,10 +14,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (input/x)
+  (let [mouse-x (clamp (.getX Gdx/input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y)
+        mouse-y (clamp (.getY Gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (viewport/unproject viewport mouse-x mouse-y)))

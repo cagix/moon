@@ -1,7 +1,7 @@
 (ns cdq.create.stage
-  (:require [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.input :as input])
-  (:import (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+  (:require [clojure.gdx.scenes.scene2d.group :as group])
+  (:import (com.badlogic.gdx Gdx)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (gdl StageWithState)))
 
@@ -36,5 +36,5 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
   (let [stage (create-stage viewport batch)]
-    (input/set-processor stage)
+    (.setInputProcessor Gdx/input stage)
     stage))
