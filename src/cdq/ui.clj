@@ -1,6 +1,5 @@
 (ns cdq.ui
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
+  (:require [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :refer [find-actor-with-id add-actor!]]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils]
@@ -239,11 +238,12 @@
 (defn image-button
   ([image on-clicked]
    (image-button image on-clicked {}))
-  ([{:keys [texture-region]} on-clicked {:keys [scale]}]
+  ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
    (let [drawable (texture-region-drawable texture-region)
          button (VisImageButton. ^Drawable drawable)]
      (when scale
-       (let [[w h] (texture-region/dimensions texture-region)]
+       (let [[w h] [(.getRegionWidth  texture-region)
+                    (.getRegionHeight texture-region)]]
          (scene2d.utils/set-min-size! drawable (* scale w) (* scale h))))
      (.addListener button (change-listener on-clicked))
      button)))

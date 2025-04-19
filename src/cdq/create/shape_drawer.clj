@@ -1,14 +1,15 @@
 (ns cdq.create.shape-drawer
   (:require cdq.graphics.shape-drawer
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
-            [clojure.gdx.math.utils :refer [degree->radians]]))
+            [clojure.gdx.math.utils :refer [degree->radians]])
+  (:import (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 ; TODO earlygrey only here ... separate project ... no other dependneices?
 
 (defn create [batch shape-drawer-texture]
   (space.earlygrey.shapedrawer.ShapeDrawer. batch
-                                            (texture-region/create shape-drawer-texture 1 0 1 1)))
+                                            (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1)))
 
 (defn- set-color [shape-drawer color]
   (space.earlygrey.shapedrawer.ShapeDrawer/.setColor shape-drawer (color/munge color)))

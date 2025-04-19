@@ -1,9 +1,10 @@
 (ns cdq.level.uf-caves
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [clojure.data.grid2d :as g2d]
-            [clojure.gdx.graphics.g2d.texture-region :as texture-region]
             [clojure.gdx.tiled :as tiled]
-            [clojure.rand :refer [get-rand-weighted-item]]))
+            [clojure.rand :refer [get-rand-weighted-item]])
+  (:import (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (def ^:private scaling 4)
 
@@ -32,11 +33,11 @@
 (def ^:private sprite-size 48)
 
 (defn- uf-tile [texture & {:keys [sprite-x sprite-y movement]}]
-  (tm-tile (texture-region/create texture
-                                  (* sprite-x sprite-size)
-                                  (* sprite-y sprite-size)
-                                  sprite-size
-                                  sprite-size)
+  (tm-tile (TextureRegion. ^Texture texture
+                           (int (* sprite-x sprite-size))
+                           (int (* sprite-y sprite-size))
+                           (int sprite-size)
+                           (int sprite-size))
            movement))
 
 (def ^:private uf-grounds

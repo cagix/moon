@@ -1,18 +1,21 @@
 (ns cdq.graphics.sprite
-  (:require [clojure.gdx.graphics.g2d.texture-region :as texture-region]))
+  (:import (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
 
 (defn- assoc-dimensions
   "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [texture-region] :as image} world-unit-scale scale]
+  [{:keys [^TextureRegion texture-region] :as image} world-unit-scale scale]
   {:pre [(or (number? scale)
              (and (vector? scale)
                   (number? (scale 0))
                   (number? (scale 1))))]}
   (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions (texture-region/dimensions texture-region) scale)
+                           (scale-dimensions [(.getRegionWidth  texture-region)
+                                              (.getRegionHeight texture-region)]
+                                             scale)
                            scale)]
     (assoc image
            :pixel-dimensions pixel-dimensions
@@ -28,9 +31,9 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(defn sub [sprite bounds {:keys [cdq.graphics/world-unit-scale]}]
+(defn sub [sprite [x y w h] {:keys [cdq.graphics/world-unit-scale]}]
   (create* world-unit-scale
-           (apply texture-region/->create (:texture-region sprite) bounds)))
+           (TextureRegion. ^TextureRegion (:texture-region sprite) (int x) (int y) (int w) (int h))))
 
 (defn sheet [{:keys [cdq.graphics/world-unit-scale
                      cdq/assets]}
@@ -38,7 +41,7 @@
              tilew
              tileh]
   {:image (create* world-unit-scale
-                   (texture-region/create (assets path)))
+                   (TextureRegion. ^Texture (assets path)))
    :tilew tilew
    :tileh tileh})
 
@@ -56,4 +59,4 @@
                       cdq/assets]}
               path]
   (create* world-unit-scale
-           (texture-region/create (assets path))))
+           (TextureRegion. ^Texture (assets path))))
