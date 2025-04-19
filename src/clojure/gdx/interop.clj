@@ -280,14 +280,14 @@
 
 (defn- create-color
   ([r g b]
-   (create r g b 1))
+   (create-color r g b 1))
   ([r g b a]
    (Color. (float r) (float g) (float b) (float a))))
 
 (defn ->color ^Color [c]
   (cond (= Color (class c)) c
         (keyword? c) (k->color c)
-        (vector? c) (apply create c)
+        (vector? c) (apply create-color c)
         :else (throw (ex-info "Cannot understand color" c))))
 
 (defn k->align [k]
