@@ -1,6 +1,5 @@
 (ns cdq.game
   (:require cdq.application
-            [cdq.create.cursors :as cursors]
             [cdq.create.default-font :as default-font]
             [cdq.create.db :as db]
             cdq.create.effects
@@ -15,13 +14,16 @@
             [cdq.create.world-viewport :as world-viewport]
             cdq.world.context
             [clojure.gdx.assets :as assets]
+            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.utils])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Pixmap)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
@@ -48,6 +50,21 @@
                            (recur remaining result))))]
      [file asset-type])))
 
+(defrecord Cursors []
+  clojure.gdx.utils/Disposable
+  (dispose [this]
+    (run! clojure.gdx.utils/dispose (vals this))))
+
+(defn- load-cursors [config]
+  (map->Cursors
+   (clojure.utils/mapvals
+    (fn [[file [hotspot-x hotspot-y]]]
+      (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+            cursor (graphics/new-cursor pixmap hotspot-x hotspot-y)]
+        (clojure.gdx.utils/dispose pixmap)
+        cursor))
+    config)))
+
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
@@ -58,7 +75,20 @@
                                            :asset-type->extensions {:sound   #{"wav"}
                                                                     :texture #{"png" "bmp"}}})
                  :cdq.graphics/batch batch
-                 :cdq.graphics/cursors (cursors/create)
+                 :cdq.graphics/cursors (load-cursors {:cursors/bag                   ["bag001"       [0   0]]
+                                                      :cursors/black-x               ["black_x"      [0   0]]
+                                                      :cursors/default               ["default"      [0   0]]
+                                                      :cursors/denied                ["denied"       [16 16]]
+                                                      :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                      :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                      :cursors/hand-grab             ["hand003"      [4  16]]
+                                                      :cursors/move-window           ["move002"      [16 16]]
+                                                      :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                      :cursors/over-button           ["hand002"      [0   0]]
+                                                      :cursors/sandclock             ["sandclock"    [16 16]]
+                                                      :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                      :cursors/use-skill             ["pointer004"   [0   0]]
+                                                      :cursors/walking               ["walking"      [16 16]]})
                  :cdq.graphics/default-font (default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
                                                                   :size 16
                                                                   :quality-scaling 2})
