@@ -1,5 +1,5 @@
 (ns cdq.dev
-  (:require [cdq.application :as app]
+  (:require [gdl.application :as app]
             cdq.graphics
             [cdq.db :as db]
             [clojure.string :as str]

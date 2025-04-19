@@ -1,4 +1,4 @@
-(ns cdq.application
+(ns gdl.application
   (:require cdq.graphics.shape-drawer
             [clojure.gdx.assets :as assets] ; all-of-type -> editor -> decide later
             [clojure.gdx.interop :as interop]

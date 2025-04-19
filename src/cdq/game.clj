@@ -1,5 +1,5 @@
 (ns cdq.game
-  (:require cdq.application
+  (:require gdl.application
             [cdq.create.db :as db]
             cdq.create.effects
             cdq.create.entity-components
@@ -18,4 +18,4 @@
     (cdq.world.context/reset context :worlds/vampire)))
 
 (defn -main []
-  (cdq.application/start! create-game cdq.render/game-loop!))
+  (gdl.application/start! create-game cdq.render/game-loop!))
