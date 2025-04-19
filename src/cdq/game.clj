@@ -15,23 +15,15 @@
             [cdq.create.world-unit-scale :as world-unit-scale]
             [cdq.create.world-viewport :as world-viewport]
             cdq.world.context
-            clojure.gdx.application
-            clojure.gdx.backends.lwjgl
             [clojure.gdx.utils :as utils]
             [clojure.java.io :as io])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
+  (:import (com.badlogic.gdx ApplicationAdapter)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
-
-; TODO * the application context without any game specific logic ! *
-; just the mechanics !!
-; clojure.rpg ?
-; but where exactly does game specific logic start? at schemas ???
-; !!! what a boundary !!!
-; can also set background color ScreenUtils/clear ...
-; fuck !
 
 (defn- create-game []
   (let [schemas (schemas/create)
@@ -98,23 +90,19 @@
                    (.getImage (Toolkit/getDefaultToolkit)
                               (io/resource "moon.png")))
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
-                                            (create [_]
-                                              (reset! cdq.application/state (create-game)))
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create []
+                          (reset! cdq.application/state (create-game)))
 
-                                            (dispose [_]
-                                              (dispose-game @cdq.application/state))
+                        (dispose []
+                          (dispose-game @cdq.application/state))
 
-                                            (pause [_])
+                        (render []
+                          (swap! cdq.application/state render-game))
 
-                                            (render [_]
-                                              (swap! cdq.application/state render-game))
-
-                                            (resize [_ width height]
-                                              (resize-game @cdq.application/state width height))
-
-                                            (resume [_]))
-                                          {:title "Cyber Dungeon Quest"
-                                           :windowed-mode {:width 1440
-                                                           :height 900}
-                                           :foreground-fps 60}))
+                        (resize [width height]
+                          (resize-game @cdq.application/state width height)))
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle "Cyber Dungeon Quest")
+                        (.setWindowedMode 1440 900)
+                        (.setForegroundFPS 60))))
