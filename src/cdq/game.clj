@@ -3,7 +3,6 @@
             cdq.create.effects
             cdq.create.entity-components
             cdq.create.schemas
-            [cdq.create.shape-drawer-texture :as shape-drawer-texture]
             [cdq.create.stage :as stage]
             [cdq.create.tiled-map-renderer :as tiled-map-renderer]
             [cdq.create.ui-viewport :as ui-viewport]
@@ -22,7 +21,7 @@
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap Texture Texture$TextureFilter)
+           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
@@ -178,10 +177,18 @@
       (draw-fn)
       (.setDefaultLineWidth this (float old-line-width)))))
 
+(defn- white-pixel-texture []
+  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                 (.setColor Color/WHITE)
+                 (.drawPixel 0 0))
+        texture (Texture. pixmap)]
+    (.dispose pixmap)
+    texture))
+
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
-        shape-drawer-texture (shape-drawer-texture/create)
+        shape-drawer-texture (white-pixel-texture)
         world-unit-scale (world-unit-scale/create)
         ui-viewport (ui-viewport/create)
         context {:cdq/assets (load-assets {:folder "resources/"
