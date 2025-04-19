@@ -278,6 +278,18 @@
 (def k->input-key    (partial static-field Input$Keys-mapping    "Key"))
 (def k->color        (partial static-field Color-mapping         "Color"))
 
+(defn- create-color
+  ([r g b]
+   (create r g b 1))
+  ([r g b a]
+   (Color. (float r) (float g) (float b) (float a))))
+
+(defn ->color ^Color [c]
+  (cond (= Color (class c)) c
+        (keyword? c) (k->color c)
+        (vector? c) (apply create c)
+        :else (throw (ex-info "Cannot understand color" c))))
+
 (defn k->align [k]
   (case k
     :center Align/center

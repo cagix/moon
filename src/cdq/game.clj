@@ -6,7 +6,6 @@
             cdq.graphics.shape-drawer
             cdq.world.context
             [clojure.gdx.assets :as assets] ; all-of-type -> editor -> decide later
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.utils :as utils]
@@ -95,7 +94,7 @@
   (* MathUtils/degreesToRadians (float degree)))
 
 (defn- sd-set-color [shape-drawer color]
-  (ShapeDrawer/.setColor shape-drawer (color/munge color)))
+  (ShapeDrawer/.setColor shape-drawer (interop/->color color)))
 
 (extend-type ShapeDrawer
   cdq.graphics.shape-drawer/ShapeDrawer
