@@ -1,9 +1,9 @@
 (ns cdq.render.when-not-paused.update-time
-  (:require cdq.time
-            clojure.gdx.graphics))
+  (:require [cdq.graphics :as graphics]
+            cdq.time))
 
 (defn render [context]
-  (let [delta-ms (min (clojure.gdx.graphics/delta-time)
+  (let [delta-ms (min (graphics/delta-time)
                       cdq.time/max-delta)]
     (-> context
         (update :cdq.context/elapsed-time + delta-ms)

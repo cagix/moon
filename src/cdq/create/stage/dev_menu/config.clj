@@ -2,12 +2,11 @@
   (:require cdq.game
             [cdq.db :as db]
             cdq.editor
-            cdq.graphics
             [cdq.graphics.camera :as cam]
             [cdq.stage :as stage]
             [cdq.ui :as ui]
             cdq.world.context
-            [clojure.gdx.graphics :as graphics]
+            [cdq.graphics :as graphics]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.string :as str]
@@ -63,10 +62,10 @@
                    {:label "paused?"
                     :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
                    {:label "GUI"
-                    :update-fn (comp cdq.graphics/mouse-position
+                    :update-fn (comp graphics/mouse-position
                                      :cdq.graphics/ui-viewport)}
                    {:label "World"
-                    :update-fn #(mapv int (cdq.graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
+                    :update-fn #(mapv int (graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
                    {:label "Zoom"
                     :update-fn #(cam/zoom (:camera (:cdq.graphics/world-viewport %)))
                     :icon "images/zoom.png"}

@@ -1,12 +1,17 @@
 (ns cdq.graphics
-  (:require [clojure.gdx.graphics]
-            [clojure.utils :as utils])
+  (:require [clojure.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
+(defn delta-time []
+  (.getDeltaTime Gdx/graphics))
+
+(defn frames-per-second []
+  (.getFramesPerSecond Gdx/graphics))
+
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
-  (clojure.gdx.graphics/set-cursor (utils/safe-get cursors cursor-key)))
+  (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
