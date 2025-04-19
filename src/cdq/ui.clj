@@ -2,19 +2,18 @@
   (:require [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :refer [find-actor-with-id add-actor!]]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils]
-            [cdq.vis-ui.widgets.separator :as separator])
+            [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils Drawable ChangeListener ClickListener)
            (com.badlogic.gdx.utils Align Scaling)
-           (com.kotcrab.vis.ui.widget VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)
+           (com.kotcrab.vis.ui.widget VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow Separator)
            (gdl StageWithState)))
 
 (defn horizontal-separator-cell [colspan]
-  {:actor (separator/horizontal)
+  {:actor (Separator. "default")
    :pad-top 2
    :pad-bottom 2
    :colspan colspan
@@ -22,7 +21,7 @@
    :expand-x? true})
 
 (defn vertical-separator-cell []
-  {:actor (separator/vertical)
+  {:actor (Separator. "vertical")
    :pad-top 2
    :pad-bottom 2
    :fill-y? true
