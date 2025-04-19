@@ -1,7 +1,7 @@
 (ns cdq.create.stage.actionbar
-  (:require [gdl.gdx.scenes.scene2d.actor :as actor]
+  (:require [gdl.ui.actor :as actor]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.gdx.scenes.scene2d.group :as group]))
+            [gdl.ui.group :as group]))
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]

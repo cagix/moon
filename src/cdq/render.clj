@@ -11,8 +11,8 @@
             cdq.world
             [gdl.data.grid2d :as g2d]
             [gdl.input :as input]
-            [gdl.gdx.scenes.scene2d.actor :as actor]
-            [gdl.gdx.scenes.scene2d.group :as group]
+            [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             [gdl.utils :as utils])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)

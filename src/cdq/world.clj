@@ -16,8 +16,8 @@
             [cdq.info :as info]
             [gdl.math.vector2 :as v]
             [gdl.ui :as ui]
-            [gdl.gdx.scenes.scene2d.actor :as actor]
-            [gdl.gdx.scenes.scene2d.group :as group]
+            [gdl.ui.actor :as actor]
+            [gdl.ui.group :as group]
             cdq.time
             [gdl.audio.sound :as sound])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))

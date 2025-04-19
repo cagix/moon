@@ -7,8 +7,8 @@
             [gdl.ui :as ui]
             cdq.world.context
             [gdl.graphics :as graphics]
-            [gdl.gdx.scenes.scene2d.ui.table :as table]
-            [gdl.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [gdl.ui.table :as table]
+            [gdl.ui.widget-group :as widget-group]
             [clojure.string :as str]
             [gdl.utils :refer [readable-number]]))
 

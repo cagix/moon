@@ -1,4 +1,4 @@
-(ns gdl.gdx.scenes.scene2d.ui.table
+(ns gdl.ui.table
   (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Table)))
 

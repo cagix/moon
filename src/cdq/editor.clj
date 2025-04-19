@@ -25,10 +25,10 @@
             [clojure.edn :as edn]
             [gdl.assets :as assets]
             [gdl.input :as input]
-            [gdl.gdx.scenes.scene2d.actor :as actor]
-            [gdl.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [gdl.gdx.scenes.scene2d.ui.table :as table]
-            [gdl.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [gdl.ui.actor :as actor]
+            [gdl.ui.group :refer [children clear-children add-actor! find-actor]]
+            [gdl.ui.table :as table]
+            [gdl.ui.widget-group :as widget-group]
             [clojure.string :as str]
             [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))

@@ -1,5 +1,5 @@
-(ns gdl.gdx.scenes.scene2d.group
-  (:require [gdl.gdx.scenes.scene2d.actor :as actor])
+(ns gdl.ui.group
+  (:require [gdl.ui.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn children

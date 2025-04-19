@@ -2,7 +2,7 @@
   (:require gdl.graphics.shape-drawer
             [gdl.assets :as assets] ; all-of-type -> editor -> decide later
             [gdl.gdx.interop :as interop]
-            [gdl.gdx.scenes.scene2d.group :as group]
+            [gdl.ui.group :as group]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]

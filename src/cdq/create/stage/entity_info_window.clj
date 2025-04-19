@@ -1,7 +1,7 @@
 (ns cdq.create.stage.entity-info-window
   (:require [cdq.info :as info]
             [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.gdx.scenes.scene2d.group :as group]))
+            [gdl.ui.group :as group]))
 
 (def ^:private disallowed-keys [:entity/skills
                                 #_:entity/fsm

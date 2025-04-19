@@ -14,7 +14,7 @@
                                selected-skill]]
             [gdl.input :as input]
             [cdq.widgets.inventory :as widgets.inventory]
-            [gdl.gdx.scenes.scene2d.actor :as actor]))
+            [gdl.ui.actor :as actor]))
 
 (defmulti manual-tick (fn [[k] context]
                         k))

@@ -1,8 +1,8 @@
 (ns gdl.ui
-  (:require [gdl.gdx.scenes.scene2d.actor :as actor]
-            [gdl.gdx.scenes.scene2d.group :refer [find-actor-with-id add-actor!]]
-            [gdl.gdx.scenes.scene2d.ui.table :as table]
-            [gdl.gdx.scenes.scene2d.ui.utils :as scene2d.utils])
+  (:require [gdl.ui.actor :as actor]
+            [gdl.ui.group :refer [find-actor-with-id add-actor!]]
+            [gdl.ui.table :as table]
+            [gdl.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
