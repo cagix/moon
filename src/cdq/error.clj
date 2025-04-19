@@ -1,6 +1,6 @@
 (ns cdq.error
   (:require [cdq.stage :as stage]
-            [cdq.ui :as ui]
+            [gdl.ui :as ui]
             [gdl.utils :refer [pretty-pst with-err-str]]))
 
 (defn error-window [{:keys [cdq.context/stage]} throwable]

@@ -15,7 +15,7 @@
             [cdq.stage :as stage]
             [cdq.info :as info]
             [gdl.math.vector2 :as v]
-            [cdq.ui :as ui]
+            [gdl.ui :as ui]
             [gdl.gdx.scenes.scene2d.actor :as actor]
             [gdl.gdx.scenes.scene2d.group :as group]
             cdq.time

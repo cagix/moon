@@ -1,5 +1,5 @@
 (ns cdq.create.stage.windows
-  (:require [cdq.ui :as ui]
+  (:require [gdl.ui :as ui]
             [gdl.utils :as utils]))
 
 (defn create [actors context]

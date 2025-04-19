@@ -2,7 +2,7 @@
   (:require [gdl.graphics.sprite :as sprite]
             [gdl.graphics.batch :as batch]
             [gdl.graphics.text :as text]
-            [cdq.ui :refer [ui-actor]]
+            [gdl.ui :refer [ui-actor]]
             [gdl.utils :refer [readable-number]]
             [cdq.entity :as entity]
             [cdq.val-max :as val-max]))

@@ -6,7 +6,7 @@
             [gdl.math.vector2 :as v]
             [cdq.stage :as stage]
             [cdq.skill :as skill]
-            [cdq.ui :as ui]
+            [gdl.ui :as ui]
             [cdq.world :refer [world-item?
                                player-movement-vector
                                get-inventory

@@ -1,7 +1,7 @@
 (ns cdq.create.stage.player-message
   (:require [gdl.graphics :as graphics]
             [gdl.graphics.text :as text]
-            [cdq.ui :refer [ui-actor]]))
+            [gdl.ui :refer [ui-actor]]))
 
 (defn- draw-player-message [{:keys [gdl.graphics/ui-viewport
                                     cdq.context/player-message] :as c}]

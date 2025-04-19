@@ -1,4 +1,4 @@
-(ns cdq.ui
+(ns gdl.ui
   (:require [gdl.gdx.scenes.scene2d.actor :as actor]
             [gdl.gdx.scenes.scene2d.group :refer [find-actor-with-id add-actor!]]
             [gdl.gdx.scenes.scene2d.ui.table :as table]

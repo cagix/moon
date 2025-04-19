@@ -4,7 +4,7 @@
             cdq.editor
             [gdl.graphics.camera :as cam]
             [cdq.stage :as stage]
-            [cdq.ui :as ui]
+            [gdl.ui :as ui]
             cdq.world.context
             [gdl.graphics :as graphics]
             [gdl.gdx.scenes.scene2d.ui.table :as table]

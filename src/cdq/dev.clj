@@ -6,7 +6,7 @@
             [clojure.pprint :refer [pprint]]
             [gdl.gdx.scenes.scene2d.group :refer [children]]
             [cdq.stage :as stage]
-            [cdq.ui :refer [t-node scroll-pane] :as ui]
+            [gdl.ui :refer [t-node scroll-pane] :as ui]
             [cdq.world :as world]))
 
 (comment
