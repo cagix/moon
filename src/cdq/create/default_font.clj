@@ -1,10 +1,10 @@
 (ns cdq.create.default-font
-  (:require [clojure.gdx.files :as files]
-            [clojure.gdx.graphics.g2d.freetype :as freetype])
-  (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
+  (:require [clojure.gdx.graphics.g2d.freetype :as freetype])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
 (defn create [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (freetype/generate-font (files/internal file)
+  (let [^BitmapFont font (freetype/generate-font (.internal Gdx/files file)
                                                  {:size (* size quality-scaling)})]
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)

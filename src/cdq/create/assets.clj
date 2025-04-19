@@ -1,8 +1,8 @@
 (ns cdq.create.assets
-  (:require [clojure.gdx.files :as files]
-            [clojure.gdx.assets :as assets]
+  (:require [clojure.gdx.assets :as assets]
             [clojure.gdx.files.file-handle :as fh]
-            [clojure.string :as str]))
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn create []
   (assets/create
@@ -10,7 +10,7 @@
      (for [[asset-type extensions] {:sound   #{"wav"}
                                     :texture #{"png" "bmp"}}
            file (map #(str/replace-first % folder "")
-                     (loop [[file & remaining] (fh/list (files/internal folder))
+                     (loop [[file & remaining] (fh/list (.internal Gdx/files folder))
                             result []]
                        (cond (nil? file)
                              result
