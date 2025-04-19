@@ -6,7 +6,6 @@
             [cdq.create.stage :as stage]
             [cdq.create.tiled-map-renderer :as tiled-map-renderer]
             [cdq.create.ui-viewport :as ui-viewport]
-            [cdq.create.world-unit-scale :as world-unit-scale]
             [cdq.create.world-viewport :as world-viewport]
             cdq.graphics.shape-drawer
             cdq.world.context
@@ -189,7 +188,7 @@
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
-        world-unit-scale (world-unit-scale/create)
+        world-unit-scale (float (/ 48))
         ui-viewport (ui-viewport/create)
         context {:cdq/assets (load-assets {:folder "resources/"
                                            :asset-type->extensions {:sound   #{"wav"}
