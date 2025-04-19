@@ -30,9 +30,6 @@
       (throw (ex-info "cannot resolve " {:sym qualified-symbol})))
     (apply f (concat params more-params))))
 
-(defn execute! [function-invocation-forms]
-  (run! req-resolve-call function-invocation-forms))
-
 (def overwrite-warnings? false)
 
 (defmacro defcomponent [k & sys-impls]

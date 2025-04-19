@@ -17,9 +17,21 @@
             cdq.world.context
             clojure.gdx.application
             clojure.gdx.backends.lwjgl
-            [clojure.gdx.utils :as utils])
+            [clojure.gdx.utils :as utils]
+            [clojure.java.io :as io])
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+           (com.badlogic.gdx.utils SharedLibraryLoader Os)
+           (com.badlogic.gdx.utils.viewport Viewport)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration)))
+
+; TODO * the application context without any game specific logic ! *
+; just the mechanics !!
+; clojure.rpg ?
+; but where exactly does game specific logic start? at schemas ???
+; !!! what a boundary !!!
+; can also set background color ScreenUtils/clear ...
+; fuck !
 
 (defn- create-game []
   (let [schemas (schemas/create)
@@ -81,9 +93,11 @@
   (Viewport/.update (:cdq.graphics/world-viewport context) width height false))
 
 (defn -main []
-  (clojure.utils/execute! (get {:mac '[(clojure.java.awt.taskbar/set-icon "moon.png")
-                                       (clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]}
-                               (clojure.gdx.utils/operating-system)))
+  (when  (= SharedLibraryLoader/os Os/MacOsX)
+    (.setIconImage (Taskbar/getTaskbar)
+                   (.getImage (Toolkit/getDefaultToolkit)
+                              (io/resource "moon.png")))
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
                                             (create [_]
                                               (reset! cdq.application/state (create-game)))
