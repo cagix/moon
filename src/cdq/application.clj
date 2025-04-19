@@ -305,3 +305,6 @@
                         (.setTitle "Cyber Dungeon Quest")
                         (.setWindowedMode 1440 900)
                         (.setForegroundFPS 60))))
+
+(defn post-runnable [f]
+  (.postRunnable Gdx/app (fn [] (f @state))))

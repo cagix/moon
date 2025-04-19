@@ -7,20 +7,16 @@
             [clojure.gdx.scenes.scene2d.group :refer [children]]
             [cdq.stage :as stage]
             [cdq.ui :refer [t-node scroll-pane] :as ui]
-            [cdq.world :as world])
-  (:import (com.badlogic.gdx Gdx)))
-
-(defn post-runnable [f]
-  (.postRunnable Gdx/app (fn [] (f @app/state))))
+            [cdq.world :as world]))
 
 (comment
 
  (print-app-values-tree "app-values-tree.clj" #{"cdq"})
 
- ; use post-runnable to get proper error messages in console
+ ; use app/post-runnable to get proper error messages in console
 
- (post-runnable (fn [context] (show-tree-view! "Application Context" context)))
- (post-runnable (fn [context] (show-table-view "Application Context" context)))
+ (app/post-runnable (fn [context] (show-tree-view! "Application Context" context)))
+ (app/post-runnable (fn [context] (show-table-view "Application Context" context)))
 
  (show-tree-view! "Mouseover Entity" @(:cdq.context/mouseover-eid @app/state))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
@@ -51,7 +47,7 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable #(world/creature %
+ (app/post-runnable #(world/creature %
                                      {:position [35 73]
                                       :creature-id :creatures/dragon-red
                                       :components {:entity/fsm {:fsm :fsms/npc
