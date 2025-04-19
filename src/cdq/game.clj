@@ -48,10 +48,8 @@
                   :cdq.graphics/world-unit-scale world-unit-scale
                   :cdq.graphics/world-viewport (world-viewport/create world-unit-scale)
                   :cdq/db (db/create schemas)
-
-                  ; what are this again ?
                   :context/entity-components (cdq.create.entity-components/create)
-                  :cdq/schemas schemas  ; part of db?
+                  :cdq/schemas schemas
                   :cdq.context/stage (stage/create batch ui-viewport)}) ]
     (cdq.world.context/reset context :worlds/vampire)))
 
@@ -90,28 +88,10 @@
 
 (def state (atom nil))
 
-; This is fucking everything thats being executed
-; * creating context -> what does it consists of, how does it connect - which APIs, which data (pass !)
-; * dispose/resize is trivial
-; * render loop!
-; = > draw game / take input / update game
-
-; So what is the game board/domain model?
-; => database/ schemas (part of db ?)
-; => tiledmap & entities -> that's it ?!?!?
-; => this keep simple .... maybe just STR/DEFENSE ?
 (defn -main []
-
-  ; => dynamically bind the game again (load all forms, symbols first ?? )
-  ; => so code logic is not complected ?
-  ; => pass data again ...
-  ; => the executing tree becomes
-  ; also __upfactor__ => only what we need / monorepo !?
-  ; => and _tests_ for design => just simple application test without any doing .... ?
   (clojure.utils/execute! (get {:mac '[(clojure.java.awt.taskbar/set-icon "moon.png")
                                        (clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]}
                                (clojure.gdx.utils/operating-system)))
-  ; we draw the line at gdx .... too big/complicated
   (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
                                             (create [_]
                                               (reset! state (create-game)))
@@ -132,8 +112,6 @@
                                            :windowed-mode {:width 1440
                                                            :height 900}
                                            :foreground-fps 60}))
-
-; this side effects as data ?
 
 (defrecord Body [position
                  left-bottom
@@ -186,11 +164,11 @@
                     k))
 (defmethod create! :default [_ eid c])
 
-(def id-counter (atom 0)) ; TODO no global state !!!
+(def id-counter (atom 0))
 
 (extend-type Game
   world/World
-  (spawn-entity [context position body components] ; <<< --- FIXME this is just a side efffect ...
+  (spawn-entity [context position body components]
     (assert (and (not (contains? components :position))
                  (not (contains? components :entity/id))))
     (let [eid (atom (-> body
