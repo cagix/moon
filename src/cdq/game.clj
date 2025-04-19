@@ -4,7 +4,7 @@
             [cdq.create.cursors :as cursors]
             [cdq.create.default-font :as default-font]
             [cdq.create.db :as db]
-            cdq.create.effects                              ; this should bepassed !
+            cdq.create.effects
             cdq.create.entity-components
             [cdq.create.schemas :as schemas]
             [cdq.create.shape-drawer :as shape-drawer]
@@ -21,18 +21,6 @@
   (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
-(comment
- ; create! is a [k value] or just [nil foo!]? )
- (fn [context [k fn-invoc]]
-   (if-let [result (req-resolve-call fn-invoc)]
-     (assoc context k (req-resolve-call fn-invoc))
-     context)))
-
-; context/assets
-; context/graphics
-; context/stage
-; context/db
-; context/world
 (defn- create-game []
   (let [schemas (schemas/create)
         batch (SpriteBatch.)
@@ -59,32 +47,15 @@
                  :cdq.context/stage (stage/create batch ui-viewport)}]
     (cdq.world.context/reset context :worlds/vampire)))
 
-; actually the 'application' can contain all application specific stuff
-; -> batch, cursors, font, shapes, tiledmap, 2 viewports, stage
-; all db/entity-components/game-specific stuff move somewhere else ... !
-; do I need vis-ui there ?
-; => clojure.rpg game maker application ???
-; for tile based realtime games ....
-
 (defn- dispose-game [context]
   (doseq [[_k value] context
           :when (utils/disposable? value)]
     (utils/dispose value)))
 
-(comment
-
- ; render! is a fn which returns a new context or nil , continue with old context ...
-
- (fn [context render!]
-   (if-let [result (render! context)]
-     result
-     context)))
-
 (defn- render-game [context]
   (reduce (fn [context f]
             (f context))
           context
-          ; 'require-resolve-fn-invocations'
           (for [ns-sym '[cdq.render.assoc-active-entities
                          cdq.render.set-camera-on-player
                          cdq.render.clear-screen
@@ -110,11 +81,9 @@
   (Viewport/.update (:cdq.graphics/world-viewport context) width height false))
 
 (defn -main []
-  ; move to backend code :mac-os options
   (clojure.utils/execute! (get {:mac '[(clojure.java.awt.taskbar/set-icon "moon.png")
                                        (clojure.lwjgl.system.configuration/set-glfw-library-name "glfw_async")]}
                                (clojure.gdx.utils/operating-system)))
-  ; pass directly ApplicationListener interface (=> Adapter )
   (clojure.gdx.backends.lwjgl/application (reify clojure.gdx.application/Listener
                                             (create [_]
                                               (reset! cdq.application/state (create-game)))
