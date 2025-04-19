@@ -7,9 +7,9 @@
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.camera :as cam]
             [cdq.ui :refer [ui-actor text-button] :as ui]
-            [clojure.gdx.input :as input]
-            [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.scenes.scene2d.group :refer [add-actor!]]
+            [gdl.gdx.input :as input]
+            [gdl.gdx.tiled :as tiled]
+            [gdl.gdx.scenes.scene2d.group :refer [add-actor!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx.graphics Color)))
