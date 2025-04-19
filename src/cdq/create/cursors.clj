@@ -1,9 +1,9 @@
 (ns cdq.create.cursors
   (:require [clojure.gdx.graphics :as graphics]
-            [clojure.gdx.graphics.pixmap :as pixmap]
             clojure.gdx.utils
             clojure.utils)
-  (:import (com.badlogic.gdx Gdx)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Pixmap)))
 
 (def config
   {:cursors/bag                   ["bag001"       [0   0]]
@@ -30,7 +30,7 @@
   (map->Cursors
    (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
-      (let [pixmap (pixmap/create (.internal Gdx/files (str "cursors/" file ".png")))
+      (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
             cursor (graphics/new-cursor pixmap hotspot-x hotspot-y)]
         (clojure.gdx.utils/dispose pixmap)
         cursor))
