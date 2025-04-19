@@ -1,8 +1,19 @@
 (ns clojure.gdx.tiled
   (:import (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.maps MapLayer MapLayers MapProperties)
-           (com.badlogic.gdx.maps.tiled TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
+           (com.badlogic.gdx.maps.tiled TmxMapLoader TiledMap TiledMapTile TiledMapTileLayer TiledMapTileLayer$Cell)
            (com.badlogic.gdx.maps.tiled.tiles StaticTiledMapTile)))
+
+(defn load-map
+  "Loads the TiledMap from the given file. The file is resolved via the FileHandleResolver set in the constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate system.
+
+  Parameters:
+  file-name - the filename
+
+  Returns:
+  the TiledMap "
+  [file-name]
+  (.load (TmxMapLoader.) file-name))
 
 (defn dispose
   "Disposes all resources like Texture instances that the map may own."

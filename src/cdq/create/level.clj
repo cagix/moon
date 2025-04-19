@@ -2,7 +2,7 @@
   (:require [cdq.level.modules :refer [generate-modules]]
             [cdq.level.uf-caves :as uf-caves]
             [cdq.db :as db]
-            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]))
+            [clojure.gdx.tiled :as tiled]))
 
 (defmulti generate-level* (fn [world c] (:world/generator world)))
 
@@ -17,7 +17,7 @@
                    ((:cdq/assets c) "maps/uf_terrain.png"))) ; TODO use (def assets ::assets)
 
 (defmethod generate-level* :world.generator/tiled-map [world c]
-  {:tiled-map (tmx-map-loader/load (:world/tiled-map world))
+  {:tiled-map (tiled/load-map (:world/tiled-map world))
    :start-position [32 71]})
 
 (defmethod generate-level* :world.generator/modules [world {:keys [cdq/db] :as c}]

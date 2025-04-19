@@ -10,7 +10,6 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :as input]
             [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.maps.tiled.tmx-map-loader :as tmx-map-loader]
             [clojure.gdx.scenes.scene2d.group :refer [add-actor!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
@@ -169,7 +168,7 @@
   #_(dispose (:tiled-map @current-data)))
 
 (comment
- (atom {:tiled-map (tmx-map-loader/load modules/file)
+ (atom {:tiled-map (tiled/load-map modules/file)
         :show-movement-properties false
         :show-grid-lines false})
  )
