@@ -3,7 +3,7 @@
 ; => parts = editor, modifier, effect, creature, projectile, ... ?
 (ns cdq.editor
   (:require cdq.error
-            [cdq.game :refer [state]]
+            [cdq.application :refer [state]]
             [cdq.assets :refer [play-sound]]
             [cdq.db :as db]
             [cdq.schema :as schema]
