@@ -2,11 +2,12 @@
   (:require [cdq.context :as context]
             [cdq.create.level :as level]
             cdq.create.grid
+            [cdq.stage]
             [cdq.grid :as grid]
-            [gdl.ui.stage :as stage]
             [cdq.world :refer [spawn-creature]]
             [gdl.data.grid2d :as g2d]
             [gdl.tiled :as tiled]
+            [gdl.ui.stage :as stage]
             [gdl.utils :as utils :refer [defcomponent]]))
 
 (defn- set-arr [arr cell cell->blocked?]
@@ -64,21 +65,10 @@
   (spawn-creature context
                   (player-entity-props (:start-position level))))
 
-(def actors
-  '[(cdq.create.stage.dev-menu/create (cdq.create.stage.dev-menu.config/create))
-    (cdq.create.stage.actionbar/create)
-    (cdq.create.stage.hp-mana-bar/create)
-    (cdq.create.stage.windows/create [(cdq.create.stage.entity-info-window/create)
-                                      (cdq.widgets.inventory/create)])
-    (cdq.create.stage.player-state/create)
-    (cdq.create.stage.player-message/actor)])
-
 (defn- reset-stage! [{:keys [cdq.context/stage] :as context}]
   (com.badlogic.gdx.scenes.scene2d.Stage/.clear stage)
   (run! #(stage/add-actor stage %)
-        (map (fn [fn-invoc]
-               (utils/req-resolve-call fn-invoc context))
-             actors)))
+        (cdq.stage/actors context)))
 
 (defn reset [context world-id]
   (reset-stage! context)

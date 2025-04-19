@@ -6,10 +6,10 @@
             [cdq.modules :as modules]
             [gdl.graphics.shape-drawer :as sd]
             [gdl.graphics.camera :as cam]
-            [cdq.ui :refer [ui-actor text-button] :as ui]
-            [gdl.gdx.input :as input]
-            [gdl.gdx.tiled :as tiled]
-            [gdl.gdx.scenes.scene2d.group :refer [add-actor!]]
+            [gdl.ui :refer [ui-actor text-button] :as ui]
+            [gdl.input :as input]
+            [gdl.tiled :as tiled]
+            [gdl.ui.group :refer [add-actor!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx.graphics Color)))
