@@ -2,7 +2,6 @@
   (:require [cdq.context :as context]
             [cdq.create.level :as level]
             cdq.create.grid
-            cdq.create.content-grid
             [cdq.grid :as grid]
             [cdq.stage :as stage]
             [cdq.world :refer [spawn-creature]]
@@ -21,6 +20,21 @@
     (doseq [cell (g2d/cells grid)]
       (set-arr arr @cell grid/blocks-vision?))
     [arr width height]))
+
+(defn- create-content-grid* [{:keys [cell-size width height]}]
+  {:grid (g2d/create-grid
+          (inc (int (/ width  cell-size))) ; inc because corners
+          (inc (int (/ height cell-size)))
+          (fn [idx]
+            (atom {:idx idx,
+                   :entities #{}})))
+   :cell-w cell-size
+   :cell-h cell-size})
+
+(defn- content-grid [tiled-map]
+  (create-content-grid* {:cell-size 16
+                         :width  (tiled/tm-width  tiled-map)
+                         :height (tiled/tm-height tiled-map)}))
 
 (defn- player-entity-props [start-position]
   {:position (utils/tile->middle start-position)
@@ -71,7 +85,7 @@
   (let [{:keys [tiled-map start-position] :as level} (level/create context world-id)
         grid (cdq.create.grid/create tiled-map)
         context (merge context
-                       {:cdq.context/content-grid (cdq.create.content-grid/create tiled-map)
+                       {:cdq.context/content-grid (content-grid tiled-map)
                         :cdq.context/elapsed-time 0
                         :cdq.context/entity-ids (atom {})
                         :cdq.context/player-message (atom {:duration-seconds 1.5})
@@ -97,3 +111,23 @@
     (let [id (:entity/id @eid)]
       (assert (contains? @entity-ids id))
       (swap! entity-ids dissoc id))))
+
+(defcomponent :cdq.context/content-grid
+  (context/add-entity [[_ {:keys [grid cell-w cell-h]}] eid]
+    (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid
+          [x y] (:position entity)
+          new-cell (get grid [(int (/ x cell-w))
+                              (int (/ y cell-h))])]
+      (when-not (= content-cell new-cell)
+        (swap! new-cell update :entities conj eid)
+        (swap! eid assoc :cdq.content-grid/content-cell new-cell)
+        (when content-cell
+          (swap! content-cell update :entities disj eid)))))
+
+  (context/remove-entity [_ eid]
+    (-> @eid
+        :cdq.content-grid/content-cell
+        (swap! update :entities disj eid)))
+
+  (context/position-changed [this eid]
+    (context/add-entity this eid)))
