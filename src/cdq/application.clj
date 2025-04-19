@@ -3,7 +3,6 @@
             [clojure.gdx.assets :as assets] ; all-of-type -> editor -> decide later
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.gdx.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -26,6 +25,14 @@
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
+(defprotocol Disposable
+  (dispose! [_]))
+
+(extend-type com.badlogic.gdx.utils.Disposable
+  Disposable
+  (dispose! [this]
+    (.dispose this)))
+
 (defn- load-assets [{:keys [folder
                             asset-type->extensions]}]
   (assets/create
@@ -47,9 +54,9 @@
      [file asset-type])))
 
 (defrecord Cursors []
-  clojure.gdx.utils/Disposable
-  (dispose [this]
-    (run! clojure.gdx.utils/dispose (vals this))))
+  Disposable
+  (dispose! [this]
+    (run! dispose! (vals this))))
 
 (defn- load-cursors [config]
   (map->Cursors
@@ -57,7 +64,7 @@
     (fn [[file [hotspot-x hotspot-y]]]
       (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
             cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-        (clojure.gdx.utils/dispose pixmap)
+        (.dispose pixmap)
         cursor))
     config)))
 
@@ -270,9 +277,12 @@
      :cdq.context/stage (create-stage! {:skin-scale :x1} batch ui-viewport)}))
 
 (defn- dispose-game [context]
-  (doseq [[_k value] context
-          :when (utils/disposable? value)]
-    (utils/dispose value)))
+  (doseq [[k value] context]
+    (if (satisfies? Disposable value)
+      (do
+       #_(println "Disposing:" k)
+       (dispose! value))
+      #_(println "Not Disposable: " k ))))
 
 (defn- resize-game [context width height]
   ; could make 'viewport/update protocol' or 'on-resize' protocol
