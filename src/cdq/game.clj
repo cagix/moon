@@ -28,6 +28,11 @@
      (assoc context k (req-resolve-call fn-invoc))
      context)))
 
+; context/assets
+; context/graphics
+; context/stage
+; context/db
+; context/world
 (defn- create-game []
   (let [schemas (schemas/create)
         batch (batch/create)
@@ -37,7 +42,9 @@
         context {:cdq/assets (assets/create)
                  :cdq.graphics/batch batch
                  :cdq.graphics/cursors (cursors/create)
-                 :cdq.graphics/default-font (default-font/create)
+                 :cdq.graphics/default-font (default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
+                                                                  :size 16
+                                                                  :quality-scaling 2})
                  :cdq.graphics/shape-drawer (shape-drawer/create batch shape-drawer-texture)
                  :cdq.graphics/shape-drawer-texture shape-drawer-texture
                  :cdq.graphics/tiled-map-renderer (tiled-map-renderer/create batch world-unit-scale)

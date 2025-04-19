@@ -3,14 +3,8 @@
             [clojure.gdx.graphics.g2d.freetype :as freetype])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
-(def config
-  {:file "fonts/exocet/films.EXL_____.ttf"
-   :size 16
-   :quality-scaling 2})
-
-(defn create []
-  (let [{:keys [file size quality-scaling]} config
-        ^BitmapFont font (freetype/generate-font (files/internal file)
+(defn create [{:keys [file size quality-scaling]}]
+  (let [^BitmapFont font (freetype/generate-font (files/internal file)
                                                  {:size (* size quality-scaling)})]
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
