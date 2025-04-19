@@ -239,44 +239,48 @@
     (.setToOrtho camera y-down? world-width world-height)
     (fit-viewport world-width world-height camera)))
 
-(defn- create-game []
-  (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
-        batch (SpriteBatch.)
+(defn- create-context []
+  (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ 48))
-        ui-viewport (fit-viewport 1440 900 (OrthographicCamera.)) ; TODO part of stage?
-        context {:cdq/assets (load-assets {:folder "resources/"
-                                           :asset-type->extensions {:sound   #{"wav"}
-                                                                    :texture #{"png" "bmp"}}})
-                 :cdq.graphics/batch batch
-                 :cdq.graphics/cursors (load-cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                                      :cursors/black-x               ["black_x"      [0   0]]
-                                                      :cursors/default               ["default"      [0   0]]
-                                                      :cursors/denied                ["denied"       [16 16]]
-                                                      :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                      :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                      :cursors/hand-grab             ["hand003"      [4  16]]
-                                                      :cursors/move-window           ["move002"      [16 16]]
-                                                      :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                      :cursors/over-button           ["hand002"      [0   0]]
-                                                      :cursors/sandclock             ["sandclock"    [16 16]]
-                                                      :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                      :cursors/use-skill             ["pointer004"   [0   0]]
-                                                      :cursors/walking               ["walking"      [16 16]]})
-                 :cdq.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                                        :size 16
-                                                        :quality-scaling 2})
-                 :cdq.graphics/shape-drawer (ShapeDrawer. batch
-                                                          (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-                 :cdq.graphics/shape-drawer-texture shape-drawer-texture
-                 :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
-                 :cdq.graphics/ui-viewport ui-viewport
-                 :cdq.graphics/world-unit-scale world-unit-scale
-                 :cdq.graphics/world-viewport (world-viewport world-unit-scale {:width 1440 :height 900})
-                 :cdq/db (db/create schemas)
-                 :context/entity-components (cdq.create.entity-components/create)
-                 :cdq/schemas schemas
-                 :cdq.context/stage (create-stage! {:skin-scale :x1} batch ui-viewport)}]
+        ; TODO ui-viewport part of stage?
+        ui-viewport (fit-viewport 1440 900 (OrthographicCamera.))]
+    {:cdq/assets (load-assets {:folder "resources/"
+                               :asset-type->extensions {:sound   #{"wav"}
+                                                        :texture #{"png" "bmp"}}})
+     :cdq.graphics/batch batch
+     :cdq.graphics/cursors (load-cursors {:cursors/bag                   ["bag001"       [0   0]]
+                                          :cursors/black-x               ["black_x"      [0   0]]
+                                          :cursors/default               ["default"      [0   0]]
+                                          :cursors/denied                ["denied"       [16 16]]
+                                          :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                          :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                          :cursors/hand-grab             ["hand003"      [4  16]]
+                                          :cursors/move-window           ["move002"      [16 16]]
+                                          :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                          :cursors/over-button           ["hand002"      [0   0]]
+                                          :cursors/sandclock             ["sandclock"    [16 16]]
+                                          :cursors/skill-not-usable      ["x007"         [0   0]]
+                                          :cursors/use-skill             ["pointer004"   [0   0]]
+                                          :cursors/walking               ["walking"      [16 16]]})
+     :cdq.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
+                                            :size 16
+                                            :quality-scaling 2})
+     :cdq.graphics/shape-drawer (ShapeDrawer. batch
+                                              (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+     :cdq.graphics/shape-drawer-texture shape-drawer-texture
+     :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
+     :cdq.graphics/ui-viewport ui-viewport
+     :cdq.graphics/world-unit-scale world-unit-scale
+     :cdq.graphics/world-viewport (world-viewport world-unit-scale {:width 1440 :height 900})
+     :cdq.context/stage (create-stage! {:skin-scale :x1} batch ui-viewport)}))
+
+(defn- create-game []
+  (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
+        context (merge (create-context)
+                       {:cdq/db (db/create schemas)
+                        :context/entity-components (cdq.create.entity-components/create)
+                        :cdq/schemas schemas})]
     (cdq.world.context/reset context :worlds/vampire)))
 
 (defn- dispose-game [context]
