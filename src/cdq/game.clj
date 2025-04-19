@@ -1,7 +1,6 @@
 (ns cdq.game
   (:require cdq.application
             [cdq.create.assets :as assets]
-            [cdq.create.batch :as batch]
             [cdq.create.cursors :as cursors]
             [cdq.create.default-font :as default-font]
             [cdq.create.db :as db]
@@ -19,7 +18,8 @@
             clojure.gdx.application
             clojure.gdx.backends.lwjgl
             [clojure.gdx.utils :as utils]
-            [clojure.gdx.utils.viewport :as viewport]))
+            [clojure.gdx.utils.viewport :as viewport])
+  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
 
 (comment
  ; create! is a [k value] or just [nil foo!]? )
@@ -35,7 +35,7 @@
 ; context/world
 (defn- create-game []
   (let [schemas (schemas/create)
-        batch (batch/create)
+        batch (SpriteBatch.)
         shape-drawer-texture (shape-drawer-texture/create)
         world-unit-scale (world-unit-scale/create)
         ui-viewport (ui-viewport/create)
