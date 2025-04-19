@@ -25,6 +25,7 @@
         new-scale (float (* old-scale
                             (float unit-scale)
                             (float (or scale 1))))
+        target-width (float 0)
         wrap? false]
     (.setScale data new-scale)
     (.draw font
@@ -32,6 +33,7 @@
            text
            (float x)
            (float (+ y (if up? (text-height font text) 0)))
+           target-width
            (interop/k->align (or h-align :center))
-           wrap? )
+           wrap?)
     (.setScale data old-scale)))
