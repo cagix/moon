@@ -4,6 +4,7 @@
             cdq.create.entity-components
             cdq.create.schemas
             cdq.graphics.shape-drawer
+            cdq.render
             cdq.world.context
             [clojure.gdx.assets :as assets] ; all-of-type -> editor -> decide later
             [clojure.gdx.interop :as interop]
@@ -283,30 +284,6 @@
           :when (utils/disposable? value)]
     (utils/dispose value)))
 
-(defn- render-game [context]
-  (reduce (fn [context f]
-            (f context))
-          context
-          (for [ns-sym '[cdq.render.assoc-active-entities
-                         cdq.render.set-camera-on-player
-                         cdq.render.clear-screen ; application level code
-                         cdq.render.tiled-map
-                         cdq.render.draw-on-world-view
-                         cdq.render.stage
-                         cdq.render.player-state-input
-                         cdq.render.update-mouseover-entity
-                         cdq.render.update-paused
-                         cdq.render.when-not-paused
-
-                         ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                         cdq.render.remove-destroyed-entities
-
-                         cdq.render.camera-controls
-                         cdq.render.window-controls]]
-            (do
-             (require ns-sym)
-             (resolve (symbol (str ns-sym "/render")))))))
-
 (defn- resize-game [context width height]
   ; could make 'viewport/update protocol' or 'on-resize' protocol
   ; and reify the viewports
@@ -330,7 +307,7 @@
                           (dispose-game @state))
 
                         (render []
-                          (swap! state render-game))
+                          (swap! state cdq.render/game-loop!))
 
                         (resize [width height]
                           (resize-game @state width height)))
