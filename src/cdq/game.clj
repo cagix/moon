@@ -1,6 +1,5 @@
 (ns cdq.game
-  (:require cdq.application
-            [cdq.create.db :as db]
+  (:require [cdq.create.db :as db]
             cdq.create.effects
             cdq.create.entity-components
             cdq.create.schemas
@@ -252,6 +251,8 @@
   (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
   (Viewport/.update (:cdq.graphics/world-viewport context) width height false))
 
+(def state (atom nil))
+
 (defn -main []
   (when  (= SharedLibraryLoader/os Os/MacOsX)
     (.setIconImage (Taskbar/getTaskbar)
@@ -260,16 +261,16 @@
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
   (Lwjgl3Application. (proxy [ApplicationAdapter] []
                         (create []
-                          (reset! cdq.application/state (create-game)))
+                          (reset! state (create-game)))
 
                         (dispose []
-                          (dispose-game @cdq.application/state))
+                          (dispose-game @state))
 
                         (render []
-                          (swap! cdq.application/state render-game))
+                          (swap! state render-game))
 
                         (resize [width height]
-                          (resize-game @cdq.application/state width height)))
+                          (resize-game @state width height)))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle "Cyber Dungeon Quest")
                         (.setWindowedMode 1440 900)
