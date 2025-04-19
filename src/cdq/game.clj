@@ -3,7 +3,6 @@
             cdq.create.effects
             cdq.create.entity-components
             cdq.create.schemas
-            [cdq.create.stage :as stage]
             [cdq.create.tiled-map-renderer :as tiled-map-renderer]
             [cdq.create.ui-viewport :as ui-viewport]
             [cdq.create.world-viewport :as world-viewport]
@@ -12,12 +11,14 @@
             [clojure.gdx.assets :as assets] ; all-of-type -> editor
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.utils])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter)
@@ -27,6 +28,9 @@
            (com.badlogic.gdx.math MathUtils)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+           (com.kotcrab.vis.ui.widget Tooltip)
+           (gdl StageWithState)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
@@ -184,6 +188,34 @@
     (.dispose pixmap)
     texture))
 
+(defn- create-stage! [config batch viewport]
+  ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
+  ; => actually there is a deeper issue at play
+  ; we need to dispose ALL resources which were loaded already ...
+  (when (VisUI/isLoaded)
+    (VisUI/dispose))
+  (VisUI/load (case (:skin-scale config)
+                :x1 VisUI$SkinScale/X1
+                :x2 VisUI$SkinScale/X2))
+  (-> (VisUI/getSkin)
+      (.getFont "default-font")
+      .getData
+      .markupEnabled
+      (set! true))
+  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+  ;Controls whether to fade out tooltip when mouse was moved. (default false)
+  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+  (let [stage (proxy [StageWithState ILookup] [viewport batch]
+                (valAt
+                  ([id]
+                   (group/find-actor-with-id (StageWithState/.getRoot this) id))
+                  ([id not-found]
+                   (or (group/find-actor-with-id (StageWithState/.getRoot this) id)
+                       not-found))))]
+    (.setInputProcessor Gdx/input stage)
+    stage))
+
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
@@ -221,7 +253,7 @@
                  :cdq/db (db/create schemas)
                  :context/entity-components (cdq.create.entity-components/create)
                  :cdq/schemas schemas
-                 :cdq.context/stage (stage/create {:skin-scale :x1} batch ui-viewport)}]
+                 :cdq.context/stage (create-stage! {:skin-scale :x1} batch ui-viewport)}]
     (cdq.world.context/reset context :worlds/vampire)))
 
 (defn- dispose-game [context]
