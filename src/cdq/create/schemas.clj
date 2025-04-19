@@ -3,16 +3,7 @@
             [cdq.db :as db]
             cdq.graphics.animation
             cdq.graphics.sprite
-            [cdq.schema :as schema]
-            clojure.edn
-            clojure.java.io))
-
-(defn create []
-  (-> "schema.edn"
-      clojure.java.io/resource
-      slurp
-      clojure.edn/read-string))
-; TODO validate - data based - game object editor - ODB?
+            [cdq.schema :as schema]))
 
 (defmethod schema/edn->value :s/sound [_ sound-name {:keys [cdq/assets]}]
   (cdq.assets/sound assets sound-name))

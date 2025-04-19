@@ -5,7 +5,7 @@
             [cdq.create.db :as db]
             cdq.create.effects
             cdq.create.entity-components
-            [cdq.create.schemas :as schemas]
+            cdq.create.schemas
             [cdq.create.shape-drawer :as shape-drawer]
             [cdq.create.shape-drawer-texture :as shape-drawer-texture]
             [cdq.create.stage :as stage]
@@ -16,6 +16,7 @@
             cdq.world.context
             [clojure.gdx.assets :as assets]
             [clojure.gdx.utils :as utils]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -48,7 +49,7 @@
      [file asset-type])))
 
 (defn- create-game []
-  (let [schemas (schemas/create)
+  (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
         shape-drawer-texture (shape-drawer-texture/create)
         world-unit-scale (world-unit-scale/create)
