@@ -3,15 +3,15 @@
             cdq.create.effects
             cdq.create.entity-components
             cdq.create.schemas
-            [cdq.create.ui-viewport :as ui-viewport]
-            [cdq.create.world-viewport :as world-viewport]
             cdq.graphics.shape-drawer
+            [cdq.graphics.camera :as camera]
             cdq.world.context
             [clojure.gdx.assets :as assets] ; all-of-type -> editor
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.utils :as utils]
+            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -20,7 +20,7 @@
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter)
+           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
@@ -221,12 +221,20 @@
                                           (float world-unit-scale)
                                           batch))))
 
+(defn- world-viewport [world-unit-scale config]
+  {:pre [world-unit-scale]}
+  (let [camera (OrthographicCamera.)
+        world-width  (* (:width  config) world-unit-scale)
+        world-height (* (:height config) world-unit-scale)]
+    (camera/set-to-ortho camera world-width world-height :y-down? false)
+    (fit-viewport/create world-width world-height camera)))
+
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ 48))
-        ui-viewport (ui-viewport/create)
+        ui-viewport (fit-viewport/create 1440 900 (OrthographicCamera.))
         context {:cdq/assets (load-assets {:folder "resources/"
                                            :asset-type->extensions {:sound   #{"wav"}
                                                                     :texture #{"png" "bmp"}}})
@@ -254,7 +262,7 @@
                  :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
                  :cdq.graphics/ui-viewport ui-viewport
                  :cdq.graphics/world-unit-scale world-unit-scale
-                 :cdq.graphics/world-viewport (world-viewport/create world-unit-scale)
+                 :cdq.graphics/world-viewport (world-viewport world-unit-scale {:width 1440 :height 900})
                  :cdq/db (db/create schemas)
                  :context/entity-components (cdq.create.entity-components/create)
                  :cdq/schemas schemas
