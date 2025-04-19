@@ -1,10 +1,10 @@
 (ns cdq.graphics
-  (:require [clojure.gdx.utils.viewport :as viewport]
-            [clojure.gdx.graphics]
+  (:require [clojure.gdx.graphics]
             [clojure.gdx.math.utils :refer [clamp]]
-            [clojure.gdx.utils.viewport :as viewport]
             [clojure.utils :as utils])
-  (:import (com.badlogic.gdx Gdx)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
   (clojure.gdx.graphics/set-cursor (utils/safe-get cursors cursor-key)))
@@ -20,7 +20,8 @@
         mouse-y (clamp (.getY Gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
-    (viewport/unproject viewport mouse-x mouse-y)))
+    (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]
+      [(.x v2) (.y v2)])))
 
 (defn mouse-position [ui-viewport]
   ; TODO mapv int needed?

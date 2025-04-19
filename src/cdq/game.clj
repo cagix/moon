@@ -17,9 +17,9 @@
             cdq.world.context
             clojure.gdx.application
             clojure.gdx.backends.lwjgl
-            [clojure.gdx.utils :as utils]
-            [clojure.gdx.utils.viewport :as viewport])
-  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)))
+            [clojure.gdx.utils :as utils])
+  (:import (com.badlogic.gdx.graphics.g2d SpriteBatch)
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 (comment
  ; create! is a [k value] or just [nil foo!]? )
@@ -99,8 +99,8 @@
              (resolve (symbol (str ns-sym "/render")))))))
 
 (defn- resize-game [context width height]
-  (viewport/update (:cdq.graphics/ui-viewport    context) width height :center-camera? true)
-  (viewport/update (:cdq.graphics/world-viewport context) width height))
+  (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
+  (Viewport/.update (:cdq.graphics/world-viewport context) width height false))
 
 (defn -main []
   ; move to backend code :mac-os options
