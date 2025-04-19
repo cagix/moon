@@ -1,6 +1,5 @@
 (ns cdq.game
   (:require cdq.application
-            [cdq.create.assets :as assets]
             [cdq.create.cursors :as cursors]
             [cdq.create.default-font :as default-font]
             [cdq.create.db :as db]
@@ -15,15 +14,38 @@
             [cdq.create.world-unit-scale :as world-unit-scale]
             [cdq.create.world-viewport :as world-viewport]
             cdq.world.context
+            [clojure.gdx.assets :as assets]
             [clojure.gdx.utils :as utils]
-            [clojure.java.io :as io])
-  (:import (com.badlogic.gdx ApplicationAdapter)
+            [clojure.java.io :as io]
+            [clojure.string :as str])
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
+
+(defn- load-assets [{:keys [folder
+                            asset-type->extensions]}]
+  (assets/create
+   (for [[asset-type extensions] asset-type->extensions
+         file (map #(str/replace-first % folder "")
+                   (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+                          result []]
+                     (cond (nil? file)
+                           result
+
+                           (.isDirectory file)
+                           (recur (concat remaining (.list file)) result)
+
+                           (extensions (.extension file))
+                           (recur remaining (conj result (.path file)))
+
+                           :else
+                           (recur remaining result))))]
+     [file asset-type])))
 
 (defn- create-game []
   (let [schemas (schemas/create)
@@ -31,9 +53,9 @@
         shape-drawer-texture (shape-drawer-texture/create)
         world-unit-scale (world-unit-scale/create)
         ui-viewport (ui-viewport/create)
-        context {:cdq/assets (assets/create {:folder "resources/"
-                                             :asset-type->extensions {:sound   #{"wav"}
-                                                                      :texture #{"png" "bmp"}}})
+        context {:cdq/assets (load-assets {:folder "resources/"
+                                           :asset-type->extensions {:sound   #{"wav"}
+                                                                    :texture #{"png" "bmp"}}})
                  :cdq.graphics/batch batch
                  :cdq.graphics/cursors (cursors/create)
                  :cdq.graphics/default-font (default-font/create {:file "fonts/exocet/films.EXL_____.ttf"
