@@ -1,4 +1,4 @@
-(ns cdq.create.stage.dev-menu
+(ns gdl.ui.menu
   (:require gdl.application
             gdl.graphics.sprite
             [gdl.ui.group :refer [add-actor!]]
@@ -53,8 +53,8 @@
     (add-update-labels c menu-bar update-labels)
     menu-bar))
 
-(defn- create* [c config]
-  (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu* c config))
+(defn create [context config]
+  (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu* context config))
                       :expand-x? true
                       :fill-x? true
                       :colspan 1}]
@@ -64,6 +64,3 @@
                       :fill-x? true
                       :fill-y? true}]]
              :fill-parent? true}))
-
-(defn create [dev-menu-config context]
-  (create* context (gdl.utils/req-resolve-call dev-menu-config context)))
