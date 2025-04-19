@@ -6,8 +6,8 @@
             [cdq.info :as info]
             [gdl.graphics.shape-drawer :as sd]
             gdl.graphics.sprite
-            [clojure.gdx.scenes.scene2d.actor :refer [user-object] :as actor]
-            [clojure.data.grid2d :as g2d]
+            [gdl.gdx.scenes.scene2d.actor :refer [user-object] :as actor]
+            [gdl.data.grid2d :as g2d]
             [cdq.ui :refer [ui-widget
                             texture-region-drawable
                             image-widget
@@ -16,8 +16,8 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [clojure.gdx.audio.sound :as sound]
-            [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils])
+            [gdl.gdx.audio.sound :as sound]
+            [gdl.gdx.scenes.scene2d.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.graphics Color)))
 
 ; Items are also smaller than 48x48 all of them

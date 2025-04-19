@@ -1,5 +1,5 @@
-(ns clojure.gdx.input
-  (:require [clojure.gdx.interop :refer [k->input-button k->input-key]])
+(ns gdl.gdx.input
+  (:require [gdl.gdx.interop :refer [k->input-button k->input-key]])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn button-just-pressed? [button]

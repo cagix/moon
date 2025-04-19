@@ -7,10 +7,10 @@
             [cdq.ui :as ui]
             cdq.world.context
             [gdl.graphics :as graphics]
-            [clojure.gdx.scenes.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [gdl.gdx.scenes.scene2d.ui.table :as table]
+            [gdl.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.string :as str]
-            [clojure.utils :refer [readable-number]]))
+            [gdl.utils :refer [readable-number]]))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (stage/mouse-on-actor? context)]

@@ -1,5 +1,5 @@
 (ns gdl.graphics.text
-  (:require [clojure.gdx.interop :as interop]
+  (:require [gdl.gdx.interop :as interop]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont BitmapFont$BitmapFontData)))
 

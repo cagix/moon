@@ -1,4 +1,4 @@
-(ns clojure.gdx.scenes.scene2d.ui.widget-group
+(ns gdl.gdx.scenes.scene2d.ui.widget-group
   (:import (com.badlogic.gdx.scenes.scene2d.ui WidgetGroup)))
 
 (defn pack! [this]

@@ -1,12 +1,12 @@
 (ns gdl.application
   (:require gdl.graphics.shape-drawer
-            [clojure.gdx.assets :as assets] ; all-of-type -> editor -> decide later
-            [clojure.gdx.interop :as interop]
-            [clojure.gdx.scenes.scene2d.group :as group]
+            [gdl.gdx.assets :as assets] ; all-of-type -> editor -> decide later
+            [gdl.gdx.interop :as interop]
+            [gdl.gdx.scenes.scene2d.group :as group]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.utils])
+            [gdl.utils])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
@@ -60,7 +60,7 @@
 
 (defn- load-cursors [config]
   (map->Cursors
-   (clojure.utils/mapvals
+   (gdl.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
       (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
             cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]

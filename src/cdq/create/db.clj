@@ -2,7 +2,7 @@
   (:require [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.property :as property]
-            [clojure.utils :refer [safe-get]]
+            [gdl.utils :refer [safe-get]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]))

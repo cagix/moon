@@ -5,9 +5,9 @@
             [cdq.grid :as grid]
             [cdq.stage :as stage]
             [cdq.world :refer [spawn-creature]]
-            [clojure.data.grid2d :as g2d]
-            [clojure.gdx.tiled :as tiled]
-            [clojure.utils :as utils :refer [defcomponent]]))
+            [gdl.data.grid2d :as g2d]
+            [gdl.gdx.tiled :as tiled]
+            [gdl.utils :as utils :refer [defcomponent]]))
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]

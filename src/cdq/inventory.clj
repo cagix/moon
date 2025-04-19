@@ -1,6 +1,6 @@
 (ns cdq.inventory
-  (:require [clojure.utils :refer [find-first]]
-            [clojure.data.grid2d :as g2d]))
+  (:require [gdl.utils :refer [find-first]]
+            [gdl.data.grid2d :as g2d]))
 
 (def empty-inventory
   (->> #:inventory.slot{:bag      [6 4]

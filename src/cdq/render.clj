@@ -9,11 +9,11 @@
             [cdq.stage :as stage]
             [gdl.math.raycaster :as raycaster]
             cdq.world
-            [clojure.data.grid2d :as g2d]
-            [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
-            [clojure.utils :as utils])
+            [gdl.data.grid2d :as g2d]
+            [gdl.gdx.input :as input]
+            [gdl.gdx.scenes.scene2d.actor :as actor]
+            [gdl.gdx.scenes.scene2d.group :as group]
+            [gdl.utils :as utils])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)
            (gdl StageWithState)))
@@ -158,7 +158,7 @@
                         hits (remove #(= (:z-order @%) :z-order/effect)
                                      (cdq.grid/point->entities grid (gdl.graphics/world-mouse-position world-viewport)))]
                     (->> cdq.world/render-z-order
-                         (clojure.utils/sort-by-order hits #(:z-order @%))
+                         (gdl.utils/sort-by-order hits #(:z-order @%))
                          reverse
                          (filter #(los/exists? c player @%))
                          first)))]
@@ -183,7 +183,7 @@
   (if (:cdq.context/paused? context)
     context
     (reduce (fn [context f]
-              (clojure.utils/req-resolve-call f context))
+              (gdl.utils/req-resolve-call f context))
             context
             '[(cdq.render.when-not-paused.update-time/render)
               (cdq.render.when-not-paused.update-potential-fields/render)

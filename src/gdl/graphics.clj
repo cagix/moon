@@ -1,5 +1,5 @@
 (ns gdl.graphics
-  (:require [clojure.utils :as utils])
+  (:require [gdl.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))

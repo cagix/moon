@@ -1,4 +1,4 @@
-(ns clojure.gdx.assets
+(ns gdl.gdx.assets
   (:import (clojure.lang IFn)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)

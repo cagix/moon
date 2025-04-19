@@ -7,15 +7,15 @@
             [cdq.entity.fsm :as fsm]
             [gdl.math.raycaster :as raycaster]
             [gdl.math.vector2 :as v]
-            [clojure.rand :refer [rand-int-between]]
-            [clojure.utils :refer [defcomponent]]
+            [gdl.rand :refer [rand-int-between]]
+            [gdl.utils :refer [defcomponent]]
             [cdq.line-of-sight :as los]
             [cdq.world :refer [spawn-audiovisual
                                spawn-creature
                                spawn-projectile
                                line-render
                                projectile-size]]
-            [clojure.gdx.audio.sound :as sound]))
+            [gdl.gdx.audio.sound :as sound]))
 
 (comment
  (ns cdq.components.effects.audiovisual)

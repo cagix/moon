@@ -12,9 +12,9 @@
                                get-inventory
                                show-player-msg
                                selected-skill]]
-            [clojure.gdx.input :as input]
+            [gdl.gdx.input :as input]
             [cdq.widgets.inventory :as widgets.inventory]
-            [clojure.gdx.scenes.scene2d.actor :as actor]))
+            [gdl.gdx.scenes.scene2d.actor :as actor]))
 
 (defmulti manual-tick (fn [[k] context]
                         k))

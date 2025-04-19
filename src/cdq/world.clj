@@ -6,20 +6,20 @@
             [cdq.widgets.inventory :as widgets.inventory]
             [gdl.graphics.animation :as animation]
             [cdq.db :as db]
-            [clojure.utils :refer [define-order safe-merge]]
+            [gdl.utils :refer [define-order safe-merge]]
             [gdl.graphics.shape-drawer :as sd]
             [cdq.timer :as timer]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [clojure.gdx.input :as input]
+            [gdl.gdx.input :as input]
             [cdq.stage :as stage]
             [cdq.info :as info]
             [gdl.math.vector2 :as v]
             [cdq.ui :as ui]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :as group]
+            [gdl.gdx.scenes.scene2d.actor :as actor]
+            [gdl.gdx.scenes.scene2d.group :as group]
             cdq.time
-            [clojure.gdx.audio.sound :as sound])
+            [gdl.gdx.audio.sound :as sound])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not

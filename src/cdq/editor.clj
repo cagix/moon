@@ -23,14 +23,14 @@
                             add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
-            [clojure.gdx.assets :as assets]
-            [clojure.gdx.input :as input]
-            [clojure.gdx.scenes.scene2d.actor :as actor]
-            [clojure.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
-            [clojure.gdx.scenes.scene2d.ui.table :as table]
-            [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
+            [gdl.gdx.assets :as assets]
+            [gdl.gdx.input :as input]
+            [gdl.gdx.scenes.scene2d.actor :as actor]
+            [gdl.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
+            [gdl.gdx.scenes.scene2d.ui.table :as table]
+            [gdl.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
+            [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- stage-add! [actor]

@@ -1,7 +1,7 @@
 (ns cdq.create.stage.dev-menu
   (:require gdl.application
             gdl.graphics.sprite
-            [clojure.gdx.scenes.scene2d.group :refer [add-actor!]]
+            [gdl.gdx.scenes.scene2d.group :refer [add-actor!]]
             [cdq.ui :as ui :refer [ui-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
@@ -66,4 +66,4 @@
              :fill-parent? true}))
 
 (defn create [dev-menu-config context]
-  (create* context (clojure.utils/req-resolve-call dev-menu-config context)))
+  (create* context (gdl.utils/req-resolve-call dev-menu-config context)))

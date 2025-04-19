@@ -1,6 +1,6 @@
 (ns cdq.entity
   (:require [gdl.math.vector2 :as v]
-            [clojure.utils :refer [safe-merge]]
+            [gdl.utils :refer [safe-merge]]
             [cdq.db :as db]
             [cdq.timer :as timer]
             [cdq.schema :as s]
