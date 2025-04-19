@@ -1,4 +1,4 @@
-(ns cdq.math.vector2
+(ns gdl.math.vector2
   (:import (com.badlogic.gdx.math MathUtils Vector2)))
 
 (defn- m-v2

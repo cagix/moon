@@ -1,7 +1,7 @@
 (ns cdq.entity.fsm
   (:require [cdq.entity :as entity]
             [cdq.fsm :as fsm]
-            cdq.graphics))
+            gdl.graphics))
 
 (defn event
   ([c eid event*]
@@ -20,7 +20,7 @@
                entity-states (:context/entity-components c)]
            (when (:entity/player? @eid)
              (when-let [cursor (get-in entity-states [new-state-k :cursor])]
-               (cdq.graphics/set-cursor c cursor)))
+               (gdl.graphics/set-cursor c cursor)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))

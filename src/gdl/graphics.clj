@@ -1,4 +1,4 @@
-(ns cdq.graphics
+(ns gdl.graphics
   (:require [clojure.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.math Vector2 MathUtils)
@@ -10,7 +10,7 @@
 (defn frames-per-second []
   (.getFramesPerSecond Gdx/graphics))
 
-(defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
+(defn set-cursor [{:keys [gdl.graphics/cursors]} cursor-key]
   (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
 (defn- clamp [value min max]
@@ -39,5 +39,5 @@
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position world-viewport))
 
-(defn pixels->world-units [{:keys [cdq.graphics/world-unit-scale]} pixels]
+(defn pixels->world-units [{:keys [gdl.graphics/world-unit-scale]} pixels]
   (* (int pixels) world-unit-scale))

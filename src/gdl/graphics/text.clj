@@ -1,4 +1,4 @@
-(ns cdq.graphics.text
+(ns gdl.graphics.text
   (:require [clojure.gdx.interop :as interop]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics.g2d BitmapFont BitmapFont$BitmapFontData)))
@@ -15,8 +15,8 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [cdq.context/unit-scale
-           cdq.graphics/batch
-           cdq.graphics/default-font]}
+           gdl.graphics/batch
+           gdl.graphics/default-font]}
    {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
   (let [^BitmapFont font (or font default-font)

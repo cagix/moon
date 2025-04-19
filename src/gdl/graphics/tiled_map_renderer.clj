@@ -1,4 +1,4 @@
-(ns cdq.graphics.tiled-map-renderer
+(ns gdl.graphics.tiled-map-renderer
   (:require [clojure.gdx.tiled :as tiled])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
@@ -22,8 +22,8 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [{:keys [cdq.graphics/tiled-map-renderer
-           cdq.graphics/world-viewport]}
+  [{:keys [gdl.graphics/tiled-map-renderer
+           gdl.graphics/world-viewport]}
    tiled-map
    color-setter]
   (draw* (tiled-map-renderer tiled-map)

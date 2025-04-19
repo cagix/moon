@@ -4,13 +4,13 @@
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
             cdq.error
-            [cdq.graphics.animation :as animation]
+            [gdl.graphics.animation :as animation]
             [cdq.grid :as grid]
             [cdq.schema :as s]
             [cdq.skill :as skill]
             [cdq.line-of-sight :as los]
             [cdq.timer :as timer]
-            [cdq.math.vector2 :as v]
+            [gdl.math.vector2 :as v]
             [cdq.world.potential-field :as potential-field]
             [clojure.utils :refer [find-first]]
             [cdq.world :refer [nearest-enemy

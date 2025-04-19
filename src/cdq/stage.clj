@@ -1,5 +1,5 @@
 (ns cdq.stage
-  (:require [cdq.graphics :as graphics])
+  (:require [gdl.graphics :as graphics])
   (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defn mouse-on-actor? [stage]

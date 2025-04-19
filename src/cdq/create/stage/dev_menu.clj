@@ -1,6 +1,6 @@
 (ns cdq.create.stage.dev-menu
   (:require gdl.application
-            cdq.graphics.sprite
+            gdl.graphics.sprite
             [clojure.gdx.scenes.scene2d.group :refer [add-actor!]]
             [cdq.ui :as ui :refer [ui-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Touchable)
@@ -17,7 +17,7 @@
 
 (defn- add-upd-label
   ([c table text-fn icon]
-   (let [icon (ui/image->widget (cdq.graphics.sprite/create c icon) {})
+   (let [icon (ui/image->widget (gdl.graphics.sprite/create c icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (add-actor! table (ui-actor {:act (set-label-text-fn label text-fn)}))

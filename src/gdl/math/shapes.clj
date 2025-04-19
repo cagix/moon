@@ -1,4 +1,4 @@
-(ns cdq.math.shapes
+(ns gdl.math.shapes
   (:import (com.badlogic.gdx.math Circle Intersector Rectangle)))
 
 (defmulti ^:private overlaps?*

@@ -2,11 +2,11 @@
   (:require gdl.application
             [cdq.db :as db]
             cdq.editor
-            [cdq.graphics.camera :as cam]
+            [gdl.graphics.camera :as cam]
             [cdq.stage :as stage]
             [cdq.ui :as ui]
             cdq.world.context
-            [cdq.graphics :as graphics]
+            [gdl.graphics :as graphics]
             [clojure.gdx.scenes.scene2d.ui.table :as table]
             [clojure.gdx.scenes.scene2d.ui.widget-group :as widget-group]
             [clojure.string :as str]
@@ -63,11 +63,11 @@
                     :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
                    {:label "GUI"
                     :update-fn (comp graphics/mouse-position
-                                     :cdq.graphics/ui-viewport)}
+                                     :gdl.graphics/ui-viewport)}
                    {:label "World"
-                    :update-fn #(mapv int (graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
+                    :update-fn #(mapv int (graphics/world-mouse-position (:gdl.graphics/world-viewport %)))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom (:camera (:cdq.graphics/world-viewport %)))
+                    :update-fn #(cam/zoom (:camera (:gdl.graphics/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [_]

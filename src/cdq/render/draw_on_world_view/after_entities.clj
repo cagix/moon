@@ -1,13 +1,13 @@
 (ns cdq.render.draw-on-world-view.after-entities
-  (:require cdq.graphics
-            [cdq.graphics.shape-drawer :as sd]
+  (:require gdl.graphics
+            [gdl.graphics.shape-drawer :as sd]
             [cdq.grid :as grid]
-            [cdq.math.shapes :refer [circle->outer-rectangle]]))
+            [gdl.math.shapes :refer [circle->outer-rectangle]]))
 
-(defn- geom-test [{:keys [cdq.graphics/shape-drawer
+(defn- geom-test [{:keys [gdl.graphics/shape-drawer
                           cdq.context/grid
-                          cdq.graphics/world-viewport]}]
-  (let [position (cdq.graphics/world-mouse-position world-viewport)
+                          gdl.graphics/world-viewport]}]
+  (let [position (gdl.graphics/world-mouse-position world-viewport)
         radius 0.8
         circle {:position position :radius radius}]
     (sd/circle shape-drawer position radius [1 0 0 0.5])
@@ -18,11 +18,11 @@
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [{:keys [cdq.graphics/shape-drawer
+(defn- highlight-mouseover-tile [{:keys [gdl.graphics/shape-drawer
                                          cdq.context/grid
-                                         cdq.graphics/world-viewport]}]
+                                         gdl.graphics/world-viewport]}]
   (when highlight-blocked-cell?
-    (let [[x y] (mapv int (cdq.graphics/world-mouse-position world-viewport))
+    (let [[x y] (mapv int (gdl.graphics/world-mouse-position world-viewport))
           cell (grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (sd/rectangle shape-drawer x y 1 1

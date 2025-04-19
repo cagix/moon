@@ -1,13 +1,13 @@
 (ns cdq.render
   (:require [cdq.context :as context]
-            [cdq.graphics.camera :as camera]
-            [cdq.graphics.shape-drawer :as sd]
-            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [gdl.graphics.camera :as camera]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             cdq.grid
             [cdq.line-of-sight :as los]
             cdq.render.player-state-input
             [cdq.stage :as stage]
-            [cdq.math.raycaster :as raycaster]
+            [gdl.math.raycaster :as raycaster]
             cdq.world
             [clojure.data.grid2d :as g2d]
             [clojure.gdx.input :as input]
@@ -33,7 +33,7 @@
   (assoc context :cdq.game/active-entities (active-entities content-grid @player-eid)))
 
 (defn- set-camera-on-player
-  [{:keys [cdq.graphics/world-viewport
+  [{:keys [gdl.graphics/world-viewport
            cdq.context/player-eid]
     :as context}]
   {:pre [world-viewport
@@ -85,7 +85,7 @@
                 (swap! explored-tile-corners assoc (mapv int position) true))
               Color/WHITE))))))
 
-(defn- render-tiled-map! [{:keys [cdq.graphics/world-viewport
+(defn- render-tiled-map! [{:keys [gdl.graphics/world-viewport
                                   cdq.context/tiled-map
                                   cdq.context/raycaster
                                   cdq.context/explored-tile-corners]
@@ -113,8 +113,8 @@
              :active-skill cdq.render.draw-on-world-view.entities/draw-skill-image-and-active-effect}})
     (cdq.render.draw-on-world-view.after-entities/render)])
 
-(defn- draw-with [{:keys [^Batch cdq.graphics/batch
-                          cdq.graphics/shape-drawer] :as c}
+(defn- draw-with [{:keys [^Batch gdl.graphics/batch
+                          gdl.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]
@@ -126,8 +126,8 @@
       (draw-fn (assoc c :cdq.context/unit-scale unit-scale))))
   (.end batch))
 
-(defn- draw-on-world-view* [{:keys [cdq.graphics/world-unit-scale
-                                    cdq.graphics/world-viewport] :as c} render-fn]
+(defn- draw-on-world-view* [{:keys [gdl.graphics/world-unit-scale
+                                    gdl.graphics/world-viewport] :as c} render-fn]
   (draw-with c
              world-viewport
              world-unit-scale
@@ -150,13 +150,13 @@
 (defn- update-mouseover-entity! [{:keys [cdq.context/grid
                                          cdq.context/mouseover-eid
                                          cdq.context/player-eid
-                                         cdq.graphics/world-viewport
+                                         gdl.graphics/world-viewport
                                          cdq.context/stage] :as c}]
   (let [new-eid (if (stage/mouse-on-actor? stage)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (cdq.grid/point->entities grid (cdq.graphics/world-mouse-position world-viewport)))]
+                                     (cdq.grid/point->entities grid (gdl.graphics/world-mouse-position world-viewport)))]
                     (->> cdq.world/render-z-order
                          (clojure.utils/sort-by-order hits #(:z-order @%))
                          reverse
@@ -202,7 +202,7 @@
       (destroy! v eid context)))
   context)
 
-(defn- camera-controls! [{:keys [cdq.graphics/world-viewport]
+(defn- camera-controls! [{:keys [gdl.graphics/world-viewport]
                           :as context}]
   (let [camera (:camera world-viewport)
         zoom-speed 0.025]

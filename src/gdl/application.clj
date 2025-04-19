@@ -1,5 +1,5 @@
 (ns gdl.application
-  (:require cdq.graphics.shape-drawer
+  (:require gdl.graphics.shape-drawer
             [clojure.gdx.assets :as assets] ; all-of-type -> editor -> decide later
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -99,7 +99,7 @@
   (ShapeDrawer/.setColor shape-drawer (interop/->color color)))
 
 (extend-type ShapeDrawer
-  cdq.graphics.shape-drawer/ShapeDrawer
+  gdl.graphics.shape-drawer/ShapeDrawer
   (ellipse [this [x y] radius-x radius-y color]
     (sd-set-color this color)
     (.ellipse this
@@ -249,8 +249,8 @@
     {:cdq/assets (load-assets {:folder "resources/"
                                :asset-type->extensions {:sound   #{"wav"}
                                                         :texture #{"png" "bmp"}}})
-     :cdq.graphics/batch batch
-     :cdq.graphics/cursors (load-cursors {:cursors/bag                   ["bag001"       [0   0]]
+     :gdl.graphics/batch batch
+     :gdl.graphics/cursors (load-cursors {:cursors/bag                   ["bag001"       [0   0]]
                                           :cursors/black-x               ["black_x"      [0   0]]
                                           :cursors/default               ["default"      [0   0]]
                                           :cursors/denied                ["denied"       [16 16]]
@@ -264,16 +264,16 @@
                                           :cursors/skill-not-usable      ["x007"         [0   0]]
                                           :cursors/use-skill             ["pointer004"   [0   0]]
                                           :cursors/walking               ["walking"      [16 16]]})
-     :cdq.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
+     :gdl.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
                                             :size 16
                                             :quality-scaling 2})
-     :cdq.graphics/shape-drawer (ShapeDrawer. batch
+     :gdl.graphics/shape-drawer (ShapeDrawer. batch
                                               (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-     :cdq.graphics/shape-drawer-texture shape-drawer-texture
-     :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
-     :cdq.graphics/ui-viewport ui-viewport
-     :cdq.graphics/world-unit-scale world-unit-scale
-     :cdq.graphics/world-viewport (world-viewport world-unit-scale {:width 1440 :height 900})
+     :gdl.graphics/shape-drawer-texture shape-drawer-texture
+     :gdl.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
+     :gdl.graphics/ui-viewport ui-viewport
+     :gdl.graphics/world-unit-scale world-unit-scale
+     :gdl.graphics/world-viewport (world-viewport world-unit-scale {:width 1440 :height 900})
      :cdq.context/stage (create-stage! {:skin-scale :x1} batch ui-viewport)}))
 
 (defn- dispose-game [context]
@@ -288,8 +288,8 @@
   ; could make 'viewport/update protocol' or 'on-resize' protocol
   ; and reify the viewports
   ; so we could have only one
-  (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
-  (Viewport/.update (:cdq.graphics/world-viewport context) width height false))
+  (Viewport/.update (:gdl.graphics/ui-viewport    context) width height true)
+  (Viewport/.update (:gdl.graphics/world-viewport context) width height false))
 
 (def state (atom nil))
 

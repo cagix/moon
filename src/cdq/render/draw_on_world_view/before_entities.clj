@@ -1,14 +1,14 @@
 (ns cdq.render.draw-on-world-view.before-entities
-  (:require [cdq.graphics.camera :as cam]
-            [cdq.graphics.shape-drawer :as sd]))
+  (:require [gdl.graphics.camera :as cam]
+            [gdl.graphics.shape-drawer :as sd]))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn render [{:keys [cdq.graphics/world-viewport
-                      cdq.graphics/shape-drawer
+(defn render [{:keys [gdl.graphics/world-viewport
+                      gdl.graphics/shape-drawer
                       cdq.context/factions-iterations
                       cdq.context/grid]}]
   (let [sd shape-drawer

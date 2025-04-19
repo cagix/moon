@@ -1,11 +1,11 @@
 (ns cdq.widgets.inventory
   (:require [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
-            cdq.graphics
+            gdl.graphics
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
-            [cdq.graphics.shape-drawer :as sd]
-            cdq.graphics.sprite
+            [gdl.graphics.shape-drawer :as sd]
+            gdl.graphics.sprite
             [clojure.gdx.scenes.scene2d.actor :refer [user-object] :as actor]
             [clojure.data.grid2d :as g2d]
             [cdq.ui :refer [ui-widget
@@ -44,13 +44,13 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [this {:keys [cdq.context/player-eid
-                     cdq.graphics/shape-drawer
-                     cdq.graphics/ui-viewport]}]
+                     gdl.graphics/shape-drawer
+                     gdl.graphics/ui-viewport]}]
      (draw-cell-rect shape-drawer
                      @player-eid
                      (actor/x this)
                      (actor/y this)
-                     (actor/hit this (cdq.graphics/mouse-position ui-viewport))
+                     (actor/hit this (gdl.graphics/mouse-position ui-viewport))
                      (user-object (actor/parent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -70,7 +70,7 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [c slot]
-  (cdq.graphics.sprite/from-sheet (cdq.graphics.sprite/sheet c
+  (gdl.graphics.sprite/from-sheet (gdl.graphics.sprite/sheet c
                                                                      "images/items.png"
                                                                      48
                                                                      48)
@@ -125,7 +125,7 @@
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
                                (->cell c :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [cdq.graphics/ui-viewport] :as c}]
+(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false

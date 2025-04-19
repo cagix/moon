@@ -1,8 +1,8 @@
 (ns cdq.create.schemas
   (:require cdq.assets
             [cdq.db :as db]
-            cdq.graphics.animation
-            cdq.graphics.sprite
+            gdl.graphics.animation
+            gdl.graphics.sprite
             [cdq.schema :as schema]))
 
 (defmethod schema/edn->value :s/sound [_ sound-name {:keys [cdq/assets]}]
@@ -12,17 +12,17 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (cdq.graphics.sprite/from-sheet (cdq.graphics.sprite/sheet c file tilew tileh)
+      (gdl.graphics.sprite/from-sheet (gdl.graphics.sprite/sheet c file tilew tileh)
                                       [(int (/ sprite-x tilew))
                                        (int (/ sprite-y tileh))]
                                       c))
-    (cdq.graphics.sprite/create c file)))
+    (gdl.graphics.sprite/create c file)))
 
 (defmethod schema/edn->value :s/image [_ edn c]
   (edn->sprite c edn))
 
 (defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} c]
-  (cdq.graphics.animation/create (map #(edn->sprite c %) frames)
+  (gdl.graphics.animation/create (map #(edn->sprite c %) frames)
                                      :frame-duration frame-duration
                                      :looping? looping?))
 

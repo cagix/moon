@@ -1,4 +1,4 @@
-(ns cdq.graphics.batch
+(ns gdl.graphics.batch
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)))
 
@@ -24,7 +24,7 @@
 
 (defn draw-image
   [{:keys [cdq.context/unit-scale
-           cdq.graphics/batch]}
+           gdl.graphics/batch]}
    {:keys [texture-region color] :as image} position]
   (draw-texture-region batch
                        texture-region
@@ -35,7 +35,7 @@
 
 (defn draw-rotated-centered
   [{:keys [cdq.context/unit-scale
-           cdq.graphics/batch]}
+           gdl.graphics/batch]}
    {:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image unit-scale)]
     (draw-texture-region batch

@@ -18,7 +18,7 @@
     (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc @eid disallowed-keys))))
 
-(defn create [{:keys [cdq.graphics/ui-viewport] :as c}]
+(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window

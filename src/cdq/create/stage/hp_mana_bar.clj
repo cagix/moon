@@ -1,7 +1,7 @@
 (ns cdq.create.stage.hp-mana-bar
-  (:require [cdq.graphics.sprite :as sprite]
-            [cdq.graphics.batch :as batch]
-            [cdq.graphics.text :as text]
+  (:require [gdl.graphics.sprite :as sprite]
+            [gdl.graphics.batch :as batch]
+            [gdl.graphics.text :as text]
             [cdq.ui :refer [ui-actor]]
             [clojure.utils :refer [readable-number]]
             [cdq.entity :as entity]
@@ -14,7 +14,7 @@
               :y (+ y 2)
               :up? true}))
 
-(defn create [{:keys [cdq.graphics/ui-viewport] :as c}]
+(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
   (let [rahmen      (sprite/create c "images/rahmen.png")
         hpcontent   (sprite/create c "images/hp.png")
         manacontent (sprite/create c "images/mana.png")

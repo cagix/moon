@@ -1,4 +1,4 @@
-(ns cdq.graphics.shape-drawer)
+(ns gdl.graphics.shape-drawer)
 
 (defprotocol ShapeDrawer
   (ellipse [_ [x y] radius-x radius-y color])

@@ -1,9 +1,9 @@
 (ns cdq.create.stage.player-message
-  (:require [cdq.graphics :as graphics]
-            [cdq.graphics.text :as text]
+  (:require [gdl.graphics :as graphics]
+            [gdl.graphics.text :as text]
             [cdq.ui :refer [ui-actor]]))
 
-(defn- draw-player-message [{:keys [cdq.graphics/ui-viewport
+(defn- draw-player-message [{:keys [gdl.graphics/ui-viewport
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]
     (text/draw c

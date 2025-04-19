@@ -1,9 +1,9 @@
 (ns cdq.render.draw-on-world-view.entities
-  (:require cdq.graphics
+  (:require gdl.graphics
             [cdq.timer :as timer]
-            [cdq.graphics.shape-drawer :as sd]
-            [cdq.graphics.batch :as batch]
-            [cdq.graphics.text :as text]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.batch :as batch]
+            [gdl.graphics.text :as text]
             [cdq.line-of-sight :as los]
             [clojure.utils :refer [pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
@@ -13,7 +13,7 @@
                                item-place-position]]
             [cdq.entity :as entity]))
 
-(defn- draw-skill-image [{:keys [cdq.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [{:keys [gdl.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
@@ -45,14 +45,14 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [{:keys [cdq.graphics/shape-drawer] :as c}
+(defn- draw-hpbar [{:keys [gdl.graphics/shape-drawer] :as c}
                    {:keys [position width half-width half-height]}
                    ratio]
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (cdq.graphics/pixels->world-units c 5)
-          border (cdq.graphics/pixels->world-units c borders-px)]
+          height (gdl.graphics/pixels->world-units c 5)
+          border (gdl.graphics/pixels->world-units c borders-px)]
       (sd/filled-rectangle shape-drawer x y width height :black)
       (sd/filled-rectangle shape-drawer
                            (+ x border)
@@ -87,7 +87,7 @@
 (defn draw-line
   [{:keys [thick? end color]}
    entity
-   {:keys [cdq.graphics/shape-drawer]}]
+   {:keys [gdl.graphics/shape-drawer]}]
   (let [position (:position entity)]
     (if thick?
       (sd/with-line-width shape-drawer 4
@@ -103,7 +103,7 @@
   [_
    {:keys [entity/faction] :as entity}
    {:keys [cdq.context/player-eid
-           cdq.graphics/shape-drawer] :as c}]
+           gdl.graphics/shape-drawer] :as c}]
   (let [player @player-eid]
     (sd/with-line-width shape-drawer 3
       #(sd/ellipse shape-drawer
@@ -157,13 +157,13 @@
 
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
-  [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]
+  [[_ {:keys [eid]}] {:keys [gdl.graphics/ui-viewport] :as c}]
   (when (not (world-item? c))
     (batch/draw-centered c
                          (:entity/image (:entity/item-on-cursor @eid))
-                         (cdq.graphics/mouse-position ui-viewport))))
+                         (gdl.graphics/mouse-position ui-viewport))))
 
-(defn draw-stunned-circle [_ entity {:keys [cdq.graphics/shape-drawer]}]
+(defn draw-stunned-circle [_ entity {:keys [gdl.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
 
 (defn draw-text [{:keys [text]} entity c]
@@ -173,16 +173,16 @@
                 :x x
                 :y (+ y
                       (:half-height entity)
-                      (cdq.graphics/pixels->world-units c 5))
+                      (gdl.graphics/pixels->world-units c 5))
                 :scale 2
                 :up? true})))
 
 ; TODO draw opacity as of counter ratio?
-(defn draw-filled-circle-grey [_ entity {:keys [cdq.graphics/shape-drawer]}]
+(defn draw-filled-circle-grey [_ entity {:keys [gdl.graphics/shape-drawer]}]
   (sd/filled-circle shape-drawer (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
 (defmethod render-effect :effects/target-all
-  [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
+  [_ {:keys [effect/source]} {:keys [gdl.graphics/shape-drawer] :as c}]
   (let [source* @source]
     (doseq [target* (map deref (los/creatures-in-los-of-player c))]
       (sd/line shape-drawer
@@ -193,7 +193,7 @@
 (defmethod render-effect :effects/target-entity
   [[_ {:keys [maxrange]}]
    {:keys [effect/source effect/target]}
-   {:keys [cdq.graphics/shape-drawer]}]
+   {:keys [gdl.graphics/shape-drawer]}]
   (when target
     (let [source* @source
           target* @target]
@@ -212,7 +212,7 @@
            above
            info]}
    {:keys [cdq.context/player-eid
-           cdq.graphics/shape-drawer
+           gdl.graphics/shape-drawer
            cdq.game/active-entities] :as c}]
   (let [entities (map deref active-entities)
         player @player-eid]

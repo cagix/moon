@@ -2,8 +2,8 @@
   (:require [cdq.assets :refer [play-sound]]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
-            cdq.graphics
-            [cdq.math.vector2 :as v]
+            gdl.graphics
+            [gdl.math.vector2 :as v]
             [cdq.stage :as stage]
             [cdq.skill :as skill]
             [cdq.ui :as ui]
@@ -25,10 +25,10 @@
   c)
 
 (defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid
-                                  cdq.graphics/world-viewport]} eid]
+                                  gdl.graphics/world-viewport]} eid]
   (let [target-position (or (and mouseover-eid
                                  (:position @mouseover-eid))
-                            (cdq.graphics/world-mouse-position world-viewport))]
+                            (gdl.graphics/world-mouse-position world-viewport))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position
@@ -138,7 +138,7 @@
   (if-let [movement-vector (player-movement-vector)]
     (fsm/event c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
-      (cdq.graphics/set-cursor c cursor)
+      (gdl.graphics/set-cursor c cursor)
       (when (input/button-just-pressed? :left)
         (on-click)))))
 

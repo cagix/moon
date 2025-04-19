@@ -1,5 +1,5 @@
-(ns cdq.math.raycaster ; cdq
-  (:require [cdq.math.vector2 :as v])
+(ns gdl.math.raycaster
+  (:require [gdl.math.vector2 :as v])
   (:import (gdl RayCaster)))
 
 ; boolean array used because 10x faster than access to cdq grid data structure

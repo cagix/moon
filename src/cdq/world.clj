@@ -1,20 +1,20 @@
 (ns cdq.world
   (:require [cdq.context :as context]
-            cdq.graphics
+            gdl.graphics
             [cdq.fsm :as fsm]
             [cdq.inventory :as inventory]
             [cdq.widgets.inventory :as widgets.inventory]
-            [cdq.graphics.animation :as animation]
+            [gdl.graphics.animation :as animation]
             [cdq.db :as db]
             [clojure.utils :refer [define-order safe-merge]]
-            [cdq.graphics.shape-drawer :as sd]
+            [gdl.graphics.shape-drawer :as sd]
             [cdq.timer :as timer]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
             [clojure.gdx.input :as input]
             [cdq.stage :as stage]
             [cdq.info :as info]
-            [cdq.math.vector2 :as v]
+            [gdl.math.vector2 :as v]
             [cdq.ui :as ui]
             [clojure.gdx.scenes.scene2d.actor :as actor]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -245,7 +245,7 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [cdq.graphics/ui-viewport] :as c}
+(defn show-modal [{:keys [gdl.graphics/ui-viewport] :as c}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal (:cdq.context/stage c))))
   (stage/add-actor (:cdq.context/stage c)
@@ -273,9 +273,9 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn item-place-position [{:keys [cdq.graphics/world-viewport] :as c} entity]
+(defn item-place-position [{:keys [gdl.graphics/world-viewport] :as c} entity]
   (placement-point (:position entity)
-                   (cdq.graphics/world-mouse-position world-viewport)
+                   (gdl.graphics/world-mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 

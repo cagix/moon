@@ -1,4 +1,4 @@
-(ns cdq.graphics.sprite
+(ns gdl.graphics.sprite
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 
@@ -31,11 +31,11 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(defn sub [sprite [x y w h] {:keys [cdq.graphics/world-unit-scale]}]
+(defn sub [sprite [x y w h] {:keys [gdl.graphics/world-unit-scale]}]
   (create* world-unit-scale
            (TextureRegion. ^TextureRegion (:texture-region sprite) (int x) (int y) (int w) (int h))))
 
-(defn sheet [{:keys [cdq.graphics/world-unit-scale
+(defn sheet [{:keys [gdl.graphics/world-unit-scale
                      cdq/assets]}
              path
              tilew
@@ -55,7 +55,7 @@
         tileh]
        context))
 
-(defn create [{:keys [cdq.graphics/world-unit-scale
+(defn create [{:keys [gdl.graphics/world-unit-scale
                       cdq/assets]}
               path]
   (create* world-unit-scale
