@@ -53,7 +53,7 @@
     (add-update-labels c menu-bar update-labels)
     menu-bar))
 
-(defn table [c config]
+(defn- create* [c config]
   (ui/table {:rows [[{:actor (ui/menu-bar->table (dev-menu* c config))
                       :expand-x? true
                       :fill-x? true
@@ -66,4 +66,4 @@
              :fill-parent? true}))
 
 (defn create [dev-menu-config context]
-  (table context (clojure.utils/req-resolve-call dev-menu-config context)))
+  (create* context (clojure.utils/req-resolve-call dev-menu-config context)))
