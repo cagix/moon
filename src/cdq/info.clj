@@ -3,10 +3,10 @@
             [cdq.timer :as timer]
             [cdq.operation :as op]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.graphics.colors :as colors]
             [clojure.math :as math]
             [clojure.string :as str]
-            [clojure.utils :refer [readable-number sort-by-k-order]]))
+            [clojure.utils :refer [readable-number sort-by-k-order]])
+  (:import (com.badlogic.gdx.graphics Colors)))
 
 (defn- remove-newlines [s]
   (let [new-s (-> s
@@ -21,7 +21,7 @@
                                    k))
 (defmethod info-segment :default [_ _entity _context])
 
-(colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52))
+(Colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
