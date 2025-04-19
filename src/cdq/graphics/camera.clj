@@ -3,11 +3,6 @@
   (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)
            (com.badlogic.gdx.math Frustum Vector3)))
 
-(defn set-to-ortho
-  "Sets this camera to an orthographic projection, centered at (viewport-width/2, viewport-height/2), with the y-axis pointing up or down."
-  [camera viewport-width viewport-height & {:keys [y-down?]}]
-  (OrthographicCamera/.setToOrtho camera y-down? viewport-width viewport-height))
-
 (defn position
   "Returns camera position as [x y] vector."
   [^Camera camera]

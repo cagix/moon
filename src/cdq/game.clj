@@ -4,7 +4,6 @@
             cdq.create.entity-components
             cdq.create.schemas
             cdq.graphics.shape-drawer
-            [cdq.graphics.camera :as camera]
             cdq.world.context
             [clojure.gdx.assets :as assets] ; all-of-type -> editor
             [clojure.gdx.graphics :as graphics]
@@ -236,8 +235,9 @@
   {:pre [world-unit-scale]}
   (let [camera (OrthographicCamera.)
         world-width  (* (:width  config) world-unit-scale)
-        world-height (* (:height config) world-unit-scale)]
-    (camera/set-to-ortho camera world-width world-height :y-down? false)
+        world-height (* (:height config) world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
     (fit-viewport world-width world-height camera)))
 
 (defn- create-game []
