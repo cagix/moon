@@ -1,7 +1,24 @@
-(ns cdq.math.shapes ; cdq !!
-  (:require [cdq.math.circle :as circle]
-            [cdq.math.intersector :as intersector]
-            [cdq.math.rectangle :as rectangle]))
+(ns cdq.math.shapes
+  (:import (com.badlogic.gdx.math Circle Intersector Rectangle)))
+
+(defmulti ^:private overlaps?*
+  (fn [a b] [(class a) (class b)]))
+
+(defmethod overlaps?* [Circle Circle]
+  [^Circle a ^Circle b]
+  (Intersector/overlaps a b))
+
+(defmethod overlaps?* [Rectangle Rectangle]
+  [^Rectangle a ^Rectangle b]
+  (Intersector/overlaps a b))
+
+(defmethod overlaps?* [Rectangle Circle]
+  [^Rectangle rect ^Circle circle]
+  (Intersector/overlaps circle rect))
+
+(defmethod overlaps?* [Circle Rectangle]
+  [^Circle circle ^Rectangle rect]
+  (Intersector/overlaps circle rect))
 
 (defn- rectangle? [{[x y] :left-bottom :keys [width height]}]
   (and x y width height))
@@ -13,20 +30,20 @@
   (cond
    (rectangle? m) (let [{:keys [left-bottom width height]} m
                         [x y] left-bottom]
-                    (rectangle/create x y width height))
+                    (Rectangle. x y width height))
 
    (circle? m) (let [{:keys [position radius]} m
                      [x y] position]
-                 (circle/create x y radius))
+                 (Circle. x y radius))
 
    :else (throw (Error. (str m)))))
 
 (defn overlaps? [shape-a shape-b]
-  (intersector/overlaps? (m->shape shape-a)
-                         (m->shape shape-b)))
+  (overlaps?* (m->shape shape-a)
+              (m->shape shape-b)))
 
 (defn rect-contains? [rectangle [x y]]
-  (rectangle/contains? (m->shape rectangle) x y))
+  (Rectangle/.contains (m->shape rectangle) x y))
 
 (defn circle->outer-rectangle [{[x y] :position :keys [radius] :as circle}]
   {:pre [(circle? circle)]}
