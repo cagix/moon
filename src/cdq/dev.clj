@@ -7,10 +7,11 @@
             [clojure.gdx.scenes.scene2d.group :refer [children]]
             [cdq.stage :as stage]
             [cdq.ui :refer [t-node scroll-pane] :as ui]
-            [cdq.world :as world]))
+            [cdq.world :as world])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn post-runnable [f]
-  (.postRunnable com.badlogic.gdx.Gdx/app (fn [] (f @app/state))))
+  (.postRunnable Gdx/app (fn [] (f @app/state))))
 
 (comment
 
