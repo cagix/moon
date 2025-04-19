@@ -9,9 +9,9 @@
             [clojure.gdx.assets :as assets] ; all-of-type -> editor
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.interop :as interop]
             [clojure.gdx.scenes.scene2d.group :as group]
             [clojure.gdx.utils :as utils]
-            [clojure.gdx.utils.viewport.fit-viewport :as fit-viewport]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -26,7 +26,7 @@
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math MathUtils)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
-           (com.badlogic.gdx.utils.viewport Viewport)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (gdl StageWithState OrthogonalTiledMapRenderer)
@@ -221,20 +221,31 @@
                                           (float world-unit-scale)
                                           batch))))
 
+(defn- fit-viewport
+  "A ScalingViewport that uses Scaling.fit so it keeps the aspect ratio by scaling the world up to fit the screen, adding black bars (letterboxing) for the remaining space."
+  [width height camera & {:keys [center-camera?]}]
+  {:pre [width height]}
+  (proxy [FitViewport ILookup] [width height camera]
+    (valAt
+      ([key]
+       (interop/k->viewport-field this key))
+      ([key _not-found]
+       (interop/k->viewport-field this key)))))
+
 (defn- world-viewport [world-unit-scale config]
   {:pre [world-unit-scale]}
   (let [camera (OrthographicCamera.)
         world-width  (* (:width  config) world-unit-scale)
         world-height (* (:height config) world-unit-scale)]
     (camera/set-to-ortho camera world-width world-height :y-down? false)
-    (fit-viewport/create world-width world-height camera)))
+    (fit-viewport world-width world-height camera)))
 
 (defn- create-game []
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ 48))
-        ui-viewport (fit-viewport/create 1440 900 (OrthographicCamera.))
+        ui-viewport (fit-viewport 1440 900 (OrthographicCamera.)) ; TODO part of stage?
         context {:cdq/assets (load-assets {:folder "resources/"
                                            :asset-type->extensions {:sound   #{"wav"}
                                                                     :texture #{"png" "bmp"}}})
@@ -280,7 +291,7 @@
           context
           (for [ns-sym '[cdq.render.assoc-active-entities
                          cdq.render.set-camera-on-player
-                         cdq.render.clear-screen
+                         cdq.render.clear-screen ; application level code
                          cdq.render.tiled-map
                          cdq.render.draw-on-world-view
                          cdq.render.stage
@@ -299,6 +310,9 @@
              (resolve (symbol (str ns-sym "/render")))))))
 
 (defn- resize-game [context width height]
+  ; could make 'viewport/update protocol' or 'on-resize' protocol
+  ; and reify the viewports
+  ; so we could have only one
   (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
   (Viewport/.update (:cdq.graphics/world-viewport context) width height false))
 
