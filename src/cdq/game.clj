@@ -5,8 +5,7 @@
             cdq.create.schemas
             cdq.graphics.shape-drawer
             cdq.world.context
-            [clojure.gdx.assets :as assets] ; all-of-type -> editor
-            [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.assets :as assets] ; all-of-type -> editor -> decide later
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scenes.scene2d.group :as group]
@@ -63,7 +62,7 @@
    (clojure.utils/mapvals
     (fn [[file [hotspot-x hotspot-y]]]
       (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-            cursor (graphics/new-cursor pixmap hotspot-x hotspot-y)]
+            cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
         (clojure.gdx.utils/dispose pixmap)
         cursor))
     config)))
