@@ -1,6 +1,5 @@
 (ns cdq.math.vector2
-  (:require [clojure.gdx.math.utils :refer [equal?]])
-  (:import (com.badlogic.gdx.math Vector2)))
+  (:import (com.badlogic.gdx.math MathUtils Vector2)))
 
 (defn- m-v2
   (^Vector2 [[x y]] (Vector2. x y))
@@ -25,7 +24,7 @@
   (.dst (m-v2 v1) (m-v2 v2)))
 
 (defn normalised? [v]
-  (equal? 1 (length v)))
+  (MathUtils/isEqual 1 (length v)))
 
 (defn direction [[sx sy] [tx ty]]
   (normalise [(- (float tx) (float sx))

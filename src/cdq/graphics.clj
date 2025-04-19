@@ -1,13 +1,15 @@
 (ns cdq.graphics
   (:require [clojure.gdx.graphics]
-            [clojure.gdx.math.utils :refer [clamp]]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
   (clojure.gdx.graphics/set-cursor (utils/safe-get cursors cursor-key)))
+
+(defn- clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter

@@ -1,9 +1,12 @@
 (ns cdq.create.shape-drawer
   (:require cdq.graphics.shape-drawer
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.math.utils :refer [degree->radians]])
+            [clojure.gdx.graphics.color :as color])
   (:import (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
+           (com.badlogic.gdx.math MathUtils)))
+
+(defn- degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
 
 ; TODO earlygrey only here ... separate project ... no other dependneices?
 
