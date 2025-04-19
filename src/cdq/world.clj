@@ -19,7 +19,7 @@
             [gdl.gdx.scenes.scene2d.actor :as actor]
             [gdl.gdx.scenes.scene2d.group :as group]
             cdq.time
-            [gdl.gdx.audio.sound :as sound])
+            [gdl.audio.sound :as sound])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not

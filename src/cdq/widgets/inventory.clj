@@ -16,7 +16,7 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [gdl.gdx.audio.sound :as sound]
+            [gdl.audio.sound :as sound]
             [gdl.gdx.scenes.scene2d.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.graphics Color)))
 

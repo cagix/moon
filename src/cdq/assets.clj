@@ -1,5 +1,5 @@
 (ns cdq.assets
-  (:require [gdl.gdx.audio.sound :as sound]))
+  (:require [gdl.audio.sound :as sound]))
 
 (defn sound [assets sound-name]
   (->> sound-name

@@ -7,7 +7,7 @@
                                item-place-position
                                show-modal
                                spawn-audiovisual]]
-            [gdl.gdx.audio.sound :as sound]))
+            [gdl.audio.sound :as sound]))
 
 (defn create []
   {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]

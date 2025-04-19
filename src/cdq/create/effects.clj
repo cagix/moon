@@ -15,7 +15,7 @@
                                spawn-projectile
                                line-render
                                projectile-size]]
-            [gdl.gdx.audio.sound :as sound]))
+            [gdl.audio.sound :as sound]))
 
 (comment
  (ns cdq.components.effects.audiovisual)
