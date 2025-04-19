@@ -2,7 +2,7 @@
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]
             [gdl.data.grid2d :as g2d]
-            [gdl.gdx.tiled :as tiled]))
+            [gdl.tiled :as tiled]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)

@@ -6,7 +6,7 @@
             [cdq.stage :as stage]
             [cdq.world :refer [spawn-creature]]
             [gdl.data.grid2d :as g2d]
-            [gdl.gdx.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [gdl.utils :as utils :refer [defcomponent]]))
 
 (defn- set-arr [arr cell cell->blocked?]

@@ -2,7 +2,7 @@
   (:require [cdq.level.modules :refer [generate-modules]]
             [cdq.level.uf-caves :as uf-caves]
             [cdq.db :as db]
-            [gdl.gdx.tiled :as tiled]))
+            [gdl.tiled :as tiled]))
 
 (defmulti generate-level* (fn [world c] (:world/generator world)))
 

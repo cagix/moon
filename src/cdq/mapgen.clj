@@ -2,7 +2,7 @@
   (:require [gdl.rand :refer [sshuffle srand srand-int]]
             [gdl.utils :refer [assoc-ks]]
             [gdl.data.grid2d :as g2d]
-            [gdl.gdx.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [cdq.property :as property]))
 
 (defn creatures-with-level [creature-properties level]

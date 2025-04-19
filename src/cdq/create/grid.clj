@@ -2,7 +2,7 @@
   (:require [cdq.context :as context]
             [cdq.grid :as grid]
             [gdl.data.grid2d :as g2d]
-            [gdl.gdx.tiled :as tiled]
+            [gdl.tiled :as tiled]
             [gdl.utils :refer [tile->middle defcomponent]]))
 
 (defrecord RCell [position

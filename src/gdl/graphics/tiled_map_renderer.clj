@@ -1,5 +1,5 @@
 (ns gdl.graphics.tiled-map-renderer
-  (:require [gdl.gdx.tiled :as tiled])
+  (:require [gdl.tiled :as tiled])
   (:import (gdl OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn- draw* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
