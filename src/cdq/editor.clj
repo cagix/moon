@@ -23,7 +23,7 @@
                             add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
-            [gdl.gdx.assets :as assets]
+            [gdl.assets :as assets]
             [gdl.input :as input]
             [gdl.gdx.scenes.scene2d.actor :as actor]
             [gdl.gdx.scenes.scene2d.group :refer [children clear-children add-actor! find-actor]]
