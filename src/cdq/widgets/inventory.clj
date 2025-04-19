@@ -17,8 +17,8 @@
                             remove-tooltip!]
              :as ui]
             [clojure.gdx.audio.sound :as sound]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils]))
+            [clojure.gdx.scenes.scene2d.ui.utils :as scene2d.utils])
+  (:import (com.badlogic.gdx.graphics Color)))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -82,7 +82,7 @@
                      :texture-region
                      texture-region-drawable)]
     (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (color/create 1 1 1 0.4))))
+    (scene2d.utils/tint drawable (Color. (float 1) (float 1) (float 1) (float 0.4)))))
 
 (defmulti clicked-inventory-cell (fn [[k] cell c]
                                    k))

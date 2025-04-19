@@ -7,12 +7,12 @@
             [cdq.graphics.shape-drawer :as sd]
             [cdq.graphics.camera :as cam]
             [cdq.ui :refer [ui-actor text-button] :as ui]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :as input]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.scenes.scene2d.group :refer [add-actor!]]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]])
+  (:import (com.badlogic.gdx.graphics Color)))
 
 (def state (atom nil))
 
@@ -155,7 +155,7 @@
 (defn render [_]
   #_(cdq.graphics.tiled-map-renderer/draw @state
                                               (:tiled-map @current-data)
-                                              (constantly color/white))
+                                              (constantly Color/WHITE))
   #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (input/key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))

@@ -1,6 +1,6 @@
 (ns cdq.graphics.batch
-  (:require [clojure.gdx.graphics.color :as color])
-  (:import (com.badlogic.gdx.graphics.g2d Batch)))
+  (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.graphics.g2d Batch)))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
@@ -20,7 +20,7 @@
          1 ; scale-x
          1 ; scale-y
          rotation)
-  (if color (.setColor batch color/white)))
+  (if color (.setColor batch Color/WHITE)))
 
 (defn draw-image
   [{:keys [cdq.context/unit-scale

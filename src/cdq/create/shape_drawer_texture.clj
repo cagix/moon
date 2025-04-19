@@ -1,12 +1,10 @@
 (ns cdq.create.shape-drawer-texture
-  (:require [clojure.gdx.graphics.color :as color]
-            clojure.gdx.utils)
-  (:import (com.badlogic.gdx.graphics Texture Pixmap Pixmap$Format)))
+  (:import (com.badlogic.gdx.graphics Color Texture Pixmap Pixmap$Format)))
 
 (defn create []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor color/white)
+                 (.setColor Color/WHITE)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
-    (clojure.gdx.utils/dispose pixmap)
+    (.dispose pixmap)
     texture))

@@ -2,11 +2,10 @@
   (:require [cdq.entity :as entity]
             [cdq.timer :as timer]
             [cdq.operation :as op]
-            [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [readable-number sort-by-k-order]])
-  (:import (com.badlogic.gdx.graphics Colors)))
+  (:import (com.badlogic.gdx.graphics Color Colors)))
 
 (defn- remove-newlines [s]
   (let [new-s (-> s
@@ -21,7 +20,7 @@
                                    k))
 (defmethod info-segment :default [_ _entity _context])
 
-(Colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52))
+(Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
                           :entity/modifiers "CYAN"
