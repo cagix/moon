@@ -9,7 +9,7 @@
             [cdq.create.world-viewport :as world-viewport]
             cdq.graphics.shape-drawer
             cdq.world.context
-            [clojure.gdx.assets :as assets]
+            [clojure.gdx.assets :as assets] ; all-of-type -> editor
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.utils :as utils]
@@ -221,7 +221,7 @@
                  :cdq/db (db/create schemas)
                  :context/entity-components (cdq.create.entity-components/create)
                  :cdq/schemas schemas
-                 :cdq.context/stage (stage/create batch ui-viewport)}]
+                 :cdq.context/stage (stage/create {:skin-scale :x1} batch ui-viewport)}]
     (cdq.world.context/reset context :worlds/vampire)))
 
 (defn- dispose-game [context]
