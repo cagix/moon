@@ -1,5 +1,6 @@
 (ns cdq.application
-  (:require [cdq.context :as context]
+  (:require cdq.assets
+            [cdq.context :as context]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.effect-context :as effect-ctx]
@@ -8,8 +9,6 @@
             [cdq.schema :as schema]
             [cdq.property :as property]
             [cdq.timer :as timer]
-            cdq.create.entity-components
-            cdq.create.schemas
             cdq.error
             cdq.render.player-state-input
             [cdq.grid :as grid]
@@ -21,6 +20,10 @@
                                player-movement-vector
                                friendlies-in-radius
                                minimum-size
+                               item-place-position
+                               show-modal
+                               delayed-alert
+                               spawn-item
                                spawn-audiovisual
                                spawn-creature
                                spawn-projectile
@@ -36,6 +39,7 @@
             [gdl.graphics.animation :as animation]
             [gdl.graphics.camera :as camera]
             [gdl.graphics.shape-drawer :as sd]
+            gdl.graphics.sprite
             [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
             [gdl.input :as input]
             [gdl.math.raycaster :as raycaster]
@@ -66,6 +70,33 @@
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defmethod schema/edn->value :s/sound [_ sound-name {:keys [cdq/assets]}]
+  (cdq.assets/sound assets sound-name))
+
+(defn- edn->sprite [c {:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (gdl.graphics.sprite/from-sheet (gdl.graphics.sprite/sheet c file tilew tileh)
+                                      [(int (/ sprite-x tilew))
+                                       (int (/ sprite-y tileh))]
+                                      c))
+    (gdl.graphics.sprite/create c file)))
+
+(defmethod schema/edn->value :s/image [_ edn c]
+  (edn->sprite c edn))
+
+(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} c]
+  (gdl.graphics.animation/create (map #(edn->sprite c %) frames)
+                                     :frame-duration frame-duration
+                                     :looping? looping?))
+
+(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [cdq/db] :as context}]
+  (db/build db property-id context))
+
+(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [cdq/db] :as context}]
+  (set (map #(db/build db % context) property-ids)))
 
 (comment
  (ns cdq.components.effects.audiovisual)
@@ -658,6 +689,75 @@
     (map->DB {:db/data (zipmap (map :property/id properties) properties)
               :db/properties-file properties-file})))
 
+(defn- entity-components []
+  {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]
+                                            (spawn-audiovisual c
+                                                               (:position @eid)
+                                                               (db/build db audiovisuals-id c)))}
+   :player-idle           {:pause-game? true}
+   :active-skill          {:pause-game? false
+                           :cursor :cursors/sandclock
+                           :enter (fn [[_ {:keys [eid skill]}]
+                                       {:keys [cdq.context/elapsed-time] :as c}]
+                                    (sound/play (:skill/start-action-sound skill))
+                                    (when (:skill/cooldown skill)
+                                      (swap! eid assoc-in
+                                             [:entity/skills (:property/id skill) :skill/cooling-down?]
+                                             (timer/create elapsed-time (:skill/cooldown skill))))
+                                    (when (and (:skill/cost skill)
+                                               (not (zero? (:skill/cost skill))))
+                                      (swap! eid entity/pay-mana-cost (:skill/cost skill))))}
+   :player-dead           {:pause-game? true
+                           :cursor :cursors/black-x
+                           :enter (fn [[_ {:keys [tx/sound
+                                                  modal/title
+                                                  modal/text
+                                                  modal/button-text]}]
+                                       c]
+                                    (sound/play sound)
+                                    (show-modal c {:title title
+                                                   :text text
+                                                   :button-text button-text
+                                                   :on-click (fn [])}))}
+   :player-item-on-cursor {:pause-game? true
+                           :cursor :cursors/hand-grab
+                           :enter (fn [[_ {:keys [eid item]}] c]
+                                    (swap! eid assoc :entity/item-on-cursor item))
+                           :exit (fn [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
+                                   ; at clicked-cell when we put it into a inventory-cell
+                                   ; we do not want to drop it on the ground too additonally,
+                                   ; so we dissoc it there manually. Otherwise it creates another item
+                                   ; on the ground
+                                   (let [entity @eid]
+                                     (when (:entity/item-on-cursor entity)
+                                       (sound/play place-world-item-sound)
+                                       (swap! eid dissoc :entity/item-on-cursor)
+                                       (spawn-item c
+                                                   (item-place-position c entity)
+                                                   (:entity/item-on-cursor entity)))))}
+   :player-moving         {:pause-game? false
+                           :cursor :cursors/walking
+                           :enter (fn [[_ {:keys [eid movement-vector]}] c]
+                                    (swap! eid assoc :entity/movement {:direction movement-vector
+                                                                       :speed (entity/stat @eid :entity/movement-speed)}))
+                           :exit (fn [[_ {:keys [eid]}] c]
+                                   (swap! eid dissoc :entity/movement))}
+   :stunned               {:pause-game? false
+                           :cursor :cursors/denied}
+   :npc-dead              {:enter (fn [[_ {:keys [eid]}] c]
+                                    (swap! eid assoc :entity/destroyed? true))}
+   :npc-moving            {:enter (fn [[_ {:keys [eid movement-vector]}] c]
+                                    (swap! eid assoc :entity/movement {:direction movement-vector
+                                                                       :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
+                           :exit (fn [[_ {:keys [eid]}] c]
+                                   (swap! eid dissoc :entity/movement))}
+   :npc-sleeping          {:exit (fn [[_ {:keys [eid]}] c]
+                                   (delayed-alert c
+                                                  (:position       @eid)
+                                                  (:entity/faction @eid)
+                                                  0.2)
+                                   (swap! eid entity/add-text-effect c "[WHITE]!"))}})
+
 (defn- create-context []
   (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
@@ -713,7 +813,7 @@
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         context (merge context
                        {:cdq/db (create-db schemas)
-                        :context/entity-components (cdq.create.entity-components/create)
+                        :context/entity-components (entity-components)
                         :cdq/schemas schemas})]
     (cdq.world.context/reset context :worlds/vampire)))
 
