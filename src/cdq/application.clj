@@ -12,7 +12,6 @@
             cdq.error
             [cdq.grid :as grid]
             [cdq.line-of-sight :as los]
-            [cdq.skill :as skill]
             cdq.potential-fields
             cdq.time
             [cdq.widgets.inventory :as widgets.inventory]
@@ -153,6 +152,24 @@
      (ui/button? actor)                     :cursors/over-button
      :else                               :cursors/default)))
 
+(defn- not-enough-mana? [entity {:keys [skill/cost]}]
+  (and cost (> cost (entity/mana-val entity))))
+
+(defn- skill-usable-state
+  [entity {:keys [skill/cooling-down? skill/effects] :as skill} effect-ctx]
+  (cond
+   cooling-down?
+   :cooldown
+
+   (not-enough-mana? entity skill)
+   :not-enough-mana
+
+   (not (effect-ctx/some-applicable? effect-ctx effects))
+   :invalid-params
+
+   :else
+   :usable))
+
 (defn- interaction-state [{:keys [cdq.context/mouseover-eid
                                   cdq.context/stage] :as c} eid]
   (let [entity @eid]
@@ -169,7 +186,7 @@
      (if-let [skill-id (selected-skill c)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx c eid)
-             state (skill/usable-state entity skill effect-ctx)]
+             state (skill-usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
             ; TODO cursor AS OF SKILL effect (SWORD !) / show already what the effect would do ? e.g. if it would kill highlight
@@ -1192,7 +1209,7 @@
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
-       (filter #(and (= :usable (skill/usable-state entity % ctx))
+       (filter #(and (= :usable (skill-usable-state entity % ctx))
                      (effect-ctx/applicable-and-useful? c ctx (:skill/effects %))))
        first))
 
