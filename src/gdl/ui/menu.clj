@@ -1,5 +1,5 @@
 (ns gdl.ui.menu
-  (:require cdq.application
+  (:require gdl.application
             gdl.graphics.sprite
             [gdl.ui.group :refer [add-actor!]]
             [gdl.ui :as ui :refer [ui-actor]])
@@ -39,7 +39,7 @@
   (let [app-menu (ui/menu label)]
     (doseq [{:keys [label on-click]} items]
       (PopupMenu/.addItem app-menu (menu-item label (if on-click
-                                                      #(on-click @cdq.application/state) ;=> change-listener get .application-state @ ui but not sure if it has that or go through actor
+                                                      #(on-click @gdl.application/state) ;=> change-listener get .application-state @ ui but not sure if it has that or go through actor
                                                       (fn [])))))
     (ui/add-menu menu-bar app-menu)))
 
