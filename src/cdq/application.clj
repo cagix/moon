@@ -912,54 +912,6 @@
                                                   0.2)
                                    (swap! eid entity/add-text-effect c "[WHITE]!"))}})
 
-(defn- create-context []
-  (let [batch (SpriteBatch.)
-        shape-drawer-texture (white-pixel-texture)
-        world-unit-scale (float (/ 48))
-        ; TODO ui-viewport part of stage?
-        ui-viewport (fit-viewport 1440 900 (OrthographicCamera.))
-        schemas (-> "schema.edn" io/resource slurp edn/read-string)
-        context {:cdq/assets (load-assets {:folder "resources/"
-                                           :asset-type->extensions {:sound   #{"wav"}
-                                                                    :texture #{"png" "bmp"}}})
-                 :gdl.graphics/batch batch
-                 :gdl.graphics/cursors (load-cursors {:cursors/bag                   ["bag001"       [0   0]]
-                                                      :cursors/black-x               ["black_x"      [0   0]]
-                                                      :cursors/default               ["default"      [0   0]]
-                                                      :cursors/denied                ["denied"       [16 16]]
-                                                      :cursors/hand-before-grab      ["hand004"      [4  16]]
-                                                      :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
-                                                      :cursors/hand-grab             ["hand003"      [4  16]]
-                                                      :cursors/move-window           ["move002"      [16 16]]
-                                                      :cursors/no-skill-selected     ["denied003"    [0   0]]
-                                                      :cursors/over-button           ["hand002"      [0   0]]
-                                                      :cursors/sandclock             ["sandclock"    [16 16]]
-                                                      :cursors/skill-not-usable      ["x007"         [0   0]]
-                                                      :cursors/use-skill             ["pointer004"   [0   0]]
-                                                      :cursors/walking               ["walking"      [16 16]]})
-                 :gdl.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
-                                                        :size 16
-                                                        :quality-scaling 2})
-                 :gdl.graphics/shape-drawer (ShapeDrawer. batch
-                                                          (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-                 :gdl.graphics/shape-drawer-texture shape-drawer-texture
-                 :gdl.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
-                 :gdl.graphics/ui-viewport ui-viewport
-                 :gdl.graphics/world-unit-scale world-unit-scale
-                 :gdl.graphics/world-viewport (world-viewport world-unit-scale {:width 1440 :height 900})
-                 :cdq.context/stage (create-stage! {:skin-scale :x1} batch ui-viewport)
-                 :cdq/schemas schemas
-                 :cdq/db (create-db schemas)
-                 :context/entity-components (entity-components)}]
-    (cdq.world.context/reset context :worlds/vampire)))
-
-(defn- resize-game [context width height]
-  ; could make 'viewport/update protocol' or 'on-resize' protocol
-  ; and reify the viewports
-  ; so we could have only one
-  (Viewport/.update (:gdl.graphics/ui-viewport    context) width height true)
-  (Viewport/.update (:gdl.graphics/world-viewport context) width height false))
-
 (defn- active-entities [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
                      :cdq.content-grid/content-cell
@@ -1438,36 +1390,90 @@
         (run! #(actor/set-visible % false) windows))))
   c)
 
-(defn- game-loop! [context]
-  (reduce (fn [context f]
-            (f context))
-          context
-          [assoc-active-entities
-           set-camera-on-player
-           clear-screen!
-           render-tiled-map!
-           draw-on-world-view!
-           render-stage!
-           player-state-input
-           update-mouseover-entity!
-           update-paused!
-           when-not-paused!
-
-           ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-           remove-destroyed-entities!
-
-           camera-controls!
-           window-controls!]))
-
 (def state (atom nil))
 
-(defn- lwjgl-application [config listener]
+(defn- start! [config]
   (when (= SharedLibraryLoader/os Os/MacOsX)
     (.setIconImage (Taskbar/getTaskbar)
                    (.getImage (Toolkit/getDefaultToolkit)
                               (io/resource (:dock-icon (:mac-os config)))))
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (Lwjgl3Application. listener
+  (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                        (create []
+                          (reset! state (let [batch (SpriteBatch.)
+                                              shape-drawer-texture (white-pixel-texture)
+                                              world-unit-scale (float (/ 48))
+                                              ; TODO ui-viewport part of stage?
+                                              ui-viewport (fit-viewport 1440 900 (OrthographicCamera.))
+                                              schemas (-> "schema.edn" io/resource slurp edn/read-string)
+                                              context {:cdq/assets (load-assets {:folder "resources/"
+                                                                                 :asset-type->extensions {:sound   #{"wav"}
+                                                                                                          :texture #{"png" "bmp"}}})
+                                                       :gdl.graphics/batch batch
+                                                       :gdl.graphics/cursors (load-cursors {:cursors/bag                   ["bag001"       [0   0]]
+                                                                                            :cursors/black-x               ["black_x"      [0   0]]
+                                                                                            :cursors/default               ["default"      [0   0]]
+                                                                                            :cursors/denied                ["denied"       [16 16]]
+                                                                                            :cursors/hand-before-grab      ["hand004"      [4  16]]
+                                                                                            :cursors/hand-before-grab-gray ["hand004_gray" [4  16]]
+                                                                                            :cursors/hand-grab             ["hand003"      [4  16]]
+                                                                                            :cursors/move-window           ["move002"      [16 16]]
+                                                                                            :cursors/no-skill-selected     ["denied003"    [0   0]]
+                                                                                            :cursors/over-button           ["hand002"      [0   0]]
+                                                                                            :cursors/sandclock             ["sandclock"    [16 16]]
+                                                                                            :cursors/skill-not-usable      ["x007"         [0   0]]
+                                                                                            :cursors/use-skill             ["pointer004"   [0   0]]
+                                                                                            :cursors/walking               ["walking"      [16 16]]})
+                                                       :gdl.graphics/default-font (load-font {:file "fonts/exocet/films.EXL_____.ttf"
+                                                                                              :size 16
+                                                                                              :quality-scaling 2})
+                                                       :gdl.graphics/shape-drawer (ShapeDrawer. batch
+                                                                                                (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+                                                       :gdl.graphics/shape-drawer-texture shape-drawer-texture
+                                                       :gdl.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
+                                                       :gdl.graphics/ui-viewport ui-viewport
+                                                       :gdl.graphics/world-unit-scale world-unit-scale
+                                                       :gdl.graphics/world-viewport (world-viewport world-unit-scale {:width 1440 :height 900})
+                                                       :cdq.context/stage (create-stage! {:skin-scale :x1} batch ui-viewport)
+                                                       :cdq/schemas schemas
+                                                       :cdq/db (create-db schemas)
+                                                       :context/entity-components (entity-components)}]
+                                          (cdq.world.context/reset context :worlds/vampire))))
+
+                        (dispose []
+                          (doseq [[k value] @state]
+                            (if (satisfies? Disposable value)
+                              (do
+                               #_(println "Disposing:" k)
+                               (dispose! value))
+                              #_(println "Not Disposable: " k ))))
+
+                        (render []
+                          (swap! state (fn [context]
+                                         (reduce (fn [context f]
+                                                   (f context))
+                                                 context
+                                                 [assoc-active-entities
+                                                  set-camera-on-player
+                                                  clear-screen!
+                                                  render-tiled-map!
+                                                  draw-on-world-view!
+                                                  render-stage!
+                                                  player-state-input
+                                                  update-mouseover-entity!
+                                                  update-paused!
+                                                  when-not-paused!
+
+                                                  ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                                                  remove-destroyed-entities!
+
+                                                  camera-controls!
+                                                  window-controls!]))))
+
+                        (resize [width height]
+                          (let [context @state]
+                            (Viewport/.update (:gdl.graphics/ui-viewport    context) width height true)
+                            (Viewport/.update (:gdl.graphics/world-viewport context) width height false))))
                       (doto (Lwjgl3ApplicationConfiguration.)
                         (.setTitle (:title config))
                         (.setWindowedMode (:width  (:windowed-mode config))
@@ -1475,27 +1481,10 @@
                         (.setForegroundFPS (:foreground-fps config)))))
 
 (defn -main []
-  (lwjgl-application {:mac-os {:dock-icon "moon.png"}
-                      :title "Cyber Dungeon Quest"
-                      :windowed-mode {:width 1440 :height 900}
-                      :foreground-fps 60
-                      :listener (proxy [ApplicationAdapter] []
-                                  (create []
-                                    (reset! state (create-context)))
-
-                                  (dispose []
-                                    (doseq [[k value] @state]
-                                      (if (satisfies? Disposable value)
-                                        (do
-                                         #_(println "Disposing:" k)
-                                         (dispose! value))
-                                        #_(println "Not Disposable: " k ))))
-
-                                  (render []
-                                    (swap! state game-loop!))
-
-                                  (resize [width height]
-                                    (resize-game @state width height)))}))
+  (start! {:mac-os {:dock-icon "moon.png"}
+           :title "Cyber Dungeon Quest"
+           :windowed-mode {:width 1440 :height 900}
+           :foreground-fps 60}))
 
 (defn post-runnable [f]
   (.postRunnable Gdx/app (fn [] (f @state))))
