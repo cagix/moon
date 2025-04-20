@@ -1,24 +1,38 @@
 (ns cdq.application
-  (:require [cdq.create.db :as db]
+  (:require [cdq.context :as context]
+            [cdq.db :as db]
+            [cdq.schema :as schema]
+            [cdq.property :as property]
             cdq.create.effects
             cdq.create.entity-components
             cdq.create.schemas
-            cdq.render
+            cdq.render.player-state-input
+            cdq.grid
+            [cdq.line-of-sight :as los]
+            cdq.world
             cdq.world.context
-            [gdl.assets :as assets] ; all-of-type -> editor -> decide later
+            [gdl.assets :as assets]
+            [gdl.data.grid2d :as g2d]
             [gdl.gdx.interop :as interop]
-            gdl.graphics.shape-drawer
+            [gdl.graphics.camera :as camera]
+            [gdl.graphics.shape-drawer :as sd]
+            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [gdl.input :as input]
+            [gdl.math.raycaster :as raycaster]
+            [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            [gdl.utils]
+            [gdl.ui.stage :as stage]
+            [gdl.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.pprint :refer [pprint]])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math MathUtils)
@@ -246,6 +260,105 @@
     (.setToOrtho camera y-down? world-width world-height)
     (fit-viewport world-width world-height camera)))
 
+; reduce-kv?
+(defn- apply-kvs
+  "Calls for every key in map (f k v) to calculate new value at k."
+  [m f]
+  (reduce (fn [m k]
+            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
+          m
+          (keys m)))
+
+(defn- validate-properties! [properties schemas]
+  (assert (or (empty? properties)
+              (apply distinct? (map :property/id properties))))
+  (run! #(schema/validate! schemas (property/type %) %) properties))
+
+#_(def ^:private undefined-data-ks (atom #{}))
+
+(comment
+ #{:frames
+   :looping?
+   :frame-duration
+   :file ; => this is texture ... convert that key itself only?!
+   :sub-image-bounds})
+
+(defn- build* [{:keys [cdq/schemas] :as c} property]
+  (apply-kvs property
+             (fn [k v]
+               (let [schema (try (schema/schema-of schemas k)
+                                 (catch Throwable _t
+                                   #_(swap! undefined-data-ks conj k)
+                                   nil))
+                     v (if (map? v)
+                         (build* c v)
+                         v)]
+                 (try (schema/edn->value schema v c)
+                      (catch Throwable t
+                        (throw (ex-info " " {:k k :v v} t))))))))
+
+(defn- recur-sort-map [m]
+  (into (sorted-map)
+        (zipmap (keys m)
+                (map #(if (map? %)
+                        (recur-sort-map %)
+                        %)
+                     (vals m)))))
+
+(defn- async-pprint-spit! [file data]
+  (.start
+   (Thread.
+    (fn []
+      (binding [*print-level* nil]
+        (->> data
+             pprint
+             with-out-str
+             (spit file)))))))
+
+(defrecord DB []
+  db/DB
+  (async-write-to-file! [{:keys [db/data db/properties-file]}]
+    ; TODO validate them again!?
+    (->> data
+         vals
+         (sort-by property/type)
+         (map recur-sort-map)
+         doall
+         (async-pprint-spit! properties-file)))
+
+  (update [{:keys [db/data] :as db}
+           {:keys [property/id] :as property}
+           schemas]
+    {:pre [(contains? property :property/id)
+           (contains? data id)]}
+    (schema/validate! schemas (property/type property) property)
+    (clojure.core/update db :db/data assoc id property)) ; assoc-in ?
+
+  (delete [{:keys [db/data] :as db} property-id]
+    {:pre [(contains? data property-id)]}
+    (clojure.core/update db dissoc :db/data property-id)) ; dissoc-in ?
+
+  (get-raw [{:keys [db/data]} id]
+    (utils/safe-get data id))
+
+  (all-raw [{:keys [db/data]} property-type]
+    (->> (vals data)
+         (filter #(= property-type (property/type %)))))
+
+  (build [this id context]
+    (build* context (db/get-raw this id)))
+
+  (build-all [this property-type context]
+    (map (partial build* context)
+         (db/all-raw this property-type))))
+
+(defn- create-db [schemas]
+  (let [properties-file (io/resource "properties.edn")
+        properties (-> properties-file slurp edn/read-string)]
+    (validate-properties! properties schemas)
+    (map->DB {:db/data (zipmap (map :property/id properties) properties)
+              :db/properties-file properties-file})))
+
 (defn- create-context []
   (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
@@ -300,10 +413,236 @@
 (defn- create-game [context]
   (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
         context (merge context
-                       {:cdq/db (db/create schemas)
+                       {:cdq/db (create-db schemas)
                         :context/entity-components (cdq.create.entity-components/create)
                         :cdq/schemas schemas})]
     (cdq.world.context/reset context :worlds/vampire)))
+
+(defn- active-entities [{:keys [grid]} center-entity]
+  (->> (let [idx (-> center-entity
+                     :cdq.content-grid/content-cell
+                     deref
+                     :idx)]
+         (cons idx (g2d/get-8-neighbour-positions idx)))
+       (keep grid)
+       (mapcat (comp :entities deref))))
+
+(defn- assoc-active-entities [{:keys [cdq.context/content-grid
+                                      cdq.context/player-eid]
+                               :as context}]
+  (assoc context :cdq.game/active-entities (active-entities content-grid @player-eid)))
+
+(defn- set-camera-on-player
+  [{:keys [gdl.graphics/world-viewport
+           cdq.context/player-eid]
+    :as context}]
+  {:pre [world-viewport
+         player-eid]}
+  (camera/set-position (:camera world-viewport)
+                       (:position @player-eid))
+  context)
+
+(defn- clear-screen! [context]
+  (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
+  context)
+
+(def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
+
+(def ^:private ^:dbg-flag see-all-tiles? false)
+
+(comment
+ (def ^:private count-rays? false)
+
+ (def ray-positions (atom []))
+ (def do-once (atom true))
+
+ (count @ray-positions)
+ 2256
+ (count (distinct @ray-positions))
+ 608
+ (* 608 4)
+ 2432
+ )
+
+(defn- tile-color-setter [raycaster explored-tile-corners light-position]
+  #_(reset! do-once false)
+  (let [light-cache (atom {})]
+    (fn tile-color-setter [_color x y]
+      (let [position [(int x) (int y)]
+            explored? (get @explored-tile-corners position) ; TODO needs int call ?
+            base-color (if explored? explored-tile-color Color/BLACK)
+            cache-entry (get @light-cache position :not-found)
+            blocked? (if (= cache-entry :not-found)
+                       (let [blocked? (raycaster/blocked? raycaster light-position position)]
+                         (swap! light-cache assoc position blocked?)
+                         blocked?)
+                       cache-entry)]
+        #_(when @do-once
+            (swap! ray-positions conj position))
+        (if blocked?
+          (if see-all-tiles? Color/WHITE base-color)
+          (do (when-not explored?
+                (swap! explored-tile-corners assoc (mapv int position) true))
+              Color/WHITE))))))
+
+(defn- render-tiled-map! [{:keys [gdl.graphics/world-viewport
+                                  cdq.context/tiled-map
+                                  cdq.context/raycaster
+                                  cdq.context/explored-tile-corners]
+                           :as context}]
+  (tiled-map-renderer/draw context
+                           tiled-map
+                           (tile-color-setter raycaster
+                                              explored-tile-corners
+                                              (camera/position (:camera world-viewport))))
+  context)
+
+(def ^:private render-fns
+  '[(cdq.render.draw-on-world-view.before-entities/render)
+    (cdq.render.draw-on-world-view.entities/render-entities
+     {:below {:entity/mouseover? cdq.render.draw-on-world-view.entities/draw-faction-ellipse
+              :player-item-on-cursor cdq.render.draw-on-world-view.entities/draw-world-item-if-exists
+              :stunned cdq.render.draw-on-world-view.entities/draw-stunned-circle}
+      :default {:entity/image cdq.render.draw-on-world-view.entities/draw-image-as-of-body
+                :entity/clickable cdq.render.draw-on-world-view.entities/draw-text-when-mouseover-and-text
+                :entity/line-render cdq.render.draw-on-world-view.entities/draw-line}
+      :above {:npc-sleeping cdq.render.draw-on-world-view.entities/draw-zzzz
+              :entity/string-effect cdq.render.draw-on-world-view.entities/draw-text
+              :entity/temp-modifier cdq.render.draw-on-world-view.entities/draw-filled-circle-grey}
+      :info {:entity/hp cdq.render.draw-on-world-view.entities/draw-hpbar-when-mouseover-and-not-full
+             :active-skill cdq.render.draw-on-world-view.entities/draw-skill-image-and-active-effect}})
+    (cdq.render.draw-on-world-view.after-entities/render)])
+
+(defn- draw-with [{:keys [^Batch gdl.graphics/batch
+                          gdl.graphics/shape-drawer] :as c}
+                 viewport
+                 unit-scale
+                 draw-fn]
+  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+  (.setProjectionMatrix batch (camera/combined (:camera viewport)))
+  (.begin batch)
+  (sd/with-line-width shape-drawer unit-scale
+    (fn []
+      (draw-fn (assoc c :cdq.context/unit-scale unit-scale))))
+  (.end batch))
+
+(defn- draw-on-world-view* [{:keys [gdl.graphics/world-unit-scale
+                                    gdl.graphics/world-viewport] :as c} render-fn]
+  (draw-with c
+             world-viewport
+             world-unit-scale
+             render-fn))
+
+(defn- draw-on-world-view! [context]
+  (draw-on-world-view* context
+                       (fn [context]
+                         (doseq [f render-fns]
+                           (utils/req-resolve-call f context))))
+  context)
+
+(defn- render-stage! [{:keys [^StageWithState cdq.context/stage] :as context}]
+  (set! (.applicationState stage) (assoc context :cdq.context/unit-scale 1))
+  (com.badlogic.gdx.scenes.scene2d.Stage/.draw stage)
+  (set! (.applicationState stage) context)
+  (com.badlogic.gdx.scenes.scene2d.Stage/.act stage)
+  context)
+
+(defn- update-mouseover-entity! [{:keys [cdq.context/grid
+                                         cdq.context/mouseover-eid
+                                         cdq.context/player-eid
+                                         gdl.graphics/world-viewport
+                                         cdq.context/stage] :as c}]
+  (let [new-eid (if (stage/mouse-on-actor? stage)
+                  nil
+                  (let [player @player-eid
+                        hits (remove #(= (:z-order @%) :z-order/effect)
+                                     (cdq.grid/point->entities grid (gdl.graphics/world-mouse-position world-viewport)))]
+                    (->> cdq.world/render-z-order
+                         (gdl.utils/sort-by-order hits #(:z-order @%))
+                         reverse
+                         (filter #(los/exists? c player @%))
+                         first)))]
+    (when mouseover-eid
+      (swap! mouseover-eid dissoc :entity/mouseover?))
+    (when new-eid
+      (swap! new-eid assoc :entity/mouseover? true))
+    (assoc c :cdq.context/mouseover-eid new-eid)))
+
+(defn- update-paused! [{:keys [cdq.context/player-eid
+                               context/entity-components
+                               error ; FIXME ! not `::` keys so broken !
+                               ] :as c}]
+  (let [pausing? true]
+    (assoc c :cdq.context/paused? (or error
+                                      (and pausing?
+                                           (get-in entity-components [(cdq.entity/state-k @player-eid) :pause-game?])
+                                           (not (or (input/key-just-pressed? :p)
+                                                    (input/key-pressed?      :space))))))))
+
+(defn- when-not-paused! [context]
+  (if (:cdq.context/paused? context)
+    context
+    (reduce (fn [context f]
+              (gdl.utils/req-resolve-call f context))
+            context
+            '[(cdq.render.when-not-paused.update-time/render)
+              (cdq.render.when-not-paused.update-potential-fields/render)
+              (cdq.render.when-not-paused.tick-entities/render)])))
+
+(defn- remove-destroyed-entities! [{:keys [cdq.context/entity-ids
+                                           context/entity-components]
+                                    :as context}]
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (vals @entity-ids))]
+    (doseq [component context]
+      (context/remove-entity component eid))
+    (doseq [[k v] @eid
+            :let [destroy! (get-in entity-components [k :destroy!])]
+            :when destroy!]
+      (destroy! v eid context)))
+  context)
+
+(defn- camera-controls! [{:keys [gdl.graphics/world-viewport]
+                          :as context}]
+  (let [camera (:camera world-viewport)
+        zoom-speed 0.025]
+    (when (input/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
+    (when (input/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed))))
+  context)
+
+(defn- window-controls! [c]
+  (let [window-hotkeys {:inventory-window   :i
+                        :entity-info-window :e}]
+    (doseq [window-id [:inventory-window
+                       :entity-info-window]
+            :when (input/key-just-pressed? (get window-hotkeys window-id))]
+      (actor/toggle-visible! (get (:windows (:cdq.context/stage c)) window-id))))
+  (when (input/key-just-pressed? :escape)
+    (let [windows (group/children (:windows (:cdq.context/stage c)))]
+      (when (some actor/visible? windows)
+        (run! #(actor/set-visible % false) windows))))
+  c)
+
+(defn- game-loop! [context]
+  (reduce (fn [context f]
+            (f context))
+          context
+          [assoc-active-entities
+           set-camera-on-player
+           clear-screen!
+           render-tiled-map!
+           draw-on-world-view!
+           render-stage!
+           cdq.render.player-state-input/render
+           update-mouseover-entity!
+           update-paused!
+           when-not-paused!
+
+           ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+           remove-destroyed-entities!
+
+           camera-controls!
+           window-controls!]))
 
 (def state (atom nil))
 
@@ -321,7 +660,7 @@
                           (dispose-game @state))
 
                         (render []
-                          (swap! state cdq.render/game-loop!))
+                          (swap! state game-loop!))
 
                         (resize [width height]
                           (resize-game @state width height)))
