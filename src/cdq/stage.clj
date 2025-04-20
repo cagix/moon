@@ -10,7 +10,6 @@
             [gdl.ui :as ui :refer [ui-actor]]
             [gdl.ui.actor :as actor]
             [gdl.ui.group :as group]
-            gdl.ui.menu
             [gdl.utils :as utils]))
 
 (defn- action-bar-button-group []
@@ -122,8 +121,9 @@
              :actors actors}))
 
 (defn actors [context]
+  (require 'gdl.ui.menu)
   (require 'cdq.create.stage.dev-menu.config) ; requires cdq.world.context
-  [(gdl.ui.menu/create context ((resolve 'cdq.create.stage.dev-menu.config/create) context))
+  [((resolve 'gdl.ui.menu/create) context ((resolve 'cdq.create.stage.dev-menu.config/create) context))
    (action-bar)
    (hp-mana-bar context)
    (window-group context [(entity-info-window context)
