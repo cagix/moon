@@ -1461,36 +1461,41 @@
 
 (def state (atom nil))
 
-(defn start! [config]
-  (when  (= SharedLibraryLoader/os Os/MacOsX)
+(defn- lwjgl-application [config listener]
+  (when (= SharedLibraryLoader/os Os/MacOsX)
     (.setIconImage (Taskbar/getTaskbar)
                    (.getImage (Toolkit/getDefaultToolkit)
                               (io/resource (:dock-icon (:mac-os config)))))
     (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (Lwjgl3Application. (proxy [ApplicationAdapter] []
-                        (create []
-                          (reset! state (create-context)))
-
-                        (dispose []
-                          (doseq [[k value] @state]
-                            (if (satisfies? Disposable value)
-                              (do
-                               #_(println "Disposing:" k)
-                               (dispose! value))
-                              #_(println "Not Disposable: " k ))))
-
-                        (render []
-                          (swap! state game-loop!))
-
-                        (resize [width height]
-                          (resize-game @state width height)))
+  (Lwjgl3Application. listener
                       (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle "Cyber Dungeon Quest")
-                        (.setWindowedMode 1440 900)
-                        (.setForegroundFPS 60))))
+                        (.setTitle (:title config))
+                        (.setWindowedMode (:width  (:windowed-mode config))
+                                          (:height (:windowed-mode config)))
+                        (.setForegroundFPS (:foreground-fps config)))))
 
 (defn -main []
-  (start! {:mac-os {:dock-icon "moon.png"}}))
+  (lwjgl-application {:mac-os {:dock-icon "moon.png"}
+                      :title "Cyber Dungeon Quest"
+                      :windowed-mode {:width 1440 :height 900}
+                      :foreground-fps 60
+                      :listener (proxy [ApplicationAdapter] []
+                                  (create []
+                                    (reset! state (create-context)))
+
+                                  (dispose []
+                                    (doseq [[k value] @state]
+                                      (if (satisfies? Disposable value)
+                                        (do
+                                         #_(println "Disposing:" k)
+                                         (dispose! value))
+                                        #_(println "Not Disposable: " k ))))
+
+                                  (render []
+                                    (swap! state game-loop!))
+
+                                  (resize [width height]
+                                    (resize-game @state width height)))}))
 
 (defn post-runnable [f]
   (.postRunnable Gdx/app (fn [] (f @state))))
