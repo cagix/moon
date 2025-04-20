@@ -1,4 +1,4 @@
-(ns cdq.game
+(ns cdq.application
   (:require [gdl.application :as app]
             [cdq.create.db :as db]
             cdq.create.effects
