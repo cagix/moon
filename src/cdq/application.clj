@@ -1404,7 +1404,6 @@
                             (reset! state (let [batch (SpriteBatch.)
                                                 shape-drawer-texture (white-pixel-texture)
                                                 world-unit-scale (float (/ (:world-unit-scale config)))
-                                                ; TODO ui-viewport part of stage?
                                                 ui-viewport (fit-viewport (:width  (:ui-viewport config))
                                                                           (:height (:ui-viewport config))
                                                                           (OrthographicCamera.))
