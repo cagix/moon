@@ -290,7 +290,11 @@
         (vector? c) (apply create-color c)
         :else (throw (ex-info "Cannot understand color" c))))
 
-(defn k->align [k]
+(defn k->align
+  "Returns the `com.badlogic.gdx.utils.Align` enum for keyword `k`.
+
+  `k` is either `:center`, `:left` or `:right` and `Align` value is `Align/center`, `Align/left` and `Align/right`."
+  [k]
   (case k
     :center Align/center
     :left   Align/left
