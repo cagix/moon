@@ -9,6 +9,15 @@
                                item-place-position]]
             [cdq.audio.sound :as sound]))
 
+; entity defmethods:
+; * cdq.entity
+; * cdq.info
+; * cdq.render.draw-on-world-view.entities
+; * cdq.render
+; * cdq.widgets.inventory
+; * cdq.widgets.skill-window
+; * cdq.world (create!)
+
 (def ^:private components
   {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]
                                             (spawn-audiovisual c
