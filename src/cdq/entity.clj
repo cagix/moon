@@ -6,6 +6,14 @@
             [cdq.inventory :as inventory]
             [cdq.operation :as op]))
 
+(defmulti tick! (fn [[k] eid c]
+                  k))
+(defmethod tick! :default [_ eid c])
+
+(defmulti manual-tick (fn [[k] context]
+                        k))
+(defmethod manual-tick :default [_ c])
+
 (defn mod-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
   (op/apply (modifier-k modifiers)

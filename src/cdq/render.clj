@@ -22,12 +22,8 @@
            (com.badlogic.gdx.graphics.g2d Batch)
            (cdq StageWithState)))
 
-(defmulti manual-tick (fn [[k] context]
-                        k))
-(defmethod manual-tick :default [_ c])
-
 (defn player-state-input [{:keys [cdq.context/player-eid] :as c}]
-  (manual-tick (entity/state-obj @player-eid) c)
+  (entity/manual-tick (entity/state-obj @player-eid) c)
   c)
 
 (defn- active-entities [{:keys [grid]} center-entity]
@@ -211,10 +207,6 @@
                                max-iterations))
   context)
 
-(defmulti tick! (fn [[k] eid c]
-                  k))
-(defmethod tick! :default [_ eid c])
-
 (defn- tick-entities! [{:keys [cdq.game/active-entities]
                         :as context}]
   ; precaution in case a component gets removed by another component
@@ -227,7 +219,7 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (tick! [k v] eid context))
+               (entity/tick! [k v] eid context))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t

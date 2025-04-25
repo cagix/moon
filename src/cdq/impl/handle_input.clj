@@ -1,11 +1,10 @@
 (ns cdq.impl.handle-input
   (:require [cdq.assets :as assets]
             [cdq.audio.sound :as sound]
-            [cdq.entity :as entity]
+            [cdq.entity :as entity :refer [manual-tick]]
             [cdq.entity.fsm :as fsm]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
-            [cdq.render :refer [manual-tick]]
             [cdq.skill :as skill]
             [cdq.math.vector2 :as v]
             [cdq.ui :as ui]

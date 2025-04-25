@@ -3,7 +3,7 @@
             [cdq.context :as context]
             [cdq.db :as db]
             [cdq.effect-context :as effect-ctx]
-            [cdq.entity :as entity]
+            [cdq.entity :as entity :refer [tick!]]
             [cdq.entity.fsm :as fsm]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
@@ -13,7 +13,6 @@
             cdq.time
             [cdq.timer :as timer]
             [cdq.utils :refer [safe-merge find-first]]
-            [cdq.render :refer [tick!]]
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.math.vector2 :as v]
@@ -33,8 +32,6 @@
 ; * cdq.widgets.inventory
 ; * cdq.widgets.skill-window
 ; * cdq.world (create!)
-
-; TODO - multimethods also to 'cdq.component' (cdq.render, cdq.render.entites...)
 
 (defmethod entity/create :entity/delete-after-duration
   [[_ duration]
