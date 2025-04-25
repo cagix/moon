@@ -1,7 +1,7 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.utils Disposable SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
@@ -9,6 +9,8 @@
            (org.lwjgl.system Configuration)))
 
 (def state (atom nil))
+
+(def ^:private runnables (atom []))
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)
@@ -39,7 +41,10 @@
                                            (reduce (fn [context f]
                                                      (f context))
                                                    context
-                                                   render-pipeline))))
+                                                   render-pipeline)))
+                            (doseq [f @runnables]
+                              (f @state))
+                            (reset! runnables []))
 
                           (resize [width height]
                             (let [context @state]
@@ -51,5 +56,5 @@
                                             (:height (:windowed-mode config)))
                           (.setForegroundFPS (:foreground-fps config))))))
 
-(defn post-runnable [f]
-  (.postRunnable Gdx/app (fn [] (f @state))))
+(defn post-runnable! [f]
+  (swap! runnables conj f))
