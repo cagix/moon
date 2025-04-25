@@ -3,6 +3,7 @@
  :windowed-mode {:width 1440 :height 900}
  :foreground-fps 60
  :requires [cdq.impl.effects
+            cdq.impl.handle-input
             cdq.impl.info
             cdq.impl.level]
  :create-pipeline [cdq.impl.context/create!

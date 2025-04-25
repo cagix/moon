@@ -19,6 +19,8 @@
 ; * cdq.widgets.skill-window
 ; * cdq.world (create!)
 
+; TODO - multimethods also to 'cdq.component'
+
 (defmethod entity/create :entity/delete-after-duration
   [[_ duration]
    {:keys [cdq.context/elapsed-time] :as c}]
