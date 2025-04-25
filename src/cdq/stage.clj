@@ -5,7 +5,6 @@
             cdq.widgets.inventory
             [cdq.graphics :as graphics]
             [cdq.graphics.sprite :as sprite]
-            [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.actor :as actor]
@@ -76,12 +75,12 @@
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [c x y contentimage minmaxval name]
-                            (batch/draw-image c rahmen [x y])
-                            (batch/draw-image c
-                                              (sprite/sub contentimage
-                                                          [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]
-                                                          c)
-                                              [x y])
+                            (graphics/draw-image c rahmen [x y])
+                            (graphics/draw-image c
+                                                 (sprite/sub contentimage
+                                                             [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]
+                                                             c)
+                                                 [x y])
                             (render-infostr-on-bar c (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn [{:keys [cdq.context/player-eid] :as c}]
                        (let [player-entity @player-eid

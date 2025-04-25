@@ -9,7 +9,6 @@
             [cdq.inventory :as inventory]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
-            [cdq.graphics.batch :as batch]
             [cdq.grid :as grid]
             [cdq.line-of-sight :as los]
             cdq.time
@@ -142,9 +141,9 @@
 (defmethod entity/draw-gui-view :player-item-on-cursor
   [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]
   (when (not (world-item? c))
-    (batch/draw-centered c
-                         (:entity/image (:entity/item-on-cursor @eid))
-                         (graphics/mouse-position ui-viewport))))
+    (graphics/draw-centered c
+                            (:entity/image (:entity/item-on-cursor @eid))
+                            (graphics/mouse-position ui-viewport))))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx

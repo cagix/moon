@@ -2,8 +2,8 @@
   (:require cdq.graphics
             [cdq.effect :as effect]
             [cdq.timer :as timer]
+            [cdq.graphics :as graphics]
             [cdq.graphics.shape-drawer :as sd]
-            [cdq.graphics.batch :as batch]
             [cdq.graphics.text :as text]
             [cdq.line-of-sight :as los]
             [cdq.utils :refer [pretty-pst sort-by-order]]
@@ -27,7 +27,7 @@
                90 ; start-angle
                (* (float action-counter-ratio) 360) ; degree
                [1 1 1 0.5])
-    (batch/draw-image c image [(- (float x) radius) y])))
+    (graphics/draw-image c image [(- (float x) radius) y])))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
@@ -80,10 +80,10 @@
       (draw-hpbar c entity ratio))))
 
 (defn draw-image-as-of-body [image entity c]
-  (batch/draw-rotated-centered c
-                               image
-                               (or (:rotation-angle entity) 0)
-                               (:position entity)))
+  (graphics/draw-rotated-centered c
+                                  image
+                                  (or (:rotation-angle entity) 0)
+                                  (:position entity)))
 
 (defn draw-line
   [{:keys [thick? end color]}
@@ -148,9 +148,9 @@
 
 (defn draw-world-item-if-exists [{:keys [item]} entity c]
   (when (world-item? c)
-    (batch/draw-centered c
-                         (:entity/image item)
-                         (item-place-position c entity))))
+    (graphics/draw-centered c
+                            (:entity/image item)
+                            (item-place-position c entity))))
 
 (defn draw-stunned-circle [_ entity {:keys [cdq.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
