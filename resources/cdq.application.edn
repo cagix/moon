@@ -4,6 +4,22 @@
  :foreground-fps 60
  :requires [cdq.impl.effects]
  :create-context! cdq.impl.context/create!
+ :render-pipeline [cdq.render/assoc-active-entities
+                   cdq.render/set-camera-on-player
+                   cdq.render/clear-screen!
+                   cdq.render/render-tiled-map!
+                   cdq.render/draw-on-world-view!
+                   cdq.render/render-stage!
+                   cdq.render/player-state-input
+                   cdq.render/update-mouseover-entity!
+                   cdq.render/update-paused!
+                   cdq.render/when-not-paused!
+
+                   ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                   cdq.render/remove-destroyed-entities!
+
+                   cdq.render/camera-controls!
+                   cdq.render/window-controls!]
  :assets {:folder "resources/"
           :asset-type->extensions {:sound   #{"wav"}
                                    :texture #{"png" "bmp"}}}

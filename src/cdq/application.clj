@@ -1,6 +1,5 @@
 (ns cdq.application
-  (:require cdq.render
-            cdq.utils
+  (:require cdq.utils
             [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -14,7 +13,8 @@
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)
-        create-context! (requiring-resolve (:create-context! config))]
+        create-context! (requiring-resolve (:create-context! config))
+        render-pipeline (map requiring-resolve (:render-pipeline config))]
     (doseq [ns (:requires config)]
       #_(println "requiring " ns)
       (require ns))
@@ -40,22 +40,7 @@
                                            (reduce (fn [context f]
                                                      (f context))
                                                    context
-                                                   [cdq.render/assoc-active-entities
-                                                    cdq.render/set-camera-on-player
-                                                    cdq.render/clear-screen!
-                                                    cdq.render/render-tiled-map!
-                                                    cdq.render/draw-on-world-view!
-                                                    cdq.render/render-stage!
-                                                    cdq.render/player-state-input
-                                                    cdq.render/update-mouseover-entity!
-                                                    cdq.render/update-paused!
-                                                    cdq.render/when-not-paused!
-
-                                                    ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                                                    cdq.render/remove-destroyed-entities!
-
-                                                    cdq.render/camera-controls!
-                                                    cdq.render/window-controls!]))))
+                                                   render-pipeline))))
 
                           (resize [width height]
                             (let [context @state]
