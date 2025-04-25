@@ -20,6 +20,8 @@
             [cdq.utils :as utils])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)
+           (com.badlogic.gdx.scenes.scene2d Stage)
+           (com.badlogic.gdx.utils ScreenUtils)
            (cdq StageWithState)))
 
 (defn player-state-input [{:keys [cdq.context/player-eid] :as c}]
@@ -51,7 +53,7 @@
   context)
 
 (defn clear-screen! [context]
-  (com.badlogic.gdx.utils.ScreenUtils/clear com.badlogic.gdx.graphics.Color/BLACK)
+  (ScreenUtils/clear Color/BLACK)
   context)
 
 (def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
@@ -150,9 +152,9 @@
 
 (defn render-stage! [{:keys [^StageWithState cdq.context/stage] :as context}]
   (set! (.applicationState stage) (assoc context :cdq.context/unit-scale 1))
-  (com.badlogic.gdx.scenes.scene2d.Stage/.draw stage)
+  (Stage/.draw stage)
   (set! (.applicationState stage) context)
-  (com.badlogic.gdx.scenes.scene2d.Stage/.act stage)
+  (Stage/.act stage)
   context)
 
 (defn update-mouseover-entity! [{:keys [cdq.context/grid

@@ -7,7 +7,9 @@
             [cdq.ui.group :refer [children]]
             [cdq.ui.stage :as stage]
             [cdq.ui :refer [t-node scroll-pane] :as ui]
-            [cdq.world :as world]))
+            [cdq.world :as world])
+  (:import (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.scenes.scene2d Group Stage)))
 
 (comment
 
@@ -142,14 +144,14 @@
   (when (coll? v)
     (add-elements! node v))
 
-  (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
+  (when (instance? Stage v)
     (add-map-nodes! node (children->str-map (children (stage/root v))) level))
 
-  (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
+  (when (instance? Group v)
     (add-map-nodes! node (children->str-map (children v)) level))
 
   (when (and (var? v)
-             (instance? com.badlogic.gdx.assets.AssetManager @v))
+             (instance? AssetManager @v))
     (add-map-nodes! node (bean @v) level)))
 
 (comment

@@ -7,7 +7,8 @@
             [cdq.data.grid2d :as g2d]
             [cdq.tiled :as tiled]
             [cdq.ui.stage :as stage]
-            [cdq.utils :as utils :refer [tile->middle defcomponent]]))
+            [cdq.utils :as utils :refer [tile->middle defcomponent]])
+  (:import (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -147,7 +148,7 @@
                   (player-entity-props (:start-position level))))
 
 (defn- reset-stage! [{:keys [cdq.context/stage] :as context}]
-  (com.badlogic.gdx.scenes.scene2d.Stage/.clear stage)
+  (Stage/.clear stage)
   (run! #(stage/add-actor stage %)
         (cdq.stage/actors context)))
 
