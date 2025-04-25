@@ -8,7 +8,6 @@
             cdq.world.context
             [cdq.graphics :as graphics]
             [cdq.ui.table :as table]
-            [cdq.ui.widget-group :as widget-group]
             [clojure.string :as str]
             [cdq.utils :refer [readable-number]]))
 
@@ -47,7 +46,7 @@
                                     (table/add! window (cdq.editor/overview-table context
                                                                                   property-type
                                                                                   cdq.editor/edit-property))
-                                    (widget-group/pack! window)
+                                    (ui/pack! window)
                                     (stage/add-actor (:cdq.context/stage context)
                                                      window)))})}]
    :update-labels [{:label "Mouseover-entity id"

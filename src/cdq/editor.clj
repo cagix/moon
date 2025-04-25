@@ -28,7 +28,6 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.group :refer [children clear-children add-actor! find-actor]]
             [cdq.ui.table :as table]
-            [cdq.ui.widget-group :as widget-group]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
@@ -121,7 +120,7 @@
     (add-actor! window (ui-actor {:act (fn [_]
                                          (when (input/key-just-pressed? :enter)
                                            (save!)))}))
-    (widget-group/pack! window)
+    (ui/pack! window)
     window))
 
 (defmethod schema->widget :default [_ v]
@@ -267,7 +266,7 @@
                                             (actor/remove window)
                                             (redo-rows (conj property-ids id)))]
                         (table/add! window (overview-table @state property-type clicked-id-fn))
-                        (widget-group/pack! window)
+                        (ui/pack! window)
                         (stage-add! window))))]
       (for [property-id property-ids]
         (let [property (db/build (get-db) property-id @state)
@@ -306,7 +305,7 @@
                                               (actor/remove window)
                                               (redo-rows id))]
                           (table/add! window (overview-table @state property-type clicked-id-fn))
-                          (widget-group/pack! window)
+                          (ui/pack! window)
                           (stage-add! window)))))]
       [(when property-id
          (let [property (db/build (get-db) property-id @state)
@@ -410,7 +409,7 @@
                                                            schema
                                                            map-widget-table)])
                        (rebuild-editor-window)))]))
-    (widget-group/pack! window)
+    (ui/pack! window)
     (stage-add! window)))
 
 (defn- interpose-f [f coll]
