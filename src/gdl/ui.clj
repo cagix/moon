@@ -226,6 +226,8 @@
 (defn change-listener ^ChangeListener [on-clicked]
   (proxy [ChangeListener] []
     (changed [event actor]
+      ;(println "Clicked on change-listener ... ")
+      ;(println "(keys (application-state actor))" (keys (application-state actor)))
       (binding [*on-clicked-actor* actor]
         (on-clicked)))))
 
