@@ -3,7 +3,8 @@
  :windowed-mode {:width 1440 :height 900}
  :foreground-fps 60
  :requires [cdq.impl.effects]
- :create-context! cdq.impl.context/create!
+ :create-pipeline [cdq.impl.context/create!
+                   cdq.world.context/reset]
  :render-pipeline [cdq.render/assoc-active-entities
                    cdq.render/set-camera-on-player
                    cdq.render/clear-screen!
@@ -45,4 +46,4 @@
  :world-viewport {:width 1440 :height 900}
  :ui {:skin-scale :x1}
  :schemas "schema.edn"
- :first-level :worlds/vampire}
+ :world-id :worlds/vampire}

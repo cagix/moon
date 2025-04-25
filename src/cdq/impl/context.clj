@@ -2,7 +2,6 @@
   (:require [cdq.db :as db]
             cdq.impl.entity
             [cdq.schema :as schema]
-            cdq.world.context
             [cdq.assets :as assets]
             [cdq.gdx.interop :as interop]
             cdq.graphics.animation
@@ -341,26 +340,25 @@
     (map->DB {:db/data (zipmap (map :property/id properties) properties)
               :db/properties-file properties-file})))
 
-(defn create! [config]
+(defn create! [_context config]
   (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
         world-unit-scale (float (/ (:world-unit-scale config)))
         ui-viewport (fit-viewport (:width  (:ui-viewport config))
                                   (:height (:ui-viewport config))
                                   (OrthographicCamera.))
-        schemas (-> (:schemas config) io/resource slurp edn/read-string)
-        context {:cdq/assets (assets/create (:assets config))
-                 :cdq.graphics/batch batch
-                 :cdq.graphics/cursors (load-cursors (:cursors config))
-                 :cdq.graphics/default-font (load-font (:default-font config))
-                 :cdq.graphics/shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-                 :cdq.graphics/shape-drawer-texture shape-drawer-texture
-                 :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
-                 :cdq.graphics/ui-viewport ui-viewport
-                 :cdq.graphics/world-unit-scale world-unit-scale
-                 :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
-                 :cdq.context/stage (create-stage! (:ui config) batch ui-viewport)
-                 :cdq/schemas schemas
-                 :cdq/db (create-db schemas)
-                 :context/entity-components (cdq.impl.entity/components)}]
-    (cdq.world.context/reset context (:first-level config))))
+        schemas (-> (:schemas config) io/resource slurp edn/read-string)]
+    {:cdq/assets (assets/create (:assets config))
+     :cdq.graphics/batch batch
+     :cdq.graphics/cursors (load-cursors (:cursors config))
+     :cdq.graphics/default-font (load-font (:default-font config))
+     :cdq.graphics/shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+     :cdq.graphics/shape-drawer-texture shape-drawer-texture
+     :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
+     :cdq.graphics/ui-viewport ui-viewport
+     :cdq.graphics/world-unit-scale world-unit-scale
+     :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
+     :cdq.context/stage (create-stage! (:ui config) batch ui-viewport)
+     :cdq/schemas schemas
+     :cdq/db (create-db schemas)
+     :context/entity-components (cdq.impl.entity/components)}))

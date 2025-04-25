@@ -70,7 +70,7 @@
   (run! #(stage/add-actor stage %)
         (cdq.stage/actors context)))
 
-(defn reset [context world-id]
+(defn reset [context {:keys [world-id] :as _config}]
   (reset-stage! context)
   (let [{:keys [tiled-map start-position] :as level} (level/create context world-id)
         grid (cdq.create.grid/create tiled-map)

@@ -14,7 +14,7 @@
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)
-        create-context! (requiring-resolve (:create-context! config))
+        create-pipeline (map requiring-resolve (:create-pipeline config))
         render-pipeline (map requiring-resolve (:render-pipeline config))]
     (doseq [ns (:requires config)]
       #_(println "requiring " ns)
@@ -25,8 +25,15 @@
                                 (io/resource (:dock-icon (:mac-os config)))))
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
+
+                          ; TODO pass specific configs to specific pipeline steps ...
+                          ; like before ....
+
                           (create []
-                            (reset! state (create-context! config)))
+                            (reset! state (reduce (fn [context f]
+                                                    (f context config))
+                                                  {}
+                                                  create-pipeline)))
 
                           (dispose []
                             (doseq [[k obj] @state]
