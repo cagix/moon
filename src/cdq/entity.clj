@@ -1,7 +1,5 @@
 (ns cdq.entity
   (:require [cdq.math.vector2 :as v]
-            [cdq.utils :refer [safe-merge]]
-            [cdq.db :as db]
             [cdq.timer :as timer]
             [cdq.schema :as s]
             [cdq.math.shapes :as shape]
@@ -19,8 +17,6 @@
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
 
-; temporary here, move to entity.render
-; widgets in cdq.world and circular dependencies
 (defmulti draw-gui-view (fn [[k] context]
                           k))
 (defmethod draw-gui-view :default [_ c])
@@ -29,84 +25,6 @@
                    k))
 (defmethod create :default [[_ v] _context]
   v)
-
-(defmethod create :entity/delete-after-duration
-  [[_ duration]
-   {:keys [cdq.context/elapsed-time] :as c}]
-  (timer/create elapsed-time duration))
-
-(defmethod create :entity/hp
-  [[_ v] _c]
-  [v v])
-
-(defmethod create :entity/mana
-  [[_ v] _c]
-  [v v])
-
-(defmethod create :entity/projectile-collision
-  [[_ v] c]
-  (assoc v :already-hit-bodies #{}))
-
-(defn- apply-action-speed-modifier [entity skill action-time]
-  (/ action-time
-     (or (stat entity (:skill/action-time-modifier-key skill))
-         1)))
-
-(defmethod create :active-skill
-  [[_ eid [skill effect-ctx]]
-   {:keys [cdq.context/elapsed-time]}]
-  {:eid eid
-   :skill skill
-   :effect-ctx effect-ctx
-   :counter (->> skill
-                 :skill/action-time
-                 (apply-action-speed-modifier @eid skill)
-                 (timer/create elapsed-time))})
-
-(defmethod create :npc-dead
-  [[_ eid] c]
-  {:eid eid})
-
-(defmethod create :npc-idle
-  [[_ eid] c]
-  {:eid eid})
-
-(defmethod create :npc-moving
-  [[_ eid movement-vector]
-   {:keys [cdq.context/elapsed-time]}]
-  {:eid eid
-   :movement-vector movement-vector
-   :counter (timer/create elapsed-time (* (stat @eid :entity/reaction-time) 0.016))})
-
-(defmethod create :npc-sleeping
-  [[_ eid] c]
-  {:eid eid})
-
-(defmethod create :player-dead
-  [[k] {:keys [cdq/db] :as c}]
-  (db/build db :player-dead/component.enter c))
-
-(defmethod create :player-idle
-  [[_ eid] {:keys [cdq/db] :as c}]
-  (safe-merge (db/build db :player-idle/clicked-inventory-cell c)
-              {:eid eid}))
-
-(defmethod create :player-item-on-cursor
-  [[_ eid item] {:keys [cdq/db] :as c}]
-  (safe-merge (db/build db :player-item-on-cursor/component c)
-              {:eid eid
-               :item item}))
-
-(defmethod create :player-moving
-  [[_ eid movement-vector] c]
-  {:eid eid
-   :movement-vector movement-vector})
-
-(defmethod create :stunned
-  [[_ eid duration]
-   {:keys [cdq.context/elapsed-time]}]
-  {:eid eid
-   :counter (timer/create elapsed-time duration)})
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))

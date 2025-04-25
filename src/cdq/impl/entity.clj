@@ -1,22 +1,100 @@
 (ns cdq.impl.entity
-  (:require [cdq.db :as db]
+  (:require [cdq.audio.sound :as sound]
+            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.timer :as timer]
+            [cdq.utils :refer [safe-merge]]
             [cdq.world :refer [delayed-alert
                                spawn-audiovisual
                                show-modal
                                spawn-item
-                               item-place-position]]
-            [cdq.audio.sound :as sound]))
+                               item-place-position]]))
 
 ; entity defmethods:
-; * cdq.entity
 ; * cdq.info
 ; * cdq.render.draw-on-world-view.entities
 ; * cdq.render
 ; * cdq.widgets.inventory
 ; * cdq.widgets.skill-window
 ; * cdq.world (create!)
+
+(defmethod entity/create :entity/delete-after-duration
+  [[_ duration]
+   {:keys [cdq.context/elapsed-time] :as c}]
+  (timer/create elapsed-time duration))
+
+(defmethod entity/create :entity/hp
+  [[_ v] _c]
+  [v v])
+
+(defmethod entity/create :entity/mana
+  [[_ v] _c]
+  [v v])
+
+(defmethod entity/create :entity/projectile-collision
+  [[_ v] c]
+  (assoc v :already-hit-bodies #{}))
+
+(defn- apply-action-speed-modifier [entity skill action-time]
+  (/ action-time
+     (or (entity/stat entity (:skill/action-time-modifier-key skill))
+         1)))
+
+(defmethod entity/create :active-skill
+  [[_ eid [skill effect-ctx]]
+   {:keys [cdq.context/elapsed-time]}]
+  {:eid eid
+   :skill skill
+   :effect-ctx effect-ctx
+   :counter (->> skill
+                 :skill/action-time
+                 (apply-action-speed-modifier @eid skill)
+                 (timer/create elapsed-time))})
+
+(defmethod entity/create :npc-dead
+  [[_ eid] c]
+  {:eid eid})
+
+(defmethod entity/create :npc-idle
+  [[_ eid] c]
+  {:eid eid})
+
+(defmethod entity/create :npc-moving
+  [[_ eid movement-vector]
+   {:keys [cdq.context/elapsed-time]}]
+  {:eid eid
+   :movement-vector movement-vector
+   :counter (timer/create elapsed-time (* (entity/stat @eid :entity/reaction-time) 0.016))})
+
+(defmethod entity/create :npc-sleeping
+  [[_ eid] c]
+  {:eid eid})
+
+(defmethod entity/create :player-dead
+  [[k] {:keys [cdq/db] :as c}]
+  (db/build db :player-dead/component.enter c))
+
+(defmethod entity/create :player-idle
+  [[_ eid] {:keys [cdq/db] :as c}]
+  (safe-merge (db/build db :player-idle/clicked-inventory-cell c)
+              {:eid eid}))
+
+(defmethod entity/create :player-item-on-cursor
+  [[_ eid item] {:keys [cdq/db] :as c}]
+  (safe-merge (db/build db :player-item-on-cursor/component c)
+              {:eid eid
+               :item item}))
+
+(defmethod entity/create :player-moving
+  [[_ eid movement-vector] c]
+  {:eid eid
+   :movement-vector movement-vector})
+
+(defmethod entity/create :stunned
+  [[_ eid duration]
+   {:keys [cdq.context/elapsed-time]}]
+  {:eid eid
+   :counter (timer/create elapsed-time duration)})
 
 (def ^:private components
   {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]
@@ -87,5 +165,5 @@
                                                   0.2)
                                    (swap! eid entity/add-text-effect c "[WHITE]!"))}})
 
-(defn add-components [context]
+(defn add-components [context _config]
   (assoc context :context/entity-components components))
