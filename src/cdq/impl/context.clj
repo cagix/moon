@@ -3,7 +3,6 @@
             [cdq.db :as db]
             cdq.impl.entity
             [cdq.schema :as schema]
-            cdq.utils
             cdq.world.context
             [gdl.assets :as assets]
             [gdl.gdx.interop :as interop]
@@ -22,6 +21,7 @@
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math MathUtils)
+           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
@@ -29,9 +29,9 @@
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defrecord Cursors []
-  cdq.utils/Disposable
-  (dispose! [this]
-    (run! cdq.utils/dispose! (vals this))))
+  Disposable
+  (dispose [this]
+    (run! Disposable/.dispose (vals this))))
 
 (defn- load-cursors [config]
   (map->Cursors

@@ -1,10 +1,9 @@
 (ns cdq.application
-  (:require cdq.utils
-            [clojure.edn :as edn]
+  (:require [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.utils SharedLibraryLoader Os)
+           (com.badlogic.gdx.utils Disposable SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
@@ -28,11 +27,11 @@
                             (reset! state (create-context! config)))
 
                           (dispose []
-                            (doseq [[k value] @state]
-                              (if (satisfies? cdq.utils/Disposable value)
+                            (doseq [[k obj] @state]
+                              (if (instance? Disposable obj)
                                 (do
                                  #_(println "Disposing:" k)
-                                 (cdq.utils/dispose! value))
+                                 (Disposable/.dispose obj))
                                 #_(println "Not Disposable: " k ))))
 
                           (render []
