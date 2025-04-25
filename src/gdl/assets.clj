@@ -1,10 +1,13 @@
 (ns gdl.assets
+  (:require [clojure.string :as str])
   (:import (clojure.lang IFn)
+           (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)))
 
-(defn create [assets]
+(defn- asset-manager [assets]
   (let [this (proxy [AssetManager IFn] [] ; not proxy but only reify/protocol!
                (invoke [^String path]
                  (let [^AssetManager this this]
@@ -17,6 +20,26 @@
                                  :texture Texture)))
     (.finishLoading this)
     this))
+
+(defn create [{:keys [folder
+                      asset-type->extensions]}]
+  (asset-manager
+   (for [[asset-type extensions] asset-type->extensions
+         file (map #(str/replace-first % folder "")
+                   (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+                          result []]
+                     (cond (nil? file)
+                           result
+
+                           (.isDirectory file)
+                           (recur (concat remaining (.list file)) result)
+
+                           (extensions (.extension file))
+                           (recur remaining (conj result (.path file)))
+
+                           :else
+                           (recur remaining result))))]
+     [file asset-type])))
 
 (defn all-of-type [manager asset-type]
   (let [asset-type (case asset-type

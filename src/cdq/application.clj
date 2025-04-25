@@ -56,12 +56,10 @@
             [gdl.utils :as utils :refer [find-first defcomponent]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
@@ -536,26 +534,6 @@
   Disposable
   (dispose! [this]
     (.dispose this)))
-
-(defn- load-assets [{:keys [folder
-                            asset-type->extensions]}]
-  (assets/create
-   (for [[asset-type extensions] asset-type->extensions
-         file (map #(str/replace-first % folder "")
-                   (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
-                          result []]
-                     (cond (nil? file)
-                           result
-
-                           (.isDirectory file)
-                           (recur (concat remaining (.list file)) result)
-
-                           (extensions (.extension file))
-                           (recur remaining (conj result (.path file)))
-
-                           :else
-                           (recur remaining result))))]
-     [file asset-type])))
 
 (defrecord Cursors []
   Disposable
@@ -1408,7 +1386,7 @@
                                                                           (:height (:ui-viewport config))
                                                                           (OrthographicCamera.))
                                                 schemas (-> (:schemas config) io/resource slurp edn/read-string)
-                                                context {:cdq/assets (load-assets (:assets config))
+                                                context {:cdq/assets (assets/create (:assets config))
                                                          :gdl.graphics/batch batch
                                                          :gdl.graphics/cursors (load-cursors (:cursors config))
                                                          :gdl.graphics/default-font (load-font (:default-font config))
