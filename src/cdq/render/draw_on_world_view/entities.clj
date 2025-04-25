@@ -155,14 +155,6 @@
                          (:entity/image item)
                          (item-place-position c entity))))
 
-
-(defmethod entity/draw-gui-view :player-item-on-cursor
-  [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]
-  (when (not (world-item? c))
-    (batch/draw-centered c
-                         (:entity/image (:entity/item-on-cursor @eid))
-                         (cdq.graphics/mouse-position ui-viewport))))
-
 (defn draw-stunned-circle [_ entity {:keys [cdq.graphics/shape-drawer]}]
   (sd/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
 
@@ -180,29 +172,6 @@
 ; TODO draw opacity as of counter ratio?
 (defn draw-filled-circle-grey [_ entity {:keys [cdq.graphics/shape-drawer]}]
   (sd/filled-circle shape-drawer (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
-
-(defmethod render-effect :effects/target-all
-  [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
-  (let [source* @source]
-    (doseq [target* (map deref (los/creatures-in-los-of-player c))]
-      (sd/line shape-drawer
-               (:position source*) #_(start-point source* target*)
-               (:position target*)
-               [1 0 0 0.5]))))
-
-(defmethod render-effect :effects/target-entity
-  [[_ {:keys [maxrange]}]
-   {:keys [effect/source effect/target]}
-   {:keys [cdq.graphics/shape-drawer]}]
-  (when target
-    (let [source* @source
-          target* @target]
-      (sd/line shape-drawer
-               (entity/start-point source* target*)
-               (entity/end-point source* target* maxrange)
-               (if (entity/in-range? source* target* maxrange)
-                 [1 0 0 0.5]
-                 [1 1 0 0.5])))))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 

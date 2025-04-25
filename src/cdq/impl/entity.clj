@@ -2,16 +2,18 @@
   (:require [cdq.audio.sound :as sound]
             [cdq.db :as db]
             [cdq.entity :as entity]
+            [cdq.graphics :as graphics]
+            [cdq.graphics.batch :as batch]
             [cdq.timer :as timer]
             [cdq.utils :refer [safe-merge]]
             [cdq.world :refer [delayed-alert
                                spawn-audiovisual
                                show-modal
                                spawn-item
-                               item-place-position]]))
+                               item-place-position
+                               world-item?]]))
 
 ; entity defmethods:
-; * cdq.render.draw-on-world-view.entities
 ; * cdq.render
 ; * cdq.widgets.inventory
 ; * cdq.widgets.skill-window
@@ -94,6 +96,13 @@
    {:keys [cdq.context/elapsed-time]}]
   {:eid eid
    :counter (timer/create elapsed-time duration)})
+
+(defmethod entity/draw-gui-view :player-item-on-cursor
+  [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]
+  (when (not (world-item? c))
+    (batch/draw-centered c
+                         (:entity/image (:entity/item-on-cursor @eid))
+                         (graphics/mouse-position ui-viewport))))
 
 (def ^:private components
   {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]

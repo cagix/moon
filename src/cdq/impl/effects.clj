@@ -4,6 +4,7 @@
             [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
+            [cdq.graphics.shape-drawer :as sd]
             [cdq.line-of-sight :as los]
             [cdq.timer :as timer]
             [cdq.world :refer [spawn-audiovisual
@@ -16,7 +17,8 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.rand :refer [rand-int-between]]
-            [cdq.utils :refer [defcomponent]]))
+            [cdq.utils :refer [defcomponent]]
+            [cdq.render.draw-on-world-view.entities :refer [render-effect]]))
 
 (comment
  (ns cdq.components.effects.audiovisual)
@@ -155,7 +157,15 @@
         ; find a way to pass ctx / effect-ctx separate ?
         (effect-ctx/do-all! c
                             {:effect/source source :effect/target target}
-                            entity-effects)))))
+                            entity-effects))))
+
+  (render-effect [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
+    (let [source* @source]
+      (doseq [target* (map deref (los/creatures-in-los-of-player c))]
+        (sd/line shape-drawer
+                 (:position source*) #_(start-point source* target*)
+                 (:position target*)
+                 [1 0 0 0.5])))))
 
 (defcomponent :effects/target-entity
   (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
@@ -181,7 +191,20 @@
          (effect-ctx/do-all! c effect-ctx entity-effects))
         (spawn-audiovisual c
                            (entity/end-point source* target* maxrange)
-                           (db/build db :audiovisuals/hit-ground c))))))
+                           (db/build db :audiovisuals/hit-ground c)))))
+
+  (render-effect [[_ {:keys [maxrange]}]
+                  {:keys [effect/source effect/target]}
+                  {:keys [cdq.graphics/shape-drawer]}]
+    (when target
+      (let [source* @source
+            target* @target]
+        (sd/line shape-drawer
+                 (entity/start-point source* target*)
+                 (entity/end-point source* target* maxrange)
+                 (if (entity/in-range? source* target* maxrange)
+                   [1 0 0 0.5]
+                   [1 1 0 0.5]))))))
 
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]
