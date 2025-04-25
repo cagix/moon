@@ -48,12 +48,12 @@
     (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc @eid disallowed-keys))))
 
-(defn- entity-info-window [{:keys [cdq.graphics/ui-viewport] :as c}]
+(defn- entity-info-window [position]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window
                            :visible? false
-                           :position [(:width ui-viewport) 0]
+                           :position position
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
@@ -120,13 +120,13 @@
   (ui/group {:id :windows
              :actors actors}))
 
-(defn actors [context]
+(defn actors [{:keys [cdq.graphics/ui-viewport] :as context}]
   (require 'cdq.ui.menu)
   (require 'cdq.create.stage.dev-menu.config) ; requires cdq.world.context
   [((resolve 'cdq.ui.menu/create) context ((resolve 'cdq.create.stage.dev-menu.config/create) context))
    (action-bar)
    (hp-mana-bar context)
-   (window-group context [(entity-info-window context)
+   (window-group context [(entity-info-window [(:width ui-viewport) 0])
                           (cdq.widgets.inventory/create context)])
    (player-state-actor)
    (player-message-actor)])
