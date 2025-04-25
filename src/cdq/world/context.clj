@@ -1,6 +1,6 @@
 (ns cdq.world.context
   (:require [cdq.context :as context]
-            [cdq.create.level :as level]
+            [cdq.level :as level]
             [cdq.stage]
             [cdq.grid :as grid]
             [cdq.world :refer [spawn-creature]]

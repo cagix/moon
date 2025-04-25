@@ -1,5 +1,5 @@
 (ns cdq.impl.level
-  (:require [cdq.create.level :refer [generate-level*]]
+  (:require [cdq.level :refer [generate-level*]]
             [cdq.tiled :as tiled]))
 
 (defmethod generate-level* :world.generator/tiled-map [world c]

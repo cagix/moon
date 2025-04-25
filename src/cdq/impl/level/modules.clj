@@ -1,5 +1,5 @@
 (ns cdq.impl.level.modules
-  (:require [cdq.create.level :refer [generate-level*]]
+  (:require [cdq.level :refer [generate-level*]]
             [cdq.db :as db]
             [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]

@@ -1,4 +1,4 @@
-(ns cdq.create.level
+(ns cdq.level
   (:require [cdq.db :as db]))
 
 (defmulti generate-level* (fn [world c] (:world/generator world)))

@@ -1,5 +1,5 @@
 (ns cdq.impl.level.uf-caves
-  (:require [cdq.create.level :refer [generate-level*]]
+  (:require [cdq.level :refer [generate-level*]]
             [cdq.db :as db]
             [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [cdq.data.grid2d :as g2d]
