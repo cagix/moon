@@ -149,8 +149,7 @@
 
 (defn- reset-stage! [{:keys [cdq.context/stage] :as context}]
   (Stage/.clear stage)
-  (run! #(stage/add-actor stage %)
-        (cdq.stage/actors context)))
+  (run! #(stage/add-actor stage %) (cdq.stage/actors context)))
 
 (defn reset [context {:keys [world-id] :as _config}]
   (reset-stage! context)
