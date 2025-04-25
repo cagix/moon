@@ -11,7 +11,6 @@
                                item-place-position]]))
 
 ; entity defmethods:
-; * cdq.info
 ; * cdq.render.draw-on-world-view.entities
 ; * cdq.render
 ; * cdq.widgets.inventory
