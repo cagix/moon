@@ -50,3 +50,8 @@
                      :texture Texture)]
     (filter #(= (AssetManager/.getAssetType manager %) asset-type)
             (AssetManager/.getAssetNames manager))))
+
+(defn sound [assets sound-name]
+  (->> sound-name
+       (format "sounds/%s.wav")
+       assets))

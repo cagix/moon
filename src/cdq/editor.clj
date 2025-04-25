@@ -4,7 +4,6 @@
 (ns cdq.editor
   (:require cdq.error
             [cdq.application :refer [state]]
-            [cdq.assets :refer [play-sound]]
             [cdq.db :as db]
             [cdq.schema :as schema]
             [gdl.ui.stage :as stage]
@@ -23,6 +22,7 @@
                             add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
+            [gdl.audio.sound :as sound]
             [gdl.assets :as assets]
             [gdl.input :as input]
             [gdl.ui.actor :as actor]
@@ -162,7 +162,7 @@
   (assets/all-of-type (:cdq/assets @state) asset-type))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(play-sound @state sound-name)))
+  (text-button "play!" #(sound/play (assets/sound (:cdq/assets @state) sound-name))))
 
 (declare columns)
 

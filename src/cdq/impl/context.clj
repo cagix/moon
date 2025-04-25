@@ -1,6 +1,5 @@
 (ns cdq.impl.context
-  (:require cdq.assets
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             cdq.impl.entity
             [cdq.schema :as schema]
             cdq.world.context
@@ -225,7 +224,7 @@
           (keys m)))
 
 (defmethod schema/edn->value :s/sound [_ sound-name {:keys [cdq/assets]}]
-  (cdq.assets/sound assets sound-name))
+  (assets/sound assets sound-name))
 
 (defn- edn->sprite [c {:keys [file sub-image-bounds]}]
   (if sub-image-bounds

@@ -1,6 +1,5 @@
 (ns cdq.render
-  (:require [cdq.assets :refer [play-sound]]
-            [cdq.context :as context]
+  (:require [cdq.context :as context]
             [cdq.db :as db]
             [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity]
@@ -23,6 +22,8 @@
                                show-player-msg
                                selected-skill]]
             [cdq.world.potential-field :as potential-field]
+            [gdl.assets :as assets]
+            [gdl.audio.sound :as sound]
             [gdl.data.grid2d :as g2d]
             [gdl.graphics :as graphics]
             [gdl.graphics.animation :as animation]
@@ -68,19 +69,19 @@
     (cond
      (actor/visible? (get-inventory c))
      (do
-      (play-sound c "bfxr_takeit")
+      (sound/play (assets/sound (:cdq/assets c) "bfxr_takeit"))
       (swap! eid assoc :entity/destroyed? true)
       (fsm/event c player-eid :pickup-item item))
 
      (entity/can-pickup-item? @player-eid item)
      (do
-      (play-sound c "bfxr_pickup")
+      (sound/play (assets/sound (:cdq/assets c) "bfxr_pickup"))
       (swap! eid assoc :entity/destroyed? true)
       (widgets.inventory/pickup-item c player-eid item))
 
      :else
      (do
-      (play-sound c "bfxr_denied")
+      (sound/play (assets/sound (:cdq/assets c) "bfxr_denied"))
       (show-player-msg c "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
@@ -100,7 +101,7 @@
     [(clickable->cursor @clicked-eid false) (fn []
                                               (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
-                                              (play-sound c "bfx_denied")
+                                              (sound/play (assets/sound (:cdq/assets c) "bfx_denied"))
                                               (show-player-msg c "Too far away"))]))
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
@@ -167,14 +168,14 @@
             ; invalid-params -> depends on params ...
             [:cursors/skill-not-usable
              (fn []
-               (play-sound c "bfxr_denied")
+               (sound/play (assets/sound (:cdq/assets c) "bfxr_denied"))
                (show-player-msg c (case state
                                     :cooldown "Skill is still on cooldown"
                                     :not-enough-mana "Not enough mana"
                                     :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
-          (play-sound c "bfxr_denied")
+          (sound/play (assets/sound (:cdq/assets c) "bfxr_denied"))
           (show-player-msg c "No selected skill"))]))))
 
 (defmethod manual-tick :player-idle [[_ {:keys [eid]}] c]
