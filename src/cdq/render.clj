@@ -376,7 +376,8 @@
                   k))
 (defmethod tick! :default [_ eid c])
 
-(defn- tick-entities! [{:keys [cdq.game/active-entities] :as context}]
+(defn- tick-entities! [{:keys [cdq.game/active-entities]
+                        :as context}]
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
   ; should be contains? check ?
@@ -649,22 +650,23 @@
   context)
 
 (defn camera-controls! [{:keys [cdq.graphics/world-viewport]
-                          :as context}]
+                         :as context}]
   (let [camera (:camera world-viewport)
         zoom-speed 0.025]
     (when (input/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
     (when (input/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed))))
   context)
 
-(defn window-controls! [c]
+(defn window-controls! [{:keys [cdq.context/stage]
+                         :as context}]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (input/key-just-pressed? (get window-hotkeys window-id))]
-      (actor/toggle-visible! (get (:windows (:cdq.context/stage c)) window-id))))
+      (actor/toggle-visible! (get (:windows stage) window-id))))
   (when (input/key-just-pressed? :escape)
-    (let [windows (group/children (:windows (:cdq.context/stage c)))]
+    (let [windows (group/children (:windows stage))]
       (when (some actor/visible? windows)
         (run! #(actor/set-visible % false) windows))))
-  c)
+  context)
