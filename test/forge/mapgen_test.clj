@@ -1,15 +1,15 @@
 (ns forge.mapgen-test
   (:require [cdq.create.level :refer [generate-level]]
-            gdl.graphics
+            cdq.graphics
             cdq.error
             [cdq.db :as db]
             [cdq.modules :as modules]
-            [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.camera :as cam]
-            [gdl.ui :refer [ui-actor text-button] :as ui]
-            [gdl.input :as input]
-            [gdl.tiled :as tiled]
-            [gdl.ui.group :refer [add-actor!]]
+            [cdq.graphics.shape-drawer :as sd]
+            [cdq.graphics.camera :as cam]
+            [cdq.ui :refer [ui-actor text-button] :as ui]
+            [cdq.input :as input]
+            [cdq.tiled :as tiled]
+            [cdq.ui.group :refer [add-actor!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx.graphics Color)))
@@ -39,15 +39,15 @@
   ESCAPE: leave
   direction keys: move")
 
-(defn- map-infos ^String [{:keys [gdl.graphics/world-viewport] :as c}]
-  (let [tile (mapv int (gdl.graphics/world-mouse-position world-viewport))
+(defn- map-infos ^String [{:keys [cdq.graphics/world-viewport] :as c}]
+  (let [tile (mapv int (cdq.graphics/world-mouse-position world-viewport))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (gdl.graphics/world-mouse-position world-viewport)
+                                 (cdq.graphics/world-mouse-position world-viewport)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
@@ -60,7 +60,7 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn- ->info-window [{:keys [cdq.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (add-actor! window (ui-actor {:act #(do
@@ -83,15 +83,15 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [gdl.graphics/world-viewport
-                              gdl.graphics/shape-drawer]}]
+(defn- render-on-map [{:keys [cdq.graphics/world-viewport
+                              cdq.graphics/shape-drawer]}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
         visible-tiles (cam/visible-tiles (:camera world-viewport))
-        [x y] (mapv int (gdl.graphics/world-mouse-position world-viewport))
+        [x y] (mapv int (cdq.graphics/world-mouse-position world-viewport))
         sd shape-drawer]
     (sd/rectangle sd x y 1 1 :white)
     (when start-position
@@ -115,7 +115,7 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [{:keys [gdl.graphics/world-viewport
+(defn- generate-screen-ctx [{:keys [cdq.graphics/world-viewport
                                     cdq/db]
                              :as c}
                             properties]
@@ -153,10 +153,10 @@
   #_(cam/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(gdl.graphics.tiled-map-renderer/draw @state
+  #_(cdq.graphics.tiled-map-renderer/draw @state
                                               (:tiled-map @current-data)
                                               (constantly Color/WHITE))
-  #_(gdl.graphics/draw-on-world-view @state render-on-map)
+  #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (input/key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
   #_(if (input/key-just-pressed? :m)

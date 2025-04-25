@@ -7,7 +7,7 @@
                                show-modal
                                spawn-item
                                item-place-position]]
-            [gdl.audio.sound :as sound]))
+            [cdq.audio.sound :as sound]))
 
 (defn components []
   {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]

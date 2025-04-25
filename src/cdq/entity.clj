@@ -1,10 +1,10 @@
 (ns cdq.entity
-  (:require [gdl.math.vector2 :as v]
-            [gdl.utils :refer [safe-merge]]
+  (:require [cdq.math.vector2 :as v]
+            [cdq.utils :refer [safe-merge]]
             [cdq.db :as db]
             [cdq.timer :as timer]
             [cdq.schema :as s]
-            [gdl.math.shapes :as shape]
+            [cdq.math.shapes :as shape]
             [cdq.inventory :as inventory]
             [cdq.operation :as op]))
 

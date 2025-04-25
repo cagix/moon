@@ -12,11 +12,11 @@
                                line-render
                                projectile-size
                                ]]
-            [gdl.audio.sound :as sound]
-            [gdl.math.raycaster :as raycaster]
-            [gdl.math.vector2 :as v]
-            [gdl.rand :refer [rand-int-between]]
-            [gdl.utils :refer [defcomponent]]))
+            [cdq.audio.sound :as sound]
+            [cdq.math.raycaster :as raycaster]
+            [cdq.math.vector2 :as v]
+            [cdq.rand :refer [rand-int-between]]
+            [cdq.utils :refer [defcomponent]]))
 
 (comment
  (ns cdq.components.effects.audiovisual)

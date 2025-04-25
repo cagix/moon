@@ -3,14 +3,14 @@
             [cdq.info :as info]
             [cdq.val-max :as val-max]
             cdq.widgets.inventory
-            [gdl.graphics :as graphics]
-            [gdl.graphics.sprite :as sprite]
-            [gdl.graphics.batch :as batch]
-            [gdl.graphics.text :as text]
-            [gdl.ui :as ui :refer [ui-actor]]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.group :as group]
-            [gdl.utils :as utils]))
+            [cdq.graphics :as graphics]
+            [cdq.graphics.sprite :as sprite]
+            [cdq.graphics.batch :as batch]
+            [cdq.graphics.text :as text]
+            [cdq.ui :as ui :refer [ui-actor]]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
+            [cdq.utils :as utils]))
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
@@ -48,7 +48,7 @@
     (info/text c ; don't use select-keys as it loses Entity record type
                (apply dissoc @eid disallowed-keys))))
 
-(defn- entity-info-window [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn- entity-info-window [{:keys [cdq.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info"
                            :id :entity-info-window
@@ -69,7 +69,7 @@
               :y (+ y 2)
               :up? true}))
 
-(defn- hp-mana-bar [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn- hp-mana-bar [{:keys [cdq.graphics/ui-viewport] :as c}]
   (let [rahmen      (sprite/create c "images/rahmen.png")
         hpcontent   (sprite/create c "images/hp.png")
         manacontent (sprite/create c "images/mana.png")
@@ -91,7 +91,7 @@
                          (render-hpmana-bar c x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
                          (render-hpmana-bar c x y-mana manacontent (entity/mana        player-entity) "MP")))})))
 
-(defn- draw-player-message [{:keys [gdl.graphics/ui-viewport
+(defn- draw-player-message [{:keys [cdq.graphics/ui-viewport
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]
     (text/draw c
@@ -121,9 +121,9 @@
              :actors actors}))
 
 (defn actors [context]
-  (require 'gdl.ui.menu)
+  (require 'cdq.ui.menu)
   (require 'cdq.create.stage.dev-menu.config) ; requires cdq.world.context
-  [((resolve 'gdl.ui.menu/create) context ((resolve 'cdq.create.stage.dev-menu.config/create) context))
+  [((resolve 'cdq.ui.menu/create) context ((resolve 'cdq.create.stage.dev-menu.config/create) context))
    (action-bar)
    (hp-mana-bar context)
    (window-group context [(entity-info-window context)

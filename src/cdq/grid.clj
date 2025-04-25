@@ -1,5 +1,5 @@
 (ns cdq.grid
-  (:require [gdl.math.shapes :refer [rectangle->tiles
+  (:require [cdq.math.shapes :refer [rectangle->tiles
                                      circle->outer-rectangle
                                      overlaps?
                                      rect-contains?]]))

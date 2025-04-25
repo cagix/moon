@@ -22,25 +22,25 @@
                                show-player-msg
                                selected-skill]]
             [cdq.world.potential-field :as potential-field]
-            [gdl.assets :as assets]
-            [gdl.audio.sound :as sound]
-            [gdl.data.grid2d :as g2d]
-            [gdl.graphics :as graphics]
-            [gdl.graphics.animation :as animation]
-            [gdl.graphics.camera :as camera]
-            [gdl.graphics.shape-drawer :as sd]
-            [gdl.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [gdl.input :as input]
-            [gdl.math.raycaster :as raycaster]
-            [gdl.math.vector2 :as v]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.group :as group]
-            [gdl.ui.stage :as stage]
-            [gdl.utils :as utils :refer [find-first]])
+            [cdq.assets :as assets]
+            [cdq.audio.sound :as sound]
+            [cdq.data.grid2d :as g2d]
+            [cdq.graphics :as graphics]
+            [cdq.graphics.animation :as animation]
+            [cdq.graphics.camera :as camera]
+            [cdq.graphics.shape-drawer :as sd]
+            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
+            [cdq.input :as input]
+            [cdq.math.raycaster :as raycaster]
+            [cdq.math.vector2 :as v]
+            [cdq.ui :as ui]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
+            [cdq.ui.stage :as stage]
+            [cdq.utils :as utils :refer [find-first]])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)
-           (gdl StageWithState)))
+           (cdq StageWithState)))
 
 (defmulti manual-tick (fn [[k] context]
                         k))
@@ -51,10 +51,10 @@
   c)
 
 (defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid
-                                  gdl.graphics/world-viewport]} eid]
+                                  cdq.graphics/world-viewport]} eid]
   (let [target-position (or (and mouseover-eid
                                  (:position @mouseover-eid))
-                            (gdl.graphics/world-mouse-position world-viewport))]
+                            (cdq.graphics/world-mouse-position world-viewport))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position
@@ -182,7 +182,7 @@
   (if-let [movement-vector (player-movement-vector)]
     (fsm/event c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
-      (gdl.graphics/set-cursor c cursor)
+      (cdq.graphics/set-cursor c cursor)
       (when (input/button-just-pressed? :left)
         (on-click)))))
 
@@ -206,7 +206,7 @@
   (assoc context :cdq.game/active-entities (active-entities content-grid @player-eid)))
 
 (defn set-camera-on-player
-  [{:keys [gdl.graphics/world-viewport
+  [{:keys [cdq.graphics/world-viewport
            cdq.context/player-eid]
     :as context}]
   {:pre [world-viewport
@@ -258,7 +258,7 @@
                 (swap! explored-tile-corners assoc (mapv int position) true))
               Color/WHITE))))))
 
-(defn render-tiled-map! [{:keys [gdl.graphics/world-viewport
+(defn render-tiled-map! [{:keys [cdq.graphics/world-viewport
                                  cdq.context/tiled-map
                                  cdq.context/raycaster
                                  cdq.context/explored-tile-corners]
@@ -286,8 +286,8 @@
              :active-skill cdq.render.draw-on-world-view.entities/draw-skill-image-and-active-effect}})
     (cdq.render.draw-on-world-view.after-entities/render)])
 
-(defn- draw-with [{:keys [^Batch gdl.graphics/batch
-                          gdl.graphics/shape-drawer] :as c}
+(defn- draw-with [{:keys [^Batch cdq.graphics/batch
+                          cdq.graphics/shape-drawer] :as c}
                  viewport
                  unit-scale
                  draw-fn]
@@ -299,8 +299,8 @@
       (draw-fn (assoc c :cdq.context/unit-scale unit-scale))))
   (.end batch))
 
-(defn- draw-on-world-view* [{:keys [gdl.graphics/world-unit-scale
-                                    gdl.graphics/world-viewport] :as c} render-fn]
+(defn- draw-on-world-view* [{:keys [cdq.graphics/world-unit-scale
+                                    cdq.graphics/world-viewport] :as c} render-fn]
   (draw-with c
              world-viewport
              world-unit-scale
@@ -323,15 +323,15 @@
 (defn update-mouseover-entity! [{:keys [cdq.context/grid
                                         cdq.context/mouseover-eid
                                         cdq.context/player-eid
-                                        gdl.graphics/world-viewport
+                                        cdq.graphics/world-viewport
                                         cdq.context/stage] :as c}]
   (let [new-eid (if (stage/mouse-on-actor? stage)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (cdq.grid/point->entities grid (gdl.graphics/world-mouse-position world-viewport)))]
+                                     (cdq.grid/point->entities grid (cdq.graphics/world-mouse-position world-viewport)))]
                     (->> cdq.world/render-z-order
-                         (gdl.utils/sort-by-order hits #(:z-order @%))
+                         (cdq.utils/sort-by-order hits #(:z-order @%))
                          reverse
                          (filter #(los/exists? c player @%))
                          first)))]
@@ -648,7 +648,7 @@
       (destroy! v eid context)))
   context)
 
-(defn camera-controls! [{:keys [gdl.graphics/world-viewport]
+(defn camera-controls! [{:keys [cdq.graphics/world-viewport]
                           :as context}]
   (let [camera (:camera world-viewport)
         zoom-speed 0.025]

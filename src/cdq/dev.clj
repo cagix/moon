@@ -1,12 +1,12 @@
 (ns cdq.dev
   (:require [cdq.application :as app]
-            gdl.graphics
+            cdq.graphics
             [cdq.db :as db]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [gdl.ui.group :refer [children]]
-            [gdl.ui.stage :as stage]
-            [gdl.ui :refer [t-node scroll-pane] :as ui]
+            [cdq.ui.group :refer [children]]
+            [cdq.ui.stage :as stage]
+            [cdq.ui :refer [t-node scroll-pane] :as ui]
             [cdq.world :as world]))
 
 (comment
@@ -83,8 +83,8 @@
                     (db/build db item-id c)))
 
 (defn- mouseover-grid-cell [{:keys [cdq.context/grid
-                                    gdl.graphics/world-viewport]}]
-  @(grid (mapv int (gdl.graphics/world-mouse-position world-viewport))))
+                                    cdq.graphics/world-viewport]}]
+  @(grid (mapv int (cdq.graphics/world-mouse-position world-viewport))))
 
 (defn- class->label-str [class]
   (case class
@@ -182,7 +182,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:gdl.graphics/ui-viewport @app/state)
+  (let [viewport (:cdq.graphics/ui-viewport @app/state)
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})

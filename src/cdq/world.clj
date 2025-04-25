@@ -1,25 +1,25 @@
 (ns cdq.world
   (:require [cdq.context :as context]
-            gdl.graphics
+            cdq.graphics
             [cdq.fsm :as fsm]
             [cdq.inventory :as inventory]
             [cdq.widgets.inventory :as widgets.inventory]
-            [gdl.graphics.animation :as animation]
+            [cdq.graphics.animation :as animation]
             [cdq.db :as db]
-            [gdl.utils :refer [define-order safe-merge]]
-            [gdl.graphics.shape-drawer :as sd]
+            [cdq.utils :refer [define-order safe-merge]]
+            [cdq.graphics.shape-drawer :as sd]
             [cdq.timer :as timer]
             [cdq.entity :as entity]
             [cdq.grid :as grid]
-            [gdl.input :as input]
-            [gdl.ui.stage :as stage]
+            [cdq.input :as input]
+            [cdq.ui.stage :as stage]
             [cdq.info :as info]
-            [gdl.math.vector2 :as v]
-            [gdl.ui :as ui]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.group :as group]
+            [cdq.math.vector2 :as v]
+            [cdq.ui :as ui]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
             cdq.time
-            [gdl.audio.sound :as sound])
+            [cdq.audio.sound :as sound])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
@@ -245,7 +245,7 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [gdl.graphics/ui-viewport] :as c}
+(defn show-modal [{:keys [cdq.graphics/ui-viewport] :as c}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal (:cdq.context/stage c))))
   (stage/add-actor (:cdq.context/stage c)
@@ -273,9 +273,9 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn item-place-position [{:keys [gdl.graphics/world-viewport] :as c} entity]
+(defn item-place-position [{:keys [cdq.graphics/world-viewport] :as c} entity]
   (placement-point (:position entity)
-                   (gdl.graphics/world-mouse-position world-viewport)
+                   (cdq.graphics/world-mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 

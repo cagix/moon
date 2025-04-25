@@ -6,9 +6,9 @@
             [cdq.application :refer [state]]
             [cdq.db :as db]
             [cdq.schema :as schema]
-            [gdl.ui.stage :as stage]
+            [cdq.ui.stage :as stage]
             [cdq.property :as property]
-            [gdl.ui :refer [horizontal-separator-cell
+            [cdq.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
                             ui-actor
                             image-button
@@ -22,15 +22,15 @@
                             add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
-            [gdl.audio.sound :as sound]
-            [gdl.assets :as assets]
-            [gdl.input :as input]
-            [gdl.ui.actor :as actor]
-            [gdl.ui.group :refer [children clear-children add-actor! find-actor]]
-            [gdl.ui.table :as table]
-            [gdl.ui.widget-group :as widget-group]
+            [cdq.audio.sound :as sound]
+            [cdq.assets :as assets]
+            [cdq.input :as input]
+            [cdq.ui.actor :as actor]
+            [cdq.ui.group :refer [children clear-children add-actor! find-actor]]
+            [cdq.ui.table :as table]
+            [cdq.ui.widget-group :as widget-group]
             [clojure.string :as str]
-            [gdl.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
+            [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
   (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
 
 (defn- stage-add! [actor]
@@ -62,7 +62,7 @@
                          :pack? true})]
     {:actor (ui/scroll-pane table)
      :width  (+ (.getWidth table) 50)
-     :height (min (- (:height (:gdl.graphics/ui-viewport @state)) 50)
+     :height (min (- (:height (:cdq.graphics/ui-viewport @state)) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]

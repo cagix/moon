@@ -5,10 +5,10 @@
             [cdq.stage]
             [cdq.grid :as grid]
             [cdq.world :refer [spawn-creature]]
-            [gdl.data.grid2d :as g2d]
-            [gdl.tiled :as tiled]
-            [gdl.ui.stage :as stage]
-            [gdl.utils :as utils :refer [defcomponent]]))
+            [cdq.data.grid2d :as g2d]
+            [cdq.tiled :as tiled]
+            [cdq.ui.stage :as stage]
+            [cdq.utils :as utils :refer [defcomponent]]))
 
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]

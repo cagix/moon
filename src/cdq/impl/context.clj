@@ -3,13 +3,13 @@
             cdq.impl.entity
             [cdq.schema :as schema]
             cdq.world.context
-            [gdl.assets :as assets]
-            [gdl.gdx.interop :as interop]
-            gdl.graphics.animation
-            gdl.graphics.sprite
+            [cdq.assets :as assets]
+            [cdq.gdx.interop :as interop]
+            cdq.graphics.animation
+            cdq.graphics.sprite
             [cdq.property :as property]
-            [gdl.ui.group :as group]
-            [gdl.utils :as utils]
+            [cdq.ui.group :as group]
+            [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]])
@@ -24,7 +24,7 @@
            (com.badlogic.gdx.utils.viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
-           (gdl StageWithState OrthogonalTiledMapRenderer)
+           (cdq StageWithState OrthogonalTiledMapRenderer)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defrecord Cursors []
@@ -73,7 +73,7 @@
   (ShapeDrawer/.setColor shape-drawer (interop/->color color)))
 
 (extend-type ShapeDrawer
-  gdl.graphics.shape-drawer/ShapeDrawer
+  cdq.graphics.shape-drawer/ShapeDrawer
   (ellipse [this [x y] radius-x radius-y color]
     (sd-set-color this color)
     (.ellipse this
@@ -230,17 +230,17 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (gdl.graphics.sprite/from-sheet (gdl.graphics.sprite/sheet c file tilew tileh)
+      (cdq.graphics.sprite/from-sheet (cdq.graphics.sprite/sheet c file tilew tileh)
                                       [(int (/ sprite-x tilew))
                                        (int (/ sprite-y tileh))]
                                       c))
-    (gdl.graphics.sprite/create c file)))
+    (cdq.graphics.sprite/create c file)))
 
 (defmethod schema/edn->value :s/image [_ edn c]
   (edn->sprite c edn))
 
 (defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} c]
-  (gdl.graphics.animation/create (map #(edn->sprite c %) frames)
+  (cdq.graphics.animation/create (map #(edn->sprite c %) frames)
                                      :frame-duration frame-duration
                                      :looping? looping?))
 
@@ -350,15 +350,15 @@
                                   (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)
         context {:cdq/assets (assets/create (:assets config))
-                 :gdl.graphics/batch batch
-                 :gdl.graphics/cursors (load-cursors (:cursors config))
-                 :gdl.graphics/default-font (load-font (:default-font config))
-                 :gdl.graphics/shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-                 :gdl.graphics/shape-drawer-texture shape-drawer-texture
-                 :gdl.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
-                 :gdl.graphics/ui-viewport ui-viewport
-                 :gdl.graphics/world-unit-scale world-unit-scale
-                 :gdl.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
+                 :cdq.graphics/batch batch
+                 :cdq.graphics/cursors (load-cursors (:cursors config))
+                 :cdq.graphics/default-font (load-font (:default-font config))
+                 :cdq.graphics/shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+                 :cdq.graphics/shape-drawer-texture shape-drawer-texture
+                 :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
+                 :cdq.graphics/ui-viewport ui-viewport
+                 :cdq.graphics/world-unit-scale world-unit-scale
+                 :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
                  :cdq.context/stage (create-stage! (:ui config) batch ui-viewport)
                  :cdq/schemas schemas
                  :cdq/db (create-db schemas)

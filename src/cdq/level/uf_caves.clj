@@ -1,8 +1,8 @@
 (ns cdq.level.uf-caves
   (:require [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
-            [gdl.data.grid2d :as g2d]
-            [gdl.tiled :as tiled]
-            [gdl.rand :refer [get-rand-weighted-item]])
+            [cdq.data.grid2d :as g2d]
+            [cdq.tiled :as tiled]
+            [cdq.rand :refer [get-rand-weighted-item]])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)))
 

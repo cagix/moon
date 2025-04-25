@@ -4,7 +4,7 @@
             [cdq.operation :as op]
             [clojure.math :as math]
             [clojure.string :as str]
-            [gdl.utils :refer [readable-number sort-by-k-order]])
+            [cdq.utils :refer [readable-number sort-by-k-order]])
   (:import (com.badlogic.gdx.graphics Color Colors)))
 
 (defn- remove-newlines [s]

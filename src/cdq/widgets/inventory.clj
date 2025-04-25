@@ -1,14 +1,14 @@
 (ns cdq.widgets.inventory
   (:require [cdq.entity :as entity]
             [cdq.entity.fsm :as fsm]
-            gdl.graphics
+            cdq.graphics
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
-            [gdl.graphics.shape-drawer :as sd]
-            gdl.graphics.sprite
-            [gdl.ui.actor :refer [user-object] :as actor]
-            [gdl.data.grid2d :as g2d]
-            [gdl.ui :refer [ui-widget
+            [cdq.graphics.shape-drawer :as sd]
+            cdq.graphics.sprite
+            [cdq.ui.actor :refer [user-object] :as actor]
+            [cdq.data.grid2d :as g2d]
+            [cdq.ui :refer [ui-widget
                             texture-region-drawable
                             image-widget
                             ui-stack
@@ -16,8 +16,8 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [gdl.audio.sound :as sound]
-            [gdl.ui.utils :as scene2d.utils])
+            [cdq.audio.sound :as sound]
+            [cdq.ui.utils :as scene2d.utils])
   (:import (com.badlogic.gdx.graphics Color)))
 
 ; Items are also smaller than 48x48 all of them
@@ -44,13 +44,13 @@
 (defn- draw-rect-actor []
   (ui-widget
    (fn [this {:keys [cdq.context/player-eid
-                     gdl.graphics/shape-drawer
-                     gdl.graphics/ui-viewport]}]
+                     cdq.graphics/shape-drawer
+                     cdq.graphics/ui-viewport]}]
      (draw-cell-rect shape-drawer
                      @player-eid
                      (actor/x this)
                      (actor/y this)
-                     (actor/hit this (gdl.graphics/mouse-position ui-viewport))
+                     (actor/hit this (cdq.graphics/mouse-position ui-viewport))
                      (user-object (actor/parent this))))))
 
 (def ^:private slot->y-sprite-idx
@@ -70,7 +70,7 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [c slot]
-  (gdl.graphics.sprite/from-sheet (gdl.graphics.sprite/sheet c
+  (cdq.graphics.sprite/from-sheet (cdq.graphics.sprite/sheet c
                                                                      "images/items.png"
                                                                      48
                                                                      48)
@@ -125,7 +125,7 @@
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
                                (->cell c :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [gdl.graphics/ui-viewport] :as c}]
+(defn create [{:keys [cdq.graphics/ui-viewport] :as c}]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false

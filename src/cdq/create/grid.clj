@@ -1,9 +1,9 @@
 (ns cdq.create.grid
   (:require [cdq.context :as context]
             [cdq.grid :as grid]
-            [gdl.data.grid2d :as g2d]
-            [gdl.tiled :as tiled]
-            [gdl.utils :refer [tile->middle defcomponent]]))
+            [cdq.data.grid2d :as g2d]
+            [cdq.tiled :as tiled]
+            [cdq.utils :refer [tile->middle defcomponent]]))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.

@@ -2,15 +2,15 @@
   (:require cdq.application
             [cdq.db :as db]
             cdq.editor
-            [gdl.graphics.camera :as cam]
-            [gdl.ui.stage :as stage]
-            [gdl.ui :as ui]
+            [cdq.graphics.camera :as cam]
+            [cdq.ui.stage :as stage]
+            [cdq.ui :as ui]
             cdq.world.context
-            [gdl.graphics :as graphics]
-            [gdl.ui.table :as table]
-            [gdl.ui.widget-group :as widget-group]
+            [cdq.graphics :as graphics]
+            [cdq.ui.table :as table]
+            [cdq.ui.widget-group :as widget-group]
             [clojure.string :as str]
-            [gdl.utils :refer [readable-number]]))
+            [cdq.utils :refer [readable-number]]))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (stage/mouse-on-actor? context)]
@@ -63,11 +63,11 @@
                     :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
                    {:label "GUI"
                     :update-fn (comp graphics/mouse-position
-                                     :gdl.graphics/ui-viewport)}
+                                     :cdq.graphics/ui-viewport)}
                    {:label "World"
-                    :update-fn #(mapv int (graphics/world-mouse-position (:gdl.graphics/world-viewport %)))}
+                    :update-fn #(mapv int (graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
                    {:label "Zoom"
-                    :update-fn #(cam/zoom (:camera (:gdl.graphics/world-viewport %)))
+                    :update-fn #(cam/zoom (:camera (:cdq.graphics/world-viewport %)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [_]

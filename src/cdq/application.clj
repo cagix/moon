@@ -43,8 +43,8 @@
 
                           (resize [width height]
                             (let [context @state]
-                              (Viewport/.update (:gdl.graphics/ui-viewport    context) width height true)
-                              (Viewport/.update (:gdl.graphics/world-viewport context) width height false))))
+                              (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
+                              (Viewport/.update (:cdq.graphics/world-viewport context) width height false))))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle (:title config))
                           (.setWindowedMode (:width  (:windowed-mode config))
