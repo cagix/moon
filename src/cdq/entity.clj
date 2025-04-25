@@ -6,6 +6,10 @@
             [cdq.inventory :as inventory]
             [cdq.operation :as op]))
 
+(defmulti clicked-inventory-cell (fn [[k] cell c]
+                                   k))
+(defmethod clicked-inventory-cell :default [_ cell c])
+
 (defmulti create! (fn [[k] eid c]
                     k))
 (defmethod create! :default [_ eid c])

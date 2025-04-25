@@ -18,7 +18,10 @@
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.math.vector2 :as v]
-            [cdq.widgets.inventory :as widgets.inventory]
+            [cdq.widgets.inventory :as widgets.inventory
+             :refer [remove-item
+                     set-item
+                     stack-item]]
             [cdq.world :refer [add-skill
                                minimum-size
                                nearest-enemy
@@ -446,3 +449,52 @@
 
 (defn add-components [context _config]
   (assoc context :context/entity-components components))
+
+(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
+  (let [entity @eid
+        inventory (:entity/inventory entity)
+        item-in-cell (get-in inventory cell)
+        item-on-cursor (:entity/item-on-cursor entity)]
+    (cond
+     ; PUT ITEM IN EMPTY CELL
+     (and (not item-in-cell)
+          (inventory/valid-slot? cell item-on-cursor))
+     (do
+      (sound/play item-put-sound)
+      (swap! eid dissoc :entity/item-on-cursor)
+      (set-item c eid cell item-on-cursor)
+      (fsm/event c eid :dropped-item))
+
+     ; STACK ITEMS
+     (and item-in-cell
+          (inventory/stackable? item-in-cell item-on-cursor))
+     (do
+      (sound/play item-put-sound)
+      (swap! eid dissoc :entity/item-on-cursor)
+      (stack-item c eid cell item-on-cursor)
+      (fsm/event c eid :dropped-item))
+
+     ; SWAP ITEMS
+     (and item-in-cell
+          (inventory/valid-slot? cell item-on-cursor))
+     (do
+      (sound/play item-put-sound)
+      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+      ; TODO? coud handle pickup-item from item-on-cursor state also
+      (swap! eid dissoc :entity/item-on-cursor)
+      (remove-item c eid cell)
+      (set-item c eid cell item-on-cursor)
+      (fsm/event c eid :dropped-item)
+      (fsm/event c eid :pickup-item item-in-cell)))))
+
+(defmethod entity/clicked-inventory-cell :player-item-on-cursor
+  [[_ {:keys [eid] :as data}] cell c]
+  (clicked-cell data eid cell c))
+
+(defmethod entity/clicked-inventory-cell :player-idle
+  [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
+  ; TODO no else case
+  (when-let [item (get-in (:entity/inventory @eid) cell)]
+    (sound/play pickup-item-sound)
+    (fsm/event c eid :pickup-item item)
+    (remove-item c eid cell)))
