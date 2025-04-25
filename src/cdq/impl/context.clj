@@ -22,7 +22,7 @@
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math MathUtils)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
+           (com.badlogic.gdx.utils.viewport FitViewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget Tooltip)
            (gdl StageWithState OrthogonalTiledMapRenderer)
