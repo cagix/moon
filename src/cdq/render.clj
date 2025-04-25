@@ -668,4 +668,3 @@
       (when (some actor/visible? windows)
         (run! #(actor/set-visible % false) windows))))
   c)
-
