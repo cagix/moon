@@ -119,9 +119,7 @@
              :actors actors}))
 
 (defn actors [{:keys [cdq.graphics/ui-viewport] :as context}]
-  (require 'cdq.ui.menu)
-  (require 'cdq.create.stage.dev-menu.config) ; requires cdq.world.context
-  [((resolve 'cdq.ui.menu/create) context ((resolve 'cdq.create.stage.dev-menu.config/create) context))
+  [((requiring-resolve 'cdq.impl.ui.dev-menu/create) context) ; requires cdq.world.context
    (action-bar)
    (hp-mana-bar context [(/ (:width ui-viewport) 2)
                          80 ; action-bar-icon-size
