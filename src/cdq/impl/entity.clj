@@ -35,10 +35,6 @@
                                player-movement-vector]]
             [cdq.world.potential-field :as potential-field]))
 
-; entity defmethods:
-; * cdq.widgets.inventory
-; * cdq.widgets.skill-window
-
 (defmethod entity/create :entity/delete-after-duration
   [[_ duration]
    {:keys [cdq.context/elapsed-time] :as c}]
