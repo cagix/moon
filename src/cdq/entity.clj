@@ -6,6 +6,10 @@
             [cdq.inventory :as inventory]
             [cdq.operation :as op]))
 
+(defmulti create! (fn [[k] eid c]
+                    k))
+(defmethod create! :default [_ eid c])
+
 (defmulti tick! (fn [[k] eid c]
                   k))
 (defmethod tick! :default [_ eid c])

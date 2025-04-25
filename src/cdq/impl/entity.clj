@@ -5,6 +5,8 @@
             [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity :refer [tick!]]
             [cdq.entity.fsm :as fsm]
+            cdq.fsm
+            [cdq.inventory :as inventory]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.graphics.batch :as batch]
@@ -16,7 +18,9 @@
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.math.vector2 :as v]
-            [cdq.world :refer [minimum-size
+            [cdq.widgets.inventory :as widgets.inventory]
+            [cdq.world :refer [add-skill
+                               minimum-size
                                nearest-enemy
                                friendlies-in-radius
                                delayed-alert
@@ -31,7 +35,6 @@
 ; entity defmethods:
 ; * cdq.widgets.inventory
 ; * cdq.widgets.skill-window
-; * cdq.world (create!)
 
 (defmethod entity/create :entity/delete-after-duration
   [[_ duration]
@@ -110,6 +113,32 @@
    {:keys [cdq.context/elapsed-time]}]
   {:eid eid
    :counter (timer/create elapsed-time duration)})
+
+(defmethod entity/create! :entity/inventory
+  [[k items] eid c]
+  (swap! eid assoc k inventory/empty-inventory)
+  (doseq [item items]
+    (widgets.inventory/pickup-item c eid item)))
+
+(defmethod entity/create! :entity/skills
+  [[k skills] eid c]
+  (swap! eid assoc k nil)
+  (doseq [skill skills]
+    (add-skill c eid skill)))
+
+(defmethod entity/create! :entity/animation
+  [[_ animation] eid c]
+  (swap! eid assoc :entity/image (animation/current-frame animation)))
+
+(defmethod entity/create! :entity/delete-after-animation-stopped?
+  [_ eid c]
+  (-> @eid :entity/animation :looping? not assert))
+
+(defmethod entity/create! :entity/fsm
+  [[k {:keys [fsm initial-state]}] eid c]
+  (swap! eid assoc
+         k (cdq.fsm/create fsm initial-state)
+         initial-state (entity/create [initial-state eid] c)))
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
   [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]

@@ -1,10 +1,6 @@
 (ns cdq.world
   (:require [cdq.context :as context]
             cdq.graphics
-            [cdq.fsm :as fsm]
-            [cdq.inventory :as inventory]
-            [cdq.widgets.inventory :as widgets.inventory]
-            [cdq.graphics.animation :as animation]
             [cdq.db :as db]
             [cdq.utils :refer [define-order safe-merge]]
             [cdq.graphics.shape-drawer :as sd]
@@ -18,7 +14,6 @@
             [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            cdq.time
             [cdq.audio.sound :as sound])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
@@ -81,10 +76,6 @@
           {}
           components))
 
-(defmulti create! (fn [[k] eid c]
-                    k))
-(defmethod create! :default [_ eid c])
-
 (def id-counter (atom 0))
 
 (defn spawn-entity [context position body components]
@@ -99,7 +90,7 @@
     (doseq [component context]
       (context/add-entity component eid))
     (doseq [component @eid]
-      (create! component eid context))
+      (entity/create! component eid context))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
@@ -218,22 +209,6 @@
     {:horizontal-group group
      :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
 
-(defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
-  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
-        button (ui/image-button image (fn []) {:scale 2})]
-    (actor/set-id button id)
-    (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-    (group/add-actor! horizontal-group button)
-    (ButtonGroup/.add button-group ^Button button)
-    nil))
-
-(defn- action-bar-remove-skill [c {:keys [property/id]}]
-  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
-        button (get horizontal-group id)]
-    (actor/remove button)
-    (ButtonGroup/.remove button-group ^Button button)
-    nil))
-
 (defn selected-skill [c]
   (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
@@ -293,6 +268,22 @@
         (when (pos? (v/length v))
           v)))))
 
+(defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+        button (ui/image-button image (fn []) {:scale 2})]
+    (actor/set-id button id)
+    (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (group/add-actor! horizontal-group button)
+    (ButtonGroup/.add button-group ^Button button)
+    nil))
+
+(defn- action-bar-remove-skill [c {:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+        button (get horizontal-group id)]
+    (actor/remove button)
+    (ButtonGroup/.remove button-group ^Button button)
+    nil))
+
 (defn add-skill [c eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
   (when (:entity/player? @eid)
@@ -304,29 +295,3 @@
   (when (:entity/player? @eid)
     (action-bar-remove-skill c skill))
   (swap! eid update :entity/skills dissoc id))
-
-(defmethod create! :entity/inventory
-  [[k items] eid c]
-  (swap! eid assoc k inventory/empty-inventory)
-  (doseq [item items]
-    (widgets.inventory/pickup-item c eid item)))
-
-(defmethod create! :entity/skills
-  [[k skills] eid c]
-  (swap! eid assoc k nil)
-  (doseq [skill skills]
-    (add-skill c eid skill)))
-
-(defmethod create! :entity/animation
-  [[_ animation] eid c]
-  (swap! eid assoc :entity/image (animation/current-frame animation)))
-
-(defmethod create! :entity/delete-after-animation-stopped?
-  [_ eid c]
-  (-> @eid :entity/animation :looping? not assert))
-
-(defmethod create! :entity/fsm
-  [[k {:keys [fsm initial-state]}] eid c]
-  (swap! eid assoc
-         k (fsm/create fsm initial-state)
-         initial-state (entity/create [initial-state eid] c)))
