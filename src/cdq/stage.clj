@@ -127,6 +127,7 @@
                          80 ; action-bar-icon-size
                          ])
    (window-group context [(entity-info-window [(:width ui-viewport) 0])
-                          (cdq.widgets.inventory/create context)])
+                          (cdq.widgets.inventory/create context [(:width  ui-viewport)
+                                                                 (:height ui-viewport)])])
    (player-state-actor)
    (player-message-actor)])

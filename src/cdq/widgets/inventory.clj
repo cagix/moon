@@ -122,14 +122,13 @@
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
                                (->cell c :inventory.slot/bag :position [x y]))))}))
 
-(defn create [{:keys [cdq.graphics/ui-viewport] :as c}]
+(defn create [context position]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
-              :position [(:width  ui-viewport)
-                         (:height ui-viewport)]
-              :rows [[{:actor (inventory-table c)
+              :position position
+              :rows [[{:actor (inventory-table context)
                        :pad 4}]]}))
 
 (defn- inventory-cell-widget [c cell]
