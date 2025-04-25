@@ -69,13 +69,11 @@
               :y (+ y 2)
               :up? true}))
 
-(defn- hp-mana-bar [{:keys [cdq.graphics/ui-viewport] :as c}]
-  (let [rahmen      (sprite/create c "images/rahmen.png")
-        hpcontent   (sprite/create c "images/hp.png")
-        manacontent (sprite/create c "images/mana.png")
-        x (/ (:width ui-viewport) 2)
+(defn- hp-mana-bar [context [x y-mana]]
+  (let [rahmen      (sprite/create context "images/rahmen.png")
+        hpcontent   (sprite/create context "images/hp.png")
+        manacontent (sprite/create context "images/mana.png")
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
-        y-mana 80 ; action-bar-icon-size
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [c x y contentimage minmaxval name]
                             (batch/draw-image c rahmen [x y])
@@ -125,7 +123,9 @@
   (require 'cdq.create.stage.dev-menu.config) ; requires cdq.world.context
   [((resolve 'cdq.ui.menu/create) context ((resolve 'cdq.create.stage.dev-menu.config/create) context))
    (action-bar)
-   (hp-mana-bar context)
+   (hp-mana-bar context [(/ (:width ui-viewport) 2)
+                         80 ; action-bar-icon-size
+                         ])
    (window-group context [(entity-info-window [(:width ui-viewport) 0])
                           (cdq.widgets.inventory/create context)])
    (player-state-actor)
