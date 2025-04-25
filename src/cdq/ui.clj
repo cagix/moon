@@ -1,13 +1,12 @@
 (ns cdq.ui
   (:require [cdq.ui.actor :as actor]
             [cdq.ui.group :refer [find-actor-with-id add-actor!]]
-            [cdq.ui.table :as table]
-            [cdq.ui.utils :as scene2d.utils])
+            [cdq.ui.table :as table])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
-           (com.badlogic.gdx.scenes.scene2d.utils Drawable ChangeListener ClickListener)
+           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener ClickListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow Separator)
            (cdq StageWithState)))
@@ -186,7 +185,9 @@
   [image opts]
   (image-widget (:texture-region image) opts))
 
-(def texture-region-drawable scene2d.utils/texture-region-drawable)
+(defn texture-region-drawable ^TextureRegionDrawable
+  [^TextureRegion texture-region]
+  (TextureRegionDrawable. texture-region))
 
 (defn scroll-pane [actor]
   (let [scroll-pane (VisScrollPane. actor)]
@@ -248,7 +249,9 @@
      (when scale
        (let [[w h] [(.getRegionWidth  texture-region)
                     (.getRegionHeight texture-region)]]
-         (scene2d.utils/set-min-size! drawable (* scale w) (* scale h))))
+         (BaseDrawable/.setMinSize drawable
+                                   (float (* scale w))
+                                   (float (* scale h)))))
      (.addListener button (change-listener on-clicked))
      button)))
 

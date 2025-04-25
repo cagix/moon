@@ -14,9 +14,9 @@
                             set-drawable!
                             add-tooltip!
                             remove-tooltip!]
-             :as ui]
-            [cdq.ui.utils :as scene2d.utils])
-  (:import (com.badlogic.gdx.graphics Color)))
+             :as ui])
+  (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable)))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -76,8 +76,11 @@
   (let [drawable (-> (slot->sprite c slot)
                      :texture-region
                      texture-region-drawable)]
-    (scene2d.utils/set-min-size! drawable cell-size)
-    (scene2d.utils/tint drawable (Color. (float 1) (float 1) (float 1) (float 0.4)))))
+    (BaseDrawable/.setMinSize drawable
+                              (float cell-size)
+                              (float cell-size))
+    (TextureRegionDrawable/.tint drawable
+                                 (Color. (float 1) (float 1) (float 1) (float 0.4)))))
 
 (defn- ->cell [c slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
@@ -132,7 +135,9 @@
   (let [cell-widget (inventory-cell-widget c cell)
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
-    (scene2d.utils/set-min-size! drawable cell-size)
+    (BaseDrawable/.setMinSize drawable
+                              (float cell-size)
+                              (float cell-size))
     (set-drawable! image-widget drawable)
     (add-tooltip! cell-widget #(info/text % item))))
 
