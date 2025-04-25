@@ -38,8 +38,8 @@
        (mapcat (comp :entities deref))))
 
 (defn assoc-active-entities [{:keys [cdq.context/content-grid
-                                      cdq.context/player-eid]
-                               :as context}]
+                                     cdq.context/player-eid]
+                              :as context}]
   (assoc context :cdq.game/active-entities (active-entities content-grid @player-eid)))
 
 (defn set-camera-on-player

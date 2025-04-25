@@ -2,14 +2,14 @@
   (:require cdq.application
             [cdq.db :as db]
             cdq.editor
-            [cdq.graphics.camera :as cam]
-            [cdq.ui.stage :as stage]
-            [cdq.ui :as ui]
-            cdq.world.context
             [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as cam]
+            [cdq.ui :as ui]
+            [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
-            [clojure.string :as str]
-            [cdq.utils :refer [readable-number]]))
+            [cdq.utils :refer [readable-number]]
+            cdq.world.context
+            [clojure.string :as str]))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (stage/mouse-on-actor? context)]
