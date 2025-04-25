@@ -1,5 +1,6 @@
 (ns cdq.render.draw-on-world-view.entities
   (:require cdq.graphics
+            [cdq.effect :as effect]
             [cdq.timer :as timer]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.graphics.batch :as batch]
@@ -117,12 +118,8 @@
                          :else
                          neutral-color)))))
 
-(defmulti render-effect (fn [[k] _effect-ctx context]
-                          k))
-(defmethod render-effect :default [_ _effect-ctx context])
-
 (defn- render-active-effect [context effect-ctx effect]
-  (run! #(render-effect % effect-ctx context) effect))
+  (run! #(effect/render % effect-ctx context) effect))
 
 (defn draw-skill-image-and-active-effect
   [{:keys [skill effect-ctx counter]}

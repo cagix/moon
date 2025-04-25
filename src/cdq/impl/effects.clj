@@ -11,14 +11,12 @@
                                spawn-creature
                                spawn-projectile
                                line-render
-                               projectile-size
-                               ]]
+                               projectile-size]]
             [cdq.audio.sound :as sound]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.rand :refer [rand-int-between]]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.render.draw-on-world-view.entities :refer [render-effect]]))
+            [cdq.utils :refer [defcomponent]]))
 
 (comment
  (ns cdq.components.effects.audiovisual)
@@ -159,7 +157,7 @@
                             {:effect/source source :effect/target target}
                             entity-effects))))
 
-  (render-effect [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
+  (effect/render [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
     (let [source* @source]
       (doseq [target* (map deref (los/creatures-in-los-of-player c))]
         (sd/line shape-drawer
@@ -193,7 +191,7 @@
                            (entity/end-point source* target* maxrange)
                            (db/build db :audiovisuals/hit-ground c)))))
 
-  (render-effect [[_ {:keys [maxrange]}]
+  (effect/render [[_ {:keys [maxrange]}]
                   {:keys [effect/source effect/target]}
                   {:keys [cdq.graphics/shape-drawer]}]
     (when target
