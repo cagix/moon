@@ -1,6 +1,5 @@
 (ns cdq.impl.context
   (:require [cdq.db :as db]
-            cdq.impl.entity
             [cdq.schema :as schema]
             [cdq.assets :as assets]
             [cdq.gdx.interop :as interop]
@@ -360,5 +359,4 @@
      :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
      :cdq.context/stage (create-stage! (:ui config) batch ui-viewport)
      :cdq/schemas schemas
-     :cdq/db (create-db schemas)
-     :context/entity-components (cdq.impl.entity/components)}))
+     :cdq/db (create-db schemas)}))

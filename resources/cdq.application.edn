@@ -2,8 +2,10 @@
  :title "Cyber Dungeon Quest"
  :windowed-mode {:width 1440 :height 900}
  :foreground-fps 60
- :requires [cdq.impl.effects]
+ :requires [cdq.impl.effects
+            cdq.impl.level]
  :create-pipeline [cdq.impl.context/create!
+                   cdq.impl.entity/add-components
                    cdq.world.context/reset]
  :render-pipeline [cdq.render/assoc-active-entities
                    cdq.render/set-camera-on-player

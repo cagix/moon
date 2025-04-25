@@ -20,7 +20,11 @@
 
  (show-tree-view! "Mouseover Entity" @(:cdq.context/mouseover-eid @app/state))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
- (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"forge"}))
+ (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
+
+ (clojure.pprint/pprint
+  (ns-value-vars #{"cdq"})
+  )
 
  ; Idea:
  ; * Generate the tree as data-structure first

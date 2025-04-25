@@ -9,7 +9,7 @@
                                item-place-position]]
             [cdq.audio.sound :as sound]))
 
-(defn components []
+(def ^:private components
   {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]
                                             (spawn-audiovisual c
                                                                (:position @eid)
@@ -77,3 +77,6 @@
                                                   (:entity/faction @eid)
                                                   0.2)
                                    (swap! eid entity/add-text-effect c "[WHITE]!"))}})
+
+(defn add-components [context]
+  (assoc context :context/entity-components components))
