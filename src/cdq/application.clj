@@ -47,6 +47,12 @@
                             (reset! runnables []))
 
                           (resize [width height]
+                            #_(doseq [[k obj] @state]
+                              (if (satisfies? cdq.lifecycle/Resizable obj)
+                                (do
+                                 #_(println "resizing" k)
+                                 (cdq.lifecycle/resize! obj width height))
+                                #_(println "Not resizable " k )))
                             (let [context @state]
                               (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
                               (Viewport/.update (:cdq.graphics/world-viewport context) width height false))))
