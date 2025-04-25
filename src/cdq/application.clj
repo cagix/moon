@@ -1,7 +1,5 @@
 (ns cdq.application
-  (:require cdq.impl.context
-            cdq.impl.effects
-            cdq.render
+  (:require cdq.render
             cdq.utils
             [clojure.edn :as edn]
             [clojure.java.io :as io])
@@ -15,7 +13,11 @@
 (def state (atom nil))
 
 (defn -main []
-  (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
+  (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)
+        create-context! (requiring-resolve (:create-context! config))]
+    (doseq [ns (:requires config)]
+      #_(println "requiring " ns)
+      (require ns))
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
                      (.getImage (Toolkit/getDefaultToolkit)
@@ -23,7 +25,7 @@
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
-                            (reset! state (cdq.impl.context/create! config)))
+                            (reset! state (create-context! config)))
 
                           (dispose []
                             (doseq [[k value] @state]

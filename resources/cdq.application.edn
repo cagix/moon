@@ -2,6 +2,8 @@
  :title "Cyber Dungeon Quest"
  :windowed-mode {:width 1440 :height 900}
  :foreground-fps 60
+ :requires [cdq.impl.effects]
+ :create-context! cdq.impl.context/create!
  :assets {:folder "resources/"
           :asset-type->extensions {:sound   #{"wav"}
                                    :texture #{"png" "bmp"}}}
