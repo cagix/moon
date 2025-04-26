@@ -6,12 +6,6 @@
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
-(defn delta-time []
-  (.getDeltaTime Gdx/graphics))
-
-(defn frames-per-second []
-  (.getFramesPerSecond Gdx/graphics))
-
 (defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
   (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 

@@ -9,7 +9,8 @@
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.utils :as utils]))
+            [cdq.utils :as utils])
+  (:import (com.badlogic.gdx Gdx)))
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
@@ -100,7 +101,7 @@
 
 (defn- check-remove-message [{:keys [cdq.context/player-message]}]
   (when (:text @player-message)
-    (swap! player-message update :counter + (graphics/delta-time))
+    (swap! player-message update :counter + (.getDeltaTime Gdx/graphics))
     (when (>= (:counter @player-message)
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))

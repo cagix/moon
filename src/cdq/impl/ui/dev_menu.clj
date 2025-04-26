@@ -12,7 +12,8 @@
             [cdq.utils :refer [readable-number]]
             cdq.world.context
             [clojure.string :as str])
-  (:import (com.badlogic.gdx.scenes.scene2d Touchable)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget PopupMenu)))
 
@@ -75,7 +76,7 @@
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [_]
-                                 (graphics/frames-per-second))
+                                 (.getFramesPerSecond Gdx/graphics))
                     :icon "images/fps.png"}]})
 
 (defn- menu-item [text on-clicked]

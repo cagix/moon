@@ -18,7 +18,8 @@
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils])
-  (:import (com.badlogic.gdx.graphics Color)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)
            (com.badlogic.gdx.scenes.scene2d Stage)
            (com.badlogic.gdx.utils ScreenUtils)
@@ -195,7 +196,7 @@
                                                           (input/key-pressed?      :space))))))))
 
 (defn- update-time [context]
-  (let [delta-ms (min (graphics/delta-time)
+  (let [delta-ms (min (.getDeltaTime Gdx/graphics)
                       cdq.time/max-delta)]
     (-> context
         (update :cdq.context/elapsed-time + delta-ms)
