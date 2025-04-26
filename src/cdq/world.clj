@@ -201,11 +201,11 @@
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
 
-(defn get-inventory [c]
-  (get (:windows (:cdq.context/stage c)) :inventory-window))
+(defn get-inventory [{:keys [cdq.context/stage]}]
+  (get (:windows stage) :inventory-window))
 
-(defn get-action-bar [c]
-  (let [group (:ui/action-bar (:action-bar-table (:cdq.context/stage c)))]
+(defn get-action-bar [{:keys [cdq.context/stage]}]
+  (let [group (:ui/action-bar (:action-bar-table stage))]
     {:horizontal-group group
      :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
 
@@ -236,8 +236,8 @@
                                                  (* (:height ui-viewport) (/ 3 4))]
                                :pack? true})))
 
-(defn world-item? [c]
-  (not (stage/mouse-on-actor? (:cdq.context/stage c))))
+(defn world-item? [{:keys [cdq.context/stage]}]
+  (not (stage/mouse-on-actor? stage)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
