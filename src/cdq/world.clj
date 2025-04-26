@@ -1,20 +1,20 @@
 (ns cdq.world
-  (:require [cdq.context :as context]
-            cdq.graphics
+  (:require [cdq.audio.sound :as sound]
+            [cdq.context :as context]
             [cdq.db :as db]
-            [cdq.utils :refer [define-order safe-merge]]
-            [cdq.graphics.shape-drawer :as sd]
-            [cdq.timer :as timer]
             [cdq.entity :as entity]
+            [cdq.graphics :as graphics]
+            [cdq.graphics.shape-drawer :as sd]
             [cdq.grid :as grid]
-            [cdq.input :as input]
-            [cdq.ui.stage :as stage]
             [cdq.info :as info]
+            [cdq.input :as input]
             [cdq.math.vector2 :as v]
+            [cdq.timer :as timer]
             [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
-            [cdq.audio.sound :as sound])
+            [cdq.ui.stage :as stage]
+            [cdq.utils :refer [define-order safe-merge]])
   (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
@@ -250,7 +250,7 @@
 
 (defn item-place-position [{:keys [cdq.graphics/world-viewport] :as c} entity]
   (placement-point (:position entity)
-                   (cdq.graphics/world-mouse-position world-viewport)
+                   (graphics/world-mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
