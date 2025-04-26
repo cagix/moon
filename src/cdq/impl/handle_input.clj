@@ -131,7 +131,7 @@
   (if-let [movement-vector (player-movement-vector)]
     (fsm/event c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
-      (graphics/set-cursor c cursor)
+      (graphics/set-cursor! c cursor)
       (when (input/button-just-pressed? :left)
         (on-click)))))
 

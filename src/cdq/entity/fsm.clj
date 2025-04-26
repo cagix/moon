@@ -20,7 +20,7 @@
                entity-states (:context/entity-components c)]
            (when (:entity/player? @eid)
              (when-let [cursor (get-in entity-states [new-state-k :cursor])]
-               (graphics/set-cursor c cursor)))
+               (graphics/set-cursor! c cursor)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))

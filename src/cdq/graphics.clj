@@ -6,7 +6,7 @@
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
-(defn set-cursor [{:keys [cdq.graphics/cursors]} cursor-key]
+(defn set-cursor! [{:keys [cdq.graphics/cursors]} cursor-key]
   (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
 (defn- clamp [value min max]
