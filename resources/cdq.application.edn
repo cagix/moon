@@ -24,10 +24,10 @@
                    cdq.render/player-state-input! ; here side-effects ....
                    cdq.render/update-mouseover-entity!
                    cdq.render/set-paused-flag
-                   cdq.render/when-not-paused!
+                   cdq.render/when-not-paused! ; here side-effects @ tick!
 
                    ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                   cdq.render/remove-destroyed-entities!
+                   cdq.render/remove-destroyed-entities! ; here side-effects
 
                    cdq.render/camera-controls!
                    cdq.render/window-controls!]
