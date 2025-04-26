@@ -182,11 +182,11 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (assoc context :cdq.context/mouseover-eid new-eid)))
 
-(defn update-paused! [{:keys [cdq.context/player-eid
-                              context/entity-components
-                              error ; FIXME ! not `::` keys so broken !
-                              ]
-                       :as context}]
+(defn set-paused-flag [{:keys [cdq.context/player-eid
+                               context/entity-components
+                               error ; FIXME ! not `::` keys so broken !
+                               ]
+                        :as context}]
   (let [pausing? true]
     (assoc context :cdq.context/paused? (or error
                                             (and pausing?

@@ -21,9 +21,9 @@
                    cdq.render/render-stage! ; also update ..
                    ;;
 
-                   cdq.render/player-state-input!
+                   cdq.render/player-state-input! ; here side-effects ....
                    cdq.render/update-mouseover-entity!
-                   cdq.render/update-paused!
+                   cdq.render/set-paused-flag
                    cdq.render/when-not-paused!
 
                    ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
