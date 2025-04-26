@@ -24,8 +24,8 @@
            (com.badlogic.gdx.utils ScreenUtils)
            (cdq StageWithState)))
 
-(defn player-state-input [{:keys [cdq.context/player-eid]
-                           :as context}]
+(defn player-state-input! [{:keys [cdq.context/player-eid]
+                            :as context}]
   (entity/manual-tick (entity/state-obj @player-eid) context)
   context)
 
@@ -43,7 +43,7 @@
                               :as context}]
   (assoc context :cdq.game/active-entities (active-entities content-grid @player-eid)))
 
-(defn set-camera-on-player
+(defn set-camera-on-player!
   [{:keys [cdq.graphics/world-viewport
            cdq.context/player-eid]
     :as context}]

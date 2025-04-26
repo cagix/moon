@@ -12,12 +12,16 @@
                    cdq.impl.entity/add-components
                    cdq.world.context/reset]
  :render-pipeline [cdq.render/assoc-active-entities
-                   cdq.render/set-camera-on-player
+                   cdq.render/set-camera-on-player!
+
+                   ;; draw game
                    cdq.render/clear-screen!
                    cdq.render/render-tiled-map!
                    cdq.render/draw-on-world-view!
-                   cdq.render/render-stage!
-                   cdq.render/player-state-input
+                   cdq.render/render-stage! ; also update ..
+                   ;;
+
+                   cdq.render/player-state-input!
                    cdq.render/update-mouseover-entity!
                    cdq.render/update-paused!
                    cdq.render/when-not-paused!
