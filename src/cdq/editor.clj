@@ -30,7 +30,7 @@
             [cdq.ui.table :as table]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
-  (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane)))
+  (:import (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 (defn- stage-add! [actor]
   (stage/add-actor (:cdq.context/stage @state) actor))
@@ -507,8 +507,8 @@
         container (ui/table {})
         tabbed-pane (TabbedPane.)]
     (.addListener tabbed-pane
-                  (proxy [com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter] []
-                    (switchedTab [^com.kotcrab.vis.ui.widget.tabbedpane.Tab tab]
+                  (proxy [TabbedPaneAdapter] []
+                    (switchedTab [^Tab tab]
                       (.clearChildren container)
                       (.fill (.expand (.add container (.getContentTable tab)))))))
     (.fillX (.expandX (.add table (.getTable tabbed-pane))))

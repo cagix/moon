@@ -1,7 +1,7 @@
 (ns cdq.graphics.text
   (:require [cdq.gdx.interop :as interop]
             [clojure.string :as str])
-  (:import (com.badlogic.gdx.graphics.g2d BitmapFont BitmapFont$BitmapFontData)))
+  (:import (com.badlogic.gdx.graphics.g2d BitmapFont)))
 
 (defn- text-height [font text]
   (-> text
