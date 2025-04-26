@@ -1,4 +1,4 @@
-(ns cdq.graphics.camera ; => TODO reify a protocol ?
+(ns cdq.graphics.camera
   (:refer-clojure :exclude [update])
   (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)
            (com.badlogic.gdx.math Frustum Vector3)))

@@ -24,9 +24,10 @@
            (com.badlogic.gdx.utils ScreenUtils)
            (cdq StageWithState)))
 
-(defn player-state-input [{:keys [cdq.context/player-eid] :as c}]
-  (entity/manual-tick (entity/state-obj @player-eid) c)
-  c)
+(defn player-state-input [{:keys [cdq.context/player-eid]
+                           :as context}]
+  (entity/manual-tick (entity/state-obj @player-eid) context)
+  context)
 
 (defn- active-entities [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
@@ -46,8 +47,6 @@
   [{:keys [cdq.graphics/world-viewport
            cdq.context/player-eid]
     :as context}]
-  {:pre [world-viewport
-         player-eid]}
   (camera/set-position (:camera world-viewport)
                        (:position @player-eid))
   context)
@@ -123,25 +122,28 @@
              :active-skill cdq.render.draw-on-world-view.entities/draw-skill-image-and-active-effect}})
     (cdq.render.draw-on-world-view.after-entities/render)])
 
-(defn- draw-with [{:keys [^Batch cdq.graphics/batch
-                          cdq.graphics/shape-drawer] :as c}
-                 viewport
-                 unit-scale
-                 draw-fn]
+(defn- draw-with! [{:keys [^Batch cdq.graphics/batch
+                           cdq.graphics/shape-drawer]
+                    :as context}
+                   viewport
+                   unit-scale
+                   draw-fn]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (camera/combined (:camera viewport)))
   (.begin batch)
   (sd/with-line-width shape-drawer unit-scale
     (fn []
-      (draw-fn (assoc c :cdq.context/unit-scale unit-scale))))
+      (draw-fn (assoc context :cdq.context/unit-scale unit-scale))))
   (.end batch))
 
 (defn- draw-on-world-view* [{:keys [cdq.graphics/world-unit-scale
-                                    cdq.graphics/world-viewport] :as c} render-fn]
-  (draw-with c
-             world-viewport
-             world-unit-scale
-             render-fn))
+                                    cdq.graphics/world-viewport]
+                             :as context}
+                            render-fn]
+  (draw-with! context
+              world-viewport
+              world-unit-scale
+              render-fn))
 
 (defn draw-on-world-view! [context]
   (draw-on-world-view* context
@@ -150,7 +152,8 @@
                            (utils/req-resolve-call f context))))
   context)
 
-(defn render-stage! [{:keys [^StageWithState cdq.context/stage] :as context}]
+(defn render-stage! [{:keys [^StageWithState cdq.context/stage]
+                      :as context}]
   (set! (.applicationState stage) (assoc context :cdq.context/unit-scale 1))
   (Stage/.draw stage)
   (set! (.applicationState stage) context)
@@ -161,33 +164,35 @@
                                         cdq.context/mouseover-eid
                                         cdq.context/player-eid
                                         cdq.graphics/world-viewport
-                                        cdq.context/stage] :as c}]
+                                        cdq.context/stage]
+                                 :as context}]
   (let [new-eid (if (stage/mouse-on-actor? stage)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (cdq.grid/point->entities grid (cdq.graphics/world-mouse-position world-viewport)))]
+                                     (grid/point->entities grid (graphics/world-mouse-position world-viewport)))]
                     (->> cdq.world/render-z-order
-                         (cdq.utils/sort-by-order hits #(:z-order @%))
+                         (utils/sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(los/exists? c player @%))
+                         (filter #(los/exists? context player @%))
                          first)))]
     (when mouseover-eid
       (swap! mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (assoc c :cdq.context/mouseover-eid new-eid)))
+    (assoc context :cdq.context/mouseover-eid new-eid)))
 
 (defn update-paused! [{:keys [cdq.context/player-eid
                               context/entity-components
                               error ; FIXME ! not `::` keys so broken !
-                              ] :as c}]
+                              ]
+                       :as context}]
   (let [pausing? true]
-    (assoc c :cdq.context/paused? (or error
-                                      (and pausing?
-                                           (get-in entity-components [(cdq.entity/state-k @player-eid) :pause-game?])
-                                           (not (or (input/key-just-pressed? :p)
-                                                    (input/key-pressed?      :space))))))))
+    (assoc context :cdq.context/paused? (or error
+                                            (and pausing?
+                                                 (get-in entity-components [(cdq.entity/state-k @player-eid) :pause-game?])
+                                                 (not (or (input/key-just-pressed? :p)
+                                                          (input/key-pressed?      :space))))))))
 
 (defn- update-time [context]
   (let [delta-ms (min (graphics/delta-time)
