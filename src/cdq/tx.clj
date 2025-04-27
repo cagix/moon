@@ -44,3 +44,12 @@
 
 (defn sound [{:keys [cdq/assets]} sound-name]
   (sound/play (assets/sound assets sound-name)))
+
+; we cannot just set/unset movement direction
+; because it is handled by the state enter/exit for npc/player movement state ...
+; so we cannot expose it as a 'transaction'
+; so the movement should be updated in the respective npc/player movement 'state' and no movement 'component' necessary !
+; for projectiles inside projectile update !?
+(defn set-movement [eid movement-vector]
+  (swap! eid assoc :entity/movement {:direction movement-vector
+                                     :speed (or (entity/stat @eid :entity/movement-speed) 0)}))

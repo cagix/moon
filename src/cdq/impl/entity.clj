@@ -213,8 +213,7 @@
 
 (defmethod tick! :player-moving [[_ {:keys [movement-vector]}] eid c]
   (if-let [movement-vector (player-movement-vector)]
-    (swap! eid assoc :entity/movement {:direction movement-vector
-                                       :speed (entity/stat @eid :entity/movement-speed)})
+    (tx/set-movement eid movement-vector)
     (tx/event c eid :no-movement-input)))
 
 (defmethod tick! :stunned [[_ {:keys [counter]}]
@@ -422,8 +421,7 @@
    :player-moving         {:pause-game? false
                            :cursor :cursors/walking
                            :enter (fn [[_ {:keys [eid movement-vector]}] c]
-                                    (swap! eid assoc :entity/movement {:direction movement-vector
-                                                                       :speed (entity/stat @eid :entity/movement-speed)}))
+                                    (tx/set-movement eid movement-vector))
                            :exit (fn [[_ {:keys [eid]}] c]
                                    (swap! eid dissoc :entity/movement))}
    :stunned               {:pause-game? false
@@ -431,8 +429,7 @@
    :npc-dead              {:enter (fn [[_ {:keys [eid]}] c]
                                     (swap! eid assoc :entity/destroyed? true))}
    :npc-moving            {:enter (fn [[_ {:keys [eid movement-vector]}] c]
-                                    (swap! eid assoc :entity/movement {:direction movement-vector
-                                                                       :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
+                                    (tx/set-movement eid movement-vector))
                            :exit (fn [[_ {:keys [eid]}] c]
                                    (swap! eid dissoc :entity/movement))}
    :npc-sleeping          {:exit (fn [[_ {:keys [eid]}] c]
