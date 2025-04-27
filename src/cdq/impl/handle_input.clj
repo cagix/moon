@@ -1,7 +1,5 @@
 (ns cdq.impl.handle-input
-  (:require [cdq.assets :as assets]
-            [cdq.audio.sound :as sound]
-            [cdq.entity :as entity :refer [manual-tick]]
+  (:require [cdq.entity :as entity :refer [manual-tick]]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.skill :as skill]
@@ -26,19 +24,19 @@
     (cond
      (actor/visible? (get-inventory c))
      (do
-      (sound/play (assets/sound (:cdq/assets c) "bfxr_takeit"))
+      (tx/sound c "bfxr_takeit")
       (swap! eid assoc :entity/destroyed? true)
       (tx/event c player-eid :pickup-item item))
 
      (entity/can-pickup-item? @player-eid item)
      (do
-      (sound/play (assets/sound (:cdq/assets c) "bfxr_pickup"))
+      (tx/sound c "bfxr_pickup")
       (swap! eid assoc :entity/destroyed? true)
       (widgets.inventory/pickup-item c player-eid item))
 
      :else
      (do
-      (sound/play (assets/sound (:cdq/assets c) "bfxr_denied"))
+      (tx/sound c "bfxr_denied")
       (show-player-msg c "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
@@ -58,7 +56,7 @@
     [(clickable->cursor @clicked-eid false) (fn []
                                               (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
-                                              (sound/play (assets/sound (:cdq/assets c) "bfx_denied"))
+                                              (tx/sound c "bfxr_denied")
                                               (show-player-msg c "Too far away"))]))
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
@@ -117,14 +115,14 @@
             ; invalid-params -> depends on params ...
             [:cursors/skill-not-usable
              (fn []
-               (sound/play (assets/sound (:cdq/assets c) "bfxr_denied"))
+               (tx/sound c "bfxr_denied")
                (show-player-msg c (case state
                                     :cooldown "Skill is still on cooldown"
                                     :not-enough-mana "Not enough mana"
                                     :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
-          (sound/play (assets/sound (:cdq/assets c) "bfxr_denied"))
+          (tx/sound c "bfxr_denied")
           (show-player-msg c "No selected skill"))]))))
 
 (defmethod manual-tick :player-idle [[_ {:keys [eid]}] c]
