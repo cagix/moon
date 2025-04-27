@@ -7,11 +7,8 @@
             [cdq.grid :as grid]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
-            [cdq.ui.actor :as actor]
-            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [cdq.utils :refer [define-order safe-merge]])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
+            [cdq.utils :refer [define-order safe-merge]]))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
@@ -196,18 +193,6 @@
 (defn nearest-enemy [{:keys [cdq.context/grid]} entity]
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
-
-(defn get-inventory [{:keys [cdq.context/stage]}]
-  (get (:windows stage) :inventory-window))
-
-(defn get-action-bar [{:keys [cdq.context/stage]}]
-  (let [group (:ui/action-bar (:action-bar-table stage))]
-    {:horizontal-group group
-     :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
-
-(defn selected-skill [c]
-  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar c)))]
-    (actor/user-object skill-button)))
 
 (defn world-item? [{:keys [cdq.context/stage]}]
   (not (stage/mouse-on-actor? stage)))

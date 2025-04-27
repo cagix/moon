@@ -10,9 +10,7 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [cdq.utils :as utils]
-            [cdq.world :refer [get-inventory
-                               get-action-bar]])
+            [cdq.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
@@ -68,8 +66,8 @@
 (defn show-player-msg [{:keys [cdq.context/player-message]} text]
   (swap! player-message assoc :text text :counter 0))
 
-(defn toggle-inventory-window [context]
-  (actor/toggle-visible! (get-inventory context)))
+(defn toggle-inventory-window [{:keys [cdq.context/stage]}]
+  (actor/toggle-visible! (stage/get-inventory stage)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -92,8 +90,9 @@
                                                  (* (:height ui-viewport) (/ 3 4))]
                                :pack? true})))
 
-(defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
-  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+(defn- action-bar-add-skill [{:keys [cdq.context/stage]}
+                             {:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar stage)
         button (ui/image-button image (fn []) {:scale 2})]
     (actor/set-id button id)
     (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
@@ -101,8 +100,9 @@
     (ButtonGroup/.add button-group ^Button button)
     nil))
 
-(defn- action-bar-remove-skill [c {:keys [property/id]}]
-  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+(defn- action-bar-remove-skill [{:keys [cdq.context/stage]}
+                                {:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar stage)
         button (get horizontal-group id)]
     (actor/remove button)
     (ButtonGroup/.remove button-group ^Button button)

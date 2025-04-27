@@ -9,18 +9,19 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.stage :as stage]
             [cdq.widgets.inventory :as widgets.inventory]
-            [cdq.world :refer [world-item?
-                               get-inventory
-                               selected-skill]]))
+            [cdq.world :refer [world-item?]]))
 
 (defmulti ^:private on-clicked
   (fn [eid c]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid {:keys [cdq.context/player-eid] :as c}]
+(defmethod on-clicked :clickable/item [eid
+                                       {:keys [cdq.context/player-eid
+                                               cdq.context/stage]
+                                        :as c}]
   (let [item (:entity/item @eid)]
     (cond
-     (actor/visible? (get-inventory c))
+     (actor/visible? (stage/get-inventory stage))
      (do
       (tx/sound c "bfxr_takeit")
       (tx/mark-destroyed eid)
@@ -94,7 +95,7 @@
      (clickable-entity-interaction c entity mouseover-eid)
 
      :else
-     (if-let [skill-id (selected-skill c)]
+     (if-let [skill-id (stage/selected-skill stage)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx c eid)
              state (skill/usable-state entity skill effect-ctx)]
