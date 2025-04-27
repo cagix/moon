@@ -153,9 +153,9 @@
         ; at sub-effects
         ; and no more safe - merge
         ; find a way to pass ctx / effect-ctx separate ?
-        (effect-ctx/do-all! c
-                            {:effect/source source :effect/target target}
-                            entity-effects))))
+        (tx/effect c
+                   {:effect/source source :effect/target target}
+                   entity-effects))))
 
   (effect/render [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
     (let [source* @source]
@@ -186,7 +186,7 @@
                        :duration 0.05
                        :color [1 0 0 0.75]
                        :thick? true})
-         (effect-ctx/do-all! c effect-ctx entity-effects))
+         (tx/effect c effect-ctx entity-effects))
         (spawn-audiovisual c
                            (entity/end-point source* target* maxrange)
                            (db/build db :audiovisuals/hit-ground c)))))

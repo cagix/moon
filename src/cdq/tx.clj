@@ -1,5 +1,7 @@
 (ns cdq.tx
-  (:require [cdq.entity :as entity]
+  (:require [cdq.effect :as effect]
+            [cdq.effect-context :as effect-context]
+            [cdq.entity :as entity]
             [cdq.fsm :as fsm]
             [cdq.graphics :as graphics]))
 
@@ -29,3 +31,7 @@
              (f old-state-obj context))
            (when-let [f (get-in entity-states [new-state-k :enter])]
              (f new-state-obj context))))))))
+
+(defn effect [context effect-ctx effect]
+  (run! #(effect/handle % effect-ctx context)
+        (effect-context/filter-applicable? effect-ctx effect)))

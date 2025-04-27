@@ -168,7 +168,7 @@
 
    (timer/stopped? counter elapsed-time)
    (do
-    (effect-ctx/do-all! c effect-ctx (:skill/effects skill))
+    (tx/effect c effect-ctx (:skill/effects skill))
     (tx/event c eid :action-done))))
 
 (defn- npc-choose-skill [c entity ctx]
@@ -339,10 +339,10 @@
     (when hit-entity
       (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
-      (effect-ctx/do-all! c
-                          {:effect/source eid
-                           :effect/target hit-entity}
-                          entity-effects))))
+      (tx/effect c
+                 {:effect/source eid
+                  :effect/target hit-entity}
+                 entity-effects))))
 
 (defmethod tick! :entity/delete-after-animation-stopped?
   [_ eid c]

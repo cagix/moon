@@ -11,7 +11,3 @@
   (->> effect
        (filter-applicable? effect-ctx)
        (some #(effect/useful? % effect-ctx context))))
-
-(defn do-all! [context effect-ctx effect]
-  (run! #(effect/handle % effect-ctx context)
-        (filter-applicable? effect-ctx effect)))
