@@ -229,7 +229,7 @@
            cdq.context/elapsed-time]
     :as c}]
   (when (timer/stopped? counter elapsed-time)
-    (swap! eid assoc :entity/destroyed? true)
+    (tx/mark-destroyed eid)
     (doseq [friendly-eid (friendlies-in-radius grid (:position @eid) faction)]
       (tx/event c friendly-eid :alert))))
 
@@ -244,7 +244,7 @@
    eid
    {:keys [cdq.context/elapsed-time]}]
   (when (timer/stopped? counter elapsed-time)
-    (swap! eid assoc :entity/destroyed? true)))
+    (tx/mark-destroyed eid)))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -334,7 +334,7 @@
         destroy? (or (and hit-entity (not piercing?))
                      (some #(grid/blocked? % (:z-order entity)) cells*))]
     (when destroy?
-      (swap! eid assoc :entity/destroyed? true))
+      (tx/mark-destroyed eid))
     (when hit-entity
       (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
@@ -346,7 +346,7 @@
 (defmethod tick! :entity/delete-after-animation-stopped?
   [_ eid c]
   (when (animation/stopped? (:entity/animation @eid))
-    (swap! eid assoc :entity/destroyed? true)))
+    (tx/mark-destroyed eid)))
 
 (defmethod tick! :entity/skills
   [[k skills]
@@ -427,7 +427,7 @@
    :stunned               {:pause-game? false
                            :cursor :cursors/denied}
    :npc-dead              {:enter (fn [[_ {:keys [eid]}] c]
-                                    (swap! eid assoc :entity/destroyed? true))}
+                                    (tx/mark-destroyed eid))}
    :npc-moving            {:enter (fn [[_ {:keys [eid movement-vector]}] c]
                                     (tx/set-movement eid movement-vector))
                            :exit (fn [[_ {:keys [eid]}] c]

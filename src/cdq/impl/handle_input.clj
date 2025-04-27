@@ -25,13 +25,13 @@
      (actor/visible? (get-inventory c))
      (do
       (tx/sound c "bfxr_takeit")
-      (swap! eid assoc :entity/destroyed? true)
+      (tx/mark-destroyed eid)
       (tx/event c player-eid :pickup-item item))
 
      (entity/can-pickup-item? @player-eid item)
      (do
       (tx/sound c "bfxr_pickup")
-      (swap! eid assoc :entity/destroyed? true)
+      (tx/mark-destroyed eid)
       (widgets.inventory/pickup-item c player-eid item))
 
      :else

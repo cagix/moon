@@ -53,3 +53,6 @@
 (defn set-movement [eid movement-vector]
   (swap! eid assoc :entity/movement {:direction movement-vector
                                      :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
+
+(defn mark-destroyed [eid]
+  (swap! eid assoc :entity/destroyed? true))
