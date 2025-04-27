@@ -1,13 +1,9 @@
 (ns cdq.graphics
-  (:require [cdq.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
-
-(defn set-cursor! [{:keys [cdq.graphics/cursors]} cursor-key]
-  (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))

@@ -3,7 +3,11 @@
             [cdq.effect-context :as effect-context]
             [cdq.entity :as entity]
             [cdq.fsm :as fsm]
-            [cdq.graphics :as graphics]))
+            [cdq.utils :as utils])
+  (:import (com.badlogic.gdx Gdx)))
+
+(defn cursor [{:keys [cdq.graphics/cursors]} cursor-key]
+  (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
 (defn event
   ([context eid event*]
@@ -21,8 +25,8 @@
                                                          context)]
                entity-states (:context/entity-components context)]
            (when (:entity/player? @eid)
-             (when-let [cursor (get-in entity-states [new-state-k :cursor])]
-               (graphics/set-cursor! context cursor)))
+             (when-let [cursor-key (get-in entity-states [new-state-k :cursor])]
+               (cursor context cursor-key)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
