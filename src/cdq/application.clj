@@ -25,10 +25,6 @@
                                 (io/resource (:dock-icon (:mac-os config)))))
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
-
-                          ; TODO pass specific configs to specific pipeline steps ...
-                          ; like before ....
-
                           (create []
                             (reset! state (reduce (fn [context f]
                                                     (f context config))
