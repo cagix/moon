@@ -1,6 +1,5 @@
 (ns cdq.editor
-  (:require cdq.error
-            [cdq.application :refer [state]]
+  (:require [cdq.application :refer [state]]
             [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.ui.stage :as stage]
@@ -74,7 +73,7 @@
   #(try (f)
         (actor/remove window)
         (catch Throwable t
-          (cdq.error/error-window @state t))))
+          (stage/error-window! (:cdq.context/stage @state) t))))
 
 (defn- async-write-to-file! [{:keys [cdq/db]}]
   (db/async-write-to-file! db))

@@ -1,7 +1,6 @@
 (ns forge.mapgen-test
   (:require [cdq.level :refer [generate-level]]
             cdq.graphics
-            cdq.error
             [cdq.db :as db]
             [cdq.modules :as modules]
             [cdq.graphics.shape-drawer :as sd]
@@ -136,7 +135,7 @@
               :rows [[(ui/label (with-out-str (pprint (db/build db level-id c))))]
                      [(text-button "Generate" #(try (generate-screen-ctx c (db/build db level-id c))
                                                     (catch Throwable t
-                                                      (cdq.error/error-window @state t)
+                                                      #_(stage/error-window! (:cdq.context/stage @state) t)
                                                       (println t))))]]
               :pack? true}))
 

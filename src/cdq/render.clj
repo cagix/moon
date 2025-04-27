@@ -2,7 +2,6 @@
   (:require [cdq.context :as context]
             [cdq.db :as db]
             [cdq.entity :as entity]
-            cdq.error
             [cdq.grid :as grid]
             [cdq.line-of-sight :as los]
             cdq.potential-fields
@@ -233,7 +232,7 @@
       (catch Throwable t
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
-     (cdq.error/error-window context t)
+     (stage/error-window! (:cdq.context/stage context) t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   context)
 
