@@ -3,7 +3,6 @@
             [cdq.timer :as timer]
             [cdq.schema :as s]
             [cdq.math.shapes :as shape]
-            [cdq.inventory :as inventory]
             [cdq.operation :as op]))
 
 (defmulti clicked-inventory-cell (fn [[k] cell c]
@@ -85,11 +84,6 @@
   (let [val-max (update val-max 0 mod-value modifiers modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))
-
-(defn can-pickup-item? [{:keys [entity/inventory]} item]
-  (or
-   (inventory/free-cell inventory (:item/slot item)   item)
-   (inventory/free-cell inventory :inventory.slot/bag item)))
 
 (defn mana
   "Returns the mana val-max vector `[current-value maximum]` of entity after applying max-hp modifier.

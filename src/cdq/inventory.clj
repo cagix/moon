@@ -34,8 +34,13 @@
   (for [[position item] (slot inventory)]
     [[slot position] item]))
 
-(defn free-cell [inventory slot item]
+(defn- free-cell [inventory slot item]
   (find-first (fn [[_cell cell-item]]
                 (or (stackable? item cell-item)
                     (nil? cell-item)))
               (cells-and-items inventory slot)))
+
+(defn can-pickup-item? [inventory item]
+  (or
+   (free-cell inventory (:item/slot item)   item)
+   (free-cell inventory :inventory.slot/bag item)))

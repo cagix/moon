@@ -2,6 +2,7 @@
   (:require [cdq.entity :as entity :refer [manual-tick]]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
+            [cdq.inventory :as inventory]
             [cdq.skill :as skill]
             [cdq.tx :as tx]
             [cdq.math.vector2 :as v]
@@ -27,7 +28,7 @@
       (tx/mark-destroyed eid)
       (tx/event c player-eid :pickup-item item))
 
-     (entity/can-pickup-item? @player-eid item)
+     (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
      (do
       (tx/sound c "bfxr_pickup")
       (tx/mark-destroyed eid)

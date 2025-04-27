@@ -190,7 +190,7 @@
             (set-item c eid cell (update cell-item :count + (:count item))))))
 
 (defn pickup-item [c eid item]
-  (let [[cell cell-item] (entity/can-pickup-item? @eid item)]
+  (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
     (assert cell)
     (assert (or (inventory/stackable? item cell-item)
                 (nil? cell-item)))
