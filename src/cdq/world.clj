@@ -6,7 +6,6 @@
             [cdq.graphics :as graphics]
             [cdq.grid :as grid]
             [cdq.info :as info]
-            [cdq.input :as input]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
             [cdq.ui :as ui]
@@ -229,16 +228,6 @@
                    (graphics/world-mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
-
-(defn player-movement-vector []
-  (let [r (when (input/key-pressed? :d) [1  0])
-        l (when (input/key-pressed? :a) [-1 0])
-        u (when (input/key-pressed? :w) [0  1])
-        d (when (input/key-pressed? :s) [0 -1])]
-    (when (or r l u d)
-      (let [v (v/add-vs (remove nil? [r l u d]))]
-        (when (pos? (v/length v))
-          v)))))
 
 (defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (get-action-bar c)

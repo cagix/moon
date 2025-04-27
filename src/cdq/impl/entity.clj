@@ -6,6 +6,7 @@
             [cdq.entity :as entity :refer [tick!]]
             cdq.fsm
             [cdq.inventory :as inventory]
+            [cdq.input :as input]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.grid :as grid]
@@ -29,8 +30,7 @@
                                spawn-audiovisual
                                spawn-item
                                item-place-position
-                               world-item?
-                               player-movement-vector]]
+                               world-item?]]
             [cdq.world.potential-field :as potential-field]))
 
 (defmethod entity/create :entity/delete-after-duration
@@ -211,7 +211,7 @@
         (tx/event c eid :alert)))))
 
 (defmethod tick! :player-moving [[_ {:keys [movement-vector]}] eid c]
-  (if-let [movement-vector (player-movement-vector)]
+  (if-let [movement-vector (input/player-movement-vector)]
     (tx/set-movement eid movement-vector)
     (tx/event c eid :no-movement-input)))
 

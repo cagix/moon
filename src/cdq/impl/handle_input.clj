@@ -11,8 +11,7 @@
             [cdq.widgets.inventory :as widgets.inventory]
             [cdq.world :refer [world-item?
                                get-inventory
-                               selected-skill
-                               player-movement-vector]]))
+                               selected-skill]]))
 
 (defmulti ^:private on-clicked
   (fn [eid c]
@@ -125,7 +124,7 @@
           (tx/show-player-msg c "No selected skill"))]))))
 
 (defmethod manual-tick :player-idle [[_ {:keys [eid]}] c]
-  (if-let [movement-vector (player-movement-vector)]
+  (if-let [movement-vector (input/player-movement-vector)]
     (tx/event c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
       (tx/cursor c cursor)
