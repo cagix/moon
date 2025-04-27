@@ -128,8 +128,8 @@
               :rows [[{:actor (inventory-table context)
                        :pad 4}]]}))
 
-(defn- inventory-cell-widget [c cell]
-  (get (::table (get (:windows (:cdq.context/stage c)) :inventory-window)) cell))
+(defn- inventory-cell-widget [{:keys [cdq.context/stage]} cell]
+  (get (::table (get (:windows stage) :inventory-window)) cell))
 
 (defn- set-item-image-in-widget [c cell item]
   (let [cell-widget (inventory-cell-widget c cell)
