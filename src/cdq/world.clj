@@ -78,7 +78,7 @@
 
 (def id-counter (atom 0))
 
-(defn spawn-entity [context position body components]
+(defn- spawn-entity [context position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
