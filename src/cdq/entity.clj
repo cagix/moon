@@ -1,6 +1,5 @@
 (ns cdq.entity
   (:require [cdq.math.vector2 :as v]
-            [cdq.timer :as timer]
             [cdq.schema :as s]
             [cdq.math.shapes :as shape]
             [cdq.operation :as op]))
@@ -144,13 +143,3 @@
 
 (defn has-skill? [{:keys [entity/skills]} {:keys [property/id]}]
   (contains? skills id))
-
-(defn add-text-effect [entity {:keys [cdq.context/elapsed-time]} text]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (:entity/string-effect entity)]
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter #(timer/reset % elapsed-time)))
-           {:text text
-            :counter (timer/create elapsed-time 0.4)})))

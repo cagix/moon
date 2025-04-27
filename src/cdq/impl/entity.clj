@@ -435,7 +435,7 @@
                                                   (:position       @eid)
                                                   (:entity/faction @eid)
                                                   0.2)
-                                   (swap! eid entity/add-text-effect c "[WHITE]!"))}})
+                                   (tx/text-effect c eid "[WHITE]!"))}})
 
 (defn add-components [context _config]
   (assoc context :context/entity-components components))

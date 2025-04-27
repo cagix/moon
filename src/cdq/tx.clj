@@ -6,6 +6,7 @@
             [cdq.entity :as entity]
             [cdq.fsm :as fsm]
             [cdq.info :as info]
+            [cdq.timer :as timer]
             [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
@@ -119,3 +120,16 @@
   (when (:entity/player? @eid)
     (action-bar-remove-skill c skill))
   (swap! eid update :entity/skills dissoc id))
+
+(defn- add-text-effect [entity {:keys [cdq.context/elapsed-time]} text]
+  (assoc entity
+         :entity/string-effect
+         (if-let [string-effect (:entity/string-effect entity)]
+           (-> string-effect
+               (update :text str "\n" text)
+               (update :counter #(timer/reset % elapsed-time)))
+           {:text text
+            :counter (timer/create elapsed-time 0.4)})))
+
+(defn text-effect [context eid text]
+  (swap! eid add-text-effect context text))
