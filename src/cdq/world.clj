@@ -4,7 +4,6 @@
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
-            [cdq.graphics.shape-drawer :as sd]
             [cdq.grid :as grid]
             [cdq.info :as info]
             [cdq.input :as input]
@@ -230,10 +229,6 @@
                    (graphics/world-mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
-
-(defn draw-body-rect [sd entity color]
-  (let [[x y] (:left-bottom entity)]
-    (sd/rectangle sd x y (:width entity) (:height entity) color)))
 
 (defn player-movement-vector []
   (let [r (when (input/key-pressed? :d) [1  0])

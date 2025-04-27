@@ -172,6 +172,10 @@
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
+(defn- draw-body-rect [sd entity color]
+  (let [[x y] (:left-bottom entity)]
+    (sd/rectangle sd x y (:width entity) (:height entity) color)))
+
 (defn render-entities
   [{:keys [below
            default
