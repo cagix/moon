@@ -5,7 +5,9 @@
             [cdq.effect-context :as effect-context]
             [cdq.entity :as entity]
             [cdq.fsm :as fsm]
+            [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
+            [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [cdq.world :refer [get-inventory]])
   (:import (com.badlogic.gdx Gdx)))
@@ -64,3 +66,24 @@
 
 (defn toggle-inventory-window [context]
   (actor/toggle-visible! (get-inventory context)))
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn show-modal [{:keys [cdq.graphics/ui-viewport
+                          cdq.context/stage]}
+                  {:keys [title text button-text on-click]}]
+  (assert (not (::modal stage)))
+  (stage/add-actor stage
+                   (ui/window {:title title
+                               :rows [[(ui/label text)]
+                                      [(ui/text-button button-text
+                                                       (fn []
+                                                         (actor/remove (::modal stage))
+                                                         (on-click)))]]
+                               :id ::modal
+                               :modal? true
+                               :center-position [(/ (:width  ui-viewport) 2)
+                                                 (* (:height ui-viewport) (/ 3 4))]
+                               :pack? true})))

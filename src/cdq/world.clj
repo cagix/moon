@@ -213,26 +213,6 @@
   (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar c)))]
     (actor/user-object skill-button)))
 
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [cdq.graphics/ui-viewport] :as c}
-                  {:keys [title text button-text on-click]}]
-  (assert (not (::modal (:cdq.context/stage c))))
-  (stage/add-actor (:cdq.context/stage c)
-                   (ui/window {:title title
-                               :rows [[(ui/label text)]
-                                      [(ui/text-button button-text
-                                                       (fn []
-                                                         (actor/remove (::modal (:cdq.context/stage c)))
-                                                         (on-click)))]]
-                               :id ::modal
-                               :modal? true
-                               :center-position [(/ (:width  ui-viewport) 2)
-                                                 (* (:height ui-viewport) (/ 3 4))]
-                               :pack? true})))
-
 (defn world-item? [{:keys [cdq.context/stage]}]
   (not (stage/mouse-on-actor? stage)))
 

@@ -27,7 +27,6 @@
                                friendlies-in-radius
                                delayed-alert
                                spawn-audiovisual
-                               show-modal
                                spawn-item
                                item-place-position
                                world-item?
@@ -398,10 +397,10 @@
                                                   modal/button-text]}]
                                        c]
                                     (sound/play sound)
-                                    (show-modal c {:title title
-                                                   :text text
-                                                   :button-text button-text
-                                                   :on-click (fn [])}))}
+                                    (tx/show-modal c {:title title
+                                                      :text text
+                                                      :button-text button-text
+                                                      :on-click (fn [])}))}
    :player-item-on-cursor {:pause-game? true
                            :cursor :cursors/hand-grab
                            :enter (fn [[_ {:keys [eid item]}] c]
