@@ -9,7 +9,6 @@
             [cdq.utils :refer [pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
             [cdq.world :refer [render-z-order
-                               draw-body-rect
                                world-item?
                                item-place-position]]
             [cdq.entity :as entity]))

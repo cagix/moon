@@ -2,6 +2,7 @@
   (:require [cdq.application :as app]
             cdq.graphics
             [cdq.db :as db]
+            [cdq.tx :as tx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [cdq.ui.group :refer [children]]
@@ -77,9 +78,7 @@
 (defn- learn-skill! [{:keys [cdq.context/player-eid
                              cdq/db] :as c}
                      skill-id]
-  (world/add-skill c
-                   player-eid
-                   (db/build db skill-id c)))
+  (tx/add-skill c player-eid (db/build db skill-id c)))
 
 (defn- create-item! [{:keys [cdq.context/player-eid
                              cdq/db] :as c}

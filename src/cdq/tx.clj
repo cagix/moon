@@ -5,12 +5,16 @@
             [cdq.effect-context :as effect-context]
             [cdq.entity :as entity]
             [cdq.fsm :as fsm]
+            [cdq.info :as info]
             [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
+            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
-            [cdq.world :refer [get-inventory]])
-  (:import (com.badlogic.gdx Gdx)))
+            [cdq.world :refer [get-inventory
+                               get-action-bar]])
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 (defn cursor [{:keys [cdq.graphics/cursors]} cursor-key]
   (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
@@ -87,3 +91,31 @@
                                :center-position [(/ (:width  ui-viewport) 2)
                                                  (* (:height ui-viewport) (/ 3 4))]
                                :pack? true})))
+
+(defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+        button (ui/image-button image (fn []) {:scale 2})]
+    (actor/set-id button id)
+    (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (group/add-actor! horizontal-group button)
+    (ButtonGroup/.add button-group ^Button button)
+    nil))
+
+(defn- action-bar-remove-skill [c {:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
+        button (get horizontal-group id)]
+    (actor/remove button)
+    (ButtonGroup/.remove button-group ^Button button)
+    nil))
+
+(defn add-skill [c eid {:keys [property/id] :as skill}]
+  {:pre [(not (entity/has-skill? @eid skill))]}
+  (when (:entity/player? @eid)
+    (action-bar-add-skill c skill))
+  (swap! eid assoc-in [:entity/skills id] skill))
+
+(defn remove-skill [c eid {:keys [property/id] :as skill}]
+  {:pre [(entity/has-skill? @eid skill)]}
+  (when (:entity/player? @eid)
+    (action-bar-remove-skill c skill))
+  (swap! eid update :entity/skills dissoc id))

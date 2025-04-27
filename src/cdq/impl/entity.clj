@@ -22,8 +22,7 @@
              :refer [remove-item
                      set-item
                      stack-item]]
-            [cdq.world :refer [add-skill
-                               minimum-size
+            [cdq.world :refer [minimum-size
                                nearest-enemy
                                friendlies-in-radius
                                delayed-alert
@@ -121,7 +120,7 @@
   [[k skills] eid c]
   (swap! eid assoc k nil)
   (doseq [skill skills]
-    (add-skill c eid skill)))
+    (tx/add-skill c eid skill)))
 
 (defmethod entity/create! :entity/animation
   [[_ animation] eid c]

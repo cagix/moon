@@ -5,15 +5,13 @@
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.grid :as grid]
-            [cdq.info :as info]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
-            [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [define-order safe-merge]])
-  (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
+  (:import (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
@@ -228,31 +226,3 @@
                    (graphics/world-mouse-position world-viewport)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
-
-(defn- action-bar-add-skill [c {:keys [property/id entity/image] :as skill}]
-  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
-        button (ui/image-button image (fn []) {:scale 2})]
-    (actor/set-id button id)
-    (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-    (group/add-actor! horizontal-group button)
-    (ButtonGroup/.add button-group ^Button button)
-    nil))
-
-(defn- action-bar-remove-skill [c {:keys [property/id]}]
-  (let [{:keys [horizontal-group button-group]} (get-action-bar c)
-        button (get horizontal-group id)]
-    (actor/remove button)
-    (ButtonGroup/.remove button-group ^Button button)
-    nil))
-
-(defn add-skill [c eid {:keys [property/id] :as skill}]
-  {:pre [(not (entity/has-skill? @eid skill))]}
-  (when (:entity/player? @eid)
-    (action-bar-add-skill c skill))
-  (swap! eid assoc-in [:entity/skills id] skill))
-
-(defn remove-skill [c eid {:keys [property/id] :as skill}]
-  {:pre [(entity/has-skill? @eid skill)]}
-  (when (:entity/player? @eid)
-    (action-bar-remove-skill c skill))
-  (swap! eid update :entity/skills dissoc id))
