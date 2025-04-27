@@ -56,3 +56,6 @@
 
 (defn mark-destroyed [eid]
   (swap! eid assoc :entity/destroyed? true))
+
+(defn show-player-msg [{:keys [cdq.context/player-message]} text]
+  (swap! player-message assoc :text text :counter 0))

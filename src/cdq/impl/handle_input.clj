@@ -10,7 +10,6 @@
             [cdq.ui.stage :as stage]
             [cdq.widgets.inventory :as widgets.inventory]
             [cdq.world :refer [world-item?
-                               show-player-msg
                                get-inventory
                                selected-skill
                                player-movement-vector]]))
@@ -37,7 +36,7 @@
      :else
      (do
       (tx/sound c "bfxr_denied")
-      (show-player-msg c "Your Inventory is full")))))
+      (tx/show-player-msg c "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
   (actor/toggle-visible! (get-inventory c)))
@@ -57,7 +56,7 @@
                                               (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (tx/sound c "bfxr_denied")
-                                              (show-player-msg c "Too far away"))]))
+                                              (tx/show-player-msg c "Too far away"))]))
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
   (and (actor/parent actor)
@@ -116,14 +115,14 @@
             [:cursors/skill-not-usable
              (fn []
                (tx/sound c "bfxr_denied")
-               (show-player-msg c (case state
-                                    :cooldown "Skill is still on cooldown"
-                                    :not-enough-mana "Not enough mana"
-                                    :invalid-params "Cannot use this here")))])))
+               (tx/show-player-msg c (case state
+                                       :cooldown "Skill is still on cooldown"
+                                       :not-enough-mana "Not enough mana"
+                                       :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
           (tx/sound c "bfxr_denied")
-          (show-player-msg c "No selected skill"))]))))
+          (tx/show-player-msg c "No selected skill"))]))))
 
 (defmethod manual-tick :player-idle [[_ {:keys [eid]}] c]
   (if-let [movement-vector (player-movement-vector)]
