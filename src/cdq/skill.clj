@@ -1,6 +1,6 @@
 (ns cdq.skill
-  (:require [cdq.entity :as entity]
-            [cdq.effect-context :as effect-ctx]))
+  (:require [cdq.effect :as effect]
+            [cdq.entity :as entity]))
 
 (defn- not-enough-mana? [entity {:keys [skill/cost]}]
   (and cost (> cost (entity/mana-val entity))))
@@ -14,7 +14,7 @@
    (not-enough-mana? entity skill)
    :not-enough-mana
 
-   (not (effect-ctx/some-applicable? effect-ctx effects))
+   (not (effect/some-applicable? effect-ctx effects))
    :invalid-params
 
    :else

@@ -1,7 +1,6 @@
 (ns cdq.impl.effects
   (:require [cdq.db :as db]
             [cdq.effect :as effect]
-            [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.line-of-sight :as los]
@@ -168,7 +167,7 @@
 (defcomponent :effects/target-entity
   (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
     (and target
-         (seq (effect-ctx/filter-applicable? effect-ctx entity-effects))))
+         (seq (effect/filter-applicable? effect-ctx entity-effects))))
 
   (effect/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _c]
     (entity/in-range? @source @target maxrange))

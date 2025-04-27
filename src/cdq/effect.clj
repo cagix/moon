@@ -13,3 +13,14 @@
 (defmulti render (fn [[k] _effect-ctx context]
                           k))
 (defmethod render :default [_ _effect-ctx context])
+
+(defn filter-applicable? [effect-ctx effect]
+  (filter #(applicable? % effect-ctx) effect))
+
+(defn some-applicable? [effect-ctx effect]
+  (seq (filter-applicable? effect-ctx effect)))
+
+(defn applicable-and-useful? [context effect-ctx effect]
+  (->> effect
+       (filter-applicable? effect-ctx)
+       (some #(useful? % effect-ctx context))))

@@ -2,7 +2,7 @@
   (:require [cdq.audio.sound :as sound]
             [cdq.context :as context]
             [cdq.db :as db]
-            [cdq.effect-context :as effect-ctx]
+            [cdq.effect :as effect]
             [cdq.entity :as entity :refer [tick!]]
             cdq.fsm
             [cdq.inventory :as inventory]
@@ -157,8 +157,8 @@
                                 eid
                                 {:keys [cdq.context/elapsed-time] :as c}]
   (cond
-   (not (effect-ctx/some-applicable? (update-effect-ctx c effect-ctx)
-                                     (:skill/effects skill)))
+   (not (effect/some-applicable? (update-effect-ctx c effect-ctx)
+                                 (:skill/effects skill)))
    (do
     (tx/event c eid :action-done)
     ; TODO some sound ?
@@ -176,7 +176,7 @@
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect-ctx/applicable-and-useful? c ctx (:skill/effects %))))
+                     (effect/applicable-and-useful? c ctx (:skill/effects %))))
        first))
 
 (defn- npc-effect-context [c eid]

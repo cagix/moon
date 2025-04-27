@@ -2,7 +2,6 @@
   (:require [cdq.assets :as assets]
             [cdq.audio.sound :as sound]
             [cdq.effect :as effect]
-            [cdq.effect-context :as effect-context]
             [cdq.entity :as entity]
             [cdq.fsm :as fsm]
             [cdq.info :as info]
@@ -47,7 +46,7 @@
 
 (defn effect [context effect-ctx effect]
   (run! #(effect/handle % effect-ctx context)
-        (effect-context/filter-applicable? effect-ctx effect)))
+        (effect/filter-applicable? effect-ctx effect)))
 
 (defn sound [{:keys [cdq/assets]} sound-name]
   (sound/play (assets/sound assets sound-name)))
