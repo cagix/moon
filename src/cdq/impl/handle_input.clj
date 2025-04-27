@@ -2,10 +2,10 @@
   (:require [cdq.assets :as assets]
             [cdq.audio.sound :as sound]
             [cdq.entity :as entity :refer [manual-tick]]
-            [cdq.entity.fsm :as fsm]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.skill :as skill]
+            [cdq.tx :as tx]
             [cdq.math.vector2 :as v]
             [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
@@ -28,7 +28,7 @@
      (do
       (sound/play (assets/sound (:cdq/assets c) "bfxr_takeit"))
       (swap! eid assoc :entity/destroyed? true)
-      (fsm/event c player-eid :pickup-item item))
+      (tx/event c player-eid :pickup-item item))
 
      (entity/can-pickup-item? @player-eid item)
      (do
@@ -109,7 +109,7 @@
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
              (fn []
-               (fsm/event c eid :start-action [skill effect-ctx]))])
+               (tx/event c eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -129,7 +129,7 @@
 
 (defmethod manual-tick :player-idle [[_ {:keys [eid]}] c]
   (if-let [movement-vector (player-movement-vector)]
-    (fsm/event c eid :movement-input movement-vector)
+    (tx/event c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
       (graphics/set-cursor! c cursor)
       (when (input/button-just-pressed? :left)
@@ -138,4 +138,4 @@
 (defmethod manual-tick :player-item-on-cursor [[_ {:keys [eid]}] c]
   (when (and (input/button-just-pressed? :left)
              (world-item? c))
-    (fsm/event c eid :drop-item)))
+    (tx/event c eid :drop-item)))

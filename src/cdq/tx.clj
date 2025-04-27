@@ -1,4 +1,4 @@
-(ns cdq.entity.fsm
+(ns cdq.tx
   (:require [cdq.entity :as entity]
             [cdq.fsm :as fsm]
             [cdq.graphics :as graphics]))

@@ -3,10 +3,10 @@
             [cdq.effect :as effect]
             [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity]
-            [cdq.entity.fsm :as fsm]
             [cdq.graphics.shape-drawer :as sd]
             [cdq.line-of-sight :as los]
             [cdq.timer :as timer]
+            [cdq.tx :as tx]
             [cdq.world :refer [spawn-audiovisual
                                spawn-creature
                                spawn-projectile
@@ -267,7 +267,7 @@
          (spawn-audiovisual c
                             (:position target*)
                             (db/build db :audiovisuals/damage c))
-         (fsm/event c target (if (zero? new-hp-val) :kill :alert))
+         (tx/event c target (if (zero? new-hp-val) :kill :alert))
          (swap! target entity/add-text-effect c (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
@@ -276,7 +276,7 @@
          (:entity/fsm @target)))
 
   (effect/handle [_ {:keys [effect/target]} c]
-    (fsm/event c target :kill)))
+    (tx/event c target :kill)))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -314,4 +314,4 @@
          (:entity/fsm @target)))
 
   (effect/handle [[_ duration] {:keys [effect/target]} c]
-    (fsm/event c target :stun duration)))
+    (tx/event c target :stun duration)))

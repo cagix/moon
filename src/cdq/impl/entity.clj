@@ -4,7 +4,6 @@
             [cdq.db :as db]
             [cdq.effect-context :as effect-ctx]
             [cdq.entity :as entity :refer [tick!]]
-            [cdq.entity.fsm :as fsm]
             cdq.fsm
             [cdq.inventory :as inventory]
             [cdq.graphics :as graphics]
@@ -16,6 +15,7 @@
             [cdq.utils :refer [safe-merge find-first]]
             [cdq.schema :as schema]
             [cdq.skill :as skill]
+            [cdq.tx :as tx]
             [cdq.math.vector2 :as v]
             [cdq.widgets.inventory :as widgets.inventory
              :refer [remove-item
@@ -162,14 +162,14 @@
    (not (effect-ctx/some-applicable? (update-effect-ctx c effect-ctx)
                                      (:skill/effects skill)))
    (do
-    (fsm/event c eid :action-done)
+    (tx/event c eid :action-done)
     ; TODO some sound ?
     )
 
    (timer/stopped? counter elapsed-time)
    (do
     (effect-ctx/do-all! c effect-ctx (:skill/effects skill))
-    (fsm/event c eid :action-done))))
+    (tx/event c eid :action-done))))
 
 (defn- npc-choose-skill [c entity ctx]
   (->> entity
@@ -195,33 +195,33 @@
 (defmethod tick! :npc-idle [_ eid c]
   (let [effect-ctx (npc-effect-context c eid)]
     (if-let [skill (npc-choose-skill c @eid effect-ctx)]
-      (fsm/event c eid :start-action [skill effect-ctx])
-      (fsm/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0])))))
+      (tx/event c eid :start-action [skill effect-ctx])
+      (tx/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0])))))
 
 (defmethod tick! :npc-moving [[_ {:keys [counter]}]
                               eid
                               {:keys [cdq.context/elapsed-time] :as c}]
   (when (timer/stopped? counter elapsed-time)
-    (fsm/event c eid :timer-finished)))
+    (tx/event c eid :timer-finished)))
 
 (defmethod tick! :npc-sleeping [_ eid {:keys [cdq.context/grid] :as c}]
   (let [entity @eid
         cell (grid (entity/tile entity))]
     (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
-        (fsm/event c eid :alert)))))
+        (tx/event c eid :alert)))))
 
 (defmethod tick! :player-moving [[_ {:keys [movement-vector]}] eid c]
   (if-let [movement-vector (player-movement-vector)]
     (swap! eid assoc :entity/movement {:direction movement-vector
                                        :speed (entity/stat @eid :entity/movement-speed)})
-    (fsm/event c eid :no-movement-input)))
+    (tx/event c eid :no-movement-input)))
 
 (defmethod tick! :stunned [[_ {:keys [counter]}]
                            eid
                            {:keys [cdq.context/elapsed-time] :as c}]
   (when (timer/stopped? counter elapsed-time)
-    (fsm/event c eid :effect-wears-off)))
+    (tx/event c eid :effect-wears-off)))
 
 (defmethod tick! :entity/alert-friendlies-after-duration
   [[_ {:keys [counter faction]}]
@@ -232,7 +232,7 @@
   (when (timer/stopped? counter elapsed-time)
     (swap! eid assoc :entity/destroyed? true)
     (doseq [friendly-eid (friendlies-in-radius grid (:position @eid) faction)]
-      (fsm/event c friendly-eid :alert))))
+      (tx/event c friendly-eid :alert))))
 
 (defmethod tick! :entity/animation
   [[k animation] eid {:keys [cdq.context/delta-time]}]
@@ -458,7 +458,7 @@
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item c eid cell item-on-cursor)
-      (fsm/event c eid :dropped-item))
+      (tx/event c eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -467,7 +467,7 @@
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item c eid cell item-on-cursor)
-      (fsm/event c eid :dropped-item))
+      (tx/event c eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -479,8 +479,8 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (remove-item c eid cell)
       (set-item c eid cell item-on-cursor)
-      (fsm/event c eid :dropped-item)
-      (fsm/event c eid :pickup-item item-in-cell)))))
+      (tx/event c eid :dropped-item)
+      (tx/event c eid :pickup-item item-in-cell)))))
 
 (defmethod entity/clicked-inventory-cell :player-item-on-cursor
   [[_ {:keys [eid] :as data}] cell c]
@@ -491,5 +491,5 @@
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (sound/play pickup-item-sound)
-    (fsm/event c eid :pickup-item item)
+    (tx/event c eid :pickup-item item)
     (remove-item c eid cell)))
