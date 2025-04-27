@@ -5,7 +5,9 @@
             [cdq.effect-context :as effect-context]
             [cdq.entity :as entity]
             [cdq.fsm :as fsm]
-            [cdq.utils :as utils])
+            [cdq.ui.actor :as actor]
+            [cdq.utils :as utils]
+            [cdq.world :refer [get-inventory]])
   (:import (com.badlogic.gdx Gdx)))
 
 (defn cursor [{:keys [cdq.graphics/cursors]} cursor-key]
@@ -59,3 +61,6 @@
 
 (defn show-player-msg [{:keys [cdq.context/player-message]} text]
   (swap! player-message assoc :text text :counter 0))
+
+(defn toggle-inventory-window [context]
+  (actor/toggle-visible! (get-inventory context)))

@@ -39,7 +39,7 @@
       (tx/show-player-msg c "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
-  (actor/toggle-visible! (get-inventory c)))
+  (tx/toggle-inventory-window c))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
