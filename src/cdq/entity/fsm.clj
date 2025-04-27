@@ -4,9 +4,9 @@
             [cdq.graphics :as graphics]))
 
 (defn event
-  ([c eid event*]
-   (event c eid event* nil))
-  ([c eid event params]
+  ([context eid event*]
+   (event context eid event* nil))
+  ([context eid event params]
    (when-let [fsm (:entity/fsm @eid)]
      (let [old-state-k (:state fsm)
            new-fsm (fsm/event fsm event)
@@ -16,16 +16,16 @@
                new-state-obj [new-state-k (entity/create (if params
                                                            [new-state-k eid params]
                                                            [new-state-k eid])
-                                                         c)]
-               entity-states (:context/entity-components c)]
+                                                         context)]
+               entity-states (:context/entity-components context)]
            (when (:entity/player? @eid)
              (when-let [cursor (get-in entity-states [new-state-k :cursor])]
-               (graphics/set-cursor! c cursor)))
+               (graphics/set-cursor! context cursor)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
            (when-let [f (get-in entity-states [old-state-k :exit])]
-             (f old-state-obj c))
+             (f old-state-obj context))
            (when-let [f (get-in entity-states [new-state-k :enter])]
-             (f new-state-obj c))))))))
+             (f new-state-obj context))))))))
