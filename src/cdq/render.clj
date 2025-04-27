@@ -152,10 +152,14 @@
                            (utils/req-resolve-call f context))))
   context)
 
-(defn render-stage! [{:keys [^StageWithState cdq.context/stage]
-                      :as context}]
+(defn stage-draw! [{:keys [^StageWithState cdq.context/stage]
+                    :as context}]
   (set! (.applicationState stage) (assoc context :cdq.context/unit-scale 1))
   (Stage/.draw stage)
+  context)
+
+(defn stage-act! [{:keys [^StageWithState cdq.context/stage]
+                   :as context}]
   (set! (.applicationState stage) context)
   (Stage/.act stage)
   context)
