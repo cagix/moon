@@ -285,7 +285,7 @@
 (def ^:private max-speed (/ minimum-size
                             cdq.time/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
-(def speed-schema (schema/m-schema [:and number? [:>= 0] [:<= max-speed]]))
+(def ^:private speed-schema (schema/m-schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (defmethod tick! :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
