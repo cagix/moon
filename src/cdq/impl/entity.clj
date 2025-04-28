@@ -4,7 +4,7 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity :refer [tick!]]
-            cdq.fsm
+            [cdq.fsm :as fsm]
             [cdq.inventory :as inventory]
             [cdq.input :as input]
             [cdq.graphics :as graphics]
@@ -133,7 +133,7 @@
 (defmethod entity/create! :entity/fsm
   [[k {:keys [fsm initial-state]}] eid c]
   (swap! eid assoc
-         k (cdq.fsm/create fsm initial-state)
+         k (fsm/create fsm initial-state)
          initial-state (entity/create [initial-state eid] c)))
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
