@@ -248,7 +248,6 @@
 (defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [cdq/db] :as context}]
   (set (map #(db/build db % context) property-ids)))
 
-
 (defn- validate-properties! [properties schemas]
   (assert (or (empty? properties)
               (apply distinct? (map :property/id properties))))
