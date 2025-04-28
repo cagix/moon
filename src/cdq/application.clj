@@ -8,7 +8,11 @@
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
-(def state (atom nil))
+(def state
+  "Do not call `swap!`, instead use `post-runnable!`, as the main game loop has side-effects and should not be retried.
+
+  (Should probably make this private and have a `get-state` function)"
+  (atom nil))
 
 (def ^:private runnables (atom []))
 
