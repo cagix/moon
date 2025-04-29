@@ -36,6 +36,8 @@
                                   ; (stage .act is called via passing context in the main 'swap!' of the application loop)
                                   ; (swap! state render)
                                   ; cdq.render.stage pass .applicationState and return
+                                  ; TODO maybe use 'post-runnable!' ??
+                                  ; or 'swap-state!' ?
                                   (swap! cdq.application/state cdq.world.context/reset {:world-id (:property/id world)}))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}

@@ -2,7 +2,7 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             cdq.application.desktop)
-  (:import (com.badlogic.gdx ApplicationAdapter)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
@@ -11,8 +11,6 @@
 
   (Should probably make this private and have a `get-state` function)"
   (atom nil))
-
-(def ^:private runnables (atom []))
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)
@@ -43,10 +41,7 @@
                         (reduce (fn [context f]
                                   (f context))
                                 context
-                                render-pipeline)))
-         (doseq [f @runnables]
-           (f @state))
-         (reset! runnables []))
+                                render-pipeline))))
 
        (resize [width height]
          (let [context @state]
@@ -54,4 +49,4 @@
            (Viewport/.update (:cdq.graphics/world-viewport context) width height false)))))))
 
 (defn post-runnable! [f]
-  (swap! runnables conj f))
+  (.postRunnable Gdx/app (fn [] (f @state))))
