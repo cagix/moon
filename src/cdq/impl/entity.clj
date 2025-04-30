@@ -13,7 +13,7 @@
             [cdq.line-of-sight :as los]
             cdq.time
             [cdq.timer :as timer]
-            [cdq.utils :refer [safe-merge find-first]]
+            [cdq.utils :refer [defcomponent safe-merge find-first]]
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.tx :as tx]
@@ -32,10 +32,13 @@
                                world-item?]]
             [cdq.world.potential-field :as potential-field]))
 
-(defmethod entity/create :entity/delete-after-duration
-  [[_ duration]
-   {:keys [cdq.context/elapsed-time] :as c}]
-  (timer/create elapsed-time duration))
+(defcomponent :entity/delete-after-duration
+  (entity/create [[_ duration] {:keys [cdq.context/elapsed-time]}]
+    (timer/create elapsed-time duration))
+
+  (tick! [[_ counter] eid {:keys [cdq.context/elapsed-time]}]
+    (when (timer/stopped? counter elapsed-time)
+      (tx/mark-destroyed eid))))
 
 (defmethod entity/create :entity/hp
   [[_ v] _c]
@@ -236,13 +239,6 @@
   (swap! eid #(-> %
                   (assoc :entity/image (animation/current-frame animation))
                   (assoc k (animation/tick animation delta-time)))))
-
-(defmethod tick! :entity/delete-after-duration
-  [[_ counter]
-   eid
-   {:keys [cdq.context/elapsed-time]}]
-  (when (timer/stopped? counter elapsed-time)
-    (tx/mark-destroyed eid)))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
