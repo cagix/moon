@@ -12,7 +12,7 @@
       (remove-newlines new-s))))
 
 (defmulti info-segment (fn [[k] _entity _context]
-                                   k))
+                         k))
 (defmethod info-segment :default [_ _entity _context])
 
 (def ^:private k->colors {:property/pretty-name "PRETTY_NAME"
