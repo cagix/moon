@@ -12,7 +12,20 @@
   (Should probably make this private and have a `get-state` function)"
   (atom nil))
 
-(defn -main []
+(defn -main
+  "Reads `cdq.application.edn` as `config`.
+
+  * `:requires` - a sequence of namespaces to require.
+
+  * `:create-pipeline` - a vector or `(fn [context config] context)` for creating the initial context.
+
+  * `:render-pipeline` - a vector or `(fn [context] context)` for the main loop.
+
+  Starts a libgdx desktop application using the lwjgl3-backend, `reset!` and `swap!`-ing the `state` atom on callbacks.
+
+  TODO:
+  On `resize` callback -> updates viewports."
+  []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)
         create-pipeline (map requiring-resolve (:create-pipeline config))
         render-pipeline (map requiring-resolve (:render-pipeline config))]
@@ -48,5 +61,9 @@
            (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
            (Viewport/.update (:cdq.graphics/world-viewport context) width height false)))))))
 
-(defn post-runnable! [f]
+(defn post-runnable!
+  "`f` should be a `(fn [context])`.
+
+  Is executed after the main-loop, in order not to interfere with it."
+  [f]
   (.postRunnable Gdx/app (fn [] (f @state))))
