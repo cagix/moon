@@ -39,7 +39,7 @@
   (nearest-entity-distance [this faction]
     (-> this faction :distance)))
 
-(defn ->grid-cell [position movement]
+(defn- ->grid-cell [position movement]
   {:pre [(#{:none :air :all} movement)]}
   (map->RCell
    {:position position

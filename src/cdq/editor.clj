@@ -78,11 +78,11 @@
 (defn- async-write-to-file! [{:keys [cdq/db]}]
   (db/async-write-to-file! db))
 
-(defn update! [property]
+(defn- update! [property]
   (swap! state update :cdq/db db/update property (:cdq/schemas @state))
   (async-write-to-file! @state))
 
-(defn delete! [property-id]
+(defn- delete! [property-id]
   (swap! state update :cdq/db db/delete property-id)
   (async-write-to-file! @state))
 
@@ -480,6 +480,8 @@
 
 (defn edit-property [id]
   (stage-add! (editor-window (db/get-raw (get-db) id))))
+
+; TODO unused code below
 
 (defn- property-types [schemas]
   (filter #(= "properties" (namespace %))
