@@ -1,10 +1,12 @@
 (ns cdq.application
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            cdq.application.desktop)
+            [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.utils Disposable SharedLibraryLoader Os)
+           (com.badlogic.gdx.utils.viewport Viewport)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration)))
 
 (def state
   "Do not call `swap!`, instead use `post-runnable!`, as the main game loop has side-effects and should not be retried.
@@ -32,34 +34,42 @@
     (doseq [ns (:requires config)]
       #_(println "requiring " ns)
       (require ns))
-    (cdq.application.desktop/application!
-     config
-     (proxy [ApplicationAdapter] []
-       (create []
-         (reset! state (reduce (fn [context f]
-                                 (f context config))
-                               {}
-                               create-pipeline)))
+    (when (= SharedLibraryLoader/os Os/MacOsX)
+      (.setIconImage (Taskbar/getTaskbar)
+                     (.getImage (Toolkit/getDefaultToolkit)
+                                (io/resource (:dock-icon (:mac-os config)))))
+      (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+    (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                          (create []
+                            (reset! state (reduce (fn [context f]
+                                                    (f context config))
+                                                  {}
+                                                  create-pipeline)))
 
-       (dispose []
-         (doseq [[k obj] @state]
-           (if (instance? Disposable obj)
-             (do
-              #_(println "Disposing:" k)
-              (Disposable/.dispose obj))
-             #_(println "Not Disposable: " k ))))
+                          (dispose []
+                            (doseq [[k obj] @state]
+                              (if (instance? Disposable obj)
+                                (do
+                                 #_(println "Disposing:" k)
+                                 (Disposable/.dispose obj))
+                                #_(println "Not Disposable: " k ))))
 
-       (render []
-         (swap! state (fn [context]
-                        (reduce (fn [context f]
-                                  (f context))
-                                context
-                                render-pipeline))))
+                          (render []
+                            (swap! state (fn [context]
+                                           (reduce (fn [context f]
+                                                     (f context))
+                                                   context
+                                                   render-pipeline))))
 
-       (resize [width height]
-         (let [context @state]
-           (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
-           (Viewport/.update (:cdq.graphics/world-viewport context) width height false)))))))
+                          (resize [width height]
+                            (let [context @state]
+                              (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
+                              (Viewport/.update (:cdq.graphics/world-viewport context) width height false))))
+                        (doto (Lwjgl3ApplicationConfiguration.)
+                          (.setTitle (:title config))
+                          (.setWindowedMode (:width  (:windowed-mode config))
+                                            (:height (:windowed-mode config)))
+                          (.setForegroundFPS (:foreground-fps config))))))
 
 (defn post-runnable!
   "`f` should be a `(fn [context])`.
