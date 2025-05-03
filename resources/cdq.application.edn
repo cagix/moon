@@ -8,8 +8,7 @@
             cdq.impl.level
             cdq.impl.level.uf-caves
             cdq.impl.level.modules]
- :create-pipeline [cdq.impl.entity/add-components ; ??? as component ??
-                   cdq.world.context/reset]
+ :create-pipeline [cdq.world.context/reset]
  :assets {:folder "resources/"
           :asset-type->extensions {:sound   #{"wav"}
                                    :texture #{"png" "bmp"}}}
