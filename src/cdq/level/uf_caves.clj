@@ -1,7 +1,5 @@
-(ns cdq.impl.level.uf-caves
-  (:require [cdq.level :refer [generate-level*]]
-            [cdq.db :as db]
-            [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
+(ns cdq.level.uf-caves
+  (:require [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [cdq.data.grid2d :as g2d]
             [cdq.tiled :as tiled]
             [cdq.rand :refer [get-rand-weighted-item]])
@@ -123,8 +121,3 @@
                          spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))
-
-(defmethod generate-level* :world.generator/uf-caves [world {:keys [cdq/db] :as c}]
-  (create world
-          (db/build-all db :properties/creatures c)
-          ((:cdq/assets c) "maps/uf_terrain.png")))

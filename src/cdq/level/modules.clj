@@ -1,7 +1,5 @@
-(ns cdq.impl.level.modules
-  (:require [cdq.level :refer [generate-level*]]
-            [cdq.db :as db]
-            [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
+(ns cdq.level.modules
+  (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]
             [cdq.data.grid2d :as g2d]
             [cdq.tiled :as tiled]))
@@ -124,7 +122,3 @@
     {:tiled-map tiled-map
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
-
-(defmethod generate-level* :world.generator/modules [world {:keys [cdq/db] :as c}]
-  (generate-modules world
-                    (db/build-all db :properties/creatures c)))

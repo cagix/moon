@@ -21,6 +21,8 @@
             [cdq.inventory :as inventory]
             [cdq.line-of-sight :as los]
             [cdq.level :as level]
+            cdq.level.uf-caves
+            cdq.level.modules
             [cdq.property :as property]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
@@ -79,6 +81,15 @@
 (defmethod level/generate-level* :world.generator/tiled-map [world c]
   {:tiled-map (tiled/load-map (:world/tiled-map world))
    :start-position [32 71]})
+
+(defmethod level/generate-level* :world.generator/uf-caves [world {:keys [cdq/db] :as c}]
+  (cdq.level.uf-caves/create world
+                             (db/build-all db :properties/creatures c)
+                             ((:cdq/assets c) "maps/uf_terrain.png")))
+
+(defmethod level/generate-level* :world.generator/modules [world {:keys [cdq/db] :as c}]
+  (cdq.level.modules/generate-modules world
+                                      (db/build-all db :properties/creatures c)))
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
@@ -1981,9 +1992,6 @@
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
-    (doseq [ns (:requires config)]
-      #_(println "requiring " ns)
-      (require ns))
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
                      (.getImage (Toolkit/getDefaultToolkit)
