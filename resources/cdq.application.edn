@@ -8,25 +8,8 @@
             cdq.impl.level
             cdq.impl.level.uf-caves
             cdq.impl.level.modules]
- :create-pipeline [cdq.impl.entity/add-components
+ :create-pipeline [cdq.impl.entity/add-components ; ??? as component ??
                    cdq.world.context/reset]
- :render-pipeline [cdq.render/assoc-active-entities
-                   cdq.render/set-camera-on-player!
-                   cdq.render/clear-screen!
-                   cdq.render/render-tiled-map!
-                   cdq.render/draw-on-world-view!
-                   cdq.render/stage-draw!
-                   cdq.render/stage-act!
-                   cdq.render/player-state-input!
-                   cdq.render/update-mouseover-entity!
-                   cdq.render/set-paused-flag
-                   cdq.render/when-not-paused!
-
-                   ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                   cdq.render/remove-destroyed-entities!
-
-                   cdq.render/camera-controls!
-                   cdq.render/window-controls!]
  :assets {:folder "resources/"
           :asset-type->extensions {:sound   #{"wav"}
                                    :texture #{"png" "bmp"}}}
