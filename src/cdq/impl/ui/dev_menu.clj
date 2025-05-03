@@ -10,7 +10,6 @@
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
             [cdq.utils :refer [readable-number]]
-            cdq.world.context
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d Touchable)
@@ -38,7 +37,7 @@
                                   ; cdq.render.stage pass .applicationState and return
                                   ; TODO maybe use 'post-runnable!' ??
                                   ; or 'swap-state!' ?
-                                  (swap! cdq.application/state cdq.world.context/reset {:world-id (:property/id world)}))})}
+                                  (swap! cdq.application/state cdq.application/reset-game! {:world-id (:property/id world)}))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
