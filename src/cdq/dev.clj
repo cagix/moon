@@ -10,7 +10,8 @@
             [cdq.ui :refer [t-node scroll-pane] :as ui]
             [cdq.world :as world])
   (:import (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.scenes.scene2d Group Stage)))
+           (com.badlogic.gdx.scenes.scene2d Group Stage)
+           (com.kotcrab.vis.ui.widget VisTree)))
 
 (comment
 
@@ -198,7 +199,7 @@
      }))
 
 (defn- generate-tree [m]
-  (doto (ui/tree)
+  (doto (VisTree.)
     (add-map-nodes! (into (sorted-map) m)
                     0)))
 

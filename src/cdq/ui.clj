@@ -8,7 +8,7 @@
            (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener ClickListener)
            (com.badlogic.gdx.utils Align Scaling)
-           (com.kotcrab.vis.ui.widget VisTable Tooltip Menu MenuBar MenuItem VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow Separator)
+           (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)
            (cdq StageWithState)))
 
 (defn pack! [this]
@@ -291,23 +291,8 @@
 (defn t-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
 
-(defn menu [label]
-  (Menu. label))
-
-(defn menu-bar []
-  (MenuBar.))
-
-(def menu-bar->table MenuBar/.getTable)
-(def add-menu        MenuBar/.addMenu)
-
-(defn menu-item ^MenuItem [text]
-  (MenuItem. text))
-
 (defn window? [actor]
   (instance? VisWindow actor))
-
-(defn tree []
-  (VisTree.))
 
 (defn click-listener
   "Detects mouse over, mouse or finger touch presses, and clicks on an actor. A touch must go down over the actor and is considered pressed as long as it is over the actor or within the tap square. This behavior makes it easier to press buttons on a touch interface when the initial touch happens near the edge of the actor. Double clicks can be detected using getTapCount(). Any touch (not just the first) will trigger this listener. While pressed, other touch downs are ignored."
