@@ -6,7 +6,6 @@
             [cdq.info :as info]
             [cdq.timer :as timer]
             [cdq.ui :as ui]
-            [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
@@ -68,7 +67,7 @@
   (swap! player-message assoc :text text :counter 0))
 
 (defn toggle-inventory-window [{:keys [cdq.context/stage]}]
-  (actor/toggle-visible! (stage/get-inventory stage)))
+  (ui/toggle-visible! (stage/get-inventory stage)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?

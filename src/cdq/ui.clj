@@ -1,15 +1,22 @@
 (ns cdq.ui
-  (:require [cdq.ui.actor :as actor]
-            [cdq.ui.group :refer [find-actor-with-id add-actor!]]
+  (:require [cdq.ui.group :refer [find-actor-with-id add-actor!]]
             [cdq.ui.table :as table])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
+           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)
            (cdq StageWithState)))
+
+(defn toggle-visible! [^Actor actor]
+  (.setVisible actor (not (.isVisible actor))))
+
+(defn hit [^Actor actor [x y]]
+  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+    (.hit actor (.x v) (.y v) true)))
 
 (defn horizontal-separator-cell [colspan]
   {:actor (Separator. "default")
@@ -39,8 +46,21 @@
     (.pack widget-group))
   widget-group)
 
+(defn- set-center! [^Actor actor x y]
+  (.setPosition actor
+                (- x (/ (.getWidth  actor) 2))
+                (- y (/ (.getHeight actor) 2))))
+
+(defn- set-actor-opts! [^Actor a {:keys [id name visible? touchable center-position position] :as opts}]
+  (when id                          (.setUserObject        a id))
+  (when name                        (.setName      a name))
+  (when (contains? opts :visible?)  (.setVisible   a (boolean visible?)))
+  (when-let [[x y] center-position] (set-center!   a x y))
+  (when-let [[x y] position]        (.setPosition  a x y))
+  a)
+
 (defn- set-opts [actor opts]
-  (actor/set-opts actor opts)
+  (set-actor-opts! actor opts)
   (when (instance? Table actor)
     (table/set-opts actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)

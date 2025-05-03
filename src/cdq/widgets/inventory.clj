@@ -5,7 +5,6 @@
             [cdq.info :as info]
             [cdq.graphics.shape-drawer :as sd]
             cdq.graphics.sprite
-            [cdq.ui.actor :as actor]
             [cdq.data.grid2d :as g2d]
             [cdq.ui :refer [texture-region-drawable
                             image-widget
@@ -50,7 +49,7 @@
                         @player-eid
                         (.getX this)
                         (.getY this)
-                        (actor/hit this (cdq.graphics/mouse-position ui-viewport))
+                        (ui/hit this (cdq.graphics/mouse-position ui-viewport))
                         (.getUserObject (.getParent this)))))))
 
 (def ^:private slot->y-sprite-idx

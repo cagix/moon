@@ -36,7 +36,6 @@
             cdq.potential-fields
             [cdq.operation :as op]
             [cdq.ui :as ui :refer [ui-actor]]
-            [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.ui.table :as table]
@@ -2043,7 +2042,7 @@
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (input/key-just-pressed? (get window-hotkeys window-id))]
-      (actor/toggle-visible! (get (:windows stage) window-id))))
+      (ui/toggle-visible! (get (:windows stage) window-id))))
   (when (input/key-just-pressed? :escape)
     (let [windows (group/children (:windows stage))]
       (when (some Actor/.isVisible windows)
