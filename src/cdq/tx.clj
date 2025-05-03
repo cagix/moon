@@ -3,14 +3,14 @@
             [cdq.audio.sound :as sound]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.fsm :as fsm]
             [cdq.info :as info]
             [cdq.timer :as timer]
             [cdq.ui :as ui]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [cdq.utils :as utils])
+            [cdq.utils :as utils]
+            [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
@@ -23,7 +23,7 @@
   ([context eid event params]
    (when-let [fsm (:entity/fsm @eid)]
      (let [old-state-k (:state fsm)
-           new-fsm (fsm/event fsm event)
+           new-fsm (fsm/fsm-event fsm event)
            new-state-k (:state new-fsm)]
        (when-not (= old-state-k new-state-k)
          (let [old-state-obj (entity/state-obj @eid)

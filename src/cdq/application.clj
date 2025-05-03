@@ -6,7 +6,6 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.fsm :as fsm]
             [cdq.gdx.interop :as interop]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
@@ -66,7 +65,8 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.math :as math]
-            [clojure.pprint :refer [pprint]])
+            [clojure.pprint :refer [pprint]]
+            [reduce-fsm :as fsm])
   (:import (cdq StageWithState OrthogonalTiledMapRenderer)
            (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
@@ -1126,10 +1126,64 @@
   [_ eid c]
   (-> @eid :entity/animation :looping? not assert))
 
+(def ^:private npc-fsm
+  (fsm/fsm-inc
+   [[:npc-sleeping
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :alert -> :npc-idle]
+    [:npc-idle
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :movement-direction -> :npc-moving]
+    [:npc-moving
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :timer-finished -> :npc-idle]
+    [:active-skill
+     :kill -> :npc-dead
+     :stun -> :stunned
+     :action-done -> :npc-idle]
+    [:stunned
+     :kill -> :npc-dead
+     :effect-wears-off -> :npc-idle]
+    [:npc-dead]]))
+
+(def ^:private player-fsm
+  (fsm/fsm-inc
+   [[:player-idle
+     :kill -> :player-dead
+     :stun -> :stunned
+     :start-action -> :active-skill
+     :pickup-item -> :player-item-on-cursor
+     :movement-input -> :player-moving]
+    [:player-moving
+     :kill -> :player-dead
+     :stun -> :stunned
+     :no-movement-input -> :player-idle]
+    [:active-skill
+     :kill -> :player-dead
+     :stun -> :stunned
+     :action-done -> :player-idle]
+    [:stunned
+     :kill -> :player-dead
+     :effect-wears-off -> :player-idle]
+    [:player-item-on-cursor
+     :kill -> :player-dead
+     :stun -> :stunned
+     :drop-item -> :player-idle
+     :dropped-item -> :player-idle]
+    [:player-dead]]))
+
 (defmethod entity/create! :entity/fsm
   [[k {:keys [fsm initial-state]}] eid c]
   (swap! eid assoc
-         k (fsm/create fsm initial-state)
+         ; fsm throws when initial-state is not part of states, so no need to assert initial-state
+         ; initial state is nil, so associng it. make bug report at reduce-fsm?
+         k (assoc ((case fsm
+                     :fsms/player player-fsm
+                     :fsms/npc npc-fsm) initial-state nil) :state initial-state)
          initial-state (entity/create [initial-state eid] c)))
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
