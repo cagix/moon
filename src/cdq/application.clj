@@ -25,6 +25,7 @@
             cdq.level.modules
             [cdq.property :as property]
             [cdq.math.raycaster :as raycaster]
+            [cdq.math.shapes :refer [circle->outer-rectangle]]
             [cdq.math.vector2 :as v]
             [cdq.rand :refer [rand-int-between]]
             [cdq.schema :as schema]
@@ -39,7 +40,8 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number]]
+            [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number
+                                         pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
             [cdq.widgets.inventory :as widgets.inventory :refer [remove-item
                                                                  set-item
@@ -55,7 +57,9 @@
                                spawn-projectile
                                projectile-size
                                item-place-position
-                               world-item?]]
+                               world-item?
+                               render-z-order
+                               item-place-position]]
             [cdq.world.potential-field :as potential-field]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -1551,21 +1555,280 @@
                                               (camera/position (:camera world-viewport))))
   context)
 
-(def ^:private render-fns
-  '[(cdq.render.draw-on-world-view.before-entities/render)
-    (cdq.render.draw-on-world-view.entities/render-entities
-     {:below {:entity/mouseover? cdq.render.draw-on-world-view.entities/draw-faction-ellipse
-              :player-item-on-cursor cdq.render.draw-on-world-view.entities/draw-world-item-if-exists
-              :stunned cdq.render.draw-on-world-view.entities/draw-stunned-circle}
-      :default {:entity/image cdq.render.draw-on-world-view.entities/draw-image-as-of-body
-                :entity/clickable cdq.render.draw-on-world-view.entities/draw-text-when-mouseover-and-text
-                :entity/line-render cdq.render.draw-on-world-view.entities/draw-line}
-      :above {:npc-sleeping cdq.render.draw-on-world-view.entities/draw-zzzz
-              :entity/string-effect cdq.render.draw-on-world-view.entities/draw-text
-              :entity/temp-modifier cdq.render.draw-on-world-view.entities/draw-filled-circle-grey}
-      :info {:entity/hp cdq.render.draw-on-world-view.entities/draw-hpbar-when-mouseover-and-not-full
-             :active-skill cdq.render.draw-on-world-view.entities/draw-skill-image-and-active-effect}})
-    (cdq.render.draw-on-world-view.after-entities/render)])
+(def ^:private ^:dbg-flag tile-grid? false)
+(def ^:private ^:dbg-flag potential-field-colors? false)
+(def ^:private ^:dbg-flag cell-entities? false)
+(def ^:private ^:dbg-flag cell-occupied? false)
+
+(defn- draw-before-entities! [{:keys [cdq.graphics/world-viewport
+                                      cdq.graphics/shape-drawer
+                                      cdq.context/factions-iterations
+                                      cdq.context/grid]}]
+  (let [sd shape-drawer
+        cam (:camera world-viewport)
+        [left-x right-x bottom-y top-y] (camera/frustum cam)]
+
+    (when tile-grid?
+      (shape-drawer/grid sd
+               (int left-x) (int bottom-y)
+               (inc (int (:width  world-viewport)))
+               (+ 2 (int (:height world-viewport)))
+               1 1 [1 1 1 0.8]))
+
+    (doseq [[x y] (camera/visible-tiles cam)
+            :let [cell (grid [x y])]
+            :when cell
+            :let [cell* @cell]]
+
+      (when (and cell-entities? (seq (:entities cell*)))
+        (shape-drawer/filled-rectangle sd x y 1 1 [1 0 0 0.6]))
+
+      (when (and cell-occupied? (seq (:occupied cell*)))
+        (shape-drawer/filled-rectangle sd x y 1 1 [0 0 1 0.6]))
+
+      (when potential-field-colors?
+        (let [faction :good
+              {:keys [distance]} (faction cell*)]
+          (when distance
+            (let [ratio (/ distance (factions-iterations faction))]
+              (shape-drawer/filled-rectangle sd x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
+
+(defn- geom-test [{:keys [cdq.graphics/shape-drawer
+                          cdq.context/grid
+                          cdq.graphics/world-viewport]}]
+  (let [position (graphics/world-mouse-position world-viewport)
+        radius 0.8
+        circle {:position position :radius radius}]
+    (shape-drawer/circle shape-drawer position radius [1 0 0 0.5])
+    (doseq [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
+      (shape-drawer/rectangle shape-drawer x y 1 1 [1 0 0 0.5]))
+    (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
+      (shape-drawer/rectangle shape-drawer x y width height [0 0 1 1]))))
+
+(def ^:private ^:dbg-flag highlight-blocked-cell? true)
+
+(defn- highlight-mouseover-tile [{:keys [cdq.graphics/shape-drawer
+                                         cdq.context/grid
+                                         cdq.graphics/world-viewport]}]
+  (when highlight-blocked-cell?
+    (let [[x y] (mapv int (graphics/world-mouse-position world-viewport))
+          cell (grid [x y])]
+      (when (and cell (#{:air :none} (:movement @cell)))
+        (shape-drawer/rectangle shape-drawer x y 1 1
+                      (case (:movement @cell)
+                        :air  [1 1 0 0.5]
+                        :none [1 0 0 0.5]))))))
+
+(defn- draw-after-entities! [c]
+  #_(geom-test c)
+  (highlight-mouseover-tile c))
+
+(defn- draw-skill-image [{:keys [cdq.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]
+  (let [[width height] (:world-unit-dimensions image)
+        _ (assert (= width height))
+        radius (/ (float width) 2)
+        y (+ (float y) (float (:half-height entity)) (float 0.15))
+        center [x (+ y radius)]]
+    (shape-drawer/filled-circle shape-drawer center radius [1 1 1 0.125])
+    (shape-drawer/sector shape-drawer
+               center
+               radius
+               90 ; start-angle
+               (* (float action-counter-ratio) 360) ; degree
+               [1 1 1 0.5])
+    (graphics/draw-image c image [(- (float x) radius) y])))
+
+(def ^:private hpbar-colors
+  {:green     [0 0.8 0]
+   :darkgreen [0 0.5 0]
+   :yellow    [0.5 0.5 0]
+   :red       [0.5 0 0]})
+
+(defn- hpbar-color [ratio]
+  (let [ratio (float ratio)
+        color (cond
+               (> ratio 0.75) :green
+               (> ratio 0.5)  :darkgreen
+               (> ratio 0.25) :yellow
+               :else          :red)]
+    (color hpbar-colors)))
+
+(def ^:private borders-px 1)
+
+(defn- draw-hpbar [{:keys [cdq.graphics/shape-drawer] :as c}
+                   {:keys [position width half-width half-height]}
+                   ratio]
+  (let [[x y] position]
+    (let [x (- x half-width)
+          y (+ y half-height)
+          height (graphics/pixels->world-units c 5)
+          border (graphics/pixels->world-units c borders-px)]
+      (shape-drawer/filled-rectangle shape-drawer x y width height :black)
+      (shape-drawer/filled-rectangle shape-drawer
+                           (+ x border)
+                           (+ y border)
+                           (- (* width ratio) (* 2 border))
+                           (- height          (* 2 border))
+                           (hpbar-color ratio)))))
+
+(defn- draw-text-when-mouseover-and-text
+  [{:keys [text]}
+   {:keys [entity/mouseover?] :as entity}
+   c]
+  (when (and mouseover? text)
+    (let [[x y] (:position entity)]
+      (text/draw c
+                 {:text text
+                  :x x
+                  :y (+ y (:half-height entity))
+                  :up? true}))))
+
+(defn- draw-hpbar-when-mouseover-and-not-full [_ entity c]
+  (let [ratio (val-max/ratio (entity/hitpoints entity))]
+    (when (or (< ratio 1) (:entity/mouseover? entity))
+      (draw-hpbar c entity ratio))))
+
+(defn- draw-image-as-of-body [image entity c]
+  (graphics/draw-rotated-centered c
+                                  image
+                                  (or (:rotation-angle entity) 0)
+                                  (:position entity)))
+
+(defn- draw-line
+  [{:keys [thick? end color]}
+   entity
+   {:keys [cdq.graphics/shape-drawer]}]
+  (let [position (:position entity)]
+    (if thick?
+      (shape-drawer/with-line-width shape-drawer 4
+        #(shape-drawer/line shape-drawer position end color))
+      (shape-drawer/line shape-drawer position end color))))
+
+(def ^:private outline-alpha 0.4)
+(def ^:private enemy-color    [1 0 0 outline-alpha])
+(def ^:private friendly-color [0 1 0 outline-alpha])
+(def ^:private neutral-color  [1 1 1 outline-alpha])
+
+(defn- draw-faction-ellipse
+  [_
+   {:keys [entity/faction] :as entity}
+   {:keys [cdq.context/player-eid
+           cdq.graphics/shape-drawer] :as c}]
+  (let [player @player-eid]
+    (shape-drawer/with-line-width shape-drawer 3
+      #(shape-drawer/ellipse shape-drawer
+                   (:position entity)
+                   (:half-width entity)
+                   (:half-height entity)
+                   (cond (= faction (entity/enemy player))
+                         enemy-color
+                         (= faction (:entity/faction player))
+                         friendly-color
+                         :else
+                         neutral-color)))))
+
+(defn- render-active-effect [context effect-ctx effect]
+  (run! #(effect/render % effect-ctx context) effect))
+
+(defn- draw-skill-image-and-active-effect
+  [{:keys [skill effect-ctx counter]}
+   entity
+   {:keys [cdq.context/elapsed-time] :as c}]
+  (let [{:keys [entity/image skill/effects]} skill]
+    (draw-skill-image c
+                      image
+                      entity
+                      (:position entity)
+                      (timer/ratio counter elapsed-time))
+    (render-active-effect c
+                          effect-ctx
+                          ; !! FIXME !!
+                          ; (update-effect-ctx c effect-ctx)
+                          ; - render does not need to update .. update inside active-skill
+                          effects)))
+
+(defn- draw-zzzz [_ entity c]
+  (let [[x y] (:position entity)]
+    (text/draw c
+               {:text "zzz"
+                :x x
+                :y (+ y (:half-height entity))
+                :up? true})))
+
+(defn- draw-world-item-if-exists [{:keys [item]} entity c]
+  (when (world-item? c)
+    (graphics/draw-centered c
+                            (:entity/image item)
+                            (item-place-position c entity))))
+
+(defn- draw-stunned-circle [_ entity {:keys [cdq.graphics/shape-drawer]}]
+  (shape-drawer/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
+
+(defn- draw-text [{:keys [text]} entity c]
+  (let [[x y] (:position entity)]
+    (text/draw c
+               {:text text
+                :x x
+                :y (+ y
+                      (:half-height entity)
+                      (graphics/pixels->world-units c 5))
+                :scale 2
+                :up? true})))
+
+; TODO draw opacity as of counter ratio?
+(defn- draw-filled-circle-grey [_ entity {:keys [cdq.graphics/shape-drawer]}]
+  (shape-drawer/filled-circle shape-drawer (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
+
+(def ^:private ^:dbg-flag show-body-bounds false)
+
+(defn- draw-body-rect [sd entity color]
+  (let [[x y] (:left-bottom entity)]
+    (shape-drawer/rectangle sd x y (:width entity) (:height entity) color)))
+
+(def ^:private entity-render-fns
+  {:below {:entity/mouseover? draw-faction-ellipse
+           :player-item-on-cursor draw-world-item-if-exists
+           :stunned draw-stunned-circle}
+   :default {:entity/image draw-image-as-of-body
+             :entity/clickable draw-text-when-mouseover-and-text
+             :entity/line-render draw-line}
+   :above {:npc-sleeping draw-zzzz
+           :entity/string-effect draw-text
+           :entity/temp-modifier draw-filled-circle-grey}
+   :info {:entity/hp draw-hpbar-when-mouseover-and-not-full
+          :active-skill draw-skill-image-and-active-effect}})
+
+(defn- render-entities!
+  [{:keys [cdq.context/player-eid
+           cdq.graphics/shape-drawer
+           cdq.game/active-entities] :as c}]
+  (let [entities (map deref active-entities)
+        player @player-eid
+        {:keys [below
+                default
+                above
+                info]} entity-render-fns
+        ]
+    (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
+                                              first
+                                              render-z-order)
+            system [below
+                    default
+                    above
+                    info]
+            entity entities
+            :when (or (= z-order :z-order/effect)
+                      (los/exists? c player entity))]
+      (try
+       (when show-body-bounds
+         (draw-body-rect shape-drawer entity (if (:collides? entity) :white :gray)))
+       (doseq [[k v] entity
+               :let [f (get system k)]
+               :when f]
+         (f v entity c))
+       (catch Throwable t
+         (draw-body-rect shape-drawer entity :red)
+         (pretty-pst t))))))
 
 (defn- draw-with! [{:keys [^Batch cdq.graphics/batch
                            cdq.graphics/shape-drawer]
@@ -1593,8 +1856,10 @@
 (defn- draw-on-world-view! [context]
   (draw-on-world-view* context
                        (fn [context]
-                         (doseq [f render-fns]
-                           (utils/req-resolve-call f context))))
+                         (doseq [render! [draw-before-entities!
+                                          render-entities!
+                                          draw-after-entities!]]
+                           (render! context))))
   context)
 
 (defn- stage-draw! [{:keys [^StageWithState cdq.context/stage]
