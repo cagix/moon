@@ -2,8 +2,7 @@
  :title "Cyber Dungeon Quest"
  :windowed-mode {:width 1440 :height 900}
  :foreground-fps 60
- :requires [cdq.impl.effects
-            cdq.impl.handle-input
+ :requires [cdq.impl.handle-input
             cdq.impl.info
             cdq.impl.level
             cdq.impl.level.uf-caves
