@@ -14,9 +14,6 @@
 (defn add-actor [stage actor]
   (Stage/.addActor stage actor))
 
-(defn root [stage]
-  (Stage/.getRoot stage))
-
 (defn get-inventory [stage]
   (get (:windows stage) :inventory-window))
 

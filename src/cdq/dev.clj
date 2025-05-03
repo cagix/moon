@@ -148,7 +148,7 @@
     (add-elements! node v))
 
   (when (instance? Stage v)
-    (add-map-nodes! node (children->str-map (children (stage/root v))) level))
+    (add-map-nodes! node (children->str-map (children (Stage/.getRoot v))) level))
 
   (when (instance? Group v)
     (add-map-nodes! node (children->str-map (children v)) level))
