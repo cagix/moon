@@ -2,8 +2,7 @@
  :title "Cyber Dungeon Quest"
  :windowed-mode {:width 1440 :height 900}
  :foreground-fps 60
- :requires [cdq.impl.level
-            cdq.impl.level.uf-caves
+ :requires [cdq.impl.level.uf-caves
             cdq.impl.level.modules]
  :assets {:folder "resources/"
           :asset-type->extensions {:sound   #{"wav"}

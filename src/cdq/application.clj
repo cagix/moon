@@ -76,6 +76,10 @@
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
+(defmethod level/generate-level* :world.generator/tiled-map [world c]
+  {:tiled-map (tiled/load-map (:world/tiled-map world))
+   :start-position [32 71]})
+
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
     (.setName actor "action-bar/button-group")
