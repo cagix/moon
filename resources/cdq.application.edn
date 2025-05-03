@@ -8,8 +8,7 @@
             cdq.impl.level
             cdq.impl.level.uf-caves
             cdq.impl.level.modules]
- :create-pipeline [cdq.impl.context/create!
-                   cdq.impl.entity/add-components
+ :create-pipeline [cdq.impl.entity/add-components
                    cdq.world.context/reset]
  :render-pipeline [cdq.render/assoc-active-entities
                    cdq.render/set-camera-on-player!
