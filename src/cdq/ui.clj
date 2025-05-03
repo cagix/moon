@@ -5,7 +5,7 @@
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window)
+           (com.badlogic.gdx.scenes.scene2d.ui Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)
