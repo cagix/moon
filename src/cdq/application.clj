@@ -12,10 +12,11 @@
             [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.shape-drawer :as shape-drawer]
-            cdq.graphics.sprite
+            [cdq.graphics.sprite :as sprite]
+            [cdq.graphics.text :as text]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.grid :as grid]
-            [cdq.info :refer [info-segment]]
+            [cdq.info :as info :refer [info-segment]]
             [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.line-of-sight :as los]
@@ -25,7 +26,6 @@
             [cdq.math.vector2 :as v]
             [cdq.rand :refer [rand-int-between]]
             [cdq.schema :as schema]
-            [cdq.stage]
             [cdq.skill :as skill]
             cdq.time
             [cdq.timer :as timer]
@@ -33,11 +33,12 @@
             [cdq.tx :as tx]
             cdq.potential-fields
             [cdq.operation :as op]
-            [cdq.ui :as ui]
+            [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number]]
+            [cdq.val-max :as val-max]
             [cdq.widgets.inventory :as widgets.inventory :refer [remove-item
                                                                  set-item
                                                                  stack-item]]
@@ -74,6 +75,112 @@
            (com.kotcrab.vis.ui.widget Tooltip)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
+
+(defn- action-bar-button-group []
+  (let [actor (ui-actor {})]
+    (.setName actor "action-bar/button-group")
+    (actor/set-user-object actor (ui/button-group {:max-check-count 1
+                                                   :min-check-count 0}))
+    actor))
+
+(defn- action-bar* []
+  (let [group (ui/horizontal-group {:pad 2 :space 2})]
+    (.setUserObject group :ui/action-bar)
+    (group/add-actor! group (action-bar-button-group))
+    group))
+
+(defn- action-bar []
+  (ui/table {:rows [[{:actor (action-bar*)
+                      :expand? true
+                      :bottom? true}]]
+             :id :action-bar-table
+             :cell-defaults {:pad 2}
+             :fill-parent? true}))
+
+(def ^:private disallowed-keys [:entity/skills
+                                #_:entity/fsm
+                                :entity/faction
+                                :active-skill])
+
+(defn- ->label-text [{:keys [cdq.context/mouseover-eid] :as c}]
+  ; items then have 2x pretty-name
+  #_(.setText (.getTitleLabel window)
+              (if-let [eid mouseover-eid]
+                (info/text c [:property/pretty-name (:property/pretty-name @eid)])
+                "Entity Info"))
+  (when-let [eid mouseover-eid]
+    (info/text c ; don't use select-keys as it loses Entity record type
+               (apply dissoc @eid disallowed-keys))))
+
+(defn- entity-info-window [position]
+  (let [label (ui/label "")
+        window (ui/window {:title "Info"
+                           :id :entity-info-window
+                           :visible? false
+                           :position position
+                           :rows [[{:actor label :expand? true}]]})]
+    ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
+    ; => fix size somehow.
+    (group/add-actor! window (ui-actor {:act (fn [context]
+                                               (.setText label (str (->label-text context)))
+                                               (.pack window))}))
+    window))
+
+(defn- render-infostr-on-bar [c infostr x y h]
+  (text/draw c
+             {:text infostr
+              :x (+ x 75)
+              :y (+ y 2)
+              :up? true}))
+
+(defn- hp-mana-bar [context [x y-mana]]
+  (let [rahmen      (sprite/create context "images/rahmen.png")
+        hpcontent   (sprite/create context "images/hp.png")
+        manacontent (sprite/create context "images/mana.png")
+        [rahmenw rahmenh] (:pixel-dimensions rahmen)
+        y-hp (+ y-mana rahmenh)
+        render-hpmana-bar (fn [c x y contentimage minmaxval name]
+                            (graphics/draw-image c rahmen [x y])
+                            (graphics/draw-image c
+                                                 (sprite/sub contentimage
+                                                             [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]
+                                                             c)
+                                                 [x y])
+                            (render-infostr-on-bar c (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid] :as c}]
+                       (let [player-entity @player-eid
+                             x (- x (/ rahmenw 2))]
+                         (render-hpmana-bar c x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
+                         (render-hpmana-bar c x y-mana manacontent (entity/mana        player-entity) "MP")))})))
+
+(defn- draw-player-message [{:keys [cdq.graphics/ui-viewport
+                                    cdq.context/player-message] :as c}]
+  (when-let [text (:text @player-message)]
+    (text/draw c
+               {:x (/ (:width ui-viewport) 2)
+                :y (+ (/ (:height ui-viewport) 2) 200)
+                :text text
+                :scale 2.5
+                :up? true})))
+
+(defn- check-remove-message [{:keys [cdq.context/player-message]}]
+  (when (:text @player-message)
+    (swap! player-message update :counter + (.getDeltaTime Gdx/graphics))
+    (when (>= (:counter @player-message)
+              (:duration-seconds @player-message))
+      (swap! player-message dissoc :counter :text))))
+
+(defn- player-message-actor []
+  (ui-actor {:draw draw-player-message
+             :act  check-remove-message}))
+
+(defn- player-state-actor []
+  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
+                                          %)}))
+
+(defn- window-group [context actors]
+  (ui/group {:id :windows
+             :actors actors}))
 
 (Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))
 
@@ -808,9 +915,22 @@
   (spawn-creature context
                   (player-entity-props (:start-position level))))
 
+(defn- create-stage-actors [{:keys [cdq.graphics/ui-viewport] :as context}]
+  [((requiring-resolve 'cdq.impl.ui.dev-menu/create) context)
+   (action-bar)
+   (hp-mana-bar context [(/ (:width ui-viewport) 2)
+                         80 ; action-bar-icon-size
+                         ])
+   (window-group context [(entity-info-window [(:width ui-viewport) 0])
+                          (cdq.widgets.inventory/create context [(:width  ui-viewport)
+                                                                 (:height ui-viewport)])])
+   (player-state-actor)
+   (player-message-actor)])
+
 (defn- reset-stage! [{:keys [cdq.context/stage] :as context}]
   (Stage/.clear stage)
-  (run! #(stage/add-actor stage %) (cdq.stage/actors context)))
+  (run! #(stage/add-actor stage %)
+        (create-stage-actors context)))
 
 (defn reset-game! [context {:keys [world-id] :as _config}]
   (reset-stage! context)
