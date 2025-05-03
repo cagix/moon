@@ -188,7 +188,7 @@
 
 (defn scroll-pane [actor]
   (let [scroll-pane (VisScrollPane. actor)]
-    (Actor/.setUserObject scroll-pane :scroll-pane)
+    (.setUserObject scroll-pane :scroll-pane)
     (.setFlickScroll scroll-pane false)
     (.setFadeScrollBars scroll-pane false)
     scroll-pane))
@@ -200,20 +200,20 @@
   "Returns true if the actor or its parent is a button."
   [^Actor actor]
   (or (button-class? actor)
-      (and (actor/parent actor)
-           (button-class? (actor/parent actor)))))
+      (and (Actor/.getParent actor)
+           (button-class? (Actor/.getParent actor)))))
 
 (defn window-title-bar?
   "Returns true if the actor is a window title bar."
   [^Actor actor]
   (when (instance? Label actor)
-    (when-let [p (actor/parent actor)]
-      (when-let [p (actor/parent p)]
+    (when-let [p (Actor/.getParent actor)]
+      (when-let [p (Actor/.getParent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
 
 (defn find-ancestor-window ^Window [^Actor actor]
-  (if-let [p (actor/parent actor)]
+  (if-let [p (Actor/.getParent actor)]
     (if (instance? Window p)
       p
       (find-ancestor-window p))

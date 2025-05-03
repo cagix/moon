@@ -1,19 +1,6 @@
 (ns cdq.ui.actor
-  (:refer-clojure :exclude [remove name])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.math Vector2)))
-
-(def x Actor/.getX)
-(def y Actor/.getY)
-
-(def parent Actor/.getParent)
-
-(def set-id Actor/.setUserObject)
-(def set-user-object Actor/.setUserObject)
-
-(def user-object Actor/.getUserObject)
-(def set-visible Actor/.setVisible)
-(def visible?    Actor/.isVisible)
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
@@ -27,25 +14,10 @@
   (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
     (.hit actor (.x v) (.y v) true)))
 
-(defn set-touchable [^Actor a touchable]
-  (.setTouchable a (case touchable
-                     :children-only Touchable/childrenOnly
-                     :disabled      Touchable/disabled
-                     :enabled       Touchable/enabled)))
-
 (defn set-opts [^Actor a {:keys [id name visible? touchable center-position position] :as opts}]
   (when id                          (.setUserObject        a id))
   (when name                        (.setName      a name))
   (when (contains? opts :visible?)  (.setVisible   a (boolean visible?)))
-  (when touchable                   (set-touchable a touchable))
   (when-let [[x y] center-position] (set-center    a x y))
   (when-let [[x y] position]        (.setPosition  a x y))
   a)
-
-(defn remove
-  "Removes this actor from its parent, if it has a parent."
-  [actor]
-  (Actor/.remove actor))
-
-(defn name [actor]
-  (Actor/.getName actor))

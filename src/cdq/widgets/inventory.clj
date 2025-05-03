@@ -5,7 +5,7 @@
             [cdq.info :as info]
             [cdq.graphics.shape-drawer :as sd]
             cdq.graphics.sprite
-            [cdq.ui.actor :refer [user-object] :as actor]
+            [cdq.ui.actor :as actor]
             [cdq.data.grid2d :as g2d]
             [cdq.ui :refer [texture-region-drawable
                             image-widget
@@ -14,6 +14,7 @@
                             remove-tooltip!]
              :as ui])
   (:import (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
@@ -43,13 +44,14 @@
     (draw [_batch _parent-alpha]
       (let [{:keys [cdq.context/player-eid
                     cdq.graphics/shape-drawer
-                    cdq.graphics/ui-viewport]} (ui/application-state this)]
+                    cdq.graphics/ui-viewport]} (ui/application-state this)
+            ^Actor this this]
         (draw-cell-rect shape-drawer
                         @player-eid
-                        (actor/x this)
-                        (actor/y this)
+                        (.getX this)
+                        (.getY this)
                         (actor/hit this (cdq.graphics/mouse-position ui-viewport))
-                        (user-object (actor/parent this)))))))
+                        (.getUserObject (.getParent this)))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0

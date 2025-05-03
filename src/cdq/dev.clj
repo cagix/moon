@@ -11,7 +11,8 @@
             [cdq.world :as world])
   (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.scenes.scene2d Group Stage)
-           (com.kotcrab.vis.ui.widget VisTree Tree$Node)))
+           (com.badlogic.gdx.scenes.scene2d.ui Tree$Node)
+           (com.kotcrab.vis.ui.widget VisTree)))
 
 (comment
 

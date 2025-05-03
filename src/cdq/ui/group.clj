@@ -1,6 +1,5 @@
 (ns cdq.ui.group
-  (:require [cdq.ui.actor :as actor])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Group)))
 
 (defn children
   "Returns an ordered list of child actors in this group."
@@ -22,8 +21,8 @@
 
 (defn find-actor-with-id [group id]
   (let [actors (children group)
-        ids (keep actor/user-object actors)]
+        ids (keep Actor/.getUserObject actors)]
     (assert (or (empty? ids)
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (actor/user-object %)) actors))))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))

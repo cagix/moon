@@ -74,7 +74,7 @@
            (com.badlogic.gdx.graphics Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.scenes.scene2d Stage)
+           (com.badlogic.gdx.scenes.scene2d Actor Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
@@ -98,8 +98,8 @@
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
     (.setName actor "action-bar/button-group")
-    (actor/set-user-object actor (ui/button-group {:max-check-count 1
-                                                   :min-check-count 0}))
+    (.setUserObject actor (ui/button-group {:max-check-count 1
+                                            :min-check-count 0}))
     actor))
 
 (defn- action-bar* []
@@ -383,7 +383,7 @@
                                         :as c}]
   (let [item (:entity/item @eid)]
     (cond
-     (actor/visible? (stage/get-inventory stage))
+     (Actor/.isVisible (stage/get-inventory stage))
      (do
       (tx/sound c "bfxr_takeit")
       (tx/mark-destroyed eid)
@@ -420,11 +420,11 @@
                                               (tx/sound c "bfxr_denied")
                                               (tx/show-player-msg c "Too far away"))]))
 
-(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} actor]
-  (and (actor/parent actor)
-       (= "inventory-cell" (actor/name (actor/parent actor)))
+(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} ^Actor actor]
+  (and (.getParent actor)
+       (= "inventory-cell" (.getName (.getParent actor)))
        (get-in (:entity/inventory @player-eid)
-               (actor/user-object (actor/parent actor)))))
+               (.getUserObject (.getParent actor)))))
 
 (defn- mouseover-actor->cursor [{:keys [cdq.context/stage] :as c}]
   (let [actor (stage/mouse-on-actor? stage)]
@@ -2046,8 +2046,8 @@
       (actor/toggle-visible! (get (:windows stage) window-id))))
   (when (input/key-just-pressed? :escape)
     (let [windows (group/children (:windows stage))]
-      (when (some actor/visible? windows)
-        (run! #(actor/set-visible % false) windows))))
+      (when (some Actor/.isVisible windows)
+        (run! #(Actor/.setVisible % false) windows))))
   context)
 
 (defrecord Cursors []

@@ -12,6 +12,7 @@
             [cdq.utils :as utils]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 (defn cursor [{:keys [cdq.graphics/cursors]} cursor-key]
@@ -82,7 +83,7 @@
                                :rows [[(ui/label text)]
                                       [(ui/text-button button-text
                                                        (fn []
-                                                         (actor/remove (::modal stage))
+                                                         (Actor/.remove (::modal stage))
                                                          (on-click)))]]
                                :id ::modal
                                :modal? true
@@ -94,7 +95,7 @@
                              {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (stage/get-action-bar stage)
         button (ui/image-button image (fn []) {:scale 2})]
-    (actor/set-id button id)
+    (Actor/.setUserObject button id)
     (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (group/add-actor! horizontal-group button)
     (ButtonGroup/.add button-group ^Button button)
@@ -104,7 +105,7 @@
                                 {:keys [property/id]}]
   (let [{:keys [horizontal-group button-group]} (stage/get-action-bar stage)
         button (get horizontal-group id)]
-    (actor/remove button)
+    (Actor/.remove button)
     (ButtonGroup/.remove button-group ^Button button)
     nil))
 
