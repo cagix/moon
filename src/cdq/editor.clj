@@ -22,10 +22,10 @@
             [cdq.assets :as assets]
             [cdq.input :as input]
             [cdq.ui.group :refer [children clear-children add-actor! find-actor]]
-            [cdq.ui.table :as table]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+           (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
 (defn- stage-add! [actor]
@@ -108,11 +108,11 @@
         widget (schema->widget schema props)
         save!   (apply-context-fn window #(update! (->value schema widget)))
         delete! (apply-context-fn window #(delete! (:property/id props)))]
-    (table/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
-                                                 [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
-                                                   :center? true}
-                                                  {:actor (text-button "Delete" delete!)
-                                                   :center? true}]])]])
+    (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
+                                              [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
+                                                :center? true}
+                                               {:actor (text-button "Delete" delete!)
+                                                :center? true}]])]])
     (add-actor! window (ui-actor {:act (fn [_]
                                          (when (input/key-just-pressed? :enter)
                                            (save!)))}))
@@ -171,7 +171,7 @@
                [(text-button sound-name
                              (fn []
                                (clear-children table)
-                               (table/add-rows! table [(columns table sound-name)])
+                               (ui/add-rows! table [(columns table sound-name)])
                                (.remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
                                (let [[k _] (Actor/.getUserObject table)]
@@ -186,9 +186,9 @@
 
 (defmethod schema->widget :s/sound [_ sound-name]
   (let [table (ui/table {:cell-defaults {:pad 5}})]
-    (table/add-rows! table [(if sound-name
-                              (columns table sound-name)
-                              [(text-button "No sound" #(choose-window table))])])
+    (ui/add-rows! table [(if sound-name
+                           (columns table sound-name)
+                           [(text-button "No sound" #(choose-window table))])])
     table))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
@@ -249,7 +249,7 @@
                     (clear-children table)
                     (add-one-to-many-rows table property-type property-ids)
                     (pack-ancestor-window! table))]
-    (table/add-rows!
+    (ui/add-rows!
      table
      [[(text-button "+"
                     (fn []
@@ -261,7 +261,7 @@
                             clicked-id-fn (fn [id]
                                             (.remove window)
                                             (redo-rows (conj property-ids id)))]
-                        (table/add! window (overview-table @state property-type clicked-id-fn))
+                        (.add window ^Actor (overview-table @state property-type clicked-id-fn))
                         (.pack window)
                         (stage-add! window))))]
       (for [property-id property-ids]
@@ -287,7 +287,7 @@
                     (clear-children table)
                     (add-one-to-one-rows table property-type id)
                     (pack-ancestor-window! table))]
-    (table/add-rows!
+    (ui/add-rows!
      table
      [[(when-not property-id
          (text-button "+"
@@ -300,7 +300,7 @@
                               clicked-id-fn (fn [id]
                                               (.remove window)
                                               (redo-rows id))]
-                          (table/add! window (overview-table @state property-type clicked-id-fn))
+                          (.add window ^Actor (overview-table @state property-type clicked-id-fn))
                           (.pack window)
                           (stage-add! window)))))]
       [(when property-id
@@ -328,7 +328,7 @@
 (defn- window->property-value []
  (let [window (get-editor-window)
        scroll-pane-table (find-actor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (table/cells scroll-pane-table)))
+       m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (->value [:s/map] table)))
 
@@ -394,16 +394,16 @@
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
                                    (schema/map-keys schema
                                                     (:cdq/schemas @state))))]
-    (table/add-rows!
+    (ui/add-rows!
      window
      (for [k remaining-ks]
        [(text-button (name k)
                      (fn []
                        (.remove window)
-                       (table/add-rows! map-widget-table [(component-row
-                                                           [k (k->default-value k)]
-                                                           schema
-                                                           map-widget-table)])
+                       (ui/add-rows! map-widget-table [(component-row
+                                                        [k (k->default-value k)]
+                                                        schema
+                                                        map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
     (stage-add! window)))
@@ -438,7 +438,7 @@
                                                 m)))
         colspan component-row-cols
         opt? (schema/optional-keys-left schema m (:cdq/schemas @state))]
-    (table/add-rows!
+    (ui/add-rows!
      table
      (concat [(when opt?
                 [{:actor (text-button "Add component" #(choose-component-window schema table))

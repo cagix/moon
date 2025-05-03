@@ -38,7 +38,6 @@
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
-            [cdq.ui.table :as table]
             [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number
                                          pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
@@ -2405,9 +2404,9 @@
                                                            :close-button? true
                                                            :center? true
                                                            :close-on-escape? true})]
-                                    (table/add! window ((requiring-resolve 'cdq.editor/overview-table) context
-                                                        property-type
-                                                        (requiring-resolve 'cdq.editor/edit-property)))
+                                    (.add window ^Actor ((requiring-resolve 'cdq.editor/overview-table) context
+                                                         property-type
+                                                         (requiring-resolve 'cdq.editor/edit-property)))
                                     (.pack window)
                                     (stage/add-actor (:cdq.context/stage context)
                                                      window)))})}]
