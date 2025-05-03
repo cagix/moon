@@ -6,12 +6,11 @@
             [cdq.info :as info]
             [cdq.timer :as timer]
             [cdq.ui :as ui]
-            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 (defn cursor [{:keys [cdq.graphics/cursors]} cursor-key]
@@ -96,7 +95,7 @@
         button (ui/image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
     (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-    (group/add-actor! horizontal-group button)
+    (Group/.addActor horizontal-group button)
     (ButtonGroup/.add button-group ^Button button)
     nil))
 

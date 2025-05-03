@@ -21,10 +21,9 @@
             [cdq.audio.sound :as sound]
             [cdq.assets :as assets]
             [cdq.input :as input]
-            [cdq.ui.group :refer [children clear-children add-actor! find-actor]]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Group Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
@@ -113,9 +112,9 @@
                                                 :center? true}
                                                {:actor (text-button "Delete" delete!)
                                                 :center? true}]])]])
-    (add-actor! window (ui-actor {:act (fn [_]
-                                         (when (input/key-just-pressed? :enter)
-                                           (save!)))}))
+    (.addActor window (ui-actor {:act (fn [_]
+                                        (when (input/key-just-pressed? :enter)
+                                          (save!)))}))
     (.pack window)
     window))
 
@@ -170,7 +169,7 @@
   (let [rows (for [sound-name (map sound-file->sound-name (all-of-type :sound))]
                [(text-button sound-name
                              (fn []
-                               (clear-children table)
+                               (Group/.clearChildren table)
                                (ui/add-rows! table [(columns table sound-name)])
                                (.remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
@@ -246,7 +245,7 @@
 
 (defn- add-one-to-many-rows [table property-type property-ids]
   (let [redo-rows (fn [property-ids]
-                    (clear-children table)
+                    (Group/.clearChildren table)
                     (add-one-to-many-rows table property-type property-ids)
                     (pack-ancestor-window! table))]
     (ui/add-rows!
@@ -278,13 +277,13 @@
     table))
 
 (defmethod ->value :s/one-to-many [_ widget]
-  (->> (children widget)
+  (->> (Group/.getChildren widget)
        (keep Actor/.getUserObject)
        set))
 
 (defn- add-one-to-one-rows [table property-type property-id]
   (let [redo-rows (fn [id]
-                    (clear-children table)
+                    (Group/.clearChildren table)
                     (add-one-to-one-rows table property-type id)
                     (pack-ancestor-window! table))]
     (ui/add-rows!
@@ -318,7 +317,7 @@
     table))
 
 (defmethod ->value :s/one-to-one [_ widget]
-  (->> (children widget)
+  (->> (Group/.getChildren widget)
        (keep Actor/.getUserObject)
        first))
 
@@ -327,7 +326,7 @@
 
 (defn- window->property-value []
  (let [window (get-editor-window)
-       scroll-pane-table (find-actor (:scroll-pane window) "scroll-pane-table")
+       scroll-pane-table (Group/.findActor (:scroll-pane window) "scroll-pane-table")
        m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (->value [:s/map] table)))
@@ -349,7 +348,7 @@
   (find-first (fn [actor]
                 (and (Actor/.getUserObject actor)
                      (= k ((Actor/.getUserObject actor) 0))))
-              (children table)))
+              (Group/.getChildren table)))
 
 (defn- attribute-label [k schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
@@ -450,7 +449,7 @@
 
 (defmethod ->value :s/map [_ table]
   (into {}
-        (for [widget (filter value-widget? (children table))
+        (for [widget (filter value-widget? (Group/.getChildren table))
               :let [[k _] (Actor/.getUserObject widget)]]
           [k (->value (schema/schema-of (:cdq/schemas @state) k) widget)])))
 
@@ -507,7 +506,7 @@
     (.addListener tabbed-pane
                   (proxy [TabbedPaneAdapter] []
                     (switchedTab [^Tab tab]
-                      (.clearChildren container)
+                      (Group/.clearChildren container)
                       (.fill (.expand (.add container (.getContentTable tab)))))))
     (.fillX (.expandX (.add table (.getTable tabbed-pane))))
     (.row table)

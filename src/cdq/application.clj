@@ -36,7 +36,6 @@
             cdq.potential-fields
             [cdq.operation :as op]
             [cdq.ui :as ui :refer [ui-actor]]
-            [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
             [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number
                                          pretty-pst sort-by-order]]
@@ -72,7 +71,7 @@
            (com.badlogic.gdx.graphics Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.scenes.scene2d Actor Stage)
+           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
@@ -103,7 +102,7 @@
 (defn- action-bar* []
   (let [group (ui/horizontal-group {:pad 2 :space 2})]
     (.setUserObject group :ui/action-bar)
-    (group/add-actor! group (action-bar-button-group))
+    (.addActor group (action-bar-button-group))
     group))
 
 (defn- action-bar []
@@ -138,9 +137,9 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (group/add-actor! window (ui-actor {:act (fn [context]
-                                               (.setText label (str (->label-text context)))
-                                               (.pack window))}))
+    (.addActor window (ui-actor {:act (fn [context]
+                                        (.setText label (str (->label-text context)))
+                                        (.pack window))}))
     window))
 
 (defn- render-infostr-on-bar [c infostr x y h]
@@ -2043,7 +2042,7 @@
             :when (input/key-just-pressed? (get window-hotkeys window-id))]
       (ui/toggle-visible! (get (:windows stage) window-id))))
   (when (input/key-just-pressed? :escape)
-    (let [windows (group/children (:windows stage))]
+    (let [windows (Group/.getChildren (:windows stage))]
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows))))
   context)
@@ -2116,9 +2115,9 @@
   (let [stage (proxy [StageWithState ILookup] [viewport batch]
                 (valAt
                   ([id]
-                   (group/find-actor-with-id (StageWithState/.getRoot this) id))
+                   (ui/find-actor-with-id (StageWithState/.getRoot this) id))
                   ([id not-found]
-                   (or (group/find-actor-with-id (StageWithState/.getRoot this) id)
+                   (or (ui/find-actor-with-id (StageWithState/.getRoot this) id)
                        not-found))))]
     (.setInputProcessor Gdx/input stage)
     stage))

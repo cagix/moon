@@ -5,7 +5,6 @@
             [cdq.tx :as tx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [cdq.ui.group :refer [children]]
             [cdq.ui.stage :as stage]
             [cdq.ui :refer [scroll-pane] :as ui]
             [cdq.world :as world])
@@ -149,17 +148,17 @@
     (add-elements! node v))
 
   (when (instance? Stage v)
-    (add-map-nodes! node (children->str-map (children (Stage/.getRoot v))) level))
+    (add-map-nodes! node (children->str-map (.getChildren (Stage/.getRoot v))) level))
 
   (when (instance? Group v)
-    (add-map-nodes! node (children->str-map (children v)) level))
+    (add-map-nodes! node (children->str-map (Group/.getChildren v)) level))
 
   (when (and (var? v)
              (instance? AssetManager @v))
     (add-map-nodes! node (bean @v) level)))
 
 (comment
- (let [vis-image (first (children (.getRoot (stage-get))))]
+ (let [vis-image (first (.getChildren (.getRoot (stage-get))))]
    (supers (class vis-image))
    (str vis-image)
    )

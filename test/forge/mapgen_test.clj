@@ -8,7 +8,6 @@
             [cdq.ui :refer [ui-actor text-button] :as ui]
             [cdq.input :as input]
             [cdq.tiled :as tiled]
-            [cdq.ui.group :refer [add-actor!]]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx.graphics Color)))
@@ -62,9 +61,9 @@
 (defn- ->info-window [{:keys [cdq.graphics/ui-viewport] :as c}]
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
-    (add-actor! window (ui-actor {:act #(do
-                                         (.setText label (map-infos %))
-                                         (.pack window))}))
+    (.addActor window (ui-actor {:act #(do
+                                        (.setText label (map-infos %))
+                                        (.pack window))}))
     (.setPosition window 0 (:height ui-viewport)) window))
 
 (def ^:private camera-movement-speed 1)

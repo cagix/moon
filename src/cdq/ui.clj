@@ -1,5 +1,4 @@
 (ns cdq.ui
-  (:require [cdq.ui.group :refer [find-actor-with-id add-actor!]])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
@@ -9,6 +8,14 @@
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)
            (cdq StageWithState)))
+
+(defn find-actor-with-id [^Group group id]
+  (let [actors (.getChildren group)
+        ids (keep Actor/.getUserObject actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
@@ -115,7 +122,7 @@
 
 (defn group [{:keys [actors] :as opts}]
   (let [group (proxy-ILookup Group [])]
-    (run! #(add-actor! group %) actors)
+    (run! #(.addActor group %) actors)
     (set-opts group opts)))
 
 (defn horizontal-group ^HorizontalGroup [{:keys [space pad]}]
@@ -126,7 +133,7 @@
 
 (defn vertical-group [actors]
   (let [group (proxy-ILookup VerticalGroup [])]
-    (run! #(add-actor! group %) actors)
+    (run! #(.addActor group %) actors)
     group))
 
 (defn application-state [actor]
