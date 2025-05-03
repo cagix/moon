@@ -40,6 +40,7 @@
             [cdq.ui.actor :as actor]
             [cdq.ui.group :as group]
             [cdq.ui.stage :as stage]
+            [cdq.ui.table :as table]
             [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number
                                          pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
@@ -934,8 +935,10 @@
   (spawn-creature context
                   (player-entity-props (:start-position level))))
 
+(declare dev-menu-config)
+
 (defn- create-stage-actors [{:keys [cdq.graphics/ui-viewport] :as context}]
-  [((requiring-resolve 'cdq.impl.ui.dev-menu/create) context)
+  [((requiring-resolve 'cdq.ui.menu/create) context (dev-menu-config context))
    (action-bar)
    (hp-mana-bar context [(/ (:width ui-viewport) 2)
                          80 ; action-bar-icon-size
@@ -951,7 +954,7 @@
   (run! #(stage/add-actor stage %)
         (create-stage-actors context)))
 
-(defn reset-game! [context {:keys [world-id] :as _config}]
+(defn- reset-game! [context {:keys [world-id] :as _config}]
   (reset-stage! context)
   (let [{:keys [tiled-map start-position] :as level} (level/create context world-id)
         grid (create-grid tiled-map)
@@ -1807,8 +1810,7 @@
         {:keys [below
                 default
                 above
-                info]} entity-render-fns
-        ]
+                info]} entity-render-fns]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
@@ -2316,3 +2318,67 @@
   Is executed after the main-loop, in order not to interfere with it."
   [f]
   (.postRunnable Gdx/app (fn [] (f @state))))
+
+;"Mouseover-Actor: "
+#_(when-let [actor (stage/mouse-on-actor? context)]
+    (str "TRUE - name:" (.getName actor)
+         "id: " (user-object actor)))
+
+(defn- dev-menu-config [{:keys [cdq/db] :as c}]
+  {:menus [{:label "World"
+            :items (for [world (map (fn [id] (db/build db id c))
+                                    [:worlds/vampire
+                                     :worlds/modules
+                                     :worlds/uf-caves])]
+                     {:label (str "Start " (:property/id world))
+                      :on-click (fn [_context]
+                                  ; FIXME SEVERE
+                                  ; passing outdated context!
+                                  ; do not use cdq.application/state in ui contexts -> grep!
+                                  ; (stage .act is called via passing context in the main 'swap!' of the application loop)
+                                  ; (swap! state render)
+                                  ; cdq.render.stage pass .applicationState and return
+                                  ; TODO maybe use 'post-runnable!' ??
+                                  ; or 'swap-state!' ?
+                                  (swap! state reset-game! {:world-id (:property/id world)}))})}
+           {:label "Help"
+            :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
+           {:label "Objects"
+            :items (for [property-type (sort (filter #(= "properties" (namespace %))
+                                                     (keys (:cdq/schemas c))))]
+                     {:label (str/capitalize (name property-type))
+                      :on-click (fn [context]
+                                  (let [window (ui/window {:title "Edit"
+                                                           :modal? true
+                                                           :close-button? true
+                                                           :center? true
+                                                           :close-on-escape? true})]
+                                    (table/add! window ((requiring-resolve 'cdq.editor/overview-table) context
+                                                        property-type
+                                                        (requiring-resolve 'cdq.editor/edit-property)))
+                                    (ui/pack! window)
+                                    (stage/add-actor (:cdq.context/stage context)
+                                                     window)))})}]
+   :update-labels [{:label "Mouseover-entity id"
+                    :update-fn (fn [{:keys [cdq.context/mouseover-eid]}]
+                                 (when-let [entity (and mouseover-eid @mouseover-eid)]
+                                   (:entity/id entity)))
+                    :icon "images/mouseover.png"}
+                   {:label "elapsed-time"
+                    :update-fn (fn [{:keys [cdq.context/elapsed-time]}]
+                                 (str (readable-number elapsed-time) " seconds"))
+                    :icon "images/clock.png"}
+                   {:label "paused?"
+                    :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
+                   {:label "GUI"
+                    :update-fn (comp graphics/mouse-position
+                                     :cdq.graphics/ui-viewport)}
+                   {:label "World"
+                    :update-fn #(mapv int (graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
+                   {:label "Zoom"
+                    :update-fn #(camera/zoom (:camera (:cdq.graphics/world-viewport %)))
+                    :icon "images/zoom.png"}
+                   {:label "FPS"
+                    :update-fn (fn [_]
+                                 (.getFramesPerSecond Gdx/graphics))
+                    :icon "images/fps.png"}]})
