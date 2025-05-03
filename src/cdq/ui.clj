@@ -11,9 +11,6 @@
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)
            (cdq StageWithState)))
 
-(defn pack! [this]
-  (WidgetGroup/.pack this))
-
 (defn horizontal-separator-cell [colspan]
   {:actor (Separator. "default")
    :pad-top 2

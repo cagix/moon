@@ -116,7 +116,7 @@
     (add-actor! window (ui-actor {:act (fn [_]
                                          (when (input/key-just-pressed? :enter)
                                            (save!)))}))
-    (ui/pack! window)
+    (.pack window)
     window))
 
 (defmethod schema->widget :default [_ v]
@@ -262,7 +262,7 @@
                                             (actor/remove window)
                                             (redo-rows (conj property-ids id)))]
                         (table/add! window (overview-table @state property-type clicked-id-fn))
-                        (ui/pack! window)
+                        (.pack window)
                         (stage-add! window))))]
       (for [property-id property-ids]
         (let [property (db/build (get-db) property-id @state)
@@ -301,7 +301,7 @@
                                               (actor/remove window)
                                               (redo-rows id))]
                           (table/add! window (overview-table @state property-type clicked-id-fn))
-                          (ui/pack! window)
+                          (.pack window)
                           (stage-add! window)))))]
       [(when property-id
          (let [property (db/build (get-db) property-id @state)
@@ -405,7 +405,7 @@
                                                            schema
                                                            map-widget-table)])
                        (rebuild-editor-window)))]))
-    (ui/pack! window)
+    (.pack window)
     (stage-add! window)))
 
 (defn- interpose-f [f coll]

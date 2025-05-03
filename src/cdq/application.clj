@@ -2409,7 +2409,7 @@
                                     (table/add! window ((requiring-resolve 'cdq.editor/overview-table) context
                                                         property-type
                                                         (requiring-resolve 'cdq.editor/edit-property)))
-                                    (ui/pack! window)
+                                    (.pack window)
                                     (stage/add-actor (:cdq.context/stage context)
                                                      window)))})}]
    :update-labels [{:label "Mouseover-entity id"
