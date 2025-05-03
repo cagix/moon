@@ -5,8 +5,8 @@
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener ClickListener)
+           (com.badlogic.gdx.scenes.scene2d.ui Widget Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window)
+           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)
            (cdq StageWithState)))
@@ -279,24 +279,3 @@
          ; act should pass the context ! that's where its really coming from ...
          ; so thread it through with stage ... libgdx
          (println "actor act called but not part of stage."))))))
-
-(defn ui-widget [draw!]
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (draw! this (application-state this)))))
-
-(defn set-drawable! [^Image image drawable]
-  (.setDrawable image drawable))
-
-(defn t-node ^Tree$Node [actor]
-  (proxy [Tree$Node] [actor]))
-
-(defn window? [actor]
-  (instance? VisWindow actor))
-
-(defn click-listener
-  "Detects mouse over, mouse or finger touch presses, and clicks on an actor. A touch must go down over the actor and is considered pressed as long as it is over the actor or within the tap square. This behavior makes it easier to press buttons on a touch interface when the initial touch happens near the edge of the actor. Double clicks can be detected using getTapCount(). Any touch (not just the first) will trigger this listener. While pressed, other touch downs are ignored."
-  [clicked-fn]
-  (proxy [ClickListener] []
-    (clicked [event x y]
-      (clicked-fn {:event event :x x :y y}))))

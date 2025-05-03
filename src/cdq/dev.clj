@@ -7,11 +7,11 @@
             [clojure.pprint :refer [pprint]]
             [cdq.ui.group :refer [children]]
             [cdq.ui.stage :as stage]
-            [cdq.ui :refer [t-node scroll-pane] :as ui]
+            [cdq.ui :refer [scroll-pane] :as ui]
             [cdq.world :as world])
   (:import (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.scenes.scene2d Group Stage)
-           (com.kotcrab.vis.ui.widget VisTree)))
+           (com.kotcrab.vis.ui.widget VisTree Tree$Node)))
 
 (comment
 
@@ -92,6 +92,9 @@
                                     cdq.graphics/world-viewport]}]
   @(grid (mapv int (cdq.graphics/world-mouse-position world-viewport))))
 
+(defn- tree-node ^Tree$Node [actor]
+  (proxy [Tree$Node] [actor]))
+
 (defn- class->label-str [class]
   (case class
     clojure.lang.LazySeq ""
@@ -125,7 +128,7 @@
 
 (defn- add-elements! [node elements]
   (doseq [element elements]
-    (.add node (t-node (ui/label (str (->v-str element)))))))
+    (.add node (tree-node (ui/label (str (->v-str element)))))))
 
 #_(let [ns-sym (first (first (into {} (ns-value-vars))))]
   ;(map ->v-str vars)
@@ -165,14 +168,14 @@
 ; * handle clicks
 ; * add nodes then ...
 
-(defn- add-map-nodes! [parent-node m level]
+(defn- add-map-nodes! [parent-tree-node m level]
   ;(println "Level: " level " - go deeper? " (< level 4))
   (when (< level 2)
     (doseq [[k v] (into (sorted-map) m)]
       ;(println "add-map-nodes! k " k)
       (try
-       (let [node (t-node (ui/label (labelstr k v)))]
-         (.add parent-node node) ; no t-node-add!: tree cannot be casted to tree-node ... , Tree itself different .add
+       (let [node (tree-node (ui/label (labelstr k v)))]
+         (.add parent-tree-node node) ; no tree-node-add!: tree cannot be casted to tree-node ... , Tree itself different .add
 
          #_(when (instance? clojure.lang.Atom v) ; StackOverFLow
            (add-nodes node level @v))
@@ -183,7 +186,7 @@
 
        (catch Throwable t
          (throw (ex-info "" {:k k :v v} t))
-         #_(.add parent-node (t-node (ui/label (str "[RED] "k " - " t))))
+         #_(.add parent-tree-node (tree-node (ui/label (str "[RED] "k " - " t))))
 
          )))))
 

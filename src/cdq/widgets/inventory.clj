@@ -7,16 +7,15 @@
             cdq.graphics.sprite
             [cdq.ui.actor :refer [user-object] :as actor]
             [cdq.data.grid2d :as g2d]
-            [cdq.ui :refer [ui-widget
-                            texture-region-drawable
+            [cdq.ui :refer [texture-region-drawable
                             image-widget
                             ui-stack
-                            set-drawable!
                             add-tooltip!
                             remove-tooltip!]
              :as ui])
   (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable)))
+           (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
+           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -40,16 +39,17 @@
 ; is not layouted automatically to cell , use 0/0 ??
 ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
 (defn- draw-rect-actor []
-  (ui-widget
-   (fn [this {:keys [cdq.context/player-eid
-                     cdq.graphics/shape-drawer
-                     cdq.graphics/ui-viewport]}]
-     (draw-cell-rect shape-drawer
-                     @player-eid
-                     (actor/x this)
-                     (actor/y this)
-                     (actor/hit this (cdq.graphics/mouse-position ui-viewport))
-                     (user-object (actor/parent this))))))
+  (proxy [Widget] []
+    (draw [_batch _parent-alpha]
+      (let [{:keys [cdq.context/player-eid
+                    cdq.graphics/shape-drawer
+                    cdq.graphics/ui-viewport]} (ui/application-state this)]
+        (draw-cell-rect shape-drawer
+                        @player-eid
+                        (actor/x this)
+                        (actor/y this)
+                        (actor/hit this (cdq.graphics/mouse-position ui-viewport))
+                        (user-object (actor/parent this)))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -90,12 +90,12 @@
                          image-widget])]
     (.setName stack "inventory-cell")
     (.setUserObject stack cell)
-    (.addListener stack (ui/click-listener
-                         (fn [_click-context]
-                           (let [{:keys [cdq.context/player-eid] :as context} (ui/application-state stack)]
-                             (entity/clicked-inventory-cell (entity/state-obj @player-eid)
-                                                            cell
-                                                            context)))))
+    (.addListener stack (proxy [ClickListener] []
+                          (clicked [_event _x _y]
+                            (let [{:keys [cdq.context/player-eid] :as context} (ui/application-state stack)]
+                              (entity/clicked-inventory-cell (entity/state-obj @player-eid)
+                                                             cell
+                                                             context)))))
     stack))
 
 (defn- inventory-table [c]
@@ -138,13 +138,13 @@
     (BaseDrawable/.setMinSize drawable
                               (float cell-size)
                               (float cell-size))
-    (set-drawable! image-widget drawable)
+    (Image/.setDrawable image-widget drawable)
     (add-tooltip! cell-widget #(info/text % item))))
 
 (defn- remove-item-from-widget [c cell]
   (let [cell-widget (inventory-cell-widget c cell)
         image-widget (get cell-widget :image)]
-    (set-drawable! image-widget (slot->background c (cell 0)))
+    (Image/.setDrawable image-widget (slot->background c (cell 0)))
     (remove-tooltip! cell-widget)))
 
 (defn set-item [c eid cell item]
