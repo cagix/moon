@@ -22,7 +22,8 @@
          ^:private ^BitmapFont default-font
          ^:private world-unit-scale
          world-viewport
-         ^:private get-tiled-map-renderer)
+         ^:private get-tiled-map-renderer
+         ^:private ^:dynamic *unit-scale*)
 
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -129,10 +130,10 @@
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
 
-(defn- unit-dimensions [image unit-scale]
-  (if (= unit-scale 1)
-    (:pixel-dimensions image)
-    (:world-unit-dimensions image)))
+(defn- unit-dimensions [image]
+  (if (bound? #'*unit-scale*)
+    (:world-unit-dimensions image)
+    (:pixel-dimensions image)))
 
 (defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
   (if color (.setColor batch color))
@@ -150,19 +151,17 @@
   (if color (.setColor batch Color/WHITE)))
 
 (defn draw-image
-  [{:keys [cdq.context/unit-scale]}
-   {:keys [texture-region color] :as image} position]
+  [{:keys [texture-region color] :as image} position]
   (draw-texture-region batch
                        texture-region
                        position
-                       (unit-dimensions image unit-scale)
+                       (unit-dimensions image)
                        0 ; rotation
                        color))
 
 (defn draw-rotated-centered
-  [{:keys [cdq.context/unit-scale]}
-   {:keys [texture-region color] :as image} rotation [x y]]
-  (let [[w h] (unit-dimensions image unit-scale)]
+  [{:keys [texture-region color] :as image} rotation [x y]]
+  (let [[w h] (unit-dimensions image)]
     (draw-texture-region batch
                          texture-region
                          [(- (float x) (/ (float w) 2))
@@ -171,8 +170,8 @@
                          rotation
                          color)))
 
-(defn draw-centered [c image position]
-  (draw-rotated-centered c image 0 position))
+(defn draw-centered [image position]
+  (draw-rotated-centered image 0 position))
 
 (defn set-camera-position! [position]
   (camera/set-position! (:camera world-viewport) position))
@@ -188,14 +187,12 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{:keys [cdq.context/unit-scale]}
-   {:keys [font x y text h-align up? scale]}]
-  {:pre [unit-scale]}
+  [{:keys [font x y text h-align up? scale]}]
   (let [^BitmapFont font (or font default-font)
         data (.getData font)
         old-scale (float (.scaleX data))
         new-scale (float (* old-scale
-                            (float unit-scale)
+                            (float (if (bound? #'*unit-scale*) *unit-scale* 1))
                             (float (or scale 1))))
         target-width (float 0)
         wrap? false]
@@ -303,15 +300,14 @@
             :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
       (line shape-drawer [leftx liney] [rightx liney] color))))
 
-(defn draw-on-world-view! [context draw-fns]
+(defn draw-on-world-view! [f]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
   (.begin batch)
   (with-line-width world-unit-scale
     (fn []
-      (let [context (assoc context :cdq.context/unit-scale world-unit-scale)]
-        (doseq [f draw-fns]
-          (f context)))))
+      (binding [*unit-scale* world-unit-scale]
+        (f))))
   (.end batch))
 
 (defn set-cursor! [cursor-key]

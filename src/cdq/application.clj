@@ -134,9 +134,8 @@
                                         (.pack window))}))
     window))
 
-(defn- render-infostr-on-bar [c infostr x y h]
-  (graphics/draw-text c
-                      {:text infostr
+(defn- render-infostr-on-bar [infostr x y h]
+  (graphics/draw-text {:text infostr
                        :x (+ x 75)
                        :y (+ y 2)
                        :up? true}))
@@ -147,23 +146,21 @@
         manacontent (graphics/->sprite "images/mana.png")
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [c x y contentimage minmaxval name]
-                            (graphics/draw-image c rahmen [x y])
-                            (graphics/draw-image c
-                                                 (graphics/sub-sprite contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+        render-hpmana-bar (fn [x y contentimage minmaxval name]
+                            (graphics/draw-image rahmen [x y])
+                            (graphics/draw-image (graphics/sub-sprite contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
-                            (render-infostr-on-bar c (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid] :as c}]
+                            (render-infostr-on-bar (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid]}]
                        (let [player-entity @player-eid
                              x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar c x y-hp   hpcontent   (entity/hitpoints   player-entity) "HP")
-                         (render-hpmana-bar c x y-mana manacontent (entity/mana        player-entity) "MP")))})))
+                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                         (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
 (defn- draw-player-message [{:keys [cdq.graphics/ui-viewport
-                                    cdq.context/player-message] :as c}]
+                                    cdq.context/player-message]}]
   (when-let [text (:text @player-message)]
-    (graphics/draw-text c
-                        {:x (/ (:width ui-viewport) 2)
+    (graphics/draw-text {:x (/ (:width ui-viewport) 2)
                          :y (+ (/ (:height ui-viewport) 2) 200)
                          :text text
                          :scale 2.5
@@ -1170,8 +1167,7 @@
 (defmethod entity/draw-gui-view :player-item-on-cursor
   [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]
   (when (not (world-item? c))
-    (graphics/draw-centered c
-                            (:entity/image (:entity/item-on-cursor @eid))
+    (graphics/draw-centered (:entity/image (:entity/item-on-cursor @eid))
                             (graphics/mouse-position ui-viewport))))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
@@ -1636,7 +1632,7 @@
   #_(geom-test c)
   (highlight-mouseover-tile c))
 
-(defn- draw-skill-image [c image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
@@ -1644,11 +1640,11 @@
         center [x (+ y radius)]]
     (graphics/filled-circle center radius [1 1 1 0.125])
     (graphics/sector center
-                         radius
-                         90 ; start-angle
-                         (* (float action-counter-ratio) 360) ; degree
-                         [1 1 1 0.5])
-    (graphics/draw-image c image [(- (float x) radius) y])))
+                     radius
+                     90 ; start-angle
+                     (* (float action-counter-ratio) 360) ; degree
+                     [1 1 1 0.5])
+    (graphics/draw-image image [(- (float x) radius) y])))
 
 (def ^:private hpbar-colors
   {:green     [0 0.8 0]
@@ -1683,11 +1679,10 @@
 (defn- draw-text-when-mouseover-and-text
   [{:keys [text]}
    {:keys [entity/mouseover?] :as entity}
-   c]
+   _context]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
-      (graphics/draw-text c
-                          {:text text
+      (graphics/draw-text {:text text
                            :x x
                            :y (+ y (:half-height entity))
                            :up? true}))))
@@ -1697,9 +1692,8 @@
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))
 
-(defn- draw-image-as-of-body [image entity c]
-  (graphics/draw-rotated-centered c
-                                  image
+(defn- draw-image-as-of-body [image entity _context]
+  (graphics/draw-rotated-centered image
                                   (or (:rotation-angle entity) 0)
                                   (:position entity)))
 
@@ -1741,8 +1735,7 @@
    entity
    {:keys [cdq.context/elapsed-time] :as c}]
   (let [{:keys [entity/image skill/effects]} skill]
-    (draw-skill-image c
-                      image
+    (draw-skill-image image
                       entity
                       (:position entity)
                       (timer/ratio counter elapsed-time))
@@ -1753,27 +1746,24 @@
                           ; - render does not need to update .. update inside active-skill
                           effects)))
 
-(defn- draw-zzzz [_ entity c]
+(defn- draw-zzzz [_ entity _context]
   (let [[x y] (:position entity)]
-    (graphics/draw-text c
-                        {:text "zzz"
+    (graphics/draw-text {:text "zzz"
                          :x x
                          :y (+ y (:half-height entity))
                          :up? true})))
 
 (defn- draw-world-item-if-exists [{:keys [item]} entity c]
   (when (world-item? c)
-    (graphics/draw-centered c
-                            (:entity/image item)
+    (graphics/draw-centered (:entity/image item)
                             (item-place-position c entity))))
 
 (defn- draw-stunned-circle [_ entity _context]
   (graphics/circle (:position entity) 0.5 [1 1 1 0.6]))
 
-(defn- draw-text [{:keys [text]} entity c]
+(defn- draw-text [{:keys [text]} entity _context]
   (let [[x y] (:position entity)]
-    (graphics/draw-text c
-                        {:text text
+    (graphics/draw-text {:text text
                          :x x
                          :y (+ y
                                (:half-height entity)
@@ -1835,15 +1825,16 @@
          (pretty-pst t))))))
 
 (defn- draw-on-world-view! [context]
-  (graphics/draw-on-world-view! context
-                                [draw-before-entities!
-                                 render-entities!
-                                 draw-after-entities!])
+  (graphics/draw-on-world-view! (fn []
+                                  (doseq [f [draw-before-entities!
+                                             render-entities!
+                                             draw-after-entities!]]
+                                    (f context))))
   context)
 
 (defn- stage-draw! [{:keys [^StageWithState cdq.context/stage]
                      :as context}]
-  (set! (.applicationState stage) (assoc context :cdq.context/unit-scale 1))
+  (set! (.applicationState stage) context)
   (Stage/.draw stage)
   context)
 
