@@ -2047,14 +2047,6 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn- white-pixel-texture []
-  (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
-                 (.drawPixel 0 0))
-        texture (Texture. pixmap)]
-    (.dispose pixmap)
-    texture))
-
 (defn- create-stage! [config batch viewport]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
@@ -2238,7 +2230,12 @@
 
 (defn- create-initial-context! [config]
   (let [batch (SpriteBatch.)
-        shape-drawer-texture (white-pixel-texture)
+        shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                            (.setColor Color/WHITE)
+                                            (.drawPixel 0 0))
+                                   texture (Texture. pixmap)]
+                               (.dispose pixmap)
+                               texture)
         world-unit-scale (float (/ (:world-unit-scale config)))
         ui-viewport (fit-viewport (:width  (:ui-viewport config))
                                   (:height (:ui-viewport config))
