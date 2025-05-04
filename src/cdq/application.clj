@@ -67,9 +67,7 @@
            (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.graphics Color Colors OrthographicCamera)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
@@ -1992,30 +1990,6 @@
         (run! #(Actor/.setVisible % false) windows))))
   context)
 
-(defn- font-params [{:keys [size]}]
-  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
-    (set! (.size params) size)
-    ; .color and this:
-    ;(set! (.borderWidth parameter) 1)
-    ;(set! (.borderColor parameter) red)
-    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
-    (set! (.magFilter params) Texture$TextureFilter/Linear)
-    params))
-
-(defn- generate-font [file-handle params]
-  (let [generator (FreeTypeFontGenerator. file-handle)
-        font (.generateFont generator (font-params params))]
-    (.dispose generator)
-    font))
-
-(defn- load-font [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
-                                        {:size (* size quality-scaling)})]
-    (.setScale (.getData font) (float (/ quality-scaling)))
-    (set! (.markupEnabled (.getData font)) true)
-    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
-    font))
-
 (defn- create-stage! [batch viewport]
   (let [stage (proxy [StageWithState ILookup] [viewport batch]
                 (valAt
@@ -2179,8 +2153,7 @@
                                   (:height (:ui-viewport config))
                                   (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
-    {:cdq.graphics/default-font (load-font (:default-font config))
-     :cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
+    {:cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
                                                  (OrthogonalTiledMapRenderer. tiled-map
                                                                               (float world-unit-scale)
                                                                               @#'graphics/batch)))

@@ -18,10 +18,10 @@
                       :cursors/sandclock             ["sandclock"    [16 16]]
                       :cursors/skill-not-usable      ["x007"         [0   0]]
                       :cursors/use-skill             ["pointer004"   [0   0]]
-                      :cursors/walking               ["walking"      [16 16]]}}
- :default-font {:file "fonts/exocet/films.EXL_____.ttf"
-                :size 16
-                :quality-scaling 2}
+                      :cursors/walking               ["walking"      [16 16]]}
+            :default-font {:file "fonts/exocet/films.EXL_____.ttf"
+                           :size 16
+                           :quality-scaling 2}}
  :ui-viewport {:width 1440 :height 900}
  :world-unit-scale 48
  :world-viewport {:width 1440 :height 900}

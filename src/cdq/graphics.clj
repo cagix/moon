@@ -4,8 +4,9 @@
             [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture)
+           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport Viewport)
@@ -14,9 +15,34 @@
 (declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
          ^:private ^ShapeDrawer shape-drawer
-         ^:private cursors)
+         ^:private cursors
+         ^:private ^BitmapFont default-font)
 
-(defn create! [{:keys [cursors]}]
+(defn- font-params [{:keys [size]}]
+  (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
+    (set! (.size params) size)
+    ; .color and this:
+    ;(set! (.borderWidth parameter) 1)
+    ;(set! (.borderColor parameter) red)
+    (set! (.minFilter params) Texture$TextureFilter/Linear) ; because scaling to world-units
+    (set! (.magFilter params) Texture$TextureFilter/Linear)
+    params))
+
+(defn- generate-font [file-handle params]
+  (let [generator (FreeTypeFontGenerator. file-handle)
+        font (.generateFont generator (font-params params))]
+    (.dispose generator)
+    font))
+
+(defn- load-font [{:keys [file size quality-scaling]}]
+  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
+                                        {:size (* size quality-scaling)})]
+    (.setScale (.getData font) (float (/ quality-scaling)))
+    (set! (.markupEnabled (.getData font)) true)
+    (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
+    font))
+
+(defn create! [{:keys [cursors default-font]}]
   (.bindRoot #'batch (SpriteBatch.))
   (.bindRoot #'shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                                    (.setColor Color/WHITE)
@@ -31,12 +57,14 @@
                                 cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                             (.dispose pixmap)
                             cursor))
-                        cursors)))
+                        cursors))
+  (.bindRoot #'default-font (load-font default-font)))
 
 (defn dispose! []
   (.dispose batch)
   (.dispose shape-drawer-texture)
-  (run! Disposable/.dispose (vals cursors)))
+  (run! Disposable/.dispose (vals cursors))
+  (.dispose default-font))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
@@ -129,8 +157,7 @@
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
-  [{:keys [cdq.context/unit-scale
-           cdq.graphics/default-font]}
+  [{:keys [cdq.context/unit-scale]}
    {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
   (let [^BitmapFont font (or font default-font)
@@ -151,8 +178,6 @@
            (interop/k->align (or h-align :center))
            wrap?)
     (.setScale data old-scale)))
-
-
 
 (defn- sd-set-color! [color]
   (.setColor shape-drawer (interop/->color color)))
