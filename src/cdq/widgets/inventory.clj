@@ -65,13 +65,12 @@
 (defn- slot->sprite-idx [slot]
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
-(defn- slot->sprite [c slot]
-  (sprite/from-sheet (sprite/sheet c "images/items.png" 48 48)
-                     (slot->sprite-idx slot)
-                     c))
+(defn- slot->sprite [slot]
+  (sprite/from-sheet (sprite/sheet "images/items.png" 48 48)
+                     (slot->sprite-idx slot)))
 
-(defn- slot->background [c slot]
-  (let [drawable (-> (slot->sprite c slot)
+(defn- slot->background [slot]
+  (let [drawable (-> (slot->sprite slot)
                      :texture-region
                      texture-region-drawable)]
     (BaseDrawable/.setMinSize drawable
@@ -80,9 +79,9 @@
     (TextureRegionDrawable/.tint drawable
                                  (Color. (float 1) (float 1) (float 1) (float 0.4)))))
 
-(defn- ->cell [c slot & {:keys [position]}]
+(defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
-        image-widget (image-widget (slot->background c slot)
+        image-widget (image-widget (slot->background slot)
                                    {:id :image})
         stack (ui-stack [(draw-rect-actor)
                          image-widget])]
@@ -96,34 +95,34 @@
                                                              context)))))
     stack))
 
-(defn- inventory-table [c]
+(defn- inventory-table []
   (ui/table {:id ::table
              :rows (concat [[nil nil
-                             (->cell c :inventory.slot/helm)
-                             (->cell c :inventory.slot/necklace)]
+                             (->cell :inventory.slot/helm)
+                             (->cell :inventory.slot/necklace)]
                             [nil
-                             (->cell c :inventory.slot/weapon)
-                             (->cell c :inventory.slot/chest)
-                             (->cell c :inventory.slot/cloak)
-                             (->cell c :inventory.slot/shield)]
+                             (->cell :inventory.slot/weapon)
+                             (->cell :inventory.slot/chest)
+                             (->cell :inventory.slot/cloak)
+                             (->cell :inventory.slot/shield)]
                             [nil nil
-                             (->cell c :inventory.slot/leg)]
+                             (->cell :inventory.slot/leg)]
                             [nil
-                             (->cell c :inventory.slot/glove)
-                             (->cell c :inventory.slot/rings :position [0 0])
-                             (->cell c :inventory.slot/rings :position [1 0])
-                             (->cell c :inventory.slot/boot)]]
+                             (->cell :inventory.slot/glove)
+                             (->cell :inventory.slot/rings :position [0 0])
+                             (->cell :inventory.slot/rings :position [1 0])
+                             (->cell :inventory.slot/boot)]]
                            (for [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
-                               (->cell c :inventory.slot/bag :position [x y]))))}))
+                               (->cell :inventory.slot/bag :position [x y]))))}))
 
-(defn create [context position]
+(defn create [position]
   (ui/window {:title "Inventory"
               :id :inventory-window
               :visible? false
               :pack? true
               :position position
-              :rows [[{:actor (inventory-table context)
+              :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
 (defn- inventory-cell-widget [{:keys [cdq.context/stage]} cell]
@@ -142,7 +141,7 @@
 (defn- remove-item-from-widget [c cell]
   (let [cell-widget (inventory-cell-widget c cell)
         image-widget (get cell-widget :image)]
-    (Image/.setDrawable image-widget (slot->background c (cell 0)))
+    (Image/.setDrawable image-widget (slot->background (cell 0)))
     (remove-tooltip! cell-widget)))
 
 (defn set-item [c eid cell item]

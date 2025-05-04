@@ -142,18 +142,16 @@
                        :y (+ y 2)
                        :up? true}))
 
-(defn- hp-mana-bar [context [x y-mana]]
-  (let [rahmen      (sprite/create context "images/rahmen.png")
-        hpcontent   (sprite/create context "images/hp.png")
-        manacontent (sprite/create context "images/mana.png")
+(defn- hp-mana-bar [[x y-mana]]
+  (let [rahmen      (sprite/create "images/rahmen.png")
+        hpcontent   (sprite/create "images/hp.png")
+        manacontent (sprite/create "images/mana.png")
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [c x y contentimage minmaxval name]
                             (graphics/draw-image c rahmen [x y])
                             (graphics/draw-image c
-                                                 (sprite/sub contentimage
-                                                             [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh]
-                                                             c)
+                                                 (sprite/sub contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
                             (render-infostr-on-bar c (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn [{:keys [cdq.context/player-eid] :as c}]
@@ -186,10 +184,6 @@
 (defn- player-state-actor []
   (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
                                           %)}))
-
-(defn- window-group [context actors]
-  (ui/group {:id :windows
-             :actors actors}))
 
 (Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))
 
@@ -924,14 +918,15 @@
 (declare dev-menu-config)
 
 (defn- create-stage-actors [{:keys [cdq.graphics/ui-viewport] :as context}]
-  [((requiring-resolve 'cdq.ui.menu/create) context (dev-menu-config context))
+  [((requiring-resolve 'cdq.ui.menu/create) (dev-menu-config context))
    (action-bar)
-   (hp-mana-bar context [(/ (:width ui-viewport) 2)
-                         80 ; action-bar-icon-size
-                         ])
-   (window-group context [(entity-info-window [(:width ui-viewport) 0])
-                          (cdq.widgets.inventory/create context [(:width  ui-viewport)
-                                                                 (:height ui-viewport)])])
+   (hp-mana-bar [(/ (:width ui-viewport) 2)
+                 80 ; action-bar-icon-size
+                 ])
+   (ui/group {:id :windows
+              :actors [(entity-info-window [(:width ui-viewport) 0])
+                       (cdq.widgets.inventory/create [(:width  ui-viewport)
+                                                      (:height ui-viewport)])]})
    (player-state-actor)
    (player-message-actor)])
 
@@ -2001,21 +1996,20 @@
 (defmethod schema/edn->value :s/sound [_ sound-name _context]
   (assets/sound sound-name))
 
-(defn- edn->sprite [c {:keys [file sub-image-bounds]}]
+(defn- edn->sprite [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (sprite/from-sheet (sprite/sheet c file tilew tileh)
+      (sprite/from-sheet (sprite/sheet file tilew tileh)
                          [(int (/ sprite-x tilew))
-                          (int (/ sprite-y tileh))]
-                         c))
-    (sprite/create c file)))
+                          (int (/ sprite-y tileh))]))
+    (sprite/create file)))
 
-(defmethod schema/edn->value :s/image [_ edn c]
-  (edn->sprite c edn))
+(defmethod schema/edn->value :s/image [_ edn _context]
+  (edn->sprite edn))
 
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} c]
-  (animation/create (map #(edn->sprite c %) frames)
+(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} _context]
+  (animation/create (map #(edn->sprite %) frames)
                     :frame-duration frame-duration
                     :looping? looping?))
 

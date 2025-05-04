@@ -11,26 +11,26 @@
     (Label/.setText label (str (text-fn context)))))
 
 (defn- add-upd-label!
-  ([c table text-fn icon]
-   (let [icon (ui/image->widget (sprite/create c icon) {})
+  ([table text-fn icon]
+   (let [icon (ui/image->widget (sprite/create icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (Group/.addActor table (ui-actor {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table sub-table)))))
-  ([c table text-fn]
+  ([table text-fn]
    (let [label (ui/label "")]
      (Group/.addActor table (ui-actor {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table label))))))
 
-(defn- add-update-labels! [c menu-bar update-labels]
+(defn- add-update-labels! [menu-bar update-labels]
   (let [table (MenuBar/.getTable menu-bar)]
     (doseq [{:keys [label update-fn icon]} update-labels]
       (let [update-fn #(str label ": " (update-fn %))]
         (if icon
-          (add-upd-label! c table update-fn icon)
-          (add-upd-label! c table update-fn))))))
+          (add-upd-label! table update-fn icon)
+          (add-upd-label! table update-fn))))))
 
-(defn- add-menu! [c menu-bar {:keys [label items]}]
+(defn- add-menu! [menu-bar {:keys [label items]}]
   (let [app-menu (Menu. label)]
     (doseq [{:keys [label on-click]} items]
       (PopupMenu/.addItem app-menu (doto (MenuItem. label)
@@ -39,10 +39,10 @@
                                                                          (fn [])))))))
     (MenuBar/.addMenu menu-bar app-menu)))
 
-(defn create [context {:keys [menus update-labels]}]
+(defn create [{:keys [menus update-labels]}]
   (ui/table {:rows [[{:actor (let [menu-bar (MenuBar.)]
-                               (run! #(add-menu! context menu-bar %) menus)
-                               (add-update-labels! context menu-bar update-labels)
+                               (run! #(add-menu! menu-bar %) menus)
+                               (add-update-labels! menu-bar update-labels)
                                (MenuBar/.getTable menu-bar))
                       :expand-x? true
                       :fill-x? true

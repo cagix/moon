@@ -33,26 +33,24 @@
       (assoc-dimensions world-unit-scale 1) ; = scale 1
       map->Sprite))
 
-(defn sub [sprite [x y w h] _context]
+(defn sub [sprite [x y w h]]
   (create* graphics/world-unit-scale
            (TextureRegion. ^TextureRegion (:texture-region sprite) (int x) (int y) (int w) (int h))))
 
-(defn sheet [_context path tilew tileh]
+(defn sheet [path tilew tileh]
   {:image (create* graphics/world-unit-scale
                    (TextureRegion. ^Texture (assets/get path)))
    :tilew tilew
    :tileh tileh})
 
 (defn from-sheet [{:keys [image tilew tileh]}
-                  [x y]
-                  context]
+                  [x y]]
   (sub image
        [(* x tilew)
         (* y tileh)
         tilew
-        tileh]
-       context))
+        tileh]))
 
-(defn create [_context path]
+(defn create [path]
   (create* graphics/world-unit-scale
            (TextureRegion. ^Texture (assets/get path))))
