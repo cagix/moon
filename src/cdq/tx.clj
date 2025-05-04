@@ -47,8 +47,8 @@
   (run! #(effect/handle % effect-ctx context)
         (effect/filter-applicable? effect-ctx effect)))
 
-(defn sound [{:keys [cdq/assets]} sound-name]
-  (sound/play (assets/sound assets sound-name)))
+(defn sound [sound-name]
+  (sound/play (assets/sound sound-name)))
 
 ; we cannot just set/unset movement direction
 ; because it is handled by the state enter/exit for npc/player movement state ...

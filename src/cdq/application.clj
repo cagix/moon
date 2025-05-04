@@ -84,7 +84,7 @@
 (defmethod level/generate-level* :world.generator/uf-caves [world {:keys [cdq/db] :as c}]
   (cdq.level.uf-caves/create world
                              (db/build-all db :properties/creatures c)
-                             ((:cdq/assets c) "maps/uf_terrain.png")))
+                             (assets/get "maps/uf_terrain.png")))
 
 (defmethod level/generate-level* :world.generator/modules [world {:keys [cdq/db] :as c}]
   (cdq.level.modules/generate-modules world
@@ -380,19 +380,19 @@
     (cond
      (Actor/.isVisible (stage/get-inventory stage))
      (do
-      (tx/sound c "bfxr_takeit")
+      (tx/sound "bfxr_takeit")
       (tx/mark-destroyed eid)
       (tx/event c player-eid :pickup-item item))
 
      (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
      (do
-      (tx/sound c "bfxr_pickup")
+      (tx/sound "bfxr_pickup")
       (tx/mark-destroyed eid)
       (widgets.inventory/pickup-item c player-eid item))
 
      :else
      (do
-      (tx/sound c "bfxr_denied")
+      (tx/sound "bfxr_denied")
       (tx/show-player-msg c "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
@@ -412,7 +412,7 @@
     [(clickable->cursor @clicked-eid false) (fn []
                                               (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
-                                              (tx/sound c "bfxr_denied")
+                                              (tx/sound "bfxr_denied")
                                               (tx/show-player-msg c "Too far away"))]))
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} ^Actor actor]
@@ -471,14 +471,14 @@
             ; invalid-params -> depends on params ...
             [:cursors/skill-not-usable
              (fn []
-               (tx/sound c "bfxr_denied")
+               (tx/sound "bfxr_denied")
                (tx/show-player-msg c (case state
                                        :cooldown "Skill is still on cooldown"
                                        :not-enough-mana "Not enough mana"
                                        :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
-          (tx/sound c "bfxr_denied")
+          (tx/sound "bfxr_denied")
           (tx/show-player-msg c "No selected skill"))]))))
 
 (defmethod entity/manual-tick :player-idle [[_ {:keys [eid]}] c]
@@ -2072,8 +2072,8 @@
           m
           (keys m)))
 
-(defmethod schema/edn->value :s/sound [_ sound-name {:keys [cdq/assets]}]
-  (assets/sound assets sound-name))
+(defmethod schema/edn->value :s/sound [_ sound-name _context]
+  (assets/sound sound-name))
 
 (defn- edn->sprite [c {:keys [file sub-image-bounds]}]
   (if sub-image-bounds
@@ -2203,8 +2203,7 @@
                                   (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
     (shape-drawer/create! batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-    {:cdq/assets (assets/create (:assets config))
-     :cdq.graphics/batch batch
+    {:cdq.graphics/batch batch
      :cdq.graphics/cursors (load-cursors (:cursors config))
      :cdq.graphics/default-font (load-font (:default-font config))
      :cdq.graphics/shape-drawer-texture shape-drawer-texture
@@ -2234,13 +2233,15 @@
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
-                            (ui/load! (:vis-ui config))
+                            (ui/load! (:vis-ui config)) ; TODO we don't do dispose! ....
+                            (assets/create! (:assets config))
                             (reset! state
                                     (let [main-context (assoc (create-initial-context! config)
                                                               :context/entity-components entity-components)]
                                       (reset-game! main-context config))))
 
                           (dispose []
+                            (assets/dispose!)
                             (doseq [[k obj] @state]
                               (if (instance? Disposable obj)
                                 (do

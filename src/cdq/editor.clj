@@ -152,11 +152,8 @@
 (defmethod ->value :enum [_ widget]
   (edn/read-string (ui/selected widget)))
 
-(defn- all-of-type [asset-type]
-  (assets/all-of-type (:cdq/assets @state) asset-type))
-
 (defn- play-button [sound-name]
-  (text-button "play!" #(sound/play (assets/sound (:cdq/assets @state) sound-name))))
+  (text-button "play!" #(sound/play (assets/sound sound-name))))
 
 (declare columns)
 
@@ -166,7 +163,7 @@
       (str/replace ".wav" "")))
 
 (defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name (all-of-type :sound))]
+  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type :sound))]
                [(text-button sound-name
                              (fn []
                                (Group/.clearChildren table)
@@ -456,7 +453,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (all-of-type :texture))]
+  (for [file (sort (assets/all-of-type :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -517,8 +514,8 @@
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn- background-image [{:keys [cdq/assets]} path]
-  (ui/image-widget (assets path)
+(defn- background-image [_context path]
+  (ui/image-widget (assets/get path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))

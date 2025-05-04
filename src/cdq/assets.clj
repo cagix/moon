@@ -1,28 +1,14 @@
 (ns cdq.assets
+  (:refer-clojure :exclude [get])
   (:require [clojure.string :as str])
-  (:import (clojure.lang IFn)
-           (com.badlogic.gdx Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Texture)))
 
-(defn- asset-manager [assets]
-  (let [this (proxy [AssetManager IFn] []
-               (invoke [^String path]
-                 (let [^AssetManager this this]
-                   (if (.contains this path)
-                     (.get this path)
-                     (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))))]
-    (doseq [[file asset-type] assets]
-      (.load this ^String file (case asset-type
-                                 :sound Sound
-                                 :texture Texture)))
-    (.finishLoading this)
-    this))
-
-(defn- recursively-search [folder extensions]
-  (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files folder))
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
          result []]
     (cond (nil? file)
           result
@@ -36,22 +22,36 @@
           :else
           (recur remaining result))))
 
-(defn create [{:keys [folder
-                      asset-type->extensions]}]
-  (asset-manager
-   (for [[asset-type extensions] asset-type->extensions
-         file (map #(str/replace-first % folder "")
-                   (recursively-search folder extensions))]
-     [file asset-type])))
+(declare ^:private ^AssetManager asset-manager)
 
-(defn all-of-type [manager asset-type]
+(defn create! [{:keys [folder asset-type->extensions]}]
+  (let [manager (AssetManager.)]
+    (doseq [[file asset-type] (for [[asset-type extensions] asset-type->extensions
+                                    file (map #(str/replace-first % folder "")
+                                              (recursively-search (.internal Gdx/files folder) extensions))]
+                                [file asset-type])]
+      (.load manager ^String file (case asset-type
+                                    :sound Sound
+                                    :texture Texture)))
+    (.finishLoading manager)
+    (.bindRoot #'asset-manager manager)))
+
+(defn dispose! []
+  (.dispose asset-manager))
+
+(defn all-of-type [asset-type]
   (let [asset-type (case asset-type
                      :sound   Sound
                      :texture Texture)]
-    (filter #(= (AssetManager/.getAssetType manager %) asset-type)
-            (AssetManager/.getAssetNames manager))))
+    (filter #(= (.getAssetType asset-manager %) asset-type)
+            (.getAssetNames asset-manager))))
 
-(defn sound [assets sound-name]
+(defn get [^String path]
+  (if (.contains asset-manager path)
+    (.get asset-manager path)
+    (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
+
+(defn sound [sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
-       assets))
+       get))
