@@ -21,19 +21,13 @@
 (defn- frustum-plane-points [^Frustum frustum]
   (map vector3->clj-vec (.planePoints frustum)))
 
-(defn frustum [camera]
-  (let [frustum-points (take 4 (frustum-plane-points (.frustum ^Camera camera)))
+(defn frustum [^Camera camera]
+  (let [frustum-points (take 4 (frustum-plane-points (.frustum camera)))
         left-x   (apply min (map first  frustum-points))
         right-x  (apply max (map first  frustum-points))
         bottom-y (apply min (map second frustum-points))
         top-y    (apply max (map second frustum-points))]
     [left-x right-x bottom-y top-y]))
-
-(defn viewport-width [^Camera camera]
-  (.viewportWidth camera))
-
-(defn viewport-height [^Camera camera]
-  (.viewportHeight camera))
 
 (defn zoom [^OrthographicCamera camera]
   (.zoom camera))
@@ -59,9 +53,9 @@
 
 (defn calculate-zoom
   "calculates the zoom value for camera to see all the 4 points."
-  [camera & {:keys [left top right bottom]}]
-  (let [viewport-width  (viewport-width  camera)
-        viewport-height (viewport-height camera)
+  [^Camera camera & {:keys [left top right bottom]}]
+  (let [viewport-width  (.viewportWidth  camera)
+        viewport-height (.viewportHeight camera)
         [px py] (position camera)
         px (float px)
         py (float py)
