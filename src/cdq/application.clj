@@ -2194,7 +2194,7 @@
                                      :worlds/modules
                                      :worlds/uf-caves])]
                      {:label (str "Start " (:property/id world))
-                      :on-click (fn [_context]
+                      :on-click (fn []
                                   ; FIXME SEVERE
                                   ; passing outdated context!
                                   ; do not use cdq.application/state in ui contexts -> grep!
@@ -2210,12 +2210,13 @@
             :items (for [property-type (sort (filter #(= "properties" (namespace %))
                                                      (keys (:cdq/schemas c))))]
                      {:label (str/capitalize (name property-type))
-                      :on-click (fn [context]
+                      :on-click (fn []
                                   (let [window (ui/window {:title "Edit"
                                                            :modal? true
                                                            :close-button? true
                                                            :center? true
-                                                           :close-on-escape? true})]
+                                                           :close-on-escape? true})
+                                        context @state]
                                     (.add window ^Actor ((requiring-resolve 'cdq.editor/overview-table) context
                                                          property-type
                                                          (requiring-resolve 'cdq.editor/edit-property)))

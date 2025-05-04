@@ -1,6 +1,5 @@
 (ns cdq.ui.menu
-  (:require cdq.application
-            [cdq.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.ui :as ui :refer [ui-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Group Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
@@ -34,9 +33,7 @@
   (let [app-menu (Menu. label)]
     (doseq [{:keys [label on-click]} items]
       (PopupMenu/.addItem app-menu (doto (MenuItem. label)
-                                     (.addListener (ui/change-listener (if on-click
-                                                                         #(on-click @cdq.application/state) ;=> change-listener get .application-state @ ui but not sure if it has that or go through actor
-                                                                         (fn [])))))))
+                                     (.addListener (ui/change-listener (or on-click (fn [])))))))
     (MenuBar/.addMenu menu-bar app-menu)))
 
 (defn create [{:keys [menus update-labels]}]
