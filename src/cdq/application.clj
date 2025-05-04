@@ -2257,7 +2257,7 @@
      :cdq.graphics/world-unit-scale world-unit-scale
      :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
      :cdq.graphics/ui-viewport ui-viewport
-     :cdq.context/stage (create-stage! (:ui config) batch ui-viewport)
+     :cdq.context/stage (create-stage! (:ui config) batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      :cdq/schemas schemas
      :cdq/db (create-db schemas)}))
 
