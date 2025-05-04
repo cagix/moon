@@ -1535,10 +1535,9 @@
 (defn assoc-active-entities [context]
   (assoc context :cdq.game/active-entities (game/get-active-entities context)))
 
-(defn- set-camera-on-player! [{:keys [cdq.graphics/world-viewport
-                                      cdq.context/player-eid]
+(defn- set-camera-on-player! [{:keys [cdq.context/player-eid]
                                :as context}]
-  (camera/set-position! (:camera world-viewport) (:position @player-eid))
+  (graphics/set-camera-position! context (:position @player-eid))
   context)
 
 (defn- clear-screen! [context]

@@ -1,4 +1,5 @@
 (ns cdq.graphics
+  (:require [cdq.graphics.camera :as camera])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.graphics.g2d Batch)
@@ -80,3 +81,6 @@
 
 (defn draw-centered [c image position]
   (draw-rotated-centered c image 0 position))
+
+(defn set-camera-position! [{:keys [cdq.graphics/world-viewport]} position]
+  (camera/set-position! (:camera world-viewport) position))
