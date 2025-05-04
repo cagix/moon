@@ -39,13 +39,12 @@
 (defn- draw-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (let [{:keys [cdq.context/player-eid
-                    cdq.graphics/ui-viewport]} (ui/application-state this)
+      (let [{:keys [cdq.context/player-eid]} (ui/application-state this)
             ^Actor this this]
         (draw-cell-rect @player-eid
                         (.getX this)
                         (.getY this)
-                        (ui/hit this (cdq.graphics/mouse-position ui-viewport))
+                        (ui/hit this (graphics/mouse-position))
                         (.getUserObject (.getParent this)))))))
 
 (def ^:private slot->y-sprite-idx

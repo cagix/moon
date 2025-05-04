@@ -6,7 +6,7 @@
            (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
 
 (defn mouse-on-actor? [stage]
-  (let [[x y] (graphics/mouse-position (Stage/.getViewport stage))]
+  (let [[x y] (graphics/mouse-position #_(Stage/.getViewport stage))]
     (Stage/.hit stage x y true)))
 
 (defn add-actor [stage actor]

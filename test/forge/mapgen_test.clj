@@ -57,13 +57,13 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window [{:keys [cdq.graphics/ui-viewport] :as c}]
+(defn- ->info-window []
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (.addActor window (ui-actor {:act #(do
                                         (.setText label (map-infos %))
                                         (.pack window))}))
-    (.setPosition window 0 (:height ui-viewport)) window))
+    (.setPosition window 0 (:height graphics/ui-viewport)) window))
 
 (def ^:private camera-movement-speed 1)
 
@@ -167,4 +167,4 @@
 
 #_(defn actors [_]
     [(->generate-map-window c world-id)
-     (->info-window c)])
+     (->info-window)])

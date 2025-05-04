@@ -66,8 +66,7 @@
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [cdq.graphics/ui-viewport
-                          cdq.context/stage]}
+(defn show-modal [{:keys [cdq.context/stage]}
                   {:keys [title text button-text on-click]}]
   (assert (not (::modal stage)))
   (stage/add-actor stage
@@ -79,8 +78,8 @@
                                                          (on-click)))]]
                                :id ::modal
                                :modal? true
-                               :center-position [(/ (:width  ui-viewport) 2)
-                                                 (* (:height ui-viewport) (/ 3 4))]
+                               :center-position [(/ (:width  graphics/ui-viewport) 2)
+                                                 (* (:height graphics/ui-viewport) (/ 3 4))]
                                :pack? true})))
 
 (defn- action-bar-add-skill [{:keys [cdq.context/stage]}

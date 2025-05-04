@@ -23,7 +23,8 @@
          ^:private world-unit-scale
          world-viewport
          ^:private get-tiled-map-renderer
-         ^:private ^:dynamic *unit-scale*)
+         ^:private ^:dynamic *unit-scale*
+         ui-viewport)
 
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -49,7 +50,7 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn fit-viewport [width height camera]
+(defn- fit-viewport [width height camera]
   (proxy [FitViewport clojure.lang.ILookup] [width height camera]
     (valAt
       ([key]
@@ -68,7 +69,8 @@
 (defn create! [{:keys [cursors
                        default-font
                        tile-size
-                       world-viewport]}]
+                       world-viewport
+                       ui-viewport]}]
   (.bindRoot #'batch (SpriteBatch.))
   (.bindRoot #'shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                                    (.setColor Color/WHITE)
@@ -90,7 +92,10 @@
   (.bindRoot #'get-tiled-map-renderer (memoize (fn [tiled-map]
                                                  (OrthogonalTiledMapRenderer. tiled-map
                                                                               (float world-unit-scale)
-                                                                              batch)))))
+                                                                              batch))))
+  (.bindRoot #'ui-viewport (fit-viewport (:width  ui-viewport)
+                                         (:height ui-viewport)
+                                         (OrthographicCamera.))))
 
 (defn dispose! []
   (.dispose batch)
@@ -118,7 +123,7 @@
     (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]
       [(.x v2) (.y v2)])))
 
-(defn mouse-position [ui-viewport]
+(defn mouse-position []
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position ui-viewport)))
 

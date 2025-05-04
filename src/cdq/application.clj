@@ -65,7 +65,7 @@
            (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics Color Colors OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Colors)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport Viewport)
@@ -158,11 +158,10 @@
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
-(defn- draw-player-message [{:keys [cdq.graphics/ui-viewport
-                                    cdq.context/player-message]}]
+(defn- draw-player-message [{:keys [cdq.context/player-message]}]
   (when-let [text (:text @player-message)]
-    (graphics/draw-text {:x (/ (:width ui-viewport) 2)
-                         :y (+ (/ (:height ui-viewport) 2) 200)
+    (graphics/draw-text {:x (/ (:width     graphics/ui-viewport) 2)
+                         :y (+ (/ (:height graphics/ui-viewport) 2) 200)
                          :text text
                          :scale 2.5
                          :up? true})))
@@ -914,16 +913,16 @@
 
 (declare dev-menu-config)
 
-(defn- create-stage-actors [{:keys [cdq.graphics/ui-viewport] :as context}]
+(defn- create-stage-actors [context]
   [((requiring-resolve 'cdq.ui.menu/create) (dev-menu-config context))
    (action-bar)
-   (hp-mana-bar [(/ (:width ui-viewport) 2)
+   (hp-mana-bar [(/ (:width graphics/ui-viewport) 2)
                  80 ; action-bar-icon-size
                  ])
    (ui/group {:id :windows
-              :actors [(entity-info-window [(:width ui-viewport) 0])
-                       (cdq.widgets.inventory/create [(:width  ui-viewport)
-                                                      (:height ui-viewport)])]})
+              :actors [(entity-info-window [(:width graphics/ui-viewport) 0])
+                       (cdq.widgets.inventory/create [(:width  graphics/ui-viewport)
+                                                      (:height graphics/ui-viewport)])]})
    (player-state-actor)
    (player-message-actor)])
 
@@ -1166,10 +1165,10 @@
          initial-state (entity/create [initial-state eid] c)))
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
-  [[_ {:keys [eid]}] {:keys [cdq.graphics/ui-viewport] :as c}]
+  [[_ {:keys [eid]}] c]
   (when (not (world-item? c))
     (graphics/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                            (graphics/mouse-position ui-viewport))))
+                            (graphics/mouse-position))))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -2115,7 +2114,6 @@
               :db/properties-file properties-file})))
 
 ; * stage -> Remove StageWithState & dependencies to 'cdq.application'
-; => TODO what to do with ui-viewport ?
 
 ; * database
 ; => TODO what to do with cdq/schemas ?
@@ -2123,12 +2121,9 @@
 ; * 'world'
 
 (defn- create-initial-context! [config]
-  (let [ui-viewport (graphics/fit-viewport (:width  (:ui-viewport config))
-                                           (:height (:ui-viewport config))
-                                           (OrthographicCamera.))
-        schemas (-> (:schemas config) io/resource slurp edn/read-string)]
-    {:cdq.graphics/ui-viewport ui-viewport
-     :cdq.context/stage (create-stage! @#'graphics/batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
+  (let [schemas (-> (:schemas config) io/resource slurp edn/read-string)]
+    {:cdq.context/stage (create-stage! @#'graphics/batch
+                                       graphics/ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      ; -> tests ?
      :cdq/schemas schemas
      :cdq/db (create-db schemas)}))
@@ -2187,9 +2182,8 @@
                                                     window-controls!]))))
 
                           (resize [width height]
-                            (let [context @state]
-                              (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
-                              (Viewport/.update graphics/world-viewport width height false))))
+                            (Viewport/.update graphics/ui-viewport    width height true)
+                            (Viewport/.update graphics/world-viewport width height false)))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle (:title config))
                           (.setWindowedMode (:width  (:windowed-mode config))
@@ -2256,8 +2250,7 @@
                    {:label "paused?"
                     :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
                    {:label "GUI"
-                    :update-fn (comp graphics/mouse-position
-                                     :cdq.graphics/ui-viewport)}
+                    :update-fn (fn [_] (graphics/mouse-position))}
                    {:label "World"
                     :update-fn (fn [_] (mapv int (graphics/world-mouse-position)))}
                    {:label "Zoom"

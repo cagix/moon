@@ -191,7 +191,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport (:cdq.graphics/ui-viewport @app/state)
+  (let [viewport graphics/ui-viewport
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
