@@ -2099,6 +2099,11 @@
     (map->DB {:db/data (zipmap (map :property/id properties) properties)
               :db/properties-file properties-file})))
 
+; * stage -> Remove StageWithState & dependencies to 'cdq.application'
+; * database
+; * :context/entity-components
+; * 'world'
+
 (defn- create-initial-context! [config]
   (let [ui-viewport (graphics/fit-viewport (:width  (:ui-viewport config))
                                            (:height (:ui-viewport config))
@@ -2106,6 +2111,7 @@
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
     {:cdq.graphics/ui-viewport ui-viewport
      :cdq.context/stage (create-stage! @#'graphics/batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
+     ; -> tests ?
      :cdq/schemas schemas
      :cdq/db (create-db schemas)}))
 
