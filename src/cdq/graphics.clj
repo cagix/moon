@@ -17,8 +17,6 @@
          ^:private ^ShapeDrawer shape-drawer
          ^:private cursors
          ^:private ^BitmapFont default-font
-
-         ; TODO make private -> expose function API
          world-unit-scale
          world-viewport)
 
