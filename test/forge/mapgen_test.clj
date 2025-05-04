@@ -4,7 +4,7 @@
             [cdq.db :as db]
             [cdq.modules :as modules]
             [cdq.graphics.shape-drawer :as sd]
-            [cdq.graphics.camera :as cam]
+            [cdq.graphics.camera :as camera]
             [cdq.ui :refer [ui-actor text-button] :as ui]
             [cdq.input :as input]
             [cdq.tiled :as tiled]
@@ -15,15 +15,15 @@
 (def state (atom nil))
 
 (defn- show-whole-map! [camera tiled-map]
-  (cam/set-position camera
-                    [(/ (tiled/tm-width  tiled-map) 2)
-                     (/ (tiled/tm-height tiled-map) 2)])
-  (cam/set-zoom camera
-                (cam/calculate-zoom camera
-                                    :left [0 0]
-                                    :top [0 (tiled/tm-height tiled-map)]
-                                    :right [(tiled/tm-width tiled-map) 0]
-                                    :bottom [0 0])))
+  (camera/set-position camera
+                       [(/ (tiled/tm-width  tiled-map) 2)
+                        (/ (tiled/tm-height tiled-map) 2)])
+  (camera/set-zoom camera
+                   (camera/calculate-zoom camera
+                                          :left [0 0]
+                                          :top [0 (tiled/tm-height tiled-map)]
+                                          :right [(tiled/tm-width tiled-map) 0]
+                                          :bottom [0 0])))
 
 (defn- current-data [] ; TODO just use vars
   #_(-> (screen/current)
@@ -72,10 +72,10 @@
 ; PLUS symbol shift & = symbol on keyboard not registered
 (defn- camera-controls [input camera]
   (let [apply-position (fn [idx f]
-                         (cam/set-position camera
-                                           (update (cam/position camera)
-                                                   idx
-                                                   #(f % camera-movement-speed))))]
+                         (camera/set-position camera
+                                              (update (camera/position camera)
+                                                      idx
+                                                      #(f % camera-movement-speed))))]
     (if (input/key-pressed? input :left)  (apply-position 0 -))
     (if (input/key-pressed? input :right) (apply-position 0 +))
     (if (input/key-pressed? input :up)    (apply-position 1 +))
@@ -88,7 +88,7 @@
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (cam/visible-tiles (:camera world-viewport))
+        visible-tiles (camera/visible-tiles (:camera world-viewport))
         [x y] (mapv int (cdq.graphics/world-mouse-position world-viewport))
         sd shape-drawer]
     (sd/rectangle sd x y 1 1 :white)
@@ -141,14 +141,14 @@
 (def ^:private zoom-speed 0.025)
 
 (defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
-  (when (input/key-pressed? input :minus)  (cam/inc-zoom camera    zoom-speed))
-  (when (input/key-pressed? input :equals) (cam/inc-zoom camera (- zoom-speed))))
+  (when (input/key-pressed? input :minus)  (camera/inc-zoom camera    zoom-speed))
+  (when (input/key-pressed? input :equals) (camera/inc-zoom camera (- zoom-speed))))
 
 (defn enter [_]
   #_(show-whole-map! c/camera (:tiled-map @current-data)))
 
 (defn exit [_]
-  #_(cam/reset-zoom! c/camera))
+  #_(camera/reset-zoom! c/camera))
 
 (defn render [_]
   #_(cdq.graphics.tiled-map-renderer/draw @state

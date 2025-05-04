@@ -1,5 +1,5 @@
 (ns cdq.line-of-sight
-  (:require [cdq.graphics.camera :as cam]
+  (:require [cdq.graphics.camera :as camera]
             [cdq.math.raycaster :as raycaster]))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -8,7 +8,7 @@
   (let [[x y] (:position entity)
         x (float x)
         y (float y)
-        [cx cy] (cam/position (:camera viewport))
+        [cx cy] (camera/position (:camera viewport))
         px (float cx)
         py (float cy)
         xdist (Math/abs (- x px))
