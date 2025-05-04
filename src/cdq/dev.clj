@@ -26,9 +26,10 @@
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
 
- (clojure.pprint/pprint
-  (ns-value-vars #{"cdq"})
-  )
+ (spit "ns_value_vars.edn"
+       (with-out-str
+        (clojure.pprint/pprint
+         (ns-value-vars #{"cdq"}))))
 
  ; Idea:
  ; * Generate the tree as data-structure first
