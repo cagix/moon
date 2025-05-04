@@ -10,7 +10,6 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
-            [cdq.graphics.sprite :as sprite]
             [cdq.grid :as grid]
             [cdq.info :as info :refer [info-segment]]
             [cdq.input :as input]
@@ -143,15 +142,15 @@
                        :up? true}))
 
 (defn- hp-mana-bar [[x y-mana]]
-  (let [rahmen      (sprite/create "images/rahmen.png")
-        hpcontent   (sprite/create "images/hp.png")
-        manacontent (sprite/create "images/mana.png")
+  (let [rahmen      (graphics/->sprite "images/rahmen.png")
+        hpcontent   (graphics/->sprite "images/hp.png")
+        manacontent (graphics/->sprite "images/mana.png")
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [c x y contentimage minmaxval name]
                             (graphics/draw-image c rahmen [x y])
                             (graphics/draw-image c
-                                                 (sprite/sub contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                                                 (graphics/sub-sprite contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
                             (render-infostr-on-bar c (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn [{:keys [cdq.context/player-eid] :as c}]
@@ -2000,10 +1999,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (sprite/from-sheet (sprite/sheet file tilew tileh)
-                         [(int (/ sprite-x tilew))
-                          (int (/ sprite-y tileh))]))
-    (sprite/create file)))
+      (graphics/from-sheet (graphics/sprite-sheet file tilew tileh)
+                           [(int (/ sprite-x tilew))
+                            (int (/ sprite-y tileh))]))
+    (graphics/->sprite file)))
 
 (defmethod schema/edn->value :s/image [_ edn _context]
   (edn->sprite edn))

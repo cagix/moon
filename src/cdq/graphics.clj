@@ -1,5 +1,6 @@
 (ns cdq.graphics
-  (:require [cdq.gdx.interop :as interop]
+  (:require [cdq.assets :as assets]
+            [cdq.gdx.interop :as interop]
             [cdq.graphics.camera :as camera]
             [cdq.tiled :as tiled]
             [cdq.utils :as utils]
@@ -19,7 +20,7 @@
          ^:private ^ShapeDrawer shape-drawer
          ^:private cursors
          ^:private ^BitmapFont default-font
-         world-unit-scale
+         ^:private world-unit-scale
          world-viewport
          ^:private get-tiled-map-renderer)
 
@@ -341,3 +342,55 @@
                    tiled-map
                    color-setter
                    (:camera world-viewport)))
+
+(defn- scale-dimensions [dimensions scale]
+  (mapv (comp float (partial * scale)) dimensions))
+
+(defn- assoc-dimensions
+  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
+  [{:keys [^TextureRegion texture-region] :as image} scale]
+  {:pre [(or (number? scale)
+             (and (vector? scale)
+                  (number? (scale 0))
+                  (number? (scale 1))))]}
+  (let [pixel-dimensions (if (number? scale)
+                           (scale-dimensions [(.getRegionWidth  texture-region)
+                                              (.getRegionHeight texture-region)]
+                                             scale)
+                           scale)]
+    (assoc image
+           :pixel-dimensions pixel-dimensions
+           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
+
+(defrecord Sprite [texture-region
+                   pixel-dimensions
+                   world-unit-dimensions
+                   color]) ; optional
+
+(defn- sprite* [texture-region]
+  (-> {:texture-region texture-region}
+      (assoc-dimensions 1) ; = scale 1
+      map->Sprite))
+
+(defn sub-sprite [sprite [x y w h]]
+  (sprite* (TextureRegion. ^TextureRegion (:texture-region sprite)
+                           (int x)
+                           (int y)
+                           (int w)
+                           (int h))))
+
+(defn sprite-sheet [path tilew tileh]
+  {:image (sprite* (TextureRegion. ^Texture (assets/get path)))
+   :tilew tilew
+   :tileh tileh})
+
+(defn from-sheet [{:keys [image tilew tileh]}
+                  [x y]]
+  (sub-sprite image
+              [(* x tilew)
+               (* y tileh)
+               tilew
+               tileh]))
+
+(defn ->sprite [path]
+  (sprite* (TextureRegion. ^Texture (assets/get path))))

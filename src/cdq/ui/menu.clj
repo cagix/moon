@@ -1,6 +1,6 @@
 (ns cdq.ui.menu
   (:require cdq.application
-            [cdq.graphics.sprite :as sprite]
+            [cdq.graphics :as graphics]
             [cdq.ui :as ui :refer [ui-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Group Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
@@ -12,7 +12,7 @@
 
 (defn- add-upd-label!
   ([table text-fn icon]
-   (let [icon (ui/image->widget (sprite/create icon) {})
+   (let [icon (ui/image->widget (graphics/->sprite icon) {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (Group/.addActor table (ui-actor {:act (set-label-text-fn label text-fn)}))
