@@ -2083,12 +2083,6 @@
     (.setInputProcessor Gdx/input stage)
     stage))
 
-(defn- tiled-map-renderer [batch world-unit-scale]
-  (memoize (fn [tiled-map]
-             (OrthogonalTiledMapRenderer. tiled-map
-                                          (float world-unit-scale)
-                                          batch))))
-
 (defn- fit-viewport
   "A ScalingViewport that uses Scaling.fit so it keeps the aspect ratio by scaling the world up to fit the screen, adding black bars (letterboxing) for the remaining space."
   [width height camera & {:keys [center-camera?]}]
@@ -2256,7 +2250,10 @@
      :cdq.graphics/default-font (load-font (:default-font config))
      :cdq.graphics/shape-drawer (shape-drawer/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
      :cdq.graphics/shape-drawer-texture shape-drawer-texture
-     :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
+     :cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
+                                                 (OrthogonalTiledMapRenderer. tiled-map
+                                                                              (float world-unit-scale)
+                                                                              batch)))
      :cdq.graphics/world-unit-scale world-unit-scale
      :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
      :cdq.graphics/ui-viewport ui-viewport
