@@ -3,7 +3,7 @@
             [cdq.graphics :as graphics]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
-            cdq.graphics.sprite
+            [cdq.graphics.sprite :as sprite]
             [cdq.data.grid2d :as g2d]
             [cdq.ui :refer [texture-region-drawable
                             image-widget
@@ -66,9 +66,9 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [c slot]
-  (cdq.graphics.sprite/from-sheet (cdq.graphics.sprite/sheet c "images/items.png" 48 48)
-                                  (slot->sprite-idx slot)
-                                  c))
+  (sprite/from-sheet (sprite/sheet c "images/items.png" 48 48)
+                     (slot->sprite-idx slot)
+                     c))
 
 (defn- slot->background [c slot]
   (let [drawable (-> (slot->sprite c slot)
