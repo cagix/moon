@@ -146,9 +146,8 @@
   #_(camera/reset-zoom! c/camera))
 
 (defn render [_]
-  #_(cdq.graphics.tiled-map-renderer/draw @state
-                                              (:tiled-map @current-data)
-                                              (constantly Color/WHITE))
+  #_(graphics/draw-tiled-map (:tiled-map @current-data)
+                             (constantly Color/WHITE))
   #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (input/key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))

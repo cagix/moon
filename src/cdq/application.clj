@@ -11,7 +11,6 @@
             [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.sprite :as sprite]
-            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.grid :as grid]
             [cdq.info :as info :refer [info-segment]]
             [cdq.input :as input]
@@ -62,7 +61,7 @@
             [clojure.math :as math]
             [clojure.pprint :refer [pprint]]
             [reduce-fsm :as fsm])
-  (:import (cdq StageWithState OrthogonalTiledMapRenderer)
+  (:import (cdq StageWithState)
            (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
@@ -1577,8 +1576,7 @@
                                   cdq.context/raycaster
                                   cdq.context/explored-tile-corners]
                            :as context}]
-  (tiled-map-renderer/draw context
-                           tiled-map
+  (graphics/draw-tiled-map tiled-map
                            (tile-color-setter raycaster
                                               explored-tile-corners
                                               (camera/position (:camera graphics/world-viewport))))
@@ -2122,11 +2120,7 @@
                                            (:height (:ui-viewport config))
                                            (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
-    {:cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
-                                                 (OrthogonalTiledMapRenderer. tiled-map
-                                                                              (float @#'graphics/world-unit-scale)
-                                                                              @#'graphics/batch)))
-     :cdq.graphics/ui-viewport ui-viewport
+    {:cdq.graphics/ui-viewport ui-viewport
      :cdq.context/stage (create-stage! @#'graphics/batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      :cdq/schemas schemas
      :cdq/db (create-db schemas)}))
