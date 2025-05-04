@@ -81,35 +81,32 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [cdq.graphics/world-viewport
-                              cdq.graphics/shape-drawer]}]
+(defn- render-on-map [{:keys [cdq.graphics/world-viewport]}]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
         visible-tiles (camera/visible-tiles (:camera world-viewport))
-        [x y] (mapv int (cdq.graphics/world-mouse-position world-viewport))
-        sd shape-drawer]
-    (sd/rectangle sd x y 1 1 :white)
+        [x y] (mapv int (cdq.graphics/world-mouse-position world-viewport))]
+    (sd/rectangle x y 1 1 :white)
     (when start-position
-      (sd/filled-rectangle sd (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
+      (sd/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
     (when show-movement-properties
       (doseq [[x y] visible-tiles
               :let [prop (tiled/movement-property tiled-map [x y])]]
-        (sd/filled-circle sd [(+ x 0.5) (+ y 0.5)] 0.08 :black)
-        (sd/filled-circle sd [(+ x 0.5) (+ y 0.5)]
-                         0.05
-                         (case prop
-                           "all"   :green
-                           "air"   :orange
-                           "none"  :red))))
+        (sd/filled-circle [(+ x 0.5) (+ y 0.5)] 0.08 :black)
+        (sd/filled-circle [(+ x 0.5) (+ y 0.5)]
+                          0.05
+                          (case prop
+                            "all"   :green
+                            "air"   :orange
+                            "none"  :red))))
     (when show-grid-lines
-      (sd/grid sd
-              0
-              0
-              (tiled/tm-width  tiled-map)
-              (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
+      (sd/grid 0
+               0
+               (tiled/tm-width  tiled-map)
+               (tiled/tm-height tiled-map) 1 1 [1 1 1 0.5]))))
 
 (def ^:private world-id :worlds/uf-caves)
 

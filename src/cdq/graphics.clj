@@ -125,14 +125,13 @@
 
 (defn draw-on-world-view! [{:keys [^Batch cdq.graphics/batch
                                    cdq.graphics/world-viewport
-                                   cdq.graphics/shape-drawer
                                    cdq.graphics/world-unit-scale]
                             :as context}
                            draw-fns]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
   (.begin batch)
-  (shape-drawer/with-line-width shape-drawer world-unit-scale
+  (shape-drawer/with-line-width world-unit-scale
     (fn []
       (let [context (assoc context :cdq.context/unit-scale world-unit-scale)]
         (doseq [f draw-fns]

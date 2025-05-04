@@ -633,11 +633,10 @@
                    {:effect/source source :effect/target target}
                    entity-effects))))
 
-  (effect/render [_ {:keys [effect/source]} {:keys [cdq.graphics/shape-drawer] :as c}]
+  (effect/render [_ {:keys [effect/source]} c]
     (let [source* @source]
       (doseq [target* (map deref (los/creatures-in-los-of-player c))]
-        (shape-drawer/line shape-drawer
-                           (:position source*) #_(start-point source* target*)
+        (shape-drawer/line (:position source*) #_(start-point source* target*)
                            (:position target*)
                            [1 0 0 0.5])))))
 
@@ -669,12 +668,11 @@
 
   (effect/render [[_ {:keys [maxrange]}]
                   {:keys [effect/source effect/target]}
-                  {:keys [cdq.graphics/shape-drawer]}]
+                  _context]
     (when target
       (let [source* @source
             target* @target]
-        (shape-drawer/line shape-drawer
-                           (entity/start-point source* target*)
+        (shape-drawer/line (entity/start-point source* target*)
                            (entity/end-point source* target* maxrange)
                            (if (entity/in-range? source* target* maxrange)
                              [1 0 0 0.5]
@@ -1598,19 +1596,16 @@
 (def ^:private ^:dbg-flag cell-occupied? false)
 
 (defn- draw-before-entities! [{:keys [cdq.graphics/world-viewport
-                                      cdq.graphics/shape-drawer
                                       cdq.context/factions-iterations
                                       cdq.context/grid]}]
-  (let [sd shape-drawer
-        cam (:camera world-viewport)
+  (let [cam (:camera world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
     (when tile-grid?
-      (shape-drawer/grid sd
-               (int left-x) (int bottom-y)
-               (inc (int (:width  world-viewport)))
-               (+ 2 (int (:height world-viewport)))
-               1 1 [1 1 1 0.8]))
+      (shape-drawer/grid (int left-x) (int bottom-y)
+                         (inc (int (:width  world-viewport)))
+                         (+ 2 (int (:height world-viewport)))
+                         1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
             :let [cell (grid [x y])]
@@ -1618,61 +1613,58 @@
             :let [cell* @cell]]
 
       (when (and cell-entities? (seq (:entities cell*)))
-        (shape-drawer/filled-rectangle sd x y 1 1 [1 0 0 0.6]))
+        (shape-drawer/filled-rectangle x y 1 1 [1 0 0 0.6]))
 
       (when (and cell-occupied? (seq (:occupied cell*)))
-        (shape-drawer/filled-rectangle sd x y 1 1 [0 0 1 0.6]))
+        (shape-drawer/filled-rectangle x y 1 1 [0 0 1 0.6]))
 
       (when potential-field-colors?
         (let [faction :good
               {:keys [distance]} (faction cell*)]
           (when distance
             (let [ratio (/ distance (factions-iterations faction))]
-              (shape-drawer/filled-rectangle sd x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
+              (shape-drawer/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-(defn- geom-test [{:keys [cdq.graphics/shape-drawer
-                          cdq.context/grid
+(defn- geom-test [{:keys [cdq.context/grid
                           cdq.graphics/world-viewport]}]
   (let [position (graphics/world-mouse-position world-viewport)
         radius 0.8
         circle {:position position :radius radius}]
-    (shape-drawer/circle shape-drawer position radius [1 0 0 0.5])
+    (shape-drawer/circle position radius [1 0 0 0.5])
     (doseq [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
-      (shape-drawer/rectangle shape-drawer x y 1 1 [1 0 0 0.5]))
+      (shape-drawer/rectangle x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
-      (shape-drawer/rectangle shape-drawer x y width height [0 0 1 1]))))
+      (shape-drawer/rectangle x y width height [0 0 1 1]))))
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [{:keys [cdq.graphics/shape-drawer
-                                         cdq.context/grid
+(defn- highlight-mouseover-tile [{:keys [cdq.context/grid
                                          cdq.graphics/world-viewport]}]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (graphics/world-mouse-position world-viewport))
           cell (grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
-        (shape-drawer/rectangle shape-drawer x y 1 1
-                      (case (:movement @cell)
-                        :air  [1 1 0 0.5]
-                        :none [1 0 0 0.5]))))))
+        (shape-drawer/rectangle x y 1 1
+                                (case (:movement @cell)
+                                  :air  [1 1 0 0.5]
+                                  :none [1 0 0 0.5]))))))
 
 (defn- draw-after-entities! [c]
   #_(geom-test c)
   (highlight-mouseover-tile c))
 
-(defn- draw-skill-image [{:keys [cdq.graphics/shape-drawer] :as c} image entity [x y] action-counter-ratio]
+(defn- draw-skill-image [c image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
         _ (assert (= width height))
         radius (/ (float width) 2)
         y (+ (float y) (float (:half-height entity)) (float 0.15))
         center [x (+ y radius)]]
-    (shape-drawer/filled-circle shape-drawer center radius [1 1 1 0.125])
-    (shape-drawer/sector shape-drawer
-               center
-               radius
-               90 ; start-angle
-               (* (float action-counter-ratio) 360) ; degree
-               [1 1 1 0.5])
+    (shape-drawer/filled-circle center radius [1 1 1 0.125])
+    (shape-drawer/sector center
+                         radius
+                         90 ; start-angle
+                         (* (float action-counter-ratio) 360) ; degree
+                         [1 1 1 0.5])
     (graphics/draw-image c image [(- (float x) radius) y])))
 
 (def ^:private hpbar-colors
@@ -1692,7 +1684,7 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [{:keys [cdq.graphics/shape-drawer] :as c}
+(defn- draw-hpbar [c
                    {:keys [position width half-width half-height]}
                    ratio]
   (let [[x y] position]
@@ -1700,13 +1692,12 @@
           y (+ y half-height)
           height (graphics/pixels->world-units c 5)
           border (graphics/pixels->world-units c borders-px)]
-      (shape-drawer/filled-rectangle shape-drawer x y width height :black)
-      (shape-drawer/filled-rectangle shape-drawer
-                           (+ x border)
-                           (+ y border)
-                           (- (* width ratio) (* 2 border))
-                           (- height          (* 2 border))
-                           (hpbar-color ratio)))))
+      (shape-drawer/filled-rectangle x y width height :black)
+      (shape-drawer/filled-rectangle (+ x border)
+                                     (+ y border)
+                                     (- (* width ratio) (* 2 border))
+                                     (- height          (* 2 border))
+                                     (hpbar-color ratio)))))
 
 (defn- draw-text-when-mouseover-and-text
   [{:keys [text]}
@@ -1734,12 +1725,11 @@
 (defn- draw-line
   [{:keys [thick? end color]}
    entity
-   {:keys [cdq.graphics/shape-drawer]}]
+   _context]
   (let [position (:position entity)]
     (if thick?
-      (shape-drawer/with-line-width shape-drawer 4
-        #(shape-drawer/line shape-drawer position end color))
-      (shape-drawer/line shape-drawer position end color))))
+      (shape-drawer/with-line-width 4 #(shape-drawer/line position end color))
+      (shape-drawer/line position end color))))
 
 (def ^:private outline-alpha 0.4)
 (def ^:private enemy-color    [1 0 0 outline-alpha])
@@ -1749,20 +1739,18 @@
 (defn- draw-faction-ellipse
   [_
    {:keys [entity/faction] :as entity}
-   {:keys [cdq.context/player-eid
-           cdq.graphics/shape-drawer] :as c}]
+   {:keys [cdq.context/player-eid] :as c}]
   (let [player @player-eid]
-    (shape-drawer/with-line-width shape-drawer 3
-      #(shape-drawer/ellipse shape-drawer
-                   (:position entity)
-                   (:half-width entity)
-                   (:half-height entity)
-                   (cond (= faction (entity/enemy player))
-                         enemy-color
-                         (= faction (:entity/faction player))
-                         friendly-color
-                         :else
-                         neutral-color)))))
+    (shape-drawer/with-line-width 3
+      #(shape-drawer/ellipse (:position entity)
+                             (:half-width entity)
+                             (:half-height entity)
+                             (cond (= faction (entity/enemy player))
+                                   enemy-color
+                                   (= faction (:entity/faction player))
+                                   friendly-color
+                                   :else
+                                   neutral-color)))))
 
 (defn- render-active-effect [context effect-ctx effect]
   (run! #(effect/render % effect-ctx context) effect))
@@ -1798,8 +1786,8 @@
                             (:entity/image item)
                             (item-place-position c entity))))
 
-(defn- draw-stunned-circle [_ entity {:keys [cdq.graphics/shape-drawer]}]
-  (shape-drawer/circle shape-drawer (:position entity) 0.5 [1 1 1 0.6]))
+(defn- draw-stunned-circle [_ entity _context]
+  (shape-drawer/circle (:position entity) 0.5 [1 1 1 0.6]))
 
 (defn- draw-text [{:keys [text]} entity c]
   (let [[x y] (:position entity)]
@@ -1813,14 +1801,14 @@
                          :up? true})))
 
 ; TODO draw opacity as of counter ratio?
-(defn- draw-filled-circle-grey [_ entity {:keys [cdq.graphics/shape-drawer]}]
-  (shape-drawer/filled-circle shape-drawer (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
+(defn- draw-filled-circle-grey [_ entity _context]
+  (shape-drawer/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
-(defn- draw-body-rect [sd entity color]
+(defn- draw-body-rect [entity color]
   (let [[x y] (:left-bottom entity)]
-    (shape-drawer/rectangle sd x y (:width entity) (:height entity) color)))
+    (shape-drawer/rectangle x y (:width entity) (:height entity) color)))
 
 (def ^:private entity-render-fns
   {:below {:entity/mouseover? draw-faction-ellipse
@@ -1837,7 +1825,6 @@
 
 (defn- render-entities!
   [{:keys [cdq.context/player-eid
-           cdq.graphics/shape-drawer
            cdq.game/active-entities] :as c}]
   (let [entities (map deref active-entities)
         player @player-eid
@@ -1857,13 +1844,13 @@
                       (los/exists? c player entity))]
       (try
        (when show-body-bounds
-         (draw-body-rect shape-drawer entity (if (:collides? entity) :white :gray)))
+         (draw-body-rect entity (if (:collides? entity) :white :gray)))
        (doseq [[k v] entity
                :let [f (get system k)]
                :when f]
          (f v entity c))
        (catch Throwable t
-         (draw-body-rect shape-drawer entity :red)
+         (draw-body-rect entity :red)
          (pretty-pst t))))))
 
 (defn- draw-on-world-view! [context]
@@ -2215,11 +2202,11 @@
                                   (:height (:ui-viewport config))
                                   (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
+    (shape-drawer/create! batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
     {:cdq/assets (assets/create (:assets config))
      :cdq.graphics/batch batch
      :cdq.graphics/cursors (load-cursors (:cursors config))
      :cdq.graphics/default-font (load-font (:default-font config))
-     :cdq.graphics/shape-drawer (shape-drawer/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
      :cdq.graphics/shape-drawer-texture shape-drawer-texture
      :cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
                                                  (OrthogonalTiledMapRenderer. tiled-map
