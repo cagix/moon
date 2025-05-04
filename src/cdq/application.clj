@@ -69,7 +69,7 @@
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
@@ -1868,36 +1868,11 @@
          (draw-body-rect shape-drawer entity :red)
          (pretty-pst t))))))
 
-(defn- draw-with! [{:keys [^Batch cdq.graphics/batch
-                           cdq.graphics/shape-drawer]
-                    :as context}
-                   viewport
-                   unit-scale
-                   draw-fn]
-  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (camera/combined (:camera viewport)))
-  (.begin batch)
-  (shape-drawer/with-line-width shape-drawer unit-scale
-    (fn []
-      (draw-fn (assoc context :cdq.context/unit-scale unit-scale))))
-  (.end batch))
-
-(defn- draw-on-world-view* [{:keys [cdq.graphics/world-unit-scale
-                                    cdq.graphics/world-viewport]
-                             :as context}
-                            render-fn]
-  (draw-with! context
-              world-viewport
-              world-unit-scale
-              render-fn))
-
 (defn- draw-on-world-view! [context]
-  (draw-on-world-view* context
-                       (fn [context]
-                         (doseq [render! [draw-before-entities!
-                                          render-entities!
-                                          draw-after-entities!]]
-                           (render! context))))
+  (graphics/draw-on-world-view! context
+                                [draw-before-entities!
+                                 render-entities!
+                                 draw-after-entities!])
   context)
 
 (defn- stage-draw! [{:keys [^StageWithState cdq.context/stage]
