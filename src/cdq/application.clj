@@ -1532,7 +1532,7 @@
   (entity/manual-tick (entity/state-obj @player-eid) context)
   context)
 
-(defn assoc-active-entities [context]
+(defn- assoc-active-entities [context]
   (assoc context :cdq.game/active-entities (game/get-active-entities context)))
 
 (defn- set-camera-on-player! [{:keys [cdq.context/player-eid]
