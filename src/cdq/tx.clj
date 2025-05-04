@@ -3,18 +3,14 @@
             [cdq.audio.sound :as sound]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.timer :as timer]
             [cdq.ui :as ui]
             [cdq.ui.stage :as stage]
-            [cdq.utils :as utils]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Actor Group)
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
-
-(defn cursor [{:keys [cdq.graphics/cursors]} cursor-key]
-  (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
 (defn event
   ([context eid event*]
@@ -33,7 +29,7 @@
                entity-states (:context/entity-components context)]
            (when (:entity/player? @eid)
              (when-let [cursor-key (get-in entity-states [new-state-k :cursor])]
-               (cursor context cursor-key)))
+               (graphics/set-cursor! cursor-key)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))

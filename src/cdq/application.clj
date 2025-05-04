@@ -67,7 +67,7 @@
            (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics Color Colors Pixmap Texture Texture$TextureFilter OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Colors Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
@@ -484,7 +484,7 @@
   (if-let [movement-vector (input/player-movement-vector)]
     (tx/event c eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state c eid)]
-      (tx/cursor c cursor)
+      (graphics/set-cursor! cursor)
       (when (input/button-just-pressed? :left)
         (on-click)))))
 
@@ -1992,21 +1992,6 @@
         (run! #(Actor/.setVisible % false) windows))))
   context)
 
-(defrecord Cursors []
-  Disposable
-  (dispose [this]
-    (run! Disposable/.dispose (vals this))))
-
-(defn- load-cursors [config]
-  (map->Cursors
-   (utils/mapvals
-    (fn [[file [hotspot-x hotspot-y]]]
-      (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-            cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-        (.dispose pixmap)
-        cursor))
-    config)))
-
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
     (set! (.size params) size)
@@ -2194,8 +2179,7 @@
                                   (:height (:ui-viewport config))
                                   (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
-    {:cdq.graphics/cursors (load-cursors (:cursors config))
-     :cdq.graphics/default-font (load-font (:default-font config))
+    {:cdq.graphics/default-font (load-font (:default-font config))
      :cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
                                                  (OrthogonalTiledMapRenderer. tiled-map
                                                                               (float world-unit-scale)
@@ -2224,7 +2208,7 @@
                           (create []
                             (ui/load! (:vis-ui config)) ; TODO we don't do dispose! ....
                             (assets/create! (:assets config))
-                            (graphics/create!)
+                            (graphics/create! (:graphics config))
                             (reset! state
                                     (let [main-context (assoc (create-initial-context! config)
                                                               :context/entity-components entity-components)]

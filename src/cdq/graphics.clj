@@ -1,19 +1,22 @@
 (ns cdq.graphics
   (:require [cdq.gdx.interop :as interop]
             [cdq.graphics.camera :as camera]
+            [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.math Vector2 MathUtils)
+           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
-         ^:private ^ShapeDrawer shape-drawer)
+         ^:private ^ShapeDrawer shape-drawer
+         ^:private cursors)
 
-(defn create! []
+(defn create! [{:keys [cursors]}]
   (.bindRoot #'batch (SpriteBatch.))
   (.bindRoot #'shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                                    (.setColor Color/WHITE)
@@ -21,11 +24,19 @@
                                           texture (Texture. pixmap)]
                                       (.dispose pixmap)
                                       texture))
-  (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
+  (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
+  (.bindRoot #'cursors (utils/mapvals
+                        (fn [[file [hotspot-x hotspot-y]]]
+                          (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
+                                cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                            (.dispose pixmap)
+                            cursor))
+                        cursors)))
 
 (defn dispose! []
   (.dispose batch)
-  (.dispose shape-drawer-texture))
+  (.dispose shape-drawer-texture)
+  (run! Disposable/.dispose (vals cursors)))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
@@ -249,3 +260,6 @@
         (doseq [f draw-fns]
           (f context)))))
   (.end batch))
+
+(defn set-cursor! [cursor-key]
+  (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
