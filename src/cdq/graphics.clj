@@ -5,9 +5,17 @@
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont)
+           (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+(declare ^:private ^Batch batch)
+
+(defn create! []
+  (.bindRoot #'batch (SpriteBatch.)))
+
+(defn dispose! []
+  (.dispose batch))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
@@ -59,8 +67,7 @@
   (if color (.setColor batch Color/WHITE)))
 
 (defn draw-image
-  [{:keys [cdq.context/unit-scale
-           cdq.graphics/batch]}
+  [{:keys [cdq.context/unit-scale]}
    {:keys [texture-region color] :as image} position]
   (draw-texture-region batch
                        texture-region
@@ -70,8 +77,7 @@
                        color))
 
 (defn draw-rotated-centered
-  [{:keys [cdq.context/unit-scale
-           cdq.graphics/batch]}
+  [{:keys [cdq.context/unit-scale]}
    {:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image unit-scale)]
     (draw-texture-region batch
@@ -100,7 +106,6 @@
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [cdq.context/unit-scale
-           cdq.graphics/batch
            cdq.graphics/default-font]}
    {:keys [font x y text h-align up? scale]}]
   {:pre [unit-scale]}
@@ -123,8 +128,7 @@
            wrap?)
     (.setScale data old-scale)))
 
-(defn draw-on-world-view! [{:keys [^Batch cdq.graphics/batch
-                                   cdq.graphics/world-viewport
+(defn draw-on-world-view! [{:keys [cdq.graphics/world-viewport
                                    cdq.graphics/world-unit-scale]
                             :as context}
                            draw-fns]

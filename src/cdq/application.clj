@@ -69,7 +69,7 @@
            (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color Colors Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d BitmapFont TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
@@ -2190,8 +2190,7 @@
               :db/properties-file properties-file})))
 
 (defn- create-initial-context! [config]
-  (let [batch (SpriteBatch.)
-        shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+  (let [shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                             (.setColor Color/WHITE)
                                             (.drawPixel 0 0))
                                    texture (Texture. pixmap)]
@@ -2202,19 +2201,18 @@
                                   (:height (:ui-viewport config))
                                   (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
-    (shape-drawer/create! batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
-    {:cdq.graphics/batch batch
-     :cdq.graphics/cursors (load-cursors (:cursors config))
+    (shape-drawer/create! @#'graphics/batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+    {:cdq.graphics/cursors (load-cursors (:cursors config))
      :cdq.graphics/default-font (load-font (:default-font config))
      :cdq.graphics/shape-drawer-texture shape-drawer-texture
      :cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
                                                  (OrthogonalTiledMapRenderer. tiled-map
                                                                               (float world-unit-scale)
-                                                                              batch)))
+                                                                              @#'graphics/batch)))
      :cdq.graphics/world-unit-scale world-unit-scale
      :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
      :cdq.graphics/ui-viewport ui-viewport
-     :cdq.context/stage (create-stage! batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
+     :cdq.context/stage (create-stage! @#'graphics/batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      :cdq/schemas schemas
      :cdq/db (create-db schemas)}))
 
@@ -2235,6 +2233,7 @@
                           (create []
                             (ui/load! (:vis-ui config)) ; TODO we don't do dispose! ....
                             (assets/create! (:assets config))
+                            (graphics/create!)
                             (reset! state
                                     (let [main-context (assoc (create-initial-context! config)
                                                               :context/entity-components entity-components)]
@@ -2242,6 +2241,7 @@
 
                           (dispose []
                             (assets/dispose!)
+                            (graphics/dispose!)
                             (doseq [[k obj] @state]
                               (if (instance? Disposable obj)
                                 (do
