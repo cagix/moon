@@ -25,6 +25,6 @@
  :ui-viewport {:width 1440 :height 900}
  :world-unit-scale 48
  :world-viewport {:width 1440 :height 900}
- :ui {:skin-scale :x1}
+ :vis-ui {:skin-scale :x1}
  :schemas "schema.edn"
  :world-id :worlds/vampire}

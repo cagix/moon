@@ -74,8 +74,6 @@
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
-           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget Tooltip)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
@@ -2047,24 +2045,7 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn- create-stage! [config batch viewport]
-  ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
-  ; => actually there is a deeper issue at play
-  ; we need to dispose ALL resources which were loaded already ...
-  (when (VisUI/isLoaded)
-    (VisUI/dispose))
-  (VisUI/load (case (:skin-scale config)
-                :x1 VisUI$SkinScale/X1
-                :x2 VisUI$SkinScale/X2))
-  (-> (VisUI/getSkin)
-      (.getFont "default-font")
-      .getData
-      .markupEnabled
-      (set! true))
-  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
-  ;Controls whether to fade out tooltip when mouse was moved. (default false)
-  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+(defn- create-stage! [batch viewport]
   (let [stage (proxy [StageWithState ILookup] [viewport batch]
                 (valAt
                   ([id]
@@ -2221,13 +2202,6 @@
     (map->DB {:db/data (zipmap (map :property/id properties) properties)
               :db/properties-file properties-file})))
 
-; * Make modules with state - init! / dispose! functions
-; * Hide internals
-; * Only expose what is required, no internal data, etc.
-; => where will this lead?
-; => the whole context as one ?
-; or different 'name' spaces ?
-
 (defn- create-initial-context! [config]
   (let [batch (SpriteBatch.)
         shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -2254,7 +2228,7 @@
      :cdq.graphics/world-unit-scale world-unit-scale
      :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
      :cdq.graphics/ui-viewport ui-viewport
-     :cdq.context/stage (create-stage! (:ui config) batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
+     :cdq.context/stage (create-stage! batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      :cdq/schemas schemas
      :cdq/db (create-db schemas)}))
 
@@ -2273,6 +2247,7 @@
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
+                            (ui/load! (:vis-ui config))
                             (reset! state
                                     (let [main-context (assoc (create-initial-context! config)
                                                               :context/entity-components entity-components)]
