@@ -2283,7 +2283,6 @@
                                   (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
     {:cdq/assets (assets/create (:assets config))
-     ;;
      :cdq.graphics/batch batch
      :cdq.graphics/cursors (load-cursors (:cursors config))
      :cdq.graphics/default-font (load-font (:default-font config))
@@ -2292,14 +2291,10 @@
      :cdq.graphics/tiled-map-renderer (tiled-map-renderer batch world-unit-scale)
      :cdq.graphics/world-unit-scale world-unit-scale
      :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
-     ;;
      :cdq.graphics/ui-viewport ui-viewport
      :cdq.context/stage (create-stage! (:ui config) batch ui-viewport)
-     ;;
      :cdq/schemas schemas
-     :cdq/db (create-db schemas)
-     ;;
-     }))
+     :cdq/db (create-db schemas)}))
 
 (def state
   "Do not call `swap!`, instead use `post-runnable!`, as the main game loop has side-effects and should not be retried.
