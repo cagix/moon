@@ -7,6 +7,7 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.gdx.interop :as interop]
+            [cdq.game :as game]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
@@ -1531,19 +1532,8 @@
   (entity/manual-tick (entity/state-obj @player-eid) context)
   context)
 
-(defn- active-entities [{:keys [grid]} center-entity]
-  (->> (let [idx (-> center-entity
-                     :cdq.content-grid/content-cell
-                     deref
-                     :idx)]
-         (cons idx (g2d/get-8-neighbour-positions idx)))
-       (keep grid)
-       (mapcat (comp :entities deref))))
-
-(defn- assoc-active-entities [{:keys [cdq.context/content-grid
-                                      cdq.context/player-eid]
-                               :as context}]
-  (assoc context :cdq.game/active-entities (active-entities content-grid @player-eid)))
+(defn assoc-active-entities [context]
+  (assoc context :cdq.game/active-entities (game/get-active-entities context)))
 
 (defn- set-camera-on-player! [{:keys [cdq.graphics/world-viewport
                                       cdq.context/player-eid]
