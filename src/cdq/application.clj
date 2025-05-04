@@ -13,7 +13,6 @@
             [cdq.graphics.camera :as camera]
             [cdq.graphics.shape-drawer :as shape-drawer]
             [cdq.graphics.sprite :as sprite]
-            [cdq.graphics.text :as text]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.grid :as grid]
             [cdq.info :as info :refer [info-segment]]
@@ -144,11 +143,11 @@
     window))
 
 (defn- render-infostr-on-bar [c infostr x y h]
-  (text/draw c
-             {:text infostr
-              :x (+ x 75)
-              :y (+ y 2)
-              :up? true}))
+  (graphics/draw-text c
+                      {:text infostr
+                       :x (+ x 75)
+                       :y (+ y 2)
+                       :up? true}))
 
 (defn- hp-mana-bar [context [x y-mana]]
   (let [rahmen      (sprite/create context "images/rahmen.png")
@@ -173,12 +172,12 @@
 (defn- draw-player-message [{:keys [cdq.graphics/ui-viewport
                                     cdq.context/player-message] :as c}]
   (when-let [text (:text @player-message)]
-    (text/draw c
-               {:x (/ (:width ui-viewport) 2)
-                :y (+ (/ (:height ui-viewport) 2) 200)
-                :text text
-                :scale 2.5
-                :up? true})))
+    (graphics/draw-text c
+                        {:x (/ (:width ui-viewport) 2)
+                         :y (+ (/ (:height ui-viewport) 2) 200)
+                         :text text
+                         :scale 2.5
+                         :up? true})))
 
 (defn- check-remove-message [{:keys [cdq.context/player-message]}]
   (when (:text @player-message)
@@ -1717,11 +1716,11 @@
    c]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
-      (text/draw c
-                 {:text text
-                  :x x
-                  :y (+ y (:half-height entity))
-                  :up? true}))))
+      (graphics/draw-text c
+                          {:text text
+                           :x x
+                           :y (+ y (:half-height entity))
+                           :up? true}))))
 
 (defn- draw-hpbar-when-mouseover-and-not-full [_ entity c]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
@@ -1789,11 +1788,11 @@
 
 (defn- draw-zzzz [_ entity c]
   (let [[x y] (:position entity)]
-    (text/draw c
-               {:text "zzz"
-                :x x
-                :y (+ y (:half-height entity))
-                :up? true})))
+    (graphics/draw-text c
+                        {:text "zzz"
+                         :x x
+                         :y (+ y (:half-height entity))
+                         :up? true})))
 
 (defn- draw-world-item-if-exists [{:keys [item]} entity c]
   (when (world-item? c)
@@ -1806,14 +1805,14 @@
 
 (defn- draw-text [{:keys [text]} entity c]
   (let [[x y] (:position entity)]
-    (text/draw c
-               {:text text
-                :x x
-                :y (+ y
-                      (:half-height entity)
-                      (graphics/pixels->world-units c 5))
-                :scale 2
-                :up? true})))
+    (graphics/draw-text c
+                        {:text text
+                         :x x
+                         :y (+ y
+                               (:half-height entity)
+                               (graphics/pixels->world-units c 5))
+                         :scale 2
+                         :up? true})))
 
 ; TODO draw opacity as of counter ratio?
 (defn- draw-filled-circle-grey [_ entity {:keys [cdq.graphics/shape-drawer]}]
