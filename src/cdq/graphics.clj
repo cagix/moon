@@ -4,19 +4,23 @@
             [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter)
+           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
-           (com.badlogic.gdx.utils.viewport Viewport)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
          ^:private ^ShapeDrawer shape-drawer
          ^:private cursors
-         ^:private ^BitmapFont default-font)
+         ^:private ^BitmapFont default-font
+
+         ; TODO make private -> expose function API
+         world-unit-scale
+         world-viewport)
 
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -42,7 +46,26 @@
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
 
-(defn create! [{:keys [cursors default-font]}]
+(defn fit-viewport [width height camera]
+  (proxy [FitViewport clojure.lang.ILookup] [width height camera]
+    (valAt
+      ([key]
+       (interop/k->viewport-field this key))
+      ([key _not-found]
+       (interop/k->viewport-field this key)))))
+
+(defn- ->world-viewport [world-unit-scale config]
+  (let [camera (OrthographicCamera.)
+        world-width  (* (:width  config) world-unit-scale)
+        world-height (* (:height config) world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
+    (fit-viewport world-width world-height camera)))
+
+(defn create! [{:keys [cursors
+                       default-font
+                       tile-size
+                       world-viewport]}]
   (.bindRoot #'batch (SpriteBatch.))
   (.bindRoot #'shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                                                    (.setColor Color/WHITE)
@@ -58,7 +81,9 @@
                             (.dispose pixmap)
                             cursor))
                         cursors))
-  (.bindRoot #'default-font (load-font default-font)))
+  (.bindRoot #'default-font (load-font default-font))
+  (.bindRoot #'world-unit-scale (float (/ tile-size)))
+  (.bindRoot #'world-viewport (->world-viewport world-unit-scale world-viewport)))
 
 (defn dispose! []
   (.dispose batch)
@@ -90,12 +115,12 @@
   ; TODO mapv int needed?
   (mapv int (unproject-mouse-position ui-viewport)))
 
-(defn world-mouse-position [world-viewport]
+(defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
   (unproject-mouse-position world-viewport))
 
-(defn pixels->world-units [{:keys [cdq.graphics/world-unit-scale]} pixels]
+(defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))
 
 (defn- unit-dimensions [image unit-scale]
@@ -143,7 +168,7 @@
 (defn draw-centered [c image position]
   (draw-rotated-centered c image 0 position))
 
-(defn set-camera-position! [{:keys [cdq.graphics/world-viewport]} position]
+(defn set-camera-position! [position]
   (camera/set-position! (:camera world-viewport) position))
 
 (defn- text-height [font text]
@@ -272,10 +297,7 @@
             :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
       (line shape-drawer [leftx liney] [rightx liney] color))))
 
-(defn draw-on-world-view! [{:keys [cdq.graphics/world-viewport
-                                   cdq.graphics/world-unit-scale]
-                            :as context}
-                           draw-fns]
+(defn draw-on-world-view! [context draw-fns]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
   (.begin batch)

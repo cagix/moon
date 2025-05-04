@@ -36,15 +36,15 @@
   ESCAPE: leave
   direction keys: move")
 
-(defn- map-infos ^String [{:keys [cdq.graphics/world-viewport] :as c}]
-  (let [tile (mapv int (cdq.graphics/world-mouse-position world-viewport))
+(defn- map-infos ^String [c]
+  (let [tile (mapv int (graphics/world-mouse-position))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
     (->> [infotext
           (str "Tile " tile)
           (when-not area-level-grid
             (str "Module " (mapv (comp int /)
-                                 (cdq.graphics/world-mouse-position world-viewport)
+                                 (graphics/world-mouse-position)
                                  [modules/width modules/height])))
           (when area-level-grid
             (str "Creature id: " (tiled/property-value tiled-map :creatures tile :id)))
@@ -80,14 +80,14 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [{:keys [cdq.graphics/world-viewport]}]
+(defn- render-on-map [_context]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
                 show-movement-properties
                 show-grid-lines]} @(current-data)
-        visible-tiles (camera/visible-tiles (:camera world-viewport))
-        [x y] (mapv int (cdq.graphics/world-mouse-position world-viewport))]
+        visible-tiles (camera/visible-tiles (:camera graphics/world-viewport))
+        [x y] (mapv int (graphics/world-mouse-position))]
     (graphics/rectangle x y 1 1 :white)
     (when start-position
       (graphics/filled-rectangle (start-position 0) (start-position 1) 1 1 [1 0 1 0.9]))
@@ -109,8 +109,7 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [{:keys [cdq.graphics/world-viewport
-                                    cdq/db]
+(defn- generate-screen-ctx [{:keys [cdq/db]
                              :as c}
                             properties]
   (let [{:keys [tiled-map start-position]} (generate-level c
@@ -121,7 +120,7 @@
            :tiled-map tiled-map
            ;:area-level-grid area-level-grid
            :start-position start-position)
-    (show-whole-map! (:camera world-viewport) tiled-map)
+    (show-whole-map! (:camera graphics/world-viewport) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
 (defn ->generate-map-window [{:keys [cdq/db] :as c} level-id]

@@ -1,5 +1,6 @@
 (ns cdq.graphics.tiled-map-renderer
-  (:require [cdq.tiled :as tiled])
+  (:require [cdq.graphics :as graphics]
+            [cdq.tiled :as tiled])
   (:import (cdq OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn- draw* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
@@ -22,11 +23,10 @@
   Can be used for lights & shadows.
 
   Renders only visible layers."
-  [{:keys [cdq.graphics/tiled-map-renderer
-           cdq.graphics/world-viewport]}
+  [{:keys [cdq.graphics/tiled-map-renderer]}
    tiled-map
    color-setter]
   (draw* (tiled-map-renderer tiled-map)
          tiled-map
          color-setter
-         (:camera world-viewport)))
+         (:camera graphics/world-viewport)))

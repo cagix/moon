@@ -1,5 +1,6 @@
 (ns cdq.line-of-sight
-  (:require [cdq.graphics.camera :as camera]
+  (:require [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]
             [cdq.math.raycaster :as raycaster]))
 
 ; does not take into account zoom - but zoom is only for debug ???
@@ -23,10 +24,9 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn exists? [{:keys [cdq.context/raycaster
-                       cdq.graphics/world-viewport]} source target]
+(defn exists? [{:keys [cdq.context/raycaster]} source target]
   (and (or (not (:entity/player? source))
-           (on-screen? world-viewport target))
+           (on-screen? graphics/world-viewport target))
        (not (and los-checks?
                  (raycaster/blocked? raycaster (:position source) (:position target))))))
 

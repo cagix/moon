@@ -1,6 +1,6 @@
 (ns cdq.dev
   (:require [cdq.application :as app]
-            cdq.graphics
+            [cdq.graphics :as graphics]
             [cdq.db :as db]
             [cdq.tx :as tx]
             [clojure.string :as str]
@@ -89,9 +89,8 @@
                     (:position @player-eid)
                     (db/build db item-id c)))
 
-(defn- mouseover-grid-cell [{:keys [cdq.context/grid
-                                    cdq.graphics/world-viewport]}]
-  @(grid (mapv int (cdq.graphics/world-mouse-position world-viewport))))
+(defn- mouseover-grid-cell [{:keys [cdq.context/grid]}]
+  @(grid (mapv int (graphics/world-mouse-position))))
 
 (defn- tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))

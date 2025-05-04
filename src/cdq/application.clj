@@ -6,7 +6,6 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
-            [cdq.gdx.interop :as interop]
             [cdq.game :as game]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
@@ -70,7 +69,7 @@
            (com.badlogic.gdx.graphics Color Colors OrthographicCamera)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
-           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
+           (com.badlogic.gdx.utils.viewport Viewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
@@ -426,11 +425,10 @@
      (ui/button? actor)                  :cursors/over-button
      :else                               :cursors/default)))
 
-(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid
-                                  cdq.graphics/world-viewport]} eid]
+(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid]} eid]
   (let [target-position (or (and mouseover-eid
                                  (:position @mouseover-eid))
-                            (graphics/world-mouse-position world-viewport))]
+                            (graphics/world-mouse-position))]
     {:effect/source eid
      :effect/target mouseover-eid
      :effect/target-position target-position
@@ -1529,7 +1527,7 @@
 
 (defn- set-camera-on-player! [{:keys [cdq.context/player-eid]
                                :as context}]
-  (graphics/set-camera-position! context (:position @player-eid))
+  (graphics/set-camera-position! (:position @player-eid))
   context)
 
 (defn- clear-screen! [context]
@@ -1575,8 +1573,7 @@
                 (swap! explored-tile-corners assoc (mapv int position) true))
               Color/WHITE))))))
 
-(defn- render-tiled-map! [{:keys [cdq.graphics/world-viewport
-                                  cdq.context/tiled-map
+(defn- render-tiled-map! [{:keys [cdq.context/tiled-map
                                   cdq.context/raycaster
                                   cdq.context/explored-tile-corners]
                            :as context}]
@@ -1584,7 +1581,7 @@
                            tiled-map
                            (tile-color-setter raycaster
                                               explored-tile-corners
-                                              (camera/position (:camera world-viewport))))
+                                              (camera/position (:camera graphics/world-viewport))))
   context)
 
 (def ^:private ^:dbg-flag tile-grid? false)
@@ -1592,16 +1589,15 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn- draw-before-entities! [{:keys [cdq.graphics/world-viewport
-                                      cdq.context/factions-iterations
+(defn- draw-before-entities! [{:keys [cdq.context/factions-iterations
                                       cdq.context/grid]}]
-  (let [cam (:camera world-viewport)
+  (let [cam (:camera graphics/world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
     (when tile-grid?
       (graphics/grid (int left-x) (int bottom-y)
-                         (inc (int (:width  world-viewport)))
-                         (+ 2 (int (:height world-viewport)))
+                         (inc (int (:width  graphics/world-viewport)))
+                         (+ 2 (int (:height graphics/world-viewport)))
                          1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
@@ -1622,9 +1618,8 @@
             (let [ratio (/ distance (factions-iterations faction))]
               (graphics/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-(defn- geom-test [{:keys [cdq.context/grid
-                          cdq.graphics/world-viewport]}]
-  (let [position (graphics/world-mouse-position world-viewport)
+(defn- geom-test [{:keys [cdq.context/grid]}]
+  (let [position (graphics/world-mouse-position)
         radius 0.8
         circle {:position position :radius radius}]
     (graphics/circle position radius [1 0 0 0.5])
@@ -1635,10 +1630,9 @@
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [{:keys [cdq.context/grid
-                                         cdq.graphics/world-viewport]}]
+(defn- highlight-mouseover-tile [{:keys [cdq.context/grid]}]
   (when highlight-blocked-cell?
-    (let [[x y] (mapv int (graphics/world-mouse-position world-viewport))
+    (let [[x y] (mapv int (graphics/world-mouse-position))
           cell (grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (graphics/rectangle x y 1 1
@@ -1681,20 +1675,18 @@
 
 (def ^:private borders-px 1)
 
-(defn- draw-hpbar [c
-                   {:keys [position width half-width half-height]}
-                   ratio]
+(defn- draw-hpbar [{:keys [position width half-width half-height]} ratio]
   (let [[x y] position]
     (let [x (- x half-width)
           y (+ y half-height)
-          height (graphics/pixels->world-units c 5)
-          border (graphics/pixels->world-units c borders-px)]
+          height (graphics/pixels->world-units 5)
+          border (graphics/pixels->world-units borders-px)]
       (graphics/filled-rectangle x y width height :black)
       (graphics/filled-rectangle (+ x border)
-                                     (+ y border)
-                                     (- (* width ratio) (* 2 border))
-                                     (- height          (* 2 border))
-                                     (hpbar-color ratio)))))
+                                 (+ y border)
+                                 (- (* width ratio) (* 2 border))
+                                 (- height          (* 2 border))
+                                 (hpbar-color ratio)))))
 
 (defn- draw-text-when-mouseover-and-text
   [{:keys [text]}
@@ -1708,10 +1700,10 @@
                            :y (+ y (:half-height entity))
                            :up? true}))))
 
-(defn- draw-hpbar-when-mouseover-and-not-full [_ entity c]
+(defn- draw-hpbar-when-mouseover-and-not-full [_ entity _c]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
-      (draw-hpbar c entity ratio))))
+      (draw-hpbar entity ratio))))
 
 (defn- draw-image-as-of-body [image entity c]
   (graphics/draw-rotated-centered c
@@ -1793,7 +1785,7 @@
                          :x x
                          :y (+ y
                                (:half-height entity)
-                               (graphics/pixels->world-units c 5))
+                               (graphics/pixels->world-units 5))
                          :scale 2
                          :up? true})))
 
@@ -1872,14 +1864,13 @@
 (defn- update-mouseover-entity! [{:keys [cdq.context/grid
                                          cdq.context/mouseover-eid
                                          cdq.context/player-eid
-                                         cdq.graphics/world-viewport
                                          cdq.context/stage]
                                   :as context}]
   (let [new-eid (if (stage/mouse-on-actor? stage)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities grid (graphics/world-mouse-position world-viewport)))]
+                                     (grid/point->entities grid (graphics/world-mouse-position)))]
                     (->> cdq.world/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
@@ -1968,9 +1959,8 @@
       (destroy! v eid context)))
   context)
 
-(defn- camera-controls! [{:keys [cdq.graphics/world-viewport]
-                          :as context}]
-  (let [camera (:camera world-viewport)
+(defn- camera-controls! [context]
+  (let [camera (:camera graphics/world-viewport)
         zoom-speed 0.025]
     (when (input/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
     (when (input/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed))))
@@ -2000,26 +1990,6 @@
                        not-found))))]
     (.setInputProcessor Gdx/input stage)
     stage))
-
-(defn- fit-viewport
-  "A ScalingViewport that uses Scaling.fit so it keeps the aspect ratio by scaling the world up to fit the screen, adding black bars (letterboxing) for the remaining space."
-  [width height camera & {:keys [center-camera?]}]
-  {:pre [width height]}
-  (proxy [FitViewport ILookup] [width height camera]
-    (valAt
-      ([key]
-       (interop/k->viewport-field this key))
-      ([key _not-found]
-       (interop/k->viewport-field this key)))))
-
-(defn- world-viewport [world-unit-scale config]
-  {:pre [world-unit-scale]}
-  (let [camera (OrthographicCamera.)
-        world-width  (* (:width  config) world-unit-scale)
-        world-height (* (:height config) world-unit-scale)
-        y-down? false]
-    (.setToOrtho camera y-down? world-width world-height)
-    (fit-viewport world-width world-height camera)))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -2148,17 +2118,14 @@
               :db/properties-file properties-file})))
 
 (defn- create-initial-context! [config]
-  (let [world-unit-scale (float (/ (:world-unit-scale config)))
-        ui-viewport (fit-viewport (:width  (:ui-viewport config))
-                                  (:height (:ui-viewport config))
-                                  (OrthographicCamera.))
+  (let [ui-viewport (graphics/fit-viewport (:width  (:ui-viewport config))
+                                           (:height (:ui-viewport config))
+                                           (OrthographicCamera.))
         schemas (-> (:schemas config) io/resource slurp edn/read-string)]
     {:cdq.graphics/tiled-map-renderer (memoize (fn [tiled-map]
                                                  (OrthogonalTiledMapRenderer. tiled-map
-                                                                              (float world-unit-scale)
+                                                                              (float @#'graphics/world-unit-scale)
                                                                               @#'graphics/batch)))
-     :cdq.graphics/world-unit-scale world-unit-scale
-     :cdq.graphics/world-viewport (world-viewport world-unit-scale (:world-viewport config))
      :cdq.graphics/ui-viewport ui-viewport
      :cdq.context/stage (create-stage! @#'graphics/batch ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      :cdq/schemas schemas
@@ -2223,7 +2190,7 @@
                           (resize [width height]
                             (let [context @state]
                               (Viewport/.update (:cdq.graphics/ui-viewport    context) width height true)
-                              (Viewport/.update (:cdq.graphics/world-viewport context) width height false))))
+                              (Viewport/.update graphics/world-viewport width height false))))
                         (doto (Lwjgl3ApplicationConfiguration.)
                           (.setTitle (:title config))
                           (.setWindowedMode (:width  (:windowed-mode config))
@@ -2292,9 +2259,9 @@
                     :update-fn (comp graphics/mouse-position
                                      :cdq.graphics/ui-viewport)}
                    {:label "World"
-                    :update-fn #(mapv int (graphics/world-mouse-position (:cdq.graphics/world-viewport %)))}
+                    :update-fn (fn [_] (mapv int (graphics/world-mouse-position)))}
                    {:label "Zoom"
-                    :update-fn #(camera/zoom (:camera (:cdq.graphics/world-viewport %)))
+                    :update-fn (fn [_] (camera/zoom (:camera graphics/world-viewport)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
                     :update-fn (fn [_]
