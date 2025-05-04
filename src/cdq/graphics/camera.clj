@@ -38,7 +38,7 @@
 (defn zoom [^OrthographicCamera camera]
   (.zoom camera))
 
-(defn set-position
+(defn set-position!
   "Sets x and y and calls update on the camera."
   [^Camera camera [x y]]
   (set! (.x (.position camera)) (float x))

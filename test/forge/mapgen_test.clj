@@ -15,9 +15,9 @@
 (def state (atom nil))
 
 (defn- show-whole-map! [camera tiled-map]
-  (camera/set-position camera
-                       [(/ (tiled/tm-width  tiled-map) 2)
-                        (/ (tiled/tm-height tiled-map) 2)])
+  (camera/set-position! camera
+                        [(/ (tiled/tm-width  tiled-map) 2)
+                         (/ (tiled/tm-height tiled-map) 2)])
   (camera/set-zoom camera
                    (camera/calculate-zoom camera
                                           :left [0 0]
@@ -72,10 +72,10 @@
 ; PLUS symbol shift & = symbol on keyboard not registered
 (defn- camera-controls [input camera]
   (let [apply-position (fn [idx f]
-                         (camera/set-position camera
-                                              (update (camera/position camera)
-                                                      idx
-                                                      #(f % camera-movement-speed))))]
+                         (camera/set-position! camera
+                                               (update (camera/position camera)
+                                                       idx
+                                                       #(f % camera-movement-speed))))]
     (if (input/key-pressed? input :left)  (apply-position 0 -))
     (if (input/key-pressed? input :right) (apply-position 0 +))
     (if (input/key-pressed? input :up)    (apply-position 1 +))
