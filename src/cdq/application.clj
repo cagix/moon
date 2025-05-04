@@ -2235,6 +2235,13 @@
     (map->DB {:db/data (zipmap (map :property/id properties) properties)
               :db/properties-file properties-file})))
 
+; * Make modules with state - init! / dispose! functions
+; * Hide internals
+; * Only expose what is required, no internal data, etc.
+; => where will this lead?
+; => the whole context as one ?
+; or different 'name' spaces ?
+
 (defn- create-initial-context! [config]
   (let [batch (SpriteBatch.)
         shape-drawer-texture (white-pixel-texture)
