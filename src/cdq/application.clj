@@ -6,6 +6,7 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.entity.state :as state]
             [cdq.game :as game]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
@@ -1390,72 +1391,90 @@
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))
 
-(def ^:private entity-components
-  {:entity/destroy-audiovisual {:destroy! (fn [audiovisuals-id eid {:keys [cdq/db] :as c}]
-                                            (spawn-audiovisual c
-                                                               (:position @eid)
-                                                               (db/build db audiovisuals-id c)))}
-   :player-idle           {:pause-game? true}
-   :active-skill          {:pause-game? false
-                           :cursor :cursors/sandclock
-                           :enter (fn [[_ {:keys [eid skill]}]
-                                       {:keys [cdq.context/elapsed-time] :as c}]
-                                    (sound/play (:skill/start-action-sound skill))
-                                    (when (:skill/cooldown skill)
-                                      (swap! eid assoc-in
-                                             [:entity/skills (:property/id skill) :skill/cooling-down?]
-                                             (timer/create elapsed-time (:skill/cooldown skill))))
-                                    (when (and (:skill/cost skill)
-                                               (not (zero? (:skill/cost skill))))
-                                      (swap! eid entity/pay-mana-cost (:skill/cost skill))))}
-   :player-dead           {:pause-game? true
-                           :cursor :cursors/black-x
-                           :enter (fn [[_ {:keys [tx/sound
-                                                  modal/title
-                                                  modal/text
-                                                  modal/button-text]}]
-                                       c]
-                                    (sound/play sound)
-                                    (tx/show-modal c {:title title
-                                                      :text text
-                                                      :button-text button-text
-                                                      :on-click (fn [])}))}
-   :player-item-on-cursor {:pause-game? true
-                           :cursor :cursors/hand-grab
-                           :enter (fn [[_ {:keys [eid item]}] c]
-                                    (swap! eid assoc :entity/item-on-cursor item))
-                           :exit (fn [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
-                                   ; at clicked-cell when we put it into a inventory-cell
-                                   ; we do not want to drop it on the ground too additonally,
-                                   ; so we dissoc it there manually. Otherwise it creates another item
-                                   ; on the ground
-                                   (let [entity @eid]
-                                     (when (:entity/item-on-cursor entity)
-                                       (sound/play place-world-item-sound)
-                                       (swap! eid dissoc :entity/item-on-cursor)
-                                       (spawn-item c
-                                                   (item-place-position c entity)
-                                                   (:entity/item-on-cursor entity)))))}
-   :player-moving         {:pause-game? false
-                           :cursor :cursors/walking
-                           :enter (fn [[_ {:keys [eid movement-vector]}] c]
-                                    (tx/set-movement eid movement-vector))
-                           :exit (fn [[_ {:keys [eid]}] c]
-                                   (swap! eid dissoc :entity/movement))}
-   :stunned               {:pause-game? false
-                           :cursor :cursors/denied}
-   :npc-dead              {:enter (fn [[_ {:keys [eid]}] c]
-                                    (tx/mark-destroyed eid))}
-   :npc-moving            {:enter (fn [[_ {:keys [eid movement-vector]}] c]
-                                    (tx/set-movement eid movement-vector))
-                           :exit (fn [[_ {:keys [eid]}] c]
-                                   (swap! eid dissoc :entity/movement))}
-   :npc-sleeping          {:exit (fn [[_ {:keys [eid]}] c]
-                                   (delayed-alert c
-                                                  (:position       @eid)
-                                                  (:entity/faction @eid)
-                                                  0.2)
-                                   (tx/text-effect c eid "[WHITE]!"))}})
+(defcomponent :active-skill
+  (state/cursor [_] :cursors/sandclock)
+  (state/pause-game? [_] false)
+  (state/enter! [[_ {:keys [eid skill]}]
+                 {:keys [cdq.context/elapsed-time] :as c}]
+    (sound/play (:skill/start-action-sound skill))
+    (when (:skill/cooldown skill)
+      (swap! eid assoc-in
+             [:entity/skills (:property/id skill) :skill/cooling-down?]
+             (timer/create elapsed-time (:skill/cooldown skill))))
+    (when (and (:skill/cost skill)
+               (not (zero? (:skill/cost skill))))
+      (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
+
+(defcomponent :player-idle
+  (state/pause-game? [_] true))
+
+(defcomponent :player-dead
+  (state/cursor [_] :cursors/black-x)
+  (state/pause-game? [_] true)
+  (state/enter! [[_ {:keys [tx/sound
+                            modal/title
+                            modal/text
+                            modal/button-text]}]
+                 c]
+    (sound/play sound)
+    (tx/show-modal c {:title title
+                      :text text
+                      :button-text button-text
+                      :on-click (fn [])})))
+
+(defcomponent :player-item-on-cursor
+  (state/cursor [_] :cursors/hand-grab)
+  (state/pause-game? [_] true)
+  (state/enter! [[_ {:keys [eid item]}] c]
+    (swap! eid assoc :entity/item-on-cursor item))
+  (state/exit! [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
+    ; at clicked-cell when we put it into a inventory-cell
+    ; we do not want to drop it on the ground too additonally,
+    ; so we dissoc it there manually. Otherwise it creates another item
+    ; on the ground
+    (let [entity @eid]
+      (when (:entity/item-on-cursor entity)
+        (sound/play place-world-item-sound)
+        (swap! eid dissoc :entity/item-on-cursor)
+        (spawn-item c
+                    (item-place-position c entity)
+                    (:entity/item-on-cursor entity))))))
+
+(defcomponent :player-moving
+  (state/cursor [_] :cursors/walking)
+  (state/pause-game? [_] false)
+  (state/enter! [[_ {:keys [eid movement-vector]}] c]
+    (tx/set-movement eid movement-vector))
+  (state/exit! [[_ {:keys [eid]}] c]
+    (swap! eid dissoc :entity/movement)))
+
+(defcomponent :stunned
+  (state/cursor [_] :cursors/denied)
+  (state/pause-game? [_] false))
+
+(defcomponent :entity/destroy-audiovisual
+  (entity/destroy! [[_ audiovisuals-id] eid {:keys [cdq/db] :as c}]
+    (spawn-audiovisual c
+                       (:position @eid)
+                       (db/build db audiovisuals-id c))))
+
+(defcomponent :npc-dead
+  (state/enter! [[_ {:keys [eid]}] c]
+    (tx/mark-destroyed eid)))
+
+(defcomponent :npc-moving
+  (state/enter! [[_ {:keys [eid movement-vector]}] c]
+    (tx/set-movement eid movement-vector))
+  (state/exit! [[_ {:keys [eid]}] c]
+    (swap! eid dissoc :entity/movement)))
+
+(defcomponent :npc-sleeping
+  (state/exit! [[_ {:keys [eid]}] c]
+    (delayed-alert c
+                   (:position       @eid)
+                   (:entity/faction @eid)
+                   0.2)
+    (tx/text-effect c eid "[WHITE]!")))
 
 (defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
   (let [entity @eid
@@ -1866,14 +1885,13 @@
     (assoc context :cdq.context/mouseover-eid new-eid)))
 
 (defn- set-paused-flag [{:keys [cdq.context/player-eid
-                                context/entity-components
                                 error ; FIXME ! not `::` keys so broken !
                                 ]
                          :as context}]
   (let [pausing? true]
     (assoc context :cdq.context/paused? (or error
                                             (and pausing?
-                                                 (get-in entity-components [(cdq.entity/state-k @player-eid) :pause-game?])
+                                                 (state/pause-game? (entity/state-obj @player-eid))
                                                  (not (or (input/key-just-pressed? :p)
                                                           (input/key-pressed?      :space))))))))
 
@@ -1929,17 +1947,14 @@
              update-potential-fields!
              tick-entities!])))
 
-(defn- remove-destroyed-entities! [{:keys [cdq.context/entity-ids
-                                           context/entity-components]
+(defn- remove-destroyed-entities! [{:keys [cdq.context/entity-ids]
                                     :as context}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
     (doseq [component context]
       (context/remove-entity component eid))
-    (doseq [[k v] @eid
-            :let [destroy! (get-in entity-components [k :destroy!])]
-            :when destroy!]
-      (destroy! v eid context)))
+    (doseq [component @eid]
+      (entity/destroy! component eid context)))
   context)
 
 (defn- camera-controls! [context]
@@ -2100,8 +2115,11 @@
               :db/properties-file properties-file})))
 
 ; * stage -> Remove StageWithState & dependencies to 'cdq.application'
+; => TODO what to do with ui-viewport ?
+
 ; * database
-; * :context/entity-components
+; => TODO what to do with cdq/schemas ?
+
 ; * 'world'
 
 (defn- create-initial-context! [config]
@@ -2133,10 +2151,7 @@
                             (ui/load! (:vis-ui config)) ; TODO we don't do dispose! ....
                             (assets/create! (:assets config))
                             (graphics/create! (:graphics config))
-                            (reset! state
-                                    (let [main-context (assoc (create-initial-context! config)
-                                                              :context/entity-components entity-components)]
-                                      (reset-game! main-context config))))
+                            (reset! state (reset-game! (create-initial-context! config) config)))
 
                           (dispose []
                             (assets/dispose!)

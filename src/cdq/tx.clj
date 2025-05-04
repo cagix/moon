@@ -3,6 +3,7 @@
             [cdq.audio.sound :as sound]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.timer :as timer]
@@ -25,19 +26,16 @@
                new-state-obj [new-state-k (entity/create (if params
                                                            [new-state-k eid params]
                                                            [new-state-k eid])
-                                                         context)]
-               entity-states (:context/entity-components context)]
+                                                         context)]]
            (when (:entity/player? @eid)
-             (when-let [cursor-key (get-in entity-states [new-state-k :cursor])]
+             (when-let [cursor-key (state/cursor new-state-obj)]
                (graphics/set-cursor! cursor-key)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
-           (when-let [f (get-in entity-states [old-state-k :exit])]
-             (f old-state-obj context))
-           (when-let [f (get-in entity-states [new-state-k :enter])]
-             (f new-state-obj context))))))))
+           (state/exit!  old-state-obj context)
+           (state/enter! new-state-obj context)))))))
 
 (defn effect [context effect-ctx effect]
   (run! #(effect/handle % effect-ctx context)
