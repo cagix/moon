@@ -1,9 +1,8 @@
 (ns cdq.widgets.inventory
   (:require [cdq.entity :as entity]
-            cdq.graphics
+            [cdq.graphics :as graphics]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
-            [cdq.graphics.shape-drawer :as sd]
             cdq.graphics.sprite
             [cdq.data.grid2d :as g2d]
             [cdq.ui :refer [texture-region-drawable
@@ -26,14 +25,14 @@
 (def ^:private not-allowed-color  [0.6 0   0 0.8])
 
 (defn- draw-cell-rect [player-entity x y mouseover? cell]
-  (sd/rectangle x y cell-size cell-size :gray)
+  (graphics/rectangle x y cell-size cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
                   droppable-color
                   not-allowed-color)]
-      (sd/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+      (graphics/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??

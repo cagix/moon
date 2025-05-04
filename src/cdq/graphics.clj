@@ -1,24 +1,37 @@
 (ns cdq.graphics
   (:require [cdq.gdx.interop :as interop]
             [cdq.graphics.camera :as camera]
-            [cdq.graphics.shape-drawer :as shape-drawer]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch)
+           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture)
+           (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.math Vector2 MathUtils)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+           (com.badlogic.gdx.utils.viewport Viewport)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
-(declare ^:private ^Batch batch)
+(declare ^:private ^Batch batch
+         ^:private ^Texture shape-drawer-texture
+         ^:private ^ShapeDrawer shape-drawer)
 
 (defn create! []
-  (.bindRoot #'batch (SpriteBatch.)))
+  (.bindRoot #'batch (SpriteBatch.))
+  (.bindRoot #'shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
+                                                   (.setColor Color/WHITE)
+                                                   (.drawPixel 0 0))
+                                          texture (Texture. pixmap)]
+                                      (.dispose pixmap)
+                                      texture))
+  (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1))))
 
 (defn dispose! []
-  (.dispose batch))
+  (.dispose batch)
+  (.dispose shape-drawer-texture))
 
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
+
+(defn- degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter
@@ -128,6 +141,101 @@
            wrap?)
     (.setScale data old-scale)))
 
+
+
+(defn- sd-set-color! [color]
+  (.setColor shape-drawer (interop/->color color)))
+
+(defn ellipse [[x y] radius-x radius-y color]
+  (sd-set-color! color)
+  (.ellipse shape-drawer
+            (float x)
+            (float y)
+            (float radius-x)
+            (float radius-y)))
+
+(defn filled-ellipse [[x y] radius-x radius-y color]
+  (sd-set-color! color)
+  (.filledEllipse shape-drawer
+                  (float x)
+                  (float y)
+                  (float radius-x)
+                  (float radius-y)))
+
+(defn circle [[x y] radius color]
+  (sd-set-color! color)
+  (.circle shape-drawer
+           (float x)
+           (float y)
+           (float radius)))
+
+(defn filled-circle [[x y] radius color]
+  (sd-set-color! color)
+  (.filledCircle shape-drawer
+                 (float x)
+                 (float y)
+                 (float radius)))
+
+(defn arc [[center-x center-y] radius start-angle degree color]
+  (sd-set-color! color)
+  (.arc shape-drawer
+        (float center-x)
+        (float center-y)
+        (float radius)
+        (float (degree->radians start-angle))
+        (float (degree->radians degree))))
+
+(defn sector [[center-x center-y] radius start-angle degree color]
+  (sd-set-color! color)
+  (.sector shape-drawer
+           (float center-x)
+           (float center-y)
+           (float radius)
+           (float (degree->radians start-angle))
+           (float (degree->radians degree))))
+
+(defn rectangle [x y w h color]
+  (sd-set-color! color)
+  (.rectangle shape-drawer
+              (float x)
+              (float y)
+              (float w)
+              (float h)))
+
+(defn filled-rectangle [x y w h color]
+  (sd-set-color! color)
+  (.filledRectangle shape-drawer
+                    (float x)
+                    (float y)
+                    (float w)
+                    (float h)))
+
+(defn line [[sx sy] [ex ey] color]
+  (sd-set-color! color)
+  (.line shape-drawer
+         (float sx)
+         (float sy)
+         (float ex)
+         (float ey)))
+
+(defn with-line-width [width draw-fn]
+  (let [old-line-width (.getDefaultLineWidth shape-drawer)]
+    (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
+    (draw-fn)
+    (.setDefaultLineWidth shape-drawer (float old-line-width))))
+
+(defn grid [leftx bottomy gridw gridh cellw cellh color]
+  (let [w (* (float gridw) (float cellw))
+        h (* (float gridh) (float cellh))
+        topy (+ (float bottomy) (float h))
+        rightx (+ (float leftx) (float w))]
+    (doseq [idx (range (inc (float gridw)))
+            :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
+      (line shape-drawer [linex topy] [linex bottomy] color))
+    (doseq [idx (range (inc (float gridh)))
+            :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
+      (line shape-drawer [leftx liney] [rightx liney] color))))
+
 (defn draw-on-world-view! [{:keys [cdq.graphics/world-viewport
                                    cdq.graphics/world-unit-scale]
                             :as context}
@@ -135,7 +243,7 @@
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
   (.begin batch)
-  (shape-drawer/with-line-width world-unit-scale
+  (with-line-width world-unit-scale
     (fn []
       (let [context (assoc context :cdq.context/unit-scale world-unit-scale)]
         (doseq [f draw-fns]
