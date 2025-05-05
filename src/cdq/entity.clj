@@ -8,9 +8,9 @@
                                    k))
 (defmethod clicked-inventory-cell :default [_ cell c])
 
-(defmulti create! (fn [[k] eid c]
+(defmulti create! (fn [[k] eid]
                     k))
-(defmethod create! :default [_ eid c])
+(defmethod create! :default [_ eid])
 
 (defmulti destroy! (fn [[k] eid c]
                     k))
@@ -39,9 +39,9 @@
                           k))
 (defmethod draw-gui-view :default [_ c])
 
-(defmulti create (fn [[k] context]
+(defmulti create (fn [[k]]
                    k))
-(defmethod create :default [[_ v] _context]
+(defmethod create :default [[_ v]]
   v)
 
 (defn direction [entity other-entity]

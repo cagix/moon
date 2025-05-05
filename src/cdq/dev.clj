@@ -56,12 +56,12 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (app/post-runnable! #(world/spawn-creature %
-                                            {:position [35 73]
-                                             :creature-id :creatures/dragon-red
-                                             :components {:entity/fsm {:fsm :fsms/npc
-                                                                       :initial-state :npc-sleeping}
-                                                          :entity/faction :evil}}))
+ (app/post-runnable! (fn [_]
+                       (world/spawn-creature {:position [35 73]
+                                              :creature-id :creatures/dragon-red
+                                              :components {:entity/fsm {:fsm :fsms/npc
+                                                                        :initial-state :npc-sleeping}
+                                                           :entity/faction :evil}})))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
@@ -80,10 +80,9 @@
 (defn- learn-skill! [{:keys [cdq.context/player-eid]} skill-id]
   (tx/add-skill player-eid (db/build skill-id)))
 
-(defn- create-item! [{:keys [cdq.context/player-eid] :as c}
+(defn- create-item! [{:keys [cdq.context/player-eid]}
                      item-id]
-  (world/spawn-item c
-                    (:position @player-eid)
+  (world/spawn-item (:position @player-eid)
                     (db/build item-id)))
 
 (defn- mouseover-grid-cell []

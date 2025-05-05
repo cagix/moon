@@ -479,7 +479,7 @@
    false)
 
  (defn handle [[_ audiovisual] {:keys [effect/target-position]} c]
-   (spawn-audiovisual c target-position audiovisual))
+   (spawn-audiovisual target-position audiovisual))
  )
 
 (defcomponent :effects/audiovisual
@@ -490,7 +490,7 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target-position]} c]
-    (spawn-audiovisual c target-position audiovisual)))
+    (spawn-audiovisual target-position audiovisual)))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)
@@ -519,8 +519,7 @@
               max-range))))
 
   (effect/handle [[_ projectile] {:keys [effect/source effect/target-direction]} c]
-    (spawn-projectile c
-                      {:position (projectile-start-point @source
+    (spawn-projectile {:position (projectile-start-point @source
                                                          target-direction
                                                          (projectile-size projectile))
                        :direction target-direction
@@ -560,8 +559,7 @@
   (effect/handle [[_ {:keys [property/id]}]
                   {:keys [effect/source effect/target-position]}
                   c]
-    (spawn-creature c
-                    {:position target-position
+    (spawn-creature {:position target-position
                      :creature-id id ; already properties/get called through one-to-one, now called again.
                      :components {:entity/fsm {:fsm :fsms/npc
                                                :initial-state :npc-idle}
@@ -592,8 +590,7 @@
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} c]
     (let [source* @source]
       (doseq [target (los/creatures-in-los-of-player c)]
-        (line-render c
-                     {:start (:position source*) #_(start-point source* target*)
+        (line-render {:start (:position source*) #_(start-point source* target*)
                       :end (:position @target)
                       :duration 0.05
                       :color [1 0 0 0.75]
@@ -630,15 +627,13 @@
           target* @target]
       (if (entity/in-range? source* target* maxrange)
         (do
-         (line-render c
-                      {:start (entity/start-point source* target*)
+         (line-render {:start (entity/start-point source* target*)
                        :end (:position target*)
                        :duration 0.05
                        :color [1 0 0 0.75]
                        :thick? true})
          (tx/effect c effect-ctx entity-effects))
-        (spawn-audiovisual c
-                           (entity/end-point source* target* maxrange)
+        (spawn-audiovisual (entity/end-point source* target* maxrange)
                            (db/build :audiovisuals/hit-ground)))))
 
   (effect/render [[_ {:keys [maxrange]}]
@@ -661,8 +656,7 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target]} c]
-    (spawn-audiovisual c
-                       (:position @target)
+    (spawn-audiovisual (:position @target)
                        audiovisual)))
 
 (defcomponent :effects.target/convert
@@ -713,9 +707,7 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
-         (spawn-audiovisual c
-                            (:position target*)
-                            (db/build :audiovisuals/damage))
+         (spawn-audiovisual (:position target*) (db/build :audiovisuals/damage))
          (tx/event c target (if (zero? new-hp-val) :kill :alert))
          (tx/text-effect c target (str "[RED]" dmg-amount "[]")))))))
 
@@ -776,16 +768,6 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
-(defn- spawn-enemies! [c]
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property world/tiled-map :creatures :id)]
-                  {:position position
-                   :creature-id (keyword creature-id)
-                   :components {:entity/fsm {:fsm :fsms/npc
-                                             :initial-state :npc-sleeping}
-                                :entity/faction :evil}})]
-    (spawn-creature c (update props :position utils/tile->middle)))
-  :ok)
-
 (declare dev-menu-config)
 
 (defn- create-stage-actors []
@@ -809,30 +791,25 @@
 (defn- reset-game! [{:keys [world-id]}]
   (reset-stage!)
   (timer/init!)
-  (let [{:keys [tiled-map start-position]} (level/create world-id)
-        _ (world/create! tiled-map)
-        context {}]
-    (spawn-enemies! context)
-    (assoc context :cdq.context/player-eid (spawn-creature context (player-entity-props start-position)))))
+  (let [{:keys [tiled-map start-position]} (level/create world-id)]
+    (world/create! tiled-map)
+    {:cdq.context/player-eid (spawn-creature (player-entity-props start-position))}))
 
 (defcomponent :entity/delete-after-duration
-  (entity/create [[_ duration] _c]
+  (entity/create [[_ duration]]
     (timer/create duration))
 
   (entity/tick! [[_ counter] eid _c]
     (when (timer/stopped? counter)
       (tx/mark-destroyed eid))))
 
-(defmethod entity/create :entity/hp
-  [[_ v] _c]
+(defmethod entity/create :entity/hp [[_ v]]
   [v v])
 
-(defmethod entity/create :entity/mana
-  [[_ v] _c]
+(defmethod entity/create :entity/mana [[_ v]]
   [v v])
 
-(defmethod entity/create :entity/projectile-collision
-  [[_ v] c]
+(defmethod entity/create :entity/projectile-collision [[_ v]]
   (assoc v :already-hit-bodies #{}))
 
 (defn- apply-action-speed-modifier [entity skill action-time]
@@ -840,8 +817,7 @@
      (or (entity/stat entity (:skill/action-time-modifier-key skill))
          1)))
 
-(defmethod entity/create :active-skill
-  [[_ eid [skill effect-ctx]] _c]
+(defmethod entity/create :active-skill [[_ eid [skill effect-ctx]]]
   {:eid eid
    :skill skill
    :effect-ctx effect-ctx
@@ -850,67 +826,54 @@
                  (apply-action-speed-modifier @eid skill)
                  timer/create)})
 
-(defmethod entity/create :npc-dead
-  [[_ eid] c]
+(defmethod entity/create :npc-dead [[_ eid]]
   {:eid eid})
 
-(defmethod entity/create :npc-idle
-  [[_ eid] c]
+(defmethod entity/create :npc-idle [[_ eid]]
   {:eid eid})
 
-(defmethod entity/create :npc-moving
-  [[_ eid movement-vector] _c]
+(defmethod entity/create :npc-moving [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector
    :counter (timer/create (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
-(defmethod entity/create :npc-sleeping
-  [[_ eid] c]
+(defmethod entity/create :npc-sleeping [[_ eid]]
   {:eid eid})
 
-(defmethod entity/create :player-dead
-  [[k] _c]
+(defmethod entity/create :player-dead [[k]]
   (db/build :player-dead/component.enter))
 
-(defmethod entity/create :player-idle
-  [[_ eid] _c]
+(defmethod entity/create :player-idle [[_ eid]]
   (safe-merge (db/build :player-idle/clicked-inventory-cell)
               {:eid eid}))
 
-(defmethod entity/create :player-item-on-cursor
-  [[_ eid item] _c]
+(defmethod entity/create :player-item-on-cursor [[_ eid item]]
   (safe-merge (db/build :player-item-on-cursor/component)
               {:eid eid
                :item item}))
 
-(defmethod entity/create :player-moving
-  [[_ eid movement-vector] c]
+(defmethod entity/create :player-moving [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector})
 
-(defmethod entity/create :stunned
-  [[_ eid duration] _c]
+(defmethod entity/create :stunned [[_ eid duration]]
   {:eid eid
    :counter (timer/create duration)})
 
-(defmethod entity/create! :entity/inventory
-  [[k items] eid _c]
+(defmethod entity/create! :entity/inventory [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
     (widgets.inventory/pickup-item eid item)))
 
-(defmethod entity/create! :entity/skills
-  [[k skills] eid _c]
+(defmethod entity/create! :entity/skills [[k skills] eid]
   (swap! eid assoc k nil)
   (doseq [skill skills]
     (tx/add-skill eid skill)))
 
-(defmethod entity/create! :entity/animation
-  [[_ animation] eid c]
+(defmethod entity/create! :entity/animation [[_ animation] eid]
   (swap! eid assoc :entity/image (animation/current-frame animation)))
 
-(defmethod entity/create! :entity/delete-after-animation-stopped?
-  [_ eid c]
+(defmethod entity/create! :entity/delete-after-animation-stopped? [_ eid]
   (-> @eid :entity/animation :looping? not assert))
 
 (def ^:private npc-fsm
@@ -963,15 +926,14 @@
      :dropped-item -> :player-idle]
     [:player-dead]]))
 
-(defmethod entity/create! :entity/fsm
-  [[k {:keys [fsm initial-state]}] eid c]
+(defmethod entity/create! :entity/fsm [[k {:keys [fsm initial-state]}] eid]
   (swap! eid assoc
          ; fsm throws when initial-state is not part of states, so no need to assert initial-state
          ; initial state is nil, so associng it. make bug report at reduce-fsm?
          k (assoc ((case fsm
                      :fsms/player player-fsm
                      :fsms/npc npc-fsm) initial-state nil) :state initial-state)
-         initial-state (entity/create [initial-state eid] c)))
+         initial-state (entity/create [initial-state eid])))
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
   [[_ {:keys [eid]}] _c]
@@ -1224,8 +1186,7 @@
       (when (:entity/item-on-cursor entity)
         (sound/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
-        (spawn-item c
-                    (item-place-position c entity)
+        (spawn-item (item-place-position c entity)
                     (:entity/item-on-cursor entity))))))
 
 (defcomponent :player-moving
@@ -1242,8 +1203,7 @@
 
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid c]
-    (spawn-audiovisual c
-                       (:position @eid)
+    (spawn-audiovisual (:position @eid)
                        (db/build audiovisuals-id))))
 
 (defcomponent :npc-dead
@@ -1258,8 +1218,7 @@
 
 (defcomponent :npc-sleeping
   (state/exit! [[_ {:keys [eid]}] c]
-    (delayed-alert c
-                   (:position       @eid)
+    (delayed-alert (:position       @eid)
                    (:entity/faction @eid)
                    0.2)
     (tx/text-effect c eid "[WHITE]!")))

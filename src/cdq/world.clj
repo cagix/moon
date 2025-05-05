@@ -90,19 +90,6 @@
          raycaster
          potential-field-cache)
 
-(defn create! [tiled-map]
-  (.bindRoot #'tiled-map tiled-map)
-  (.bindRoot #'content-grid (create-content-grid {:cell-size 16
-                                                  :width  (tiled/tm-width  tiled-map)
-                                                  :height (tiled/tm-height tiled-map)}))
-  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
-                                                            (tiled/tm-height tiled-map)
-                                                            (constantly false))))
-  (.bindRoot #'entity-ids (atom {}))
-  (.bindRoot #'grid (create-grid tiled-map))
-  (.bindRoot #'raycaster (create-raycaster grid))
-  (.bindRoot #'potential-field-cache (atom nil)))
-
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
                      :cdq.content-grid/content-cell
@@ -260,15 +247,15 @@
     :z-order z-order
     :rotation-angle (or rotation-angle 0)}))
 
-(defn- create-vs [components context]
+(defn- create-vs [components]
   (reduce (fn [m [k v]]
-            (assoc m k (entity/create [k v] context)))
+            (assoc m k (entity/create [k v])))
           {}
           components))
 
 (def id-counter (atom 0))
 
-(defn- spawn-entity [context position body components]
+(defn- spawn-entity [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
   (let [eid (atom (-> body
@@ -276,10 +263,10 @@
                       create-body
                       (safe-merge (-> components
                                       (assoc :entity/id (swap! id-counter inc))
-                                      (create-vs context)))))]
+                                      create-vs))))]
     (add-entity! eid)
     (doseq [component @eid]
-      (entity/create! component eid context))
+      (entity/create! component eid))
     eid))
 
 (def ^{:doc "For effects just to have a mouseover body size for debugging purposes."
@@ -289,10 +276,9 @@
    :height 0.5
    :z-order :z-order/effect})
 
-(defn spawn-audiovisual [c position {:keys [tx/sound entity/animation]}]
+(defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
   (sound/play sound)
-  (spawn-entity c
-                position
+  (spawn-entity position
                 effect-body-props
                 {:entity/animation animation
                  :entity/delete-after-animation-stopped? true}))
@@ -311,19 +297,17 @@
    :collides? true
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
-(defn spawn-creature [c {:keys [position creature-id components]}]
+(defn spawn-creature [{:keys [position creature-id components]}]
   (let [props (db/build creature-id)]
-    (spawn-entity c
-                  position
+    (spawn-entity position
                   (->body (:entity/body props))
                   (-> props
                       (dissoc :entity/body)
                       (assoc :entity/destroy-audiovisual :audiovisuals/creature-die)
                       (safe-merge components)))))
 
-(defn spawn-item [c position item]
-  (spawn-entity c
-                position
+(defn spawn-item [position item]
+  (spawn-entity position
                 {:width 0.75
                  :height 0.75
                  :z-order :z-order/on-ground}
@@ -332,20 +316,15 @@
                  :entity/clickable {:type :clickable/item
                                     :text (:property/pretty-name item)}}))
 
-(defn delayed-alert [c
-                     position
-                     faction
-                     duration]
-  (spawn-entity c
-                position
+(defn delayed-alert [position faction duration]
+  (spawn-entity position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
                  {:counter (timer/create duration)
                   :faction faction}}))
 
-(defn line-render [c {:keys [start end duration color thick?]}]
-  (spawn-entity c
-                start
+(defn line-render [{:keys [start end duration color thick?]}]
+  (spawn-entity start
                 effect-body-props
                 #:entity {:line-render {:thick? thick? :end end :color color}
                           :delete-after-duration duration}))
@@ -354,16 +333,14 @@
   {:pre [(:entity/image projectile)]}
   (first (:world-unit-dimensions (:entity/image projectile))))
 
-(defn spawn-projectile [c
-                        {:keys [position direction faction]}
+(defn spawn-projectile [{:keys [position direction faction]}
                         {:keys [entity/image
                                 projectile/max-range
                                 projectile/speed
                                 entity-effects
                                 projectile/piercing?] :as projectile}]
   (let [size (projectile-size projectile)]
-    (spawn-entity c
-                  position
+    (spawn-entity position
                   {:width size
                    :height size
                    :z-order :z-order/flying
@@ -406,3 +383,26 @@
                    (graphics/world-mouse-position)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
+
+(defn- spawn-enemies! []
+  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+                  {:position position
+                   :creature-id (keyword creature-id)
+                   :components {:entity/fsm {:fsm :fsms/npc
+                                             :initial-state :npc-sleeping}
+                                :entity/faction :evil}})]
+    (spawn-creature (update props :position tile->middle))))
+
+(defn create! [tiled-map]
+  (.bindRoot #'tiled-map tiled-map)
+  (.bindRoot #'content-grid (create-content-grid {:cell-size 16
+                                                  :width  (tiled/tm-width  tiled-map)
+                                                  :height (tiled/tm-height tiled-map)}))
+  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
+                                                            (tiled/tm-height tiled-map)
+                                                            (constantly false))))
+  (.bindRoot #'entity-ids (atom {}))
+  (.bindRoot #'grid (create-grid tiled-map))
+  (.bindRoot #'raycaster (create-raycaster grid))
+  (.bindRoot #'potential-field-cache (atom nil))
+  (spawn-enemies!))

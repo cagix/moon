@@ -25,8 +25,7 @@
          (let [old-state-obj (entity/state-obj @eid)
                new-state-obj [new-state-k (entity/create (if params
                                                            [new-state-k eid params]
-                                                           [new-state-k eid])
-                                                         context)]]
+                                                           [new-state-k eid]))]]
            (when (:entity/player? @eid)
              (when-let [cursor-key (state/cursor new-state-obj)]
                (graphics/set-cursor! cursor-key)))
