@@ -776,8 +776,8 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
-(defn- spawn-enemies! [{:keys [cdq.context/tiled-map] :as c}]
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+(defn- spawn-enemies! [c]
+  (doseq [props (for [[position creature-id] (tiled/positions-with-property world/tiled-map :creatures :id)]
                   {:position position
                    :creature-id (keyword creature-id)
                    :components {:entity/fsm {:fsm :fsms/npc
@@ -811,8 +811,7 @@
   (timer/init!)
   (let [{:keys [tiled-map start-position]} (level/create world-id)
         _ (world/create! tiled-map)
-        context {:cdq.context/tiled-map tiled-map
-                 :cdq.context/factions-iterations {:good 15 :evil 5}
+        context {:cdq.context/factions-iterations {:good 15 :evil 5}
                  :world/potential-field-cache (atom nil)}]
     (spawn-enemies! context)
     (assoc context :cdq.context/player-eid (spawn-creature context (player-entity-props start-position)))))
@@ -1371,9 +1370,8 @@
                 (swap! explored-tile-corners assoc (mapv int position) true))
               Color/WHITE))))))
 
-(defn- render-tiled-map! [{:keys [cdq.context/tiled-map]
-                           :as context}]
-  (graphics/draw-tiled-map tiled-map
+(defn- render-tiled-map! [context]
+  (graphics/draw-tiled-map world/tiled-map
                            (tile-color-setter world/raycaster
                                               world/explored-tile-corners
                                               (camera/position (:camera graphics/world-viewport))))
@@ -1424,7 +1422,7 @@
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [_context]
+(defn- highlight-mouseover-tile []
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (graphics/world-mouse-position))
           cell (world/grid [x y])]
@@ -1434,9 +1432,9 @@
                                   :air  [1 1 0 0.5]
                                   :none [1 0 0 0.5]))))))
 
-(defn- draw-after-entities! [c]
+(defn- draw-after-entities! [_context]
   #_(geom-test)
-  (highlight-mouseover-tile c))
+  (highlight-mouseover-tile))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)

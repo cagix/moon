@@ -82,13 +82,15 @@
       (set-arr arr @cell grid/blocks-vision?))
     [arr width height]))
 
-(declare ^:private content-grid
+(declare tiled-map
+         ^:private content-grid
          ^:private entity-ids
          explored-tile-corners
          grid
          raycaster)
 
 (defn create! [tiled-map]
+  (.bindRoot #'tiled-map tiled-map)
   (.bindRoot #'content-grid (create-content-grid {:cell-size 16
                                                   :width  (tiled/tm-width  tiled-map)
                                                   :height (tiled/tm-height tiled-map)}))
