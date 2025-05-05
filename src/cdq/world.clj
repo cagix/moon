@@ -22,12 +22,16 @@
    :cell-h cell-size})
 
 (declare ^:private content-grid
-         ^:private entity-ids)
+         ^:private entity-ids
+         explored-tile-corners)
 
 (defn create! [tiled-map]
   (.bindRoot #'content-grid (create-content-grid {:cell-size 16
                                                   :width  (tiled/tm-width  tiled-map)
                                                   :height (tiled/tm-height tiled-map)}))
+  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
+                                                            (tiled/tm-height tiled-map)
+                                                            (constantly false))))
   (.bindRoot #'entity-ids (atom {})))
 
 (defn- active-entities* [{:keys [grid]} center-entity]

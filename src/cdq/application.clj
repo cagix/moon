@@ -874,10 +874,7 @@
         grid (create-grid tiled-map)
         _ (world/create! tiled-map)
         _ (timer/init!)
-        context {:cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
-                                                                           (tiled/tm-height tiled-map)
-                                                                           (constantly false)))
-                 :cdq.context/grid grid
+        context {:cdq.context/grid grid
                  :cdq.context/tiled-map tiled-map
                  :cdq.context/raycaster (raycaster grid)
                  :cdq.context/factions-iterations {:good 15 :evil 5}
@@ -1445,12 +1442,11 @@
               Color/WHITE))))))
 
 (defn- render-tiled-map! [{:keys [cdq.context/tiled-map
-                                  cdq.context/raycaster
-                                  cdq.context/explored-tile-corners]
+                                  cdq.context/raycaster]
                            :as context}]
   (graphics/draw-tiled-map tiled-map
                            (tile-color-setter raycaster
-                                              explored-tile-corners
+                                              world/explored-tile-corners
                                               (camera/position (:camera graphics/world-viewport))))
   context)
 
