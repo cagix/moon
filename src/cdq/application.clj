@@ -147,8 +147,8 @@
                             (graphics/draw-image (graphics/sub-sprite contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
                             (render-infostr-on-bar (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn [{:keys [cdq.context/player-eid]}]
-                       (let [player-entity @player-eid
+    (ui-actor {:draw (fn [_]
+                       (let [player-entity @world/player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
@@ -173,7 +173,7 @@
              :act  check-remove-message}))
 
 (defn- player-state-actor []
-  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @(:cdq.context/player-eid %))
+  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @world/player-eid)
                                           %)}))
 
 (Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))
@@ -350,22 +350,20 @@
   (fn [eid c]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid
-                                       {:keys [cdq.context/player-eid]
-                                        :as c}]
+(defmethod on-clicked :clickable/item [eid c]
   (let [item (:entity/item @eid)]
     (cond
      (Actor/.isVisible (stage/get-inventory))
      (do
       (tx/sound "bfxr_takeit")
       (tx/mark-destroyed eid)
-      (tx/event c player-eid :pickup-item item))
+      (tx/event c world/player-eid :pickup-item item))
 
-     (inventory/can-pickup-item? (:entity/inventory @player-eid) item)
+     (inventory/can-pickup-item? (:entity/inventory @world/player-eid) item)
      (do
       (tx/sound "bfxr_pickup")
       (tx/mark-destroyed eid)
-      (widgets.inventory/pickup-item player-eid item))
+      (widgets.inventory/pickup-item world/player-eid item))
 
      :else
      (do
@@ -392,10 +390,10 @@
                                               (tx/sound "bfxr_denied")
                                               (stage/show-player-msg! "Too far away"))]))
 
-(defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} ^Actor actor]
+(defn- inventory-cell-with-item? [c ^Actor actor]
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
-       (get-in (:entity/inventory @player-eid)
+       (get-in (:entity/inventory @world/player-eid)
                (.getUserObject (.getParent actor)))))
 
 (defn- mouseover-actor->cursor [c]
@@ -757,17 +755,6 @@
   (effect/handle [[_ duration] {:keys [effect/target]} c]
     (tx/event c target :stun duration)))
 
-(defn- player-entity-props [start-position]
-  {:position (utils/tile->middle start-position)
-   :creature-id :creatures/vampire
-   :components {:entity/fsm {:fsm :fsms/player
-                             :initial-state :player-idle}
-                :entity/faction :good
-                :entity/player? true
-                :entity/free-skill-points 3
-                :entity/clickable {:type :clickable/player}
-                :entity/click-distance-tiles 1.5}})
-
 (declare dev-menu-config)
 
 (defn- create-stage-actors []
@@ -791,9 +778,8 @@
 (defn- reset-game! [{:keys [world-id]}]
   (reset-stage!)
   (timer/init!)
-  (let [{:keys [tiled-map start-position]} (level/create world-id)]
-    (world/create! tiled-map)
-    {:cdq.context/player-eid (spawn-creature (player-entity-props start-position))}))
+  (world/create! (level/create world-id))
+  {})
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
@@ -1272,17 +1258,15 @@
     (tx/event c eid :pickup-item item)
     (remove-item eid cell)))
 
-(defn- player-state-input! [{:keys [cdq.context/player-eid]
-                             :as context}]
-  (entity/manual-tick (entity/state-obj @player-eid) context)
+(defn- player-state-input! [context]
+  (entity/manual-tick (entity/state-obj @world/player-eid) context)
   context)
 
 (defn- assoc-active-entities [context]
   (assoc context :cdq.game/active-entities (world/get-active-entities context)))
 
-(defn- set-camera-on-player! [{:keys [cdq.context/player-eid]
-                               :as context}]
-  (graphics/set-camera-position! (:position @player-eid))
+(defn- set-camera-on-player! [context]
+  (graphics/set-camera-position! (:position @world/player-eid))
   context)
 
 (defn- clear-screen! [context]
@@ -1475,21 +1459,20 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defn- draw-faction-ellipse
-  [_
-   {:keys [entity/faction] :as entity}
-   {:keys [cdq.context/player-eid] :as c}]
-  (let [player @player-eid]
+(defn- draw-faction-ellipse [_
+                             {:keys [entity/faction] :as entity}
+                             c]
+  (let [player @world/player-eid]
     (graphics/with-line-width 3
       #(graphics/ellipse (:position entity)
-                             (:half-width entity)
-                             (:half-height entity)
-                             (cond (= faction (entity/enemy player))
-                                   enemy-color
-                                   (= faction (:entity/faction player))
-                                   friendly-color
-                                   :else
-                                   neutral-color)))))
+                         (:half-width entity)
+                         (:half-height entity)
+                         (cond (= faction (entity/enemy player))
+                               enemy-color
+                               (= faction (:entity/faction player))
+                               friendly-color
+                               :else
+                               neutral-color)))))
 
 (defn- render-active-effect [context effect-ctx effect]
   (run! #(effect/render % effect-ctx context) effect))
@@ -1559,10 +1542,9 @@
           :active-skill draw-skill-image-and-active-effect}})
 
 (defn- render-entities!
-  [{:keys [cdq.context/player-eid
-           cdq.game/active-entities] :as c}]
+  [{:keys [cdq.game/active-entities] :as c}]
   (let [entities (map deref active-entities)
-        player @player-eid
+        player @world/player-eid
         {:keys [below
                 default
                 above
@@ -1606,12 +1588,10 @@
   (Stage/.act ui/stage)
   context)
 
-(defn- update-mouseover-entity! [{:keys [cdq.context/mouseover-eid
-                                         cdq.context/player-eid]
-                                  :as context}]
+(defn- update-mouseover-entity! [{:keys [cdq.context/mouseover-eid] :as context}]
   (let [new-eid (if (stage/mouse-on-actor?)
                   nil
-                  (let [player @player-eid
+                  (let [player @world/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
                                      (grid/point->entities world/grid (graphics/world-mouse-position)))]
                     (->> cdq.world/render-z-order
@@ -1625,14 +1605,11 @@
       (swap! new-eid assoc :entity/mouseover? true))
     (assoc context :cdq.context/mouseover-eid new-eid)))
 
-(defn- set-paused-flag [{:keys [cdq.context/player-eid
-                                error ; FIXME ! not `::` keys so broken !
-                                ]
-                         :as context}]
+(defn- set-paused-flag [context]
   (let [pausing? true]
-    (assoc context :cdq.context/paused? (or error
+    (assoc context :cdq.context/paused? (or #_error
                                             (and pausing?
-                                                 (state/pause-game? (entity/state-obj @player-eid))
+                                                 (state/pause-game? (entity/state-obj @world/player-eid))
                                                  (not (or (input/key-just-pressed? :p)
                                                           (input/key-pressed?      :space))))))))
 

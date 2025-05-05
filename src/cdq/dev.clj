@@ -77,12 +77,11 @@
  )
 
 
-(defn- learn-skill! [{:keys [cdq.context/player-eid]} skill-id]
-  (tx/add-skill player-eid (db/build skill-id)))
+(defn- learn-skill! [_context skill-id]
+  (tx/add-skill world/player-eid (db/build skill-id)))
 
-(defn- create-item! [{:keys [cdq.context/player-eid]}
-                     item-id]
-  (world/spawn-item (:position @player-eid)
+(defn- create-item! [_context item-id]
+  (world/spawn-item (:position @world/player-eid)
                     (db/build item-id)))
 
 (defn- mouseover-grid-cell []

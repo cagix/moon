@@ -88,7 +88,8 @@
          explored-tile-corners
          grid
          raycaster
-         potential-field-cache)
+         potential-field-cache
+         player-eid)
 
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
@@ -103,7 +104,7 @@
   "Expensive operation.
 
   Active entities are those which are nearby the position of the player and about one screen away."
-  [{:keys [cdq.context/player-eid]}]
+  [_context]
   (active-entities* content-grid @player-eid))
 
 (defn- set-cells! [grid eid]
@@ -393,7 +394,18 @@
                                 :entity/faction :evil}})]
     (spawn-creature (update props :position tile->middle))))
 
-(defn create! [tiled-map]
+(defn- player-entity-props [start-position]
+  {:position (tile->middle start-position)
+   :creature-id :creatures/vampire
+   :components {:entity/fsm {:fsm :fsms/player
+                             :initial-state :player-idle}
+                :entity/faction :good
+                :entity/player? true
+                :entity/free-skill-points 3
+                :entity/clickable {:type :clickable/player}
+                :entity/click-distance-tiles 1.5}})
+
+(defn create! [{:keys [tiled-map start-position]}]
   (.bindRoot #'tiled-map tiled-map)
   (.bindRoot #'content-grid (create-content-grid {:cell-size 16
                                                   :width  (tiled/tm-width  tiled-map)
@@ -405,4 +417,5 @@
   (.bindRoot #'grid (create-grid tiled-map))
   (.bindRoot #'raycaster (create-raycaster grid))
   (.bindRoot #'potential-field-cache (atom nil))
-  (spawn-enemies!))
+  (spawn-enemies!)
+  (.bindRoot #'player-eid (spawn-creature (player-entity-props start-position))))

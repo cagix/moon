@@ -15,7 +15,7 @@
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player-eid))
-#_(defn ->skill-window [{:keys [cdq.context/player-eid] :as c}]
+#_(defn ->skill-window [c]
     (ui/window {:title "Skills"
                 :id :skill-window
                 :visible? false
@@ -30,7 +30,7 @@
                                                         ; => should probably build this window @ game start
                                                         (fn [context]
                                                           (state/clicked-skillmenu-skill
-                                                           (entity/state-obj @player-eid)
+                                                           (entity/state-obj @world/player-eid)
                                                            (db/build id)
                                                            c)))]]
                          (do

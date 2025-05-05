@@ -9,7 +9,8 @@
                             ui-stack
                             add-tooltip!
                             remove-tooltip!]
-             :as ui])
+             :as ui]
+            [cdq.world :as world])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
@@ -39,9 +40,9 @@
 (defn- draw-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (let [{:keys [cdq.context/player-eid]} (ui/application-state this)
+      (let [_context (ui/application-state this)
             ^Actor this this]
-        (draw-cell-rect @player-eid
+        (draw-cell-rect @world/player-eid
                         (.getX this)
                         (.getY this)
                         (ui/hit this (graphics/mouse-position))
@@ -87,8 +88,8 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [_event _x _y]
-                            (let [{:keys [cdq.context/player-eid] :as context} (ui/application-state stack)]
-                              (entity/clicked-inventory-cell (entity/state-obj @player-eid)
+                            (let [context (ui/application-state stack)]
+                              (entity/clicked-inventory-cell (entity/state-obj @world/player-eid)
                                                              cell
                                                              context)))))
     stack))
