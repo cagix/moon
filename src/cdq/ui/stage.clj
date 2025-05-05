@@ -5,29 +5,28 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
 
-(defn mouse-on-actor? [stage]
-  (let [[x y] (graphics/mouse-position #_(Stage/.getViewport stage))]
-    (Stage/.hit stage x y true)))
+(defn mouse-on-actor? []
+  (let [[x y] (graphics/mouse-position #_(Stage/.getViewport ui/stage))]
+    (Stage/.hit ui/stage x y true)))
 
-(defn add-actor [stage actor]
-  (Stage/.addActor stage actor))
+(defn add-actor [actor]
+  (Stage/.addActor ui/stage actor))
 
-(defn get-inventory [stage]
-  (get (:windows stage) :inventory-window))
+(defn get-inventory []
+  (get (:windows ui/stage) :inventory-window))
 
-(defn get-action-bar [stage]
-  (let [group (:ui/action-bar (:action-bar-table stage))]
+(defn get-action-bar []
+  (let [group (:ui/action-bar (:action-bar-table ui/stage))]
     {:horizontal-group group
      :button-group (Actor/.getUserObject (Group/.findActor group "action-bar/button-group"))}))
 
-(defn selected-skill [stage]
-  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar stage)))]
+(defn selected-skill []
+  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar)))]
     (Actor/.getUserObject skill-button)))
 
-(defn error-window! [stage throwable]
+(defn error-window! [throwable]
   (pretty-pst throwable)
-  (add-actor stage
-             (ui/window {:title "Error"
+  (add-actor (ui/window {:title "Error"
                          :rows [[(ui/label (binding [*print-level* 3]
                                              (with-err-str
                                                (clojure.repl/pst throwable))))]]

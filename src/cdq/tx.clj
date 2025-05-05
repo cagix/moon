@@ -59,22 +59,20 @@
 (defn show-player-msg [{:keys [cdq.context/player-message]} text]
   (swap! player-message assoc :text text :counter 0))
 
-(defn toggle-inventory-window [{:keys [cdq.context/stage]}]
-  (ui/toggle-visible! (stage/get-inventory stage)))
+(defn toggle-inventory-window [_context]
+  (ui/toggle-visible! (stage/get-inventory)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [cdq.context/stage]}
-                  {:keys [title text button-text on-click]}]
-  (assert (not (::modal stage)))
-  (stage/add-actor stage
-                   (ui/window {:title title
+(defn show-modal [{:keys [title text button-text on-click]}]
+  (assert (not (::modal ui/stage)))
+  (stage/add-actor (ui/window {:title title
                                :rows [[(ui/label text)]
                                       [(ui/text-button button-text
                                                        (fn []
-                                                         (Actor/.remove (::modal stage))
+                                                         (Actor/.remove (::modal ui/stage))
                                                          (on-click)))]]
                                :id ::modal
                                :modal? true
@@ -82,9 +80,8 @@
                                                  (* (:height graphics/ui-viewport) (/ 3 4))]
                                :pack? true})))
 
-(defn- action-bar-add-skill [{:keys [cdq.context/stage]}
-                             {:keys [property/id entity/image] :as skill}]
-  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar stage)
+(defn- action-bar-add-skill [{:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar)
         button (ui/image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
     (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
@@ -92,24 +89,23 @@
     (ButtonGroup/.add button-group ^Button button)
     nil))
 
-(defn- action-bar-remove-skill [{:keys [cdq.context/stage]}
-                                {:keys [property/id]}]
-  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar stage)
+(defn- action-bar-remove-skill [{:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar)
         button (get horizontal-group id)]
     (Actor/.remove button)
     (ButtonGroup/.remove button-group ^Button button)
     nil))
 
-(defn add-skill [c eid {:keys [property/id] :as skill}]
+(defn add-skill [eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
   (when (:entity/player? @eid)
-    (action-bar-add-skill c skill))
+    (action-bar-add-skill skill))
   (swap! eid assoc-in [:entity/skills id] skill))
 
-(defn remove-skill [c eid {:keys [property/id] :as skill}]
+(defn remove-skill [eid {:keys [property/id] :as skill}]
   {:pre [(entity/has-skill? @eid skill)]}
   (when (:entity/player? @eid)
-    (action-bar-remove-skill c skill))
+    (action-bar-remove-skill skill))
   (swap! eid update :entity/skills dissoc id))
 
 (defn- add-text-effect [entity {:keys [cdq.context/elapsed-time]} text]

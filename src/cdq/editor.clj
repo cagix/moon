@@ -2,6 +2,7 @@
   (:require [cdq.application :refer [state]]
             [cdq.db :as db]
             [cdq.schema :as schema]
+            [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
             [cdq.property :as property]
             [cdq.ui :refer [horizontal-separator-cell
@@ -26,9 +27,6 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
-
-(defn- stage-add! [actor]
-  (stage/add-actor (:cdq.context/stage @state) actor))
 
 (defn- info-text [property]
   (binding [*print-level* 3]
@@ -72,7 +70,7 @@
   #(try (f)
         (Actor/.remove window)
         (catch Throwable t
-          (stage/error-window! (:cdq.context/stage @state) t))))
+          (stage/error-window! t))))
 
 (defn- async-write-to-file! [{:keys [cdq/db]}]
   (db/async-write-to-file! db))
@@ -173,7 +171,7 @@
                                (let [[k _] (Actor/.getUserObject table)]
                                  (Actor/.setUserObject table [k sound-name]))))
                 (play-button sound-name)])]
-    (stage-add! (scrollable-choose-window rows))))
+    (stage/add-actor (scrollable-choose-window rows))))
 
 (defn- columns [table sound-name]
   [(text-button sound-name
@@ -259,7 +257,7 @@
                                             (redo-rows (conj property-ids id)))]
                         (.add window ^Actor (overview-table @state property-type clicked-id-fn))
                         (.pack window)
-                        (stage-add! window))))]
+                        (stage/add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/build (get-db) property-id @state)
               image-widget (image->widget (property/->image property)
@@ -298,7 +296,7 @@
                                               (redo-rows id))]
                           (.add window ^Actor (overview-table @state property-type clicked-id-fn))
                           (.pack window)
-                          (stage-add! window)))))]
+                          (stage/add-actor window)))))]
       [(when property-id
          (let [property (db/build (get-db) property-id @state)
                image-widget (image->widget (property/->image property)
@@ -319,7 +317,7 @@
        first))
 
 (defn- get-editor-window []
-  (:property-editor-window (:cdq.context/stage @state)))
+  (:property-editor-window ui/stage))
 
 (defn- window->property-value []
  (let [window (get-editor-window)
@@ -331,7 +329,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (Actor/.remove (get-editor-window))
-    (stage-add! (editor-window prop-value))))
+    (stage/add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (schema/schema-of (:cdq/schemas @state) k)
@@ -402,7 +400,7 @@
                                                         map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
-    (stage-add! window)))
+    (stage/add-actor window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -462,7 +460,7 @@
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
-                  #(stage-add! (scrollable-choose-window (texture-rows)))
+                  #(stage/add-actor (scrollable-choose-window (texture-rows)))
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
@@ -475,7 +473,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn edit-property [id]
-  (stage-add! (editor-window (db/get-raw (get-db) id))))
+  (stage/add-actor (editor-window (db/get-raw (get-db) id))))
 
 ; TODO unused code below
 
@@ -525,4 +523,4 @@
   ; because assets are searhed and loaded differently ...
   (doseq [actor [(background-image context "images/moon_background.png")
                  (tabs-table       context "custom label text here")]]
-    (stage/add-actor context actor)))
+    (stage/add-actor actor)))

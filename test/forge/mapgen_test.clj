@@ -129,7 +129,7 @@
               :rows [[(ui/label (with-out-str (pprint (db/build db level-id c))))]
                      [(text-button "Generate" #(try (generate-screen-ctx c (db/build db level-id c))
                                                     (catch Throwable t
-                                                      #_(stage/error-window! (:cdq.context/stage @state) t)
+                                                      #_(stage/error-window! t)
                                                       (println t))))]]
               :pack? true}))
 

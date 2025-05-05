@@ -1,5 +1,8 @@
 (ns cdq.ui
-  (:import (com.badlogic.gdx.graphics Texture)
+  (:import (cdq StageWithState)
+           (clojure.lang ILookup)
+           (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window)
@@ -7,10 +10,19 @@
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)
-           (cdq StageWithState)))
+           (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)))
 
-(defn load! [{:keys [skin-scale]}]
+(declare ^StageWithState stage)
+
+(defn find-actor-with-id [^Group group id]
+  (let [actors (.getChildren group)
+        ids (keep Actor/.getUserObject actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+
+(defn load! [{:keys [skin-scale]} batch viewport]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
@@ -27,15 +39,16 @@
   ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
-
-(defn find-actor-with-id [^Group group id]
-  (let [actors (.getChildren group)
-        ids (keep Actor/.getUserObject actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
+  (let [stage (proxy [StageWithState ILookup] [viewport batch]
+                (valAt
+                  ([id]
+                   (find-actor-with-id (StageWithState/.getRoot this) id))
+                  ([id not-found]
+                   (or (find-actor-with-id (StageWithState/.getRoot this) id)
+                       not-found))))]
+    (.setInputProcessor Gdx/input stage)
+    (.bindRoot #'stage stage)))
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))

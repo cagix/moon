@@ -61,9 +61,7 @@
             [clojure.math :as math]
             [clojure.pprint :refer [pprint]]
             [reduce-fsm :as fsm])
-  (:import (cdq StageWithState)
-           (clojure.lang ILookup)
-           (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color Colors)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
@@ -358,12 +356,11 @@
     (:type (:entity/clickable @eid))))
 
 (defmethod on-clicked :clickable/item [eid
-                                       {:keys [cdq.context/player-eid
-                                               cdq.context/stage]
+                                       {:keys [cdq.context/player-eid]
                                         :as c}]
   (let [item (:entity/item @eid)]
     (cond
-     (Actor/.isVisible (stage/get-inventory stage))
+     (Actor/.isVisible (stage/get-inventory))
      (do
       (tx/sound "bfxr_takeit")
       (tx/mark-destroyed eid)
@@ -373,7 +370,7 @@
      (do
       (tx/sound "bfxr_pickup")
       (tx/mark-destroyed eid)
-      (widgets.inventory/pickup-item c player-eid item))
+      (widgets.inventory/pickup-item player-eid item))
 
      :else
      (do
@@ -406,8 +403,8 @@
        (get-in (:entity/inventory @player-eid)
                (.getUserObject (.getParent actor)))))
 
-(defn- mouseover-actor->cursor [{:keys [cdq.context/stage] :as c}]
-  (let [actor (stage/mouse-on-actor? stage)]
+(defn- mouseover-actor->cursor [c]
+  (let [actor (stage/mouse-on-actor?)]
     (cond
      (inventory-cell-with-item? c actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)        :cursors/move-window
@@ -423,11 +420,10 @@
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [{:keys [cdq.context/mouseover-eid
-                                  cdq.context/stage] :as c} eid]
+(defn- interaction-state [{:keys [cdq.context/mouseover-eid] :as c} eid]
   (let [entity @eid]
     (cond
-     (stage/mouse-on-actor? stage)
+     (stage/mouse-on-actor?)
      [(mouseover-actor->cursor c)
       (fn [] nil)] ; handled by actors themself, they check player state
 
@@ -436,7 +432,7 @@
      (clickable-entity-interaction c entity mouseover-eid)
 
      :else
-     (if-let [skill-id (stage/selected-skill stage)]
+     (if-let [skill-id (stage/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx c eid)
              state (skill/usable-state entity skill effect-ctx)]
@@ -475,7 +471,7 @@
 
 (defmethod entity/manual-tick :player-item-on-cursor [[_ {:keys [eid]}] c]
   (when (and (input/button-just-pressed? :left)
-             (world-item? c))
+             (world-item?))
     (tx/event c eid :drop-item)))
 
 (comment
@@ -926,10 +922,9 @@
    (player-state-actor)
    (player-message-actor)])
 
-(defn- reset-stage! [{:keys [cdq.context/stage] :as context}]
-  (Stage/.clear stage)
-  (run! #(stage/add-actor stage %)
-        (create-stage-actors context)))
+(defn- reset-stage! [context]
+  (Stage/.clear ui/stage)
+  (run! stage/add-actor (create-stage-actors context)))
 
 (defn- reset-game! [context {:keys [world-id] :as _config}]
   (reset-stage! context)
@@ -1085,16 +1080,16 @@
    :counter (timer/create elapsed-time duration)})
 
 (defmethod entity/create! :entity/inventory
-  [[k items] eid c]
+  [[k items] eid _c]
   (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
-    (widgets.inventory/pickup-item c eid item)))
+    (widgets.inventory/pickup-item eid item)))
 
 (defmethod entity/create! :entity/skills
-  [[k skills] eid c]
+  [[k skills] eid _c]
   (swap! eid assoc k nil)
   (doseq [skill skills]
-    (tx/add-skill c eid skill)))
+    (tx/add-skill eid skill)))
 
 (defmethod entity/create! :entity/animation
   [[_ animation] eid c]
@@ -1165,8 +1160,8 @@
          initial-state (entity/create [initial-state eid] c)))
 
 (defmethod entity/draw-gui-view :player-item-on-cursor
-  [[_ {:keys [eid]}] c]
-  (when (not (world-item? c))
+  [[_ {:keys [eid]}] _c]
+  (when (not (world-item?))
     (graphics/draw-centered (:entity/image (:entity/item-on-cursor @eid))
                             (graphics/mouse-position))))
 
@@ -1414,12 +1409,12 @@
                             modal/title
                             modal/text
                             modal/button-text]}]
-                 c]
+                 _c]
     (sound/play sound)
-    (tx/show-modal c {:title title
-                      :text text
-                      :button-text button-text
-                      :on-click (fn [])})))
+    (tx/show-modal {:title title
+                    :text text
+                    :button-text button-text
+                    :on-click (fn [])})))
 
 (defcomponent :player-item-on-cursor
   (state/cursor [_] :cursors/hand-grab)
@@ -1487,7 +1482,7 @@
      (do
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
-      (set-item c eid cell item-on-cursor)
+      (set-item eid cell item-on-cursor)
       (tx/event c eid :dropped-item))
 
      ; STACK ITEMS
@@ -1507,8 +1502,8 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (remove-item c eid cell)
-      (set-item c eid cell item-on-cursor)
+      (remove-item eid cell)
+      (set-item eid cell item-on-cursor)
       (tx/event c eid :dropped-item)
       (tx/event c eid :pickup-item item-in-cell)))))
 
@@ -1522,7 +1517,7 @@
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (sound/play pickup-item-sound)
     (tx/event c eid :pickup-item item)
-    (remove-item c eid cell)))
+    (remove-item eid cell)))
 
 (defn- player-state-input! [{:keys [cdq.context/player-eid]
                              :as context}]
@@ -1772,7 +1767,7 @@
                          :up? true})))
 
 (defn- draw-world-item-if-exists [{:keys [item]} entity c]
-  (when (world-item? c)
+  (when (world-item?)
     (graphics/draw-centered (:entity/image item)
                             (item-place-position c entity))))
 
@@ -1850,24 +1845,21 @@
                                     (f context))))
   context)
 
-(defn- stage-draw! [{:keys [^StageWithState cdq.context/stage]
-                     :as context}]
-  (set! (.applicationState stage) context)
-  (Stage/.draw stage)
+(defn- stage-draw! [context]
+  (set! (.applicationState ui/stage) context)
+  (Stage/.draw ui/stage)
   context)
 
-(defn- stage-act! [{:keys [^StageWithState cdq.context/stage]
-                    :as context}]
-  (set! (.applicationState stage) context)
-  (Stage/.act stage)
+(defn- stage-act! [context]
+  (set! (.applicationState ui/stage) context)
+  (Stage/.act ui/stage)
   context)
 
 (defn- update-mouseover-entity! [{:keys [cdq.context/grid
                                          cdq.context/mouseover-eid
-                                         cdq.context/player-eid
-                                         cdq.context/stage]
+                                         cdq.context/player-eid]
                                   :as context}]
-  (let [new-eid (if (stage/mouse-on-actor? stage)
+  (let [new-eid (if (stage/mouse-on-actor?)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
@@ -1932,7 +1924,7 @@
       (catch Throwable t
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
-     (stage/error-window! (:cdq.context/stage context) t)
+     (stage/error-window! t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   context)
 
@@ -1963,30 +1955,18 @@
     (when (input/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed))))
   context)
 
-(defn- window-controls! [{:keys [cdq.context/stage]
-                          :as context}]
+(defn- window-controls! [context]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (input/key-just-pressed? (get window-hotkeys window-id))]
-      (ui/toggle-visible! (get (:windows stage) window-id))))
+      (ui/toggle-visible! (get (:windows ui/stage) window-id))))
   (when (input/key-just-pressed? :escape)
-    (let [windows (Group/.getChildren (:windows stage))]
+    (let [windows (Group/.getChildren (:windows ui/stage))]
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows))))
   context)
-
-(defn- create-stage! [batch viewport]
-  (let [stage (proxy [StageWithState ILookup] [viewport batch]
-                (valAt
-                  ([id]
-                   (ui/find-actor-with-id (StageWithState/.getRoot this) id))
-                  ([id not-found]
-                   (or (ui/find-actor-with-id (StageWithState/.getRoot this) id)
-                       not-found))))]
-    (.setInputProcessor Gdx/input stage)
-    stage))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -2113,26 +2093,12 @@
     (map->DB {:db/data (zipmap (map :property/id properties) properties)
               :db/properties-file properties-file})))
 
-; * stage -> Remove StageWithState & dependencies to 'cdq.application'
-
-; * database
-; => TODO what to do with cdq/schemas ?
-
-; * 'world'
-
 (defn- create-initial-context! [config]
   (let [schemas (-> (:schemas config) io/resource slurp edn/read-string)]
-    {:cdq.context/stage (create-stage! @#'graphics/batch
-                                       graphics/ui-viewport) ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
-     ; -> tests ?
-     :cdq/schemas schemas
+    {:cdq/schemas schemas
      :cdq/db (create-db schemas)}))
 
-(def state
-  "Do not call `swap!`, instead use `post-runnable!`, as the main game loop has side-effects and should not be retried.
-
-  (Should probably make this private and have a `get-state` function)"
-  (atom nil))
+(def state (atom nil))
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
@@ -2143,9 +2109,12 @@
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
-                            (ui/load! (:vis-ui config)) ; TODO we don't do dispose! ....
                             (assets/create! (:assets config))
                             (graphics/create! (:graphics config))
+                            (ui/load! (:vis-ui config)
+                                      graphics/batch ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
+     ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
+                                      graphics/ui-viewport) ; TODO we don't do dispose! ....
                             (reset! state (reset-game! (create-initial-context! config) config)))
 
                           (dispose []
@@ -2236,8 +2205,7 @@
                                                          property-type
                                                          (requiring-resolve 'cdq.editor/edit-property)))
                                     (.pack window)
-                                    (stage/add-actor (:cdq.context/stage context)
-                                                     window)))})}]
+                                    (stage/add-actor window)))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn [{:keys [cdq.context/mouseover-eid]}]
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]

@@ -194,8 +194,8 @@
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
 
-(defn world-item? [{:keys [cdq.context/stage]}]
-  (not (stage/mouse-on-actor? stage)))
+(defn world-item? []
+  (not (stage/mouse-on-actor?)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners

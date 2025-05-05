@@ -80,7 +80,7 @@
 (defn- learn-skill! [{:keys [cdq.context/player-eid
                              cdq/db] :as c}
                      skill-id]
-  (tx/add-skill c player-eid (db/build db skill-id c)))
+  (tx/add-skill player-eid (db/build db skill-id c)))
 
 (defn- create-item! [{:keys [cdq.context/player-eid
                              cdq/db] :as c}
@@ -221,15 +221,11 @@
 
 (defn- show-table-view [title m]
   {:pre [(map? m)]}
-  (stage/add-actor (:cdq.context/stage @app/state)
-                   (scroll-pane-window title
-                                       (generate-table m))))
+  (stage/add-actor (scroll-pane-window title (generate-table m))))
 
 (defn- show-tree-view! [title m]
   {:pre [(map? m)]}
-  (stage/add-actor (:cdq.context/stage @app/state)
-                   (scroll-pane-window title
-                                       (generate-tree m))))
+  (stage/add-actor (scroll-pane-window title (generate-tree m))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

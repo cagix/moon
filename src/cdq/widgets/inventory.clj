@@ -123,11 +123,11 @@
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
-(defn- inventory-cell-widget [{:keys [cdq.context/stage]} cell]
-  (get (::table (get (:windows stage) :inventory-window)) cell))
+(defn- inventory-cell-widget [cell]
+  (get (::table (get (:windows ui/stage) :inventory-window)) cell))
 
-(defn- set-item-image-in-widget [c cell item]
-  (let [cell-widget (inventory-cell-widget c cell)
+(defn- set-item-image-in-widget [cell item]
+  (let [cell-widget (inventory-cell-widget cell)
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable
@@ -136,29 +136,29 @@
     (Image/.setDrawable image-widget drawable)
     (add-tooltip! cell-widget #(info/text % item))))
 
-(defn- remove-item-from-widget [c cell]
-  (let [cell-widget (inventory-cell-widget c cell)
+(defn- remove-item-from-widget [cell]
+  (let [cell-widget (inventory-cell-widget cell)
         image-widget (get cell-widget :image)]
     (Image/.setDrawable image-widget (slot->background (cell 0)))
     (remove-tooltip! cell-widget)))
 
-(defn set-item [c eid cell item]
+(defn set-item [eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
     (assert (and (nil? (get-in inventory cell))
                  (inventory/valid-slot? cell item)))
     (when (:entity/player? entity)
-      (set-item-image-in-widget c cell item))
+      (set-item-image-in-widget cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-add (:entity/modifiers item)))))
 
-(defn remove-item [c eid cell]
+(defn remove-item [eid cell]
   (let [entity @eid
         item (get-in (:entity/inventory entity) cell)]
     (assert item)
     (when (:entity/player? entity)
-      (remove-item-from-widget c cell))
+      (remove-item-from-widget cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-remove (:entity/modifiers item)))))
@@ -176,19 +176,19 @@
       (remove-item! eid cell))))
 
 ; TODO no items which stack are available
-(defn stack-item [c eid cell item]
+(defn stack-item [eid cell item]
   (let [cell-item (get-in (:entity/inventory @eid) cell)]
     (assert (inventory/stackable? item cell-item))
     ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
     ; first remove and then place, just update directly  item ...
-    (concat (remove-item c eid cell)
-            (set-item c eid cell (update cell-item :count + (:count item))))))
+    (concat (remove-item eid cell)
+            (set-item eid cell (update cell-item :count + (:count item))))))
 
-(defn pickup-item [c eid item]
+(defn pickup-item [eid item]
   (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
     (assert cell)
     (assert (or (inventory/stackable? item cell-item)
                 (nil? cell-item)))
     (if (inventory/stackable? item cell-item)
-      (stack-item c eid cell item)
-      (set-item c eid cell item))))
+      (stack-item eid cell item)
+      (set-item eid cell item))))

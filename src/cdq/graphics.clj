@@ -15,7 +15,7 @@
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
-(declare ^:private ^Batch batch
+(declare ^Batch batch
          ^:private ^Texture shape-drawer-texture
          ^:private ^ShapeDrawer shape-drawer
          ^:private cursors
