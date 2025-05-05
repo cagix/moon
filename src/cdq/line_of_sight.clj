@@ -31,8 +31,8 @@
        (not (and los-checks?
                  (raycaster/blocked? world/raycaster (:position source) (:position target))))))
 
-(defn creatures-in-los-of-player [{:keys [cdq.game/active-entities]}]
-  (->> active-entities
+(defn creatures-in-los-of-player []
+  (->> world/active-entities
        (filter #(:entity/species @%))
        (filter #(exists? @world/player-eid @%))
        (remove #(:entity/player? @%))))

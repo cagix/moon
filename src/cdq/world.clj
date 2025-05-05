@@ -89,7 +89,8 @@
          grid
          raycaster
          potential-field-cache
-         player-eid)
+         player-eid
+         active-entities)
 
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
@@ -99,13 +100,6 @@
          (cons idx (g2d/get-8-neighbour-positions idx)))
        (keep grid)
        (mapcat (comp :entities deref))))
-
-(defn get-active-entities
-  "Expensive operation.
-
-  Active entities are those which are nearby the position of the player and about one screen away."
-  []
-  (active-entities* content-grid @player-eid))
 
 (defn- set-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]
@@ -419,3 +413,10 @@
   (.bindRoot #'potential-field-cache (atom nil))
   (spawn-enemies!)
   (.bindRoot #'player-eid (spawn-creature (player-entity-props start-position))))
+
+(defn cache-active-entities!
+  "Expensive operation.
+
+  Active entities are those which are nearby the position of the player and about one screen away."
+  []
+  (.bindRoot #'active-entities (active-entities* content-grid @player-eid)))

@@ -587,7 +587,7 @@
 
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} c]
     (let [source* @source]
-      (doseq [target (los/creatures-in-los-of-player c)]
+      (doseq [target (los/creatures-in-los-of-player)]
         (line-render {:start (:position source*) #_(start-point source* target*)
                       :end (:position @target)
                       :duration 0.05
@@ -605,7 +605,7 @@
 
   (effect/render [_ {:keys [effect/source]} c]
     (let [source* @source]
-      (doseq [target* (map deref (los/creatures-in-los-of-player c))]
+      (doseq [target* (map deref (los/creatures-in-los-of-player))]
         (graphics/line (:position source*) #_(start-point source* target*)
                            (:position target*)
                            [1 0 0 0.5])))))
@@ -1262,9 +1262,6 @@
   (entity/manual-tick (entity/state-obj @world/player-eid) context)
   context)
 
-(defn- assoc-active-entities [context]
-  (assoc context :cdq.game/active-entities (world/get-active-entities)))
-
 (defn- set-camera-on-player! [context]
   (graphics/set-camera-position! (:position @world/player-eid))
   context)
@@ -1541,9 +1538,8 @@
    :info {:entity/hp draw-hpbar-when-mouseover-and-not-full
           :active-skill draw-skill-image-and-active-effect}})
 
-(defn- render-entities!
-  [{:keys [cdq.game/active-entities] :as c}]
-  (let [entities (map deref active-entities)
+(defn- render-entities! [c]
+  (let [entities (map deref world/active-entities)
         player @world/player-eid
         {:keys [below
                 default
@@ -1619,24 +1615,23 @@
     (timer/inc-state! delta-ms)
     (assoc context :cdq.context/delta-time delta-ms)))
 
-(defn- update-potential-fields! [{:keys [cdq.game/active-entities] :as context}]
+(defn- update-potential-fields! [context]
   (doseq [[faction max-iterations] factions-iterations]
     (cdq.potential-fields/tick world/potential-field-cache
                                world/grid
                                faction
-                               active-entities
+                               world/active-entities
                                max-iterations))
   context)
 
-(defn- tick-entities! [{:keys [cdq.game/active-entities]
-                        :as context}]
+(defn- tick-entities! [context]
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
   ; should be contains? check ?
   ; but then the 'order' is important? in such case dependent components
   ; should be moved together?
   (try
-   (doseq [eid active-entities]
+   (doseq [eid world/active-entities]
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
@@ -1711,12 +1706,12 @@
                                 #_(println "Not Disposable: " k ))))
 
                           (render []
+                            (world/cache-active-entities!)
                             (swap! state (fn [context]
                                            (reduce (fn [context f]
                                                      (f context))
                                                    context
-                                                   [assoc-active-entities
-                                                    set-camera-on-player!
+                                                   [set-camera-on-player!
                                                     clear-screen!
                                                     render-tiled-map!
                                                     draw-on-world-view!
