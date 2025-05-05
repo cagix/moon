@@ -874,8 +874,7 @@
         grid (create-grid tiled-map)
         _ (world/create! tiled-map)
         _ (timer/init!)
-        context {:cdq.context/error nil
-                 :cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
+        context {:cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                            (tiled/tm-height tiled-map)
                                                                            (constantly false)))
                  :cdq.context/grid grid
