@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [cdq.assets :as assets]
             [cdq.audio.sound :as sound]
-            [cdq.context :as context]
             [cdq.data.grid2d :as g2d]
             [cdq.db :as db]
             [cdq.editor :as editor]
@@ -41,20 +40,20 @@
             [cdq.widgets.inventory :as widgets.inventory :refer [remove-item
                                                                  set-item
                                                                  stack-item]]
-            [cdq.world :refer [minimum-size
-                               nearest-enemy
-                               friendlies-in-radius
-                               delayed-alert
-                               spawn-audiovisual
-                               spawn-creature
-                               spawn-item
-                               line-render
-                               spawn-projectile
-                               projectile-size
-                               item-place-position
-                               world-item?
-                               render-z-order
-                               item-place-position]]
+            [cdq.world :as world :refer [minimum-size
+                                         nearest-enemy
+                                         friendlies-in-radius
+                                         delayed-alert
+                                         spawn-audiovisual
+                                         spawn-creature
+                                         spawn-item
+                                         line-render
+                                         spawn-projectile
+                                         projectile-size
+                                         item-place-position
+                                         world-item?
+                                         render-z-order
+                                         item-place-position]]
             [cdq.world.potential-field :as potential-field]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -819,39 +818,6 @@
                           "air"  :air
                           "all"  :all))))))
 
-(defn- set-cells! [grid eid]
-  (let [cells (grid/rectangle->cells grid @eid)]
-    (assert (not-any? nil? cells))
-    (swap! eid assoc ::touched-cells cells)
-    (doseq [cell cells]
-      (assert (not (get (:entities @cell) eid)))
-      (swap! cell update :entities conj eid))))
-
-(defn- remove-from-cells! [eid]
-  (doseq [cell (::touched-cells @eid)]
-    (assert (get (:entities @cell) eid))
-    (swap! cell update :entities disj eid)))
-
-; could use inside tiles only for >1 tile bodies (for example size 4.5 use 4x4 tiles for occupied)
-; => only now there are no >1 tile entities anyway
-(defn- rectangle->occupied-cells [grid {:keys [left-bottom width height] :as rectangle}]
-  (if (or (> (float width) 1) (> (float height) 1))
-    (grid/rectangle->cells grid rectangle)
-    [(grid [(int (+ (float (left-bottom 0)) (/ (float width) 2)))
-            (int (+ (float (left-bottom 1)) (/ (float height) 2)))])]))
-
-(defn- set-occupied-cells! [grid eid]
-  (let [cells (rectangle->occupied-cells grid @eid)]
-    (doseq [cell cells]
-      (assert (not (get (:occupied @cell) eid)))
-      (swap! cell update :occupied conj eid))
-    (swap! eid assoc ::occupied-cells cells)))
-
-(defn- remove-from-occupied-cells! [eid]
-  (doseq [cell (::occupied-cells @eid)]
-    (assert (get (:occupied @cell) eid))
-    (swap! cell update :occupied disj eid)))
-
 (defn- set-arr [arr cell cell->blocked?]
   (let [[x y] (:position cell)]
     (aset arr x y (boolean (cell->blocked? cell)))))
@@ -945,57 +911,6 @@
                  :cdq.context/factions-iterations {:good 15 :evil 5}
                  :world/potential-field-cache (atom nil)}]
     (assoc context :cdq.context/player-eid (spawn-creatures! context))))
-
-(defcomponent :cdq.context/entity-ids
-  (context/add-entity [[_ entity-ids] eid]
-    (let [id (:entity/id @eid)]
-      (assert (number? id))
-      (swap! entity-ids assoc id eid)))
-
-  (context/remove-entity [[_ entity-ids] eid]
-    (let [id (:entity/id @eid)]
-      (assert (contains? @entity-ids id))
-      (swap! entity-ids dissoc id))))
-
-(defcomponent :cdq.context/content-grid
-  (context/add-entity [[_ {:keys [grid cell-w cell-h]}] eid]
-    (let [{:keys [cdq.content-grid/content-cell] :as entity} @eid
-          [x y] (:position entity)
-          new-cell (get grid [(int (/ x cell-w))
-                              (int (/ y cell-h))])]
-      (when-not (= content-cell new-cell)
-        (swap! new-cell update :entities conj eid)
-        (swap! eid assoc :cdq.content-grid/content-cell new-cell)
-        (when content-cell
-          (swap! content-cell update :entities disj eid)))))
-
-  (context/remove-entity [_ eid]
-    (-> @eid
-        :cdq.content-grid/content-cell
-        (swap! update :entities disj eid)))
-
-  (context/position-changed [this eid]
-    (context/add-entity this eid)))
-
-(defcomponent :cdq.context/grid
-  (context/add-entity [[_ grid] eid]
-    ; https://github.com/damn/core/issues/58
-    ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
-    (set-cells! grid eid)
-    (when (:collides? @eid)
-      (set-occupied-cells! grid eid)))
-
-  (context/remove-entity [[_ _grid] eid]
-    (remove-from-cells! eid)
-    (when (:collides? @eid)
-      (remove-from-occupied-cells! eid)))
-
-  (context/position-changed [[_ grid] eid]
-    (remove-from-cells! eid)
-    (set-cells! grid eid)
-    (when (:collides? @eid)
-      (remove-from-occupied-cells! eid)
-      (set-occupied-cells! grid eid))))
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration] {:keys [cdq.context/elapsed-time]}]
@@ -1319,8 +1234,7 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body grid body movement)
                         (move-body body movement))]
-        (doseq [component context]
-          (context/position-changed component eid))
+        (world/position-changed! eid context)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))
@@ -1941,8 +1855,7 @@
                                     :as context}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
-    (doseq [component context]
-      (context/remove-entity component eid))
+    (world/remove-entity! eid context)
     (doseq [component @eid]
       (entity/destroy! component eid context)))
   context)
