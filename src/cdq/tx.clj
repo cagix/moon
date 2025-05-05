@@ -104,7 +104,7 @@
     (action-bar-remove-skill skill))
   (swap! eid update :entity/skills dissoc id))
 
-(defn- add-text-effect [entity _c text]
+(defn- add-text-effect [entity text]
   (assoc entity
          :entity/string-effect
          (if-let [string-effect (:entity/string-effect entity)]
@@ -114,5 +114,5 @@
            {:text text
             :counter (timer/create 0.4)})))
 
-(defn text-effect [context eid text]
-  (swap! eid add-text-effect context text))
+(defn text-effect [eid text]
+  (swap! eid add-text-effect text))

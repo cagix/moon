@@ -697,7 +697,7 @@
        nil
 
        (armor-saves? source* target*)
-       (tx/text-effect c target "[WHITE]ARMOR")
+       (tx/text-effect target "[WHITE]ARMOR")
 
        :else
        (let [min-max (:damage/min-max (entity/damage source* target* damage))
@@ -706,7 +706,7 @@
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (spawn-audiovisual (:position target*) (db/build :audiovisuals/damage))
          (tx/event c target (if (zero? new-hp-val) :kill :alert))
-         (tx/text-effect c target (str "[RED]" dmg-amount "[]")))))))
+         (tx/text-effect target (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
   (effect/applicable? [_ {:keys [effect/target]}]
@@ -1206,7 +1206,7 @@
     (delayed-alert (:position       @eid)
                    (:entity/faction @eid)
                    0.2)
-    (tx/text-effect c eid "[WHITE]!")))
+    (tx/text-effect eid "[WHITE]!")))
 
 (defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
   (let [entity @eid
