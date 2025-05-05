@@ -811,8 +811,7 @@
   (timer/init!)
   (let [{:keys [tiled-map start-position]} (level/create world-id)
         _ (world/create! tiled-map)
-        context {:cdq.context/factions-iterations {:good 15 :evil 5}
-                 :world/potential-field-cache (atom nil)}]
+        context {}]
     (spawn-enemies! context)
     (assoc context :cdq.context/player-eid (spawn-creature context (player-entity-props start-position)))))
 
@@ -1382,7 +1381,9 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn- draw-before-entities! [{:keys [cdq.context/factions-iterations]}]
+(def ^:private factions-iterations {:good 15 :evil 5})
+
+(defn- draw-before-entities! [_context]
   (let [cam (:camera graphics/world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
@@ -1682,12 +1683,9 @@
     (timer/inc-state! delta-ms)
     (assoc context :cdq.context/delta-time delta-ms)))
 
-(defn- update-potential-fields! [{:keys [cdq.context/factions-iterations
-                                         world/potential-field-cache
-                                         cdq.game/active-entities]
-                                  :as context}]
+(defn- update-potential-fields! [{:keys [cdq.game/active-entities] :as context}]
   (doseq [[faction max-iterations] factions-iterations]
-    (cdq.potential-fields/tick potential-field-cache
+    (cdq.potential-fields/tick world/potential-field-cache
                                world/grid
                                faction
                                active-entities

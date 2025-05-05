@@ -87,7 +87,8 @@
          ^:private entity-ids
          explored-tile-corners
          grid
-         raycaster)
+         raycaster
+         potential-field-cache)
 
 (defn create! [tiled-map]
   (.bindRoot #'tiled-map tiled-map)
@@ -99,7 +100,8 @@
                                                             (constantly false))))
   (.bindRoot #'entity-ids (atom {}))
   (.bindRoot #'grid (create-grid tiled-map))
-  (.bindRoot #'raycaster (create-raycaster grid)))
+  (.bindRoot #'raycaster (create-raycaster grid))
+  (.bindRoot #'potential-field-cache (atom nil)))
 
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
