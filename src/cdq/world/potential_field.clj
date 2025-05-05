@@ -96,7 +96,7 @@
          (= cell (first cells)))))
 
 ; TODO work with entity !? occupied-by-other? works with entity not entity ... not with ids ... hmmm
-(defn find-direction [{:keys [cdq.context/grid]} eid] ; TODO pass faction here, one less dependency.
+(defn find-direction [grid eid] ; TODO pass faction here, one less dependency.
   (let [position (:position @eid)
         own-cell (grid (mapv int position))
         {:keys [target-entity target-cell]} (find-next-cell grid eid own-cell)]

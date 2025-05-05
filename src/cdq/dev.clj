@@ -23,7 +23,7 @@
  (app/post-runnable! (fn [context] (show-table-view "Application Context" context)))
 
  (show-tree-view! "Mouseover Entity" @(:cdq.context/mouseover-eid @app/state))
- (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell @app/state))
+ (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
 
  (spit "ns_value_vars.edn"
@@ -86,8 +86,8 @@
                     (:position @player-eid)
                     (db/build item-id)))
 
-(defn- mouseover-grid-cell [{:keys [cdq.context/grid]}]
-  @(grid (mapv int (graphics/world-mouse-position))))
+(defn- mouseover-grid-cell []
+  @(world/grid (mapv int (graphics/world-mouse-position))))
 
 (defn- tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))

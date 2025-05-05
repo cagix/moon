@@ -9,7 +9,7 @@
             [cdq.tiled :as tiled]
             [cdq.timer :as timer]
             [cdq.ui.stage :as stage]
-            [cdq.utils :refer [define-order safe-merge]]))
+            [cdq.utils :refer [define-order safe-merge tile->middle]]))
 
 (defn- create-content-grid [{:keys [cell-size width height]}]
   {:grid (g2d/create-grid
@@ -21,9 +21,72 @@
    :cell-w cell-size
    :cell-h cell-size})
 
+(defrecord RCell [position
+                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
+                  adjacent-cells
+                  movement
+                  entities
+                  occupied
+                  good
+                  evil]
+  grid/Cell
+  (blocked? [_ z-order]
+    (case movement
+      :none true ; wall
+      :air (case z-order ; water/doodads
+             :z-order/flying false
+             :z-order/ground true)
+      :all false)) ; ground/floor
+
+  (blocks-vision? [_]
+    (= movement :none))
+
+  (occupied-by-other? [_ eid]
+    (some #(not= % eid) occupied))
+
+  (nearest-entity [this faction]
+    (-> this faction :eid))
+
+  (nearest-entity-distance [this faction]
+    (-> this faction :distance)))
+
+(defn- ->grid-cell [position movement]
+  {:pre [(#{:none :air :all} movement)]}
+  (map->RCell
+   {:position position
+    :middle (tile->middle position)
+    :movement movement
+    :entities #{}
+    :occupied #{}}))
+
+(defn- create-grid [tiled-map]
+  (g2d/create-grid
+   (tiled/tm-width tiled-map)
+   (tiled/tm-height tiled-map)
+   (fn [position]
+     (atom (->grid-cell position
+                        (case (tiled/movement-property tiled-map position)
+                          "none" :none
+                          "air"  :air
+                          "all"  :all))))))
+
+(defn- set-arr [arr cell cell->blocked?]
+  (let [[x y] (:position cell)]
+    (aset arr x y (boolean (cell->blocked? cell)))))
+
+(defn- create-raycaster [grid]
+  (let [width  (g2d/width  grid)
+        height (g2d/height grid)
+        arr (make-array Boolean/TYPE width height)]
+    (doseq [cell (g2d/cells grid)]
+      (set-arr arr @cell grid/blocks-vision?))
+    [arr width height]))
+
 (declare ^:private content-grid
          ^:private entity-ids
-         explored-tile-corners)
+         explored-tile-corners
+         grid
+         raycaster)
 
 (defn create! [tiled-map]
   (.bindRoot #'content-grid (create-content-grid {:cell-size 16
@@ -32,7 +95,9 @@
   (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                             (tiled/tm-height tiled-map)
                                                             (constantly false))))
-  (.bindRoot #'entity-ids (atom {})))
+  (.bindRoot #'entity-ids (atom {}))
+  (.bindRoot #'grid (create-grid tiled-map))
+  (.bindRoot #'raycaster (create-raycaster grid)))
 
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
@@ -95,7 +160,7 @@
       (when content-cell
         (swap! content-cell update :entities disj eid)))))
 
-(defn- add-entity! [eid {:keys [cdq.context/grid]}]
+(defn- add-entity! [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
@@ -108,7 +173,7 @@
   (when (:collides? @eid)
     (set-occupied-cells! grid eid)))
 
-(defn- remove-entity! [eid {:keys [cdq.context/grid]}]
+(defn- remove-entity! [eid]
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
@@ -121,7 +186,7 @@
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)))
 
-(defn position-changed! [eid {:keys [cdq.context/grid]}]
+(defn position-changed! [eid]
   (content-grid-update-entity! content-grid eid)
 
   (remove-from-cells! eid)
@@ -133,7 +198,7 @@
 (defn remove-destroyed-entities! [context]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
-    (remove-entity! eid context)
+    (remove-entity! eid)
     (doseq [component @eid]
       (entity/destroy! component eid context)))
   context)
@@ -208,7 +273,7 @@
                       (safe-merge (-> components
                                       (assoc :entity/id (swap! id-counter inc))
                                       (create-vs context)))))]
-    (add-entity! eid context)
+    (add-entity! eid)
     (doseq [component @eid]
       (entity/create! component eid context))
     eid))
@@ -316,7 +381,7 @@
        (grid/circle->entities grid)
        (filter #(= (:entity/faction @%) faction))))
 
-(defn nearest-enemy [{:keys [cdq.context/grid]} entity]
+(defn nearest-enemy [entity]
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
 

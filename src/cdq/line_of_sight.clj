@@ -1,7 +1,8 @@
 (ns cdq.line-of-sight
   (:require [cdq.graphics :as graphics]
             [cdq.graphics.camera :as camera]
-            [cdq.math.raycaster :as raycaster]))
+            [cdq.math.raycaster :as raycaster]
+            [cdq.world :as world]))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -24,15 +25,15 @@
 
 ; does not take into account size of entity ...
 ; => assert bodies <1 width then
-(defn exists? [{:keys [cdq.context/raycaster]} source target]
+(defn exists? [source target]
   (and (or (not (:entity/player? source))
            (on-screen? graphics/world-viewport target))
        (not (and los-checks?
-                 (raycaster/blocked? raycaster (:position source) (:position target))))))
+                 (raycaster/blocked? world/raycaster (:position source) (:position target))))))
 
 (defn creatures-in-los-of-player [{:keys [cdq.context/player-eid
-                                          cdq.game/active-entities] :as c}]
+                                          cdq.game/active-entities]}]
   (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(exists? c @player-eid @%))
+       (filter #(exists? @player-eid @%))
        (remove #(:entity/player? @%))))

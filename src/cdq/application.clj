@@ -1,7 +1,6 @@
 (ns cdq.application
   (:require [cdq.assets :as assets]
             [cdq.audio.sound :as sound]
-            [cdq.data.grid2d :as g2d]
             [cdq.db :as db]
             [cdq.editor :as editor]
             [cdq.effect :as effect]
@@ -506,11 +505,11 @@
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (effect/useful? [[_ {:keys [projectile/max-range] :as projectile}]
                    {:keys [effect/source effect/target]}
-                   {:keys [cdq.context/raycaster]}]
+                   _context]
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-      (and (not (raycaster/path-blocked? raycaster ; TODO test
+      (and (not (raycaster/path-blocked? world/raycaster ; TODO test
                                          source-p
                                          target-p
                                          (projectile-size projectile)))
@@ -766,67 +765,6 @@
   (effect/handle [[_ duration] {:keys [effect/target]} c]
     (tx/event c target :stun duration)))
 
-(defrecord RCell [position
-                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  grid/Cell
-  (blocked? [_ z-order]
-    (case movement
-      :none true ; wall
-      :air (case z-order ; water/doodads
-             :z-order/flying false
-             :z-order/ground true)
-      :all false)) ; ground/floor
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied))
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance)))
-
-(defn- ->grid-cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (map->RCell
-   {:position position
-    :middle (tile->middle position)
-    :movement movement
-    :entities #{}
-    :occupied #{}}))
-
-(defn- create-grid [tiled-map]
-  (g2d/create-grid
-   (tiled/tm-width tiled-map)
-   (tiled/tm-height tiled-map)
-   (fn [position]
-     (atom (->grid-cell position
-                        (case (tiled/movement-property tiled-map position)
-                          "none" :none
-                          "air"  :air
-                          "all"  :all))))))
-
-(defn- set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn- raycaster [grid]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
-      (set-arr arr @cell grid/blocks-vision?))
-    [arr width height]))
-
 (defn- player-entity-props [start-position]
   {:position (utils/tile->middle start-position)
    :creature-id :creatures/vampire
@@ -870,13 +808,10 @@
 
 (defn- reset-game! [{:keys [world-id]}]
   (reset-stage!)
+  (timer/init!)
   (let [{:keys [tiled-map start-position]} (level/create world-id)
-        grid (create-grid tiled-map)
         _ (world/create! tiled-map)
-        _ (timer/init!)
-        context {:cdq.context/grid grid
-                 :cdq.context/tiled-map tiled-map
-                 :cdq.context/raycaster (raycaster grid)
+        context {:cdq.context/tiled-map tiled-map
                  :cdq.context/factions-iterations {:good 15 :evil 5}
                  :world/potential-field-cache (atom nil)}]
     (spawn-enemies! context)
@@ -1049,10 +984,10 @@
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
   "Call this on effect-context if the time of using the context is not the time when context was built."
-  [context {:keys [effect/source effect/target] :as effect-ctx}]
+  [{:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (los/exists? context @source @target))
+           (los/exists? @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
@@ -1060,7 +995,7 @@
                                       eid
                                       c]
   (cond
-   (not (effect/some-applicable? (update-effect-ctx c effect-ctx)
+   (not (effect/some-applicable? (update-effect-ctx effect-ctx)
                                  (:skill/effects skill)))
    (do
     (tx/event c eid :action-done)
@@ -1082,11 +1017,11 @@
                      (effect/applicable-and-useful? c ctx (:skill/effects %))))
        first))
 
-(defn- npc-effect-context [c eid]
+(defn- npc-effect-context [eid]
   (let [entity @eid
-        target (nearest-enemy c entity)
+        target (nearest-enemy entity)
         target (when (and target
-                          (los/exists? c entity @target))
+                          (los/exists? entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -1094,10 +1029,10 @@
                                 (entity/direction entity @target))}))
 
 (defmethod entity/tick! :npc-idle [_ eid c]
-  (let [effect-ctx (npc-effect-context c eid)]
+  (let [effect-ctx (npc-effect-context eid)]
     (if-let [skill (npc-choose-skill c @eid effect-ctx)]
       (tx/event c eid :start-action [skill effect-ctx])
-      (tx/event c eid :movement-direction (or (potential-field/find-direction c eid) [0 0])))))
+      (tx/event c eid :movement-direction (or (potential-field/find-direction world/grid eid) [0 0])))))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}]
                                     eid
@@ -1105,9 +1040,9 @@
   (when (timer/stopped? counter)
     (tx/event c eid :timer-finished)))
 
-(defmethod entity/tick! :npc-sleeping [_ eid {:keys [cdq.context/grid] :as c}]
+(defmethod entity/tick! :npc-sleeping [_ eid c]
   (let [entity @eid
-        cell (grid (entity/tile entity))]
+        cell (world/grid (entity/tile entity))]
     (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
         (tx/event c eid :alert)))))
@@ -1122,12 +1057,10 @@
     (tx/event c eid :effect-wears-off)))
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration
-  [[_ {:keys [counter faction]}]
-   eid
-   {:keys [cdq.context/grid] :as c}]
+  [[_ {:keys [counter faction]}] eid c]
   (when (timer/stopped? counter)
     (tx/mark-destroyed eid)
-    (doseq [friendly-eid (friendlies-in-radius grid (:position @eid) faction)]
+    (doseq [friendly-eid (friendlies-in-radius world/grid (:position @eid) faction)]
       (tx/event c friendly-eid :alert))))
 
 (defmethod entity/tick! :entity/animation
@@ -1182,8 +1115,7 @@
 (defmethod entity/tick! :entity/movement
   [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
    eid
-   {:keys [cdq.context/delta-time
-           cdq.context/grid] :as context}]
+   {:keys [cdq.context/delta-time] :as context}]
   (assert (schema/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
@@ -1195,9 +1127,9 @@
     (let [movement (assoc movement :delta-time delta-time)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
-                        (try-move-solid-body grid body movement)
+                        (try-move-solid-body world/grid body movement)
                         (move-body body movement))]
-        (world/position-changed! eid context)
+        (world/position-changed! eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))
@@ -1205,15 +1137,13 @@
           (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
 
 (defmethod entity/tick! :entity/projectile-collision
-  [[k {:keys [entity-effects already-hit-bodies piercing?]}]
-   eid
-   {:keys [cdq.context/grid] :as c}]
+  [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
   ; TODO this could be called from body on collision
   ; for non-solid
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (grid/rectangle->cells grid entity)) ; just use cached-touched -cells
+        cells* (map deref (grid/rectangle->cells world/grid entity)) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
@@ -1441,11 +1371,10 @@
                 (swap! explored-tile-corners assoc (mapv int position) true))
               Color/WHITE))))))
 
-(defn- render-tiled-map! [{:keys [cdq.context/tiled-map
-                                  cdq.context/raycaster]
+(defn- render-tiled-map! [{:keys [cdq.context/tiled-map]
                            :as context}]
   (graphics/draw-tiled-map tiled-map
-                           (tile-color-setter raycaster
+                           (tile-color-setter world/raycaster
                                               world/explored-tile-corners
                                               (camera/position (:camera graphics/world-viewport))))
   context)
@@ -1455,8 +1384,7 @@
 (def ^:private ^:dbg-flag cell-entities? false)
 (def ^:private ^:dbg-flag cell-occupied? false)
 
-(defn- draw-before-entities! [{:keys [cdq.context/factions-iterations
-                                      cdq.context/grid]}]
+(defn- draw-before-entities! [{:keys [cdq.context/factions-iterations]}]
   (let [cam (:camera graphics/world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
@@ -1467,7 +1395,7 @@
                      1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
-            :let [cell (grid [x y])]
+            :let [cell (world/grid [x y])]
             :when cell
             :let [cell* @cell]]
 
@@ -1484,22 +1412,22 @@
             (let [ratio (/ distance (factions-iterations faction))]
               (graphics/filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-(defn- geom-test [{:keys [cdq.context/grid]}]
+(defn- geom-test []
   (let [position (graphics/world-mouse-position)
         radius 0.8
         circle {:position position :radius radius}]
     (graphics/circle position radius [1 0 0 0.5])
-    (doseq [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
+    (doseq [[x y] (map #(:position @%) (grid/circle->cells world/grid circle))]
       (graphics/rectangle x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
       (graphics/rectangle x y width height [0 0 1 1]))))
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile [{:keys [cdq.context/grid]}]
+(defn- highlight-mouseover-tile [_context]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (graphics/world-mouse-position))
-          cell (grid [x y])]
+          cell (world/grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (graphics/rectangle x y 1 1
                                 (case (:movement @cell)
@@ -1507,7 +1435,7 @@
                                   :none [1 0 0 0.5]))))))
 
 (defn- draw-after-entities! [c]
-  #_(geom-test c)
+  #_(geom-test)
   (highlight-mouseover-tile c))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
@@ -1620,7 +1548,7 @@
     (render-active-effect c
                           effect-ctx
                           ; !! FIXME !!
-                          ; (update-effect-ctx c effect-ctx)
+                          ; (update-effect-ctx effect-ctx)
                           ; - render does not need to update .. update inside active-skill
                           effects)))
 
@@ -1690,7 +1618,7 @@
                     info]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (los/exists? c player entity))]
+                      (los/exists? player entity))]
       (try
        (when show-body-bounds
          (draw-body-rect entity (if (:collides? entity) :white :gray)))
@@ -1720,19 +1648,18 @@
   (Stage/.act ui/stage)
   context)
 
-(defn- update-mouseover-entity! [{:keys [cdq.context/grid
-                                         cdq.context/mouseover-eid
+(defn- update-mouseover-entity! [{:keys [cdq.context/mouseover-eid
                                          cdq.context/player-eid]
                                   :as context}]
   (let [new-eid (if (stage/mouse-on-actor?)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities grid (graphics/world-mouse-position)))]
+                                     (grid/point->entities world/grid (graphics/world-mouse-position)))]
                     (->> cdq.world/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(los/exists? context player @%))
+                         (filter #(los/exists? player @%))
                          first)))]
     (when mouseover-eid
       (swap! mouseover-eid dissoc :entity/mouseover?))
@@ -1758,13 +1685,12 @@
     (assoc context :cdq.context/delta-time delta-ms)))
 
 (defn- update-potential-fields! [{:keys [cdq.context/factions-iterations
-                                         cdq.context/grid
                                          world/potential-field-cache
                                          cdq.game/active-entities]
                                   :as context}]
   (doseq [[faction max-iterations] factions-iterations]
     (cdq.potential-fields/tick potential-field-cache
-                               grid
+                               world/grid
                                faction
                                active-entities
                                max-iterations))
