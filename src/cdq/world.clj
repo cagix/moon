@@ -259,7 +259,7 @@
                  :entity/clickable {:type :clickable/item
                                     :text (:property/pretty-name item)}}))
 
-(defn delayed-alert [{:keys [cdq.context/elapsed-time] :as c}
+(defn delayed-alert [c
                      position
                      faction
                      duration]
@@ -267,7 +267,7 @@
                 position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
-                 {:counter (timer/create elapsed-time duration)
+                 {:counter (timer/create duration)
                   :faction faction}}))
 
 (defn line-render [c {:keys [start end duration color thick?]}]

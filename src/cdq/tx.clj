@@ -108,15 +108,15 @@
     (action-bar-remove-skill skill))
   (swap! eid update :entity/skills dissoc id))
 
-(defn- add-text-effect [entity {:keys [cdq.context/elapsed-time]} text]
+(defn- add-text-effect [entity _c text]
   (assoc entity
          :entity/string-effect
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter #(timer/reset % elapsed-time)))
+               (update :counter timer/reset))
            {:text text
-            :counter (timer/create elapsed-time 0.4)})))
+            :counter (timer/create 0.4)})))
 
 (defn text-effect [context eid text]
   (swap! eid add-text-effect context text))

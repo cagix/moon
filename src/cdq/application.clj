@@ -306,10 +306,8 @@
   "All visible targets")
 
 (defmethod info-segment :entity/delete-after-duration
-  [[_ counter]
-   _entity
-   {:keys [cdq.context/elapsed-time] :as c}]
-  (str "Remaining: " (readable-number (timer/ratio counter elapsed-time)) "/1"))
+  [[_ counter] _entity _c]
+  (str "Remaining: " (readable-number (timer/ratio counter)) "/1"))
 
 (defmethod info-segment :entity/faction
   [[_ faction] _entity _c]
@@ -340,8 +338,8 @@
 (defmethod info-segment :entity/temp-modifier
   [[_ {:keys [counter]}]
    _entity
-   {:keys [cdq.context/elapsed-time] :as c}]
-  (str "Spiderweb - remaining: " (readable-number (timer/ratio counter elapsed-time)) "/1"))
+   _c]
+  (str "Spiderweb - remaining: " (readable-number (timer/ratio counter)) "/1"))
 
 #_(defmethod info-segment :entity/skills
     [skills _c]
@@ -754,10 +752,10 @@
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
     (effect/handle [_
                     {:keys [effect/target]}
-                    {:keys [cdq.context/elapsed-time] :as c}]
+                    _c]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
-                                                   :counter (timer/create elapsed-time duration)})
+                                                   :counter (timer/create duration)})
         (swap! target entity/mod-add modifiers)))))
 
 (defcomponent :effects.target/stun
@@ -881,8 +879,8 @@
   (let [{:keys [tiled-map start-position] :as level} (level/create world-id)
         grid (create-grid tiled-map)
         _ (world/create! tiled-map)
-        context {:cdq.context/elapsed-time 0
-                 :cdq.context/player-message (atom {:duration-seconds 1.5})
+        _ (timer/init!)
+        context {:cdq.context/player-message (atom {:duration-seconds 1.5})
                  :cdq.context/level level
                  :cdq.context/error nil
                  :cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
@@ -896,11 +894,11 @@
     (assoc context :cdq.context/player-eid (spawn-creatures! context))))
 
 (defcomponent :entity/delete-after-duration
-  (entity/create [[_ duration] {:keys [cdq.context/elapsed-time]}]
-    (timer/create elapsed-time duration))
+  (entity/create [[_ duration] _c]
+    (timer/create duration))
 
-  (entity/tick! [[_ counter] eid {:keys [cdq.context/elapsed-time]}]
-    (when (timer/stopped? counter elapsed-time)
+  (entity/tick! [[_ counter] eid _c]
+    (when (timer/stopped? counter)
       (tx/mark-destroyed eid))))
 
 (defmethod entity/create :entity/hp
@@ -921,15 +919,14 @@
          1)))
 
 (defmethod entity/create :active-skill
-  [[_ eid [skill effect-ctx]]
-   {:keys [cdq.context/elapsed-time]}]
+  [[_ eid [skill effect-ctx]] _c]
   {:eid eid
    :skill skill
    :effect-ctx effect-ctx
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 (timer/create elapsed-time))})
+                 timer/create)})
 
 (defmethod entity/create :npc-dead
   [[_ eid] c]
@@ -940,11 +937,10 @@
   {:eid eid})
 
 (defmethod entity/create :npc-moving
-  [[_ eid movement-vector]
-   {:keys [cdq.context/elapsed-time]}]
+  [[_ eid movement-vector] _c]
   {:eid eid
    :movement-vector movement-vector
-   :counter (timer/create elapsed-time (* (entity/stat @eid :entity/reaction-time) 0.016))})
+   :counter (timer/create (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
 (defmethod entity/create :npc-sleeping
   [[_ eid] c]
@@ -971,10 +967,9 @@
    :movement-vector movement-vector})
 
 (defmethod entity/create :stunned
-  [[_ eid duration]
-   {:keys [cdq.context/elapsed-time]}]
+  [[_ eid duration] _c]
   {:eid eid
-   :counter (timer/create elapsed-time duration)})
+   :counter (timer/create duration)})
 
 (defmethod entity/create! :entity/inventory
   [[k items] eid _c]
@@ -1074,7 +1069,7 @@
 
 (defmethod entity/tick! :active-skill [[_ {:keys [skill effect-ctx counter]}]
                                       eid
-                                      {:keys [cdq.context/elapsed-time] :as c}]
+                                      c]
   (cond
    (not (effect/some-applicable? (update-effect-ctx c effect-ctx)
                                  (:skill/effects skill)))
@@ -1083,7 +1078,7 @@
     ; TODO some sound ?
     )
 
-   (timer/stopped? counter elapsed-time)
+   (timer/stopped? counter)
    (do
     (tx/effect c effect-ctx (:skill/effects skill))
     (tx/event c eid :action-done))))
@@ -1117,8 +1112,8 @@
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}]
                                     eid
-                                    {:keys [cdq.context/elapsed-time] :as c}]
-  (when (timer/stopped? counter elapsed-time)
+                                    c]
+  (when (timer/stopped? counter)
     (tx/event c eid :timer-finished)))
 
 (defmethod entity/tick! :npc-sleeping [_ eid {:keys [cdq.context/grid] :as c}]
@@ -1133,19 +1128,15 @@
     (tx/set-movement eid movement-vector)
     (tx/event c eid :no-movement-input)))
 
-(defmethod entity/tick! :stunned [[_ {:keys [counter]}]
-                                 eid
-                                 {:keys [cdq.context/elapsed-time] :as c}]
-  (when (timer/stopped? counter elapsed-time)
+(defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid c]
+  (when (timer/stopped? counter)
     (tx/event c eid :effect-wears-off)))
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration
   [[_ {:keys [counter faction]}]
    eid
-   {:keys [cdq.context/grid
-           cdq.context/elapsed-time]
-    :as c}]
-  (when (timer/stopped? counter elapsed-time)
+   {:keys [cdq.context/grid] :as c}]
+  (when (timer/stopped? counter)
     (tx/mark-destroyed eid)
     (doseq [friendly-eid (friendlies-in-radius grid (:position @eid) faction)]
       (tx/event c friendly-eid :alert))))
@@ -1257,40 +1248,30 @@
   (when (animation/stopped? (:entity/animation @eid))
     (tx/mark-destroyed eid)))
 
-(defmethod entity/tick! :entity/skills
-  [[k skills]
-   eid
-   {:keys [cdq.context/elapsed-time]}]
+(defmethod entity/tick! :entity/skills [[k skills] eid _c]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
-                     (timer/stopped? cooling-down? elapsed-time))]
+                     (timer/stopped? cooling-down?))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
 
-(defmethod entity/tick! :entity/string-effect
-  [[k {:keys [counter]}]
-   eid
-   {:keys [cdq.context/elapsed-time]}]
-  (when (timer/stopped? counter elapsed-time)
+(defmethod entity/tick! :entity/string-effect [[k {:keys [counter]}] eid _c]
+  (when (timer/stopped? counter)
     (swap! eid dissoc k)))
 
-(defmethod entity/tick! :entity/temp-modifier
-  [[k {:keys [modifiers counter]}]
-   eid
-   {:keys [cdq.context/elapsed-time]}]
-  (when (timer/stopped? counter elapsed-time)
+(defmethod entity/tick! :entity/temp-modifier [[k {:keys [modifiers counter]}] eid _c]
+  (when (timer/stopped? counter)
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))
 
 (defcomponent :active-skill
   (state/cursor [_] :cursors/sandclock)
   (state/pause-game? [_] false)
-  (state/enter! [[_ {:keys [eid skill]}]
-                 {:keys [cdq.context/elapsed-time] :as c}]
+  (state/enter! [[_ {:keys [eid skill]}] c]
     (sound/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (timer/create elapsed-time (:skill/cooldown skill))))
+             (timer/create (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
@@ -1642,12 +1623,12 @@
 (defn- draw-skill-image-and-active-effect
   [{:keys [skill effect-ctx counter]}
    entity
-   {:keys [cdq.context/elapsed-time] :as c}]
+   c]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image
                       entity
                       (:position entity)
-                      (timer/ratio counter elapsed-time))
+                      (timer/ratio counter))
     (render-active-effect c
                           effect-ctx
                           ; !! FIXME !!
@@ -1785,9 +1766,8 @@
 (defn- update-time [context]
   (let [delta-ms (min (.getDeltaTime Gdx/graphics)
                       cdq.time/max-delta)]
-    (-> context
-        (update :cdq.context/elapsed-time + delta-ms)
-        (assoc :cdq.context/delta-time delta-ms))))
+    (timer/inc-state! delta-ms)
+    (assoc context :cdq.context/delta-time delta-ms)))
 
 (defn- update-potential-fields! [{:keys [cdq.context/factions-iterations
                                          cdq.context/grid
@@ -1957,8 +1937,8 @@
                                    (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"
-                    :update-fn (fn [{:keys [cdq.context/elapsed-time]}]
-                                 (str (readable-number elapsed-time) " seconds"))
+                    :update-fn (fn [_]
+                                 (str (readable-number timer/elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
                     :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
