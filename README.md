@@ -1,3 +1,8 @@
+# TODO
+
+* namespace graph
+* lein hiera
+
 # Moon Engine
 
 ![moon 2](https://github.com/user-attachments/assets/b1c666de-2aad-427f-b06a-c838048958bb)
