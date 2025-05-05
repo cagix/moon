@@ -1850,15 +1850,6 @@
              update-potential-fields!
              tick-entities!])))
 
-(defn- remove-destroyed-entities! [{:keys [cdq.context/entity-ids]
-                                    :as context}]
-  (doseq [eid (filter (comp :entity/destroyed? deref)
-                      (vals @entity-ids))]
-    (world/remove-entity! eid context)
-    (doseq [component @eid]
-      (entity/destroy! component eid context)))
-  context)
-
 (defn- camera-controls! [context]
   (let [camera (:camera graphics/world-viewport)
         zoom-speed 0.025]
@@ -1927,7 +1918,7 @@
                                                     when-not-paused!
 
                                                     ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                                                    remove-destroyed-entities!
+                                                    world/remove-destroyed-entities!
 
                                                     camera-controls!
                                                     window-controls!]))))

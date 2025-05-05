@@ -87,9 +87,9 @@
   (when (:collides? @eid)
     (set-occupied-cells! grid eid)))
 
-(defn remove-entity! [eid {:keys [cdq.context/entity-ids
-                                  cdq.context/content-grid
-                                  cdq.context/grid]}]
+(defn- remove-entity! [eid {:keys [cdq.context/entity-ids
+                                   cdq.context/content-grid
+                                   cdq.context/grid]}]
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
@@ -111,6 +111,15 @@
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! grid eid)))
+
+(defn remove-destroyed-entities! [{:keys [cdq.context/entity-ids]
+                                   :as context}]
+  (doseq [eid (filter (comp :entity/destroyed? deref)
+                      (vals @entity-ids))]
+    (remove-entity! eid context)
+    (doseq [component @eid]
+      (entity/destroy! component eid context)))
+  context)
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
