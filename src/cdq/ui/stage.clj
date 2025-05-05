@@ -5,6 +5,14 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
 
+(declare player-message)
+
+(defn init-state! []
+  (.bindRoot #'player-message (atom {:duration-seconds 1.5})))
+
+(defn show-player-msg! [text]
+  (swap! player-message assoc :text text :counter 0))
+
 (defn mouse-on-actor? []
   (let [[x y] (graphics/mouse-position #_(Stage/.getViewport ui/stage))]
     (Stage/.hit ui/stage x y true)))

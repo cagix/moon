@@ -154,20 +154,20 @@
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
-(defn- draw-player-message [{:keys [cdq.context/player-message]}]
-  (when-let [text (:text @player-message)]
+(defn- draw-player-message [_context]
+  (when-let [text (:text @stage/player-message)]
     (graphics/draw-text {:x (/ (:width     graphics/ui-viewport) 2)
                          :y (+ (/ (:height graphics/ui-viewport) 2) 200)
                          :text text
                          :scale 2.5
                          :up? true})))
 
-(defn- check-remove-message [{:keys [cdq.context/player-message]}]
-  (when (:text @player-message)
-    (swap! player-message update :counter + (.getDeltaTime Gdx/graphics))
-    (when (>= (:counter @player-message)
-              (:duration-seconds @player-message))
-      (swap! player-message dissoc :counter :text))))
+(defn- check-remove-message [_context]
+  (when (:text @stage/player-message)
+    (swap! stage/player-message update :counter + (.getDeltaTime Gdx/graphics))
+    (when (>= (:counter @stage/player-message)
+              (:duration-seconds @stage/player-message))
+      (swap! stage/player-message dissoc :counter :text))))
 
 (defn- player-message-actor []
   (ui-actor {:draw draw-player-message
@@ -371,7 +371,7 @@
      :else
      (do
       (tx/sound "bfxr_denied")
-      (tx/show-player-msg c "Your Inventory is full")))))
+      (stage/show-player-msg! "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_ c]
   (tx/toggle-inventory-window c))
@@ -391,7 +391,7 @@
                                               (on-clicked clicked-eid c))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (tx/sound "bfxr_denied")
-                                              (tx/show-player-msg c "Too far away"))]))
+                                              (stage/show-player-msg! "Too far away"))]))
 
 (defn- inventory-cell-with-item? [{:keys [cdq.context/player-eid] :as c} ^Actor actor]
   (and (.getParent actor)
@@ -448,14 +448,14 @@
             [:cursors/skill-not-usable
              (fn []
                (tx/sound "bfxr_denied")
-               (tx/show-player-msg c (case state
-                                       :cooldown "Skill is still on cooldown"
-                                       :not-enough-mana "Not enough mana"
-                                       :invalid-params "Cannot use this here")))])))
+               (stage/show-player-msg! (case state
+                                         :cooldown "Skill is still on cooldown"
+                                         :not-enough-mana "Not enough mana"
+                                         :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
           (tx/sound "bfxr_denied")
-          (tx/show-player-msg c "No selected skill"))]))))
+          (stage/show-player-msg! "No selected skill"))]))))
 
 (defmethod entity/manual-tick :player-idle [[_ {:keys [eid]}] c]
   (if-let [movement-vector (input/player-movement-vector)]
@@ -871,6 +871,7 @@
    (player-message-actor)])
 
 (defn- reset-stage! []
+  (stage/init-state!)
   (Stage/.clear ui/stage)
   (run! stage/add-actor (create-stage-actors)))
 
@@ -880,8 +881,7 @@
         grid (create-grid tiled-map)
         _ (world/create! tiled-map)
         _ (timer/init!)
-        context {:cdq.context/player-message (atom {:duration-seconds 1.5})
-                 :cdq.context/level level
+        context {:cdq.context/level level
                  :cdq.context/error nil
                  :cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                            (tiled/tm-height tiled-map)
