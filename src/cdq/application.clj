@@ -7,7 +7,6 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.game :as game]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
@@ -1438,7 +1437,7 @@
   context)
 
 (defn- assoc-active-entities [context]
-  (assoc context :cdq.game/active-entities (game/get-active-entities context)))
+  (assoc context :cdq.game/active-entities (world/get-active-entities context)))
 
 (defn- set-camera-on-player! [{:keys [cdq.context/player-eid]
                                :as context}]

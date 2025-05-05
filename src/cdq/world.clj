@@ -1,5 +1,6 @@
 (ns cdq.world
   (:require [cdq.audio.sound :as sound]
+            [cdq.data.grid2d :as g2d]
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
@@ -8,6 +9,23 @@
             [cdq.timer :as timer]
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [define-order safe-merge]]))
+
+(defn- active-entities* [{:keys [grid]} center-entity]
+  (->> (let [idx (-> center-entity
+                     :cdq.content-grid/content-cell
+                     deref
+                     :idx)]
+         (cons idx (g2d/get-8-neighbour-positions idx)))
+       (keep grid)
+       (mapcat (comp :entities deref))))
+
+(defn get-active-entities
+  "Expensive operation.
+
+  Active entities are those which are nearby the position of the player and about one screen away."
+  [{:keys [cdq.context/content-grid
+           cdq.context/player-eid]}]
+  (active-entities* content-grid @player-eid))
 
 (defn- set-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]
