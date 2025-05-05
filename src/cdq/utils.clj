@@ -5,31 +5,6 @@
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
 
-(comment
- requiring-resolve
-
- )
-
-(defn req-resolve [qualified-symbol]
-  ;(println "req-resolve" qualified-symbol)
-  (require (symbol (namespace qualified-symbol)))
-  (let [result (resolve qualified-symbol)]
-    ;(println "result " result)
-    (when-not result
-      (throw (ex-info "cannot resolve " {:sym qualified-symbol})))
-    result))
-
-(defn req-resolve-call [[qualified-symbol & params] & more-params]
-  ;(println "req-resolve-call: " qualified-symbol)
-  ;(println "  params: " params)
-  ;(println "  more-params: " more-params)
-  (require (symbol (namespace qualified-symbol)))
-  (let [f (resolve qualified-symbol)]
-    ;(println "resolved: " f)
-    (when-not f
-      (throw (ex-info "cannot resolve " {:sym qualified-symbol})))
-    (apply f (concat params more-params))))
-
 (def overwrite-warnings? false)
 
 (defmacro defcomponent [k & sys-impls]

@@ -4,6 +4,7 @@
             [cdq.context :as context]
             [cdq.data.grid2d :as g2d]
             [cdq.db :as db]
+            [cdq.editor :as editor]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
@@ -33,6 +34,7 @@
             [cdq.operation :as op]
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.stage :as stage]
+            [cdq.ui.menu :as ui.menu]
             [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number
                                          pretty-pst sort-by-order]]
             [cdq.val-max :as val-max]
@@ -908,7 +910,7 @@
 (declare dev-menu-config)
 
 (defn- create-stage-actors []
-  [((requiring-resolve 'cdq.ui.menu/create) (dev-menu-config))
+  [(ui.menu/create (dev-menu-config))
    (action-bar)
    (hp-mana-bar [(/ (:width graphics/ui-viewport) 2)
                  80 ; action-bar-icon-size
@@ -2059,9 +2061,7 @@
                                                            :close-button? true
                                                            :center? true
                                                            :close-on-escape? true})]
-                                    (.add window ^Actor ((requiring-resolve 'cdq.editor/overview-table)
-                                                         property-type
-                                                         (requiring-resolve 'cdq.editor/edit-property)))
+                                    (.add window ^Actor (editor/overview-table property-type editor/edit-property))
                                     (.pack window)
                                     (stage/add-actor window)))})}]
    :update-labels [{:label "Mouseover-entity id"
