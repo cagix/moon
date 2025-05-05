@@ -21,12 +21,14 @@
    :cell-w cell-size
    :cell-h cell-size})
 
-(declare ^:private content-grid)
+(declare ^:private content-grid
+         ^:private entity-ids)
 
 (defn create! [tiled-map]
   (.bindRoot #'content-grid (create-content-grid {:cell-size 16
                                                   :width  (tiled/tm-width  tiled-map)
-                                                  :height (tiled/tm-height tiled-map)})))
+                                                  :height (tiled/tm-height tiled-map)}))
+  (.bindRoot #'entity-ids (atom {})))
 
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
@@ -89,8 +91,7 @@
       (when content-cell
         (swap! content-cell update :entities disj eid)))))
 
-(defn- add-entity! [eid {:keys [cdq.context/entity-ids
-                                cdq.context/grid]}]
+(defn- add-entity! [eid {:keys [cdq.context/grid]}]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
@@ -103,8 +104,7 @@
   (when (:collides? @eid)
     (set-occupied-cells! grid eid)))
 
-(defn- remove-entity! [eid {:keys [cdq.context/entity-ids
-                                   cdq.context/grid]}]
+(defn- remove-entity! [eid {:keys [cdq.context/grid]}]
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
@@ -126,8 +126,7 @@
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! grid eid)))
 
-(defn remove-destroyed-entities! [{:keys [cdq.context/entity-ids]
-                                   :as context}]
+(defn remove-destroyed-entities! [context]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
     (remove-entity! eid context)

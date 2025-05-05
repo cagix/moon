@@ -882,7 +882,6 @@
         grid (create-grid tiled-map)
         _ (world/create! tiled-map)
         context {:cdq.context/elapsed-time 0
-                 :cdq.context/entity-ids (atom {})
                  :cdq.context/player-message (atom {:duration-seconds 1.5})
                  :cdq.context/level level
                  :cdq.context/error nil
