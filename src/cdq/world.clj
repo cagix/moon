@@ -104,7 +104,7 @@
   "Expensive operation.
 
   Active entities are those which are nearby the position of the player and about one screen away."
-  [_context]
+  []
   (active-entities* content-grid @player-eid))
 
 (defn- set-cells! [grid eid]

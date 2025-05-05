@@ -390,19 +390,19 @@
                                               (tx/sound "bfxr_denied")
                                               (stage/show-player-msg! "Too far away"))]))
 
-(defn- inventory-cell-with-item? [c ^Actor actor]
+(defn- inventory-cell-with-item? [^Actor actor]
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
        (get-in (:entity/inventory @world/player-eid)
                (.getUserObject (.getParent actor)))))
 
-(defn- mouseover-actor->cursor [c]
+(defn- mouseover-actor->cursor []
   (let [actor (stage/mouse-on-actor?)]
     (cond
-     (inventory-cell-with-item? c actor) :cursors/hand-before-grab
-     (ui/window-title-bar? actor)        :cursors/move-window
-     (ui/button? actor)                  :cursors/over-button
-     :else                               :cursors/default)))
+     (inventory-cell-with-item? actor) :cursors/hand-before-grab
+     (ui/window-title-bar? actor)      :cursors/move-window
+     (ui/button? actor)                :cursors/over-button
+     :else                             :cursors/default)))
 
 (defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid]} eid]
   (let [target-position (or (and mouseover-eid
@@ -417,7 +417,7 @@
   (let [entity @eid]
     (cond
      (stage/mouse-on-actor?)
-     [(mouseover-actor->cursor c)
+     [(mouseover-actor->cursor)
       (fn [] nil)] ; handled by actors themself, they check player state
 
      (and mouseover-eid
@@ -1263,7 +1263,7 @@
   context)
 
 (defn- assoc-active-entities [context]
-  (assoc context :cdq.game/active-entities (world/get-active-entities context)))
+  (assoc context :cdq.game/active-entities (world/get-active-entities)))
 
 (defn- set-camera-on-player! [context]
   (graphics/set-camera-position! (:position @world/player-eid))
