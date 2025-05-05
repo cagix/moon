@@ -1510,9 +1510,9 @@
 
     (when tile-grid?
       (graphics/grid (int left-x) (int bottom-y)
-                         (inc (int (:width  graphics/world-viewport)))
-                         (+ 2 (int (:height graphics/world-viewport)))
-                         1 1 [1 1 1 0.8]))
+                     (inc (int (:width  graphics/world-viewport)))
+                     (+ 2 (int (:height graphics/world-viewport)))
+                     1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
             :let [cell (grid [x y])]
