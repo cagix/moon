@@ -40,8 +40,7 @@
 (defn- draw-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (let [_context (ui/application-state this)
-            ^Actor this this]
+      (let [^Actor this this]
         (draw-cell-rect @world/player-eid
                         (.getX this)
                         (.getY this)
@@ -88,10 +87,8 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [_event _x _y]
-                            (let [context (ui/application-state stack)]
-                              (entity/clicked-inventory-cell (entity/state-obj @world/player-eid)
-                                                             cell
-                                                             context)))))
+                            (entity/clicked-inventory-cell (entity/state-obj @world/player-eid)
+                                                           cell))))
     stack))
 
 (defn- inventory-table []
@@ -135,7 +132,7 @@
                               (float cell-size)
                               (float cell-size))
     (Image/.setDrawable image-widget drawable)
-    (add-tooltip! cell-widget #(info/text % item))))
+    (add-tooltip! cell-widget #(info/text item))))
 
 (defn- remove-item-from-widget [cell]
   (let [cell-widget (inventory-cell-widget cell)

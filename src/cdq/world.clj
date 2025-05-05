@@ -90,7 +90,10 @@
          raycaster
          potential-field-cache
          player-eid
-         active-entities)
+         active-entities
+         delta-time)
+
+(def mouseover-eid nil)
 
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity

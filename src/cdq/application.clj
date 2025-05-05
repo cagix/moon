@@ -50,8 +50,7 @@
                                          projectile-size
                                          item-place-position
                                          world-item?
-                                         render-z-order
-                                         item-place-position]]
+                                         render-z-order]]
             [cdq.world.potential-field :as potential-field]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
@@ -106,14 +105,14 @@
                                 :entity/faction
                                 :active-skill])
 
-(defn- ->label-text [{:keys [cdq.context/mouseover-eid] :as c}]
+(defn- ->label-text []
   ; items then have 2x pretty-name
   #_(.setText (.getTitleLabel window)
-              (if-let [eid mouseover-eid]
-                (info/text c [:property/pretty-name (:property/pretty-name @eid)])
+              (if-let [eid world/mouseover-eid]
+                (info/text [:property/pretty-name (:property/pretty-name @eid)])
                 "Entity Info"))
-  (when-let [eid mouseover-eid]
-    (info/text c ; don't use select-keys as it loses Entity record type
+  (when-let [eid world/mouseover-eid]
+    (info/text ; don't use select-keys as it loses Entity record type
                (apply dissoc @eid disallowed-keys))))
 
 (defn- entity-info-window [position]
@@ -125,8 +124,8 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (.addActor window (ui-actor {:act (fn [context]
-                                        (.setText label (str (->label-text context)))
+    (.addActor window (ui-actor {:act (fn []
+                                        (.setText label (str (->label-text)))
                                         (.pack window))}))
     window))
 
@@ -147,13 +146,13 @@
                             (graphics/draw-image (graphics/sub-sprite contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
                             (render-infostr-on-bar (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn [_]
+    (ui-actor {:draw (fn []
                        (let [player-entity @world/player-eid
                              x (- x (/ rahmenw 2))]
                          (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                          (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
-(defn- draw-player-message [_context]
+(defn- draw-player-message []
   (when-let [text (:text @stage/player-message)]
     (graphics/draw-text {:x (/ (:width     graphics/ui-viewport) 2)
                          :y (+ (/ (:height graphics/ui-viewport) 2) 200)
@@ -161,7 +160,7 @@
                          :scale 2.5
                          :up? true})))
 
-(defn- check-remove-message [_context]
+(defn- check-remove-message []
   (when (:text @stage/player-message)
     (swap! stage/player-message update :counter + (.getDeltaTime Gdx/graphics))
     (when (>= (:counter @stage/player-message)
@@ -173,8 +172,7 @@
              :act  check-remove-message}))
 
 (defn- player-state-actor []
-  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @world/player-eid)
-                                          %)}))
+  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @world/player-eid))}))
 
 (Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))
 
@@ -203,44 +201,32 @@
                  (str (+? v) (op-value-text component) " " (str/capitalize (name k)))))
              (sort-by op/-order op))))
 
-(defmethod info-segment :property/pretty-name
-  [[_ v] _entity _c]
-  v)
+(defmethod info-segment :property/pretty-name [[_ v] _entity] v)
 
-(defmethod info-segment :maxrange
-  [[_ v] _entity _c]
-  v)
+(defmethod info-segment :maxrange [[_ v] _entity] v)
 
-(defmethod info-segment :creature/level
-  [[_ v] _entity _c]
-  (str "Level: " v))
+(defmethod info-segment :creature/level [[_ v] _entity] (str "Level: " v))
 
-(defmethod info-segment :projectile/piercing?
-  [_ _entity _c] ; TODO also when false ?!
+(defmethod info-segment :projectile/piercing?  [_ _entity] ; TODO also when false ?!
   "Piercing")
 
-(defmethod info-segment :skill/action-time-modifier-key
-  [[_ v] _entity _c]
+(defmethod info-segment :skill/action-time-modifier-key [[_ v] _entity]
   (case v
     :entity/cast-speed "Spell"
     :entity/attack-speed "Attack"))
 
-(defmethod info-segment :skill/action-time
-  [[_ v] _entity _c]
+(defmethod info-segment :skill/action-time [[_ v] _entity]
   (str "Action-Time: " (readable-number v) " seconds"))
 
-(defmethod info-segment :skill/cooldown
-  [[_ v] _entity _c]
+(defmethod info-segment :skill/cooldown [[_ v] _entity]
   (when-not (zero? v)
     (str "Cooldown: " (readable-number v) " seconds")))
 
-(defmethod info-segment :skill/cost
-  [[_ v] _entity _c]
+(defmethod info-segment :skill/cost [[_ v] _entity]
   (when-not (zero? v)
     (str "Cost: " v " Mana")))
 
-(defmethod info-segment ::stat
-  [[k _] entity _c]
+(defmethod info-segment ::stat [[k _] entity]
   (str (str/capitalize (name k)) ": " (entity/stat entity k)))
 
 (derive :entity/reaction-time  ::stat)
@@ -251,19 +237,16 @@
 (derive :entity/armor-save     ::stat)
 (derive :entity/armor-pierce   ::stat)
 
-(defmethod info-segment :effects/spawn
-  [[_ {:keys [property/pretty-name]}] _entity _context]
+(defmethod info-segment :effects/spawn [[_ {:keys [property/pretty-name]}] _entity]
   (str "Spawns a " pretty-name))
 
-(defmethod info-segment :effects.target/convert
-  [_ _entity _c]
+(defmethod info-segment :effects.target/convert [_ _entity]
   "Converts target to your side.")
 
 (defn- damage-info [{[min max] :damage/min-max}]
   (str min "-" max " damage"))
 
-(defmethod info-segment :effects.target/damage
-  [[_ damage] _entity _c]
+(defmethod info-segment :effects.target/damage [[_ damage] _entity]
   (damage-info damage)
   #_(if source
       (let [modified (entity/damage @source damage)]
@@ -273,91 +256,74 @@
       (damage-info damage)) ; property menu no source,modifiers
   )
 
-(defmethod info-segment :effects.target/hp
-  [[k ops] _entity _context]
+(defmethod info-segment :effects.target/hp [[k ops] _entity]
   (op-info ops k))
 
-(defmethod info-segment :effects.target/kill
-  [_ _entity _c]
+(defmethod info-segment :effects.target/kill [_ _entity]
   "Kills target")
 
 ; FIXME no source
 ; => to entity move
-(defmethod info-segment :effects.target/melee-damage
-  [_ _entity _c]
+(defmethod info-segment :effects.target/melee-damage [_ _entity]
   (str "Damage based on entity strength."
        #_(when source
            (str "\n" (damage-info (entity->melee-damage @source))))))
 
-(defmethod info-segment :effects.target/spiderweb
-  [_ _entity _c]
+(defmethod info-segment :effects.target/spiderweb [_ _entity]
   "Spiderweb slows 50% for 5 seconds."
   ; modifiers same like item/modifiers has info-text
   ; counter ?
   )
 
-(defmethod info-segment :effects.target/stun
-  [[_ duration] _entity _c]
+(defmethod info-segment :effects.target/stun [[_ duration] _entity]
   (str "Stuns for " (readable-number duration) " seconds"))
 
-(defmethod info-segment :effects/target-all
-  [_ _entity _c]
+(defmethod info-segment :effects/target-all [_ _entity]
   "All visible targets")
 
-(defmethod info-segment :entity/delete-after-duration
-  [[_ counter] _entity _c]
+(defmethod info-segment :entity/delete-after-duration [[_ counter] _entity]
   (str "Remaining: " (readable-number (timer/ratio counter)) "/1"))
 
-(defmethod info-segment :entity/faction
-  [[_ faction] _entity _c]
+(defmethod info-segment :entity/faction [[_ faction] _entity]
   (str "Faction: " (name faction)))
 
-(defmethod info-segment :entity/fsm
-  [[_ fsm] _entity _c]
+(defmethod info-segment :entity/fsm [[_ fsm] _entity]
   (str "State: " (name (:state fsm))))
 
-(defmethod info-segment :entity/hp
-  [_ entity _c]
+(defmethod info-segment :entity/hp [_ entity]
   (str "Hitpoints: " (entity/hitpoints entity)))
 
-(defmethod info-segment :entity/mana
-  [_ entity _c]
+(defmethod info-segment :entity/mana [_ entity]
   (str "Mana: " (entity/mana entity)))
 
-(defmethod info-segment :entity/modifiers
-  [[_ mods] _entity _c]
+(defmethod info-segment :entity/modifiers [[_ mods] _entity]
   (when (seq mods)
     (str/join "\n" (keep (fn [[k ops]]
                            (op-info ops k)) mods))))
 
-(defmethod info-segment :entity/species
-  [[_ species] _entity _c]
+(defmethod info-segment :entity/species [[_ species] _entity]
   (str "Creature - " (str/capitalize (name species))))
 
-(defmethod info-segment :entity/temp-modifier
-  [[_ {:keys [counter]}]
-   _entity
-   _c]
+(defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] _entity]
   (str "Spiderweb - remaining: " (readable-number (timer/ratio counter)) "/1"))
 
-#_(defmethod info-segment :entity/skills
-    [skills _c]
+#_(defmethod info-segment :entity/skills [skills]
   ; => recursive info-text leads to endless text wall
   #_(when (seq skills)
       (str "Skills: " (str/join "," (map name (keys skills))))))
 
 (defmulti ^:private on-clicked
-  (fn [eid c]
+  (fn [eid]
     (:type (:entity/clickable @eid))))
 
-(defmethod on-clicked :clickable/item [eid c]
+(defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
      (Actor/.isVisible (stage/get-inventory))
      (do
       (tx/sound "bfxr_takeit")
       (tx/mark-destroyed eid)
-      (tx/event c world/player-eid :pickup-item item))
+      (tx/event world/player-eid :pickup-item item))
 
      (inventory/can-pickup-item? (:entity/inventory @world/player-eid) item)
      (do
@@ -370,8 +336,8 @@
       (tx/sound "bfxr_denied")
       (stage/show-player-msg! "Your Inventory is full")))))
 
-(defmethod on-clicked :clickable/player [_ c]
-  (tx/toggle-inventory-window c))
+(defmethod on-clicked :clickable/player [_]
+  (tx/toggle-inventory-window))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -380,12 +346,12 @@
                       :cursors/hand-before-grab)
     :clickable/player :cursors/bag))
 
-(defn- clickable-entity-interaction [c player-entity clicked-eid]
+(defn- clickable-entity-interaction [player-entity clicked-eid]
   (if (< (v/distance (:position player-entity)
                      (:position @clicked-eid))
          (:entity/click-distance-tiles player-entity))
     [(clickable->cursor @clicked-eid false) (fn []
-                                              (on-clicked clicked-eid c))]
+                                              (on-clicked clicked-eid))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (tx/sound "bfxr_denied")
                                               (stage/show-player-msg! "Too far away"))]))
@@ -404,30 +370,30 @@
      (ui/button? actor)                :cursors/over-button
      :else                             :cursors/default)))
 
-(defn- player-effect-ctx [{:keys [cdq.context/mouseover-eid]} eid]
-  (let [target-position (or (and mouseover-eid
-                                 (:position @mouseover-eid))
+(defn- player-effect-ctx [eid]
+  (let [target-position (or (and world/mouseover-eid
+                                 (:position @world/mouseover-eid))
                             (graphics/world-mouse-position))]
     {:effect/source eid
-     :effect/target mouseover-eid
+     :effect/target world/mouseover-eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
-(defn- interaction-state [{:keys [cdq.context/mouseover-eid] :as c} eid]
+(defn- interaction-state [eid]
   (let [entity @eid]
     (cond
      (stage/mouse-on-actor?)
      [(mouseover-actor->cursor)
       (fn [] nil)] ; handled by actors themself, they check player state
 
-     (and mouseover-eid
-          (:entity/clickable @mouseover-eid))
-     (clickable-entity-interaction c entity mouseover-eid)
+     (and world/mouseover-eid
+          (:entity/clickable @world/mouseover-eid))
+     (clickable-entity-interaction entity world/mouseover-eid)
 
      :else
      (if-let [skill-id (stage/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
-             effect-ctx (player-effect-ctx c eid)
+             effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]
          (if (= state :usable)
            (do
@@ -436,7 +402,7 @@
             ; => e.g. meditation no TARGET .. etc.
             [:cursors/use-skill
              (fn []
-               (tx/event c eid :start-action [skill effect-ctx]))])
+               (tx/event eid :start-action [skill effect-ctx]))])
            (do
             ; TODO cursor as of usable state
             ; cooldown -> sanduhr kleine
@@ -454,18 +420,18 @@
           (tx/sound "bfxr_denied")
           (stage/show-player-msg! "No selected skill"))]))))
 
-(defmethod entity/manual-tick :player-idle [[_ {:keys [eid]}] c]
+(defmethod entity/manual-tick :player-idle [[_ {:keys [eid]}]]
   (if-let [movement-vector (input/player-movement-vector)]
-    (tx/event c eid :movement-input movement-vector)
-    (let [[cursor on-click] (interaction-state c eid)]
+    (tx/event eid :movement-input movement-vector)
+    (let [[cursor on-click] (interaction-state eid)]
       (graphics/set-cursor! cursor)
       (when (input/button-just-pressed? :left)
         (on-click)))))
 
-(defmethod entity/manual-tick :player-item-on-cursor [[_ {:keys [eid]}] c]
+(defmethod entity/manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (and (input/button-just-pressed? :left)
              (world-item?))
-    (tx/event c eid :drop-item)))
+    (tx/event eid :drop-item)))
 
 (comment
  (ns cdq.components.effects.audiovisual)
@@ -484,10 +450,10 @@
   (effect/applicable? [_ {:keys [effect/target-position]}]
     target-position)
 
-  (effect/useful? [_ _ _c]
+  (effect/useful? [_ _]
     false)
 
-  (effect/handle [[_ audiovisual] {:keys [effect/target-position]} c]
+  (effect/handle [[_ audiovisual] {:keys [effect/target-position]}]
     (spawn-audiovisual target-position audiovisual)))
 
 (defn- projectile-start-point [entity direction size]
@@ -502,8 +468,7 @@
 
   ; TODO valid params direction has to be  non-nil (entities not los player ) ?
   (effect/useful? [[_ {:keys [projectile/max-range] :as projectile}]
-                   {:keys [effect/source effect/target]}
-                   _context]
+                   {:keys [effect/source effect/target]}]
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
@@ -516,7 +481,7 @@
                           target-p)
               max-range))))
 
-  (effect/handle [[_ projectile] {:keys [effect/source effect/target-direction]} c]
+  (effect/handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
     (spawn-projectile {:position (projectile-start-point @source
                                                          target-direction
                                                          (projectile-size projectile))
@@ -543,10 +508,10 @@
   (effect/applicable? [_ _ctx]
     true)
 
-  (effect/useful? [_ _ _c]
+  (effect/useful? [_ _]
     false)
 
-  (effect/handle [[_ sound] _ctx c]
+  (effect/handle [[_ sound] _ctx]
     (sound/play sound)))
 
 (defcomponent :effects/spawn
@@ -555,8 +520,7 @@
          target-position))
 
   (effect/handle [[_ {:keys [property/id]}]
-                  {:keys [effect/source effect/target-position]}
-                  c]
+                  {:keys [effect/source effect/target-position]}]
     (spawn-creature {:position target-position
                      :creature-id id ; already properties/get called through one-to-one, now called again.
                      :components {:entity/fsm {:fsm :fsms/npc
@@ -581,11 +545,11 @@
   (effect/applicable? [_ _]
     true)
 
-  (effect/useful? [_ _ _c]
+  (effect/useful? [_ _]
     ; TODO
     false)
 
-  (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]} c]
+  (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target (los/creatures-in-los-of-player)]
         (line-render {:start (:position source*) #_(start-point source* target*)
@@ -599,8 +563,7 @@
         ; at sub-effects
         ; and no more safe - merge
         ; find a way to pass ctx / effect-ctx separate ?
-        (tx/effect c
-                   {:effect/source source :effect/target target}
+        (tx/effect {:effect/source source :effect/target target}
                    entity-effects))))
 
   (effect/render [_ {:keys [effect/source]}]
@@ -615,12 +578,11 @@
     (and target
          (seq (effect/filter-applicable? effect-ctx entity-effects))))
 
-  (effect/useful?  [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]} _c]
+  (effect/useful? [[_ {:keys [maxrange]}] {:keys [effect/source effect/target]}]
     (entity/in-range? @source @target maxrange))
 
   (effect/handle [[_ {:keys [maxrange entity-effects]}]
-                  {:keys [effect/source effect/target] :as effect-ctx}
-                  c]
+                  {:keys [effect/source effect/target] :as effect-ctx}]
     (let [source* @source
           target* @target]
       (if (entity/in-range? source* target* maxrange)
@@ -630,7 +592,7 @@
                        :duration 0.05
                        :color [1 0 0 0.75]
                        :thick? true})
-         (tx/effect c effect-ctx entity-effects))
+         (tx/effect effect-ctx entity-effects))
         (spawn-audiovisual (entity/end-point source* target* maxrange)
                            (db/build :audiovisuals/hit-ground)))))
 
@@ -649,10 +611,10 @@
   (effect/applicable? [_ {:keys [effect/target]}]
     target)
 
-  (effect/useful? [_ _ _c]
+  (effect/useful? [_ _]
     false)
 
-  (effect/handle [[_ audiovisual] {:keys [effect/target]} c]
+  (effect/handle [[_ audiovisual] {:keys [effect/target]}]
     (spawn-audiovisual (:position @target)
                        audiovisual)))
 
@@ -662,7 +624,7 @@
          (= (:entity/faction @target)
             (entity/enemy @source))))
 
-  (effect/handle [_ {:keys [effect/source effect/target]} c]
+  (effect/handle [_ {:keys [effect/source effect/target]}]
     (swap! target assoc :entity/faction (:entity/faction @source))))
 
 (defn- effective-armor-save [source* target*]
@@ -687,8 +649,7 @@
          (:entity/hp @target)))
 
   (effect/handle [[_ damage]
-                  {:keys [effect/source effect/target]}
-                  c]
+                  {:keys [effect/source effect/target]}]
     (let [source* @source
           target* @target
           hp (entity/hitpoints target*)]
@@ -705,7 +666,7 @@
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (spawn-audiovisual (:position target*) (db/build :audiovisuals/damage))
-         (tx/event c target (if (zero? new-hp-val) :kill :alert))
+         (tx/event target (if (zero? new-hp-val) :kill :alert))
          (tx/text-effect target (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
@@ -713,8 +674,8 @@
     (and target
          (:entity/fsm @target)))
 
-  (effect/handle [_ {:keys [effect/target]} c]
-    (tx/event c target :kill)))
+  (effect/handle [_ {:keys [effect/target]}]
+    (tx/event target :kill)))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -727,8 +688,8 @@
   (effect/applicable? [_ {:keys [effect/source] :as ctx}]
     (effect/applicable? (melee-damage-effect @source) ctx))
 
-  (effect/handle [_ {:keys [effect/source] :as ctx} c]
-    (effect/handle (melee-damage-effect @source) ctx c)))
+  (effect/handle [_ {:keys [effect/source] :as ctx}]
+    (effect/handle (melee-damage-effect @source) ctx)))
 
 (let [modifiers {:modifier/movement-speed {:op/mult -0.5}}
       duration 5]
@@ -738,9 +699,7 @@
       true)
 
     ; TODO stacking? (if already has k ?) or reset counter ? (see string-effect too)
-    (effect/handle [_
-                    {:keys [effect/target]}
-                    _c]
+    (effect/handle [_ {:keys [effect/target]}]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
                                                    :counter (timer/create duration)})
@@ -751,8 +710,8 @@
     (and target
          (:entity/fsm @target)))
 
-  (effect/handle [[_ duration] {:keys [effect/target]} c]
-    (tx/event c target :stun duration)))
+  (effect/handle [[_ duration] {:keys [effect/target]}]
+    (tx/event target :stun duration)))
 
 (declare dev-menu-config)
 
@@ -777,14 +736,13 @@
 (defn- reset-game! [{:keys [world-id]}]
   (reset-stage!)
   (timer/init!)
-  (world/create! (level/create world-id))
-  {})
+  (world/create! (level/create world-id)))
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
     (timer/create duration))
 
-  (entity/tick! [[_ counter] eid _c]
+  (entity/tick! [[_ counter] eid]
     (when (timer/stopped? counter)
       (tx/mark-destroyed eid))))
 
@@ -920,8 +878,7 @@
                      :fsms/npc npc-fsm) initial-state nil) :state initial-state)
          initial-state (entity/create [initial-state eid])))
 
-(defmethod entity/draw-gui-view :player-item-on-cursor
-  [[_ {:keys [eid]}] _c]
+(defmethod entity/draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (not (world-item?))
     (graphics/draw-centered (:entity/image (:entity/item-on-cursor @eid))
                             (graphics/mouse-position))))
@@ -936,30 +893,28 @@
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
-(defmethod entity/tick! :active-skill [[_ {:keys [skill effect-ctx counter]}]
-                                      eid
-                                      c]
+(defmethod entity/tick! :active-skill [[_ {:keys [skill effect-ctx counter]}] eid]
   (cond
    (not (effect/some-applicable? (update-effect-ctx effect-ctx)
                                  (:skill/effects skill)))
    (do
-    (tx/event c eid :action-done)
+    (tx/event eid :action-done)
     ; TODO some sound ?
     )
 
    (timer/stopped? counter)
    (do
-    (tx/effect c effect-ctx (:skill/effects skill))
-    (tx/event c eid :action-done))))
+    (tx/effect effect-ctx (:skill/effects skill))
+    (tx/event eid :action-done))))
 
-(defn- npc-choose-skill [c entity ctx]
+(defn- npc-choose-skill [entity ctx]
   (->> entity
        :entity/skills
        vals
        (sort-by #(or (:skill/cost %) 0))
        reverse
        (filter #(and (= :usable (skill/usable-state entity % ctx))
-                     (effect/applicable-and-useful? c ctx (:skill/effects %))))
+                     (effect/applicable-and-useful? ctx (:skill/effects %))))
        first))
 
 (defn- npc-effect-context [eid]
@@ -973,46 +928,42 @@
      :effect/target-direction (when target
                                 (entity/direction entity @target))}))
 
-(defmethod entity/tick! :npc-idle [_ eid c]
+(defmethod entity/tick! :npc-idle [_ eid]
   (let [effect-ctx (npc-effect-context eid)]
-    (if-let [skill (npc-choose-skill c @eid effect-ctx)]
-      (tx/event c eid :start-action [skill effect-ctx])
-      (tx/event c eid :movement-direction (or (potential-field/find-direction world/grid eid) [0 0])))))
+    (if-let [skill (npc-choose-skill @eid effect-ctx)]
+      (tx/event eid :start-action [skill effect-ctx])
+      (tx/event eid :movement-direction (or (potential-field/find-direction world/grid eid) [0 0])))))
 
-(defmethod entity/tick! :npc-moving [[_ {:keys [counter]}]
-                                    eid
-                                    c]
+(defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]
   (when (timer/stopped? counter)
-    (tx/event c eid :timer-finished)))
+    (tx/event eid :timer-finished)))
 
-(defmethod entity/tick! :npc-sleeping [_ eid c]
+(defmethod entity/tick! :npc-sleeping [_ eid]
   (let [entity @eid
         cell (world/grid (entity/tile entity))]
     (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
-        (tx/event c eid :alert)))))
+        (tx/event eid :alert)))))
 
-(defmethod entity/tick! :player-moving [[_ {:keys [movement-vector]}] eid c]
+(defmethod entity/tick! :player-moving [[_ {:keys [movement-vector]}] eid]
   (if-let [movement-vector (input/player-movement-vector)]
     (tx/set-movement eid movement-vector)
-    (tx/event c eid :no-movement-input)))
+    (tx/event eid :no-movement-input)))
 
-(defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid c]
+(defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid]
   (when (timer/stopped? counter)
-    (tx/event c eid :effect-wears-off)))
+    (tx/event eid :effect-wears-off)))
 
-(defmethod entity/tick! :entity/alert-friendlies-after-duration
-  [[_ {:keys [counter faction]}] eid c]
+(defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
   (when (timer/stopped? counter)
     (tx/mark-destroyed eid)
     (doseq [friendly-eid (friendlies-in-radius world/grid (:position @eid) faction)]
-      (tx/event c friendly-eid :alert))))
+      (tx/event friendly-eid :alert))))
 
-(defmethod entity/tick! :entity/animation
-  [[k animation] eid {:keys [cdq.context/delta-time]}]
+(defmethod entity/tick! :entity/animation [[k animation] eid]
   (swap! eid #(-> %
                   (assoc :entity/image (animation/current-frame animation))
-                  (assoc k (animation/tick animation delta-time)))))
+                  (assoc k (animation/tick animation world/delta-time)))))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -1057,10 +1008,8 @@
 
 (def ^:private speed-schema (schema/m-schema [:and number? [:>= 0] [:<= max-speed]]))
 
-(defmethod entity/tick! :entity/movement
-  [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
-   eid
-   {:keys [cdq.context/delta-time] :as context}]
+(defmethod entity/tick! :entity/movement [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
+                                          eid]
   (assert (schema/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
@@ -1069,7 +1018,7 @@
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time delta-time)
+    (let [movement (assoc movement :delta-time world/delta-time)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body world/grid body movement)
@@ -1082,7 +1031,7 @@
           (swap! eid assoc :rotation-angle (v/angle-from-vector direction)))))))
 
 (defmethod entity/tick! :entity/projectile-collision
-  [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid c]
+  [[k {:keys [entity-effects already-hit-bodies piercing?]}] eid]
   ; TODO this could be called from body on collision
   ; for non-solid
   ; means non colliding with other entities
@@ -1102,27 +1051,25 @@
     (when hit-entity
       (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
-      (tx/effect c
-                 {:effect/source eid
+      (tx/effect {:effect/source eid
                   :effect/target hit-entity}
                  entity-effects))))
 
-(defmethod entity/tick! :entity/delete-after-animation-stopped?
-  [_ eid c]
+(defmethod entity/tick! :entity/delete-after-animation-stopped? [_ eid]
   (when (animation/stopped? (:entity/animation @eid))
     (tx/mark-destroyed eid)))
 
-(defmethod entity/tick! :entity/skills [[k skills] eid _c]
+(defmethod entity/tick! :entity/skills [[k skills] eid]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
                      (timer/stopped? cooling-down?))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
 
-(defmethod entity/tick! :entity/string-effect [[k {:keys [counter]}] eid _c]
+(defmethod entity/tick! :entity/string-effect [[k {:keys [counter]}] eid]
   (when (timer/stopped? counter)
     (swap! eid dissoc k)))
 
-(defmethod entity/tick! :entity/temp-modifier [[k {:keys [modifiers counter]}] eid _c]
+(defmethod entity/tick! :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
   (when (timer/stopped? counter)
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))
@@ -1130,7 +1077,7 @@
 (defcomponent :active-skill
   (state/cursor [_] :cursors/sandclock)
   (state/pause-game? [_] false)
-  (state/enter! [[_ {:keys [eid skill]}] c]
+  (state/enter! [[_ {:keys [eid skill]}]]
     (sound/play (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
@@ -1149,8 +1096,7 @@
   (state/enter! [[_ {:keys [tx/sound
                             modal/title
                             modal/text
-                            modal/button-text]}]
-                 _c]
+                            modal/button-text]}]]
     (sound/play sound)
     (tx/show-modal {:title title
                     :text text
@@ -1160,9 +1106,9 @@
 (defcomponent :player-item-on-cursor
   (state/cursor [_] :cursors/hand-grab)
   (state/pause-game? [_] true)
-  (state/enter! [[_ {:keys [eid item]}] c]
+  (state/enter! [[_ {:keys [eid item]}]]
     (swap! eid assoc :entity/item-on-cursor item))
-  (state/exit! [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}] c]
+  (state/exit! [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}]]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
@@ -1171,15 +1117,15 @@
       (when (:entity/item-on-cursor entity)
         (sound/play place-world-item-sound)
         (swap! eid dissoc :entity/item-on-cursor)
-        (spawn-item (item-place-position c entity)
+        (spawn-item (item-place-position entity)
                     (:entity/item-on-cursor entity))))))
 
 (defcomponent :player-moving
   (state/cursor [_] :cursors/walking)
   (state/pause-game? [_] false)
-  (state/enter! [[_ {:keys [eid movement-vector]}] c]
+  (state/enter! [[_ {:keys [eid movement-vector]}]]
     (tx/set-movement eid movement-vector))
-  (state/exit! [[_ {:keys [eid]}] c]
+  (state/exit! [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement)))
 
 (defcomponent :stunned
@@ -1192,23 +1138,23 @@
                        (db/build audiovisuals-id))))
 
 (defcomponent :npc-dead
-  (state/enter! [[_ {:keys [eid]}] c]
+  (state/enter! [[_ {:keys [eid]}]]
     (tx/mark-destroyed eid)))
 
 (defcomponent :npc-moving
-  (state/enter! [[_ {:keys [eid movement-vector]}] c]
+  (state/enter! [[_ {:keys [eid movement-vector]}]]
     (tx/set-movement eid movement-vector))
-  (state/exit! [[_ {:keys [eid]}] c]
+  (state/exit! [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement)))
 
 (defcomponent :npc-sleeping
-  (state/exit! [[_ {:keys [eid]}] c]
+  (state/exit! [[_ {:keys [eid]}]]
     (delayed-alert (:position       @eid)
                    (:entity/faction @eid)
                    0.2)
     (tx/text-effect eid "[WHITE]!")))
 
-(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell c]
+(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell]
   (let [entity @eid
         inventory (:entity/inventory entity)
         item-in-cell (get-in inventory cell)
@@ -1221,7 +1167,7 @@
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item eid cell item-on-cursor)
-      (tx/event c eid :dropped-item))
+      (tx/event eid :dropped-item))
 
      ; STACK ITEMS
      (and item-in-cell
@@ -1229,8 +1175,8 @@
      (do
       (sound/play item-put-sound)
       (swap! eid dissoc :entity/item-on-cursor)
-      (stack-item c eid cell item-on-cursor)
-      (tx/event c eid :dropped-item))
+      (stack-item eid cell item-on-cursor)
+      (tx/event eid :dropped-item))
 
      ; SWAP ITEMS
      (and item-in-cell
@@ -1242,19 +1188,19 @@
       (swap! eid dissoc :entity/item-on-cursor)
       (remove-item eid cell)
       (set-item eid cell item-on-cursor)
-      (tx/event c eid :dropped-item)
-      (tx/event c eid :pickup-item item-in-cell)))))
+      (tx/event eid :dropped-item)
+      (tx/event eid :pickup-item item-in-cell)))))
 
 (defmethod entity/clicked-inventory-cell :player-item-on-cursor
-  [[_ {:keys [eid] :as data}] cell c]
-  (clicked-cell data eid cell c))
+  [[_ {:keys [eid] :as data}] cell]
+  (clicked-cell data eid cell))
 
 (defmethod entity/clicked-inventory-cell :player-idle
-  [[_ {:keys [eid player-idle/pickup-item-sound]}] cell c]
+  [[_ {:keys [eid player-idle/pickup-item-sound]}] cell]
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (sound/play pickup-item-sound)
-    (tx/event c eid :pickup-item item)
+    (tx/event eid :pickup-item item)
     (remove-item eid cell)))
 
 (def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
@@ -1537,7 +1483,7 @@
          (draw-body-rect entity :red)
          (pretty-pst t))))))
 
-(defn- update-mouseover-entity! [{:keys [cdq.context/mouseover-eid] :as context}]
+(defn- update-mouseover-entity! []
   (let [new-eid (if (stage/mouse-on-actor?)
                   nil
                   (let [player @world/player-eid
@@ -1548,36 +1494,36 @@
                          reverse
                          (filter #(los/exists? player @%))
                          first)))]
-    (when mouseover-eid
-      (swap! mouseover-eid dissoc :entity/mouseover?))
+    (when world/mouseover-eid
+      (swap! world/mouseover-eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (assoc context :cdq.context/mouseover-eid new-eid)))
+    (.bindRoot #'world/mouseover-eid new-eid)))
 
-(defn- set-paused-flag [context]
-  (let [pausing? true]
-    (assoc context :cdq.context/paused? (or #_error
-                                            (and pausing?
-                                                 (state/pause-game? (entity/state-obj @world/player-eid))
-                                                 (not (or (input/key-just-pressed? :p)
-                                                          (input/key-pressed?      :space))))))))
+(def pausing? true)
+(declare paused?)
 
-(defn- update-time [context]
-  (let [delta-ms (min (.getDeltaTime Gdx/graphics)
-                      cdq.time/max-delta)]
+(defn- set-paused-flag! []
+  (.bindRoot #'paused? (or #_error
+                           (and pausing?
+                                (state/pause-game? (entity/state-obj @world/player-eid))
+                                (not (or (input/key-just-pressed? :p)
+                                         (input/key-pressed?      :space)))))))
+
+(defn- update-time! []
+  (let [delta-ms (min (.getDeltaTime Gdx/graphics) cdq.time/max-delta)]
     (timer/inc-state! delta-ms)
-    (assoc context :cdq.context/delta-time delta-ms)))
+    (.bindRoot #'world/delta-time delta-ms)))
 
-(defn- update-potential-fields! [context]
+(defn- update-potential-fields! []
   (doseq [[faction max-iterations] factions-iterations]
     (cdq.potential-fields/tick world/potential-field-cache
                                world/grid
                                faction
                                world/active-entities
-                               max-iterations))
-  context)
+                               max-iterations)))
 
-(defn- tick-entities! [context]
+(defn- tick-entities! []
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
   ; should be contains? check ?
@@ -1588,7 +1534,7 @@
      (try
       (doseq [k (keys @eid)]
         (try (when-let [v (k @eid)]
-               (entity/tick! [k v] eid context))
+               (entity/tick! [k v] eid))
              (catch Throwable t
                (throw (ex-info "entity-tick" {:k k} t)))))
       (catch Throwable t
@@ -1596,17 +1542,7 @@
    (catch Throwable t
      (stage/error-window! t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
-  context)
-
-(defn- when-not-paused! [context]
-  (if (:cdq.context/paused? context)
-    context
-    (reduce (fn [context f]
-              (f context))
-            context
-            [update-time
-             update-potential-fields!
-             tick-entities!])))
+  )
 
 (defn- camera-controls! []
   (let [camera (:camera graphics/world-viewport)
@@ -1626,8 +1562,6 @@
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 
-(def state (atom nil))
-
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (db/create!)
@@ -1644,18 +1578,13 @@
                                       graphics/batch ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
                                       graphics/ui-viewport) ; TODO we don't do dispose! ....
-                            (reset! state (reset-game! config)))
+                            (reset-game! config))
 
                           (dispose []
                             (assets/dispose!)
                             (graphics/dispose!)
                             ; TODO dispose world/tiled-map !! also @ reset-game ?!
-                            (doseq [[k obj] @state]
-                              (if (instance? Disposable obj)
-                                (do
-                                 #_(println "Disposing:" k)
-                                 (Disposable/.dispose obj))
-                                #_(println "Not Disposable: " k ))))
+                            )
 
                           (render []
                             (world/cache-active-entities!)
@@ -1669,20 +1598,19 @@
                                                             (draw-before-entities!)
                                                             (render-entities!)
                                                             (draw-after-entities!)))
-                            (set! (.applicationState ui/stage) @state)
                             (Stage/.draw ui/stage)
-                            (set! (.applicationState ui/stage) @state)
                             (Stage/.act ui/stage)
-                            (entity/manual-tick (entity/state-obj @world/player-eid) @state)
-                            (swap! state (fn [context]
-                                           (reduce (fn [context f]
-                                                     (f context))
-                                                   context
-                                                   [update-mouseover-entity!
-                                                    set-paused-flag
-                                                    when-not-paused!])))
+                            (entity/manual-tick (entity/state-obj @world/player-eid))
+                            (update-mouseover-entity!)
+                            (set-paused-flag!)
+                            (when-not paused?
+                              (update-time!)
+                              (update-potential-fields!)
+                              (tick-entities!))
+
                             ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
                             (world/remove-destroyed-entities!)
+
                             (camera-controls!)
                             (window-controls!))
 
@@ -1695,12 +1623,8 @@
                                             (:height (:windowed-mode config)))
                           (.setForegroundFPS (:foreground-fps config))))))
 
-(defn post-runnable!
-  "`f` should be a `(fn [context])`.
-
-  Is executed after the main-loop, in order not to interfere with it."
-  [f]
-  (.postRunnable Gdx/app (fn [] (f @state))))
+(defn post-runnable! [f]
+  (.postRunnable Gdx/app f))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (stage/mouse-on-actor? context)]
@@ -1714,7 +1638,7 @@
                                               :worlds/uf-caves])]
                      {:label (str "Start " (:property/id world))
                       :on-click (fn []
-                                  (reset! state (reset-game! {:world-id (:property/id world)})))})}
+                                  (reset-game! {:world-id (:property/id world)}))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
@@ -1731,24 +1655,22 @@
                                     (.pack window)
                                     (stage/add-actor window)))})}]
    :update-labels [{:label "Mouseover-entity id"
-                    :update-fn (fn [{:keys [cdq.context/mouseover-eid]}]
-                                 (when-let [entity (and mouseover-eid @mouseover-eid)]
+                    :update-fn (fn []
+                                 (when-let [entity (and world/mouseover-eid @world/mouseover-eid)]
                                    (:entity/id entity)))
                     :icon "images/mouseover.png"}
                    {:label "elapsed-time"
-                    :update-fn (fn [_]
-                                 (str (readable-number timer/elapsed-time) " seconds"))
+                    :update-fn (fn [] (str (readable-number timer/elapsed-time) " seconds"))
                     :icon "images/clock.png"}
                    {:label "paused?"
-                    :update-fn :cdq.context/paused?} ; TODO (def paused ::paused) @ cdq.context
+                    :update-fn (fn [] paused?)}
                    {:label "GUI"
-                    :update-fn (fn [_] (graphics/mouse-position))}
+                    :update-fn (fn [] (graphics/mouse-position))}
                    {:label "World"
-                    :update-fn (fn [_] (mapv int (graphics/world-mouse-position)))}
+                    :update-fn (fn [] (mapv int (graphics/world-mouse-position)))}
                    {:label "Zoom"
-                    :update-fn (fn [_] (camera/zoom (:camera graphics/world-viewport)))
+                    :update-fn (fn [] (camera/zoom (:camera graphics/world-viewport)))
                     :icon "images/zoom.png"}
                    {:label "FPS"
-                    :update-fn (fn [_]
-                                 (.getFramesPerSecond Gdx/graphics))
+                    :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
                     :icon "images/fps.png"}]})

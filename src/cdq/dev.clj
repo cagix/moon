@@ -19,10 +19,7 @@
 
  ; use app/post-runnable! to get proper error messages in console
 
- (app/post-runnable! (fn [context] (show-tree-view! "Application Context" context)))
- (app/post-runnable! (fn [context] (show-table-view "Application Context" context)))
-
- (show-tree-view! "Mouseover Entity" @(:cdq.context/mouseover-eid @app/state))
+ (show-tree-view! "Mouseover Entity" @world/mouseover-eid)
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
 
@@ -56,12 +53,11 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (app/post-runnable! (fn [_]
-                       (world/spawn-creature {:position [35 73]
-                                              :creature-id :creatures/dragon-red
-                                              :components {:entity/fsm {:fsm :fsms/npc
-                                                                        :initial-state :npc-sleeping}
-                                                           :entity/faction :evil}})))
+ (app/post-runnable! #(world/spawn-creature {:position [35 73]
+                                             :creature-id :creatures/dragon-red
+                                             :components {:entity/fsm {:fsm :fsms/npc
+                                                                       :initial-state :npc-sleeping}
+                                                          :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?

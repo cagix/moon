@@ -3,12 +3,12 @@
 (defmulti applicable? (fn [[k] effect-ctx]
                         k))
 
-(defmulti handle (fn [[k] effect-ctx context]
+(defmulti handle (fn [[k] effect-ctx]
                    k))
 
-(defmulti useful? (fn [[k] effect-ctx context]
+(defmulti useful? (fn [[k] effect-ctx]
                     k))
-(defmethod useful? :default [_ _effect-ctx context] true)
+(defmethod useful? :default [_ _effect-ctx] true)
 
 (defmulti render (fn [[k] _effect-ctx]
                           k))
@@ -20,7 +20,7 @@
 (defn some-applicable? [effect-ctx effect]
   (seq (filter-applicable? effect-ctx effect)))
 
-(defn applicable-and-useful? [context effect-ctx effect]
+(defn applicable-and-useful? [effect-ctx effect]
   (->> effect
        (filter-applicable? effect-ctx)
-       (some #(useful? % effect-ctx context))))
+       (some #(useful? % effect-ctx))))

@@ -7,10 +7,10 @@
 (defmulti pause-game? (fn [[k]]
                         k))
 
-(defmulti enter! (fn [[k] _context]
+(defmulti enter! (fn [[k]]
                   k))
-(defmethod enter! :default [_ _context])
+(defmethod enter! :default [_])
 
-(defmulti exit! (fn [[k] _context]
+(defmulti exit! (fn [[k]]
                   k))
-(defmethod exit! :default [_ _context])
+(defmethod exit! :default [_])

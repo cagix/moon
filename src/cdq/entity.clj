@@ -4,9 +4,9 @@
             [cdq.math.shapes :as shape]
             [cdq.operation :as op]))
 
-(defmulti clicked-inventory-cell (fn [[k] cell c]
+(defmulti clicked-inventory-cell (fn [[k] cell]
                                    k))
-(defmethod clicked-inventory-cell :default [_ cell c])
+(defmethod clicked-inventory-cell :default [_ cell])
 
 (defmulti create! (fn [[k] eid]
                     k))
@@ -16,13 +16,13 @@
                     k))
 (defmethod destroy! :default [_ eid])
 
-(defmulti tick! (fn [[k] eid c]
+(defmulti tick! (fn [[k] eid]
                   k))
-(defmethod tick! :default [_ eid c])
+(defmethod tick! :default [_ eid])
 
-(defmulti manual-tick (fn [[k] context]
+(defmulti manual-tick (fn [[k]]
                         k))
-(defmethod manual-tick :default [_ c])
+(defmethod manual-tick :default [_])
 
 (defn mod-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}
@@ -35,9 +35,9 @@
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
 
-(defmulti draw-gui-view (fn [[k] context]
+(defmulti draw-gui-view (fn [[k]]
                           k))
-(defmethod draw-gui-view :default [_ c])
+(defmethod draw-gui-view :default [_])
 
 (defmulti create (fn [[k]]
                    k))

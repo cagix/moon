@@ -14,9 +14,9 @@
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 (defn event
-  ([context eid event*]
-   (event context eid event* nil))
-  ([context eid event params]
+  ([eid event*]
+   (event eid event* nil))
+  ([eid event params]
    (when-let [fsm (:entity/fsm @eid)]
      (let [old-state-k (:state fsm)
            new-fsm (fsm/fsm-event fsm event)
@@ -33,11 +33,11 @@
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
                            (dissoc old-state-k)))
-           (state/exit!  old-state-obj context)
-           (state/enter! new-state-obj context)))))))
+           (state/exit!  old-state-obj)
+           (state/enter! new-state-obj)))))))
 
-(defn effect [context effect-ctx effect]
-  (run! #(effect/handle % effect-ctx context)
+(defn effect [effect-ctx effect]
+  (run! #(effect/handle % effect-ctx)
         (effect/filter-applicable? effect-ctx effect)))
 
 (defn sound [sound-name]
@@ -55,7 +55,7 @@
 (defn mark-destroyed [eid]
   (swap! eid assoc :entity/destroyed? true))
 
-(defn toggle-inventory-window [_context]
+(defn toggle-inventory-window []
   (ui/toggle-visible! (stage/get-inventory)))
 
 ; no window movable type cursor appears here like in player idle
@@ -80,7 +80,7 @@
   (let [{:keys [horizontal-group button-group]} (stage/get-action-bar)
         button (ui/image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
-    (ui/add-tooltip! button #(info/text % skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (Group/.addActor horizontal-group button)
     (ButtonGroup/.add button-group ^Button button)
     nil))

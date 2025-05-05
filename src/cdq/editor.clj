@@ -95,7 +95,7 @@
                                                 :center? true}
                                                {:actor (text-button "Delete" delete!)
                                                 :center? true}]])]])
-    (.addActor window (ui-actor {:act (fn [_]
+    (.addActor window (ui-actor {:act (fn []
                                         (when (input/key-just-pressed? :enter)
                                           (save!)))}))
     (.pack window)
@@ -177,7 +177,7 @@
                  (text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui-stack [button top-widget])]
-    (add-tooltip! button (fn [_context] (info-text props)))
+    (add-tooltip! button #(info-text props))
     (.setTouchable top-widget Touchable/disabled)
     stack))
 
@@ -247,7 +247,7 @@
         (let [property (db/build property-id)
               image-widget (image->widget (property/->image property)
                                           {:id property-id})]
-          (add-tooltip! image-widget (fn [_context] (info-text property)))))
+          (add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
         (text-button "-" #(redo-rows (disj property-ids id))))])))
 
@@ -286,7 +286,7 @@
          (let [property (db/build property-id)
                image-widget (image->widget (property/->image property)
                                            {:id property-id})]
-           (add-tooltip! image-widget (fn [_context] (info-text property)))
+           (add-tooltip! image-widget #(info-text property))
            image-widget))]
       [(when property-id
          (text-button "-" #(redo-rows nil)))]])))

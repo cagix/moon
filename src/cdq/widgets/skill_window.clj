@@ -1,11 +1,11 @@
 (ns cdq.widgets.skill-window)
 
-(defmulti clicked-skillmenu-skill (fn [[k] skill c]
+(defmulti clicked-skillmenu-skill (fn [[k] skill]
                                     k))
-(defmethod clicked-skillmenu-skill :default [_ skill c])
+(defmethod clicked-skillmenu-skill :default [_ skill])
 
 #_(defmethod state/clicked-skillmenu-skill :player-idle
-  [[_ {:keys [eid]}] skill c]
+  [[_ {:keys [eid]}] skill]
   (let [free-skill-points (:entity/free-skill-points @eid)]
     ; TODO no else case, no visible free-skill-points
     (when (and (pos? free-skill-points)
@@ -15,7 +15,7 @@
 
 ; TODO render text label free-skill-points
 ; (str "Free points: " (:entity/free-skill-points @world/player-eid))
-#_(defn ->skill-window [c]
+#_(defn ->skill-window []
     (ui/window {:title "Skills"
                 :id :skill-window
                 :visible? false
@@ -34,6 +34,6 @@
                                                            (db/build id)
                                                            c)))]]
                          (do
-                          (add-tooltip! button #(info/text % (db/build id))) ; TODO no player modifiers applied (see actionbar)
+                          (add-tooltip! button #(info/text (db/build id))) ; TODO no player modifiers applied (see actionbar)
                           button))]
                 :pack? true}))

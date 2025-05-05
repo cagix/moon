@@ -1,10 +1,9 @@
 (ns cdq.ui
-  (:import (cdq StageWithState)
-           (clojure.lang ILookup)
+  (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Group)
+           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
            (com.badlogic.gdx.math Vector2)
@@ -12,7 +11,7 @@
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)))
 
-(declare ^StageWithState stage)
+(declare ^Stage stage)
 
 (defn find-actor-with-id [^Group group id]
   (let [actors (.getChildren group)
@@ -40,12 +39,12 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  (let [stage (proxy [StageWithState ILookup] [viewport batch]
+  (let [stage (proxy [Stage ILookup] [viewport batch]
                 (valAt
                   ([id]
-                   (find-actor-with-id (StageWithState/.getRoot this) id))
+                   (find-actor-with-id (Stage/.getRoot this) id))
                   ([id not-found]
-                   (or (find-actor-with-id (StageWithState/.getRoot this) id)
+                   (or (find-actor-with-id (Stage/.getRoot this) id)
                        not-found))))]
     (.setInputProcessor Gdx/input stage)
     (.bindRoot #'stage stage)))
@@ -169,10 +168,6 @@
     (run! #(.addActor group %) actors)
     group))
 
-(defn application-state [actor]
-  (when-let [stage (Actor/.getStage actor)]
-    (.applicationState ^StageWithState stage)))
-
 (defn add-tooltip!
   "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
   Returns the actor."
@@ -187,8 +182,7 @@
                   (getWidth []
                     (let [^Tooltip this this]
                       (when-not text?
-                        (when-let [context (application-state (.getTarget this))]
-                          (.setText this (str (tooltip-text context)))))
+                        (.setText this (str (tooltip-text))))
                       (proxy-super getWidth))))]
     (.setAlignment label Align/center)
     (.setTarget  tooltip actor)
@@ -323,8 +317,6 @@
 (defn change-listener ^ChangeListener [on-clicked]
   (proxy [ChangeListener] []
     (changed [event actor]
-      ;(println "Clicked on change-listener ... ")
-      ;(println "(keys (application-state actor))" (keys (application-state actor)))
       (binding [*on-clicked-actor* actor]
         (on-clicked)))))
 
@@ -351,24 +343,6 @@
 (defn ui-actor ^Actor [{:keys [draw act]}]
   (proxy [Actor] []
     (draw [_batch _parent-alpha]
-      (when draw
-        (draw (application-state this))))
+      (when draw (draw)))
     (act [_delta]
-      (if (Actor/.getStage this)
-        (let [context (application-state this)]
-          (assert context)
-          (when act
-            (act (application-state this))))
-        (do
-         ; called x1 time when editor window opened then closed.
-         ; is removed during stage actors iteration
-         ; so then is called
-         ; ... ... so no context !
-         ; for draw not possible...
-         ; so my assumption was:
-         ; * an actor always has a stage....
-         ; so it should be removed from iterating ...
-         ; or the actor should get the context from stage itself not in act ....
-         ; act should pass the context ! that's where its really coming from ...
-         ; so thread it through with stage ... libgdx
-         (println "actor act called but not part of stage."))))))
+      (when act (act)))))
