@@ -6,9 +6,27 @@
             [cdq.graphics :as graphics]
             [cdq.grid :as grid]
             [cdq.math.vector2 :as v]
+            [cdq.tiled :as tiled]
             [cdq.timer :as timer]
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [define-order safe-merge]]))
+
+(defn- create-content-grid [{:keys [cell-size width height]}]
+  {:grid (g2d/create-grid
+          (inc (int (/ width  cell-size))) ; inc because corners
+          (inc (int (/ height cell-size)))
+          (fn [idx]
+            (atom {:idx idx,
+                   :entities #{}})))
+   :cell-w cell-size
+   :cell-h cell-size})
+
+(declare ^:private content-grid)
+
+(defn create! [tiled-map]
+  (.bindRoot #'content-grid (create-content-grid {:cell-size 16
+                                                  :width  (tiled/tm-width  tiled-map)
+                                                  :height (tiled/tm-height tiled-map)})))
 
 (defn- active-entities* [{:keys [grid]} center-entity]
   (->> (let [idx (-> center-entity
@@ -23,8 +41,7 @@
   "Expensive operation.
 
   Active entities are those which are nearby the position of the player and about one screen away."
-  [{:keys [cdq.context/content-grid
-           cdq.context/player-eid]}]
+  [{:keys [cdq.context/player-eid]}]
   (active-entities* content-grid @player-eid))
 
 (defn- set-cells! [grid eid]
@@ -73,7 +90,6 @@
         (swap! content-cell update :entities disj eid)))))
 
 (defn- add-entity! [eid {:keys [cdq.context/entity-ids
-                                cdq.context/content-grid
                                 cdq.context/grid]}]
   (let [id (:entity/id @eid)]
     (assert (number? id))
@@ -88,7 +104,6 @@
     (set-occupied-cells! grid eid)))
 
 (defn- remove-entity! [eid {:keys [cdq.context/entity-ids
-                                   cdq.context/content-grid
                                    cdq.context/grid]}]
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
@@ -102,8 +117,7 @@
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)))
 
-(defn position-changed! [eid {:keys [cdq.context/content-grid
-                                     cdq.context/grid]}]
+(defn position-changed! [eid {:keys [cdq.context/grid]}]
   (content-grid-update-entity! content-grid eid)
 
   (remove-from-cells! eid)

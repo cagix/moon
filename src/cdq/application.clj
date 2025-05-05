@@ -829,21 +829,6 @@
       (set-arr arr @cell grid/blocks-vision?))
     [arr width height]))
 
-(defn- create-content-grid* [{:keys [cell-size width height]}]
-  {:grid (g2d/create-grid
-          (inc (int (/ width  cell-size))) ; inc because corners
-          (inc (int (/ height cell-size)))
-          (fn [idx]
-            (atom {:idx idx,
-                   :entities #{}})))
-   :cell-w cell-size
-   :cell-h cell-size})
-
-(defn- content-grid [tiled-map]
-  (create-content-grid* {:cell-size 16
-                         :width  (tiled/tm-width  tiled-map)
-                         :height (tiled/tm-height tiled-map)}))
-
 (defn- player-entity-props [start-position]
   {:position (utils/tile->middle start-position)
    :creature-id :creatures/vampire
@@ -895,8 +880,8 @@
   (reset-stage!)
   (let [{:keys [tiled-map start-position] :as level} (level/create world-id)
         grid (create-grid tiled-map)
-        context {:cdq.context/content-grid (content-grid tiled-map)
-                 :cdq.context/elapsed-time 0
+        _ (world/create! tiled-map)
+        context {:cdq.context/elapsed-time 0
                  :cdq.context/entity-ids (atom {})
                  :cdq.context/player-message (atom {:duration-seconds 1.5})
                  :cdq.context/level level
