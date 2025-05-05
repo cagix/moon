@@ -848,13 +848,6 @@
     (spawn-creature c (update props :position utils/tile->middle)))
   :ok)
 
-(defn- spawn-creatures! [{:keys [cdq.context/level
-                                 cdq.context/tiled-map]
-                          :as context}]
-  (spawn-enemies! context)
-  (spawn-creature context
-                  (player-entity-props (:start-position level))))
-
 (declare dev-menu-config)
 
 (defn- create-stage-actors []
@@ -877,12 +870,11 @@
 
 (defn- reset-game! [{:keys [world-id]}]
   (reset-stage!)
-  (let [{:keys [tiled-map start-position] :as level} (level/create world-id)
+  (let [{:keys [tiled-map start-position]} (level/create world-id)
         grid (create-grid tiled-map)
         _ (world/create! tiled-map)
         _ (timer/init!)
-        context {:cdq.context/level level
-                 :cdq.context/error nil
+        context {:cdq.context/error nil
                  :cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
                                                                            (tiled/tm-height tiled-map)
                                                                            (constantly false)))
@@ -891,7 +883,8 @@
                  :cdq.context/raycaster (raycaster grid)
                  :cdq.context/factions-iterations {:good 15 :evil 5}
                  :world/potential-field-cache (atom nil)}]
-    (assoc context :cdq.context/player-eid (spawn-creatures! context))))
+    (spawn-enemies! context)
+    (assoc context :cdq.context/player-eid (spawn-creature context (player-entity-props start-position)))))
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration] _c]
