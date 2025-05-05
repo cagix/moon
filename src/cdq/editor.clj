@@ -1,6 +1,5 @@
 (ns cdq.editor
-  (:require [cdq.application :refer [state]]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
@@ -27,6 +26,9 @@
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
+
+(defn- get-schemas []
+  @(var db/-schemas))
 
 (defn- info-text [property]
   (binding [*print-level* 3]
@@ -72,28 +74,11 @@
         (catch Throwable t
           (stage/error-window! t))))
 
-(defn- async-write-to-file! [{:keys [cdq/db]}]
-  (db/async-write-to-file! db))
-
-(defn- update! [property]
-  (swap! state update :cdq/db db/update property (:cdq/schemas @state))
-  (async-write-to-file! @state))
-
-(defn- delete! [property-id]
-  (swap! state update :cdq/db db/delete property-id)
-  (async-write-to-file! @state))
-
-(defn- get-db
-  ([]
-   (get-db @state))
-  ([context]
-   (:cdq/db context)))
-
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
 ; for example at images/relationships
 (defn- editor-window [props]
-  (let [schemas (:cdq/schemas @state)
+  (let [schemas (get-schemas)
         schema (schema/schema-of schemas (property/type props))
         window (ui/window {:title (str "[SKY]Property[]")
                            :id :property-editor-window
@@ -103,8 +88,8 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (schema->widget schema props)
-        save!   (apply-context-fn window #(update! (->value schema widget)))
-        delete! (apply-context-fn window #(delete! (:property/id props)))]
+        save!   (apply-context-fn window #(db/update! (->value schema widget)))
+        delete! (apply-context-fn window #(db/delete! (:property/id props)))]
     (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                               [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
                                                 :center? true}
@@ -219,14 +204,14 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
-(defn overview-table [context property-type clicked-id-fn]
+(defn overview-table [property-type clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all (get-db context) property-type context)
+        properties (db/build-all property-type)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -255,11 +240,11 @@
                             clicked-id-fn (fn [id]
                                             (.remove window)
                                             (redo-rows (conj property-ids id)))]
-                        (.add window ^Actor (overview-table @state property-type clicked-id-fn))
+                        (.add window ^Actor (overview-table property-type clicked-id-fn))
                         (.pack window)
                         (stage/add-actor window))))]
       (for [property-id property-ids]
-        (let [property (db/build (get-db) property-id @state)
+        (let [property (db/build property-id)
               image-widget (image->widget (property/->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget (fn [_context] (info-text property)))))
@@ -294,11 +279,11 @@
                               clicked-id-fn (fn [id]
                                               (.remove window)
                                               (redo-rows id))]
-                          (.add window ^Actor (overview-table @state property-type clicked-id-fn))
+                          (.add window ^Actor (overview-table property-type clicked-id-fn))
                           (.pack window)
                           (stage/add-actor window)))))]
       [(when property-id
-         (let [property (db/build (get-db) property-id @state)
+         (let [property (db/build property-id)
                image-widget (image->widget (property/->image property)
                                            {:id property-id})]
            (add-tooltip! image-widget (fn [_context] (info-text property)))
@@ -332,7 +317,7 @@
     (stage/add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
-  (let [widget (schema->widget (schema/schema-of (:cdq/schemas @state) k)
+  (let [widget (schema->widget (schema/schema-of (get-schemas) k)
                                v)]
     (Actor/.setUserObject widget [k v])
     widget))
@@ -348,7 +333,7 @@
 (defn- attribute-label [k schema table]
   (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                         (name k))
-        delete-button (when (schema/optional-k? k schema (:cdq/schemas @state))
+        delete-button (when (schema/optional-k? k schema (get-schemas))
                         (text-button "-"
                                      (fn []
                                        (Actor/.remove (find-kv-widget table k))
@@ -370,13 +355,13 @@
   [(horizontal-separator-cell component-row-cols)])
 
 (defn- k->default-value [k]
-  (let [schema (schema/schema-of (:cdq/schemas @state) k)]
+  (let [schema (schema/schema-of (get-schemas) k)]
     (cond
      (#{:s/one-to-one :s/one-to-many} (schema/type schema)) nil
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (schema/generate schema {:size 3} (:cdq/schemas @state)))))
+     :else (schema/generate schema {:size 3} (get-schemas)))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (ui/window {:title "Choose"
@@ -386,8 +371,7 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
-                                   (schema/map-keys schema
-                                                    (:cdq/schemas @state))))]
+                                   (schema/map-keys schema (get-schemas))))]
     (ui/add-rows!
      window
      (for [k remaining-ks]
@@ -431,7 +415,7 @@
                                (sort-by-k-order property-k-sort-order
                                                 m)))
         colspan component-row-cols
-        opt? (schema/optional-keys-left schema m (:cdq/schemas @state))]
+        opt? (schema/optional-keys-left schema m (get-schemas))]
     (ui/add-rows!
      table
      (concat [(when opt?
@@ -446,7 +430,7 @@
   (into {}
         (for [widget (filter value-widget? (Group/.getChildren table))
               :let [[k _] (Actor/.getUserObject widget)]]
-          [k (->value (schema/schema-of (:cdq/schemas @state) k) widget)])))
+          [k (->value (schema/schema-of (get-schemas) k) widget)])))
 
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
@@ -456,7 +440,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (schema/edn->value schema image @state)
+  (image-button (schema/edn->value schema image)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -465,7 +449,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (schema/edn->value :s/image image @state)
+                      (image-button (schema/edn->value :s/image image)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))
@@ -473,7 +457,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn edit-property [id]
-  (stage/add-actor (editor-window (db/get-raw (get-db) id))))
+  (stage/add-actor (editor-window (db/get-raw id))))
 
 ; TODO unused code below
 
@@ -481,19 +465,17 @@
   (filter #(= "properties" (namespace %))
           (keys schemas)))
 
-(defn- property-type-tabs [{:keys [cdq/schemas] :as context}]
-  (for [property-type (sort (property-types schemas))]
+(defn- property-type-tabs []
+  (for [property-type (sort (property-types (get-schemas)))]
     {:title (str/capitalize (name property-type))
-     :content (overview-table context
-                              property-type
-                              edit-property)}))
+     :content (overview-table property-type edit-property)}))
 
 (defn- tab-widget [{:keys [title content savable? closable-by-user?]}]
   (proxy [Tab] [(boolean savable?) (boolean closable-by-user?)]
     (getTabTitle [] title)
     (getContentTable [] content)))
 
-(defn tabs-table [context]
+(defn tabs-table []
   (let [label-str "foobar"
         table (ui/table {:fill-parent? true})
         container (ui/table {})
@@ -508,19 +490,19 @@
     (.fill (.expand (.add table container)))
     (.row table)
     (.pad (.left (.add table (ui/label label-str))) (float 10))
-    (doseq [tab-data (property-type-tabs context)]
+    (doseq [tab-data (property-type-tabs)]
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
-(defn- background-image [_context path]
+(defn- background-image [path]
   (ui/image-widget (assets/get path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))
 
-(defn create [_ context]
+(defn create []
   ; TODO cannot find asset when starting from 'moon' ...
   ; because assets are searhed and loaded differently ...
-  (doseq [actor [(background-image context "images/moon_background.png")
-                 (tabs-table       context "custom label text here")]]
+  (doseq [actor [(background-image "images/moon_background.png")
+                 (tabs-table       "custom label text here")]]
     (stage/add-actor actor)))

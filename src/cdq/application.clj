@@ -19,7 +19,6 @@
             [cdq.level :as level]
             cdq.level.uf-caves
             cdq.level.modules
-            [cdq.property :as property]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [cdq.math.vector2 :as v]
@@ -59,7 +58,6 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.math :as math]
-            [clojure.pprint :refer [pprint]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
@@ -70,18 +68,18 @@
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
-(defmethod level/generate-level* :world.generator/tiled-map [world c]
+(defmethod level/generate-level* :world.generator/tiled-map [world]
   {:tiled-map (tiled/load-map (:world/tiled-map world))
    :start-position [32 71]})
 
-(defmethod level/generate-level* :world.generator/uf-caves [world {:keys [cdq/db] :as c}]
+(defmethod level/generate-level* :world.generator/uf-caves [world]
   (cdq.level.uf-caves/create world
-                             (db/build-all db :properties/creatures c)
+                             (db/build-all :properties/creatures)
                              (assets/get "maps/uf_terrain.png")))
 
-(defmethod level/generate-level* :world.generator/modules [world {:keys [cdq/db] :as c}]
+(defmethod level/generate-level* :world.generator/modules [world]
   (cdq.level.modules/generate-modules world
-                                      (db/build-all db :properties/creatures c)))
+                                      (db/build-all :properties/creatures)))
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
@@ -630,7 +628,7 @@
 
   (effect/handle [[_ {:keys [maxrange entity-effects]}]
                   {:keys [effect/source effect/target] :as effect-ctx}
-                  {:keys [cdq/db] :as c}]
+                  c]
     (let [source* @source
           target* @target]
       (if (entity/in-range? source* target* maxrange)
@@ -644,7 +642,7 @@
          (tx/effect c effect-ctx entity-effects))
         (spawn-audiovisual c
                            (entity/end-point source* target* maxrange)
-                           (db/build db :audiovisuals/hit-ground c)))))
+                           (db/build :audiovisuals/hit-ground)))))
 
   (effect/render [[_ {:keys [maxrange]}]
                   {:keys [effect/source effect/target]}
@@ -702,7 +700,7 @@
 
   (effect/handle [[_ damage]
                   {:keys [effect/source effect/target]}
-                  {:keys [cdq/db] :as c}]
+                  c]
     (let [source* @source
           target* @target
           hp (entity/hitpoints target*)]
@@ -720,7 +718,7 @@
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (spawn-audiovisual c
                             (:position target*)
-                            (db/build db :audiovisuals/damage c))
+                            (db/build :audiovisuals/damage))
          (tx/event c target (if (zero? new-hp-val) :kill :alert))
          (tx/text-effect c target (str "[RED]" dmg-amount "[]")))))))
 
@@ -909,8 +907,8 @@
 
 (declare dev-menu-config)
 
-(defn- create-stage-actors [context]
-  [((requiring-resolve 'cdq.ui.menu/create) (dev-menu-config context))
+(defn- create-stage-actors []
+  [((requiring-resolve 'cdq.ui.menu/create) (dev-menu-config))
    (action-bar)
    (hp-mana-bar [(/ (:width graphics/ui-viewport) 2)
                  80 ; action-bar-icon-size
@@ -922,29 +920,28 @@
    (player-state-actor)
    (player-message-actor)])
 
-(defn- reset-stage! [context]
+(defn- reset-stage! []
   (Stage/.clear ui/stage)
-  (run! stage/add-actor (create-stage-actors context)))
+  (run! stage/add-actor (create-stage-actors)))
 
-(defn- reset-game! [context {:keys [world-id] :as _config}]
-  (reset-stage! context)
-  (let [{:keys [tiled-map start-position] :as level} (level/create context world-id)
+(defn- reset-game! [{:keys [world-id]}]
+  (reset-stage!)
+  (let [{:keys [tiled-map start-position] :as level} (level/create world-id)
         grid (create-grid tiled-map)
-        context (merge context
-                       {:cdq.context/content-grid (content-grid tiled-map)
-                        :cdq.context/elapsed-time 0
-                        :cdq.context/entity-ids (atom {})
-                        :cdq.context/player-message (atom {:duration-seconds 1.5})
-                        :cdq.context/level level
-                        :cdq.context/error nil
-                        :cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
-                                                                                  (tiled/tm-height tiled-map)
-                                                                                  (constantly false)))
-                        :cdq.context/grid grid
-                        :cdq.context/tiled-map tiled-map
-                        :cdq.context/raycaster (raycaster grid)
-                        :cdq.context/factions-iterations {:good 15 :evil 5}
-                        :world/potential-field-cache (atom nil)})]
+        context {:cdq.context/content-grid (content-grid tiled-map)
+                 :cdq.context/elapsed-time 0
+                 :cdq.context/entity-ids (atom {})
+                 :cdq.context/player-message (atom {:duration-seconds 1.5})
+                 :cdq.context/level level
+                 :cdq.context/error nil
+                 :cdq.context/explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
+                                                                           (tiled/tm-height tiled-map)
+                                                                           (constantly false)))
+                 :cdq.context/grid grid
+                 :cdq.context/tiled-map tiled-map
+                 :cdq.context/raycaster (raycaster grid)
+                 :cdq.context/factions-iterations {:good 15 :evil 5}
+                 :world/potential-field-cache (atom nil)}]
     (assoc context :cdq.context/player-eid (spawn-creatures! context))))
 
 (defcomponent :cdq.context/entity-ids
@@ -1054,17 +1051,17 @@
   {:eid eid})
 
 (defmethod entity/create :player-dead
-  [[k] {:keys [cdq/db] :as c}]
-  (db/build db :player-dead/component.enter c))
+  [[k] _c]
+  (db/build :player-dead/component.enter))
 
 (defmethod entity/create :player-idle
-  [[_ eid] {:keys [cdq/db] :as c}]
-  (safe-merge (db/build db :player-idle/clicked-inventory-cell c)
+  [[_ eid] _c]
+  (safe-merge (db/build :player-idle/clicked-inventory-cell)
               {:eid eid}))
 
 (defmethod entity/create :player-item-on-cursor
-  [[_ eid item] {:keys [cdq/db] :as c}]
-  (safe-merge (db/build db :player-item-on-cursor/component c)
+  [[_ eid item] _c]
+  (safe-merge (db/build :player-item-on-cursor/component)
               {:eid eid
                :item item}))
 
@@ -1447,10 +1444,10 @@
   (state/pause-game? [_] false))
 
 (defcomponent :entity/destroy-audiovisual
-  (entity/destroy! [[_ audiovisuals-id] eid {:keys [cdq/db] :as c}]
+  (entity/destroy! [[_ audiovisuals-id] eid c]
     (spawn-audiovisual c
                        (:position @eid)
-                       (db/build db audiovisuals-id c))))
+                       (db/build audiovisuals-id))))
 
 (defcomponent :npc-dead
   (state/enter! [[_ {:keys [eid]}] c]
@@ -1968,140 +1965,11 @@
         (run! #(Actor/.setVisible % false) windows))))
   context)
 
-; reduce-kv?
-(defn- apply-kvs
-  "Calls for every key in map (f k v) to calculate new value at k."
-  [m f]
-  (reduce (fn [m k]
-            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
-          m
-          (keys m)))
-
-(defmethod schema/edn->value :s/sound [_ sound-name _context]
-  (assets/sound sound-name))
-
-(defn- edn->sprite [{:keys [file sub-image-bounds]}]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (graphics/from-sheet (graphics/sprite-sheet file tilew tileh)
-                           [(int (/ sprite-x tilew))
-                            (int (/ sprite-y tileh))]))
-    (graphics/->sprite file)))
-
-(defmethod schema/edn->value :s/image [_ edn _context]
-  (edn->sprite edn))
-
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]} _context]
-  (animation/create (map #(edn->sprite %) frames)
-                    :frame-duration frame-duration
-                    :looping? looping?))
-
-(defmethod schema/edn->value :s/one-to-one [_ property-id {:keys [cdq/db] :as context}]
-  (db/build db property-id context))
-
-(defmethod schema/edn->value :s/one-to-many [_ property-ids {:keys [cdq/db] :as context}]
-  (set (map #(db/build db % context) property-ids)))
-
-(defn- validate-properties! [properties schemas]
-  (assert (or (empty? properties)
-              (apply distinct? (map :property/id properties))))
-  (run! #(schema/validate! schemas (property/type %) %) properties))
-
-#_(def ^:private undefined-data-ks (atom #{}))
-
-(comment
- #{:frames
-   :looping?
-   :frame-duration
-   :file ; => this is texture ... convert that key itself only?!
-   :sub-image-bounds})
-
-(defn- build* [{:keys [cdq/schemas] :as c} property]
-  (apply-kvs property
-             (fn [k v]
-               (let [schema (try (schema/schema-of schemas k)
-                                 (catch Throwable _t
-                                   #_(swap! undefined-data-ks conj k)
-                                   nil))
-                     v (if (map? v)
-                         (build* c v)
-                         v)]
-                 (try (schema/edn->value schema v c)
-                      (catch Throwable t
-                        (throw (ex-info " " {:k k :v v} t))))))))
-
-(defn- recur-sort-map [m]
-  (into (sorted-map)
-        (zipmap (keys m)
-                (map #(if (map? %)
-                        (recur-sort-map %)
-                        %)
-                     (vals m)))))
-
-(defn- async-pprint-spit! [file data]
-  (.start
-   (Thread.
-    (fn []
-      (binding [*print-level* nil]
-        (->> data
-             pprint
-             with-out-str
-             (spit file)))))))
-
-(defrecord DB []
-  db/DB
-  (async-write-to-file! [{:keys [db/data db/properties-file]}]
-    ; TODO validate them again!?
-    (->> data
-         vals
-         (sort-by property/type)
-         (map recur-sort-map)
-         doall
-         (async-pprint-spit! properties-file)))
-
-  (update [{:keys [db/data] :as db}
-           {:keys [property/id] :as property}
-           schemas]
-    {:pre [(contains? property :property/id)
-           (contains? data id)]}
-    (schema/validate! schemas (property/type property) property)
-    (clojure.core/update db :db/data assoc id property)) ; assoc-in ?
-
-  (delete [{:keys [db/data] :as db} property-id]
-    {:pre [(contains? data property-id)]}
-    (clojure.core/update db dissoc :db/data property-id)) ; dissoc-in ?
-
-  (get-raw [{:keys [db/data]} id]
-    (utils/safe-get data id))
-
-  (all-raw [{:keys [db/data]} property-type]
-    (->> (vals data)
-         (filter #(= property-type (property/type %)))))
-
-  (build [this id context]
-    (build* context (db/get-raw this id)))
-
-  (build-all [this property-type context]
-    (map (partial build* context)
-         (db/all-raw this property-type))))
-
-(defn- create-db [schemas]
-  (let [properties-file (io/resource "properties.edn")
-        properties (-> properties-file slurp edn/read-string)]
-    (validate-properties! properties schemas)
-    (map->DB {:db/data (zipmap (map :property/id properties) properties)
-              :db/properties-file properties-file})))
-
-(defn- create-initial-context! [config]
-  (let [schemas (-> (:schemas config) io/resource slurp edn/read-string)]
-    {:cdq/schemas schemas
-     :cdq/db (create-db schemas)}))
-
 (def state (atom nil))
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
+    (db/create!)
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
                      (.getImage (Toolkit/getDefaultToolkit)
@@ -2115,7 +1983,7 @@
                                       graphics/batch ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
      ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
                                       graphics/ui-viewport) ; TODO we don't do dispose! ....
-                            (reset! state (reset-game! (create-initial-context! config) config)))
+                            (reset! state (reset-game! config)))
 
                           (dispose []
                             (assets/dispose!)
@@ -2171,37 +2039,27 @@
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
-(defn- dev-menu-config [{:keys [cdq/db] :as c}]
+(defn- dev-menu-config []
   {:menus [{:label "World"
-            :items (for [world (map (fn [id] (db/build db id c))
-                                    [:worlds/vampire
-                                     :worlds/modules
-                                     :worlds/uf-caves])]
+            :items (for [world (map db/build [:worlds/vampire
+                                              :worlds/modules
+                                              :worlds/uf-caves])]
                      {:label (str "Start " (:property/id world))
                       :on-click (fn []
-                                  ; FIXME SEVERE
-                                  ; passing outdated context!
-                                  ; do not use cdq.application/state in ui contexts -> grep!
-                                  ; (stage .act is called via passing context in the main 'swap!' of the application loop)
-                                  ; (swap! state render)
-                                  ; cdq.render.stage pass .applicationState and return
-                                  ; TODO maybe use 'post-runnable!' ??
-                                  ; or 'swap-state!' ?
-                                  (swap! state reset-game! {:world-id (:property/id world)}))})}
+                                  (reset! state (reset-game! {:world-id (:property/id world)})))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
             :items (for [property-type (sort (filter #(= "properties" (namespace %))
-                                                     (keys (:cdq/schemas c))))]
+                                                     (keys @#'db/-schemas)))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn []
                                   (let [window (ui/window {:title "Edit"
                                                            :modal? true
                                                            :close-button? true
                                                            :center? true
-                                                           :close-on-escape? true})
-                                        context @state]
-                                    (.add window ^Actor ((requiring-resolve 'cdq.editor/overview-table) context
+                                                           :close-on-escape? true})]
+                                    (.add window ^Actor ((requiring-resolve 'cdq.editor/overview-table)
                                                          property-type
                                                          (requiring-resolve 'cdq.editor/edit-property)))
                                     (.pack window)

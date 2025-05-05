@@ -1,12 +1,12 @@
 (ns cdq.level
   (:require [cdq.db :as db]))
 
-(defmulti generate-level* (fn [world c] (:world/generator world)))
+(defmulti generate-level* :world/generator)
 
-(defn generate-level [c world-props]
-  (assoc (generate-level* world-props c)
+(defn generate-level [world-props]
+  (assoc (generate-level* world-props)
          :world/player-creature
          (:world/player-creature world-props)))
 
-(defn create [{:keys [cdq/db] :as context} world-id]
-  (generate-level context (db/build db world-id context)))
+(defn create [world-id]
+  (generate-level (db/build world-id)))
