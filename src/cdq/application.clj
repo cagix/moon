@@ -603,12 +603,12 @@
                    {:effect/source source :effect/target target}
                    entity-effects))))
 
-  (effect/render [_ {:keys [effect/source]} c]
+  (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target* (map deref (los/creatures-in-los-of-player))]
         (graphics/line (:position source*) #_(start-point source* target*)
-                           (:position target*)
-                           [1 0 0 0.5])))))
+                       (:position target*)
+                       [1 0 0 0.5])))))
 
 (defcomponent :effects/target-entity
   (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
@@ -635,16 +635,15 @@
                            (db/build :audiovisuals/hit-ground)))))
 
   (effect/render [[_ {:keys [maxrange]}]
-                  {:keys [effect/source effect/target]}
-                  _context]
+                  {:keys [effect/source effect/target]}]
     (when target
       (let [source* @source
             target* @target]
         (graphics/line (entity/start-point source* target*)
-                           (entity/end-point source* target* maxrange)
-                           (if (entity/in-range? source* target* maxrange)
-                             [1 0 0 0.5]
-                             [1 1 0 0.5]))))))
+                       (entity/end-point source* target* maxrange)
+                       (if (entity/in-range? source* target* maxrange)
+                         [1 0 0 0.5]
+                         [1 1 0 0.5]))))))
 
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]
@@ -1188,7 +1187,7 @@
   (state/pause-game? [_] false))
 
 (defcomponent :entity/destroy-audiovisual
-  (entity/destroy! [[_ audiovisuals-id] eid c]
+  (entity/destroy! [[_ audiovisuals-id] eid]
     (spawn-audiovisual (:position @eid)
                        (db/build audiovisuals-id))))
 
@@ -1258,18 +1257,6 @@
     (tx/event c eid :pickup-item item)
     (remove-item eid cell)))
 
-(defn- player-state-input! [context]
-  (entity/manual-tick (entity/state-obj @world/player-eid) context)
-  context)
-
-(defn- set-camera-on-player! [context]
-  (graphics/set-camera-position! (:position @world/player-eid))
-  context)
-
-(defn- clear-screen! [context]
-  (ScreenUtils/clear Color/BLACK)
-  context)
-
 (def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
@@ -1309,13 +1296,6 @@
                 (swap! explored-tile-corners assoc (mapv int position) true))
               Color/WHITE))))))
 
-(defn- render-tiled-map! [context]
-  (graphics/draw-tiled-map world/tiled-map
-                           (tile-color-setter world/raycaster
-                                              world/explored-tile-corners
-                                              (camera/position (:camera graphics/world-viewport))))
-  context)
-
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)
 (def ^:private ^:dbg-flag cell-entities? false)
@@ -1323,7 +1303,7 @@
 
 (def ^:private factions-iterations {:good 15 :evil 5})
 
-(defn- draw-before-entities! [_context]
+(defn- draw-before-entities! []
   (let [cam (:camera graphics/world-viewport)
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
@@ -1373,7 +1353,7 @@
                                   :air  [1 1 0 0.5]
                                   :none [1 0 0 0.5]))))))
 
-(defn- draw-after-entities! [_context]
+(defn- draw-after-entities! []
   #_(geom-test)
   (highlight-mouseover-tile))
 
@@ -1421,10 +1401,8 @@
                                  (- height          (* 2 border))
                                  (hpbar-color ratio)))))
 
-(defn- draw-text-when-mouseover-and-text
-  [{:keys [text]}
-   {:keys [entity/mouseover?] :as entity}
-   _context]
+(defn- draw-text-when-mouseover-and-text [{:keys [text]}
+                                          {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
       (graphics/draw-text {:text text
@@ -1432,20 +1410,18 @@
                            :y (+ y (:half-height entity))
                            :up? true}))))
 
-(defn- draw-hpbar-when-mouseover-and-not-full [_ entity _c]
+(defn- draw-hpbar-when-mouseover-and-not-full [_ entity]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))
 
-(defn- draw-image-as-of-body [image entity _context]
+(defn- draw-image-as-of-body [image entity]
   (graphics/draw-rotated-centered image
                                   (or (:rotation-angle entity) 0)
                                   (:position entity)))
 
-(defn- draw-line
-  [{:keys [thick? end color]}
-   entity
-   _context]
+(defn- draw-line [{:keys [thick? end color]}
+                  entity]
   (let [position (:position entity)]
     (if thick?
       (graphics/with-line-width 4 #(graphics/line position end color))
@@ -1456,9 +1432,7 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defn- draw-faction-ellipse [_
-                             {:keys [entity/faction] :as entity}
-                             c]
+(defn- draw-faction-ellipse [_ {:keys [entity/faction] :as entity}]
   (let [player @world/player-eid]
     (graphics/with-line-width 3
       #(graphics/ellipse (:position entity)
@@ -1471,41 +1445,38 @@
                                :else
                                neutral-color)))))
 
-(defn- render-active-effect [context effect-ctx effect]
-  (run! #(effect/render % effect-ctx context) effect))
+(defn- render-active-effect [effect-ctx effect]
+  (run! #(effect/render % effect-ctx) effect))
 
-(defn- draw-skill-image-and-active-effect
-  [{:keys [skill effect-ctx counter]}
-   entity
-   c]
+(defn- draw-skill-image-and-active-effect [{:keys [skill effect-ctx counter]}
+                                           entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image
                       entity
                       (:position entity)
                       (timer/ratio counter))
-    (render-active-effect c
-                          effect-ctx
+    (render-active-effect effect-ctx
                           ; !! FIXME !!
                           ; (update-effect-ctx effect-ctx)
                           ; - render does not need to update .. update inside active-skill
                           effects)))
 
-(defn- draw-zzzz [_ entity _context]
+(defn- draw-zzzz [_ entity]
   (let [[x y] (:position entity)]
     (graphics/draw-text {:text "zzz"
                          :x x
                          :y (+ y (:half-height entity))
                          :up? true})))
 
-(defn- draw-world-item-if-exists [{:keys [item]} entity c]
+(defn- draw-world-item-if-exists [{:keys [item]} entity]
   (when (world-item?)
     (graphics/draw-centered (:entity/image item)
-                            (item-place-position c entity))))
+                            (item-place-position entity))))
 
-(defn- draw-stunned-circle [_ entity _context]
+(defn- draw-stunned-circle [_ entity]
   (graphics/circle (:position entity) 0.5 [1 1 1 0.6]))
 
-(defn- draw-text [{:keys [text]} entity _context]
+(defn- draw-text [{:keys [text]} entity]
   (let [[x y] (:position entity)]
     (graphics/draw-text {:text text
                          :x x
@@ -1516,7 +1487,7 @@
                          :up? true})))
 
 ; TODO draw opacity as of counter ratio?
-(defn- draw-filled-circle-grey [_ entity _context]
+(defn- draw-filled-circle-grey [_ entity]
   (graphics/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
@@ -1538,7 +1509,7 @@
    :info {:entity/hp draw-hpbar-when-mouseover-and-not-full
           :active-skill draw-skill-image-and-active-effect}})
 
-(defn- render-entities! [c]
+(defn- render-entities! []
   (let [entities (map deref world/active-entities)
         player @world/player-eid
         {:keys [below
@@ -1561,28 +1532,10 @@
        (doseq [[k v] entity
                :let [f (get system k)]
                :when f]
-         (f v entity c))
+         (f v entity))
        (catch Throwable t
          (draw-body-rect entity :red)
          (pretty-pst t))))))
-
-(defn- draw-on-world-view! [context]
-  (graphics/draw-on-world-view! (fn []
-                                  (doseq [f [draw-before-entities!
-                                             render-entities!
-                                             draw-after-entities!]]
-                                    (f context))))
-  context)
-
-(defn- stage-draw! [context]
-  (set! (.applicationState ui/stage) context)
-  (Stage/.draw ui/stage)
-  context)
-
-(defn- stage-act! [context]
-  (set! (.applicationState ui/stage) context)
-  (Stage/.act ui/stage)
-  context)
 
 (defn- update-mouseover-entity! [{:keys [cdq.context/mouseover-eid] :as context}]
   (let [new-eid (if (stage/mouse-on-actor?)
@@ -1655,14 +1608,13 @@
              update-potential-fields!
              tick-entities!])))
 
-(defn- camera-controls! [context]
+(defn- camera-controls! []
   (let [camera (:camera graphics/world-viewport)
         zoom-speed 0.025]
     (when (input/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
-    (when (input/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed))))
-  context)
+    (when (input/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed)))))
 
-(defn- window-controls! [context]
+(defn- window-controls! []
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
@@ -1672,8 +1624,7 @@
   (when (input/key-just-pressed? :escape)
     (let [windows (Group/.getChildren (:windows ui/stage))]
       (when (some Actor/.isVisible windows)
-        (run! #(Actor/.setVisible % false) windows))))
-  context)
+        (run! #(Actor/.setVisible % false) windows)))))
 
 (def state (atom nil))
 
@@ -1698,6 +1649,7 @@
                           (dispose []
                             (assets/dispose!)
                             (graphics/dispose!)
+                            ; TODO dispose world/tiled-map !! also @ reset-game ?!
                             (doseq [[k obj] @state]
                               (if (instance? Disposable obj)
                                 (do
@@ -1707,26 +1659,32 @@
 
                           (render []
                             (world/cache-active-entities!)
+                            (graphics/set-camera-position! (:position @world/player-eid))
+                            (ScreenUtils/clear Color/BLACK)
+                            (graphics/draw-tiled-map world/tiled-map
+                                                     (tile-color-setter world/raycaster
+                                                                        world/explored-tile-corners
+                                                                        (camera/position (:camera graphics/world-viewport))))
+                            (graphics/draw-on-world-view! (fn []
+                                                            (draw-before-entities!)
+                                                            (render-entities!)
+                                                            (draw-after-entities!)))
+                            (set! (.applicationState ui/stage) @state)
+                            (Stage/.draw ui/stage)
+                            (set! (.applicationState ui/stage) @state)
+                            (Stage/.act ui/stage)
+                            (entity/manual-tick (entity/state-obj @world/player-eid) @state)
                             (swap! state (fn [context]
                                            (reduce (fn [context f]
                                                      (f context))
                                                    context
-                                                   [set-camera-on-player!
-                                                    clear-screen!
-                                                    render-tiled-map!
-                                                    draw-on-world-view!
-                                                    stage-draw!
-                                                    stage-act!
-                                                    player-state-input!
-                                                    update-mouseover-entity!
+                                                   [update-mouseover-entity!
                                                     set-paused-flag
-                                                    when-not-paused!
-
-                                                    ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                                                    world/remove-destroyed-entities!
-
-                                                    camera-controls!
-                                                    window-controls!]))))
+                                                    when-not-paused!])))
+                            ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                            (world/remove-destroyed-entities!)
+                            (camera-controls!)
+                            (window-controls!))
 
                           (resize [width height]
                             (Viewport/.update graphics/ui-viewport    width height true)

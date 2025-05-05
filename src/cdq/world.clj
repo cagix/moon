@@ -181,13 +181,12 @@
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! grid eid)))
 
-(defn remove-destroyed-entities! [context]
+(defn remove-destroyed-entities! []
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
     (remove-entity! eid)
     (doseq [component @eid]
-      (entity/destroy! component eid context)))
-  context)
+      (entity/destroy! component eid))))
 
 ; setting a min-size for colliding bodies so movement can set a max-speed for not
 ; skipping bodies at too fast movement
@@ -373,7 +372,7 @@
                   (min maxrange
                        (v/distance player target)))))
 
-(defn item-place-position [_context entity]
+(defn item-place-position [entity]
   (placement-point (:position entity)
                    (graphics/world-mouse-position)
                    ; so you cannot put it out of your own reach
