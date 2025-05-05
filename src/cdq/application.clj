@@ -738,6 +738,57 @@
   (timer/init!)
   (world/create! (level/create world-id)))
 
+(declare paused?)
+
+;"Mouseover-Actor: "
+#_(when-let [actor (stage/mouse-on-actor? context)]
+    (str "TRUE - name:" (.getName actor)
+         "id: " (user-object actor)))
+
+(defn- dev-menu-config []
+  {:menus [{:label "World"
+            :items (for [world (map db/build [:worlds/vampire
+                                              :worlds/modules
+                                              :worlds/uf-caves])]
+                     {:label (str "Start " (:property/id world))
+                      :on-click (fn []
+                                  (reset-game! {:world-id (:property/id world)}))})}
+           {:label "Help"
+            :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
+           {:label "Objects"
+            :items (for [property-type (sort (filter #(= "properties" (namespace %))
+                                                     (keys @#'db/-schemas)))]
+                     {:label (str/capitalize (name property-type))
+                      :on-click (fn []
+                                  (let [window (ui/window {:title "Edit"
+                                                           :modal? true
+                                                           :close-button? true
+                                                           :center? true
+                                                           :close-on-escape? true})]
+                                    (.add window ^Actor (editor/overview-table property-type editor/edit-property))
+                                    (.pack window)
+                                    (stage/add-actor window)))})}]
+   :update-labels [{:label "Mouseover-entity id"
+                    :update-fn (fn []
+                                 (when-let [entity (and world/mouseover-eid @world/mouseover-eid)]
+                                   (:entity/id entity)))
+                    :icon "images/mouseover.png"}
+                   {:label "elapsed-time"
+                    :update-fn (fn [] (str (readable-number timer/elapsed-time) " seconds"))
+                    :icon "images/clock.png"}
+                   {:label "paused?"
+                    :update-fn (fn [] paused?)}
+                   {:label "GUI"
+                    :update-fn (fn [] (graphics/mouse-position))}
+                   {:label "World"
+                    :update-fn (fn [] (mapv int (graphics/world-mouse-position)))}
+                   {:label "Zoom"
+                    :update-fn (fn [] (camera/zoom (:camera graphics/world-viewport)))
+                    :icon "images/zoom.png"}
+                   {:label "FPS"
+                    :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
+                    :icon "images/fps.png"}]})
+
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
     (timer/create duration))
@@ -1501,7 +1552,6 @@
     (.bindRoot #'world/mouseover-eid new-eid)))
 
 (def pausing? true)
-(declare paused?)
 
 (defn- set-paused-flag! []
   (.bindRoot #'paused? (or #_error
@@ -1576,7 +1626,7 @@
                             (graphics/create! (:graphics config))
                             (ui/load! (:vis-ui config)
                                       graphics/batch ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
-     ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
+                                      ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
                                       graphics/ui-viewport) ; TODO we don't do dispose! ....
                             (reset-game! config))
 
@@ -1622,55 +1672,3 @@
                           (.setWindowedMode (:width  (:windowed-mode config))
                                             (:height (:windowed-mode config)))
                           (.setForegroundFPS (:foreground-fps config))))))
-
-(defn post-runnable! [f]
-  (.postRunnable Gdx/app f))
-
-;"Mouseover-Actor: "
-#_(when-let [actor (stage/mouse-on-actor? context)]
-    (str "TRUE - name:" (.getName actor)
-         "id: " (user-object actor)))
-
-(defn- dev-menu-config []
-  {:menus [{:label "World"
-            :items (for [world (map db/build [:worlds/vampire
-                                              :worlds/modules
-                                              :worlds/uf-caves])]
-                     {:label (str "Start " (:property/id world))
-                      :on-click (fn []
-                                  (reset-game! {:world-id (:property/id world)}))})}
-           {:label "Help"
-            :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
-           {:label "Objects"
-            :items (for [property-type (sort (filter #(= "properties" (namespace %))
-                                                     (keys @#'db/-schemas)))]
-                     {:label (str/capitalize (name property-type))
-                      :on-click (fn []
-                                  (let [window (ui/window {:title "Edit"
-                                                           :modal? true
-                                                           :close-button? true
-                                                           :center? true
-                                                           :close-on-escape? true})]
-                                    (.add window ^Actor (editor/overview-table property-type editor/edit-property))
-                                    (.pack window)
-                                    (stage/add-actor window)))})}]
-   :update-labels [{:label "Mouseover-entity id"
-                    :update-fn (fn []
-                                 (when-let [entity (and world/mouseover-eid @world/mouseover-eid)]
-                                   (:entity/id entity)))
-                    :icon "images/mouseover.png"}
-                   {:label "elapsed-time"
-                    :update-fn (fn [] (str (readable-number timer/elapsed-time) " seconds"))
-                    :icon "images/clock.png"}
-                   {:label "paused?"
-                    :update-fn (fn [] paused?)}
-                   {:label "GUI"
-                    :update-fn (fn [] (graphics/mouse-position))}
-                   {:label "World"
-                    :update-fn (fn [] (mapv int (graphics/world-mouse-position)))}
-                   {:label "Zoom"
-                    :update-fn (fn [] (camera/zoom (:camera graphics/world-viewport)))
-                    :icon "images/zoom.png"}
-                   {:label "FPS"
-                    :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
-                    :icon "images/fps.png"}]})

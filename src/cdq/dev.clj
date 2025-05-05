@@ -1,6 +1,5 @@
 (ns cdq.dev
-  (:require [cdq.application :as app]
-            [cdq.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.db :as db]
             [cdq.tx :as tx]
             [clojure.string :as str]
@@ -8,16 +7,20 @@
             [cdq.ui.stage :as stage]
             [cdq.ui :refer [scroll-pane] :as ui]
             [cdq.world :as world])
-  (:import (com.badlogic.gdx.assets AssetManager)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.scenes.scene2d Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Tree$Node)
            (com.kotcrab.vis.ui.widget VisTree)))
+
+(defn post-runnable! [f]
+  (.postRunnable Gdx/app f))
 
 (comment
 
  (print-app-values-tree "app-values-tree.clj" #{"cdq"})
 
- ; use app/post-runnable! to get proper error messages in console
+ ; use post-runnable! to get proper error messages in console
 
  (show-tree-view! "Mouseover Entity" @world/mouseover-eid)
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell))
@@ -53,11 +56,11 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (app/post-runnable! #(world/spawn-creature {:position [35 73]
-                                             :creature-id :creatures/dragon-red
-                                             :components {:entity/fsm {:fsm :fsms/npc
-                                                                       :initial-state :npc-sleeping}
-                                                          :entity/faction :evil}}))
+ (post-runnable! #(world/spawn-creature {:position [35 73]
+                                         :creature-id :creatures/dragon-red
+                                         :components {:entity/fsm {:fsm :fsms/npc
+                                                                   :initial-state :npc-sleeping}
+                                                      :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
