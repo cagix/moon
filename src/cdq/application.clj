@@ -1612,15 +1612,28 @@
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 
+(defn- start-application! [{:keys [title
+                                   windowed-mode
+                                   foreground-fps
+                                   dock-icon]}
+                           application-listener]
+  (when (= SharedLibraryLoader/os Os/MacOsX)
+    (.setIconImage (Taskbar/getTaskbar)
+                   (.getImage (Toolkit/getDefaultToolkit)
+                              (io/resource dock-icon)))
+    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+  (Lwjgl3Application. application-listener
+                      (doto (Lwjgl3ApplicationConfiguration.)
+                        (.setTitle title)
+                        (.setWindowedMode (:width  windowed-mode)
+                                          (:height windowed-mode))
+                        (.setForegroundFPS foreground-fps))))
+
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (db/create!)
-    (when (= SharedLibraryLoader/os Os/MacOsX)
-      (.setIconImage (Taskbar/getTaskbar)
-                     (.getImage (Toolkit/getDefaultToolkit)
-                                (io/resource (:dock-icon (:mac-os config)))))
-      (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-    (Lwjgl3Application. (proxy [ApplicationAdapter] []
+    (start-application! (:application config)
+                        (proxy [ApplicationAdapter] []
                           (create []
                             (assets/create! (:assets config))
                             (graphics/create! (:graphics config))
@@ -1666,9 +1679,4 @@
 
                           (resize [width height]
                             (Viewport/.update graphics/ui-viewport    width height true)
-                            (Viewport/.update graphics/world-viewport width height false)))
-                        (doto (Lwjgl3ApplicationConfiguration.)
-                          (.setTitle (:title config))
-                          (.setWindowedMode (:width  (:windowed-mode config))
-                                            (:height (:windowed-mode config)))
-                          (.setForegroundFPS (:foreground-fps config))))))
+                            (Viewport/.update graphics/world-viewport width height false))))))

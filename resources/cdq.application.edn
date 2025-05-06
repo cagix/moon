@@ -1,7 +1,8 @@
-{:mac-os {:dock-icon "moon.png"}
- :title "Cyber Dungeon Quest"
- :windowed-mode {:width 1440 :height 900}
- :foreground-fps 60
+{:application {:title "Cyber Dungeon Quest"
+               :windowed-mode {:width 1440
+                               :height 900}
+               :foreground-fps 60
+               :dock-icon "moon.png"}
  :assets {:folder "resources/"
           :asset-type->extensions {:sound   #{"wav"}
                                    :texture #{"png" "bmp"}}}
