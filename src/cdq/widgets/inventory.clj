@@ -3,14 +3,14 @@
             [cdq.graphics :as graphics]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
-            [cdq.data.grid2d :as g2d]
             [cdq.ui :refer [texture-region-drawable
                             image-widget
                             ui-stack
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
-            [cdq.world :as world])
+            [cdq.world :as world]
+            [clojure.data.grid2d :as g2d])
   (:import (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Actor)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)

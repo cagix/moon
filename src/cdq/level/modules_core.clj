@@ -1,5 +1,5 @@
-(ns cdq.modules
-  (:require [cdq.mapgen :refer [grid->tiled-map transition-idx-value]]
+(ns cdq.level.modules-core
+  (:require [cdq.level.helper :refer [grid->tiled-map transition-idx-value]]
             [cdq.tiled :as tiled]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...

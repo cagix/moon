@@ -16,7 +16,6 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [cdq.math.vector2 :as v]
-            [cdq.rand :refer [rand-int-between]]
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.timer :as timer]
@@ -50,6 +49,7 @@
             [clojure.edn :as edn]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.java.io :as io]
+            [clojure.rand :refer [rand-int-between]]
             [clojure.string :as str]
             [clojure.math :as math]
             [reduce-fsm :as fsm])

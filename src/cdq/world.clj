@@ -1,6 +1,5 @@
 (ns cdq.world
   (:require [cdq.assets :as assets]
-            [cdq.data.grid2d :as g2d]
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
@@ -9,7 +8,8 @@
             [cdq.tiled :as tiled]
             [cdq.timer :as timer]
             [cdq.ui.stage :as stage]
-            [cdq.utils :refer [define-order safe-merge tile->middle]]))
+            [cdq.utils :refer [define-order safe-merge tile->middle]]
+            [clojure.data.grid2d :as g2d]))
 
 (defn- create-content-grid [{:keys [cell-size width height]}]
   {:grid (g2d/create-grid
