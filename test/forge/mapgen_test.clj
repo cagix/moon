@@ -1,7 +1,7 @@
 (ns forge.mapgen-test
   (:require [cdq.graphics :as graphics]
             [cdq.db :as db]
-            [cdq.modules :as modules]
+            [cdq.level.modules-core :as modules]
             [cdq.graphics.camera :as camera]
             [cdq.ui :refer [ui-actor text-button] :as ui]
             [cdq.input :as input]

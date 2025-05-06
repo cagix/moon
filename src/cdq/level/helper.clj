@@ -1,7 +1,6 @@
 (ns cdq.level.helper
   (:require [cdq.utils :refer [assoc-ks]]
             [cdq.tiled :as tiled]
-            [cdq.property :as property]
             [clojure.data.grid2d :as g2d]
             [clojure.rand :refer [sshuffle srand srand-int]]))
 
@@ -10,9 +9,11 @@
 
 (def creature-tile
   (memoize
-   (fn [{:keys [property/id] :as prop}]
+   (fn [{:keys [property/id
+                entity/image
+                entity/animation]}]
      (assert id)
-     (let [image (property/->image prop)
+     (let [image (or image (first (:frames animation)))
            tile (tiled/static-tiled-map-tile (:texture-region image))]
        (tiled/put! (tiled/m-props tile) "id" id)
        tile))))

@@ -26,6 +26,10 @@
            (com.badlogic.gdx.scenes.scene2d.ui Table)
            (com.kotcrab.vis.ui.widget.tabbedpane Tab TabbedPane TabbedPaneAdapter)))
 
+(defn- property->image [{:keys [entity/image entity/animation]}]
+  (or image
+      (first (:frames animation))))
+
 (defn- get-schemas []
   @(var db/-schemas))
 
@@ -171,7 +175,7 @@
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
   (let [on-clicked #(clicked-id-fn id)
-        button (if-let [image (property/->image props)]
+        button (if-let [image (property->image props)]
                  (image-button image on-clicked {:scale scale})
                  (text-button (name id) on-clicked))
         top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
@@ -244,7 +248,7 @@
                         (stage/add-actor window))))]
       (for [property-id property-ids]
         (let [property (db/build property-id)
-              image-widget (image->widget (property/->image property)
+              image-widget (image->widget (property->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget #(info-text property))))
       (for [id property-ids]
@@ -283,7 +287,7 @@
                           (stage/add-actor window)))))]
       [(when property-id
          (let [property (db/build property-id)
-               image-widget (image->widget (property/->image property)
+               image-widget (image->widget (property->image property)
                                            {:id property-id})]
            (add-tooltip! image-widget #(info-text property))
            image-widget))]
