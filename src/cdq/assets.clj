@@ -51,7 +51,8 @@
     (.get asset-manager path)
     (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
 
-(defn sound [sound-name]
+(defn play-sound! [sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
-       get))
+       get
+       Sound/.play))

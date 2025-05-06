@@ -1,6 +1,5 @@
 (ns cdq.db
-  (:require [cdq.assets :as assets]
-            [cdq.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.schema :as schema]
             [cdq.property :as property]
@@ -110,9 +109,6 @@
 
 (defn build-all [property-type]
   (map build* (all-raw property-type)))
-
-(defmethod schema/edn->value :s/sound [_ sound-name]
-  (assets/sound sound-name))
 
 (defn- edn->sprite [{:keys [file sub-image-bounds]}]
   (if sub-image-bounds

@@ -1,5 +1,6 @@
 (ns cdq.editor
-  (:require [cdq.db :as db]
+  (:require [cdq.assets :as assets]
+            [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
@@ -18,8 +19,6 @@
                             add-tooltip!]
              :as ui]
             [clojure.edn :as edn]
-            [cdq.audio.sound :as sound]
-            [cdq.assets :as assets]
             [cdq.input :as input]
             [clojure.string :as str]
             [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]])
@@ -136,7 +135,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(sound/play (assets/sound sound-name))))
+  (text-button "play!" #(assets/play-sound! sound-name)))
 
 (declare columns)
 

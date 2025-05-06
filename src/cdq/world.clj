@@ -1,5 +1,5 @@
 (ns cdq.world
-  (:require [cdq.audio.sound :as sound]
+  (:require [cdq.assets :as assets]
             [cdq.data.grid2d :as g2d]
             [cdq.db :as db]
             [cdq.entity :as entity]
@@ -274,7 +274,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (sound/play sound)
+  (assets/play-sound! sound)
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation

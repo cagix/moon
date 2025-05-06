@@ -1,7 +1,5 @@
 (ns cdq.tx
-  (:require [cdq.assets :as assets]
-            [cdq.audio.sound :as sound]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
             [cdq.info :as info]
@@ -34,9 +32,6 @@
                            (dissoc old-state-k)))
            (state/exit!  old-state-obj)
            (state/enter! new-state-obj)))))))
-
-(defn sound [sound-name]
-  (sound/play (assets/sound sound-name)))
 
 ; we cannot just set/unset movement direction
 ; because it is handled by the state enter/exit for npc/player movement state ...
