@@ -34,9 +34,8 @@
 
 ; TODO bounds (armor-save, armor-pierce)
 {
- :property/id :qualified-keyword, ; why is this in schema?
+ :property/id :qualified-keyword,
 
- ; this ':audiovisual/' ?
  :tx/sound :s/sound,
  :entity/animation :s/animation,
 
