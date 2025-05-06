@@ -1,5 +1,6 @@
 (ns cdq.widgets.inventory
-  (:require [cdq.entity :as entity]
+  (:require [cdq.assets :as assets]
+            [cdq.entity :as entity]
             [cdq.graphics :as graphics]
             [cdq.inventory :refer [empty-inventory] :as inventory]
             [cdq.info :as info]
@@ -65,7 +66,7 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (graphics/from-sheet (graphics/sprite-sheet "images/items.png" 48 48)
+  (graphics/from-sheet (graphics/sprite-sheet (assets/get "images/items.png") 48 48)
                        (slot->sprite-idx slot)))
 
 (defn- slot->background [slot]

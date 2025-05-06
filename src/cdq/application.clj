@@ -49,7 +49,7 @@
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.graphics Color Colors)
-           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
+           (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
@@ -113,9 +113,9 @@
                        :up? true}))
 
 (defn- hp-mana-bar [[x y-mana]]
-  (let [rahmen      (graphics/->sprite "images/rahmen.png")
-        hpcontent   (graphics/->sprite "images/hp.png")
-        manacontent (graphics/->sprite "images/mana.png")
+  (let [rahmen      (graphics/->sprite (assets/get "images/rahmen.png"))
+        hpcontent   (graphics/->sprite (assets/get "images/hp.png"))
+        manacontent (graphics/->sprite (assets/get "images/mana.png"))
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]

@@ -1,6 +1,5 @@
 (ns cdq.graphics
-  (:require [cdq.assets :as assets]
-            [cdq.gdx.interop :as interop]
+  (:require [cdq.gdx.interop :as interop]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.utils :as utils]
@@ -367,8 +366,8 @@
                            (int w)
                            (int h))))
 
-(defn sprite-sheet [path tilew tileh]
-  {:image (sprite* (TextureRegion. ^Texture (assets/get path)))
+(defn sprite-sheet [^Texture texture tilew tileh]
+  {:image (sprite* (TextureRegion. texture))
    :tilew tilew
    :tileh tileh})
 
@@ -380,5 +379,5 @@
                tilew
                tileh]))
 
-(defn ->sprite [path]
-  (sprite* (TextureRegion. ^Texture (assets/get path))))
+(defn ->sprite [^Texture texture]
+  (sprite* (TextureRegion. texture)))

@@ -1,5 +1,6 @@
 (ns cdq.db
-  (:require [cdq.graphics :as graphics]
+  (:require [cdq.assets :as assets]
+            [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.schema :as schema]
             [cdq.property :as property]
@@ -114,10 +115,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (graphics/from-sheet (graphics/sprite-sheet file tilew tileh)
+      (graphics/from-sheet (graphics/sprite-sheet (assets/get file) tilew tileh)
                            [(int (/ sprite-x tilew))
                             (int (/ sprite-y tileh))]))
-    (graphics/->sprite file)))
+    (graphics/->sprite (assets/get file))))
 
 (defmethod schema/edn->value :s/image [_ edn]
   (edn->sprite edn))
