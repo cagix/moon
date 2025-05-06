@@ -51,24 +51,22 @@
                                          render-z-order]]
             [cdq.world.potential-field :as potential-field]
             [clojure.edn :as edn]
+            [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.math :as math]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
-           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color Colors)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
-           (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
-           (com.badlogic.gdx.utils.viewport Viewport)
-           (java.awt Taskbar Toolkit)
-           (org.lwjgl.system Configuration)))
+           (com.badlogic.gdx.utils Disposable ScreenUtils)
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
 
 (defmethod level/generate-level* :world.generator/tiled-map [world]
-  {:tiled-map (tiled/load-map (:world/tiled-map world))
+  {:tiled-map (tiled/load-map (:world/tiled-map world)) ; TODO not disposed !
    :start-position [32 71]})
 
 (defmethod level/generate-level* :world.generator/uf-caves [world]
@@ -1604,27 +1602,10 @@
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 
-(defn- start-application! [{:keys [title
-                                   windowed-mode
-                                   foreground-fps
-                                   dock-icon]}
-                           application-listener]
-  (when (= SharedLibraryLoader/os Os/MacOsX)
-    (.setIconImage (Taskbar/getTaskbar)
-                   (.getImage (Toolkit/getDefaultToolkit)
-                              (io/resource dock-icon)))
-    (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
-  (Lwjgl3Application. application-listener
-                      (doto (Lwjgl3ApplicationConfiguration.)
-                        (.setTitle title)
-                        (.setWindowedMode (:width  windowed-mode)
-                                          (:height windowed-mode))
-                        (.setForegroundFPS foreground-fps))))
-
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (db/create!)
-    (start-application! (:application config)
+    (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []
                             (assets/create! (:assets config))
