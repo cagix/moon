@@ -463,10 +463,10 @@
                     :update-fn (fn []
                                  (when-let [entity (and world/mouseover-eid @world/mouseover-eid)]
                                    (:entity/id entity)))
-                    :icon "images/mouseover.png"}
+                    :icon (assets/get "images/mouseover.png")}
                    {:label "elapsed-time"
                     :update-fn (fn [] (str (readable-number timer/elapsed-time) " seconds"))
-                    :icon "images/clock.png"}
+                    :icon (assets/get "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [] paused?)}
                    {:label "GUI"
@@ -475,10 +475,10 @@
                     :update-fn (fn [] (mapv int (graphics/world-mouse-position)))}
                    {:label "Zoom"
                     :update-fn (fn [] (camera/zoom (:camera graphics/world-viewport)))
-                    :icon "images/zoom.png"}
+                    :icon (assets/get "images/zoom.png")}
                    {:label "FPS"
                     :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
-                    :icon "images/fps.png"}]})
+                    :icon (assets/get "images/fps.png")}]})
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]

@@ -1,6 +1,5 @@
 (ns cdq.ui.menu
-  (:require [cdq.graphics :as graphics]
-            [cdq.ui :as ui :refer [ui-actor]])
+  (:require [cdq.ui :as ui :refer [ui-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Group Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu)))
@@ -10,7 +9,7 @@
 
 (defn- add-upd-label!
   ([table text-fn icon]
-   (let [icon (ui/image->widget (graphics/->sprite icon) {})
+   (let [icon (ui/image-widget icon {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
      (Group/.addActor table (ui-actor {:act (set-label-text-fn label text-fn)}))
