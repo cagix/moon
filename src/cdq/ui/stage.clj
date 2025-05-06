@@ -2,8 +2,35 @@
   (:require [cdq.graphics :as graphics]
             [cdq.ui :as ui]
             [cdq.utils :refer [pretty-pst with-err-str]])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
+
+(declare ^:private ^Stage stage)
+
+(defn init! []
+  (let [stage (proxy [Stage ILookup] [graphics/ui-viewport graphics/batch]
+                (valAt
+                  ([id]
+                   (ui/find-actor-with-id (Stage/.getRoot this) id))
+                  ([id not-found]
+                   (or (ui/find-actor-with-id (Stage/.getRoot this) id)
+                       not-found))))]
+    (.setInputProcessor Gdx/input stage)
+    (.bindRoot #'stage stage)))
+
+(defn clear! []
+  (.clear stage))
+
+(defn draw! []
+  (.draw stage))
+
+(defn act! []
+  (.act stage))
+
+(defn get-actor [id-keyword]
+  (id-keyword stage))
 
 (declare player-message)
 
@@ -14,17 +41,17 @@
   (swap! player-message assoc :text text :counter 0))
 
 (defn mouse-on-actor? []
-  (let [[x y] (graphics/mouse-position #_(Stage/.getViewport ui/stage))]
-    (Stage/.hit ui/stage x y true)))
+  (let [[x y] (graphics/mouse-position #_(Stage/.getViewport stage))]
+    (Stage/.hit stage x y true)))
 
 (defn add-actor [actor]
-  (Stage/.addActor ui/stage actor))
+  (Stage/.addActor stage actor))
 
 (defn get-inventory []
-  (get (:windows ui/stage) :inventory-window))
+  (get (:windows stage) :inventory-window))
 
 (defn get-action-bar []
-  (let [group (:ui/action-bar (:action-bar-table ui/stage))]
+  (let [group (:ui/action-bar (:action-bar-table stage))]
     {:horizontal-group group
      :button-group (Actor/.getUserObject (Group/.findActor group "action-bar/button-group"))}))
 

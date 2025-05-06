@@ -415,7 +415,7 @@
 
 (defn- reset-game! [world-fn]
   (stage/init-state!)
-  (Stage/.clear ui/stage)
+  (stage/clear!)
   (run! stage/add-actor [(ui.menu/create (dev-menu-config))
                          (action-bar)
                          (hp-mana-bar [(/ (:width graphics/ui-viewport) 2)
@@ -1288,9 +1288,9 @@
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (input/key-just-pressed? (get window-hotkeys window-id))]
-      (ui/toggle-visible! (get (:windows ui/stage) window-id))))
+      (ui/toggle-visible! (get (stage/get-actor :windows) window-id))))
   (when (input/key-just-pressed? :escape)
-    (let [windows (Group/.getChildren (:windows ui/stage))]
+    (let [windows (Group/.getChildren (stage/get-actor :windows))]
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 
@@ -1305,9 +1305,10 @@
                             (assets/create! (:assets config))
                             (graphics/create! (:graphics config))
                             (ui/load! (:vis-ui config)
-                                      graphics/batch ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
+                                       ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
                                       ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
-                                      graphics/ui-viewport) ; TODO we don't do dispose! ....
+                                      ) ; TODO we don't do dispose! ....
+                            (stage/init!)
                             (reset-game! (:world-fn config)))
 
                           (dispose []
@@ -1328,8 +1329,8 @@
                                                             (draw-before-entities!)
                                                             (render-entities!)
                                                             (draw-after-entities!)))
-                            (Stage/.draw ui/stage)
-                            (Stage/.act ui/stage)
+                            (stage/draw!)
+                            (stage/act!)
                             (entity/manual-tick (entity/state-obj @world/player-eid))
                             (update-mouseover-entity!)
                             (set-paused-flag!)

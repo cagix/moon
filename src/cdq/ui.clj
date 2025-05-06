@@ -1,17 +1,14 @@
 (ns cdq.ui
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
+           (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
            (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator)))
-
-(declare ^Stage stage)
 
 (defn find-actor-with-id [^Group group id]
   (let [actors (.getChildren group)
@@ -21,7 +18,7 @@
             (str "Actor ids are not distinct: " (vec ids)))
     (first (filter #(= id (Actor/.getUserObject %)) actors))))
 
-(defn load! [{:keys [skin-scale]} batch viewport]
+(defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
   ; => actually there is a deeper issue at play
   ; we need to dispose ALL resources which were loaded already ...
@@ -38,16 +35,7 @@
   ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
-  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0))
-  (let [stage (proxy [Stage ILookup] [viewport batch]
-                (valAt
-                  ([id]
-                   (find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (.setInputProcessor Gdx/input stage)
-    (.bindRoot #'stage stage)))
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
 (defn toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))
@@ -145,7 +133,7 @@
 (defmacro ^:private proxy-ILookup
   "For actors inheriting from Group."
   [class args]
-  `(proxy [~class clojure.lang.ILookup] ~args
+  `(proxy [~class ILookup] ~args
      (valAt
        ([id#]
         (find-actor-with-id ~'this id#))

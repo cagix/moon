@@ -53,12 +53,12 @@
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (::modal ui/stage)))
+  (assert (not (stage/get-actor ::modal)))
   (stage/add-actor (ui/window {:title title
                                :rows [[(ui/label text)]
                                       [(ui/text-button button-text
                                                        (fn []
-                                                         (Actor/.remove (::modal ui/stage))
+                                                         (Actor/.remove (stage/get-actor ::modal))
                                                          (on-click)))]]
                                :id ::modal
                                :modal? true

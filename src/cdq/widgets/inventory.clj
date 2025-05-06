@@ -9,6 +9,7 @@
                             add-tooltip!
                             remove-tooltip!]
              :as ui]
+            [cdq.ui.stage :as stage]
             [cdq.world :as world]
             [clojure.data.grid2d :as g2d])
   (:import (com.badlogic.gdx.graphics Color)
@@ -122,7 +123,7 @@
                        :pad 4}]]}))
 
 (defn- inventory-cell-widget [cell]
-  (get (::table (get (:windows ui/stage) :inventory-window)) cell))
+  (get (::table (get (stage/get-actor :windows) :inventory-window)) cell))
 
 (defn- set-item-image-in-widget [cell item]
   (let [cell-widget (inventory-cell-widget cell)
