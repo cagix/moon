@@ -1,4 +1,5 @@
-{:application {:title "Cyber Dungeon Quest"
+{:requires [cdq.effects]
+ :application {:title "Cyber Dungeon Quest"
                :windowed-mode {:width 1440
                                :height 900}
                :foreground-fps 60
