@@ -4,7 +4,6 @@
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
-            [cdq.line-of-sight :as los]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
@@ -117,7 +116,7 @@
  ; TODO showing one a bit further up
  ; maybe world view port is cut
  ; not quite showing correctly.
- (let [targets (los/creatures-in-los-of-player)]
+ (let [targets (world/creatures-in-los-of-player)]
    (count targets)
    #_(sort-by #(% 1) (map #(vector (:entity.creature/name @%)
                                    (:position @%)) targets)))
@@ -135,7 +134,7 @@
 
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target (los/creatures-in-los-of-player)]
+      (doseq [target (world/creatures-in-los-of-player)]
         (line-render {:start (:position source*) #_(start-point source* target*)
                       :end (:position @target)
                       :duration 0.05
@@ -152,7 +151,7 @@
 
   (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target* (map deref (los/creatures-in-los-of-player))]
+      (doseq [target* (map deref (world/creatures-in-los-of-player))]
         (graphics/line (:position source*) #_(start-point source* target*)
                        (:position target*)
                        [1 0 0 0.5])))))

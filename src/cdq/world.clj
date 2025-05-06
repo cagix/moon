@@ -3,7 +3,9 @@
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]
             [cdq.grid :as grid]
+            [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.tiled :as tiled]
             [cdq.timer :as timer]
@@ -422,3 +424,36 @@
   Active entities are those which are nearby the position of the player and about one screen away."
   []
   (.bindRoot #'active-entities (active-entities* content-grid @player-eid)))
+
+; does not take into account zoom - but zoom is only for debug ???
+; vision range?
+(defn- on-screen? [viewport entity]
+  (let [[x y] (:position entity)
+        x (float x)
+        y (float y)
+        [cx cy] (camera/position (:camera viewport))
+        px (float cx)
+        py (float cy)
+        xdist (Math/abs (- x px))
+        ydist (Math/abs (- y py))]
+    (and
+     (<= xdist (inc (/ (float (:width viewport))  2)))
+     (<= ydist (inc (/ (float (:height viewport)) 2))))))
+
+; TODO at wrong point , this affects targeting logic of npcs
+; move the debug flag to either render or mouseover or lets see
+(def ^:private ^:dbg-flag los-checks? true)
+
+; does not take into account size of entity ...
+; => assert bodies <1 width then
+(defn line-of-sight? [source target]
+  (and (or (not (:entity/player? source))
+           (on-screen? graphics/world-viewport target))
+       (not (and los-checks?
+                 (raycaster/blocked? raycaster (:position source) (:position target))))))
+
+(defn creatures-in-los-of-player []
+  (->> active-entities
+       (filter #(:entity/species @%))
+       (filter #(line-of-sight? @player-eid @%))
+       (remove #(:entity/player? @%))))

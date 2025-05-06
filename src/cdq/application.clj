@@ -13,7 +13,6 @@
             [cdq.info :as info :refer [info-segment]]
             [cdq.input :as input]
             [cdq.inventory :as inventory]
-            [cdq.line-of-sight :as los]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [cdq.math.vector2 :as v]
@@ -626,7 +625,7 @@
   [{:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (los/exists? @source @target))
+           (world/line-of-sight? @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
@@ -658,7 +657,7 @@
   (let [entity @eid
         target (nearest-enemy entity)
         target (when (and target
-                          (los/exists? entity @target))
+                          (world/line-of-sight? entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -1204,7 +1203,7 @@
                     info]
             entity entities
             :when (or (= z-order :z-order/effect)
-                      (los/exists? player entity))]
+                      (world/line-of-sight? player entity))]
       (try
        (when show-body-bounds
          (draw-body-rect entity (if (:collides? entity) :white :gray)))
@@ -1225,7 +1224,7 @@
                     (->> cdq.world/render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
-                         (filter #(los/exists? player @%))
+                         (filter #(world/line-of-sight? player @%))
                          first)))]
     (when world/mouseover-eid
       (swap! world/mouseover-eid dissoc :entity/mouseover?))
