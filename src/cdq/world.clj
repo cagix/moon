@@ -11,17 +11,8 @@
             [cdq.timer :as timer]
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [define-order safe-merge tile->middle]]
+            [cdq.world.content-grid :as content-grid]
             [clojure.data.grid2d :as g2d]))
-
-(defn- create-content-grid [{:keys [cell-size width height]}]
-  {:grid (g2d/create-grid
-          (inc (int (/ width  cell-size))) ; inc because corners
-          (inc (int (/ height cell-size)))
-          (fn [idx]
-            (atom {:idx idx,
-                   :entities #{}})))
-   :cell-w cell-size
-   :cell-h cell-size})
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
@@ -97,15 +88,6 @@
 
 (def mouseover-eid nil)
 
-(defn- active-entities* [{:keys [grid]} center-entity]
-  (->> (let [idx (-> center-entity
-                     :cdq.content-grid/content-cell
-                     deref
-                     :idx)]
-         (cons idx (g2d/get-8-neighbour-positions idx)))
-       (keep grid)
-       (mapcat (comp :entities deref))))
-
 (defn- set-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]
     (assert (not-any? nil? cells))
@@ -139,24 +121,12 @@
     (assert (get (:occupied @cell) eid))
     (swap! cell update :occupied disj eid)))
 
-(defn- content-grid-update-entity! [content-grid eid]
-  (let [{:keys [grid cell-w cell-h]} content-grid
-        {:keys [cdq.content-grid/content-cell] :as entity} @eid
-        [x y] (:position entity)
-        new-cell (get grid [(int (/ x cell-w))
-                            (int (/ y cell-h))])]
-    (when-not (= content-cell new-cell)
-      (swap! new-cell update :entities conj eid)
-      (swap! eid assoc :cdq.content-grid/content-cell new-cell)
-      (when content-cell
-        (swap! content-cell update :entities disj eid)))))
-
 (defn- add-entity! [eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
 
-  (content-grid-update-entity! content-grid eid)
+  (content-grid/update-entity! content-grid eid)
 
   ; https://github.com/damn/core/issues/58
   ;(assert (valid-position? grid @eid)) ; TODO deactivate because projectile no left-bottom remove that field or update properly for all
@@ -169,16 +139,14 @@
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
 
-  (-> @eid
-      :cdq.content-grid/content-cell
-      (swap! update :entities disj eid))
+  (content-grid/remove-entity! eid)
 
   (remove-from-cells! eid)
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)))
 
 (defn position-changed! [eid]
-  (content-grid-update-entity! content-grid eid)
+  (content-grid/update-entity! content-grid eid)
 
   (remove-from-cells! eid)
   (set-cells! grid eid)
@@ -405,7 +373,7 @@
 
 (defn create! [{:keys [tiled-map start-position]}]
   (.bindRoot #'tiled-map tiled-map)
-  (.bindRoot #'content-grid (create-content-grid {:cell-size 16
+  (.bindRoot #'content-grid (content-grid/create {:cell-size 16
                                                   :width  (tiled/tm-width  tiled-map)
                                                   :height (tiled/tm-height tiled-map)}))
   (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
@@ -423,7 +391,7 @@
 
   Active entities are those which are nearby the position of the player and about one screen away."
   []
-  (.bindRoot #'active-entities (active-entities* content-grid @player-eid)))
+  (.bindRoot #'active-entities (content-grid/active-entities content-grid @player-eid)))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
