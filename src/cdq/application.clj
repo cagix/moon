@@ -19,7 +19,6 @@
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.timer :as timer]
-            [cdq.tiled :as tiled]
             [cdq.tx :as tx]
             cdq.potential-fields
             [cdq.operation :as op]
@@ -61,10 +60,6 @@
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
-
-(defn vampire-level [_creature-properties]
-  {:tiled-map (tiled/load-map "maps/vampire.tmx") ; TODO not disposed !
-   :start-position [32 71]})
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
@@ -734,7 +729,7 @@
 
 (defn- dev-menu-config []
   {:menus [{:label "World"
-            :items (for [world-fn '[cdq.application/vampire-level
+            :items (for [world-fn '[cdq.level.vampire/create
                                     cdq.level.uf-caves/create
                                     cdq.level.modules/create]]
                      {:label (str "Start " (namespace world-fn))
