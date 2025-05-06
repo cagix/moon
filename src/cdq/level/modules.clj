@@ -1,7 +1,7 @@
 (ns cdq.level.modules
-  (:require [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
+  (:require [cdq.data.grid2d :as g2d]
+            [cdq.mapgen :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.modules :as modules]
-            [cdq.data.grid2d :as g2d]
             [cdq.tiled :as tiled]))
 
 ; can adjust:
@@ -63,7 +63,7 @@
         (when (seq creatures)
           (tiled/set-tile! layer position (creature-tile (rand-nth creatures))))))))
 
-(defn generate-modules
+(defn- generate-modules
   "The generated tiled-map needs to be disposed."
   [{:keys [world/map-size
            world/max-area-level
@@ -122,3 +122,9 @@
     {:tiled-map tiled-map
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
+
+(defn create [creature-properties]
+  (generate-modules {:world/map-size 5,
+                     :world/max-area-level 3,
+                     :world/spawn-rate 0.05}
+                    creature-properties))

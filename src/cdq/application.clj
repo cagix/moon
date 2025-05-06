@@ -13,8 +13,6 @@
             [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.line-of-sight :as los]
-            cdq.level.uf-caves
-            cdq.level.modules
             [cdq.math.raycaster :as raycaster]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [cdq.math.vector2 :as v]
@@ -64,21 +62,9 @@
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
 
-(defn vampire-level []
+(defn vampire-level [_creature-properties]
   {:tiled-map (tiled/load-map "maps/vampire.tmx") ; TODO not disposed !
    :start-position [32 71]})
-
-(defn uf-caves-level []
-  (cdq.level.uf-caves/create {:world/map-size 200,
-                              :world/spawn-rate 0.01}
-                             (db/build-all :properties/creatures)
-                             (assets/get "maps/uf_terrain.png")))
-
-(defn modules-level []
-  (cdq.level.modules/generate-modules {:world/map-size 5,
-                                       :world/max-area-level 3,
-                                       :world/spawn-rate 0.05}
-                                      (db/build-all :properties/creatures)))
 
 (defn- action-bar-button-group []
   (let [actor (ui-actor {})]
@@ -737,7 +723,7 @@
 (defn- reset-game! [world-fn]
   (reset-stage!)
   (timer/init!)
-  (world/create! ((resolve world-fn))))
+  (world/create! ((requiring-resolve world-fn) (db/build-all :properties/creatures))))
 
 (declare paused?)
 
@@ -749,9 +735,9 @@
 (defn- dev-menu-config []
   {:menus [{:label "World"
             :items (for [world-fn '[cdq.application/vampire-level
-                                    cdq.application/uf-caves-level
-                                    cdq.application/modules-level]]
-                     {:label (str "Start " (name world-fn))
+                                    cdq.level.uf-caves/create
+                                    cdq.level.modules/create]]
+                     {:label (str "Start " (namespace world-fn))
                       :on-click (fn [] (reset-game! world-fn))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}

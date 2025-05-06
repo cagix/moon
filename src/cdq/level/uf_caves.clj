@@ -1,6 +1,7 @@
 (ns cdq.level.uf-caves
-  (:require [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
+  (:require [cdq.assets :as assets]
             [cdq.data.grid2d :as g2d]
+            [cdq.mapgen :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [cdq.tiled :as tiled]
             [cdq.rand :refer [get-rand-weighted-item]])
   (:import (com.badlogic.gdx.graphics Texture)
@@ -105,9 +106,9 @@
 
 ; TODO don't spawn my faction vampire w. player items ...
 ; FIXME - overlapping with player - don't spawn creatures on start position
-(defn create [{:keys [world/map-size world/spawn-rate]}
-              creature-properties
-              texture]
+(defn- create* [{:keys [map-size spawn-rate]}
+                creature-properties
+                texture]
   (let [{:keys [start grid]} (cave-grid :size map-size)
         {:keys [start-position grid]} (scale-grid grid start scaling)
         grid (assoc-transition-cells grid)
@@ -121,3 +122,9 @@
                          spawn-positions)
     {:tiled-map tiled-map
      :start-position start-position}))
+
+(defn create [creature-properties]
+  (create* {:map-size 200,
+            :spawn-rate 0.01}
+           creature-properties
+           (assets/get "maps/uf_terrain.png")))

@@ -27,4 +27,4 @@
             :world-viewport {:width 1440 :height 900}
             :ui-viewport {:width 1440 :height 900}}
  :vis-ui {:skin-scale :x1}
- :world-fn cdq.application/vampire-level}
+ :world-fn cdq.level.modules/create}
