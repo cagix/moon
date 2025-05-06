@@ -23,7 +23,6 @@
             [cdq.rand :refer [rand-int-between]]
             [cdq.schema :as schema]
             [cdq.skill :as skill]
-            cdq.time
             [cdq.timer :as timer]
             [cdq.tiled :as tiled]
             [cdq.tx :as tx]
@@ -65,6 +64,9 @@
            (com.badlogic.gdx.utils.viewport Viewport)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
+
+; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
+(def max-delta 0.04)
 
 (defmethod level/generate-level* :world.generator/tiled-map [world]
   {:tiled-map (tiled/load-map (:world/tiled-map world))
@@ -1054,8 +1056,7 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ minimum-size
-                            cdq.time/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
+(def ^:private max-speed (/ minimum-size max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
 (def ^:private speed-schema (schema/m-schema [:and number? [:>= 0] [:<= max-speed]]))
 
@@ -1561,7 +1562,7 @@
                                          (input/key-pressed?      :space)))))))
 
 (defn- update-time! []
-  (let [delta-ms (min (.getDeltaTime Gdx/graphics) cdq.time/max-delta)]
+  (let [delta-ms (min (.getDeltaTime Gdx/graphics) max-delta)]
     (timer/inc-state! delta-ms)
     (.bindRoot #'world/delta-time delta-ms)))
 
