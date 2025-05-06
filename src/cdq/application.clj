@@ -559,12 +559,12 @@
                       :thick? true})
         ; some sound .... or repeat smae sound???
         ; skill do sound  / skill start sound >?
-        ; problem : nested tx/effect , we are still having direction/target-position
+        ; problem : nested effect/do-all! , we are still having direction/target-position
         ; at sub-effects
         ; and no more safe - merge
         ; find a way to pass ctx / effect-ctx separate ?
-        (tx/effect {:effect/source source :effect/target target}
-                   entity-effects))))
+        (effect/do-all! {:effect/source source :effect/target target}
+                        entity-effects))))
 
   (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
@@ -592,7 +592,7 @@
                        :duration 0.05
                        :color [1 0 0 0.75]
                        :thick? true})
-         (tx/effect effect-ctx entity-effects))
+         (effect/do-all! effect-ctx entity-effects))
         (spawn-audiovisual (entity/end-point source* target* maxrange)
                            (db/build :audiovisuals/hit-ground)))))
 
@@ -955,7 +955,7 @@
 
    (timer/stopped? counter)
    (do
-    (tx/effect effect-ctx (:skill/effects skill))
+    (effect/do-all! effect-ctx (:skill/effects skill))
     (tx/event eid :action-done))))
 
 (defn- npc-choose-skill [entity ctx]
@@ -1102,9 +1102,9 @@
     (when hit-entity
       (swap! eid assoc-in [k :already-hit-bodies] (conj already-hit-bodies hit-entity))) ; this is only necessary in case of not piercing ...
     (when hit-entity
-      (tx/effect {:effect/source eid
-                  :effect/target hit-entity}
-                 entity-effects))))
+      (effect/do-all! {:effect/source eid
+                       :effect/target hit-entity}
+                      entity-effects))))
 
 (defmethod entity/tick! :entity/delete-after-animation-stopped? [_ eid]
   (when (animation/stopped? (:entity/animation @eid))

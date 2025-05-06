@@ -24,3 +24,7 @@
   (->> effect
        (filter-applicable? effect-ctx)
        (some #(useful? % effect-ctx))))
+
+(defn do-all! [effect-ctx effect]
+  (run! #(handle % effect-ctx)
+        (filter-applicable? effect-ctx effect)))

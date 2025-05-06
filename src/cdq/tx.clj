@@ -1,7 +1,6 @@
 (ns cdq.tx
   (:require [cdq.assets :as assets]
             [cdq.audio.sound :as sound]
-            [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
@@ -35,10 +34,6 @@
                            (dissoc old-state-k)))
            (state/exit!  old-state-obj)
            (state/enter! new-state-obj)))))))
-
-(defn effect [effect-ctx effect]
-  (run! #(effect/handle % effect-ctx)
-        (effect/filter-applicable? effect-ctx effect)))
 
 (defn sound [sound-name]
   (sound/play (assets/sound sound-name)))
