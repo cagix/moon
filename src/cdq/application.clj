@@ -835,17 +835,12 @@
 (defmethod entity/create :npc-sleeping [[_ eid]]
   {:eid eid})
 
-(defmethod entity/create :player-dead [[k]]
-  (db/build :player-dead/component.enter))
-
 (defmethod entity/create :player-idle [[_ eid]]
-  (safe-merge (db/build :player-idle/clicked-inventory-cell)
-              {:eid eid}))
+  {:eid eid})
 
 (defmethod entity/create :player-item-on-cursor [[_ eid item]]
-  (safe-merge (db/build :player-item-on-cursor/component)
-              {:eid eid
-               :item item}))
+  {:eid eid
+   :item item})
 
 (defmethod entity/create :player-moving [[_ eid movement-vector]]
   {:eid eid
@@ -1144,14 +1139,11 @@
 (defcomponent :player-dead
   (state/cursor [_] :cursors/black-x)
   (state/pause-game? [_] true)
-  (state/enter! [[_ {:keys [tx/sound
-                            modal/title
-                            modal/text
-                            modal/button-text]}]]
-    (assets/play-sound! sound)
-    (tx/show-modal {:title title
-                    :text text
-                    :button-text button-text
+  (state/enter! [_]
+    (assets/play-sound! "bfxr_playerdeath")
+    (tx/show-modal {:title "YOU DIED - again!"
+                    :text "Good luck next time!"
+                    :button-text "OK"
                     :on-click (fn [])})))
 
 (defcomponent :player-item-on-cursor
@@ -1159,14 +1151,14 @@
   (state/pause-game? [_] true)
   (state/enter! [[_ {:keys [eid item]}]]
     (swap! eid assoc :entity/item-on-cursor item))
-  (state/exit! [[_ {:keys [eid player-item-on-cursor/place-world-item-sound]}]]
+  (state/exit! [[_ {:keys [eid]}]]
     ; at clicked-cell when we put it into a inventory-cell
     ; we do not want to drop it on the ground too additonally,
     ; so we dissoc it there manually. Otherwise it creates another item
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (assets/play-sound! place-world-item-sound)
+        (assets/play-sound! "bfxr_itemputground")
         (swap! eid dissoc :entity/item-on-cursor)
         (spawn-item (item-place-position entity)
                     (:entity/item-on-cursor entity))))))
@@ -1205,7 +1197,7 @@
                    0.2)
     (tx/text-effect eid "[WHITE]!")))
 
-(defn- clicked-cell [{:keys [player-item-on-cursor/item-put-sound]} eid cell]
+(defn- clicked-cell [eid cell]
   (let [entity @eid
         inventory (:entity/inventory entity)
         item-in-cell (get-in inventory cell)
@@ -1215,7 +1207,7 @@
      (and (not item-in-cell)
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (assets/play-sound! item-put-sound)
+      (assets/play-sound! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item eid cell item-on-cursor)
       (tx/event eid :dropped-item))
@@ -1224,7 +1216,7 @@
      (and item-in-cell
           (inventory/stackable? item-in-cell item-on-cursor))
      (do
-      (assets/play-sound! item-put-sound)
+      (assets/play-sound! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item eid cell item-on-cursor)
       (tx/event eid :dropped-item))
@@ -1233,7 +1225,7 @@
      (and item-in-cell
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (assets/play-sound! item-put-sound)
+      (assets/play-sound! "bfxr_itemput")
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -1243,14 +1235,14 @@
       (tx/event eid :pickup-item item-in-cell)))))
 
 (defmethod entity/clicked-inventory-cell :player-item-on-cursor
-  [[_ {:keys [eid] :as data}] cell]
-  (clicked-cell data eid cell))
+  [[_ {:keys [eid]}] cell]
+  (clicked-cell eid cell))
 
 (defmethod entity/clicked-inventory-cell :player-idle
-  [[_ {:keys [eid player-idle/pickup-item-sound]}] cell]
+  [[_ {:keys [eid]}] cell]
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
-    (assets/play-sound! pickup-item-sound)
+    (assets/play-sound! "bfxr_takeit")
     (tx/event eid :pickup-item item)
     (remove-item eid cell)))
 
