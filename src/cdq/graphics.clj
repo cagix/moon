@@ -2,11 +2,10 @@
   (:require [cdq.assets :as assets]
             [cdq.gdx.interop :as interop]
             [cdq.graphics.camera :as camera]
-            [cdq.tiled :as tiled]
+            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.utils :as utils]
             [clojure.string :as str])
-  (:import (cdq OrthogonalTiledMapRenderer ColorSetter)
-           (com.badlogic.gdx Gdx)
+  (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
@@ -90,9 +89,9 @@
   (.bindRoot #'world-unit-scale (float (/ tile-size)))
   (.bindRoot #'world-viewport (->world-viewport world-unit-scale world-viewport))
   (.bindRoot #'get-tiled-map-renderer (memoize (fn [tiled-map]
-                                                 (OrthogonalTiledMapRenderer. tiled-map
-                                                                              (float world-unit-scale)
-                                                                              batch))))
+                                                 (tiled-map-renderer/create tiled-map
+                                                                            world-unit-scale
+                                                                            batch))))
   (.bindRoot #'ui-viewport (fit-viewport (:width  ui-viewport)
                                          (:height ui-viewport)
                                          (OrthographicCamera.))))
@@ -318,18 +317,6 @@
 (defn set-cursor! [cursor-key]
   (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
-(defn- draw-tiled-map* [^OrthogonalTiledMapRenderer this tiled-map color-setter camera]
-  (.setColorSetter this (reify ColorSetter
-                          (apply [_ color x y]
-                            (color-setter color x y))))
-  (.setView this camera)
-  (->> tiled-map
-       tiled/layers
-       (filter tiled/visible?)
-       (map (partial tiled/layer-index tiled-map))
-       int-array
-       (.render this)))
-
 (defn draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
 
@@ -339,10 +326,10 @@
 
   Renders only visible layers."
   [tiled-map color-setter]
-  (draw-tiled-map* (get-tiled-map-renderer tiled-map)
-                   tiled-map
-                   color-setter
-                   (:camera world-viewport)))
+  (tiled-map-renderer/draw! (get-tiled-map-renderer tiled-map)
+                            tiled-map
+                            color-setter
+                            (:camera world-viewport)))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))
