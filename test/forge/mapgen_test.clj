@@ -1,6 +1,5 @@
 (ns forge.mapgen-test
-  (:require [cdq.level :refer [generate-level]]
-            [cdq.graphics :as graphics]
+  (:require [cdq.graphics :as graphics]
             [cdq.db :as db]
             [cdq.modules :as modules]
             [cdq.graphics.camera :as camera]
@@ -109,7 +108,7 @@
 
 (def ^:private world-id :worlds/uf-caves)
 
-(defn- generate-screen-ctx [c properties]
+#_(defn- generate-screen-ctx [c properties]
   (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
         atom-data (current-data)]
     (tiled/dispose (:tiled-map @atom-data))
@@ -120,7 +119,7 @@
     (show-whole-map! (:camera graphics/world-viewport) tiled-map)
     (tiled/set-visible (tiled/get-layer tiled-map "creatures") true)))
 
-(defn ->generate-map-window [c level-id]
+#_(defn ->generate-map-window [c level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
               :rows [[(ui/label (with-out-str (pprint (db/build level-id))))]

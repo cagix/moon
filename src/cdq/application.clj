@@ -13,7 +13,6 @@
             [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.line-of-sight :as los]
-            [cdq.level :as level]
             cdq.level.uf-caves
             cdq.level.modules
             [cdq.math.raycaster :as raycaster]
@@ -59,23 +58,26 @@
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.graphics Color Colors)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
-           (com.badlogic.gdx.utils Disposable ScreenUtils)
+           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
 
-(defmethod level/generate-level* :world.generator/tiled-map [world]
-  {:tiled-map (tiled/load-map (:world/tiled-map world)) ; TODO not disposed !
+(defn vampire-level []
+  {:tiled-map (tiled/load-map "maps/vampire.tmx") ; TODO not disposed !
    :start-position [32 71]})
 
-(defmethod level/generate-level* :world.generator/uf-caves [world]
-  (cdq.level.uf-caves/create world
+(defn uf-caves-level []
+  (cdq.level.uf-caves/create {:world/map-size 200,
+                              :world/spawn-rate 0.01}
                              (db/build-all :properties/creatures)
                              (assets/get "maps/uf_terrain.png")))
 
-(defmethod level/generate-level* :world.generator/modules [world]
-  (cdq.level.modules/generate-modules world
+(defn modules-level []
+  (cdq.level.modules/generate-modules {:world/map-size 5,
+                                       :world/max-area-level 3,
+                                       :world/spawn-rate 0.05}
                                       (db/build-all :properties/creatures)))
 
 (defn- action-bar-button-group []
@@ -732,10 +734,10 @@
   (Stage/.clear ui/stage)
   (run! stage/add-actor (create-stage-actors)))
 
-(defn- reset-game! [{:keys [world-id]}]
+(defn- reset-game! [world-fn]
   (reset-stage!)
   (timer/init!)
-  (world/create! (level/create world-id)))
+  (world/create! ((resolve world-fn))))
 
 (declare paused?)
 
@@ -746,12 +748,11 @@
 
 (defn- dev-menu-config []
   {:menus [{:label "World"
-            :items (for [world (map db/build [:worlds/vampire
-                                              :worlds/modules
-                                              :worlds/uf-caves])]
-                     {:label (str "Start " (:property/id world))
-                      :on-click (fn []
-                                  (reset-game! {:world-id (:property/id world)}))})}
+            :items (for [world-fn '[cdq.application/vampire-level
+                                    cdq.application/uf-caves-level
+                                    cdq.application/modules-level]]
+                     {:label (str "Start " (name world-fn))
+                      :on-click (fn [] (reset-game! world-fn))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
@@ -1614,7 +1615,7 @@
                                       graphics/batch ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
                                       ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
                                       graphics/ui-viewport) ; TODO we don't do dispose! ....
-                            (reset-game! config))
+                            (reset-game! (:world-fn config)))
 
                           (dispose []
                             (assets/dispose!)

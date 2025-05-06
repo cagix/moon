@@ -160,24 +160,6 @@
                              [:skill/cooldown {:optional true}]
                              [:skill/cost     {:optional true}]]],
 
- :world/generator [:enum
-                   :world.generator/tiled-map
-                   :world.generator/modules
-                   :world.generator/uf-caves],
- :world/player-creature :some,
- :world/tiled-map :string
- :world/map-size :s/pos-int,
- :world/max-area-level :s/pos-int,
- :world/spawn-rate :s/pos,
-
- :properties/worlds [:s/map [:property/id
-                             :world/generator
-                             :world/player-creature
-                             [:world/tiled-map      {:optional true}]
-                             [:world/map-size       {:optional true}]
-                             [:world/max-area-level {:optional true}]
-                             [:world/spawn-rate     {:optional true}]]],
-
  :damage/min-max :s/val-max,
  :effects.target/damage [:s/map [:damage/min-max]],
 
