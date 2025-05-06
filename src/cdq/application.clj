@@ -1,5 +1,6 @@
 (ns cdq.application
   (:require [cdq.assets :as assets]
+            [cdq.audio.sound :as sound]
             [cdq.db :as db]
             [cdq.editor :as editor]
             [cdq.effect :as effect]
@@ -298,19 +299,19 @@
     (cond
      (Actor/.isVisible (stage/get-inventory))
      (do
-      (assets/play-sound! "bfxr_takeit")
+      (sound/play! "bfxr_takeit")
       (tx/mark-destroyed eid)
       (tx/event world/player-eid :pickup-item item))
 
      (inventory/can-pickup-item? (:entity/inventory @world/player-eid) item)
      (do
-      (assets/play-sound! "bfxr_pickup")
+      (sound/play! "bfxr_pickup")
       (tx/mark-destroyed eid)
       (widgets.inventory/pickup-item world/player-eid item))
 
      :else
      (do
-      (assets/play-sound! "bfxr_denied")
+      (sound/play! "bfxr_denied")
       (stage/show-player-msg! "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
@@ -330,7 +331,7 @@
     [(clickable->cursor @clicked-eid false) (fn []
                                               (on-clicked clicked-eid))]
     [(clickable->cursor @clicked-eid true)  (fn []
-                                              (assets/play-sound! "bfxr_denied")
+                                              (sound/play! "bfxr_denied")
                                               (stage/show-player-msg! "Too far away"))]))
 
 (defn- inventory-cell-with-item? [^Actor actor]
@@ -387,14 +388,14 @@
             ; invalid-params -> depends on params ...
             [:cursors/skill-not-usable
              (fn []
-               (assets/play-sound! "bfxr_denied")
+               (sound/play! "bfxr_denied")
                (stage/show-player-msg! (case state
                                          :cooldown "Skill is still on cooldown"
                                          :not-enough-mana "Not enough mana"
                                          :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
-          (assets/play-sound! "bfxr_denied")
+          (sound/play! "bfxr_denied")
           (stage/show-player-msg! "No selected skill"))]))))
 
 (defmethod entity/manual-tick :player-idle [[_ {:keys [eid]}]]
@@ -813,7 +814,7 @@
   (state/cursor [_] :cursors/sandclock)
   (state/pause-game? [_] false)
   (state/enter! [[_ {:keys [eid skill]}]]
-    (assets/play-sound! (:skill/start-action-sound skill))
+    (sound/play! (:skill/start-action-sound skill))
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
@@ -829,7 +830,7 @@
   (state/cursor [_] :cursors/black-x)
   (state/pause-game? [_] true)
   (state/enter! [_]
-    (assets/play-sound! "bfxr_playerdeath")
+    (sound/play! "bfxr_playerdeath")
     (tx/show-modal {:title "YOU DIED - again!"
                     :text "Good luck next time!"
                     :button-text "OK"
@@ -847,7 +848,7 @@
     ; on the ground
     (let [entity @eid]
       (when (:entity/item-on-cursor entity)
-        (assets/play-sound! "bfxr_itemputground")
+        (sound/play! "bfxr_itemputground")
         (swap! eid dissoc :entity/item-on-cursor)
         (spawn-item (item-place-position entity)
                     (:entity/item-on-cursor entity))))))
@@ -896,7 +897,7 @@
      (and (not item-in-cell)
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (assets/play-sound! "bfxr_itemput")
+      (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (set-item eid cell item-on-cursor)
       (tx/event eid :dropped-item))
@@ -905,7 +906,7 @@
      (and item-in-cell
           (inventory/stackable? item-in-cell item-on-cursor))
      (do
-      (assets/play-sound! "bfxr_itemput")
+      (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
       (stack-item eid cell item-on-cursor)
       (tx/event eid :dropped-item))
@@ -914,7 +915,7 @@
      (and item-in-cell
           (inventory/valid-slot? cell item-on-cursor))
      (do
-      (assets/play-sound! "bfxr_itemput")
+      (sound/play! "bfxr_itemput")
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
@@ -931,7 +932,7 @@
   [[_ {:keys [eid]}] cell]
   ; TODO no else case
   (when-let [item (get-in (:entity/inventory @eid) cell)]
-    (assets/play-sound! "bfxr_takeit")
+    (sound/play! "bfxr_takeit")
     (tx/event eid :pickup-item item)
     (remove-item eid cell)))
 
