@@ -14,6 +14,9 @@
             [cdq.world.content-grid :as content-grid]
             [clojure.data.grid2d :as g2d]))
 
+; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
+(def max-delta 0.04)
+
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
                   adjacent-cells
