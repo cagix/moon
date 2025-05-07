@@ -397,6 +397,25 @@
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 
+; 'cdq.g' -> start with '-main' -> has the API for all state stuff
+; and nothing else
+; -> all logic into sub-namespaces
+
+; 1. cdq.db
+; -> used by editor! -> stage actors dynamically add ?
+; -> editor part of game ?
+
+; 2. cdq.assets
+; -> cdq.audio.sound
+; -> cdq.widgets.inventory -> move into cdq.application first
+
+; 3. cdq.graphics
+; -> 'cdq.tx'
+
+; 4. cdq.ui.stage
+
+; 5. cdq.world
+
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (doseq [ns-sym (:requires config)]
