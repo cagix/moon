@@ -2,7 +2,6 @@
   (:require [cdq.graphics :as graphics]
             [cdq.db :as db]
             [cdq.g :as g]
-            [cdq.tx :as tx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [cdq.ui.stage :as stage]
@@ -77,7 +76,7 @@
 
 
 (defn- learn-skill! [_context skill-id]
-  (tx/add-skill g/player-eid (db/build skill-id)))
+  (g/add-skill g/player-eid (db/build skill-id)))
 
 (defn- create-item! [_context item-id]
   (g/spawn-item (:position @g/player-eid)
