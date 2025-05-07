@@ -2,7 +2,6 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.graphics :as graphics]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]]
@@ -144,9 +143,9 @@
   (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
       (doseq [target* (map deref (g/creatures-in-los-of-player))]
-        (graphics/line (:position source*) #_(start-point source* target*)
-                       (:position target*)
-                       [1 0 0 0.5])))))
+        (g/draw-line (:position source*) #_(start-point source* target*)
+                     (:position target*)
+                     [1 0 0 0.5])))))
 
 (defcomponent :effects/target-entity
   (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
@@ -176,11 +175,11 @@
     (when target
       (let [source* @source
             target* @target]
-        (graphics/line (entity/start-point source* target*)
-                       (entity/end-point source* target* maxrange)
-                       (if (entity/in-range? source* target* maxrange)
-                         [1 0 0 0.5]
-                         [1 1 0 0.5]))))))
+        (g/draw-line (entity/start-point source* target*)
+                     (entity/end-point source* target* maxrange)
+                     (if (entity/in-range? source* target* maxrange)
+                       [1 0 0 0.5]
+                       [1 1 0 0.5]))))))
 
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]

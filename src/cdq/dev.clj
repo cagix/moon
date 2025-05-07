@@ -1,6 +1,5 @@
 (ns cdq.dev
-  (:require [cdq.graphics :as graphics]
-            [cdq.g :as g]
+  (:require [cdq.g :as g]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [cdq.ui :refer [scroll-pane] :as ui])
@@ -80,7 +79,7 @@
   (g/spawn-item (:position @g/player-eid) (g/build item-id)))
 
 (defn- mouseover-grid-cell []
-  @(g/grid (mapv int (graphics/world-mouse-position))))
+  @(g/grid (mapv int (g/world-mouse-position))))
 
 (defn- tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
@@ -181,7 +180,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport graphics/ui-viewport
+  (let [viewport g/ui-viewport
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
