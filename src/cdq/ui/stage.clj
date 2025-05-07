@@ -1,11 +1,11 @@
 (ns cdq.ui.stage
   (:require [cdq.graphics :as graphics]
             [cdq.ui :as ui]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.utils :refer [pretty-pst with-err-str]])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
-           (com.badlogic.gdx.scenes.scene2d.ui ButtonGroup)))
+           (com.badlogic.gdx.scenes.scene2d Stage)))
 
 (declare ^:private ^Stage stage)
 
@@ -51,13 +51,10 @@
   (get (:windows stage) :inventory-window))
 
 (defn get-action-bar []
-  (let [group (:ui/action-bar (:action-bar-table stage))]
-    {:horizontal-group group
-     :button-group (Actor/.getUserObject (Group/.findActor group "action-bar/button-group"))}))
+  (action-bar/get-data stage))
 
 (defn selected-skill []
-  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (get-action-bar)))]
-    (Actor/.getUserObject skill-button)))
+  (action-bar/selected-skill (get-action-bar)))
 
 (defn error-window! [throwable]
   (pretty-pst throwable)

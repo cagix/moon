@@ -23,6 +23,7 @@
             cdq.potential-fields
             [cdq.operation :as op]
             [cdq.ui :as ui :refer [ui-actor]]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.stage :as stage]
             [cdq.ui.menu :as ui.menu]
             [cdq.utils :as utils :refer [defcomponent safe-merge find-first tile->middle readable-number
@@ -55,27 +56,6 @@
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
-
-(defn- action-bar-button-group []
-  (let [actor (ui-actor {})]
-    (.setName actor "action-bar/button-group")
-    (.setUserObject actor (ui/button-group {:max-check-count 1
-                                            :min-check-count 0}))
-    actor))
-
-(defn- action-bar* []
-  (let [group (ui/horizontal-group {:pad 2 :space 2})]
-    (.setUserObject group :ui/action-bar)
-    (.addActor group (action-bar-button-group))
-    group))
-
-(defn- action-bar []
-  (ui/table {:rows [[{:actor (action-bar*)
-                      :expand? true
-                      :bottom? true}]]
-             :id :action-bar-table
-             :cell-defaults {:pad 2}
-             :fill-parent? true}))
 
 (def ^:private disallowed-keys [:entity/skills
                                 #_:entity/fsm
@@ -416,7 +396,7 @@
   (stage/init-state!)
   (stage/clear!)
   (run! stage/add-actor [(ui.menu/create (dev-menu-config))
-                         (action-bar)
+                         (action-bar/create)
                          (hp-mana-bar [(/ (:width graphics/ui-viewport) 2)
                                        80 ; action-bar-icon-size
                                        ])

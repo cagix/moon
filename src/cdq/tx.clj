@@ -2,13 +2,12 @@
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
-            [cdq.info :as info]
             [cdq.timer :as timer]
             [cdq.ui :as ui]
+            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.stage :as stage]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
 
 (defn event
   ([eid event*]
@@ -66,32 +65,16 @@
                                                  (* (:height graphics/ui-viewport) (/ 3 4))]
                                :pack? true})))
 
-(defn- action-bar-add-skill [{:keys [property/id entity/image] :as skill}]
-  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar)
-        button (ui/image-button image (fn []) {:scale 2})]
-    (Actor/.setUserObject button id)
-    (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-    (Group/.addActor horizontal-group button)
-    (ButtonGroup/.add button-group ^Button button)
-    nil))
-
-(defn- action-bar-remove-skill [{:keys [property/id]}]
-  (let [{:keys [horizontal-group button-group]} (stage/get-action-bar)
-        button (get horizontal-group id)]
-    (Actor/.remove button)
-    (ButtonGroup/.remove button-group ^Button button)
-    nil))
-
 (defn add-skill [eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
   (when (:entity/player? @eid)
-    (action-bar-add-skill skill))
+    (action-bar/add-skill! (stage/get-action-bar) skill))
   (swap! eid assoc-in [:entity/skills id] skill))
 
 (defn remove-skill [eid {:keys [property/id] :as skill}]
   {:pre [(entity/has-skill? @eid skill)]}
   (when (:entity/player? @eid)
-    (action-bar-remove-skill skill))
+    (action-bar/remove-skill! (stage/get-action-bar) skill))
   (swap! eid update :entity/skills dissoc id))
 
 (defn- add-text-effect [entity text]
