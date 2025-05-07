@@ -2,7 +2,6 @@
   (:require [cdq.schema :as schema]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
-            [cdq.ui.stage :as stage]
             [cdq.property :as property]
             [cdq.ui :refer [horizontal-separator-cell
                             vertical-separator-cell
@@ -74,7 +73,7 @@
   #(try (f)
         (Actor/.remove window)
         (catch Throwable t
-          (stage/error-window! t))))
+          (g/error-window! t))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
@@ -158,7 +157,7 @@
                                (let [[k _] (Actor/.getUserObject table)]
                                  (Actor/.setUserObject table [k sound-name]))))
                 (play-button sound-name)])]
-    (stage/add-actor (scrollable-choose-window rows))))
+    (g/add-actor (scrollable-choose-window rows))))
 
 (defn- columns [table sound-name]
   [(text-button sound-name
@@ -244,7 +243,7 @@
                                             (redo-rows (conj property-ids id)))]
                         (.add window ^Actor (overview-table property-type clicked-id-fn))
                         (.pack window)
-                        (stage/add-actor window))))]
+                        (g/add-actor window))))]
       (for [property-id property-ids]
         (let [property (g/build property-id)
               image-widget (image->widget (property->image property)
@@ -283,7 +282,7 @@
                                               (redo-rows id))]
                           (.add window ^Actor (overview-table property-type clicked-id-fn))
                           (.pack window)
-                          (stage/add-actor window)))))]
+                          (g/add-actor window)))))]
       [(when property-id
          (let [property (g/build property-id)
                image-widget (image->widget (property->image property)
@@ -304,7 +303,7 @@
        first))
 
 (defn- get-editor-window []
-  (stage/get-actor :property-editor-window))
+  (g/get-actor :property-editor-window))
 
 (defn- window->property-value []
  (let [window (get-editor-window)
@@ -316,7 +315,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (Actor/.remove (get-editor-window))
-    (stage/add-actor (editor-window prop-value))))
+    (g/add-actor (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (schema/schema-of (get-schemas) k)
@@ -386,7 +385,7 @@
                                                         map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
-    (stage/add-actor window)))
+    (g/add-actor window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -446,7 +445,7 @@
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
-                  #(stage/add-actor (scrollable-choose-window (texture-rows)))
+                  #(g/add-actor (scrollable-choose-window (texture-rows)))
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
@@ -459,7 +458,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn edit-property [id]
-  (stage/add-actor (editor-window (g/get-raw id))))
+  (g/add-actor (editor-window (g/get-raw id))))
 
 ; TODO unused code below
 
@@ -507,7 +506,7 @@
   ; because assets are searhed and loaded differently ...
   (doseq [actor [(background-image "images/moon_background.png")
                  (tabs-table       "custom label text here")]]
-    (stage/add-actor actor)))
+    (g/add-actor actor)))
 
 (defn open-main-window! [property-type]
   (let [window (ui/window {:title "Edit"
@@ -517,4 +516,4 @@
                            :close-on-escape? true})]
     (.add window ^Actor (overview-table property-type edit-property))
     (.pack window)
-    (stage/add-actor window)))
+    (g/add-actor window)))

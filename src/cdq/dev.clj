@@ -3,7 +3,6 @@
             [cdq.g :as g]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [cdq.ui.stage :as stage]
             [cdq.ui :refer [scroll-pane] :as ui])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
@@ -212,11 +211,11 @@
 
 (defn- show-table-view [title m]
   {:pre [(map? m)]}
-  (stage/add-actor (scroll-pane-window title (generate-table m))))
+  (g/add-actor (scroll-pane-window title (generate-table m))))
 
 (defn- show-tree-view! [title m]
   {:pre [(map? m)]}
-  (stage/add-actor (scroll-pane-window title (generate-tree m))))
+  (g/add-actor (scroll-pane-window title (generate-tree m))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

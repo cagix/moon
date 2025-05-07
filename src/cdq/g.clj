@@ -17,14 +17,15 @@
             [cdq.schema :as schema]
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.stage :as stage]
             [cdq.ui.menu :as ui.menu]
             [cdq.utils :as utils :refer [readable-number
                                          pretty-pst
                                          sort-by-order
                                          define-order
                                          safe-merge
-                                         tile->middle]]
+                                         tile->middle
+                                         pretty-pst
+                                         with-err-str]]
             [cdq.val-max :as val-max]
             [cdq.world.content-grid :as content-grid]
             [clojure.data.grid2d :as g2d]
@@ -34,16 +35,66 @@
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Texture)
-           (com.badlogic.gdx.scenes.scene2d Actor Group)
+           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+(declare ^:private ^Stage stage)
+
+(defn- init-stage! []
+  (let [stage (proxy [Stage ILookup] [graphics/ui-viewport graphics/batch]
+                (valAt
+                  ([id]
+                   (ui/find-actor-with-id (Stage/.getRoot this) id))
+                  ([id not-found]
+                   (or (ui/find-actor-with-id (Stage/.getRoot this) id)
+                       not-found))))]
+    (.setInputProcessor Gdx/input stage)
+    (.bindRoot #'stage stage)))
+
+(defn get-actor [id-keyword]
+  (id-keyword stage))
+
+(declare player-message)
+
+(defn show-player-msg! [text]
+  (swap! player-message assoc :text text :counter 0))
+
+(defn mouse-on-actor? []
+  (let [[x y] (graphics/mouse-position #_(Stage/.getViewport stage))]
+    (Stage/.hit stage x y true)))
+
+(defn add-actor [actor]
+  (Stage/.addActor stage actor))
+
+(defn get-inventory []
+  (get (:windows stage) :inventory-window))
+
+(defn get-action-bar []
+  (action-bar/get-data stage))
+
+(defn selected-skill []
+  (action-bar/selected-skill (get-action-bar)))
+
+(defn error-window! [throwable]
+  (pretty-pst throwable)
+  (add-actor (ui/window {:title "Error"
+                         :rows [[(ui/label (binding [*print-level* 3]
+                                             (with-err-str
+                                               (clojure.repl/pst throwable))))]]
+                         :modal? true
+                         :close-button? true
+                         :close-on-escape? true
+                         :center? true
+                         :pack? true})))
 
 (defn- recursively-search [^FileHandle folder extensions]
   (loop [[^FileHandle file & remaining] (.list folder)
@@ -276,36 +327,36 @@
   (swap! eid assoc :entity/destroyed? true))
 
 (defn toggle-inventory-window []
-  (ui/toggle-visible! (stage/get-inventory)))
+  (ui/toggle-visible! (get-inventory)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (stage/get-actor ::modal)))
-  (stage/add-actor (ui/window {:title title
-                               :rows [[(ui/label text)]
-                                      [(ui/text-button button-text
-                                                       (fn []
-                                                         (Actor/.remove (stage/get-actor ::modal))
-                                                         (on-click)))]]
-                               :id ::modal
-                               :modal? true
-                               :center-position [(/ (:width  graphics/ui-viewport) 2)
-                                                 (* (:height graphics/ui-viewport) (/ 3 4))]
-                               :pack? true})))
+  (assert (not (get-actor ::modal)))
+  (add-actor (ui/window {:title title
+                         :rows [[(ui/label text)]
+                                [(ui/text-button button-text
+                                                 (fn []
+                                                   (Actor/.remove (get-actor ::modal))
+                                                   (on-click)))]]
+                         :id ::modal
+                         :modal? true
+                         :center-position [(/ (:width  graphics/ui-viewport) 2)
+                                           (* (:height graphics/ui-viewport) (/ 3 4))]
+                         :pack? true})))
 
 (defn add-skill [eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
   (when (:entity/player? @eid)
-    (action-bar/add-skill! (stage/get-action-bar) skill))
+    (action-bar/add-skill! (get-action-bar) skill))
   (swap! eid assoc-in [:entity/skills id] skill))
 
 (defn remove-skill [eid {:keys [property/id] :as skill}]
   {:pre [(entity/has-skill? @eid skill)]}
   (when (:entity/player? @eid)
-    (action-bar/remove-skill! (stage/get-action-bar) skill))
+    (action-bar/remove-skill! (get-action-bar) skill))
   (swap! eid update :entity/skills dissoc id))
 
 (defn- add-text-effect* [entity text]
@@ -644,7 +695,7 @@
                        (entity/enemy entity)))
 
 (defn world-item? []
-  (not (stage/mouse-on-actor?)))
+  (not (mouse-on-actor?)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -842,7 +893,7 @@
                        :pad 4}]]}))
 
 (defn- inventory-cell-widget [cell]
-  (get (::table (get (stage/get-actor :windows) :inventory-window)) cell))
+  (get (::table (get (get-actor :windows) :inventory-window)) cell))
 
 (defn- set-item-image-in-widget [cell item]
   (let [cell-widget (inventory-cell-widget cell)
@@ -964,7 +1015,7 @@
                          (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
 (defn- draw-player-message []
-  (when-let [text (:text @stage/player-message)]
+  (when-let [text (:text @player-message)]
     (graphics/draw-text {:x (/ (:width     graphics/ui-viewport) 2)
                          :y (+ (/ (:height graphics/ui-viewport) 2) 200)
                          :text text
@@ -972,11 +1023,11 @@
                          :up? true})))
 
 (defn- check-remove-message []
-  (when (:text @stage/player-message)
-    (swap! stage/player-message update :counter + (.getDeltaTime Gdx/graphics))
-    (when (>= (:counter @stage/player-message)
-              (:duration-seconds @stage/player-message))
-      (swap! stage/player-message dissoc :counter :text))))
+  (when (:text @player-message)
+    (swap! player-message update :counter + (.getDeltaTime Gdx/graphics))
+    (when (>= (:counter @player-message)
+              (:duration-seconds @player-message))
+      (swap! player-message dissoc :counter :text))))
 
 (defn- player-message-actor []
   (ui-actor {:draw draw-player-message
@@ -988,26 +1039,26 @@
 (declare dev-menu-config)
 
 (defn- reset-game! [world-fn]
-  (stage/init-state!)
-  (stage/clear!)
-  (run! stage/add-actor [(ui.menu/create (dev-menu-config))
-                         (action-bar/create)
-                         (hp-mana-bar [(/ (:width graphics/ui-viewport) 2)
-                                       80 ; action-bar-icon-size
-                                       ])
-                         (ui/group {:id :windows
-                                    :actors [(entity-info-window [(:width graphics/ui-viewport) 0])
-                                             (create-inventory-widget [(:width  graphics/ui-viewport)
-                                                                       (:height graphics/ui-viewport)])]})
-                         (player-state-actor)
-                         (player-message-actor)])
+  (.bindRoot #'player-message (atom {:duration-seconds 1.5}))
+  (.clear stage)
+  (run! add-actor [(ui.menu/create (dev-menu-config))
+                   (action-bar/create)
+                   (hp-mana-bar [(/ (:width graphics/ui-viewport) 2)
+                                 80 ; action-bar-icon-size
+                                 ])
+                   (ui/group {:id :windows
+                              :actors [(entity-info-window [(:width graphics/ui-viewport) 0])
+                                       (create-inventory-widget [(:width  graphics/ui-viewport)
+                                                                 (:height graphics/ui-viewport)])]})
+                   (player-state-actor)
+                   (player-message-actor)])
   (.bindRoot #'elapsed-time 0)
   (create-world-state! ((requiring-resolve world-fn) (build-all :properties/creatures))))
 
 (declare paused?)
 
 ;"Mouseover-Actor: "
-#_(when-let [actor (stage/mouse-on-actor? context)]
+#_(when-let [actor (mouse-on-actor? context)]
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
@@ -1193,7 +1244,7 @@
          (pretty-pst t))))))
 
 (defn- update-mouseover-entity! []
-  (let [new-eid (if (stage/mouse-on-actor?)
+  (let [new-eid (if (mouse-on-actor?)
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
@@ -1248,7 +1299,7 @@
       (catch Throwable t
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
-     (stage/error-window! t)
+     (error-window! t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
@@ -1264,9 +1315,9 @@
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (input/key-just-pressed? (get window-hotkeys window-id))]
-      (ui/toggle-visible! (get (stage/get-actor :windows) window-id))))
+      (ui/toggle-visible! (get (get-actor :windows) window-id))))
   (when (input/key-just-pressed? :escape)
-    (let [windows (Group/.getChildren (stage/get-actor :windows))]
+    (let [windows (Group/.getChildren (get-actor :windows))]
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 
@@ -1275,11 +1326,11 @@
 ; -> all logic into sub-namespaces
 
 ; 4. cdq.graphics
-; 5. cdq.ui.stage
 
 ; then * metadocs
 ; * and highlight namspace local vars so no overlap
 ; 'blue' ?
+; or list all vars and check if contains (test)
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
@@ -1295,7 +1346,7 @@
                                        ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
                                       ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
                                       ) ; TODO we don't do dispose! ....
-                            (stage/init!)
+                            (init-stage!)
                             (reset-game! (:world-fn config)))
 
                           (dispose []
@@ -1316,8 +1367,8 @@
                                                             (draw-before-entities!)
                                                             (render-entities!)
                                                             (draw-after-entities!)))
-                            (stage/draw!)
-                            (stage/act!)
+                            (.draw stage)
+                            (.act stage)
                             (entity/manual-tick (entity/state-obj @player-eid))
                             (update-mouseover-entity!)
                             (set-paused-flag!)

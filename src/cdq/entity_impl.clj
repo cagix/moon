@@ -12,7 +12,6 @@
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.ui :as ui]
-            [cdq.ui.stage :as stage]
             [cdq.utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
             [cdq.world.potential-field :as potential-field]
@@ -26,7 +25,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (Actor/.isVisible (stage/get-inventory))
+     (Actor/.isVisible (g/get-inventory))
      (do
       (g/play-sound! "bfxr_takeit")
       (g/mark-destroyed eid)
@@ -41,7 +40,7 @@
      :else
      (do
       (g/play-sound! "bfxr_denied")
-      (stage/show-player-msg! "Your Inventory is full")))))
+      (g/show-player-msg! "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
   (g/toggle-inventory-window))
@@ -61,7 +60,7 @@
                                               (on-clicked clicked-eid))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (g/play-sound! "bfxr_denied")
-                                              (stage/show-player-msg! "Too far away"))]))
+                                              (g/show-player-msg! "Too far away"))]))
 
 (defn- inventory-cell-with-item? [^Actor actor]
   (and (.getParent actor)
@@ -70,7 +69,7 @@
                (.getUserObject (.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
-  (let [actor (stage/mouse-on-actor?)]
+  (let [actor (g/mouse-on-actor?)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)      :cursors/move-window
@@ -89,7 +88,7 @@
 (defn- interaction-state [eid]
   (let [entity @eid]
     (cond
-     (stage/mouse-on-actor?)
+     (g/mouse-on-actor?)
      [(mouseover-actor->cursor)
       (fn [] nil)] ; handled by actors themself, they check player state
 
@@ -98,7 +97,7 @@
      (clickable-entity-interaction entity g/mouseover-eid)
 
      :else
-     (if-let [skill-id (stage/selected-skill)]
+     (if-let [skill-id (g/selected-skill)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]
@@ -118,14 +117,14 @@
             [:cursors/skill-not-usable
              (fn []
                (g/play-sound! "bfxr_denied")
-               (stage/show-player-msg! (case state
-                                         :cooldown "Skill is still on cooldown"
-                                         :not-enough-mana "Not enough mana"
-                                         :invalid-params "Cannot use this here")))])))
+               (g/show-player-msg! (case state
+                                     :cooldown "Skill is still on cooldown"
+                                     :not-enough-mana "Not enough mana"
+                                     :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
           (g/play-sound! "bfxr_denied")
-          (stage/show-player-msg! "No selected skill"))]))))
+          (g/show-player-msg! "No selected skill"))]))))
 
 (defmethod entity/manual-tick :player-idle [[_ {:keys [eid]}]]
   (if-let [movement-vector (input/player-movement-vector)]
