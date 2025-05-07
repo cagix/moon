@@ -1,8 +1,8 @@
 (ns cdq.info-impl
   (:require [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.info :refer [info-segment]]
             [cdq.operation :as op]
-            [cdq.timer :as timer]
             [cdq.utils :refer [readable-number]]
             [clojure.math :as math]
             [clojure.string :as str])
@@ -116,7 +116,7 @@
   "All visible targets")
 
 (defmethod info-segment :entity/delete-after-duration [[_ counter] _entity]
-  (str "Remaining: " (readable-number (timer/ratio counter)) "/1"))
+  (str "Remaining: " (readable-number (g/timer-ratio counter)) "/1"))
 
 (defmethod info-segment :entity/faction [[_ faction] _entity]
   (str "Faction: " (name faction)))
@@ -139,7 +139,7 @@
   (str "Creature - " (str/capitalize (name species))))
 
 (defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] _entity]
-  (str "Spiderweb - remaining: " (readable-number (timer/ratio counter)) "/1"))
+  (str "Spiderweb - remaining: " (readable-number (g/timer-ratio counter)) "/1"))
 
 #_(defmethod info-segment :entity/skills [skills]
   ; => recursive info-text leads to endless text wall

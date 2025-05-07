@@ -7,7 +7,6 @@
             [cdq.graphics :as graphics]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
-            [cdq.timer :as timer]
             [clojure.rand :refer [rand-int-between]]
             [cdq.utils :refer [defcomponent]]))
 
@@ -280,7 +279,7 @@
     (effect/handle [_ {:keys [effect/target]}]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
-                                                   :counter (timer/create duration)})
+                                                   :counter (g/->timer duration)})
         (swap! target entity/mod-add modifiers)))))
 
 (defcomponent :effects.target/stun

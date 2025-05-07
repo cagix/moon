@@ -13,7 +13,6 @@
             [cdq.math.vector2 :as v]
             [cdq.schema :as schema]
             [cdq.skill :as skill]
-            [cdq.timer :as timer]
             [cdq.ui :as ui]
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [defcomponent find-first]]
@@ -145,10 +144,10 @@
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
-    (timer/create duration))
+    (g/->timer duration))
 
   (entity/tick! [[_ counter] eid]
-    (when (timer/stopped? counter)
+    (when (g/stopped? counter)
       (g/mark-destroyed eid))))
 
 (defmethod entity/create :entity/hp [[_ v]]
@@ -172,7 +171,7 @@
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 timer/create)})
+                 g/->timer)})
 
 (defmethod entity/create :npc-dead [[_ eid]]
   {:eid eid})
@@ -183,7 +182,7 @@
 (defmethod entity/create :npc-moving [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector
-   :counter (timer/create (* (entity/stat @eid :entity/reaction-time) 0.016))})
+   :counter (g/->timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
 (defmethod entity/create :npc-sleeping [[_ eid]]
   {:eid eid})
@@ -201,7 +200,7 @@
 
 (defmethod entity/create :stunned [[_ eid duration]]
   {:eid eid
-   :counter (timer/create duration)})
+   :counter (g/->timer duration)})
 
 (defmethod entity/create! :entity/inventory [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
@@ -302,7 +301,7 @@
     ; TODO some sound ?
     )
 
-   (timer/stopped? counter)
+   (g/stopped? counter)
    (do
     (effect/do-all! effect-ctx (:skill/effects skill))
     (g/send-event! eid :action-done))))
@@ -335,7 +334,7 @@
       (g/send-event! eid :movement-direction (or (potential-field/find-direction g/grid eid) [0 0])))))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]
-  (when (timer/stopped? counter)
+  (when (g/stopped? counter)
     (g/send-event! eid :timer-finished)))
 
 (defmethod entity/tick! :npc-sleeping [_ eid]
@@ -351,11 +350,11 @@
     (g/send-event! eid :no-movement-input)))
 
 (defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid]
-  (when (timer/stopped? counter)
+  (when (g/stopped? counter)
     (g/send-event! eid :effect-wears-off)))
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
-  (when (timer/stopped? counter)
+  (when (g/stopped? counter)
     (g/mark-destroyed eid)
     (doseq [friendly-eid (g/friendlies-in-radius g/grid (:position @eid) faction)]
       (g/send-event! friendly-eid :alert))))
@@ -461,15 +460,15 @@
 (defmethod entity/tick! :entity/skills [[k skills] eid]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
-                     (timer/stopped? cooling-down?))]
+                     (g/stopped? cooling-down?))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
 
 (defmethod entity/tick! :entity/string-effect [[k {:keys [counter]}] eid]
-  (when (timer/stopped? counter)
+  (when (g/stopped? counter)
     (swap! eid dissoc k)))
 
 (defmethod entity/tick! :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
-  (when (timer/stopped? counter)
+  (when (g/stopped? counter)
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))
 
@@ -481,7 +480,7 @@
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (timer/create (:skill/cooldown skill))))
+             (g/->timer (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
@@ -699,7 +698,7 @@
     (draw-skill-image image
                       entity
                       (:position entity)
-                      (timer/ratio counter))
+                      (g/timer-ratio counter))
     (render-active-effect effect-ctx
                           ; !! FIXME !!
                           ; (update-effect-ctx effect-ctx)

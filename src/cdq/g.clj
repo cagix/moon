@@ -14,7 +14,6 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [cdq.math.vector2 :as v]
-            [cdq.timer :as timer]
             [cdq.tiled :as tiled]
             cdq.potential-fields
             [cdq.ui :as ui :refer [ui-actor]]
@@ -42,6 +41,26 @@
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+(declare elapsed-time)
+
+(defn ->timer [duration]
+  {:pre [(>= duration 0)]}
+  {:duration duration
+   :stop-time (+ elapsed-time duration)})
+
+(defn stopped? [{:keys [stop-time]}]
+  (>= elapsed-time stop-time))
+
+(defn timer-reset [{:keys [duration] :as timer}]
+  (assoc timer :stop-time (+ elapsed-time duration)))
+
+(defn timer-ratio [{:keys [duration stop-time] :as timer}]
+  {:post [(<= 0 % 1)]}
+  (if (stopped? timer)
+    0
+    ; min 1 because floating point math inaccuracies
+    (min 1 (/ (- stop-time elapsed-time) duration))))
 
 (defn send-event!
   ([eid event]
@@ -117,9 +136,9 @@
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter timer/reset))
+               (update :counter timer-reset))
            {:text text
-            :counter (timer/create 0.4)})))
+            :counter (->timer 0.4)})))
 
 (defn add-text-effect! [eid text]
   (swap! eid add-text-effect* text))
@@ -400,7 +419,7 @@
   (spawn-entity position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
-                 {:counter (timer/create duration)
+                 {:counter (->timer duration)
                   :faction faction}}))
 
 (defn line-render [{:keys [start end duration color thick?]}]
@@ -804,7 +823,7 @@
                                                                        (:height graphics/ui-viewport)])]})
                          (player-state-actor)
                          (player-message-actor)])
-  (timer/init!)
+  (.bindRoot #'elapsed-time 0)
   (create-world-state! ((requiring-resolve world-fn) (db/build-all :properties/creatures))))
 
 (declare paused?)
@@ -842,7 +861,7 @@
                                    (:entity/id entity)))
                     :icon (assets/get "images/mouseover.png")}
                    {:label "elapsed-time"
-                    :update-fn (fn [] (str (readable-number timer/elapsed-time) " seconds"))
+                    :update-fn (fn [] (str (readable-number elapsed-time) " seconds"))
                     :icon (assets/get "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [] paused?)}
@@ -1030,7 +1049,7 @@
 
 (defn- update-time! []
   (let [delta-ms (min (.getDeltaTime Gdx/graphics) max-delta)]
-    (timer/inc-state! delta-ms)
+    (alter-var-root #'elapsed-time + delta-ms)
     (.bindRoot #'delta-time delta-ms)))
 
 (defn- update-potential-fields! []
