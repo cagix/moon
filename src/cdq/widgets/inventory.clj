@@ -22,32 +22,32 @@
 ; so wasting space ...
 ; can maybe make a smaller textureatlas or something...
 
-(def ^:private cell-size 48)
-(def ^:private droppable-color    [0   0.6 0 0.8])
-(def ^:private not-allowed-color  [0.6 0   0 0.8])
+(def ^:private inventory-cell-size 48)
+(def ^:private inventory-droppable-color   [0   0.6 0 0.8])
+(def ^:private inventory-not-allowed-color [0.6 0   0 0.8])
 
-(defn- draw-cell-rect [player-entity x y mouseover? cell]
-  (graphics/rectangle x y cell-size cell-size :gray)
+(defn- draw-inventory-cell-rect! [player-entity x y mouseover? cell]
+  (graphics/rectangle x y inventory-cell-size inventory-cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
-                  droppable-color
-                  not-allowed-color)]
-      (graphics/filled-rectangle (inc x) (inc y) (- cell-size 2) (- cell-size 2) color))))
+                  inventory-droppable-color
+                  inventory-not-allowed-color)]
+      (graphics/filled-rectangle (inc x) (inc y) (- inventory-cell-size 2) (- inventory-cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??
 ; (maybe (.setTransform stack true) ? , but docs say it should work anyway
-(defn- draw-rect-actor []
+(defn- draw-inventory-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
       (let [^Actor this this]
-        (draw-cell-rect @world/player-eid
-                        (.getX this)
-                        (.getY this)
-                        (ui/hit this (graphics/mouse-position))
-                        (.getUserObject (.getParent this)))))))
+        (draw-inventory-cell-rect! @world/player-eid
+                                   (.getX this)
+                                   (.getY this)
+                                   (ui/hit this (graphics/mouse-position))
+                                   (.getUserObject (.getParent this)))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -74,16 +74,16 @@
                      :texture-region
                      texture-region-drawable)]
     (BaseDrawable/.setMinSize drawable
-                              (float cell-size)
-                              (float cell-size))
+                              (float inventory-cell-size)
+                              (float inventory-cell-size))
     (TextureRegionDrawable/.tint drawable
                                  (Color. (float 1) (float 1) (float 1) (float 0.4)))))
 
-(defn- ->cell [slot & {:keys [position]}]
+(defn- ->inventory-cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]
         image-widget (image-widget (slot->background slot)
                                    {:id :image})
-        stack (ui-stack [(draw-rect-actor)
+        stack (ui-stack [(draw-inventory-rect-actor)
                          image-widget])]
     (.setName stack "inventory-cell")
     (.setUserObject stack cell)
@@ -96,23 +96,23 @@
 (defn- inventory-table []
   (ui/table {:id ::table
              :rows (concat [[nil nil
-                             (->cell :inventory.slot/helm)
-                             (->cell :inventory.slot/necklace)]
+                             (->inventory-cell :inventory.slot/helm)
+                             (->inventory-cell :inventory.slot/necklace)]
                             [nil
-                             (->cell :inventory.slot/weapon)
-                             (->cell :inventory.slot/chest)
-                             (->cell :inventory.slot/cloak)
-                             (->cell :inventory.slot/shield)]
+                             (->inventory-cell :inventory.slot/weapon)
+                             (->inventory-cell :inventory.slot/chest)
+                             (->inventory-cell :inventory.slot/cloak)
+                             (->inventory-cell :inventory.slot/shield)]
                             [nil nil
-                             (->cell :inventory.slot/leg)]
+                             (->inventory-cell :inventory.slot/leg)]
                             [nil
-                             (->cell :inventory.slot/glove)
-                             (->cell :inventory.slot/rings :position [0 0])
-                             (->cell :inventory.slot/rings :position [1 0])
-                             (->cell :inventory.slot/boot)]]
+                             (->inventory-cell :inventory.slot/glove)
+                             (->inventory-cell :inventory.slot/rings :position [0 0])
+                             (->inventory-cell :inventory.slot/rings :position [1 0])
+                             (->inventory-cell :inventory.slot/boot)]]
                            (for [y (range (g2d/height (:inventory.slot/bag empty-inventory)))]
                              (for [x (range (g2d/width (:inventory.slot/bag empty-inventory)))]
-                               (->cell :inventory.slot/bag :position [x y]))))}))
+                               (->inventory-cell :inventory.slot/bag :position [x y]))))}))
 
 (defn create [position]
   (ui/window {:title "Inventory"
@@ -131,8 +131,8 @@
         image-widget (get cell-widget :image)
         drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable
-                              (float cell-size)
-                              (float cell-size))
+                              (float inventory-cell-size)
+                              (float inventory-cell-size))
     (Image/.setDrawable image-widget drawable)
     (add-tooltip! cell-widget #(info/text item))))
 
