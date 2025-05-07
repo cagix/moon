@@ -1,12 +1,12 @@
 (ns cdq.dev
   (:require [cdq.graphics :as graphics]
             [cdq.db :as db]
+            [cdq.g :as g]
             [cdq.tx :as tx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [cdq.ui.stage :as stage]
-            [cdq.ui :refer [scroll-pane] :as ui]
-            [cdq.world :as world])
+            [cdq.ui :refer [scroll-pane] :as ui])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.scenes.scene2d Group Stage)
@@ -22,7 +22,7 @@
 
  ; use post-runnable! to get proper error messages in console
 
- (show-tree-view! "Mouseover Entity" @world/mouseover-eid)
+ (show-tree-view! "Mouseover Entity" @g/mouseover-eid)
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
 
@@ -56,7 +56,7 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable! #(world/spawn-creature {:position [35 73]
+ (post-runnable! #(g/spawn-creature {:position [35 73]
                                          :creature-id :creatures/dragon-red
                                          :components {:entity/fsm {:fsm :fsms/npc
                                                                    :initial-state :npc-sleeping}
@@ -77,14 +77,14 @@
 
 
 (defn- learn-skill! [_context skill-id]
-  (tx/add-skill world/player-eid (db/build skill-id)))
+  (tx/add-skill g/player-eid (db/build skill-id)))
 
 (defn- create-item! [_context item-id]
-  (world/spawn-item (:position @world/player-eid)
+  (g/spawn-item (:position @g/player-eid)
                     (db/build item-id)))
 
 (defn- mouseover-grid-cell []
-  @(world/grid (mapv int (graphics/world-mouse-position))))
+  @(g/grid (mapv int (graphics/world-mouse-position))))
 
 (defn- tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))

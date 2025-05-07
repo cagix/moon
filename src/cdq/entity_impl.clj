@@ -19,7 +19,6 @@
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
-            [cdq.world :as world]
             [cdq.world.potential-field :as potential-field]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx.scenes.scene2d Actor)))
@@ -35,13 +34,13 @@
      (do
       (sound/play! "bfxr_takeit")
       (tx/mark-destroyed eid)
-      (tx/event world/player-eid :pickup-item item))
+      (tx/event g/player-eid :pickup-item item))
 
-     (inventory/can-pickup-item? (:entity/inventory @world/player-eid) item)
+     (inventory/can-pickup-item? (:entity/inventory @g/player-eid) item)
      (do
       (sound/play! "bfxr_pickup")
       (tx/mark-destroyed eid)
-      (g/pickup-item world/player-eid item))
+      (g/pickup-item g/player-eid item))
 
      :else
      (do
@@ -71,7 +70,7 @@
 (defn- inventory-cell-with-item? [^Actor actor]
   (and (.getParent actor)
        (= "inventory-cell" (.getName (.getParent actor)))
-       (get-in (:entity/inventory @world/player-eid)
+       (get-in (:entity/inventory @g/player-eid)
                (.getUserObject (.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
@@ -83,11 +82,11 @@
      :else                             :cursors/default)))
 
 (defn- player-effect-ctx [eid]
-  (let [target-position (or (and world/mouseover-eid
-                                 (:position @world/mouseover-eid))
+  (let [target-position (or (and g/mouseover-eid
+                                 (:position @g/mouseover-eid))
                             (graphics/world-mouse-position))]
     {:effect/source eid
-     :effect/target world/mouseover-eid
+     :effect/target g/mouseover-eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
@@ -98,9 +97,9 @@
      [(mouseover-actor->cursor)
       (fn [] nil)] ; handled by actors themself, they check player state
 
-     (and world/mouseover-eid
-          (:entity/clickable @world/mouseover-eid))
-     (clickable-entity-interaction entity world/mouseover-eid)
+     (and g/mouseover-eid
+          (:entity/clickable @g/mouseover-eid))
+     (clickable-entity-interaction entity g/mouseover-eid)
 
      :else
      (if-let [skill-id (stage/selected-skill)]
@@ -142,7 +141,7 @@
 
 (defmethod entity/manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (and (input/button-just-pressed? :left)
-             (world/world-item?))
+             (g/world-item?))
     (tx/event eid :drop-item)))
 
 (defcomponent :entity/delete-after-duration
@@ -281,7 +280,7 @@
          initial-state (entity/create [initial-state eid])))
 
 (defmethod entity/draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
-  (when (not (world/world-item?))
+  (when (not (g/world-item?))
     (graphics/draw-centered (:entity/image (:entity/item-on-cursor @eid))
                             (graphics/mouse-position))))
 
@@ -291,7 +290,7 @@
   [{:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (world/line-of-sight? @source @target))
+           (g/line-of-sight? @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
@@ -321,9 +320,9 @@
 
 (defn- npc-effect-context [eid]
   (let [entity @eid
-        target (world/nearest-enemy entity)
+        target (g/nearest-enemy entity)
         target (when (and target
-                          (world/line-of-sight? entity @target))
+                          (g/line-of-sight? entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -334,7 +333,7 @@
   (let [effect-ctx (npc-effect-context eid)]
     (if-let [skill (npc-choose-skill @eid effect-ctx)]
       (tx/event eid :start-action [skill effect-ctx])
-      (tx/event eid :movement-direction (or (potential-field/find-direction world/grid eid) [0 0])))))
+      (tx/event eid :movement-direction (or (potential-field/find-direction g/grid eid) [0 0])))))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]
   (when (timer/stopped? counter)
@@ -342,7 +341,7 @@
 
 (defmethod entity/tick! :npc-sleeping [_ eid]
   (let [entity @eid
-        cell (world/grid (entity/tile entity))]
+        cell (g/grid (entity/tile entity))]
     (when-let [distance (grid/nearest-entity-distance @cell (entity/enemy entity))]
       (when (<= distance (entity/stat entity :entity/aggro-range))
         (tx/event eid :alert)))))
@@ -359,13 +358,13 @@
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
   (when (timer/stopped? counter)
     (tx/mark-destroyed eid)
-    (doseq [friendly-eid (world/friendlies-in-radius world/grid (:position @eid) faction)]
+    (doseq [friendly-eid (g/friendlies-in-radius g/grid (:position @eid) faction)]
       (tx/event friendly-eid :alert))))
 
 (defmethod entity/tick! :entity/animation [[k animation] eid]
   (swap! eid #(-> %
                   (assoc :entity/image (animation/current-frame animation))
-                  (assoc k (animation/tick animation world/delta-time)))))
+                  (assoc k (animation/tick animation g/delta-time)))))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -405,7 +404,7 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ world/minimum-size world/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
+(def ^:private max-speed (/ g/minimum-size g/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
 (def ^:private speed-schema (schema/m-schema [:and number? [:>= 0] [:<= max-speed]]))
 
@@ -419,12 +418,12 @@
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time world/delta-time)
+    (let [movement (assoc movement :delta-time g/delta-time)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
-                        (try-move-solid-body world/grid body movement)
+                        (try-move-solid-body g/grid body movement)
                         (move-body body movement))]
-        (world/position-changed! eid)
+        (g/position-changed! eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))
@@ -438,7 +437,7 @@
   ; means non colliding with other entities
   ; but still collding with other stuff here ? o.o
   (let [entity @eid
-        cells* (map deref (grid/rectangle->cells world/grid entity)) ; just use cached-touched -cells
+        cells* (map deref (grid/rectangle->cells g/grid entity)) ; just use cached-touched -cells
         hit-entity (find-first #(and (not (contains? already-hit-bodies %)) ; not filtering out own id
                                      (not= (:entity/faction entity) ; this is not clear in the componentname & what if they dont have faction - ??
                                            (:entity/faction @%))
@@ -515,7 +514,7 @@
       (when (:entity/item-on-cursor entity)
         (sound/play! "bfxr_itemputground")
         (swap! eid dissoc :entity/item-on-cursor)
-        (world/spawn-item (world/item-place-position entity)
+        (g/spawn-item (g/item-place-position entity)
                           (:entity/item-on-cursor entity))))))
 
 (defcomponent :player-moving
@@ -532,7 +531,7 @@
 
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid]
-    (world/spawn-audiovisual (:position @eid)
+    (g/spawn-audiovisual (:position @eid)
                              (db/build audiovisuals-id))))
 
 (defcomponent :npc-dead
@@ -547,7 +546,7 @@
 
 (defcomponent :npc-sleeping
   (state/exit! [[_ {:keys [eid]}]]
-    (world/delayed-alert (:position       @eid)
+    (g/delayed-alert (:position       @eid)
                          (:entity/faction @eid)
                          0.2)
     (tx/text-effect eid "[WHITE]!")))
@@ -680,7 +679,7 @@
 
 (defmethod entity/render-below! :entity/mouseover?
   [_ {:keys [entity/faction] :as entity}]
-  (let [player @world/player-eid]
+  (let [player @g/player-eid]
     (graphics/with-line-width 3
       #(graphics/ellipse (:position entity)
                          (:half-width entity)
@@ -718,9 +717,9 @@
 
 (defmethod entity/render-below! :player-item-on-cursor
   [[_ {:keys [item]}] entity]
-  (when (world/world-item?)
+  (when (g/world-item?)
     (graphics/draw-centered (:entity/image item)
-                            (world/item-place-position entity))))
+                            (g/item-place-position entity))))
 
 (defmethod entity/render-below! :stunned
   [_ entity]

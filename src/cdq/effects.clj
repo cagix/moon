@@ -3,18 +3,14 @@
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
+            [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
             [cdq.tx :as tx]
             [clojure.rand :refer [rand-int-between]]
-            [cdq.utils :refer [defcomponent]]
-            [cdq.world :as world :refer [spawn-audiovisual
-                                         spawn-creature
-                                         spawn-projectile
-                                         line-render
-                                         projectile-size]]))
+            [cdq.utils :refer [defcomponent]]))
 
 (comment
  (ns cdq.components.effects.audiovisual)
@@ -26,7 +22,7 @@
    false)
 
  (defn handle [[_ audiovisual] {:keys [effect/target-position]} c]
-   (spawn-audiovisual target-position audiovisual))
+   (g/spawn-audiovisual target-position audiovisual))
  )
 
 (defcomponent :effects/audiovisual
@@ -37,7 +33,7 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target-position]}]
-    (spawn-audiovisual target-position audiovisual)))
+    (g/spawn-audiovisual target-position audiovisual)))
 
 (defn- projectile-start-point [entity direction size]
   (v/add (:position entity)
@@ -55,22 +51,22 @@
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-      (and (not (raycaster/path-blocked? world/raycaster ; TODO test
+      (and (not (raycaster/path-blocked? g/raycaster ; TODO test
                                          source-p
                                          target-p
-                                         (projectile-size projectile)))
+                                         (g/projectile-size projectile)))
            ; TODO not taking into account body sizes
            (< (v/distance source-p ; entity/distance function protocol EntityPosition
                           target-p)
               max-range))))
 
   (effect/handle [[_ projectile] {:keys [effect/source effect/target-direction]}]
-    (spawn-projectile {:position (projectile-start-point @source
-                                                         target-direction
-                                                         (projectile-size projectile))
-                       :direction target-direction
-                       :faction (:entity/faction @source)}
-                      projectile)))
+    (g/spawn-projectile {:position (projectile-start-point @source
+                                                           target-direction
+                                                           (g/projectile-size projectile))
+                         :direction target-direction
+                         :faction (:entity/faction @source)}
+                        projectile)))
 
 (comment
  ; mass shooting
@@ -104,11 +100,11 @@
 
   (effect/handle [[_ {:keys [property/id]}]
                   {:keys [effect/source effect/target-position]}]
-    (spawn-creature {:position target-position
-                     :creature-id id ; already properties/get called through one-to-one, now called again.
-                     :components {:entity/fsm {:fsm :fsms/npc
-                                               :initial-state :npc-idle}
-                                  :entity/faction (:entity/faction @source)}})))
+    (g/spawn-creature {:position target-position
+                       :creature-id id ; already properties/get called through one-to-one, now called again.
+                       :components {:entity/fsm {:fsm :fsms/npc
+                                                 :initial-state :npc-idle}
+                                    :entity/faction (:entity/faction @source)}})))
 
 (comment
  ; TODO applicable targets? e.g. projectiles/effect s/???item entiteis ??? check
@@ -116,7 +112,7 @@
  ; TODO showing one a bit further up
  ; maybe world view port is cut
  ; not quite showing correctly.
- (let [targets (world/creatures-in-los-of-player)]
+ (let [targets (g/creatures-in-los-of-player)]
    (count targets)
    #_(sort-by #(% 1) (map #(vector (:entity.creature/name @%)
                                    (:position @%)) targets)))
@@ -134,12 +130,12 @@
 
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target (world/creatures-in-los-of-player)]
-        (line-render {:start (:position source*) #_(start-point source* target*)
-                      :end (:position @target)
-                      :duration 0.05
-                      :color [1 0 0 0.75]
-                      :thick? true})
+      (doseq [target (g/creatures-in-los-of-player)]
+        (g/line-render {:start (:position source*) #_(start-point source* target*)
+                        :end (:position @target)
+                        :duration 0.05
+                        :color [1 0 0 0.75]
+                        :thick? true})
         ; some sound .... or repeat smae sound???
         ; skill do sound  / skill start sound >?
         ; problem : nested effect/do-all! , we are still having direction/target-position
@@ -151,7 +147,7 @@
 
   (effect/render [_ {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target* (map deref (world/creatures-in-los-of-player))]
+      (doseq [target* (map deref (g/creatures-in-los-of-player))]
         (graphics/line (:position source*) #_(start-point source* target*)
                        (:position target*)
                        [1 0 0 0.5])))))
@@ -170,14 +166,14 @@
           target* @target]
       (if (entity/in-range? source* target* maxrange)
         (do
-         (line-render {:start (entity/start-point source* target*)
-                       :end (:position target*)
-                       :duration 0.05
-                       :color [1 0 0 0.75]
-                       :thick? true})
+         (g/line-render {:start (entity/start-point source* target*)
+                         :end (:position target*)
+                         :duration 0.05
+                         :color [1 0 0 0.75]
+                         :thick? true})
          (effect/do-all! effect-ctx entity-effects))
-        (spawn-audiovisual (entity/end-point source* target* maxrange)
-                           (db/build :audiovisuals/hit-ground)))))
+        (g/spawn-audiovisual (entity/end-point source* target* maxrange)
+                             (db/build :audiovisuals/hit-ground)))))
 
   (effect/render [[_ {:keys [maxrange]}]
                   {:keys [effect/source effect/target]}]
@@ -198,8 +194,8 @@
     false)
 
   (effect/handle [[_ audiovisual] {:keys [effect/target]}]
-    (spawn-audiovisual (:position @target)
-                       audiovisual)))
+    (g/spawn-audiovisual (:position @target)
+                         audiovisual)))
 
 (defcomponent :effects.target/convert
   (effect/applicable? [_ {:keys [effect/source effect/target]}]
@@ -248,7 +244,7 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
-         (spawn-audiovisual (:position target*) (db/build :audiovisuals/damage))
+         (g/spawn-audiovisual (:position target*) (db/build :audiovisuals/damage))
          (tx/event target (if (zero? new-hp-val) :kill :alert))
          (tx/text-effect target (str "[RED]" dmg-amount "[]")))))))
 
