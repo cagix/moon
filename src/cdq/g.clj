@@ -1,6 +1,5 @@
 (ns cdq.g
-  (:require [cdq.audio.sound :as sound]
-            [cdq.assets :as assets]
+  (:require [cdq.assets :as assets]
             [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
@@ -34,12 +33,19 @@
             [clojure.string :as str]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+(defn play-sound! [sound-name]
+  (->> sound-name
+       (format "sounds/%s.wav")
+       assets/get
+       Sound/.play))
 
 (declare elapsed-time)
 
@@ -375,7 +381,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (sound/play! sound)
+  (play-sound! sound)
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation
@@ -1096,18 +1102,9 @@
 ; -> all logic into sub-namespaces
 
 ; 1. cdq.db
-; -> used by editor! -> stage actors dynamically add ?
-; -> editor part of game ?
-
-; 2. cdq.assets
-; -> cdq.audio.sound
-;   -> editor
-
-; 3. cdq.graphics
-; -> db, editor, stage
-
-; 4. cdq.ui.stage
-; -> editor
+; 3. cdq.assets
+; 4. cdq.graphics
+; 5. cdq.ui.stage
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]

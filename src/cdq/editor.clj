@@ -1,8 +1,8 @@
 (ns cdq.editor
   (:require [cdq.assets :as assets]
-            [cdq.audio.sound :as sound]
             [cdq.db :as db]
             [cdq.schema :as schema]
+            [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
             [cdq.property :as property]
@@ -140,7 +140,7 @@
   (edn/read-string (ui/selected widget)))
 
 (defn- play-button [sound-name]
-  (text-button "play!" #(sound/play! sound-name)))
+  (text-button "play!" #(g/play-sound! sound-name)))
 
 (declare columns)
 
