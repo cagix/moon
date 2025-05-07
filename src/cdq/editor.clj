@@ -510,3 +510,13 @@
   (doseq [actor [(background-image "images/moon_background.png")
                  (tabs-table       "custom label text here")]]
     (stage/add-actor actor)))
+
+(defn open-main-window! []
+  (let [window (ui/window {:title "Edit"
+                           :modal? true
+                           :close-button? true
+                           :center? true
+                           :close-on-escape? true})]
+    (.add window ^Actor (overview-table property-type edit-property))
+    (.pack window)
+    (stage/add-actor window)))

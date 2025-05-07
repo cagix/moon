@@ -2,7 +2,6 @@
   (:require [cdq.audio.sound :as sound]
             [cdq.assets :as assets]
             [cdq.db :as db]
-            [cdq.editor :as editor]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
@@ -846,15 +845,7 @@
             :items (for [property-type (sort (filter #(= "properties" (namespace %))
                                                      (keys @#'db/-schemas)))]
                      {:label (str/capitalize (name property-type))
-                      :on-click (fn []
-                                  (let [window (ui/window {:title "Edit"
-                                                           :modal? true
-                                                           :close-button? true
-                                                           :center? true
-                                                           :close-on-escape? true})]
-                                    (.add window ^Actor (editor/overview-table property-type editor/edit-property))
-                                    (.pack window)
-                                    (stage/add-actor window)))})}]
+                      :on-click (requiring-resolve 'cdq.editor/open-main-window)})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn []
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
