@@ -511,7 +511,7 @@
                  (tabs-table       "custom label text here")]]
     (stage/add-actor actor)))
 
-(defn open-main-window! []
+(defn open-main-window! [property-type]
   (let [window (ui/window {:title "Edit"
                            :modal? true
                            :close-button? true

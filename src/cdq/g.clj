@@ -845,7 +845,8 @@
             :items (for [property-type (sort (filter #(= "properties" (namespace %))
                                                      (keys @#'db/-schemas)))]
                      {:label (str/capitalize (name property-type))
-                      :on-click (requiring-resolve 'cdq.editor/open-main-window)})}]
+                      :on-click (fn []
+                                  ((requiring-resolve 'cdq.editor/open-main-window!) property-type))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn []
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
