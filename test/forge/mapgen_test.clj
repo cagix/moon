@@ -1,7 +1,5 @@
 (ns forge.mapgen-test
-  (:require [cdq.graphics :as graphics]
-            [cdq.db :as db]
-            [cdq.level.modules-core :as modules]
+  (:require [cdq.level.modules-core :as modules]
             [cdq.graphics.camera :as camera]
             [cdq.ui :refer [ui-actor text-button] :as ui]
             [cdq.input :as input]
@@ -35,7 +33,7 @@
   ESCAPE: leave
   direction keys: move")
 
-(defn- map-infos ^String [c]
+#_(defn- map-infos ^String [c]
   (let [tile (mapv int (graphics/world-mouse-position))
         {:keys [tiled-map
                 area-level-grid]} @(current-data)]
@@ -56,7 +54,7 @@
          (remove nil?)
          (str/join "\n"))))
 
-(defn- ->info-window []
+#_(defn- ->info-window []
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
     (.addActor window (ui-actor {:act #(do
@@ -79,7 +77,7 @@
     (if (input/key-pressed? input :up)    (apply-position 1 +))
     (if (input/key-pressed? input :down)  (apply-position 1 -))))
 
-(defn- render-on-map [_context]
+#_(defn- render-on-map [_context]
   (let [{:keys [tiled-map
                 area-level-grid
                 start-position
