@@ -1,9 +1,9 @@
 (ns cdq.g
   (:require [cdq.assets :as assets]
-            [cdq.db :as db]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
+            [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
             [cdq.grid :as grid]
             [cdq.info :as info]
@@ -14,6 +14,8 @@
             [cdq.math.vector2 :as v]
             [cdq.tiled :as tiled]
             cdq.potential-fields
+            [cdq.property :as property]
+            [cdq.schema :as schema]
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.stage :as stage]
@@ -31,6 +33,7 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [clojure.pprint :refer [pprint]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
            (com.badlogic.gdx.audio Sound)
@@ -40,6 +43,131 @@
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+; reduce-kv?
+(defn- apply-kvs
+  "Calls for every key in map (f k v) to calculate new value at k."
+  [m f]
+  (reduce (fn [m k]
+            (assoc m k (f k (get m k)))) ; using assoc because non-destructive for records
+          m
+          (keys m)))
+
+(defn- recur-sort-map [m]
+  (into (sorted-map)
+        (zipmap (keys m)
+                (map #(if (map? %)
+                        (recur-sort-map %)
+                        %)
+                     (vals m)))))
+
+(defn- async-pprint-spit! [file data]
+  (.start
+   (Thread.
+    (fn []
+      (binding [*print-level* nil]
+        (->> data
+             pprint
+             with-out-str
+             (spit file)))))))
+
+(declare ^:private -data
+         ^:private -properties-file
+         ^:private -schemas)
+
+(defn- validate-properties! [properties]
+  (assert (or (empty? properties)
+              (apply distinct? (map :property/id properties))))
+  (run! #(schema/validate! -schemas (property/type %) %) properties))
+
+(defn- create-db! []
+  (let [schemas (-> "schema.edn" io/resource slurp edn/read-string)
+        properties-file (io/resource "properties.edn")
+        properties (-> properties-file slurp edn/read-string)]
+    (.bindRoot #'-schemas schemas)
+    (validate-properties! properties)
+    (.bindRoot #'-data (zipmap (map :property/id properties) properties))
+    (.bindRoot #'-properties-file properties-file)))
+
+#_(def ^:private undefined-data-ks (atom #{}))
+
+(comment
+ #{:frames
+   :looping?
+   :frame-duration
+   :file ; => this is texture ... convert that key itself only?!
+   :sub-image-bounds})
+
+(defn- build* [property]
+  (apply-kvs property
+             (fn [k v]
+               (let [schema (try (schema/schema-of -schemas k)
+                                 (catch Throwable _t
+                                   #_(swap! undefined-data-ks conj k)
+                                   nil))
+                     v (if (map? v)
+                         (build* v)
+                         v)]
+                 (try (schema/edn->value schema v)
+                      (catch Throwable t
+                        (throw (ex-info " " {:k k :v v} t))))))))
+
+(defn- async-write-to-file! []
+  ; TODO validate them again!?
+  (->> -data
+       vals
+       (sort-by property/type)
+       (map recur-sort-map)
+       doall
+       (async-pprint-spit! -properties-file)))
+
+(defn update! [{:keys [property/id] :as property}]
+  {:pre [(contains? property :property/id)
+         (contains? -data id)]}
+  (schema/validate! -schemas (property/type property) property)
+  (alter-var-root #'-data assoc id property)
+  (async-write-to-file!))
+
+(defn delete! [property-id]
+  {:pre [(contains? -data property-id)]}
+  (alter-var-root #'-data dissoc property-id)
+  (async-write-to-file!))
+
+(defn get-raw [property-id]
+  (utils/safe-get -data property-id))
+
+(defn all-raw [property-type]
+  (->> (vals -data)
+       (filter #(= property-type (property/type %)))))
+
+(defn build [property-id]
+  (build* (get-raw property-id)))
+
+(defn build-all [property-type]
+  (map build* (all-raw property-type)))
+
+(defn- edn->sprite [{:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (graphics/from-sheet (graphics/sprite-sheet (assets/get file) tilew tileh)
+                           [(int (/ sprite-x tilew))
+                            (int (/ sprite-y tileh))]))
+    (graphics/->sprite (assets/get file))))
+
+(defmethod schema/edn->value :s/image [_ edn]
+  (edn->sprite edn))
+
+(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
+  (animation/create (map edn->sprite frames)
+                    :frame-duration frame-duration
+                    :looping? looping?))
+
+(defmethod schema/edn->value :s/one-to-one [_ property-id]
+  (build property-id))
+
+(defmethod schema/edn->value :s/one-to-many [_ property-ids]
+  (set (map build property-ids)))
 
 (defn play-sound! [sound-name]
   (->> sound-name
@@ -402,7 +530,7 @@
    :z-order :z-order/ground #_(if flying? :z-order/flying :z-order/ground)})
 
 (defn spawn-creature [{:keys [position creature-id components]}]
-  (let [props (db/build creature-id)]
+  (let [props (build creature-id)]
     (spawn-entity position
                   (->body (:entity/body props))
                   (-> props
@@ -829,7 +957,7 @@
                          (player-state-actor)
                          (player-message-actor)])
   (.bindRoot #'elapsed-time 0)
-  (create-world-state! ((requiring-resolve world-fn) (db/build-all :properties/creatures))))
+  (create-world-state! ((requiring-resolve world-fn) (build-all :properties/creatures))))
 
 (declare paused?)
 
@@ -849,7 +977,7 @@
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
             :items (for [property-type (sort (filter #(= "properties" (namespace %))
-                                                     (keys @#'db/-schemas)))]
+                                                     (keys @#'-schemas)))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn []
                                   ((requiring-resolve 'cdq.editor/open-main-window!) property-type))})}]
@@ -1101,7 +1229,6 @@
 ; and nothing else
 ; -> all logic into sub-namespaces
 
-; 1. cdq.db
 ; 3. cdq.assets
 ; 4. cdq.graphics
 ; 5. cdq.ui.stage
@@ -1110,7 +1237,7 @@
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
-    (db/create!)
+    (create-db!)
     (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []

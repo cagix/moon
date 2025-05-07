@@ -1,6 +1,5 @@
 (ns cdq.entity-impl
-  (:require [cdq.db :as db]
-            [cdq.effect :as effect]
+  (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.g :as g]
@@ -528,8 +527,7 @@
 
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid]
-    (g/spawn-audiovisual (:position @eid)
-                             (db/build audiovisuals-id))))
+    (g/spawn-audiovisual (:position @eid) (g/build audiovisuals-id))))
 
 (defcomponent :npc-dead
   (state/enter! [[_ {:keys [eid]}]]

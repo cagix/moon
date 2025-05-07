@@ -1,6 +1,5 @@
 (ns cdq.dev
   (:require [cdq.graphics :as graphics]
-            [cdq.db :as db]
             [cdq.g :as g]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -76,11 +75,10 @@
 
 
 (defn- learn-skill! [_context skill-id]
-  (g/add-skill g/player-eid (db/build skill-id)))
+  (g/add-skill g/player-eid (g/build skill-id)))
 
 (defn- create-item! [_context item-id]
-  (g/spawn-item (:position @g/player-eid)
-                    (db/build item-id)))
+  (g/spawn-item (:position @g/player-eid) (g/build item-id)))
 
 (defn- mouseover-grid-cell []
   @(g/grid (mapv int (graphics/world-mouse-position))))

@@ -1,6 +1,5 @@
 (ns cdq.editor
   (:require [cdq.assets :as assets]
-            [cdq.db :as db]
             [cdq.schema :as schema]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
@@ -32,7 +31,7 @@
       (first (:frames animation))))
 
 (defn- get-schemas []
-  @(var db/-schemas))
+  @(var g/-schemas))
 
 (defn- info-text [property]
   (binding [*print-level* 3]
@@ -92,8 +91,8 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (schema->widget schema props)
-        save!   (apply-context-fn window #(db/update! (->value schema widget)))
-        delete! (apply-context-fn window #(db/delete! (:property/id props)))]
+        save!   (apply-context-fn window #(g/update! (->value schema widget)))
+        delete! (apply-context-fn window #(g/delete! (:property/id props)))]
     (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                               [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
                                                 :center? true}
@@ -215,7 +214,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (db/build-all property-type)
+        properties (g/build-all property-type)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -248,7 +247,7 @@
                         (.pack window)
                         (stage/add-actor window))))]
       (for [property-id property-ids]
-        (let [property (db/build property-id)
+        (let [property (g/build property-id)
               image-widget (image->widget (property->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget #(info-text property))))
@@ -287,7 +286,7 @@
                           (.pack window)
                           (stage/add-actor window)))))]
       [(when property-id
-         (let [property (db/build property-id)
+         (let [property (g/build property-id)
                image-widget (image->widget (property->image property)
                                            {:id property-id})]
            (add-tooltip! image-widget #(info-text property))
@@ -461,7 +460,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn edit-property [id]
-  (stage/add-actor (editor-window (db/get-raw id))))
+  (stage/add-actor (editor-window (g/get-raw id))))
 
 ; TODO unused code below
 
