@@ -1,5 +1,6 @@
 (ns cdq.entity-impl
-  (:require [cdq.audio.sound :as sound]
+  (:require [cdq.application :as g]
+            [cdq.audio.sound :as sound]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -18,7 +19,6 @@
             [cdq.ui.stage :as stage]
             [cdq.utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
-            [cdq.widgets.inventory :as widgets.inventory]
             [cdq.world :as world]
             [cdq.world.potential-field :as potential-field]
             [reduce-fsm :as fsm])
@@ -41,7 +41,7 @@
      (do
       (sound/play! "bfxr_pickup")
       (tx/mark-destroyed eid)
-      (widgets.inventory/pickup-item world/player-eid item))
+      (g/pickup-item world/player-eid item))
 
      :else
      (do
@@ -208,7 +208,7 @@
 (defmethod entity/create! :entity/inventory [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
-    (widgets.inventory/pickup-item eid item)))
+    (g/pickup-item eid item)))
 
 (defmethod entity/create! :entity/skills [[k skills] eid]
   (swap! eid assoc k nil)
@@ -564,7 +564,7 @@
      (do
       (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (widgets.inventory/set-item eid cell item-on-cursor)
+      (g/set-item eid cell item-on-cursor)
       (tx/event eid :dropped-item))
 
      ; STACK ITEMS
@@ -573,7 +573,7 @@
      (do
       (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (widgets.inventory/stack-item eid cell item-on-cursor)
+      (g/stack-item eid cell item-on-cursor)
       (tx/event eid :dropped-item))
 
      ; SWAP ITEMS
@@ -584,8 +584,8 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (widgets.inventory/remove-item eid cell)
-      (widgets.inventory/set-item eid cell item-on-cursor)
+      (g/remove-item eid cell)
+      (g/set-item eid cell item-on-cursor)
       (tx/event eid :dropped-item)
       (tx/event eid :pickup-item item-in-cell)))))
 
@@ -599,7 +599,7 @@
   (when-let [item (get-in (:entity/inventory @eid) cell)]
     (sound/play! "bfxr_takeit")
     (tx/event eid :pickup-item item)
-    (widgets.inventory/remove-item eid cell)))
+    (g/remove-item eid cell)))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
