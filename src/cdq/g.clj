@@ -1,6 +1,5 @@
 (ns cdq.g
-  (:require [cdq.assets :as assets]
-            [cdq.entity :as entity]
+  (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
@@ -36,13 +35,59 @@
             [clojure.pprint :refer [pprint]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
+
+(defn- recursively-search [^FileHandle folder extensions]
+  (loop [[^FileHandle file & remaining] (.list folder)
+         result []]
+    (cond (nil? file)
+          result
+
+          (.isDirectory file)
+          (recur (concat remaining (.list file)) result)
+
+          (extensions (.extension file))
+          (recur remaining (conj result (.path file)))
+
+          :else
+          (recur remaining result))))
+
+(declare ^:private ^AssetManager asset-manager)
+
+(defn- create-asset-manager! [{:keys [folder asset-type->extensions]}]
+  (let [manager (AssetManager.)]
+    (doseq [[file asset-type] (for [[asset-type extensions] asset-type->extensions
+                                    file (map #(str/replace-first % folder "")
+                                              (recursively-search (.internal Gdx/files folder) extensions))]
+                                [file asset-type])]
+      (.load manager ^String file (case asset-type
+                                    :sound Sound
+                                    :texture Texture)))
+    (.finishLoading manager)
+    (.bindRoot #'asset-manager manager)))
+
+(defn- dispose-asset-manager! []
+  (.dispose asset-manager))
+
+(defn assets-of-type [asset-type]
+  (let [asset-type (case asset-type
+                     :sound   Sound
+                     :texture Texture)]
+    (filter #(= (.getAssetType asset-manager %) asset-type)
+            (.getAssetNames asset-manager))))
+
+(defn asset [^String path]
+  (if (.contains asset-manager path)
+    (.get asset-manager path)
+    (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -150,10 +195,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (graphics/from-sheet (graphics/sprite-sheet (assets/get file) tilew tileh)
+      (graphics/from-sheet (graphics/sprite-sheet (asset file) tilew tileh)
                            [(int (/ sprite-x tilew))
                             (int (/ sprite-y tileh))]))
-    (graphics/->sprite (assets/get file))))
+    (graphics/->sprite (asset file))))
 
 (defmethod schema/edn->value :s/image [_ edn]
   (edn->sprite edn))
@@ -172,7 +217,7 @@
 (defn play-sound! [sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
-       assets/get
+       asset
        Sound/.play))
 
 (declare elapsed-time)
@@ -739,7 +784,7 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (graphics/from-sheet (graphics/sprite-sheet (assets/get "images/items.png") 48 48)
+  (graphics/from-sheet (graphics/sprite-sheet (asset "images/items.png") 48 48)
                        (slot->sprite-idx slot)))
 
 (defn- slot->background [slot]
@@ -902,9 +947,9 @@
                        :up? true}))
 
 (defn- hp-mana-bar [[x y-mana]]
-  (let [rahmen      (graphics/->sprite (assets/get "images/rahmen.png"))
-        hpcontent   (graphics/->sprite (assets/get "images/hp.png"))
-        manacontent (graphics/->sprite (assets/get "images/mana.png"))
+  (let [rahmen      (graphics/->sprite (asset "images/rahmen.png"))
+        hpcontent   (graphics/->sprite (asset "images/hp.png"))
+        manacontent (graphics/->sprite (asset "images/mana.png"))
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
@@ -985,10 +1030,10 @@
                     :update-fn (fn []
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
                                    (:entity/id entity)))
-                    :icon (assets/get "images/mouseover.png")}
+                    :icon (asset "images/mouseover.png")}
                    {:label "elapsed-time"
                     :update-fn (fn [] (str (readable-number elapsed-time) " seconds"))
-                    :icon (assets/get "images/clock.png")}
+                    :icon (asset "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [] paused?)}
                    {:label "GUI"
@@ -997,10 +1042,10 @@
                     :update-fn (fn [] (mapv int (graphics/world-mouse-position)))}
                    {:label "Zoom"
                     :update-fn (fn [] (camera/zoom (:camera graphics/world-viewport)))
-                    :icon (assets/get "images/zoom.png")}
+                    :icon (asset "images/zoom.png")}
                    {:label "FPS"
                     :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
-                    :icon (assets/get "images/fps.png")}]})
+                    :icon (asset "images/fps.png")}]})
 
 (def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
 
@@ -1229,9 +1274,12 @@
 ; and nothing else
 ; -> all logic into sub-namespaces
 
-; 3. cdq.assets
 ; 4. cdq.graphics
 ; 5. cdq.ui.stage
+
+; then * metadocs
+; * and highlight namspace local vars so no overlap
+; 'blue' ?
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
@@ -1241,7 +1289,7 @@
     (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []
-                            (assets/create! (:assets config))
+                            (create-asset-manager! (:assets config))
                             (graphics/create! (:graphics config))
                             (ui/load! (:vis-ui config)
                                        ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
@@ -1251,7 +1299,7 @@
                             (reset-game! (:world-fn config)))
 
                           (dispose []
-                            (assets/dispose!)
+                            (dispose-asset-manager!)
                             (graphics/dispose!)
                             ; TODO dispose tiled-map !! also @ reset-game ?!
                             )

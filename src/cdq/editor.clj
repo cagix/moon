@@ -1,6 +1,5 @@
 (ns cdq.editor
-  (:require [cdq.assets :as assets]
-            [cdq.schema :as schema]
+  (:require [cdq.schema :as schema]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.ui.stage :as stage]
@@ -149,7 +148,7 @@
       (str/replace ".wav" "")))
 
 (defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type :sound))]
+  (let [rows (for [sound-name (map sound-file->sound-name (g/assets-of-type :sound))]
                [(text-button sound-name
                              (fn []
                                (Group/.clearChildren table)
@@ -438,7 +437,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-of-type :texture))]
+  (for [file (sort (g/assets-of-type :texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -498,7 +497,7 @@
     table))
 
 (defn- background-image [path]
-  (ui/image-widget (assets/get path)
+  (ui/image-widget (g/asset path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))

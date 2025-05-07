@@ -1,5 +1,5 @@
 (ns cdq.level.uf-caves
-  (:require [cdq.assets :as assets]
+  (:require [cdq.g :as g]
             [cdq.level.helper :refer [creatures-with-level creature-tile wgt-grid->tiled-map adjacent-wall-positions scalegrid cave-grid flood-fill]]
             [cdq.tiled :as tiled]
             [clojure.data.grid2d :as g2d]
@@ -127,4 +127,4 @@
   (create* {:map-size 200,
             :spawn-rate 0.01}
            creature-properties
-           (assets/get "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?
+           (g/asset "maps/uf_terrain.png"))) ; TODO make level disposable itself ? just 'Texture.' then ?
