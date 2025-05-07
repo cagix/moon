@@ -919,8 +919,8 @@
                                  (- height          (* 2 border))
                                  (hpbar-color ratio)))))
 
-(defn- draw-text-when-mouseover-and-text [{:keys [text]}
-                                          {:keys [entity/mouseover?] :as entity}]
+(defmethod entity/render-default! :entity/clickable
+  [[_ {:keys [text]}] {:keys [entity/mouseover?] :as entity}]
   (when (and mouseover? text)
     (let [[x y] (:position entity)]
       (graphics/draw-text {:text text
@@ -928,18 +928,20 @@
                            :y (+ y (:half-height entity))
                            :up? true}))))
 
-(defn- draw-hpbar-when-mouseover-and-not-full [_ entity]
+(defmethod entity/render-info! :entity/hp
+  [_ entity]
   (let [ratio (val-max/ratio (entity/hitpoints entity))]
     (when (or (< ratio 1) (:entity/mouseover? entity))
       (draw-hpbar entity ratio))))
 
-(defn- draw-image-as-of-body [image entity]
+(defmethod entity/render-default! :entity/image
+  [[_ image] entity]
   (graphics/draw-rotated-centered image
                                   (or (:rotation-angle entity) 0)
                                   (:position entity)))
 
-(defn- draw-line [{:keys [thick? end color]}
-                  entity]
+(defmethod entity/render-default! :entity/line-render
+  [[_ {:keys [thick? end color]}] entity]
   (let [position (:position entity)]
     (if thick?
       (graphics/with-line-width 4 #(graphics/line position end color))
@@ -950,7 +952,8 @@
 (def ^:private friendly-color [0 1 0 outline-alpha])
 (def ^:private neutral-color  [1 1 1 outline-alpha])
 
-(defn- draw-faction-ellipse [_ {:keys [entity/faction] :as entity}]
+(defmethod entity/render-below! :entity/mouseover?
+  [_ {:keys [entity/faction] :as entity}]
   (let [player @world/player-eid]
     (graphics/with-line-width 3
       #(graphics/ellipse (:position entity)
@@ -966,8 +969,8 @@
 (defn- render-active-effect [effect-ctx effect]
   (run! #(effect/render % effect-ctx) effect))
 
-(defn- draw-skill-image-and-active-effect [{:keys [skill effect-ctx counter]}
-                                           entity]
+(defmethod entity/render-info! :active-skill
+  [[_ {:keys [skill effect-ctx counter]}] entity]
   (let [{:keys [entity/image skill/effects]} skill]
     (draw-skill-image image
                       entity
@@ -979,22 +982,26 @@
                           ; - render does not need to update .. update inside active-skill
                           effects)))
 
-(defn- draw-zzzz [_ entity]
+(defmethod entity/render-above! :npc-sleeping
+  [_ entity]
   (let [[x y] (:position entity)]
     (graphics/draw-text {:text "zzz"
                          :x x
                          :y (+ y (:half-height entity))
                          :up? true})))
 
-(defn- draw-world-item-if-exists [{:keys [item]} entity]
+(defmethod entity/render-below! :player-item-on-cursor
+  [[_ {:keys [item]}] entity]
   (when (world-item?)
     (graphics/draw-centered (:entity/image item)
                             (item-place-position entity))))
 
-(defn- draw-stunned-circle [_ entity]
+(defmethod entity/render-below! :stunned
+  [_ entity]
   (graphics/circle (:position entity) 0.5 [1 1 1 0.6]))
 
-(defn- draw-text [{:keys [text]} entity]
+(defmethod entity/render-above! :entity/string-effect
+  [[_ {:keys [text]}] entity]
   (let [[x y] (:position entity)]
     (graphics/draw-text {:text text
                          :x x
@@ -1005,7 +1012,8 @@
                          :up? true})))
 
 ; TODO draw opacity as of counter ratio?
-(defn- draw-filled-circle-grey [_ entity]
+(defmethod entity/render-above! :entity/temp-modifier
+  [_ entity]
   (graphics/filled-circle (:position entity) 0.5 [0.5 0.5 0.5 0.4]))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
@@ -1014,7 +1022,11 @@
   (let [[x y] (:left-bottom entity)]
     (graphics/rectangle x y (:width entity) (:height entity) color)))
 
-(def ^:private entity-render-fns
+; I can create this later after loading all the component namespaces
+; just go through the systems
+; and see which components are signed up for it
+; => I get an overview what is rendered how...
+#_(def ^:private entity-render-fns
   {:below {:entity/mouseover? draw-faction-ellipse
            :player-item-on-cursor draw-world-item-if-exists
            :stunned draw-stunned-circle}
@@ -1029,28 +1041,22 @@
 
 (defn- render-entities! []
   (let [entities (map deref world/active-entities)
-        player @world/player-eid
-        {:keys [below
-                default
-                above
-                info]} entity-render-fns]
+        player @world/player-eid]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
-            system [below
-                    default
-                    above
-                    info]
+            render! [entity/render-below!
+                     entity/render-default!
+                     entity/render-above!
+                     entity/render-info!]
             entity entities
             :when (or (= z-order :z-order/effect)
                       (world/line-of-sight? player entity))]
       (try
        (when show-body-bounds
          (draw-body-rect entity (if (:collides? entity) :white :gray)))
-       (doseq [[k v] entity
-               :let [f (get system k)]
-               :when f]
-         (f v entity))
+       (doseq [component entity]
+         (render! component entity))
        (catch Throwable t
          (draw-body-rect entity :red)
          (pretty-pst t))))))
