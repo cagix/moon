@@ -1,4 +1,4 @@
-(ns cdq.application
+(ns cdq.g
   (:require [cdq.assets :as assets]
             [cdq.db :as db]
             [cdq.editor :as editor]

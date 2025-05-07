@@ -1,10 +1,10 @@
 (ns cdq.entity-impl
-  (:require [cdq.application :as g]
-            [cdq.audio.sound :as sound]
+  (:require [cdq.audio.sound :as sound]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
+            [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.graphics.animation :as animation]
             [cdq.grid :as grid]
