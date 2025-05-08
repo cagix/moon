@@ -52,7 +52,9 @@
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
-(declare ^Batch batch
+(declare ^:private ^AssetManager asset-manager)
+
+(declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
          ^:private ^ShapeDrawer shape-drawer
          ^:private cursors
@@ -62,6 +64,31 @@
          ^:private get-tiled-map-renderer
          ^:private ^:dynamic *unit-scale*
          ui-viewport)
+
+(declare ^:private ^Stage stage)
+
+(declare player-message)
+
+(declare ^:private -data
+         ^:private -properties-file
+         ^:private -schemas)
+
+(declare elapsed-time)
+
+(declare tiled-map
+         ^:private content-grid
+         ^:private entity-ids
+         explored-tile-corners
+         grid
+         raycaster
+         potential-field-cache
+         player-eid
+         active-entities
+         delta-time)
+
+(def mouseover-eid nil)
+
+(declare paused?)
 
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -215,27 +242,26 @@
 (defn draw-centered [image position]
   (draw-rotated-centered image 0 position))
 
-(defn set-camera-position! [position]
+(defn- set-camera-position! [position]
   (camera/set-position! (:camera world-viewport) position))
 
-(defn- text-height [font text]
+(defn- text-height [^BitmapFont font text]
   (-> text
       (str/split #"\n")
       count
-      (* (BitmapFont/.getLineHeight font))))
+      (* (.getLineHeight font))))
 
-(defn draw-text
-  "font, h-align, up? and scale are optional.
-  h-align one of: :center, :left, :right. Default :center.
-  up? renders the font over y, otherwise under.
-  scale will multiply the drawn text size with the scale."
-  [{:keys [font x y text h-align up? scale]}]
-  (let [^BitmapFont font (or font default-font)
-        data (.getData font)
+(defn- draw-text* [{:keys [^BitmapFont font
+                           scale
+                           batch
+                           x
+                           y
+                           text
+                           h-align
+                           up?]}]
+  (let [data (.getData font)
         old-scale (float (.scaleX data))
-        new-scale (float (* old-scale
-                            (float (if (bound? #'*unit-scale*) *unit-scale* 1))
-                            (float (or scale 1))))
+        new-scale (float (* old-scale (float scale)))
         target-width (float 0)
         wrap? false]
     (.setScale data new-scale)
@@ -248,6 +274,22 @@
            (interop/k->align (or h-align :center))
            wrap?)
     (.setScale data old-scale)))
+
+(defn draw-text
+  "font, h-align, up? and scale are optional.
+  h-align one of: :center, :left, :right. Default :center.
+  up? renders the font over y, otherwise under.
+  scale will multiply the drawn text size with the scale."
+  [{:keys [font scale x y text h-align up?]}]
+  (draw-text* {:font (or font default-font)
+               :scale (* (float (if (bound? #'*unit-scale*) *unit-scale* 1))
+                         (float (or scale 1)))
+               :batch batch
+               :x x
+               :y y
+               :text text
+               :h-align h-align
+               :up? up?}))
 
 (defn- sd-set-color! [color]
   (.setColor shape-drawer (interop/->color color)))
@@ -342,7 +384,7 @@
             :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
       (draw-line shape-drawer [leftx liney] [rightx liney] color))))
 
-(defn draw-on-world-view! [f]
+(defn- draw-on-world-view! [f]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
   (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
   (.begin batch)
@@ -355,7 +397,7 @@
 (defn set-cursor! [cursor-key]
   (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
-(defn draw-tiled-map
+(defn- draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
 
   Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
@@ -421,8 +463,6 @@
 (defn ->sprite [^Texture texture]
   (sprite* (TextureRegion. texture)))
 
-(declare ^:private ^Stage stage)
-
 (defn- init-stage! []
   (let [stage (proxy [Stage ILookup] [ui-viewport batch]
                 (valAt
@@ -436,8 +476,6 @@
 
 (defn get-actor [id-keyword]
   (id-keyword stage))
-
-(declare player-message)
 
 (defn show-player-msg! [text]
   (swap! player-message assoc :text text :counter 0))
@@ -484,8 +522,6 @@
 
           :else
           (recur remaining result))))
-
-(declare ^:private ^AssetManager asset-manager)
 
 (defn- create-asset-manager! [{:keys [folder asset-type->extensions]}]
   (let [manager (AssetManager.)]
@@ -540,10 +576,6 @@
              pprint
              with-out-str
              (spit file)))))))
-
-(declare ^:private -data
-         ^:private -properties-file
-         ^:private -schemas)
 
 (defn- validate-properties! [properties]
   (assert (or (empty? properties)
@@ -644,8 +676,6 @@
        (format "sounds/%s.wav")
        asset
        Sound/.play))
-
-(declare elapsed-time)
 
 (defn ->timer [duration]
   {:pre [(>= duration 0)]}
@@ -810,19 +840,6 @@
       (set-arr arr @cell grid/blocks-vision?))
     [arr width height]))
 
-(declare tiled-map
-         ^:private content-grid
-         ^:private entity-ids
-         explored-tile-corners
-         grid
-         raycaster
-         potential-field-cache
-         player-eid
-         active-entities
-         delta-time)
-
-(def mouseover-eid nil)
-
 (defn- set-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]
     (assert (not-any? nil? cells))
@@ -889,7 +906,7 @@
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! grid eid)))
 
-(defn remove-destroyed-entities! []
+(defn- remove-destroyed-entities! []
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
     (remove-entity! eid)
@@ -1121,7 +1138,7 @@
   (spawn-enemies!)
   (.bindRoot #'player-eid (spawn-creature (player-entity-props start-position))))
 
-(defn cache-active-entities!
+(defn- cache-active-entities!
   "Expensive operation.
 
   Active entities are those which are nearby the position of the player and about one screen away."
@@ -1428,8 +1445,6 @@
                    (player-message-actor)])
   (.bindRoot #'elapsed-time 0)
   (create-world-state! ((requiring-resolve world-fn) (build-all :properties/creatures))))
-
-(declare paused?)
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? context)]
