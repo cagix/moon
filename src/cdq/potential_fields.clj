@@ -1,5 +1,5 @@
 (ns cdq.potential-fields
-  (:require [cdq.entity :as entity]
+  (:require [cdq.entity :as entity] ; just entity/tile
             [cdq.grid :as grid]
             [cdq.world.potential-field :refer [pf-cell-blocked?]]))
 

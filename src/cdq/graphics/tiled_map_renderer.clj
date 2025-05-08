@@ -1,4 +1,4 @@
-(ns cdq.graphics.tiled-map-renderer
+(ns cdq.graphics.tiled-map-renderer ; TODO move to 'tiled' ?
   (:require [cdq.tiled :as tiled])
   (:import (cdq OrthogonalTiledMapRenderer ColorSetter)))
 

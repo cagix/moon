@@ -1,7 +1,7 @@
 (ns cdq.world.potential-field
   (:require [cdq.math.vector2 :as v]
             [cdq.utils :refer [utils-positions when-seq]]
-            [cdq.entity :as entity]
+            [cdq.entity :as entity] ; just entity/faction
             [cdq.grid :refer [rectangle->cells
                               cached-adjacent-cells
                               blocked?
