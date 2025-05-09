@@ -43,14 +43,14 @@
             [reduce-fsm :as fsm])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils ScreenUtils)
-           (com.badlogic.gdx.utils.viewport FitViewport Viewport)
+           (com.badlogic.gdx.utils.viewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (declare ^:private asset-manager)
@@ -91,22 +91,6 @@
 
 (declare paused?)
 
-(defn- fit-viewport [width height camera]
-  (proxy [FitViewport clojure.lang.ILookup] [width height camera]
-    (valAt
-      ([key]
-       (interop/k->viewport-field this key))
-      ([key _not-found]
-       (interop/k->viewport-field this key)))))
-
-(defn- ->world-viewport [world-unit-scale config]
-  (let [camera (OrthographicCamera.)
-        world-width  (* (:width  config) world-unit-scale)
-        world-height (* (:height config) world-unit-scale)
-        y-down? false]
-    (.setToOrtho camera y-down? world-width world-height)
-    (fit-viewport world-width world-height camera)))
-
 (defn- create-graphics! [{:keys [cursors
                                  default-font
                                  tile-size
@@ -129,14 +113,13 @@
                         cursors))
   (.bindRoot #'default-font (graphics/truetype-font default-font))
   (.bindRoot #'world-unit-scale (float (/ tile-size)))
-  (.bindRoot #'world-viewport (->world-viewport world-unit-scale world-viewport))
+  (.bindRoot #'world-viewport (graphics/world-viewport world-unit-scale world-viewport))
   (.bindRoot #'get-tiled-map-renderer (memoize (fn [tiled-map]
                                                  (tiled-map-renderer/create tiled-map
                                                                             world-unit-scale
                                                                             batch))))
-  (.bindRoot #'ui-viewport (fit-viewport (:width  ui-viewport)
-                                         (:height ui-viewport)
-                                         (OrthographicCamera.))))
+  (.bindRoot #'ui-viewport (graphics/fit-viewport (:width  ui-viewport)
+                                                  (:height ui-viewport))))
 
 (defn- dispose-graphics! []
   (.dispose batch)

@@ -1,8 +1,10 @@
 (ns clojure.gdx.graphics
-  (:require [clojure.gdx :as gdx])
-  (:import (com.badlogic.gdx.graphics Texture$TextureFilter)
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.interop :as interop])
+  (:import (com.badlogic.gdx.graphics Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)))
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.utils.viewport FitViewport)))
 
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -27,3 +29,22 @@
     (set! (.markupEnabled (.getData font)) true)
     (.setUseIntegerPositions font false) ; otherwise scaling to world-units (/ 1 48)px not visible
     font))
+
+(defn fit-viewport
+  ([width height]
+   (fit-viewport width height (OrthographicCamera.)))
+  ([width height camera]
+   (proxy [FitViewport clojure.lang.ILookup] [width height camera]
+     (valAt
+       ([key]
+        (interop/k->viewport-field this key))
+       ([key _not-found]
+        (interop/k->viewport-field this key))))))
+
+(defn world-viewport [world-unit-scale {:keys [width height]}]
+  (let [camera (OrthographicCamera.)
+        world-width  (* width world-unit-scale)
+        world-height (* height world-unit-scale)
+        y-down? false]
+    (.setToOrtho camera y-down? world-width world-height)
+    (fit-viewport world-width world-height camera)))
