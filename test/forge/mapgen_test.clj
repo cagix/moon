@@ -1,8 +1,8 @@
 (ns forge.mapgen-test
   (:require [cdq.level.modules-core :as modules]
-            [cdq.graphics.camera :as camera]
-            [cdq.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.scene2d.ui :refer [ui-actor text-button] :as ui]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])

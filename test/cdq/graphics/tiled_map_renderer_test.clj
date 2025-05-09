@@ -1,7 +1,6 @@
 (ns cdq.graphics.tiled-map-renderer-test
-  (:require [cdq.graphics.camera :as camera]
-            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
+  (:require [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.tiled :as tiled])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color OrthographicCamera)
@@ -34,13 +33,13 @@
                                                      (* screen-width world-unit-scale)
                                                      (* screen-height world-unit-scale))))
                           (camera/set-position! camera camera-position)
-                          (def renderer (tiled-map-renderer/create tiled-map world-unit-scale batch)))
+                          (def renderer (tiled/renderer tiled-map world-unit-scale batch)))
 
                         (dispose []
                           (Disposable/.dispose tiled-map)
                           (Disposable/.dispose batch))
 
                         (render []
-                          (tiled-map-renderer/draw! renderer tiled-map color-setter camera))
+                          (tiled/draw! renderer tiled-map color-setter camera))
 
                         (resize [width height]))))

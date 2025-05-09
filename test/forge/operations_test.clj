@@ -1,5 +1,5 @@
 (ns forge.operations-test
-  (:require [cdq.operation :as ops]
+  (:require [cdq.entity.stats.op :as ops]
             [clojure.test :refer :all]))
 
 (deftest add-and-remove
