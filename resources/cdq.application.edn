@@ -1,6 +1,6 @@
-{:requires [cdq.effects
-            cdq.entity-impl
-            cdq.info-impl]
+{:requires [cdq.impl.effects
+            cdq.impl.entity
+            cdq.impl.info]
  :application {:title "Cyber Dungeon Quest"
                :windowed-mode {:width 1440
                                :height 900}

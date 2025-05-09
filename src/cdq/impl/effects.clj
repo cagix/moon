@@ -1,4 +1,4 @@
-(ns cdq.effects
+(ns cdq.impl.effects
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]

@@ -1,4 +1,4 @@
-(ns cdq.info-impl
+(ns cdq.impl.info
   (:require [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.info :refer [info-segment]]

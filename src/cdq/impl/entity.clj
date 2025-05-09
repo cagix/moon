@@ -1,4 +1,4 @@
-(ns cdq.entity-impl
+(ns cdq.impl.entity
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
