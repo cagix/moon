@@ -1,5 +1,5 @@
-(ns cdq.val-max
-  (:require [cdq.schema :as s]))
+(ns cdq.data.val-max
+  (:require [cdq.db.schema :as s]))
 
 (defn ratio
   "If mx and v is 0, returns 0, otherwise (/ v mx)"

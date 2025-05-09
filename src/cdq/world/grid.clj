@@ -1,4 +1,4 @@
-(ns cdq.grid
+(ns cdq.world.grid
   (:require [clojure.gdx.math :refer [rectangle->tiles
                                       circle->outer-rectangle
                                       overlaps?

@@ -1,8 +1,8 @@
 (ns cdq.impl.info
   (:require [cdq.entity :as entity]
+            [cdq.entity.stats.op :as op]
             [cdq.g :as g]
             [cdq.info :refer [info-segment]]
-            [cdq.operation :as op]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.utils :refer [readable-number]])

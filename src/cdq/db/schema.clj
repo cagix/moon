@@ -1,4 +1,4 @@
-(ns cdq.schema
+(ns cdq.db.schema
   (:refer-clojure :exclude [type])
   (:require [clojure.set :as set]
             [malli.core :as m]

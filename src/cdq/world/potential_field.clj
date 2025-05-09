@@ -1,6 +1,6 @@
 (ns cdq.world.potential-field
   (:require [cdq.entity :as entity] ; just entity/faction
-            [cdq.grid :refer [rectangle->cells
+            [cdq.world.grid :refer [rectangle->cells
                               cached-adjacent-cells
                               blocked?
                               occupied-by-other?

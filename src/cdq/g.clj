@@ -1,15 +1,15 @@
 (ns cdq.g
-  (:require [cdq.entity :as entity]
+  (:require [cdq.data.val-max :as val-max]
+            [cdq.db.property :as property]
+            [cdq.db.schema :as schema]
+            [cdq.entity :as entity]
+            [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.grid :as grid]
             [cdq.info :as info]
-            [cdq.inventory :as inventory]
-            cdq.potential-fields
-            [cdq.property :as property]
-            [cdq.schema :as schema]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.val-max :as val-max]
             [cdq.world.content-grid :as content-grid]
+            [cdq.world.grid :as grid]
+            cdq.world.potential-fields
             [clojure.data.animation :as animation]
             [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
@@ -1281,7 +1281,7 @@
                                                      (keys @#'-schemas)))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn []
-                                  ((requiring-resolve 'cdq.editor/open-main-window!) property-type))})}]
+                                  ((requiring-resolve 'cdq.ui.editor/open-main-window!) property-type))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn []
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
@@ -1481,11 +1481,11 @@
 
 (defn- update-potential-fields! []
   (doseq [[faction max-iterations] factions-iterations]
-    (cdq.potential-fields/tick potential-field-cache
-                               grid
-                               faction
-                               active-entities
-                               max-iterations)))
+    (cdq.world.potential-fields/tick potential-field-cache
+                                     grid
+                                     faction
+                                     active-entities
+                                     max-iterations)))
 
 (defn- tick-entities! []
   ; precaution in case a component gets removed by another component

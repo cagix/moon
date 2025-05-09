@@ -1,6 +1,6 @@
 (ns cdq.entity
-  (:require [cdq.schema :as s]
-            [cdq.operation :as op]
+  (:require [cdq.db.schema :as s]
+            [cdq.entity.stats.op :as op]
             [clojure.gdx.math :as math]
             [clojure.gdx.math.vector2 :as v]))
 

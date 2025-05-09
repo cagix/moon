@@ -1,6 +1,6 @@
-(ns cdq.potential-fields
+(ns cdq.world.potential-fields
   (:require [cdq.entity :as entity] ; just entity/tile
-            [cdq.grid :as grid]
+            [cdq.world.grid :as grid]
             [cdq.world.potential-field :refer [pf-cell-blocked?]]))
 
 ; Assumption: The map contains no not-allowed diagonal cells, diagonal wall cells where both

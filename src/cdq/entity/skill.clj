@@ -1,4 +1,4 @@
-(ns cdq.skill
+(ns cdq.entity.skill
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]))
 

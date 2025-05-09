@@ -1,7 +1,7 @@
-(ns cdq.editor
-  (:require [cdq.g :as g]
-            [cdq.property :as property]
-            [cdq.schema :as schema]
+(ns cdq.ui.editor
+  (:require [cdq.db.property :as property]
+            [cdq.db.schema :as schema]
+            [cdq.g :as g]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]

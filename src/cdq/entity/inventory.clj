@@ -1,4 +1,4 @@
-(ns cdq.inventory
+(ns cdq.entity.inventory
   (:require [clojure.data.grid2d :as g2d]
             [clojure.utils :refer [find-first]]))
 
