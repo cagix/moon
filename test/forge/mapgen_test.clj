@@ -2,8 +2,8 @@
   (:require [cdq.level.modules-core :as modules]
             [cdq.graphics.camera :as camera]
             [cdq.ui :refer [ui-actor text-button] :as ui]
-            [cdq.tiled :as tiled]
             [clojure.gdx :as gdx]
+            [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx.graphics Color)))

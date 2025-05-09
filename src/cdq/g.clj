@@ -21,6 +21,7 @@
             [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
+            [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
@@ -38,7 +39,6 @@
             [reduce-fsm :as fsm])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
@@ -48,11 +48,11 @@
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.math Vector2 MathUtils)
-           (com.badlogic.gdx.utils Disposable ScreenUtils)
+           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
-(declare ^:private ^AssetManager asset-manager)
+(declare ^:private asset-manager)
 
 (declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
@@ -145,7 +145,7 @@
   (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (.bindRoot #'cursors (utils/mapvals
                         (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (Pixmap. (gdx/internal (str "cursors/" file ".png")))
+                          (let [pixmap (Pixmap. ^FileHandle (gdx/internal (str "cursors/" file ".png")))
                                 cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
                             (.dispose pixmap)
                             cursor))
@@ -164,7 +164,7 @@
 (defn- dispose-graphics! []
   (.dispose batch)
   (.dispose shape-drawer-texture)
-  (run! Disposable/.dispose (vals cursors))
+  (run! gdx/dispose! (vals cursors))
   (.dispose default-font))
 
 (defn- clamp [value min max]
@@ -523,32 +523,22 @@
           :else
           (recur remaining result))))
 
-(defn- create-asset-manager! [{:keys [folder asset-type->extensions]}]
-  (let [manager (AssetManager.)]
-    (doseq [[file asset-type] (for [[asset-type extensions] asset-type->extensions
-                                    file (map #(str/replace-first % folder "")
-                                              (recursively-search (gdx/internal folder) extensions))]
-                                [file asset-type])]
-      (.load manager ^String file (case asset-type
-                                    :sound Sound
-                                    :texture Texture)))
-    (.finishLoading manager)
-    (.bindRoot #'asset-manager manager)))
+(defn- create-asset-manager! [folder]
+  (let [assets (for [[asset-type extensions] {com.badlogic.gdx.audio.Sound #{"wav"}
+                                              com.badlogic.gdx.graphics.Texture #{"png" "bmp"}}
+                     file (map #(str/replace-first % folder "")
+                               (recursively-search (gdx/internal folder) extensions))]
+                 [file asset-type])]
+    (.bindRoot #'asset-manager (asset-manager/create assets))))
 
 (defn- dispose-asset-manager! []
-  (.dispose asset-manager))
+  (gdx/dispose! asset-manager))
 
 (defn assets-of-type [asset-type]
-  (let [asset-type (case asset-type
-                     :sound   Sound
-                     :texture Texture)]
-    (filter #(= (.getAssetType asset-manager %) asset-type)
-            (.getAssetNames asset-manager))))
+  (asset-manager/all-of-type asset-manager asset-type))
 
-(defn asset [^String path]
-  (if (.contains asset-manager path)
-    (.get asset-manager path)
-    (throw (IllegalArgumentException. (str "Asset cannot be found: " path)))))
+(defn asset [path]
+  (asset-manager/get asset-manager path))
 
 ; reduce-kv?
 (defn- apply-kvs

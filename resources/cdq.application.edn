@@ -6,9 +6,7 @@
                                :height 900}
                :foreground-fps 60
                :dock-icon "moon.png"}
- :assets {:folder "resources/"
-          :asset-type->extensions {:sound   #{"wav"}
-                                   :texture #{"png" "bmp"}}}
+ :assets "resources/"
  :graphics {:cursors {:cursors/bag                   ["bag001"       [0   0]]
                       :cursors/black-x               ["black_x"      [0   0]]
                       :cursors/default               ["default"      [0   0]]

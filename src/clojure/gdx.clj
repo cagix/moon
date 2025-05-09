@@ -1,6 +1,7 @@
 (ns clojure.gdx
   (:require [clojure.gdx.interop :as interop])
-  (:import (com.badlogic.gdx Gdx)))
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.utils Disposable)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -30,10 +31,13 @@
   (.setInputProcessor Gdx/input input-processor))
 
 (defn button-just-pressed? [button]
-  (.isButtonJustPressed Gdx/input (k->input-button button)))
+  (.isButtonJustPressed Gdx/input (interop/k->input-button button)))
 
 (defn key-just-pressed? [key]
   (.isKeyJustPressed Gdx/input (interop/k->input-key key)))
 
 (defn key-pressed? [key]
   (.isKeyPressed Gdx/input (interop/k->input-key key)))
+
+(defn dispose! [disposable]
+  (Disposable/.dispose disposable))
