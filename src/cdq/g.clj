@@ -42,14 +42,12 @@
                                              pretty-pst
                                              with-err-str]]
             [reduce-fsm :as fsm])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx ApplicationAdapter)
+  (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
-           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
 (declare ^:private asset-manager)
@@ -58,7 +56,7 @@
          ^:private ^Texture shape-drawer-texture
          ^:private shape-drawer
          ^:private cursors
-         ^:private ^BitmapFont default-font
+         ^:private default-font
          ^:private world-unit-scale
          ^:private world-viewport
          ^:private get-tiled-map-renderer
@@ -119,7 +117,7 @@
   (.dispose batch)
   (.dispose shape-drawer-texture)
   (run! dispose! (vals cursors))
-  (.dispose default-font))
+  (dispose! default-font))
 
 (defn mouse-position []
   ; TODO mapv int needed?
@@ -293,7 +291,7 @@
   (sprite* (TextureRegion. texture)))
 
 (defn- init-stage! []
-  (let [stage (proxy [Stage ILookup] [ui-viewport batch]
+  (let [stage (proxy [Stage clojure.lang.ILookup] [ui-viewport batch]
                 (valAt
                   ([id]
                    (ui/find-actor-with-id (Stage/.getRoot this) id))
@@ -1552,7 +1550,7 @@
                           (render []
                             (cache-active-entities!)
                             (set-camera-position! (:position @player-eid))
-                            (ScreenUtils/clear Color/BLACK)
+                            (graphics/clear-screen!)
                             (draw-tiled-map tiled-map
                                             (tile-color-setter raycaster
                                                                explored-tile-corners

@@ -8,7 +8,11 @@
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch Batch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
+
+(defn clear-screen! []
+  (ScreenUtils/clear Color/BLACK))
 
 (defn sprite-batch []
   (SpriteBatch.))
