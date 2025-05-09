@@ -1,8 +1,8 @@
 (ns cdq.level.modules
   (:require [cdq.level.helper :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.level.modules-core :as modules]
-            [cdq.tiled :as tiled]
-            [clojure.data.grid2d :as g2d]))
+            [clojure.data.grid2d :as g2d]
+            [clojure.gdx.tiled :as tiled]))
 
 ; can adjust:
 ; * split percentage , for higher level areas may scale faster (need to be more careful)

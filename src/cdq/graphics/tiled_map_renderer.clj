@@ -1,5 +1,5 @@
 (ns cdq.graphics.tiled-map-renderer ; TODO move to 'tiled' ?
-  (:require [cdq.tiled :as tiled])
+  (:require [clojure.gdx.tiled :as tiled])
   (:import (cdq OrthogonalTiledMapRenderer ColorSetter)))
 
 (defn create [tiled-map world-unit-scale batch]

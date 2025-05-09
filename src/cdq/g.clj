@@ -10,7 +10,6 @@
             [cdq.math.raycaster :as raycaster]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
             [cdq.math.vector2 :as v]
-            [cdq.tiled :as tiled]
             cdq.potential-fields
             [cdq.property :as property]
             [cdq.schema :as schema]
@@ -32,6 +31,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.tiled :as tiled]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]

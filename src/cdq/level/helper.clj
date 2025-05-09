@@ -1,7 +1,7 @@
 (ns cdq.level.helper
   (:require [cdq.utils :refer [assoc-ks]]
-            [cdq.tiled :as tiled]
             [clojure.data.grid2d :as g2d]
+            [clojure.gdx.tiled :as tiled]
             [clojure.rand :refer [sshuffle srand srand-int]]))
 
 (defn creatures-with-level [creature-properties level]
