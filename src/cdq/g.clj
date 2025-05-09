@@ -1,13 +1,11 @@
 (ns cdq.g
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.gdx.interop :as interop]
             [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.grid :as grid]
             [cdq.info :as info]
-            [cdq.input :as input]
             [cdq.inventory :as inventory]
             [cdq.math.raycaster :as raycaster]
             [cdq.math.shapes :refer [circle->outer-rectangle]]
@@ -31,13 +29,15 @@
             [cdq.world.content-grid :as content-grid]
             [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
+            [clojure.gdx :as gdx]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.interop :as interop]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
             [reduce-fsm :as fsm])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx ApplicationAdapter Gdx)
+           (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.assets AssetManager)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.files FileHandle)
@@ -107,7 +107,7 @@
     font))
 
 (defn- load-font [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
+  (let [^BitmapFont font (generate-font (gdx/internal file)
                                         {:size (* size quality-scaling)})]
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
@@ -145,8 +145,8 @@
   (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (.bindRoot #'cursors (utils/mapvals
                         (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (Pixmap. (.internal Gdx/files (str "cursors/" file ".png")))
-                                cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
+                          (let [pixmap (Pixmap. (gdx/internal (str "cursors/" file ".png")))
+                                cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
                             (.dispose pixmap)
                             cursor))
                         cursors))
@@ -178,10 +178,10 @@
 (defn- unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (.getX Gdx/input)
+  (let [mouse-x (clamp (gdx/input-x)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (.getY Gdx/input)
+        mouse-y (clamp (gdx/input-y)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]
@@ -395,7 +395,7 @@
   (.end batch))
 
 (defn set-cursor! [cursor-key]
-  (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
+  (gdx/set-cursor! (utils/safe-get cursors cursor-key)))
 
 (defn- draw-tiled-map
   "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
@@ -471,7 +471,7 @@
                   ([id not-found]
                    (or (ui/find-actor-with-id (Stage/.getRoot this) id)
                        not-found))))]
-    (.setInputProcessor Gdx/input stage)
+    (gdx/set-input-processor! stage)
     (.bindRoot #'stage stage)))
 
 (defn get-actor [id-keyword]
@@ -527,7 +527,7 @@
   (let [manager (AssetManager.)]
     (doseq [[file asset-type] (for [[asset-type extensions] asset-type->extensions
                                     file (map #(str/replace-first % folder "")
-                                              (recursively-search (.internal Gdx/files folder) extensions))]
+                                              (recursively-search (gdx/internal folder) extensions))]
                                 [file asset-type])]
       (.load manager ^String file (case asset-type
                                     :sound Sound
@@ -1415,7 +1415,7 @@
 
 (defn- check-remove-message []
   (when (:text @player-message)
-    (swap! player-message update :counter + (.getDeltaTime Gdx/graphics))
+    (swap! player-message update :counter + (gdx/delta-time))
     (when (>= (:counter @player-message)
               (:duration-seconds @player-message))
       (swap! player-message dissoc :counter :text))))
@@ -1484,7 +1484,7 @@
                     :update-fn (fn [] (camera/zoom (:camera world-viewport)))
                     :icon (asset "images/zoom.png")}
                    {:label "FPS"
-                    :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
+                    :update-fn (fn [] (gdx/frames-per-second))
                     :icon (asset "images/fps.png")}]})
 
 (def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
@@ -1655,11 +1655,11 @@
   (.bindRoot #'paused? (or #_error
                            (and pausing?
                                 (state/pause-game? (entity/state-obj @player-eid))
-                                (not (or (input/key-just-pressed? :p)
-                                         (input/key-pressed?      :space)))))))
+                                (not (or (gdx/key-just-pressed? :p)
+                                         (gdx/key-pressed?      :space)))))))
 
 (defn- update-time! []
-  (let [delta-ms (min (.getDeltaTime Gdx/graphics) max-delta)]
+  (let [delta-ms (min (gdx/delta-time) max-delta)]
     (alter-var-root #'elapsed-time + delta-ms)
     (.bindRoot #'delta-time delta-ms)))
 
@@ -1695,17 +1695,17 @@
 (defn- camera-controls! []
   (let [camera (:camera world-viewport)
         zoom-speed 0.025]
-    (when (input/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
-    (when (input/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed)))))
+    (when (gdx/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
+    (when (gdx/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed)))))
 
 (defn- window-controls! []
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
-            :when (input/key-just-pressed? (get window-hotkeys window-id))]
+            :when (gdx/key-just-pressed? (get window-hotkeys window-id))]
       (ui/toggle-visible! (get (get-actor :windows) window-id))))
-  (when (input/key-just-pressed? :escape)
+  (when (gdx/key-just-pressed? :escape)
     (let [windows (Group/.getChildren (get-actor :windows))]
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))

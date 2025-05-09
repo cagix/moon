@@ -1,16 +1,11 @@
 (ns cdq.dev
   (:require [cdq.g :as g]
+            [cdq.ui :as ui]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.stage :as stage]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]
-            [cdq.ui :refer [scroll-pane] :as ui])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.assets AssetManager)
-           (com.badlogic.gdx.scenes.scene2d Group Stage)
-           (com.badlogic.gdx.scenes.scene2d.ui Tree$Node)
-           (com.kotcrab.vis.ui.widget VisTree)))
-
-(defn post-runnable! [f]
-  (.postRunnable Gdx/app f))
+            [clojure.pprint :refer [pprint]]))
 
 (comment
 
@@ -52,11 +47,12 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (post-runnable! #(g/spawn-creature {:position [35 73]
-                                         :creature-id :creatures/dragon-red
-                                         :components {:entity/fsm {:fsm :fsms/npc
-                                                                   :initial-state :npc-sleeping}
-                                                      :entity/faction :evil}}))
+ (gdx/post-runnable!
+  (g/spawn-creature {:position [35 73]
+                     :creature-id :creatures/dragon-red
+                     :components {:entity/fsm {:fsm :fsms/npc
+                                               :initial-state :npc-sleeping}
+                                  :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
@@ -80,9 +76,6 @@
 
 (defn- mouseover-grid-cell []
   @(g/grid (mapv int (g/world-mouse-position))))
-
-(defn- tree-node ^Tree$Node [actor]
-  (proxy [Tree$Node] [actor]))
 
 (defn- class->label-str [class]
   (case class
@@ -117,7 +110,7 @@
 
 (defn- add-elements! [node elements]
   (doseq [element elements]
-    (.add node (tree-node (ui/label (str (->v-str element)))))))
+    (.add node (ui/tree-node (ui/label (str (->v-str element)))))))
 
 #_(let [ns-sym (first (first (into {} (ns-value-vars))))]
   ;(map ->v-str vars)
@@ -136,14 +129,14 @@
   (when (coll? v)
     (add-elements! node v))
 
-  (when (instance? Stage v)
-    (add-map-nodes! node (children->str-map (.getChildren (Stage/.getRoot v))) level))
+  (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
+    (add-map-nodes! node (children->str-map (group/children (stage/root v))) level))
 
-  (when (instance? Group v)
-    (add-map-nodes! node (children->str-map (Group/.getChildren v)) level))
+  (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
+    (add-map-nodes! node (children->str-map (group/children v)) level))
 
   (when (and (var? v)
-             (instance? AssetManager @v))
+             (instance? com.badlogic.gdx.assets.AssetManager @v))
     (add-map-nodes! node (bean @v) level)))
 
 (comment
@@ -163,7 +156,7 @@
     (doseq [[k v] (into (sorted-map) m)]
       ;(println "add-map-nodes! k " k)
       (try
-       (let [node (tree-node (ui/label (labelstr k v)))]
+       (let [node (ui/tree-node (ui/label (labelstr k v)))]
          (.add parent-tree-node node) ; no tree-node-add!: tree cannot be casted to tree-node ... , Tree itself different .add
 
          #_(when (instance? clojure.lang.Atom v) ; StackOverFLow
@@ -175,7 +168,7 @@
 
        (catch Throwable t
          (throw (ex-info "" {:k k :v v} t))
-         #_(.add parent-tree-node (tree-node (ui/label (str "[RED] "k " - " t))))
+         #_(.add parent-tree-node (ui/tree-node (ui/label (str "[RED] "k " - " t))))
 
          )))))
 
@@ -184,14 +177,14 @@
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})
-        scroll-pane (scroll-pane table)]
+        scroll-pane (ui/scroll-pane table)]
     {:actor scroll-pane
      :width  800 ; (- (:width viewport) 100) ; (+ 100 (/ (:width viewport) 2))
      :height 800 ; (- (:height viewport) 200) ; (- (:height viewport) 50) #_(min (- (:height viewport) 50) (height table))
      }))
 
 (defn- generate-tree [m]
-  (doto (VisTree.)
+  (doto (ui/tree)
     (add-map-nodes! (into (sorted-map) m)
                     0)))
 

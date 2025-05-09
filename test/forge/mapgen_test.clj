@@ -2,8 +2,8 @@
   (:require [cdq.level.modules-core :as modules]
             [cdq.graphics.camera :as camera]
             [cdq.ui :refer [ui-actor text-button] :as ui]
-            [cdq.input :as input]
             [cdq.tiled :as tiled]
+            [clojure.gdx :as gdx]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
   (:import (com.badlogic.gdx.graphics Color)))
@@ -66,16 +66,16 @@
 
 ; TODO textfield takes control !
 ; PLUS symbol shift & = symbol on keyboard not registered
-(defn- camera-controls [input camera]
+(defn- camera-controls [camera]
   (let [apply-position (fn [idx f]
                          (camera/set-position! camera
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (input/key-pressed? input :left)  (apply-position 0 -))
-    (if (input/key-pressed? input :right) (apply-position 0 +))
-    (if (input/key-pressed? input :up)    (apply-position 1 +))
-    (if (input/key-pressed? input :down)  (apply-position 1 -))))
+    (if (gdx/key-pressed? :left)  (apply-position 0 -))
+    (if (gdx/key-pressed? :right) (apply-position 0 +))
+    (if (gdx/key-pressed? :up)    (apply-position 1 +))
+    (if (gdx/key-pressed? :down)  (apply-position 1 -))))
 
 #_(defn- render-on-map [_context]
   (let [{:keys [tiled-map
@@ -130,8 +130,8 @@
 (def ^:private zoom-speed 0.025)
 
 (defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
-  (when (input/key-pressed? input :minus)  (camera/inc-zoom camera    zoom-speed))
-  (when (input/key-pressed? input :equals) (camera/inc-zoom camera (- zoom-speed))))
+  (when (gdx/key-pressed? input :minus)  (camera/inc-zoom camera    zoom-speed))
+  (when (gdx/key-pressed? input :equals) (camera/inc-zoom camera (- zoom-speed))))
 
 (defn enter [_]
   #_(show-whole-map! c/camera (:tiled-map @current-data)))
@@ -143,9 +143,9 @@
   #_(graphics/draw-tiled-map (:tiled-map @current-data)
                              (constantly Color/WHITE))
   #_(cdq.graphics/draw-on-world-view @state render-on-map)
-  #_(if (input/key-just-pressed? :l)
+  #_(if (gdx/key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))
-  #_(if (input/key-just-pressed? :m)
+  #_(if (gdx/key-just-pressed? :m)
       (swap! current-data update :show-movement-properties not))
   #_(adjust-zoom input c/camera)
   #_(camera-controls input c/camera))

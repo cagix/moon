@@ -14,8 +14,9 @@
             [cdq.utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
             [cdq.world.potential-field :as potential-field]
-            [reduce-fsm :as fsm])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor)))
+            [clojure.gdx :as gdx]
+            [clojure.gdx.scene2d.actor :as actor]
+            [reduce-fsm :as fsm]))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -24,7 +25,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (Actor/.isVisible (g/get-inventory))
+     (actor/visible? (g/get-inventory))
      (do
       (g/play-sound! "bfxr_takeit")
       (g/mark-destroyed eid)
@@ -61,11 +62,11 @@
                                               (g/play-sound! "bfxr_denied")
                                               (g/show-player-msg! "Too far away"))]))
 
-(defn- inventory-cell-with-item? [^Actor actor]
-  (and (.getParent actor)
-       (= "inventory-cell" (.getName (.getParent actor)))
+(defn- inventory-cell-with-item? [actor]
+  (and (actor/parent actor)
+       (= "inventory-cell" (actor/name (actor/parent actor)))
        (get-in (:entity/inventory @g/player-eid)
-               (.getUserObject (.getParent actor)))))
+               (actor/user-object (actor/parent actor)))))
 
 (defn- mouseover-actor->cursor []
   (let [actor (g/mouse-on-actor?)]
@@ -130,11 +131,11 @@
     (g/send-event! eid :movement-input movement-vector)
     (let [[cursor on-click] (interaction-state eid)]
       (g/set-cursor! cursor)
-      (when (input/button-just-pressed? :left)
+      (when (gdx/button-just-pressed? :left)
         (on-click)))))
 
 (defmethod entity/manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
-  (when (and (input/button-just-pressed? :left)
+  (when (and (gdx/button-just-pressed? :left)
              (g/world-item?))
     (g/send-event! eid :drop-item)))
 
