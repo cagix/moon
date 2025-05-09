@@ -1,7 +1,6 @@
 (ns cdq.g
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.graphics.animation :as animation]
             [cdq.graphics.camera :as camera]
             [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.grid :as grid]
@@ -18,6 +17,7 @@
             [cdq.ui.menu :as ui.menu]
             [cdq.val-max :as val-max]
             [cdq.world.content-grid :as content-grid]
+            [clojure.data.animation :as animation]
             [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
