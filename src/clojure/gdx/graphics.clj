@@ -1,12 +1,13 @@
 (ns clojure.gdx.graphics
   (:require [clojure.gdx :as gdx]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.math :refer [clamp]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch Batch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math Vector2 MathUtils)
+           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
 (defn sprite-batch []
@@ -65,9 +66,6 @@
         y-down? false]
     (.setToOrtho camera y-down? world-width world-height)
     (fit-viewport world-width world-height camera)))
-
-(defn- clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
 
 ; touch coordinates are y-down, while screen coordinates are y-up
 ; so the clamping of y is reverse, but as black bars are equal it does not matter

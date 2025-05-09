@@ -26,6 +26,7 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.graphics.shape-drawer :as shape-drawer]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose!]]
@@ -48,16 +49,14 @@
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
-           (com.badlogic.gdx.math MathUtils)
            (com.badlogic.gdx.utils ScreenUtils)
-           (com.badlogic.gdx.utils.viewport Viewport)
-           (space.earlygrey.shapedrawer ShapeDrawer)))
+           (com.badlogic.gdx.utils.viewport Viewport)))
 
 (declare ^:private asset-manager)
 
 (declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
-         ^:private ^ShapeDrawer shape-drawer
+         ^:private shape-drawer
          ^:private cursors
          ^:private ^BitmapFont default-font
          ^:private world-unit-scale
@@ -98,7 +97,7 @@
                                  ui-viewport]}]
   (.bindRoot #'batch (graphics/sprite-batch))
   (.bindRoot #'shape-drawer-texture (graphics/white-pixel-texture))
-  (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
+  (.bindRoot #'shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (.bindRoot #'cursors (utils/mapvals
                         (fn [[file [hotspot-x hotspot-y]]]
                           (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
@@ -121,9 +120,6 @@
   (.dispose shape-drawer-texture)
   (run! dispose! (vals cursors))
   (.dispose default-font))
-
-(defn- degree->radians [degree]
-  (* MathUtils/degreesToRadians (float degree)))
 
 (defn mouse-position []
   ; TODO mapv int needed?
@@ -184,98 +180,38 @@
                         :h-align h-align
                         :up? up?}))
 
-(defn- sd-set-color! [color]
-  (.setColor shape-drawer (interop/->color color)))
-
 (defn draw-ellipse [[x y] radius-x radius-y color]
-  (sd-set-color! color)
-  (.ellipse shape-drawer
-            (float x)
-            (float y)
-            (float radius-x)
-            (float radius-y)))
+  (shape-drawer/ellipse! shape-drawer x y radius-x radius-y color))
 
 (defn draw-filled-ellipse [[x y] radius-x radius-y color]
-  (sd-set-color! color)
-  (.filledEllipse shape-drawer
-                  (float x)
-                  (float y)
-                  (float radius-x)
-                  (float radius-y)))
+  (shape-drawer/filled-ellipse! shape-drawer x y radius-x radius-y color))
 
 (defn draw-circle [[x y] radius color]
-  (sd-set-color! color)
-  (.circle shape-drawer
-           (float x)
-           (float y)
-           (float radius)))
+  (shape-drawer/circle! shape-drawer x y radius color))
 
 (defn draw-filled-circle [[x y] radius color]
-  (sd-set-color! color)
-  (.filledCircle shape-drawer
-                 (float x)
-                 (float y)
-                 (float radius)))
+  (shape-drawer/filled-circle! shape-drawer x y radius color))
 
 (defn draw-arc [[center-x center-y] radius start-angle degree color]
-  (sd-set-color! color)
-  (.arc shape-drawer
-        (float center-x)
-        (float center-y)
-        (float radius)
-        (float (degree->radians start-angle))
-        (float (degree->radians degree))))
+  (shape-drawer/arc! shape-drawer center-x center-y radius start-angle degree color))
 
 (defn draw-sector [[center-x center-y] radius start-angle degree color]
-  (sd-set-color! color)
-  (.sector shape-drawer
-           (float center-x)
-           (float center-y)
-           (float radius)
-           (float (degree->radians start-angle))
-           (float (degree->radians degree))))
+  (shape-drawer/sector! shape-drawer center-x center-y radius start-angle degree color))
 
 (defn draw-rectangle [x y w h color]
-  (sd-set-color! color)
-  (.rectangle shape-drawer
-              (float x)
-              (float y)
-              (float w)
-              (float h)))
+  (shape-drawer/rectangle! shape-drawer x y w h color))
 
 (defn draw-filled-rectangle [x y w h color]
-  (sd-set-color! color)
-  (.filledRectangle shape-drawer
-                    (float x)
-                    (float y)
-                    (float w)
-                    (float h)))
+  (shape-drawer/filled-rectangle! shape-drawer x y w h color))
 
 (defn draw-line [[sx sy] [ex ey] color]
-  (sd-set-color! color)
-  (.line shape-drawer
-         (float sx)
-         (float sy)
-         (float ex)
-         (float ey)))
+  (shape-drawer/line! shape-drawer sx sy ex ey color))
 
 (defn with-line-width [width draw-fn]
-  (let [old-line-width (.getDefaultLineWidth shape-drawer)]
-    (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
-    (draw-fn)
-    (.setDefaultLineWidth shape-drawer (float old-line-width))))
+  (shape-drawer/with-line-width shape-drawer width draw-fn))
 
 (defn draw-grid [leftx bottomy gridw gridh cellw cellh color]
-  (let [w (* (float gridw) (float cellw))
-        h (* (float gridh) (float cellh))
-        topy (+ (float bottomy) (float h))
-        rightx (+ (float leftx) (float w))]
-    (doseq [idx (range (inc (float gridw)))
-            :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
-      (draw-line shape-drawer [linex topy] [linex bottomy] color))
-    (doseq [idx (range (inc (float gridh)))
-            :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
-      (draw-line shape-drawer [leftx liney] [rightx liney] color))))
+  (shape-drawer/grid! shape-drawer color))
 
 (defn- draw-on-world-view! [f]
   (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
