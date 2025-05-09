@@ -43,7 +43,7 @@
             [reduce-fsm :as fsm])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter)
+           (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
