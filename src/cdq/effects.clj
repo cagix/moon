@@ -2,8 +2,8 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
-            [cdq.math.raycaster :as raycaster]
-            [cdq.math.vector2 :as v]
+            [clojure.gdx.math.raycaster :as raycaster]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]]
             [clojure.utils :refer [defcomponent]]))
 

@@ -1,20 +1,13 @@
 (ns cdq.g
   (:require [cdq.entity :as entity]
             [cdq.entity.state :as state]
-            [cdq.graphics.camera :as camera]
-            [cdq.graphics.tiled-map-renderer :as tiled-map-renderer]
             [cdq.grid :as grid]
             [cdq.info :as info]
             [cdq.inventory :as inventory]
-            [cdq.math.raycaster :as raycaster]
-            [cdq.math.shapes :refer [circle->outer-rectangle]]
-            [cdq.math.vector2 :as v]
             cdq.potential-fields
             [cdq.property :as property]
             [cdq.schema :as schema]
-            [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.menu :as ui.menu]
             [cdq.val-max :as val-max]
             [cdq.world.content-grid :as content-grid]
             [clojure.data.animation :as animation]
@@ -26,9 +19,15 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.graphics :as graphics]
+            [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as shape-drawer]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.scene2d.ui :as ui :refer [ui-actor]]
+            [clojure.gdx.scene2d.ui.menu :as ui.menu]
             [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.math :refer [circle->outer-rectangle]]
+            [clojure.gdx.math.raycaster :as raycaster]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.java.io :as io]
             [clojure.string :as str]
@@ -107,9 +106,9 @@
   (.bindRoot #'world-unit-scale (float (/ tile-size)))
   (.bindRoot #'world-viewport (graphics/world-viewport world-unit-scale world-viewport))
   (.bindRoot #'get-tiled-map-renderer (memoize (fn [tiled-map]
-                                                 (tiled-map-renderer/create tiled-map
-                                                                            world-unit-scale
-                                                                            batch))))
+                                                 (tiled/renderer tiled-map
+                                                                 world-unit-scale
+                                                                 batch))))
   (.bindRoot #'ui-viewport (graphics/fit-viewport (:width  ui-viewport)
                                                   (:height ui-viewport))))
 
@@ -233,10 +232,10 @@
 
   Renders only visible layers."
   [tiled-map color-setter]
-  (tiled-map-renderer/draw! (get-tiled-map-renderer tiled-map)
-                            tiled-map
-                            color-setter
-                            (:camera world-viewport)))
+  (tiled/draw! (get-tiled-map-renderer tiled-map)
+               tiled-map
+               color-setter
+               (:camera world-viewport)))
 
 (defn- scale-dimensions [dimensions scale]
   (mapv (comp float (partial * scale)) dimensions))

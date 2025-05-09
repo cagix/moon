@@ -6,15 +6,15 @@
             [cdq.grid :as grid]
             [cdq.input :as input]
             [cdq.inventory :as inventory]
-            [cdq.math.vector2 :as v]
             [cdq.schema :as schema]
             [cdq.skill :as skill]
-            [cdq.ui :as ui]
             [cdq.val-max :as val-max]
             [cdq.world.potential-field :as potential-field]
             [clojure.data.animation :as animation]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.ui :as ui]
+            [clojure.gdx.math.vector2 :as v]
             [clojure.utils :refer [defcomponent find-first]]
             [reduce-fsm :as fsm]))
 

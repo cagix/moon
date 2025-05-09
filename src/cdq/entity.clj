@@ -1,8 +1,8 @@
 (ns cdq.entity
-  (:require [cdq.math.vector2 :as v]
-            [cdq.schema :as s]
-            [cdq.math.shapes :as shape]
-            [cdq.operation :as op]))
+  (:require [cdq.schema :as s]
+            [cdq.operation :as op]
+            [clojure.gdx.math :as math]
+            [clojure.gdx.math.vector2 :as v]))
 
 (defmulti clicked-inventory-cell (fn [[k] cell]
                                    k))
@@ -60,7 +60,7 @@
   (v/direction (:position entity) (:position other-entity)))
 
 (defn collides? [entity other-entity]
-  (shape/overlaps? entity other-entity))
+  (math/overlaps? entity other-entity))
 
 (defn tile [entity]
   (mapv int (:position entity)))

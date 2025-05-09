@@ -1,6 +1,6 @@
 (ns cdq.ui.action-bar
-  (:require [cdq.ui :as ui :refer [ui-actor]]
-            [cdq.info :as info])
+  (:require [cdq.info :as info]
+            [clojure.gdx.scene2d.ui :as ui :refer [ui-actor]])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 

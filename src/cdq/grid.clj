@@ -1,8 +1,8 @@
 (ns cdq.grid
-  (:require [cdq.math.shapes :refer [rectangle->tiles
-                                     circle->outer-rectangle
-                                     overlaps?
-                                     rect-contains?]]))
+  (:require [clojure.gdx.math :refer [rectangle->tiles
+                                      circle->outer-rectangle
+                                      overlaps?
+                                      rect-contains?]]))
 
 (defn rectangle->cells [grid rectangle]
   (into [] (keep grid) (rectangle->tiles rectangle)))

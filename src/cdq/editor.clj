@@ -2,23 +2,23 @@
   (:require [cdq.g :as g]
             [cdq.property :as property]
             [cdq.schema :as schema]
-            [cdq.ui :refer [horizontal-separator-cell
-                            vertical-separator-cell
-                            ui-actor
-                            image-button
-                            text-button
-                            *on-clicked-actor*
-                            find-ancestor-window
-                            pack-ancestor-window!
-                            image->widget
-                            ui-stack
-                            text-field
-                            add-tooltip!]
-             :as ui]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.ui :refer [horizontal-separator-cell
+                                            vertical-separator-cell
+                                            ui-actor
+                                            image-button
+                                            text-button
+                                            *on-clicked-actor*
+                                            find-ancestor-window
+                                            pack-ancestor-window!
+                                            image->widget
+                                            ui-stack
+                                            text-field
+                                            add-tooltip!]
+             :as ui]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.string :as str]
             [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]))

@@ -1,6 +1,6 @@
 (ns cdq.input
-  (:require [cdq.math.vector2 :as v]
-            [clojure.gdx :as gdx]))
+  (:require [clojure.gdx :as gdx]
+            [clojure.gdx.math.vector2 :as v]))
 
 (defn player-movement-vector []
   (let [r (when (gdx/key-pressed? :d) [1  0])

@@ -1,9 +1,9 @@
 (ns cdq.dev
   (:require [cdq.g :as g]
-            [cdq.ui :as ui]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
+            [clojure.gdx.scene2d.ui :as ui]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
