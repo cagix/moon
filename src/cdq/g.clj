@@ -61,7 +61,7 @@
          ^:private cursors
          ^:private ^BitmapFont default-font
          ^:private world-unit-scale
-         world-viewport
+         ^:private world-viewport
          ^:private get-tiled-map-renderer
          ^:private ^:dynamic *unit-scale*
          ui-viewport)
