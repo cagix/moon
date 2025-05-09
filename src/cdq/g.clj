@@ -27,6 +27,7 @@
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
+            [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -164,7 +165,7 @@
 (defn- dispose-graphics! []
   (.dispose batch)
   (.dispose shape-drawer-texture)
-  (run! gdx/dispose! (vals cursors))
+  (run! dispose! (vals cursors))
   (.dispose default-font))
 
 (defn- clamp [value min max]
@@ -532,7 +533,7 @@
     (.bindRoot #'asset-manager (asset-manager/create assets))))
 
 (defn- dispose-asset-manager! []
-  (gdx/dispose! asset-manager))
+  (dispose! asset-manager))
 
 (defn assets-of-type [asset-type]
   (asset-manager/all-of-type asset-manager asset-type))

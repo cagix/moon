@@ -1,7 +1,6 @@
 (ns clojure.gdx
   (:require [clojure.gdx.interop :as interop])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.utils Disposable)))
+  (:import (com.badlogic.gdx Gdx)))
 
 (defmacro post-runnable! [& exprs]
   `(.postRunnable Gdx/app (fn [] ~@exprs)))
@@ -38,6 +37,3 @@
 
 (defn key-pressed? [key]
   (.isKeyPressed Gdx/input (interop/k->input-key key)))
-
-(defn dispose! [disposable]
-  (Disposable/.dispose disposable))
