@@ -22,7 +22,9 @@
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.asset-manager :as asset-manager]
+            [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
             [clojure.java.io :as io]
@@ -39,8 +41,6 @@
             [reduce-fsm :as fsm])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
@@ -145,7 +145,7 @@
   (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (.bindRoot #'cursors (utils/mapvals
                         (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (Pixmap. ^FileHandle (gdx/internal (str "cursors/" file ".png")))
+                          (let [pixmap (Pixmap. ^com.badlogic.gdx.files.FileHandle (gdx/internal (str "cursors/" file ".png")))
                                 cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
                             (.dispose pixmap)
                             cursor))
@@ -508,17 +508,17 @@
                          :center? true
                          :pack? true})))
 
-(defn- recursively-search [^FileHandle folder extensions]
-  (loop [[^FileHandle file & remaining] (.list folder)
+(defn- recursively-search [folder extensions]
+  (loop [[file & remaining] (file-handle/list folder)
          result []]
     (cond (nil? file)
           result
 
-          (.isDirectory file)
-          (recur (concat remaining (.list file)) result)
+          (file-handle/directory? file)
+          (recur (concat remaining (file-handle/list file)) result)
 
-          (extensions (.extension file))
-          (recur remaining (conj result (.path file)))
+          (extensions (file-handle/extension file))
+          (recur remaining (conj result (file-handle/path file)))
 
           :else
           (recur remaining result))))
@@ -665,7 +665,7 @@
   (->> sound-name
        (format "sounds/%s.wav")
        asset
-       Sound/.play))
+       sound/play!))
 
 (defn ->timer [duration]
   {:pre [(>= duration 0)]}
