@@ -48,7 +48,7 @@
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
-           (com.badlogic.gdx.math Vector2 MathUtils)
+           (com.badlogic.gdx.math MathUtils)
            (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
@@ -122,34 +122,17 @@
   (run! dispose! (vals cursors))
   (.dispose default-font))
 
-(defn- clamp [value min max]
-  (MathUtils/clamp (float value) (float min) (float max)))
-
 (defn- degree->radians [degree]
   (* MathUtils/degreesToRadians (float degree)))
 
-; touch coordinates are y-down, while screen coordinates are y-up
-; so the clamping of y is reverse, but as black bars are equal it does not matter
-(defn- unproject-mouse-position
-  "Returns vector of [x y]."
-  [viewport]
-  (let [mouse-x (clamp (gdx/input-x)
-                       (:left-gutter-width viewport)
-                       (:right-gutter-x    viewport))
-        mouse-y (clamp (gdx/input-y)
-                       (:top-gutter-height viewport)
-                       (:top-gutter-y      viewport))]
-    (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]
-      [(.x v2) (.y v2)])))
-
 (defn mouse-position []
   ; TODO mapv int needed?
-  (mapv int (unproject-mouse-position ui-viewport)))
+  (mapv int (graphics/unproject-mouse-position ui-viewport)))
 
 (defn world-mouse-position []
   ; TODO clamping only works for gui-viewport ? check. comment if true
   ; TODO ? "Can be negative coordinates, undefined cells."
-  (unproject-mouse-position world-viewport))
+  (graphics/unproject-mouse-position world-viewport))
 
 (defn pixels->world-units [pixels]
   (* (int pixels) world-unit-scale))

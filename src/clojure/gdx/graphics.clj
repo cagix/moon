@@ -5,7 +5,8 @@
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch )
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.utils.viewport FitViewport)))
+           (com.badlogic.gdx.math Vector2 MathUtils)
+           (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
 
 (defn sprite-batch []
   (SpriteBatch.))
@@ -63,3 +64,20 @@
         y-down? false]
     (.setToOrtho camera y-down? world-width world-height)
     (fit-viewport world-width world-height camera)))
+
+(defn- clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
+
+; touch coordinates are y-down, while screen coordinates are y-up
+; so the clamping of y is reverse, but as black bars are equal it does not matter
+(defn unproject-mouse-position
+  "Returns vector of [x y]."
+  [viewport]
+  (let [mouse-x (clamp (gdx/input-x)
+                       (:left-gutter-width viewport)
+                       (:right-gutter-x    viewport))
+        mouse-y (clamp (gdx/input-y)
+                       (:top-gutter-height viewport)
+                       (:top-gutter-y      viewport))]
+    (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]
+      [(.x v2) (.y v2)])))
