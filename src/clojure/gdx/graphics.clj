@@ -1,9 +1,10 @@
 (ns clojure.gdx.graphics
   (:require [clojure.gdx :as gdx]
-            [clojure.gdx.interop :as interop])
+            [clojure.gdx.interop :as interop]
+            [clojure.string :as str])
   (:import (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch )
+           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch Batch)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
@@ -81,3 +82,48 @@
                        (:top-gutter-y      viewport))]
     (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]
       [(.x v2) (.y v2)])))
+
+(defn draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
+  (if color (.setColor batch color))
+  (.draw batch
+         texture-region
+         x
+         y
+         (/ (float w) 2) ; rotation origin
+         (/ (float h) 2)
+         w
+         h
+         1 ; scale-x
+         1 ; scale-y
+         rotation)
+  (if color (.setColor batch Color/WHITE)))
+
+(defn- text-height [^BitmapFont font text]
+  (-> text
+      (str/split #"\n")
+      count
+      (* (.getLineHeight font))))
+
+(defn draw-text! [{:keys [^BitmapFont font
+                          scale
+                          batch
+                          x
+                          y
+                          text
+                          h-align
+                          up?]}]
+  (let [data (.getData font)
+        old-scale (float (.scaleX data))
+        new-scale (float (* old-scale (float scale)))
+        target-width (float 0)
+        wrap? false]
+    (.setScale data new-scale)
+    (.draw font
+           batch
+           text
+           (float x)
+           (float (+ y (if up? (text-height font text) 0)))
+           target-width
+           (interop/k->align (or h-align :center))
+           wrap?)
+    (.setScale data old-scale)))

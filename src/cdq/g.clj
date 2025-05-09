@@ -142,40 +142,25 @@
     (:world-unit-dimensions image)
     (:pixel-dimensions image)))
 
-(defn- draw-texture-region [^Batch batch texture-region [x y] [w h] rotation color]
-  (if color (.setColor batch color))
-  (.draw batch
-         texture-region
-         x
-         y
-         (/ (float w) 2) ; rotation origin
-         (/ (float h) 2)
-         w
-         h
-         1 ; scale-x
-         1 ; scale-y
-         rotation)
-  (if color (.setColor batch Color/WHITE)))
-
 (defn draw-image
   [{:keys [texture-region color] :as image} position]
-  (draw-texture-region batch
-                       texture-region
-                       position
-                       (unit-dimensions image)
-                       0 ; rotation
-                       color))
+  (graphics/draw-texture-region batch
+                                texture-region
+                                position
+                                (unit-dimensions image)
+                                0 ; rotation
+                                color))
 
 (defn draw-rotated-centered
   [{:keys [texture-region color] :as image} rotation [x y]]
   (let [[w h] (unit-dimensions image)]
-    (draw-texture-region batch
-                         texture-region
-                         [(- (float x) (/ (float w) 2))
-                          (- (float y) (/ (float h) 2))]
-                         [w h]
-                         rotation
-                         color)))
+    (graphics/draw-texture-region batch
+                                  texture-region
+                                  [(- (float x) (/ (float w) 2))
+                                   (- (float y) (/ (float h) 2))]
+                                  [w h]
+                                  rotation
+                                  color)))
 
 (defn draw-centered [image position]
   (draw-rotated-centered image 0 position))
@@ -183,51 +168,21 @@
 (defn- set-camera-position! [position]
   (camera/set-position! (:camera world-viewport) position))
 
-(defn- text-height [^BitmapFont font text]
-  (-> text
-      (str/split #"\n")
-      count
-      (* (.getLineHeight font))))
-
-(defn- draw-text* [{:keys [^BitmapFont font
-                           scale
-                           batch
-                           x
-                           y
-                           text
-                           h-align
-                           up?]}]
-  (let [data (.getData font)
-        old-scale (float (.scaleX data))
-        new-scale (float (* old-scale (float scale)))
-        target-width (float 0)
-        wrap? false]
-    (.setScale data new-scale)
-    (.draw font
-           batch
-           text
-           (float x)
-           (float (+ y (if up? (text-height font text) 0)))
-           target-width
-           (interop/k->align (or h-align :center))
-           wrap?)
-    (.setScale data old-scale)))
-
 (defn draw-text
   "font, h-align, up? and scale are optional.
   h-align one of: :center, :left, :right. Default :center.
   up? renders the font over y, otherwise under.
   scale will multiply the drawn text size with the scale."
   [{:keys [font scale x y text h-align up?]}]
-  (draw-text* {:font (or font default-font)
-               :scale (* (float (if (bound? #'*unit-scale*) *unit-scale* 1))
-                         (float (or scale 1)))
-               :batch batch
-               :x x
-               :y y
-               :text text
-               :h-align h-align
-               :up? up?}))
+  (graphics/draw-text! {:font (or font default-font)
+                        :scale (* (float (if (bound? #'*unit-scale*) *unit-scale* 1))
+                                  (float (or scale 1)))
+                        :batch batch
+                        :x x
+                        :y y
+                        :text text
+                        :h-align h-align
+                        :up? up?}))
 
 (defn- sd-set-color! [color]
   (.setColor shape-drawer (interop/->color color)))
