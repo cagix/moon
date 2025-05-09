@@ -43,8 +43,8 @@
             [reduce-fsm :as fsm])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
+           (com.badlogic.gdx.graphics Color Texture Texture$TextureFilter)
+           (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
@@ -96,19 +96,14 @@
                                  tile-size
                                  world-viewport
                                  ui-viewport]}]
-  (.bindRoot #'batch (SpriteBatch.))
-  (.bindRoot #'shape-drawer-texture (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                                                   (.setColor Color/WHITE)
-                                                   (.drawPixel 0 0))
-                                          texture (Texture. pixmap)]
-                                      (.dispose pixmap)
-                                      texture))
+  (.bindRoot #'batch (graphics/sprite-batch))
+  (.bindRoot #'shape-drawer-texture (graphics/white-pixel-texture))
   (.bindRoot #'shape-drawer (ShapeDrawer. batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
   (.bindRoot #'cursors (utils/mapvals
                         (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (Pixmap. ^com.badlogic.gdx.files.FileHandle (gdx/internal (str "cursors/" file ".png")))
+                          (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
                                 cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
-                            (.dispose pixmap)
+                            (dispose! pixmap)
                             cursor))
                         cursors))
   (.bindRoot #'default-font (graphics/truetype-font default-font))
