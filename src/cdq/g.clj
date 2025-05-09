@@ -1701,17 +1701,6 @@
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 
-; 'cdq.g' -> start with '-main' -> has the API for all state stuff
-; and nothing else
-; -> all logic into sub-namespaces
-
-; 4. cdq.graphics
-
-; then * metadocs
-; * and highlight namspace local vars so no overlap
-; 'blue' ?
-; or list all vars and check if contains (test)
-
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (doseq [ns-sym (:requires config)]
@@ -1722,17 +1711,14 @@
                           (create []
                             (create-asset-manager! (:assets config))
                             (create-graphics! (:graphics config))
-                            (ui/load! (:vis-ui config)
-                                       ; we have to pass batch as we use our draw-image/shapes with our other batch inside stage actors
-                                      ; -> tests ?, otherwise could use custom batch also from stage itself and not depend on 'graphics', also pass ui-viewport and dont put in graphics
-                                      ) ; TODO we don't do dispose! ....
+                            (ui/load! (:vis-ui config)) ; TODO we don't do dispose!
                             (init-stage!)
                             (reset-game! (:world-fn config)))
 
                           (dispose []
                             (dispose-asset-manager!)
                             (dispose-graphics!)
-                            ; TODO dispose tiled-map !! also @ reset-game ?!
+                            ; TODO dispose world tiled-map/level resources?
                             )
 
                           (render []
