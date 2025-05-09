@@ -1,4 +1,4 @@
-(ns cdq.utils
+(ns clojure.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]))
 
 (defn pretty-pst [t]

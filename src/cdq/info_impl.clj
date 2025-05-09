@@ -3,9 +3,9 @@
             [cdq.g :as g]
             [cdq.info :refer [info-segment]]
             [cdq.operation :as op]
-            [cdq.utils :refer [readable-number]]
             [clojure.math :as math]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.utils :refer [readable-number]])
   (:import (com.badlogic.gdx.graphics Color Colors)))
 
 (Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))

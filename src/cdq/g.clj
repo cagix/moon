@@ -16,14 +16,6 @@
             [cdq.ui :as ui :refer [ui-actor]]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.menu :as ui.menu]
-            [cdq.utils :as utils :refer [readable-number
-                                         pretty-pst
-                                         sort-by-order
-                                         define-order
-                                         safe-merge
-                                         tile->middle
-                                         pretty-pst
-                                         with-err-str]]
             [cdq.val-max :as val-max]
             [cdq.world.content-grid :as content-grid]
             [clojure.data.grid2d :as g2d]
@@ -35,6 +27,14 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
+            [clojure.utils :as utils :refer [readable-number
+                                             pretty-pst
+                                             sort-by-order
+                                             define-order
+                                             safe-merge
+                                             tile->middle
+                                             pretty-pst
+                                             with-err-str]]
             [reduce-fsm :as fsm])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx ApplicationAdapter)

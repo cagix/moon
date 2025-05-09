@@ -15,13 +15,13 @@
                             text-field
                             add-tooltip!]
              :as ui]
-            [cdq.utils :refer [truncate ->edn-str find-first sort-by-k-order]]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui.table :as table]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]))
 
 (defn- property->image [{:keys [entity/image entity/animation]}]
   (or image

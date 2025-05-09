@@ -11,11 +11,11 @@
             [cdq.schema :as schema]
             [cdq.skill :as skill]
             [cdq.ui :as ui]
-            [cdq.utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
             [cdq.world.potential-field :as potential-field]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.utils :refer [defcomponent find-first]]
             [reduce-fsm :as fsm]))
 
 (defmulti ^:private on-clicked
