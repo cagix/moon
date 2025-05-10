@@ -107,7 +107,7 @@
 (def ^:private world-id :worlds/uf-caves)
 
 #_(defn- generate-screen-ctx [c properties]
-  (let [{:keys [tiled-map start-position]} (generate-level (db/build world-id))
+  (let [{:keys [tiled-map start-position]} (generate-level (bb/build ctx/db world-id))
         atom-data (current-data)]
     (tiled/dispose (:tiled-map @atom-data))
     (swap! atom-data assoc
@@ -120,8 +120,8 @@
 #_(defn ->generate-map-window [c level-id]
   (ui/window {:title "Properties"
               :cell-defaults {:pad 10}
-              :rows [[(ui/label (with-out-str (pprint (db/build level-id))))]
-                     [(text-button "Generate" #(try (generate-screen-ctx c (db/build level-id))
+              :rows [[(ui/label (with-out-str (pprint (bb/build ctx/db level-id))))]
+                     [(text-button "Generate" #(try (generate-screen-ctx c (db/build ctx/db level-id))
                                                     (catch Throwable t
                                                       #_(stage/error-window! t)
                                                       (println t))))]]

@@ -1,9 +1,11 @@
 (ns cdq.ui.editor
   (:require [cdq.assets :as assets]
             [cdq.ctx :as ctx]
+            [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
             [cdq.g :as g]
+            [cdq.g.db :as g.db]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]
@@ -30,7 +32,7 @@
       (first (:frames animation))))
 
 (defn- get-schemas []
-  @(var g/-schemas))
+  (:schemas ctx/db))
 
 (defn- info-text [property]
   (binding [*print-level* 3]
@@ -90,8 +92,12 @@
                            :close-on-escape? true
                            :cell-defaults {:pad 5}})
         widget (schema->widget schema props)
-        save!   (apply-context-fn window #(g/update! (->value schema widget)))
-        delete! (apply-context-fn window #(g/delete! (:property/id props)))]
+        save!   (apply-context-fn window #(do
+                                           (alter-var-root #'ctx/db db/update (->value schema widget))
+                                           (db/save! ctx/db)))
+        delete! (apply-context-fn window #(do
+                                           (alter-var-root #'ctx/db db/delete (:property/id props))
+                                           (db/save! ctx/db)))]
     (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
                                               [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
                                                 :center? true}
@@ -213,7 +219,7 @@
                 extra-info-text
                 columns
                 image/scale]} (overview property-type)
-        properties (g/build-all property-type)
+        properties (db/build-all ctx/db property-type)
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
@@ -246,7 +252,7 @@
                         (.pack window)
                         (g/add-actor window))))]
       (for [property-id property-ids]
-        (let [property (g/build property-id)
+        (let [property (db/build ctx/db property-id)
               image-widget (image->widget (property->image property)
                                           {:id property-id})]
           (add-tooltip! image-widget #(info-text property))))
@@ -285,7 +291,7 @@
                           (.pack window)
                           (g/add-actor window)))))]
       [(when property-id
-         (let [property (g/build property-id)
+         (let [property (db/build ctx/db property-id)
                image-widget (image->widget (property->image property)
                                            {:id property-id})]
            (add-tooltip! image-widget #(info-text property))
@@ -442,7 +448,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (schema/edn->value schema image)
+  (image-button (g.db/edn->value schema image ctx/db)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -451,7 +457,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (schema/edn->value :s/image image)
+                      (image-button (g.db/edn->value :s/image image ctx/db)
                                     (fn on-clicked [])
                                     {:scale 2}))]
              :cell-defaults {:pad 1}}))
@@ -459,7 +465,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn edit-property [id]
-  (g/add-actor (editor-window (g/get-raw id))))
+  (g/add-actor (editor-window (db/get-raw ctx/db id))))
 
 ; TODO unused code below
 

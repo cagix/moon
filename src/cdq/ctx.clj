@@ -9,4 +9,7 @@
 
  ^{:doc "Instance of [[cdq.graphics/Graphics]]."}
  graphics
+
+ ^{:doc "[[cdq.db/DB]]"}
+ db
  )

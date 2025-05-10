@@ -1,6 +1,7 @@
 (ns cdq.impl.entity
   (:require [cdq.ctx :as ctx]
             [cdq.data.val-max :as val-max]
+            [cdq.db :as db]
             [cdq.db.schema :as schema]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -585,7 +586,7 @@
 
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid]
-    (g/spawn-audiovisual (:position @eid) (g/build audiovisuals-id))))
+    (g/spawn-audiovisual (:position @eid) (db/build ctx/db audiovisuals-id))))
 
 (defcomponent :npc-dead
   (state/enter! [[_ {:keys [eid]}]]

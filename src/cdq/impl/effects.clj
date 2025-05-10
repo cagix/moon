@@ -1,5 +1,7 @@
 (ns cdq.impl.effects
-  (:require [cdq.effect :as effect]
+  (:require [cdq.ctx :as ctx]
+            [cdq.db :as db]
+            [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
@@ -169,7 +171,7 @@
                          :thick? true})
          (effect/do-all! effect-ctx entity-effects))
         (g/spawn-audiovisual (entity/end-point source* target* maxrange)
-                             (g/build :audiovisuals/hit-ground)))))
+                             (db/build ctx/db :audiovisuals/hit-ground)))))
 
   (effect/render [[_ {:keys [maxrange]}]
                   {:keys [effect/source effect/target]}
@@ -242,7 +244,7 @@
              dmg-amount (rand-int-between min-max)
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
-         (g/spawn-audiovisual (:position target*) (g/build :audiovisuals/damage))
+         (g/spawn-audiovisual (:position target*) (db/build ctx/db :audiovisuals/damage))
          (g/send-event! target (if (zero? new-hp-val) :kill :alert))
          (g/add-text-effect! target (str "[RED]" dmg-amount "[]")))))))
 

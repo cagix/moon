@@ -14,13 +14,6 @@
 (defmulti malli-form (fn [schema _schemas] (type schema)))
 (defmethod malli-form :default [schema _schemas] schema)
 
-(defmulti edn->value (fn [schema v]
-                       (when schema  ; undefined-data-ks
-                         (type schema))))
-
-(defmethod edn->value :default [_schema v]
-  v)
-
 (defn schema-of [schemas k]
   (assert (contains? schemas k) (pr-str k))
   (get schemas k))
