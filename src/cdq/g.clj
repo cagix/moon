@@ -821,7 +821,7 @@
                     :update-fn (fn [] (str (readable-number ctx/elapsed-time) " seconds"))
                     :icon (ctx/assets "images/clock.png")}
                    {:label "paused?"
-                    :update-fn (fn [] (:paused? ctx/world))}
+                    :update-fn (fn [] ctx/paused?)}
                    {:label "GUI"
                     :update-fn (fn [] (graphics/mouse-position ctx/graphics))}
                    {:label "World"
@@ -1098,8 +1098,8 @@
                             (stage/act! stage)
                             (state/manual-tick (entity/state-obj @ctx/player-eid))
                             (update-mouseover-entity!)
-                            (alter-var-root #'ctx/world assoc :paused? (pause-game?))
-                            (when-not (:paused? ctx/world)
+                            (.bindRoot #'ctx/paused? (pause-game?))
+                            (when-not ctx/paused?
                               (let [delta-ms (min (gdx/delta-time) max-delta)]
                                 (alter-var-root #'ctx/elapsed-time + delta-ms)
                                 (.bindRoot #'ctx/delta-time delta-ms))

@@ -16,6 +16,7 @@
 
          elapsed-time
          delta-time
-         player-eid)
+         player-eid
+         paused?)
 
 (def mouseover-eid nil)

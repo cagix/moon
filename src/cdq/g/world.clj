@@ -74,8 +74,7 @@
                   explored-tile-corners
                   entity-ids
                   potential-field-cache
-                  active-entities
-                  paused?]
+                  active-entities]
   world/World
   (cell [_ position]
     ; assert/document integer ?
@@ -97,5 +96,4 @@
                                                                (constantly false)))
                  :entity-ids (atom {})
                  :potential-field-cache (atom nil)
-                 :active-entities nil
-                 :paused? nil})))
+                 :active-entities nil})))
