@@ -52,15 +52,15 @@
 
 (declare elapsed-time)
 
-(declare tiled-map
+(declare ^:private tiled-map
          ^:private content-grid
          ^:private entity-ids
-         explored-tile-corners
+         ^:private explored-tile-corners
          grid
          raycaster
-         potential-field-cache
+         ^:private potential-field-cache
          player-eid
-         active-entities
+         ^:private active-entities
          delta-time)
 
 (def mouseover-eid nil)
