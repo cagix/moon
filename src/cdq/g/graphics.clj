@@ -204,7 +204,7 @@
     (map->Graphics
      {:batch batch
       :shape-drawer-texture  shape-drawer-texture
-      :shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1))
+      :shape-drawer (shape-drawer/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
