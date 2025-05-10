@@ -1,8 +1,10 @@
 (ns cdq.g.world
-  (:require [cdq.world.content-grid :as content-grid]
+  (:require [cdq.world :as world]
+            [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             [clojure.data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
+            [clojure.timer :as timer]
             [clojure.utils :as utils]))
 
 (defrecord RCell [position
@@ -78,7 +80,21 @@
                   elapsed-time
                   delta-time
                   paused?
-                  mouseover-eid])
+                  mouseover-eid]
+  world/World
+  (cell [_ position]
+    ; assert/document integer ?
+    (grid position)
+    )
+
+  (timer [_ duration]
+    (timer/create elapsed-time duration))
+  (stopped? [_ timer]
+    (timer/stopped? elapsed-time timer))
+  (reset-timer [_ timer]
+    (timer/reset elapsed-time timer))
+  (timer-ratio [_ timer]
+    (timer/ratio elapsed-time timer)))
 
 (defn create [{:keys [tiled-map start-position]}]
   (let [width  (tiled/tm-width  tiled-map)

@@ -3,6 +3,7 @@
             [cdq.db :as db]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
+            [cdq.world :as world]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
@@ -16,7 +17,7 @@
 
  ; use post-runnable! to get proper error messages in console
 
- (show-tree-view! "Mouseover Entity" @(:mouseover-eid ctx/world))
+ (show-tree-view! "Mouseover Entity" (:mouseover-eid ctx/world))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
 
@@ -78,7 +79,7 @@
   (g/spawn-item (:position @(:player-eid ctx/world)) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
-  @((:grid ctx/world) (mapv int (graphics/world-mouse-position ctx/graphics))))
+  @(world/cell ctx/world (mapv int (graphics/world-mouse-position ctx/graphics))))
 
 (defn- class->label-str [class]
   (case class

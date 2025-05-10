@@ -11,6 +11,7 @@
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
+            [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
             [clojure.data.animation :as animation]
@@ -233,10 +234,10 @@
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
-    (g/->timer duration))
+    (world/timer ctx/world duration))
 
   (entity/tick! [[_ counter] eid]
-    (when (g/stopped? counter)
+    (when (world/stopped? ctx/world counter)
       (g/mark-destroyed eid))))
 
 (defmethod entity/create :entity/hp [[_ v]]
@@ -260,7 +261,7 @@
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 g/->timer)})
+                 (world/timer ctx/world))})
 
 (defmethod entity/create :npc-dead [[_ eid]]
   {:eid eid})
@@ -271,7 +272,7 @@
 (defmethod entity/create :npc-moving [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector
-   :counter (g/->timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
+   :counter (world/timer ctx/world (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
 (defmethod entity/create :npc-sleeping [[_ eid]]
   {:eid eid})
@@ -282,7 +283,7 @@
 
 (defmethod entity/create :stunned [[_ eid duration]]
   {:eid eid
-   :counter (g/->timer duration)})
+   :counter (world/timer ctx/world duration)})
 
 (defmethod entity/create! :entity/inventory [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
@@ -378,7 +379,7 @@
     ; TODO some sound ?
     )
 
-   (g/stopped? counter)
+   (world/stopped? ctx/world counter)
    (do
     (effect/do-all! effect-ctx (:skill/effects skill))
     (g/send-event! eid :action-done))))
@@ -411,7 +412,7 @@
       (g/send-event! eid :movement-direction (or (potential-field/find-direction (:grid ctx/world) eid) [0 0])))))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]
-  (when (g/stopped? counter)
+  (when (world/stopped? ctx/world counter)
     (g/send-event! eid :timer-finished)))
 
 (defmethod entity/tick! :npc-sleeping [_ eid]
@@ -427,11 +428,11 @@
     (g/send-event! eid :no-movement-input)))
 
 (defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid]
-  (when (g/stopped? counter)
+  (when (world/stopped? ctx/world counter)
     (g/send-event! eid :effect-wears-off)))
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
-  (when (g/stopped? counter)
+  (when (world/stopped? ctx/world counter)
     (g/mark-destroyed eid)
     (doseq [friendly-eid (g/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
       (g/send-event! friendly-eid :alert))))
@@ -537,15 +538,15 @@
 (defmethod entity/tick! :entity/skills [[k skills] eid]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
-                     (g/stopped? cooling-down?))]
+                     (world/stopped? ctx/world cooling-down?))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
 
 (defmethod entity/tick! :entity/string-effect [[k {:keys [counter]}] eid]
-  (when (g/stopped? counter)
+  (when (world/stopped? ctx/world counter)
     (swap! eid dissoc k)))
 
 (defmethod entity/tick! :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
-  (when (g/stopped? counter)
+  (when (world/stopped? ctx/world counter)
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))
 
@@ -557,7 +558,7 @@
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (g/->timer (:skill/cooldown skill))))
+             (world/timer ctx/world (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
@@ -709,7 +710,7 @@
     (draw-skill-image image
                       entity
                       (:position entity)
-                      (g/timer-ratio counter)
+                      (world/timer-ratio ctx/world counter)
                       g)
     (render-active-effect effect-ctx ; TODO !!!
                           ; !! FIXME !!

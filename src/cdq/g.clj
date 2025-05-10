@@ -12,6 +12,7 @@
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ui.action-bar :as action-bar]
+            [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             cdq.world.potential-fields
@@ -90,24 +91,6 @@
        ctx/assets
        sound/play!))
 
-(defn ->timer [duration]
-  {:pre [(>= duration 0)]}
-  {:duration duration
-   :stop-time (+ (:elapsed-time ctx/world) duration)})
-
-(defn stopped? [{:keys [stop-time]}]
-  (>= (:elapsed-time ctx/world) stop-time))
-
-(defn timer-reset [{:keys [duration] :as timer}]
-  (assoc timer :stop-time (+ (:elapsed-time ctx/world) duration)))
-
-(defn timer-ratio [{:keys [duration stop-time] :as timer}]
-  {:post [(<= 0 % 1)]}
-  (if (stopped? timer)
-    0
-    ; min 1 because floating point math inaccuracies
-    (min 1 (/ (- stop-time (:elapsed-time ctx/world)) duration))))
-
 (defn send-event!
   ([eid event]
    (send-event! eid event nil))
@@ -182,9 +165,9 @@
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter timer-reset))
+               (update :counter #(world/reset-timer ctx/world %)))
            {:text text
-            :counter (->timer 0.4)})))
+            :counter (world/timer ctx/world 0.4)})))
 
 (defn add-text-effect! [eid text]
   (swap! eid add-text-effect* text))
@@ -402,7 +385,7 @@
   (spawn-entity position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
-                 {:counter (->timer duration)
+                 {:counter (world/timer ctx/world duration)
                   :faction faction}}))
 
 (defn line-render [{:keys [start end duration color thick?]}]
@@ -1021,7 +1004,7 @@
            (not (or (gdx/key-just-pressed? :p)
                     (gdx/key-pressed?      :space))))))
 
-; TODO here timers check stopped? ???
+; TODO here timers check stopped? ??? but they are linked w. entities .... ?
 (defn- update-time [world graphics-delta]
   (let [delta-ms (min graphics-delta max-delta)]
     (-> world

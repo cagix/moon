@@ -5,6 +5,7 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
+            [cdq.world :as world]
             [clojure.gdx.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]]
@@ -281,7 +282,7 @@
     (effect/handle [_ {:keys [effect/target]}]
       (when-not (:entity/temp-modifier @target)
         (swap! target assoc :entity/temp-modifier {:modifiers modifiers
-                                                   :counter (g/->timer duration)})
+                                                   :counter (world/timer ctx/world duration)})
         (swap! target entity/mod-add modifiers)))))
 
 (defcomponent :effects.target/stun

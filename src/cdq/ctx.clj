@@ -13,6 +13,23 @@
  ^{:doc "[[cdq.db/DB]]"}
  db
 
- ^{:doc "[[cdq.world/World]]"}
+ ; TODO hide 'grid' , spawn-entity!, spawn-enemies!,
+ ; :raycaster
+ ; ;active-entities ( ? )  -> render-entities! ?
+ ; hide 'elapsed-time' ?
+
+ ^{:doc "Instance of [[cdq.world/World]]
+
+        Keys:
+
+        * `:mouseover-eid` - may be nil or an `eid`
+
+        * `:player-eid`
+
+        * `:elapsed-time` - in milliseconds non-paused game time
+
+        * `:paused?` - wheter the game world is paused and not updating
+
+   [[cdq.world/World]]"}
  world
  )
