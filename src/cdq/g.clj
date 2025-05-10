@@ -22,6 +22,7 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as shape-drawer]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :as ui :refer [ui-actor]]
             [clojure.gdx.scene2d.ui.menu :as ui.menu]
             [clojure.gdx.tiled :as tiled]
@@ -44,7 +45,7 @@
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
-           (com.badlogic.gdx.scenes.scene2d Actor Group Stage)
+           (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.utils.viewport Viewport)))
@@ -62,7 +63,7 @@
          ^:private ^:dynamic *unit-scale*
          ui-viewport)
 
-(declare ^:private ^Stage stage)
+(declare ^:private stage)
 
 (declare player-message)
 
@@ -289,17 +290,6 @@
 (defn ->sprite [^Texture texture]
   (sprite* (TextureRegion. texture)))
 
-(defn- init-stage! []
-  (let [stage (proxy [Stage clojure.lang.ILookup] [ui-viewport batch]
-                (valAt
-                  ([id]
-                   (ui/find-actor-with-id (Stage/.getRoot this) id))
-                  ([id not-found]
-                   (or (ui/find-actor-with-id (Stage/.getRoot this) id)
-                       not-found))))]
-    (gdx/set-input-processor! stage)
-    (.bindRoot #'stage stage)))
-
 (defn get-actor [id-keyword]
   (id-keyword stage))
 
@@ -307,11 +297,10 @@
   (swap! player-message assoc :text text :counter 0))
 
 (defn mouse-on-actor? []
-  (let [[x y] (mouse-position #_(Stage/.getViewport stage))]
-    (Stage/.hit stage x y true)))
+  (stage/hit stage (mouse-position #_(Stage/.getViewport stage))))
 
 (defn add-actor [actor]
-  (Stage/.addActor stage actor))
+  (stage/add-actor! stage actor))
 
 (defn get-inventory []
   (get (:windows stage) :inventory-window))
@@ -1247,7 +1236,7 @@
 
 (defn- reset-game! [world-fn]
   (.bindRoot #'player-message (atom {:duration-seconds 1.5}))
-  (.clear stage)
+  (stage/clear! stage)
   (run! add-actor [(ui.menu/create (dev-menu-config))
                    (action-bar/create)
                    (hp-mana-bar [(/ (:width ui-viewport) 2)
@@ -1537,7 +1526,8 @@
                             (create-asset-manager! (:assets config))
                             (create-graphics! (:graphics config))
                             (ui/load! (:vis-ui config)) ; TODO we don't do dispose!
-                            (init-stage!)
+                            (.bindRoot #'stage (stage/create ui-viewport batch))
+                            (gdx/set-input-processor! stage)
                             (reset-game! (:world-fn config)))
 
                           (dispose []
@@ -1558,8 +1548,8 @@
                                                    (draw-before-entities!)
                                                    (render-entities!)
                                                    (draw-after-entities!)))
-                            (.draw stage)
-                            (.act stage)
+                            (stage/draw! stage)
+                            (stage/act! stage)
                             (entity/manual-tick (entity/state-obj @player-eid))
                             (update-mouseover-entity!)
                             (set-paused-flag!)
