@@ -126,13 +126,26 @@
           (g/play-sound! "bfxr_denied")
           (g/show-player-msg! "No selected skill"))]))))
 
-(defmethod entity/manual-tick :player-idle [[_ {:keys [eid]}]]
-  (if-let [movement-vector (input/player-movement-vector)]
-    (g/send-event! eid :movement-input movement-vector)
-    (let [[cursor on-click] (interaction-state eid)]
-      (g/set-cursor! cursor)
-      (when (gdx/button-just-pressed? :left)
-        (on-click)))))
+(defcomponent :player-idle
+  (entity/create [[_ eid]]
+    {:eid eid})
+
+  (state/pause-game? [_] true)
+
+  (entity/manual-tick :player-idle [[_ {:keys [eid]}]]
+    (if-let [movement-vector (input/player-movement-vector)]
+      (g/send-event! eid :movement-input movement-vector)
+      (let [[cursor on-click] (interaction-state eid)]
+        (g/set-cursor! cursor)
+        (when (gdx/button-just-pressed? :left)
+          (on-click)))))
+
+  (entity/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+    ; TODO no else case
+    (when-let [item (get-in (:entity/inventory @eid) cell)]
+      (g/play-sound! "bfxr_takeit")
+      (g/send-event! eid :pickup-item item)
+      (g/remove-item eid cell))))
 
 (defmethod entity/manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (and (gdx/button-just-pressed? :left)
@@ -182,9 +195,6 @@
    :counter (g/->timer (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
 (defmethod entity/create :npc-sleeping [[_ eid]]
-  {:eid eid})
-
-(defmethod entity/create :player-idle [[_ eid]]
   {:eid eid})
 
 (defmethod entity/create :player-item-on-cursor [[_ eid item]]
@@ -482,9 +492,6 @@
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
 
-(defcomponent :player-idle
-  (state/pause-game? [_] true))
-
 (defcomponent :player-dead
   (state/cursor [_] :cursors/black-x)
   (state/pause-game? [_] true)
@@ -585,14 +592,6 @@
 (defmethod entity/clicked-inventory-cell :player-item-on-cursor
   [[_ {:keys [eid]}] cell]
   (clicked-cell eid cell))
-
-(defmethod entity/clicked-inventory-cell :player-idle
-  [[_ {:keys [eid]}] cell]
-  ; TODO no else case
-  (when-let [item (get-in (:entity/inventory @eid) cell)]
-    (g/play-sound! "bfxr_takeit")
-    (g/send-event! eid :pickup-item item)
-    (g/remove-item eid cell)))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
