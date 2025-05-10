@@ -4,7 +4,6 @@
             [cdq.world.grid :as grid]
             [clojure.data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]
-            [clojure.timer :as timer]
             [clojure.utils :as utils]))
 
 (defrecord RCell [position
@@ -77,24 +76,12 @@
                   potential-field-cache
                   player-eid
                   active-entities
-                  elapsed-time
-                  delta-time
                   paused?
                   mouseover-eid]
   world/World
   (cell [_ position]
     ; assert/document integer ?
-    (grid position)
-    )
-
-  (timer [_ duration]
-    (timer/create elapsed-time duration))
-  (stopped? [_ timer]
-    (timer/stopped? elapsed-time timer))
-  (reset-timer [_ timer]
-    (timer/reset elapsed-time timer))
-  (timer-ratio [_ timer]
-    (timer/ratio elapsed-time timer)))
+    (grid position)))
 
 (defn create [{:keys [tiled-map start-position]}]
   (let [width  (tiled/tm-width  tiled-map)
@@ -114,7 +101,5 @@
                  :potential-field-cache (atom nil)
                  :player-eid nil
                  :active-entities nil
-                 :elapsed-time 0
-                 :delta-time nil
                  :paused? nil
                  :mouseover-eid nil})))

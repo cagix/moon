@@ -3,9 +3,9 @@
             [cdq.entity :as entity]
             [cdq.entity.stats.op :as op]
             [cdq.info :refer [info-segment]]
-            [cdq.world :as world]
             [clojure.math :as math]
             [clojure.string :as str]
+            [clojure.timer :as timer]
             [clojure.utils :refer [readable-number]])
   (:import (com.badlogic.gdx.graphics Color Colors)))
 
@@ -117,7 +117,7 @@
   "All visible targets")
 
 (defmethod info-segment :entity/delete-after-duration [[_ counter] _entity]
-  (str "Remaining: " (readable-number (world/timer-ratio ctx/world counter)) "/1"))
+  (str "Remaining: " (readable-number (timer/ratio ctx/elapsed-time counter)) "/1"))
 
 (defmethod info-segment :entity/faction [[_ faction] _entity]
   (str "Faction: " (name faction)))
@@ -140,7 +140,7 @@
   (str "Creature - " (str/capitalize (name species))))
 
 (defmethod info-segment :entity/temp-modifier [[_ {:keys [counter]}] _entity]
-  (str "Spiderweb - remaining: " (readable-number (world/timer-ratio ctx/world counter)) "/1"))
+  (str "Spiderweb - remaining: " (readable-number (timer/ratio ctx/elapsed-time counter)) "/1"))
 
 #_(defmethod info-segment :entity/skills [skills]
   ; => recursive info-text leads to endless text wall

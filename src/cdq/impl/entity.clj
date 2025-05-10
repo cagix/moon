@@ -19,6 +19,7 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui :as ui]
             [clojure.gdx.math.vector2 :as v]
+            [clojure.timer :as timer]
             [clojure.utils :refer [defcomponent find-first]]
             [reduce-fsm :as fsm]))
 
@@ -234,10 +235,10 @@
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
-    (world/timer ctx/world duration))
+    (timer/create ctx/elapsed-time duration))
 
   (entity/tick! [[_ counter] eid]
-    (when (world/stopped? ctx/world counter)
+    (when (timer/stopped? ctx/elapsed-time counter)
       (g/mark-destroyed eid))))
 
 (defmethod entity/create :entity/hp [[_ v]]
@@ -261,7 +262,7 @@
    :counter (->> skill
                  :skill/action-time
                  (apply-action-speed-modifier @eid skill)
-                 (world/timer ctx/world))})
+                 (timer/create ctx/elapsed-time))})
 
 (defmethod entity/create :npc-dead [[_ eid]]
   {:eid eid})
@@ -272,7 +273,7 @@
 (defmethod entity/create :npc-moving [[_ eid movement-vector]]
   {:eid eid
    :movement-vector movement-vector
-   :counter (world/timer ctx/world (* (entity/stat @eid :entity/reaction-time) 0.016))})
+   :counter (timer/create ctx/elapsed-time (* (entity/stat @eid :entity/reaction-time) 0.016))})
 
 (defmethod entity/create :npc-sleeping [[_ eid]]
   {:eid eid})
@@ -283,7 +284,7 @@
 
 (defmethod entity/create :stunned [[_ eid duration]]
   {:eid eid
-   :counter (world/timer ctx/world duration)})
+   :counter (timer/create ctx/elapsed-time duration)})
 
 (defmethod entity/create! :entity/inventory [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
@@ -379,7 +380,7 @@
     ; TODO some sound ?
     )
 
-   (world/stopped? ctx/world counter)
+   (timer/stopped? ctx/elapsed-time counter)
    (do
     (effect/do-all! effect-ctx (:skill/effects skill))
     (g/send-event! eid :action-done))))
@@ -412,7 +413,7 @@
       (g/send-event! eid :movement-direction (or (potential-field/find-direction (:grid ctx/world) eid) [0 0])))))
 
 (defmethod entity/tick! :npc-moving [[_ {:keys [counter]}] eid]
-  (when (world/stopped? ctx/world counter)
+  (when (timer/stopped? ctx/elapsed-time counter)
     (g/send-event! eid :timer-finished)))
 
 (defmethod entity/tick! :npc-sleeping [_ eid]
@@ -428,11 +429,11 @@
     (g/send-event! eid :no-movement-input)))
 
 (defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid]
-  (when (world/stopped? ctx/world counter)
+  (when (timer/stopped? ctx/elapsed-time counter)
     (g/send-event! eid :effect-wears-off)))
 
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
-  (when (world/stopped? ctx/world counter)
+  (when (timer/stopped? ctx/elapsed-time counter)
     (g/mark-destroyed eid)
     (doseq [friendly-eid (g/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
       (g/send-event! friendly-eid :alert))))
@@ -440,7 +441,7 @@
 (defmethod entity/tick! :entity/animation [[k animation] eid]
   (swap! eid #(-> %
                   (assoc :entity/image (animation/current-frame animation))
-                  (assoc k (animation/tick animation (:delta-time ctx/world))))))
+                  (assoc k (animation/tick animation ctx/delta-time)))))
 
 (defn- move-position [position {:keys [direction speed delta-time]}]
   (mapv #(+ %1 (* %2 speed delta-time)) position direction))
@@ -494,7 +495,7 @@
   (when-not (or (zero? (v/length direction))
                 (nil? speed)
                 (zero? speed))
-    (let [movement (assoc movement :delta-time (:delta-time ctx/world))
+    (let [movement (assoc movement :delta-time ctx/delta-time)
           body @eid]
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body (:grid ctx/world) body movement)
@@ -538,15 +539,15 @@
 (defmethod entity/tick! :entity/skills [[k skills] eid]
   (doseq [{:keys [skill/cooling-down?] :as skill} (vals skills)
           :when (and cooling-down?
-                     (world/stopped? ctx/world cooling-down?))]
+                     (timer/stopped? ctx/elapsed-time cooling-down?))]
     (swap! eid assoc-in [k (:property/id skill) :skill/cooling-down?] false)))
 
 (defmethod entity/tick! :entity/string-effect [[k {:keys [counter]}] eid]
-  (when (world/stopped? ctx/world counter)
+  (when (timer/stopped? ctx/elapsed-time counter)
     (swap! eid dissoc k)))
 
 (defmethod entity/tick! :entity/temp-modifier [[k {:keys [modifiers counter]}] eid]
-  (when (world/stopped? ctx/world counter)
+  (when (timer/stopped? ctx/elapsed-time counter)
     (swap! eid dissoc k)
     (swap! eid entity/mod-remove modifiers)))
 
@@ -558,7 +559,7 @@
     (when (:skill/cooldown skill)
       (swap! eid assoc-in
              [:entity/skills (:property/id skill) :skill/cooling-down?]
-             (world/timer ctx/world (:skill/cooldown skill))))
+             (timer/create ctx/elapsed-time (:skill/cooldown skill))))
     (when (and (:skill/cost skill)
                (not (zero? (:skill/cost skill))))
       (swap! eid entity/pay-mana-cost (:skill/cost skill)))))
@@ -710,7 +711,7 @@
     (draw-skill-image image
                       entity
                       (:position entity)
-                      (world/timer-ratio ctx/world counter)
+                      (timer/ratio ctx/elapsed-time counter)
                       g)
     (render-active-effect effect-ctx ; TODO !!!
                           ; !! FIXME !!

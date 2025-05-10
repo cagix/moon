@@ -34,6 +34,7 @@
             [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.java.io :as io]
             [clojure.string :as str]
+            [clojure.timer :as timer]
             [clojure.utils :as utils :refer [readable-number
                                              sort-by-order
                                              define-order
@@ -165,9 +166,9 @@
          (if-let [string-effect (:entity/string-effect entity)]
            (-> string-effect
                (update :text str "\n" text)
-               (update :counter #(world/reset-timer ctx/world %)))
+               (update :counter #(timer/reset ctx/elapsed-time %)))
            {:text text
-            :counter (world/timer ctx/world 0.4)})))
+            :counter (timer/create ctx/elapsed-time 0.4)})))
 
 (defn add-text-effect! [eid text]
   (swap! eid add-text-effect* text))
@@ -385,7 +386,7 @@
   (spawn-entity position
                 effect-body-props
                 {:entity/alert-friendlies-after-duration
-                 {:counter (world/timer ctx/world duration)
+                 {:counter (timer/create ctx/elapsed-time duration)
                   :faction faction}}))
 
 (defn line-render [{:keys [start end duration color thick?]}]
@@ -769,6 +770,7 @@
 (declare dev-menu-config)
 
 (defn- reset-game! [world-fn]
+  (.bindRoot #'ctx/elapsed-time 0)
   (.bindRoot #'player-message (atom {:duration-seconds 1.5}))
   (stage/clear! stage)
   (run! add-actor [(ui.menu/create (dev-menu-config))
@@ -814,7 +816,7 @@
                                    (:entity/id entity)))
                     :icon (ctx/assets "images/mouseover.png")}
                    {:label "elapsed-time"
-                    :update-fn (fn [] (str (readable-number (:elapsed-time ctx/world)) " seconds"))
+                    :update-fn (fn [] (str (readable-number ctx/elapsed-time) " seconds"))
                     :icon (ctx/assets "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [] (:paused? ctx/world))}
@@ -1004,13 +1006,6 @@
            (not (or (gdx/key-just-pressed? :p)
                     (gdx/key-pressed?      :space))))))
 
-; TODO here timers check stopped? ??? but they are linked w. entities .... ?
-(defn- update-time [world graphics-delta]
-  (let [delta-ms (min graphics-delta max-delta)]
-    (-> world
-        (update :elapsed-time + delta-ms)
-        (assoc :delta-time delta-ms))))
-
 (defn- update-potential-fields! [{:keys [potential-field-cache
                                          grid
                                          active-entities]}]
@@ -1068,11 +1063,9 @@
     (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []
-                            ; TODO Input / App / Files / Graphics from Gdx ?
-                            ; TODO can bind cdq.g.graphics or asssets dynamically ...
                             (.bindRoot #'ctx/assets   (cdq.g.assets/create (:assets config)))
                             (.bindRoot #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
-                            (ui/load! (:vis-ui config)) ; TODO we don't do dispose!
+                            (ui/load! (:vis-ui config))
                             (.bindRoot #'stage (stage/create (:ui-viewport ctx/graphics)
                                                              (:batch       ctx/graphics)))
                             (gdx/set-input-processor! stage)
@@ -1081,6 +1074,7 @@
                           (dispose []
                             (dispose! ctx/assets)
                             (dispose! ctx/graphics)
+                            ; TODO vis-ui dispose
                             ; TODO dispose world tiled-map/level resources?
                             )
 
@@ -1104,7 +1098,9 @@
                             (update-mouseover-entity!)
                             (alter-var-root #'ctx/world assoc :paused? (pause-game?))
                             (when-not (:paused? ctx/world)
-                              (alter-var-root #'ctx/world update-time (gdx/delta-time))
+                              (let [delta-ms (min (gdx/delta-time) max-delta)]
+                                (alter-var-root #'ctx/elapsed-time + delta-ms)
+                                (.bindRoot #'ctx/delta-time delta-ms))
                               (update-potential-fields! ctx/world)
                               (tick-entities! ctx/world))
 
