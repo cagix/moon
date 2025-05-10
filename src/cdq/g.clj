@@ -51,13 +51,8 @@
 
 (declare ^:private stage)
 
-(declare ^:private player-message)
-
 (defn get-actor [id-keyword]
   (id-keyword stage))
-
-(defn show-player-msg! [text]
-  (swap! player-message assoc :text text :counter 0))
 
 (defn mouse-on-actor? []
   (stage/hit stage (graphics/mouse-position ctx/graphics)))
@@ -745,24 +740,26 @@
                          (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
                          (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
-(defn- draw-player-message [g]
-  (when-let [text (:text @player-message)]
-    (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
-                           :y (+ (/ (:height (:ui-viewport g)) 2) 200)
-                           :text text
-                           :scale 2.5
-                           :up? true})))
+(declare ^:private player-message)
 
-(defn- check-remove-message []
-  (when (:text @player-message)
-    (swap! player-message update :counter + (gdx/delta-time))
-    (when (>= (:counter @player-message)
-              (:duration-seconds @player-message))
-      (swap! player-message dissoc :counter :text))))
+(defn show-player-msg! [text]
+  (swap! player-message assoc :text text :counter 0))
 
 (defn- player-message-actor []
-  (ui-actor {:draw (fn [] (draw-player-message ctx/graphics))
-             :act  check-remove-message}))
+  (ui-actor {:draw (fn []
+                     (let [g ctx/graphics]
+                       (when-let [text (:text @player-message)]
+                         (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
+                                                :y (+ (/ (:height (:ui-viewport g)) 2) 200)
+                                                :text text
+                                                :scale 2.5
+                                                :up? true}))))
+             :act  (fn []
+                     (when (:text @player-message)
+                       (swap! player-message update :counter + (gdx/delta-time))
+                       (when (>= (:counter @player-message)
+                                 (:duration-seconds @player-message))
+                         (swap! player-message dissoc :counter :text))))}))
 
 (defn- player-state-actor []
   (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @(:player-eid ctx/world)))}))
