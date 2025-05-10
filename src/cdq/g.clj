@@ -50,7 +50,7 @@
 
 (declare ^:private player-message)
 
-(declare elapsed-time)
+(declare ^:private elapsed-time)
 
 (declare ^:private tiled-map
          ^:private content-grid
@@ -61,11 +61,10 @@
          ^:private potential-field-cache
          player-eid
          ^:private active-entities
-         delta-time)
+         delta-time
+         ^:private paused?)
 
 (def mouseover-eid nil)
-
-(declare paused?)
 
 (defn get-actor [id-keyword]
   (id-keyword stage))
