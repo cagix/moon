@@ -8,6 +8,7 @@
             [cdq.g.assets]
             [cdq.g.db]
             [cdq.g.graphics]
+            [cdq.g.world]
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ui.action-bar :as action-bar]
@@ -190,67 +191,6 @@
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
-
-(defrecord RCell [position
-                  middle ; only used @ potential-field-follow-to-enemy -> can remove it.
-                  adjacent-cells
-                  movement
-                  entities
-                  occupied
-                  good
-                  evil]
-  grid/Cell
-  (blocked? [_ z-order]
-    (case movement
-      :none true ; wall
-      :air (case z-order ; water/doodads
-             :z-order/flying false
-             :z-order/ground true)
-      :all false)) ; ground/floor
-
-  (blocks-vision? [_]
-    (= movement :none))
-
-  (occupied-by-other? [_ eid]
-    (some #(not= % eid) occupied))
-
-  (nearest-entity [this faction]
-    (-> this faction :eid))
-
-  (nearest-entity-distance [this faction]
-    (-> this faction :distance)))
-
-(defn- ->grid-cell [position movement]
-  {:pre [(#{:none :air :all} movement)]}
-  (map->RCell
-   {:position position
-    :middle (tile->middle position)
-    :movement movement
-    :entities #{}
-    :occupied #{}}))
-
-(defn- create-grid [tiled-map]
-  (g2d/create-grid
-   (tiled/tm-width tiled-map)
-   (tiled/tm-height tiled-map)
-   (fn [position]
-     (atom (->grid-cell position
-                        (case (tiled/movement-property tiled-map position)
-                          "none" :none
-                          "air"  :air
-                          "all"  :all))))))
-
-(defn- set-arr [arr cell cell->blocked?]
-  (let [[x y] (:position cell)]
-    (aset arr x y (boolean (cell->blocked? cell)))))
-
-(defn- create-raycaster [grid]
-  (let [width  (g2d/width  grid)
-        height (g2d/height grid)
-        arr (make-array Boolean/TYPE width height)]
-    (doseq [cell (g2d/cells grid)]
-      (set-arr arr @cell grid/blocks-vision?))
-    [arr width height]))
 
 (defn- set-cells! [grid eid]
   (let [cells (grid/rectangle->cells grid @eid)]
@@ -834,40 +774,6 @@
 
 (declare dev-menu-config)
 
-(defrecord World [tiled-map
-                  grid
-                  raycaster
-                  content-grid
-                  explored-tile-corners
-                  entity-ids
-                  potential-field-cache
-                  player-eid
-                  active-entities
-                  elapsed-time
-                  delta-time
-                  paused?
-                  mouseover-eid])
-
-; TODO id-counter ?
-(defn- create-world [{:keys [tiled-map start-position]}]
-  (let [width (tiled/tm-width  tiled-map)
-        height (tiled/tm-height tiled-map)
-        grid (create-grid tiled-map)]
-    (map->World {:tiled-map tiled-map
-                 :start-position start-position
-                 :grid grid
-                 :raycaster (create-raycaster grid)
-                 :content-grid (content-grid/create {:cell-size 16 :width  width :height height})
-                 :explored-tile-corners (atom (g2d/create-grid width height (constantly false)))
-                 :entity-ids (atom {})
-                 :potential-field-cache (atom nil)
-                 :player-eid nil ; ?
-                 :active-entities nil ; ??
-                 :elapsed-time 0
-                 :delta-time nil ; ??
-                 :paused? nil ; ??
-                 :mouseover-eid nil})))
-
 (defn- reset-game! [world-fn]
   (.bindRoot #'player-message (atom {:duration-seconds 1.5}))
   (stage/clear! stage)
@@ -882,8 +788,8 @@
                                                                  (:height (:ui-viewport ctx/graphics))])]})
                    (player-state-actor)
                    (player-message-actor)])
-  (.bindRoot #'ctx/world (create-world ((requiring-resolve world-fn)
-                                        (db/build-all ctx/db :properties/creatures))))
+  (.bindRoot #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
+                                              (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
   (alter-var-root #'ctx/world assoc :player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
 
