@@ -14,3 +14,11 @@
 (defmulti exit! (fn [[k]]
                   k))
 (defmethod exit! :default [_])
+
+(defmulti clicked-inventory-cell (fn [[k] cell]
+                                   k))
+(defmethod clicked-inventory-cell :default [_ cell])
+
+(defmulti manual-tick (fn [[k]]
+                        k))
+(defmethod manual-tick :default [_])

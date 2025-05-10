@@ -132,7 +132,7 @@
 
   (state/pause-game? [_] true)
 
-  (entity/manual-tick [[_ {:keys [eid]}]]
+  (state/manual-tick [[_ {:keys [eid]}]]
     (if-let [movement-vector (input/player-movement-vector)]
       (g/send-event! eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
@@ -140,14 +140,14 @@
         (when (gdx/button-just-pressed? :left)
           (on-click)))))
 
-  (entity/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+  (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
     ; TODO no else case
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (g/play-sound! "bfxr_takeit")
       (g/send-event! eid :pickup-item item)
       (g/remove-item eid cell))))
 
-(defmethod entity/manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
+(defmethod state/manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (and (gdx/button-just-pressed? :left)
              (g/world-item?))
     (g/send-event! eid :drop-item)))
@@ -589,7 +589,7 @@
       (g/send-event! eid :dropped-item)
       (g/send-event! eid :pickup-item item-in-cell)))))
 
-(defmethod entity/clicked-inventory-cell :player-item-on-cursor
+(defmethod state/clicked-inventory-cell :player-item-on-cursor
   [[_ {:keys [eid]}] cell]
   (clicked-cell eid cell))
 

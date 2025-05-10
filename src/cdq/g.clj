@@ -1028,8 +1028,8 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [_event _x _y]
-                            (entity/clicked-inventory-cell (entity/state-obj @player-eid)
-                                                           cell))))
+                            (state/clicked-inventory-cell (entity/state-obj @player-eid)
+                                                          cell))))
     stack))
 
 (defn- inventory-table []
@@ -1524,7 +1524,7 @@
                                                    (draw-after-entities!)))
                             (stage/draw! stage)
                             (stage/act! stage)
-                            (entity/manual-tick (entity/state-obj @player-eid))
+                            (state/manual-tick (entity/state-obj @player-eid))
                             (update-mouseover-entity!)
                             (set-paused-flag!)
                             (when-not paused?

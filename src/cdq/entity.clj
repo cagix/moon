@@ -4,10 +4,6 @@
             [clojure.gdx.math :as math]
             [clojure.gdx.math.vector2 :as v]))
 
-(defmulti clicked-inventory-cell (fn [[k] cell]
-                                   k))
-(defmethod clicked-inventory-cell :default [_ cell])
-
 (defmulti create! (fn [[k] eid]
                     k))
 (defmethod create! :default [_ eid])
@@ -19,10 +15,6 @@
 (defmulti tick! (fn [[k] eid]
                   k))
 (defmethod tick! :default [_ eid])
-
-(defmulti manual-tick (fn [[k]]
-                        k))
-(defmethod manual-tick :default [_])
 
 (defmulti  render-below! (fn [[k] entity] k))
 (defmethod render-below! :default [_ _entity])
