@@ -695,10 +695,10 @@
 (defn- ->label-text []
   ; items then have 2x pretty-name
   #_(.setText (.getTitleLabel window)
-              (if-let [eid (:mouseover-eid ctx/world)]
+              (if-let [eid ctx/mouseover-eid]
                 (info/text [:property/pretty-name (:property/pretty-name @eid)])
                 "Entity Info"))
-  (when-let [eid (:mouseover-eid ctx/world)]
+  (when-let [eid ctx/mouseover-eid]
     (info/text ; don't use select-keys as it loses Entity record type
                (apply dissoc @eid disallowed-keys))))
 
@@ -814,8 +814,7 @@
                                   ((requiring-resolve 'cdq.ui.editor/open-main-window!) property-type))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn []
-                                 (when-let [entity (and (:mouseover-eid ctx/world)
-                                                        @(:mouseover-eid ctx/world))]
+                                 (when-let [entity (and ctx/mouseover-eid @ctx/mouseover-eid)]
                                    (:entity/id entity)))
                     :icon (ctx/assets "images/mouseover.png")}
                    {:label "elapsed-time"
@@ -994,11 +993,11 @@
                          reverse
                          (filter #(line-of-sight? player @%))
                          first)))]
-    (when-let [eid (:mouseover-eid ctx/world)]
+    (when-let [eid ctx/mouseover-eid]
       (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (alter-var-root #'ctx/world assoc :mouseover-eid new-eid)))
+    (.bindRoot #'ctx/mouseover-eid new-eid)))
 
 (def pausing? true)
 

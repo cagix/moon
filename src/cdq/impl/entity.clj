@@ -82,11 +82,11 @@
      :else                             :cursors/default)))
 
 (defn- player-effect-ctx [eid]
-  (let [target-position (or (and (:mouseover-eid ctx/world)
-                                 (:position @(:mouseover-eid ctx/world)))
+  (let [target-position (or (and ctx/mouseover-eid
+                                 (:position @ctx/mouseover-eid))
                             (graphics/world-mouse-position ctx/graphics))]
     {:effect/source eid
-     :effect/target (:mouseover-eid ctx/world)
+     :effect/target ctx/mouseover-eid
      :effect/target-position target-position
      :effect/target-direction (v/direction (:position @eid) target-position)}))
 
@@ -97,9 +97,9 @@
      [(mouseover-actor->cursor)
       (fn [] nil)] ; handled by actors themself, they check player state
 
-     (and (:mouseover-eid ctx/world)
-          (:entity/clickable @(:mouseover-eid ctx/world)))
-     (clickable-entity-interaction entity (:mouseover-eid ctx/world))
+     (and ctx/mouseover-eid
+          (:entity/clickable @ctx/mouseover-eid))
+     (clickable-entity-interaction entity ctx/mouseover-eid)
 
      :else
      (if-let [skill-id (g/selected-skill)]

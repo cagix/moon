@@ -1,27 +1,21 @@
 (ns cdq.ctx)
 
-(declare
+(declare ^{:doc "Implements [[cdq.assets/Assets]] and `clojure.lang.IFn` with one arg, like this: `(ctx/assets \"my_image.png\")`.
 
- ^{:doc "Implements [[cdq.assets/Assets]] and `clojure.lang.IFn` with one arg, like this: `(assets \"my_image.png\")`.
+                Returns the asset or throws an exception if it cannot be found."}
+         assets
 
-        Returns the asset or throws an exception if it cannot be found."}
- assets
+         ^{:doc "[[cdq.graphics/Graphics]]."}
+         graphics
 
- ^{:doc "Instance of [[cdq.graphics/Graphics]]."}
- graphics
+         ^{:doc "[[cdq.db/DB]]"}
+         db
 
- ^{:doc "[[cdq.db/DB]]"}
- db
+         ^{:doc "[[cdq.world/World]]."}
+         world
 
- ^{:doc "Instance of [[cdq.world/World]]
-Keys:
+         elapsed-time
+         delta-time
+         player-eid)
 
-* `:mouseover-eid` - may be nil or an `eid`
-
-* `:paused?` - wheter the game world is paused and not updating"}
- world
-
- elapsed-time
- delta-time
- player-eid
- )
+(def mouseover-eid nil)

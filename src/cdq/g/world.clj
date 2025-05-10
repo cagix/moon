@@ -75,8 +75,7 @@
                   entity-ids
                   potential-field-cache
                   active-entities
-                  paused?
-                  mouseover-eid]
+                  paused?]
   world/World
   (cell [_ position]
     ; assert/document integer ?
@@ -99,5 +98,4 @@
                  :entity-ids (atom {})
                  :potential-field-cache (atom nil)
                  :active-entities nil
-                 :paused? nil
-                 :mouseover-eid nil})))
+                 :paused? nil})))
