@@ -21,17 +21,17 @@
                   k))
 (defmethod tick! :default [_ eid])
 
-(defmulti  render-below! (fn [[k] entity] k))
-(defmethod render-below! :default [_ _entity])
+(defmulti  render-below! (fn [[k] entity g] k))
+(defmethod render-below! :default [_ _entity g])
 
-(defmulti  render-default! (fn [[k] entity] k))
-(defmethod render-default! :default [_ _entity])
+(defmulti  render-default! (fn [[k] entity g] k))
+(defmethod render-default! :default [_ _entity g])
 
-(defmulti  render-above! (fn [[k] entity] k))
-(defmethod render-above! :default [_ _entity])
+(defmulti  render-above! (fn [[k] entity g] k))
+(defmethod render-above! :default [_ _entity g])
 
-(defmulti  render-info! (fn [[k] entity] k))
-(defmethod render-info! :default [_ _entity])
+(defmulti  render-info! (fn [[k] entity g] k))
+(defmethod render-info! :default [_ _entity g])
 
 (defn mod-value [base-value modifiers modifier-k]
   {:pre [(= "modifier" (namespace modifier-k))]}

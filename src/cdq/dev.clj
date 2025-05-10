@@ -1,5 +1,7 @@
 (ns cdq.dev
-  (:require [cdq.g :as g]
+  (:require [cdq.ctx :as ctx]
+            [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
@@ -75,7 +77,7 @@
   (g/spawn-item (:position @g/player-eid) (g/build item-id)))
 
 (defn- mouseover-grid-cell []
-  @(g/grid (mapv int (g/world-mouse-position))))
+  @(g/grid (mapv int (graphics/world-mouse-position ctx/graphics))))
 
 (defn- class->label-str [class]
   (case class
@@ -173,7 +175,7 @@
          )))))
 
 (defn- scroll-pane-cell [rows]
-  (let [viewport g/ui-viewport
+  (let [viewport (:ui-viewport ctx/graphics)
         table (ui/table {:rows rows
                          :cell-defaults {:pad 1}
                          :pack? true})

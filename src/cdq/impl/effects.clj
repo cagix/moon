@@ -2,6 +2,7 @@
   (:require [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.g :as g]
+            [cdq.graphics :as graphics]
             [clojure.gdx.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]
             [clojure.rand :refer [rand-int-between]]
@@ -140,12 +141,12 @@
         (effect/do-all! {:effect/source source :effect/target target}
                         entity-effects))))
 
-  (effect/render [_ {:keys [effect/source]}]
+  (effect/render [_ {:keys [effect/source]} g]
     (let [source* @source]
       (doseq [target* (map deref (g/creatures-in-los-of-player))]
-        (g/draw-line (:position source*) #_(start-point source* target*)
-                     (:position target*)
-                     [1 0 0 0.5])))))
+        (graphics/draw-line g (:position source*) #_(start-point source* target*)
+                            (:position target*)
+                            [1 0 0 0.5])))))
 
 (defcomponent :effects/target-entity
   (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
@@ -171,15 +172,17 @@
                              (g/build :audiovisuals/hit-ground)))))
 
   (effect/render [[_ {:keys [maxrange]}]
-                  {:keys [effect/source effect/target]}]
+                  {:keys [effect/source effect/target]}
+                  g]
     (when target
       (let [source* @source
             target* @target]
-        (g/draw-line (entity/start-point source* target*)
-                     (entity/end-point source* target* maxrange)
-                     (if (entity/in-range? source* target* maxrange)
-                       [1 0 0 0.5]
-                       [1 1 0 0.5]))))))
+        (graphics/draw-line g
+                            (entity/start-point source* target*)
+                            (entity/end-point source* target* maxrange)
+                            (if (entity/in-range? source* target* maxrange)
+                              [1 0 0 0.5]
+                              [1 1 0 0.5]))))))
 
 (defcomponent :effects.target/audiovisual
   (effect/applicable? [_ {:keys [effect/target]}]

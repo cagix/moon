@@ -6,7 +6,9 @@
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.g.assets :as assets]
+            [cdq.g.assets]
+            [cdq.g.graphics]
+            [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ui.action-bar :as action-bar]
             [cdq.world.content-grid :as content-grid]
@@ -18,9 +20,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.shape-drawer :as shape-drawer]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :as ui :refer [ui-actor]]
@@ -43,23 +43,10 @@
                                              with-err-str]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color Texture)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont TextureRegion)
+           (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
-           (com.badlogic.gdx.utils.viewport Viewport)))
-
-(declare ^:private ^Batch batch
-         ^:private ^Texture shape-drawer-texture
-         ^:private shape-drawer
-         ^:private cursors
-         ^:private default-font
-         ^:private world-unit-scale
-         ^:private world-viewport
-         ^:private get-tiled-map-renderer
-         ^:private ^:dynamic *unit-scale*
-         ui-viewport)
+           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
 (declare ^:private stage)
 
@@ -86,208 +73,6 @@
 
 (declare paused?)
 
-(defn- create-graphics! [{:keys [cursors
-                                 default-font
-                                 tile-size
-                                 world-viewport
-                                 ui-viewport]}]
-  (.bindRoot #'batch (graphics/sprite-batch))
-  (.bindRoot #'shape-drawer-texture (graphics/white-pixel-texture))
-  (.bindRoot #'shape-drawer (shape-drawer/create batch (TextureRegion. shape-drawer-texture 1 0 1 1)))
-  (.bindRoot #'cursors (utils/mapvals
-                        (fn [[file [hotspot-x hotspot-y]]]
-                          (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
-                                cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
-                            (dispose! pixmap)
-                            cursor))
-                        cursors))
-  (.bindRoot #'default-font (graphics/truetype-font default-font))
-  (.bindRoot #'world-unit-scale (float (/ tile-size)))
-  (.bindRoot #'world-viewport (graphics/world-viewport world-unit-scale world-viewport))
-  (.bindRoot #'get-tiled-map-renderer (memoize (fn [tiled-map]
-                                                 (tiled/renderer tiled-map
-                                                                 world-unit-scale
-                                                                 batch))))
-  (.bindRoot #'ui-viewport (graphics/fit-viewport (:width  ui-viewport)
-                                                  (:height ui-viewport))))
-
-(defn- dispose-graphics! []
-  (.dispose batch)
-  (.dispose shape-drawer-texture)
-  (run! dispose! (vals cursors))
-  (dispose! default-font))
-
-(defn mouse-position []
-  ; TODO mapv int needed?
-  (mapv int (graphics/unproject-mouse-position ui-viewport)))
-
-(defn world-mouse-position []
-  ; TODO clamping only works for gui-viewport ? check. comment if true
-  ; TODO ? "Can be negative coordinates, undefined cells."
-  (graphics/unproject-mouse-position world-viewport))
-
-(defn pixels->world-units [pixels]
-  (* (int pixels) world-unit-scale))
-
-(defn- unit-dimensions [image]
-  (if (bound? #'*unit-scale*)
-    (:world-unit-dimensions image)
-    (:pixel-dimensions image)))
-
-(defn draw-image
-  [{:keys [texture-region color] :as image} position]
-  (graphics/draw-texture-region batch
-                                texture-region
-                                position
-                                (unit-dimensions image)
-                                0 ; rotation
-                                color))
-
-(defn draw-rotated-centered
-  [{:keys [texture-region color] :as image} rotation [x y]]
-  (let [[w h] (unit-dimensions image)]
-    (graphics/draw-texture-region batch
-                                  texture-region
-                                  [(- (float x) (/ (float w) 2))
-                                   (- (float y) (/ (float h) 2))]
-                                  [w h]
-                                  rotation
-                                  color)))
-
-(defn draw-centered [image position]
-  (draw-rotated-centered image 0 position))
-
-(defn- set-camera-position! [position]
-  (camera/set-position! (:camera world-viewport) position))
-
-(defn draw-text
-  "font, h-align, up? and scale are optional.
-  h-align one of: :center, :left, :right. Default :center.
-  up? renders the font over y, otherwise under.
-  scale will multiply the drawn text size with the scale."
-  [{:keys [font scale x y text h-align up?]}]
-  (graphics/draw-text! {:font (or font default-font)
-                        :scale (* (float (if (bound? #'*unit-scale*) *unit-scale* 1))
-                                  (float (or scale 1)))
-                        :batch batch
-                        :x x
-                        :y y
-                        :text text
-                        :h-align h-align
-                        :up? up?}))
-
-(defn draw-ellipse [[x y] radius-x radius-y color]
-  (shape-drawer/ellipse! shape-drawer x y radius-x radius-y color))
-
-(defn draw-filled-ellipse [[x y] radius-x radius-y color]
-  (shape-drawer/filled-ellipse! shape-drawer x y radius-x radius-y color))
-
-(defn draw-circle [[x y] radius color]
-  (shape-drawer/circle! shape-drawer x y radius color))
-
-(defn draw-filled-circle [[x y] radius color]
-  (shape-drawer/filled-circle! shape-drawer x y radius color))
-
-(defn draw-arc [[center-x center-y] radius start-angle degree color]
-  (shape-drawer/arc! shape-drawer center-x center-y radius start-angle degree color))
-
-(defn draw-sector [[center-x center-y] radius start-angle degree color]
-  (shape-drawer/sector! shape-drawer center-x center-y radius start-angle degree color))
-
-(defn draw-rectangle [x y w h color]
-  (shape-drawer/rectangle! shape-drawer x y w h color))
-
-(defn draw-filled-rectangle [x y w h color]
-  (shape-drawer/filled-rectangle! shape-drawer x y w h color))
-
-(defn draw-line [[sx sy] [ex ey] color]
-  (shape-drawer/line! shape-drawer sx sy ex ey color))
-
-(defn with-line-width [width draw-fn]
-  (shape-drawer/with-line-width shape-drawer width draw-fn))
-
-(defn draw-grid [leftx bottomy gridw gridh cellw cellh color]
-  (shape-drawer/grid! shape-drawer color))
-
-(defn- draw-on-world-view! [f]
-  (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
-  (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
-  (.begin batch)
-  (with-line-width world-unit-scale
-    (fn []
-      (binding [*unit-scale* world-unit-scale]
-        (f))))
-  (.end batch))
-
-(defn set-cursor! [cursor-key]
-  (gdx/set-cursor! (utils/safe-get cursors cursor-key)))
-
-(defn- draw-tiled-map
-  "Renders tiled-map using world-view at world-camera position and with world-unit-scale.
-
-  Color-setter is a `(fn [color x y])` which is called for every tile-corner to set the color.
-
-  Can be used for lights & shadows.
-
-  Renders only visible layers."
-  [tiled-map color-setter]
-  (tiled/draw! (get-tiled-map-renderer tiled-map)
-               tiled-map
-               color-setter
-               (:camera world-viewport)))
-
-(defn- scale-dimensions [dimensions scale]
-  (mapv (comp float (partial * scale)) dimensions))
-
-(defn- assoc-dimensions
-  "scale can be a number for multiplying the texture-region-dimensions or [w h]."
-  [{:keys [^TextureRegion texture-region] :as image} scale]
-  {:pre [(or (number? scale)
-             (and (vector? scale)
-                  (number? (scale 0))
-                  (number? (scale 1))))]}
-  (let [pixel-dimensions (if (number? scale)
-                           (scale-dimensions [(.getRegionWidth  texture-region)
-                                              (.getRegionHeight texture-region)]
-                                             scale)
-                           scale)]
-    (assoc image
-           :pixel-dimensions pixel-dimensions
-           :world-unit-dimensions (scale-dimensions pixel-dimensions world-unit-scale))))
-
-(defrecord Sprite [texture-region
-                   pixel-dimensions
-                   world-unit-dimensions
-                   color]) ; optional
-
-(defn- sprite* [texture-region]
-  (-> {:texture-region texture-region}
-      (assoc-dimensions 1) ; = scale 1
-      map->Sprite))
-
-(defn sub-sprite [sprite [x y w h]]
-  (sprite* (TextureRegion. ^TextureRegion (:texture-region sprite)
-                           (int x)
-                           (int y)
-                           (int w)
-                           (int h))))
-
-(defn sprite-sheet [^Texture texture tilew tileh]
-  {:image (sprite* (TextureRegion. texture))
-   :tilew tilew
-   :tileh tileh})
-
-(defn from-sheet [{:keys [image tilew tileh]}
-                  [x y]]
-  (sub-sprite image
-              [(* x tilew)
-               (* y tileh)
-               tilew
-               tileh]))
-
-(defn ->sprite [^Texture texture]
-  (sprite* (TextureRegion. texture)))
-
 (defn get-actor [id-keyword]
   (id-keyword stage))
 
@@ -295,7 +80,7 @@
   (swap! player-message assoc :text text :counter 0))
 
 (defn mouse-on-actor? []
-  (stage/hit stage (mouse-position #_(Stage/.getViewport stage))))
+  (stage/hit stage (graphics/mouse-position ctx/graphics)))
 
 (defn add-actor [actor]
   (stage/add-actor! stage actor))
@@ -423,10 +208,11 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (from-sheet (sprite-sheet (ctx/assets file) tilew tileh)
-                  [(int (/ sprite-x tilew))
-                   (int (/ sprite-y tileh))]))
-    (->sprite (ctx/assets file))))
+      (graphics/from-sheet ctx/graphics
+                           (graphics/sprite-sheet ctx/graphics (ctx/assets file) tilew tileh)
+                           [(int (/ sprite-x tilew))
+                            (int (/ sprite-y tileh))]))
+    (graphics/sprite ctx/graphics (ctx/assets file))))
 
 (defmethod schema/edn->value :s/image [_ edn]
   (edn->sprite edn))
@@ -481,7 +267,7 @@
                                                            [new-state-k eid]))]]
            (when (:entity/player? @eid)
              (when-let [cursor-key (state/cursor new-state-obj)]
-               (set-cursor! cursor-key)))
+               (graphics/set-cursor! ctx/graphics cursor-key)))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
@@ -518,8 +304,8 @@
                                                    (on-click)))]]
                          :id ::modal
                          :modal? true
-                         :center-position [(/ (:width  ui-viewport) 2)
-                                           (* (:height ui-viewport) (/ 3 4))]
+                         :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
+                                           (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
                          :pack? true})))
 
 (defn add-skill [eid {:keys [property/id] :as skill}]
@@ -870,7 +656,7 @@
 
 (defn item-place-position [entity]
   (placement-point (:position entity)
-                   (world-mouse-position)
+                   (graphics/world-mouse-position ctx/graphics)
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
@@ -939,7 +725,7 @@
 ; => assert bodies <1 width then
 (defn line-of-sight? [source target]
   (and (or (not (:entity/player? source))
-           (on-screen? world-viewport target))
+           (on-screen? (:world-viewport ctx/graphics) target))
        (not (and los-checks?
                  (raycaster/blocked? raycaster (:position source) (:position target))))))
 
@@ -957,15 +743,15 @@
 (def ^:private inventory-droppable-color   [0   0.6 0 0.8])
 (def ^:private inventory-not-allowed-color [0.6 0   0 0.8])
 
-(defn- draw-inventory-cell-rect! [player-entity x y mouseover? cell]
-  (draw-rectangle x y inventory-cell-size inventory-cell-size :gray)
+(defn- draw-inventory-cell-rect! [g player-entity x y mouseover? cell]
+  (graphics/draw-rectangle g x y inventory-cell-size inventory-cell-size :gray)
   (when (and mouseover?
              (= :player-item-on-cursor (entity/state-k player-entity)))
     (let [item (:entity/item-on-cursor player-entity)
           color (if (inventory/valid-slot? cell item)
                   inventory-droppable-color
                   inventory-not-allowed-color)]
-      (draw-filled-rectangle (inc x) (inc y) (- inventory-cell-size 2) (- inventory-cell-size 2) color))))
+      (graphics/draw-filled-rectangle g (inc x) (inc y) (- inventory-cell-size 2) (- inventory-cell-size 2) color))))
 
 ; TODO why do I need to call getX ?
 ; is not layouted automatically to cell , use 0/0 ??
@@ -973,11 +759,13 @@
 (defn- draw-inventory-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (let [^Actor this this]
-        (draw-inventory-cell-rect! @player-eid
+      (let [^Actor this this
+            g ctx/graphics]
+        (draw-inventory-cell-rect! g
+                                   @player-eid
                                    (.getX this)
                                    (.getY this)
-                                   (ui/hit this (mouse-position))
+                                   (ui/hit this (graphics/mouse-position g))
                                    (.getUserObject (.getParent this)))))))
 
 (def ^:private slot->y-sprite-idx
@@ -997,8 +785,11 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (from-sheet (sprite-sheet (ctx/assets "images/items.png") 48 48)
-              (slot->sprite-idx slot)))
+  (graphics/from-sheet ctx/graphics
+                       (graphics/sprite-sheet ctx/graphics
+                                              (ctx/assets "images/items.png")
+                                              48 48)
+                       (slot->sprite-idx slot)))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
@@ -1153,36 +944,39 @@
                                         (.pack window))}))
     window))
 
-(defn- render-infostr-on-bar [infostr x y h]
-  (draw-text {:text infostr
-              :x (+ x 75)
-              :y (+ y 2)
-              :up? true}))
+(defn- render-infostr-on-bar [g infostr x y h]
+  (graphics/draw-text g {:text infostr
+                         :x (+ x 75)
+                         :y (+ y 2)
+                         :up? true}))
 
 (defn- hp-mana-bar [[x y-mana]]
-  (let [rahmen      (->sprite (ctx/assets "images/rahmen.png"))
-        hpcontent   (->sprite (ctx/assets "images/hp.png"))
-        manacontent (->sprite (ctx/assets "images/mana.png"))
+  (let [rahmen      (graphics/sprite ctx/graphics (ctx/assets "images/rahmen.png"))
+        hpcontent   (graphics/sprite ctx/graphics (ctx/assets "images/hp.png"))
+        manacontent (graphics/sprite ctx/graphics (ctx/assets "images/mana.png"))
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [x y contentimage minmaxval name]
-                            (draw-image rahmen [x y])
-                            (draw-image (sub-sprite contentimage [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
-                                        [x y])
-                            (render-infostr-on-bar (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+        render-hpmana-bar (fn [g x y contentimage minmaxval name]
+                            (graphics/draw-image g rahmen [x y])
+                            (graphics/draw-image g (graphics/sub-sprite g
+                                                                        contentimage
+                                                                        [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                                                 [x y])
+                            (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
                        (let [player-entity @player-eid
-                             x (- x (/ rahmenw 2))]
-                         (render-hpmana-bar x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                         (render-hpmana-bar x y-mana manacontent (entity/mana      player-entity) "MP")))})))
+                             x (- x (/ rahmenw 2))
+                             g ctx/graphics]
+                         (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                         (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
-(defn- draw-player-message []
+(defn- draw-player-message [g]
   (when-let [text (:text @player-message)]
-    (draw-text {:x (/ (:width     ui-viewport) 2)
-                :y (+ (/ (:height ui-viewport) 2) 200)
-                :text text
-                :scale 2.5
-                :up? true})))
+    (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
+                           :y (+ (/ (:height (:ui-viewport g)) 2) 200)
+                           :text text
+                           :scale 2.5
+                           :up? true})))
 
 (defn- check-remove-message []
   (when (:text @player-message)
@@ -1192,7 +986,7 @@
       (swap! player-message dissoc :counter :text))))
 
 (defn- player-message-actor []
-  (ui-actor {:draw draw-player-message
+  (ui-actor {:draw (fn [] (draw-player-message ctx/graphics))
              :act  check-remove-message}))
 
 (defn- player-state-actor []
@@ -1205,13 +999,13 @@
   (stage/clear! stage)
   (run! add-actor [(ui.menu/create (dev-menu-config))
                    (action-bar/create)
-                   (hp-mana-bar [(/ (:width ui-viewport) 2)
+                   (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
                                  80 ; action-bar-icon-size
                                  ])
                    (ui/group {:id :windows
-                              :actors [(entity-info-window [(:width ui-viewport) 0])
-                                       (create-inventory-widget [(:width  ui-viewport)
-                                                                 (:height ui-viewport)])]})
+                              :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
+                                       (create-inventory-widget [(:width  (:ui-viewport ctx/graphics))
+                                                                 (:height (:ui-viewport ctx/graphics))])]})
                    (player-state-actor)
                    (player-message-actor)])
   (.bindRoot #'elapsed-time 0)
@@ -1248,11 +1042,11 @@
                    {:label "paused?"
                     :update-fn (fn [] paused?)}
                    {:label "GUI"
-                    :update-fn (fn [] (mouse-position))}
+                    :update-fn (fn [] (graphics/mouse-position ctx/graphics))}
                    {:label "World"
-                    :update-fn (fn [] (mapv int (world-mouse-position)))}
+                    :update-fn (fn [] (mapv int (graphics/world-mouse-position ctx/graphics)))}
                    {:label "Zoom"
-                    :update-fn (fn [] (camera/zoom (:camera world-viewport)))
+                    :update-fn (fn [] (camera/zoom (:camera (:world-viewport ctx/graphics))))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
                     :update-fn (fn [] (gdx/frames-per-second))
@@ -1305,14 +1099,16 @@
 (def ^:private factions-iterations {:good 15 :evil 5})
 
 (defn- draw-before-entities! []
-  (let [cam (:camera world-viewport)
+  (let [g ctx/graphics
+        cam (:camera (:world-viewport g))
         [left-x right-x bottom-y top-y] (camera/frustum cam)]
 
     (when tile-grid?
-      (draw-grid (int left-x) (int bottom-y)
-                 (inc (int (:width  world-viewport)))
-                 (+ 2 (int (:height world-viewport)))
-                 1 1 [1 1 1 0.8]))
+      (graphics/draw-grid g
+                          (int left-x) (int bottom-y)
+                          (inc (int (:width  (:world-viewport g))))
+                          (+ 2 (int (:height (:world-viewport g))))
+                          1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
             :let [cell (grid [x y])]
@@ -1320,49 +1116,49 @@
             :let [cell* @cell]]
 
       (when (and cell-entities? (seq (:entities cell*)))
-        (draw-filled-rectangle x y 1 1 [1 0 0 0.6]))
+        (graphics/draw-filled-rectangle g x y 1 1 [1 0 0 0.6]))
 
       (when (and cell-occupied? (seq (:occupied cell*)))
-        (draw-filled-rectangle x y 1 1 [0 0 1 0.6]))
+        (graphics/draw-filled-rectangle g x y 1 1 [0 0 1 0.6]))
 
       (when potential-field-colors?
         (let [faction :good
               {:keys [distance]} (faction cell*)]
           (when distance
             (let [ratio (/ distance (factions-iterations faction))]
-              (draw-filled-rectangle x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
+              (graphics/draw-filled-rectangle g x y 1 1 [ratio (- 1 ratio) ratio 0.6]))))))))
 
-(defn- geom-test []
-  (let [position (world-mouse-position)
+(defn- geom-test [g]
+  (let [position (graphics/world-mouse-position g)
         radius 0.8
         circle {:position position :radius radius}]
-    (draw-circle position radius [1 0 0 0.5])
+    (graphics/draw-circle g position radius [1 0 0 0.5])
     (doseq [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
-      (draw-rectangle x y 1 1 [1 0 0 0.5]))
+      (graphics/draw-rectangle g x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
-      (draw-rectangle x y width height [0 0 1 1]))))
+      (graphics/draw-rectangle g x y width height [0 0 1 1]))))
 
 (def ^:private ^:dbg-flag highlight-blocked-cell? true)
 
-(defn- highlight-mouseover-tile []
+(defn- highlight-mouseover-tile [g]
   (when highlight-blocked-cell?
-    (let [[x y] (mapv int (world-mouse-position))
+    (let [[x y] (mapv int (graphics/world-mouse-position g))
           cell (grid [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
-        (draw-rectangle x y 1 1
-                        (case (:movement @cell)
-                          :air  [1 1 0 0.5]
-                          :none [1 0 0 0.5]))))))
+        (graphics/draw-rectangle g x y 1 1
+                                 (case (:movement @cell)
+                                   :air  [1 1 0 0.5]
+                                   :none [1 0 0 0.5]))))))
 
 (defn- draw-after-entities! []
-  #_(geom-test)
-  (highlight-mouseover-tile))
+  #_(geom-test ctx/graphics)
+  (highlight-mouseover-tile ctx/graphics))
 
 (def ^:private ^:dbg-flag show-body-bounds false)
 
-(defn- draw-body-rect [entity color]
+(defn- draw-body-rect [g entity color]
   (let [[x y] (:left-bottom entity)]
-    (draw-rectangle x y (:width entity) (:height entity) color)))
+    (graphics/draw-rectangle g x y (:width entity) (:height entity) color)))
 
 ; I can create this later after loading all the component namespaces
 ; just go through the systems
@@ -1383,7 +1179,8 @@
 
 (defn- render-entities! []
   (let [entities (map deref active-entities)
-        player @player-eid]
+        player @player-eid
+        g ctx/graphics]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
                                               render-z-order)
@@ -1396,11 +1193,11 @@
                       (line-of-sight? player entity))]
       (try
        (when show-body-bounds
-         (draw-body-rect entity (if (:collides? entity) :white :gray)))
+         (draw-body-rect g entity (if (:collides? entity) :white :gray)))
        (doseq [component entity]
-         (render! component entity))
+         (render! component entity g))
        (catch Throwable t
-         (draw-body-rect entity :red)
+         (draw-body-rect g entity :red)
          (pretty-pst t))))))
 
 (defn- update-mouseover-entity! []
@@ -1408,7 +1205,7 @@
                   nil
                   (let [player @player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities grid (world-mouse-position)))]
+                                     (grid/point->entities grid (graphics/world-mouse-position ctx/graphics)))]
                     (->> render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
@@ -1464,7 +1261,7 @@
   )
 
 (defn- camera-controls! []
-  (let [camera (:camera world-viewport)
+  (let [camera (:camera (:world-viewport ctx/graphics))
         zoom-speed 0.025]
     (when (gdx/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
     (when (gdx/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed)))))
@@ -1489,31 +1286,36 @@
     (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []
-                            (.bindRoot #'ctx/assets (assets/create (:assets config)))
-                            (create-graphics! (:graphics config))
+                            ; TODO Input / App / Files / Graphics from Gdx ?
+                            ; TODO can bind cdq.g.graphics or asssets dynamically ...
+                            (.bindRoot #'ctx/assets   (cdq.g.assets/create (:assets config)))
+                            (.bindRoot #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
                             (ui/load! (:vis-ui config)) ; TODO we don't do dispose!
-                            (.bindRoot #'stage (stage/create ui-viewport batch))
+                            (.bindRoot #'stage (stage/create (:ui-viewport ctx/graphics)
+                                                             (:batch       ctx/graphics)))
                             (gdx/set-input-processor! stage)
                             (reset-game! (:world-fn config)))
 
                           (dispose []
                             (dispose! ctx/assets)
-                            (dispose-graphics!)
+                            (dispose! ctx/graphics)
                             ; TODO dispose world tiled-map/level resources?
                             )
 
                           (render []
                             (cache-active-entities!)
-                            (set-camera-position! (:position @player-eid))
-                            (graphics/clear-screen!)
-                            (draw-tiled-map tiled-map
-                                            (tile-color-setter raycaster
-                                                               explored-tile-corners
-                                                               (camera/position (:camera world-viewport))))
-                            (draw-on-world-view! (fn []
-                                                   (draw-before-entities!)
-                                                   (render-entities!)
-                                                   (draw-after-entities!)))
+                            (graphics/set-camera-position! ctx/graphics (:position @player-eid))
+                            (graphics/clear-screen! ctx/graphics)
+                            (graphics/draw-tiled-map ctx/graphics
+                                                     tiled-map
+                                                     (tile-color-setter raycaster
+                                                                        explored-tile-corners
+                                                                        (camera/position (:camera (:world-viewport ctx/graphics)))))
+                            (graphics/draw-on-world-view! ctx/graphics
+                                                          (fn []
+                                                            (draw-before-entities!)
+                                                            (render-entities!)
+                                                            (draw-after-entities!)))
                             (stage/draw! stage)
                             (stage/act! stage)
                             (state/manual-tick (entity/state-obj @player-eid))
@@ -1531,5 +1333,4 @@
                             (window-controls!))
 
                           (resize [width height]
-                            (Viewport/.update ui-viewport    width height true)
-                            (Viewport/.update world-viewport width height false))))))
+                            (graphics/resize! ctx/graphics width height))))))

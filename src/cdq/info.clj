@@ -50,6 +50,9 @@
                         :maxrange
                         :entity-effects])
 
+; TODO as protocol -> e.g. Creature, Skill, Item is a record which has to implement 'info-text'
+; -> no dependency on implementation ...
+
 (defn text
   "Creates a formatted informational text representation of components."
   [components]

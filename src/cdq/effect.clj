@@ -10,9 +10,9 @@
                     k))
 (defmethod useful? :default [_ _effect-ctx] true)
 
-(defmulti render (fn [[k] _effect-ctx]
-                          k))
-(defmethod render :default [_ _effect-ctx])
+(defmulti render (fn [[k] _effect-ctx g]
+                   k))
+(defmethod render :default [_ _effect-ctx g])
 
 (defn filter-applicable? [effect-ctx effect]
   (filter #(applicable? % effect-ctx) effect))
