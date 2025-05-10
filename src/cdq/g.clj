@@ -71,7 +71,7 @@
 
 (declare ^:private stage)
 
-(declare player-message)
+(declare ^:private player-message)
 
 (declare ^:private -data
          ^:private -properties-file
