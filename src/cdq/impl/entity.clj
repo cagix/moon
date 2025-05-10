@@ -147,10 +147,84 @@
       (g/send-event! eid :pickup-item item)
       (g/remove-item eid cell))))
 
-(defmethod state/manual-tick :player-item-on-cursor [[_ {:keys [eid]}]]
-  (when (and (gdx/button-just-pressed? :left)
-             (g/world-item?))
-    (g/send-event! eid :drop-item)))
+(defn- clicked-cell [eid cell]
+  (let [entity @eid
+        inventory (:entity/inventory entity)
+        item-in-cell (get-in inventory cell)
+        item-on-cursor (:entity/item-on-cursor entity)]
+    (cond
+     ; PUT ITEM IN EMPTY CELL
+     (and (not item-in-cell)
+          (inventory/valid-slot? cell item-on-cursor))
+     (do
+      (g/play-sound! "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (g/set-item eid cell item-on-cursor)
+      (g/send-event! eid :dropped-item))
+
+     ; STACK ITEMS
+     (and item-in-cell
+          (inventory/stackable? item-in-cell item-on-cursor))
+     (do
+      (g/play-sound! "bfxr_itemput")
+      (swap! eid dissoc :entity/item-on-cursor)
+      (g/stack-item eid cell item-on-cursor)
+      (g/send-event! eid :dropped-item))
+
+     ; SWAP ITEMS
+     (and item-in-cell
+          (inventory/valid-slot? cell item-on-cursor))
+     (do
+      (g/play-sound! "bfxr_itemput")
+      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
+      ; TODO? coud handle pickup-item from item-on-cursor state also
+      (swap! eid dissoc :entity/item-on-cursor)
+      (g/remove-item eid cell)
+      (g/set-item eid cell item-on-cursor)
+      (g/send-event! eid :dropped-item)
+      (g/send-event! eid :pickup-item item-in-cell)))))
+
+(defcomponent :player-item-on-cursor
+  (entity/create [[_ eid item]]
+    {:eid eid
+     :item item})
+
+  (entity/render-below! [[_ {:keys [item]}] entity]
+    (when (g/world-item?)
+      (g/draw-centered (:entity/image item)
+                       (g/item-place-position entity))))
+
+  (state/cursor [_] :cursors/hand-grab)
+
+  (state/pause-game? [_] true)
+
+  (state/enter! [[_ {:keys [eid item]}]]
+    (swap! eid assoc :entity/item-on-cursor item))
+
+  (state/exit! [[_ {:keys [eid]}]]
+    ; at clicked-cell when we put it into a inventory-cell
+    ; we do not want to drop it on the ground too additonally,
+    ; so we dissoc it there manually. Otherwise it creates another item
+    ; on the ground
+    (let [entity @eid]
+      (when (:entity/item-on-cursor entity)
+        (g/play-sound! "bfxr_itemputground")
+        (swap! eid dissoc :entity/item-on-cursor)
+        (g/spawn-item (g/item-place-position entity)
+                      (:entity/item-on-cursor entity)))))
+
+  (state/manual-tick [[_ {:keys [eid]}]]
+    (when (and (gdx/button-just-pressed? :left)
+               (g/world-item?))
+      (g/send-event! eid :drop-item)))
+
+  (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
+    (clicked-cell eid cell))
+
+  (state/draw-gui-view [[_ {:keys [eid]}]]
+    (when (not (g/world-item?))
+      (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
+                       (g/mouse-position)))))
 
 (defcomponent :entity/delete-after-duration
   (entity/create [[_ duration]]
@@ -196,10 +270,6 @@
 
 (defmethod entity/create :npc-sleeping [[_ eid]]
   {:eid eid})
-
-(defmethod entity/create :player-item-on-cursor [[_ eid item]]
-  {:eid eid
-   :item item})
 
 (defmethod entity/create :player-moving [[_ eid movement-vector]]
   {:eid eid
@@ -283,11 +353,6 @@
                      :fsms/player player-fsm
                      :fsms/npc npc-fsm) initial-state nil) :state initial-state)
          initial-state (entity/create [initial-state eid])))
-
-(defmethod state/draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
-  (when (not (g/world-item?))
-    (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
-                            (g/mouse-position))))
 
 ; this is not necessary if effect does not need target, but so far not other solution came up.
 (defn- update-effect-ctx
@@ -502,23 +567,6 @@
                     :button-text "OK"
                     :on-click (fn [])})))
 
-(defcomponent :player-item-on-cursor
-  (state/cursor [_] :cursors/hand-grab)
-  (state/pause-game? [_] true)
-  (state/enter! [[_ {:keys [eid item]}]]
-    (swap! eid assoc :entity/item-on-cursor item))
-  (state/exit! [[_ {:keys [eid]}]]
-    ; at clicked-cell when we put it into a inventory-cell
-    ; we do not want to drop it on the ground too additonally,
-    ; so we dissoc it there manually. Otherwise it creates another item
-    ; on the ground
-    (let [entity @eid]
-      (when (:entity/item-on-cursor entity)
-        (g/play-sound! "bfxr_itemputground")
-        (swap! eid dissoc :entity/item-on-cursor)
-        (g/spawn-item (g/item-place-position entity)
-                          (:entity/item-on-cursor entity))))))
-
 (defcomponent :player-moving
   (state/cursor [_] :cursors/walking)
   (state/pause-game? [_] false)
@@ -551,47 +599,6 @@
                      (:entity/faction @eid)
                      0.2)
     (g/add-text-effect! eid "[WHITE]!")))
-
-(defn- clicked-cell [eid cell]
-  (let [entity @eid
-        inventory (:entity/inventory entity)
-        item-in-cell (get-in inventory cell)
-        item-on-cursor (:entity/item-on-cursor entity)]
-    (cond
-     ; PUT ITEM IN EMPTY CELL
-     (and (not item-in-cell)
-          (inventory/valid-slot? cell item-on-cursor))
-     (do
-      (g/play-sound! "bfxr_itemput")
-      (swap! eid dissoc :entity/item-on-cursor)
-      (g/set-item eid cell item-on-cursor)
-      (g/send-event! eid :dropped-item))
-
-     ; STACK ITEMS
-     (and item-in-cell
-          (inventory/stackable? item-in-cell item-on-cursor))
-     (do
-      (g/play-sound! "bfxr_itemput")
-      (swap! eid dissoc :entity/item-on-cursor)
-      (g/stack-item eid cell item-on-cursor)
-      (g/send-event! eid :dropped-item))
-
-     ; SWAP ITEMS
-     (and item-in-cell
-          (inventory/valid-slot? cell item-on-cursor))
-     (do
-      (g/play-sound! "bfxr_itemput")
-      ; need to dissoc and drop otherwise state enter does not trigger picking it up again
-      ; TODO? coud handle pickup-item from item-on-cursor state also
-      (swap! eid dissoc :entity/item-on-cursor)
-      (g/remove-item eid cell)
-      (g/set-item eid cell item-on-cursor)
-      (g/send-event! eid :dropped-item)
-      (g/send-event! eid :pickup-item item-in-cell)))))
-
-(defmethod state/clicked-inventory-cell :player-item-on-cursor
-  [[_ {:keys [eid]}] cell]
-  (clicked-cell eid cell))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio]
   (let [[width height] (:world-unit-dimensions image)
@@ -708,12 +715,6 @@
                   :x x
                   :y (+ y (:half-height entity))
                   :up? true})))
-
-(defmethod entity/render-below! :player-item-on-cursor
-  [[_ {:keys [item]}] entity]
-  (when (g/world-item?)
-    (g/draw-centered (:entity/image item)
-                     (g/item-place-position entity))))
 
 (defmethod entity/render-below! :stunned
   [_ entity]
