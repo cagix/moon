@@ -2,6 +2,7 @@
   (:require [cdq.data.val-max :as val-max]
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
+            [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
@@ -15,7 +16,6 @@
             [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
-            [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics :as graphics]
@@ -49,14 +49,6 @@
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.utils.viewport Viewport)))
-
-(declare ^:private asset-manager)
-
-(defn assets-of-type [asset-type]
-  (asset-manager/all-of-type asset-manager asset-type))
-
-(defn asset [path]
-  (asset-manager/get asset-manager path))
 
 (declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
@@ -431,10 +423,10 @@
   (if sub-image-bounds
     (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
           [tilew tileh]       (drop 2 sub-image-bounds)]
-      (from-sheet (sprite-sheet (asset file) tilew tileh)
-                           [(int (/ sprite-x tilew))
-                            (int (/ sprite-y tileh))]))
-    (->sprite (asset file))))
+      (from-sheet (sprite-sheet (ctx/assets file) tilew tileh)
+                  [(int (/ sprite-x tilew))
+                   (int (/ sprite-y tileh))]))
+    (->sprite (ctx/assets file))))
 
 (defmethod schema/edn->value :s/image [_ edn]
   (edn->sprite edn))
@@ -453,7 +445,7 @@
 (defn play-sound! [sound-name]
   (->> sound-name
        (format "sounds/%s.wav")
-       asset
+       ctx/assets
        sound/play!))
 
 (defn ->timer [duration]
@@ -1005,8 +997,8 @@
   [21 (+ (slot->y-sprite-idx slot) 2)])
 
 (defn- slot->sprite [slot]
-  (from-sheet (sprite-sheet (asset "images/items.png") 48 48)
-                       (slot->sprite-idx slot)))
+  (from-sheet (sprite-sheet (ctx/assets "images/items.png") 48 48)
+              (slot->sprite-idx slot)))
 
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
@@ -1168,9 +1160,9 @@
               :up? true}))
 
 (defn- hp-mana-bar [[x y-mana]]
-  (let [rahmen      (->sprite (asset "images/rahmen.png"))
-        hpcontent   (->sprite (asset "images/hp.png"))
-        manacontent (->sprite (asset "images/mana.png"))
+  (let [rahmen      (->sprite (ctx/assets "images/rahmen.png"))
+        hpcontent   (->sprite (ctx/assets "images/hp.png"))
+        manacontent (->sprite (ctx/assets "images/mana.png"))
         [rahmenw rahmenh] (:pixel-dimensions rahmen)
         y-hp (+ y-mana rahmenh)
         render-hpmana-bar (fn [x y contentimage minmaxval name]
@@ -1249,10 +1241,10 @@
                     :update-fn (fn []
                                  (when-let [entity (and mouseover-eid @mouseover-eid)]
                                    (:entity/id entity)))
-                    :icon (asset "images/mouseover.png")}
+                    :icon (ctx/assets "images/mouseover.png")}
                    {:label "elapsed-time"
                     :update-fn (fn [] (str (readable-number elapsed-time) " seconds"))
-                    :icon (asset "images/clock.png")}
+                    :icon (ctx/assets "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [] paused?)}
                    {:label "GUI"
@@ -1261,10 +1253,10 @@
                     :update-fn (fn [] (mapv int (world-mouse-position)))}
                    {:label "Zoom"
                     :update-fn (fn [] (camera/zoom (:camera world-viewport)))
-                    :icon (asset "images/zoom.png")}
+                    :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
                     :update-fn (fn [] (gdx/frames-per-second))
-                    :icon (asset "images/fps.png")}]})
+                    :icon (ctx/assets "images/fps.png")}]})
 
 (def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
 
@@ -1497,7 +1489,7 @@
     (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []
-                            (.bindRoot #'asset-manager (asset-manager/create (assets/search (:assets config))))
+                            (.bindRoot #'ctx/assets (assets/create (:assets config)))
                             (create-graphics! (:graphics config))
                             (ui/load! (:vis-ui config)) ; TODO we don't do dispose!
                             (.bindRoot #'stage (stage/create ui-viewport batch))
@@ -1505,7 +1497,7 @@
                             (reset-game! (:world-fn config)))
 
                           (dispose []
-                            (dispose! asset-manager)
+                            (dispose! ctx/assets)
                             (dispose-graphics!)
                             ; TODO dispose world tiled-map/level resources?
                             )

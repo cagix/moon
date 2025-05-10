@@ -1,5 +1,7 @@
 (ns cdq.g.assets
-  (:require [clojure.gdx :as gdx]
+  (:require [cdq.assets :as assets]
+            [clojure.gdx :as gdx]
+            [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.string :as str]))
 
@@ -18,9 +20,21 @@
           :else
           (recur remaining result))))
 
-(defn search [folder]
-  (for [[asset-type extensions] {com.badlogic.gdx.audio.Sound #{"wav"}
+(defn- search [folder]
+  (for [[asset-type extensions] {com.badlogic.gdx.audio.Sound      #{"wav"}
                                  com.badlogic.gdx.graphics.Texture #{"png" "bmp"}}
         file (map #(str/replace-first % folder "")
                   (recursively-search (gdx/internal folder) extensions))]
     [file asset-type]))
+
+(defn create [folder]
+  (let [this (asset-manager/create (search folder))]
+    (reify clojure.lang.IFn
+      (invoke [_ path]
+        (asset-manager/get this path))
+      assets/Assets
+      (all-of-type [_ asset-type]
+        (asset-manager/all-of-type this asset-type))
+      com.badlogic.gdx.utils.Disposable
+      (dispose [_]
+        (com.badlogic.gdx.utils.Disposable/.dispose this)))))

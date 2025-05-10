@@ -1,5 +1,7 @@
 (ns cdq.ui.editor
-  (:require [cdq.db.property :as property]
+  (:require [cdq.assets :as assets]
+            [cdq.ctx :as ctx]
+            [cdq.db.property :as property]
             [cdq.db.schema :as schema]
             [cdq.g :as g]
             [clojure.edn :as edn]
@@ -146,7 +148,7 @@
       (str/replace ".wav" "")))
 
 (defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name (g/assets-of-type com.badlogic.gdx.audio.Sound))]
+  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type ctx/assets com.badlogic.gdx.audio.Sound))]
                [(text-button sound-name
                              (fn []
                                (group/clear-children! table)
@@ -435,7 +437,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (g/assets-of-type com.badlogic.gdx.graphics.Texture))]
+  (for [file (sort (assets/all-of-type ctx/assets com.badlogic.gdx.graphics.Texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -497,7 +499,7 @@
     table))
 
 (defn- background-image [path]
-  (ui/image-widget (g/asset path)
+  (ui/image-widget (ctx/assets path)
                    {:fill-parent? true
                     :scaling :fill
                     :align :center}))
