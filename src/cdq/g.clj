@@ -103,8 +103,7 @@
                                                            [new-state-k eid params]
                                                            [new-state-k eid]))]]
            (when (:entity/player? @eid)
-             (when-let [cursor-key (state/cursor new-state-obj)]
-               (graphics/set-cursor! ctx/graphics cursor-key)))
+             ((:state-changed! (:entity/player? @eid)) new-state-obj))
            (swap! eid #(-> %
                            (assoc :entity/fsm new-fsm
                                   new-state-k (new-state-obj 1))
@@ -148,13 +147,13 @@
 (defn add-skill [eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
   (when (:entity/player? @eid)
-    (action-bar/add-skill! (get-action-bar) skill))
+    ((:skill-added! (:entity/player? @eid)) skill))
   (swap! eid assoc-in [:entity/skills id] skill))
 
 (defn remove-skill [eid {:keys [property/id] :as skill}]
   {:pre [(entity/has-skill? @eid skill)]}
   (when (:entity/player? @eid)
-    (action-bar/remove-skill! (get-action-bar) skill))
+    ((:skill-removed! (:entity/player? @eid)) skill))
   (swap! eid update :entity/skills dissoc id))
 
 (defn- add-text-effect* [entity text]
@@ -447,26 +446,6 @@
                    ; so you cannot put it out of your own reach
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
-(defn- spawn-enemies! []
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
-                  {:position position
-                   :creature-id (keyword creature-id)
-                   :components {:entity/fsm {:fsm :fsms/npc
-                                             :initial-state :npc-sleeping}
-                                :entity/faction :evil}})]
-    (spawn-creature (update props :position tile->middle))))
-
-(defn- player-entity-props [start-position]
-  {:position (tile->middle start-position)
-   :creature-id :creatures/vampire
-   :components {:entity/fsm {:fsm :fsms/player
-                             :initial-state :player-idle}
-                :entity/faction :good
-                :entity/player? true
-                :entity/free-skill-points 3
-                :entity/clickable {:type :clickable/player}
-                :entity/click-distance-tiles 1.5}})
-
 (defn- cache-active-entities
   "Expensive operation.
 
@@ -642,7 +621,7 @@
     (assert (and (nil? (get-in inventory cell))
                  (inventory/valid-slot? cell item)))
     (when (:entity/player? entity)
-      (set-item-image-in-widget cell item))
+      ((:item-set! (:entity/player? entity)) cell item))
     (swap! eid assoc-in (cons :entity/inventory cell) item)
     (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-add (:entity/modifiers item)))))
@@ -652,7 +631,7 @@
         item (get-in (:entity/inventory entity) cell)]
     (assert item)
     (when (:entity/player? entity)
-      (remove-item-from-widget cell))
+      ((:item-removed! (:entity/player? entity)) cell))
     (swap! eid assoc-in (cons :entity/inventory cell) nil)
     (when (inventory/applies-modifiers? cell)
       (swap! eid entity/mod-remove (:entity/modifiers item)))))
@@ -770,6 +749,36 @@
   (actor/create
    {:draw (fn [_this]
             (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
+
+(defn- spawn-enemies! []
+  (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
+                  {:position position
+                   :creature-id (keyword creature-id)
+                   :components {:entity/fsm {:fsm :fsms/npc
+                                             :initial-state :npc-sleeping}
+                                :entity/faction :evil}})]
+    (spawn-creature (update props :position tile->middle))))
+
+(defn- player-entity-props [start-position]
+  {:position (tile->middle start-position)
+   :creature-id :creatures/vampire
+   :components {:entity/fsm {:fsm :fsms/player
+                             :initial-state :player-idle}
+                :entity/faction :good
+                :entity/player? {:state-changed! (fn [new-state-obj]
+                                                   (when-let [cursor-key (state/cursor new-state-obj)]
+                                                     (graphics/set-cursor! ctx/graphics cursor-key)))
+                                 :skill-added! (fn [skill]
+                                                 (action-bar/add-skill! (get-action-bar) skill))
+                                 :skill-removed! (fn [skill]
+                                                   (action-bar/remove-skill! (get-action-bar) skill))
+                                 :item-set! (fn [inventory-cell item]
+                                              (set-item-image-in-widget inventory-cell item))
+                                 :item-removed! (fn [inventory-cell]
+                                                  (remove-item-from-widget inventory-cell))}
+                :entity/free-skill-points 3
+                :entity/clickable {:type :clickable/player}
+                :entity/click-distance-tiles 1.5}})
 
 (declare dev-menu-config)
 
