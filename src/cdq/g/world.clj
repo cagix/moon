@@ -74,7 +74,6 @@
                   explored-tile-corners
                   entity-ids
                   potential-field-cache
-                  player-eid
                   active-entities
                   paused?
                   mouseover-eid]
@@ -99,7 +98,6 @@
                                                                (constantly false)))
                  :entity-ids (atom {})
                  :potential-field-cache (atom nil)
-                 :player-eid nil
                  :active-entities nil
                  :paused? nil
                  :mouseover-eid nil})))

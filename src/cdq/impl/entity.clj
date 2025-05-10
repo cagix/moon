@@ -34,13 +34,13 @@
      (do
       (g/play-sound! "bfxr_takeit")
       (g/mark-destroyed eid)
-      (g/send-event! (:player-eid ctx/world) :pickup-item item))
+      (g/send-event! ctx/player-eid :pickup-item item))
 
-     (inventory/can-pickup-item? (:entity/inventory @(:player-eid ctx/world)) item)
+     (inventory/can-pickup-item? (:entity/inventory @ctx/player-eid) item)
      (do
       (g/play-sound! "bfxr_pickup")
       (g/mark-destroyed eid)
-      (g/pickup-item (:player-eid ctx/world) item))
+      (g/pickup-item ctx/player-eid item))
 
      :else
      (do
@@ -70,7 +70,7 @@
 (defn- inventory-cell-with-item? [actor]
   (and (actor/parent actor)
        (= "inventory-cell" (actor/name (actor/parent actor)))
-       (get-in (:entity/inventory @(:player-eid ctx/world))
+       (get-in (:entity/inventory @ctx/player-eid)
                (actor/user-object (actor/parent actor)))))
 
 (defn- mouseover-actor->cursor []
@@ -689,7 +689,7 @@
 
 (defmethod entity/render-below! :entity/mouseover?
   [_ {:keys [entity/faction] :as entity} g]
-  (let [player @(:player-eid ctx/world)]
+  (let [player @ctx/player-eid]
     (graphics/with-line-width g 3
       #(graphics/draw-ellipse g
                               (:position entity)

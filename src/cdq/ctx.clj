@@ -18,10 +18,10 @@ Keys:
 
 * `:mouseover-eid` - may be nil or an `eid`
 
-* `:player-eid`
-
 * `:paused?` - wheter the game world is paused and not updating"}
  world
 
  elapsed-time
- delta-time)
+ delta-time
+ player-eid
+ )

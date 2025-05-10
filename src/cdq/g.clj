@@ -471,8 +471,8 @@
   "Expensive operation.
 
   Active entities are those which are nearby the position of the player and about one screen away."
-  [{:keys [content-grid player-eid] :as world}]
-  (assoc world :active-entities (content-grid/active-entities content-grid @player-eid)))
+  [{:keys [content-grid] :as world}]
+  (assoc world :active-entities (content-grid/active-entities content-grid @ctx/player-eid)))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -501,10 +501,10 @@
        (not (and los-checks?
                  (raycaster/blocked? (:raycaster ctx/world) (:position source) (:position target))))))
 
-(defn creatures-in-los-of-player [{:keys [active-entities player-eid]}]
+(defn creatures-in-los-of-player [{:keys [active-entities]}]
   (->> active-entities
        (filter #(:entity/species @%))
-       (filter #(line-of-sight? @player-eid @%))
+       (filter #(line-of-sight? @ctx/player-eid @%))
        (remove #(:entity/player? @%))))
 
 ; Items are also smaller than 48x48 all of them
@@ -534,7 +534,7 @@
       (let [^Actor this this
             g ctx/graphics]
         (draw-inventory-cell-rect! g
-                                   @(:player-eid ctx/world)
+                                   @ctx/player-eid
                                    (.getX this)
                                    (.getY this)
                                    (ui/hit this (graphics/mouse-position g))
@@ -583,7 +583,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [_event _x _y]
-                            (state/clicked-inventory-cell (entity/state-obj @(:player-eid ctx/world))
+                            (state/clicked-inventory-cell (entity/state-obj @ctx/player-eid)
                                                           cell))))
     stack))
 
@@ -736,7 +736,7 @@
                                                  [x y])
                             (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (actor/create {:draw (fn [_this]
-                           (let [player-entity @(:player-eid ctx/world)
+                           (let [player-entity @ctx/player-eid
                                  x (- x (/ rahmenw 2))
                                  g ctx/graphics]
                              (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
@@ -769,7 +769,7 @@
 (defn- player-state-actor []
   (actor/create
    {:draw (fn [_this]
-            (state/draw-gui-view (entity/state-obj @(:player-eid ctx/world))))}))
+            (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
 
 (declare dev-menu-config)
 
@@ -790,7 +790,7 @@
   (.bindRoot #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
                                               (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
-  (alter-var-root #'ctx/world assoc :player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
+  (.bindRoot #'ctx/player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? context)]
@@ -961,7 +961,7 @@
 
 (defn- render-entities! []
   (let [entities (map deref (:active-entities ctx/world))
-        player @(:player-eid ctx/world)
+        player @ctx/player-eid
         g ctx/graphics]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
@@ -985,7 +985,7 @@
 (defn- update-mouseover-entity! []
   (let [new-eid (if (mouse-on-actor?)
                   nil
-                  (let [player @(:player-eid ctx/world)
+                  (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
                                      (grid/point->entities (:grid ctx/world)
                                                            (graphics/world-mouse-position ctx/graphics)))]
@@ -1005,7 +1005,7 @@
 (defn- pause-game? []
   (or #_error
       (and pausing?
-           (state/pause-game? (entity/state-obj @(:player-eid ctx/world)))
+           (state/pause-game? (entity/state-obj @ctx/player-eid))
            (not (or (gdx/key-just-pressed? :p)
                     (gdx/key-pressed?      :space))))))
 
@@ -1083,7 +1083,7 @@
 
                           (render []
                             (alter-var-root #'ctx/world cache-active-entities)
-                            (graphics/set-camera-position! ctx/graphics (:position @(:player-eid ctx/world)))
+                            (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
                             (graphics/clear-screen! ctx/graphics)
                             (graphics/draw-tiled-map ctx/graphics
                                                      (:tiled-map ctx/world)
@@ -1097,7 +1097,7 @@
                                                             (draw-after-entities!)))
                             (stage/draw! stage)
                             (stage/act! stage)
-                            (state/manual-tick (entity/state-obj @(:player-eid ctx/world)))
+                            (state/manual-tick (entity/state-obj @ctx/player-eid))
                             (update-mouseover-entity!)
                             (alter-var-root #'ctx/world assoc :paused? (pause-game?))
                             (when-not (:paused? ctx/world)
