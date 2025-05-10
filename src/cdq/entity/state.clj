@@ -22,3 +22,7 @@
 (defmulti manual-tick (fn [[k]]
                         k))
 (defmethod manual-tick :default [_])
+
+(defmulti draw-gui-view (fn [[k]]
+                          k))
+(defmethod draw-gui-view :default [_])

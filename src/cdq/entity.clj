@@ -4,6 +4,11 @@
             [clojure.gdx.math :as math]
             [clojure.gdx.math.vector2 :as v]))
 
+(defmulti create (fn [[k]]
+                   k))
+(defmethod create :default [[_ v]]
+  v)
+
 (defmulti create! (fn [[k] eid]
                     k))
 (defmethod create! :default [_ eid])
@@ -38,15 +43,6 @@
     (mod-value base-value
                (:entity/modifiers entity)
                (keyword "modifier" (name k)))))
-
-(defmulti draw-gui-view (fn [[k]]
-                          k))
-(defmethod draw-gui-view :default [_])
-
-(defmulti create (fn [[k]]
-                   k))
-(defmethod create :default [[_ v]]
-  v)
 
 (defn direction [entity other-entity]
   (v/direction (:position entity) (:position other-entity)))

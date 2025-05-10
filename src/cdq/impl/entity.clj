@@ -284,7 +284,7 @@
                      :fsms/npc npc-fsm) initial-state nil) :state initial-state)
          initial-state (entity/create [initial-state eid])))
 
-(defmethod entity/draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
+(defmethod state/draw-gui-view :player-item-on-cursor [[_ {:keys [eid]}]]
   (when (not (g/world-item?))
     (g/draw-centered (:entity/image (:entity/item-on-cursor @eid))
                             (g/mouse-position))))

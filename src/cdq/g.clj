@@ -1204,7 +1204,7 @@
              :act  check-remove-message}))
 
 (defn- player-state-actor []
-  (ui-actor {:draw #(entity/draw-gui-view (entity/state-obj @player-eid))}))
+  (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @player-eid))}))
 
 (declare dev-menu-config)
 
