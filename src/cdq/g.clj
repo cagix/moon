@@ -326,6 +326,17 @@
 
 (def id-counter (atom 0))
 
+; this could take world ( all entity/create & entity/create! take only timers, etc. so world can be passed)
+; _but_
+; skills & inventory passes to user interface
+; pass user interface callbacks to world
+; player :entity/controller
+; fn -> set-/remove- item
+; fn ->> set-/remove- skill
+; => ...
+; => :entity/player? is the problem -> and send-entity callbacks
+; is there ui called ?
+; or again full context need to pass ??
 (defn- spawn-entity [position body components]
   (assert (and (not (contains? components :position))
                (not (contains? components :entity/id))))
