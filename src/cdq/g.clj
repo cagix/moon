@@ -5,6 +5,7 @@
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
+            [cdq.g.assets :as assets]
             [cdq.info :as info]
             [cdq.ui.action-bar :as action-bar]
             [cdq.world.content-grid :as content-grid]
@@ -17,7 +18,6 @@
             [clojure.gdx.asset-manager :as asset-manager]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.files.file-handle :as file-handle]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.shape-drawer :as shape-drawer]
@@ -51,6 +51,12 @@
            (com.badlogic.gdx.utils.viewport Viewport)))
 
 (declare ^:private asset-manager)
+
+(defn assets-of-type [asset-type]
+  (asset-manager/all-of-type asset-manager asset-type))
+
+(defn asset [path]
+  (asset-manager/get asset-manager path))
 
 (declare ^:private ^Batch batch
          ^:private ^Texture shape-drawer-texture
@@ -322,38 +328,6 @@
                          :close-on-escape? true
                          :center? true
                          :pack? true})))
-
-(defn- recursively-search [folder extensions]
-  (loop [[file & remaining] (file-handle/list folder)
-         result []]
-    (cond (nil? file)
-          result
-
-          (file-handle/directory? file)
-          (recur (concat remaining (file-handle/list file)) result)
-
-          (extensions (file-handle/extension file))
-          (recur remaining (conj result (file-handle/path file)))
-
-          :else
-          (recur remaining result))))
-
-(defn- create-asset-manager! [folder]
-  (let [assets (for [[asset-type extensions] {com.badlogic.gdx.audio.Sound #{"wav"}
-                                              com.badlogic.gdx.graphics.Texture #{"png" "bmp"}}
-                     file (map #(str/replace-first % folder "")
-                               (recursively-search (gdx/internal folder) extensions))]
-                 [file asset-type])]
-    (.bindRoot #'asset-manager (asset-manager/create assets))))
-
-(defn- dispose-asset-manager! []
-  (dispose! asset-manager))
-
-(defn assets-of-type [asset-type]
-  (asset-manager/all-of-type asset-manager asset-type))
-
-(defn asset [path]
-  (asset-manager/get asset-manager path))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -1523,7 +1497,7 @@
     (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []
-                            (create-asset-manager! (:assets config))
+                            (.bindRoot #'asset-manager (asset-manager/create (assets/search (:assets config))))
                             (create-graphics! (:graphics config))
                             (ui/load! (:vis-ui config)) ; TODO we don't do dispose!
                             (.bindRoot #'stage (stage/create ui-viewport batch))
@@ -1531,7 +1505,7 @@
                             (reset-game! (:world-fn config)))
 
                           (dispose []
-                            (dispose-asset-manager!)
+                            (dispose! asset-manager)
                             (dispose-graphics!)
                             ; TODO dispose world tiled-map/level resources?
                             )
