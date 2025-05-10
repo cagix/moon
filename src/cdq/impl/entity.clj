@@ -132,7 +132,7 @@
 
   (state/pause-game? [_] true)
 
-  (entity/manual-tick :player-idle [[_ {:keys [eid]}]]
+  (entity/manual-tick [[_ {:keys [eid]}]]
     (if-let [movement-vector (input/player-movement-vector)]
       (g/send-event! eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
