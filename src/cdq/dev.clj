@@ -16,7 +16,7 @@
 
  ; use post-runnable! to get proper error messages in console
 
- (show-tree-view! "Mouseover Entity" @g/mouseover-eid)
+ (show-tree-view! "Mouseover Entity" @(:mouseover-eid ctx/world))
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
 
@@ -72,13 +72,13 @@
 
 
 (defn- learn-skill! [_context skill-id]
-  (g/add-skill g/player-eid (db/build ctx/db skill-id)))
+  (g/add-skill (:player-eid ctx/world) (db/build ctx/db skill-id)))
 
 (defn- create-item! [_context item-id]
-  (g/spawn-item (:position @g/player-eid) (db/build ctx/db item-id)))
+  (g/spawn-item (:position @(:player-eid ctx/world)) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
-  @(g/grid (mapv int (graphics/world-mouse-position ctx/graphics))))
+  @((:grid ctx/world) (mapv int (graphics/world-mouse-position ctx/graphics))))
 
 (defn- class->label-str [class]
   (case class

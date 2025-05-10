@@ -12,4 +12,7 @@
 
  ^{:doc "[[cdq.db/DB]]"}
  db
+
+ ^{:doc "[[cdq.world/World]]"}
+ world
  )

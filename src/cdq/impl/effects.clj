@@ -49,7 +49,7 @@
     (let [source-p (:position @source)
           target-p (:position @target)]
       ; is path blocked ereally needed? we need LOS also right to have a target-direction as AI?
-      (and (not (raycaster/path-blocked? g/raycaster ; TODO test
+      (and (not (raycaster/path-blocked? (:raycaster ctx/world) ; TODO test
                                          source-p
                                          target-p
                                          (g/projectile-size projectile)))
@@ -110,7 +110,7 @@
  ; TODO showing one a bit further up
  ; maybe world view port is cut
  ; not quite showing correctly.
- (let [targets (g/creatures-in-los-of-player)]
+ (let [targets (g/creatures-in-los-of-player ctx/world)]
    (count targets)
    #_(sort-by #(% 1) (map #(vector (:entity.creature/name @%)
                                    (:position @%)) targets)))
@@ -128,7 +128,7 @@
 
   (effect/handle [[_ {:keys [entity-effects]}] {:keys [effect/source]}]
     (let [source* @source]
-      (doseq [target (g/creatures-in-los-of-player)]
+      (doseq [target (g/creatures-in-los-of-player ctx/world)]
         (g/line-render {:start (:position source*) #_(start-point source* target*)
                         :end (:position @target)
                         :duration 0.05
@@ -145,7 +145,7 @@
 
   (effect/render [_ {:keys [effect/source]} g]
     (let [source* @source]
-      (doseq [target* (map deref (g/creatures-in-los-of-player))]
+      (doseq [target* (map deref (g/creatures-in-los-of-player ctx/world))]
         (graphics/draw-line g (:position source*) #_(start-point source* target*)
                             (:position target*)
                             [1 0 0 0.5])))))

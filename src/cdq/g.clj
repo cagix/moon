@@ -50,22 +50,6 @@
 
 (declare ^:private player-message)
 
-(declare ^:private elapsed-time)
-
-(declare ^:private tiled-map
-         ^:private content-grid
-         ^:private entity-ids
-         ^:private explored-tile-corners
-         grid
-         raycaster
-         ^:private potential-field-cache
-         player-eid
-         ^:private active-entities
-         delta-time
-         ^:private paused?)
-
-(def mouseover-eid nil)
-
 (defn get-actor [id-keyword]
   (id-keyword stage))
 
@@ -108,20 +92,20 @@
 (defn ->timer [duration]
   {:pre [(>= duration 0)]}
   {:duration duration
-   :stop-time (+ elapsed-time duration)})
+   :stop-time (+ (:elapsed-time ctx/world) duration)})
 
 (defn stopped? [{:keys [stop-time]}]
-  (>= elapsed-time stop-time))
+  (>= (:elapsed-time ctx/world) stop-time))
 
 (defn timer-reset [{:keys [duration] :as timer}]
-  (assoc timer :stop-time (+ elapsed-time duration)))
+  (assoc timer :stop-time (+ (:elapsed-time ctx/world) duration)))
 
 (defn timer-ratio [{:keys [duration stop-time] :as timer}]
   {:post [(<= 0 % 1)]}
   (if (stopped? timer)
     0
     ; min 1 because floating point math inaccuracies
-    (min 1 (/ (- stop-time elapsed-time) duration))))
+    (min 1 (/ (- stop-time (:elapsed-time ctx/world)) duration))))
 
 (defn send-event!
   ([eid event]
@@ -301,7 +285,7 @@
     (assert (get (:occupied @cell) eid))
     (swap! cell update :occupied disj eid)))
 
-(defn- add-entity! [eid]
+(defn- add-entity! [{:keys [entity-ids content-grid grid]} eid]
   (let [id (:entity/id @eid)]
     (assert (number? id))
     (swap! entity-ids assoc id eid))
@@ -314,7 +298,7 @@
   (when (:collides? @eid)
     (set-occupied-cells! grid eid)))
 
-(defn- remove-entity! [eid]
+(defn- remove-entity! [{:keys [entity-ids content-grid grid]} eid]
   (let [id (:entity/id @eid)]
     (assert (contains? @entity-ids id))
     (swap! entity-ids dissoc id))
@@ -325,7 +309,7 @@
   (when (:collides? @eid)
     (remove-from-occupied-cells! eid)))
 
-(defn position-changed! [eid]
+(defn position-changed! [{:keys [content-grid grid]} eid]
   (content-grid/update-entity! content-grid eid)
 
   (remove-from-cells! eid)
@@ -334,10 +318,10 @@
     (remove-from-occupied-cells! eid)
     (set-occupied-cells! grid eid)))
 
-(defn- remove-destroyed-entities! []
+(defn- remove-destroyed-entities! [{:keys [entity-ids] :as world}]
   (doseq [eid (filter (comp :entity/destroyed? deref)
                       (vals @entity-ids))]
-    (remove-entity! eid)
+    (remove-entity! world eid)
     (doseq [component @eid]
       (entity/destroy! component eid))))
 
@@ -411,7 +395,7 @@
                       (safe-merge (-> components
                                       (assoc :entity/id (swap! id-counter inc))
                                       create-vs))))]
-    (add-entity! eid)
+    (add-entity! ctx/world eid)
     (doseq [component @eid]
       (entity/create! component eid))
     eid))
@@ -509,7 +493,7 @@
        (grid/circle->entities grid)
        (filter #(= (:entity/faction @%) faction))))
 
-(defn nearest-enemy [entity]
+(defn nearest-enemy [{:keys [grid]} entity]
   (grid/nearest-entity @(grid (entity/tile entity))
                        (entity/enemy entity)))
 
@@ -532,7 +516,7 @@
                    (- (:entity/click-distance-tiles entity) 0.1)))
 
 (defn- spawn-enemies! []
-  (doseq [props (for [[position creature-id] (tiled/positions-with-property tiled-map :creatures :id)]
+  (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
                   {:position position
                    :creature-id (keyword creature-id)
                    :components {:entity/fsm {:fsm :fsms/npc
@@ -551,27 +535,12 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
-(defn- create-world-state! [{:keys [tiled-map start-position]}]
-  (.bindRoot #'tiled-map tiled-map)
-  (.bindRoot #'content-grid (content-grid/create {:cell-size 16
-                                                  :width  (tiled/tm-width  tiled-map)
-                                                  :height (tiled/tm-height tiled-map)}))
-  (.bindRoot #'explored-tile-corners (atom (g2d/create-grid (tiled/tm-width  tiled-map)
-                                                            (tiled/tm-height tiled-map)
-                                                            (constantly false))))
-  (.bindRoot #'entity-ids (atom {}))
-  (.bindRoot #'grid (create-grid tiled-map))
-  (.bindRoot #'raycaster (create-raycaster grid))
-  (.bindRoot #'potential-field-cache (atom nil))
-  (spawn-enemies!)
-  (.bindRoot #'player-eid (spawn-creature (player-entity-props start-position))))
-
-(defn- cache-active-entities!
+(defn- cache-active-entities
   "Expensive operation.
 
   Active entities are those which are nearby the position of the player and about one screen away."
-  []
-  (.bindRoot #'active-entities (content-grid/active-entities content-grid @player-eid)))
+  [{:keys [content-grid player-eid] :as world}]
+  (assoc world :active-entities (content-grid/active-entities content-grid @player-eid)))
 
 ; does not take into account zoom - but zoom is only for debug ???
 ; vision range?
@@ -598,9 +567,9 @@
   (and (or (not (:entity/player? source))
            (on-screen? (:world-viewport ctx/graphics) target))
        (not (and los-checks?
-                 (raycaster/blocked? raycaster (:position source) (:position target))))))
+                 (raycaster/blocked? (:raycaster ctx/world) (:position source) (:position target))))))
 
-(defn creatures-in-los-of-player []
+(defn creatures-in-los-of-player [{:keys [active-entities player-eid]}]
   (->> active-entities
        (filter #(:entity/species @%))
        (filter #(line-of-sight? @player-eid @%))
@@ -633,7 +602,7 @@
       (let [^Actor this this
             g ctx/graphics]
         (draw-inventory-cell-rect! g
-                                   @player-eid
+                                   @(:player-eid ctx/world)
                                    (.getX this)
                                    (.getY this)
                                    (ui/hit this (graphics/mouse-position g))
@@ -682,7 +651,7 @@
     (.setUserObject stack cell)
     (.addListener stack (proxy [ClickListener] []
                           (clicked [_event _x _y]
-                            (state/clicked-inventory-cell (entity/state-obj @player-eid)
+                            (state/clicked-inventory-cell (entity/state-obj @(:player-eid ctx/world))
                                                           cell))))
     stack))
 
@@ -794,10 +763,10 @@
 (defn- ->label-text []
   ; items then have 2x pretty-name
   #_(.setText (.getTitleLabel window)
-              (if-let [eid mouseover-eid]
+              (if-let [eid (:mouseover-eid ctx/world)]
                 (info/text [:property/pretty-name (:property/pretty-name @eid)])
                 "Entity Info"))
-  (when-let [eid mouseover-eid]
+  (when-let [eid (:mouseover-eid ctx/world)]
     (info/text ; don't use select-keys as it loses Entity record type
                (apply dissoc @eid disallowed-keys))))
 
@@ -835,7 +804,7 @@
                                                  [x y])
                             (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
     (ui-actor {:draw (fn []
-                       (let [player-entity @player-eid
+                       (let [player-entity @(:player-eid ctx/world)
                              x (- x (/ rahmenw 2))
                              g ctx/graphics]
                          (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
@@ -861,9 +830,43 @@
              :act  check-remove-message}))
 
 (defn- player-state-actor []
-  (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @player-eid))}))
+  (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @(:player-eid ctx/world)))}))
 
 (declare dev-menu-config)
+
+(defrecord World [tiled-map
+                  grid
+                  raycaster
+                  content-grid
+                  explored-tile-corners
+                  entity-ids
+                  potential-field-cache
+                  player-eid
+                  active-entities
+                  elapsed-time
+                  delta-time
+                  paused?
+                  mouseover-eid])
+
+; TODO id-counter ?
+(defn- create-world [{:keys [tiled-map start-position]}]
+  (let [width (tiled/tm-width  tiled-map)
+        height (tiled/tm-height tiled-map)
+        grid (create-grid tiled-map)]
+    (map->World {:tiled-map tiled-map
+                 :start-position start-position
+                 :grid grid
+                 :raycaster (create-raycaster grid)
+                 :content-grid (content-grid/create {:cell-size 16 :width  width :height height})
+                 :explored-tile-corners (atom (g2d/create-grid width height (constantly false)))
+                 :entity-ids (atom {})
+                 :potential-field-cache (atom nil)
+                 :player-eid nil ; ?
+                 :active-entities nil ; ??
+                 :elapsed-time 0
+                 :delta-time nil ; ??
+                 :paused? nil ; ??
+                 :mouseover-eid nil})))
 
 (defn- reset-game! [world-fn]
   (.bindRoot #'player-message (atom {:duration-seconds 1.5}))
@@ -879,8 +882,10 @@
                                                                  (:height (:ui-viewport ctx/graphics))])]})
                    (player-state-actor)
                    (player-message-actor)])
-  (.bindRoot #'elapsed-time 0)
-  (create-world-state! ((requiring-resolve world-fn) (db/build-all ctx/db :properties/creatures))))
+  (.bindRoot #'ctx/world (create-world ((requiring-resolve world-fn)
+                                        (db/build-all ctx/db :properties/creatures))))
+  (spawn-enemies!)
+  (alter-var-root #'ctx/world assoc :player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? context)]
@@ -904,14 +909,15 @@
                                   ((requiring-resolve 'cdq.ui.editor/open-main-window!) property-type))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn []
-                                 (when-let [entity (and mouseover-eid @mouseover-eid)]
+                                 (when-let [entity (and (:mouseover-eid ctx/world)
+                                                        @(:mouseover-eid ctx/world))]
                                    (:entity/id entity)))
                     :icon (ctx/assets "images/mouseover.png")}
                    {:label "elapsed-time"
-                    :update-fn (fn [] (str (readable-number elapsed-time) " seconds"))
+                    :update-fn (fn [] (str (readable-number (:elapsed-time ctx/world)) " seconds"))
                     :icon (ctx/assets "images/clock.png")}
                    {:label "paused?"
-                    :update-fn (fn [] paused?)}
+                    :update-fn (fn [] (:paused? ctx/world))}
                    {:label "GUI"
                     :update-fn (fn [] (graphics/mouse-position ctx/graphics))}
                    {:label "World"
@@ -982,7 +988,7 @@
                           1 1 [1 1 1 0.8]))
 
     (doseq [[x y] (camera/visible-tiles cam)
-            :let [cell (grid [x y])]
+            :let [cell ((:grid ctx/world) [x y])]
             :when cell
             :let [cell* @cell]]
 
@@ -1004,7 +1010,7 @@
         radius 0.8
         circle {:position position :radius radius}]
     (graphics/draw-circle g position radius [1 0 0 0.5])
-    (doseq [[x y] (map #(:position @%) (grid/circle->cells grid circle))]
+    (doseq [[x y] (map #(:position @%) (grid/circle->cells (:grid ctx/world) circle))]
       (graphics/draw-rectangle g x y 1 1 [1 0 0 0.5]))
     (let [{[x y] :left-bottom :keys [width height]} (circle->outer-rectangle circle)]
       (graphics/draw-rectangle g x y width height [0 0 1 1]))))
@@ -1014,7 +1020,7 @@
 (defn- highlight-mouseover-tile [g]
   (when highlight-blocked-cell?
     (let [[x y] (mapv int (graphics/world-mouse-position g))
-          cell (grid [x y])]
+          cell ((:grid ctx/world) [x y])]
       (when (and cell (#{:air :none} (:movement @cell)))
         (graphics/draw-rectangle g x y 1 1
                                  (case (:movement @cell)
@@ -1049,8 +1055,8 @@
           :active-skill draw-skill-image-and-active-effect}})
 
 (defn- render-entities! []
-  (let [entities (map deref active-entities)
-        player @player-eid
+  (let [entities (map deref (:active-entities ctx/world))
+        player @(:player-eid ctx/world)
         g ctx/graphics]
     (doseq [[z-order entities] (sort-by-order (group-by :z-order entities)
                                               first
@@ -1074,35 +1080,40 @@
 (defn- update-mouseover-entity! []
   (let [new-eid (if (mouse-on-actor?)
                   nil
-                  (let [player @player-eid
+                  (let [player @(:player-eid ctx/world)
                         hits (remove #(= (:z-order @%) :z-order/effect)
-                                     (grid/point->entities grid (graphics/world-mouse-position ctx/graphics)))]
+                                     (grid/point->entities (:grid ctx/world)
+                                                           (graphics/world-mouse-position ctx/graphics)))]
                     (->> render-z-order
                          (utils/sort-by-order hits #(:z-order @%))
                          reverse
                          (filter #(line-of-sight? player @%))
                          first)))]
-    (when mouseover-eid
-      (swap! mouseover-eid dissoc :entity/mouseover?))
+    (when-let [eid (:mouseover-eid ctx/world)]
+      (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (.bindRoot #'mouseover-eid new-eid)))
+    (alter-var-root #'ctx/world assoc :mouseover-eid new-eid)))
 
 (def pausing? true)
 
-(defn- set-paused-flag! []
-  (.bindRoot #'paused? (or #_error
-                           (and pausing?
-                                (state/pause-game? (entity/state-obj @player-eid))
-                                (not (or (gdx/key-just-pressed? :p)
-                                         (gdx/key-pressed?      :space)))))))
+(defn- pause-game? []
+  (or #_error
+      (and pausing?
+           (state/pause-game? (entity/state-obj @(:player-eid ctx/world)))
+           (not (or (gdx/key-just-pressed? :p)
+                    (gdx/key-pressed?      :space))))))
 
-(defn- update-time! []
-  (let [delta-ms (min (gdx/delta-time) max-delta)]
-    (alter-var-root #'elapsed-time + delta-ms)
-    (.bindRoot #'delta-time delta-ms)))
+; TODO here timers check stopped? ???
+(defn- update-time [world graphics-delta]
+  (let [delta-ms (min graphics-delta max-delta)]
+    (-> world
+        (update :elapsed-time + delta-ms)
+        (assoc :delta-time delta-ms))))
 
-(defn- update-potential-fields! []
+(defn- update-potential-fields! [{:keys [potential-field-cache
+                                         grid
+                                         active-entities]}]
   (doseq [[faction max-iterations] factions-iterations]
     (cdq.world.potential-fields/tick potential-field-cache
                                      grid
@@ -1110,7 +1121,7 @@
                                      active-entities
                                      max-iterations)))
 
-(defn- tick-entities! []
+(defn- tick-entities! [{:keys [active-entities]}]
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
   ; should be contains? check ?
@@ -1174,13 +1185,13 @@
                             )
 
                           (render []
-                            (cache-active-entities!)
-                            (graphics/set-camera-position! ctx/graphics (:position @player-eid))
+                            (alter-var-root #'ctx/world cache-active-entities)
+                            (graphics/set-camera-position! ctx/graphics (:position @(:player-eid ctx/world)))
                             (graphics/clear-screen! ctx/graphics)
                             (graphics/draw-tiled-map ctx/graphics
-                                                     tiled-map
-                                                     (tile-color-setter raycaster
-                                                                        explored-tile-corners
+                                                     (:tiled-map ctx/world)
+                                                     (tile-color-setter (:raycaster ctx/world)
+                                                                        (:explored-tile-corners ctx/world)
                                                                         (camera/position (:camera (:world-viewport ctx/graphics)))))
                             (graphics/draw-on-world-view! ctx/graphics
                                                           (fn []
@@ -1189,16 +1200,16 @@
                                                             (draw-after-entities!)))
                             (stage/draw! stage)
                             (stage/act! stage)
-                            (state/manual-tick (entity/state-obj @player-eid))
+                            (state/manual-tick (entity/state-obj @(:player-eid ctx/world)))
                             (update-mouseover-entity!)
-                            (set-paused-flag!)
-                            (when-not paused?
-                              (update-time!)
-                              (update-potential-fields!)
-                              (tick-entities!))
+                            (alter-var-root #'ctx/world assoc :paused? (pause-game?))
+                            (when-not (:paused? ctx/world)
+                              (alter-var-root #'ctx/world update-time (gdx/delta-time))
+                              (update-potential-fields! ctx/world)
+                              (tick-entities! ctx/world))
 
                             ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                            (remove-destroyed-entities!)
+                            (remove-destroyed-entities! ctx/world)
 
                             (camera-controls!)
                             (window-controls!))
