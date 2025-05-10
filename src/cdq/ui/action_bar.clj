@@ -1,15 +1,15 @@
 (ns cdq.ui.action-bar
   (:require [cdq.info :as info]
-            [clojure.gdx.scene2d.ui :as ui :refer [ui-actor]])
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 (defn- button-group []
-  (let [actor (ui-actor {})]
-    (.setName actor "action-bar/button-group")
-    (.setUserObject actor (ui/button-group {:max-check-count 1
-                                            :min-check-count 0}))
-    actor))
+  (doto (actor/create {})
+    (.setName "action-bar/button-group")
+    (.setUserObject (ui/button-group {:max-check-count 1
+                                      :min-check-count 0}))))
 
 (defn- horizontal-group []
   (let [group (ui/horizontal-group {:pad 2 :space 2})]

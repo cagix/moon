@@ -1,22 +1,24 @@
 (ns clojure.gdx.scene2d.ui.menu
-  (:require [clojure.gdx.scene2d.ui :as ui :refer [ui-actor]])
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.ui :as ui])
   (:import (com.badlogic.gdx.scenes.scene2d Group Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu)))
 
 (defn- set-label-text-fn [label text-fn]
-  (fn [] (Label/.setText label (str (text-fn)))))
+  (fn [_this]
+    (Label/.setText label (str (text-fn)))))
 
 (defn- add-upd-label!
   ([table text-fn icon]
    (let [icon (ui/image-widget icon {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
-     (Group/.addActor table (ui-actor {:act (set-label-text-fn label text-fn)}))
+     (Group/.addActor table (actor/create {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
    (let [label (ui/label "")]
-     (Group/.addActor table (ui-actor {:act (set-label-text-fn label text-fn)}))
+     (Group/.addActor table (actor/create {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]

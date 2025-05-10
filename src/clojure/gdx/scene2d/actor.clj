@@ -2,6 +2,15 @@
   (:refer-clojure :exclude [name])
   (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)))
 
+(defn create ^Actor [{:keys [draw act]}]
+  (proxy [Actor] []
+    (draw [_batch _parent-alpha]
+      (when draw
+        (draw this)))
+    (act [_delta]
+      (when act
+        (act this)))))
+
 (defn remove!
   "Removes this actor from its parent, if it has a parent."
   [^Actor actor]
@@ -22,6 +31,9 @@
 
 (defn name [^Actor actor]
   (.getName actor))
+
+(defn set-name! [^Actor actor name]
+  (.setName actor name))
 
 (defn parent [^Actor actor]
   (.getParent actor))

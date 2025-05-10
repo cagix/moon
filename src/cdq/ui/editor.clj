@@ -12,7 +12,6 @@
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui :refer [horizontal-separator-cell
                                             vertical-separator-cell
-                                            ui-actor
                                             image-button
                                             text-button
                                             *on-clicked-actor*
@@ -103,9 +102,9 @@
                                                 :center? true}
                                                {:actor (text-button "Delete" delete!)
                                                 :center? true}]])]])
-    (.addActor window (ui-actor {:act (fn []
-                                        (when (gdx/key-just-pressed? :enter)
-                                          (save!)))}))
+    (.addActor window (actor/create {:act (fn [_this]
+                                            (when (gdx/key-just-pressed? :enter)
+                                              (save!)))}))
     (.pack window)
     window))
 

@@ -328,13 +328,6 @@
      (.addListener button (change-listener on-clicked))
      button)))
 
-(defn ui-actor ^Actor [{:keys [draw act]}]
-  (proxy [Actor] []
-    (draw [_batch _parent-alpha]
-      (when draw (draw)))
-    (act [_delta]
-      (when act (act)))))
-
 (defn tree []
   (VisTree.))
 

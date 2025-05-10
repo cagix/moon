@@ -2,7 +2,8 @@
   (:require [cdq.level.modules-core :as modules]
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.scene2d.ui :refer [ui-actor text-button] :as ui]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.ui :refer [text-button] :as ui]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]])
@@ -57,9 +58,10 @@
 #_(defn- ->info-window []
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
-    (.addActor window (ui-actor {:act #(do
-                                        (.setText label (map-infos %))
-                                        (.pack window))}))
+    (.addActor window (actor/create {:act (fn [_this]
+                                            (do
+                                             (.setText label (map-infos %))
+                                             (.pack window)))}))
     (.setPosition window 0 (:height graphics/ui-viewport)) window))
 
 (def ^:private camera-movement-speed 1)

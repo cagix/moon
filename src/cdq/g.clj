@@ -24,8 +24,10 @@
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
+            [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui :as ui :refer [ui-actor]]
+            [clojure.gdx.scene2d.ui :as ui]
             [clojure.gdx.scene2d.ui.menu :as ui.menu]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [circle->outer-rectangle]]
@@ -709,9 +711,9 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (.addActor window (ui-actor {:act (fn []
-                                        (.setText label (str (->label-text)))
-                                        (.pack window))}))
+    (.addActor window (actor/create {:act (fn [_this]
+                                            (.setText label (str (->label-text)))
+                                            (.pack window))}))
     window))
 
 (defn- render-infostr-on-bar [g infostr x y h]
@@ -733,42 +735,46 @@
                                                                         [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
                             (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (ui-actor {:draw (fn []
-                       (let [player-entity @(:player-eid ctx/world)
-                             x (- x (/ rahmenw 2))
-                             g ctx/graphics]
-                         (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                         (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
-
-(declare ^:private player-message)
+    (actor/create {:draw (fn [_this]
+                           (let [player-entity @(:player-eid ctx/world)
+                                 x (- x (/ rahmenw 2))
+                                 g ctx/graphics]
+                             (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                             (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
 (defn show-player-msg! [text]
-  (swap! player-message assoc :text text :counter 0))
+  (actor/set-user-object! (group/find-actor (stage/root stage) "player-message-actor")
+                          (atom {:text text
+                                 :counter 0})))
 
 (defn- player-message-actor []
-  (ui-actor {:draw (fn []
-                     (let [g ctx/graphics]
-                       (when-let [text (:text @player-message)]
-                         (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
-                                                :y (+ (/ (:height (:ui-viewport g)) 2) 200)
-                                                :text text
-                                                :scale 2.5
-                                                :up? true}))))
-             :act  (fn []
-                     (when (:text @player-message)
-                       (swap! player-message update :counter + (gdx/delta-time))
-                       (when (>= (:counter @player-message)
-                                 (:duration-seconds @player-message))
-                         (swap! player-message dissoc :counter :text))))}))
+  (doto (actor/create {:draw (fn [this]
+                               (let [g ctx/graphics
+                                     state (actor/user-object this)]
+                                 (when-let [text (:text @state)]
+                                   (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
+                                                          :y (+ (/ (:height (:ui-viewport g)) 2) 200)
+                                                          :text text
+                                                          :scale 2.5
+                                                          :up? true}))))
+                       :act (fn [this]
+                              (let [state (actor/user-object this)]
+                                (when (:text @state)
+                                  (swap! state update :counter + (gdx/delta-time))
+                                  (when (>= (:counter @state) 1.5)
+                                    (reset! state nil)))))})
+    (actor/set-user-object! (atom nil))
+    (actor/set-name! "player-message-actor")))
 
 (defn- player-state-actor []
-  (ui-actor {:draw #(state/draw-gui-view (entity/state-obj @(:player-eid ctx/world)))}))
+  (actor/create
+   {:draw (fn [_this]
+            (state/draw-gui-view (entity/state-obj @(:player-eid ctx/world))))}))
 
 (declare dev-menu-config)
 
 (defn- reset-game! [world-fn]
   (.bindRoot #'ctx/elapsed-time 0)
-  (.bindRoot #'player-message (atom {:duration-seconds 1.5}))
   (stage/clear! stage)
   (run! add-actor [(ui.menu/create (dev-menu-config))
                    (action-bar/create)
