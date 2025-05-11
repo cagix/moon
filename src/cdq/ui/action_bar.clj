@@ -8,10 +8,10 @@
 (defn create []
   (ui/table {:rows [[{:actor (doto (ui/horizontal-group {:pad 2 :space 2})
                                (actor/set-user-object! ::horizontal-group)
-                               (grup/add-actor! (doto (actor/create {})
-                                                  (actor/set-name! "button-group")
-                                                  (actor/set-user-object! (ui/button-group {:max-check-count 1
-                                                                                            :min-check-count 0})))))
+                               (group/add-actor! (doto (actor/create {})
+                                                   (actor/set-name! "button-group")
+                                                   (actor/set-user-object! (ui/button-group {:max-check-count 1
+                                                                                             :min-check-count 0})))))
                       :expand? true
                       :bottom? true}]]
              :id ::action-bar-table
