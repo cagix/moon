@@ -58,9 +58,6 @@
 (defn mouse-on-actor? []
   (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
 
-(defn get-inventory [stage]
-  (get (:windows stage) :inventory-window))
-
 (defn selected-skill [stage]
   (action-bar/selected-skill (action-bar/get-data stage)))
 
@@ -115,9 +112,6 @@
 
 (defn mark-destroyed [eid]
   (swap! eid assoc :entity/destroyed? true))
-
-(defn toggle-inventory-window []
-  (actor/toggle-visible! (get-inventory ctx/stage)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -590,7 +584,7 @@
                        :pad 4}]]}))
 
 (defn- inventory-cell-widget [cell]
-  (get (::table (get-inventory ctx/stage)) cell))
+  (get (::table (-> ctx/stage :windows :inventory-window)) cell))
 
 (defn- set-item-image-in-widget [cell item]
   (let [cell-widget (inventory-cell-widget cell)

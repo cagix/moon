@@ -30,7 +30,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (actor/visible? (g/get-inventory ctx/stage))
+     (-> ctx/stage :windows :inventory-window actor/visible?)
      (do
       (g/play-sound! "bfxr_takeit")
       (g/mark-destroyed eid)
@@ -48,7 +48,7 @@
       (g/show-player-msg! "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (g/toggle-inventory-window))
+  (-> ctx/stage :windows :inventory-window actor/toggle-visible!))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
