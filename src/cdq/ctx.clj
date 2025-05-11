@@ -8,6 +8,8 @@
          ^{:doc "[[cdq.graphics/Graphics]]."}
          graphics
 
+         stage
+
          ^{:doc "[[cdq.db/DB]]"}
          db
 

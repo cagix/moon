@@ -51,22 +51,20 @@
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
-(declare ^:private stage)
-
 (defn get-actor [id-keyword]
-  (id-keyword stage))
+  (id-keyword ctx/stage))
 
 (defn mouse-on-actor? []
-  (stage/hit stage (graphics/mouse-position ctx/graphics)))
+  (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
 
 (defn add-actor [actor]
-  (stage/add-actor! stage actor))
+  (stage/add-actor! ctx/stage actor))
 
 (defn get-inventory []
-  (get (:windows stage) :inventory-window))
+  (get (:windows ctx/stage) :inventory-window))
 
 (defn get-action-bar []
-  (action-bar/get-data stage))
+  (action-bar/get-data ctx/stage))
 
 (defn selected-skill []
   (action-bar/selected-skill (get-action-bar)))
@@ -722,7 +720,7 @@
                              (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
 (defn show-player-msg! [text]
-  (actor/set-user-object! (group/find-actor (stage/root stage) "player-message-actor")
+  (actor/set-user-object! (group/find-actor (stage/root ctx/stage) "player-message-actor")
                           (atom {:text text
                                  :counter 0})))
 
@@ -784,7 +782,7 @@
 
 (defn- reset-game! [world-fn]
   (.bindRoot #'ctx/elapsed-time 0)
-  (stage/clear! stage)
+  (stage/clear! ctx/stage)
   (run! add-actor [(ui.menu/create (dev-menu-config))
                    (action-bar/create)
                    (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
@@ -1077,9 +1075,9 @@
                             (.bindRoot #'ctx/assets   (cdq.g.assets/create (:assets config)))
                             (.bindRoot #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
                             (ui/load! (:vis-ui config))
-                            (.bindRoot #'stage (stage/create (:ui-viewport ctx/graphics)
-                                                             (:batch       ctx/graphics)))
-                            (gdx/set-input-processor! stage)
+                            (.bindRoot #'ctx/stage (stage/create (:ui-viewport ctx/graphics)
+                                                                 (:batch       ctx/graphics)))
+                            (gdx/set-input-processor! ctx/stage)
                             (reset-game! (:world-fn config)))
 
                           (dispose []
@@ -1103,8 +1101,8 @@
                                                             (draw-before-entities!)
                                                             (render-entities!)
                                                             (draw-after-entities!)))
-                            (stage/draw! stage)
-                            (stage/act! stage)
+                            (stage/draw! ctx/stage)
+                            (stage/act! ctx/stage)
                             (state/manual-tick (entity/state-obj @ctx/player-eid))
                             (update-mouseover-entity!)
                             (.bindRoot #'ctx/paused? (pause-game?))
