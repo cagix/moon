@@ -43,7 +43,8 @@
                                              safe-merge
                                              tile->middle
                                              pretty-pst
-                                             with-err-str]]
+                                             with-err-str
+                                             bind-root]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color)
@@ -781,7 +782,7 @@
 (declare dev-menu-config)
 
 (defn- reset-game! [world-fn]
-  (.bindRoot #'ctx/elapsed-time 0)
+  (bind-root #'ctx/elapsed-time 0)
   (stage/clear! ctx/stage)
   (run! add-actor [(ui.menu/create (dev-menu-config))
                    (action-bar/create)
@@ -794,10 +795,10 @@
                                                                  (:height (:ui-viewport ctx/graphics))])]})
                    (player-state-actor)
                    (player-message-actor)])
-  (.bindRoot #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
+  (bind-root #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
                                               (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
-  (.bindRoot #'ctx/player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
+  (bind-root #'ctx/player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? context)]
@@ -1004,7 +1005,7 @@
       (swap! eid dissoc :entity/mouseover?))
     (when new-eid
       (swap! new-eid assoc :entity/mouseover? true))
-    (.bindRoot #'ctx/mouseover-eid new-eid)))
+    (bind-root #'ctx/mouseover-eid new-eid)))
 
 (def pausing? true)
 
@@ -1068,14 +1069,14 @@
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
-    (.bindRoot #'ctx/db (cdq.g.db/create))
+    (bind-root #'ctx/db (cdq.g.db/create))
     (lwjgl/application! (:application config)
                         (proxy [ApplicationAdapter] []
                           (create []
-                            (.bindRoot #'ctx/assets   (cdq.g.assets/create (:assets config)))
-                            (.bindRoot #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
+                            (bind-root #'ctx/assets   (cdq.g.assets/create (:assets config)))
+                            (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
                             (ui/load! (:vis-ui config))
-                            (.bindRoot #'ctx/stage (stage/create (:ui-viewport ctx/graphics)
+                            (bind-root #'ctx/stage (stage/create (:ui-viewport ctx/graphics)
                                                                  (:batch       ctx/graphics)))
                             (gdx/set-input-processor! ctx/stage)
                             (reset-game! (:world-fn config)))
@@ -1105,11 +1106,11 @@
                             (stage/act! ctx/stage)
                             (state/manual-tick (entity/state-obj @ctx/player-eid))
                             (update-mouseover-entity!)
-                            (.bindRoot #'ctx/paused? (pause-game?))
+                            (bind-root #'ctx/paused? (pause-game?))
                             (when-not ctx/paused?
                               (let [delta-ms (min (gdx/delta-time) max-delta)]
                                 (alter-var-root #'ctx/elapsed-time + delta-ms)
-                                (.bindRoot #'ctx/delta-time delta-ms))
+                                (bind-root #'ctx/delta-time delta-ms))
                               (update-potential-fields! ctx/world)
                               (tick-entities! ctx/world))
 

@@ -1,6 +1,9 @@
 (ns clojure.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]))
 
+(defn bind-root [var value]
+  (.bindRoot var value))
+
 (defn pretty-pst [t]
   (binding [*print-level* 3]
     (pretty-repl/pretty-pst t 24)))
