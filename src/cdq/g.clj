@@ -52,6 +52,9 @@
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
 ; (viewport/unproject-mouse-position (stage/viewport stage))
+; => move ui-viewport inside stage?
+; => viewport/unproject-mouse-position ? -> already exists!
+; => stage/resize-viewport! need to add (for viewport)
 (defn mouse-on-actor? []
   (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
 
