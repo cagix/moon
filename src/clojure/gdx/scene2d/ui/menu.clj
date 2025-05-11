@@ -1,8 +1,8 @@
 (ns clojure.gdx.scene2d.ui.menu
   (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui :as ui])
-  (:import (com.badlogic.gdx.scenes.scene2d Group Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Label Table)
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Label Table)
            (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu)))
 
 (defn- set-label-text-fn [label text-fn]
@@ -14,11 +14,11 @@
    (let [icon (ui/image-widget icon {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
-     (Group/.addActor table (actor/create {:act (set-label-text-fn label text-fn)}))
+     (group/add-actor! table (actor/create {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
    (let [label (ui/label "")]
-     (Group/.addActor table (actor/create {:act (set-label-text-fn label text-fn)}))
+     (group/add-actor! table (actor/create {:act (set-label-text-fn label text-fn)}))
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]
@@ -45,7 +45,7 @@
                       :fill-x? true
                       :colspan 1}]
                     [{:actor (doto (ui/label "")
-                               (.setTouchable Touchable/disabled))
+                               (actor/set-touchable! :disabled))
                       :expand? true
                       :fill-x? true
                       :fill-y? true}]]

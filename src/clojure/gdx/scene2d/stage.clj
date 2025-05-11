@@ -1,5 +1,5 @@
 (ns clojure.gdx.scene2d.stage
-  (:require [clojure.gdx.scene2d.ui :as ui])
+  (:require [clojure.gdx.scene2d.group :as group])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Stage)))
 
@@ -10,9 +10,9 @@
   (proxy [Stage ILookup] [viewport batch]
     (valAt
       ([id]
-       (ui/find-actor-with-id (root this) id))
+       (group/find-actor-with-id (root this) id))
       ([id not-found]
-       (or (ui/find-actor-with-id (root this) id)
+       (or (group/find-actor-with-id (root this) id)
            not-found)))))
 
 (defn hit [^Stage stage [x y]]

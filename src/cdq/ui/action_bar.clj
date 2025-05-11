@@ -1,9 +1,9 @@
 (ns cdq.ui.action-bar
   (:require [cdq.info :as info]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.ui :as ui])
-  (:import (com.badlogic.gdx.scenes.scene2d Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
 
 (defn- button-group []
   (doto (actor/create {})
@@ -28,7 +28,7 @@
 (defn get-data [stage]
   (let [group (:ui/action-bar (:action-bar-table stage))]
     {:horizontal-group group
-     :button-group (actor/user-object (Group/.findActor group "action-bar/button-group"))}))
+     :button-group (actor/user-object (group/find-actor group "action-bar/button-group"))}))
 
 (defn selected-skill [data]
   (when-let [skill-button (ButtonGroup/.getChecked (:button-group data))]
@@ -39,7 +39,7 @@
         button (ui/image-button image (fn []) {:scale 2})]
     (actor/set-user-object! button id)
     (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-    (Group/.addActor horizontal-group button)
+    (group/add-actor! horizontal-group button)
     (ButtonGroup/.add button-group ^Button button)
     nil))
 

@@ -1,23 +1,14 @@
 (ns clojure.gdx.scene2d.ui
-  (:require [clojure.gdx.scene2d.actor :as actor])
-  (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics Texture)
+  (:require [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group])
+  (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
-           (com.badlogic.gdx.math Vector2)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
            (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator VisTree)))
-
-(defn find-actor-with-id [^Group group id]
-  (let [actors (.getChildren group)
-        ids (keep actor/user-object actors)]
-    (assert (or (empty? ids)
-                (apply distinct? ids)) ; TODO could check @ add
-            (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (actor/user-object %)) actors))))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
@@ -111,30 +102,20 @@
     (set-widget-group-opts actor opts))
   actor)
 
-(defmacro ^:private proxy-ILookup
-  "For actors inheriting from Group."
-  [class args]
-  `(proxy [~class ILookup] ~args
-     (valAt
-       ([id#]
-        (find-actor-with-id ~'this id#))
-       ([id# not-found#]
-        (or (find-actor-with-id ~'this id#) not-found#)))))
-
 (defn group [{:keys [actors] :as opts}]
-  (let [group (proxy-ILookup Group [])]
-    (run! #(.addActor group %) actors)
+  (let [group (group/proxy-ILookup Group [])]
+    (run! #(group/add-actor! group %) actors)
     (set-opts group opts)))
 
 (defn horizontal-group ^HorizontalGroup [{:keys [space pad]}]
-  (let [group (proxy-ILookup HorizontalGroup [])]
+  (let [group (group/proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
     group))
 
 (defn vertical-group [actors]
-  (let [group (proxy-ILookup VerticalGroup [])]
-    (run! #(.addActor group %) actors)
+  (let [group (group/proxy-ILookup VerticalGroup [])]
+    (run! #(group/add-actor! group %) actors)
     group))
 
 (defn add-tooltip!
@@ -162,10 +143,9 @@
   (Tooltip/removeTooltip actor))
 
 (defn button-group [{:keys [max-check-count min-check-count]}]
-  (let [bg (ButtonGroup.)]
-    (.setMaxCheckCount bg max-check-count)
-    (.setMinCheckCount bg min-check-count)
-    bg))
+  (doto (ButtonGroup.)
+    (.setMaxCheckCount max-check-count)
+    (.setMinCheckCount min-check-count)))
 
 (defn check-box
   "on-clicked is a fn of one arg, taking the current isChecked state"
@@ -188,11 +168,11 @@
 (def selected VisSelectBox/.getSelected)
 
 (defn table ^Table [opts]
-  (-> (proxy-ILookup VisTable [])
+  (-> (group/proxy-ILookup VisTable [])
       (set-opts opts)))
 
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
-  (-> (let [window (doto (proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
+  (-> (let [window (doto (group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
                      (.setModal (boolean modal?)))]
         (when close-button?    (.addCloseButton window))
         (when center?          (.centerWindow   window))
@@ -210,7 +190,7 @@
 (def text-field->text VisTextField/.getText)
 
 (defn ui-stack ^Stack [actors]
-  (proxy-ILookup Stack [(into-array Actor actors)]))
+  (group/proxy-ILookup Stack [(into-array Actor actors)]))
 
 (defmulti ^:private image* type)
 

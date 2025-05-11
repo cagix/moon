@@ -48,7 +48,6 @@
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d Group)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
@@ -1057,7 +1056,7 @@
             :when (gdx/key-just-pressed? (get window-hotkeys window-id))]
       (actor/toggle-visible! (get (:windows ctx/stage) window-id))))
   (when (gdx/key-just-pressed? :escape)
-    (let [windows (Group/.getChildren (:windows ctx/stage))]
+    (let [windows (group/children (:windows ctx/stage))]
       (when (some actor/visible? windows)
         (run! #(actor/set-visible! % false) windows)))))
 
