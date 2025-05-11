@@ -57,11 +57,8 @@
 (defn get-inventory [stage]
   (get (:windows stage) :inventory-window))
 
-(defn get-action-bar []
-  (action-bar/get-data ctx/stage))
-
-(defn selected-skill []
-  (action-bar/selected-skill (get-action-bar)))
+(defn selected-skill [stage]
+  (action-bar/selected-skill (action-bar/get-data stage)))
 
 (defn error-window! [throwable]
   (pretty-pst throwable)
@@ -761,9 +758,9 @@
                                                    (when-let [cursor-key (state/cursor new-state-obj)]
                                                      (graphics/set-cursor! ctx/graphics cursor-key)))
                                  :skill-added! (fn [skill]
-                                                 (action-bar/add-skill! (get-action-bar) skill))
+                                                 (action-bar/add-skill! (action-bar/get-data ctx/stage) skill))
                                  :skill-removed! (fn [skill]
-                                                   (action-bar/remove-skill! (get-action-bar) skill))
+                                                   (action-bar/remove-skill! (action-bar/get-data ctx/stage) skill))
                                  :item-set! (fn [inventory-cell item]
                                               (set-item-image-in-widget inventory-cell item))
                                  :item-removed! (fn [inventory-cell]

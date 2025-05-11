@@ -102,7 +102,7 @@
      (clickable-entity-interaction entity ctx/mouseover-eid)
 
      :else
-     (if-let [skill-id (g/selected-skill)]
+     (if-let [skill-id (g/selected-skill ctx/stage)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]
