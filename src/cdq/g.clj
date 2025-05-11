@@ -48,7 +48,7 @@
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d Actor Group)
+           (com.badlogic.gdx.scenes.scene2d Group)
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
@@ -132,7 +132,7 @@
                          :rows [[(ui/label text)]
                                 [(ui/text-button button-text
                                                  (fn []
-                                                   (Actor/.remove (::modal ctx/stage))
+                                                   (actor/remove! (::modal ctx/stage))
                                                    (on-click)))]]
                          :id ::modal
                          :modal? true
@@ -506,14 +506,13 @@
 (defn- draw-inventory-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (let [^Actor this this
-            g ctx/graphics]
+      (let [g ctx/graphics]
         (draw-inventory-cell-rect! g
                                    @ctx/player-eid
-                                   (.getX this)
-                                   (.getY this)
+                                   (actor/x this)
+                                   (actor/y this)
                                    (ui/hit this (graphics/mouse-position g))
-                                   (.getUserObject (.getParent this)))))))
+                                   (actor/user-object (actor/parent this)))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -1059,8 +1058,8 @@
       (ui/toggle-visible! (get (:windows ctx/stage) window-id))))
   (when (gdx/key-just-pressed? :escape)
     (let [windows (Group/.getChildren (:windows ctx/stage))]
-      (when (some Actor/.isVisible windows)
-        (run! #(Actor/.setVisible % false) windows)))))
+      (when (some actor/visible? windows)
+        (run! #(actor/set-visible! % false) windows)))))
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]

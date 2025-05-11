@@ -29,6 +29,9 @@
 (defn visible? [^Actor actor]
   (.isVisible actor))
 
+(defn set-visible! [^Actor actor visible?]
+  (.setVisible actor visible?))
+
 (defn name [^Actor actor]
   (.getName actor))
 
@@ -37,3 +40,9 @@
 
 (defn parent [^Actor actor]
   (.getParent actor))
+
+(defn x [^Actor actor]
+  (.getX actor))
+
+(defn y [^Actor actor]
+  (.getY actor))
