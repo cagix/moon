@@ -12,6 +12,7 @@
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [cdq.ui.action-bar :as action-bar]
+            [cdq.ui.error-window :as error-window]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -43,7 +44,6 @@
                                              safe-merge
                                              tile->middle
                                              pretty-pst
-                                             with-err-str
                                              bind-root]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter)
@@ -57,18 +57,6 @@
 ; => stage/resize-viewport! need to add (for viewport)
 (defn mouse-on-actor? []
   (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
-
-(defn error-window! [throwable]
-  (pretty-pst throwable)
-  (stage/add-actor! ctx/stage (ui/window {:title "Error"
-                                          :rows [[(ui/label (binding [*print-level* 3]
-                                                              (with-err-str
-                                                                (clojure.repl/pst throwable))))]]
-                                          :modal? true
-                                          :close-button? true
-                                          :close-on-escape? true
-                                          :center? true
-                                          :pack? true})))
 
 (defn play-sound! [sound-name]
   (->> sound-name
@@ -1029,7 +1017,8 @@
       (catch Throwable t
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
-     (error-window! t)
+     (pretty-pst t)
+     (stage/add-actor! ctx/stage (error-window/create t))
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 

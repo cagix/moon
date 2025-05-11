@@ -6,6 +6,7 @@
             [cdq.db.schema :as schema]
             [cdq.g :as g]
             [cdq.g.db :as g.db]
+            [cdq.ui.error-window :as error-window]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]
@@ -25,7 +26,7 @@
              :as ui]
             [clojure.gdx.scene2d.ui.table :as table]
             [clojure.string :as str]
-            [clojure.utils :refer [truncate ->edn-str find-first sort-by-k-order]]))
+            [clojure.utils :as utils :refer [truncate ->edn-str find-first sort-by-k-order]]))
 
 (defn- property->image [{:keys [entity/image entity/animation]}]
   (or image
@@ -76,7 +77,8 @@
   #(try (f)
         (actor/remove! window)
         (catch Throwable t
-          (g/error-window! t))))
+          (utils/pretty-pst t)
+          (stage/add-actor! ctx/stage (error-window/create t)))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
