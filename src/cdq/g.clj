@@ -52,9 +52,6 @@
            (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
-(defn get-actor [id-keyword]
-  (id-keyword ctx/stage))
-
 (defn mouse-on-actor? []
   (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
 
@@ -130,12 +127,12 @@
 ; => input events handling
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (get-actor ::modal)))
+  (assert (not (::modal ctx/stage)))
   (add-actor (ui/window {:title title
                          :rows [[(ui/label text)]
                                 [(ui/text-button button-text
                                                  (fn []
-                                                   (Actor/.remove (get-actor ::modal))
+                                                   (Actor/.remove (::modal ctx/stage))
                                                    (on-click)))]]
                          :id ::modal
                          :modal? true
@@ -596,7 +593,7 @@
                        :pad 4}]]}))
 
 (defn- inventory-cell-widget [cell]
-  (get (::table (get (get-actor :windows) :inventory-window)) cell))
+  (get (::table (get (:windows ctx/stage) :inventory-window)) cell))
 
 (defn- set-item-image-in-widget [cell item]
   (let [cell-widget (inventory-cell-widget cell)
@@ -1059,9 +1056,9 @@
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (gdx/key-just-pressed? (get window-hotkeys window-id))]
-      (ui/toggle-visible! (get (get-actor :windows) window-id))))
+      (ui/toggle-visible! (get (:windows ctx/stage) window-id))))
   (when (gdx/key-just-pressed? :escape)
-    (let [windows (Group/.getChildren (get-actor :windows))]
+    (let [windows (Group/.getChildren (:windows ctx/stage))]
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
 

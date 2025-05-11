@@ -309,7 +309,7 @@
        first))
 
 (defn- get-editor-window []
-  (g/get-actor :property-editor-window))
+  (:property-editor-window ctx/stage))
 
 (defn- window->property-value []
  (let [window (get-editor-window)
