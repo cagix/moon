@@ -10,10 +10,12 @@
             [cdq.g.graphics]
             [cdq.g.world]
             [cdq.graphics :as graphics]
-            [cdq.info :as info]
             [cdq.ui.action-bar :as action-bar]
+            [cdq.ui.entity-info-window :as entity-info-window]
             [cdq.ui.error-window :as error-window]
+            [cdq.ui.hp-mana-bar :as hp-mana-bar]
             [cdq.ui.inventory-window :as inventory-window]
+            [cdq.ui.player-message :as player-message]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -508,89 +510,11 @@
       (stack-item eid cell item)
       (set-item eid cell item))))
 
-(def ^:private disallowed-keys [:entity/skills
-                                #_:entity/fsm
-                                :entity/faction
-                                :active-skill])
-
-(defn- ->label-text []
-  ; items then have 2x pretty-name
-  #_(.setText (.getTitleLabel window)
-              (if-let [eid ctx/mouseover-eid]
-                (info/text [:property/pretty-name (:property/pretty-name @eid)])
-                "Entity Info"))
-  (when-let [eid ctx/mouseover-eid]
-    (info/text ; don't use select-keys as it loses Entity record type
-               (apply dissoc @eid disallowed-keys))))
-
-(defn- entity-info-window [position]
-  (let [label (ui/label "")
-        window (ui/window {:title "Info"
-                           :id :entity-info-window
-                           :visible? false
-                           :position position
-                           :rows [[{:actor label :expand? true}]]})]
-    ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
-    ; => fix size somehow.
-    (.addActor window (actor/create {:act (fn [_this]
-                                            (.setText label (str (->label-text)))
-                                            (.pack window))}))
-    window))
-
-(defn- render-infostr-on-bar [g infostr x y h]
-  (graphics/draw-text g {:text infostr
-                         :x (+ x 75)
-                         :y (+ y 2)
-                         :up? true}))
-
-(defn- hp-mana-bar [[x y-mana]]
-  (let [rahmen      (graphics/sprite ctx/graphics (ctx/assets "images/rahmen.png"))
-        hpcontent   (graphics/sprite ctx/graphics (ctx/assets "images/hp.png"))
-        manacontent (graphics/sprite ctx/graphics (ctx/assets "images/mana.png"))
-        [rahmenw rahmenh] (:pixel-dimensions rahmen)
-        y-hp (+ y-mana rahmenh)
-        render-hpmana-bar (fn [g x y contentimage minmaxval name]
-                            (graphics/draw-image g rahmen [x y])
-                            (graphics/draw-image g (graphics/sub-sprite g
-                                                                        contentimage
-                                                                        [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
-                                                 [x y])
-                            (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (actor/create {:draw (fn [_this]
-                           (let [player-entity @ctx/player-eid
-                                 x (- x (/ rahmenw 2))
-                                 g ctx/graphics]
-                             (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                             (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
-
 (defn show-player-msg! [text]
-  (actor/set-user-object! (group/find-actor (stage/root ctx/stage) "player-message-actor")
-                          (atom {:text text
-                                 :counter 0})))
-
-(defn- player-message-actor []
-  (doto (actor/create {:draw (fn [this]
-                               (let [g ctx/graphics
-                                     state (actor/user-object this)]
-                                 (when-let [text (:text @state)]
-                                   (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
-                                                          :y (+ (/ (:height (:ui-viewport g)) 2) 200)
-                                                          :text text
-                                                          :scale 2.5
-                                                          :up? true}))))
-                       :act (fn [this]
-                              (let [state (actor/user-object this)]
-                                (when (:text @state)
-                                  (swap! state update :counter + (gdx/delta-time))
-                                  (when (>= (:counter @state) 1.5)
-                                    (reset! state nil)))))})
-    (actor/set-user-object! (atom nil))
-    (actor/set-name! "player-message-actor")))
+  (player-message/show-message! ctx/stage text))
 
 (defn- player-state-actor []
-  (actor/create
-   {:draw (fn [_this]
-            (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
+  (actor/create {:draw (fn [_this] (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
 
 (defn- spawn-enemies! []
   (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
@@ -630,15 +554,15 @@
   (run! #(stage/add-actor! ctx/stage %)
         [(ui.menu/create (dev-menu-config))
          (action-bar/create)
-         (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
-                       80 ; action-bar-icon-size
-                       ])
+         (hp-mana-bar/create [(/ (:width (:ui-viewport ctx/graphics)) 2)
+                              80 ; action-bar-icon-size
+                              ])
          (ui/group {:id :windows
-                    :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
+                    :actors [(entity-info-window/create [(:width (:ui-viewport ctx/graphics)) 0])
                              (inventory-window/create [(:width  (:ui-viewport ctx/graphics))
                                                        (:height (:ui-viewport ctx/graphics))])]})
          (player-state-actor)
-         (player-message-actor)])
+         (player-message/create)])
   (bind-root #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
                                               (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
