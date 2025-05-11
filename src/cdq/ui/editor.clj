@@ -10,6 +10,7 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
+            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :refer [horizontal-separator-cell
                                             vertical-separator-cell
                                             image-button
@@ -163,7 +164,7 @@
                                (let [[k _] (actor/user-object table)]
                                  (actor/set-user-object! table [k sound-name]))))
                 (play-button sound-name)])]
-    (g/add-actor (scrollable-choose-window rows))))
+    (stage/add-actor! ctx/stage (scrollable-choose-window rows))))
 
 (defn- columns [table sound-name]
   [(text-button sound-name
@@ -249,7 +250,7 @@
                                             (redo-rows (conj property-ids id)))]
                         (table/add! window (overview-table property-type clicked-id-fn))
                         (.pack window)
-                        (g/add-actor window))))]
+                        (stage/add-actor! ctx/stage window))))]
       (for [property-id property-ids]
         (let [property (db/build ctx/db property-id)
               image-widget (image->widget (property->image property)
@@ -288,7 +289,7 @@
                                               (redo-rows id))]
                           (table/add! window (overview-table property-type clicked-id-fn))
                           (.pack window)
-                          (g/add-actor window)))))]
+                          (stage/add-actor! ctx/stage window)))))]
       [(when property-id
          (let [property (db/build ctx/db property-id)
                image-widget (image->widget (property->image property)
@@ -321,7 +322,7 @@
 (defn- rebuild-editor-window []
   (let [prop-value (window->property-value)]
     (actor/remove! (get-editor-window))
-    (g/add-actor (editor-window prop-value))))
+    (stage/add-actor! ctx/stage (editor-window prop-value))))
 
 (defn- value-widget [[k v]]
   (let [widget (schema->widget (schema/schema-of (get-schemas) k)
@@ -391,7 +392,7 @@
                                                         map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
-    (g/add-actor window)))
+    (stage/add-actor! ctx/stage window)))
 
 (defn- interpose-f [f coll]
   (drop 1 (interleave (repeatedly f) coll)))
@@ -451,7 +452,7 @@
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
-                  #(g/add-actor (scrollable-choose-window (texture-rows)))
+                  #(stage/add-actor! ctx/stage (scrollable-choose-window (texture-rows)))
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
@@ -464,7 +465,7 @@
 ; FIXME overview table not refreshed after changes in properties
 
 (defn edit-property [id]
-  (g/add-actor (editor-window (db/get-raw ctx/db id))))
+  (stage/add-actor! ctx/stage (editor-window (db/get-raw ctx/db id))))
 
 ; TODO unused code below
 
@@ -514,7 +515,7 @@
   ; because assets are searhed and loaded differently ...
   (doseq [actor [(background-image "images/moon_background.png")
                  (tabs-table       "custom label text here")]]
-    (g/add-actor actor)))
+    (stage/add-actor! ctx/stage actor)))
 
 (defn open-main-window! [property-type]
   (let [window (ui/window {:title "Edit"
@@ -524,4 +525,4 @@
                            :close-on-escape? true})]
     (table/add! window (overview-table property-type edit-property))
     (.pack window)
-    (g/add-actor window)))
+    (stage/add-actor! ctx/stage window)))

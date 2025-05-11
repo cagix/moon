@@ -207,11 +207,11 @@
 
 (defn- show-table-view [title m]
   {:pre [(map? m)]}
-  (g/add-actor (scroll-pane-window title (generate-table m))))
+  (stage/add-actor! ctx/stage (scroll-pane-window title (generate-table m))))
 
 (defn- show-tree-view! [title m]
   {:pre [(map? m)]}
-  (g/add-actor (scroll-pane-window title (generate-tree m))))
+  (stage/add-actor! ctx/stage (scroll-pane-window title (generate-tree m))))
 
 (defn get-namespaces [packages]
   (filter #(packages (first (str/split (name (ns-name %)) #"\.")))

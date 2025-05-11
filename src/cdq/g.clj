@@ -54,9 +54,6 @@
 (defn mouse-on-actor? []
   (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
 
-(defn add-actor [actor]
-  (stage/add-actor! ctx/stage actor))
-
 (defn get-inventory []
   (get (:windows ctx/stage) :inventory-window))
 
@@ -68,15 +65,15 @@
 
 (defn error-window! [throwable]
   (pretty-pst throwable)
-  (add-actor (ui/window {:title "Error"
-                         :rows [[(ui/label (binding [*print-level* 3]
-                                             (with-err-str
-                                               (clojure.repl/pst throwable))))]]
-                         :modal? true
-                         :close-button? true
-                         :close-on-escape? true
-                         :center? true
-                         :pack? true})))
+  (stage/add-actor! ctx/stage (ui/window {:title "Error"
+                                          :rows [[(ui/label (binding [*print-level* 3]
+                                                              (with-err-str
+                                                                (clojure.repl/pst throwable))))]]
+                                          :modal? true
+                                          :close-button? true
+                                          :close-on-escape? true
+                                          :center? true
+                                          :pack? true})))
 
 (defn play-sound! [sound-name]
   (->> sound-name
@@ -127,17 +124,18 @@
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal [{:keys [title text button-text on-click]}]
   (assert (not (::modal ctx/stage)))
-  (add-actor (ui/window {:title title
-                         :rows [[(ui/label text)]
-                                [(ui/text-button button-text
-                                                 (fn []
-                                                   (actor/remove! (::modal ctx/stage))
-                                                   (on-click)))]]
-                         :id ::modal
-                         :modal? true
-                         :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
-                                           (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
-                         :pack? true})))
+  (stage/add-actor! ctx/stage
+                    (ui/window {:title title
+                                :rows [[(ui/label text)]
+                                       [(ui/text-button button-text
+                                                        (fn []
+                                                          (actor/remove! (::modal ctx/stage))
+                                                          (on-click)))]]
+                                :id ::modal
+                                :modal? true
+                                :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
+                                                  (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
+                                :pack? true})))
 
 (defn add-skill [eid {:keys [property/id] :as skill}]
   {:pre [(not (entity/has-skill? @eid skill))]}
@@ -779,17 +777,18 @@
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
   (stage/clear! ctx/stage)
-  (run! add-actor [(ui.menu/create (dev-menu-config))
-                   (action-bar/create)
-                   (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
-                                 80 ; action-bar-icon-size
-                                 ])
-                   (ui/group {:id :windows
-                              :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
-                                       (create-inventory-widget [(:width  (:ui-viewport ctx/graphics))
-                                                                 (:height (:ui-viewport ctx/graphics))])]})
-                   (player-state-actor)
-                   (player-message-actor)])
+  (run! #(stage/add-actor! ctx/stage %)
+        [(ui.menu/create (dev-menu-config))
+         (action-bar/create)
+         (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
+                       80 ; action-bar-icon-size
+                       ])
+         (ui/group {:id :windows
+                    :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
+                             (create-inventory-widget [(:width  (:ui-viewport ctx/graphics))
+                                                       (:height (:ui-viewport ctx/graphics))])]})
+         (player-state-actor)
+         (player-message-actor)])
   (bind-root #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
                                               (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
