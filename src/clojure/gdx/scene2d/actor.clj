@@ -1,6 +1,7 @@
 (ns clojure.gdx.scene2d.actor
   (:refer-clojure :exclude [name])
-  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)))
+  (:import (com.badlogic.gdx.scenes.scene2d Actor Touchable)
+           (com.badlogic.gdx.math Vector2)))
 
 (defn create ^Actor [{:keys [draw act]}]
   (proxy [Actor] []
@@ -32,6 +33,9 @@
 (defn set-visible! [^Actor actor visible?]
   (.setVisible actor visible?))
 
+(defn toggle-visible! [actor]
+  (set-visible! actor (not (visible? actor))))
+
 (defn name [^Actor actor]
   (.getName actor))
 
@@ -46,3 +50,25 @@
 
 (defn y [^Actor actor]
   (.getY actor))
+
+(defn hit [^Actor actor [x y]]
+  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
+    (.hit actor (.x v) (.y v) true)))
+
+(defn set-center! [^Actor actor x y]
+  (.setPosition actor
+                (- x (/ (.getWidth  actor) 2))
+                (- y (/ (.getHeight actor) 2))))
+
+(defn set-opts! [^Actor actor {:keys [id
+                                      name
+                                      visible?
+                                      touchable
+                                      center-position
+                                      position] :as opts}]
+  (when id (set-user-object! actor id))
+  (when name (set-name! actor name))
+  (when (contains? opts :visible?) (set-visible! actor (boolean visible?)))
+  (when-let [[x y] center-position] (set-center! actor x y))
+  (when-let [[x y] position] (.setPosition actor x y))
+  actor)

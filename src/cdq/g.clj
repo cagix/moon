@@ -120,7 +120,7 @@
   (swap! eid assoc :entity/destroyed? true))
 
 (defn toggle-inventory-window []
-  (ui/toggle-visible! (get-inventory)))
+  (actor/toggle-visible! (get-inventory)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -511,7 +511,7 @@
                                    @ctx/player-eid
                                    (actor/x this)
                                    (actor/y this)
-                                   (ui/hit this (graphics/mouse-position g))
+                                   (actor/hit this (graphics/mouse-position g))
                                    (actor/user-object (actor/parent this)))))))
 
 (def ^:private slot->y-sprite-idx
@@ -1055,7 +1055,7 @@
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (gdx/key-just-pressed? (get window-hotkeys window-id))]
-      (ui/toggle-visible! (get (:windows ctx/stage) window-id))))
+      (actor/toggle-visible! (get (:windows ctx/stage) window-id))))
   (when (gdx/key-just-pressed? :escape)
     (let [windows (Group/.getChildren (:windows ctx/stage))]
       (when (some actor/visible? windows)

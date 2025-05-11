@@ -1,4 +1,5 @@
 (ns clojure.gdx.scene2d.ui
+  (:require [clojure.gdx.scene2d.actor :as actor])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
@@ -12,11 +13,11 @@
 
 (defn find-actor-with-id [^Group group id]
   (let [actors (.getChildren group)
-        ids (keep Actor/.getUserObject actors)]
+        ids (keep actor/user-object actors)]
     (assert (or (empty? ids)
                 (apply distinct? ids)) ; TODO could check @ add
             (str "Actor ids are not distinct: " (vec ids)))
-    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+    (first (filter #(= id (actor/user-object %)) actors))))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
@@ -36,13 +37,6 @@
   ;Controls whether to fade out tooltip when mouse was moved. (default false)
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
-
-(defn toggle-visible! [^Actor actor]
-  (.setVisible actor (not (.isVisible actor))))
-
-(defn hit [^Actor actor [x y]]
-  (let [v (.stageToLocalCoordinates actor (Vector2. x y))]
-    (.hit actor (.x v) (.y v) true)))
 
 (defn horizontal-separator-cell [colspan]
   {:actor (Separator. "default")
@@ -71,19 +65,6 @@
   (when pack?
     (.pack widget-group))
   widget-group)
-
-(defn- set-center! [^Actor actor x y]
-  (.setPosition actor
-                (- x (/ (.getWidth  actor) 2))
-                (- y (/ (.getHeight actor) 2))))
-
-(defn- set-actor-opts! [^Actor a {:keys [id name visible? touchable center-position position] :as opts}]
-  (when id                          (.setUserObject        a id))
-  (when name                        (.setName      a name))
-  (when (contains? opts :visible?)  (.setVisible   a (boolean visible?)))
-  (when-let [[x y] center-position] (set-center!   a x y))
-  (when-let [[x y] position]        (.setPosition  a x y))
-  a)
 
 (defn- set-cell-opts! [^Cell cell opts]
   (doseq [[option arg] opts]
@@ -123,7 +104,7 @@
   (add-rows! table rows))
 
 (defn- set-opts [actor opts]
-  (set-actor-opts! actor opts)
+  (actor/set-opts! actor opts)
   (when (instance? Table actor)
     (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
@@ -276,28 +257,28 @@
 
 (defn button?
   "Returns true if the actor or its parent is a button."
-  [^Actor actor]
+  [actor]
   (or (button-class? actor)
-      (and (Actor/.getParent actor)
-           (button-class? (Actor/.getParent actor)))))
+      (and (actor/parent actor)
+           (button-class? (actor/parent actor)))))
 
 (defn window-title-bar?
   "Returns true if the actor is a window title bar."
-  [^Actor actor]
+  [actor]
   (when (instance? Label actor)
-    (when-let [p (Actor/.getParent actor)]
-      (when-let [p (Actor/.getParent p)]
+    (when-let [p (actor/parent actor)]
+      (when-let [p (actor/parent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
 
-(defn find-ancestor-window ^Window [^Actor actor]
-  (if-let [p (Actor/.getParent actor)]
+(defn find-ancestor-window ^Window [actor]
+  (if-let [p (actor/parent actor)]
     (if (instance? Window p)
       p
       (find-ancestor-window p))
     (throw (Error. (str "Actor has no parent window " actor)))))
 
-(defn pack-ancestor-window! [^Actor actor]
+(defn pack-ancestor-window! [actor]
   (.pack (find-ancestor-window actor)))
 
 (declare ^:dynamic *on-clicked-actor*)
