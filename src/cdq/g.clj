@@ -13,12 +13,12 @@
             [cdq.info :as info]
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
+            [cdq.ui.inventory-window :as inventory-window]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             cdq.world.potential-fields
             [clojure.data.animation :as animation]
-            [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.audio.sound :as sound]
@@ -47,9 +47,7 @@
                                              bind-root]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
+           (com.badlogic.gdx.graphics Color)))
 
 ; (viewport/unproject-mouse-position (stage/viewport stage))
 ; => move ui-viewport inside stage?
@@ -459,134 +457,6 @@
        (filter #(line-of-sight? @ctx/player-eid @%))
        (remove #(:entity/player? @%))))
 
-; Items are also smaller than 48x48 all of them
-; so wasting space ...
-; can maybe make a smaller textureatlas or something...
-
-(def ^:private inventory-cell-size 48)
-(def ^:private inventory-droppable-color   [0   0.6 0 0.8])
-(def ^:private inventory-not-allowed-color [0.6 0   0 0.8])
-
-(defn- draw-inventory-cell-rect! [g player-entity x y mouseover? cell]
-  (graphics/draw-rectangle g x y inventory-cell-size inventory-cell-size :gray)
-  (when (and mouseover?
-             (= :player-item-on-cursor (entity/state-k player-entity)))
-    (let [item (:entity/item-on-cursor player-entity)
-          color (if (inventory/valid-slot? cell item)
-                  inventory-droppable-color
-                  inventory-not-allowed-color)]
-      (graphics/draw-filled-rectangle g (inc x) (inc y) (- inventory-cell-size 2) (- inventory-cell-size 2) color))))
-
-; TODO why do I need to call getX ?
-; is not layouted automatically to cell , use 0/0 ??
-; (maybe (.setTransform stack true) ? , but docs say it should work anyway
-(defn- draw-inventory-rect-actor []
-  (proxy [Widget] []
-    (draw [_batch _parent-alpha]
-      (let [g ctx/graphics]
-        (draw-inventory-cell-rect! g
-                                   @ctx/player-eid
-                                   (actor/x this)
-                                   (actor/y this)
-                                   (actor/hit this (graphics/mouse-position g))
-                                   (actor/user-object (actor/parent this)))))))
-
-(def ^:private slot->y-sprite-idx
-  #:inventory.slot {:weapon   0
-                    :shield   1
-                    :rings    2
-                    :necklace 3
-                    :helm     4
-                    :cloak    5
-                    :chest    6
-                    :leg      7
-                    :glove    8
-                    :boot     9
-                    :bag      10}) ; transparent
-
-(defn- slot->sprite-idx [slot]
-  [21 (+ (slot->y-sprite-idx slot) 2)])
-
-(defn- slot->sprite [slot]
-  (graphics/from-sheet ctx/graphics
-                       (graphics/sprite-sheet ctx/graphics
-                                              (ctx/assets "images/items.png")
-                                              48 48)
-                       (slot->sprite-idx slot)))
-
-(defn- slot->background [slot]
-  (let [drawable (-> (slot->sprite slot)
-                     :texture-region
-                     ui/texture-region-drawable)]
-    (BaseDrawable/.setMinSize drawable
-                              (float inventory-cell-size)
-                              (float inventory-cell-size))
-    (TextureRegionDrawable/.tint drawable
-                                 (Color. (float 1) (float 1) (float 1) (float 0.4)))))
-
-(defn- ->inventory-cell [slot & {:keys [position]}]
-  (let [cell [slot (or position [0 0])]
-        image-widget (ui/image-widget (slot->background slot)
-                                      {:id :image})
-        stack (ui/ui-stack [(draw-inventory-rect-actor)
-                            image-widget])]
-    (.setName stack "inventory-cell")
-    (.setUserObject stack cell)
-    (.addListener stack (proxy [ClickListener] []
-                          (clicked [_event _x _y]
-                            (state/clicked-inventory-cell (entity/state-obj @ctx/player-eid)
-                                                          cell))))
-    stack))
-
-(defn- inventory-table []
-  (ui/table {:id ::table
-             :rows (concat [[nil nil
-                             (->inventory-cell :inventory.slot/helm)
-                             (->inventory-cell :inventory.slot/necklace)]
-                            [nil
-                             (->inventory-cell :inventory.slot/weapon)
-                             (->inventory-cell :inventory.slot/chest)
-                             (->inventory-cell :inventory.slot/cloak)
-                             (->inventory-cell :inventory.slot/shield)]
-                            [nil nil
-                             (->inventory-cell :inventory.slot/leg)]
-                            [nil
-                             (->inventory-cell :inventory.slot/glove)
-                             (->inventory-cell :inventory.slot/rings :position [0 0])
-                             (->inventory-cell :inventory.slot/rings :position [1 0])
-                             (->inventory-cell :inventory.slot/boot)]]
-                           (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-                             (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                               (->inventory-cell :inventory.slot/bag :position [x y]))))}))
-
-(defn- create-inventory-widget [position]
-  (ui/window {:title "Inventory"
-              :id :inventory-window
-              :visible? false
-              :pack? true
-              :position position
-              :rows [[{:actor (inventory-table)
-                       :pad 4}]]}))
-
-(defn- inventory-cell-widget [cell]
-  (get (::table (-> ctx/stage :windows :inventory-window)) cell))
-
-(defn- set-item-image-in-widget [cell item]
-  (let [cell-widget (inventory-cell-widget cell)
-        image-widget (get cell-widget :image)
-        drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
-    (BaseDrawable/.setMinSize drawable
-                              (float inventory-cell-size)
-                              (float inventory-cell-size))
-    (Image/.setDrawable image-widget drawable)
-    (ui/add-tooltip! cell-widget #(info/text item))))
-
-(defn- remove-item-from-widget [cell]
-  (let [cell-widget (inventory-cell-widget cell)
-        image-widget (get cell-widget :image)]
-    (Image/.setDrawable image-widget (slot->background (cell 0)))
-    (ui/remove-tooltip! cell-widget)))
-
 (defn set-item [eid cell item]
   (let [entity @eid
         inventory (:entity/inventory entity)]
@@ -745,9 +615,9 @@
                                  :skill-removed! (fn [skill]
                                                    (action-bar/remove-skill! ctx/stage skill))
                                  :item-set! (fn [inventory-cell item]
-                                              (set-item-image-in-widget inventory-cell item))
+                                              (inventory-window/set-item-image! inventory-cell item))
                                  :item-removed! (fn [inventory-cell]
-                                                  (remove-item-from-widget inventory-cell))}
+                                                  (inventory-window/remove-item-image! inventory-cell))}
                 :entity/free-skill-points 3
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
@@ -765,7 +635,7 @@
                        ])
          (ui/group {:id :windows
                     :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
-                             (create-inventory-widget [(:width  (:ui-viewport ctx/graphics))
+                             (inventory-window/create [(:width  (:ui-viewport ctx/graphics))
                                                        (:height (:ui-viewport ctx/graphics))])]})
          (player-state-actor)
          (player-message-actor)])
