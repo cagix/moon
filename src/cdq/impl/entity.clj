@@ -30,7 +30,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (actor/visible? (g/get-inventory))
+     (actor/visible? (g/get-inventory ctx/stage))
      (do
       (g/play-sound! "bfxr_takeit")
       (g/mark-destroyed eid)
