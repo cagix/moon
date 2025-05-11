@@ -17,7 +17,7 @@
 
  ; use post-runnable! to get proper error messages in console
 
- (show-tree-view! "Mouseover Entity" (:mouseover-eid ctx/world))
+ (show-tree-view! "Mouseover Entity" ctx/mouseover-eid)
  (show-tree-view! "Mouseover Grid Cell" (mouseover-grid-cell))
  (show-tree-view! "Ns vaue Vars" (ns-value-vars #{"cdq"}))
 
