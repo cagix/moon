@@ -58,9 +58,6 @@
 (defn mouse-on-actor? []
   (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
 
-(defn selected-skill [stage]
-  (action-bar/selected-skill (action-bar/get-data stage)))
-
 (defn error-window! [throwable]
   (pretty-pst throwable)
   (stage/add-actor! ctx/stage (ui/window {:title "Error"
@@ -756,9 +753,9 @@
                                                    (when-let [cursor-key (state/cursor new-state-obj)]
                                                      (graphics/set-cursor! ctx/graphics cursor-key)))
                                  :skill-added! (fn [skill]
-                                                 (action-bar/add-skill! (action-bar/get-data ctx/stage) skill))
+                                                 (action-bar/add-skill! ctx/stage skill))
                                  :skill-removed! (fn [skill]
-                                                   (action-bar/remove-skill! (action-bar/get-data ctx/stage) skill))
+                                                   (action-bar/remove-skill! ctx/stage skill))
                                  :item-set! (fn [inventory-cell item]
                                               (set-item-image-in-widget inventory-cell item))
                                  :item-removed! (fn [inventory-cell]
