@@ -1,25 +1,19 @@
 (ns clojure.gdx.graphics
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math :refer [clamp]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d BitmapFont SpriteBatch Batch)
+           (com.badlogic.gdx.graphics Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d Batch BitmapFont)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils ScreenUtils)
            (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
-
-(defn clear-screen! []
-  (ScreenUtils/clear Color/BLACK))
-
-(defn sprite-batch []
-  (SpriteBatch.))
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor Color/WHITE)
+                 (.setColor color/white)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)

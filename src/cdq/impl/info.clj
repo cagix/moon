@@ -3,13 +3,14 @@
             [cdq.entity :as entity]
             [cdq.entity.stats.op :as op]
             [cdq.info :refer [info-segment]]
+            [clojure.gdx.graphics.color :as color]
             [clojure.math :as math]
             [clojure.string :as str]
             [clojure.timer :as timer]
             [clojure.utils :refer [readable-number]])
-  (:import (com.badlogic.gdx.graphics Color Colors)))
+  (:import (com.badlogic.gdx.graphics Colors)))
 
-(Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))
+(Colors/put "PRETTY_NAME" (color/create 0.84 0.8 0.52 1))
 
 (defmulti ^:private op-value-text (fn [[k]]
                                     k))

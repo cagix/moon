@@ -3,11 +3,13 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as shape-drawer]
+            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.graphics Color Texture)
+  (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d Batch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
@@ -63,9 +65,6 @@
     (dispose! default-font))
 
   cdq.graphics/Graphics
-  (clear-screen! [_]
-    (graphics/clear-screen!))
-
   (mouse-position [_]
     ; TODO mapv int needed?
     (mapv int (graphics/unproject-mouse-position ui-viewport)))
@@ -144,7 +143,7 @@
     (shape-drawer/grid! shape-drawer color))
 
   (draw-on-world-view! [this f]
-    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
+    (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
     (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
     (.begin batch)
     (shape-drawer/with-line-width shape-drawer world-unit-scale
@@ -198,7 +197,7 @@
                       tile-size
                       world-viewport
                       ui-viewport]}]
-  (let [batch (graphics/sprite-batch)
+  (let [batch (sprite-batch/create)
         shape-drawer-texture (graphics/white-pixel-texture)
         world-unit-scale (float (/ tile-size))]
     (map->Graphics

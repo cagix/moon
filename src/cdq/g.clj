@@ -25,6 +25,7 @@
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics.camera :as camera]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
@@ -36,6 +37,7 @@
             [clojure.gdx.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]
             [clojure.gdx.utils.disposable :refer [dispose!]]
+            [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.timer :as timer]
@@ -46,8 +48,7 @@
                                              tile->middle
                                              pretty-pst
                                              bind-root]])
-  (:import (com.badlogic.gdx ApplicationAdapter)
-           (com.badlogic.gdx.graphics Color)))
+  (:import (com.badlogic.gdx ApplicationAdapter)))
 
 ; (viewport/unproject-mouse-position (stage/viewport stage))
 ; => move ui-viewport inside stage?
@@ -486,7 +487,7 @@
                     :update-fn (fn [] (gdx/frames-per-second))
                     :icon (ctx/assets "images/fps.png")}]})
 
-(def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
+(def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 
@@ -510,7 +511,7 @@
     (fn tile-color-setter [_color x y]
       (let [position [(int x) (int y)]
             explored? (get @explored-tile-corners position) ; TODO needs int call ?
-            base-color (if explored? explored-tile-color Color/BLACK)
+            base-color (if explored? explored-tile-color color/black)
             cache-entry (get @light-cache position :not-found)
             blocked? (if (= cache-entry :not-found)
                        (let [blocked? (raycaster/blocked? raycaster light-position position)]
@@ -520,10 +521,10 @@
         #_(when @do-once
             (swap! ray-positions conj position))
         (if blocked?
-          (if see-all-tiles? Color/WHITE base-color)
+          (if see-all-tiles? color/white base-color)
           (do (when-not explored?
                 (swap! explored-tile-corners assoc (mapv int position) true))
-              Color/WHITE))))))
+              color/white))))))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)
@@ -736,7 +737,7 @@
                           (render []
                             (alter-var-root #'ctx/world cache-active-entities)
                             (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
-                            (graphics/clear-screen! ctx/graphics)
+                            (screen-utils/clear! color/black)
                             (graphics/draw-tiled-map ctx/graphics
                                                      (:tiled-map ctx/world)
                                                      (tile-color-setter (:raycaster ctx/world)

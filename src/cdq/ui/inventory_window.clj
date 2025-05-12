@@ -6,10 +6,10 @@
             [cdq.graphics :as graphics]
             [cdq.info :as info]
             [clojure.data.grid2d :as g2d]
+            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui :as ui])
-  (:import (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
+  (:import (com.badlogic.gdx.scenes.scene2d.ui Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)))
 
 ; Items are also smaller than 48x48 all of them
@@ -70,7 +70,7 @@
                      :texture-region
                      ui/texture-region-drawable)]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (TextureRegionDrawable/.tint drawable (Color. (float 1) (float 1) (float 1) (float 0.4)))))
+    (TextureRegionDrawable/.tint drawable (color/create 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]]

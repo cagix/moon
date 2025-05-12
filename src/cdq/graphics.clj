@@ -1,7 +1,6 @@
 (ns cdq.graphics)
 
 (defprotocol Graphics
-  (clear-screen! [_])
   (mouse-position [_])
   (world-mouse-position [_])
   (pixels->world-units [_ pixels])
