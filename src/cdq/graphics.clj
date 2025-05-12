@@ -1,14 +1,5 @@
 (ns cdq.graphics)
 
-; TODO :
-; * draw functions can only be used within stage/draw! and draw-on-world-view!
-; beacuse sprite-batch needs to be set
-; also can only be used within application (e.g. clear-screen)
-; some can always be called ... (mouse-position / px->wu, set-camera....)
-; mutable object ?
-
-; draw-tiled-map does not need a 'setup'
-
 (defprotocol Graphics
   (clear-screen! [_])
   (mouse-position [_])
