@@ -239,7 +239,7 @@
        nil
 
        (armor-saves? source* target*)
-       (g/add-text-effect! target "[WHITE]ARMOR")
+       (entity/add-text-effect! target "[WHITE]ARMOR")
 
        :else
        (let [min-max (:damage/min-max (entity/damage source* target* damage))
@@ -247,8 +247,8 @@
              new-hp-val (max (- (hp 0) dmg-amount) 0)]
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (g/spawn-audiovisual (:position target*) (db/build ctx/db :audiovisuals/damage))
-         (g/send-event! target (if (zero? new-hp-val) :kill :alert))
-         (g/add-text-effect! target (str "[RED]" dmg-amount "[]")))))))
+         (entity/send-event! target (if (zero? new-hp-val) :kill :alert))
+         (entity/add-text-effect! target (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
   (effect/applicable? [_ {:keys [effect/target]}]
@@ -256,7 +256,7 @@
          (:entity/fsm @target)))
 
   (effect/handle [_ {:keys [effect/target]}]
-    (g/send-event! target :kill)))
+    (entity/send-event! target :kill)))
 
 (defn- entity->melee-damage [entity]
   (let [strength (or (entity/stat entity :entity/strength) 0)]
@@ -292,4 +292,4 @@
          (:entity/fsm @target)))
 
   (effect/handle [[_ duration] {:keys [effect/target]}]
-    (g/send-event! target :stun duration)))
+    (entity/send-event! target :stun duration)))

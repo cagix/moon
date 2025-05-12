@@ -1,6 +1,7 @@
 (ns cdq.dev
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
+            [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
@@ -73,7 +74,7 @@
 
 
 (defn- learn-skill! [_context skill-id]
-  (g/add-skill ctx/player-eid (db/build ctx/db skill-id)))
+  (entity/add-skill ctx/player-eid (db/build ctx/db skill-id)))
 
 (defn- create-item! [_context item-id]
   (g/spawn-item (:position @ctx/player-eid) (db/build ctx/db item-id)))

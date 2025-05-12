@@ -45,8 +45,7 @@
                                              safe-merge
                                              tile->middle
                                              pretty-pst
-                                             bind-root]]
-            [reduce-fsm :as fsm])
+                                             bind-root]])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.graphics Color)))
 
@@ -62,40 +61,6 @@
        (format "sounds/%s.wav")
        ctx/assets
        sound/play!))
-
-(defn send-event!
-  ([eid event]
-   (send-event! eid event nil))
-  ([eid event params]
-   (when-let [fsm (:entity/fsm @eid)]
-     (let [old-state-k (:state fsm)
-           new-fsm (fsm/fsm-event fsm event)
-           new-state-k (:state new-fsm)]
-       (when-not (= old-state-k new-state-k)
-         (let [old-state-obj (entity/state-obj @eid)
-               new-state-obj [new-state-k (entity/create (if params
-                                                           [new-state-k eid params]
-                                                           [new-state-k eid]))]]
-           (when (:entity/player? @eid)
-             ((:state-changed! (:entity/player? @eid)) new-state-obj))
-           (swap! eid #(-> %
-                           (assoc :entity/fsm new-fsm
-                                  new-state-k (new-state-obj 1))
-                           (dissoc old-state-k)))
-           (state/exit!  old-state-obj)
-           (state/enter! new-state-obj)))))))
-
-; we cannot just set/unset movement direction
-; because it is handled by the state enter/exit for npc/player movement state ...
-; so we cannot expose it as a 'transaction'
-; so the movement should be updated in the respective npc/player movement 'state' and no movement 'component' necessary !
-; for projectiles inside projectile update !?
-(defn set-movement [eid movement-vector]
-  (swap! eid assoc :entity/movement {:direction movement-vector
-                                     :speed (or (entity/stat @eid :entity/movement-speed) 0)}))
-
-(defn mark-destroyed [eid]
-  (swap! eid assoc :entity/destroyed? true))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -115,31 +80,6 @@
                                 :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
                                                   (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
                                 :pack? true})))
-
-(defn add-skill [eid {:keys [property/id] :as skill}]
-  {:pre [(not (entity/has-skill? @eid skill))]}
-  (when (:entity/player? @eid)
-    ((:skill-added! (:entity/player? @eid)) skill))
-  (swap! eid assoc-in [:entity/skills id] skill))
-
-(defn remove-skill [eid {:keys [property/id] :as skill}]
-  {:pre [(entity/has-skill? @eid skill)]}
-  (when (:entity/player? @eid)
-    ((:skill-removed! (:entity/player? @eid)) skill))
-  (swap! eid update :entity/skills dissoc id))
-
-(defn- add-text-effect* [entity text]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (:entity/string-effect entity)]
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter #(timer/reset ctx/elapsed-time %)))
-           {:text text
-            :counter (timer/create ctx/elapsed-time 0.4)})))
-
-(defn add-text-effect! [eid text]
-  (swap! eid add-text-effect* text))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
@@ -447,57 +387,6 @@
        (filter #(line-of-sight? @ctx/player-eid @%))
        (remove #(:entity/player? @%))))
 
-(defn set-item [eid cell item]
-  (let [entity @eid
-        inventory (:entity/inventory entity)]
-    (assert (and (nil? (get-in inventory cell))
-                 (inventory/valid-slot? cell item)))
-    (when (:entity/player? entity)
-      ((:item-set! (:entity/player? entity)) cell item))
-    (swap! eid assoc-in (cons :entity/inventory cell) item)
-    (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-add (:entity/modifiers item)))))
-
-(defn remove-item [eid cell]
-  (let [entity @eid
-        item (get-in (:entity/inventory entity) cell)]
-    (assert item)
-    (when (:entity/player? entity)
-      ((:item-removed! (:entity/player? entity)) cell))
-    (swap! eid assoc-in (cons :entity/inventory cell) nil)
-    (when (inventory/applies-modifiers? cell)
-      (swap! eid entity/mod-remove (:entity/modifiers item)))))
-
-; TODO doesnt exist, stackable, usable items with action/skillbar thingy
-#_(defn remove-one-item [eid cell]
-  (let [item (get-in (:entity/inventory @eid) cell)]
-    (if (and (:count item)
-             (> (:count item) 1))
-      (do
-       ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
-       ; first remove and then place, just update directly  item ...
-       (remove-item! eid cell)
-       (set-item! eid cell (update item :count dec)))
-      (remove-item! eid cell))))
-
-; TODO no items which stack are available
-(defn stack-item [eid cell item]
-  (let [cell-item (get-in (:entity/inventory @eid) cell)]
-    (assert (inventory/stackable? item cell-item))
-    ; TODO this doesnt make sense with modifiers ! (triggered 2 times if available)
-    ; first remove and then place, just update directly  item ...
-    (concat (remove-item eid cell)
-            (set-item eid cell (update cell-item :count + (:count item))))))
-
-(defn pickup-item [eid item]
-  (let [[cell cell-item] (inventory/can-pickup-item? (:entity/inventory @eid) item)]
-    (assert cell)
-    (assert (or (inventory/stackable? item cell-item)
-                (nil? cell-item)))
-    (if (inventory/stackable? item cell-item)
-      (stack-item eid cell item)
-      (set-item eid cell item))))
-
 (defn show-player-msg! [text]
   (player-message/show-message! ctx/stage text))
 
@@ -804,21 +693,20 @@
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
-(defn- camera-controls! []
-  (let [camera (:camera (:world-viewport ctx/graphics))
-        zoom-speed 0.025]
+(defn- camera-controls! [camera]
+  (let [zoom-speed 0.025]
     (when (gdx/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
     (when (gdx/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed)))))
 
-(defn- window-controls! []
+(defn- window-controls! [stage]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (gdx/key-just-pressed? (get window-hotkeys window-id))]
-      (actor/toggle-visible! (get (:windows ctx/stage) window-id))))
+      (actor/toggle-visible! (get (:windows stage) window-id))))
   (when (gdx/key-just-pressed? :escape)
-    (let [windows (group/children (:windows ctx/stage))]
+    (let [windows (group/children (:windows stage))]
       (when (some actor/visible? windows)
         (run! #(actor/set-visible! % false) windows)))))
 
@@ -874,8 +762,8 @@
                             ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
                             (remove-destroyed-entities! ctx/world)
 
-                            (camera-controls!)
-                            (window-controls!))
+                            (camera-controls! (:camera (:world-viewport ctx/graphics)))
+                            (window-controls! ctx/stage))
 
                           (resize [width height]
                             (graphics/resize! ctx/graphics width height))))))
