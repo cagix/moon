@@ -92,7 +92,7 @@
          1 ; scale-x
          1 ; scale-y
          rotation)
-  (if color (.setColor batch Color/WHITE)))
+  (if color (.setColor batch color/white)))
 
 (defn- text-height [^BitmapFont font text]
   (-> text
