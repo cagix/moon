@@ -68,16 +68,16 @@
 
 ; TODO textfield takes control !
 ; PLUS symbol shift & = symbol on keyboard not registered
-(defn- camera-controls [camera]
+#_(defn- camera-controls [camera]
   (let [apply-position (fn [idx f]
                          (camera/set-position! camera
                                                (update (camera/position camera)
                                                        idx
                                                        #(f % camera-movement-speed))))]
-    (if (gdx/key-pressed? :left)  (apply-position 0 -))
-    (if (gdx/key-pressed? :right) (apply-position 0 +))
-    (if (gdx/key-pressed? :up)    (apply-position 1 +))
-    (if (gdx/key-pressed? :down)  (apply-position 1 -))))
+    (if (input/key-pressed? gdx/input :left)  (apply-position 0 -))
+    (if (input/key-pressed? gdx/input :right) (apply-position 0 +))
+    (if (input/key-pressed? gdx/input :up)    (apply-position 1 +))
+    (if (input/key-pressed? gdx/input :down)  (apply-position 1 -))))
 
 #_(defn- render-on-map [_context]
   (let [{:keys [tiled-map
@@ -132,7 +132,7 @@
 
 (def ^:private zoom-speed 0.025)
 
-(defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
+#_(defn adjust-zoom [input camera] ; TODO this now in cdq.context available.
   (when (gdx/key-pressed? input :minus)  (camera/inc-zoom camera    zoom-speed))
   (when (gdx/key-pressed? input :equals) (camera/inc-zoom camera (- zoom-speed))))
 

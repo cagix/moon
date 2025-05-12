@@ -6,6 +6,7 @@
             [cdq.graphics :as graphics]
             [cdq.world :as world]
             [clojure.gdx :as gdx]
+            [clojure.gdx.app :as app]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :as ui]
@@ -52,12 +53,12 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (gdx/post-runnable!
-  (g/spawn-creature {:position [35 73]
-                     :creature-id :creatures/dragon-red
-                     :components {:entity/fsm {:fsm :fsms/npc
-                                               :initial-state :npc-sleeping}
-                                  :entity/faction :evil}}))
+ (app/post-runnable! gdx/app
+                     (g/spawn-creature {:position [35 73]
+                                        :creature-id :creatures/dragon-red
+                                        :components {:entity/fsm {:fsm :fsms/npc
+                                                                  :initial-state :npc-sleeping}
+                                                     :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?

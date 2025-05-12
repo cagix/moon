@@ -156,7 +156,7 @@
     (.end batch))
 
   (set-cursor! [_ cursor-key]
-    (gdx/set-cursor! (utils/safe-get cursors cursor-key)))
+    (graphics/set-cursor! gdx/graphics (utils/safe-get cursors cursor-key)))
 
   (draw-tiled-map [_ tiled-map color-setter]
     (tiled/draw! (get-tiled-map-renderer tiled-map)
@@ -207,7 +207,7 @@
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
-                        cursor (gdx/cursor pixmap hotspot-x hotspot-y)]
+                        cursor (graphics/cursor gdx/graphics pixmap hotspot-x hotspot-y)]
                     (dispose! pixmap)
                     cursor))
                 cursors)

@@ -1,15 +1,30 @@
 (ns clojure.gdx.graphics
   (:require [clojure.gdx :as gdx]
+            [clojure.gdx.files :as files]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math :refer [clamp]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
-           (com.badlogic.gdx.graphics.g2d Batch BitmapFont)
-           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator FreeTypeFontGenerator$FreeTypeFontParameter)
+           (com.badlogic.gdx.graphics Pixmap
+                                      Pixmap$Format
+                                      Texture
+                                      Texture$TextureFilter
+                                      OrthographicCamera)
+           (com.badlogic.gdx.graphics.g2d Batch
+                                          BitmapFont)
+           (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
+                                                   FreeTypeFontGenerator$FreeTypeFontParameter)
            (com.badlogic.gdx.math Vector2)
-           (com.badlogic.gdx.utils.viewport Viewport FitViewport)))
+           (com.badlogic.gdx.utils.viewport Viewport
+                                            FitViewport)))
+
+(defprotocol Graphics
+  (delta-time [_])
+  (frames-per-second [_])
+  (cursor [_ pixmap hotspot-x hotspot-y])
+  (set-cursor! [_ cursor]))
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
@@ -20,7 +35,7 @@
     texture))
 
 (defn pixmap [path]
-  (Pixmap. ^FileHandle (gdx/internal path)))
+  (Pixmap. ^FileHandle (files/internal gdx/files path)))
 
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -39,7 +54,7 @@
     font))
 
 (defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (generate-font (gdx/internal file)
+  (let [^BitmapFont font (generate-font (files/internal gdx/files file)
                                         {:size (* size quality-scaling)})]
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
@@ -70,10 +85,10 @@
 (defn unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (gdx/input-x)
+  (let [mouse-x (clamp (input/x gdx/input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (gdx/input-y)
+        mouse-y (clamp (input/y gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]

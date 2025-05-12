@@ -2,6 +2,7 @@
   (:require [cdq.ctx :as ctx]
             [cdq.graphics :as graphics]
             [clojure.gdx :as gdx]
+            [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]))
@@ -24,7 +25,7 @@
                        :act (fn [this]
                               (let [state (actor/user-object this)]
                                 (when (:text @state)
-                                  (swap! state update :counter + (gdx/delta-time))
+                                  (swap! state update :counter + (gdx.graphics/delta-time gdx/graphics))
                                   (when (>= (:counter @state) 1.5)
                                     (reset! state nil)))))})
     (actor/set-user-object! (atom nil))

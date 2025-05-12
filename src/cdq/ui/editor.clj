@@ -9,6 +9,7 @@
             [cdq.ui.error-window :as error-window]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
@@ -106,7 +107,7 @@
                                                {:actor (text-button "Delete" delete!)
                                                 :center? true}]])]])
     (.addActor window (actor/create {:act (fn [_this]
-                                            (when (gdx/key-just-pressed? :enter)
+                                            (when (input/key-just-pressed? gdx/input :enter)
                                               (save!)))}))
     (.pack window)
     window))

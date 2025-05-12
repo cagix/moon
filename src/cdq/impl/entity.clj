@@ -17,6 +17,7 @@
             [cdq.world.potential-field :as potential-field]
             [clojure.data.animation :as animation]
             [clojure.gdx :as gdx]
+            [clojure.gdx.input :as gdx.input]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.ui :as ui]
             [clojure.gdx.math.vector2 :as v]
@@ -143,7 +144,7 @@
       (entity/send-event! eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
         (graphics/set-cursor! ctx/graphics cursor)
-        (when (gdx/button-just-pressed? :left)
+        (when (gdx.input/button-just-pressed? gdx/input :left)
           (on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
@@ -221,7 +222,7 @@
                       (:entity/item-on-cursor entity)))))
 
   (state/manual-tick [[_ {:keys [eid]}]]
-    (when (and (gdx/button-just-pressed? :left)
+    (when (and (gdx.input/button-just-pressed? gdx/input :left)
                (g/world-item?))
       (entity/send-event! eid :drop-item)))
 

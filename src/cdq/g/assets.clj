@@ -2,6 +2,7 @@
   (:require [cdq.assets :as assets]
             [clojure.gdx :as gdx]
             [clojure.gdx.asset-manager :as asset-manager]
+            [clojure.gdx.files :as files]
             [clojure.gdx.files.file-handle :as file-handle]
             [clojure.string :as str]))
 
@@ -24,7 +25,7 @@
   (for [[asset-type extensions] {com.badlogic.gdx.audio.Sound      #{"wav"}
                                  com.badlogic.gdx.graphics.Texture #{"png" "bmp"}}
         file (map #(str/replace-first % folder "")
-                  (recursively-search (gdx/internal folder) extensions))]
+                  (recursively-search (files/internal gdx/files folder) extensions))]
     [file asset-type]))
 
 (defn create [folder]

@@ -24,8 +24,10 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
+            [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
+            [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
@@ -47,8 +49,7 @@
                                              safe-merge
                                              tile->middle
                                              pretty-pst
-                                             bind-root]])
-  (:import (com.badlogic.gdx ApplicationAdapter)))
+                                             bind-root]]))
 
 ; (viewport/unproject-mouse-position (stage/viewport stage))
 ; => move ui-viewport inside stage?
@@ -484,7 +485,7 @@
                     :update-fn (fn [] (camera/zoom (:camera (:world-viewport ctx/graphics))))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
-                    :update-fn (fn [] (gdx/frames-per-second))
+                    :update-fn (fn [] (gdx.graphics/frames-per-second gdx/graphics))
                     :icon (ctx/assets "images/fps.png")}]})
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
@@ -659,8 +660,8 @@
   (or #_error
       (and pausing?
            (state/pause-game? (entity/state-obj @ctx/player-eid))
-           (not (or (gdx/key-just-pressed? :p)
-                    (gdx/key-pressed?      :space))))))
+           (not (or (input/key-just-pressed? gdx/input :p)
+                    (input/key-pressed?      gdx/input :space))))))
 
 (defn- update-potential-fields! [{:keys [potential-field-cache
                                          grid
@@ -696,17 +697,17 @@
 
 (defn- camera-controls! [camera]
   (let [zoom-speed 0.025]
-    (when (gdx/key-pressed? :minus)  (camera/inc-zoom camera    zoom-speed))
-    (when (gdx/key-pressed? :equals) (camera/inc-zoom camera (- zoom-speed)))))
+    (when (input/key-pressed? gdx/input :minus)  (camera/inc-zoom camera    zoom-speed))
+    (when (input/key-pressed? gdx/input :equals) (camera/inc-zoom camera (- zoom-speed)))))
 
 (defn- window-controls! [stage]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
-            :when (gdx/key-just-pressed? (get window-hotkeys window-id))]
+            :when (input/key-just-pressed? gdx/input (get window-hotkeys window-id))]
       (actor/toggle-visible! (get (:windows stage) window-id))))
-  (when (gdx/key-just-pressed? :escape)
+  (when (input/key-just-pressed? gdx/input :escape)
     (let [windows (group/children (:windows stage))]
       (when (some actor/visible? windows)
         (run! #(actor/set-visible! % false) windows)))))
@@ -716,55 +717,52 @@
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
     (bind-root #'ctx/db (cdq.g.db/create))
-    (lwjgl/application! (:application config)
-                        (proxy [ApplicationAdapter] []
-                          (create []
-                            (bind-root #'ctx/assets   (cdq.g.assets/create (:assets config)))
-                            (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
-                            (ui/load! (:vis-ui config))
-                            (bind-root #'ctx/stage (stage/create (:ui-viewport ctx/graphics)
-                                                                 (:batch       ctx/graphics)))
-                            (gdx/set-input-processor! ctx/stage)
-                            (reset-game! (:world-fn config)))
+    (lwjgl/application!
+     (:application config)
+     {:create! (fn []
+                 (bind-root #'ctx/assets   (cdq.g.assets/create (:assets config)))
+                 (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
+                 (ui/load! (:vis-ui config))
+                 (bind-root #'ctx/stage (stage/create (:ui-viewport ctx/graphics)
+                                                      (:batch       ctx/graphics)))
+                 (input/set-processor! gdx/input ctx/stage)
+                 (reset-game! (:world-fn config)))
+      :dispose! (fn []
+                  (dispose! ctx/assets)
+                  (dispose! ctx/graphics)
+                  ; TODO vis-ui dispose
+                  ; TODO dispose world tiled-map/level resources?
+                  )
+      :render! (fn []
+                 (alter-var-root #'ctx/world cache-active-entities)
+                 (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
+                 (screen-utils/clear! color/black)
+                 (graphics/draw-tiled-map ctx/graphics
+                                          (:tiled-map ctx/world)
+                                          (tile-color-setter (:raycaster ctx/world)
+                                                             (:explored-tile-corners ctx/world)
+                                                             (camera/position (:camera (:world-viewport ctx/graphics)))))
+                 (graphics/draw-on-world-view! ctx/graphics
+                                               (fn []
+                                                 (draw-before-entities!)
+                                                 (render-entities!)
+                                                 (draw-after-entities!)))
+                 (stage/draw! ctx/stage)
+                 (stage/act! ctx/stage)
+                 (state/manual-tick (entity/state-obj @ctx/player-eid))
+                 (update-mouseover-entity!)
+                 (bind-root #'ctx/paused? (pause-game?))
+                 (when-not ctx/paused?
+                   (let [delta-ms (min (gdx.graphics/delta-time gdx/graphics) max-delta)]
+                     (alter-var-root #'ctx/elapsed-time + delta-ms)
+                     (bind-root #'ctx/delta-time delta-ms))
+                   (update-potential-fields! ctx/world)
+                   (tick-entities! ctx/world))
 
-                          (dispose []
-                            (dispose! ctx/assets)
-                            (dispose! ctx/graphics)
-                            ; TODO vis-ui dispose
-                            ; TODO dispose world tiled-map/level resources?
-                            )
+                 ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                 (remove-destroyed-entities! ctx/world)
 
-                          (render []
-                            (alter-var-root #'ctx/world cache-active-entities)
-                            (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
-                            (screen-utils/clear! color/black)
-                            (graphics/draw-tiled-map ctx/graphics
-                                                     (:tiled-map ctx/world)
-                                                     (tile-color-setter (:raycaster ctx/world)
-                                                                        (:explored-tile-corners ctx/world)
-                                                                        (camera/position (:camera (:world-viewport ctx/graphics)))))
-                            (graphics/draw-on-world-view! ctx/graphics
-                                                          (fn []
-                                                            (draw-before-entities!)
-                                                            (render-entities!)
-                                                            (draw-after-entities!)))
-                            (stage/draw! ctx/stage)
-                            (stage/act! ctx/stage)
-                            (state/manual-tick (entity/state-obj @ctx/player-eid))
-                            (update-mouseover-entity!)
-                            (bind-root #'ctx/paused? (pause-game?))
-                            (when-not ctx/paused?
-                              (let [delta-ms (min (gdx/delta-time) max-delta)]
-                                (alter-var-root #'ctx/elapsed-time + delta-ms)
-                                (bind-root #'ctx/delta-time delta-ms))
-                              (update-potential-fields! ctx/world)
-                              (tick-entities! ctx/world))
-
-                            ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                            (remove-destroyed-entities! ctx/world)
-
-                            (camera-controls! (:camera (:world-viewport ctx/graphics)))
-                            (window-controls! ctx/stage))
-
-                          (resize [width height]
-                            (graphics/resize! ctx/graphics width height))))))
+                 (camera-controls! (:camera (:world-viewport ctx/graphics)))
+                 (window-controls! ctx/stage))
+      :resize! (fn [width height]
+                 (graphics/resize! ctx/graphics width height))})))
