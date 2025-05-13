@@ -1,11 +1,11 @@
 (ns cdq.g
   (:require [cdq.audio.sound :as sound]
+            [cdq.assets :as assets]
             [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.g.assets]
             [cdq.g.db]
             [cdq.g.graphics]
             [cdq.g.world]
@@ -714,7 +714,7 @@
     (lwjgl/application!
      (:application config)
      {:create! (fn []
-                 (bind-root #'ctx/assets   (cdq.g.assets/create (:assets config)))
+                 (bind-root #'ctx/assets   (assets/create (:assets config)))
                  (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
                  (ui/load! (:vis-ui config))
                  (bind-root #'ctx/stage (stage/create (:ui-viewport ctx/graphics)
