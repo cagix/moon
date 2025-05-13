@@ -1,7 +1,7 @@
 (ns cdq.world.grid
-  (:require [clojure.gdx.math :refer [circle->outer-rectangle
-                                      overlaps?
-                                      rect-contains?]]))
+  (:require [cdq.math :refer [circle->outer-rectangle
+                              overlaps?
+                              rect-contains?]]))
 
 (defn- rectangle->tiles
   [{[x y] :left-bottom :keys [left-bottom width height]}]

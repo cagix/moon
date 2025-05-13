@@ -1,5 +1,5 @@
 (ns cdq.input
-  (:require [clojure.gdx.math.vector2 :as v])
+  (:require [cdq.math.vector2 :as v])
   (:import (com.badlogic.gdx Gdx Input$Keys)))
 
 (defn player-movement-vector []

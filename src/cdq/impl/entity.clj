@@ -12,6 +12,7 @@
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
+            [cdq.math.vector2 :as v]
             [cdq.stage :as stage]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent find-first]]
@@ -19,7 +20,6 @@
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
-            [clojure.gdx.math.vector2 :as v]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx Input$Buttons)))
 

@@ -7,11 +7,11 @@
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.rand :refer [rand-int-between]]
+            [cdq.math.raycaster :as raycaster]
+            [cdq.math.vector2 :as v]
             [cdq.timer :as timer]
             [cdq.utils :refer [defcomponent]]
-            [cdq.world :as world]
-            [clojure.gdx.math.raycaster :as raycaster]
-            [clojure.gdx.math.vector2 :as v]))
+            [cdq.world :as world]))
 
 (comment
  (ns cdq.components.effects.audiovisual)

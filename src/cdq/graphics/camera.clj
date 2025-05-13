@@ -1,4 +1,4 @@
-(ns clojure.gdx.graphics.camera
+(ns cdq.graphics.camera
   (:import (com.badlogic.gdx.graphics Camera OrthographicCamera)
            (com.badlogic.gdx.math Frustum Vector3)))
 

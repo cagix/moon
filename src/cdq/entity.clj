@@ -5,8 +5,8 @@
             [cdq.entity.state :as state]
             [cdq.entity.stats.op :as op]
             [cdq.timer :as timer]
-            [clojure.gdx.math :as math]
-            [clojure.gdx.math.vector2 :as v]
+            [cdq.math :as math]
+            [cdq.math.vector2 :as v]
             [reduce-fsm :as fsm]))
 
 (defmulti create (fn [[k]]

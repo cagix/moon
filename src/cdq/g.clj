@@ -9,9 +9,14 @@
             [cdq.entity.state :as state]
             [cdq.g.world]
             [cdq.graphics :as graphics]
+            [cdq.graphics.camera :as camera]
             [cdq.stage :as stage]
             [cdq.tiled :as tiled]
             [cdq.timer :as timer]
+            [cdq.interop :as interop]
+            [cdq.math :refer [circle->outer-rectangle]]
+            [cdq.math.raycaster :as raycaster]
+            [cdq.math.vector2 :as v]
             [cdq.utils :as utils :refer [sort-by-order
                                          define-order
                                          safe-merge
@@ -23,11 +28,6 @@
             [cdq.world.grid :as grid]
             cdq.world.potential-fields
             [clojure.edn :as edn]
-            [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.interop :as interop]
-            [clojure.gdx.math :refer [circle->outer-rectangle]]
-            [clojure.gdx.math.raycaster :as raycaster]
-            [clojure.gdx.math.vector2 :as v]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)

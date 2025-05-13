@@ -1,8 +1,8 @@
 (ns cdq.graphics
-  (:require [cdq.tiled :as tiled]
+  (:require [cdq.graphics.camera :as camera]
+            [cdq.interop :as interop]
+            [cdq.tiled :as tiled]
             [cdq.utils :as utils]
-            [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.interop :as interop]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)

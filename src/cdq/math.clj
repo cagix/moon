@@ -1,4 +1,4 @@
-(ns clojure.gdx.math
+(ns cdq.math
   (:import (com.badlogic.gdx.math Circle Intersector Rectangle)))
 
 (defmulti ^:private overlaps?*
