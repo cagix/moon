@@ -137,3 +137,22 @@
 ; => stage/resize-viewport! need to add (for viewport)
 (defn mouse-on-actor? [stage]
   (stage/hit stage (graphics/mouse-position ctx/graphics)))
+
+; no window movable type cursor appears here like in player idle
+; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
+; => input events handling
+; hmmm interesting ... can disable @ item in cursor  / moving / etc.
+(defn show-modal! [stage {:keys [title text button-text on-click]}]
+  (assert (not (::modal stage)))
+  (stage/add-actor! stage
+                    (ui/window {:title title
+                                :rows [[(ui/label text)]
+                                       [(ui/text-button button-text
+                                                        (fn []
+                                                          (actor/remove! (::modal stage))
+                                                          (on-click)))]]
+                                :id ::modal
+                                :modal? true
+                                :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
+                                                  (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
+                                :pack? true})))

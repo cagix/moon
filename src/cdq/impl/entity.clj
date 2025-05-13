@@ -571,10 +571,10 @@
   (state/pause-game? [_] true)
   (state/enter! [_]
     (sound/play! "bfxr_playerdeath")
-    (g/show-modal {:title "YOU DIED - again!"
-                    :text "Good luck next time!"
-                    :button-text "OK"
-                    :on-click (fn [])})))
+    (cdq.stage/show-modal! ctx/stage {:title "YOU DIED - again!"
+                                      :text "Good luck next time!"
+                                      :button-text "OK"
+                                      :on-click (fn [])})))
 
 (defcomponent :player-moving
   (state/cursor [_] :cursors/walking)

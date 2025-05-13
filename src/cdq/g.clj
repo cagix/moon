@@ -28,7 +28,6 @@
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
-            [clojure.gdx.scene2d.ui :as ui]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [circle->outer-rectangle]]
             [clojure.gdx.math.raycaster :as raycaster]
@@ -43,25 +42,6 @@
                                              tile->middle
                                              pretty-pst
                                              bind-root]]))
-
-; no window movable type cursor appears here like in player idle
-; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
-; => input events handling
-; hmmm interesting ... can disable @ item in cursor  / moving / etc.
-(defn show-modal [{:keys [title text button-text on-click]}]
-  (assert (not (::modal ctx/stage)))
-  (stage/add-actor! ctx/stage
-                    (ui/window {:title title
-                                :rows [[(ui/label text)]
-                                       [(ui/text-button button-text
-                                                        (fn []
-                                                          (actor/remove! (::modal ctx/stage))
-                                                          (on-click)))]]
-                                :id ::modal
-                                :modal? true
-                                :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
-                                                  (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
-                                :pack? true})))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
