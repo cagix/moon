@@ -416,8 +416,7 @@
 
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (cdq.stage/create))
-  (input/set-processor! gdx/input ctx/stage)
+  (bind-root #'ctx/stage (cdq.stage/create!))
   (bind-root #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
                                               (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
@@ -664,7 +663,6 @@
      {:create! (fn []
                  (bind-root #'ctx/assets   (assets/create (:assets config)))
                  (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
-                 (ui/load! (:vis-ui config))
                  (reset-game! (:world-fn config)))
       :dispose! (fn []
                   (dispose! ctx/assets)

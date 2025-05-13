@@ -9,6 +9,7 @@
             [cdq.ui.player-message :as player-message]
             [cdq.ui.hp-mana-bar :as hp-mana-bar]
             [clojure.gdx :as gdx]
+            [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :as ui]
@@ -70,8 +71,10 @@
    (player-state-actor)
    (player-message/create)])
 
-(defn create []
+(defn create! []
+  (ui/load! {:skin-scale :x1} #_(:vis-ui config))
   (let [stage (stage/create (:ui-viewport ctx/graphics)
                             (:batch       ctx/graphics))]
     (run! (partial stage/add-actor! stage) (create-actors))
+    (input/set-processor! gdx/input stage)
     stage))
