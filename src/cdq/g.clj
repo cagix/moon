@@ -1,6 +1,5 @@
 (ns cdq.g
-  (:require [cdq.assets :as assets]
-            [cdq.db :as db]
+  (:require [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
@@ -19,13 +18,49 @@
             [cdq.world.grid :as grid]
             cdq.world.potential-fields
             [clojure.edn :as edn]
-            [clojure.java.io :as io])
-  (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
+            [clojure.java.io :as io]
+            [clojure.string :as str])
+  (:import (clojure.lang IFn)
+           (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.assets AssetManager)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
-           (com.badlogic.gdx.graphics Color)
+           (com.badlogic.gdx.files FileHandle)
+           (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
+
+(def asset-folder "resources/")
+(def asset-type-extensions {Sound   #{"wav"}
+                            Texture #{"png" "bmp"}})
+
+(defn- load-assets []
+  (let [manager (proxy [AssetManager IFn] []
+                  (invoke [path]
+                    (if (AssetManager/.contains this path)
+                      (AssetManager/.get this ^String path)
+                      (throw (IllegalArgumentException. (str "Asset cannot be found: " path))))))]
+    (doseq [[file asset-type] (for [[asset-type extensions] asset-type-extensions
+                                    file (map #(str/replace-first % asset-folder "")
+                                              (loop [[^FileHandle file & remaining] (.list (.internal Gdx/files asset-folder))
+                                                     result []]
+                                                (cond (nil? file)
+                                                      result
+
+                                                      (.isDirectory file)
+                                                      (recur (concat remaining (.list file)) result)
+
+                                                      (extensions (.extension file))
+                                                      (recur remaining (conj result (.path file)))
+
+                                                      :else
+                                                      (recur remaining result))))]
+                                [file asset-type])]
+      (.load manager ^String file ^Class asset-type))
+    (.finishLoading manager)
+    manager))
 
 (defn- spawn-enemies! []
   (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
@@ -291,7 +326,7 @@
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
-                            (bind-root #'ctx/assets   (assets/create (:assets config)))
+                            (bind-root #'ctx/assets (load-assets))
                             (bind-root #'ctx/graphics (graphics/create (:graphics config)))
                             (reset-game! (:world-fn config)))
 
