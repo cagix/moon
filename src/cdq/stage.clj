@@ -17,7 +17,7 @@
             [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.string :as str]
-            [clojure.utils :refer [readable-number]]))
+            [clojure.utils :as utils]))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (cdq.stage/mouse-on-actor? ctx/stage)]
@@ -45,7 +45,7 @@
                                    (:entity/id entity)))
                     :icon (ctx/assets "images/mouseover.png")}
                    {:label "elapsed-time"
-                    :update-fn (fn [] (str (readable-number ctx/elapsed-time) " seconds"))
+                    :update-fn (fn [] (str (utils/readable-number ctx/elapsed-time) " seconds"))
                     :icon (ctx/assets "images/clock.png")}
                    {:label "paused?"
                     :update-fn (fn [] ctx/paused?)}
@@ -59,6 +59,21 @@
                    {:label "FPS"
                     :update-fn (fn [] (gdx.graphics/frames-per-second gdx/graphics))
                     :icon (ctx/assets "images/fps.png")}]})
+
+(defn add-skill! [stage skill]
+  (action-bar/add-skill! stage skill))
+
+(defn remove-skill! [stage skill]
+  (action-bar/remove-skill! stage skill))
+
+(defn selected-skill [stage]
+  (action-bar/selected-skill stage))
+
+(defn set-item! [stage inventory-cell item]
+  (inventory-window/set-item-image! stage inventory-cell item))
+
+(defn remove-item! [stage inventory-cell]
+  (inventory-window/remove-item-image! stage inventory-cell))
 
 (defn- player-state-actor []
   (actor/create {:draw (fn [_this] (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))

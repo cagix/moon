@@ -11,9 +11,7 @@
             [cdq.g.world]
             [cdq.graphics :as graphics]
             [cdq.stage]
-            [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.inventory-window :as inventory-window]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -38,10 +36,8 @@
             [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.java.io :as io]
-            [clojure.string :as str]
             [clojure.timer :as timer]
-            [clojure.utils :as utils :refer [readable-number
-                                             sort-by-order
+            [clojure.utils :as utils :refer [sort-by-order
                                              define-order
                                              safe-merge
                                              tile->middle
@@ -392,13 +388,13 @@
                                                    (when-let [cursor-key (state/cursor new-state-obj)]
                                                      (graphics/set-cursor! ctx/graphics cursor-key)))
                                  :skill-added! (fn [skill]
-                                                 (action-bar/add-skill! ctx/stage skill))
+                                                 (cdq.stage/add-skill! ctx/stage skill))
                                  :skill-removed! (fn [skill]
-                                                   (action-bar/remove-skill! ctx/stage skill))
+                                                   (cdq.stage/remove-skill! ctx/stage skill))
                                  :item-set! (fn [inventory-cell item]
-                                              (inventory-window/set-item-image! ctx/stage inventory-cell item))
+                                              (cdq.stage/set-item! ctx/stage inventory-cell item))
                                  :item-removed! (fn [inventory-cell]
-                                                  (inventory-window/remove-item-image! ctx/stage inventory-cell))}
+                                                  (cdq.stage/remove-item! ctx/stage inventory-cell))}
                 :entity/free-skill-points 3
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})

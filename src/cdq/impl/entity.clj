@@ -12,7 +12,6 @@
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
-            [cdq.ui.action-bar :as action-bar]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
@@ -105,7 +104,7 @@
      (clickable-entity-interaction entity ctx/mouseover-eid)
 
      :else
-     (if-let [skill-id (action-bar/selected-skill ctx/stage)]
+     (if-let [skill-id (cdq.stage/selected-skill ctx/stage)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]
