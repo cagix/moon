@@ -78,7 +78,7 @@
         (actor/remove! window)
         (catch Throwable t
           (utils/pretty-pst t)
-          (cdq.stage/show-error-window! ctx/stage t))))
+          (stage/show-error-window! ctx/stage t))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn
