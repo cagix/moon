@@ -4,13 +4,12 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as shape-drawer]
-            [clojure.gdx.graphics.g2d.sprite-batch :as sprite-batch]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Texture)
-           (com.badlogic.gdx.graphics.g2d Batch TextureRegion)
+           (com.badlogic.gdx.graphics.g2d Batch SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
 (defn- unit-dimensions [image unit-scale]
@@ -197,7 +196,7 @@
                       tile-size
                       world-viewport
                       ui-viewport]}]
-  (let [batch (sprite-batch/create)
+  (let [batch (SpriteBatch.)
         shape-drawer-texture (graphics/white-pixel-texture)
         world-unit-scale (float (/ tile-size))]
     (map->Graphics
