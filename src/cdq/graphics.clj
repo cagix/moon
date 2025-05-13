@@ -1,7 +1,7 @@
 (ns cdq.graphics
-  (:require [cdq.graphics.camera :as camera]
-            [cdq.interop :as interop]
-            [cdq.tiled :as tiled]
+  (:require [cdq.graphics.camera :as camera]; remove
+            [cdq.interop :as interop] ; remove
+            [cdq.tiled :as tiled] ; remove
             [cdq.utils :as utils]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)

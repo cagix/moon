@@ -2,7 +2,6 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.entity :as entity]
-            [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
             [clojure.string :as str]
@@ -53,11 +52,11 @@
  ; 2. start world
  ; 3. create creature
  (post-runnable!
-  (g/spawn-creature {:position [35 73]
-                     :creature-id :creatures/dragon-red
-                     :components {:entity/fsm {:fsm :fsms/npc
-                                               :initial-state :npc-sleeping}
-                                  :entity/faction :evil}}))
+  (world/spawn-creature {:position [35 73]
+                         :creature-id :creatures/dragon-red
+                         :components {:entity/fsm {:fsm :fsms/npc
+                                                   :initial-state :npc-sleeping}
+                                      :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?
@@ -77,7 +76,7 @@
   (entity/add-skill ctx/player-eid (db/build ctx/db skill-id)))
 
 (defn- create-item! [_context item-id]
-  (g/spawn-item (:position @ctx/player-eid) (db/build ctx/db item-id)))
+  (world/spawn-item (:position @ctx/player-eid) (db/build ctx/db item-id)))
 
 (defn- mouseover-grid-cell []
   @(world/cell ctx/world (mapv int (graphics/world-mouse-position ctx/graphics))))

@@ -9,7 +9,6 @@
             [cdq.entity.inventory :as inventory]
             [cdq.entity.skill :as skill]
             [cdq.entity.state :as state]
-            [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.math.vector2 :as v]
@@ -182,16 +181,34 @@
       (entity/send-event! eid :dropped-item)
       (entity/send-event! eid :pickup-item item-in-cell)))))
 
+(defn- world-item? []
+  (not (stage/mouse-on-actor? ctx/stage)))
+
+; It is possible to put items out of sight, losing them.
+; Because line of sight checks center of entity only, not corners
+; this is okay, you have thrown the item over a hill, thats possible.
+(defn- placement-point [player target maxrange]
+  (v/add player
+         (v/scale (v/direction player target)
+                  (min maxrange
+                       (v/distance player target)))))
+
+(defn- item-place-position [entity]
+  (placement-point (:position entity)
+                   (graphics/world-mouse-position ctx/graphics)
+                   ; so you cannot put it out of your own reach
+                   (- (:entity/click-distance-tiles entity) 0.1)))
+
 (defcomponent :player-item-on-cursor
   (entity/create [[_ eid item]]
     {:eid eid
      :item item})
 
   (entity/render-below! [[_ {:keys [item]}] entity g]
-    (when (g/world-item?)
+    (when (world-item?)
       (graphics/draw-centered g
                               (:entity/image item)
-                              (g/item-place-position entity))))
+                              (item-place-position entity))))
 
   (state/cursor [_] :cursors/hand-grab)
 
@@ -209,19 +226,19 @@
       (when (:entity/item-on-cursor entity)
         (sound/play! "bfxr_itemputground")
         (swap! eid dissoc :entity/item-on-cursor)
-        (g/spawn-item (g/item-place-position entity)
-                      (:entity/item-on-cursor entity)))))
+        (world/spawn-item (item-place-position entity)
+                          (:entity/item-on-cursor entity)))))
 
   (state/manual-tick [[_ {:keys [eid]}]]
     (when (and (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
-               (g/world-item?))
+               (world-item?))
       (entity/send-event! eid :drop-item)))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
     (clicked-cell eid cell))
 
   (state/draw-gui-view [[_ {:keys [eid]}]]
-    (when (not (g/world-item?))
+    (when (not (world-item?))
       (graphics/draw-centered ctx/graphics
                               (:entity/image (:entity/item-on-cursor @eid))
                               (graphics/mouse-position ctx/graphics)))))
@@ -360,7 +377,7 @@
   [{:keys [effect/source effect/target] :as effect-ctx}]
   (if (and target
            (not (:entity/destroyed? @target))
-           (g/line-of-sight? @source @target))
+           (world/line-of-sight? @source @target))
     effect-ctx
     (dissoc effect-ctx :effect/target)))
 
@@ -390,9 +407,9 @@
 
 (defn- npc-effect-context [eid]
   (let [entity @eid
-        target (g/nearest-enemy ctx/world entity)
+        target (world/nearest-enemy ctx/world entity)
         target (when (and target
-                          (g/line-of-sight? entity @target))
+                          (world/line-of-sight? entity @target))
                  target)]
     {:effect/source eid
      :effect/target target
@@ -428,7 +445,7 @@
 (defmethod entity/tick! :entity/alert-friendlies-after-duration [[_ {:keys [counter faction]}] eid]
   (when (timer/stopped? ctx/elapsed-time counter)
     (entity/mark-destroyed eid)
-    (doseq [friendly-eid (g/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
+    (doseq [friendly-eid (world/friendlies-in-radius (:grid ctx/world) (:position @eid) faction)]
       (entity/send-event! friendly-eid :alert))))
 
 (defmethod entity/tick! :entity/animation [[k animation] eid]
@@ -474,7 +491,7 @@
 
 ; set max speed so small entities are not skipped by projectiles
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
-(def ^:private max-speed (/ g/minimum-size g/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
+(def ^:private max-speed (/ world/minimum-size world/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
 (def ^:private speed-schema (schema/m-schema [:and number? [:>= 0] [:<= max-speed]]))
 
@@ -493,7 +510,7 @@
       (when-let [body (if (:collides? body) ; < == means this is a movement-type ... which could be a multimethod ....
                         (try-move-solid-body (:grid ctx/world) body movement)
                         (move-body body movement))]
-        (g/position-changed! ctx/world eid)
+        (world/position-changed! ctx/world eid)
         (swap! eid assoc
                :position (:position body)
                :left-bottom (:left-bottom body))
@@ -581,7 +598,7 @@
 
 (defcomponent :entity/destroy-audiovisual
   (entity/destroy! [[_ audiovisuals-id] eid]
-    (g/spawn-audiovisual (:position @eid) (db/build ctx/db audiovisuals-id))))
+    (world/spawn-audiovisual (:position @eid) (db/build ctx/db audiovisuals-id))))
 
 (defcomponent :npc-dead
   (state/enter! [[_ {:keys [eid]}]]
@@ -595,9 +612,9 @@
 
 (defcomponent :npc-sleeping
   (state/exit! [[_ {:keys [eid]}]]
-    (g/delayed-alert (:position       @eid)
-                     (:entity/faction @eid)
-                     0.2)
+    (world/delayed-alert (:position       @eid)
+                         (:entity/faction @eid)
+                         0.2)
     (entity/add-text-effect! eid "[WHITE]!")))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio g]
