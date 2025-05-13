@@ -1,6 +1,5 @@
 (ns forge.mapgen-test
   (:require [cdq.level.modules-core :as modules]
-            [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.tiled :as tiled]

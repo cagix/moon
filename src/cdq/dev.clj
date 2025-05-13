@@ -5,10 +5,12 @@
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.world :as world]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.app :as app]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]])
+  (:import (com.badlogic.gdx Gdx)))
+
+(defmacro post-runnable! [& exprs]
+  (.postRunnable Gdx/app (fn [] ~@exprs)))
 
 (comment
 
@@ -50,12 +52,12 @@
  ; 1. start application
  ; 2. start world
  ; 3. create creature
- (app/post-runnable! gdx/app
-                     (g/spawn-creature {:position [35 73]
-                                        :creature-id :creatures/dragon-red
-                                        :components {:entity/fsm {:fsm :fsms/npc
-                                                                  :initial-state :npc-sleeping}
-                                                     :entity/faction :evil}}))
+ (post-runnable!
+  (g/spawn-creature {:position [35 73]
+                     :creature-id :creatures/dragon-red
+                     :components {:entity/fsm {:fsm :fsms/npc
+                                               :initial-state :npc-sleeping}
+                                  :entity/faction :evil}}))
 
  (learn-skill! :skills/bow) ; 1.5 seconds attacktime
  (post-tx! [:e/destroy (ids->eids 168)]) ; TODO how to get id ?

@@ -1,12 +1,10 @@
 (ns clojure.gdx.graphics
-  (:require [clojure.gdx :as gdx]
-            [clojure.gdx.files :as files]
-            [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :as input]
+  (:require [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.math :refer [clamp]]
             [clojure.string :as str])
-  (:import (com.badlogic.gdx.files FileHandle)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.files FileHandle)
            (com.badlogic.gdx.graphics Pixmap
                                       Pixmap$Format
                                       Texture
@@ -20,11 +18,6 @@
            (com.badlogic.gdx.utils.viewport Viewport
                                             FitViewport)))
 
-(defprotocol Graphics
-  (delta-time [_])
-  (cursor [_ pixmap hotspot-x hotspot-y])
-  (set-cursor! [_ cursor]))
-
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
                  (.setColor color/white)
@@ -34,7 +27,7 @@
     texture))
 
 (defn pixmap [path]
-  (Pixmap. ^FileHandle (files/internal gdx/files path)))
+  (Pixmap. ^FileHandle (.internal Gdx/files path)))
 
 (defn- font-params [{:keys [size]}]
   (let [params (FreeTypeFontGenerator$FreeTypeFontParameter.)]
@@ -53,7 +46,7 @@
     font))
 
 (defn truetype-font [{:keys [file size quality-scaling]}]
-  (let [^BitmapFont font (generate-font (files/internal gdx/files file)
+  (let [^BitmapFont font (generate-font (.internal Gdx/files file)
                                         {:size (* size quality-scaling)})]
     (.setScale (.getData font) (float (/ quality-scaling)))
     (set! (.markupEnabled (.getData font)) true)
@@ -84,10 +77,10 @@
 (defn unproject-mouse-position
   "Returns vector of [x y]."
   [viewport]
-  (let [mouse-x (clamp (input/x gdx/input)
+  (let [mouse-x (clamp (.getX Gdx/input)
                        (:left-gutter-width viewport)
                        (:right-gutter-x    viewport))
-        mouse-y (clamp (input/y gdx/input)
+        mouse-y (clamp (.getY Gdx/input)
                        (:top-gutter-height viewport)
                        (:top-gutter-y      viewport))]
     (let [v2 (Viewport/.unproject viewport (Vector2. mouse-x mouse-y))]

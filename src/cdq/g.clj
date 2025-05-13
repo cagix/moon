@@ -17,12 +17,8 @@
             cdq.world.potential-fields
             [clojure.data.animation :as animation]
             [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.backends.lwjgl :as lwjgl]
-            [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [circle->outer-rectangle]]
@@ -37,7 +33,12 @@
                                              safe-merge
                                              tile->middle
                                              pretty-pst
-                                             bind-root]]))
+                                             bind-root]])
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
+           (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.utils SharedLibraryLoader Os)
+           (java.awt Taskbar Toolkit)
+           (org.lwjgl.system Configuration)))
 
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
@@ -557,8 +558,8 @@
   (or #_error
       (and pausing?
            (state/pause-game? (entity/state-obj @ctx/player-eid))
-           (not (or (input/key-just-pressed? gdx/input :p)
-                    (input/key-pressed?      gdx/input :space))))))
+           (not (or (.isKeyJustPressed Gdx/input Input$Keys/P)
+                    (.isKeyPressed     Gdx/input Input$Keys/SPACE))))))
 
 (defn- update-potential-fields! [{:keys [potential-field-cache
                                          grid
@@ -594,56 +595,67 @@
 
 (defn- camera-controls! [camera]
   (let [zoom-speed 0.025]
-    (when (input/key-pressed? gdx/input :minus)  (camera/inc-zoom camera    zoom-speed))
-    (when (input/key-pressed? gdx/input :equals) (camera/inc-zoom camera (- zoom-speed)))))
+    (when (.isKeyPressed Gdx/input Input$Keys/MINUS)  (camera/inc-zoom camera    zoom-speed))
+    (when (.isKeyPressed Gdx/input Input$Keys/EQUALS) (camera/inc-zoom camera (- zoom-speed)))))
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
     (bind-root #'ctx/db (cdq.g.db/create))
-    (lwjgl/application!
-     (:application config)
-     {:create! (fn []
-                 (bind-root #'ctx/assets   (assets/create (:assets config)))
-                 (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
-                 (reset-game! (:world-fn config)))
-      :dispose! (fn []
-                  (dispose! ctx/assets)
-                  (dispose! ctx/graphics)
-                  ; TODO vis-ui dispose
-                  ; TODO dispose world tiled-map/level resources?
-                  )
-      :render! (fn []
-                 (alter-var-root #'ctx/world cache-active-entities)
-                 (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
-                 (screen-utils/clear! color/black)
-                 (graphics/draw-tiled-map ctx/graphics
-                                          (:tiled-map ctx/world)
-                                          (tile-color-setter (:raycaster ctx/world)
-                                                             (:explored-tile-corners ctx/world)
-                                                             (camera/position (:camera (:world-viewport ctx/graphics)))))
-                 (graphics/draw-on-world-view! ctx/graphics
-                                               (fn []
-                                                 (draw-before-entities!)
-                                                 (render-entities!)
-                                                 (draw-after-entities!)))
-                 (stage/draw! ctx/stage)
-                 (stage/act! ctx/stage)
-                 (state/manual-tick (entity/state-obj @ctx/player-eid))
-                 (update-mouseover-entity!)
-                 (bind-root #'ctx/paused? (pause-game?))
-                 (when-not ctx/paused?
-                   (let [delta-ms (min (gdx.graphics/delta-time gdx/graphics) max-delta)]
-                     (alter-var-root #'ctx/elapsed-time + delta-ms)
-                     (bind-root #'ctx/delta-time delta-ms))
-                   (update-potential-fields! ctx/world)
-                   (tick-entities! ctx/world))
+    (when (= SharedLibraryLoader/os Os/MacOsX)
+      (.setIconImage (Taskbar/getTaskbar)
+                     (.getImage (Toolkit/getDefaultToolkit)
+                                (io/resource "moon.png")))
+      (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
+    (Lwjgl3Application. (proxy [ApplicationAdapter] []
+                          (create []
+                            (bind-root #'ctx/assets   (assets/create (:assets config)))
+                            (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
+                            (reset-game! (:world-fn config)))
 
-                 ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
-                 (remove-destroyed-entities! ctx/world)
+                          (dispose []
+                            (dispose! ctx/assets)
+                            (dispose! ctx/graphics)
+                            ; TODO vis-ui dispose
+                            ; TODO dispose world tiled-map/level resources?
+                            )
 
-                 (camera-controls! (:camera (:world-viewport ctx/graphics)))
-                 (stage/check-window-controls! ctx/stage))
-      :resize! (fn [width height]
-                 (graphics/resize! ctx/graphics width height))})))
+                          (render []
+                            (alter-var-root #'ctx/world cache-active-entities)
+                            (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
+                            (screen-utils/clear! color/black)
+                            (graphics/draw-tiled-map ctx/graphics
+                                                     (:tiled-map ctx/world)
+                                                     (tile-color-setter (:raycaster ctx/world)
+                                                                        (:explored-tile-corners ctx/world)
+                                                                        (camera/position (:camera (:world-viewport ctx/graphics)))))
+                            (graphics/draw-on-world-view! ctx/graphics
+                                                          (fn []
+                                                            (draw-before-entities!)
+                                                            (render-entities!)
+                                                            (draw-after-entities!)))
+                            (stage/draw! ctx/stage)
+                            (stage/act! ctx/stage)
+                            (state/manual-tick (entity/state-obj @ctx/player-eid))
+                            (update-mouseover-entity!)
+                            (bind-root #'ctx/paused? (pause-game?))
+                            (when-not ctx/paused?
+                              (let [delta-ms (min (.getDeltaTime Gdx/graphics) max-delta)]
+                                (alter-var-root #'ctx/elapsed-time + delta-ms)
+                                (bind-root #'ctx/delta-time delta-ms))
+                              (update-potential-fields! ctx/world)
+                              (tick-entities! ctx/world))
+
+                            ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.
+                            (remove-destroyed-entities! ctx/world)
+
+                            (camera-controls! (:camera (:world-viewport ctx/graphics)))
+                            (stage/check-window-controls! ctx/stage))
+
+                          (resize [width height]
+                            (graphics/resize! ctx/graphics width height)))
+                        (doto (Lwjgl3ApplicationConfiguration.)
+                          (.setTitle "Cyber Dungeon Quest")
+                          (.setWindowedMode 1440 900)
+                          (.setForegroundFPS 60)))))

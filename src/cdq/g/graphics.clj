@@ -1,6 +1,5 @@
 (ns cdq.g.graphics
   (:require cdq.graphics
-            [clojure.gdx :as gdx]
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
@@ -9,7 +8,8 @@
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.utils :as utils])
-  (:import (com.badlogic.gdx.graphics Texture)
+  (:import (com.badlogic.gdx Gdx)
+           (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d Batch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
@@ -156,7 +156,7 @@
     (.end batch))
 
   (set-cursor! [_ cursor-key]
-    (graphics/set-cursor! gdx/graphics (utils/safe-get cursors cursor-key)))
+    (.setCursor Gdx/graphics (utils/safe-get cursors cursor-key)))
 
   (draw-tiled-map [_ tiled-map color-setter]
     (tiled/draw! (get-tiled-map-renderer tiled-map)
@@ -207,7 +207,7 @@
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
-                        cursor (graphics/cursor gdx/graphics pixmap hotspot-x hotspot-y)]
+                        cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
                     (dispose! pixmap)
                     cursor))
                 cursors)

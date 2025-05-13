@@ -17,12 +17,11 @@
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
             [clojure.data.animation :as animation]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.input :as gdx.input]
             [clojure.gdx.math.vector2 :as v]
             [clojure.timer :as timer]
             [clojure.utils :refer [defcomponent find-first]]
-            [reduce-fsm :as fsm]))
+            [reduce-fsm :as fsm])
+  (:import (com.badlogic.gdx Gdx Input$Buttons)))
 
 (defmulti ^:private on-clicked
   (fn [eid]
@@ -136,7 +135,7 @@
       (entity/send-event! eid :movement-input movement-vector)
       (let [[cursor on-click] (interaction-state eid)]
         (graphics/set-cursor! ctx/graphics cursor)
-        (when (gdx.input/button-just-pressed? gdx/input :left)
+        (when (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
           (on-click)))))
 
   (state/clicked-inventory-cell [[_ {:keys [eid]}] cell]
@@ -214,7 +213,7 @@
                       (:entity/item-on-cursor entity)))))
 
   (state/manual-tick [[_ {:keys [eid]}]]
-    (when (and (gdx.input/button-just-pressed? gdx/input :left)
+    (when (and (.isButtonJustPressed Gdx/input Input$Buttons/LEFT)
                (g/world-item?))
       (entity/send-event! eid :drop-item)))
 
