@@ -1,6 +1,6 @@
 (ns cdq.level.modules-core
   (:require [cdq.level.helper :refer [grid->tiled-map transition-idx-value]]
-            [clojure.gdx.tiled :as tiled]))
+            [cdq.tiled :as tiled]))
 
 ; * unique max 16 modules, not random take @ #'floor->module-index, also special start, end modules, rare modules...
 ; * at the beginning enemies very close, different area different spawn-rate !

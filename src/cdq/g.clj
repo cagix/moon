@@ -12,6 +12,7 @@
             [cdq.g.world]
             [cdq.graphics :as graphics]
             [cdq.stage :as stage]
+            [cdq.tiled :as tiled]
             [cdq.timer :as timer]
             [cdq.utils :as utils :refer [sort-by-order
                                          define-order
@@ -26,7 +27,6 @@
             [clojure.edn :as edn]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [circle->outer-rectangle]]
             [clojure.gdx.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]

@@ -1,9 +1,9 @@
 (ns cdq.g.graphics
   (:require cdq.graphics
+            [cdq.tiled :as tiled]
             [cdq.utils :as utils]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [clamp degree->radians]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
