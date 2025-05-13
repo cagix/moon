@@ -1,4 +1,5 @@
 (ns cdq.db
+  (:refer-clojure :exclude [update])
   (:require [cdq.animation :as animation]
             [cdq.ctx :as ctx]
             [cdq.db.schema :as schema]

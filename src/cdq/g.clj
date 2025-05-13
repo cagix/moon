@@ -7,7 +7,6 @@
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.g.graphics]
             [cdq.g.world]
             [cdq.graphics :as graphics]
             [cdq.stage :as stage]
@@ -608,7 +607,7 @@
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
                             (bind-root #'ctx/assets   (assets/create (:assets config)))
-                            (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
+                            (bind-root #'ctx/graphics (graphics/create (:graphics config)))
                             (reset-game! (:world-fn config)))
 
                           (dispose []
