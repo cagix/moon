@@ -6,7 +6,6 @@
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
             [cdq.g.db :as g.db]
-            [cdq.ui.error-window :as error-window]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as input]
@@ -79,7 +78,7 @@
         (actor/remove! window)
         (catch Throwable t
           (utils/pretty-pst t)
-          (stage/add-actor! ctx/stage (error-window/create t)))))
+          (cdq.stage/show-error-window! ctx/stage t))))
 
 ; We are working with raw property data without edn->value and build
 ; otherwise at update! we would have to convert again from edn->value back to edn

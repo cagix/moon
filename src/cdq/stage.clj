@@ -131,6 +131,12 @@
     (input/set-processor! gdx/input stage)
     stage))
 
+(defn draw! [stage]
+  (stage/draw! stage))
+
+(defn act! [stage]
+  (stage/act! stage))
+
 ; (viewport/unproject-mouse-position (stage/viewport stage))
 ; => move ui-viewport inside stage?
 ; => viewport/unproject-mouse-position ? -> already exists!
@@ -156,3 +162,27 @@
                                 :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
                                                   (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
                                 :pack? true})))
+
+(defn show-error-window! [stage throwable]
+  (stage/add-actor! stage
+                    (ui/window {:title "Error"
+                                :rows [[(ui/label (binding [*print-level* 3]
+                                                    (utils/with-err-str
+                                                      (clojure.repl/pst throwable))))]]
+                                :modal? true
+                                :close-button? true
+                                :close-on-escape? true
+                                :center? true
+                                :pack? true})))
+
+(defn check-window-controls! [stage]
+  (let [window-hotkeys {:inventory-window   :i
+                        :entity-info-window :e}]
+    (doseq [window-id [:inventory-window
+                       :entity-info-window]
+            :when (input/key-just-pressed? gdx/input (get window-hotkeys window-id))]
+      (actor/toggle-visible! (get (:windows stage) window-id))))
+  (when (input/key-just-pressed? gdx/input :escape)
+    (let [windows (group/children (:windows stage))]
+      (when (some actor/visible? windows)
+        (run! #(actor/set-visible! % false) windows)))))

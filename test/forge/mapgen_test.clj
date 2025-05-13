@@ -126,7 +126,7 @@
                      [(text-button "Generate" #(try (generate-screen-ctx c (db/build ctx/db level-id))
                                                     (catch Throwable t
                                                       (pretty-pst t)
-                                                      (stage/add-actor! ctx/stage (error-window/create t))
+                                                      (cdq.stage/show-error-window! ctx/stage t)
                                                       (println t))))]]
               :pack? true}))
 

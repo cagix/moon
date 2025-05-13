@@ -10,8 +10,7 @@
             [cdq.g.graphics]
             [cdq.g.world]
             [cdq.graphics :as graphics]
-            [cdq.stage]
-            [cdq.ui.error-window :as error-window]
+            [cdq.stage :as stage]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -25,9 +24,6 @@
             [clojure.gdx.graphics.color :as color]
             [clojure.gdx.input :as input]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [circle->outer-rectangle]]
             [clojure.gdx.math.raycaster :as raycaster]
@@ -292,7 +288,7 @@
                        (entity/enemy entity)))
 
 (defn world-item? []
-  (not (cdq.stage/mouse-on-actor? ctx/stage)))
+  (not (stage/mouse-on-actor? ctx/stage)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -368,20 +364,20 @@
                                                    (when-let [cursor-key (state/cursor new-state-obj)]
                                                      (graphics/set-cursor! ctx/graphics cursor-key)))
                                  :skill-added! (fn [skill]
-                                                 (cdq.stage/add-skill! ctx/stage skill))
+                                                 (stage/add-skill! ctx/stage skill))
                                  :skill-removed! (fn [skill]
-                                                   (cdq.stage/remove-skill! ctx/stage skill))
+                                                   (stage/remove-skill! ctx/stage skill))
                                  :item-set! (fn [inventory-cell item]
-                                              (cdq.stage/set-item! ctx/stage inventory-cell item))
+                                              (stage/set-item! ctx/stage inventory-cell item))
                                  :item-removed! (fn [inventory-cell]
-                                                  (cdq.stage/remove-item! ctx/stage inventory-cell))}
+                                                  (stage/remove-item! ctx/stage inventory-cell))}
                 :entity/free-skill-points 3
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (bind-root #'ctx/stage (cdq.stage/create!))
+  (bind-root #'ctx/stage (stage/create!))
   (bind-root #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
                                               (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
@@ -538,7 +534,7 @@
          (pretty-pst t))))))
 
 (defn- update-mouseover-entity! []
-  (let [new-eid (if (cdq.stage/mouse-on-actor? ctx/stage)
+  (let [new-eid (if (stage/mouse-on-actor? ctx/stage)
                   nil
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
@@ -592,7 +588,7 @@
         (throw (ex-info "" (select-keys @eid [:entity/id]) t)))))
    (catch Throwable t
      (pretty-pst t)
-     (stage/add-actor! ctx/stage (error-window/create t))
+     (stage/show-error-window! ctx/stage t)
      #_(bind-root ::error t))) ; FIXME ... either reduce or use an atom ...
   )
 
@@ -600,18 +596,6 @@
   (let [zoom-speed 0.025]
     (when (input/key-pressed? gdx/input :minus)  (camera/inc-zoom camera    zoom-speed))
     (when (input/key-pressed? gdx/input :equals) (camera/inc-zoom camera (- zoom-speed)))))
-
-(defn- window-controls! [stage]
-  (let [window-hotkeys {:inventory-window   :i
-                        :entity-info-window :e}]
-    (doseq [window-id [:inventory-window
-                       :entity-info-window]
-            :when (input/key-just-pressed? gdx/input (get window-hotkeys window-id))]
-      (actor/toggle-visible! (get (:windows stage) window-id))))
-  (when (input/key-just-pressed? gdx/input :escape)
-    (let [windows (group/children (:windows stage))]
-      (when (some actor/visible? windows)
-        (run! #(actor/set-visible! % false) windows)))))
 
 (defn -main []
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
@@ -660,6 +644,6 @@
                  (remove-destroyed-entities! ctx/world)
 
                  (camera-controls! (:camera (:world-viewport ctx/graphics)))
-                 (window-controls! ctx/stage))
+                 (stage/check-window-controls! ctx/stage))
       :resize! (fn [width height]
                  (graphics/resize! ctx/graphics width height))})))
