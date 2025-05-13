@@ -1,12 +1,11 @@
 (ns cdq.stage
   (:require [cdq.ctx :as ctx]
+            [cdq.data.val-max :as val-max]
             [cdq.entity :as entity]
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
-            [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.entity-info-window :as entity-info-window]
+            [cdq.info :as info]
             [cdq.ui.inventory-window :as inventory-window]
-            [cdq.ui.hp-mana-bar :as hp-mana-bar]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.actor :as actor]
@@ -18,7 +17,100 @@
             [clojure.string :as str]
             [clojure.utils :as utils])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.scenes.scene2d Stage)))
+           (com.badlogic.gdx.scenes.scene2d Stage)
+           (com.badlogic.gdx.scenes.scene2d.ui Button ButtonGroup)))
+
+(defn- action-bar []
+  (ui/table {:rows [[{:actor (doto (ui/horizontal-group {:pad 2 :space 2})
+                               (actor/set-user-object! ::horizontal-group)
+                               (group/add-actor! (doto (actor/create {})
+                                                   (actor/set-name! "button-group")
+                                                   (actor/set-user-object! (ui/button-group {:max-check-count 1
+                                                                                             :min-check-count 0})))))
+                      :expand? true
+                      :bottom? true}]]
+             :id ::action-bar-table
+             :cell-defaults {:pad 2}
+             :fill-parent? true}))
+
+(defn- action-bar-data [stage]
+  (let [group (::horizontal-group (::action-bar-table stage))]
+    {:horizontal-group group
+     :button-group (actor/user-object (group/find-actor group "button-group"))}))
+
+(defn selected-skill [stage]
+  (when-let [skill-button (ButtonGroup/.getChecked (:button-group (action-bar-data stage)))]
+    (actor/user-object skill-button)))
+
+(defn add-skill! [stage {:keys [property/id entity/image] :as skill}]
+  (let [{:keys [horizontal-group button-group]} (action-bar-data stage)
+        button (ui/image-button image (fn []) {:scale 2})]
+    (actor/set-user-object! button id)
+    (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (group/add-actor! horizontal-group button)
+    (ButtonGroup/.add button-group ^Button button)
+    nil))
+
+(defn remove-skill! [stage {:keys [property/id]}]
+  (let [{:keys [horizontal-group button-group]} (action-bar-data stage)
+        button (get horizontal-group id)]
+    (actor/remove! button)
+    (ButtonGroup/.remove button-group ^Button button)
+    nil))
+
+(let [disallowed-keys [:entity/skills
+                       #_:entity/fsm
+                       :entity/faction
+                       :active-skill]]
+  (defn- ->label-text []
+    ; items then have 2x pretty-name
+    #_(.setText (.getTitleLabel window)
+                (if-let [eid ctx/mouseover-eid]
+                  (info/text [:property/pretty-name (:property/pretty-name @eid)])
+                  "Entity Info"))
+    (when-let [eid ctx/mouseover-eid]
+      (info/text ; don't use select-keys as it loses Entity record type
+                 (apply dissoc @eid disallowed-keys)))))
+
+(defn- entity-info-window [position]
+  (let [label (ui/label "")
+        window (ui/window {:title "Info"
+                           :id :entity-info-window
+                           :visible? false
+                           :position position
+                           :rows [[{:actor label :expand? true}]]})]
+    ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
+    ; => fix size somehow.
+    (.addActor window (actor/create {:act (fn [_this]
+                                            (.setText label (str (->label-text)))
+                                            (.pack window))}))
+    window))
+
+(defn- render-infostr-on-bar [g infostr x y h]
+  (graphics/draw-text g {:text infostr
+                         :x (+ x 75)
+                         :y (+ y 2)
+                         :up? true}))
+
+(defn- hp-mana-bar [[x y-mana]]
+  (let [rahmen      (graphics/sprite ctx/graphics (ctx/assets "images/rahmen.png"))
+        hpcontent   (graphics/sprite ctx/graphics (ctx/assets "images/hp.png"))
+        manacontent (graphics/sprite ctx/graphics (ctx/assets "images/mana.png"))
+        [rahmenw rahmenh] (:pixel-dimensions rahmen)
+        y-hp (+ y-mana rahmenh)
+        render-hpmana-bar (fn [g x y contentimage minmaxval name]
+                            (graphics/draw-image g rahmen [x y])
+                            (graphics/draw-image g (graphics/sub-sprite g
+                                                                        contentimage
+                                                                        [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
+                                                 [x y])
+                            (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
+    (actor/create {:draw (fn [_this]
+                           (let [player-entity @ctx/player-eid
+                                 x (- x (/ rahmenw 2))
+                                 g ctx/graphics]
+                             (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+                             (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
 
 (defn root [^Stage stage]
   (Stage/.getRoot stage))
@@ -27,7 +119,7 @@
   (.addActor stage actor))
 
 ;"Mouseover-Actor: "
-#_(when-let [actor (cdq.stage/mouse-on-actor? ctx/stage)]
+#_(when-let [actor (mouse-on-actor? ctx/stage)]
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
 
@@ -67,15 +159,6 @@
                     :update-fn (fn [] (gdx.graphics/frames-per-second gdx/graphics))
                     :icon (ctx/assets "images/fps.png")}]})
 
-(defn add-skill! [stage skill]
-  (action-bar/add-skill! stage skill))
-
-(defn remove-skill! [stage skill]
-  (action-bar/remove-skill! stage skill))
-
-(defn selected-skill [stage]
-  (action-bar/selected-skill stage))
-
 (defn set-item! [stage inventory-cell item]
   (inventory-window/set-item-image! stage inventory-cell item))
 
@@ -110,21 +193,13 @@
                                  :counter 0})))
 
 (defn- create-actors []
-  ; TODO or I pass 'dev-menu-impl
-  ; 'action-bar-impl'
-  ; 'hp-mana-bar'
-  ; 'entity-info-window'
-  ; 'inventory-window'
-  ; 'player-state-actor'
-  ; 'player-message-actor'
-  ; => as protocols?
   [(ui.menu/create (dev-menu-config))
-   (action-bar/create)
-   (hp-mana-bar/create [(/ (:width (:ui-viewport ctx/graphics)) 2)
-                        80 ; action-bar-icon-size
-                        ])
+   (action-bar)
+   (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
+                 80 ; action-bar-icon-size
+                 ])
    (ui/group {:id :windows
-              :actors [(entity-info-window/create [(:width (:ui-viewport ctx/graphics)) 0])
+              :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
                        (inventory-window/create [(:width  (:ui-viewport ctx/graphics))
                                                  (:height (:ui-viewport ctx/graphics))])]})
    (player-state-actor)
