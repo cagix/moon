@@ -10,33 +10,33 @@
             [clojure.data.grid2d :as g2d]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as input]
-            [cdq.stage.actor :as actor]
-            [cdq.stage.group :as group]
             [cdq.stage.ui :as ui]
             [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.string :as str]
             [clojure.utils :as utils])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.scenes.scene2d Stage)
+           (com.badlogic.gdx.scenes.scene2d Actor Group Stage Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Label Table Button ButtonGroup Image Widget)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
+           (com.badlogic.gdx.math Vector2)
            (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu)))
 
-(defn- set-label-text-fn [label text-fn]
-  (fn [_this]
-    (Label/.setText label (str (text-fn)))))
+(defn- set-label-text-actor [label text-fn]
+  (proxy [Actor] []
+    (act [_delta]
+      (Label/.setText label (str (text-fn))))))
 
 (defn- add-upd-label!
   ([table text-fn icon]
    (let [icon (ui/image-widget icon {})
          label (ui/label "")
          sub-table (ui/table {:rows [[icon label]]})]
-     (group/add-actor! table (actor/create {:act (set-label-text-fn label text-fn)}))
+     (Group/.addActor table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
    (let [label (ui/label "")]
-     (group/add-actor! table (actor/create {:act (set-label-text-fn label text-fn)}))
+     (Group/.addActor table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table label))))))
 
 (defn- add-update-labels! [menu-bar update-labels]
@@ -63,7 +63,7 @@
                       :fill-x? true
                       :colspan 1}]
                     [{:actor (doto (ui/label "")
-                               (actor/set-touchable! :disabled))
+                               (Actor/.setTouchable Touchable/disabled))
                       :expand? true
                       :fill-x? true
                       :fill-y? true}]]
@@ -93,13 +93,16 @@
 (defn- draw-rect-actor []
   (proxy [Widget] []
     (draw [_batch _parent-alpha]
-      (let [g ctx/graphics]
+      (let [g ctx/graphics
+            ^Actor actor this]
         (draw-cell-rect! g
                          @ctx/player-eid
-                         (actor/x this)
-                         (actor/y this)
-                         (actor/hit this (graphics/mouse-position g))
-                         (actor/user-object (actor/parent this)))))))
+                         (.getX actor)
+                         (.getY actor)
+                         (let [[x y] (graphics/mouse-position g)
+                               v (.stageToLocalCoordinates actor (Vector2. x y))]
+                           (Actor/.hit actor (.x v) (.y v) true))
+                         (Actor/.getUserObject (.getParent actor)))))))
 
 (def ^:private slot->y-sprite-idx
   #:inventory.slot {:weapon   0
@@ -188,11 +191,11 @@
 
 (defn- action-bar []
   (ui/table {:rows [[{:actor (doto (ui/horizontal-group {:pad 2 :space 2})
-                               (actor/set-user-object! ::horizontal-group)
-                               (group/add-actor! (doto (actor/create {})
-                                                   (actor/set-name! "button-group")
-                                                   (actor/set-user-object! (ui/button-group {:max-check-count 1
-                                                                                             :min-check-count 0})))))
+                               (Actor/.setUserObject ::horizontal-group)
+                               (Group/.addActor (doto (proxy [Actor] [])
+                                                  (Actor/.setName "button-group")
+                                                  (Actor/.setUserObject (ui/button-group {:max-check-count 1
+                                                                                          :min-check-count 0})))))
                       :expand? true
                       :bottom? true}]]
              :id ::action-bar-table
@@ -202,25 +205,25 @@
 (defn- action-bar-data [stage]
   (let [group (::horizontal-group (::action-bar-table stage))]
     {:horizontal-group group
-     :button-group (actor/user-object (group/find-actor group "button-group"))}))
+     :button-group (Actor/.getUserObject (Group/.findActor group "button-group"))}))
 
 (defn selected-skill [stage]
   (when-let [skill-button (ButtonGroup/.getChecked (:button-group (action-bar-data stage)))]
-    (actor/user-object skill-button)))
+    (Actor/.getUserObject skill-button)))
 
 (defn add-skill! [stage {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (action-bar-data stage)
         button (ui/image-button image (fn []) {:scale 2})]
-    (actor/set-user-object! button id)
+    (Actor/.setUserObject button id)
     (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
-    (group/add-actor! horizontal-group button)
+    (Group/.addActor horizontal-group button)
     (ButtonGroup/.add button-group ^Button button)
     nil))
 
 (defn remove-skill! [stage {:keys [property/id]}]
   (let [{:keys [horizontal-group button-group]} (action-bar-data stage)
         button (get horizontal-group id)]
-    (actor/remove! button)
+    (Actor/.remove button)
     (ButtonGroup/.remove button-group ^Button button)
     nil))
 
@@ -247,9 +250,10 @@
                            :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
-    (.addActor window (actor/create {:act (fn [_this]
-                                            (.setText label (str (->label-text)))
-                                            (.pack window))}))
+    (.addActor window (proxy [Actor] []
+                        (act [_delta]
+                          (.setText label (str (->label-text)))
+                          (.pack window))))
     window))
 
 (defn- render-infostr-on-bar [g infostr x y h]
@@ -271,12 +275,13 @@
                                                                         [0 0 (* rahmenw (val-max/ratio minmaxval)) rahmenh])
                                                  [x y])
                             (render-infostr-on-bar g (str (utils/readable-number (minmaxval 0)) "/" (minmaxval 1) " " name) x y rahmenh))]
-    (actor/create {:draw (fn [_this]
-                           (let [player-entity @ctx/player-eid
-                                 x (- x (/ rahmenw 2))
-                                 g ctx/graphics]
-                             (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
-                             (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP")))})))
+    (proxy [Actor] []
+      (draw [_batch _parent-alpha]
+        (let [player-entity @ctx/player-eid
+              x (- x (/ rahmenw 2))
+              g ctx/graphics]
+          (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
+          (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP"))))))
 
 (defn root [^Stage stage]
   (Stage/.getRoot stage))
@@ -326,31 +331,34 @@
                     :icon (ctx/assets "images/fps.png")}]})
 
 (defn- player-state-actor []
-  (actor/create {:draw (fn [_this] (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
+  (proxy [Actor] []
+    (draw [_batch _parent-alpha]
+      (state/draw-gui-view (entity/state-obj @ctx/player-eid)))))
 
 (defn- player-message []
-  (doto (actor/create {:draw (fn [this]
-                               (let [g ctx/graphics
-                                     state (actor/user-object this)]
-                                 (when-let [text (:text @state)]
-                                   (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
-                                                          :y (+ (/ (:height (:ui-viewport g)) 2) 200)
-                                                          :text text
-                                                          :scale 2.5
-                                                          :up? true}))))
-                       :act (fn [this]
-                              (let [state (actor/user-object this)]
-                                (when (:text @state)
-                                  (swap! state update :counter + (gdx.graphics/delta-time gdx/graphics))
-                                  (when (>= (:counter @state) 1.5)
-                                    (reset! state nil)))))})
-    (actor/set-user-object! (atom nil))
-    (actor/set-name! "player-message-actor")))
+  (doto (proxy [Actor] []
+          (draw [_batch _parent-alpha]
+            (let [g ctx/graphics
+                  state (Actor/.getUserObject this)]
+              (when-let [text (:text @state)]
+                (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
+                                       :y (+ (/ (:height (:ui-viewport g)) 2) 200)
+                                       :text text
+                                       :scale 2.5
+                                       :up? true}))))
+          (act [delta]
+            (let [state (Actor/.getUserObject this)]
+              (when (:text @state)
+                (swap! state update :counter + delta)
+                (when (>= (:counter @state) 1.5)
+                  (reset! state nil))))))
+    (.setUserObject (atom nil))
+    (.setName "player-message-actor")))
 
 (defn show-message! [stage text]
-  (actor/set-user-object! (group/find-actor (root stage) "player-message-actor")
-                          (atom {:text text
-                                 :counter 0})))
+  (Actor/.setUserObject (Group/.findActor (root stage) "player-message-actor")
+                        (atom {:text text
+                               :counter 0})))
 
 (defn- create-actors []
   [(create-menu (dev-menu-config))
@@ -371,9 +379,9 @@
                                       (:batch       ctx/graphics)]
                 (valAt
                   ([id]
-                   (group/find-actor-with-id (root this) id))
+                   (ui/find-actor-with-id (root this) id))
                   ([id not-found]
-                   (or (group/find-actor-with-id (root this) id)
+                   (or (ui/find-actor-with-id (root this) id)
                        not-found))))]
     (run! (partial add-actor! stage) (create-actors))
     (input/set-processor! gdx/input stage)
@@ -404,7 +412,7 @@
                           :rows [[(ui/label text)]
                                  [(ui/text-button button-text
                                                   (fn []
-                                                    (actor/remove! (::modal stage))
+                                                    (Actor/.remove (::modal stage))
                                                     (on-click)))]]
                           :id ::modal
                           :modal? true
@@ -424,20 +432,23 @@
                           :center? true
                           :pack? true})))
 
+(defn- toggle-visible! [^Actor actor]
+  (.setVisible actor (not (.isVisible actor))))
+
 (defn check-window-controls! [stage]
   (let [window-hotkeys {:inventory-window   :i
                         :entity-info-window :e}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
             :when (input/key-just-pressed? gdx/input (get window-hotkeys window-id))]
-      (actor/toggle-visible! (get (:windows stage) window-id))))
+      (toggle-visible! (get (:windows stage) window-id))))
   (when (input/key-just-pressed? gdx/input :escape)
-    (let [windows (group/children (:windows stage))]
-      (when (some actor/visible? windows)
-        (run! #(actor/set-visible! % false) windows)))))
+    (let [windows (Group/.getChildren (:windows stage))]
+      (when (some Actor/.isVisible windows)
+        (run! #(Actor/.setVisible % false) windows)))))
 
 (defn inventory-visible? [stage]
-  (-> stage :windows :inventory-window actor/visible?))
+  (-> stage :windows :inventory-window Actor/.isVisible))
 
 (defn toggle-inventory-visible! [stage]
-  (-> stage :windows :inventory-window actor/toggle-visible!))
+  (-> stage :windows :inventory-window toggle-visible!))

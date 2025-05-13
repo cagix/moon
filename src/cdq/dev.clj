@@ -8,10 +8,10 @@
             [cdq.world :as world]
             [clojure.gdx :as gdx]
             [clojure.gdx.app :as app]
-            [cdq.stage.group :as group] ; <- dev menus to stage !
             [cdq.stage.ui :as ui]
             [clojure.string :as str]
-            [clojure.pprint :refer [pprint]]))
+            [clojure.pprint :refer [pprint]])
+  (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (comment
 
@@ -136,10 +136,10 @@
     (add-elements! node v))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Stage v)
-    (add-map-nodes! node (children->str-map (group/children (stage/root v))) level))
+    (add-map-nodes! node (children->str-map (Group/.getChildren (stage/root v))) level))
 
   (when (instance? com.badlogic.gdx.scenes.scene2d.Group v)
-    (add-map-nodes! node (children->str-map (group/children v)) level))
+    (add-map-nodes! node (children->str-map (Group/.getChildren v)) level))
 
   (when (and (var? v)
              (instance? com.badlogic.gdx.assets.AssetManager @v))

@@ -3,7 +3,6 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
-            [cdq.stage.actor :as actor]
             [cdq.stage.ui :refer [text-button] :as ui]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
@@ -58,10 +57,11 @@
 #_(defn- ->info-window []
   (let [label (ui/label "")
         window (ui/window {:title "Info" :rows [[label]]})]
-    (.addActor window (actor/create {:act (fn [_this]
-                                            (do
-                                             (.setText label (map-infos %))
-                                             (.pack window)))}))
+    (.addActor window (proxy [Actor] []
+                        (act [_delta]
+                          (do
+                           (.setText label (map-infos %))
+                           (.pack window)))))
     (.setPosition window 0 (:height graphics/ui-viewport)) window))
 
 (def ^:private camera-movement-speed 1)

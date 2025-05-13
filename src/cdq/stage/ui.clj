@@ -1,6 +1,4 @@
 (ns cdq.stage.ui
-  (:require [cdq.stage.actor :as actor]
-            [cdq.stage.group :as group])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
@@ -8,7 +6,25 @@
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
-           (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow Separator VisTree)))
+           (com.kotcrab.vis.ui.widget VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisWindow VisTree)))
+
+(defn find-actor-with-id [^Group group id]
+  (let [actors (.getChildren group)
+        ids (keep Actor/.getUserObject actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+
+(defmacro ^:private proxy-ILookup
+  "For actors inheriting from Group."
+  [class args]
+  `(proxy [~class clojure.lang.ILookup] ~args
+     (valAt
+       ([id#]
+        (find-actor-with-id ~'this id#))
+       ([id# not-found#]
+        (or (find-actor-with-id ~'this id#) not-found#)))))
 
 (defn load! [{:keys [skin-scale]}]
   ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
@@ -29,20 +45,6 @@
   ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
   (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
 
-(defn horizontal-separator-cell [colspan]
-  {:actor (Separator. "default")
-   :pad-top 2
-   :pad-bottom 2
-   :colspan colspan
-   :fill-x? true
-   :expand-x? true})
-
-(defn vertical-separator-cell []
-  {:actor (Separator. "vertical")
-   :pad-top 2
-   :pad-bottom 2
-   :fill-y? true
-   :expand-y? true})
 
 (comment
  ; fill parent & pack is from Widget TODO ( not widget-group ?)
@@ -94,8 +96,28 @@
   (set-cell-opts! (.defaults table) cell-defaults)
   (add-rows! table rows))
 
+(defn- set-actor-opts! [^Actor actor {:keys [id
+                                             name
+                                             visible?
+                                             touchable
+                                             center-position
+                                             position] :as opts}]
+  (when id
+    (.setUserObject actor id))
+  (when name
+    (.setName actor name))
+  (when (contains? opts :visible?)
+    (.setVisible actor (boolean visible?)))
+  (when-let [[x y] center-position]
+    (.setPosition actor
+                  (- x (/ (.getWidth  actor) 2))
+                  (- y (/ (.getHeight actor) 2))))
+  (when-let [[x y] position]
+    (.setPosition actor x y))
+  actor)
+
 (defn- set-opts [actor opts]
-  (actor/set-opts! actor opts)
+  (set-actor-opts! actor opts)
   (when (instance? Table actor)
     (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
   (when (instance? WidgetGroup actor)
@@ -103,19 +125,19 @@
   actor)
 
 (defn group [{:keys [actors] :as opts}]
-  (let [group (group/proxy-ILookup Group [])]
-    (run! #(group/add-actor! group %) actors)
+  (let [group (proxy-ILookup Group [])]
+    (run! #(Group/.addActor group %) actors)
     (set-opts group opts)))
 
 (defn horizontal-group ^HorizontalGroup [{:keys [space pad]}]
-  (let [group (group/proxy-ILookup HorizontalGroup [])]
+  (let [group (proxy-ILookup HorizontalGroup [])]
     (when space (.space group (float space)))
     (when pad   (.pad   group (float pad)))
     group))
 
 (defn vertical-group [actors]
-  (let [group (group/proxy-ILookup VerticalGroup [])]
-    (run! #(group/add-actor! group %) actors)
+  (let [group (proxy-ILookup VerticalGroup [])]
+    (run! #(Group/.addActor group %) actors)
     group))
 
 (defn add-tooltip!
@@ -168,11 +190,11 @@
 (def selected VisSelectBox/.getSelected)
 
 (defn table ^Table [opts]
-  (-> (group/proxy-ILookup VisTable [])
+  (-> (proxy-ILookup VisTable [])
       (set-opts opts)))
 
 (defn window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
-  (-> (let [window (doto (group/proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
+  (-> (let [window (doto (proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
                      (.setModal (boolean modal?)))]
         (when close-button?    (.addCloseButton window))
         (when center?          (.centerWindow   window))
@@ -190,7 +212,7 @@
 (def text-field->text VisTextField/.getText)
 
 (defn ui-stack ^Stack [actors]
-  (group/proxy-ILookup Stack [(into-array Actor actors)]))
+  (proxy-ILookup Stack [(into-array Actor actors)]))
 
 (defmulti ^:private image* type)
 
@@ -239,27 +261,17 @@
   "Returns true if the actor or its parent is a button."
   [actor]
   (or (button-class? actor)
-      (and (actor/parent actor)
-           (button-class? (actor/parent actor)))))
+      (and (Actor/.getParent actor)
+           (button-class? (Actor/.getParent actor)))))
 
 (defn window-title-bar?
   "Returns true if the actor is a window title bar."
   [actor]
   (when (instance? Label actor)
-    (when-let [p (actor/parent actor)]
-      (when-let [p (actor/parent p)]
+    (when-let [p (Actor/.getParent actor)]
+      (when-let [p (Actor/.getParent p)]
         (and (instance? VisWindow actor)
              (= (.getTitleLabel ^Window p) actor))))))
-
-(defn find-ancestor-window ^Window [actor]
-  (if-let [p (actor/parent actor)]
-    (if (instance? Window p)
-      p
-      (find-ancestor-window p))
-    (throw (Error. (str "Actor has no parent window " actor)))))
-
-(defn pack-ancestor-window! [actor]
-  (.pack (find-ancestor-window actor)))
 
 (declare ^:dynamic *on-clicked-actor*)
 

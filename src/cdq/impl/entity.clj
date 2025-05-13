@@ -19,7 +19,6 @@
             [clojure.data.animation :as animation]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as gdx.input]
-            [cdq.stage.actor :as actor] ; -> logic to stage which actor etc.
             [cdq.stage.ui :as ui]
             [clojure.gdx.math.vector2 :as v]
             [clojure.timer :as timer]
@@ -70,11 +69,13 @@
                                               (sound/play! "bfxr_denied")
                                               (stage/show-message! ctx/stage "Too far away"))]))
 
+(import 'com.badlogic.gdx.scenes.scene2d.Actor)
+
 (defn- inventory-cell-with-item? [actor]
-  (and (actor/parent actor)
-       (= "inventory-cell" (actor/name (actor/parent actor)))
+  (and (Actor/.getParent actor)
+       (= "inventory-cell" (Actor/.getName (Actor/.getParent actor)))
        (get-in (:entity/inventory @ctx/player-eid)
-               (actor/user-object (actor/parent actor)))))
+               (Actor/.getUserObject (Actor/.getParent actor)))))
 
 (defn- mouseover-actor->cursor []
   (let [actor (stage/mouse-on-actor? ctx/stage)]
