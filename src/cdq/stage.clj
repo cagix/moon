@@ -1,3 +1,4 @@
+; todo remove add-actor! and root when moving dev stuff here
 (ns cdq.stage
   (:require [cdq.audio.sound :as sound]
             [cdq.assets :as assets]
@@ -17,39 +18,315 @@
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as input]
-            [cdq.stage.ui :refer [image-button
-                                  text-button
-                                  *on-clicked-actor*
-                                  image->widget
-                                  ui-stack
-                                  text-field
-                                  add-tooltip!]
-             :as ui]
             [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.string :as str]
             [clojure.utils :as utils])
   (:import (clojure.lang ILookup)
+           (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Label Table Button ButtonGroup Image Widget Window)
-           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
+           (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Button WidgetGroup Stack HorizontalGroup VerticalGroup Tree$Node Label Table Button ButtonGroup Image Widget Window)
+           (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener Drawable ChangeListener)
+           (com.badlogic.gdx.utils Align Scaling)
            (com.badlogic.gdx.math Vector2)
-           (com.kotcrab.vis.ui.widget Separator Menu MenuBar MenuItem PopupMenu VisWindow)))
+           (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
+           (com.kotcrab.vis.ui.widget Separator Menu MenuBar MenuItem PopupMenu VisTable Tooltip VisImage VisTextButton VisCheckBox VisSelectBox VisImageButton VisTextField VisLabel VisScrollPane VisTree VisWindow)))
+
+(defn- find-actor-with-id [^Group group id]
+  (let [actors (.getChildren group)
+        ids (keep Actor/.getUserObject actors)]
+    (assert (or (empty? ids)
+                (apply distinct? ids)) ; TODO could check @ add
+            (str "Actor ids are not distinct: " (vec ids)))
+    (first (filter #(= id (Actor/.getUserObject %)) actors))))
+
+(defmacro ^:private proxy-ILookup
+  "For actors inheriting from Group."
+  [class args]
+  `(proxy [~class clojure.lang.ILookup] ~args
+     (valAt
+       ([id#]
+        (find-actor-with-id ~'this id#))
+       ([id# not-found#]
+        (or (find-actor-with-id ~'this id#) not-found#)))))
+
+(defn- load-vis-ui! [{:keys [skin-scale]}]
+  ; app crashes during startup before VisUI/dispose and we do cdq.tools.namespace.refresh-> gui elements not showing.
+  ; => actually there is a deeper issue at play
+  ; we need to dispose ALL resources which were loaded already ...
+  (when (VisUI/isLoaded)
+    (VisUI/dispose))
+  (VisUI/load (case skin-scale
+                :x1 VisUI$SkinScale/X1
+                :x2 VisUI$SkinScale/X2))
+  (-> (VisUI/getSkin)
+      (.getFont "default-font")
+      .getData
+      .markupEnabled
+      (set! true))
+  ;(set! Tooltip/DEFAULT_FADE_TIME (float 0.3))
+  ;Controls whether to fade out tooltip when mouse was moved. (default false)
+  ;(set! Tooltip/MOUSE_MOVED_FADEOUT true)
+  (set! Tooltip/DEFAULT_APPEAR_DELAY_TIME (float 0)))
+
+
+(comment
+ ; fill parent & pack is from Widget TODO ( not widget-group ?)
+ com.badlogic.gdx.scenes.scene2d.ui.Widget
+ ; about .pack :
+ ; Generally this method should not be called in an actor's constructor because it calls Layout.layout(), which means a subclass would have layout() called before the subclass' constructor. Instead, in constructors simply set the actor's size to Layout.getPrefWidth() and Layout.getPrefHeight(). This allows the actor to have a size at construction time for more convenient use with groups that do not layout their children.
+ )
+
+(defn- set-widget-group-opts [^WidgetGroup widget-group {:keys [fill-parent? pack?]}]
+  (.setFillParent widget-group (boolean fill-parent?)) ; <- actor? TODO
+  (when pack?
+    (.pack widget-group))
+  widget-group)
+
+(defn- set-cell-opts! [^Cell cell opts]
+  (doseq [[option arg] opts]
+    (case option
+      :fill-x?    (.fillX     cell)
+      :fill-y?    (.fillY     cell)
+      :expand?    (.expand    cell)
+      :expand-x?  (.expandX   cell)
+      :expand-y?  (.expandY   cell)
+      :bottom?    (.bottom    cell)
+      :colspan    (.colspan   cell (int   arg))
+      :pad        (.pad       cell (float arg))
+      :pad-top    (.padTop    cell (float arg))
+      :pad-bottom (.padBottom cell (float arg))
+      :width      (.width     cell (float arg))
+      :height     (.height    cell (float arg))
+      :center?    (.center    cell)
+      :right?     (.right     cell)
+      :left?      (.left      cell))))
+
+(defn- add-rows!
+  "rows is a seq of seqs of columns.
+  Elements are actors or nil (for just adding empty cells ) or a map of
+  {:actor :expand? :bottom?  :colspan int :pad :pad-bottom}. Only :actor is required."
+  [^Table table rows]
+  (doseq [row rows]
+    (doseq [props-or-actor row]
+      (cond
+       (map? props-or-actor) (-> (.add table ^Actor (:actor props-or-actor))
+                                 (set-cell-opts! (dissoc props-or-actor :actor)))
+       :else (.add table ^Actor props-or-actor)))
+    (.row table))
+  table)
+
+(defn- set-table-opts! [^Table table {:keys [rows cell-defaults]}]
+  (set-cell-opts! (.defaults table) cell-defaults)
+  (add-rows! table rows))
+
+(defn- set-actor-opts! [^Actor actor {:keys [id
+                                             name
+                                             visible?
+                                             touchable
+                                             center-position
+                                             position] :as opts}]
+  (when id
+    (.setUserObject actor id))
+  (when name
+    (.setName actor name))
+  (when (contains? opts :visible?)
+    (.setVisible actor (boolean visible?)))
+  (when-let [[x y] center-position]
+    (.setPosition actor
+                  (- x (/ (.getWidth  actor) 2))
+                  (- y (/ (.getHeight actor) 2))))
+  (when-let [[x y] position]
+    (.setPosition actor x y))
+  actor)
+
+(defn- set-opts! [actor opts]
+  (set-actor-opts! actor opts)
+  (when (instance? Table actor)
+    (set-table-opts! actor opts)) ; before widget-group-opts so pack is packing rows
+  (when (instance? WidgetGroup actor)
+    (set-widget-group-opts actor opts))
+  actor)
+
+(defn- ->group [{:keys [actors] :as opts}]
+  (let [group (proxy-ILookup Group [])]
+    (run! #(Group/.addActor group %) actors)
+    (set-opts! group opts)))
+
+(defn- horizontal-group ^HorizontalGroup [{:keys [space pad]}]
+  (let [group (proxy-ILookup HorizontalGroup [])]
+    (when space (.space group (float space)))
+    (when pad   (.pad   group (float pad)))
+    group))
+
+(defn- vertical-group [actors]
+  (let [group (proxy-ILookup VerticalGroup [])]
+    (run! #(Group/.addActor group %) actors)
+    group))
+
+(defn- add-tooltip!
+  "tooltip-text is a (fn [context]) or a string. If it is a function will be-recalculated every show.
+  Returns the actor."
+  [^Actor actor tooltip-text]
+  (let [text? (string? tooltip-text)
+        label (VisLabel. (if text? tooltip-text ""))
+        tooltip (proxy [Tooltip] []
+                  ; hooking into getWidth because at
+                  ; https://github.com/kotcrab/vis-blob/master/ui/src/main/java/com/kotcrab/vis/ui/widget/Tooltip.java#L271
+                  ; when tooltip position gets calculated we setText (which calls pack) before that
+                  ; so that the size is correct for the newly calculated text.
+                  (getWidth []
+                    (let [^Tooltip this this]
+                      (when-not text?
+                        (.setText this (str (tooltip-text))))
+                      (proxy-super getWidth))))]
+    (.setAlignment label Align/center)
+    (.setTarget  tooltip actor)
+    (.setContent tooltip label))
+  actor)
+
+(defn- remove-tooltip! [^Actor actor]
+  (Tooltip/removeTooltip actor))
+
+(defn- button-group [{:keys [max-check-count min-check-count]}]
+  (doto (ButtonGroup.)
+    (.setMaxCheckCount max-check-count)
+    (.setMinCheckCount min-check-count)))
+
+(defn- check-box
+  "on-clicked is a fn of one arg, taking the current isChecked state"
+  [text on-clicked checked?]
+  (let [^Button button (VisCheckBox. (str text))]
+    (.setChecked button checked?)
+    (.addListener button
+                  (proxy [ChangeListener] []
+                    (changed [event ^Button actor]
+                      (on-clicked (.isChecked actor)))))
+    button))
+
+(def ^:private checked? VisCheckBox/.isChecked)
+
+(defn- select-box [{:keys [items selected]}]
+  (doto (VisSelectBox.)
+    (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
+    (.setSelected selected)))
+
+(def ^:private selected VisSelectBox/.getSelected)
+
+(defn- ->table ^Table [opts]
+  (-> (proxy-ILookup VisTable [])
+      (set-opts! opts)))
+
+(defn- ->window ^VisWindow [{:keys [title modal? close-button? center? close-on-escape?] :as opts}]
+  (-> (let [window (doto (proxy-ILookup VisWindow [^String title true]) ; true = showWindowBorder
+                     (.setModal (boolean modal?)))]
+        (when close-button?    (.addCloseButton window))
+        (when center?          (.centerWindow   window))
+        (when close-on-escape? (.closeOnEscape  window))
+        window)
+      (set-opts! opts)))
+
+(defn- ->label ^VisLabel [text]
+  (VisLabel. ^CharSequence text))
+
+(defn- text-field [text opts]
+  (-> (VisTextField. (str text))
+      (set-opts! opts)))
+
+(def text-field->text VisTextField/.getText)
+
+(defn- ui-stack ^Stack [actors]
+  (proxy-ILookup Stack [(into-array Actor actors)]))
+
+(defmulti ^:private image* type)
+
+(defmethod image* Drawable [^Drawable drawable]
+  (VisImage. drawable))
+
+(defmethod image* Texture [^Texture texture]
+  (VisImage. (TextureRegion. texture)))
+
+(defmethod image* TextureRegion [^TextureRegion tr]
+  (VisImage. tr))
+
+(defn- image-widget ; TODO widget also make, for fill parent
+  "Takes either a texture-region or drawable. Opts are :scaling, :align and actor opts."
+  [object {:keys [scaling align fill-parent?] :as opts}]
+  (-> (let [^Image image (image* object)]
+        (when (= :center align)
+          (.setAlign image Align/center))
+        (when (= :fill scaling)
+          (.setScaling image Scaling/fill))
+        (when fill-parent?
+          (.setFillParent image true))
+        image)
+      (set-opts! opts)))
+
+(defn- image->widget
+  "Same opts as [[image-widget]]."
+  [image opts]
+  (image-widget (:texture-region image) opts))
+
+(defn- texture-region-drawable ^TextureRegionDrawable
+  [^TextureRegion texture-region]
+  (TextureRegionDrawable. texture-region))
+
+(defn- scroll-pane [actor]
+  (let [scroll-pane (VisScrollPane. actor)]
+    (.setUserObject scroll-pane :scroll-pane)
+    (.setFlickScroll scroll-pane false)
+    (.setFadeScrollBars scroll-pane false)
+    scroll-pane))
+
+(declare ^:dynamic *on-clicked-actor*)
+
+(defn- change-listener ^ChangeListener [on-clicked]
+  (proxy [ChangeListener] []
+    (changed [event actor]
+      (binding [*on-clicked-actor* actor]
+        (on-clicked)))))
+
+(defn- text-button [text on-clicked]
+  (let [button (VisTextButton. (str text))]
+    (.addListener button (change-listener on-clicked))
+    button))
+
+(defn- image-button
+  ([image on-clicked]
+   (image-button image on-clicked {}))
+  ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
+   (let [drawable (texture-region-drawable texture-region)
+         button (VisImageButton. ^Drawable drawable)]
+     (when scale
+       (let [[w h] [(.getRegionWidth  texture-region)
+                    (.getRegionHeight texture-region)]]
+         (BaseDrawable/.setMinSize drawable
+                                   (float (* scale w))
+                                   (float (* scale h)))))
+     (.addListener button (change-listener on-clicked))
+     button)))
+
+(defn tree []
+  (VisTree.))
+
+(defn tree-node ^Tree$Node [actor]
+  (proxy [Tree$Node] [actor]))
 
 (defn add-actor! [^Stage stage actor]
   (.addActor stage actor))
 
 (defn show-error-window! [stage throwable]
   (add-actor! stage
-              (ui/window {:title "Error"
-                          :rows [[(ui/label (binding [*print-level* 3]
-                                              (utils/with-err-str
-                                                (clojure.repl/pst throwable))))]]
-                          :modal? true
-                          :close-button? true
-                          :close-on-escape? true
-                          :center? true
-                          :pack? true})))
+              (->window {:title "Error"
+                         :rows [[(->label (binding [*print-level* 3]
+                                            (utils/with-err-str
+                                              (clojure.repl/pst throwable))))]]
+                         :modal? true
+                         :close-button? true
+                         :close-on-escape? true
+                         :center? true
+                         :pack? true})))
 
 (defn- find-ancestor-window ^Window [actor]
   (if-let [p (Actor/.getParent actor)]
@@ -103,23 +380,23 @@
 (defmulti ->value        widget-type)
 
 (defn- scroll-pane-cell [rows]
-  (let [table (ui/table {:rows rows
-                         :name "scroll-pane-table"
-                         :cell-defaults {:pad 5}
-                         :pack? true})]
-    {:actor (ui/scroll-pane table)
+  (let [table (->table {:rows rows
+                        :name "scroll-pane-table"
+                        :cell-defaults {:pad 5}
+                        :pack? true})]
+    {:actor (scroll-pane table)
      :width  (+ (.getWidth table) 50)
      :height (min (- (:height (:ui-viewport ctx/graphics)) 50)
                   (.getHeight table))}))
 
 (defn- scrollable-choose-window [rows]
-  (ui/window {:title "Choose"
-              :modal? true
-              :close-button? true
-              :center? true
-              :close-on-escape? true
-              :rows [[(scroll-pane-cell rows)]]
-              :pack? true}))
+  (->window {:title "Choose"
+             :modal? true
+             :close-button? true
+             :center? true
+             :close-on-escape? true
+             :rows [[(scroll-pane-cell rows)]]
+             :pack? true}))
 
 (defn- apply-context-fn [window f]
   #(try (f)
@@ -134,13 +411,13 @@
 (defn- editor-window [props]
   (let [schemas (get-schemas)
         schema (schema/schema-of schemas (property/type props))
-        window (ui/window {:title (str "[SKY]Property[]")
-                           :id :property-editor-window
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true
-                           :cell-defaults {:pad 5}})
+        window (->window {:title (str "[SKY]Property[]")
+                          :id :property-editor-window
+                          :modal? true
+                          :close-button? true
+                          :center? true
+                          :close-on-escape? true
+                          :cell-defaults {:pad 5}})
         widget (schema->widget schema props)
         save!   (apply-context-fn window #(do
                                            (alter-var-root #'ctx/db db/update (->value schema widget))
@@ -148,11 +425,11 @@
         delete! (apply-context-fn window #(do
                                            (alter-var-root #'ctx/db db/delete (:property/id props))
                                            (db/save! ctx/db)))]
-    (ui/add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
-                                              [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
-                                                :center? true}
-                                               {:actor (text-button "Delete" delete!)
-                                                :center? true}]])]])
+    (add-rows! window [[(scroll-pane-cell [[{:actor widget :colspan 2}]
+                                           [{:actor (text-button "Save [LIGHT_GRAY](ENTER)[]" save!)
+                                             :center? true}
+                                            {:actor (text-button "Delete" delete!)
+                                             :center? true}]])]])
     (.addActor window (proxy [Actor] []
                         (act [_delta]
                           (when (input/key-just-pressed? gdx/input :enter)
@@ -161,7 +438,7 @@
     window))
 
 (defmethod schema->widget :default [_ v]
-  (ui/label (utils/truncate (utils/->edn-str v) 60)))
+  (->label (utils/truncate (utils/->edn-str v) 60)))
 
 (defmethod ->value :default [_ widget]
   ((Actor/.getUserObject widget) 1))
@@ -171,28 +448,28 @@
                 (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn/read-string (ui/text-field->text widget)))
+  (edn/read-string (text-field->text widget)))
 
 (defmethod schema->widget :string [schema v]
   (add-tooltip! (text-field v {})
                 (str schema)))
 
 (defmethod ->value :string [_ widget]
-  (ui/text-field->text widget))
+  (text-field->text widget))
 
 (defmethod schema->widget :boolean [_ checked?]
   (assert (boolean? checked?))
-  (ui/check-box "" (fn [_]) checked?))
+  (check-box "" (fn [_]) checked?))
 
 (defmethod ->value :boolean [_ widget]
-  (ui/checked? widget))
+  (checked? widget))
 
 (defmethod schema->widget :enum [schema v]
-  (ui/select-box {:items (map utils/->edn-str (rest schema))
-                  :selected (utils/->edn-str v)}))
+  (select-box {:items (map utils/->edn-str (rest schema))
+               :selected (utils/->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn/read-string (ui/selected widget)))
+  (edn/read-string (selected widget)))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(sound/play! sound-name)))
@@ -209,7 +486,7 @@
                [(text-button sound-name
                              (fn []
                                (Group/.clearChildren table)
-                               (ui/add-rows! table [(columns table sound-name)])
+                               (add-rows! table [(columns table sound-name)])
                                (.remove (find-ancestor-window *on-clicked-actor*))
                                (pack-ancestor-window! table)
                                (let [[k _] (Actor/.getUserObject table)]
@@ -223,10 +500,10 @@
    (play-button sound-name)])
 
 (defmethod schema->widget :s/sound [_ sound-name]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
-    (ui/add-rows! table [(if sound-name
-                           (columns table sound-name)
-                           [(text-button "No sound" #(choose-window table))])])
+  (let [table (->table {:cell-defaults {:pad 5}})]
+    (add-rows! table [(if sound-name
+                        (columns table sound-name)
+                        [(text-button "No sound" #(choose-window table))])])
     table))
 
 (defn- property-widget [{:keys [property/id] :as props} clicked-id-fn extra-info-text scale]
@@ -234,7 +511,7 @@
         button (if-let [image (property->image props)]
                  (image-button image on-clicked {:scale scale})
                  (text-button (name id) on-clicked))
-        top-widget (ui/label (or (and extra-info-text (extra-info-text props)) ""))
+        top-widget (->label (or (and extra-info-text (extra-info-text props)) ""))
         stack (ui-stack [button top-widget])]
     (add-tooltip! button #(info-text props))
     (Actor/.setTouchable top-widget Touchable/disabled)
@@ -274,7 +551,7 @@
         properties (if sort-by-fn
                      (sort-by sort-by-fn properties)
                      properties)]
-    (ui/table
+    (->table
      {:cell-defaults {:pad 5}
       :rows (for [properties (partition-all columns properties)]
               (for [property properties]
@@ -287,15 +564,15 @@
                     (Group/.clearChildren table)
                     (add-one-to-many-rows table property-type property-ids)
                     (pack-ancestor-window! table))]
-    (ui/add-rows!
+    (add-rows!
      table
      [[(text-button "+"
                     (fn []
-                      (let [window (ui/window {:title "Choose"
-                                               :modal? true
-                                               :close-button? true
-                                               :center? true
-                                               :close-on-escape? true})
+                      (let [window (->window {:title "Choose"
+                                              :modal? true
+                                              :close-button? true
+                                              :center? true
+                                              :close-on-escape? true})
                             clicked-id-fn (fn [id]
                                             (.remove window)
                                             (redo-rows (conj property-ids id)))]
@@ -311,7 +588,7 @@
         (text-button "-" #(redo-rows (disj property-ids id))))])))
 
 (defmethod schema->widget :s/one-to-many [[_ property-type] property-ids]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
+  (let [table (->table {:cell-defaults {:pad 5}})]
     (add-one-to-many-rows table property-type property-ids)
     table))
 
@@ -325,16 +602,16 @@
                     (Group/.clearChildren table)
                     (add-one-to-one-rows table property-type id)
                     (pack-ancestor-window! table))]
-    (ui/add-rows!
+    (add-rows!
      table
      [[(when-not property-id
          (text-button "+"
                       (fn []
-                        (let [window (ui/window {:title "Choose"
-                                                 :modal? true
-                                                 :close-button? true
-                                                 :center? true
-                                                 :close-on-escape? true})
+                        (let [window (->window {:title "Choose"
+                                                :modal? true
+                                                :close-button? true
+                                                :center? true
+                                                :close-on-escape? true})
                               clicked-id-fn (fn [id]
                                               (.remove window)
                                               (redo-rows id))]
@@ -351,7 +628,7 @@
          (text-button "-" #(redo-rows nil)))]])))
 
 (defmethod schema->widget :s/one-to-one [[_ property-type] property-id]
-  (let [table (ui/table {:cell-defaults {:pad 5}})]
+  (let [table (->table {:cell-defaults {:pad 5}})]
     (add-one-to-one-rows table property-type property-id)
     table))
 
@@ -390,16 +667,16 @@
                     (Group/.getChildren table)))
 
 (defn- attribute-label [k schema table]
-  (let [label (ui/label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
-                        (name k))
+  (let [label (->label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
+                       (name k))
         delete-button (when (schema/optional-k? k schema (get-schemas))
                         (text-button "-"
                                      (fn []
                                        (Actor/.remove (find-kv-widget table k))
                                        (rebuild-editor-window))))]
-    (ui/table {:cell-defaults {:pad 2}
-               :rows [[{:actor delete-button :left? true}
-                       label]]})))
+    (->table {:cell-defaults {:pad 2}
+              :rows [[{:actor delete-button :left? true}
+                      label]]})))
 
 (def ^:private component-row-cols 3)
 
@@ -423,24 +700,24 @@
      :else (schema/generate schema {:size 3} (get-schemas)))))
 
 (defn- choose-component-window [schema map-widget-table]
-  (let [window (ui/window {:title "Choose"
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true
-                           :cell-defaults {:pad 5}})
+  (let [window (->window {:title "Choose"
+                          :modal? true
+                          :close-button? true
+                          :center? true
+                          :close-on-escape? true
+                          :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
                                    (schema/map-keys schema (get-schemas))))]
-    (ui/add-rows!
+    (add-rows!
      window
      (for [k remaining-ks]
        [(text-button (name k)
                      (fn []
                        (.remove window)
-                       (ui/add-rows! map-widget-table [(component-row
-                                                        [k (k->default-value k)]
-                                                        schema
-                                                        map-widget-table)])
+                       (add-rows! map-widget-table [(component-row
+                                                     [k (k->default-value k)]
+                                                     schema
+                                                     map-widget-table)])
                        (rebuild-editor-window)))]))
     (.pack window)
     (add-actor! ctx/stage window)))
@@ -467,15 +744,15 @@
    :skill/cooldown])
 
 (defmethod schema->widget :s/map [schema m]
-  (let [table (ui/table {:cell-defaults {:pad 5}
-                         :id :map-widget})
+  (let [table (->table {:cell-defaults {:pad 5}
+                        :id :map-widget})
         component-rows (interpose-f horiz-sep
                           (map #(component-row % schema table)
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
         opt? (schema/optional-keys-left schema m (get-schemas))]
-    (ui/add-rows!
+    (add-rows!
      table
      (concat [(when opt?
                 [{:actor (text-button "Add component" #(choose-component-window schema table))
@@ -507,11 +784,11 @@
                   {:dimensions [96 96]})) ; x2  , not hardcoded here
 
 (defmethod schema->widget :s/animation [_ animation]
-  (ui/table {:rows [(for [image (:frames animation)]
-                      (image-button (g.db/edn->value :s/image image ctx/db)
-                                    (fn on-clicked [])
-                                    {:scale 2}))]
-             :cell-defaults {:pad 1}}))
+  (->table {:rows [(for [image (:frames animation)]
+                     (image-button (g.db/edn->value :s/image image ctx/db)
+                                   (fn on-clicked [])
+                                   {:scale 2}))]
+            :cell-defaults {:pad 1}}))
 
 ; FIXME overview table not refreshed after changes in properties
 
@@ -538,8 +815,8 @@
 
 #_(defn tabs-table []
   (let [label-str "foobar"
-        table (ui/table {:fill-parent? true})
-        container (ui/table {})
+        table (->table {:fill-parent? true})
+        container (->table {})
         tabbed-pane (TabbedPane.)]
     (.addListener tabbed-pane
                   (proxy [TabbedPaneAdapter] []
@@ -550,16 +827,16 @@
     (.row table)
     (.fill (.expand (.add table container)))
     (.row table)
-    (.pad (.left (.add table (ui/label label-str))) (float 10))
+    (.pad (.left (.add table (->label label-str))) (float 10))
     (doseq [tab-data (property-type-tabs)]
       (.add tabbed-pane (tab-widget tab-data)))
     table))
 
 #_(defn- background-image [path]
-  (ui/image-widget (ctx/assets path)
-                   {:fill-parent? true
-                    :scaling :fill
-                    :align :center}))
+    (image-widget (ctx/assets path)
+                  {:fill-parent? true
+                   :scaling :fill
+                   :align :center}))
 
 #_(defn create []
   ; TODO cannot find asset when starting from 'moon' ...
@@ -569,11 +846,11 @@
     (add-actor! ctx/stage actor)))
 
 (defn- open-editor-window! [property-type]
-  (let [window (ui/window {:title "Edit"
-                           :modal? true
-                           :close-button? true
-                           :center? true
-                           :close-on-escape? true})]
+  (let [window (->window {:title "Edit"
+                          :modal? true
+                          :close-button? true
+                          :center? true
+                          :close-on-escape? true})]
     (Table/.add window ^Actor (overview-table property-type edit-property))
     (.pack window)
     (add-actor! ctx/stage window)))
@@ -585,13 +862,13 @@
 
 (defn- add-upd-label!
   ([table text-fn icon]
-   (let [icon (ui/image-widget icon {})
-         label (ui/label "")
-         sub-table (ui/table {:rows [[icon label]]})]
+   (let [icon (image-widget icon {})
+         label (->label "")
+         sub-table (->table {:rows [[icon label]]})]
      (Group/.addActor table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table sub-table)))))
   ([table text-fn]
-   (let [label (ui/label "")]
+   (let [label (->label "")]
      (Group/.addActor table (set-label-text-actor label text-fn))
      (.expandX (.right (Table/.add table label))))))
 
@@ -607,23 +884,23 @@
   (let [app-menu (Menu. label)]
     (doseq [{:keys [label on-click]} items]
       (PopupMenu/.addItem app-menu (doto (MenuItem. label)
-                                     (.addListener (ui/change-listener (or on-click (fn [])))))))
+                                     (.addListener (change-listener (or on-click (fn [])))))))
     (MenuBar/.addMenu menu-bar app-menu)))
 
 (defn- create-menu [{:keys [menus update-labels]}]
-  (ui/table {:rows [[{:actor (let [menu-bar (MenuBar.)]
-                               (run! #(add-menu! menu-bar %) menus)
-                               (add-update-labels! menu-bar update-labels)
-                               (MenuBar/.getTable menu-bar))
-                      :expand-x? true
-                      :fill-x? true
-                      :colspan 1}]
-                    [{:actor (doto (ui/label "")
-                               (Actor/.setTouchable Touchable/disabled))
-                      :expand? true
-                      :fill-x? true
-                      :fill-y? true}]]
-             :fill-parent? true}))
+  (->table {:rows [[{:actor (let [menu-bar (MenuBar.)]
+                              (run! #(add-menu! menu-bar %) menus)
+                              (add-update-labels! menu-bar update-labels)
+                              (MenuBar/.getTable menu-bar))
+                     :expand-x? true
+                     :fill-x? true
+                     :colspan 1}]
+                   [{:actor (doto (->label "")
+                              (Actor/.setTouchable Touchable/disabled))
+                     :expand? true
+                     :fill-x? true
+                     :fill-y? true}]]
+            :fill-parent? true}))
 
 ; Items are also smaller than 48x48 all of them
 ; so wasting space ...
@@ -684,14 +961,14 @@
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
                      :texture-region
-                     ui/texture-region-drawable)]
+                     texture-region-drawable)]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (TextureRegionDrawable/.tint drawable (color/create 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]]
-    (doto (ui/ui-stack [(draw-rect-actor)
-                        (ui/image-widget (slot->background slot) {:id :image})])
+    (doto (ui-stack [(draw-rect-actor)
+                     (image-widget (slot->background slot) {:id :image})])
       (.setName "inventory-cell")
       (.setUserObject cell)
       (.addListener (proxy [ClickListener] []
@@ -699,34 +976,34 @@
                         (state/clicked-inventory-cell (entity/state-obj @ctx/player-eid) cell)))))))
 
 (defn- inventory-table []
-  (ui/table {:id ::table
-             :rows (concat [[nil nil
-                             (->cell :inventory.slot/helm)
-                             (->cell :inventory.slot/necklace)]
-                            [nil
-                             (->cell :inventory.slot/weapon)
-                             (->cell :inventory.slot/chest)
-                             (->cell :inventory.slot/cloak)
-                             (->cell :inventory.slot/shield)]
-                            [nil nil
-                             (->cell :inventory.slot/leg)]
-                            [nil
-                             (->cell :inventory.slot/glove)
-                             (->cell :inventory.slot/rings :position [0 0])
-                             (->cell :inventory.slot/rings :position [1 0])
-                             (->cell :inventory.slot/boot)]]
-                           (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
-                             (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
-                               (->cell :inventory.slot/bag :position [x y]))))}))
+  (->table {:id ::table
+            :rows (concat [[nil nil
+                            (->cell :inventory.slot/helm)
+                            (->cell :inventory.slot/necklace)]
+                           [nil
+                            (->cell :inventory.slot/weapon)
+                            (->cell :inventory.slot/chest)
+                            (->cell :inventory.slot/cloak)
+                            (->cell :inventory.slot/shield)]
+                           [nil nil
+                            (->cell :inventory.slot/leg)]
+                           [nil
+                            (->cell :inventory.slot/glove)
+                            (->cell :inventory.slot/rings :position [0 0])
+                            (->cell :inventory.slot/rings :position [1 0])
+                            (->cell :inventory.slot/boot)]]
+                          (for [y (range (g2d/height (:inventory.slot/bag inventory/empty-inventory)))]
+                            (for [x (range (g2d/width (:inventory.slot/bag inventory/empty-inventory)))]
+                              (->cell :inventory.slot/bag :position [x y]))))}))
 
 (defn- inventory-window [position]
-  (ui/window {:title "Inventory"
-              :id :inventory-window
-              :visible? false
-              :pack? true
-              :position position
-              :rows [[{:actor (inventory-table)
-                       :pad 4}]]}))
+  (->window {:title "Inventory"
+             :id :inventory-window
+             :visible? false
+             :pack? true
+             :position position
+             :rows [[{:actor (inventory-table)
+                      :pad 4}]]}))
 
 (defn- get-cell-widget [stage cell]
   (get (::table (-> stage :windows :inventory-window)) cell))
@@ -734,29 +1011,29 @@
 (defn set-item! [stage cell item]
   (let [cell-widget (get-cell-widget stage cell)
         image-widget (get cell-widget :image)
-        drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
+        drawable (texture-region-drawable (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (Image/.setDrawable image-widget drawable)
-    (ui/add-tooltip! cell-widget #(info/text item))))
+    (add-tooltip! cell-widget #(info/text item))))
 
 (defn remove-item! [stage cell]
   (let [cell-widget (get-cell-widget stage cell)
         image-widget (get cell-widget :image)]
     (Image/.setDrawable image-widget (slot->background (cell 0)))
-    (ui/remove-tooltip! cell-widget)))
+    (remove-tooltip! cell-widget)))
 
 (defn- action-bar []
-  (ui/table {:rows [[{:actor (doto (ui/horizontal-group {:pad 2 :space 2})
-                               (Actor/.setUserObject ::horizontal-group)
-                               (Group/.addActor (doto (proxy [Actor] [])
-                                                  (Actor/.setName "button-group")
-                                                  (Actor/.setUserObject (ui/button-group {:max-check-count 1
-                                                                                          :min-check-count 0})))))
-                      :expand? true
-                      :bottom? true}]]
-             :id ::action-bar-table
-             :cell-defaults {:pad 2}
-             :fill-parent? true}))
+  (->table {:rows [[{:actor (doto (horizontal-group {:pad 2 :space 2})
+                              (Actor/.setUserObject ::horizontal-group)
+                              (Group/.addActor (doto (proxy [Actor] [])
+                                                 (Actor/.setName "button-group")
+                                                 (Actor/.setUserObject (button-group {:max-check-count 1
+                                                                                      :min-check-count 0})))))
+                     :expand? true
+                     :bottom? true}]]
+            :id ::action-bar-table
+            :cell-defaults {:pad 2}
+            :fill-parent? true}))
 
 (defn- action-bar-data [stage]
   (let [group (::horizontal-group (::action-bar-table stage))]
@@ -769,9 +1046,9 @@
 
 (defn add-skill! [stage {:keys [property/id entity/image] :as skill}]
   (let [{:keys [horizontal-group button-group]} (action-bar-data stage)
-        button (ui/image-button image (fn []) {:scale 2})]
+        button (image-button image (fn []) {:scale 2})]
     (Actor/.setUserObject button id)
-    (ui/add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
+    (add-tooltip! button #(info/text skill)) ; (assoc ctx :effect/source (world/player)) FIXME
     (Group/.addActor horizontal-group button)
     (ButtonGroup/.add button-group ^Button button)
     nil))
@@ -798,12 +1075,12 @@
                  (apply dissoc @eid disallowed-keys)))))
 
 (defn- entity-info-window [position]
-  (let [label (ui/label "")
-        window (ui/window {:title "Info"
-                           :id :entity-info-window
-                           :visible? false
-                           :position position
-                           :rows [[{:actor label :expand? true}]]})]
+  (let [label (->label "")
+        window (->window {:title "Info"
+                          :id :entity-info-window
+                          :visible? false
+                          :position position
+                          :rows [[{:actor label :expand? true}]]})]
     ; do not change window size ... -> no need to invalidate layout, set the whole stage up again
     ; => fix size somehow.
     (.addActor window (proxy [Actor] []
@@ -919,22 +1196,22 @@
    (hp-mana-bar [(/ (:width (:ui-viewport ctx/graphics)) 2)
                  80 ; action-bar-icon-size
                  ])
-   (ui/group {:id :windows
-              :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
-                       (inventory-window [(:width  (:ui-viewport ctx/graphics))
-                                          (:height (:ui-viewport ctx/graphics))])]})
+   (->group {:id :windows
+             :actors [(entity-info-window [(:width (:ui-viewport ctx/graphics)) 0])
+                      (inventory-window [(:width  (:ui-viewport ctx/graphics))
+                                         (:height (:ui-viewport ctx/graphics))])]})
    (player-state-actor)
    (player-message)])
 
 (defn create! []
-  (ui/load! {:skin-scale :x1} #_(:vis-ui config))
+  (load-vis-ui! {:skin-scale :x1} #_(:vis-ui config))
   (let [stage (proxy [Stage ILookup] [(:ui-viewport ctx/graphics)
                                       (:batch       ctx/graphics)]
                 (valAt
                   ([id]
-                   (ui/find-actor-with-id (root this) id))
+                   (find-actor-with-id (root this) id))
                   ([id not-found]
-                   (or (ui/find-actor-with-id (root this) id)
+                   (or (find-actor-with-id (root this) id)
                        not-found))))]
     (run! (partial add-actor! stage) (create-actors))
     (input/set-processor! gdx/input stage)
@@ -961,17 +1238,17 @@
 (defn show-modal! [stage {:keys [title text button-text on-click]}]
   (assert (not (::modal stage)))
   (add-actor! stage
-              (ui/window {:title title
-                          :rows [[(ui/label text)]
-                                 [(ui/text-button button-text
-                                                  (fn []
-                                                    (Actor/.remove (::modal stage))
-                                                    (on-click)))]]
-                          :id ::modal
-                          :modal? true
-                          :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
-                                            (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
-                          :pack? true})))
+              (->window {:title title
+                         :rows [[(->label text)]
+                                [(text-button button-text
+                                              (fn []
+                                                (Actor/.remove (::modal stage))
+                                                (on-click)))]]
+                         :id ::modal
+                         :modal? true
+                         :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
+                                           (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
+                         :pack? true})))
 
 (defn- toggle-visible! [^Actor actor]
   (.setVisible actor (not (.isVisible actor))))

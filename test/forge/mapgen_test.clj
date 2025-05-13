@@ -3,7 +3,6 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
-            [cdq.stage.ui :refer [text-button] :as ui]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
