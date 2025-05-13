@@ -4262,5 +4262,4 @@
   {:effects/target-entity
    {:entity-effects {:effects.target/melee-damage true},
     :maxrange 0.5}},
-  :skill/start-action-sound "slash"}
- )
+  :skill/start-action-sound "slash"})
