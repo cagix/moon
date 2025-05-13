@@ -77,7 +77,7 @@
                (actor/user-object (actor/parent actor)))))
 
 (defn- mouseover-actor->cursor []
-  (let [actor (g/mouse-on-actor?)]
+  (let [actor (cdq.stage/mouse-on-actor? ctx/stage)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)      :cursors/move-window
@@ -96,7 +96,7 @@
 (defn- interaction-state [eid]
   (let [entity @eid]
     (cond
-     (g/mouse-on-actor?)
+     (cdq.stage/mouse-on-actor? ctx/stage)
      [(mouseover-actor->cursor)
       (fn [] nil)] ; handled by actors themself, they check player state
 

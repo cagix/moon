@@ -49,13 +49,6 @@
                                              pretty-pst
                                              bind-root]]))
 
-; (viewport/unproject-mouse-position (stage/viewport stage))
-; => move ui-viewport inside stage?
-; => viewport/unproject-mouse-position ? -> already exists!
-; => stage/resize-viewport! need to add (for viewport)
-(defn mouse-on-actor? []
-  (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
-
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
 ; => input events handling
@@ -324,7 +317,7 @@
                        (entity/enemy entity)))
 
 (defn world-item? []
-  (not (mouse-on-actor?)))
+  (not (cdq.stage/mouse-on-actor? ctx/stage)))
 
 ; It is possible to put items out of sight, losing them.
 ; Because line of sight checks center of entity only, not corners
@@ -423,11 +416,6 @@
   (bind-root #'ctx/player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
 
 (bind-root #'ctx/reset-game! reset-game!)
-
-;"Mouseover-Actor: "
-#_(when-let [actor (mouse-on-actor? context)]
-    (str "TRUE - name:" (.getName actor)
-         "id: " (user-object actor)))
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
@@ -578,7 +566,7 @@
          (pretty-pst t))))))
 
 (defn- update-mouseover-entity! []
-  (let [new-eid (if (mouse-on-actor?)
+  (let [new-eid (if (cdq.stage/mouse-on-actor? ctx/stage)
                   nil
                   (let [player @ctx/player-eid
                         hits (remove #(= (:z-order @%) :z-order/effect)
