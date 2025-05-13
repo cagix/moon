@@ -1,5 +1,7 @@
 (ns cdq.level.modules
-  (:require [cdq.grid2d :as g2d]
+  (:require [cdq.ctx :as ctx]
+            [cdq.db :as db]
+            [cdq.grid2d :as g2d]
             [cdq.level.helper :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.level.modules-core :as modules]
             [cdq.tiled :as tiled]))
@@ -123,8 +125,8 @@
      :start-position (get-free-position-in-area-level 0)
      :area-level-grid scaled-area-level-grid}))
 
-(defn create [creature-properties]
+(defn create []
   (generate-modules {:world/map-size 5,
                      :world/max-area-level 3,
                      :world/spawn-rate 0.05}
-                    creature-properties))
+                    (db/build-all ctx/db :properties/creatures)))
