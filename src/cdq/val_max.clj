@@ -1,4 +1,4 @@
-(ns cdq.data.val-max
+(ns cdq.val-max
   (:require [cdq.db.schema :as s]))
 
 (defn ratio

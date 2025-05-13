@@ -1,4 +1,4 @@
-(ns clojure.data.animation)
+(ns cdq.animation)
 
 (defprotocol Animation
   (tick [_ delta])

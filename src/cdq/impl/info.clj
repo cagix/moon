@@ -3,10 +3,10 @@
             [cdq.entity :as entity]
             [cdq.entity.stats.op :as op]
             [cdq.info :refer [info-segment]]
+            [cdq.timer :as timer]
+            [cdq.utils :refer [readable-number]]
             [clojure.math :as math]
-            [clojure.string :as str]
-            [clojure.timer :as timer]
-            [clojure.utils :refer [readable-number]])
+            [clojure.string :as str])
   (:import (com.badlogic.gdx.graphics Color Colors)))
 
 (Colors/put "PRETTY_NAME" (Color. (float 0.84) (float 0.8) (float 0.52) (float 1)))

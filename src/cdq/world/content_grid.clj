@@ -1,5 +1,5 @@
 (ns cdq.world.content-grid
-  (:require [clojure.data.grid2d :as g2d]))
+  (:require [cdq.grid2d :as g2d]))
 
 (defn create [{:keys [cell-size width height]}]
   {:grid (g2d/create-grid

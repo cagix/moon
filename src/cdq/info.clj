@@ -1,6 +1,6 @@
 (ns cdq.info
-  (:require [clojure.string :as str]
-            [clojure.utils :refer [sort-by-k-order]]))
+  (:require [cdq.utils :refer [sort-by-k-order]]
+            [clojure.string :as str]))
 
 (defn- remove-newlines [s]
   (let [new-s (-> s

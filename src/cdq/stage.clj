@@ -5,17 +5,17 @@
             [cdq.db :as db]
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
-            [cdq.data.val-max :as val-max]
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.g.db :as g.db]
             [cdq.graphics :as graphics]
+            [cdq.grid2d :as g2d]
             [cdq.info :as info]
-            [clojure.data.grid2d :as g2d]
+            [cdq.utils :as utils]
+            [cdq.val-max :as val-max]
             [clojure.edn :as edn]
-            [clojure.string :as str]
-            [clojure.utils :as utils])
+            [clojure.string :as str])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx Input$Keys)
            (com.badlogic.gdx.audio Sound)

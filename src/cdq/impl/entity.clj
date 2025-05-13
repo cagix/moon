@@ -1,7 +1,7 @@
 (ns cdq.impl.entity
   (:require [cdq.audio.sound :as sound]
+            [cdq.animation :as animation]
             [cdq.ctx :as ctx]
-            [cdq.data.val-max :as val-max]
             [cdq.db :as db]
             [cdq.db.schema :as schema]
             [cdq.effect :as effect]
@@ -13,13 +13,13 @@
             [cdq.graphics :as graphics]
             [cdq.input :as input]
             [cdq.stage :as stage]
+            [cdq.timer :as timer]
+            [cdq.utils :refer [defcomponent find-first]]
+            [cdq.val-max :as val-max]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
-            [clojure.data.animation :as animation]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.timer :as timer]
-            [clojure.utils :refer [defcomponent find-first]]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx Input$Buttons)))
 

@@ -1,4 +1,4 @@
-(ns clojure.utils
+(ns cdq.utils
   (:require [clj-commons.pretty.repl :as pretty-repl]))
 
 (defn bind-root [var value]

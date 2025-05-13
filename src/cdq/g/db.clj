@@ -1,14 +1,14 @@
 (ns cdq.g.db
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.animation :as animation]
+            [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.db.schema :as schema]
             [cdq.db.property :as property]
             [cdq.graphics :as graphics]
-            [clojure.data.animation :as animation]
+            [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.utils :as utils]
             [clojure.pprint :refer [pprint]]))
 
 ; reduce-kv?

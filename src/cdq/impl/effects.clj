@@ -6,12 +6,12 @@
             [cdq.entity :as entity]
             [cdq.g :as g]
             [cdq.graphics :as graphics]
+            [cdq.rand :refer [rand-int-between]]
+            [cdq.timer :as timer]
+            [cdq.utils :refer [defcomponent]]
             [cdq.world :as world]
             [clojure.gdx.math.raycaster :as raycaster]
-            [clojure.gdx.math.vector2 :as v]
-            [clojure.rand :refer [rand-int-between]]
-            [clojure.timer :as timer]
-            [clojure.utils :refer [defcomponent]]))
+            [clojure.gdx.math.vector2 :as v]))
 
 (comment
  (ns cdq.components.effects.audiovisual)

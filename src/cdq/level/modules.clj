@@ -1,7 +1,7 @@
 (ns cdq.level.modules
-  (:require [cdq.level.helper :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
+  (:require [cdq.grid2d :as g2d]
+            [cdq.level.helper :refer [creatures-with-level creature-tile scale-grid cave-grid adjacent-wall-positions flood-fill]]
             [cdq.level.modules-core :as modules]
-            [clojure.data.grid2d :as g2d]
             [clojure.gdx.tiled :as tiled]))
 
 ; can adjust:

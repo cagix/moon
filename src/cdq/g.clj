@@ -1,5 +1,6 @@
 (ns cdq.g
   (:require [cdq.audio.sound :as sound]
+            [cdq.animation :as animation]
             [cdq.assets :as assets]
             [cdq.db :as db]
             [cdq.ctx :as ctx]
@@ -11,11 +12,17 @@
             [cdq.g.world]
             [cdq.graphics :as graphics]
             [cdq.stage :as stage]
+            [cdq.timer :as timer]
+            [cdq.utils :as utils :refer [sort-by-order
+                                         define-order
+                                         safe-merge
+                                         tile->middle
+                                         pretty-pst
+                                         bind-root]]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             cdq.world.potential-fields
-            [clojure.data.animation :as animation]
             [clojure.edn :as edn]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
@@ -23,14 +30,7 @@
             [clojure.gdx.math :refer [circle->outer-rectangle]]
             [clojure.gdx.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.java.io :as io]
-            [clojure.timer :as timer]
-            [clojure.utils :as utils :refer [sort-by-order
-                                             define-order
-                                             safe-merge
-                                             tile->middle
-                                             pretty-pst
-                                             bind-root]])
+            [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color)
