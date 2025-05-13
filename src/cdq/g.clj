@@ -400,9 +400,9 @@
                                  :skill-removed! (fn [skill]
                                                    (action-bar/remove-skill! ctx/stage skill))
                                  :item-set! (fn [inventory-cell item]
-                                              (inventory-window/set-item-image! inventory-cell item))
+                                              (inventory-window/set-item-image! ctx/stage inventory-cell item))
                                  :item-removed! (fn [inventory-cell]
-                                                  (inventory-window/remove-item-image! inventory-cell))}
+                                                  (inventory-window/remove-item-image! ctx/stage inventory-cell))}
                 :entity/free-skill-points 3
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})

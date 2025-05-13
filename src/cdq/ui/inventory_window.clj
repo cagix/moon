@@ -112,19 +112,19 @@
               :rows [[{:actor (inventory-table)
                        :pad 4}]]}))
 
-(defn- get-cell-widget [cell]
-  (get (::table (-> ctx/stage :windows :inventory-window)) cell))
+(defn- get-cell-widget [stage cell]
+  (get (::table (-> stage :windows :inventory-window)) cell))
 
-(defn set-item-image! [cell item]
-  (let [cell-widget (get-cell-widget cell)
+(defn set-item-image! [stage cell item]
+  (let [cell-widget (get-cell-widget stage cell)
         image-widget (get cell-widget :image)
         drawable (ui/texture-region-drawable (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (Image/.setDrawable image-widget drawable)
     (ui/add-tooltip! cell-widget #(info/text item))))
 
-(defn remove-item-image! [cell]
-  (let [cell-widget (get-cell-widget cell)
+(defn remove-item-image! [stage cell]
+  (let [cell-widget (get-cell-widget stage cell)
         image-widget (get cell-widget :image)]
     (Image/.setDrawable image-widget (slot->background (cell 0)))
     (ui/remove-tooltip! cell-widget)))
