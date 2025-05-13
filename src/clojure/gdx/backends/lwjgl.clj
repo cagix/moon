@@ -35,8 +35,6 @@
   (reify clojure.gdx.graphics/Graphics
     (delta-time [_]
       (.getDeltaTime graphics))
-    (frames-per-second [_]
-      (.getFramesPerSecond graphics))
     (cursor [_ pixmap hotspot-x hotspot-y]
       (.newCursor graphics pixmap hotspot-x hotspot-y))
     (set-cursor! [_ cursor]

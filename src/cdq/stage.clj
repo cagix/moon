@@ -12,17 +12,13 @@
             [cdq.g.db :as g.db]
             [cdq.graphics :as graphics]
             [cdq.info :as info]
-            [clojure.gdx.graphics.color :as color]
             [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
-            [clojure.gdx :as gdx]
-            [clojure.gdx.input :as input]
-            [clojure.gdx.graphics :as gdx.graphics]
-            [clojure.gdx.graphics.camera :as camera]
             [clojure.string :as str]
             [clojure.utils :as utils])
   (:import (clojure.lang ILookup)
-           (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.audio Sound)
+           (com.badlogic.gdx.graphics Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Button WidgetGroup Stack HorizontalGroup VerticalGroup Tree$Node Label Table Button ButtonGroup Image Widget Window)
@@ -302,11 +298,21 @@
 (defn- add-actor! [^Stage stage actor]
   (.addActor stage actor))
 
+(defmacro ^:private with-err-str
+  "Evaluates exprs in a context in which *err* is bound to a fresh
+  StringWriter.  Returns the string created by any nested printing
+  calls."
+  [& body]
+  `(let [s# (new java.io.StringWriter)]
+     (binding [*err* s#]
+       ~@body
+       (str s#))))
+
 (defn show-error-window! [stage throwable]
   (add-actor! stage
               (->window {:title "Error"
                          :rows [[(->label (binding [*print-level* 3]
-                                            (utils/with-err-str
+                                            (with-err-str
                                               (clojure.repl/pst throwable))))]]
                          :modal? true
                          :close-button? true
@@ -423,14 +429,23 @@
     (.pack window)
     window))
 
+(defn- ->edn-str [v]
+  (binding [*print-level* nil]
+    (pr-str v)))
+
+(defn- truncate [s limit]
+  (if (> (count s) limit)
+    (str (subs s 0 limit) "...")
+    s))
+
 (defmethod schema->widget :default [_ v]
-  (->label (utils/truncate (utils/->edn-str v) 60)))
+  (->label (truncate (->edn-str v) 60)))
 
 (defmethod ->value :default [_ widget]
   ((Actor/.getUserObject widget) 1))
 
 (defmethod schema->widget :widget/edn [schema v]
-  (add-tooltip! (text-field (utils/->edn-str v) {})
+  (add-tooltip! (text-field (->edn-str v) {})
                 (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
@@ -451,8 +466,8 @@
   (VisCheckBox/.isChecked widget))
 
 (defmethod schema->widget :enum [schema v]
-  (select-box {:items (map utils/->edn-str (rest schema))
-               :selected (utils/->edn-str v)}))
+  (select-box {:items (map ->edn-str (rest schema))
+               :selected (->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
   (edn/read-string (VisSelectBox/.getSelected widget)))
@@ -468,7 +483,7 @@
       (str/replace ".wav" "")))
 
 (defn- choose-window [table]
-  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type ctx/assets com.badlogic.gdx.audio.Sound))]
+  (let [rows (for [sound-name (map sound-file->sound-name (assets/all-of-type ctx/assets Sound))]
                [(text-button sound-name
                              (fn []
                                (Group/.clearChildren table)
@@ -757,7 +772,7 @@
 ; too many ! too big ! scroll ... only show files first & preview?
 ; make tree view from folders, etc. .. !! all creatures animations showing...
 #_(defn- texture-rows []
-  (for [file (sort (assets/all-of-type ctx/assets com.badlogic.gdx.graphics.Texture))]
+  (for [file (sort (assets/all-of-type ctx/assets Texture))]
     [(image-button (image file) (fn []))]
     #_[(text-button file (fn []))]))
 
@@ -947,7 +962,7 @@
 (defn- slot->background [slot]
   (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite slot)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
-    (TextureRegionDrawable/.tint drawable (color/create 1 1 1 0.4))))
+    (TextureRegionDrawable/.tint drawable (Color. (float 1) (float 1) (float 1) (float 0.4)))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]]
@@ -1135,10 +1150,10 @@
                    {:label "World"
                     :update-fn (fn [] (mapv int (graphics/world-mouse-position ctx/graphics)))}
                    {:label "Zoom"
-                    :update-fn (fn [] (camera/zoom (:camera (:world-viewport ctx/graphics))))
+                    :update-fn (fn [] (OrthographicCamera/.zoom (:camera (:world-viewport ctx/graphics))))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
-                    :update-fn (fn [] (gdx.graphics/frames-per-second gdx/graphics))
+                    :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
                     :icon (ctx/assets "images/fps.png")}]})
 
 (defn- player-state-actor []
@@ -1195,7 +1210,7 @@
                    (or (find-actor-with-id (Stage/.getRoot this) id)
                        not-found))))]
     (run! (partial add-actor! stage) (create-actors))
-    (input/set-processor! gdx/input stage)
+    (.setInputProcessor Gdx/input stage)
     stage))
 
 (defn draw! [^Stage stage]

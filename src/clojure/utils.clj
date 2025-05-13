@@ -110,15 +110,6 @@
     m
     (apply assoc m (interleave ks (repeat v)))))
 
-(defn truncate [s limit]
-  (if (> (count s) limit)
-    (str (subs s 0 limit) "...")
-    s))
-
-(defn ->edn-str [v]
-  (binding [*print-level* nil]
-    (pr-str v)))
-
 (defn- indexed ; from cdq.contrib.seq-utils (discontinued in 1.3)
   "Returns a lazy sequence of [index, item] pairs, where items come
   from 's' and indexes count up from zero.
@@ -141,13 +132,3 @@
 (defn dissoc-in [m ks]
   (assert (> (count ks) 1))
   (update-in m (drop-last ks) dissoc (last ks)))
-
-(defmacro with-err-str
-  "Evaluates exprs in a context in which *err* is bound to a fresh
-  StringWriter.  Returns the string created by any nested printing
-  calls."
-  [& body]
-  `(let [s# (new java.io.StringWriter)]
-     (binding [*err* s#]
-       ~@body
-       (str s#))))

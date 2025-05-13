@@ -29,9 +29,6 @@
         top-y    (apply max (map second frustum-points))]
     [left-x right-x bottom-y top-y]))
 
-(defn zoom [^OrthographicCamera camera]
-  (.zoom camera))
-
 (defn set-position!
   "Sets x and y and calls update on the camera."
   [^Camera camera [x y]]
