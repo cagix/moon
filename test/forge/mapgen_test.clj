@@ -1,7 +1,6 @@
 (ns forge.mapgen-test
   (:require [cdq.level.modules-core :as modules]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
@@ -142,7 +141,7 @@
 
 (defn render [_]
   #_(graphics/draw-tiled-map (:tiled-map @current-data)
-                             (constantly color/white))
+                             (constantly Color/WHITE))
   #_(cdq.graphics/draw-on-world-view @state render-on-map)
   #_(if (gdx/key-just-pressed? :l)
       (swap! current-data update :show-grid-lines not))

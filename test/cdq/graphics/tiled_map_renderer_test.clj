@@ -1,10 +1,9 @@
 (ns cdq.graphics.tiled-map-renderer-test
   (:require [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.tiled :as tiled])
   (:import (com.badlogic.gdx ApplicationAdapter)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application)
-           (com.badlogic.gdx.graphics OrthographicCamera)
+           (com.badlogic.gdx.graphics Color OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d SpriteBatch)
            (com.badlogic.gdx.utils Disposable)
            (org.lwjgl.system Configuration)))
@@ -19,7 +18,7 @@
 (def camera-position [32 71])
 
 (defn- color-setter [_color _x _y]
-  color/white)
+  Color/WHITE)
 
 (defn -main []
   (.set Configuration/GLFW_LIBRARY_NAME "glfw_async")

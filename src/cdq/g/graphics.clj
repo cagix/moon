@@ -2,13 +2,12 @@
   (:require cdq.graphics
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.graphics.shape-drawer :as shape-drawer]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx.graphics Texture)
+           (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.graphics.g2d Batch SpriteBatch TextureRegion)
            (com.badlogic.gdx.utils.viewport Viewport)))
 
@@ -142,7 +141,7 @@
     (shape-drawer/grid! shape-drawer color))
 
   (draw-on-world-view! [this f]
-    (.setColor batch color/white) ; fix scene2d.ui.tooltip flickering
+    (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
     (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
     (.begin batch)
     (shape-drawer/with-line-width shape-drawer world-unit-scale

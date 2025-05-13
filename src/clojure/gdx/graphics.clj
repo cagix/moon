@@ -1,11 +1,11 @@
 (ns clojure.gdx.graphics
-  (:require [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.interop :as interop]
+  (:require [clojure.gdx.interop :as interop]
             [clojure.gdx.math :refer [clamp]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.files FileHandle)
-           (com.badlogic.gdx.graphics Pixmap
+           (com.badlogic.gdx.graphics Color
+                                      Pixmap
                                       Pixmap$Format
                                       Texture
                                       Texture$TextureFilter
@@ -20,7 +20,7 @@
 
 (defn white-pixel-texture []
   (let [pixmap (doto (Pixmap. 1 1 Pixmap$Format/RGBA8888)
-                 (.setColor color/white)
+                 (.setColor Color/WHITE)
                  (.drawPixel 0 0))
         texture (Texture. pixmap)]
     (.dispose pixmap)
@@ -99,7 +99,7 @@
          1 ; scale-x
          1 ; scale-y
          rotation)
-  (if color (.setColor batch color/white)))
+  (if color (.setColor batch Color/WHITE)))
 
 (defn- text-height [^BitmapFont font text]
   (-> text

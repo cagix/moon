@@ -18,7 +18,6 @@
             [clojure.data.animation :as animation]
             [clojure.edn :as edn]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.color :as color]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [circle->outer-rectangle]]
@@ -36,6 +35,7 @@
                                              bind-root]])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
+           (com.badlogic.gdx.graphics Color)
            (com.badlogic.gdx.utils SharedLibraryLoader Os)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
@@ -386,7 +386,7 @@
 
 (bind-root #'ctx/reset-game! reset-game!)
 
-(def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
+(def ^:private explored-tile-color (Color. (float 0.5) (float 0.5) (float 0.5) (float 1)))
 
 (def ^:private ^:dbg-flag see-all-tiles? false)
 
@@ -410,7 +410,7 @@
     (fn tile-color-setter [_color x y]
       (let [position [(int x) (int y)]
             explored? (get @explored-tile-corners position) ; TODO needs int call ?
-            base-color (if explored? explored-tile-color color/black)
+            base-color (if explored? explored-tile-color Color/BLACK)
             cache-entry (get @light-cache position :not-found)
             blocked? (if (= cache-entry :not-found)
                        (let [blocked? (raycaster/blocked? raycaster light-position position)]
@@ -420,10 +420,10 @@
         #_(when @do-once
             (swap! ray-positions conj position))
         (if blocked?
-          (if see-all-tiles? color/white base-color)
+          (if see-all-tiles? Color/WHITE base-color)
           (do (when-not explored?
                 (swap! explored-tile-corners assoc (mapv int position) true))
-              color/white))))))
+              Color/WHITE))))))
 
 (def ^:private ^:dbg-flag tile-grid? false)
 (def ^:private ^:dbg-flag potential-field-colors? false)
@@ -624,7 +624,7 @@
                           (render []
                             (alter-var-root #'ctx/world cache-active-entities)
                             (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
-                            (screen-utils/clear! color/black)
+                            (screen-utils/clear! Color/BLACK)
                             (graphics/draw-tiled-map ctx/graphics
                                                      (:tiled-map ctx/world)
                                                      (tile-color-setter (:raycaster ctx/world)
