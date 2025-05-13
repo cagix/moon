@@ -11,8 +11,8 @@
             [cdq.entity.state :as state]
             [cdq.g.db :as g.db]
             [cdq.graphics :as graphics]
-            [clojure.gdx.graphics.color :as color]
             [cdq.info :as info]
+            [clojure.gdx.graphics.color :as color]
             [clojure.data.grid2d :as g2d]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
@@ -945,9 +945,7 @@
                        (slot->sprite-idx slot)))
 
 (defn- slot->background [slot]
-  (let [drawable (-> (slot->sprite slot)
-                     :texture-region
-                     TextureRegionDrawable.)]
+  (let [drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (slot->sprite slot)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (TextureRegionDrawable/.tint drawable (color/create 1 1 1 0.4))))
 
@@ -997,7 +995,7 @@
 (defn set-item! [stage cell item]
   (let [cell-widget (get-cell-widget stage cell)
         image-widget (get cell-widget :image)
-        drawable (TextureRegionDrawable. (:texture-region (:entity/image item)))]
+        drawable (TextureRegionDrawable. ^TextureRegion (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (Image/.setDrawable image-widget drawable)
     (add-tooltip! cell-widget #(info/text item))))
