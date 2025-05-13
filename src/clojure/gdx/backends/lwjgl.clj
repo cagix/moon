@@ -46,8 +46,6 @@
       (.getX input))
     (y [_]
       (.getY input))
-    (set-processor! [_ input-processor]
-      (.setInputProcessor input input-processor))
     (button-just-pressed? [_ button]
       (.isButtonJustPressed input (interop/k->input-button button)))
     (key-just-pressed? [_ key]

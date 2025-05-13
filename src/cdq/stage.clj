@@ -17,8 +17,9 @@
             [clojure.string :as str]
             [clojure.utils :as utils])
   (:import (clojure.lang ILookup)
+           (com.badlogic.gdx Gdx Input$Keys)
            (com.badlogic.gdx.audio Sound)
-           (com.badlogic.gdx.graphics Texture OrthographicCamera)
+           (com.badlogic.gdx.graphics Color Texture OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage Touchable)
            (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Button WidgetGroup Stack HorizontalGroup VerticalGroup Tree$Node Label Table Button ButtonGroup Image Widget Window)
@@ -424,7 +425,7 @@
                                              :center? true}]])]])
     (.addActor window (proxy [Actor] []
                         (act [_delta]
-                          (when (input/key-just-pressed? gdx/input :enter)
+                          (when (.isKeyJustPressed Gdx/input Input$Keys/ENTER)
                             (save!)))))
     (.pack window)
     window))
@@ -1150,7 +1151,7 @@
                    {:label "World"
                     :update-fn (fn [] (mapv int (graphics/world-mouse-position ctx/graphics)))}
                    {:label "Zoom"
-                    :update-fn (fn [] (OrthographicCamera/.zoom (:camera (:world-viewport ctx/graphics))))
+                    :update-fn (fn [] (.zoom ^OrthographicCamera (:camera (:world-viewport ctx/graphics))))
                     :icon (ctx/assets "images/zoom.png")}
                    {:label "FPS"
                     :update-fn (fn [] (.getFramesPerSecond Gdx/graphics))
@@ -1250,13 +1251,13 @@
   (.setVisible actor (not (.isVisible actor))))
 
 (defn check-window-controls! [stage]
-  (let [window-hotkeys {:inventory-window   :i
-                        :entity-info-window :e}]
+  (let [window-hotkeys {:inventory-window   Input$Keys/I
+                        :entity-info-window Input$Keys/E}]
     (doseq [window-id [:inventory-window
                        :entity-info-window]
-            :when (input/key-just-pressed? gdx/input (get window-hotkeys window-id))]
+            :when (.isKeyJustPressed Gdx/input (get window-hotkeys window-id))]
       (toggle-visible! (get (:windows stage) window-id))))
-  (when (input/key-just-pressed? gdx/input :escape)
+  (when (.isKeyJustPressed Gdx/input Input$Keys/ESCAPE)
     (let [windows (Group/.getChildren (:windows stage))]
       (when (some Actor/.isVisible windows)
         (run! #(Actor/.setVisible % false) windows)))))
