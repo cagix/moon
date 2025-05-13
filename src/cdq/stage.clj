@@ -234,8 +234,6 @@
   (-> (VisTextField. (str text))
       (set-opts! opts)))
 
-(def text-field->text VisTextField/.getText)
-
 (defn- ui-stack ^Stack [actors]
   (proxy-ILookup Stack [(into-array Actor actors)]))
 
@@ -279,7 +277,7 @@
     (.setFadeScrollBars scroll-pane false)
     scroll-pane))
 
-(declare ^:dynamic *on-clicked-actor*)
+(declare ^:private ^:dynamic *on-clicked-actor*)
 
 (defn- change-listener ^ChangeListener [on-clicked]
   (proxy [ChangeListener] []
@@ -306,9 +304,6 @@
                                    (float (* scale h)))))
      (.addListener button (change-listener on-clicked))
      button)))
-
-(defn tree []
-  (VisTree.))
 
 (defn tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
@@ -376,8 +371,8 @@
 
      :else stype)))
 
-(defmulti schema->widget widget-type)
-(defmulti ->value        widget-type)
+(defmulti ^:private schema->widget widget-type)
+(defmulti ^:private ->value        widget-type)
 
 (defn- scroll-pane-cell [rows]
   (let [table (->table {:rows rows
@@ -448,14 +443,14 @@
                 (str schema)))
 
 (defmethod ->value :widget/edn [_ widget]
-  (edn/read-string (text-field->text widget)))
+  (edn/read-string (VisTextField/.getText widget)))
 
 (defmethod schema->widget :string [schema v]
   (add-tooltip! (text-field v {})
                 (str schema)))
 
 (defmethod ->value :string [_ widget]
-  (text-field->text widget))
+  (VisTextField/.getText widget))
 
 (defmethod schema->widget :boolean [_ checked?]
   (assert (boolean? checked?))
@@ -540,7 +535,7 @@
                          :properties/player-idle {:columns 1}
                          :properties/player-item-on-cursor {:columns 1}})
 
-(defn overview-table [property-type clicked-id-fn]
+(defn- overview-table [property-type clicked-id-fn]
   (assert (contains? overview property-type)
           (pr-str property-type))
   (let [{:keys [sort-by-fn
@@ -792,7 +787,7 @@
 
 ; FIXME overview table not refreshed after changes in properties
 
-(defn edit-property [id]
+(defn- edit-property [id]
   (add-actor! ctx/stage (editor-window (db/get-raw ctx/db id))))
 
 ; TODO unused code below

@@ -190,7 +190,7 @@
      }))
 
 (defn- generate-tree [m]
-  (doto (ui/tree)
+  (doto (VisTree.)
     (add-map-nodes! (into (sorted-map) m)
                     0)))
 
