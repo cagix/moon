@@ -10,10 +10,9 @@
             [cdq.g.graphics]
             [cdq.g.world]
             [cdq.graphics :as graphics]
+            [cdq.stage]
             [cdq.ui.action-bar :as action-bar]
-            [cdq.ui.entity-info-window :as entity-info-window]
             [cdq.ui.error-window :as error-window]
-            [cdq.ui.hp-mana-bar :as hp-mana-bar]
             [cdq.ui.inventory-window :as inventory-window]
             [cdq.ui.player-message :as player-message]
             [cdq.world :as world]
@@ -33,7 +32,6 @@
             [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :as ui]
-            [clojure.gdx.scene2d.ui.menu :as ui.menu]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.math :refer [circle->outer-rectangle]]
             [clojure.gdx.math.raycaster :as raycaster]
@@ -386,9 +384,6 @@
 (defn show-player-msg! [text]
   (player-message/show-message! ctx/stage text))
 
-(defn- player-state-actor []
-  (actor/create {:draw (fn [_this] (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
-
 (defn- spawn-enemies! []
   (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
                   {:position position
@@ -419,68 +414,21 @@
                 :entity/clickable {:type :clickable/player}
                 :entity/click-distance-tiles 1.5}})
 
-(declare dev-menu-config)
-
 (defn- reset-game! [world-fn]
   (bind-root #'ctx/elapsed-time 0)
-  (stage/clear! ctx/stage)
-  (run! #(stage/add-actor! ctx/stage %)
-        [(ui.menu/create (dev-menu-config))
-         (action-bar/create)
-         (hp-mana-bar/create [(/ (:width (:ui-viewport ctx/graphics)) 2)
-                              80 ; action-bar-icon-size
-                              ])
-         (ui/group {:id :windows
-                    :actors [(entity-info-window/create [(:width (:ui-viewport ctx/graphics)) 0])
-                             (inventory-window/create [(:width  (:ui-viewport ctx/graphics))
-                                                       (:height (:ui-viewport ctx/graphics))])]})
-         (player-state-actor)
-         (player-message/create)])
+  (bind-root #'ctx/stage (cdq.stage/create))
+  (input/set-processor! gdx/input ctx/stage)
   (bind-root #'ctx/world (cdq.g.world/create ((requiring-resolve world-fn)
                                               (db/build-all ctx/db :properties/creatures))))
   (spawn-enemies!)
   (bind-root #'ctx/player-eid (spawn-creature (player-entity-props (:start-position ctx/world)))))
 
+(bind-root #'ctx/reset-game! reset-game!)
+
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? context)]
     (str "TRUE - name:" (.getName actor)
          "id: " (user-object actor)))
-
-(defn- dev-menu-config []
-  {:menus [{:label "World"
-            :items (for [world-fn '[cdq.level.vampire/create
-                                    cdq.level.uf-caves/create
-                                    cdq.level.modules/create]]
-                     {:label (str "Start " (namespace world-fn))
-                      :on-click (fn [] (reset-game! world-fn))})}
-           {:label "Help"
-            :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
-           {:label "Objects"
-            :items (for [property-type (sort (filter #(= "properties" (namespace %))
-                                                     (keys (:schemas ctx/db))))]
-                     {:label (str/capitalize (name property-type))
-                      :on-click (fn []
-                                  ((requiring-resolve 'cdq.ui.editor/open-main-window!) property-type))})}]
-   :update-labels [{:label "Mouseover-entity id"
-                    :update-fn (fn []
-                                 (when-let [entity (and ctx/mouseover-eid @ctx/mouseover-eid)]
-                                   (:entity/id entity)))
-                    :icon (ctx/assets "images/mouseover.png")}
-                   {:label "elapsed-time"
-                    :update-fn (fn [] (str (readable-number ctx/elapsed-time) " seconds"))
-                    :icon (ctx/assets "images/clock.png")}
-                   {:label "paused?"
-                    :update-fn (fn [] ctx/paused?)}
-                   {:label "GUI"
-                    :update-fn (fn [] (graphics/mouse-position ctx/graphics))}
-                   {:label "World"
-                    :update-fn (fn [] (mapv int (graphics/world-mouse-position ctx/graphics)))}
-                   {:label "Zoom"
-                    :update-fn (fn [] (camera/zoom (:camera (:world-viewport ctx/graphics))))
-                    :icon (ctx/assets "images/zoom.png")}
-                   {:label "FPS"
-                    :update-fn (fn [] (gdx.graphics/frames-per-second gdx/graphics))
-                    :icon (ctx/assets "images/fps.png")}]})
 
 (def ^:private explored-tile-color (color/create 0.5 0.5 0.5 1))
 
@@ -717,9 +665,6 @@
                  (bind-root #'ctx/assets   (assets/create (:assets config)))
                  (bind-root #'ctx/graphics (cdq.g.graphics/create (:graphics config)))
                  (ui/load! (:vis-ui config))
-                 (bind-root #'ctx/stage (stage/create (:ui-viewport ctx/graphics)
-                                                      (:batch       ctx/graphics)))
-                 (input/set-processor! gdx/input ctx/stage)
                  (reset-game! (:world-fn config)))
       :dispose! (fn []
                   (dispose! ctx/assets)

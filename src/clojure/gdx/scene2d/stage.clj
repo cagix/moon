@@ -21,9 +21,6 @@
 (defn add-actor! [^Stage stage actor]
   (.addActor stage actor))
 
-(defn clear! [^Stage stage]
-  (.clear stage))
-
 (defn draw! [^Stage stage]
   (.draw stage))
 
