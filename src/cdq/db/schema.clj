@@ -146,3 +146,10 @@
 (defmethod malli-form :s/components-ns [[_ ns-name-k] schemas]
   (malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
               schemas))
+
+(defmulti edn->value (fn [schema v]
+                       (when schema  ; undefined-data-ks
+                         (type schema))))
+
+(defmethod edn->value :default [_schema v]
+  v)

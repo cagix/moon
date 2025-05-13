@@ -781,7 +781,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (db/edn->value schema image ctx/db)
+  (image-button (schema/edn->value schema image)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -790,7 +790,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (->table {:rows [(for [image (:frames animation)]
-                     (image-button (db/edn->value :s/image image ctx/db)
+                     (image-button (schema/edn->value :s/image image)
                                    (fn on-clicked [])
                                    {:scale 2}))]
             :cell-defaults {:pad 1}}))
