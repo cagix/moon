@@ -8,7 +8,6 @@
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.g.db :as g.db]
             [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
             [cdq.info :as info]
@@ -778,7 +777,7 @@
     #_[(text-button file (fn []))]))
 
 (defmethod schema->widget :s/image [schema image]
-  (image-button (g.db/edn->value schema image ctx/db)
+  (image-button (db/edn->value schema image ctx/db)
                 (fn on-clicked [])
                 {:scale 2})
   #_(image-button image
@@ -787,7 +786,7 @@
 
 (defmethod schema->widget :s/animation [_ animation]
   (->table {:rows [(for [image (:frames animation)]
-                     (image-button (g.db/edn->value :s/image image ctx/db)
+                     (image-button (db/edn->value :s/image image ctx/db)
                                    (fn on-clicked [])
                                    {:scale 2}))]
             :cell-defaults {:pad 1}}))

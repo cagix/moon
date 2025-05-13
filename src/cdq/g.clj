@@ -7,7 +7,6 @@
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
-            [cdq.g.db]
             [cdq.g.graphics]
             [cdq.g.world]
             [cdq.graphics :as graphics]
@@ -600,7 +599,7 @@
   (let [config (-> "cdq.application.edn" io/resource slurp edn/read-string)]
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
-    (bind-root #'ctx/db (cdq.g.db/create))
+    (bind-root #'ctx/db (db/create))
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
                      (.getImage (Toolkit/getDefaultToolkit)
