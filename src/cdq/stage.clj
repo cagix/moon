@@ -6,11 +6,11 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.entity-info-window :as entity-info-window]
             [cdq.ui.inventory-window :as inventory-window]
-            [cdq.ui.player-message :as player-message]
             [cdq.ui.hp-mana-bar :as hp-mana-bar]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.actor :as actor]
+            [clojure.gdx.scene2d.group :as group]
             [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :as ui]
             [clojure.gdx.scene2d.ui.menu :as ui.menu]
@@ -63,6 +63,30 @@
 (defn- player-state-actor []
   (actor/create {:draw (fn [_this] (state/draw-gui-view (entity/state-obj @ctx/player-eid)))}))
 
+(defn- player-message []
+  (doto (actor/create {:draw (fn [this]
+                               (let [g ctx/graphics
+                                     state (actor/user-object this)]
+                                 (when-let [text (:text @state)]
+                                   (graphics/draw-text g {:x (/ (:width     (:ui-viewport g)) 2)
+                                                          :y (+ (/ (:height (:ui-viewport g)) 2) 200)
+                                                          :text text
+                                                          :scale 2.5
+                                                          :up? true}))))
+                       :act (fn [this]
+                              (let [state (actor/user-object this)]
+                                (when (:text @state)
+                                  (swap! state update :counter + (gdx.graphics/delta-time gdx/graphics))
+                                  (when (>= (:counter @state) 1.5)
+                                    (reset! state nil)))))})
+    (actor/set-user-object! (atom nil))
+    (actor/set-name! "player-message-actor")))
+
+(defn show-message! [stage text]
+  (actor/set-user-object! (group/find-actor (stage/root stage) "player-message-actor")
+                          (atom {:text text
+                                 :counter 0})))
+
 (defn- create-actors []
   ; TODO or I pass 'dev-menu-impl
   ; 'action-bar-impl'
@@ -82,7 +106,7 @@
                        (inventory-window/create [(:width  (:ui-viewport ctx/graphics))
                                                  (:height (:ui-viewport ctx/graphics))])]})
    (player-state-actor)
-   (player-message/create)])
+   (player-message)])
 
 (defn create! []
   (ui/load! {:skin-scale :x1} #_(:vis-ui config))

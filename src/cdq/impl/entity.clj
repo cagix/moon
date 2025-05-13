@@ -48,7 +48,7 @@
      :else
      (do
       (sound/play! "bfxr_denied")
-      (g/show-player-msg! "Your Inventory is full")))))
+      (cdq.stage/show-message! ctx/stage "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
   (-> ctx/stage :windows :inventory-window actor/toggle-visible!))
@@ -68,7 +68,7 @@
                                               (on-clicked clicked-eid))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (sound/play! "bfxr_denied")
-                                              (g/show-player-msg! "Too far away"))]))
+                                              (cdq.stage/show-message! ctx/stage "Too far away"))]))
 
 (defn- inventory-cell-with-item? [actor]
   (and (actor/parent actor)
@@ -125,14 +125,14 @@
             [:cursors/skill-not-usable
              (fn []
                (sound/play! "bfxr_denied")
-               (g/show-player-msg! (case state
-                                     :cooldown "Skill is still on cooldown"
-                                     :not-enough-mana "Not enough mana"
-                                     :invalid-params "Cannot use this here")))])))
+               (cdq.stage/show-message! ctx/stage (case state
+                                                       :cooldown "Skill is still on cooldown"
+                                                       :not-enough-mana "Not enough mana"
+                                                       :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
           (sound/play! "bfxr_denied")
-          (g/show-player-msg! "No selected skill"))]))))
+          (cdq.stage/show-message! ctx/stage "No selected skill"))]))))
 
 (defcomponent :player-idle
   (entity/create [[_ eid]]

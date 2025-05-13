@@ -14,7 +14,6 @@
             [cdq.ui.action-bar :as action-bar]
             [cdq.ui.error-window :as error-window]
             [cdq.ui.inventory-window :as inventory-window]
-            [cdq.ui.player-message :as player-message]
             [cdq.world :as world]
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
@@ -373,9 +372,6 @@
        (filter #(:entity/species @%))
        (filter #(line-of-sight? @ctx/player-eid @%))
        (remove #(:entity/player? @%))))
-
-(defn show-player-msg! [text]
-  (player-message/show-message! ctx/stage text))
 
 (defn- spawn-enemies! []
   (doseq [props (for [[position creature-id] (tiled/positions-with-property (:tiled-map ctx/world) :creatures :id)]
