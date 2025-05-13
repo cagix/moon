@@ -257,7 +257,7 @@
                                                      (keys (:schemas ctx/db))))]
                      {:label (str/capitalize (name property-type))
                       :on-click (fn []
-                                  ((requiring-resolve 'cdq.ui.editor/open-main-window!) property-type))})}]
+                                  ((requiring-resolve 'cdq.editor/open-main-window!) property-type))})}]
    :update-labels [{:label "Mouseover-entity id"
                     :update-fn (fn []
                                  (when-let [entity (and ctx/mouseover-eid @ctx/mouseover-eid)]

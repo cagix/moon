@@ -1,4 +1,4 @@
-(ns cdq.ui.editor
+(ns cdq.editor
   (:require [cdq.audio.sound :as sound]
             [cdq.assets :as assets]
             [cdq.ctx :as ctx]
