@@ -24,9 +24,10 @@
                                             text-field
                                             add-tooltip!]
              :as ui]
-            [clojure.gdx.scene2d.ui.table :as table]
             [clojure.string :as str]
-            [clojure.utils :as utils :refer [truncate ->edn-str find-first sort-by-k-order]]))
+            [clojure.utils :as utils :refer [truncate ->edn-str find-first sort-by-k-order]])
+  (:import (com.badlogic.gdx.scenes.scene2d Actor)
+           (com.badlogic.gdx.scenes.scene2d.ui Table)))
 
 (defn- property->image [{:keys [entity/image entity/animation]}]
   (or image
@@ -250,7 +251,7 @@
                             clicked-id-fn (fn [id]
                                             (.remove window)
                                             (redo-rows (conj property-ids id)))]
-                        (table/add! window (overview-table property-type clicked-id-fn))
+                        (Table/.add window ^Actor (overview-table property-type clicked-id-fn))
                         (.pack window)
                         (stage/add-actor! ctx/stage window))))]
       (for [property-id property-ids]
@@ -289,7 +290,7 @@
                               clicked-id-fn (fn [id]
                                               (.remove window)
                                               (redo-rows id))]
-                          (table/add! window (overview-table property-type clicked-id-fn))
+                          (Table/.add table window ^Actor (overview-table property-type clicked-id-fn))
                           (.pack window)
                           (stage/add-actor! ctx/stage window)))))]
       [(when property-id
@@ -317,7 +318,7 @@
 (defn- window->property-value []
  (let [window (get-editor-window)
        scroll-pane-table (group/find-actor (:scroll-pane window) "scroll-pane-table")
-       m-widget-cell (first (seq (table/cells scroll-pane-table)))
+       m-widget-cell (first (seq (Table/.getCells scroll-pane-table)))
        table (:map-widget scroll-pane-table)]
    (->value [:s/map] table)))
 
@@ -525,6 +526,6 @@
                            :close-button? true
                            :center? true
                            :close-on-escape? true})]
-    (table/add! window (overview-table property-type edit-property))
+    (Table/.add window ^Actor (overview-table property-type edit-property))
     (.pack window)
     (stage/add-actor! ctx/stage window)))
