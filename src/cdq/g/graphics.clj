@@ -4,17 +4,23 @@
             [cdq.utils :as utils]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
-            [clojure.gdx.math :refer [clamp degree->radians]]
             [clojure.string :as str])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Pixmap Pixmap$Format Texture Texture$TextureFilter OrthographicCamera)
            (com.badlogic.gdx.graphics.g2d Batch BitmapFont SpriteBatch TextureRegion)
            (com.badlogic.gdx.graphics.g2d.freetype FreeTypeFontGenerator
                                                    FreeTypeFontGenerator$FreeTypeFontParameter)
-           (com.badlogic.gdx.math Vector2)
+           (com.badlogic.gdx.math Vector2 MathUtils)
            (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport FitViewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
+
+(defn- degree->radians [degree]
+  (* MathUtils/degreesToRadians (float degree)))
+
+(defn- clamp [value min max]
+  (MathUtils/clamp (float value) (float min) (float max)))
+
 
 (defn- text-height [^BitmapFont font text]
   (-> text

@@ -1,8 +1,25 @@
 (ns cdq.world.grid
-  (:require [clojure.gdx.math :refer [rectangle->tiles
-                                      circle->outer-rectangle
+  (:require [clojure.gdx.math :refer [circle->outer-rectangle
                                       overlaps?
                                       rect-contains?]]))
+
+(defn- rectangle->tiles
+  [{[x y] :left-bottom :keys [left-bottom width height]}]
+  {:pre [left-bottom width height]}
+  (let [x       (float x)
+        y       (float y)
+        width   (float width)
+        height  (float height)
+        l (int x)
+        b (int y)
+        r (int (+ x width))
+        t (int (+ y height))]
+    (set
+     (if (or (> width 1) (> height 1))
+       (for [x (range l (inc r))
+             y (range b (inc t))]
+         [x y])
+       [[l b] [l t] [r b] [r t]]))))
 
 (defn rectangle->cells [grid rectangle]
   (into [] (keep grid) (rectangle->tiles rectangle)))

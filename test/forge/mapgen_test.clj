@@ -1,7 +1,7 @@
 (ns forge.mapgen-test
   (:require [cdq.level.modules-core :as modules]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.tiled :as tiled]
+            [cdq.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 
