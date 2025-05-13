@@ -12,6 +12,7 @@
             [cdq.g :as g]
             [cdq.graphics :as graphics]
             [cdq.input :as input]
+            [cdq.stage :as stage]
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
@@ -32,7 +33,7 @@
 (defmethod on-clicked :clickable/item [eid]
   (let [item (:entity/item @eid)]
     (cond
-     (-> ctx/stage :windows :inventory-window actor/visible?)
+     (stage/inventory-visible? ctx/stage)
      (do
       (sound/play! "bfxr_takeit")
       (entity/mark-destroyed eid)
@@ -47,10 +48,10 @@
      :else
      (do
       (sound/play! "bfxr_denied")
-      (cdq.stage/show-message! ctx/stage "Your Inventory is full")))))
+      (stage/show-message! ctx/stage "Your Inventory is full")))))
 
 (defmethod on-clicked :clickable/player [_]
-  (-> ctx/stage :windows :inventory-window actor/toggle-visible!))
+  (stage/toggle-inventory-visible! ctx/stage))
 
 (defn- clickable->cursor [entity too-far-away?]
   (case (:type (:entity/clickable entity))
@@ -67,7 +68,7 @@
                                               (on-clicked clicked-eid))]
     [(clickable->cursor @clicked-eid true)  (fn []
                                               (sound/play! "bfxr_denied")
-                                              (cdq.stage/show-message! ctx/stage "Too far away"))]))
+                                              (stage/show-message! ctx/stage "Too far away"))]))
 
 (defn- inventory-cell-with-item? [actor]
   (and (actor/parent actor)
@@ -76,7 +77,7 @@
                (actor/user-object (actor/parent actor)))))
 
 (defn- mouseover-actor->cursor []
-  (let [actor (cdq.stage/mouse-on-actor? ctx/stage)]
+  (let [actor (stage/mouse-on-actor? ctx/stage)]
     (cond
      (inventory-cell-with-item? actor) :cursors/hand-before-grab
      (ui/window-title-bar? actor)      :cursors/move-window
@@ -95,7 +96,7 @@
 (defn- interaction-state [eid]
   (let [entity @eid]
     (cond
-     (cdq.stage/mouse-on-actor? ctx/stage)
+     (stage/mouse-on-actor? ctx/stage)
      [(mouseover-actor->cursor)
       (fn [] nil)] ; handled by actors themself, they check player state
 
@@ -104,7 +105,7 @@
      (clickable-entity-interaction entity ctx/mouseover-eid)
 
      :else
-     (if-let [skill-id (cdq.stage/selected-skill ctx/stage)]
+     (if-let [skill-id (stage/selected-skill ctx/stage)]
        (let [skill (skill-id (:entity/skills entity))
              effect-ctx (player-effect-ctx eid)
              state (skill/usable-state entity skill effect-ctx)]
@@ -124,14 +125,14 @@
             [:cursors/skill-not-usable
              (fn []
                (sound/play! "bfxr_denied")
-               (cdq.stage/show-message! ctx/stage (case state
-                                                       :cooldown "Skill is still on cooldown"
-                                                       :not-enough-mana "Not enough mana"
-                                                       :invalid-params "Cannot use this here")))])))
+               (stage/show-message! ctx/stage (case state
+                                                :cooldown "Skill is still on cooldown"
+                                                :not-enough-mana "Not enough mana"
+                                                :invalid-params "Cannot use this here")))])))
        [:cursors/no-skill-selected
         (fn []
           (sound/play! "bfxr_denied")
-          (cdq.stage/show-message! ctx/stage "No selected skill"))]))))
+          (stage/show-message! ctx/stage "No selected skill"))]))))
 
 (defcomponent :player-idle
   (entity/create [[_ eid]]
@@ -571,10 +572,10 @@
   (state/pause-game? [_] true)
   (state/enter! [_]
     (sound/play! "bfxr_playerdeath")
-    (cdq.stage/show-modal! ctx/stage {:title "YOU DIED - again!"
-                                      :text "Good luck next time!"
-                                      :button-text "OK"
-                                      :on-click (fn [])})))
+    (stage/show-modal! ctx/stage {:title "YOU DIED - again!"
+                                  :text "Good luck next time!"
+                                  :button-text "OK"
+                                  :on-click (fn [])})))
 
 (defcomponent :player-moving
   (state/cursor [_] :cursors/walking)

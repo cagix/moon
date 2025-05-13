@@ -11,13 +11,20 @@
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :as ui]
             [clojure.gdx.scene2d.ui.menu :as ui.menu]
             [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.string :as str]
-            [clojure.utils :as utils]))
+            [clojure.utils :as utils])
+  (:import (clojure.lang ILookup)
+           (com.badlogic.gdx.scenes.scene2d Stage)))
+
+(defn root [^Stage stage]
+  (Stage/.getRoot stage))
+
+(defn add-actor! [^Stage stage actor]
+  (.addActor stage actor))
 
 ;"Mouseover-Actor: "
 #_(when-let [actor (cdq.stage/mouse-on-actor? ctx/stage)]
@@ -98,7 +105,7 @@
     (actor/set-name! "player-message-actor")))
 
 (defn show-message! [stage text]
-  (actor/set-user-object! (group/find-actor (stage/root stage) "player-message-actor")
+  (actor/set-user-object! (group/find-actor (root stage) "player-message-actor")
                           (atom {:text text
                                  :counter 0})))
 
@@ -125,24 +132,31 @@
 
 (defn create! []
   (ui/load! {:skin-scale :x1} #_(:vis-ui config))
-  (let [stage (stage/create (:ui-viewport ctx/graphics)
-                            (:batch       ctx/graphics))]
-    (run! (partial stage/add-actor! stage) (create-actors))
+  (let [stage (proxy [Stage ILookup] [(:ui-viewport ctx/graphics)
+                                      (:batch       ctx/graphics)]
+                (valAt
+                  ([id]
+                   (group/find-actor-with-id (root this) id))
+                  ([id not-found]
+                   (or (group/find-actor-with-id (root this) id)
+                       not-found))))]
+    (run! (partial add-actor! stage) (create-actors))
     (input/set-processor! gdx/input stage)
     stage))
 
-(defn draw! [stage]
-  (stage/draw! stage))
+(defn draw! [^Stage stage]
+  (.draw stage))
 
-(defn act! [stage]
-  (stage/act! stage))
+(defn act! [^Stage stage]
+  (.act stage))
 
 ; (viewport/unproject-mouse-position (stage/viewport stage))
 ; => move ui-viewport inside stage?
 ; => viewport/unproject-mouse-position ? -> already exists!
 ; => stage/resize-viewport! need to add (for viewport)
-(defn mouse-on-actor? [stage]
-  (stage/hit stage (graphics/mouse-position ctx/graphics)))
+(defn mouse-on-actor? [^Stage stage]
+  (let [[x y] (graphics/mouse-position ctx/graphics)]
+    (.hit stage x y true)))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -150,30 +164,30 @@
 ; hmmm interesting ... can disable @ item in cursor  / moving / etc.
 (defn show-modal! [stage {:keys [title text button-text on-click]}]
   (assert (not (::modal stage)))
-  (stage/add-actor! stage
-                    (ui/window {:title title
-                                :rows [[(ui/label text)]
-                                       [(ui/text-button button-text
-                                                        (fn []
-                                                          (actor/remove! (::modal stage))
-                                                          (on-click)))]]
-                                :id ::modal
-                                :modal? true
-                                :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
-                                                  (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
-                                :pack? true})))
+  (add-actor! stage
+              (ui/window {:title title
+                          :rows [[(ui/label text)]
+                                 [(ui/text-button button-text
+                                                  (fn []
+                                                    (actor/remove! (::modal stage))
+                                                    (on-click)))]]
+                          :id ::modal
+                          :modal? true
+                          :center-position [(/ (:width  (:ui-viewport ctx/graphics)) 2)
+                                            (* (:height (:ui-viewport ctx/graphics)) (/ 3 4))]
+                          :pack? true})))
 
 (defn show-error-window! [stage throwable]
-  (stage/add-actor! stage
-                    (ui/window {:title "Error"
-                                :rows [[(ui/label (binding [*print-level* 3]
-                                                    (utils/with-err-str
-                                                      (clojure.repl/pst throwable))))]]
-                                :modal? true
-                                :close-button? true
-                                :close-on-escape? true
-                                :center? true
-                                :pack? true})))
+  (add-actor! stage
+              (ui/window {:title "Error"
+                          :rows [[(ui/label (binding [*print-level* 3]
+                                              (utils/with-err-str
+                                                (clojure.repl/pst throwable))))]]
+                          :modal? true
+                          :close-button? true
+                          :close-on-escape? true
+                          :center? true
+                          :pack? true})))
 
 (defn check-window-controls! [stage]
   (let [window-hotkeys {:inventory-window   :i
@@ -186,3 +200,9 @@
     (let [windows (group/children (:windows stage))]
       (when (some actor/visible? windows)
         (run! #(actor/set-visible! % false) windows)))))
+
+(defn inventory-visible? [stage]
+  (-> stage :windows :inventory-window actor/visible?))
+
+(defn toggle-inventory-visible! [stage]
+  (-> stage :windows :inventory-window actor/toggle-visible!))

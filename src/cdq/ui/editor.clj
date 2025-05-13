@@ -6,12 +6,12 @@
             [cdq.db.property :as property]
             [cdq.db.schema :as schema]
             [cdq.g.db :as g.db]
+            [cdq.stage :as stage]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as input]
             [clojure.gdx.scene2d.actor :as actor]
             [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.scene2d.stage :as stage]
             [clojure.gdx.scene2d.ui :refer [horizontal-separator-cell
                                             vertical-separator-cell
                                             image-button
