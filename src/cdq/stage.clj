@@ -17,10 +17,10 @@
             [clojure.utils :as utils])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx.scenes.scene2d Actor Group Stage Touchable)
-           (com.badlogic.gdx.scenes.scene2d.ui Label Table Button ButtonGroup Image Widget)
+           (com.badlogic.gdx.scenes.scene2d.ui Label Table Button ButtonGroup Image Widget Window)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable ClickListener)
            (com.badlogic.gdx.math Vector2)
-           (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu)))
+           (com.kotcrab.vis.ui.widget Menu MenuBar MenuItem PopupMenu VisWindow)))
 
 (defn- set-label-text-actor [label text-fn]
   (proxy [Actor] []
@@ -452,3 +452,28 @@
 
 (defn toggle-inventory-visible! [stage]
   (-> stage :windows :inventory-window toggle-visible!))
+
+(defn inventory-cell-with-item? [actor]
+  (and (Actor/.getParent actor)
+       (= "inventory-cell" (Actor/.getName (Actor/.getParent actor)))
+       (get-in (:entity/inventory @ctx/player-eid)
+               (Actor/.getUserObject (Actor/.getParent actor)))))
+
+(defn window-title-bar? ; TODO buggy FIXME
+  "Returns true if the actor is a window title bar."
+  [^Actor actor]
+  (when (instance? Label actor)
+    (when-let [p (.getParent actor)]
+      (when-let [p (.getParent p)]
+        (and (instance? VisWindow actor)
+             (= (.getTitleLabel ^Window p) actor))))))
+
+(defn- button-class? [actor]
+  (some #(= Button %) (supers (class actor))))
+
+(defn button?
+  "Returns true if the actor or its parent is a button."
+  [^Actor actor]
+  (or (button-class? actor)
+      (and (.getParent actor)
+           (button-class? (.getParent actor)))))

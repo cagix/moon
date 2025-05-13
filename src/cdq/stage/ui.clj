@@ -2,7 +2,7 @@
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)
-           (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Window Tree$Node)
+           (com.badlogic.gdx.scenes.scene2d.ui Cell Table Image Label Button Table WidgetGroup Stack ButtonGroup HorizontalGroup VerticalGroup Tree$Node)
            (com.badlogic.gdx.scenes.scene2d.utils BaseDrawable TextureRegionDrawable Drawable ChangeListener)
            (com.badlogic.gdx.utils Align Scaling)
            (com.kotcrab.vis.ui VisUI VisUI$SkinScale)
@@ -253,25 +253,6 @@
     (.setFlickScroll scroll-pane false)
     (.setFadeScrollBars scroll-pane false)
     scroll-pane))
-
-(defn- button-class? [actor]
-  (some #(= Button %) (supers (class actor))))
-
-(defn button?
-  "Returns true if the actor or its parent is a button."
-  [actor]
-  (or (button-class? actor)
-      (and (Actor/.getParent actor)
-           (button-class? (Actor/.getParent actor)))))
-
-(defn window-title-bar?
-  "Returns true if the actor is a window title bar."
-  [actor]
-  (when (instance? Label actor)
-    (when-let [p (Actor/.getParent actor)]
-      (when-let [p (Actor/.getParent p)]
-        (and (instance? VisWindow actor)
-             (= (.getTitleLabel ^Window p) actor))))))
 
 (declare ^:dynamic *on-clicked-actor*)
 

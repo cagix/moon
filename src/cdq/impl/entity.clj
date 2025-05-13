@@ -19,7 +19,6 @@
             [clojure.data.animation :as animation]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as gdx.input]
-            [cdq.stage.ui :as ui]
             [clojure.gdx.math.vector2 :as v]
             [clojure.timer :as timer]
             [clojure.utils :refer [defcomponent find-first]]
@@ -69,21 +68,12 @@
                                               (sound/play! "bfxr_denied")
                                               (stage/show-message! ctx/stage "Too far away"))]))
 
-(import 'com.badlogic.gdx.scenes.scene2d.Actor)
-
-(defn- inventory-cell-with-item? [actor]
-  (and (Actor/.getParent actor)
-       (= "inventory-cell" (Actor/.getName (Actor/.getParent actor)))
-       (get-in (:entity/inventory @ctx/player-eid)
-               (Actor/.getUserObject (Actor/.getParent actor)))))
-
-(defn- mouseover-actor->cursor []
-  (let [actor (stage/mouse-on-actor? ctx/stage)]
-    (cond
-     (inventory-cell-with-item? actor) :cursors/hand-before-grab
-     (ui/window-title-bar? actor)      :cursors/move-window
-     (ui/button? actor)                :cursors/over-button
-     :else                             :cursors/default)))
+(defn- mouseover-actor->cursor [actor]
+  (cond
+   (stage/inventory-cell-with-item? actor) :cursors/hand-before-grab
+   (stage/window-title-bar? actor)         :cursors/move-window
+   (stage/button? actor)                   :cursors/over-button
+   :else                                   :cursors/default))
 
 (defn- player-effect-ctx [eid]
   (let [target-position (or (and ctx/mouseover-eid
@@ -98,7 +88,7 @@
   (let [entity @eid]
     (cond
      (stage/mouse-on-actor? ctx/stage)
-     [(mouseover-actor->cursor)
+     [(mouseover-actor->cursor (stage/mouse-on-actor? ctx/stage))
       (fn [] nil)] ; handled by actors themself, they check player state
 
      (and ctx/mouseover-eid
