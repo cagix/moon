@@ -19,8 +19,8 @@
             [clojure.data.animation :as animation]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as gdx.input]
-            [clojure.gdx.scene2d.actor :as actor] ; -> logic to stage which actor etc.
-            [clojure.gdx.scene2d.ui :as ui]
+            [cdq.stage.actor :as actor] ; -> logic to stage which actor etc.
+            [cdq.stage.ui :as ui]
             [clojure.gdx.math.vector2 :as v]
             [clojure.timer :as timer]
             [clojure.utils :refer [defcomponent find-first]]

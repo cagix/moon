@@ -1,5 +1,5 @@
-(ns clojure.gdx.scene2d.group
-  (:require [clojure.gdx.scene2d.actor :as actor])
+(ns cdq.stage.group
+  (:require [cdq.stage.actor :as actor])
   (:import (com.badlogic.gdx.scenes.scene2d Group)))
 
 (defn children [^Group group]

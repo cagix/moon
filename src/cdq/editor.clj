@@ -10,9 +10,9 @@
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
             [clojure.gdx.input :as input]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group]
-            [clojure.gdx.scene2d.ui :refer [horizontal-separator-cell
+            [cdq.stage.actor :as actor]
+            [cdq.stage.group :as group]
+            [cdq.stage.ui :refer [horizontal-separator-cell
                                             vertical-separator-cell
                                             image-button
                                             text-button

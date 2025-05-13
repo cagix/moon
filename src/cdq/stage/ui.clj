@@ -1,6 +1,6 @@
-(ns clojure.gdx.scene2d.ui
-  (:require [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.group :as group])
+(ns cdq.stage.ui
+  (:require [cdq.stage.actor :as actor]
+            [cdq.stage.group :as group])
   (:import (com.badlogic.gdx.graphics Texture)
            (com.badlogic.gdx.graphics.g2d TextureRegion)
            (com.badlogic.gdx.scenes.scene2d Actor Group)

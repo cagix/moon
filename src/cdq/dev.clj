@@ -8,8 +8,8 @@
             [cdq.world :as world]
             [clojure.gdx :as gdx]
             [clojure.gdx.app :as app]
-            [clojure.gdx.scene2d.group :as group] ; <- dev menus to stage !
-            [clojure.gdx.scene2d.ui :as ui]
+            [cdq.stage.group :as group] ; <- dev menus to stage !
+            [cdq.stage.ui :as ui]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
 

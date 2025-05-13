@@ -3,8 +3,8 @@
             [clojure.gdx :as gdx]
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.graphics.color :as color]
-            [clojure.gdx.scene2d.actor :as actor]
-            [clojure.gdx.scene2d.ui :refer [text-button] :as ui]
+            [cdq.stage.actor :as actor]
+            [cdq.stage.ui :refer [text-button] :as ui]
             [clojure.gdx.tiled :as tiled]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]))
