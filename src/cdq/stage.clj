@@ -1,4 +1,3 @@
-; todo remove add-actor! and root when moving dev stuff here
 (ns cdq.stage
   (:require [cdq.audio.sound :as sound]
             [cdq.assets :as assets]
@@ -305,10 +304,10 @@
      (.addListener button (change-listener on-clicked))
      button)))
 
-(defn tree-node ^Tree$Node [actor]
+(defn- tree-node ^Tree$Node [actor]
   (proxy [Tree$Node] [actor]))
 
-(defn add-actor! [^Stage stage actor]
+(defn- add-actor! [^Stage stage actor]
   (.addActor stage actor))
 
 (defn show-error-window! [stage throwable]
@@ -1111,9 +1110,6 @@
           (render-hpmana-bar g x y-hp   hpcontent   (entity/hitpoints player-entity) "HP")
           (render-hpmana-bar g x y-mana manacontent (entity/mana      player-entity) "MP"))))))
 
-(defn root [^Stage stage]
-  (Stage/.getRoot stage))
-
 ;"Mouseover-Actor: "
 #_(when-let [actor (mouse-on-actor? ctx/stage)]
     (str "TRUE - name:" (.getName actor)
@@ -1181,7 +1177,7 @@
     (.setName "player-message-actor")))
 
 (defn show-message! [stage text]
-  (Actor/.setUserObject (Group/.findActor (root stage) "player-message-actor")
+  (Actor/.setUserObject (Group/.findActor (Stage/.getRoot stage) "player-message-actor")
                         (atom {:text text
                                :counter 0})))
 
@@ -1204,9 +1200,9 @@
                                       (:batch       ctx/graphics)]
                 (valAt
                   ([id]
-                   (find-actor-with-id (root this) id))
+                   (find-actor-with-id (Stage/.getRoot this) id))
                   ([id not-found]
-                   (or (find-actor-with-id (root this) id)
+                   (or (find-actor-with-id (Stage/.getRoot this) id)
                        not-found))))]
     (run! (partial add-actor! stage) (create-actors))
     (input/set-processor! gdx/input stage)
