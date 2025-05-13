@@ -2,14 +2,16 @@
   (:require cdq.graphics
             [clojure.gdx.graphics :as graphics]
             [clojure.gdx.graphics.camera :as camera]
-            [clojure.gdx.graphics.shape-drawer :as shape-drawer]
+            [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
             [clojure.gdx.utils.disposable :refer [dispose!]]
+            [clojure.gdx.math :refer [degree->radians]]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.graphics.g2d Batch SpriteBatch TextureRegion)
-           (com.badlogic.gdx.utils.viewport Viewport)))
+           (com.badlogic.gdx.utils.viewport Viewport)
+           (space.earlygrey.shapedrawer ShapeDrawer)))
 
 (defn- unit-dimensions [image unit-scale]
   (if (= unit-scale 1)
@@ -45,9 +47,12 @@
       (assoc-dimensions 1 world-unit-scale) ; = scale 1
       map->Sprite))
 
+(defn- set-color! [^ShapeDrawer shape-drawer color]
+  (.setColor shape-drawer (interop/->color color)))
+
 (defrecord Graphics [^Batch batch
                      ^Texture shape-drawer-texture
-                     shape-drawer
+                     ^ShapeDrawer shape-drawer
                      cursors
                      default-font
                      world-unit-scale
@@ -108,43 +113,100 @@
                           :up? up?}))
 
   (draw-ellipse [_ [x y] radius-x radius-y color]
-    (shape-drawer/ellipse! shape-drawer x y radius-x radius-y color))
+    (set-color! shape-drawer color)
+    (.ellipse shape-drawer
+              (float x)
+              (float y)
+              (float radius-x)
+              (float radius-y)))
 
   (draw-filled-ellipse [_ [x y] radius-x radius-y color]
-    (shape-drawer/filled-ellipse! shape-drawer x y radius-x radius-y color))
+    (set-color! shape-drawer color)
+    (.filledEllipse shape-drawer
+                    (float x)
+                    (float y)
+                    (float radius-x)
+                    (float radius-y)))
 
   (draw-circle [_ [x y] radius color]
-    (shape-drawer/circle! shape-drawer x y radius color))
+    (set-color! shape-drawer color)
+    (.circle shape-drawer
+             (float x)
+             (float y)
+             (float radius)))
 
   (draw-filled-circle [_ [x y] radius color]
-    (shape-drawer/filled-circle! shape-drawer x y radius color))
+    (set-color! shape-drawer color)
+    (.filledCircle shape-drawer
+                   (float x)
+                   (float y)
+                   (float radius)))
 
   (draw-arc [_ [center-x center-y] radius start-angle degree color]
-    (shape-drawer/arc! shape-drawer center-x center-y radius start-angle degree color))
+    (set-color! shape-drawer color)
+    (.arc shape-drawer
+          (float center-x)
+          (float center-y)
+          (float radius)
+          (float (degree->radians start-angle))
+          (float (degree->radians degree))))
 
   (draw-sector [_ [center-x center-y] radius start-angle degree color]
-    (shape-drawer/sector! shape-drawer center-x center-y radius start-angle degree color))
+    (set-color! shape-drawer color)
+    (.sector shape-drawer
+             (float center-x)
+             (float center-y)
+             (float radius)
+             (float (degree->radians start-angle))
+             (float (degree->radians degree))))
 
   (draw-rectangle [_ x y w h color]
-    (shape-drawer/rectangle! shape-drawer x y w h color))
+    (set-color! shape-drawer color)
+    (.rectangle shape-drawer
+                (float x)
+                (float y)
+                (float w)
+                (float h)))
 
   (draw-filled-rectangle [_ x y w h color]
-    (shape-drawer/filled-rectangle! shape-drawer x y w h color))
+    (set-color! shape-drawer color)
+    (.filledRectangle shape-drawer
+                      (float x)
+                      (float y)
+                      (float w)
+                      (float h)))
 
   (draw-line [_ [sx sy] [ex ey] color]
-    (shape-drawer/line! shape-drawer sx sy ex ey color))
+    (set-color! shape-drawer color)
+    (.line shape-drawer
+           (float sx)
+           (float sy)
+           (float ex)
+           (float ey)))
 
   (with-line-width [_ width draw-fn]
-    (shape-drawer/with-line-width shape-drawer width draw-fn))
+    (let [old-line-width (.getDefaultLineWidth shape-drawer)]
+      (.setDefaultLineWidth shape-drawer (float (* width old-line-width)))
+      (draw-fn)
+      (.setDefaultLineWidth shape-drawer (float old-line-width))))
 
-  (draw-grid [_ leftx bottomy gridw gridh cellw cellh color]
-    (shape-drawer/grid! shape-drawer color))
+  (draw-grid [this leftx bottomy gridw gridh cellw cellh color]
+    (let [w (* (float gridw) (float cellw))
+          h (* (float gridh) (float cellh))
+          topy (+ (float bottomy) (float h))
+          rightx (+ (float leftx) (float w))]
+      (doseq [idx (range (inc (float gridw)))
+              :let [linex (+ (float leftx) (* (float idx) (float cellw)))]]
+        (cdq.graphics/draw-line this [linex topy] [linex bottomy] color))
+      (doseq [idx (range (inc (float gridh)))
+              :let [liney (+ (float bottomy) (* (float idx) (float cellh)))]]
+        (cdq.graphics/draw-line this [leftx liney] [rightx liney] color))))
 
   (draw-on-world-view! [this f]
     (.setColor batch Color/WHITE) ; fix scene2d.ui.tooltip flickering
     (.setProjectionMatrix batch (camera/combined (:camera world-viewport)))
     (.begin batch)
-    (shape-drawer/with-line-width shape-drawer world-unit-scale
+    (cdq.graphics/with-line-width this world-unit-scale
       (fn []
         ; could pass new 'g' with assoc :unit-scale -> but using ctx/graphics accidentally
         ; -> icon is drawn at too big ! => mutable field.
@@ -201,7 +263,7 @@
     (map->Graphics
      {:batch batch
       :shape-drawer-texture shape-drawer-texture
-      :shape-drawer (shape-drawer/create batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
+      :shape-drawer (ShapeDrawer. batch (TextureRegion. ^Texture shape-drawer-texture 1 0 1 1))
       :cursors (utils/mapvals
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
