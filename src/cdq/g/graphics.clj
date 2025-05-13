@@ -21,7 +21,6 @@
 (defn- clamp [value min max]
   (MathUtils/clamp (float value) (float min) (float max)))
 
-
 (defn- text-height [^BitmapFont font text]
   (-> text
       (str/split #"\n")
