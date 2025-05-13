@@ -204,14 +204,10 @@
                       (on-clicked (.isChecked actor)))))
     button))
 
-(def ^:private checked? VisCheckBox/.isChecked)
-
 (defn- select-box [{:keys [items selected]}]
   (doto (VisSelectBox.)
     (.setItems ^"[Lcom.badlogic.gdx.scenes.scene2d.Actor;" (into-array items))
     (.setSelected selected)))
-
-(def ^:private selected VisSelectBox/.getSelected)
 
 (defn- ->table ^Table [opts]
   (-> (proxy-ILookup VisTable [])
@@ -233,7 +229,7 @@
   (-> (VisTextField. (str text))
       (set-opts! opts)))
 
-(defn- ui-stack ^Stack [actors]
+(defn- ->stack ^Stack [actors]
   (proxy-ILookup Stack [(into-array Actor actors)]))
 
 (defmulti ^:private image* type)
@@ -265,10 +261,6 @@
   [image opts]
   (image-widget (:texture-region image) opts))
 
-(defn- texture-region-drawable ^TextureRegionDrawable
-  [^TextureRegion texture-region]
-  (TextureRegionDrawable. texture-region))
-
 (defn- scroll-pane [actor]
   (let [scroll-pane (VisScrollPane. actor)]
     (.setUserObject scroll-pane :scroll-pane)
@@ -293,7 +285,7 @@
   ([image on-clicked]
    (image-button image on-clicked {}))
   ([{:keys [^TextureRegion texture-region]} on-clicked {:keys [scale]}]
-   (let [drawable (texture-region-drawable texture-region)
+   (let [drawable (TextureRegionDrawable. texture-region)
          button (VisImageButton. ^Drawable drawable)]
      (when scale
        (let [[w h] [(.getRegionWidth  texture-region)
@@ -456,14 +448,14 @@
   (check-box "" (fn [_]) checked?))
 
 (defmethod ->value :boolean [_ widget]
-  (checked? widget))
+  (VisCheckBox/.isChecked widget))
 
 (defmethod schema->widget :enum [schema v]
   (select-box {:items (map utils/->edn-str (rest schema))
                :selected (utils/->edn-str v)}))
 
 (defmethod ->value :enum [_ widget]
-  (edn/read-string (selected widget)))
+  (edn/read-string (VisSelectBox/.getSelected widget)))
 
 (defn- play-button [sound-name]
   (text-button "play!" #(sound/play! sound-name)))
@@ -506,7 +498,7 @@
                  (image-button image on-clicked {:scale scale})
                  (text-button (name id) on-clicked))
         top-widget (->label (or (and extra-info-text (extra-info-text props)) ""))
-        stack (ui-stack [button top-widget])]
+        stack (->stack [button top-widget])]
     (add-tooltip! button #(info-text props))
     (Actor/.setTouchable top-widget Touchable/disabled)
     stack))
@@ -955,14 +947,14 @@
 (defn- slot->background [slot]
   (let [drawable (-> (slot->sprite slot)
                      :texture-region
-                     texture-region-drawable)]
+                     TextureRegionDrawable.)]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (TextureRegionDrawable/.tint drawable (color/create 1 1 1 0.4))))
 
 (defn- ->cell [slot & {:keys [position]}]
   (let [cell [slot (or position [0 0])]]
-    (doto (ui-stack [(draw-rect-actor)
-                     (image-widget (slot->background slot) {:id :image})])
+    (doto (->stack [(draw-rect-actor)
+                    (image-widget (slot->background slot) {:id :image})])
       (.setName "inventory-cell")
       (.setUserObject cell)
       (.addListener (proxy [ClickListener] []
@@ -1005,7 +997,7 @@
 (defn set-item! [stage cell item]
   (let [cell-widget (get-cell-widget stage cell)
         image-widget (get cell-widget :image)
-        drawable (texture-region-drawable (:texture-region (:entity/image item)))]
+        drawable (TextureRegionDrawable. (:texture-region (:entity/image item)))]
     (BaseDrawable/.setMinSize drawable (float cell-size) (float cell-size))
     (Image/.setDrawable image-widget drawable)
     (add-tooltip! cell-widget #(info/text item))))
