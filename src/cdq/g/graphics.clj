@@ -4,12 +4,12 @@
             [clojure.gdx.graphics.camera :as camera]
             [clojure.gdx.interop :as interop]
             [clojure.gdx.tiled :as tiled]
-            [clojure.gdx.utils.disposable :refer [dispose!]]
             [clojure.gdx.math :refer [degree->radians]]
             [clojure.utils :as utils])
   (:import (com.badlogic.gdx Gdx)
            (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.graphics.g2d Batch SpriteBatch TextureRegion)
+           (com.badlogic.gdx.utils Disposable)
            (com.badlogic.gdx.utils.viewport Viewport)
            (space.earlygrey.shapedrawer ShapeDrawer)))
 
@@ -64,8 +64,8 @@
   (dispose [_]
     (.dispose batch)
     (.dispose shape-drawer-texture)
-    (run! dispose! (vals cursors))
-    (dispose! default-font))
+    (run! Disposable/.dispose (vals cursors))
+    (Disposable/.dispose default-font))
 
   cdq.graphics/Graphics
   (mouse-position [_]
@@ -268,7 +268,7 @@
                 (fn [[file [hotspot-x hotspot-y]]]
                   (let [pixmap (graphics/pixmap (str "cursors/" file ".png"))
                         cursor (.newCursor Gdx/graphics pixmap hotspot-x hotspot-y)]
-                    (dispose! pixmap)
+                    (.dispose pixmap)
                     cursor))
                 cursors)
       :default-font (graphics/truetype-font default-font)

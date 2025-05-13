@@ -23,8 +23,6 @@
             [clojure.gdx.math :refer [circle->outer-rectangle]]
             [clojure.gdx.math.raycaster :as raycaster]
             [clojure.gdx.math.vector2 :as v]
-            [clojure.gdx.utils.disposable :refer [dispose!]]
-            [clojure.gdx.utils.screen-utils :as screen-utils]
             [clojure.java.io :as io]
             [clojure.timer :as timer]
             [clojure.utils :as utils :refer [sort-by-order
@@ -36,7 +34,7 @@
   (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color)
-           (com.badlogic.gdx.utils SharedLibraryLoader Os)
+           (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
 
@@ -615,8 +613,8 @@
                             (reset-game! (:world-fn config)))
 
                           (dispose []
-                            (dispose! ctx/assets)
-                            (dispose! ctx/graphics)
+                            (Disposable/.dispose ctx/assets)
+                            (Disposable/.dispose ctx/graphics)
                             ; TODO vis-ui dispose
                             ; TODO dispose world tiled-map/level resources?
                             )
@@ -624,7 +622,7 @@
                           (render []
                             (alter-var-root #'ctx/world cache-active-entities)
                             (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
-                            (screen-utils/clear! Color/BLACK)
+                            (ScreenUtils/clear Color/BLACK)
                             (graphics/draw-tiled-map ctx/graphics
                                                      (:tiled-map ctx/world)
                                                      (tile-color-setter (:raycaster ctx/world)
