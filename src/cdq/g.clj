@@ -1,5 +1,6 @@
 (ns cdq.g
-  (:require [cdq.db :as db]
+  (:require [cdq.audio.sound :as sound]
+            [cdq.db :as db]
             [cdq.ctx :as ctx]
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
@@ -22,7 +23,6 @@
             [clojure.data.animation :as animation]
             [clojure.edn :as edn]
             [clojure.gdx :as gdx]
-            [clojure.gdx.audio.sound :as sound]
             [clojure.gdx.backends.lwjgl :as lwjgl]
             [clojure.gdx.graphics :as gdx.graphics]
             [clojure.gdx.graphics.camera :as camera]
@@ -57,12 +57,6 @@
 ; => stage/resize-viewport! need to add (for viewport)
 (defn mouse-on-actor? []
   (stage/hit ctx/stage (graphics/mouse-position ctx/graphics)))
-
-(defn play-sound! [sound-name]
-  (->> sound-name
-       (format "sounds/%s.wav")
-       ctx/assets
-       sound/play!))
 
 ; no window movable type cursor appears here like in player idle
 ; inventory still working, other stuff not, because custom listener to keypresses ? use actor listeners?
@@ -242,7 +236,7 @@
    :z-order :z-order/effect})
 
 (defn spawn-audiovisual [position {:keys [tx/sound entity/animation]}]
-  (play-sound! sound)
+  (sound/play! sound)
   (spawn-entity position
                 effect-body-props
                 {:entity/animation animation

@@ -1,5 +1,6 @@
 (ns cdq.impl.effects
-  (:require [cdq.ctx :as ctx]
+  (:require [cdq.audio.sound :as sound]
+            [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
@@ -91,7 +92,7 @@
     false)
 
   (effect/handle [[_ sound] _ctx]
-    (g/play-sound! sound)))
+    (sound/play! sound)))
 
 (defcomponent :effects/spawn
   (effect/applicable? [_ {:keys [effect/source effect/target-position]}]
