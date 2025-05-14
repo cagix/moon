@@ -1,7 +1,5 @@
 (ns cdq.schema
-  (:refer-clojure :exclude [type])
-  (:require [cdq.malli :as malli]
-            [clojure.set :as set]))
+  (:refer-clojure :exclude [type]))
 
 (defn type [schema]
   (cond
@@ -18,13 +16,3 @@
 
 (defmethod edn->value :default [_schema v]
   v)
-
-(defn map-keys [schema schemas]
-  (malli/map-keys (malli-form schema schemas)))
-
-(defn optional-k? [k schema schemas]
-  (malli/optional? k (malli-form schema schemas)))
-
-(defn optional-keys-left [schema m schemas]
-  (seq (set/difference (malli/optional-keyset (malli-form schema schemas))
-                       (set (keys m)))))

@@ -9,11 +9,13 @@
             [cdq.graphics :as graphics]
             [cdq.grid2d :as g2d]
             [cdq.info :as info]
+            [cdq.malli :as malli]
             [cdq.schema :as schema]
             [cdq.schemas :as schemas]
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [clojure.edn :as edn]
+            [clojure.set :as set]
             [clojure.string :as str]
             [malli.generator :as mg])
   (:import (clojure.lang ILookup)
@@ -671,7 +673,7 @@
 (defn- attribute-label [k schema table]
   (let [label (->label ;(str "[GRAY]:" (namespace k) "[]/" (name k))
                        (name k))
-        delete-button (when (schema/optional-k? k schema (:schemas ctx/schemas))
+        delete-button (when (malli/optional? k (schema/malli-form schema (:schemas ctx/schemas)))
                         (text-button "-"
                                      (fn []
                                        (Actor/.remove (find-kv-widget table k))
@@ -711,7 +713,7 @@
                           :close-on-escape? true
                           :cell-defaults {:pad 5}})
         remaining-ks (sort (remove (set (keys (->value schema map-widget-table)))
-                                   (schema/map-keys schema (:schemas ctx/schemas))))]
+                                   (malli/map-keys (schema/malli-form schema (:schemas ctx/schemas)))))]
     (add-rows!
      window
      (for [k remaining-ks]
@@ -755,7 +757,8 @@
                                (utils/sort-by-k-order property-k-sort-order
                                                       m)))
         colspan component-row-cols
-        opt? (schema/optional-keys-left schema m (:schemas ctx/schemas))]
+        opt? (seq (set/difference (malli/optional-keyset (schema/malli-form schema (:schemas ctx/schemas)))
+                                  (set (keys m))))]
     (add-rows!
      table
      (concat [(when opt?
