@@ -12,5 +12,3 @@
          paused?)
 
 (def mouseover-eid nil)
-
-(declare reset-game!)

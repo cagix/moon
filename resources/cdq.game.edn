@@ -12,7 +12,11 @@
                       :fps 60
                       :create [load-assets
                                load-graphics
-                               [reset cdq.level.modules/create]]
+                               [reset
+                                cdq.level.vampire/create
+                                ;cdq.level.uf-caves/create
+                                ;cdq.level.modules/create
+                                ]]
                       :dispose [dispose-context]
                       :render [cache-active-entities
                                set-camera-on-player

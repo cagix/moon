@@ -1112,7 +1112,7 @@
                                     cdq.level.uf-caves/create
                                     cdq.level.modules/create]]
                      {:label (str "Start " (namespace world-fn))
-                      :on-click (fn [] (ctx/reset-game! world-fn))})}
+                      :on-click (fn [] ((requiring-resolve 'cdq.game.reset/do!) world-fn))})}
            {:label "Help"
             :items [{:label "[W][A][S][D] - Move\n[I] - Inventory window\n[E] - Entity Info window\n[-]/[=] - Zoom\n[P]/[SPACE] - Unpause"}]}
            {:label "Objects"
