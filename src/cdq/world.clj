@@ -132,7 +132,16 @@
                  (update :text str "\n" text)
                  (update :counter #(timer/reset ctx/elapsed-time %)))
              {:text text
-              :counter (timer/create ctx/elapsed-time 0.4)}))))
+              :counter (timer/create ctx/elapsed-time 0.4)})))
+
+  ; we cannot just set/unset movement direction
+  ; because it is handled by the state enter/exit for npc/player movement state ...
+  ; so we cannot expose it as a 'transaction'
+  ; so the movement should be updated in the respective npc/player movement 'state' and no movement 'component' necessary !
+  ; for projectiles inside projectile update !?
+  (set-movement [entity movement-vector]
+    (assoc entity :entity/movement {:direction movement-vector
+                                    :speed (or (entity/stat entity :entity/movement-speed) 0)})))
 
 (defn- create-body [{[x y] :position
                      :keys [position

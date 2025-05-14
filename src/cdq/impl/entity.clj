@@ -436,7 +436,7 @@
 
 (defmethod entity/tick! :player-moving [[_ {:keys [movement-vector]}] eid]
   (if-let [movement-vector (input/player-movement-vector)]
-    (entity/set-movement eid movement-vector)
+    (swap! eid entity/set-movement movement-vector)
     (tx/send-event! eid :no-movement-input)))
 
 (defmethod entity/tick! :stunned [[_ {:keys [counter]}] eid]
@@ -589,7 +589,7 @@
   (state/cursor [_] :cursors/walking)
   (state/pause-game? [_] false)
   (state/enter! [[_ {:keys [eid movement-vector]}]]
-    (entity/set-movement eid movement-vector))
+    (swap! eid entity/set-movement movement-vector))
   (state/exit! [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement)))
 
@@ -607,7 +607,7 @@
 
 (defcomponent :npc-moving
   (state/enter! [[_ {:keys [eid movement-vector]}]]
-    (entity/set-movement eid movement-vector))
+    (swap! eid entity/set-movement movement-vector))
   (state/exit! [[_ {:keys [eid]}]]
     (swap! eid dissoc :entity/movement)))
 
