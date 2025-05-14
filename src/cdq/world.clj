@@ -15,13 +15,6 @@
   (cell [_ position])
   (update-potential-fields! [_]))
 
-(defn cache-active-entities
-  "Expensive operation.
-
-  Active entities are those which are nearby the position of the player and about one screen away."
-  [{:keys [content-grid] :as world}]
-  (assoc world :active-entities (content-grid/active-entities content-grid @ctx/player-eid)))
-
 ; so that at low fps the game doesn't jump faster between frames used @ movement to set a max speed so entities don't jump over other entities when checking collisions
 (def max-delta 0.04)
 

@@ -261,7 +261,7 @@
                             )
 
                           (render []
-                            (alter-var-root #'ctx/world world/cache-active-entities)
+                            ((requiring-resolve 'cdq.game.cache-active-entities/do!))
                             (graphics/set-camera-position! ctx/graphics (:position @ctx/player-eid))
                             (ScreenUtils/clear Color/BLACK)
                             (graphics/draw-tiled-map ctx/graphics
