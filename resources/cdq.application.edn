@@ -2,6 +2,9 @@
             cdq.impl.entity
             cdq.impl.info
             cdq.impl.schemas]
+ :db cdq.impl.db/create
+ :assets cdq.impl.assets/create
+ :graphics* cdq.impl.graphics/create
  :graphics {:cursors {:cursors/bag                   ["bag001"       [0   0]]
                       :cursors/black-x               ["black_x"      [0   0]]
                       :cursors/default               ["default"      [0   0]]

@@ -9,9 +9,6 @@
             [cdq.graphics :as graphics]
             [cdq.graphics.camera :as camera]
             [cdq.grid2d :as g2d]
-            [cdq.impl.assets]
-            [cdq.impl.db]
-            [cdq.impl.graphics]
             [cdq.stage :as stage]
             [cdq.tiled :as tiled]
             [cdq.math :refer [circle->outer-rectangle]]
@@ -410,7 +407,7 @@
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
     (bind-root #'ctx/schemas (io-read-edn "schema.edn"))
-    (bind-root #'ctx/db (cdq.impl.db/create "properties.edn"))
+    (bind-root #'ctx/db ((requiring-resolve (:db config)) "properties.edn"))
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
                      (.getImage (Toolkit/getDefaultToolkit)
@@ -418,11 +415,11 @@
       (.set Configuration/GLFW_LIBRARY_NAME "glfw_async"))
     (Lwjgl3Application. (proxy [ApplicationAdapter] []
                           (create []
-                            (bind-root #'ctx/assets (cdq.impl.assets/create
+                            (bind-root #'ctx/assets ((requiring-resolve (:assets config))
                                                      {:folder "resources/"
                                                       :asset-type-extensions {Sound   #{"wav"}
                                                                               Texture #{"png" "bmp"}}}))
-                            (bind-root #'ctx/graphics (cdq.impl.graphics/create (:graphics config)))
+                            (bind-root #'ctx/graphics ((requiring-resolve (:graphics* config)) (:graphics config)))
                             (reset-game! (:world-fn config)))
 
                           (dispose []
