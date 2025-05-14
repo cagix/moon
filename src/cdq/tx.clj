@@ -76,3 +76,15 @@
                            (dissoc old-state-k)))
            (state/exit!  old-state-obj)
            (state/enter! new-state-obj)))))))
+
+(defn add-skill [eid {:keys [property/id] :as skill}]
+  {:pre [(not (entity/has-skill? @eid skill))]}
+  (when (:entity/player? @eid)
+    ((:skill-added! (:entity/player? @eid)) skill))
+  (swap! eid assoc-in [:entity/skills id] skill))
+
+(defn remove-skill [eid {:keys [property/id] :as skill}]
+  {:pre [(entity/has-skill? @eid skill)]}
+  (when (:entity/player? @eid)
+    ((:skill-removed! (:entity/player? @eid)) skill))
+  (swap! eid update :entity/skills dissoc id))

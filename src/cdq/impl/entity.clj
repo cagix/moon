@@ -305,7 +305,7 @@
 (defmethod entity/create! :entity/skills [[k skills] eid]
   (swap! eid assoc k nil)
   (doseq [skill skills]
-    (entity/add-skill eid skill)))
+    (tx/add-skill eid skill)))
 
 (defmethod entity/create! :entity/animation [[_ animation] eid]
   (swap! eid assoc :entity/image (animation/current-frame animation)))

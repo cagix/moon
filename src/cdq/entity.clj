@@ -161,17 +161,5 @@
 (defn mark-destroyed [eid]
   (swap! eid assoc :entity/destroyed? true))
 
-(defn add-skill [eid {:keys [property/id] :as skill}]
-  {:pre [(not (has-skill? @eid skill))]}
-  (when (:entity/player? @eid)
-    ((:skill-added! (:entity/player? @eid)) skill))
-  (swap! eid assoc-in [:entity/skills id] skill))
-
-(defn remove-skill [eid {:keys [property/id] :as skill}]
-  {:pre [(has-skill? @eid skill)]}
-  (when (:entity/player? @eid)
-    ((:skill-removed! (:entity/player? @eid)) skill))
-  (swap! eid update :entity/skills dissoc id))
-
 (defprotocol Entity
   (add-text-effect [_ text]))
