@@ -15,7 +15,6 @@
                                          bind-root]]
             [cdq.world :as world] ; -> protocolize
             [cdq.world.grid :as grid]
-            cdq.world.potential-fields
             [clojure.edn :as edn]
             [clojure.java.io :as io])
   (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
@@ -240,16 +239,6 @@
            (not (or (.isKeyJustPressed Gdx/input Input$Keys/P)
                     (.isKeyPressed     Gdx/input Input$Keys/SPACE))))))
 
-(defn- update-potential-fields! [{:keys [potential-field-cache
-                                         grid
-                                         active-entities]}]
-  (doseq [[faction max-iterations] factions-iterations]
-    (cdq.world.potential-fields/tick potential-field-cache
-                                     grid
-                                     faction
-                                     active-entities
-                                     max-iterations)))
-
 (defn- tick-entities! [{:keys [active-entities]}]
   ; precaution in case a component gets removed by another component
   ; the question is do we still want to update nil components ?
@@ -330,7 +319,7 @@
                               (let [delta-ms (min (.getDeltaTime Gdx/graphics) world/max-delta)]
                                 (alter-var-root #'ctx/elapsed-time + delta-ms)
                                 (bind-root #'ctx/delta-time delta-ms))
-                              (update-potential-fields! ctx/world)
+                              (world/update-potential-fields! ctx/world)
                               (tick-entities! ctx/world))
 
                             ; do not pause this as for example pickup item, should be destroyed => make test & remove comment.

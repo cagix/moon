@@ -12,7 +12,8 @@
             [cdq.world.grid :as grid]))
 
 (defprotocol World
-  (cell [_ position]))
+  (cell [_ position])
+  (update-potential-fields! [_]))
 
 (defn cache-active-entities
   "Expensive operation.
