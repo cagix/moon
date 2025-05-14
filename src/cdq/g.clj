@@ -1,5 +1,5 @@
 (ns cdq.g
-  (:require [cdq.game :as game]
+  (:require [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]))
 
@@ -8,4 +8,4 @@
       io/resource
       slurp
       edn/read-string
-      game/execute!))
+      utils/execute!))

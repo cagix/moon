@@ -1,8 +1,8 @@
 (ns cdq.game.when-macos
-  (:require [cdq.game :as game])
+  (:require [cdq.utils :as utils])
   (:import (com.badlogic.gdx.utils SharedLibraryLoader
                                    Os)))
 
 (defn do! [transactions]
   (when (= SharedLibraryLoader/os Os/MacOsX)
-    (game/execute! transactions)))
+    (utils/execute! transactions)))

@@ -1,7 +1,7 @@
 (ns cdq.game.when-not-paused
   (:require [cdq.ctx :as ctx]
-            [cdq.game :as game]))
+            [cdq.utils :as utils]))
 
 (defn do! [transactions]
   (when-not ctx/paused?
-    (game/execute! transactions)))
+    (utils/execute! transactions)))
