@@ -13,6 +13,7 @@
             [cdq.math.vector2 :as v]
             [cdq.stage :as stage]
             [cdq.timer :as timer]
+            [cdq.tx :as tx]
             [cdq.utils :refer [defcomponent find-first]]
             [cdq.val-max :as val-max]
             [cdq.world :as world]
@@ -39,7 +40,7 @@
      (do
       (sound/play! "bfxr_pickup")
       (entity/mark-destroyed eid)
-      (entity/pickup-item ctx/player-eid item))
+      (tx/pickup-item ctx/player-eid item))
 
      :else
      (do
@@ -142,7 +143,7 @@
     (when-let [item (get-in (:entity/inventory @eid) cell)]
       (sound/play! "bfxr_takeit")
       (entity/send-event! eid :pickup-item item)
-      (entity/remove-item eid cell))))
+      (tx/remove-item eid cell))))
 
 (defn- clicked-cell [eid cell]
   (let [entity @eid
@@ -156,7 +157,7 @@
      (do
       (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/set-item eid cell item-on-cursor)
+      (tx/set-item eid cell item-on-cursor)
       (entity/send-event! eid :dropped-item))
 
      ; STACK ITEMS
@@ -165,7 +166,7 @@
      (do
       (sound/play! "bfxr_itemput")
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/stack-item eid cell item-on-cursor)
+      (tx/stack-item eid cell item-on-cursor)
       (entity/send-event! eid :dropped-item))
 
      ; SWAP ITEMS
@@ -176,8 +177,8 @@
       ; need to dissoc and drop otherwise state enter does not trigger picking it up again
       ; TODO? coud handle pickup-item from item-on-cursor state also
       (swap! eid dissoc :entity/item-on-cursor)
-      (entity/remove-item eid cell)
-      (entity/set-item eid cell item-on-cursor)
+      (tx/remove-item eid cell)
+      (tx/set-item eid cell item-on-cursor)
       (entity/send-event! eid :dropped-item)
       (entity/send-event! eid :pickup-item item-in-cell)))))
 
@@ -299,7 +300,7 @@
 (defmethod entity/create! :entity/inventory [[k items] eid]
   (swap! eid assoc k inventory/empty-inventory)
   (doseq [item items]
-    (entity/pickup-item eid item)))
+    (tx/pickup-item eid item)))
 
 (defmethod entity/create! :entity/skills [[k skills] eid]
   (swap! eid assoc k nil)
