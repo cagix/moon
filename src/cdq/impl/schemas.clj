@@ -1,5 +1,9 @@
 (ns cdq.impl.schemas
-  (:require [cdq.schema :as schema]
+  (:require [cdq.animation :as animation]
+            [cdq.ctx :as ctx]
+            [cdq.db :as db]
+            [cdq.graphics :as graphics]
+            [cdq.schema :as schema]
             [cdq.val-max :as val-max]))
 
 (defmethod schema/malli-form :s/val-max [_ _schemas] val-max/schema)
@@ -62,3 +66,27 @@
 (defmethod schema/malli-form :s/components-ns [[_ ns-name-k] schemas]
   (schema/malli-form [:s/map-optional (namespaced-ks schemas ns-name-k)]
                      schemas))
+
+(defn- edn->sprite [{:keys [file sub-image-bounds]}]
+  (if sub-image-bounds
+    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
+          [tilew tileh]       (drop 2 sub-image-bounds)]
+      (graphics/from-sheet ctx/graphics
+                           (graphics/sprite-sheet ctx/graphics (ctx/assets file) tilew tileh)
+                           [(int (/ sprite-x tilew))
+                            (int (/ sprite-y tileh))]))
+    (graphics/sprite ctx/graphics (ctx/assets file))))
+
+(defmethod schema/edn->value :s/image [_ edn]
+  (edn->sprite edn))
+
+(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
+  (animation/create (map edn->sprite frames)
+                    :frame-duration frame-duration
+                    :looping? looping?))
+
+(defmethod schema/edn->value :s/one-to-one [_ property-id]
+  (db/build ctx/db property-id))
+
+(defmethod schema/edn->value :s/one-to-many [_ property-ids]
+  (set (map #(db/build ctx/db %) property-ids)))

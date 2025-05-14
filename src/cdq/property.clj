@@ -1,4 +1,4 @@
-(ns cdq.db.property
+(ns cdq.property
   (:refer-clojure :exclude [type]))
 
 (defn type [{:keys [property/id]}]

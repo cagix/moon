@@ -1,8 +1,8 @@
 (ns cdq.impl.db
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [cdq.db.property :as property]
             [cdq.schema :as schema]
+            [cdq.property :as property]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]

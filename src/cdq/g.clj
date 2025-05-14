@@ -1,60 +1,32 @@
 (ns cdq.g
-  (:require [cdq.animation :as animation]
-            [cdq.db :as db]
-            [cdq.schema :as schema]
-            [cdq.db.property :as property]
-            [cdq.ctx :as ctx]
-            [cdq.entity :as entity]
+  (:require [cdq.ctx :as ctx]
+            [cdq.entity :as entity] ; -> protocolize
             [cdq.entity.state :as state]
             [cdq.graphics :as graphics]
-            [cdq.graphics.camera :as camera]
+            [cdq.graphics.camera :as camera] ; -> graphics ?
             [cdq.grid2d :as g2d]
-            [cdq.stage :as stage]
+            [cdq.stage :as stage] ; -> protocolize
             [cdq.tiled :as tiled]
             [cdq.math :refer [circle->outer-rectangle]]
             [cdq.math.raycaster :as raycaster]
+            [cdq.property :as property]
             [cdq.utils :as utils :refer [sort-by-order
                                          tile->middle
                                          pretty-pst
                                          bind-root]]
-            [cdq.world :as world]
+            [cdq.world :as world] ; -> protocolize
             [cdq.world.content-grid :as content-grid]
             [cdq.world.grid :as grid]
             cdq.world.potential-fields
             [clojure.edn :as edn]
             [clojure.java.io :as io])
-  (:import (com.badlogic.gdx Gdx)
-           (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
+  (:import (com.badlogic.gdx ApplicationAdapter Gdx Input$Keys)
            (com.badlogic.gdx.audio Sound)
            (com.badlogic.gdx.backends.lwjgl3 Lwjgl3Application Lwjgl3ApplicationConfiguration)
            (com.badlogic.gdx.graphics Color Texture)
            (com.badlogic.gdx.utils Disposable ScreenUtils SharedLibraryLoader Os)
            (java.awt Taskbar Toolkit)
            (org.lwjgl.system Configuration)))
-
-(defn- edn->sprite [{:keys [file sub-image-bounds]}]
-  (if sub-image-bounds
-    (let [[sprite-x sprite-y] (take 2 sub-image-bounds)
-          [tilew tileh]       (drop 2 sub-image-bounds)]
-      (graphics/from-sheet ctx/graphics
-                           (graphics/sprite-sheet ctx/graphics (ctx/assets file) tilew tileh)
-                           [(int (/ sprite-x tilew))
-                            (int (/ sprite-y tileh))]))
-    (graphics/sprite ctx/graphics (ctx/assets file))))
-
-(defmethod schema/edn->value :s/image [_ edn]
-  (edn->sprite edn))
-
-(defmethod schema/edn->value :s/animation [_ {:keys [frames frame-duration looping?]}]
-  (animation/create (map edn->sprite frames)
-                    :frame-duration frame-duration
-                    :looping? looping?))
-
-(defmethod schema/edn->value :s/one-to-one [_ property-id]
-  (db/build ctx/db property-id))
-
-(defmethod schema/edn->value :s/one-to-many [_ property-ids]
-  (set (map #(db/build ctx/db %) property-ids)))
 
 (defrecord RCell [position
                   middle ; only used @ potential-field-follow-to-enemy -> can remove it.
