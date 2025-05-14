@@ -13,9 +13,9 @@
                       :create [load-assets
                                load-graphics
                                [reset
-                                cdq.level.vampire/create
+                                ;cdq.level.vampire/create
                                 ;cdq.level.uf-caves/create
-                                ;cdq.level.modules/create
+                                cdq.level.modules/create
                                 ]]
                       :dispose [dispose-context]
                       :render [cache-active-entities
