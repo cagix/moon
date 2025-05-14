@@ -128,17 +128,6 @@
            (:entity/modifiers target)
            :modifier/damage-receive-max)))
 
-; TODO use at projectile & also adjust rotation
-(defn start-point [entity target*]
-  (v/add (:position entity)
-         (v/scale (direction entity target*)
-                  (:radius entity))))
-
-(defn end-point [entity target* maxrange]
-  (v/add (start-point entity target*)
-         (v/scale (direction entity target*)
-                  maxrange)))
-
 (defprotocol Entity
   (mark-destroyed [_])
   (add-text-effect [_ text])

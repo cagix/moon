@@ -153,6 +153,17 @@
                             (:position target*)
                             [1 0 0 0.5])))))
 
+; TODO use at projectile & also adjust rotation
+(defn- start-point [entity target*]
+  (v/add (:position entity)
+         (v/scale (entity/direction entity target*)
+                  (:radius entity))))
+
+(defn- end-point [entity target* maxrange]
+  (v/add (start-point entity target*)
+         (v/scale (entity/direction entity target*)
+                  maxrange)))
+
 (defcomponent :effects/target-entity
   (effect/applicable? [[_ {:keys [entity-effects]}] {:keys [effect/target] :as effect-ctx}]
     (and target
@@ -167,13 +178,13 @@
           target* @target]
       (if (entity/in-range? source* target* maxrange)
         (do
-         (world/line-render {:start (entity/start-point source* target*)
+         (world/line-render {:start (start-point source* target*)
                              :end (:position target*)
                              :duration 0.05
                              :color [1 0 0 0.75]
                              :thick? true})
          (effect/do-all! effect-ctx entity-effects))
-        (world/spawn-audiovisual (entity/end-point source* target* maxrange)
+        (world/spawn-audiovisual (end-point source* target* maxrange)
                                  (db/build ctx/db :audiovisuals/hit-ground)))))
 
   (effect/render [[_ {:keys [maxrange]}]
@@ -183,8 +194,8 @@
       (let [source* @source
             target* @target]
         (graphics/draw-line g
-                            (entity/start-point source* target*)
-                            (entity/end-point source* target* maxrange)
+                            (start-point source* target*)
+                            (end-point source* target* maxrange)
                             (if (entity/in-range? source* target* maxrange)
                               [1 0 0 0.5]
                               [1 1 0 0.5]))))))
