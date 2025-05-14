@@ -1,4 +1,56 @@
-(ns cdq.malli)
+(ns cdq.malli
+  (:require [malli.core :as m]
+            [malli.error :as me]
+            [malli.generator :as mg]))
+
+(defn schema [form]
+  (m/schema form))
+
+(defn validate [schema value]
+  (m/validate schema value))
+
+(defn generate [form & {:keys [size]}]
+  (mg/generate form {:size size}))
+
+(defn validate! [form value]
+  (let [schema (schema form)]
+    (when-not (validate schema value)
+      (throw (ex-info (str (me/humanize (m/explain schema value)))
+                      {:value value
+                       :schema (m/form schema)})))))
+
+(comment
+ (validate! [:map {:closed true}
+             [:foo pos?]
+             [:bar pos?]
+             [:baz {:optional true} :some]
+             [:boz {:optional false} :some]
+             [:asdf {:optional true} :some]]
+            {:foo 1
+             :bar 2
+             :boz :a
+             :asdf :b
+             :baz :asdf})
+
+ (validate! [:map {:closed true}
+             [:foo pos?]
+             [:bar pos?]
+             [:baz {:optional true} :some]
+             [:boz {:optional false} :some]
+             [:asdf {:optional true} :some]]
+            {:foo 1
+             :bar 2
+             :boz :a})
+
+ (validate! [:map {:closed true}
+             [:foo pos?]
+             [:bar pos?]
+             [:baz {:optional true} :some]
+             [:boz {:optional false} :some]
+             [:asdf {:optional true} :some]]
+            {:bar 2
+             :boz :a})
+ )
 
 (defn map-keys [map-schema]
   (let [[_m _p & ks] map-schema]

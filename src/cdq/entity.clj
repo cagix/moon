@@ -4,10 +4,10 @@
             [cdq.entity.state :as state]
             [cdq.entity.stats.op :as op]
             [cdq.timer :as timer]
+            [cdq.malli :as m]
             [cdq.math :as math]
             [cdq.math.vector2 :as v]
             [cdq.val-max :as val-max]
-            [malli.core :as m]
             [reduce-fsm :as fsm]))
 
 (defmulti create (fn [[k]]
