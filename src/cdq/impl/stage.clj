@@ -1167,7 +1167,7 @@
     (.setName "player-message-actor")))
 
 (defn show-message! [stage text]
-  (Actor/.setUserObject (Group/.findActor (Stage/.getRoot stage) "player-message-actor") ; TODO FIXME no getRoot
+  (Actor/.setUserObject (Group/.findActor (stage/root stage) "player-message-actor")
                         (atom {:text text
                                :counter 0})))
 
@@ -1265,6 +1265,9 @@
       (mouse-on-actor? [_]
         (let [[x y] (graphics/mouse-position ctx/graphics)]
           (.hit stage x y true)))
+
+      (root [_]
+        (.getRoot stage))
 
   (show-error-window! [stage throwable]
     (add-actor! stage
