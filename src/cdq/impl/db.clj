@@ -2,11 +2,58 @@
   (:require [cdq.ctx :as ctx]
             [cdq.db :as db]
             [cdq.db.property :as property]
-            [cdq.schemas :as schemas]
+            [cdq.schema :as schema]
             [cdq.utils :as utils]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [clojure.pprint :as pprint]))
+            [clojure.pprint :as pprint]
+            [malli.core :as m]
+            [malli.error :as me]))
+
+(defn- validate!* [form value]
+  (let [schema (m/schema form)]
+    (when-not (m/validate schema value)
+      (throw (ex-info (str (me/humanize (m/explain schema value)))
+                      {:value value
+                       :schema (m/form schema)})))))
+
+(comment
+ (validate!* [:map {:closed true}
+              [:foo pos?]
+              [:bar pos?]
+              [:baz {:optional true} :some]
+              [:boz {:optional false} :some]
+              [:asdf {:optional true} :some]]
+             {:foo 1
+              :bar 2
+              :boz :a
+              :asdf :b
+              :baz :asdf})
+
+ (validate!* [:map {:closed true}
+              [:foo pos?]
+              [:bar pos?]
+              [:baz {:optional true} :some]
+              [:boz {:optional false} :some]
+              [:asdf {:optional true} :some]]
+             {:foo 1
+              :bar 2
+              :boz :a})
+
+ (validate!* [:map {:closed true}
+              [:foo pos?]
+              [:bar pos?]
+              [:baz {:optional true} :some]
+              [:boz {:optional false} :some]
+              [:asdf {:optional true} :some]]
+             {:bar 2
+              :boz :a})
+ )
+
+(defn- validate! [property]
+  (validate!* (schema/malli-form (get ctx/schemas (property/type property))
+                                 ctx/schemas)
+              property))
 
 (defn- recur-sort-map [m]
   (into (sorted-map)
@@ -40,7 +87,7 @@
   (update [this {:keys [property/id] :as property}]
     (assert (contains? property :property/id))
     (assert (contains? data id))
-    (schemas/validate! ctx/schemas (property/type property) property)
+    (validate! property)
     (update this :data assoc id property))
 
   (delete [this property-id]
@@ -58,16 +105,16 @@
          (filter #(= property-type (property/type %)))))
 
   (build [this property-id]
-    (schemas/transform ctx/schemas (db/get-raw this property-id)))
+    (schema/transform ctx/schemas (db/get-raw this property-id)))
 
   (build-all [this property-type]
-    (map #(schemas/transform ctx/schemas %) (db/all-raw this property-type))))
+    (map #(schema/transform ctx/schemas %) (db/all-raw this property-type))))
 
 (defn create [path]
   (let [properties-file (io/resource path) ; TODO required from existing?
         properties (-> properties-file slurp edn/read-string)]
     (assert (or (empty? properties)
                 (apply distinct? (map :property/id properties))))
-    (run! #(schemas/validate! ctx/schemas (property/type %) %) properties)
+    (run! validate! properties)
     (map->DB {:data (zipmap (map :property/id properties) properties)
               :file properties-file})))

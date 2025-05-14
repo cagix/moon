@@ -12,7 +12,6 @@
             [cdq.impl.assets]
             [cdq.impl.db]
             [cdq.impl.graphics]
-            [cdq.impl.schemas]
             [cdq.stage :as stage]
             [cdq.tiled :as tiled]
             [cdq.math :refer [circle->outer-rectangle]]
@@ -410,7 +409,7 @@
   (let [config (io-read-edn "cdq.application.edn")]
     (doseq [ns-sym (:requires config)]
       (require ns-sym))
-    (bind-root #'ctx/schemas (cdq.impl.schemas/create (io-read-edn "schema.edn")))
+    (bind-root #'ctx/schemas (io-read-edn "schema.edn"))
     (bind-root #'ctx/db (cdq.impl.db/create "properties.edn"))
     (when (= SharedLibraryLoader/os Os/MacOsX)
       (.setIconImage (Taskbar/getTaskbar)
