@@ -32,8 +32,7 @@
   (optional? k (malli-form schema schemas)))
 
 (defn- optional-keyset [m-schema schemas]
-  (set (filter #(optional? % m-schema) (map-keys m-schema
-                                                 schemas))))
+  (set (filter #(optional? % m-schema) (map-keys m-schema schemas))))
 
 (comment
  (= (optional-keyset
