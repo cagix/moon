@@ -119,7 +119,17 @@
                  radius
                  collides?
                  z-order
-                 rotation-angle])
+                 rotation-angle]
+  entity/Entity
+  (add-text-effect [entity text]
+    (assoc entity
+           :entity/string-effect
+           (if-let [string-effect (:entity/string-effect entity)]
+             (-> string-effect
+                 (update :text str "\n" text)
+                 (update :counter #(timer/reset ctx/elapsed-time %)))
+             {:text text
+              :counter (timer/create ctx/elapsed-time 0.4)}))))
 
 (defn- create-body [{[x y] :position
                      :keys [position

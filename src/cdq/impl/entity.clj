@@ -615,7 +615,7 @@
     (world/delayed-alert (:position       @eid)
                          (:entity/faction @eid)
                          0.2)
-    (entity/add-text-effect! eid "[WHITE]!")))
+    (swap! eid entity/add-text-effect "[WHITE]!")))
 
 (defn- draw-skill-image [image entity [x y] action-counter-ratio g]
   (let [[width height] (:world-unit-dimensions image)

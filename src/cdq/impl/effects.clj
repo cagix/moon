@@ -239,7 +239,7 @@
        nil
 
        (armor-saves? source* target*)
-       (entity/add-text-effect! target "[WHITE]ARMOR")
+       (swap! target entity/add-text-effect "[WHITE]ARMOR")
 
        :else
        (let [min-max (:damage/min-max (entity/damage source* target* damage))
@@ -248,7 +248,7 @@
          (swap! target assoc-in [:entity/hp 0] new-hp-val)
          (world/spawn-audiovisual (:position target*) (db/build ctx/db :audiovisuals/damage))
          (entity/send-event! target (if (zero? new-hp-val) :kill :alert))
-         (entity/add-text-effect! target (str "[RED]" dmg-amount "[]")))))))
+         (swap! target entity/add-text-effect (str "[RED]" dmg-amount "[]")))))))
 
 (defcomponent :effects.target/kill
   (effect/applicable? [_ {:keys [effect/target]}]

@@ -1,9 +1,7 @@
 (ns cdq.entity
-  (:require [cdq.ctx :as ctx]
-            [cdq.entity.inventory :as inventory]
+  (:require [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.entity.stats.op :as op]
-            [cdq.timer :as timer]
             [cdq.math :as math]
             [cdq.math.vector2 :as v]
             [cdq.val-max :as val-max]
@@ -200,18 +198,8 @@
     ((:skill-removed! (:entity/player? @eid)) skill))
   (swap! eid update :entity/skills dissoc id))
 
-(defn- add-text-effect* [entity text]
-  (assoc entity
-         :entity/string-effect
-         (if-let [string-effect (:entity/string-effect entity)]
-           (-> string-effect
-               (update :text str "\n" text)
-               (update :counter #(timer/reset ctx/elapsed-time %)))
-           {:text text
-            :counter (timer/create ctx/elapsed-time 0.4)})))
-
-(defn add-text-effect! [eid text]
-  (swap! eid add-text-effect* text))
+(defprotocol Entity
+  (add-text-effect [_ text]))
 
 (defn set-item [eid cell item]
   (let [entity @eid
