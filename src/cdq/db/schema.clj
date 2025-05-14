@@ -1,9 +1,7 @@
 (ns cdq.db.schema
   (:refer-clojure :exclude [type])
-  (:require [clojure.set :as set]
-            [malli.core :as m]
-            [malli.error :as me]
-            [malli.generator :as mg]))
+  (:require [cdq.val-max :as val-max]
+            [clojure.set :as set]))
 
 (defn type [schema]
   (cond
@@ -17,27 +15,6 @@
 (defn schema-of [schemas k]
   (assert (contains? schemas k) (pr-str k))
   (get schemas k))
-
-(defn- invalid-ex-info [malli-schema value]
-  (ex-info (str (me/humanize (m/explain malli-schema value)))
-           {:value value
-            :schema (m/form malli-schema)}))
-
-(defn validate [malli-schema value]
-  (m/validate malli-schema value))
-
-(defn m-schema [malli-form]
-  (m/schema malli-form))
-
-(defn validate! [schemas schema-k value]
-  (let [malli-schema (m-schema (malli-form (schema-of schemas schema-k)
-                                           schemas))]
-    (when-not (validate malli-schema value)
-      (throw (invalid-ex-info malli-schema value)))))
-
-(defn generate [schema size schemas]
-  (mg/generate (malli-form schema schemas)
-               {:size 3}))
 
 (defn map-keys [schema schemas]
   (let [[_m _p & ks] (malli-form schema schemas)]
@@ -77,15 +54,7 @@
                                         schemas)
                        (set (keys m)))))
 
-(def val-max-schema
-  (m/schema [:and
-             [:vector {:min 2 :max 2} [:int {:min 0}]]
-             [:fn {:error/fn (fn [{[^int v ^int mx] :value} _]
-                               (when (< mx v)
-                                 (format "Expected max (%d) to be smaller than val (%d)" v mx)))}
-              (fn [[^int a ^int b]] (<= a b))]]))
-
-(defmethod malli-form :s/val-max [_ _schemas] val-max-schema)
+(defmethod malli-form :s/val-max [_ _schemas] val-max/schema)
 (defmethod malli-form :s/number  [_ _schemas] number?)
 (defmethod malli-form :s/nat-int [_ _schemas] nat-int?)
 (defmethod malli-form :s/int     [_ _schemas] int?)

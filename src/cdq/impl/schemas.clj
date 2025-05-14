@@ -1,6 +1,8 @@
 (ns cdq.impl.schemas
   (:require [cdq.db.schema :as schema]
-            [cdq.schemas :as schemas]))
+            [cdq.schemas :as schemas]
+            [malli.core :as m]
+            [malli.error :as me]))
 
 ; reduce-kv?
 (defn- apply-kvs
@@ -25,8 +27,13 @@
   (property-types [_]
     (filter #(= "properties" (namespace %)) (keys schemas)))
 
-  (validate! [_ property-type property]
-    (schema/validate! schemas property-type property))
+  (validate! [_ schema-k property]
+    (let [malli-schema (m/schema (schema/malli-form (schema/schema-of schemas schema-k)
+                                                    schemas))]
+      (when-not (m/validate malli-schema property)
+        (throw (ex-info (str (me/humanize (m/explain malli-schema property)))
+                        {:value property
+                         :schema (m/form malli-schema)})))))
 
   (transform [this property]
     (apply-kvs property

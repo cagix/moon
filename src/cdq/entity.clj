@@ -1,12 +1,13 @@
 (ns cdq.entity
   (:require [cdq.ctx :as ctx]
-            [cdq.db.schema :as s]
             [cdq.entity.inventory :as inventory]
             [cdq.entity.state :as state]
             [cdq.entity.stats.op :as op]
             [cdq.timer :as timer]
             [cdq.math :as math]
             [cdq.math.vector2 :as v]
+            [cdq.val-max :as val-max]
+            [malli.core :as m]
             [reduce-fsm :as fsm]))
 
 (defmulti create (fn [[k]]
@@ -80,15 +81,15 @@
   (mapv #(-> % int (max 0)) val-max))
 
 (defn- apply-max-modifier [val-max modifiers modifier-k]
-  {:pre  [(s/validate s/val-max-schema val-max)]
-   :post [(s/validate s/val-max-schema val-max)]}
+  {:pre  [(m/validate val-max/schema val-max)]
+   :post [(m/validate val-max/schema val-max)]}
   (let [val-max (update val-max 1 mod-value modifiers modifier-k)
         [v mx] (->pos-int val-max)]
     [(min v mx) mx]))
 
 (defn- apply-min-modifier [val-max modifiers modifier-k]
-  {:pre  [(s/validate s/val-max-schema val-max)]
-   :post [(s/validate s/val-max-schema val-max)]}
+  {:pre  [(m/validate val-max/schema val-max)]
+   :post [(m/validate val-max/schema val-max)]}
   (let [val-max (update val-max 0 mod-value modifiers modifier-k)
         [v mx] (->pos-int val-max)]
     [v (max v mx)]))

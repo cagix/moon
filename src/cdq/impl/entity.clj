@@ -3,7 +3,6 @@
             [cdq.animation :as animation]
             [cdq.ctx :as ctx]
             [cdq.db :as db]
-            [cdq.db.schema :as schema]
             [cdq.effect :as effect]
             [cdq.entity :as entity]
             [cdq.entity.inventory :as inventory]
@@ -19,6 +18,7 @@
             [cdq.world :as world]
             [cdq.world.grid :as grid]
             [cdq.world.potential-field :as potential-field]
+            [malli.core :as m]
             [reduce-fsm :as fsm])
   (:import (com.badlogic.gdx Gdx Input$Buttons)))
 
@@ -493,11 +493,11 @@
 ; could set faster than max-speed if I just do multiple smaller movement steps in one frame
 (def ^:private max-speed (/ world/minimum-size world/max-delta)) ; need to make var because s/schema would fail later if divide / is inside the schema-form
 
-(def ^:private speed-schema (schema/m-schema [:and number? [:>= 0] [:<= max-speed]]))
+(def ^:private speed-schema (m/schema [:and number? [:>= 0] [:<= max-speed]]))
 
 (defmethod entity/tick! :entity/movement [[_ {:keys [direction speed rotate-in-movement-direction?] :as movement}]
                                           eid]
-  (assert (schema/validate speed-schema speed)
+  (assert (m/validate speed-schema speed)
           (pr-str speed))
   (assert (or (zero? (v/length direction))
               (v/normalised? direction))

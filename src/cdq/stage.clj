@@ -14,7 +14,8 @@
             [cdq.utils :as utils]
             [cdq.val-max :as val-max]
             [clojure.edn :as edn]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [malli.generator :as mg])
   (:import (clojure.lang ILookup)
            (com.badlogic.gdx Gdx Input$Keys)
            (com.badlogic.gdx.assets AssetManager)
@@ -699,7 +700,9 @@
 
      ;(#{:s/map} type) {} ; cannot have empty for required keys, then no Add Component button
 
-     :else (schema/generate schema {:size 3} (:schemas ctx/schemas)))))
+     :else (mg/generate
+            (schema/malli-form schema (:schemas ctx/schemas))
+            {:size 3}))))
 
 (defn- choose-component-window [schema map-widget-table]
   (let [window (->window {:title "Choose"
